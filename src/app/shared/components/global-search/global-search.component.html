@@ -1,4 +1,4 @@
-@if (!this.searchControlInput()) {
+@if (!searchControlInput()) {
   <div class="mx-3 md:mx-4">
     <osf-search-input
       [control]="searchControl"
@@ -11,6 +11,7 @@
 
 <osf-search-results-container
   [provider]="provider()"
+  [filters]="filters()"
   [tabOptions]="resourceTabOptions()"
   [resources]="resources()"
   [areResourcesLoading]="areResourcesLoading()"
@@ -29,7 +30,6 @@
     <osf-filter-chips
       [filterValues]="filterValues()"
       [filters]="filters()"
-      [filterOptionsCache]="filterOptionsCache()"
       (filterRemoved)="onFilterChipRemoved($event)"
     />
   </div>

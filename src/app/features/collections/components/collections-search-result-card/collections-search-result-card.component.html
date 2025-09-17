@@ -7,7 +7,9 @@
   <p>
     {{ 'collections.common.by' | translate }}
     @for (contributor of item?.contributors; track contributor.id) {
-      <a [href]="contributor.url" class="font-bold cursor-pointer">{{ contributor.name }}{{ $last ? '' : ', ' }}</a>
+      <a [routerLink]="['/user', contributor.id]" class="font-bold cursor-pointer">
+        {{ contributor.name }}{{ $last ? '' : ', ' }}
+      </a>
     }
   </p>
   <p class="card-description">{{ item?.description }}</p>

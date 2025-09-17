@@ -171,6 +171,13 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     visible: true,
     routerLinkActiveOptions: { exact: false },
   },
+  {
+    id: 'registration-recent-activity',
+    label: 'navigation.recentActivity',
+    routerLink: 'recent-activity',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
 ];
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -322,7 +329,7 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLink: 'moderation',
         label: 'navigation.moderation',
         visible: false,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
     ],
   },

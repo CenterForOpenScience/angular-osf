@@ -48,7 +48,9 @@
       "editAndResubmit": "Edit And Resubmit",
       "createNewVersion": "Create New Version",
       "leaveThisView": "Leave this view",
-      "addOneMore": "Add One More"
+      "addOneMore": "Add One More",
+      "filter": "Filter",
+      "sort": "Sort"
     },
     "accessibility": {
       "help": "Help",
@@ -64,7 +66,9 @@
       "tooltipBtn": "Tooltip button",
       "customizeOptions": "Customize options",
       "toggleProjectVisibility": "Toggle project visibility",
-      "tagInput": "Tag input"
+      "tagInput": "Tag input",
+      "toggleTreeNode": "Toggle tree node",
+      "copyButtonInfo": "Copy to clipboard button"
     },
     "dialogs": {
       "confirmation": "Confirmation"
@@ -86,7 +90,7 @@
         "funder": "Select funder",
         "rights": "Select license",
         "publisher": "Select provider",
-        "isPartOfCollection": "Select part of collection",
+        "isPartOfCollection": "Select collection",
         "dateCreated": "Select date",
         "creator": "Creator name",
         "resourceType": "Select resource type"
@@ -152,6 +156,9 @@
     "hint": {
       "tagSeparators": "Use enter or comma to create a tag.",
       "viewOnlyLinksBanner": "You are viewing OSF through a view-only link, which may limit the data you have permission to see."
+    },
+    "errorMessages": {
+      "serverError": "An unexpected error occurred. Please try again later."
     }
   },
   "navigation": {
@@ -203,7 +210,22 @@
     "resources": "Resources",
     "components": "Components",
     "links": "Links",
-    "institutions": "Institutions"
+    "institutions": "Institutions",
+    "recentActivity": "Recent Activity"
+  },
+  "toast": {
+    "tos-consent": {
+      "message": "Notice: We've updated our",
+      "termsOfUse": " terms of use ",
+      "and": " and ",
+      "privacyPolicy": " privacy policy.",
+      "haveReadAndAgree": "I've read and agree to the terms and conditions",
+      "continue": "Continue"
+    },
+    "cookie-consent": {
+      "message": "Notice: This website relies on cookies to help provide a better user experience. By clicking accept or continuing to use the site, you consent to our use of cookies. See our Privacy Policy and Cookie Use for more information.",
+      "accept": "Accept cookies"
+    }
   },
   "auth": {
     "common": {
@@ -263,7 +285,17 @@
     "loggedIn": {
       "dashboard": {
         "title": "Dashboard",
+        "welcome": "Welcome to OSF!",
         "createProject": "Create New Project",
+        "noCreatedProject": "You haven’t created a project yet. Click the \"Create New Project\" button above to get started.",
+        "watchVideoBelow": "Watch the short video below or visit the OSF Get Started help guides to learn more.",
+        "getStartedHelp": "Visit Get Started Help Guides",
+        "images": {
+          "osfCollectionsImageAltText": "OSF Collections",
+          "osfInstitutionsImageAltText": "OSF Institutions",
+          "osfRegistriesImageAltTest": "OSF Registries",
+          "osfPreprintsImageAltTest": "OSF Preprints"
+        },
         "quickSearch": {
           "goTo": "Go to",
           "myProjects": "My Projects",
@@ -799,6 +831,10 @@
       "view": "View",
       "edit": "Edit",
       "compare": "Compare",
+      "autocomplete": "Autocomplete",
+      "horizontalRule": "Horizontal rule",
+      "redo": "Redo",
+      "undo": "Undo",
       "version": {
         "title": "Version",
         "preview": "Preview",
@@ -992,6 +1028,7 @@
   "files": {
     "storageLocation": "OSF Storage",
     "searchPlaceholder": "Search your projects",
+    "metaTagDescriptionPlaceholder": "Presented by OSF",
     "sort": {
       "placeholder": "Sort",
       "nameAZ": "Name: A-Z",
@@ -1598,6 +1635,7 @@
           "acceptingTerms": "Accepting...",
           "back": "Back",
           "connect": "Connect",
+          "configure": "Configure",
           "reconnect": "Reconnect",
           "authorize": "Authorize",
           "disable": "Disable",
@@ -1974,7 +2012,7 @@
         "uploadDescription": "Please Upload your {{preprintWord}}",
         "note": "Note: You cannot switch options once a file is attached.",
         "uploadFromComputer": "Upload From Your Computer",
-        "selectFromProject": "Select From existing OSF project",
+        "selectFromProject": "Select From Existing OSF Project",
         "uploadFileButton": "Upload file",
         "projectSelection": {
           "title": "Project Title",
@@ -2000,7 +2038,7 @@
         "publicationDateTitle": "Publication Date (optional)",
         "publicationCitationTitle": "Publication Citation (optional)",
         "affiliatedInstitutionsTitle": "Affiliated Institutions",
-        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the Center for Open Science to create a dedicated institutional OSF landing page."
+        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the <a class='font-bold' href='https://www.cos.io/products/osf-institutions' target='_blank'>Center for Open Science</a> to create a dedicated <a class='font-bold' href='https://help.osf.io/article/191-view-institutional-landing-pages' target='_blank'>institutional OSF landing page</a>."
       },
       "authorAssertions": {
         "title": "Author Assertions",
@@ -2497,6 +2535,15 @@
     "copyright": "Copyright © 2011-2025"
   },
   "shared": {
+    "title": {
+      "description": "Provide a concise and descriptive title for your registration that accurately reflects the main focus of your research. A clear and specific title will help others quickly understand the essence of your study."
+    },
+    "description": {
+      "message": "Write a detailed description of your research project, including its purpose and any expected outcomes. This should give readers a comprehensive overview of your work."
+    },
+    "affiliatedInstitutions": {
+      "description": "This is a service provided by the OSF and is automatically applied to your registration. If you are not sure if your institution has signed up for this service, you can look for their name in this list."
+    },
     "resources": {
       "title": "Open resources",
       "data": "Data",
@@ -2516,10 +2563,12 @@
       "title": "Subjects",
       "noSelected": "No subjects selected",
       "searchSubjects": "Search subjects",
-      "noSubject": "No subjects found"
+      "noSubject": "No subjects found",
+      "description": "Identify the main subject areas that your research pertains to. This helps categorize your work and makes it easier for others in your field to find and reference it."
     },
     "tags": {
-      "title": "Tags"
+      "title": "Tags",
+      "description": "Enter specific keywords that describe the key elements and concepts of your research. These keywords will improve the discoverability of your registration in search results and databases."
     },
     "files": {
       "limitText": "You may attach up to 5 file(s) to this question. Files cannot total over 5GB in size.",
@@ -2660,8 +2709,8 @@
       "totalStorageInGb": "Total Storage in GB",
       "embargoedRegistrations": "Embargoed registrations",
       "privateProjects": "Private projects",
-      "publicProjects": "Public Projects",
-      "publicRegistrations": "Public Registrations"
+      "publicProjects": "Public projects",
+      "publicRegistrations": "Public registrations"
     },
     "contact": {
       "requestAccess": "Request Access",
@@ -2676,8 +2725,8 @@
       "lastActive": "Last Active",
       "accountCreated": "Account Created",
       "preprints": "Preprints",
-      "publicFiles": "Public Files",
-      "storageBytes": "Storage (Bytes)",
+      "filesOnOsf": "Files on OSF",
+      "totalDataStored": "Total data stored on OSF",
       "contacts": "Contacts",
       "customize": "Customize",
       "sendEmail": "Send Email",

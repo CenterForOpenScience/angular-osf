@@ -1,18 +1,19 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { PanelModule } from 'primeng/panel';
+import { Panel } from 'primeng/panel';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { MarkdownComponent } from '@osf/shared/components';
 import { WikiVersion } from '@osf/shared/models';
+
+import { MarkdownComponent } from '../../markdown/markdown.component';
 
 @Component({
   selector: 'osf-view-section',
-  imports: [PanelModule, Select, FormsModule, TranslatePipe, Skeleton, MarkdownComponent],
+  imports: [Panel, Select, FormsModule, TranslatePipe, Skeleton, MarkdownComponent],
   templateUrl: './view-section.component.html',
   styleUrl: './view-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,14 +33,13 @@ export class ViewSectionComponent {
 
   selectedVersion = signal<string | null>(null);
 
-  content = computed(() => {
-    return this.selectedVersion() === null ? this.previewContent() : this.versionContent();
-  });
+  content = computed(() => (this.selectedVersion() === null ? this.previewContent() : this.versionContent()));
 
   mappedVersions = computed(() => [
     this.previewOption,
     ...this.versions().map((version, index) => {
       const labelPrefix = index === 0 ? '(Current)' : `(${this.versions().length - index})`;
+
       return {
         label: `${labelPrefix} ${version.createdBy}: (${new Date(version.createdAt).toLocaleString()})`,
         value: version.id,

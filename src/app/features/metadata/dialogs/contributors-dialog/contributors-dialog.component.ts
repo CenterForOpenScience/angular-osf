@@ -4,36 +4,46 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Skeleton } from 'primeng/skeleton';
-import { Tooltip } from 'primeng/tooltip';
 
 import { filter, forkJoin } from 'rxjs';
 
-import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
+import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
+  ContributorsListComponent,
 } from '@osf/shared/components/contributors';
-import { AddContributorType, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
-import { ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
   ContributorsSelectors,
   DeleteContributor,
   UpdateBibliographyFilter,
+  UpdateContributor,
+  UpdateContributorsSearchValue,
   UpdatePermissionFilter,
-  UpdateSearchValue,
 } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-contributors-dialog',
-  imports: [Button, SearchInputComponent, Skeleton, Tooltip, TranslatePipe, TitleCasePipe, FormsModule],
+  imports: [Button, SearchInputComponent, TranslatePipe, FormsModule, ContributorsListComponent],
   templateUrl: './contributors-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
@@ -47,14 +57,32 @@ export class ContributorsDialogComponent implements OnInit {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
   readonly dialogService = inject(DialogService);
-  isContributorsLoading = signal<boolean>(false);
-  contributors = select(ContributorsSelectors.getContributors);
+  readonly customConfirmationService = inject(CustomConfirmationService);
+
+  isLoading = select(ContributorsSelectors.isContributorsLoading);
+  initialContributors = select(ContributorsSelectors.getContributors);
+  contributors = signal([]);
+
+  currentUser = select(UserSelectors.getCurrentUser);
+
+  isCurrentUserAdminContributor = computed(() => {
+    const currentUserId = this.currentUser()?.id;
+    const initialContributors = this.initialContributors();
+    if (!currentUserId) return false;
+
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
+  });
+
   actions = createDispatchMap({
-    updateSearchValue: UpdateSearchValue,
+    updateSearchValue: UpdateContributorsSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,
     addContributor: AddContributor,
+    updateContributor: UpdateContributor,
   });
 
   private readonly resourceType: ResourceType;
@@ -62,10 +90,15 @@ export class ContributorsDialogComponent implements OnInit {
 
   constructor() {
     this.resourceId = this.config.data?.resourceId;
-
     this.resourceType = this.config.data?.resourceType;
 
-    this.isContributorsLoading.set(this.config.data?.isLoading || false);
+    effect(() => {
+      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    });
+  }
+
+  get hasChanges(): boolean {
+    return JSON.stringify(this.initialContributors()) !== JSON.stringify(this.contributors());
   }
 
   ngOnInit(): void {
@@ -79,7 +112,7 @@ export class ContributorsDialogComponent implements OnInit {
   }
 
   openAddContributorDialog(): void {
-    const addedContributorIds = this.contributors().map((x) => x.userId);
+    const addedContributorIds = this.initialContributors().map((x) => x.userId);
 
     this.dialogService
       .open(AddContributorDialogComponent, {
@@ -104,10 +137,9 @@ export class ContributorsDialogComponent implements OnInit {
               this.actions.addContributor(this.resourceId, this.resourceType, payload)
             );
 
-            forkJoin(addRequests).subscribe(() => {
-              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-              this.dialogRef.close({ refresh: true });
-            });
+            forkJoin(addRequests).subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
           }
         }
       });
@@ -141,17 +173,27 @@ export class ContributorsDialogComponent implements OnInit {
   }
 
   removeContributor(contributor: ContributorModel): void {
-    this.actions
-      .deleteContributor(this.resourceId, this.resourceType, contributor.userId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
-            name: contributor.fullName,
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'project.contributors.removeDialog.title',
+      messageKey: 'project.contributors.removeDialog.message',
+      messageParams: { name: contributor.fullName },
+      acceptLabelKey: 'common.buttons.remove',
+      onConfirm: () => {
+        this.actions
+          .deleteContributor(this.resourceId, this.resourceType, contributor.userId)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () =>
+              this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
+                name: contributor.fullName,
+              }),
           });
-          this.dialogRef.close({ refresh: true });
-        },
-      });
+      },
+    });
+  }
+
+  cancel() {
+    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
   }
 
   onClose(): void {
@@ -159,6 +201,14 @@ export class ContributorsDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    this.dialogRef.close({ saved: true });
+    const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
+
+    const updateRequests = updatedContributors.map((payload) =>
+      this.actions.updateContributor(this.resourceId, this.resourceType, payload)
+    );
+
+    forkJoin(updateRequests).subscribe(() => {
+      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
+    });
   }
 }

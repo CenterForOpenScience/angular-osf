@@ -1,4 +1,4 @@
-<div #dropZoneContainer class="drop-zone-container">
+<div #dropZoneContainer class="drop-zone-container flex flex-1">
   @if (!hasViewOnly()) {
     <div
       class="drop-zone"
@@ -17,11 +17,11 @@
   }
 
   @if (isLoading()) {
-    <div class="w-8rem ml-auto mr-auto">
+    <div class="flex flex-1">
       <osf-loading-spinner></osf-loading-spinner>
     </div>
   } @else {
-    <div class="files-table">
+    <div class="files-table flex flex-1">
       <p-tree
         [value]="nodes()"
         styleClass="w-full md:w-[30rem]"

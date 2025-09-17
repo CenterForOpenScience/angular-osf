@@ -19,9 +19,10 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
 import {
   AdditionalInfoComponent,
@@ -48,6 +49,7 @@ import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/prepri
 import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
 import { MetaTagsService } from '@shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
 import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
@@ -87,6 +89,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly translateService = inject(TranslateService);
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
+  private readonly dataciteService = inject(DataciteService);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
@@ -100,11 +103,13 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     fetchPreprintRequests: FetchPreprintRequests,
     fetchPreprintReviewActions: FetchPreprintReviewActions,
     fetchPreprintRequestActions: FetchPreprintRequestActions,
+    clearCurrentProvider: ClearCurrentProvider,
   });
   currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   preprint = select(PreprintSelectors.getPreprint);
+  preprint$ = toObservable(select(PreprintSelectors.getPreprint));
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
   contributors = select(ContributorsSelectors.getContributors);
   areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
@@ -281,10 +286,12 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         this.fetchPreprint(this.preprintId());
       },
     });
+    this.dataciteService.logIdentifiableView(this.preprint$).subscribe();
   }
 
   ngOnDestroy() {
     this.actions.resetState();
+    this.actions.clearCurrentProvider();
   }
 
   fetchPreprintVersion(preprintVersionId: string) {
@@ -355,25 +362,26 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   private setMetaTags() {
-    const image = 'engines-dist/registries/assets/img/osf-sharing.png';
-
-    this.metaTags.updateMetaTags({
-      title: this.preprint()?.title,
-      description: this.preprint()?.description,
-      publishedDate: this.datePipe.transform(this.preprint()?.datePublished, 'yyyy-MM-dd'),
-      modifiedDate: this.datePipe.transform(this.preprint()?.dateModified, 'yyyy-MM-dd'),
-      url: pathJoin(environment.webUrl, this.preprint()?.id ?? ''),
-      image,
-      identifier: this.preprint()?.id,
-      doi: this.preprint()?.doi,
-      keywords: this.preprint()?.tags,
-      siteName: 'OSF',
-      license: this.preprint()?.embeddedLicense?.name,
-      contributors: this.contributors().map((contributor) => ({
-        givenName: contributor.fullName,
-        familyName: contributor.familyName,
-      })),
-    });
+    this.metaTags.updateMetaTags(
+      {
+        osfGuid: this.preprint()?.id,
+        title: this.preprint()?.title,
+        description: this.preprint()?.description,
+        publishedDate: this.datePipe.transform(this.preprint()?.datePublished, 'yyyy-MM-dd'),
+        modifiedDate: this.datePipe.transform(this.preprint()?.dateModified, 'yyyy-MM-dd'),
+        url: pathJoin(environment.webUrl, this.preprint()?.id ?? ''),
+        doi: this.preprint()?.doi,
+        keywords: this.preprint()?.tags,
+        siteName: 'OSF',
+        license: this.preprint()?.embeddedLicense?.name,
+        contributors: this.contributors().map((contributor) => ({
+          fullName: contributor.fullName,
+          givenName: contributor.givenName,
+          familyName: contributor.familyName,
+        })),
+      },
+      this.destroyRef
+    );
   }
 
   private hasReadWriteAccess(): boolean {

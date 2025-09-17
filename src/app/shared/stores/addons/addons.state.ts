@@ -148,7 +148,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getAuthorizedStorageOauthToken(action.accountId).pipe(
+    return this.addonsService.getAuthorizedStorageOauthToken(action.accountId, action.addonType).pipe(
       tap((addon) => {
         ctx.setState((state) => {
           const existing = state.authorizedStorageAddons.data.find(

@@ -9,6 +9,13 @@ export interface InstitutionUserAttributesJsonApi {
   public_registration_count: number;
   embargoed_registration_count: number;
   published_preprint_count: number;
+  account_creation_date: string;
+  contacts: unknown[];
+  month_last_active: string;
+  month_last_login: string;
+  public_file_count: number;
+  report_yearmonth: string;
+  storage_byte_count: number;
 }
 
 export interface InstitutionUserRelationshipDataJsonApi {

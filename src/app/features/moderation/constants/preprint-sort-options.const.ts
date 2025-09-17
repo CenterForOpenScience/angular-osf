@@ -13,10 +13,10 @@ export const PREPRINT_SORT_OPTIONS: CustomOption<string>[] = [
   },
   {
     value: PreprintSubmissionsSort.Newest,
-    label: 'moderation.sortOption.oldest',
+    label: 'moderation.sortOption.newest',
   },
   {
     value: PreprintSubmissionsSort.Oldest,
-    label: 'moderation.sortOption.newest',
+    label: 'moderation.sortOption.oldest',
   },
 ];

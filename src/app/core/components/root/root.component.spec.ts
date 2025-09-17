@@ -13,9 +13,12 @@ import { HeaderComponent } from '@core/components/header/header.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 
+import { MaintenanceBannerComponent } from '../maintenance-banner/maintenance-banner.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 
 import { RootComponent } from './root.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('RootComponent', () => {
   let component: RootComponent;
@@ -30,13 +33,15 @@ describe('RootComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         RootComponent,
+        OSFTestingModule,
         ...MockComponents(
           HeaderComponent,
           FooterComponent,
           TopnavComponent,
           ConfirmDialog,
           BreadcrumbComponent,
-          SidenavComponent
+          SidenavComponent,
+          MaintenanceBannerComponent
         ),
       ],
       providers: [

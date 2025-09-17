@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 
 import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { PaginationLinksModel, SearchFilters } from '@osf/shared/models';
+import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
 import {
   FetchResources,
   FetchResourcesByLink,
@@ -62,7 +62,11 @@ export class InstitutionsPreprintsComponent implements OnInit, OnDestroy {
   nextLink = select(GlobalSearchSelectors.getNext);
   previousLink = select(GlobalSearchSelectors.getPrevious);
 
-  tableData = computed(() => this.resources().map(mapPreprintResourceToTableData) as TableCellData[]);
+  tableData = computed(() =>
+    this.resources().map(
+      (resource: ResourceModel): TableCellData => mapPreprintResourceToTableData(resource, this.institution().iri)
+    )
+  );
 
   sortParam = computed(() => {
     const sortField = this.sortField();

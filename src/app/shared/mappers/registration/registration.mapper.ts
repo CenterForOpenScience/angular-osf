@@ -89,8 +89,8 @@ export class RegistrationMapper {
       revisionState: registration.attributes.revision_state,
       contributors:
         registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-          id: contributor.id,
-          fullName: contributor.embeds?.users?.data.attributes.full_name,
+          id: contributor.embeds.users.data.id,
+          fullName: contributor.embeds.users.data.attributes.full_name,
         })) || [],
     };
   }

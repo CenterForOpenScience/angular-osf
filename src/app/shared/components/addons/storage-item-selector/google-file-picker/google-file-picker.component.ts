@@ -6,11 +6,13 @@ import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 
-import { ENVIRONMENT } from '@core/constants/environment.token';
+import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
+import { OSFConfigService } from '@core/services/osf-config.service';
 import { StorageItemModel } from '@osf/shared/models';
 import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
 import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';
 import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@osf/shared/stores';
+import { AddonType } from '@shared/enums';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 
@@ -23,26 +25,38 @@ import { GoogleFilePickerDownloadService } from './service/google-file-picker.do
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GoogleFilePickerComponent implements OnInit {
+  private readonly Sentry = inject(SENTRY_TOKEN);
+  private configService = inject(OSFConfigService);
   readonly #translateService = inject(TranslateService);
   readonly #googlePicker = inject(GoogleFilePickerDownloadService);
-  readonly #environment = inject(ENVIRONMENT);
 
   public isFolderPicker = input.required<boolean>();
   public rootFolder = input<StorageItemModel | null>(null);
   public accountId = input<string>('');
   public handleFolderSelection = input<(folder: StorageItemModel) => void>();
+  currentAddonType = input<string>(AddonType.STORAGE);
 
   public accessToken = signal<string | null>(null);
   public visible = signal(false);
   public isGFPDisabled = signal(true);
-  private readonly apiKey = this.#environment.google.GOOGLE_FILE_PICKER_API_KEY;
-  private readonly appId = this.#environment.google.GOOGLE_FILE_PICKER_APP_ID;
+  private readonly apiKey = this.configService.get('googleFilePickerApiKey');
+  private readonly appId = this.configService.get('googleFilePickerAppId');
+
   private readonly store = inject(Store);
   private parentId = '';
   private isMultipleSelect!: boolean;
   private title!: string;
 
+  private get isPickerConfigured() {
+    return !!this.apiKey && !!this.appId;
+  }
+
   ngOnInit(): void {
+    if (!this.isPickerConfigured) {
+      this.isGFPDisabled.set(true);
+      return;
+    }
+
     this.parentId = this.isFolderPicker() ? '' : this.rootFolder()?.itemId || '';
     this.title = this.isFolderPicker()
       ? this.#translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
@@ -56,12 +70,10 @@ export class GoogleFilePickerComponent implements OnInit {
             this.#initializePicker();
             this.#loadOauthToken();
           },
-          // TODO add this error when the Sentry service is working
-          //error: (err) => console.error('GAPI modules failed:', err),
+          error: (err) => this.Sentry.captureException(err, { tags: { feature: 'google-picker auth' } }),
         });
       },
-      // TODO add this error when the Sentry service is working
-      // error: (err) => console.error('Script load failed:', err),
+      error: (err) => this.Sentry.captureException(err, { tags: { feature: 'google-picker load' } }),
     });
   }
 
@@ -72,6 +84,7 @@ export class GoogleFilePickerComponent implements OnInit {
   }
 
   public createPicker(): void {
+    if (!this.isPickerConfigured) return;
     const google = window.google;
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
@@ -100,12 +113,12 @@ export class GoogleFilePickerComponent implements OnInit {
 
   #loadOauthToken(): void {
     if (this.accountId()) {
-      this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId())).subscribe({
+      this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId(), this.currentAddonType())).subscribe({
         next: () => {
           this.accessToken.set(
             this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
           );
-          this.isGFPDisabled.set(this.accessToken() ? false : true);
+          this.isGFPDisabled.set(!this.accessToken());
         },
       });
     }

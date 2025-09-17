@@ -23,13 +23,14 @@ import { ActivatedRoute } from '@angular/router';
 
 import {
   AuthorAssertionsStepComponent,
+  FileStepComponent,
   MetadataStepComponent,
   ReviewStepComponent,
   SupplementsStepComponent,
   TitleAndAbstractStepComponent,
 } from '@osf/features/preprints/components';
-import { updatePreprintSteps } from '@osf/features/preprints/constants';
-import { PreprintSteps } from '@osf/features/preprints/enums';
+import { submitPreprintSteps } from '@osf/features/preprints/constants';
+import { PreprintSteps, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   FetchPreprintById,
@@ -39,6 +40,7 @@ import {
 } from '@osf/features/preprints/store/preprint-stepper';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
 import { StepperComponent } from '@shared/components';
+import { UserPermissions } from '@shared/enums';
 import { CanDeactivateComponent, StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
 
@@ -53,6 +55,7 @@ import { BrandService } from '@shared/services';
     SupplementsStepComponent,
     ReviewStepComponent,
     TranslatePipe,
+    FileStepComponent,
   ],
   templateUrl: './update-preprint-stepper.component.html',
   styleUrl: './update-preprint-stepper.component.scss',
@@ -73,16 +76,45 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
     fetchPreprint: FetchPreprintById,
   });
 
+  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
+  preprint = select(PreprintStepperSelectors.getPreprint);
+  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
+  hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
+
+  currentUserIsAdmin = computed(() => {
+    return this.preprint()?.currentUserPermissions.includes(UserPermissions.Admin) || false;
+  });
+
+  editAndResubmitMode = computed(() => {
+    const providerIsPremod = this.preprintProvider()?.reviewsWorkflow === ProviderReviewsWorkflow.PreModeration;
+    const preprintIsRejected = this.preprint()?.reviewsState === ReviewsState.Rejected;
+
+    return providerIsPremod && preprintIsRejected;
+  });
+
   readonly updateSteps = computed(() => {
     const provider = this.preprintProvider();
+    const preprint = this.preprint();
 
-    if (!provider) {
+    if (!provider || !preprint) {
       return [];
     }
 
-    return updatePreprintSteps
+    return submitPreprintSteps
       .map((step) => {
-        if (!provider.assertionsEnabled && step.value === PreprintSteps.AuthorAssertions) {
+        if (step.value !== PreprintSteps.File) {
+          return step;
+        }
+
+        return this.editAndResubmitMode() ? step : null;
+      })
+      .filter((step) => step !== null)
+      .map((step) => {
+        if (step.value !== PreprintSteps.AuthorAssertions) {
+          return step;
+        }
+
+        if (!provider.assertionsEnabled || !this.currentUserIsAdmin()) {
           return null;
         }
 
@@ -95,10 +127,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
       }));
   });
 
-  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
-  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
-  currentStep = signal<StepOption>(updatePreprintSteps[0]);
+  currentStep = signal<StepOption>(submitPreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
   readonly PreprintSteps = PreprintSteps;
@@ -158,4 +187,6 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
     $event.preventDefault();
     return false;
   }
+
+  protected readonly SubmitStepsEnum = PreprintSteps;
 }

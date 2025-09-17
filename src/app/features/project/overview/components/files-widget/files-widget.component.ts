@@ -39,7 +39,7 @@ import {
   OsfFile,
   SelectOption,
 } from '@osf/shared/models';
-import { Project } from '@osf/shared/models/projects';
+import { ProjectModel } from '@osf/shared/models/projects';
 
 import { environment } from 'src/environments/environment';
 
@@ -161,7 +161,7 @@ export class FilesWidgetComponent {
   }
 
   private flatComponents(
-    components: (Partial<Project> & { children?: Project[] })[] = [],
+    components: (Partial<ProjectModel> & { children?: ProjectModel[] })[] = [],
     parentPath = '..'
   ): SelectOption[] {
     return components.flatMap((component) => {
@@ -218,7 +218,10 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    this.router.navigate(['files', file.guid], { relativeTo: this.activeRoute.parent });
+    this.router.navigate(['files', file.guid], {
+      relativeTo: this.activeRoute.parent,
+      queryParamsHandling: 'merge',
+    });
   }
 
   onFilesPageChange(page: number) {

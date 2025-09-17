@@ -1,4 +1,4 @@
-import { CollectionFilterType } from '@osf/features/collections/enums';
+import { CollectionFilterType } from '../enums';
 
 export const collectionFilterTypes: CollectionFilterType[] = [
   CollectionFilterType.ProgramArea,

@@ -6,7 +6,13 @@
   <div class="flex gap-2">
     @if (institutions().length) {
       @for (institution of institutions(); track institution.id) {
-        <a [routerLink]="`/institutions/${ institution.id}`">
+        <a
+          [routerLink]="`/institutions/${ institution.id}`"
+          target="_blank"
+          rel="noopener noreferrer"
+          [pTooltip]="institution.name"
+          tooltipPosition="top"
+        >
           <img alt="institution logo" [src]="institution.assets.logo" height="45" />
         </a>
       }

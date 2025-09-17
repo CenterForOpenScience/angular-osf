@@ -6,11 +6,11 @@ import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FILTER_PLACEHOLDERS } from '@osf/shared/constants';
 import { StringOrNull } from '@osf/shared/helpers';
-import { DiscoverableFilter, SelectOption } from '@osf/shared/models';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
@@ -29,6 +29,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
     LoadingSpinnerComponent,
     Checkbox,
     NgClass,
+    FormsModule,
   ],
   templateUrl: './reusable-filter.component.html',
   styleUrls: ['./reusable-filter.component.scss'],
@@ -37,10 +38,12 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
   selectedValues = input<Record<string, StringOrNull>>({});
-  filterSearchResults = input<Record<string, SelectOption[]>>({});
+  filterSearchResults = input<Record<string, FilterOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
   plainStyle = input<boolean>(false);
+
+  readonly Boolean = Boolean;
 
   loadFilterOptions = output<DiscoverableFilter>();
   filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
@@ -71,7 +74,7 @@ export class ReusableFilterComponent {
     filters.forEach((filter) => {
       if (filter.operator === 'is-present') {
         isPresentFilters.push(filter);
-      } else if (filter.operator === 'any-of' || filter.operator === 'at-date') {
+      } else if (filter.operator.includes('any-of') || filter.operator.includes('at-date')) {
         individualFilters.push(filter);
       }
     });
@@ -152,11 +155,11 @@ export class ReusableFilterComponent {
     }
   }
 
-  getFilterOptions(filter: DiscoverableFilter): SelectOption[] {
+  getFilterOptions(filter: DiscoverableFilter): FilterOption[] {
     return filter.options || [];
   }
 
-  getFilterSearchResults(filter: DiscoverableFilter): SelectOption[] {
+  getFilterSearchResults(filter: DiscoverableFilter): FilterOption[] {
     const searchResults = this.filterSearchResults();
     return searchResults[filter.key] || [];
   }
@@ -179,18 +182,6 @@ export class ReusableFilterComponent {
 
   getFilterPlaceholder(filterKey: string): string {
     return this.FILTER_PLACEHOLDERS[filterKey] || '';
-  }
-
-  getFilterDescription(filter: DiscoverableFilter): string | null {
-    return filter.description || null;
-  }
-
-  getFilterHelpLink(filter: DiscoverableFilter): string | null {
-    return filter.helpLink || null;
-  }
-
-  getFilterHelpLinkText(filter: DiscoverableFilter): string | null {
-    return filter.helpLinkText || '';
   }
 
   getFilterLabel(filter: DiscoverableFilter): string {
@@ -216,10 +207,5 @@ export class ReusableFilterComponent {
   onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {
     const isChecked = event?.checked || false;
     this.onIsPresentFilterToggle(filter, isChecked);
-  }
-
-  isIsPresentFilterChecked(filterKey: string): boolean {
-    const selectedValue = this.selectedValues()[filterKey];
-    return selectedValue === 'true' || Boolean(selectedValue);
   }
 }

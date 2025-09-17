@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import { SetSelectedProject } from '@osf/shared/stores';
 import { ProjectSelectorComponent } from '@shared/components';
-import { Project } from '@shared/models/projects';
+import { ProjectModel } from '@shared/models/projects';
 import { CollectionsSelectors, GetUserCollectionSubmissions } from '@shared/stores/collections';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -32,7 +32,7 @@ export class SelectProjectStepComponent {
   stepChange = output<number>();
   projectSelected = output<void>();
 
-  currentSelectedProject = signal<Project | null>(null);
+  currentSelectedProject = signal<ProjectModel | null>(null);
 
   excludedProjectIds = computed(() => {
     const submissions = this.currentUserSubmissions();
@@ -44,7 +44,7 @@ export class SelectProjectStepComponent {
     getUserCollectionSubmissions: GetUserCollectionSubmissions,
   });
 
-  handleProjectChange(project: Project | null): void {
+  handleProjectChange(project: ProjectModel | null): void {
     if (project) {
       this.currentSelectedProject.set(project);
       this.actions.setSelectedProject(project);
@@ -53,7 +53,7 @@ export class SelectProjectStepComponent {
     }
   }
 
-  handleProjectsLoaded(projects: Project[]): void {
+  handleProjectsLoaded(projects: ProjectModel[]): void {
     const collectionId = this.collectionId();
     if (collectionId && projects.length) {
       const projectIds = projects.map((project) => project.id);

@@ -7,6 +7,7 @@
           <div class="content-body filter dropdown-filter">
             <p>{{ filterEntry.translationKeys.description | translate }}</p>
             <p-multi-select
+              [showToggleAll]="false"
               [id]="filterEntry.key"
               [options]="filterEntry.options"
               [ngModel]="filterEntry.selectedFilters"

@@ -29,13 +29,13 @@ export class PreprintStepperSelectors {
   }
 
   @Selector([PreprintStepperState])
-  static getPreprintFiles(state: PreprintStepperStateModel) {
-    return state.preprintFiles.data;
+  static getPreprintFile(state: PreprintStepperStateModel) {
+    return state.preprintFile.data;
   }
 
   @Selector([PreprintStepperState])
-  static arePreprintFilesLoading(state: PreprintStepperStateModel) {
-    return state.preprintFiles.isLoading;
+  static isPreprintFilesLoading(state: PreprintStepperStateModel) {
+    return state.preprintFile.isLoading;
   }
 
   @Selector([PreprintStepperState])

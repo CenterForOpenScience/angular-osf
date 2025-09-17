@@ -1,20 +1,15 @@
-import { MetaJsonApi } from '@osf/shared/models';
+import { ContributorResponse, MetaJsonApi, RegistrationNodeAttributesJsonApi } from '@osf/shared/models';
 
 import { RegistryComponentModel } from './registry-components.models';
 
 export interface RegistryComponentJsonApi {
   id: string;
   type: string;
-  attributes: {
-    title: string;
-    description: string;
-    category: string;
-    date_created: string;
-    date_modified: string;
-    date_registered: string;
-    registration_supplement: string;
-    tags: string[];
-    public: boolean;
+  attributes: RegistrationNodeAttributesJsonApi;
+  embeds: {
+    bibliographic_contributors: {
+      data: ContributorResponse[];
+    };
   };
 }
 

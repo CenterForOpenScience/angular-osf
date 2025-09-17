@@ -40,9 +40,8 @@ export class ModerationStatusBannerComponent {
   latestWithdrawalRequest = input.required<PreprintRequest | null>();
 
   isPendingWithdrawal = input.required<boolean>();
-  noActions = computed(() => {
-    return this.latestAction() === null;
-  });
+
+  noActions = computed(() => this.latestAction() === null);
 
   documentType = computed(() => {
     const provider = this.provider();
@@ -106,20 +105,9 @@ export class ModerationStatusBannerComponent {
     return recentActivityMessageByState[ReviewsState.PendingWithdrawal];
   });
 
-  actionCreatorName = computed(() => {
-    return this.latestAction()?.creator.name;
-  });
-  actionCreatorLink = computed(() => {
-    return `${environment.webUrl}/${this.actionCreatorId()}`;
-  });
-  actionCreatorId = computed(() => {
-    return this.latestAction()?.creator.id;
-  });
-
-  withdrawalRequesterName = computed(() => {
-    return this.latestWithdrawalRequest()?.creator.name;
-  });
-  withdrawalRequesterId = computed(() => {
-    return this.latestWithdrawalRequest()?.creator.id;
-  });
+  actionCreatorName = computed(() => this.latestAction()?.creator.name);
+  actionCreatorLink = computed(() => `${environment.webUrl}/${this.actionCreatorId()}`);
+  actionCreatorId = computed(() => this.latestAction()?.creator.id);
+  withdrawalRequesterName = computed(() => this.latestWithdrawalRequest()?.creator.name);
+  withdrawalRequesterId = computed(() => this.latestWithdrawalRequest()?.creator.id);
 }

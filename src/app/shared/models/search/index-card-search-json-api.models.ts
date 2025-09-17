@@ -9,6 +9,7 @@ export type IndexCardSearchResponseJsonApi = JsonApiResponse<
     };
     relationships: {
       searchResultPage: {
+        data: { id: string }[];
         links: {
           first: {
             href: string;
@@ -40,6 +41,9 @@ export interface SearchResultJsonApi {
       };
     };
   };
+  attributes?: {
+    cardSearchResultCount: number;
+  };
 }
 
 export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;
@@ -61,7 +65,7 @@ interface ResourceMetadataJsonApi {
   dateModified: { '@value': string }[];
   dateWithdrawn: { '@value': string }[];
 
-  creator: MetadataField[];
+  creator: Creator[];
   hasVersion: MetadataField[];
   identifier: { '@value': string }[];
   publisher: MetadataField[];
@@ -108,9 +112,13 @@ interface Usage {
   downloadCount: { '@value': string }[];
 }
 
+interface Creator extends MetadataField {
+  affiliation: MetadataField[];
+}
+
 interface IsContainedBy extends MetadataField {
   funder: MetadataField[];
-  creator: MetadataField[];
+  creator: Creator[];
   rights: MetadataField[];
   qualifiedAttribution: QualifiedAttribution[];
 }

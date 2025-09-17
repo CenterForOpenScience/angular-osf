@@ -1,7 +1,7 @@
-import { ProviderModel } from '@osf/shared/models';
+import { ProviderShortInfoModel } from '@osf/shared/models';
 
 export interface ProviderStateModel {
-  currentProvider: ProviderModel | null;
+  currentProvider: ProviderShortInfoModel | null;
 }
 
 export const PROVIDER_STATE_INITIAL: ProviderStateModel = {

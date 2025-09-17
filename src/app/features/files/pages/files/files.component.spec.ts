@@ -13,6 +13,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -22,8 +23,10 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
 import { GoogleFilePickerComponent } from '@osf/shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
+import { testNode } from '@osf/shared/mocks';
 import { OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
+import { CurrentResourceSelectors } from '@osf/shared/stores';
 
 import { FilesSelectors } from '../../store';
 
@@ -63,10 +66,21 @@ describe('Component: Files', () => {
         FilesService,
         MockProvider(ActivatedRoute),
         MockProvider(CustomConfirmationService),
-
         DialogService,
+        {
+          provide: SENTRY_TOKEN,
+          useValue: {
+            captureException: jest.fn(),
+            captureMessage: jest.fn(),
+            setUser: jest.fn(),
+          },
+        },
         provideMockStore({
           signals: [
+            {
+              selector: CurrentResourceSelectors.getResourceDetails,
+              value: testNode,
+            },
             {
               selector: FilesSelectors.getRootFolders,
               value: getNodeFilesMappedData(),

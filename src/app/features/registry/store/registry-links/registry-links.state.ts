@@ -8,12 +8,7 @@ import { handleSectionError } from '@shared/helpers';
 
 import { RegistryLinksService } from '../../services/registry-links.service';
 
-import {
-  GetBibliographicContributors,
-  GetBibliographicContributorsForRegistration,
-  GetLinkedNodes,
-  GetLinkedRegistrations,
-} from './registry-links.actions';
+import { GetLinkedNodes, GetLinkedRegistrations } from './registry-links.actions';
 import { REGISTRY_LINKS_STATE_DEFAULTS, RegistryLinksStateModel } from './registry-links.model';
 
 @State<RegistryLinksStateModel>({
@@ -65,63 +60,6 @@ export class RegistryLinksState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'linkedRegistrations', error))
-    );
-  }
-
-  @Action(GetBibliographicContributors)
-  getBibliographicContributors(ctx: StateContext<RegistryLinksStateModel>, action: GetBibliographicContributors) {
-    const state = ctx.getState();
-    ctx.patchState({
-      bibliographicContributors: {
-        ...state.bibliographicContributors,
-        isLoading: true,
-        error: null,
-        nodeId: action.nodeId,
-      },
-    });
-
-    return this.registryLinksService.getBibliographicContributors(action.nodeId).pipe(
-      tap((contributors) => {
-        ctx.patchState({
-          bibliographicContributors: {
-            data: contributors,
-            isLoading: false,
-            error: null,
-            nodeId: action.nodeId,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'bibliographicContributors', error))
-    );
-  }
-
-  @Action(GetBibliographicContributorsForRegistration)
-  getBibliographicContributorsForRegistration(
-    ctx: StateContext<RegistryLinksStateModel>,
-    action: GetBibliographicContributorsForRegistration
-  ) {
-    const state = ctx.getState();
-    ctx.patchState({
-      bibliographicContributorsForRegistration: {
-        ...state.bibliographicContributorsForRegistration,
-        isLoading: true,
-        error: null,
-        registrationId: action.registrationId,
-      },
-    });
-
-    return this.registryLinksService.getBibliographicContributorsForRegistration(action.registrationId).pipe(
-      tap((contributors) => {
-        ctx.patchState({
-          bibliographicContributorsForRegistration: {
-            data: contributors,
-            isLoading: false,
-            error: null,
-            registrationId: action.registrationId,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'bibliographicContributorsForRegistration', error))
     );
   }
 }

@@ -7,7 +7,7 @@ import { Tree } from 'primeng/tree';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { Project } from '../../models';
+import { ProjectShortInfoModel } from '../../models';
 
 @Component({
   selector: 'osf-select-components-dialog',
@@ -20,7 +20,7 @@ export class SelectComponentsDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
   selectedComponents: TreeNode[] = [];
-  parent: Project = this.config.data.parent;
+  parent: ProjectShortInfoModel = this.config.data.parent;
   components: TreeNode[] = [];
 
   constructor() {
@@ -37,7 +37,7 @@ export class SelectComponentsDialogComponent {
     this.selectedComponents.push({ key: this.parent.id });
   }
 
-  private mapProjectToTreeNode = (project: Project): TreeNode => {
+  private mapProjectToTreeNode = (project: ProjectShortInfoModel): TreeNode => {
     this.selectedComponents.push({
       key: project.id,
     });

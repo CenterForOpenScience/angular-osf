@@ -9,7 +9,7 @@ export interface PreprintStepperStateModel {
   preprint: AsyncStateModel<Preprint | null>;
   fileSource: PreprintFileSource;
   preprintFilesLinks: AsyncStateModel<PreprintFilesLinks | null>;
-  preprintFiles: AsyncStateModel<OsfFile[]>;
+  preprintFile: AsyncStateModel<OsfFile | null>;
   availableProjects: AsyncStateModel<IdName[]>;
   projectFiles: AsyncStateModel<OsfFile[]>;
   licenses: AsyncStateModel<LicenseModel[]>;

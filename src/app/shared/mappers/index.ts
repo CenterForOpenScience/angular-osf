@@ -1,3 +1,4 @@
+export * from './activity-logs.mapper';
 export * from './addon.mapper';
 export * from './citations.mapper';
 export * from './collections';
@@ -12,6 +13,7 @@ export * from './institutions';
 export * from './licenses.mapper';
 export * from './nodes';
 export * from './notification-subscription.mapper';
+export * from './registration-provider.mapper';
 export * from './registry';
 export * from './resource-overview.mappers';
 export * from './review-actions.mapper';

@@ -8,10 +8,10 @@
           severity="success"
           class="mr-2"
           [disabled]="!currentContent()"
-          (click)="save()"
+          (onClick)="save()"
           [loading]="isSaving()"
         ></p-button>
-        <p-button [label]="'common.buttons.revert' | translate" severity="danger" (click)="revert()"></p-button>
+        <p-button [label]="'common.buttons.revert' | translate" severity="danger" (onClick)="revert()"></p-button>
       </div>
     </div>
   </ng-template>
@@ -26,13 +26,17 @@
       height="100%"
     >
       <slot custom-btns>
-        <button class="btn btn-sm btn-default" title="Undo" (click)="undo()">
+        <button class="btn btn-sm btn-default" [attr.title]="'project.wiki.undo' | translate" (click)="undo()">
           <i class="fas fa-rotate-left"></i>
         </button>
-        <button class="btn btn-sm btn-default" title="Redo" (click)="redo()">
+        <button class="btn btn-sm btn-default" [attr.title]="'project.wiki.redo' | translate" (click)="redo()">
           <i class="fas fa-rotate-right"></i>
         </button>
-        <button class="btn btn-sm btn-default" title="Horizontal rule <hr>" (click)="doHorizontalRule()">
+        <button
+          class="btn btn-sm btn-default"
+          [attr.title]="'project.wiki.horizontalRule' | translate"
+          (click)="doHorizontalRule()"
+        >
           <i class="fas fa-grip-lines"></i>
         </button>
         <div class="btn btn-sm btn-default flex align-items-center">
@@ -44,9 +48,13 @@
             binary
             (onChange)="toggleAutocomplete()"
           />
-          <label for="autoComplete" class="ml-2 mb-0"> Autocomplete </label>
+          <label for="autoComplete" class="ml-2 mb-0"> {{ 'project.wiki.autocomplete' | translate }} </label>
         </div>
-        <button class="btn btn-sm btn-default" title="Wiki syntax help" (click)="openSyntaxHelpDialog()">
+        <button
+          class="btn btn-sm btn-default"
+          [attr.title]="'project.wiki.syntaxHelp.header' | translate"
+          (click)="openSyntaxHelpDialog()"
+        >
           <i class="fas fa-question"></i>
         </button>
       </slot>

@@ -8,16 +8,16 @@ import { inject, Injectable } from '@angular/core';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { removeNullable } from '@osf/shared/helpers';
 import { UserMapper } from '@osf/shared/mappers';
-import { Social } from '@osf/shared/models';
+import { Social, User } from '@osf/shared/models';
 
 import { UserService } from '../../services';
 
 import {
+  AcceptTermsOfServiceByUser,
   ClearCurrentUser,
   GetCurrentUser,
   GetCurrentUserSettings,
   SetCurrentUser,
-  SetUserAsModerator,
   UpdateProfileSettingsEducation,
   UpdateProfileSettingsEmployment,
   UpdateProfileSettingsSocialLinks,
@@ -233,8 +233,8 @@ export class UserState {
     );
   }
 
-  @Action(SetUserAsModerator)
-  setUserAsModerator(ctx: StateContext<UserStateModel>) {
+  @Action(AcceptTermsOfServiceByUser)
+  acceptTermsOfServiceByUser(ctx: StateContext<UserStateModel>) {
     const state = ctx.getState();
     const currentUser = state.currentUser.data;
 
@@ -242,15 +242,26 @@ export class UserState {
       return;
     }
 
-    ctx.patchState({
-      currentUser: {
-        ...state.currentUser,
-        data: {
-          ...currentUser,
-          isModerator: true,
-        },
-      },
-    });
+    const updatePayload: Partial<User> = {
+      acceptedTermsOfService: true,
+    };
+    const apiRequest = UserMapper.toAcceptedTermsOfServiceRequest(updatePayload);
+
+    return this.userService.updateUserAcceptedTermsOfService(currentUser.id, apiRequest).pipe(
+      tap((response: User): void => {
+        if (response.acceptedTermsOfService) {
+          ctx.patchState({
+            currentUser: {
+              ...state.currentUser,
+              data: {
+                ...currentUser,
+                acceptedTermsOfService: true,
+              },
+            },
+          });
+        }
+      })
+    );
   }
 
   @Action(ClearCurrentUser)

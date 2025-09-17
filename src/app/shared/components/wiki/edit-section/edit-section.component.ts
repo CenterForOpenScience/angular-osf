@@ -4,7 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { DialogService } from 'primeng/dynamicdialog';
-import { PanelModule } from 'primeng/panel';
+import { Panel } from 'primeng/panel';
 
 import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +15,7 @@ import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-s
 
 @Component({
   selector: 'osf-edit-section',
-  imports: [PanelModule, Button, TranslatePipe, FormsModule, LMarkdownEditorModule, Checkbox],
+  imports: [Panel, Button, TranslatePipe, FormsModule, LMarkdownEditorModule, Checkbox],
   templateUrl: './edit-section.component.html',
   styleUrl: './edit-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

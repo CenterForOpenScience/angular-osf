@@ -1,5 +1,7 @@
 <h2 class="mb-2">{{ 'shared.subjects.title' | translate }}</h2>
 
+<p class="mb-1">{{ 'shared.subjects.description' | translate }}</p>
+
 <p-card class="block text-base mb-3">
   @if (!selected().length) {
     <p class="text-500">{{ 'shared.subjects.noSelected' | translate }}</p>
@@ -39,7 +41,9 @@
             <p-checkbox
               [inputId]="'subjects-' + $index"
               [value]="subjects"
+              [ngModel]="isChecked(subjects)"
               (onChange)="selectSearched($event, subjects)"
+              [binary]="true"
             />
             <label for="subjects-{{ $index }}" class="flex flex-wrap ml-2">
               @for (item of subjects; track item.id) {
@@ -65,6 +69,7 @@
       (onNodeSelect)="selectSubject($event.node.data)"
       (onNodeUnselect)="removeSubject($event.node.data)"
       [ariaLabel]="'shared.subjects.subjectTree' | translate"
+      [togglerAriaLabel]="'common.accessibility.toggleTreeNode' | translate"
     >
     </p-tree>
   }

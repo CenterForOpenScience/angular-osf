@@ -1,8 +1,10 @@
 import { InjectionToken } from '@angular/core';
 
+import { AppEnvironment } from '@shared/models/environment.model';
+
 import { environment } from 'src/environments/environment';
 
-export const ENVIRONMENT = new InjectionToken<typeof environment>('App Environment', {
+export const ENVIRONMENT = new InjectionToken<AppEnvironment>('App Environment', {
   providedIn: 'root',
-  factory: () => environment,
+  factory: () => environment as AppEnvironment,
 });

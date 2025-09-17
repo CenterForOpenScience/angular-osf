@@ -15,7 +15,13 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
-import { IconComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import {
+  IconComponent,
+  LoadingSpinnerComponent,
+  MyProjectsTableComponent,
+  ScheduledBannerComponent,
+  SubHeaderComponent,
+} from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
@@ -23,9 +29,22 @@ import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf
 import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
+import { TosConsentBannerComponent } from '../../components';
+
 @Component({
   selector: 'osf-dashboard',
-  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, IconComponent, TranslatePipe],
+  imports: [
+    RouterLink,
+    Button,
+    SubHeaderComponent,
+    MyProjectsTableComponent,
+    IconComponent,
+    TranslatePipe,
+    LoadingSpinnerComponent,
+    TosConsentBannerComponent,
+    ScheduledBannerComponent,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   providers: [DialogService],
@@ -55,6 +74,10 @@ export class DashboardComponent implements OnInit {
   readonly filteredProjects = computed(() => {
     const search = this.searchControl.value?.toLowerCase() ?? '';
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
+  });
+
+  readonly existsProjects = computed(() => {
+    return this.projects().length || !!this.searchControl.value?.length;
   });
 
   dialogRef: DynamicDialogRef | null = null;
@@ -187,10 +210,14 @@ export class DashboardComponent implements OnInit {
         closable: true,
       })
       .onClose.pipe(
-        filter((result) => result.project.id),
+        filter((result) => result?.project.id),
         tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
+  }
+
+  openInfoLink(): void {
+    window.open('https://help.osf.io/', '_blank');
   }
 }

@@ -8,12 +8,13 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
 import { ToastService } from '@osf/shared/services';
 import { CreateWiki, WikiSelectors } from '@osf/shared/stores';
+
+import { TextInputComponent } from '../../text-input/text-input.component';
 
 @Component({
   selector: 'osf-add-wiki-dialog-component',
@@ -25,12 +26,11 @@ import { CreateWiki, WikiSelectors } from '@osf/shared/stores';
 export class AddWikiDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
-  actions = createDispatchMap({
-    createWiki: CreateWiki,
-  });
+  private toastService = inject(ToastService);
+
+  actions = createDispatchMap({ createWiki: CreateWiki });
   isSubmitting = select(WikiSelectors.getWikiSubmitting);
   inputLimits = InputLimits;
-  private toastService = inject(ToastService);
 
   addWikiForm = new FormGroup({
     name: new FormControl('', {

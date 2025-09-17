@@ -4,6 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ContributorPermission } from '@shared/enums';
 import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY, TranslateServiceMock } from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
 
@@ -32,7 +33,7 @@ describe('ContributorsListComponent', () => {
   it('should have default values', () => {
     expect(component.contributors()).toEqual([]);
     expect(component.isLoading()).toBe(false);
-    expect(component.showCuratorColumn()).toBe(false);
+    expect(component.showCurator()).toBe(false);
   });
 
   it('should accept contributors input', () => {
@@ -50,11 +51,11 @@ describe('ContributorsListComponent', () => {
     expect(component.isLoading()).toBe(true);
   });
 
-  it('should accept showCuratorColumn input', () => {
-    fixture.componentRef.setInput('showCuratorColumn', true);
+  it('should accept showCurator input', () => {
+    fixture.componentRef.setInput('showCurator', true);
     fixture.detectChanges();
 
-    expect(component.showCuratorColumn()).toBe(true);
+    expect(component.showCurator()).toBe(true);
   });
 
   it('should have permissionsOptions defined', () => {
@@ -94,10 +95,10 @@ describe('ContributorsListComponent', () => {
   });
 
   it('should handle curator column visibility', () => {
-    fixture.componentRef.setInput('showCuratorColumn', true);
+    fixture.componentRef.setInput('showCurator', true);
     fixture.detectChanges();
 
-    expect(component.showCuratorColumn()).toBe(true);
+    expect(component.showCurator()).toBe(true);
   });
 
   it('should handle all inputs together', () => {
@@ -105,12 +106,12 @@ describe('ContributorsListComponent', () => {
 
     fixture.componentRef.setInput('contributors', contributors);
     fixture.componentRef.setInput('isLoading', false);
-    fixture.componentRef.setInput('showCuratorColumn', true);
+    fixture.componentRef.setInput('showCurator', true);
     fixture.detectChanges();
 
     expect(component.contributors()).toEqual(contributors);
     expect(component.isLoading()).toBe(false);
-    expect(component.showCuratorColumn()).toBe(true);
+    expect(component.showCurator()).toBe(true);
   });
 
   it('should handle empty contributors list', () => {
@@ -127,10 +128,11 @@ describe('ContributorsListComponent', () => {
       type: 'user',
       isBibliographic: true,
       isCurator: true,
+      isUnregisteredContributor: false,
       fullName: 'Minimal User',
       givenName: 'Minimal User',
       familyName: 'Minimal User',
-      permission: 'read',
+      permission: ContributorPermission.Read,
       education: [],
       employment: [],
     };

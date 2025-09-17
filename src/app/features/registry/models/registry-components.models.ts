@@ -1,4 +1,4 @@
-import { NodeBibliographicContributor } from './bibliographic-contributors.models';
+import { ContributorModel } from '@osf/shared/models';
 
 export interface RegistryComponentModel {
   id: string;
@@ -12,6 +12,6 @@ export interface RegistryComponentModel {
   tags: string[];
   isPublic: boolean;
   contributorsCount?: number;
-  contributors?: NodeBibliographicContributor[];
+  contributors?: ContributorModel[];
   registry?: string;
 }

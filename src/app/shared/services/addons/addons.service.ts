@@ -39,12 +39,10 @@ export class AddonsService {
 
   getAddons(addonType: string): Observable<AddonModel[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<AddonGetResponseJsonApi[], null>>(`${this.apiUrl}/external-${addonType}-services`)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => AddonMapper.fromResponse(item));
-        })
-      );
+      .get<
+        JsonApiResponse<AddonGetResponseJsonApi[], null>
+      >(`${environment.addonsApiUrl}/external-${addonType}-services`)
+      .pipe(map((response) => response.data.map((item) => AddonMapper.fromResponse(item))));
   }
 
   getAddonsUserReference(): Observable<UserReferenceJsonApi[]> {
@@ -70,25 +68,23 @@ export class AddonsService {
 
   getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAccountModel[]> {
     const params = {
-      [`fields[external-${addonType}-services]`]: 'external_service_name',
+      [`fields[external-${addonType}-services]`]: 'external_service_name,credentials_format',
     };
     return this.jsonApiService
       .get<
         JsonApiResponse<AuthorizedAddonGetResponseJsonApi[], IncludedAddonData[]>
       >(`${this.apiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
       .pipe(
-        map((response) => {
-          return response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included));
-        })
+        map((response) => response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included)))
       );
   }
 
-  getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAccountModel> {
+  getAuthorizedStorageOauthToken(accountId: string, addonType: string): Observable<AuthorizedAccountModel> {
     return this.jsonApiService
-      .patch<AuthorizedAddonGetResponseJsonApi>(`${this.apiUrl}/authorized-storage-accounts/${accountId}`, {
+      .patch<AuthorizedAddonGetResponseJsonApi>(`${this.apiUrl}/authorized-${addonType}-accounts/${accountId}`, {
         data: {
           id: accountId,
-          type: 'authorized-storage-accounts',
+          type: `authorized-${addonType}-accounts`,
           attributes: { serialize_oauth_token: 'true' },
         },
       })

@@ -23,6 +23,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
@@ -52,8 +53,8 @@ import {
   GetResourceDetails,
   UpdateBibliographyFilter,
   UpdateContributor,
+  UpdateContributorsSearchValue,
   UpdatePermissionFilter,
-  UpdateSearchValue,
   ViewOnlyLinkSelectors,
 } from '@osf/shared/stores';
 
@@ -105,14 +106,25 @@ export class ContributorsComponent implements OnInit {
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  readonly currentUser = select(UserSelectors.getCurrentUser);
 
   canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
+
+  isCurrentUserAdminContributor = computed(() => {
+    const currentUserId = this.currentUser()?.id;
+    const initialContributors = this.initialContributors();
+    if (!currentUserId) return false;
+
+    return initialContributors.some((contributor: ContributorModel) => {
+      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
+    });
+  });
 
   actions = createDispatchMap({
     getViewOnlyLinks: FetchViewOnlyLinks,
     getResourceDetails: GetResourceDetails,
     getContributors: GetAllContributors,
-    updateSearchValue: UpdateSearchValue,
+    updateSearchValue: UpdateContributorsSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,

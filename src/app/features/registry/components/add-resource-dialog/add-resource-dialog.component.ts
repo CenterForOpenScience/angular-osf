@@ -109,9 +109,9 @@ export class AddResourceDialogComponent {
   closeDialog(): void {
     this.dialogRef.close();
     const currentResource = this.currentResource();
-    if (!currentResource) {
-      throw new Error(this.translateService.instant('resources.errors.noRegistryId'));
+
+    if (currentResource) {
+      this.actions.deleteResource(currentResource.id);
     }
-    this.actions.deleteResource(currentResource.id);
   }
 }

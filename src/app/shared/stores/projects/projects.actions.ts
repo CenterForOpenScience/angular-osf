@@ -1,5 +1,5 @@
 import { ProjectMetadataUpdatePayload } from '@shared/models';
-import { Project } from '@shared/models/projects';
+import { ProjectModel } from '@shared/models/projects';
 
 export class GetProjects {
   static readonly type = '[Projects] Get Projects';
@@ -13,7 +13,7 @@ export class GetProjects {
 export class SetSelectedProject {
   static readonly type = '[Projects] Set Selected Project';
 
-  constructor(public project: Project) {}
+  constructor(public project: ProjectModel) {}
 }
 
 export class UpdateProjectMetadata {

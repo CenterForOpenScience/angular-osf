@@ -2,7 +2,8 @@
   <div class="layout-desktop">
     <osf-sidenav></osf-sidenav>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper" osfScrollTopOnRouteChange>
+      <osf-maintenance-banner></osf-maintenance-banner>
       <osf-header></osf-header>
 
       <router-outlet />
@@ -12,7 +13,8 @@
   </div>
 } @else {
   <div class="layout-tablet">
-    <div class="content-wrapper">
+    <div class="content-wrapper" osfScrollTopOnRouteChange>
+      <osf-maintenance-banner></osf-maintenance-banner>
       <osf-topnav></osf-topnav>
 
       @if (isMedium()) {

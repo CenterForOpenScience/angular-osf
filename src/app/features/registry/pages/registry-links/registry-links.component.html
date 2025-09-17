@@ -16,8 +16,8 @@
           <p>{{ 'registry.links.noLinkedProjectsOrComponentsFound' | translate }}</p>
         </div>
       } @else {
-        <div class="flex flex-column gap-4 w-full">
-          @for (node of nodes(); track node.id) {
+        <div class="flex flex-column gap-4">
+          @for (node of linkedNodes(); track node.id) {
             <osf-registration-links-card
               (reviewEmitRegistrationData)="navigateToNodes($event)"
               [registrationData]="node"
@@ -36,13 +36,13 @@
         <div class="flex justify-content-center p-4">
           <osf-loading-spinner />
         </div>
-      } @else if (registrations().length === 0) {
+      } @else if (linkedRegistrations().length === 0) {
         <div class="text-center p-6">
           <p>{{ 'registry.links.noLinkedRegistrationsFound' | translate }}</p>
         </div>
       } @else {
-        <div class="flex flex-column gap-4 w-full">
-          @for (registration of registrations(); track registration.id) {
+        <div class="flex flex-column gap-4">
+          @for (registration of linkedRegistrations(); track registration.id) {
             <osf-registration-links-card
               (reviewEmitRegistrationData)="navigateToRegistrations($event)"
               (updateEmitRegistrationData)="updateRegistration($event)"

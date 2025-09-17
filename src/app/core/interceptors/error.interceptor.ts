@@ -31,6 +31,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       }
 
+      const serverErrorRegex = /5\d{2}/;
+
+      if (serverErrorRegex.test(error.status.toString())) {
+        errorMessage = error.error.message || 'common.errorMessages.serverError';
+      }
+
       if (error.status === 401) {
         if (!hasViewOnlyParam(router)) {
           authService.logout();
