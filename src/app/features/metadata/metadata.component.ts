@@ -37,7 +37,18 @@ import {
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
 
-import { SharedMetadataComponent } from './components/shared-metadata/shared-metadata.component';
+import {
+  MetadataAffiliatedInstitutionsComponent,
+  MetadataContributorsComponent,
+  MetadataDateInfoComponent,
+  MetadataDescriptionComponent,
+  MetadataFundingComponent,
+  MetadataLicenseComponent,
+  MetadataPublicationDoiComponent,
+  MetadataResourceInformationComponent,
+  MetadataSubjectsComponent,
+  MetadataTagsComponent,
+} from './components';
 import {
   AffiliatedInstitutionsDialogComponent,
   ContributorsDialogComponent,
@@ -72,7 +83,21 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-metadata',
-  imports: [SubHeaderComponent, TranslatePipe, MetadataTabsComponent, SharedMetadataComponent],
+  imports: [
+    SubHeaderComponent,
+    TranslatePipe,
+    MetadataTabsComponent,
+    MetadataSubjectsComponent,
+    MetadataPublicationDoiComponent,
+    MetadataLicenseComponent,
+    MetadataAffiliatedInstitutionsComponent,
+    MetadataDescriptionComponent,
+    MetadataContributorsComponent,
+    MetadataResourceInformationComponent,
+    MetadataFundingComponent,
+    MetadataDateInfoComponent,
+    MetadataTagsComponent,
+  ],
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -157,6 +182,8 @@ export class MetadataComponent implements OnInit {
     );
   });
 
+  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
+
   constructor() {
     effect(() => {
       const records = this.cedarRecords();
@@ -191,6 +218,7 @@ export class MetadataComponent implements OnInit {
 
     effect(() => {
       const metadata = this.metadata();
+
       if (this.resourceType() === ResourceType.Registration) {
         if (metadata) {
           this.provider = metadata.provider || environment.defaultProvider;
@@ -348,9 +376,7 @@ export class MetadataComponent implements OnInit {
           return this.actions.updateCustomItemMetadata(this.resourceId, updatedMetadata);
         })
       )
-      .subscribe({
-        next: () => this.toastService.showSuccess('project.metadata.resourceInformation.updated'),
-      });
+      .subscribe(() => this.toastService.showSuccess('project.metadata.resourceInformation.updated'));
   }
 
   onShowResourceInfo() {
@@ -391,9 +417,7 @@ export class MetadataComponent implements OnInit {
           );
         })
       )
-      .subscribe({
-        next: () => this.toastService.showSuccess('project.metadata.license.updated'),
-      });
+      .subscribe(() => this.toastService.showSuccess('project.metadata.license.updated'));
   }
 
   openEditFundingDialog(): void {
@@ -421,9 +445,7 @@ export class MetadataComponent implements OnInit {
           return this.actions.updateCustomItemMetadata(this.resourceId, updatedMetadata);
         })
       )
-      .subscribe({
-        next: () => this.toastService.showSuccess('project.metadata.funding.updated'),
-      });
+      .subscribe(() => this.toastService.showSuccess('project.metadata.funding.updated'));
   }
 
   openEditAffiliatedInstitutionsDialog(): void {

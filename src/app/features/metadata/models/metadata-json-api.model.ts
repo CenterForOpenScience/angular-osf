@@ -1,10 +1,4 @@
-import {
-  ApiData,
-  ContributorResponse,
-  InstitutionsJsonApiResponse,
-  LicenseDataJsonApi,
-  LicenseRecordJsonApi,
-} from '@osf/shared/models';
+import { ApiData, InstitutionsJsonApiResponse, LicenseDataJsonApi, LicenseRecordJsonApi } from '@osf/shared/models';
 
 export interface MetadataJsonApiResponse {
   data: MetadataJsonApi;
@@ -26,9 +20,6 @@ export interface MetadataAttributesJsonApi {
 }
 
 interface MetadataEmbedsJsonApi {
-  bibliographic_contributors: {
-    data: ContributorResponse[];
-  };
   identifiers: {
     data: { id: string; type: string; attributes: { category: string; value: string } }[];
   };
