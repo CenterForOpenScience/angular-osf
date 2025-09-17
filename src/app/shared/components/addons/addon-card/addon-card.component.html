@@ -1,17 +1,17 @@
 <div class="addon-card flex flex-1 gap-4 flex-column p-5">
   <div class="max-h-8rem flex justify-content-center align-items-center">
-    @if (card()!.externalServiceName) {
+    @if (actualAddon()?.externalServiceName) {
       <img
         class="addon-image"
         alt="Addon card image"
-        [src]="'assets/icons/addons/' + card()!.externalServiceName + '.svg'"
+        [src]="'assets/icons/addons/' + actualAddon()!.externalServiceName + '.svg'"
         data-test-addon-card-logo
       />
     }
   </div>
 
   <div class="flex flex-column gap-3">
-    <h3 class="text-center" data-test-addon-card-title>{{ card()?.displayName }}</h3>
+    <h3 class="text-center" data-test-addon-card-title>{{ actualAddon()?.displayName }}</h3>
 
     <div class="flex justify-content-center align-items-center md:gap-5 md:mt-3 btn-container">
       @if (showDangerButton()) {
@@ -24,7 +24,7 @@
       }
 
       <p-button
-        [label]="cardButtonLabel() || ('settings.addons.form.buttons.connect' | translate)"
+        [label]="buttonLabel() | translate"
         severity="secondary"
         (onClick)="!isConfiguredAddon() ? onConnectAddon() : onConfigureAddon()"
       ></p-button>

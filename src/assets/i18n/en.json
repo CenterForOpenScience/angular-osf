@@ -1635,6 +1635,7 @@
           "acceptingTerms": "Accepting...",
           "back": "Back",
           "connect": "Connect",
+          "configure": "Configure",
           "reconnect": "Reconnect",
           "authorize": "Authorize",
           "disable": "Disable",

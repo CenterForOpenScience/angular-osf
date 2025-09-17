@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 
 import { getAddonTypeString, isConfiguredAddon } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
-import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
+import { AddonCardModel, AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({
@@ -24,15 +24,38 @@ export class AddonCardComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly actions = createDispatchMap({ deleteAuthorizedAddon: DeleteAuthorizedAddon });
 
-  readonly card = input<AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null>(null);
-  readonly cardButtonLabel = input<string>('');
+  readonly card = input<AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | AddonCardModel | null>(null);
   readonly showDangerButton = input<boolean>(false);
 
-  readonly addonTypeString = computed(() => getAddonTypeString(this.card()));
-  readonly isConfiguredAddon = computed(() => isConfiguredAddon(this.card()));
+  readonly actualAddon = computed(() => {
+    const actualCard = this.card();
+    if (!actualCard) return null;
+
+    if ('isConfigured' in actualCard) {
+      return actualCard.addon;
+    }
+
+    return actualCard;
+  });
+
+  readonly addonTypeString = computed(() => getAddonTypeString(this.actualAddon()));
+  readonly isConfiguredAddon = computed(() => {
+    const actualCard = this.card();
+    if (!actualCard) return false;
+
+    if ('isConfigured' in actualCard) {
+      return actualCard.isConfigured;
+    }
+
+    return isConfiguredAddon(actualCard);
+  });
+
+  readonly buttonLabel = computed(() => {
+    return this.isConfiguredAddon() ? 'settings.addons.form.buttons.configure' : 'settings.addons.form.buttons.connect';
+  });
 
   onConnectAddon(): void {
-    const addon = this.card();
+    const addon = this.actualAddon();
     if (addon) {
       const currentUrl = this.router.url;
       const baseUrl = currentUrl.split('/addons')[0];
@@ -43,13 +66,24 @@ export class AddonCardComponent {
   }
 
   onConfigureAddon(): void {
-    const addon = this.card();
-    if (addon) {
+    const actualCard = this.card();
+    if (!actualCard) return;
+
+    if ('isConfigured' in actualCard && actualCard.configuredAddon) {
       const currentUrl = this.router.url;
       const baseUrl = currentUrl.split('/addons')[0];
       this.router.navigate([`${baseUrl}/addons/configure-addon`], {
-        state: { addon },
+        state: { addon: actualCard.configuredAddon },
       });
+    } else {
+      const addon = this.actualAddon();
+      if (addon) {
+        const currentUrl = this.router.url;
+        const baseUrl = currentUrl.split('/addons')[0];
+        this.router.navigate([`${baseUrl}/addons/configure-addon`], {
+          state: { addon },
+        });
+      }
     }
   }
 
@@ -63,7 +97,8 @@ export class AddonCardComponent {
   }
 
   onDisableAddon(): void {
-    const addonId = this.card()?.id;
+    const addon = this.actualAddon();
+    const addonId = addon?.id;
 
     if (addonId) {
       this.loaderService.show();

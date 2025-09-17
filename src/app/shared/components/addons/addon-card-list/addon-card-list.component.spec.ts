@@ -27,10 +27,6 @@ describe('AddonCardListComponent', () => {
     expect(component.cards()).toEqual([]);
   });
 
-  it('should have default empty string ', () => {
-    expect(component.cardButtonLabel()).toBe('');
-  });
-
   it('should have default false value', () => {
     expect(component.showDangerButton()).toBe(false);
   });
