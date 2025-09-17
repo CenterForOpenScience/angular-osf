@@ -90,7 +90,7 @@
         "funder": "Select funder",
         "rights": "Select license",
         "publisher": "Select provider",
-        "isPartOfCollection": "Select part of collection",
+        "isPartOfCollection": "Select collection",
         "dateCreated": "Select date",
         "creator": "Creator name",
         "resourceType": "Select resource type"
@@ -1635,6 +1635,7 @@
           "acceptingTerms": "Accepting...",
           "back": "Back",
           "connect": "Connect",
+          "configure": "Configure",
           "reconnect": "Reconnect",
           "authorize": "Authorize",
           "disable": "Disable",

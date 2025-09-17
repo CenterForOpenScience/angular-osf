@@ -1,5 +1,6 @@
-import { RegistryComponentModel } from '../models/registry-components.models';
-import { RegistryComponentJsonApi } from '../models/registry-components-json-api.model';
+import { ContributorsMapper } from '@osf/shared/mappers';
+
+import { RegistryComponentJsonApi, RegistryComponentModel } from '../models';
 
 export class RegistryComponentsMapper {
   static fromApiResponse(apiComponent: RegistryComponentJsonApi): RegistryComponentModel {
@@ -14,6 +15,7 @@ export class RegistryComponentsMapper {
       registrationSupplement: apiComponent.attributes.registration_supplement,
       tags: apiComponent.attributes.tags,
       isPublic: apiComponent.attributes.public,
+      contributors: ContributorsMapper.fromResponse(apiComponent.embeds.bibliographic_contributors.data) || [],
     };
   }
 

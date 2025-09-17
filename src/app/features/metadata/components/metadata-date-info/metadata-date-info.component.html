@@ -1,0 +1,23 @@
+<p-card>
+  <div class="flex justify-content-between flex-wrap gap-4">
+    <div class="flex flex-column gap-2 flex-1">
+      <h2>
+        {{ 'project.overview.metadata.dateCreated' | translate }}
+      </h2>
+
+      <p class="m-0">
+        {{ dateCreated() | date: dateFormat }}
+      </p>
+    </div>
+
+    <div class="flex flex-column gap-2 flex-1">
+      <h2>
+        {{ 'project.overview.metadata.dateUpdated' | translate }}
+      </h2>
+
+      <p class="m-0">
+        {{ dateModified() | date: dateFormat }}
+      </p>
+    </div>
+  </div>
+</p-card>

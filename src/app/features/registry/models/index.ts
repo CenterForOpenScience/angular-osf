@@ -1,4 +1,3 @@
-export * from './bibliographic-contributors.models';
 export * from './get-registry-overview-json-api.model';
 export * from './linked-nodes.models';
 export * from './linked-nodes-json-api.model';
@@ -6,6 +5,5 @@ export * from './linked-registrations-json-api.model';
 export * from './linked-response.models';
 export * from './registry-components.models';
 export * from './registry-components-json-api.model';
-export * from './registry-metadata.models';
 export * from './registry-overview.models';
 export * from './resources';

@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ResourceType } from '@osf/shared/enums';
-import { Identifier, LicenseOptions } from '@osf/shared/models';
+import { BaseNodeAttributesJsonApi, Identifier, LicenseOptions } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { CedarRecordsMapper, MetadataMapper } from '../mappers';
@@ -15,7 +15,6 @@ import {
   CedarRecordDataBinding,
   CustomMetadataJsonApi,
   CustomMetadataJsonApiResponse,
-  MetadataAttributesJsonApi,
   MetadataJsonApi,
   MetadataJsonApiResponse,
 } from '../models';
@@ -121,6 +120,7 @@ export class MetadataService {
     const params = this.getMetadataParams(resourceType);
 
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
+
     return this.jsonApiService
       .get<MetadataJsonApiResponse>(baseUrl, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response.data)));
@@ -129,7 +129,7 @@ export class MetadataService {
   updateResourceDetails(
     resourceId: string,
     resourceType: ResourceType,
-    updates: Partial<MetadataAttributesJsonApi>
+    updates: Partial<BaseNodeAttributesJsonApi>
   ): Observable<Metadata> {
     const payload = {
       data: {
@@ -186,7 +186,7 @@ export class MetadataService {
 
   private getMetadataParams(resourceType: ResourceType): Record<string, unknown> {
     const params = {
-      embed: ['affiliated_institutions', 'identifiers', 'license', 'bibliographic_contributors'],
+      embed: ['affiliated_institutions', 'identifiers', 'license'],
     };
 
     if (resourceType === ResourceType.Registration) {

@@ -5,14 +5,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/shared/services';
 
-import { BibliographicContributorsMapper, LinkedNodesMapper, LinkedRegistrationsMapper } from '../mappers';
+import { LinkedNodesMapper, LinkedRegistrationsMapper } from '../mappers';
 import {
-  BibliographicContributorsResponse,
   LinkedNodesJsonApiResponse,
   LinkedNodesResponseJsonApi,
   LinkedRegistrationsJsonApiResponse,
   LinkedRegistrationsResponseJsonApi,
-  NodeBibliographicContributor,
 } from '../models';
 
 import { environment } from 'src/environments/environment';
@@ -26,6 +24,7 @@ export class RegistryLinksService {
 
   getLinkedNodes(registryId: string, page = 1, pageSize = 10): Observable<LinkedNodesResponseJsonApi> {
     const params: Record<string, unknown> = {
+      'embed[]': 'bibliographic_contributors',
       page: page,
       'page[size]': pageSize,
     };
@@ -43,6 +42,7 @@ export class RegistryLinksService {
 
   getLinkedRegistrations(registryId: string, page = 1, pageSize = 10): Observable<LinkedRegistrationsResponseJsonApi> {
     const params: Record<string, unknown> = {
+      'embed[]': 'bibliographic_contributors',
       page: page,
       'page[size]': pageSize,
     };
@@ -59,28 +59,5 @@ export class RegistryLinksService {
           links: response.links,
         }))
       );
-  }
-
-  getBibliographicContributors(nodeId: string): Observable<NodeBibliographicContributor[]> {
-    const params: Record<string, unknown> = {
-      embed: 'users',
-    };
-
-    return this.jsonApiService
-      .get<BibliographicContributorsResponse>(`${this.apiUrl}/nodes/${nodeId}/bibliographic_contributors/`, params)
-      .pipe(map((response) => BibliographicContributorsMapper.fromApiResponseArray(response.data)));
-  }
-
-  getBibliographicContributorsForRegistration(registrationId: string): Observable<NodeBibliographicContributor[]> {
-    const params: Record<string, unknown> = {
-      embed: 'users',
-    };
-
-    return this.jsonApiService
-      .get<BibliographicContributorsResponse>(
-        `${this.apiUrl}/registrations/${registrationId}/bibliographic_contributors/`,
-        params
-      )
-      .pipe(map((response) => BibliographicContributorsMapper.fromApiResponseArray(response.data)));
   }
 }

@@ -79,9 +79,7 @@ export class WikiComponent {
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
   isCompareVersionLoading = select(WikiSelectors.getCompareVersionsLoading);
   isAnonymous = select(WikiSelectors.isWikiAnonymous);
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   actions = createDispatchMap({
     getWikiModes: GetWikiModes,

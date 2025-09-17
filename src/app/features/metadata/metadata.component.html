@@ -17,26 +17,58 @@
     (cedarFormChangeTemplate)="onCedarFormChangeTemplate()"
     (cedarFormEdit)="onCedarFormEdit()"
   >
-    <osf-shared-metadata
-      [hideEditDoi]="hideEditDoi()"
-      [selectedSubjects]="selectedSubjects()"
-      [isSubjectsUpdating]="isSubjectsUpdating()"
-      [metadata]="metadata()"
-      [affiliatedInstitutions]="affiliatedInstitutions()"
-      [resourceType]="resourceType()"
-      [customItemMetadata]="customItemMetadata()!"
-      (openEditContributorDialog)="openEditContributorDialog()"
-      (openEditDescriptionDialog)="openEditDescriptionDialog()"
-      (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
-      (showResourceInfo)="onShowResourceInfo()"
-      (openEditFundingDialog)="openEditFundingDialog()"
-      (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
-      (openEditLicenseDialog)="openEditLicenseDialog()"
-      (handleEditDoi)="handleEditDoi()"
-      (tagsChanged)="onTagsChanged($event)"
-      (getSubjectChildren)="getSubjectChildren($event)"
-      (searchSubjects)="searchSubjects($event)"
-      (updateSelectedSubjects)="updateSelectedSubjects($event)"
-    />
+    <div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
+      <div class="col-12 lg:col-6 flex flex-column gap-4">
+        <osf-metadata-date-info [dateCreated]="metadata()?.dateCreated" [dateModified]="metadata()?.dateModified" />
+
+        <osf-metadata-contributors
+          (openEditContributorDialog)="openEditContributorDialog()"
+          [contributors]="bibliographicContributors()"
+        />
+
+        <osf-metadata-description
+          (openEditDescriptionDialog)="openEditDescriptionDialog()"
+          [description]="metadata()?.description!"
+        />
+
+        <osf-metadata-resource-information
+          (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
+          (showResourceInfo)="onShowResourceInfo()"
+          [customItemMetadata]="customItemMetadata()!"
+        />
+
+        <osf-metadata-funding
+          (openEditFundingDialog)="openEditFundingDialog()"
+          [funders]="customItemMetadata()?.funders!"
+        />
+
+        <osf-metadata-affiliated-institutions
+          (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
+          [affiliatedInstitutions]="affiliatedInstitutions()"
+        />
+      </div>
+
+      <div class="col-12 lg:col-6 flex flex-column gap-4">
+        <osf-metadata-license (openEditLicenseDialog)="openEditLicenseDialog()" [license]="metadata()?.license!" />
+
+        <osf-metadata-publication-doi
+          (openEditPublicationDoiDialog)="handleEditDoi()"
+          [hideEditDoi]="hideEditDoi()"
+          [identifiers]="metadata()?.identifiers!"
+          [publicationDoi]="metadata()?.publicationDoi || null"
+          [resourceType]="resourceType()"
+        />
+
+        <osf-metadata-tags [tags]="metadata()?.tags || []" (tagsChanged)="onTagsChanged($event)"></osf-metadata-tags>
+
+        <osf-metadata-subjects
+          (getSubjectChildren)="getSubjectChildren($event)"
+          (searchSubjects)="searchSubjects($event)"
+          (updateSelectedSubjects)="updateSelectedSubjects($event)"
+          [isSubjectsUpdating]="isSubjectsUpdating()!"
+          [selectedSubjects]="selectedSubjects()"
+        />
+      </div>
+    </div>
   </osf-metadata-tabs>
 </section>

@@ -1,13 +1,10 @@
-import { RegistrationQuestions } from '@osf/features/registry/models';
+import { RegistrationQuestions } from '@osf/shared/models';
 import { ReviewActionPayload } from '@osf/shared/models/review-action';
 
 export class GetRegistryById {
   static readonly type = '[Registry Overview] Get Registry By Id';
 
-  constructor(
-    public id: string,
-    public isComponentPage?: boolean
-  ) {}
+  constructor(public id: string) {}
 }
 
 export class GetRegistryInstitutions {
