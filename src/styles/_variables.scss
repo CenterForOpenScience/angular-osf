@@ -118,6 +118,9 @@ $white-60: var(--white-60);
   // Opacity Colors
   --white-60: rgba(256, 256, 256, 0.6);
 
+  --osf-provider-primary-color: #f5fafd;
+  --osf-provider-secondary-color: #204762;
+
   // Gradients
   --gradient-1:
     linear-gradient(
@@ -167,8 +170,8 @@ $white-60: var(--white-60);
   --header-background-color: none;
   --header-background-image-url: none;
 
-  --branding-primary-color: var(--pr-blue-1);
-  --branding-secondary-color: var(--white);
+  --branding-primary-color: var(--osf-provider-primary-color);
+  --branding-secondary-color: var(--osf-provider-secondary-color);
   --branding-background-color: var(--white);
   --branding-hero-logo-image-url: none;
   --branding-hero-background-image-url: none;
