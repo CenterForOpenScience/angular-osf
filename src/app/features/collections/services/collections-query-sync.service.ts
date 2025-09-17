@@ -4,7 +4,7 @@ import { effect, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
 import { queryParamsKeys } from '@osf/features/collections/constants/query-params-keys.const';
 import { CollectionQueryParams } from '@osf/features/collections/models';
