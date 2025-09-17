@@ -5,9 +5,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { finalize, take } from 'rxjs';
+import { filter, finalize, switchMap, take } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { IconComponent, LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
@@ -20,7 +21,6 @@ import {
   DeleteResource,
   GetRegistryResources,
   RegistryResourcesSelectors,
-  SilentDelete,
 } from '../../store/registry-resources';
 
 @Component({
@@ -38,23 +38,23 @@ export class RegistryResourcesComponent {
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly resources = select(RegistryResourcesSelectors.getResources);
   readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
   readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
 
   registryId = '';
-  addingResource = signal(false);
+  isAddingResource = signal(false);
 
   private readonly actions = createDispatchMap({
     getResources: GetRegistryResources,
     addResource: AddRegistryResource,
     deleteResource: DeleteResource,
-    silentDelete: SilentDelete,
   });
 
   constructor() {
-    this.route.parent?.params.subscribe((params) => {
+    this.route.parent?.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.registryId = params['id'];
       if (this.registryId) {
         this.actions.getResources(this.registryId);
@@ -65,63 +65,56 @@ export class RegistryResourcesComponent {
   addResource() {
     if (!this.registryId) return;
 
-    this.addingResource.set(true);
+    this.isAddingResource.set(true);
 
     this.actions
       .addResource(this.registryId)
       .pipe(
         take(1),
-        finalize(() => this.addingResource.set(false))
+        switchMap(() => this.openAddResourceDialog()),
+        filter((res) => !!res),
+        finalize(() => this.isAddingResource.set(false)),
+        takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(() => {
-        const dialogRef = this.dialogService.open(AddResourceDialogComponent, {
-          header: this.translateService.instant('resources.add'),
-          width: '500px',
-          focusOnShow: false,
-          closeOnEscape: true,
-          modal: true,
-          closable: true,
-          data: { id: this.registryId },
-        });
-
-        dialogRef.onClose.subscribe({
-          next: (res) => {
-            if (res) {
-              this.toastService.showSuccess('resources.toastMessages.addResourceSuccess');
-            } else {
-              const currentResource = this.currentResource();
-
-              if (currentResource) {
-                this.actions.silentDelete(currentResource.id);
-              }
-            }
-          },
-          error: () => this.toastService.showError('resources.toastMessages.addResourceError'),
-        });
+      .subscribe({
+        next: () => this.toastService.showSuccess('resources.toastMessages.addResourceSuccess'),
+        error: () => this.toastService.showError('resources.toastMessages.addResourceError'),
       });
   }
 
-  updateResource(resource: RegistryResource) {
-    if (!this.registryId) return;
-
-    const dialogRef = this.dialogService.open(EditResourceDialogComponent, {
-      header: this.translateService.instant('resources.edit'),
+  openAddResourceDialog() {
+    return this.dialogService.open(AddResourceDialogComponent, {
+      header: this.translateService.instant('resources.add'),
       width: '500px',
       focusOnShow: false,
       closeOnEscape: true,
       modal: true,
       closable: true,
-      data: { id: this.registryId, resource: resource },
-    });
+      data: { id: this.registryId },
+    }).onClose;
+  }
 
-    dialogRef.onClose.subscribe({
-      next: (res) => {
-        if (res) {
-          this.toastService.showSuccess('resources.toastMessages.updatedResourceSuccess');
-        }
-      },
-      error: () => this.toastService.showError('resources.toastMessages.updateResourceError'),
-    });
+  updateResource(resource: RegistryResource) {
+    if (!this.registryId) return;
+
+    this.dialogService
+      .open(EditResourceDialogComponent, {
+        header: this.translateService.instant('resources.edit'),
+        width: '500px',
+        focusOnShow: false,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: { id: this.registryId, resource: resource },
+      })
+      .onClose.pipe(
+        takeUntilDestroyed(this.destroyRef),
+        filter((res) => !!res)
+      )
+      .subscribe({
+        next: () => this.toastService.showSuccess('resources.toastMessages.updatedResourceSuccess'),
+        error: () => this.toastService.showError('resources.toastMessages.updateResourceError'),
+      });
   }
 
   deleteResource(id: string) {

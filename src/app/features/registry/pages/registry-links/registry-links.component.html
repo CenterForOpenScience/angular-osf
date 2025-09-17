@@ -16,7 +16,7 @@
           <p>{{ 'registry.links.noLinkedProjectsOrComponentsFound' | translate }}</p>
         </div>
       } @else {
-        <div class="flex flex-column gap-4 w-full">
+        <div class="flex flex-column gap-4">
           @for (node of linkedNodes(); track node.id) {
             <osf-registration-links-card
               (reviewEmitRegistrationData)="navigateToNodes($event)"
@@ -41,7 +41,7 @@
           <p>{{ 'registry.links.noLinkedRegistrationsFound' | translate }}</p>
         </div>
       } @else {
-        <div class="flex flex-column gap-4 w-full">
+        <div class="flex flex-column gap-4">
           @for (registration of linkedRegistrations(); track registration.id) {
             <osf-registration-links-card
               (reviewEmitRegistrationData)="navigateToRegistrations($event)"

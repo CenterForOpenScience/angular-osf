@@ -1,7 +1,7 @@
 import { ReviewAction } from '@osf/features/moderation/models';
-import { RegistryOverview } from '@osf/features/registry/models';
-import { Institution, PageSchema } from '@osf/shared/models';
-import { AsyncStateModel } from '@shared/models';
+import { AsyncStateModel, Institution, PageSchema } from '@osf/shared/models';
+
+import { RegistryOverview } from '../../models';
 
 export interface RegistryOverviewStateModel {
   registry: AsyncStateModel<RegistryOverview | null>;

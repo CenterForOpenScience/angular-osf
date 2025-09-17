@@ -1,7 +1,7 @@
 <osf-sub-header
   [title]="'resources.title' | translate"
   [showButton]="true"
-  [isButtonDisabled]="addingResource()"
+  [isButtonDisabled]="isAddingResource()"
   [buttonLabel]="'resources.add' | translate"
   (buttonClick)="addResource()"
 />

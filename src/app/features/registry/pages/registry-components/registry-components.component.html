@@ -15,7 +15,7 @@
           <p>{{ 'registry.components.noComponentsFound' | translate }}</p>
         </div>
       } @else {
-        <div class="flex flex-column gap-4 w-full">
+        <div class="flex flex-column gap-4">
           @for (component of registryComponents(); track component.id) {
             <osf-registration-links-card
               (reviewEmitRegistrationData)="reviewComponentDetails($event)"

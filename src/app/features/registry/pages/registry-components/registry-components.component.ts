@@ -10,7 +10,6 @@ import { hasViewOnlyParam } from '@osf/shared/helpers';
 
 import { RegistrationLinksCardComponent } from '../../components';
 import { GetRegistryComponents, RegistryComponentsSelectors } from '../../store/registry-components';
-import { GetRegistryById, RegistryOverviewSelectors } from '../../store/registry-overview';
 
 @Component({
   selector: 'osf-registry-components',
@@ -31,24 +30,18 @@ export class RegistryComponentsComponent implements OnInit {
 
   private registryId = signal('');
 
-  actions = createDispatchMap({
-    getRegistryComponents: GetRegistryComponents,
-    getRegistryById: GetRegistryById,
-  });
+  actions = createDispatchMap({ getRegistryComponents: GetRegistryComponents });
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   registryComponents = select(RegistryComponentsSelectors.getRegistryComponents);
   registryComponentsLoading = select(RegistryComponentsSelectors.getRegistryComponentsLoading);
 
-  registry = select(RegistryOverviewSelectors.getRegistry);
-
   ngOnInit(): void {
     this.registryId.set(this.route.parent?.parent?.snapshot.params['id']);
 
     if (this.registryId()) {
       this.actions.getRegistryComponents(this.registryId());
-      this.actions.getRegistryById(this.registryId(), true);
     }
   }
 

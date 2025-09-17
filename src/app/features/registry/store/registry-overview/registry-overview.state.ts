@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { SetCurrentProvider } from '@osf/core/store/provider/provider.actions';
+import { SetCurrentProvider } from '@core/store/provider';
 import { CurrentResourceType } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
 
@@ -65,7 +65,8 @@ export class RegistryOverviewState {
           },
           isAnonymous: response.meta?.anonymous ?? false,
         });
-        if (registryOverview?.registrationSchemaLink && registryOverview?.questions && !action.isComponentPage) {
+
+        if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
           ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
         }
       }),
