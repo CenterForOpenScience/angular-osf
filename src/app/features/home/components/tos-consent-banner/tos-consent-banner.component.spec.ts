@@ -70,4 +70,14 @@ describe('TosConsentBannerComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new AcceptTermsOfServiceByUser());
     expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
+
+   it('should show toast banner if acceptedTermsOfService is false and "Continue" is clicked', () => {
+    component.acceptedTermsOfService.set(false);
+    const continueButton = fixture.debugElement.query(By.css('p-button button')).nativeElement;
+    continueButton.disabled = false;
+    continueButton.click();
+    fixture.detectChanges();
+    expect(component.errorMessage).toEqual('toast.tos-consent.error-message');
+  });
+
 });
