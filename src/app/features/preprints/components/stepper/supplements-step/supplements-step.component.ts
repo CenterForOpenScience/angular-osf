@@ -9,7 +9,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
-import { NgClass, TitleCasePipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -43,17 +43,7 @@ import { CustomConfirmationService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-supplements-step',
-  imports: [
-    Button,
-    TitleCasePipe,
-    NgClass,
-    Card,
-    Select,
-    AddProjectFormComponent,
-    ReactiveFormsModule,
-    Skeleton,
-    TranslatePipe,
-  ],
+  imports: [Button, NgClass, Card, Select, AddProjectFormComponent, ReactiveFormsModule, Skeleton, TranslatePipe],
   templateUrl: './supplements-step.component.html',
   styleUrl: './supplements-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
