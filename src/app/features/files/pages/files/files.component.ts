@@ -390,7 +390,10 @@ export class FilesComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    this.router.navigate([file.guid], { relativeTo: this.activeRoute });
+    this.router.navigate([file.guid], {
+      relativeTo: this.activeRoute,
+      queryParamsHandling: 'merge',
+    });
   }
 
   getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
