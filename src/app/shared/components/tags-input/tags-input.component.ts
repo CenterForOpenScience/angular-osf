@@ -46,7 +46,7 @@ export class TagsInputComponent {
   }
 
   onContainerKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === 'Enter') {
       event.preventDefault();
       this.inputElement()?.nativeElement.focus();
     }
@@ -56,7 +56,7 @@ export class TagsInputComponent {
     const target = event.target as HTMLInputElement;
     const value = target.value.trim();
 
-    if ((event.key === 'Enter' || event.key === ',' || event.key === ' ') && value) {
+    if ((event.key === 'Enter' || event.key === ',') && value) {
       event.preventDefault();
       this.addTag(value);
       target.value = '';
