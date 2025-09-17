@@ -1,3 +1,5 @@
+import { ContributorsMapper } from '@osf/shared/mappers';
+
 import { LinkedRegistration, LinkedRegistrationJsonApi } from '../models';
 
 export class LinkedRegistrationsMapper {
@@ -23,8 +25,8 @@ export class LinkedRegistrationsMapper {
       pendingWithdrawal: apiRegistration.attributes.pending_withdrawal,
       pendingRegistrationApproval: apiRegistration.attributes.pending_registration_approval,
       registrationSupplement: apiRegistration.attributes.registration_supplement,
-      subjects: apiRegistration.attributes.subjects,
       currentUserPermissions: apiRegistration.attributes.current_user_permissions,
+      contributors: ContributorsMapper.fromResponse(apiRegistration.embeds.bibliographic_contributors.data) || [],
     };
   }
 }

@@ -19,6 +19,7 @@ export class RegistryComponentsService {
 
   getRegistryComponents(registryId: string, page = 1, pageSize = 10): Observable<RegistryComponentsResponseJsonApi> {
     const params: Record<string, unknown> = {
+      'embed[]': 'bibliographic_contributors',
       page: page,
       'page[size]': pageSize,
     };
