@@ -17,7 +17,7 @@ export const environment = {
   /**
    * Domain URL used for JSON:API v2 services.
    */
-  apiDomainUrl: 'wrong-url',
+  apiDomainUrl: 'https://api.staging4.osf.io',
   /**
    * Base URL for SHARE discovery search (Trove).
    */
@@ -25,7 +25,7 @@ export const environment = {
   /**
    * URL for the OSF Addons API (v1).
    */
-  addonsApiUrl: 'wrong-url',
+  addonsApiUrl: 'https://addons.staging4.osf.io/v1',
   /**
    * API endpoint for funder metadata resolution via Crossref.
    */
