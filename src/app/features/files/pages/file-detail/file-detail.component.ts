@@ -38,7 +38,7 @@ import {
 } from '@osf/features/metadata/store';
 import { LoadingSpinnerComponent, MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
-import { pathJoin } from '@osf/shared/helpers';
+import { getViewOnlyParam, hasViewOnlyParam, pathJoin } from '@osf/shared/helpers';
 import { MetadataTabsModel, OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, MetaTagsService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
@@ -127,6 +127,8 @@ export class FileDetailComponent {
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   resourceContributors = select(FilesSelectors.getContributors);
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
+
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
@@ -221,7 +223,7 @@ export class FileDetailComponent {
       .subscribe(() => {
         const link = this.file()?.links.render;
         if (link) {
-          this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(link);
+          this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.addViewOnlyToUrl(link));
         }
         this.resourceId = this.file()?.target.id || '';
         this.resourceType = this.file()?.target.type || '';
@@ -392,5 +394,15 @@ export class FileDetailComponent {
       this.selectedCedarTemplate.set(null);
       this.actions.getCedarTemplates();
     }
+  }
+
+  private addViewOnlyToUrl(url: string): string {
+    if (!this.hasViewOnly()) return url;
+
+    const viewOnlyParam = getViewOnlyParam();
+    if (!viewOnlyParam) return url;
+
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}view_only=${encodeURIComponent(viewOnlyParam)}`;
   }
 }

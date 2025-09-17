@@ -16,7 +16,7 @@ export interface ResourceModel {
   dateWithdrawn?: Date;
 
   doi: string[];
-  creators: AbsoluteUrlName[];
+  creators: Creator[];
   identifiers: string[];
   provider?: AbsoluteUrlName;
   license?: AbsoluteUrlName;
@@ -46,7 +46,7 @@ export interface ResourceModel {
 
 export interface IsContainedBy extends AbsoluteUrlName {
   funders: AbsoluteUrlName[];
-  creators: AbsoluteUrlName[];
+  creators: Creator[];
   license?: AbsoluteUrlName;
   qualifiedAttribution: QualifiedAttribution[];
 }
@@ -54,6 +54,11 @@ export interface IsContainedBy extends AbsoluteUrlName {
 export interface QualifiedAttribution {
   agentId: string;
   order: number;
+  hadRole: string;
+}
+
+export interface Creator extends AbsoluteUrlName {
+  affiliationAbsoluteUrl: StringOrNull;
 }
 
 export interface AbsoluteUrlName {

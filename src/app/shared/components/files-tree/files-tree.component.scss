@@ -2,6 +2,9 @@
 
 :host {
   min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .files-table {

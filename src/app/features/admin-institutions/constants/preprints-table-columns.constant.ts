@@ -36,9 +36,10 @@ export const preprintsTableColumns: TableColumn[] = [
     header: 'adminInstitutions.projects.license',
   },
   {
-    field: 'contributorName',
+    field: 'creator',
     header: 'adminInstitutions.projects.contributorName',
     isLink: true,
+    isArray: true,
     linkTarget: '_blank',
   },
   {

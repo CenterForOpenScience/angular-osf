@@ -5,6 +5,7 @@ import { inject, Injectable } from '@angular/core';
 import { ResourceType } from '@osf/shared/enums';
 import { JsonApiResponse, PaginatedData, ResponseJsonApi, UserDataJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
+import { StringOrNull } from '@shared/helpers';
 
 import { AddModeratorType } from '../enums';
 import { ModerationMapper } from '../mappers';
@@ -25,11 +26,19 @@ export class ModeratorsService {
     [ResourceType.Preprint, 'providers/preprints'],
   ]);
 
-  getModerators(resourceId: string, resourceType: ResourceType): Observable<ModeratorModel[]> {
+  getModerators(
+    resourceId: string,
+    resourceType: ResourceType,
+    searchValue: StringOrNull
+  ): Observable<ModeratorModel[]> {
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/`;
 
+    const params: Record<string, string> = {};
+    if (searchValue) {
+      params['filter[full_name]'] = searchValue;
+    }
     return this.jsonApiService
-      .get<ModeratorResponseJsonApi>(baseUrl)
+      .get<ModeratorResponseJsonApi>(baseUrl, params)
       .pipe(map((response) => response.data.map((moderator) => ModerationMapper.fromModeratorResponse(moderator))));
   }
 
