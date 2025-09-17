@@ -11,7 +11,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MaintenanceBannerComponent } from './maintenance-banner.component';
 
-describe('MaintenanceBannerComponent', () => {
+describe('Component: Maintenance Banner', () => {
   let fixture: ComponentFixture<MaintenanceBannerComponent>;
   let httpClient: { get: jest.Mock };
   let cookieService: jest.Mocked<CookieService>;
