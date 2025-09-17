@@ -25,5 +25,8 @@ export const EnvironmentTokenMock = {
   useValue: {
     production: false,
     apiDomainUrl: 'http://localhost:8000',
+    googleFilePickerApiKey: 'test-api-key',
+    googleFilePickerAppId: 'test-app-id',
+    googleTagManagerId: 'test-goolge-tag-manager-id',
   },
 };

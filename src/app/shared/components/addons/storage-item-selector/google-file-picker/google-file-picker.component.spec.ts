@@ -5,7 +5,6 @@ import { Observable, of, throwError } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
-import { OSFConfigService } from '@core/services/osf-config.service';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 import { GoogleFilePickerComponent } from './google-file-picker.component';
@@ -23,17 +22,6 @@ describe('Component: Google File Picker', () => {
     loadGapiModules: jest.fn((): Observable<void> => {
       return throwLoadGapiError ? throwError(() => new Error('loadGapiModules failed')) : of(void 0);
     }),
-  };
-
-  const OSFConfigServiceProvider = {
-    provide: OSFConfigService,
-    useValue: {
-      get: (key: string) => {
-        if (key === 'googleFilePickerApiKey') return 'test-api-key';
-        if (key === 'googleFilePickerAppId') return 'test-app-id';
-        return null;
-      },
-    },
   };
 
   let sentrySpy: any;
@@ -123,7 +111,7 @@ describe('Component: Google File Picker', () => {
             provide: Store,
             useValue: storeMock,
           },
-          OSFConfigServiceProvider,
+          // OSFConfigServiceProvider,
         ],
       }).compileComponents();
 
@@ -245,7 +233,6 @@ describe('Component: Google File Picker', () => {
             provide: Store,
             useValue: storeMock,
           },
-          OSFConfigServiceProvider,
         ],
       }).compileComponents();
 
