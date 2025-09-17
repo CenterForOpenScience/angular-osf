@@ -9,6 +9,7 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { switchMap } from 'rxjs';
 
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -97,9 +98,12 @@ export class FileDetailComponent {
   readonly sanitizer = inject(DomSanitizer);
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
+
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly translateService = inject(TranslateService);
+  private readonly clipboard = inject(Clipboard);
+
   readonly dataciteService = inject(DataciteService);
 
   private readonly actions = createDispatchMap({
@@ -267,14 +271,8 @@ export class FileDetailComponent {
   }
 
   copyToClipboard(embedHtml: string): void {
-    navigator.clipboard
-      .writeText(embedHtml)
-      .then(() => {
-        this.toastService.showSuccess('files.detail.toast.copiedToClipboard');
-      })
-      .catch((err) => {
-        this.toastService.showError(err.message);
-      });
+    this.clipboard.copy(embedHtml);
+    this.toastService.showSuccess('files.toast.copiedToClipboard');
   }
 
   deleteEntry(link: string): void {

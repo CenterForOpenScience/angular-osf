@@ -5,8 +5,8 @@
     <p-checkbox
       [binary]="true"
       [ngModel]="wikiEnabled()"
-      (ngModelChange)="wikiChangeEmit.emit(wikiEnabled())"
-      id="wiki"
+      (ngModelChange)="wikiChangeEmit.emit($event)"
+      inputId="wiki"
       name="ongoing"
     ></p-checkbox>
 

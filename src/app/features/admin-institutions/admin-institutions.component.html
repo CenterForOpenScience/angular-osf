@@ -1,4 +1,4 @@
-<section class="flex flex-column xl:mt-6">
+<section class="flex flex-column flex-1 xl:mt-6">
   @if (isInstitutionLoading()) {
     <div class="h-screen flex flex-column align-items-center">
       <osf-loading-spinner />
@@ -28,7 +28,7 @@
       />
     </div>
 
-    <p-tabs [value]="selectedTab" (valueChange)="onTabChange($event)" class="flex-1 px-3 hidden md:px-5 md:inline">
+    <p-tabs [value]="selectedTab" (valueChange)="onTabChange($event)" class="px-3 hidden md:px-5 md:inline">
       <p-tablist>
         @for (item of resourceTabOptions; track $index) {
           <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
@@ -36,7 +36,7 @@
       </p-tablist>
     </p-tabs>
 
-    <section class="bg-white p-3 md:p-4">
+    <section class="flex flex-column flex-1 bg-white p-3 md:p-4">
       <router-outlet></router-outlet>
     </section>
   }

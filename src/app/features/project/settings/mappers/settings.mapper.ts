@@ -19,7 +19,6 @@ export class SettingsMapper {
       id: nodeId,
       attributes: {
         accessRequestsEnabled: result.attributes.access_requests_enabled,
-        anyoneCanComment: result.attributes.anyone_can_comment,
         anyoneCanEditWiki: result.attributes.anyone_can_edit_wiki,
         wikiEnabled: result.attributes.wiki_enabled,
       },

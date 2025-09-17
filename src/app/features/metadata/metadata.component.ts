@@ -287,7 +287,7 @@ export class MetadataComponent implements OnInit {
         .subscribe({
           next: () => {
             this.cedarFormReadonly.set(true);
-            this.toastService.showSuccess('CEDAR record updated successfully');
+            this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
             this.actions.getCedarRecords(this.resourceId, this.resourceType());
           },
         });

@@ -7,6 +7,7 @@ import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
 import { EMPTY, finalize, firstValueFrom, Observable, take } from 'rxjs';
 
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
@@ -70,6 +71,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly dialogService = inject(DialogService);
   readonly translateService = inject(TranslateService);
   readonly dataciteService = inject(DataciteService);
+  readonly clipboard = inject(Clipboard);
 
   files = input.required<OsfFile[]>();
   totalCount = input<number>(0);
@@ -389,14 +391,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   copyToClipboard(embedHtml: string): void {
-    navigator.clipboard
-      .writeText(embedHtml)
-      .then(() => {
-        this.toastService.showSuccess('files.toast.copiedToClipboard');
-      })
-      .catch((err) => {
-        this.toastService.showError(err.message);
-      });
+    this.clipboard.copy(embedHtml);
+    this.toastService.showSuccess('files.toast.copiedToClipboard');
   }
 
   async dropNode(event: TreeNodeDropEvent) {

@@ -1,31 +1,24 @@
-@if (isWeb()) {
-  <div class="layout-desktop">
+<div class="layout" [class.layout-desktop]="isWeb()" [class.layout-tablet]="!isWeb()">
+  @if (isWeb()) {
     <osf-sidenav></osf-sidenav>
+  }
 
-    <div class="content-wrapper" osfScrollTopOnRouteChange>
-      <osf-maintenance-banner></osf-maintenance-banner>
+  <div class="content-wrapper" osfScrollTopOnRouteChange>
+    <osf-maintenance-banner></osf-maintenance-banner>
+
+    @if (isWeb()) {
       <osf-header></osf-header>
-
-      <router-outlet />
-
-      <osf-footer></osf-footer>
-    </div>
-  </div>
-} @else {
-  <div class="layout-tablet">
-    <div class="content-wrapper" osfScrollTopOnRouteChange>
-      <osf-maintenance-banner></osf-maintenance-banner>
+    } @else {
       <osf-topnav></osf-topnav>
-
       @if (isMedium()) {
         <osf-breadcrumb></osf-breadcrumb>
       }
+    }
 
-      <router-outlet />
+    <router-outlet />
 
-      <osf-footer></osf-footer>
-    </div>
+    <osf-footer></osf-footer>
   </div>
-}
+</div>
 
 <p-confirm-dialog id="dialog" styleClass="w-full md:w-6 xl:w-5" [header]="'common.dialogs.confirmation' | translate" />
