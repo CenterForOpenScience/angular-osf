@@ -121,10 +121,11 @@ export class AdminTableComponent {
     }
   }
 
-  onIconClick(rowData: TableCellData, column: TableColumn): void {
+  onIconClick(rowData: TableCellData, column: TableColumn, arrayIndex?: number): void {
     if (column.iconAction) {
       this.iconClicked.emit({
         rowData,
+        arrayIndex,
         column,
         action: column.iconAction,
       });
@@ -133,6 +134,10 @@ export class AdminTableComponent {
 
   isLink(value: string | number | TableCellLink | undefined): value is TableCellLink {
     return value !== null && value !== undefined && typeof value === 'object' && 'text' in value && 'url' in value;
+  }
+
+  isLinkArray(value: unknown): value is TableCellLink[] {
+    return Array.isArray(value) && value.every((v) => v && typeof v === 'object' && 'url' in v);
   }
 
   getCellValue(value: string | number | TableCellLink | undefined): string {
@@ -151,12 +156,5 @@ export class AdminTableComponent {
       return value.url;
     }
     return '';
-  }
-
-  getLinkTarget(value: string | number | TableCellLink | undefined, column: TableColumn): string {
-    if (this.isLink(value)) {
-      return value.target || column.linkTarget || '_self';
-    }
-    return column.linkTarget || '_self';
   }
 }

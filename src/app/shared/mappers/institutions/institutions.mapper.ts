@@ -17,7 +17,7 @@ export class InstitutionsMapper {
       type: data.type,
       name: data.attributes.name,
       description: data.attributes.description,
-      iri: data.attributes.iri,
+      iri: data.links.iri,
       rorIri: data.attributes.ror_iri,
       iris: data.attributes.iris,
       assets: data.attributes.assets,

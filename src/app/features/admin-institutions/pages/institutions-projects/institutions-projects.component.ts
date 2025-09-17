@@ -87,7 +87,9 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
   currentUser = select(UserSelectors.getCurrentUser);
 
   tableData = computed(() =>
-    this.resources().map((resource: ResourceModel): TableCellData => mapProjectResourceToTableCellData(resource))
+    this.resources().map(
+      (resource: ResourceModel): TableCellData => mapProjectResourceToTableCellData(resource, this.institution().iri)
+    )
   );
 
   sortParam = computed(() => {
@@ -149,11 +151,11 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
         filter((value) => !!value),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((data: ContactDialogData) => this.sendEmailToUser(event.rowData, data));
+      .subscribe((data: ContactDialogData) => this.sendEmailToUser(event, data));
   }
 
-  private sendEmailToUser(userRowData: TableCellData, emailData: ContactDialogData): void {
-    const userId = (userRowData['creator'] as TableCellLink).url.split('/').pop() || '';
+  private sendEmailToUser(event: TableIconClickEvent, emailData: ContactDialogData): void {
+    const userId = (event.rowData['creator'] as TableCellLink[])[event.arrayIndex ?? 0].url.split('/').pop() || '';
 
     if (emailData.selectedOption === ContactOption.SendMessage) {
       this.actions
@@ -167,7 +169,7 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.messageSent'));
     } else {
-      const projectId = (userRowData['link'] as TableCellLink).url.split('/').pop() || '';
+      const projectId = (event.rowData['link'] as TableCellLink).url.split('/').pop() || '';
 
       this.actions
         .requestProjectAccess({

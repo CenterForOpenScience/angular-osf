@@ -40,7 +40,8 @@ export class ModeratorsState {
       moderators: { ...state.moderators, isLoading: true, error: null },
     });
 
-    return this.moderatorsService.getModerators(action.resourceId, action.resourceType).pipe(
+    const searchValue = state.moderators.searchValue;
+    return this.moderatorsService.getModerators(action.resourceId, action.resourceType, searchValue).pipe(
       tap((moderators: ModeratorModel[]) => {
         ctx.patchState({
           moderators: {

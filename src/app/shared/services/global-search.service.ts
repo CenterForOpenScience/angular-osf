@@ -55,9 +55,9 @@ export class GlobalSearchService {
     const options: FilterOption[] = [];
     let nextUrl: string | undefined;
 
-    const searchResultItems = response
-      .included!.filter((item): item is SearchResultJsonApi => item.type === 'search-result')
-      .sort((a, b) => Number(a.id.at(-1)) - Number(b.id.at(-1)));
+    const searchResultItems = response.included!.filter(
+      (item): item is SearchResultJsonApi => item.type === 'search-result'
+    );
     const filterOptionItems = response.included!.filter((item): item is FilterOptionItem => item.type === 'index-card');
 
     options.push(...mapFilterOptions(searchResultItems, filterOptionItems));
@@ -73,13 +73,19 @@ export class GlobalSearchService {
   }
 
   private handleResourcesRawResponse(response: IndexCardSearchResponseJsonApi): ResourcesData {
-    const searchResultItems = response
-      .included!.filter((item): item is SearchResultJsonApi => item.type === 'search-result')
-      .sort((a, b) => Number(a.id.at(-1)) - Number(b.id.at(-1)));
+    const searchResultIds = response.data.relationships.searchResultPage.data.map((obj) => obj.id);
 
-    const indexCardItems = response.included!.filter((item) => item.type === 'index-card') as IndexCardDataJsonApi[];
-    const indexCardItemsCorrectOrder = searchResultItems.map((searchResult) => {
-      return indexCardItems.find((indexCard) => indexCard.id === searchResult.relationships.indexCard.data.id)!;
+    const searchResultItems = searchResultIds.map(
+      (searchResultId) =>
+        response.included!.find(
+          (item): item is SearchResultJsonApi => item.type === 'search-result' && searchResultId === item.id
+        )!
+    );
+    const indexCardItems = searchResultItems.map((searchResult) => {
+      return response.included!.find(
+        (item): item is IndexCardDataJsonApi =>
+          item.type === 'index-card' && item.id === searchResult.relationships.indexCard.data.id
+      )!;
     });
     const relatedPropertyPathItems = response.included!.filter(
       (item): item is RelatedPropertyPathItem => item.type === 'related-property-path'
@@ -88,7 +94,7 @@ export class GlobalSearchService {
     const appliedFilters: AppliedFilter[] = response.data?.attributes?.cardSearchFilter || [];
 
     return {
-      resources: indexCardItemsCorrectOrder.map((item) => MapResources(item)),
+      resources: indexCardItems.map((item) => MapResources(item)),
       filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
       count: response.data.attributes.totalResultCount,
       self: response.data.links.self,

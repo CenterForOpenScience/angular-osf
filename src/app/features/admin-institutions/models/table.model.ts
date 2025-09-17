@@ -5,6 +5,7 @@ export interface TableColumn {
   sortField?: string;
   isLink?: boolean;
   linkTarget?: '_blank' | '_self';
+  isArray?: boolean;
   showIcon?: boolean;
   iconClass?: string;
   iconTooltip?: string;
@@ -15,13 +16,13 @@ export interface TableColumn {
 export interface TableCellLink {
   text: string;
   url: string;
-  target?: '_blank' | '_self';
 }
 
-export type TableCellData = Record<string, string | number | TableCellLink | undefined | Date>;
+export type TableCellData = Record<string, string | number | TableCellLink | undefined | Date | TableCellLink[]>;
 
 export interface TableIconClickEvent {
   rowData: TableCellData;
+  arrayIndex?: number;
   column: TableColumn;
   action: string;
 }

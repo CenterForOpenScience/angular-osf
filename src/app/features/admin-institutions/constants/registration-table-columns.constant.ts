@@ -42,9 +42,10 @@ export const registrationTableColumns: TableColumn[] = [
     sortField: 'storageByteCount',
   },
   {
-    field: 'contributorName',
+    field: 'creator',
     header: 'adminInstitutions.projects.contributorName',
     isLink: true,
+    isArray: true,
     linkTarget: '_blank',
   },
   {

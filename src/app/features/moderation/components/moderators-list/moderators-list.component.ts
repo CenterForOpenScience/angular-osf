@@ -5,7 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, skip } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -92,12 +92,6 @@ export class ModeratorsListComponent implements OnInit {
   constructor() {
     effect(() => {
       this.moderators.set(JSON.parse(JSON.stringify(this.initialModerators())));
-
-      if (this.isModeratorsLoading()) {
-        this.searchControl.disable();
-      } else {
-        this.searchControl.enable();
-      }
     });
   }
 
@@ -199,7 +193,11 @@ export class ModeratorsListComponent implements OnInit {
 
   private setSearchSubscription() {
     this.searchControl.valueChanges
-      .pipe(skip(1), debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => this.actions.updateSearchValue(res ?? null));
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        if (!res) res = null;
+        this.actions.updateSearchValue(res);
+        this.actions.loadModerators(this.providerId(), this.resourceType());
+      });
   }
 }

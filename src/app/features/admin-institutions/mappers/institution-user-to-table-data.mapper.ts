@@ -10,13 +10,11 @@ export function mapUserToTableCellData(user: InstitutionUser): TableCellData {
     userLink: {
       text: user.userId,
       url: `${environment.webUrl}/${user.userId}`,
-      target: '_blank',
     },
     orcidId: user.orcidId
       ? {
           text: user.orcidId,
           url: `https://orcid.org/${user.orcidId}`,
-          target: '_blank',
         }
       : '-',
     publicProjects: user.publicProjects,
