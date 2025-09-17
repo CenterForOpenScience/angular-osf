@@ -1,8 +1,8 @@
 import { HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { ENVIRONMENT } from '@core/factory/environment.factory';
 import { ConfigModel } from '@core/models/config.model';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { EnvironmentModel } from '@osf/shared/models/environment.model';
 
 import { OSFConfigService } from './osf-config.service';

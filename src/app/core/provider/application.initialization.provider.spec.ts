@@ -4,8 +4,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { OSFConfigService } from '@core/services/osf-config.service';
 
-import { initializeApplication } from './application.initialization.factory';
-import { ENVIRONMENT } from './environment.factory';
+import { initializeApplication } from './application.initialization.provider';
+import { ENVIRONMENT } from './environment.provider';
 
 import * as Sentry from '@sentry/angular';
 import { OSFTestingModule } from '@testing/osf.testing.module';
@@ -16,7 +16,7 @@ jest.mock('@sentry/angular', () => ({
   createErrorHandler: jest.fn(() => 'mockErrorHandler'),
 }));
 
-describe('factory: sentry', () => {
+describe('Provider: sentry', () => {
   let osfConfigServiceMock: OSFConfigService;
   let googleTagManagerConfigurationMock: GoogleTagManagerConfiguration;
   let httpMock: HttpTestingController;

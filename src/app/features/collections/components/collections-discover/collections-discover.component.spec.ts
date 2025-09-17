@@ -12,7 +12,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { CollectionsMainContentComponent } from '@osf/features/collections/components';
 import { CollectionsSearchResultCardComponent } from '@osf/features/collections/components/collections-search-result-card/collections-search-result-card.component';
 import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';

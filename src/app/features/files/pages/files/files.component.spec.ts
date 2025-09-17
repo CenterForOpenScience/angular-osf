@@ -13,7 +13,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import {
   FilesTreeComponent,
   FormSelectComponent,

@@ -6,8 +6,8 @@ import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 
-import { ENVIRONMENT } from '@core/factory/environment.factory';
-import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { StorageItemModel } from '@osf/shared/models';
 import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
 import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';

@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentModel } from '@osf/shared/models/environment.model';
 
-import { ENVIRONMENT } from './environment.factory';
+import { ENVIRONMENT } from './environment.provider';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('Factory: Environment', () => {
+describe('Provider: Environment', () => {
   let environment: EnvironmentModel;
 
   beforeEach(async () => {

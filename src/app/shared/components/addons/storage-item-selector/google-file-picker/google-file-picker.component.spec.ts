@@ -4,7 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 import { GoogleFilePickerComponent } from './google-file-picker.component';
@@ -111,7 +111,6 @@ describe('Component: Google File Picker', () => {
             provide: Store,
             useValue: storeMock,
           },
-          // OSFConfigServiceProvider,
         ],
       }).compileComponents();
 

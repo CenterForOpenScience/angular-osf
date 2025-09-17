@@ -2,7 +2,7 @@ import { Store } from '@ngxs/store';
 
 import { effect, inject, Injectable } from '@angular/core';
 
-import { WINDOW } from '@core/factory/window.factory';
+import { WINDOW } from '@core/provider/window.provider';
 import { UserSelectors } from '@osf/core/store/user';
 
 /**

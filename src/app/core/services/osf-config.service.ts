@@ -3,8 +3,8 @@ import { catchError, lastValueFrom, of, shareReplay } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { ENVIRONMENT } from '@core/factory/environment.factory';
 import { ConfigModel } from '@core/models/config.model';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 /**
  * Service for loading and accessing configuration values
@@ -24,6 +24,9 @@ export class OSFConfigService {
    */
   private http: HttpClient = inject(HttpClient);
 
+  /**
+   * Injected instance of the application environment configuration.
+   * */
   private environment = inject(ENVIRONMENT);
 
   /**

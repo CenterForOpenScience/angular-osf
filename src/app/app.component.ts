@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/factory/environment.factory';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';

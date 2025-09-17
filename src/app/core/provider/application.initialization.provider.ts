@@ -2,7 +2,7 @@ import { inject, provideAppInitializer } from '@angular/core';
 
 import { OSFConfigService } from '@core/services/osf-config.service';
 
-import { ENVIRONMENT } from './environment.factory';
+import { ENVIRONMENT } from './environment.provider';
 
 import * as Sentry from '@sentry/angular';
 import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';

@@ -8,7 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/factory/environment.factory';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser, UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
 
