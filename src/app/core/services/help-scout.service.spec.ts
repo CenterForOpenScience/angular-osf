@@ -3,7 +3,7 @@ import { Store } from '@ngxs/store';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { WINDOW } from '@core/factory/window.factory';
+import { WINDOW } from '@core/provider/window.provider';
 import { UserSelectors } from '@core/store/user/user.selectors';
 
 import { HelpScoutService } from './help-scout.service';

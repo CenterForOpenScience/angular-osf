@@ -22,6 +22,7 @@ import {
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { HelpScoutService } from '@core/services/help-scout.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
 import {
@@ -80,6 +81,7 @@ import { environment } from 'src/environments/environment';
 export class PreprintDetailsComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
+  private readonly helpScoutService = inject(HelpScoutService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
@@ -147,6 +149,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     return actions[0];
   });
+
+  constructor() {
+    this.helpScoutService.setResourceType('preprint');
+  }
 
   private currentUserIsAdmin = computed(() => {
     return this.preprint()?.currentUserPermissions.includes(UserPermissions.Admin) || false;
@@ -292,6 +298,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.actions.resetState();
     this.actions.clearCurrentProvider();
+    this.helpScoutService.unsetResourceType();
   }
 
   fetchPreprintVersion(preprintVersionId: string) {

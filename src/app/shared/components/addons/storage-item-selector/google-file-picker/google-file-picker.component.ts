@@ -6,8 +6,8 @@ import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 
-import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
-import { OSFConfigService } from '@core/services/osf-config.service';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { StorageItemModel } from '@osf/shared/models';
 import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
 import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';
@@ -26,7 +26,7 @@ import { GoogleFilePickerDownloadService } from './service/google-file-picker.do
 })
 export class GoogleFilePickerComponent implements OnInit {
   private readonly Sentry = inject(SENTRY_TOKEN);
-  private configService = inject(OSFConfigService);
+  private readonly environmnet = inject(ENVIRONMENT);
   readonly #translateService = inject(TranslateService);
   readonly #googlePicker = inject(GoogleFilePickerDownloadService);
 
@@ -39,8 +39,8 @@ export class GoogleFilePickerComponent implements OnInit {
   public accessToken = signal<string | null>(null);
   public visible = signal(false);
   public isGFPDisabled = signal(true);
-  private readonly apiKey = this.configService.get('googleFilePickerApiKey');
-  private readonly appId = this.configService.get('googleFilePickerAppId');
+  private readonly apiKey = this.environmnet.googleFilePickerApiKey;
+  private readonly appId = this.environmnet.googleFilePickerAppId;
 
   private readonly store = inject(Store);
   private parentId = '';
