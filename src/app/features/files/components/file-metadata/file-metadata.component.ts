@@ -12,6 +12,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { languageCodes } from '@osf/shared/constants';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { LanguageCodeModel } from '@osf/shared/models';
@@ -20,8 +21,6 @@ import { FileMetadataFields } from '../../constants';
 import { PatchFileMetadata } from '../../models';
 import { FilesSelectors, SetFileMetadata } from '../../store';
 import { EditFileMetadataDialogComponent } from '../edit-file-metadata-dialog/edit-file-metadata-dialog.component';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-file-metadata',
@@ -37,6 +36,7 @@ export class FileMetadataComponent {
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
+  private readonly environment = inject(ENVIRONMENT);
 
   fileMetadata = select(FilesSelectors.getFileCustomMetadata);
   isLoading = select(FilesSelectors.isFileMetadataLoading);
@@ -58,7 +58,7 @@ export class FileMetadataComponent {
 
   downloadFileMetadata(): void {
     if (this.fileGuid()) {
-      window.open(`${environment.webUrl}/${this.fileGuid()}/metadata/?format=datacite-json`)?.focus();
+      window.open(`${this.environment.webUrl}/${this.fileGuid()}/metadata/?format=datacite-json`)?.focus();
     }
   }
 

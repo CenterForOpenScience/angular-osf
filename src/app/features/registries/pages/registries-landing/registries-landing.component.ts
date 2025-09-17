@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentProvider } from '@core/store/provider';
 import {
   LoadingSpinnerComponent,
@@ -21,8 +22,6 @@ import { GetRegistryProviderBrand, RegistrationProviderSelectors } from '@osf/sh
 
 import { RegistryServicesComponent } from '../../components';
 import { GetRegistries, RegistriesSelectors } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-registries-landing',
@@ -42,6 +41,7 @@ import { environment } from 'src/environments/environment';
 })
 export class RegistriesLandingComponent implements OnInit, OnDestroy {
   private router = inject(Router);
+  private readonly environment = inject(ENVIRONMENT);
 
   private actions = createDispatchMap({
     getRegistries: GetRegistries,
@@ -55,7 +55,7 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
   isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
 
   searchControl = new FormControl<string>('');
-  defaultProvider = environment.defaultProvider;
+  defaultProvider = this.environment.defaultProvider;
 
   ngOnInit(): void {
     this.actions.getRegistries();
@@ -77,6 +77,6 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
   }
 
   goToCreateRegistration(): void {
-    this.router.navigate([`/registries/${environment.defaultProvider}/new`]);
+    this.router.navigate([`/registries/${this.defaultProvider}/new`]);
   }
 }

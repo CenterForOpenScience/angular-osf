@@ -4,14 +4,15 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { Maintenance, MaintenanceSeverity } from '../models/maintenance.model';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { environment } from 'src/environments/environment';
+import { Maintenance, MaintenanceSeverity } from '../models/maintenance.model';
 
 @Injectable({ providedIn: 'root' })
 export class MaintenanceService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   fetchMaintenanceStatus(): Observable<Maintenance | null> {
     return this.http.get<{ maintenance?: Maintenance }>(`${this.apiUrl}/status/`).pipe(

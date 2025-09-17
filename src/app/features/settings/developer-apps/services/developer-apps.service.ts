@@ -2,20 +2,20 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { DeveloperAppMapper } from '../mappers';
 import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppGetResponseJsonApi } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class DeveloperApplicationsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiDomainUrl}/v2/applications/`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly baseUrl = `${this.environment.apiDomainUrl}/v2/applications/`;
 
   getApplications(): Observable<DeveloperApp[]> {
     return this.jsonApiService

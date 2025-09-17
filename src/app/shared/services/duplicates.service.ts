@@ -3,19 +3,21 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { DuplicatesMapper } from '@shared/mappers';
-import { ResponseJsonApi } from '@shared/models';
-import { JsonApiService } from '@shared/services/json-api.service';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { DuplicateJsonApi, DuplicatesWithTotal } from 'src/app/shared/models/duplicates';
-import { environment } from 'src/environments/environment';
+import { DuplicatesMapper } from '../mappers';
+import { ResponseJsonApi } from '../models';
+import { DuplicateJsonApi, DuplicatesWithTotal } from '../models/duplicates';
+
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DuplicatesService {
   private jsonApiService = inject(JsonApiService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   fetchAllDuplicates(
     resourceId: string,

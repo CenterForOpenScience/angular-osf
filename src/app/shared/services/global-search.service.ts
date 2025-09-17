@@ -2,7 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/shared/services';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MapResources } from '@shared/mappers/search';
 import {
   FilterOption,
@@ -16,17 +16,19 @@ import {
 
 import { AppliedFilter, CombinedFilterMapper, mapFilterOptions, RelatedPropertyPathItem } from '../mappers';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalSearchService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly shareTroveUrl = this.environment.shareTroveUrl;
 
   getResources(params: Record<string, string>): Observable<ResourcesData> {
     return this.jsonApiService
-      .get<IndexCardSearchResponseJsonApi>(`${environment.shareTroveUrl}/index-card-search`, params)
+      .get<IndexCardSearchResponseJsonApi>(`${this.shareTroveUrl}/index-card-search`, params)
       .pipe(map((response) => this.handleResourcesRawResponse(response)));
   }
 
@@ -38,7 +40,7 @@ export class GlobalSearchService {
 
   getFilterOptions(params: Record<string, string>): Observable<{ options: FilterOption[]; nextUrl?: string }> {
     return this.jsonApiService
-      .get<FilterOptionsResponseJsonApi>(`${environment.shareTroveUrl}/index-value-search`, params)
+      .get<FilterOptionsResponseJsonApi>(`${this.shareTroveUrl}/index-value-search`, params)
       .pipe(map((response) => this.handleFilterOptionsRawResponse(response)));
   }
 

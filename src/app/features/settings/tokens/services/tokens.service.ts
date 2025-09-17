@@ -3,20 +3,20 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { ScopeMapper, TokenMapper } from '../mappers';
 import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class TokensService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getScopes(): Observable<ScopeModel[]> {
     return this.jsonApiService

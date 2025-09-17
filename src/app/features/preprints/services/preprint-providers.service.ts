@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PreprintProvidersMapper } from '@osf/features/preprints/mappers';
 import {
   PreprintProviderDetails,
@@ -11,14 +12,13 @@ import {
 import { JsonApiResponse, SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class PreprintProvidersService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiDomainUrl}/v2/providers/preprints/`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly baseUrl = `${this.environment.apiDomainUrl}/v2/providers/preprints/`;
 
   getPreprintProviderById(id: string): Observable<PreprintProviderDetails> {
     return this.jsonApiService

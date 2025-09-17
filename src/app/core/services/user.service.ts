@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { UserMapper } from '@osf/shared/mappers';
 import {
@@ -18,14 +19,13 @@ import {
 } from '@osf/shared/models';
 import { JsonApiService } from '@shared/services';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getUserById(userId: string): Observable<User> {
     return this.jsonApiService

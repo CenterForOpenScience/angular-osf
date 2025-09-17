@@ -21,6 +21,7 @@ import {
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
 import { SubHeaderComponent } from '@shared/components';
@@ -35,8 +36,6 @@ import {
   GetLinkAddons,
   UpdateConfiguredAddon,
 } from '@shared/stores/addons';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-configure-addon',
@@ -67,12 +66,14 @@ export class ConfigureAddonComponent implements OnInit {
   private addonFormService = inject(AddonFormService);
   private operationInvocationService = inject(AddonOperationInvocationService);
   private store = inject(Store);
+  private readonly environment = inject(ENVIRONMENT);
+
   accountNameControl = new FormControl('');
   storageAddon = signal<AddonModel | null>(null);
   addon = signal<ConfiguredAddonModel | null>(null);
-  readonly isGoogleDrive = computed(() => {
-    return this.storageAddon()?.wbKey === 'googledrive';
-  });
+
+  readonly isGoogleDrive = computed(() => this.storageAddon()?.wbKey === 'googledrive');
+
   isEditMode = signal<boolean>(false);
   selectedStorageItemId = signal('');
   selectedStorageItemUrl = signal('');
@@ -82,9 +83,9 @@ export class ConfigureAddonComponent implements OnInit {
   linkAddons = select(AddonsSelectors.getLinkAddons);
   selectedStorageItem = select(AddonsSelectors.getSelectedStorageItem);
 
-  addonServiceName = computed(() => {
-    return AddonServiceNames[this.addon()?.externalServiceName as keyof typeof AddonServiceNames];
-  });
+  addonServiceName = computed(
+    () => AddonServiceNames[this.addon()?.externalServiceName as keyof typeof AddonServiceNames]
+  );
 
   readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
@@ -92,7 +93,7 @@ export class ConfigureAddonComponent implements OnInit {
   });
   readonly resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
-    return `${environment.webUrl}/${id}`;
+    return `${this.environment.webUrl}/${id}`;
   });
   readonly addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());

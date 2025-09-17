@@ -3,18 +3,18 @@ import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { RegionsMapper } from '@shared/mappers/regions';
-import { IdName } from '@shared/models';
-import { RegionsResponseJsonApi } from '@shared/models/regions';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { environment } from 'src/environments/environment';
+import { RegionsMapper } from '../mappers/regions';
+import { IdName, RegionsResponseJsonApi } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegionsService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getAllRegions(): Observable<IdName[]> {
     return this.http

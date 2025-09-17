@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 @Component({
   selector: 'osf-privacy-policy',
@@ -10,5 +10,7 @@ import { environment } from 'src/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrivacyPolicyComponent {
-  readonly supportEmail = environment.supportEmail;
+  private readonly environment = inject(ENVIRONMENT);
+
+  readonly supportEmail = this.environment.supportEmail;
 }

@@ -7,14 +7,13 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, in
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { GetRegistryById, RegistryOverviewSelectors } from './store/registry-overview';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-registry',
@@ -32,6 +31,7 @@ export class RegistryComponent implements OnDestroy {
   private readonly dataciteService = inject(DataciteService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
+  private readonly environment = inject(ENVIRONMENT);
 
   private readonly actions = createDispatchMap({
     getRegistryById: GetRegistryById,
@@ -72,7 +72,7 @@ export class RegistryComponent implements OnDestroy {
         description: this.registry()?.description,
         publishedDate: this.datePipe.transform(this.registry()?.dateRegistered, 'yyyy-MM-dd'),
         modifiedDate: this.datePipe.transform(this.registry()?.dateModified, 'yyyy-MM-dd'),
-        url: pathJoin(environment.webUrl, this.registry()?.id ?? ''),
+        url: pathJoin(this.environment.webUrl, this.registry()?.id ?? ''),
         identifier: this.registry()?.id,
         doi: this.registry()?.doi,
         keywords: this.registry()?.tags,

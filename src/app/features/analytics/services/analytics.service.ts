@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '@osf/shared/enums';
 import { JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
@@ -9,14 +10,13 @@ import { JsonApiService } from '@osf/shared/services';
 import { AnalyticsMetricsMapper, RelatedCountsMapper } from '../mappers';
 import { AnalyticsMetricsGetResponse, AnalyticsMetricsModel, RelatedCountsGetResponse } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class AnalyticsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiDomainUrl = environment.apiDomainUrl;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiDomainUrl = this.environment.apiDomainUrl;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],

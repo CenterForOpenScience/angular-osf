@@ -1,24 +1,13 @@
-import { environment } from 'src/environments/environment';
 import structuredClone from 'structured-clone';
 
 export const ACTIVITY_LOGS_EMBEDS_QS =
   'embed%5B%5D=original_node&embed%5B%5D=user&embed%5B%5D=linked_node&embed%5B%5D=linked_registration&embed%5B%5D=template_node';
 
-export function buildRegistrationLogsUrl(
-  registrationId: string,
-  page: number,
-  pageSize: number,
-  apiBase = environment.apiDomainUrl
-) {
+export function buildRegistrationLogsUrl(registrationId: string, page: number, pageSize: number, apiBase: string) {
   return `${apiBase}/v2/registrations/${registrationId}/logs/?${ACTIVITY_LOGS_EMBEDS_QS}&page=${page}&page%5Bsize%5D=${pageSize}`;
 }
 
-export function buildNodeLogsUrl(
-  projectId: string,
-  page: number,
-  pageSize: number,
-  apiBase = environment.apiDomainUrl
-) {
+export function buildNodeLogsUrl(projectId: string, page: number, pageSize: number, apiBase: string) {
   return `${apiBase}/v2/nodes/${projectId}/logs/?${ACTIVITY_LOGS_EMBEDS_QS}&page=${page}&page%5Bsize%5D=${pageSize}`;
 }
 

@@ -4,6 +4,7 @@ import { catchError, EMPTY, forkJoin, Observable, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { getResourceTypeStringFromEnum } from '@shared/helpers';
 import { ResourcesData } from '@shared/models';
 import { GlobalSearchService } from '@shared/services';
@@ -25,8 +26,6 @@ import {
 } from './global-search.actions';
 import { GLOBAL_SEARCH_STATE_DEFAULTS, GlobalSearchStateModel } from './global-search.model';
 
-import { environment } from 'src/environments/environment';
-
 @State<GlobalSearchStateModel>({
   name: 'globalSearch',
   defaults: GLOBAL_SEARCH_STATE_DEFAULTS,
@@ -34,6 +33,8 @@ import { environment } from 'src/environments/environment';
 @Injectable()
 export class GlobalSearchState {
   private searchService = inject(GlobalSearchService);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly webUrl = this.environment.webUrl;
 
   @Action(FetchResources)
   fetchResources(ctx: StateContext<GlobalSearchStateModel>): Observable<ResourcesData> {
@@ -310,7 +311,7 @@ export class GlobalSearchState {
     });
 
     filtersParams['cardSearchFilter[resourceType]'] = getResourceTypeStringFromEnum(state.resourceType);
-    filtersParams['cardSearchFilter[accessService]'] = `${environment.webUrl}/`;
+    filtersParams['cardSearchFilter[accessService]'] = `${this.webUrl}/`;
     filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
     filtersParams['page[size]'] = '10';
 

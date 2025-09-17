@@ -24,6 +24,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
@@ -60,8 +61,6 @@ import {
   GetFileResourceMetadata,
   GetFileRevisions,
 } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-file-detail',
@@ -100,7 +99,10 @@ export class FileDetailComponent {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly translateService = inject(TranslateService);
+  private readonly environment = inject(ENVIRONMENT);
   readonly dataciteService = inject(DataciteService);
+
+  private readonly webUrl = this.environment.webUrl;
 
   private readonly actions = createDispatchMap({
     getFile: GetFile,
@@ -199,7 +201,7 @@ export class FileDetailComponent {
       type: this.fileCustomMetadata()?.resourceTypeGeneral,
       description:
         this.fileCustomMetadata()?.description ?? this.translateService.instant('files.metaTagDescriptionPlaceholder'),
-      url: pathJoin(environment.webUrl, this.fileGuid),
+      url: pathJoin(this.webUrl, this.fileGuid),
       publishedDate: this.datePipe.transform(file.dateCreated, 'yyyy-MM-dd'),
       modifiedDate: this.datePipe.transform(file.dateModified, 'yyyy-MM-dd'),
       language: this.fileCustomMetadata()?.language,

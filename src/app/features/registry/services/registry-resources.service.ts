@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MapAddResourceRequest, MapRegistryResource, toAddResourceRequestBody } from '@osf/features/registry/mappers';
 import { GetRegistryResourcesJsonApi, RegistryResource } from '@osf/features/registry/models';
 import { AddResource } from '@osf/features/registry/models/resources/add-resource.model';
@@ -12,14 +13,13 @@ import {
 import { ConfirmAddResource } from '@osf/features/registry/models/resources/confirm-add-resource.model';
 import { JsonApiService } from '@shared/services';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class RegistryResourcesService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getResources(registryId: string): Observable<RegistryResource[]> {
     const params = {

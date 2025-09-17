@@ -13,6 +13,7 @@ import { Component, computed, DestroyRef, inject, signal, viewChild } from '@ang
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { AddonConfigMap } from '@osf/features/project/addons/utils';
 import { SubHeaderComponent } from '@osf/shared/components';
@@ -44,8 +45,6 @@ import {
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
 } from '@shared/stores/addons';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-connect-configured-addon',
@@ -81,13 +80,15 @@ export class ConnectConfiguredAddonComponent {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private readonly environment = inject(ENVIRONMENT);
+
   private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
-  readonly isGoogleDrive = computed(() => {
-    return this.selectedAccount()?.externalServiceName === 'googledrive';
-  });
+
+  readonly isGoogleDrive = computed(() => this.selectedAccount()?.externalServiceName === 'googledrive');
   readonly AddonStepperValue = ProjectAddonsStepperValue;
   readonly AddonType = AddonType;
   readonly stepper = viewChild(Stepper);
+
   accountNameControl = new FormControl('');
   terms = signal<AddonTerm[]>([]);
   addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
@@ -130,24 +131,20 @@ export class ConnectConfiguredAddonComponent {
     createAddonOperationInvocation: CreateAddonOperationInvocation,
   });
 
-  readonly userReferenceId = computed(() => {
-    return this.addonsUserReference()[0]?.id;
-  });
+  readonly userReferenceId = computed(() => this.addonsUserReference()[0]?.id);
 
-  loginOrChooseAccountText = computed(() => {
-    return this.translateService.instant('settings.addons.connectAddon.loginToOrSelectAccount', {
+  loginOrChooseAccountText = computed(() =>
+    this.translateService.instant('settings.addons.connectAddon.loginToOrSelectAccount', {
       addonName: this.addon()?.displayName,
-    });
-  });
+    })
+  );
 
   resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
-    return `${environment.webUrl}/${id}`;
+    return `${this.environment.webUrl}/${id}`;
   });
 
-  addonTypeString = computed(() => {
-    return getAddonTypeString(this.addon());
-  });
+  addonTypeString = computed(() => getAddonTypeString(this.addon()));
 
   readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
