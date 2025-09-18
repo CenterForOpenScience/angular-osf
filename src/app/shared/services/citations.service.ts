@@ -3,6 +3,8 @@ import { map, Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+
 import { ResourceType } from '../enums';
 import { CitationsMapper } from '../mappers';
 import {
@@ -18,14 +20,13 @@ import {
 
 import { JsonApiService } from './json-api.service';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class CitationsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([[ResourceType.Preprint, 'preprints']]);
 

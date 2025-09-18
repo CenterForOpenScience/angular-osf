@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { Primitive, StringOrNull } from '@osf/shared/helpers';
 import { ApiData, CreateProjectPayloadJsoApi, IdName, JsonApiResponse, NodeData } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
@@ -9,14 +10,13 @@ import { JsonApiService } from '@osf/shared/services';
 import { PreprintsMapper } from '../mappers';
 import { Preprint, PreprintAttributesJsonApi, PreprintLinksJsonApi, PreprintRelationshipsJsonApi } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class PreprintsProjectsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getAvailableProjects(searchTerm: StringOrNull): Observable<IdName[]> {
     const params: Record<string, Primitive> = {};

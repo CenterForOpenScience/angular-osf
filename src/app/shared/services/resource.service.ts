@@ -2,6 +2,7 @@ import { finalize, map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { BaseNodeMapper } from '@osf/shared/mappers';
 import {
   BaseNodeDataJsonApi,
@@ -18,15 +19,14 @@ import { CurrentResourceType, ResourceType } from '../enums';
 import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class ResourceGuidService {
   private jsonApiService = inject(JsonApiService);
   private loaderService = inject(LoaderService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],

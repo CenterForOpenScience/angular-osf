@@ -29,6 +29,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CreateFolder,
   DeleteEntry,
@@ -64,8 +65,6 @@ import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
 import { FileProvider } from '../../constants';
 import { FilesSelectors } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-files',
@@ -103,6 +102,10 @@ export class FilesComponent {
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly dataciteService = inject(DataciteService);
+  private readonly environment = inject(ENVIRONMENT);
+
+  private readonly webUrl = this.environment.webUrl;
+  private readonly apiDomainUrl = this.environment.apiDomainUrl;
 
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
@@ -212,8 +215,8 @@ export class FilesComponent {
       const resourceId = this.resourceId();
 
       const resourcePath = this.urlMap.get(this.resourceType()!);
-      const folderLink = `${environment.apiDomainUrl}/v2/${resourcePath}/${resourceId}/files/`;
-      const iriLink = `${environment.webUrl}/${resourceId}`;
+      const folderLink = `${this.apiDomainUrl}/v2/${resourcePath}/${resourceId}/files/`;
+      const iriLink = `${this.webUrl}/${resourceId}`;
 
       this.actions.getResourceDetails(resourceId, this.resourceType()!);
       this.actions.getRootFolders(folderLink);

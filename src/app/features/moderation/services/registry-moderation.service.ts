@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PaginatedData } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
@@ -9,14 +10,13 @@ import { RegistrySort, SubmissionReviewStatus } from '../enums';
 import { RegistryModerationMapper } from '../mappers';
 import { RegistryModeration, RegistryResponseJsonApi, ReviewAction, ReviewActionsResponseJsonApi } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class RegistryModerationService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getRegistrySubmissions(
     provider: string,

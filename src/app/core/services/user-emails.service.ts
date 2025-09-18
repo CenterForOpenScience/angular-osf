@@ -2,18 +2,18 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MapEmail, MapEmails } from '@osf/shared/mappers';
 import { AccountEmailModel, EmailResponseJsonApi, EmailsDataJsonApi, EmailsResponseJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserEmailsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiDomainUrl}/v2/users`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly baseUrl = `${this.environment.apiDomainUrl}/v2/users`;
 
   getEmails(): Observable<AccountEmailModel[]> {
     const params: Record<string, string> = {

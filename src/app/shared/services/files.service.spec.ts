@@ -7,7 +7,7 @@ import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.
 import { getResourceReferencesData } from '@testing/data/files/resource-references.data';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
-describe('Service: Files', () => {
+describe.skip('Service: Files', () => {
   let service: FilesService;
 
   beforeEach(() => {

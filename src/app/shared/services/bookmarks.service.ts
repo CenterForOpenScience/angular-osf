@@ -2,19 +2,20 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { SparseCollectionsResponseJsonApi } from '@shared/models';
-import { JsonApiService } from '@shared/services';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { ResourceType } from '../enums';
+import { SparseCollectionsResponseJsonApi } from '../models';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BookmarksService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'linked_nodes'],

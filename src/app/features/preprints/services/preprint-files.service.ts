@@ -2,6 +2,7 @@ import { map, Observable, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
 import {
   Preprint,
@@ -13,15 +14,14 @@ import {
 import { ApiData, GetFileResponse, GetFilesResponse, OsfFile } from '@osf/shared/models';
 import { FilesService, JsonApiService } from '@shared/services';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class PreprintFilesService {
   private filesService = inject(FilesService);
   private jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   updateFileRelationship(preprintId: string, fileId: string): Observable<Preprint> {
     return this.jsonApiService

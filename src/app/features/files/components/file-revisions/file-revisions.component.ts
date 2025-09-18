@@ -13,13 +13,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { CopyButtonComponent } from '@osf/shared/components';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { FilesSelectors } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-file-revisions',
@@ -42,6 +41,8 @@ import { environment } from 'src/environments/environment';
 export class FileRevisionsComponent {
   private readonly dataciteService = inject(DataciteService);
   private readonly route = inject(ActivatedRoute);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly webUrl = this.environment.webUrl;
 
   readonly fileRevisions = select(FilesSelectors.getFileRevisions);
   readonly isLoading = select(FilesSelectors.isFileRevisionsLoading);
@@ -51,7 +52,7 @@ export class FileRevisionsComponent {
   downloadRevision(version: string): void {
     this.dataciteService.logIdentifiableDownload(this.resourceMetadata).subscribe();
     if (this.fileGuid()) {
-      window.open(`${environment.webUrl}/download/${this.fileGuid()}/?revision=${version}`)?.focus();
+      window.open(`${this.webUrl}/download/${this.fileGuid()}/?revision=${version}`)?.focus();
     }
   }
 }

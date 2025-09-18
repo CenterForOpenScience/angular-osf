@@ -4,11 +4,13 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CollectionSubmissionReviewAction,
   CollectionSubmissionReviewActionJsonApi,
 } from '@osf/features/moderation/models';
-import { CollectionsMapper } from '@shared/mappers/collections';
+
+import { CollectionsMapper, ReviewActionsMapper } from '../mappers';
 import {
   CollectionContributor,
   CollectionDetails,
@@ -27,21 +29,19 @@ import {
   JsonApiResponse,
   PaginatedData,
   ResponseJsonApi,
-} from '@shared/models';
-import { JsonApiService } from '@shared/services';
-import { SetTotalSubmissions } from '@shared/stores/collections';
-
-import { ReviewActionsMapper } from '../mappers';
+} from '../models';
 import { ReviewActionPayload, ReviewActionPayloadJsonApi } from '../models/review-action';
+import { SetTotalSubmissions } from '../stores/collections';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionsService {
-  private jsonApiService = inject(JsonApiService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
   private actions = createDispatchMap({ setTotalSubmissions: SetTotalSubmissions });
 
   getCollectionProvider(collectionName: string): Observable<CollectionProvider> {

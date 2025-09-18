@@ -1,14 +1,17 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { SOCIAL_SHARE_URLS } from '../constants';
 import { ShareableContent, SocialShareLinks } from '../models';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SocialShareService {
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly webUrl = this.environment.webUrl;
+
   generateEmailLink(content: ShareableContent): string {
     const subject = encodeURIComponent(content.title);
     const body = encodeURIComponent(content.url);
@@ -48,18 +51,18 @@ export class SocialShareService {
   }
 
   createPreprintUrl(preprintId: string, providerId: string): string {
-    return `${environment.webUrl}/preprints/${providerId}/${preprintId}`;
+    return `${this.webUrl}/preprints/${providerId}/${preprintId}`;
   }
 
   createProjectUrl(projectId: string): string {
-    return `${environment.webUrl}/${projectId}`;
+    return `${this.webUrl}/${projectId}`;
   }
 
   createRegistrationUrl(registrationId: string, providerId = 'osf'): string {
-    return `${environment.webUrl}/registries/${providerId}/${registrationId}`;
+    return `${this.webUrl}/registries/${providerId}/${registrationId}`;
   }
 
   createDownloadUrl(resourceId: string): string {
-    return `${environment.webUrl}/download/${resourceId}`;
+    return `${this.webUrl}/download/${resourceId}`;
   }
 }

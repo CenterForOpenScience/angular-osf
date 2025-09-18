@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PageSchemaMapper, RegistrationMapper } from '@osf/shared/mappers/registration';
 import {
   DraftRegistrationDataJsonApi,
@@ -26,14 +27,13 @@ import { JsonApiService } from '@osf/shared/services';
 
 import { SchemaActionTrigger } from '../enums';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class RegistriesService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   createDraft(
     registrationSchemaId: string,

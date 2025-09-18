@@ -4,33 +4,37 @@ import { DOCUMENT } from '@angular/common';
 import { DestroyRef, Inject, inject, Injectable } from '@angular/core';
 import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
 
-import { MetadataRecordFormat } from '@osf/shared/enums';
-import { MetadataRecordsService } from '@osf/shared/services';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
+import { MetadataRecordFormat } from '../enums';
 import { Content, DataContent, HeadTagDef, MetaTagAuthor, MetaTagsData } from '../models/meta-tags';
 
-import { environment } from 'src/environments/environment';
+import { MetadataRecordsService } from './metadata-records.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MetaTagsService {
-  metadataRecords: MetadataRecordsService = inject(MetadataRecordsService);
+  private readonly metadataRecords: MetadataRecordsService = inject(MetadataRecordsService);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly webUrl = this.environment.webUrl;
+  private readonly facebookAppId = this.environment.facebookAppId;
+  private readonly twitterHandle = this.environment.twitterHandle;
 
   private readonly defaultMetaTags: MetaTagsData = {
     type: 'article',
     description: 'Hosted on the OSF',
     language: 'en-US',
-    image: `${environment.webUrl}/assets/images/osf-sharing.png`,
+    image: `${this.webUrl}/assets/images/osf-sharing.png`,
     imageType: 'image/png',
     imageWidth: 1200,
     imageHeight: 630,
     imageAlt: 'OSF',
     siteName: 'OSF',
     institution: 'Center for Open Science',
-    fbAppId: environment.facebookAppId,
-    twitterSite: environment.twitterHandle,
-    twitterCreator: environment.twitterHandle,
+    fbAppId: this.facebookAppId,
+    twitterSite: this.twitterHandle,
+    twitterCreator: this.twitterHandle,
   };
 
   private readonly metaTagClass = 'osf-dynamic-meta';

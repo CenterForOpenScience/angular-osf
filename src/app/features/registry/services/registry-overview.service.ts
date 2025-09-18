@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { MapRegistryOverview } from '@osf/features/registry/mappers';
@@ -17,14 +18,13 @@ import { Institution, InstitutionsJsonApiResponse, PageSchema, SchemaBlocksRespo
 import { ReviewActionPayload } from '@osf/shared/models/review-action';
 import { JsonApiService } from '@shared/services';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class RegistryOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getRegistrationById(id: string): Observable<RegistryOverviewWithMeta> {
     const params = {
