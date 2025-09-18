@@ -17,12 +17,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UpdateProfileSettingsSocialLinks, UserSelectors } from '@osf/core/store/user';
-import { Social } from '@osf/shared/models';
+import { SOCIAL_LINKS } from '@osf/shared/constants';
+import { SocialLinksForm, SocialModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
-import { SOCIALS } from '../../constants/socials';
 import { hasSocialLinkChanges, mapSocialLinkToPayload } from '../../helpers';
-import { SocialLinksForm } from '../../models';
 import { SocialFormComponent } from '../social-form/social-form.component';
 
 @Component({
@@ -42,7 +41,7 @@ export class SocialComponent {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly fb = inject(FormBuilder);
 
-  private readonly socials = SOCIALS;
+  private readonly socials = SOCIAL_LINKS;
 
   readonly actions = createDispatchMap({ updateProfileSettingsSocialLinks: UpdateProfileSettingsSocialLinks });
   readonly socialLinks = select(UserSelectors.getSocialLinks);
@@ -80,7 +79,7 @@ export class SocialComponent {
     }
 
     const links = this.socialLinksForm.value.links as SocialLinksForm[];
-    const mappedLinks = links.map((link) => mapSocialLinkToPayload(link)) satisfies Partial<Social>[];
+    const mappedLinks = links.map((link) => mapSocialLinkToPayload(link)) satisfies Partial<SocialModel>[];
 
     this.loaderService.show();
     this.actions

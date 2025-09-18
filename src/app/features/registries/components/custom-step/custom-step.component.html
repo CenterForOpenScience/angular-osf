@@ -139,13 +139,7 @@
               }
 
               @case (FieldType.Text) {
-                <input
-                  [formControlName]="q.responseKey!"
-                  type="text"
-                  class="w-full"
-                  [placeholder]="q.exampleText"
-                  pInputText
-                />
+                <input [formControlName]="q.responseKey!" type="text" class="w-full" pInputText />
                 @if (
                   stepForm.controls[q.responseKey!].errors?.['required'] &&
                   (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)

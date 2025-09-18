@@ -18,5 +18,7 @@ export * from './scientists.const';
 export * from './search-sort-options.const';
 export * from './search-tab-options.const';
 export * from './search-tutorial-steps.const';
+export * from './social-links.const';
+export * from './social-links.const';
 export * from './social-share.config';
 export * from './sort-options.const';

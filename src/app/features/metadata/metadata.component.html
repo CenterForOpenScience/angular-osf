@@ -2,6 +2,7 @@
   <osf-sub-header
     [showButton]="true"
     [buttonLabel]="'project.metadata.addCommunityMetadataRecord.title' | translate"
+    [isButtonDisabled]="isLoading()"
     (buttonClick)="openAddRecord()"
     [title]="'project.overview.metadata.title' | translate"
   />

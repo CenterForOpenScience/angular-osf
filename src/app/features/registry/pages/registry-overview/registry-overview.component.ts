@@ -113,7 +113,8 @@ export class RegistryOverviewComponent {
     const schemaResponses =
       (this.isModeration
         ? registry?.schemaResponses
-        : registry?.schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved)) || [];
+        : registry?.schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved || this.isAdmin)) ||
+      [];
     if (index !== null) {
       return schemaResponses[index];
     }

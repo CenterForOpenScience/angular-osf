@@ -207,7 +207,6 @@ export class SettingsComponent implements OnInit {
       case 'access_requests_enabled':
       case 'wiki_enabled':
       case 'anyone_can_edit_wiki':
-      case 'anyone_can_comment':
         payload[changedField] = value as boolean;
         break;
     }

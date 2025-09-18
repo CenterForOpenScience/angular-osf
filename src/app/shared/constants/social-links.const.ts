@@ -1,12 +1,13 @@
 import { SocialLinksModel } from '../models';
 
-export const SOCIALS: SocialLinksModel[] = [
+export const SOCIAL_LINKS: SocialLinksModel[] = [
   {
     id: 0,
     label: 'settings.profileSettings.social.labels.researcherId',
     address: 'http://researchers.com/rid/',
     placeholder: 'x-xxxx-xxxx',
     key: 'researcherId',
+    icon: 'researcherID.png',
   },
   {
     id: 1,
@@ -14,6 +15,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'http://orcid.org/',
     placeholder: 'xxxx-xxxx-xxxx',
     key: 'orcid',
+    icon: 'orcid.svg',
   },
   {
     id: 2,
@@ -21,13 +23,15 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'https://linkedin.com/',
     placeholder: 'in/userID, profie/view?profileID, or pub/pubID',
     key: 'linkedIn',
+    icon: 'linkedin.svg',
   },
   {
     id: 3,
     label: 'settings.profileSettings.social.labels.twitter',
-    address: '@',
+    address: 'https://x.com/',
     placeholder: 'twitterhandle',
     key: 'twitter',
+    icon: 'x.svg',
   },
   {
     id: 4,
@@ -35,6 +39,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'https://github.com/',
     placeholder: 'username',
     key: 'github',
+    icon: 'github.svg',
   },
   {
     id: 5,
@@ -42,6 +47,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'https://impactstory.org/u/',
     placeholder: 'profileID',
     key: 'impactStory',
+    icon: 'impactStory.svg',
   },
   {
     id: 6,
@@ -49,6 +55,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'http://scholar.google.com/citations?user=',
     placeholder: 'profileID',
     key: 'scholar',
+    icon: 'scholar.svg',
   },
   {
     id: 7,
@@ -56,6 +63,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'https://researchgate.net/profile/',
     placeholder: 'profileID',
     key: 'researchGate',
+    icon: 'researchGate.svg',
   },
   {
     id: 8,
@@ -63,6 +71,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'http://xueshu.baidu.com/scholarID/',
     placeholder: 'profileID',
     key: 'baiduScholar',
+    icon: 'baiduScholar.png',
   },
   {
     id: 9,
@@ -70,6 +79,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'http://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=',
     placeholder: 'profileID',
     key: 'ssrn',
+    icon: 'ssrn.svg',
   },
   {
     id: 10,
@@ -77,6 +87,7 @@ export const SOCIALS: SocialLinksModel[] = [
     address: '',
     placeholder: 'https://yourwebsite.com',
     key: 'profileWebsites',
+    icon: '',
   },
   {
     id: 11,
@@ -84,10 +95,12 @@ export const SOCIALS: SocialLinksModel[] = [
     address: 'https://',
     placeholder: 'institution',
     key: 'academiaInstitution',
+    icon: 'academia.svg',
     linkedField: {
       key: 'academiaProfileID',
       label: 'settings.profileSettings.social.labels.academiaProfileId',
       placeholder: 'profileId',
+      address: '.academia.edu/',
     },
   },
 ];

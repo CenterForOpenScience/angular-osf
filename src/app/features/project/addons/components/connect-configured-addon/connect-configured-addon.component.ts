@@ -15,7 +15,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { OperationNames } from '@osf/features/project/addons/enums';
-import { AddonConfigMap } from '@osf/features/project/addons/utils';
+import { AddonConfigMap } from '@osf/features/project/addons/models';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';

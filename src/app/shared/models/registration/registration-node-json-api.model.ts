@@ -1,4 +1,4 @@
-import { RegistrationReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 
 import { BaseNodeAttributesJsonApi } from '../nodes';
 
@@ -25,7 +25,7 @@ export interface RegistrationNodeAttributesJsonApi extends BaseNodeAttributesJso
   registration_responses: RegistrationResponses;
   registration_supplement: string;
   reviews_state: RegistrationReviewStates;
-  revision_state: string;
+  revision_state: RevisionReviewStates;
   withdrawal_justification: string | null;
   withdrawn: boolean;
 }

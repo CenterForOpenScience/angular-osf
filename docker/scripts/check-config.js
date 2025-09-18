@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const { config } = require('process');
 
 const configPath = path.join(__dirname, '../src/assets/config/config.json');
 const templatePath = path.join(__dirname, '../src/assets/config/template.json');

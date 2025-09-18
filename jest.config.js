@@ -35,8 +35,6 @@ module.exports = {
     '!src/app/**/*.route.{ts,js}',
     '!src/app/**/*.enum.{ts,js}',
     '!src/app/**/*.type.{ts,js}',
-    '!src/app/**/*.enum.{ts,js}',
-    '!src/app/**/*.type.{ts,js}',
     '!src/app/**/*.spec.{ts,js}',
     '!src/app/**/*.module.ts',
     '!src/app/**/index.ts',
@@ -45,10 +43,10 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 14.27,
-      functions: 15.55,
-      lines: 42.6,
-      statements: 43.2,
+      branches: 15,
+      functions: 18.22,
+      lines: 43.77,
+      statements: 44.42,
     },
   },
   watchPathIgnorePatterns: [
