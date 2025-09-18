@@ -14,6 +14,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import {
   IconComponent,
@@ -53,6 +54,7 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translateService = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
+  private readonly environment = inject(ENVIRONMENT);
   private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
 
   readonly isMedium = toSignal(inject(IS_MEDIUM));
