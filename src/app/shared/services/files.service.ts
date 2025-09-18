@@ -52,7 +52,7 @@ export class FilesService {
   readonly toastService = inject(ToastService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
-  private readonly addonsApiUrl = this.environment.shareTroveUrl;
+  private readonly addonsApiUrl = this.environment.addonsApiUrl;
 
   filesFields = 'name,guid,kind,extra,size,path,materialized_path,date_modified,parent_folder,files';
 

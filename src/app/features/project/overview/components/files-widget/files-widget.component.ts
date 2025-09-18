@@ -72,7 +72,7 @@ export class FilesWidgetComponent {
   currentRootFolder = model<FileLabelModel | null>(null);
   pageNumber = signal(1);
 
-  readonly osfStorageLabel = 'Osf Storage';
+  readonly osfStorageLabel = 'OSF Storage';
 
   readonly options = computed(() => {
     const components = this.components().filter((component) => this.rootOption().value !== component.id);
