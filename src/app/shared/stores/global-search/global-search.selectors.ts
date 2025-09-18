@@ -39,11 +39,6 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getSelf(state: GlobalSearchStateModel): string {
-    return state.self;
-  }
-
-  @Selector([GlobalSearchState])
   static getFirst(state: GlobalSearchStateModel): StringOrNull {
     return state.first;
   }

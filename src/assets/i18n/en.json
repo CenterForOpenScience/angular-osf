@@ -2614,6 +2614,7 @@
       "description": "Description:",
       "provider": "Provider:",
       "license": "License:",
+      "context": "Context",
       "registrationTemplate": "Registration Template:",
       "conflictOfInterestResponse": "Conflict of Interest response:",
       "associatedData": "Associated data:",

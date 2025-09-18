@@ -31,8 +31,8 @@
 
             @if (hasFilterContent(filter)) {
               <osf-generic-filter
-                [options]="getFilterOptions(filter)"
-                [searchResults]="getFilterSearchResults(filter)"
+                [options]="filter.options || []"
+                [searchResults]="filterSearchResults()[filter.key] || []"
                 [isPaginationLoading]="!!filter.isPaginationLoading"
                 [isLoading]="!!filter.isLoading"
                 [isSearchLoading]="!!filter.isSearchLoading"
