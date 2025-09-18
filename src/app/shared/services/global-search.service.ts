@@ -53,10 +53,10 @@ export class GlobalSearchService {
   } {
     let nextUrl: string | undefined;
 
-    const searchResultItems = response.included!.filter(
-      (item): item is SearchResultJsonApi => item.type === 'search-result'
-    );
-    const filterOptionItems = response.included!.filter((item): item is FilterOptionItem => item.type === 'index-card');
+    const searchResultItems =
+      response.included?.filter((item): item is SearchResultJsonApi => item.type === 'search-result') ?? [];
+    const filterOptionItems =
+      response.included?.filter((item): item is FilterOptionItem => item.type === 'index-card') ?? [];
 
     const options = mapFilterOptions(searchResultItems, filterOptionItems);
     const searchResultPage = response?.data?.relationships?.['searchResultPage'] as {
