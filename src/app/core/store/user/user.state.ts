@@ -259,6 +259,7 @@ export class UserState {
               },
             },
           });
+          localStorage.setItem('currentUser', JSON.stringify(response))
         }
       })
     );
