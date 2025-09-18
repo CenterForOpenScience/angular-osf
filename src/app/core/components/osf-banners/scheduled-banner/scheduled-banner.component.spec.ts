@@ -7,7 +7,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BannerModel } from '@core/components/osf-banners/models/banner.model';
 import { IS_XSMALL } from '@osf/shared/helpers';
-import { BannersSelector, FetchCurrentScheduledBanner } from '@osf/shared/stores/banners';
+import { BannersSelector, GetCurrentScheduledBanner } from '@osf/shared/stores/banners';
 
 import { ScheduledBannerComponent } from './scheduled-banner.component';
 
@@ -35,7 +35,7 @@ describe('Component: Scheduled Banner', () => {
     }).overrideProvider(Store, {
       useValue: provideMockStore({
         signals: [{ selector: BannersSelector.getCurrentBanner, value: currentBannerSignal }],
-        actions: [{ action: new FetchCurrentScheduledBanner(), value: true }],
+        actions: [{ action: new GetCurrentScheduledBanner(), value: true }],
       }).useValue,
     });
 
@@ -57,7 +57,7 @@ describe('Component: Scheduled Banner', () => {
   it('should dispatch FetchCurrentScheduledBanner on init', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
     component.ngOnInit();
-    expect(dispatchSpy).toHaveBeenCalledWith(new FetchCurrentScheduledBanner());
+    expect(dispatchSpy).toHaveBeenCalledWith(new GetCurrentScheduledBanner());
   });
 
   it('should return false if no banner is set', () => {

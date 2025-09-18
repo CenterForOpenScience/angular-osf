@@ -32,7 +32,7 @@ export class BannersService {
    * @returns Observable emitting a Banner object.
    *
    */
-  fetchCurrentBanner(): Observable<BannerModel> {
+  getCurrentBanner(): Observable<BannerModel> {
     return this.jsonApiService
       .get<JsonApiResponse<BannerJsonApi, null>>(`${this.apiDomainUrl}/_/banners/current`)
       .pipe(map((response) => BannerMapper.fromResponse(response.data)));

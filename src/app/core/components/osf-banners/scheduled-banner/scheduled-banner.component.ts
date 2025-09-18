@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { IS_XSMALL } from '@osf/shared/helpers';
-import { BannersSelector, FetchCurrentScheduledBanner } from '@osf/shared/stores/banners';
+import { BannersSelector, GetCurrentScheduledBanner } from '@osf/shared/stores/banners';
 
 /**
  * Component to display a scheduled banner when one is active and visible
@@ -43,7 +43,7 @@ export class ScheduledBannerComponent implements OnInit {
    * when the component initializes.
    */
   ngOnInit(): void {
-    this.store.dispatch(new FetchCurrentScheduledBanner());
+    this.store.dispatch(new GetCurrentScheduledBanner());
   }
 
   /**
