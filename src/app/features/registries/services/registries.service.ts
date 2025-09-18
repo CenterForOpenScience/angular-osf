@@ -151,12 +151,13 @@ export class RegistriesService {
     userId: string,
     page: number,
     pageSize: number
-  ): Observable<{ data: RegistrationCard[]; totalCount: number }> {
+  ): Observable<PaginatedData<RegistrationCard[]>> {
     const params = {
       page,
       'page[size]': pageSize,
       embed: ['bibliographic_contributors', 'registration_schema', 'provider'],
     };
+
     return this.jsonApiService
       .get<ResponseJsonApi<RegistrationDataJsonApi[]>>(`${this.apiUrl}/users/${userId}/registrations/`, params)
       .pipe(

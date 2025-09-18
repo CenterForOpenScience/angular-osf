@@ -46,6 +46,7 @@ export class RegistryResourcesComponent {
 
   registryId = '';
   isAddingResource = signal(false);
+  doiDomain = 'https://doi.org/';
 
   private readonly actions = createDispatchMap({
     getResources: GetRegistryResources,
