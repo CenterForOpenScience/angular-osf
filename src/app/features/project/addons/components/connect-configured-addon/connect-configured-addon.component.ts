@@ -14,26 +14,21 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { OperationNames } from '@osf/features/project/addons/enums';
-import { AddonConfigMap } from '@osf/features/project/addons/models';
 import { SubHeaderComponent } from '@osf/shared/components';
-import { AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
-import { getAddonTypeString } from '@osf/shared/helpers';
-import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
 import {
   AddonSetupAccountFormComponent,
   AddonTermsComponent,
   StorageItemSelectorComponent,
-} from '@shared/components/addons';
-import { AddonServiceNames } from '@shared/enums';
-import { AddonModel, AddonTerm, AuthorizedAddonRequestJsonApi } from '@shared/models';
+} from '@osf/shared/components/addons';
+import { AddonServiceNames, AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
+import { getAddonTypeString } from '@osf/shared/helpers';
+import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@osf/shared/models';
 import {
-  AddonDialogService,
   AddonFormService,
   AddonOAuthService,
   AddonOperationInvocationService,
   ToastService,
-} from '@shared/services';
+} from '@osf/shared/services';
 import {
   AddonsSelectors,
   CreateAddonOperationInvocation,
@@ -44,7 +39,11 @@ import {
   GetAuthorizedStorageAddons,
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
-} from '@shared/stores/addons';
+} from '@osf/shared/stores';
+
+import { OperationNames } from '../../enums';
+import { AddonConfigMap } from '../../models';
+import { AddonDialogService } from '../../services';
 
 @Component({
   selector: 'osf-connect-configured-addon',

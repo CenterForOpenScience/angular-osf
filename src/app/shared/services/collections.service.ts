@@ -31,7 +31,7 @@ import {
   ResponseJsonApi,
 } from '../models';
 import { ReviewActionPayload, ReviewActionPayloadJsonApi } from '../models/review-action';
-import { SetTotalSubmissions } from '../stores';
+import { SetTotalSubmissions } from '../stores/collections';
 
 import { JsonApiService } from './json-api.service';
 

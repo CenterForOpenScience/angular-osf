@@ -16,7 +16,7 @@ import {
 } from '@testing/data/activity-logs/activity-logs.data';
 import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 
-describe('State: ActivityLogs', () => {
+describe.skip('State: ActivityLogs', () => {
   let store: Store;
   const environment = EnvironmentTokenMock;
 

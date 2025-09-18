@@ -6,12 +6,10 @@ import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import {
-  ConfirmAccountConnectionModalComponent,
-  DisconnectAddonModalComponent,
-} from '@osf/features/project/addons/components';
 import { AddonServiceNames } from '@osf/shared/enums';
 import { AuthorizedAccountModel, ConfiguredAddonModel } from '@osf/shared/models';
+
+import { ConfirmAccountConnectionModalComponent, DisconnectAddonModalComponent } from '../components';
 
 @Injectable({
   providedIn: 'root',

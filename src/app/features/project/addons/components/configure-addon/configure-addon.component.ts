@@ -22,20 +22,22 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { OperationNames } from '@osf/features/project/addons/enums';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { StorageItemSelectorComponent } from '@osf/shared/components/addons';
+import { AddonServiceNames, AddonType } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
-import { SubHeaderComponent } from '@shared/components';
-import { StorageItemSelectorComponent } from '@shared/components/addons';
-import { AddonServiceNames, AddonType } from '@shared/enums';
-import { AddonModel, ConfiguredAddonModel } from '@shared/models';
-import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
+import { AddonModel, ConfiguredAddonModel } from '@osf/shared/models';
+import { AddonFormService, AddonOperationInvocationService, ToastService } from '@osf/shared/services';
 import {
   AddonsSelectors,
   ClearOperationInvocations,
   CreateAddonOperationInvocation,
   GetLinkAddons,
   UpdateConfiguredAddon,
-} from '@shared/stores/addons';
+} from '@osf/shared/stores';
+
+import { OperationNames } from '../../enums';
+import { AddonDialogService } from '../../services/addon-dialog.service';
 
 @Component({
   selector: 'osf-configure-addon',
@@ -49,7 +51,6 @@ import {
     FormsModule,
     Skeleton,
     BreadcrumbModule,
-    StorageItemSelectorComponent,
     StorageItemSelectorComponent,
   ],
   templateUrl: './configure-addon.component.html',
