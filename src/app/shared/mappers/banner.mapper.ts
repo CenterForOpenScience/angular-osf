@@ -1,5 +1,5 @@
+import { BannerModel } from '../../core/components/osf-banners/models/banner.model';
 import { BannerJsonApi } from '../models/banner.json-api.model';
-import { BannerModel } from '../models/banner.model';
 
 export class BannerMapper {
   static fromResponse(response: BannerJsonApi): BannerModel {

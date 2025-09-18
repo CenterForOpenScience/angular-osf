@@ -2,8 +2,6 @@ import { Store } from '@ngxs/store';
 
 import { Observable, of } from 'rxjs';
 
-import { signal } from '@angular/core';
-
 /**
  * Interface for a mock NGXS store option configuration.
  */
@@ -146,7 +144,7 @@ export function provideMockStore(options: ProvideMockStoreOptions = {}): { provi
      * @returns A signal containing the associated mock value or `undefined`.
      */
     selectSignal: (selector: any) => {
-      return signal(signalMap.has(selector) ? signalMap.get(selector) : undefined);
+      return signalMap.has(selector) ? signalMap.get(selector) : undefined;
     },
 
     /**
