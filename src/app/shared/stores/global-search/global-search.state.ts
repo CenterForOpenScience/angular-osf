@@ -300,6 +300,9 @@ export class GlobalSearchState {
 
   private buildParamsForIndexCardSearch(state: GlobalSearchStateModel): Record<string, string> {
     const filtersParams: Record<string, string> = {};
+    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
+      filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
     Object.entries(state.filterValues).forEach(([key, value]) => {
       if (value) {
         const filterDefinition = state.filters.find((f) => f.key === key);
@@ -321,10 +324,6 @@ export class GlobalSearchState {
     const sortBy = state.sortBy;
     const sortParam = sortBy.includes('count') && !sortBy.includes('relevance') ? 'sort[integer-value]' : 'sort';
     filtersParams[sortParam] = sortBy;
-
-    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
-      filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
 
     return filtersParams;
   }
