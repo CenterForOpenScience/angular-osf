@@ -36,8 +36,8 @@ export class ContributorsMapper {
           ({
             id: user.id,
             fullName: user.attributes.full_name,
-            isBibliographic: false,
-            permission: ContributorPermission.Read,
+            isBibliographic: true,
+            permission: ContributorPermission.Write,
           }) as ContributorAddModel
       ),
       totalCount: response.meta.total,

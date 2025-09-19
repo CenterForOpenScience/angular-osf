@@ -3,11 +3,7 @@
     <div class="flex flex-column gap-2">
       <span>{{ message.detail }}</span>
       <div class="flex justify-content-end">
-        <p-button
-          type="button"
-          label="{{ 'toast.cookie-consent.accept' | translate }}"
-          (click)="acceptCookies()"
-        ></p-button>
+        <p-button [label]="'toast.cookie-consent.accept' | translate" (onClick)="acceptCookies()"></p-button>
       </div>
     </div>
   </ng-template>
