@@ -89,7 +89,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}`, payload)
+      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}/`, payload)
       .pipe(map((response) => MapRegistryOverview(response)));
   }
 
@@ -106,7 +106,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}`, payload)
+      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}/`, payload)
       .pipe(map((response) => MapRegistryOverview(response)));
   }
 

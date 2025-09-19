@@ -27,9 +27,7 @@ export class LicensesService {
   getLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService
       .get<LicensesResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/licenses/`, {
-        params: {
-          'page[size]': 100,
-        },
+        'page[size]': 100,
       })
       .pipe(map((licenses) => LicensesMapper.fromLicensesResponse(licenses)));
   }

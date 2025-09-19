@@ -393,10 +393,8 @@ export class FilesComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    this.router.navigate([file.guid], {
-      relativeTo: this.activeRoute,
-      queryParamsHandling: 'merge',
-    });
+    const url = this.router.createUrlTree([file.guid]).toString();
+    window.open(url, '_blank');
   }
 
   getAddonName(addons: ConfiguredAddonModel[], provider: string): string {

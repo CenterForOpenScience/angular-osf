@@ -123,6 +123,10 @@ export class FileMenuComponent {
       });
     }
 
+    if (this.isFolder()) {
+      const disallowedActions = [FileMenuType.Share, FileMenuType.Embed];
+      return this.allMenuItems.filter((item) => !disallowedActions.includes(item.id as FileMenuType));
+    }
     return this.allMenuItems;
   });
 

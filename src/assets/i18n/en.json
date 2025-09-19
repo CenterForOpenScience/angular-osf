@@ -2414,7 +2414,8 @@
       "withdrawRegistration": "Withdraw registration",
       "withdrawDescription": "Withdrawing a registration will remove its content from the OSF, but leave basic metadata behind. The title of a withdrawn registration and its contributor list will remain, as will justification or explanation of the withdrawal, should you wish to provide it. Withdrawn registrations will be marked with a \"withdrawn\" tag. This action is irreversible.",
       "withdrawJustificationLabel": "Please provide your justification for withdrawing this registration.",
-      "makePublicMessage": "Are you sure you want make this registration public ?",
+      "endEmbargo": "End embargo early",
+      "endEmbargoMessage": "By clicking confirm, an email will be sent to project administrator(s) to approve ending the embargo. If approved, this registration, including any components, will be made public immediately. This action is irreversible.",
       "statuses": {
         "pendingRegistrationApproval": {
           "text": "Pending approval",
@@ -2439,7 +2440,7 @@
         "embargo": {
           "text": "Embargoed registration",
           "short": "Embargoed",
-          "long": "This registration is embargoed. It will remain private until {embargoEndDate}."
+          "long": "This registration is embargoed. It will remain private until {{embargoEndDate}}."
         },
         "pendingEmbargoTermination": {
           "text": "Embargoed registration",

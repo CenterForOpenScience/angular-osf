@@ -24,8 +24,11 @@ export class RegistrationProviderService {
   private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getProviderSchemas(providerId: string): Observable<ProviderSchema[]> {
+    const params = {
+      'page[size]': 100,
+    };
     return this.jsonApiService
-      .get<ProvidersResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/schemas/`)
+      .get<ProvidersResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/schemas/`, params)
       .pipe(map((response) => RegistrationProviderMapper.fromProvidersResponse(response)));
   }
 

@@ -12,6 +12,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { WithdrawRegistration } from '@osf/features/registry/store/registry-overview';
 import { InputLimits } from '@osf/shared/constants';
+import { CustomValidators } from '@osf/shared/helpers';
 import { TextInputComponent } from '@shared/components';
 
 @Component({
@@ -26,17 +27,25 @@ export class WithdrawDialogComponent {
   private readonly config = inject(DynamicDialogConfig);
   private readonly actions = createDispatchMap({ withdrawRegistration: WithdrawRegistration });
 
-  readonly form = new FormGroup({ text: new FormControl('') });
+  readonly form = new FormGroup({
+    text: new FormControl('', { nonNullable: true, validators: [CustomValidators.requiredTrimmed()] }),
+  });
   readonly inputLimits = InputLimits;
+
+  submitting = false;
 
   withdrawRegistration(): void {
     const registryId = this.config.data.registryId;
     if (registryId) {
+      this.submitting = true;
       this.actions
         .withdrawRegistration(registryId, this.form.controls.text.value ?? '')
         .pipe(
           take(1),
-          finalize(() => this.dialogRef.close())
+          finalize(() => {
+            this.submitting = false;
+            this.dialogRef.close();
+          })
         )
         .subscribe();
     }
