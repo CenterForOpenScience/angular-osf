@@ -16,7 +16,10 @@ import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '.
 export class TokensService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getScopes(): Observable<ScopeModel[]> {
     return this.jsonApiService

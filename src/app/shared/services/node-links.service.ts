@@ -17,7 +17,10 @@ import { JsonApiService } from './json-api.service';
 export class NodeLinksService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   createNodeLink(
     currentProjectId: string,

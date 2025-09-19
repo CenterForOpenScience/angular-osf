@@ -35,8 +35,15 @@ import { JsonApiService } from '../json-api.service';
 export class AddonsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = this.environment.addonsApiUrl;
-  private readonly webUrl = this.environment.webUrl;
+
+  get apiUrl() {
+    return this.environment.addonsApiUrl;
+  }
+
+  get webUrl() {
+    return this.environment.webUrl;
+  }
+
   private readonly currentUser = select(UserSelectors.getCurrentUser);
 
   getAddons(addonType: string): Observable<AddonModel[]> {

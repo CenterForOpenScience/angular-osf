@@ -21,7 +21,10 @@ import {
 export class AccountSettingsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   updateLocation(userId: string, locationId: string): Observable<User> {
     const body = {
