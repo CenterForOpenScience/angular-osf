@@ -6,7 +6,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { ContributorPermission } from '@shared/enums';
 import {
@@ -16,24 +15,18 @@ import {
   MOCK_RESOURCE_INFO,
 } from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { CustomConfirmationService } from '@shared/services';
 import { ContributorsSelectors, CurrentResourceSelectors, ViewOnlyLinkSelectors } from '@shared/stores';
 
 import { ContributorsComponent } from './contributors.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
-describe.skip('ContributorsComponent', () => {
+describe('Component: Contributors', () => {
   let component: ContributorsComponent;
   let fixture: ComponentFixture<ContributorsComponent>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
-  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
   let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
 
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
@@ -41,23 +34,14 @@ describe.skip('ContributorsComponent', () => {
   beforeEach(async () => {
     jest.useFakeTimers();
 
-    routerMock = RouterMockBuilder.create().build();
-    activatedRouteMock = ActivatedRouteMockBuilder.create()
-      .withId('test-id')
-      .withData({ resourceType: 'project' })
-      .build();
-    toastServiceMock = ToastServiceMockBuilder.create().build();
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
       imports: [ContributorsComponent, OSFTestingModule],
       providers: [
-        MockProvider(Router, routerMock),
-        MockProvider(ActivatedRoute, activatedRouteMock),
         MockProvider(DialogService, {
           open: jest.fn().mockReturnValue({ onClose: of({}) }),
         }),
-        MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, customConfirmationServiceMock),
         MockProvider(ConfirmationService, {}),
         provideMockStore({

@@ -2,7 +2,6 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -70,11 +69,11 @@ describe('Component: Analytics', () => {
             { selector: AnalyticsSelectors.isMetricsError, value: false },
           ],
           signals: [
-            { selector: metricsSelector, value: signal(metrics) },
-            { selector: relatedCountsSelector, value: signal(relatedCounts) },
-            { selector: AnalyticsSelectors.isMetricsLoading, value: signal(false) },
-            { selector: AnalyticsSelectors.isRelatedCountsLoading, value: signal(false) },
-            { selector: AnalyticsSelectors.isMetricsError, value: signal(false) },
+            { selector: metricsSelector, value: metrics },
+            { selector: relatedCountsSelector, value: relatedCounts },
+            { selector: AnalyticsSelectors.isMetricsLoading, value: false },
+            { selector: AnalyticsSelectors.isRelatedCountsLoading, value: false },
+            { selector: AnalyticsSelectors.isMetricsError, value: false },
           ],
         }),
         { provide: IS_WEB, useValue: of(true) },

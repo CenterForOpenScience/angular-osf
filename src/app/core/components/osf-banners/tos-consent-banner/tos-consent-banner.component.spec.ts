@@ -2,7 +2,6 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent } from 'ng-mocks';
 
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -26,7 +25,7 @@ describe('Component: Tos Consent Banner', () => {
       imports: [OSFTestingStoreModule, TosConsentBannerComponent, MockComponent(IconComponent)],
       providers: [
         provideMockStore({
-          signals: [{ selector: UserSelectors.getCurrentUser, value: signal(MOCK_USER) }],
+          signals: [{ selector: UserSelectors.getCurrentUser, value: MOCK_USER }],
         }),
         TranslationServiceMock,
       ],
