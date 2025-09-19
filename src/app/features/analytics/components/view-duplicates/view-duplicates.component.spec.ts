@@ -29,7 +29,7 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('ViewDuplicatesComponent', () => {
+describe('Component: View Duplicates', () => {
   let component: ViewDuplicatesComponent;
   let fixture: ComponentFixture<ViewDuplicatesComponent>;
   let dialogService: DialogService;

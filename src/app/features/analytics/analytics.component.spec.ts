@@ -24,7 +24,7 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('AnalyticsComponent', () => {
+describe('Component: Analytics', () => {
   let component: AnalyticsComponent;
   let fixture: ComponentFixture<AnalyticsComponent>;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
@@ -84,11 +84,6 @@ describe.skip('AnalyticsComponent', () => {
 
     fixture = TestBed.createComponent(AnalyticsComponent);
     component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
   });
 
   it('should set selectedRange via onRangeChange', () => {

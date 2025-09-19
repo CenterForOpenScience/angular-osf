@@ -1,84 +1,57 @@
-import { TranslateService } from '@ngx-translate/core';
+import { CookieService } from 'ngx-cookie-service';
 
-import { MessageService } from 'primeng/api';
-
-import { of } from 'rxjs';
+import { Button } from 'primeng/button';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CookieConsentService } from '../../../../shared/services/cookie-consent/cookie-consent.service';
-
 import { CookieConsentBannerComponent } from './cookie-consent-banner.component';
 
-describe('CookieConsentComponent', () => {
-  let component: CookieConsentBannerComponent;
+import { OSFTestingModule } from '@testing/osf.testing.module';
+
+describe('Component: Cookie Consent Banner', () => {
   let fixture: ComponentFixture<CookieConsentBannerComponent>;
-  let mockToastService: jest.Mocked<MessageService>;
-  let mockConsentService: jest.Mocked<CookieConsentService>;
-  let mockTranslateService: jest.Mocked<TranslateService>;
+  let component: CookieConsentBannerComponent;
+
+  const cookieServiceMock = {
+    check: jest.fn(),
+    set: jest.fn(),
+  };
 
   beforeEach(async () => {
-    mockToastService = {
-      add: jest.fn(),
-      clear: jest.fn(),
-    } as unknown as jest.Mocked<MessageService>;
-
-    mockConsentService = {
-      hasConsent: jest.fn(),
-      grantConsent: jest.fn(),
-    } as unknown as jest.Mocked<CookieConsentService>;
-
-    mockTranslateService = {
-      get: jest.fn(),
-    } as unknown as jest.Mocked<TranslateService>;
-
     await TestBed.configureTestingModule({
-      imports: [CookieConsentBannerComponent],
-      providers: [
-        { provide: MessageService, useValue: mockToastService },
-        { provide: CookieConsentService, useValue: mockConsentService },
-        { provide: TranslateService, useValue: mockTranslateService },
-      ],
-    }).compileComponents();
+      imports: [OSFTestingModule, CookieConsentBannerComponent, Button],
 
+      providers: [{ provide: CookieService, useValue: cookieServiceMock }],
+    });
+
+    jest.clearAllMocks();
+  });
+
+  it('should show the banner if cookie is not set', () => {
+    cookieServiceMock.check.mockReturnValue(false);
     fixture = TestBed.createComponent(CookieConsentBannerComponent);
     component = fixture.componentInstance;
-  });
-  describe('ngAfterViewInit', () => {
-    it('should show toast if no consent', () => {
-      mockConsentService.hasConsent.mockReturnValue(false);
-      mockTranslateService.get.mockReturnValue(of('Please accept cookies'));
 
-      component.ngAfterViewInit();
-
-      // wait for queueMicrotask to execute
-      return Promise.resolve().then(() => {
-        expect(mockTranslateService.get).toHaveBeenCalledWith('toast.cookie-consent.message');
-        expect(mockToastService.add).toHaveBeenCalledWith({
-          detail: 'Please accept cookies',
-          key: 'cookie',
-          sticky: true,
-          severity: 'warn',
-          closable: false,
-        });
-      });
-    });
-
-    it('should not show toast if consent already given', () => {
-      mockConsentService.hasConsent.mockReturnValue(true);
-
-      component.ngAfterViewInit();
-
-      expect(mockTranslateService.get).not.toHaveBeenCalled();
-      expect(mockToastService.add).not.toHaveBeenCalled();
-    });
+    expect(component.displayBanner()).toBe(true);
   });
 
-  describe('acceptCookies', () => {
-    it('should grant consent and clear toast', () => {
-      component.acceptCookies();
-      expect(mockConsentService.grantConsent).toHaveBeenCalled();
-      expect(mockToastService.clear).toHaveBeenCalledWith('cookie');
-    });
+  it('should hide the banner if cookie is set', () => {
+    cookieServiceMock.check.mockReturnValue(true);
+    fixture = TestBed.createComponent(CookieConsentBannerComponent);
+    component = fixture.componentInstance;
+
+    expect(component.displayBanner()).toBe(false);
+  });
+
+  it('should set cookie and hide banner on acceptCookies()', () => {
+    cookieServiceMock.check.mockReturnValue(false);
+    fixture = TestBed.createComponent(CookieConsentBannerComponent);
+    component = fixture.componentInstance;
+
+    component.acceptCookies();
+
+    expect(cookieServiceMock.set).toHaveBeenCalledWith('cookie-consent', 'true', new Date('9999-12-31T23:59:59Z'), '/');
+
+    expect(component.displayBanner()).toBe(false);
   });
 });

@@ -1,14 +1,16 @@
-<p-toast key="cookie" position="bottom-center" [styleClass]="'cookie-toast'">
-  <ng-template let-message pTemplate="message">
-    <div class="flex flex-column gap-2">
-      <span>{{ message.detail }}</span>
-      <div class="flex justify-content-end">
-        <p-button
-          type="button"
-          label="{{ 'toast.cookie-consent.accept' | translate }}"
-          (click)="acceptCookies()"
-        ></p-button>
+@if (this.displayBanner()) {
+  <div class="cookie-consent-container" @fadeInOut>
+    <div class="w-full p-message">
+      <div class="grid flex-row p-message-content">
+        <div class="col">{{ 'toast.cookie-consent.message' | translate }}</div>
+        <div class="col-fixed flex justify-content-end">
+          <p-button
+            type="button"
+            label="{{ 'toast.cookie-consent.accept' | translate }}"
+            (click)="acceptCookies()"
+          ></p-button>
+        </div>
       </div>
     </div>
-  </ng-template>
-</p-toast>
+  </div>
+}

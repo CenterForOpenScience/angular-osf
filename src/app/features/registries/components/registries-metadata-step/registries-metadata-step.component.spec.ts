@@ -10,24 +10,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { RegistriesSelectors } from '@osf/features/registries/store';
 import { TextInputComponent } from '@osf/shared/components';
 import { MOCK_STORE } from '@osf/shared/mocks';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
-import { RegistriesSelectors } from '../../store';
-
-import { ContributorsComponent } from './contributors/contributors.component';
+import { RegistriesContributorsComponent } from './registries-contributors/registries-contributors.component';
 import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
 import { RegistriesSubjectsComponent } from './registries-subjects/registries-subjects.component';
 import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
-import { MetadataComponent } from './metadata.component';
+import { RegistriesMetadataStepComponent } from './registries-metadata-step.component';
 
 import { MOCK_DRAFT_REGISTRATION } from '@testing/mocks/draft-registration.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('MetadataComponent', () => {
-  let component: MetadataComponent;
-  let fixture: ComponentFixture<MetadataComponent>;
+describe('RegistriesMetadataStepComponent', () => {
+  let component: RegistriesMetadataStepComponent;
+  let fixture: ComponentFixture<RegistriesMetadataStepComponent>;
   const mockRoute = {
     snapshot: {
       params: of({ id: 'someId' }),
@@ -53,8 +52,8 @@ describe('MetadataComponent', () => {
       imports: [
         OSFTestingModule,
         ReactiveFormsModule,
-        MetadataComponent,
-        MockComponent(ContributorsComponent),
+        RegistriesMetadataStepComponent,
+        MockComponent(RegistriesContributorsComponent),
         MockComponent(RegistriesLicenseComponent),
         MockComponent(RegistriesSubjectsComponent),
         MockComponent(RegistriesTagsComponent),
@@ -68,7 +67,7 @@ describe('MetadataComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MetadataComponent);
+    fixture = TestBed.createComponent(RegistriesMetadataStepComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

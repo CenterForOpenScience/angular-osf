@@ -18,7 +18,7 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('InstitutionsSearchComponent', () => {
+describe('Component: Institutions Search', () => {
   let component: InstitutionsSearchComponent;
   let fixture: ComponentFixture<InstitutionsSearchComponent>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;

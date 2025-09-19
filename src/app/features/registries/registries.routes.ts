@@ -62,7 +62,9 @@ export const registriesRoutes: Routes = [
           {
             path: ':id/metadata',
             loadComponent: () =>
-              import('./components/metadata/metadata.component').then((mod) => mod.MetadataComponent),
+              import('./components/registries-metadata-step/registries-metadata-step.component').then(
+                (mod) => mod.RegistriesMetadataStepComponent
+              ),
           },
           {
             path: ':id/review',

@@ -38,7 +38,7 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('Component: Files', () => {
+describe('Component: Files', () => {
   let component: FilesComponent;
   let fixture: ComponentFixture<FilesComponent>;
   const currentFolderSignal = signal(getNodeFilesMappedData(0));

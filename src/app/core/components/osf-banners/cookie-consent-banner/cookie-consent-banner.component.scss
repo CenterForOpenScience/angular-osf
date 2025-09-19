@@ -1,15 +1,23 @@
-:host ::ng-deep .cookie-toast {
-  width: 900px;
-  max-width: min(92vw, 960px);
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-}
+@use "styles/mixins" as mix;
 
-:host ::ng-deep .cookie-toast .p-toast-message {
-  width: 100%;
-}
+.cookie-consent-container {
+  padding: 1rem !important;
+  display: block !important;
 
-:host ::ng-deep .cookie-toast .p-toast-message .p-toast-message-content {
-  color: #fcf8e3;
-  width: 100%;
+  .p-message {
+    background-color: #886d3f;
+    color: var(--white);
+    width: 100%;
+    border-radius: var(--p-message-border-radius, 6px);
+    outline-width: var(--p-message-border-width, 1px);
+    outline-style: solid;
+
+    .p-message-content {
+      display: flex;
+      align-items: center;
+      padding: var(--p-message-content-padding, 1.5rem);
+      gap: var(--p-message-content-gap, 0.5rem);
+      height: 100%;
+    }
+  }
 }

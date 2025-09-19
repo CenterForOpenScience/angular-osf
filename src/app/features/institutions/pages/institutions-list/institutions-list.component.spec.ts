@@ -15,7 +15,7 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('InstitutionsListComponent', () => {
+describe('Component: Institutions List', () => {
   let component: InstitutionsListComponent;
   let fixture: ComponentFixture<InstitutionsListComponent>;
   let routerMock: ReturnType<RouterMockBuilder['build']>;

@@ -37,7 +37,7 @@ describe('State: Banners', () => {
         const loading = store.selectSignal(BannersSelector.getCurrentBannerIsLoading);
         expect(loading()).toBeTruthy();
 
-        const request = httpMock.expectOne('http://localhost:8000/_/banners/current');
+        const request = httpMock.expectOne('http://localhost:8000/_/banners/current/');
         expect(request.request.method).toBe('GET');
         request.flush(getScheduledBannerData());
 
@@ -79,13 +79,13 @@ describe('State: Banners', () => {
         const loading = store.selectSignal(BannersSelector.getCurrentBannerIsLoading);
         expect(loading()).toBeTruthy();
 
-        const request = httpMock.expectOne('http://localhost:8000/_/banners/current');
+        const request = httpMock.expectOne('http://localhost:8000/_/banners/current/');
         expect(request.request.method).toBe('GET');
         request.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
 
         expect(result).toEqual({
           data: null,
-          error: 'Http failure response for http://localhost:8000/_/banners/current: 500 Server Error',
+          error: 'Http failure response for http://localhost:8000/_/banners/current/: 500 Server Error',
           isLoading: false,
           isSubmitting: false,
         });

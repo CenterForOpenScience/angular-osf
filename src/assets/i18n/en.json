@@ -655,6 +655,7 @@
         "dateUpdated": "Date Updated",
         "license": "License",
         "publication": "Publication DOI",
+        "registrationDOI": "Registration DOI",
         "subjects": "Subjects",
         "tags": "Tags",
         "citation": "Citation",

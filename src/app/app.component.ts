@@ -10,7 +10,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
-import { CookieConsentBannerComponent } from '@core/components/osf-banners/cookie-consent-banner/cookie-consent-banner.component';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
@@ -22,7 +21,7 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 @Component({
   selector: 'osf-root',
-  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent, CookieConsentBannerComponent],
+  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

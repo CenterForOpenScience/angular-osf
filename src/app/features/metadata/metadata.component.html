@@ -60,6 +60,10 @@
           [resourceType]="resourceType()"
         />
 
+        @if (showRegistrationDoi()) {
+          <osf-metadata-registration-doi [identifiers]="metadata()?.identifiers!"></osf-metadata-registration-doi>
+        }
+
         <osf-metadata-tags [tags]="metadata()?.tags || []" (tagsChanged)="onTagsChanged($event)"></osf-metadata-tags>
 
         <osf-metadata-subjects

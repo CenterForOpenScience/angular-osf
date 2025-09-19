@@ -16,7 +16,7 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('LinkedServicesComponent', () => {
+describe('Component: Linked Services', () => {
   let component: LinkedServicesComponent;
   let fixture: ComponentFixture<LinkedServicesComponent>;
 

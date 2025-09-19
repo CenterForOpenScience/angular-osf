@@ -28,7 +28,7 @@ describe('Service: Banners', () => {
       },
     });
 
-    const request = httpMock.expectOne('http://localhost:8000/_/banners/current');
+    const request = httpMock.expectOne('http://localhost:8000/_/banners/current/');
     expect(request.request.method).toBe('GET');
     request.flush(getScheduledBannerData());
 

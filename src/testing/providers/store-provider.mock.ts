@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { Observable, of } from 'rxjs';
 
+import { isSignal, Signal, signal } from '@angular/core';
+
 /**
  * Interface for a mock NGXS store option configuration.
  */
@@ -137,14 +139,32 @@ export function provideMockStore(options: ProvideMockStoreOptions = {}): { provi
     },
 
     /**
-     * Mock implementation of Store.selectSignal().
-     * Returns a signal wrapping the mock value for the given selector.
+     * Retrieves a signal associated with the given selector.
      *
-     * @param selector - The selector to retrieve the value for.
-     * @returns A signal containing the associated mock value or `undefined`.
+     * - If the selector already maps to a `Signal<T>`, it is returned as-is.
+     * - If the selector maps to a raw value, it is wrapped in a new `Signal<T>`.
+     * - This allows both `Signal<T>` and plain values to be stored in the same internal signal map.
+     *
+     * @template T - The expected type of the signal value.
+     * @param selector - The selector used as the key to retrieve the signal or value.
+     * @returns {Signal<T>} - A signal wrapping the value or the existing signal.
+     *
+     * @example
+     * // If signalMap has: signalMap.set(MySelector, signal(true))
+     * const value = selectSignal(MySelector); // Signal<boolean>
+     *
+     * @example
+     * // If signalMap has: signalMap.set(MySelector, false)
+     * const value = selectSignal(MySelector); // Signal<boolean> (wrapped)
      */
-    selectSignal: (selector: any) => {
-      return signalMap.has(selector) ? signalMap.get(selector) : undefined;
+    selectSignal: <T>(selector: any): Signal<T> => {
+      const value = signalMap.get(selector);
+
+      if (isSignal(value)) {
+        return value as Signal<T>;
+      }
+
+      return signal(value) as Signal<T>;
     },
 
     /**

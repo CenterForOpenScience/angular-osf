@@ -12,7 +12,7 @@ import { CreateViewLinkDialogComponent } from './create-view-link-dialog.compone
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('CreateViewLinkDialogComponent', () => {
+describe('Component: Create View Link Dialog', () => {
   let component: CreateViewLinkDialogComponent;
   let fixture: ComponentFixture<CreateViewLinkDialogComponent>;
   let dialogRef: jest.Mocked<DynamicDialogRef>;
