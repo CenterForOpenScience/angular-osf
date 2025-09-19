@@ -19,6 +19,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
@@ -79,8 +80,6 @@ import {
   UpdateResourceLicense,
 } from './store';
 
-import { environment } from 'src/environments/environment';
-
 @Component({
   selector: 'osf-metadata',
   imports: [
@@ -111,6 +110,7 @@ export class MetadataComponent implements OnInit {
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly environment = inject(ENVIRONMENT);
 
   private resourceId = '';
 
@@ -135,7 +135,7 @@ export class MetadataComponent implements OnInit {
   areInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
   areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
 
-  provider = environment.defaultProvider;
+  provider = this.environment.defaultProvider;
   isMedium = toSignal(inject(IS_MEDIUM));
 
   private readonly resourceNameMap = new Map<ResourceType, string>([
@@ -221,7 +221,7 @@ export class MetadataComponent implements OnInit {
 
       if (this.resourceType() === ResourceType.Registration) {
         if (metadata) {
-          this.provider = metadata.provider || environment.defaultProvider;
+          this.provider = metadata.provider || this.environment.defaultProvider;
           this.actions.fetchSubjects(this.resourceType(), this.provider);
         }
       } else {

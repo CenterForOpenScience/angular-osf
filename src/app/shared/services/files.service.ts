@@ -4,6 +4,7 @@ import { catchError, map } from 'rxjs/operators';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MapFileCustomMetadata, MapFileRevision } from '@osf/features/files/mappers';
 import {
   CreateFolderResponse,
@@ -37,13 +38,11 @@ import {
   OsfFile,
   OsfFileVersion,
 } from '@shared/models';
-import { JsonApiService } from '@shared/services';
-import { ToastService } from '@shared/services/toast.service';
 
-import { ResourceType } from '../enums';
 import { AddonMapper, ContributorsMapper, MapFile, MapFiles, MapFileVersions } from '../mappers';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -51,14 +50,11 @@ import { environment } from 'src/environments/environment';
 export class FilesService {
   readonly jsonApiService = inject(JsonApiService);
   readonly toastService = inject(ToastService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+  private readonly addonsApiUrl = this.environment.addonsApiUrl;
 
   filesFields = 'name,guid,kind,extra,size,path,materialized_path,date_modified,parent_folder,files';
-
-  private readonly urlMap = new Map<ResourceType, string>([
-    [ResourceType.Project, 'nodes'],
-    [ResourceType.Registration, 'registrations'],
-  ]);
 
   getFiles(
     filesLink: string,
@@ -313,7 +309,7 @@ export class FilesService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ApiData<null, null, null, { self: string }>[], null>
-      >(`${environment.addonsApiUrl}/resource-references`, params)
+      >(`${this.addonsApiUrl}/resource-references`, params)
       .pipe(map((response) => response.data?.[0]?.links?.self ?? ''));
   }
 

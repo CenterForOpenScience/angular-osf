@@ -2,19 +2,20 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ProjectsMapper } from '@shared/mappers/projects';
-import { ProjectMetadataUpdatePayload } from '@shared/models';
-import { ProjectJsonApi, ProjectModel, ProjectsResponseJsonApi } from '@shared/models/projects';
-import { JsonApiService } from '@shared/services';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { environment } from 'src/environments/environment';
+import { ProjectsMapper } from '../mappers/projects';
+import { ProjectJsonApi, ProjectMetadataUpdatePayload, ProjectModel, ProjectsResponseJsonApi } from '../models';
+
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectsService {
   private jsonApiService = inject(JsonApiService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   fetchProjects(userId: string, params?: Record<string, unknown>): Observable<ProjectModel[]> {
     return this.jsonApiService

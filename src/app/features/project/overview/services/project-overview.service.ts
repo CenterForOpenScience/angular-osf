@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ComponentsMapper } from '@osf/shared/mappers';
 import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
@@ -10,14 +11,13 @@ import { JsonApiService } from '@osf/shared/services';
 import { ProjectOverviewMapper } from '../mappers';
 import { ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
     const params: Record<string, unknown> = {

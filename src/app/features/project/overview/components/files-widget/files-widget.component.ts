@@ -19,6 +19,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { FileProvider } from '@osf/features/files/constants';
 import {
   FilesSelectors,
@@ -41,8 +42,6 @@ import {
 } from '@osf/shared/models';
 import { ProjectModel } from '@osf/shared/models/projects';
 
-import { environment } from 'src/environments/environment';
-
 @Component({
   selector: 'osf-files-widget',
   imports: [TranslatePipe, SelectComponent, TabsModule, FilesTreeComponent, Button, Skeleton],
@@ -57,6 +56,7 @@ export class FilesWidgetComponent {
   router = inject(Router);
   activeRoute = inject(ActivatedRoute);
 
+  private readonly environment = inject(ENVIRONMENT);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly files = select(FilesSelectors.getFiles);
@@ -72,7 +72,7 @@ export class FilesWidgetComponent {
   currentRootFolder = model<FileLabelModel | null>(null);
   pageNumber = signal(1);
 
-  readonly osfStorageLabel = 'Osf Storage';
+  readonly osfStorageLabel = 'OSF Storage';
 
   readonly options = computed(() => {
     const components = this.components().filter((component) => this.rootOption().value !== component.id);
@@ -154,8 +154,8 @@ export class FilesWidgetComponent {
 
   private getStorageAddons(projectId: string) {
     const resourcePath = 'nodes';
-    const folderLink = `${environment.apiDomainUrl}/v2/${resourcePath}/${projectId}/files/`;
-    const iriLink = `${environment.webUrl}/${projectId}`;
+    const folderLink = `${this.environment.apiDomainUrl}/v2/${resourcePath}/${projectId}/files/`;
+    const iriLink = `${this.environment.webUrl}/${projectId}`;
     this.actions.getRootFolders(folderLink);
     this.actions.getConfiguredStorageAddons(iriLink);
   }

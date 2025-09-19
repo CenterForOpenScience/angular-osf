@@ -2,7 +2,7 @@
   <div class="flex flex-wrap gap-2">
     @for (chip of chips(); track chip.key + chip.value) {
       <p-chip
-        [label]="chip.label + ' : ' + chip.displayValue"
+        [label]="chip.label + ': ' + chip.displayValue"
         removeIcon="fas fa-close"
         removable
         (onRemove)="removeFilter(chip.key)"

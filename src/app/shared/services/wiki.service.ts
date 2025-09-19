@@ -4,7 +4,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/shared/services';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiResponse, WikisWithMeta } from '@shared/models';
 
 import { ResourceType } from '../enums';
@@ -20,7 +20,7 @@ import {
   WikiVersionJsonApiResponse,
 } from '../models';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +28,8 @@ import { environment } from 'src/environments/environment';
 export class WikiService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],

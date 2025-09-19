@@ -13,14 +13,14 @@ import { HeaderComponent } from '@core/components/header/header.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 
-import { MaintenanceBannerComponent } from '../maintenance-banner/maintenance-banner.component';
+import { OSFBannerComponent } from '../osf-banners/osf-banner.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 
 import { RootComponent } from './root.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('RootComponent', () => {
+describe('Component: Root', () => {
   let component: RootComponent;
   let fixture: ComponentFixture<RootComponent>;
   let isWebSubject: BehaviorSubject<boolean>;
@@ -41,7 +41,7 @@ describe('RootComponent', () => {
           ConfirmDialog,
           BreadcrumbComponent,
           SidenavComponent,
-          MaintenanceBannerComponent
+          OSFBannerComponent
         ),
       ],
       providers: [

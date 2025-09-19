@@ -3,8 +3,10 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MyResourcesMapper } from '@osf/features/my-projects/mappers';
-import { ResourceSearchMode, ResourceType, SortOrder } from '@shared/enums';
+
+import { ResourceSearchMode, ResourceType, SortOrder } from '../enums';
 import {
   CreateProjectPayloadJsoApi,
   EndpointType,
@@ -14,10 +16,9 @@ import {
   MyResourcesItemResponseJsonApi,
   MyResourcesResponseJsonApi,
   MyResourcesSearchFilters,
-} from '@shared/models';
-import { JsonApiService } from '@shared/services';
+} from '../models';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,8 @@ export class MyResourcesService {
   };
 
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   private buildCommonParams(
     filters?: MyResourcesSearchFilters,

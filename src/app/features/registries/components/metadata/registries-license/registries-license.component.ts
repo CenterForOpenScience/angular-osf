@@ -9,13 +9,12 @@ import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angu
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
 import { LicenseComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
 import { LicenseModel, LicenseOptions } from '@osf/shared/models';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-registries-license',
@@ -28,6 +27,7 @@ export class RegistriesLicenseComponent {
   control = input.required<FormGroup>();
 
   private readonly route = inject(ActivatedRoute);
+  private readonly environment = inject(ENVIRONMENT);
   private readonly draftId = this.route.snapshot.params['id'];
   private readonly fb = inject(FormBuilder);
 
@@ -52,7 +52,7 @@ export class RegistriesLicenseComponent {
   constructor() {
     effect(() => {
       if (this.draftRegistration() && !this.isLoaded) {
-        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? environment.defaultProvider);
+        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.environment.defaultProvider);
         this.isLoaded = true;
       }
     });

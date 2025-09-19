@@ -7,9 +7,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
+import { AddonType } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
-import { AddonType } from '@shared/enums';
-import { AddonsSelectors, DeleteConfiguredAddon } from '@shared/stores/addons';
+import { AddonsSelectors, DeleteConfiguredAddon } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-disconnect-addon-modal',
@@ -39,9 +39,7 @@ export class DisconnectAddonModalComponent {
     if (!this.addon) return;
 
     this.actions.deleteConfiguredAddon(this.addon.id, this.addon.type).subscribe({
-      complete: () => {
-        this.dialogRef.close({ success: true });
-      },
+      complete: () => this.dialogRef.close({ success: true }),
     });
   }
 }

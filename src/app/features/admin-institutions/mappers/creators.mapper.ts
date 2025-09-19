@@ -26,5 +26,6 @@ export function mapCreators(project: ResourceModel, currentInstitutionId: string
         text: `${name} (${role})`,
         url: creator.absoluteUrl,
       };
-    });
+    })
+    ?.slice(0, 2);
 }

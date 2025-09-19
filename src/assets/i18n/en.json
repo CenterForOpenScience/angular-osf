@@ -2038,7 +2038,7 @@
         "publicationDateTitle": "Publication Date (optional)",
         "publicationCitationTitle": "Publication Citation (optional)",
         "affiliatedInstitutionsTitle": "Affiliated Institutions",
-        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the <a class='font-bold' href='https://www.cos.io/products/osf-institutions' target='_blank'>Center for Open Science</a> to create a dedicated <a class='font-bold' href='https://help.osf.io/article/191-view-institutional-landing-pages' target='_blank'>institutional OSF landing page</a>."
+        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an <a class='font-bold' href='https://www.cos.io/products/osf-institutions' target='_blank'>OSF institutional member</a> and has worked with the Center for Open Science to create a dedicated <a class='font-bold' href='https://help.osf.io/article/191-view-institutional-landing-pages' target='_blank'>institutional OSF landing page</a>."
       },
       "authorAssertions": {
         "title": "Author Assertions",
@@ -2063,8 +2063,8 @@
         "title": "Supplements (optional)",
         "description": "Connect an OSF project to share data, code, protocols, or other supplemental materials.",
         "options": {
-          "connectExisting": "Connect an existing OSF project",
-          "createNew": "Create a new OSF project"
+          "connectExisting": "Connect An Existing OSF Project",
+          "createNew": "Create A New OSF Project"
         },
         "projectSelection": {
           "title": "Select Project",
@@ -2614,6 +2614,7 @@
       "description": "Description:",
       "provider": "Provider:",
       "license": "License:",
+      "context": "Context",
       "registrationTemplate": "Registration Template:",
       "conflictOfInterestResponse": "Conflict of Interest response:",
       "associatedData": "Associated data:",

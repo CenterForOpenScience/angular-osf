@@ -1,15 +1,13 @@
 import { InstitutionUser, TableCellData } from '../models';
 
-import { environment } from 'src/environments/environment';
-
-export function mapUserToTableCellData(user: InstitutionUser): TableCellData {
+export function mapUserToTableCellData(user: InstitutionUser, webUrl: string): TableCellData {
   return {
     id: user.id,
     userName: user.userName || '-',
     department: user.department || '-',
     userLink: {
       text: user.userId,
-      url: `${environment.webUrl}/${user.userId}`,
+      url: `${webUrl}/${user.userId}`,
     },
     orcidId: user.orcidId
       ? {

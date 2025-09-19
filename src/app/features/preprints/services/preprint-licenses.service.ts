@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
 import {
   PreprintAttributesJsonApi,
@@ -13,14 +14,13 @@ import { LicensesMapper } from '@shared/mappers';
 import { ApiData, LicenseModel, LicenseOptions, LicensesResponseJsonApi } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class PreprintLicensesService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService

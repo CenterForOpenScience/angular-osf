@@ -42,6 +42,7 @@ export interface SearchResultJsonApi {
     };
   };
   attributes?: {
+    matchEvidence: (IriMatchEvidence | TextMatchEvidence)[];
     cardSearchResultCount: number;
   };
 }
@@ -114,6 +115,30 @@ interface Usage {
 
 interface Creator extends MetadataField {
   affiliation: MetadataField[];
+}
+
+interface IriMatchEvidence {
+  matchingIri: string;
+  osfmapPropertyPath: string[];
+  propertyPathKey: string;
+  propertyPath: {
+    displayLabel: {
+      '@language': string;
+      '@value': string;
+    }[];
+  }[];
+}
+
+interface TextMatchEvidence {
+  matchingHighlight: string;
+  osfmapPropertyPath: string[];
+  propertyPathKey: string;
+  propertyPath: {
+    displayLabel: {
+      '@language': string;
+      '@value': string;
+    }[];
+  }[];
 }
 
 interface IsContainedBy extends MetadataField {

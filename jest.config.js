@@ -58,6 +58,7 @@ module.exports = {
     '<rootDir>/src/@types/',
   ],
   testPathIgnorePatterns: [
+    '<rootDir>/src/environments',
     '<rootDir>/src/app/app.config.ts',
     '<rootDir>/src/app/app.routes.ts',
     '<rootDir>/src/app/features/files/components',

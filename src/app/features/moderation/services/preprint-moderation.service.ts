@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiResponse, PaginatedData, ResponseJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
@@ -20,14 +21,13 @@ import {
 } from '../models';
 import { PreprintSubmissionPaginatedData } from '../models/preprint-submission.model';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class PreprintModerationService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   getPreprintProviders(): Observable<PreprintProviderModerationInfo[]> {
     const baseUrl = `${this.apiUrl}/providers/preprints/?filter[permissions]=view_actions,set_up_moderation`;

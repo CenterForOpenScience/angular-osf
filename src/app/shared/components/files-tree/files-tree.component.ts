@@ -26,6 +26,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MoveFileDialogComponent } from '@osf/features/files/components/move-file-dialog/move-file-dialog.component';
 import { RenameFileDialogComponent } from '@osf/features/files/components/rename-file-dialog/rename-file-dialog.component';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
@@ -40,8 +41,6 @@ import { DataciteService } from '@osf/shared/services/datacite/datacite.service'
 import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-files-tree',
@@ -71,6 +70,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly dialogService = inject(DialogService);
   readonly translateService = inject(TranslateService);
   readonly dataciteService = inject(DataciteService);
+  private readonly environment = inject(ENVIRONMENT);
   readonly clipboard = inject(Clipboard);
 
   files = input.required<OsfFile[]>();
@@ -84,9 +84,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
   isDragOver = signal(false);
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router) || this.viewOnly();
-  });
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
@@ -259,7 +257,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   private handleShareAction(file: OsfFile, shareType?: string): void {
     const emailLink = `mailto:?subject=${file.name}&body=${file.links.html}`;
     const twitterLink = `https://twitter.com/intent/tweet?url=${file.links.html}&text=${file.name}&via=OSFramework`;
-    const facebookLink = `https://www.facebook.com/dialog/share?app_id=${environment.facebookAppId}&display=popup&href=${file.links.html}&redirect_uri=${file.links.html}`;
+    const facebookLink = `https://www.facebook.com/dialog/share?app_id=${this.environment.facebookAppId}&display=popup&href=${file.links.html}&redirect_uri=${file.links.html}`;
 
     switch (shareType) {
       case 'email':

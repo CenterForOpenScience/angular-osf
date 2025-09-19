@@ -12,6 +12,7 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, injec
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@osf/core/store/user';
 import { SelectComponent } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
@@ -42,6 +43,7 @@ export class InstitutionsUsersComponent {
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+  private readonly environment = inject(ENVIRONMENT);
 
   private readonly actions = createDispatchMap({
     fetchInstitutionUsers: FetchInstitutionUsers,
@@ -68,7 +70,9 @@ export class InstitutionsUsersComponent {
 
   currentUser = select(UserSelectors.getCurrentUser);
 
-  tableData = computed(() => this.users().map((user: InstitutionUser): TableCellData => mapUserToTableCellData(user)));
+  tableData = computed(() =>
+    this.users().map((user: InstitutionUser): TableCellData => mapUserToTableCellData(user, this.environment.webUrl))
+  );
 
   amountText = computed(() => {
     const count = this.totalCount();
