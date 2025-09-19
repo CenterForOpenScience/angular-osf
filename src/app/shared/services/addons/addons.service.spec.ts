@@ -8,7 +8,7 @@ import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.
 import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
-describe.skip('Service: Addons', () => {
+describe('Service: Addons', () => {
   let service: AddonsService;
 
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe.skip('Service: Addons', () => {
       results = result;
     });
 
-    const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/external-storage-services');
+    const request = httpMock.expectOne('http://addons.localhost:8000/external-storage-services');
     expect(request.request.method).toBe('GET');
     request.flush(getAddonsExternalStorageData());
 
@@ -54,7 +54,7 @@ describe.skip('Service: Addons', () => {
     });
 
     const request = httpMock.expectOne(
-      'https://addons.staging4.osf.io/v1/resource-references/reference-id/configured_storage_addons/'
+      'http://addons.localhost:8000/resource-references/reference-id/configured_storage_addons/'
     );
     expect(request.request.method).toBe('GET');
     request.flush(getConfiguredAddonsData());
@@ -88,7 +88,7 @@ describe.skip('Service: Addons', () => {
     });
 
     const request = httpMock.expectOne(
-      'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
+      'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
     );
     expect(request.request.method).toBe('GET');
     request.flush(getAddonsAuthorizedStorageData());
@@ -125,7 +125,7 @@ describe.skip('Service: Addons', () => {
         results = result;
       });
 
-      const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+      const request = httpMock.expectOne('http://addons.localhost:8000/authorized-storage-accounts/account-id');
       expect(request.request.method).toBe('PATCH');
       expect(request.request.body).toEqual(
         Object({

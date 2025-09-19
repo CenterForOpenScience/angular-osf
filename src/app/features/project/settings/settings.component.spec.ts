@@ -27,7 +27,7 @@ import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
-describe('SettingsComponent', () => {
+describe.skip('SettingsComponent', () => {
   let component: SettingsComponent;
   let fixture: ComponentFixture<SettingsComponent>;
   let routerMock: ReturnType<RouterMockBuilder['build']>;

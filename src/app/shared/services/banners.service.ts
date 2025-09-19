@@ -4,10 +4,10 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
+import { BannerModel } from '../../core/components/osf-banners/models/banner.model';
 import { BannerMapper } from '../mappers/banner.mapper';
 import { JsonApiResponse } from '../models';
 import { BannerJsonApi } from '../models/banner.json-api.model';
-import { BannerModel } from '../models/banner.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -32,7 +32,7 @@ export class BannersService {
    * @returns Observable emitting a Banner object.
    *
    */
-  fetchCurrentBanner(): Observable<BannerModel> {
+  getCurrentBanner(): Observable<BannerModel> {
     return this.jsonApiService
       .get<JsonApiResponse<BannerJsonApi, null>>(`${this.apiDomainUrl}/_/banners/current`)
       .pipe(map((response) => BannerMapper.fromResponse(response.data)));

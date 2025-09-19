@@ -24,7 +24,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   CustomPaginatorComponent,
   LoadingSpinnerComponent,
-  ScheduledBannerComponent,
   SearchInputComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
@@ -43,7 +42,6 @@ import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores';
     CustomPaginatorComponent,
     LoadingSpinnerComponent,
     RouterLink,
-    ScheduledBannerComponent,
   ],
   templateUrl: './institutions-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

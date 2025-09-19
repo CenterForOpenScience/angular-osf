@@ -38,7 +38,6 @@ export { RegistrationCardComponent } from './registration-card/registration-card
 export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { ResourceMetadataComponent } from './resource-metadata/resource-metadata.component';
 export { ReusableFilterComponent } from './reusable-filter/reusable-filter.component';
-export { ScheduledBannerComponent } from './scheduled-banner/scheduled-banner.component';
 export { SearchHelpTutorialComponent } from './search-help-tutorial/search-help-tutorial.component';
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SearchResultsContainerComponent } from './search-results-container/search-results-container.component';
