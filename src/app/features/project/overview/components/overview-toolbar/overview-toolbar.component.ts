@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -16,6 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ClearDuplicatedProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { IconComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { ShareableContent, ToolbarResource } from '@osf/shared/models';
@@ -77,6 +78,7 @@ export class OverviewToolbarComponent {
   isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
   bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
+  duplicatedProject = select(ProjectOverviewSelectors.getDuplicatedProject);
   socialsActionItems = computed(() => {
     const shareableContent = this.createShareableContent();
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
@@ -84,6 +86,10 @@ export class OverviewToolbarComponent {
 
   hasViewOnly = computed(() => {
     return hasViewOnlyParam(this.router);
+  });
+
+  actions = createDispatchMap({
+    clearDuplicatedProject: ClearDuplicatedProject,
   });
 
   readonly forkActionItems = [
@@ -222,13 +228,24 @@ export class OverviewToolbarComponent {
   }
 
   private handleDuplicateProject(): void {
-    this.dialogService.open(DuplicateDialogComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.duplicate.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.dialogService
+      .open(DuplicateDialogComponent, {
+        focusOnShow: false,
+        header: this.translateService.instant('project.overview.dialog.duplicate.header'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.subscribe({
+        next: () => {
+          const duplicatedProject = this.duplicatedProject();
+
+          if (duplicatedProject) {
+            this.router.navigate(['/', duplicatedProject.id]);
+          }
+        },
+        complete: () => this.actions.clearDuplicatedProject(),
+      });
   }
 
   private createShareableContent(): ShareableContent | null {

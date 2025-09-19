@@ -13,7 +13,10 @@ import { JsonApiService } from '@osf/shared/services';
 export class RegistrationsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getRegistrations(projectId: string, page: number, pageSize: number): Observable<PaginatedData<RegistrationCard[]>> {
     const params = {

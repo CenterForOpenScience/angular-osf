@@ -7,6 +7,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
+import { distinctUntilChanged, filter, map } from 'rxjs';
+
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -20,7 +22,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
 import { GetRootFolders } from '@osf/features/files/store';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
@@ -260,6 +262,7 @@ export class ProjectOverviewComponent implements OnInit {
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
+    this.setupRouteChangeEffects();
 
     effect(() => {
       const currentProject = this.currentProject();
@@ -337,6 +340,26 @@ export class ProjectOverviewComponent implements OnInit {
         this.actions.getCurrentReviewAction(resource.id, provider.primaryCollection.id);
       }
     });
+  }
+
+  private setupRouteChangeEffects(): void {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.route.snapshot.params['id'] || this.route.parent?.snapshot.params['id']),
+        filter(Boolean),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((projectId) => {
+        this.actions.clearProjectOverview();
+        this.actions.getProject(projectId);
+        this.actions.getBookmarksId();
+        this.actions.getHomeWiki(ResourceType.Project, projectId);
+        this.actions.getComponents(projectId);
+        this.actions.getLinkedProjects(projectId);
+        this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
+      });
   }
 
   private setupCleanup(): void {

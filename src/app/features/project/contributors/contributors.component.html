@@ -88,23 +88,25 @@
     </div>
   }
 
-  <div class="flex flex-column row-gap-4 mt-6 w-full">
-    <h2>{{ 'project.contributors.viewOnly' | translate }}</h2>
+  @if (isCurrentUserAdminContributor()) {
+    <div class="flex flex-column row-gap-4 mt-6 w-full">
+      <h2>{{ 'project.contributors.viewOnly' | translate }}</h2>
 
-    <p>{{ 'project.contributors.createLink' | translate }}</p>
+      <p>{{ 'project.contributors.createLink' | translate }}</p>
 
-    <p-button
-      class="w-10rem"
-      [label]="'project.contributors.createButton' | translate"
-      [disabled]="!canCreateViewLink()"
-      (onClick)="createViewLink()"
-    >
-    </p-button>
+      <p-button
+        class="w-10rem"
+        [label]="'project.contributors.createButton' | translate"
+        [disabled]="!canCreateViewLink()"
+        (onClick)="createViewLink()"
+      >
+      </p-button>
 
-    <osf-view-only-table
-      [isLoading]="isViewOnlyLinksLoading()"
-      [tableData]="viewOnlyLinks()"
-      (deleteLink)="deleteLinkItem($event)"
-    />
-  </div>
+      <osf-view-only-table
+        [isLoading]="isViewOnlyLinksLoading()"
+        [tableData]="viewOnlyLinks()"
+        (deleteLink)="deleteLinkItem($event)"
+      />
+    </div>
+  }
 </section>

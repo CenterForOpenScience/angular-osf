@@ -9,7 +9,8 @@ import { inject, Injectable } from '@angular/core';
 import { AddonServiceNames } from '@osf/shared/enums';
 import { AuthorizedAccountModel, ConfiguredAddonModel } from '@osf/shared/models';
 
-import { ConfirmAccountConnectionModalComponent, DisconnectAddonModalComponent } from '../components';
+import { ConfirmAccountConnectionModalComponent } from '../components/confirm-account-connection-modal/confirm-account-connection-modal.component';
+import { DisconnectAddonModalComponent } from '../components/disconnect-addon-modal/disconnect-addon-modal.component';
 
 @Injectable({
   providedIn: 'root',

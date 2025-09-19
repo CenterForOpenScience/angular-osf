@@ -16,7 +16,10 @@ import { RegistryModeration, RegistryResponseJsonApi, ReviewAction, ReviewAction
 export class RegistryModerationService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getRegistrySubmissions(
     provider: string,

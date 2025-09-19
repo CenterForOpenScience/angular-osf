@@ -6,15 +6,15 @@ import { Toast } from 'primeng/toast';
 
 import { AfterViewInit, Component, inject } from '@angular/core';
 
-import { CookieConsentService } from '../../services/cookie-consent/cookie-consent.service';
+import { CookieConsentService } from '../../../../shared/services/cookie-consent/cookie-consent.service';
 
 @Component({
-  selector: 'osf-cookie-consent',
-  templateUrl: './cookie-consent.component.html',
-  styleUrls: ['./cookie-consent.component.scss'],
+  selector: 'osf-cookie-consent-banner',
+  templateUrl: './cookie-consent-banner.component.html',
+  styleUrls: ['./cookie-consent-banner.component.scss'],
   imports: [Toast, Button, PrimeTemplate, TranslatePipe],
 })
-export class CookieConsentComponent implements AfterViewInit {
+export class CookieConsentBannerComponent implements AfterViewInit {
   private readonly toastService = inject(MessageService);
   private readonly consentService = inject(CookieConsentService);
   private readonly translateService = inject(TranslateService);

@@ -28,12 +28,12 @@ describe.skip('Service: Files', () => {
     });
 
     const request = httpMock.expectOne(
-      'https://addons.staging4.osf.io/v1/resource-references?filter%5Bresource_uri%5D=reference-url'
+      'http://addons.localhost:8000/resource-references?filter%5Bresource_uri%5D=reference-url'
     );
     expect(request.request.method).toBe('GET');
     request.flush(getResourceReferencesData());
 
-    expect(results).toBe('https://addons.staging4.osf.io/v1/resource-references/3193f97c-e6d8-41a4-8312-b73483442086');
+    expect(results).toBe('http://addons.localhost:8000/resource-references/3193f97c-e6d8-41a4-8312-b73483442086');
     expect(httpMock.verify).toBeTruthy();
   }));
 
@@ -44,13 +44,13 @@ describe.skip('Service: Files', () => {
     });
 
     let request = httpMock.expectOne(
-      'https://addons.staging4.osf.io/v1/resource-references?filter%5Bresource_uri%5D=reference-url'
+      'http://addons.localhost:8000/resource-references?filter%5Bresource_uri%5D=reference-url'
     );
     expect(request.request.method).toBe('GET');
     request.flush(getResourceReferencesData());
 
     request = httpMock.expectOne(
-      'https://addons.staging4.osf.io/v1/resource-references/3193f97c-e6d8-41a4-8312-b73483442086/configured_storage_addons'
+      'http://addons.localhost:8000/resource-references/3193f97c-e6d8-41a4-8312-b73483442086/configured_storage_addons'
     );
     expect(request.request.method).toBe('GET');
     request.flush(getConfiguredAddonsData());

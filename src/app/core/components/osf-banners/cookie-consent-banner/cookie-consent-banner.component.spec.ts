@@ -6,13 +6,13 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CookieConsentService } from '../../services/cookie-consent/cookie-consent.service';
+import { CookieConsentService } from '../../../../shared/services/cookie-consent/cookie-consent.service';
 
-import { CookieConsentComponent } from './cookie-consent.component';
+import { CookieConsentBannerComponent } from './cookie-consent-banner.component';
 
 describe('CookieConsentComponent', () => {
-  let component: CookieConsentComponent;
-  let fixture: ComponentFixture<CookieConsentComponent>;
+  let component: CookieConsentBannerComponent;
+  let fixture: ComponentFixture<CookieConsentBannerComponent>;
   let mockToastService: jest.Mocked<MessageService>;
   let mockConsentService: jest.Mocked<CookieConsentService>;
   let mockTranslateService: jest.Mocked<TranslateService>;
@@ -33,7 +33,7 @@ describe('CookieConsentComponent', () => {
     } as unknown as jest.Mocked<TranslateService>;
 
     await TestBed.configureTestingModule({
-      imports: [CookieConsentComponent],
+      imports: [CookieConsentBannerComponent],
       providers: [
         { provide: MessageService, useValue: mockToastService },
         { provide: CookieConsentService, useValue: mockConsentService },
@@ -41,7 +41,7 @@ describe('CookieConsentComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CookieConsentComponent);
+    fixture = TestBed.createComponent(CookieConsentBannerComponent);
     component = fixture.componentInstance;
   });
   describe('ngAfterViewInit', () => {

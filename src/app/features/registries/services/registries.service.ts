@@ -33,7 +33,10 @@ import { SchemaActionTrigger } from '../enums';
 export class RegistriesService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   createDraft(
     registrationSchemaId: string,

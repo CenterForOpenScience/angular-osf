@@ -18,7 +18,10 @@ import { JsonApiService } from '@osf/shared/services';
 export class NotificationSubscriptionService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly baseUrl = `${this.environment.apiDomainUrl}/v2/subscriptions/`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2/subscriptions/`;
+  }
 
   getAllGlobalNotificationSubscriptions(): Observable<NotificationSubscription[]> {
     const params: Record<string, string> = {
@@ -26,7 +29,7 @@ export class NotificationSubscriptionService {
     };
 
     return this.jsonApiService
-      .get<JsonApiResponse<NotificationSubscriptionGetResponseJsonApi[], null>>(this.baseUrl, params)
+      .get<JsonApiResponse<NotificationSubscriptionGetResponseJsonApi[], null>>(this.apiUrl, params)
       .pipe(
         map((responses) => responses.data.map((response) => NotificationSubscriptionMapper.fromGetResponse(response)))
       );
@@ -36,7 +39,7 @@ export class NotificationSubscriptionService {
     const request = NotificationSubscriptionMapper.toUpdateRequest(id, frequency);
 
     return this.jsonApiService
-      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.baseUrl}${id}/`, request)
+      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.apiUrl}${id}/`, request)
       .pipe(map((response) => NotificationSubscriptionMapper.fromGetResponse(response)));
   }
 }

@@ -18,6 +18,11 @@ export interface ActivityLogJsonApi {
       };
       params_project: null;
       pointer: PointerJsonApi | null;
+      template_node?: {
+        id: string;
+        url: string;
+        title: string;
+      };
       preprint_provider?:
         | string
         | {

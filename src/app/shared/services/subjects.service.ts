@@ -17,9 +17,14 @@ import { JsonApiService } from './json-api.service';
 export class SubjectsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
-  defaultProvider = this.environment.defaultProvider;
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get defaultProvider() {
+    return this.environment.defaultProvider;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
