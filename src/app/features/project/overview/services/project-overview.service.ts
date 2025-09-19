@@ -4,8 +4,14 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { ComponentsMapper } from '@osf/shared/mappers';
-import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse } from '@osf/shared/models';
+import { BaseNodeMapper, ComponentsMapper } from '@osf/shared/mappers';
+import {
+  BaseNodeDataJsonApi,
+  BaseNodeModel,
+  ComponentGetResponseJsonApi,
+  ComponentOverview,
+  JsonApiResponse,
+} from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { ProjectOverviewMapper } from '../mappers';
@@ -67,7 +73,7 @@ export class ProjectOverviewService {
     return this.jsonApiService.post<void>(`${this.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
   }
 
-  duplicateProject(projectId: string, title: string): Observable<void> {
+  duplicateProject(projectId: string, title: string): Observable<BaseNodeModel> {
     const payload = {
       data: {
         type: 'nodes',
@@ -79,7 +85,9 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.jsonApiService.post<void>(`${this.apiUrl}/nodes/`, payload);
+    return this.jsonApiService
+      .post<JsonApiResponse<BaseNodeDataJsonApi, null>>(`${this.apiUrl}/nodes/`, payload)
+      .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
   }
 
   createComponent(

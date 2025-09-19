@@ -11,6 +11,7 @@ import { ResourceType } from '@shared/enums';
 import { ProjectOverviewService } from '../services';
 
 import {
+  ClearDuplicatedProject,
   ClearProjectOverview,
   CreateComponent,
   DeleteComponent,
@@ -154,16 +155,24 @@ export class ProjectOverviewState {
     });
 
     return this.projectOverviewService.duplicateProject(action.projectId, action.title).pipe(
-      tap(() => {
+      tap((response) => {
         ctx.patchState({
           project: {
             ...state.project,
             isSubmitting: false,
           },
+          duplicatedProject: response,
         });
       }),
       catchError((error) => handleSectionError(ctx, 'project', error))
     );
+  }
+
+  @Action(ClearDuplicatedProject)
+  clearDuplicatedProject(ctx: StateContext<ProjectOverviewStateModel>) {
+    ctx.patchState({
+      duplicatedProject: null,
+    });
   }
 
   @Action(CreateComponent)
