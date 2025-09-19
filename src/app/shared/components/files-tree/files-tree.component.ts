@@ -88,7 +88,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
-  uploadFileConfirmed = output<File>();
+  uploadFilesConfirmed = output<File[] | File>();
   filesPageChange = output<number>();
 
   foldersStack: OsfFile[] = [];
@@ -163,12 +163,15 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     const files = event.dataTransfer?.files;
 
     if (files && files.length > 0) {
+      const fileArray = Array.from(files);
+      const isMultiple = files.length > 1;
+
       this.customConfirmationService.confirmAccept({
-        headerKey: 'files.dialogs.uploadFile.title',
-        messageParams: { name: files[0].name },
-        messageKey: 'files.dialogs.uploadFile.message',
+        headerKey: isMultiple ? 'files.dialogs.uploadFiles.title' : 'files.dialogs.uploadFile.title',
+        messageParams: isMultiple ? { count: files.length } : { name: files[0].name },
+        messageKey: isMultiple ? 'files.dialogs.uploadFiles.message' : 'files.dialogs.uploadFile.message',
         acceptLabelKey: 'common.buttons.upload',
-        onConfirm: () => this.uploadFileConfirmed.emit(files[0]),
+        onConfirm: () => this.uploadFilesConfirmed.emit(fileArray),
       });
     }
   }

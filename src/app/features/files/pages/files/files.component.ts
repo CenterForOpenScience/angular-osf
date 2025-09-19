@@ -278,38 +278,62 @@ export class FilesComponent {
     });
   }
 
-  uploadFile(file: File): void {
+  uploadFiles(files: File | File[]): void {
     const currentFolder = this.currentFolder();
     const uploadLink = currentFolder?.links.upload;
 
     if (!uploadLink) return;
 
-    this.fileName.set(file.name);
-    this.fileIsUploading.set(true);
+    const fileArray = Array.isArray(files) ? files : [files];
+    const isMultiple = fileArray.length > 1;
+    if (fileArray.length === 0) return;
 
-    this.filesService
-      .uploadFile(file, uploadLink)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => {
-          this.fileIsUploading.set(false);
-          this.fileName.set('');
-          this.updateFilesList();
-        })
-      )
-      .subscribe((event) => {
-        if (event.type === HttpEventType.UploadProgress && event.total) {
-          this.progress.set(Math.round((event.loaded / event.total) * 100));
-        }
-      });
+    this.fileName.set(fileArray.length === 1 ? fileArray[0].name : `${fileArray.length} files`);
+    this.fileIsUploading.set(true);
+    this.progress.set(0);
+
+    let completedUploads = 0;
+    const totalFiles = fileArray.length;
+
+    fileArray.forEach((file) => {
+      this.filesService
+        .uploadFile(file, uploadLink)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          finalize(() => {
+            if (isMultiple) {
+              completedUploads++;
+              const progressPercentage = Math.round((completedUploads / totalFiles) * 100);
+              this.progress.set(progressPercentage);
+
+              if (completedUploads === totalFiles) {
+                this.completeUpload();
+              }
+            } else {
+              this.completeUpload();
+            }
+          })
+        )
+        .subscribe((event) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            this.progress.set(Math.round((event.loaded / event.total) * 100));
+          }
+        });
+    });
+  }
+
+  private completeUpload(): void {
+    this.fileIsUploading.set(false);
+    this.fileName.set('');
+    this.updateFilesList();
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
+    const files = input.files;
+    if (!files || files.length === 0) return;
 
-    this.uploadFile(file);
+    this.uploadFiles(Array.from(files));
   }
 
   createFolder(): void {

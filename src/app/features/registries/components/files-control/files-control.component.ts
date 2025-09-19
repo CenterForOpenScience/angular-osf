@@ -124,7 +124,7 @@ export class FilesControlComponent implements OnDestroy {
     }
     if (!file) return;
 
-    this.uploadFile(file);
+    this.uploadFiles(file);
   }
 
   createFolder(): void {
@@ -166,7 +166,9 @@ export class FilesControlComponent implements OnDestroy {
     return EMPTY;
   }
 
-  uploadFile(file: File): void {
+  uploadFiles(files: File | File[]): void {
+    const fileArray = Array.isArray(files) ? files : [files];
+    const file = fileArray[0]; // Use first file for this component's logic
     const currentFolder = this.currentFolder();
     const uploadLink = currentFolder?.links.upload;
     if (!uploadLink) return;
