@@ -10,7 +10,7 @@
       name="ongoing"
     ></p-checkbox>
 
-    <label class="input-label ml-2" for="wiki">
+    <label class="mb-0 ml-2" [for]="'wiki'">
       {{ 'myProjects.settings.wikiText' | translate }}
     </label>
   </div>
@@ -26,7 +26,7 @@
     [disabledRightControls]="!isPublic()"
   >
     <div class="flex align-items-baseline gap-2">
-      <i class="fas fa-minus text-sm icon-space"></i>
+      <i class="fas fa-minus text-sm p-3"></i>
       <span>
         {{ 'myProjects.settings.' + (anyoneCanEditWiki() ? 'enabledForWiki' : 'disabledForWiki') | translate }}
       </span>

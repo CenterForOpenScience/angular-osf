@@ -15,7 +15,7 @@ import { ProjectDetailSettingAccordionComponent } from '../project-detail-settin
   selector: 'osf-project-setting-notifications',
   imports: [Card, TranslatePipe, ProjectDetailSettingAccordionComponent, NotificationDescriptionPipe],
   templateUrl: './project-setting-notifications.component.html',
-  styleUrls: ['../../settings.component.scss', './project-setting-notifications.component.scss'],
+  styleUrl: './project-setting-notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSettingNotificationsComponent {
