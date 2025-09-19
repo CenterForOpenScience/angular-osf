@@ -1,3 +1,4 @@
+export { CookieConsentBannerComponent as CookieConsentComponent } from '../../core/components/osf-banners/cookie-consent-banner/cookie-consent.banner.component';
 export { AddProjectFormComponent } from './add-project-form/add-project-form.component';
 export { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select/affiliated-institution-select.component';
 export { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view/affiliated-institutions-view.component';
