@@ -13,7 +13,7 @@ import { HeaderComponent } from '@core/components/header/header.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 
-import { OSFBannerComponent } from '../osf-banners/osf-banner.component';
+import { OSFBannerComponent } from '../osf-banners/osf.banner.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 
 import { RootComponent } from './root.component';
