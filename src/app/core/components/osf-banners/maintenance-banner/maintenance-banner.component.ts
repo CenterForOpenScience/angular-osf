@@ -70,7 +70,6 @@ export class MaintenanceBannerComponent implements OnInit {
    */
   ngOnInit(): void {
     this.dismissed.set(this.cookies.check(this.cookieName));
-    this.dismissed.set(false);
     if (!this.dismissed()) {
       this.fetchMaintenanceStatus();
     }
@@ -85,7 +84,6 @@ export class MaintenanceBannerComponent implements OnInit {
   private fetchMaintenanceStatus(): void {
     this.maintenanceService.fetchMaintenanceStatus().subscribe((maintenance: MaintenanceModel | null) => {
       this.maintenance.set(maintenance);
-      this.maintenance.set({ message: 'this is the message' } as MaintenanceModel);
     });
   }
 
