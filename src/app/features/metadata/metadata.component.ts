@@ -184,6 +184,8 @@ export class MetadataComponent implements OnInit {
     );
   });
 
+  showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
+
   bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
 
   constructor() {
