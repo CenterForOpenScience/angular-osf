@@ -27,8 +27,8 @@ import { MaintenanceService } from '../services/maintenance.service';
 @Component({
   selector: 'osf-maintenance-banner',
   imports: [CommonModule, MessageModule],
-  templateUrl: './maintenance.banner.component.html',
-  styleUrls: ['./maintenance.banner.component.scss'],
+  templateUrl: './maintenance-banner.component.html',
+  styleUrls: ['./maintenance-banner.component.scss'],
   animations: [fadeInOutAnimation],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

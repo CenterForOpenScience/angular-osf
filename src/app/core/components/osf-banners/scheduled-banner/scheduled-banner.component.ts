@@ -18,7 +18,7 @@ import { BannersSelector, GetCurrentScheduledBanner } from '@osf/shared/stores/b
  */
 @Component({
   selector: 'osf-scheduled-banner',
-  templateUrl: './scheduled.banner.component.html',
+  templateUrl: './scheduled-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScheduledBannerComponent implements OnInit {

@@ -9,7 +9,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MaintenanceBannerComponent } from './maintenance.banner.component';
+import { MaintenanceBannerComponent } from './maintenance-banner.component';
 
 describe('Component: Maintenance Banner', () => {
   let fixture: ComponentFixture<MaintenanceBannerComponent>;
