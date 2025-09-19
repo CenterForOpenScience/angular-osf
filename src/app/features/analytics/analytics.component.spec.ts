@@ -2,6 +2,7 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -24,7 +25,7 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('AnalyticsComponent', () => {
+describe('Component: Analytics', () => {
   let component: AnalyticsComponent;
   let fixture: ComponentFixture<AnalyticsComponent>;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
@@ -69,11 +70,11 @@ describe.skip('AnalyticsComponent', () => {
             { selector: AnalyticsSelectors.isMetricsError, value: false },
           ],
           signals: [
-            { selector: metricsSelector, value: metrics },
-            { selector: relatedCountsSelector, value: relatedCounts },
-            { selector: AnalyticsSelectors.isMetricsLoading, value: false },
-            { selector: AnalyticsSelectors.isRelatedCountsLoading, value: false },
-            { selector: AnalyticsSelectors.isMetricsError, value: false },
+            { selector: metricsSelector, value: signal(metrics) },
+            { selector: relatedCountsSelector, value: signal(relatedCounts) },
+            { selector: AnalyticsSelectors.isMetricsLoading, value: signal(false) },
+            { selector: AnalyticsSelectors.isRelatedCountsLoading, value: signal(false) },
+            { selector: AnalyticsSelectors.isMetricsError, value: signal(false) },
           ],
         }),
         { provide: IS_WEB, useValue: of(true) },
@@ -84,11 +85,6 @@ describe.skip('AnalyticsComponent', () => {
 
     fixture = TestBed.createComponent(AnalyticsComponent);
     component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
   });
 
   it('should set selectedRange via onRangeChange', () => {

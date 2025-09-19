@@ -52,7 +52,10 @@ export class TosConsentBannerComponent {
   /**
    * Computed signal indicating whether the user has already accepted the Terms of Service.
    */
-  acceptedTermsOfServiceChange = computed(() => this.currentUser()?.acceptedTermsOfService);
+  readonly acceptedTermsOfServiceChange = computed(() => {
+    const user = this.currentUser();
+    return user?.acceptedTermsOfService ?? false;
+  });
 
   /**
    * Triggered when the user clicks the Continue button.
