@@ -13,7 +13,11 @@
 
     @if (!registry()?.archiving && !registry()?.withdrawn) {
       <div class="pb-5 pl-4 ml-auto w-full md:pr-4">
-        <osf-overview-toolbar [currentResource]="toolbarResource()" [showViewOnlyLinks]="false" [isAdmin]="true" />
+        <osf-overview-toolbar
+          [currentResource]="toolbarResource()"
+          [showViewOnlyLinks]="false"
+          [canEdit]="hasAdminAccess() || hasWriteAccess()"
+        />
       </div>
     }
   </div>
@@ -61,7 +65,10 @@
         <div class="left-section">
           @if (!isAnonymous()) {
             <div class="flex flex-column gap-4 md:flex-row resource">
-              <osf-registry-statuses [registry]="registry()"></osf-registry-statuses>
+              <osf-registry-statuses
+                [registry]="registry()"
+                [readonly]="hasNoPermissions() || hasReadAccess()"
+              ></osf-registry-statuses>
               <osf-registry-revisions
                 [registry]="registry()"
                 [selectedRevisionIndex]="selectedRevisionIndex()"
@@ -70,6 +77,7 @@
                 (continueUpdate)="onContinueUpdateRegistration()"
                 [isModeration]="isModeration"
                 [isSubmitting]="isSchemaResponseLoading()"
+                [readonly]="hasNoPermissions() || hasReadAccess()"
               >
               </osf-registry-revisions>
             </div>
@@ -121,7 +129,7 @@
           <osf-resource-metadata
             [currentResource]="resourceOverview()"
             (customCitationUpdated)="onCustomCitationUpdated($event)"
-            [canWrite]="!hasViewOnly()"
+            [canEdit]="!hasViewOnly() && (hasWriteAccess() || hasAdminAccess())"
           />
         </div>
       </div>

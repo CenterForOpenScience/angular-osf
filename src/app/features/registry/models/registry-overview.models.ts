@@ -9,7 +9,7 @@ import {
   SchemaResponse,
   SubjectModel,
 } from '@osf/shared/models';
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates, UserPermissions } from '@shared/enums';
 
 export interface RegistryOverview {
   id: string;
@@ -41,7 +41,7 @@ export interface RegistryOverview {
   }[];
   analyticsKey: string;
   currentUserCanComment: boolean;
-  currentUserPermissions: string[];
+  currentUserPermissions: UserPermissions[];
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;

@@ -93,6 +93,12 @@ export class RegistryOverviewComponent {
   readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
   readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
+
+  readonly hasWriteAccess = select(RegistryOverviewSelectors.hasWriteAccess);
+  readonly hasAdminAccess = select(RegistryOverviewSelectors.hasAdminAccess);
+  readonly hasReadAccess = select(RegistryOverviewSelectors.hasReadAccess);
+  readonly hasNoPermissions = select(RegistryOverviewSelectors.hasNoPermissions);
+
   revisionInProgress: SchemaResponse | undefined;
 
   isLoading = computed(

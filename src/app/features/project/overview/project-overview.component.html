@@ -18,7 +18,7 @@
       [currentResource]="currentResource()"
       [projectTitle]="project.title"
       [projectDescription]="project.description"
-      [isAdmin]="isAdmin"
+      [canEdit]="isAdmin"
     />
   </div>
 
@@ -93,7 +93,7 @@
         [currentResource]="resourceOverview()"
         (customCitationUpdated)="onCustomCitationUpdated($event)"
         [isCollectionsRoute]="isCollectionsRoute()"
-        [canWrite]="canWrite"
+        [canEdit]="canWrite"
       />
     </div>
   </div>

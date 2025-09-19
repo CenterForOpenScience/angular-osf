@@ -16,31 +16,34 @@
               (click)="emitOpenRevision($index)"
             />
           }
-          @if (registryAcceptedUnapproved) {
-            <p-button
-              class="w-full"
-              styleClass="w-full"
-              [label]="'registry.overview.reviewUpdate' | translate"
-              [routerLink]="['/registries/revisions/', unApprovedRevisionId, 'review']"
-            />
-          }
-          @if (registryApproved) {
-            <p-button
-              class="w-full"
-              styleClass="w-full"
-              (click)="updateRegistration.emit(registry()?.id!)"
-              [label]="'common.buttons.update' | translate"
-              [loading]="isSubmitting()"
-            />
-          }
-          @if (registryInProgress) {
-            <p-button
-              class="w-full"
-              styleClass="w-full"
-              (click)="continueUpdateHandler()"
-              [label]="'common.buttons.continueUpdate' | translate"
-              [loading]="isSubmitting()"
-            />
+
+          @if (!readonly()) {
+            @if (registryAcceptedUnapproved) {
+              <p-button
+                class="w-full"
+                styleClass="w-full"
+                [label]="'registry.overview.reviewUpdate' | translate"
+                [routerLink]="['/registries/revisions/', unApprovedRevisionId, 'review']"
+              />
+            }
+            @if (registryApproved) {
+              <p-button
+                class="w-full"
+                styleClass="w-full"
+                (click)="updateRegistration.emit(registry()?.id!)"
+                [label]="'common.buttons.update' | translate"
+                [loading]="isSubmitting()"
+              />
+            }
+            @if (registryInProgress) {
+              <p-button
+                class="w-full"
+                styleClass="w-full"
+                (click)="continueUpdateHandler()"
+                [label]="'common.buttons.continueUpdate' | translate"
+                [loading]="isSubmitting()"
+              />
+            }
           }
         }
       </div>
