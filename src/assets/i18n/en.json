@@ -456,7 +456,7 @@
       "accessRequests": "Access Requests",
       "accessRequestsText": "Allow users to request access to this project",
       "wiki": "Wiki",
-      "wikiText": "Enable the wiki In [Dashboard] New and Noteworthy.",
+      "wikiText": "Enable the wiki in {{projectName}}",
       "wikiConfigureTitle": "Configure",
       "wikiConfigureText": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "emailNotifications": "Email Notifications",

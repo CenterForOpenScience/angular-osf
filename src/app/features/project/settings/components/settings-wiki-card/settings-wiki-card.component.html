@@ -11,7 +11,7 @@
     ></p-checkbox>
 
     <label class="mb-0 ml-2" [for]="'wiki'">
-      {{ 'myProjects.settings.wikiText' | translate }}
+      {{ 'myProjects.settings.wikiText' | translate: { projectName: title() } }}
     </label>
   </div>
 
