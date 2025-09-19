@@ -5,7 +5,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
-import { EMPTY, finalize, firstValueFrom, Observable, take } from 'rxjs';
+import { EMPTY, finalize, Observable, take } from 'rxjs';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
@@ -114,6 +114,22 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   });
 
+  constructor() {
+    effect(() => {
+      const currentFolder = this.currentFolder();
+      if (currentFolder) {
+        this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
+      }
+    });
+
+    effect(() => {
+      const storageChanged = this.storage();
+      if (storageChanged) {
+        this.foldersStack = [];
+      }
+    });
+  }
+
   ngAfterViewInit(): void {
     if (!this.viewOnly()) {
       this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
@@ -174,22 +190,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         onConfirm: () => this.uploadFilesConfirmed.emit(fileArray),
       });
     }
-  }
-
-  constructor() {
-    effect(() => {
-      const currentFolder = this.currentFolder();
-      if (currentFolder) {
-        this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
-      }
-    });
-
-    effect(() => {
-      const storageChanged = this.storage();
-      if (storageChanged) {
-        this.foldersStack = [];
-      }
-    });
   }
 
   openEntry(file: OsfFile) {
@@ -366,21 +366,27 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
             ? this.translateService.instant('files.dialogs.moveFile.title')
             : this.translateService.instant('files.dialogs.copyFile.title');
 
-        this.dialogService.open(MoveFileDialogComponent, {
-          width: '552px',
-          focusOnShow: false,
-          header: header,
-          closeOnEscape: true,
-          modal: true,
-          closable: true,
-          data: {
-            file: file,
-            resourceId: this.resourceId(),
-            action: action,
-            storageName: this.storage()?.label,
-            foldersStack: [...this.foldersStack],
-          },
-        });
+        this.dialogService
+          .open(MoveFileDialogComponent, {
+            width: '552px',
+            focusOnShow: false,
+            header: header,
+            closeOnEscape: true,
+            modal: true,
+            closable: true,
+            data: {
+              file: file,
+              resourceId: this.resourceId(),
+              action: action,
+              storageName: this.storage()?.label,
+              foldersStack: [...this.foldersStack],
+            },
+          })
+          .onClose.subscribe((foldersStack) => {
+            if (foldersStack) {
+              this.foldersStack = [...foldersStack];
+            }
+          });
       });
   }
 
@@ -424,17 +430,20 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
     const dropNode = event.dropNode as OsfFile;
     const dragNode = event.dragNode as OsfFile;
-    let path = dropNode?.path;
     const moveLink = dragNode?.links?.move;
-    let parentFolder: OsfFile | null = null;
+    let targetFolder: OsfFile | null = null;
+    let path = '';
 
     if (dropNode?.previousFolder) {
-      parentFolder = await firstValueFrom(this.filesService.getFolder(dropNode.relationships.parentFolderLink));
-      if (!parentFolder.relationships.parentFolderLink) {
-        path = '/';
+      if (this.foldersStack.length > 0) {
+        targetFolder = this.foldersStack[this.foldersStack.length - 1];
+        path = targetFolder?.path || '/';
       } else {
-        path = parentFolder.path;
+        path = '/';
       }
+    } else {
+      targetFolder = dropNode;
+      path = dropNode?.path || '/';
     }
 
     if (!path) {
@@ -446,19 +455,23 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       .pipe(
         take(1),
         finalize(() => {
-          this.actions().setCurrentFolder(dropNode?.previousFolder ? parentFolder : dropNode);
+          if (dropNode?.previousFolder) {
+            if (this.foldersStack.length > 0) {
+              this.foldersStack.pop();
+            }
+            this.actions().setCurrentFolder(targetFolder);
+          } else {
+            if (this.currentFolder()) {
+              this.foldersStack.push(this.currentFolder()!);
+            }
+            this.actions().setCurrentFolder(targetFolder);
+          }
         })
       )
       .subscribe((file) => {
         if (file.id) {
-          if (dropNode?.previousFolder) {
-            const filesLink = parentFolder?.relationships.filesLink;
-
-            if (filesLink) {
-              this.actions().getFiles(filesLink);
-            }
-          } else {
-            const filesLink = dropNode?.relationships.filesLink;
+          const filesLink = targetFolder?.relationships.filesLink;
+          if (filesLink) {
             this.actions().getFiles(filesLink);
           }
         }

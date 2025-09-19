@@ -48,10 +48,6 @@ export class MoveFileDialogComponent {
   readonly isFilesUpdating = signal(false);
   readonly rootFolders = select(FilesSelectors.getRootFolders);
 
-  readonly isFolderSame = computed(() => {
-    return this.currentFolder()?.id === this.config.data.file.relationships.parentFolderId;
-  });
-
   readonly storageName =
     this.config.data.storageName || this.translateService.instant('files.dialogs.moveFile.osfStorage');
 
@@ -65,14 +61,23 @@ export class MoveFileDialogComponent {
     getRootFolderFiles: GetRootFolderFiles,
   });
 
-  foldersStack: OsfFile[] = this.config.data.foldersStack ?? [];
-  previousFolder: OsfFile | null = null;
+  foldersStack = signal<OsfFile[]>(this.config.data.foldersStack ?? []);
+  previousFolder = signal<OsfFile | null>(null);
 
   pageNumber = signal(1);
 
   itemsPerPage = 10;
   first = 0;
   filesLink = '';
+
+  readonly isFolderSame = computed(() => {
+    const stack = this.foldersStack();
+    if (stack.length === 0) {
+      return true;
+    }
+    const parentFolder = stack[stack.length - 1];
+    return this.currentFolder()?.id === parentFolder?.id;
+  });
 
   constructor() {
     this.initPreviousFolder();
@@ -92,11 +97,11 @@ export class MoveFileDialogComponent {
   }
 
   initPreviousFolder() {
-    const foldersStack = this.foldersStack;
-    if (foldersStack.length === 0) {
-      this.previousFolder = null;
+    const stack = this.foldersStack();
+    if (stack.length === 0) {
+      this.previousFolder.set(null);
     } else {
-      this.previousFolder = foldersStack[foldersStack.length - 1];
+      this.previousFolder.set(stack[stack.length - 1]);
     }
   }
 
@@ -104,20 +109,25 @@ export class MoveFileDialogComponent {
     if (file.kind !== 'folder') return;
     const current = this.currentFolder();
     if (current) {
-      this.previousFolder = current;
-      this.foldersStack.push(current);
+      this.previousFolder.set(current);
+      this.foldersStack.update((stack) => [...stack, current]);
     }
     this.dispatch.getMoveFileFiles(file.relationships.filesLink);
     this.dispatch.setMoveFileCurrentFolder(file);
   }
 
   openParentFolder() {
-    const previous = this.foldersStack.pop() ?? null;
-    this.previousFolder = this.foldersStack.length > 0 ? this.foldersStack[this.foldersStack.length - 1] : null;
-    if (previous) {
-      this.dispatch.setMoveFileCurrentFolder(previous);
-      this.dispatch.getMoveFileFiles(previous.relationships.filesLink);
-    }
+    this.foldersStack.update((stack) => {
+      const newStack = [...stack];
+      const previous = newStack.pop() ?? null;
+      this.previousFolder.set(newStack.length > 0 ? newStack[newStack.length - 1] : null);
+
+      if (previous) {
+        this.dispatch.setMoveFileCurrentFolder(previous);
+        this.dispatch.getMoveFileFiles(previous.relationships.filesLink);
+      }
+      return newStack;
+    });
   }
 
   moveFile(): void {
@@ -146,7 +156,7 @@ export class MoveFileDialogComponent {
           this.dispatch.setCurrentFolder(this.currentFolder());
           this.dispatch.setMoveFileCurrentFolder(null);
           this.isFilesUpdating.set(false);
-          this.dialogRef.close();
+          this.dialogRef.close(this.foldersStack());
         }),
         catchError((error) => {
           this.toastService.showError(error.error.message);
@@ -154,8 +164,6 @@ export class MoveFileDialogComponent {
         })
       )
       .subscribe((file) => {
-        this.dialogRef.close();
-
         if (file.id) {
           const filesLink = this.currentFolder()?.relationships.filesLink;
           const rootFolders = this.rootFolders();
