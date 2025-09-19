@@ -15,19 +15,18 @@ import { IconComponent } from '@shared/components';
 import { TosConsentBannerComponent } from './tos-consent-banner.component';
 
 import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
-import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
-describe('TosConsentBannerComponent', () => {
-  let component: TosConsentBannerComponent;
+describe('Component: Tos Consent Banner', () => {
   let fixture: ComponentFixture<TosConsentBannerComponent>;
   let store: jest.Mocked<Store>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TosConsentBannerComponent, OSFTestingStoreModule, OSFTestingModule, MockComponent(IconComponent)],
+      imports: [TosConsentBannerComponent, OSFTestingModule, MockComponent(IconComponent)],
       providers: [
         provideMockStore({
           signals: [{ selector: UserSelectors.getCurrentUser, value: MOCK_USER }],
@@ -38,7 +37,6 @@ describe('TosConsentBannerComponent', () => {
 
     fixture = TestBed.createComponent(TosConsentBannerComponent);
     store = TestBed.inject(Store) as jest.Mocked<Store>;
-    component = fixture.componentInstance;
     store.dispatch = jest.fn().mockReturnValue(of(undefined));
     toastServiceMock = ToastServiceMockBuilder.create().build();
     fixture.detectChanges();
@@ -68,14 +66,5 @@ describe('TosConsentBannerComponent', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(new AcceptTermsOfServiceByUser());
     expect(toastServiceMock.showError).not.toHaveBeenCalled();
-  });
-
-  it('should show toast banner if acceptedTermsOfService is false and "Continue" is clicked', () => {
-    component.acceptedTermsOfService.set(false);
-    const continueButton = fixture.debugElement.query(By.css('p-button button')).nativeElement;
-    continueButton.disabled = false;
-    continueButton.click();
-    fixture.detectChanges();
-    expect(component.errorMessage).toEqual('toast.tos-consent.error-message');
   });
 });

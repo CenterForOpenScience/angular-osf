@@ -28,8 +28,6 @@ import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf
 import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
-import { TosConsentBannerComponent } from '../../components';
-
 @Component({
   selector: 'osf-dashboard',
   imports: [
@@ -39,8 +37,6 @@ import { TosConsentBannerComponent } from '../../components';
     MyProjectsTableComponent,
     IconComponent,
     TranslatePipe,
-    LoadingSpinnerComponent,
-    TosConsentBannerComponent,
     LoadingSpinnerComponent,
   ],
   templateUrl: './dashboard.component.html',
