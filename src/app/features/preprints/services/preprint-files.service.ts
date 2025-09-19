@@ -21,7 +21,10 @@ export class PreprintFilesService {
   private filesService = inject(FilesService);
   private jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   updateFileRelationship(preprintId: string, fileId: string): Observable<Preprint> {
     return this.jsonApiService

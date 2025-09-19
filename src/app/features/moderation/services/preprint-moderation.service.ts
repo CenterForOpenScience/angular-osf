@@ -27,7 +27,10 @@ import { PreprintSubmissionPaginatedData } from '../models/preprint-submission.m
 export class PreprintModerationService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getPreprintProviders(): Observable<PreprintProviderModerationInfo[]> {
     const baseUrl = `${this.apiUrl}/providers/preprints/?filter[permissions]=view_actions,set_up_moderation`;

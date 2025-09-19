@@ -17,7 +17,10 @@ import { ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../mode
 export class ProjectOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
     const params: Record<string, unknown> = {

@@ -14,7 +14,10 @@ import { JsonApiService } from './json-api.service';
 export class ResourceCardService {
   private jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getUserRelatedCounts(userId: string): Observable<UserRelatedCounts> {
     const params: Record<string, string> = {

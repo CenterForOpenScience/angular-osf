@@ -13,7 +13,10 @@ import { MetadataRecordFormat } from '../enums';
 export class MetadataRecordsService {
   private readonly http: HttpClient = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly webUrl = this.environment.webUrl;
+
+  get webUrl() {
+    return this.environment.webUrl;
+  }
 
   metadataRecordUrl(osfid: string, format: MetadataRecordFormat): string {
     return `${this.webUrl}/metadata/${osfid}/?format=${format}`;

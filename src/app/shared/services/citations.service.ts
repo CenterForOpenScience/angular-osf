@@ -26,7 +26,10 @@ import { JsonApiService } from './json-api.service';
 export class CitationsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([[ResourceType.Preprint, 'preprints']]);
 

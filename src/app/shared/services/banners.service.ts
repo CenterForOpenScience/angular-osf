@@ -24,7 +24,10 @@ export class BannersService {
    */
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiDomainUrl = this.environment.apiDomainUrl;
+
+  get apiDomainUrl() {
+    return this.environment.apiDomainUrl;
+  }
 
   /**
    * Retrieves the current banner

@@ -34,8 +34,14 @@ import {
 export class InstitutionsAdminService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
-  private readonly shareTroveUrl = this.environment.shareTroveUrl;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get shareTroveUrl() {
+    return this.environment.shareTroveUrl;
+  }
 
   fetchDepartments(institutionId: string): Observable<InstitutionDepartment[]> {
     return this.jsonApiService
