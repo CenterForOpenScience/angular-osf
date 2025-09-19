@@ -13,7 +13,7 @@ import { ProjectDetailSettingAccordionComponent } from '../project-detail-settin
   selector: 'osf-settings-wiki-card',
   imports: [Card, Checkbox, TranslatePipe, ProjectDetailSettingAccordionComponent, FormsModule],
   templateUrl: './settings-wiki-card.component.html',
-  styleUrl: '../../settings.component.scss',
+  styleUrls: ['../../settings.component.scss', './settings-wiki-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsWikiCardComponent {

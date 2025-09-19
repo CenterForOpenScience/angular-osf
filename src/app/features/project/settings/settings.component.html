@@ -5,37 +5,41 @@
     <osf-loading-spinner />
   } @else {
     <div class="flex flex-column flex-1 gap-4 w-full bg-white py-4 px-3 md:px-5 xl:px-4">
-      <osf-settings-project-form-card
-        (submitForm)="submitForm($event)"
-        (deleteProject)="deleteProject()"
-        [projectDetails]="projectDetails()"
-      />
+      @if (canWrite()) {
+        <osf-settings-project-form-card
+          (submitForm)="submitForm($event)"
+          (deleteProject)="deleteProject()"
+          [projectDetails]="projectDetails()"
+        />
 
-      <osf-settings-storage-location-card
-        [location]="projectDetails().region.name"
-        [locationText]="'myProjects.settings.storageLocationMessage' | translate"
-      ></osf-settings-storage-location-card>
+        <osf-settings-storage-location-card
+          [location]="projectDetails().region.name"
+          [locationText]="'myProjects.settings.storageLocationMessage' | translate"
+        ></osf-settings-storage-location-card>
 
-      <osf-settings-view-only-links-card
-        id="view-only-links"
-        [tableData]="viewOnlyLinks()"
-        [isLoading]="isViewOnlyLinksLoading()"
-        (deleteTableItem)="deleteLinkItem($event)"
-      />
+        @if (isAdmin()) {
+          <osf-settings-view-only-links-card
+            id="view-only-links"
+            [tableData]="viewOnlyLinks()"
+            [isLoading]="isViewOnlyLinksLoading()"
+            (deleteTableItem)="deleteLinkItem($event)"
+          />
 
-      <osf-settings-access-requests-card
-        (accessRequestChange)="onAccessRequestChange($event)"
-        [accessRequest]="accessRequest()"
-      />
+          <osf-settings-access-requests-card
+            (accessRequestChange)="onAccessRequestChange($event)"
+            [accessRequest]="accessRequest()"
+          />
+        }
 
-      <osf-settings-wiki-card
-        (wikiChangeEmit)="onWikiRequestChange($event)"
-        (anyoneCanEditWikiEmitValue)="onAnyoneCanEditWikiRequestChange($event)"
-        [wikiEnabled]="wikiEnabled()"
-        [anyoneCanEditWiki]="anyoneCanEditWiki()"
-        [title]="title()"
-        [isPublic]="projectDetails().isPublic"
-      />
+        <osf-settings-wiki-card
+          (wikiChangeEmit)="onWikiRequestChange($event)"
+          (anyoneCanEditWikiEmitValue)="onAnyoneCanEditWikiRequestChange($event)"
+          [wikiEnabled]="wikiEnabled()"
+          [anyoneCanEditWiki]="anyoneCanEditWiki()"
+          [title]="title()"
+          [isPublic]="projectDetails().isPublic"
+        />
+      }
 
       <osf-project-setting-notifications
         (notificationEmitValue)="onNotificationRequestChange($event)"

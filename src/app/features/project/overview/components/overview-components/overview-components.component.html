@@ -25,7 +25,7 @@
               </h2>
 
               <div>
-                @if (component.currentUserPermissions.includes(UserPermissions.Write)) {
+                @if (isCurrentUserContributor(component)) {
                   <p-button
                     severity="contrast"
                     icon="fas fa-ellipsis-vertical"
@@ -37,15 +37,22 @@
                   </p-button>
                 }
 
-                <p-menu appendTo="body" #componentActionMenu [model]="componentActionItems(component.id)" popup>
+                <p-menu appendTo="body" #componentActionMenu [model]="componentActionItems(component)" popup>
                   <ng-template #item let-item>
-                    <a class="p-menu-item-link">{{ item.label | translate }}</a>
+                    <a
+                      class="p-menu-item-link"
+                      (click)="handleMenuAction(item.action, item.componentId)"
+                      (keydown.enter)="handleMenuAction(item.action, item.componentId)"
+                      tabindex="0"
+                    >
+                      {{ item.label | translate }}
+                    </a>
                   </ng-template>
                 </p-menu>
               </div>
             </div>
 
-            <div class="component-name flex flex-column gap-2">
+            <div class="component-name flex flex-wrap gap-2">
               @for (contributor of component.contributors; track contributor.id) {
                 <div>
                   <a class="font-bold" [routerLink]="['/user', contributor.id]"> {{ contributor.fullName }}</a>
