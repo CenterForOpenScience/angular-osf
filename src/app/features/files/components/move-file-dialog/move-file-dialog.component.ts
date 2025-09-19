@@ -131,14 +131,10 @@ export class MoveFileDialogComponent {
   }
 
   moveFile(): void {
-    let path = this.currentFolder()?.path;
+    const path = this.currentFolder()?.path;
 
     if (!path) {
       throw new Error(this.translateService.instant('files.dialogs.moveFile.pathError'));
-    }
-
-    if (!this.currentFolder()?.relationships.parentFolderLink) {
-      path = '/';
     }
 
     this.isFilesUpdating.set(true);
