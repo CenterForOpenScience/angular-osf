@@ -8,7 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CookieConsentService } from '../../../../shared/services/cookie-consent/cookie-consent.service';
 
-import { CookieConsentBannerComponent } from './cookie-consent.banner.component';
+import { CookieConsentBannerComponent } from './cookie-consent-banner.component';
 
 describe('CookieConsentComponent', () => {
   let component: CookieConsentBannerComponent;

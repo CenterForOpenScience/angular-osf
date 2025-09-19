@@ -9,7 +9,7 @@ import { BannerModel } from '@core/components/osf-banners/models/banner.model';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { BannersSelector, GetCurrentScheduledBanner } from '@osf/shared/stores/banners';
 
-import { ScheduledBannerComponent } from './scheduled.banner.component';
+import { ScheduledBannerComponent } from './scheduled-banner.component';
 
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

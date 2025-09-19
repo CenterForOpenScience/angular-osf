@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { CookieConsentBannerComponent } from './cookie-consent-banner/cookie-consent.banner.component';
-import { MaintenanceBannerComponent } from './maintenance-banner/maintenance.banner.component';
-import { ScheduledBannerComponent } from './scheduled-banner/scheduled.banner.component';
+import { CookieConsentBannerComponent } from './cookie-consent-banner/cookie-consent-banner.component';
+import { MaintenanceBannerComponent } from './maintenance-banner/maintenance-banner.component';
+import { ScheduledBannerComponent } from './scheduled-banner/scheduled-banner.component';
 
 /**
  * Wrapper component responsible for rendering all global or conditional banners.
@@ -22,7 +22,7 @@ import { ScheduledBannerComponent } from './scheduled-banner/scheduled.banner.co
 @Component({
   selector: 'osf-banner-component',
   imports: [MaintenanceBannerComponent, ScheduledBannerComponent, CookieConsentBannerComponent],
-  templateUrl: './osf.banner.component.html',
+  templateUrl: './osf-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OSFBannerComponent {}

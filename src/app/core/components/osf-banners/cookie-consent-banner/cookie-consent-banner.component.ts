@@ -10,8 +10,8 @@ import { CookieConsentService } from '../../../../shared/services/cookie-consent
 
 @Component({
   selector: 'osf-cookie-consent-banner',
-  templateUrl: './cookie-consent.banner.component.html',
-  styleUrls: ['./cookie-consent.banner.component.scss'],
+  templateUrl: './cookie-consent-banner.component.html',
+  styleUrls: ['./cookie-consent-banner.component.scss'],
   imports: [Toast, Button, PrimeTemplate, TranslatePipe],
 })
 export class CookieConsentBannerComponent implements AfterViewInit {
