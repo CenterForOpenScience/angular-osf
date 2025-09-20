@@ -34,7 +34,6 @@ import { GLOBAL_SEARCH_STATE_DEFAULTS, GlobalSearchStateModel } from './global-s
 export class GlobalSearchState {
   private searchService = inject(GlobalSearchService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly webUrl = this.environment.webUrl;
 
   @Action(FetchResources)
   fetchResources(ctx: StateContext<GlobalSearchStateModel>): Observable<ResourcesData> {
@@ -317,7 +316,7 @@ export class GlobalSearchState {
     });
 
     filtersParams['cardSearchFilter[resourceType]'] = getResourceTypeStringFromEnum(state.resourceType);
-    filtersParams['cardSearchFilter[accessService]'] = `${this.webUrl}/`;
+    filtersParams['cardSearchFilter[accessService]'] = `${this.environment.webUrl}/`;
     filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
     filtersParams['page[size]'] = '10';
 

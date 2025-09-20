@@ -19,7 +19,6 @@ import {
   IconComponent,
   LoadingSpinnerComponent,
   MyProjectsTableComponent,
-  ScheduledBannerComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
@@ -28,8 +27,6 @@ import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
 import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
-
-import { TosConsentBannerComponent } from '../../components';
 
 @Component({
   selector: 'osf-dashboard',
@@ -40,9 +37,6 @@ import { TosConsentBannerComponent } from '../../components';
     MyProjectsTableComponent,
     IconComponent,
     TranslatePipe,
-    LoadingSpinnerComponent,
-    TosConsentBannerComponent,
-    ScheduledBannerComponent,
     LoadingSpinnerComponent,
   ],
   templateUrl: './dashboard.component.html',

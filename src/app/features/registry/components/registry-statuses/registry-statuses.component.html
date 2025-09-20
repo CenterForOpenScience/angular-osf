@@ -6,21 +6,26 @@
     <p-accordion-content>
       <div class="flex flex-column pt-4 gap-2">
         <h2 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h2>
-        <p>{{ 'registry.overview.statuses.' + registry()?.status + '.long' | translate }}</p>
+        <p>
+          {{
+            'registry.overview.statuses.' + registry()?.status + '.long' | translate: { embargoEndDate: embargoEndDate }
+          }}
+        </p>
         @if (!hasViewOnly()) {
           @if (canWithdraw) {
             <p-button
-              (click)="openWithdrawDialog()"
+              (onClick)="openWithdrawDialog()"
               [label]="'registry.overview.withdrawRegistration' | translate"
               severity="danger"
-              class="ml-auto"
+              styleClass="w-full mt-2"
             ></p-button>
           }
           @if (registry()?.status === RegistryStatus.Embargo) {
             <p-button
-              (click)="openMakePublicDialog()"
-              [label]="'common.labels.makePublic' | translate"
-              class="ml-auto"
+              (onClick)="openEndEmbargoDialog()"
+              severity="danger"
+              [label]="'registry.overview.endEmbargo' | translate"
+              styleClass="w-full mt-2"
             ></p-button>
           }
         }

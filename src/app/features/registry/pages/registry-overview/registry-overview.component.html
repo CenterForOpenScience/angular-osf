@@ -4,7 +4,7 @@
   >
     <osf-sub-header
       [title]="registry()!.title"
-      [showButton]="isModeration"
+      [showButton]="canMakeDecision()"
       [buttonSeverity]="'success'"
       [buttonLabel]="'moderation.makeDecision.header' | translate"
       [isSubmitting]="areReviewActionsLoading()"
@@ -61,7 +61,7 @@
         <div class="left-section">
           @if (!isAnonymous()) {
             <div class="flex flex-column gap-4 md:flex-row resource">
-              <osf-registry-statuses [registry]="registry()"></osf-registry-statuses>
+              <osf-registry-statuses [isModeration]="isModeration" [registry]="registry()"></osf-registry-statuses>
               <osf-registry-revisions
                 [registry]="registry()"
                 [selectedRevisionIndex]="selectedRevisionIndex()"

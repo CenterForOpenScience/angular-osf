@@ -15,4 +15,5 @@ export interface AuthorizedAccountModel {
   supportedFeatures: string[];
   providerName: string;
   credentialsFormat: string;
+  iconUrl?: string;
 }

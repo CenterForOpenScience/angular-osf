@@ -22,14 +22,15 @@ import { LicensesMapper } from '../mappers';
 export class LicensesService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService
       .get<LicensesResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/licenses/`, {
-        params: {
-          'page[size]': 100,
-        },
+        'page[size]': 100,
       })
       .pipe(map((licenses) => LicensesMapper.fromLicensesResponse(licenses)));
   }

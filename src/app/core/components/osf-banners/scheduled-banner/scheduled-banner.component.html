@@ -1,10 +1,12 @@
 @if (shouldShowBanner()) {
   <div
+    data-test-banner-parent
     [style.background-color]="currentBanner()?.color"
     class="flex w-full justify-content-center align-items flex-row"
   >
-    <a [href]="currentBanner()?.link" target="_blank" rel="noopener noreferrer">
+    <a data-test-banner-href [href]="currentBanner()?.link" target="_blank" rel="noopener noreferrer">
       <img
+        data-test-banner-image
         class="block w-full"
         [src]="isMobile() ? currentBanner()?.mobilePhoto : currentBanner()?.defaultPhoto"
         [alt]="isMobile() ? currentBanner()?.mobileAltText : currentBanner()?.defaultAltText"

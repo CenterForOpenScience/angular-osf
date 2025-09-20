@@ -23,7 +23,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
           year: data.attributes.node_license.year,
         }
       : undefined,
-    license: data.embeds.license?.data?.attributes,
+    license: data.embeds?.license?.data?.attributes,
     registrationType: data.attributes?.registration_supplement,
     doi: data.attributes?.doi,
     tags: data.attributes?.tags,
@@ -35,7 +35,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
       middleName: contributor?.embeds?.users?.data?.attributes?.middle_names,
       type: contributor?.embeds?.users?.data?.type,
     })),
-    identifiers: data.embeds.identifiers?.data.map((identifier) => ({
+    identifiers: data.embeds?.identifiers?.data.map((identifier) => ({
       id: identifier.id,
       type: identifier.type,
       value: identifier.attributes.value,
@@ -59,9 +59,9 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     associatedProjectId: data.relationships?.registered_from?.data?.id,
     schemaResponses: data.embeds?.schema_responses?.data?.map((item) => RegistrationMapper.fromSchemaResponse(item)),
     provider: {
-      id: data.embeds.provider.data.id,
-      name: data.embeds.provider.data.attributes.name,
-      permissions: data.embeds.provider.data.attributes.permissions,
+      id: data.embeds?.provider.data.id,
+      name: data.embeds?.provider.data.attributes.name,
+      permissions: data.embeds?.provider.data.attributes.permissions,
     },
     status: MapRegistryStatus(data.attributes),
     revisionStatus: data.attributes.revision_state,
@@ -74,5 +74,6 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     withdrawn: data.attributes.withdrawn || false,
     withdrawalJustification: data.attributes.withdrawal_justification,
     dateWithdrawn: data.attributes.date_withdrawn || null,
+    embargoEndDate: data.attributes.embargo_end_date || null,
   } as RegistryOverview;
 }

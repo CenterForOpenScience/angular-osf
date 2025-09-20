@@ -4,13 +4,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
+import { ResourceType, SubscriptionEvent, SubscriptionFrequency, UserPermissions } from '@osf/shared/enums';
 import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores';
@@ -73,6 +74,7 @@ export class SettingsComponent implements OnInit {
   areProjectDetailsLoading = select(SettingsSelectors.areProjectDetailsLoading);
   viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
   isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  currentUser = select(UserSelectors.getCurrentUser);
 
   actions = createDispatchMap({
     getSettings: GetProjectSettings,
@@ -93,6 +95,10 @@ export class SettingsComponent implements OnInit {
   anyoneCanComment = signal(false);
   title = signal('');
 
+  userPermissions = computed(() => this.projectDetails()?.currentUserPermissions || []);
+  isAdmin = computed(() => this.userPermissions().includes(UserPermissions.Admin));
+  canWrite = computed(() => this.userPermissions().includes(UserPermissions.Write));
+
   constructor() {
     this.setupEffects();
   }
@@ -103,7 +109,6 @@ export class SettingsComponent implements OnInit {
       this.actions.getSettings(id);
       this.actions.getNotifications(id);
       this.actions.getProjectDetails(id);
-      this.actions.getViewOnlyLinks(id, ResourceType.Project);
     }
   }
 
@@ -242,6 +247,14 @@ export class SettingsComponent implements OnInit {
 
       if (project) {
         this.title.set(project.title);
+      }
+    });
+
+    effect(() => {
+      const id = this.projectId();
+
+      if (id && this.isAdmin()) {
+        this.actions.getViewOnlyLinks(id, ResourceType.Project);
       }
     });
   }

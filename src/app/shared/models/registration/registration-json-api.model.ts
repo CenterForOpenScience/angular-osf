@@ -53,6 +53,12 @@ export interface RegistrationAttributesJsonApi {
   archiving: boolean;
   public: boolean;
   title: string;
+  has_analytic_code: boolean;
+  has_data: boolean;
+  has_materials: boolean;
+  has_papers: boolean;
+  has_project: boolean;
+  has_supplements: boolean;
   revision_state: RevisionReviewStates;
   reviews_state: RegistrationReviewStates;
   pending_registration_approval: boolean;

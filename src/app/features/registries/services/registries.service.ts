@@ -33,7 +33,10 @@ import { SchemaActionTrigger } from '../enums';
 export class RegistriesService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   createDraft(
     registrationSchemaId: string,
@@ -151,12 +154,13 @@ export class RegistriesService {
     userId: string,
     page: number,
     pageSize: number
-  ): Observable<{ data: RegistrationCard[]; totalCount: number }> {
+  ): Observable<PaginatedData<RegistrationCard[]>> {
     const params = {
       page,
       'page[size]': pageSize,
       embed: ['bibliographic_contributors', 'registration_schema', 'provider'],
     };
+
     return this.jsonApiService
       .get<ResponseJsonApi<RegistrationDataJsonApi[]>>(`${this.apiUrl}/users/${userId}/registrations/`, params)
       .pipe(

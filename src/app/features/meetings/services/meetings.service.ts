@@ -22,7 +22,10 @@ import {
 export class MeetingsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly baseUrl = `${this.environment.apiDomainUrl}/_/meetings/`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/_/meetings/`;
+  }
 
   getAllMeetings(pageNumber: number, pageSize: number, filters: SearchFilters): Observable<MeetingsWithPaging> {
     const params: Record<string, unknown> = searchPreferencesToJsonApiQueryParams(
@@ -34,7 +37,7 @@ export class MeetingsService {
     );
 
     return this.jsonApiService
-      .get<ResponseJsonApi<MeetingGetResponseJsonApi[]>>(this.baseUrl, params)
+      .get<ResponseJsonApi<MeetingGetResponseJsonApi[]>>(this.apiUrl, params)
       .pipe(map((response) => MeetingsMapper.fromMeetingsGetResponse(response)));
   }
 
@@ -53,13 +56,13 @@ export class MeetingsService {
     );
 
     return this.jsonApiService
-      .get<ResponseJsonApi<MeetingSubmissionGetResponseJsonApi[]>>(`${this.baseUrl}${meetingId}/submissions/`, params)
+      .get<ResponseJsonApi<MeetingSubmissionGetResponseJsonApi[]>>(`${this.apiUrl}${meetingId}/submissions/`, params)
       .pipe(map((response) => MeetingsMapper.fromMeetingSubmissionGetResponse(response)));
   }
 
   getMeetingById(meetingId: string) {
     return this.jsonApiService
-      .get<JsonApiResponse<MeetingGetResponseJsonApi, null>>(this.baseUrl + meetingId)
+      .get<JsonApiResponse<MeetingGetResponseJsonApi, null>>(this.apiUrl + meetingId)
       .pipe(map((response) => MeetingsMapper.fromMeetingGetResponse(response.data)));
   }
 }

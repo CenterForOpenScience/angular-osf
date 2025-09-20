@@ -51,7 +51,7 @@ export class ActivityLogDisplayService {
       preprintWordPlural: this.translateService.instant('activityLog.defaults.preprintPlural'),
       source: this.formatter.buildSource(log),
       tag: this.formatter.buildTag(log),
-      template: this.formatter.buildEmbeddedNode(log),
+      template: this.formatter.buildTemplate(log),
       titleNew: this.formatter.buildTitleNew(log),
       titleOriginal: this.formatter.buildTitleOriginal(log),
       updatedFields: this.formatter.buildUpdatedFields(log),

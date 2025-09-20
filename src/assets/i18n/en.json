@@ -456,7 +456,7 @@
       "accessRequests": "Access Requests",
       "accessRequestsText": "Allow users to request access to this project",
       "wiki": "Wiki",
-      "wikiText": "Enable the wiki In [Dashboard] New and Noteworthy.",
+      "wikiText": "Enable the wiki in {{projectName}}",
       "wikiConfigureTitle": "Configure",
       "wikiConfigureText": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "emailNotifications": "Email Notifications",
@@ -621,7 +621,8 @@
         "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
       },
       "files": {
-        "title": "Files"
+        "title": "Files",
+        "filesPreview": "Files Preview"
       },
       "components": {
         "title": "Components",
@@ -655,6 +656,7 @@
         "dateUpdated": "Date Updated",
         "license": "License",
         "publication": "Publication DOI",
+        "registrationDOI": "Registration DOI",
         "subjects": "Subjects",
         "tags": "Tags",
         "citation": "Citation",
@@ -2338,7 +2340,7 @@
     "new": {
       "addNewRegistry": "Add New Registration",
       "infoText1": "You are submitting to OSF Registries.",
-      "infoText2": "to learn more about other hosted registries",
+      "infoText2": "to learn more about other hosted registries.",
       "steps": {
         "title": "Step",
         "step1": "Do you have content for registration in an existing OSF project?",
@@ -2414,7 +2416,8 @@
       "withdrawRegistration": "Withdraw registration",
       "withdrawDescription": "Withdrawing a registration will remove its content from the OSF, but leave basic metadata behind. The title of a withdrawn registration and its contributor list will remain, as will justification or explanation of the withdrawal, should you wish to provide it. Withdrawn registrations will be marked with a \"withdrawn\" tag. This action is irreversible.",
       "withdrawJustificationLabel": "Please provide your justification for withdrawing this registration.",
-      "makePublicMessage": "Are you sure you want make this registration public ?",
+      "endEmbargo": "End embargo early",
+      "endEmbargoMessage": "By clicking confirm, an email will be sent to project administrator(s) to approve ending the embargo. If approved, this registration, including any components, will be made public immediately. This action is irreversible.",
       "statuses": {
         "pendingRegistrationApproval": {
           "text": "Pending approval",
@@ -2439,7 +2442,7 @@
         "embargo": {
           "text": "Embargoed registration",
           "short": "Embargoed",
-          "long": "This registration is embargoed. It will remain private until {embargoEndDate}."
+          "long": "This registration is embargoed. It will remain private until {{embargoEndDate}}."
         },
         "pendingEmbargoTermination": {
           "text": "Embargoed registration",

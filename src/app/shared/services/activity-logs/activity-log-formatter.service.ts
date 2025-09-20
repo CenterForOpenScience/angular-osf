@@ -235,6 +235,11 @@ export class ActivityLogFormatterService {
     return url || this.translateService.instant('activityLog.defaults.aTitle');
   }
 
+  buildTemplate(log: ActivityLog): string {
+    const url = this.urlBuilder.buildTemplateUrl(log);
+    return url || this.translateService.instant('activityLog.defaults.aTitle');
+  }
+
   buildInstitution(log: ActivityLog): string {
     return this.urlBuilder.buildInstitutionUrl(log);
   }

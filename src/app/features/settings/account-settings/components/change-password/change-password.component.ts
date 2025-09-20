@@ -19,7 +19,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { AuthService } from '@core/services';
+import { AuthService } from '@osf/core/services';
 import { CustomValidators, FormValidationHelper } from '@osf/shared/helpers';
 import { LoaderService, ToastService } from '@osf/shared/services';
 

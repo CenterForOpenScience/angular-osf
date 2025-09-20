@@ -31,6 +31,7 @@ export class RegistryStatusesComponent {
   private readonly translateService = inject(TranslateService);
 
   registry = input.required<RegistryOverview | null>();
+  isModeration = input<boolean>(false);
 
   readonly RegistryStatus = RegistryStatus;
   readonly RevisionReviewStates = RevisionReviewStates;
@@ -38,10 +39,19 @@ export class RegistryStatusesComponent {
   readonly actions = createDispatchMap({ makePublic: MakePublic });
 
   get canWithdraw(): boolean {
-    return (
-      this.registry()?.reviewsState === RegistrationReviewStates.Accepted &&
-      this.registry()?.revisionStatus === RevisionReviewStates.RevisionPendingModeration
-    );
+    return this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration();
+  }
+
+  get isEmbargo(): boolean {
+    return this.registry()?.status === RegistryStatus.Embargo;
+  }
+
+  get embargoEndDate() {
+    const embargoEndDate = this.registry()?.embargoEndDate;
+    if (embargoEndDate) {
+      return new Date(embargoEndDate).toDateString();
+    }
+    return null;
   }
 
   hasViewOnly = computed(() => {
@@ -65,13 +75,13 @@ export class RegistryStatusesComponent {
     }
   }
 
-  openMakePublicDialog(): void {
+  openEndEmbargoDialog(): void {
     const registry = this.registry();
     if (registry) {
-      this.customConfirmationService.confirmAccept({
-        headerKey: 'common.labels.makePublic',
-        messageKey: 'registry.overview.makePublicMessage',
-        acceptLabelKey: 'common.labels.makePublic',
+      this.customConfirmationService.confirmDelete({
+        headerKey: 'registry.overview.endEmbargo',
+        messageKey: 'registry.overview.endEmbargoMessage',
+        acceptLabelKey: 'common.buttons.confirm',
         onConfirm: () => this.actions.makePublic(registry.id),
       });
     }

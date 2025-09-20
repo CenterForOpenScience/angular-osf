@@ -13,23 +13,28 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy } from '@
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import {
+  ClearState,
+  DeleteDraft,
+  RegistriesSelectors,
+  UpdateDraft,
+  UpdateStepValidation,
+} from '@osf/features/registries/store';
 import { TextInputComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
 import { ContributorModel, DraftRegistrationModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService } from '@osf/shared/services';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
-import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
-
-import { ContributorsComponent } from './contributors/contributors.component';
 import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
+import { RegistriesContributorsComponent } from './registries-contributors/registries-contributors.component';
 import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
 import { RegistriesSubjectsComponent } from './registries-subjects/registries-subjects.component';
 import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
 
 @Component({
-  selector: 'osf-metadata',
+  selector: 'osf-registries-metadata-step',
   imports: [
     Card,
     TextInputComponent,
@@ -37,18 +42,18 @@ import { RegistriesTagsComponent } from './registries-tags/registries-tags.compo
     Button,
     TranslatePipe,
     TextareaModule,
-    ContributorsComponent,
+    RegistriesContributorsComponent,
     RegistriesSubjectsComponent,
     RegistriesTagsComponent,
     RegistriesLicenseComponent,
     RegistriesAffiliatedInstitutionComponent,
     Message,
   ],
-  templateUrl: './metadata.component.html',
-  styleUrl: './metadata.component.scss',
+  templateUrl: './registries-metadata-step.component.html',
+  styleUrl: './registries-metadata-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MetadataComponent implements OnDestroy {
+export class RegistriesMetadataStepComponent implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -66,7 +71,7 @@ export class MetadataComponent implements OnDestroy {
     updateStepValidation: UpdateStepValidation,
     clearState: ClearState,
   });
-  inputLimits = InputLimits;
+
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   metadataForm = this.fb.group({
