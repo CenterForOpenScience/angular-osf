@@ -2,7 +2,7 @@
   <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
     <h2>{{ 'project.overview.components.title' | translate }}</h2>
 
-    @if (!isCollectionsRoute() && canWrite()) {
+    @if (canEdit()) {
       <p-button
         (onClick)="handleAddComponent()"
         severity="secondary"

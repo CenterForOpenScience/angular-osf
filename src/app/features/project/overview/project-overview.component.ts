@@ -20,7 +20,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
@@ -67,6 +67,7 @@ import {
   OverviewWikiComponent,
   RecentActivityComponent,
 } from './components';
+import { SUBMISSION_REVIEW_STATUS_OPTIONS } from './constants';
 import {
   ClearProjectOverview,
   GetComponents,
@@ -126,10 +127,8 @@ export class ProjectOverviewComponent implements OnInit {
   areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
   subjects = select(SubjectsSelectors.getSelectedSubjects);
   areSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
-
-  readonly activityPageSize = 5;
-  readonly activityDefaultPage = 1;
-  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -151,9 +150,9 @@ export class ProjectOverviewComponent implements OnInit {
     getSubjects: FetchSelectedSubjects,
   });
 
-  currentProject = select(ProjectOverviewSelectors.getProject);
-  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-  private currentProject$ = toObservable(this.currentProject);
+  readonly activityPageSize = 5;
+  readonly activityDefaultPage = 1;
+  readonly SubmissionReviewStatusOptions = SUBMISSION_REVIEW_STATUS_OPTIONS;
 
   readonly isCollectionsRoute = computed(() => this.router.url.includes('/collections'));
 
@@ -280,10 +279,10 @@ export class ProjectOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     const projectId = this.route.snapshot.params['id'] || this.route.parent?.snapshot.params['id'];
+
     if (projectId) {
       this.actions.getProject(projectId);
       this.actions.getBookmarksId();
-      this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
@@ -304,7 +303,7 @@ export class ProjectOverviewComponent implements OnInit {
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
-        if (data && data.action) {
+        if (data?.action) {
           this.toastService.showSuccess(`moderation.makeDecision.${data.action}Success`);
           this.goBack();
         }
@@ -315,10 +314,7 @@ export class ProjectOverviewComponent implements OnInit {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 
-    this.router.navigate(['../'], {
-      relativeTo: this.route,
-      queryParams,
-    });
+    this.router.navigate(['../'], { relativeTo: this.route, queryParams });
   }
 
   private setupCollectionsEffects(): void {
@@ -355,11 +351,18 @@ export class ProjectOverviewComponent implements OnInit {
         this.actions.clearProjectOverview();
         this.actions.getProject(projectId);
         this.actions.getBookmarksId();
-        this.actions.getHomeWiki(ResourceType.Project, projectId);
         this.actions.getComponents(projectId);
         this.actions.getLinkedProjects(projectId);
         this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
       });
+
+    effect(() => {
+      const project = this.currentProject();
+
+      if (project?.wikiEnabled) {
+        this.actions.getHomeWiki(ResourceType.Project, project.id);
+      }
+    });
   }
 
   private setupCleanup(): void {

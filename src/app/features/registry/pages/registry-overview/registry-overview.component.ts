@@ -5,7 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 
-import { map, switchMap, tap } from 'rxjs';
+import { map, of, switchMap, tap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -18,7 +18,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
@@ -108,6 +108,8 @@ export class RegistryOverviewComponent {
     return !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration;
   });
 
+  private registryId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+
   readonly schemaResponse = computed(() => {
     const registry = this.registry();
     const index = this.selectedRevisionIndex();
@@ -192,6 +194,12 @@ export class RegistryOverviewComponent {
       if (registry && !registry?.withdrawn) {
         this.actions.getSubjects(registry?.id, ResourceType.Registration);
         this.actions.getInstitutions(registry?.id);
+      }
+    });
+
+    effect(() => {
+      if (this.registryId()) {
+        this.actions.getRegistryById(this.registryId());
       }
     });
 
