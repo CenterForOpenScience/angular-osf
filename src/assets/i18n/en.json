@@ -621,7 +621,8 @@
         "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
       },
       "files": {
-        "title": "Files"
+        "title": "Files",
+        "filesPreview": "Files Preview"
       },
       "components": {
         "title": "Components",
@@ -2339,7 +2340,7 @@
     "new": {
       "addNewRegistry": "Add New Registration",
       "infoText1": "You are submitting to OSF Registries.",
-      "infoText2": "to learn more about other hosted registries",
+      "infoText2": "to learn more about other hosted registries.",
       "steps": {
         "title": "Step",
         "step1": "Do you have content for registration in an existing OSF project?",

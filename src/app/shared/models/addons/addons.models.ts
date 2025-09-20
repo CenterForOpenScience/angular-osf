@@ -9,6 +9,7 @@ export interface AddonGetResponseJsonApi {
     external_service_name: string;
     credentials_format: string;
     wb_key: string;
+    icon_url: string;
     [key: string]: unknown;
   };
   relationships: {
@@ -103,6 +104,7 @@ export interface AddonModel {
   credentialsFormat: string;
   providerName: string;
   wbKey: string;
+  iconUrl: string;
 }
 
 export interface IncludedAddonData {
