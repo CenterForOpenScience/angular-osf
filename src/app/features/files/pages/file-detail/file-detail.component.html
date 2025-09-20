@@ -1,4 +1,9 @@
-<osf-sub-header [isLoading]="isFileLoading()" title="{{ file()?.name }}" />
+<osf-sub-header
+  [isLoading]="isFileLoading()"
+  title="{{ file()?.name }}{{
+    fileVersion ? ' (' + ('project.wiki.version.title' | translate) + ' ' + fileVersion + ')' : ''
+  }}"
+/>
 
 <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="ml-auto mr-4">
   <p-tablist>
@@ -104,7 +109,7 @@
 
     <div class="w-full flex flex-column gap-4 flex-1 lg:w-6">
       @if (selectedTab === FileDetailTab.Revisions) {
-        <osf-file-revisions class="metadata"></osf-file-revisions>
+        <osf-file-revisions (openRevision)="onOpenRevision($event)" class="metadata"></osf-file-revisions>
       } @else if (selectedTab === FileDetailTab.Keywords) {
         <osf-file-keywords class="metadata"></osf-file-keywords>
       } @else {

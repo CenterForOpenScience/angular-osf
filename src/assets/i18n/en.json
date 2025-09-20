@@ -1047,7 +1047,7 @@
     "dialogs": {
       "uploadFile": {
         "title": "Upload file",
-        "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
+        "message": "Are you sure you want to upload <span class=\"font-bold\">{{name}}</span>?"
       },
       "createFolder": {
         "title": "Create folder",

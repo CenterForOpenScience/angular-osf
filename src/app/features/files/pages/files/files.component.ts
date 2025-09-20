@@ -10,7 +10,18 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, EMPTY, filter, finalize, Observable, skip, switchMap, take } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  finalize,
+  Observable,
+  skip,
+  switchMap,
+  take,
+} from 'rxjs';
 
 import { HttpEventType } from '@angular/common/http';
 import {
@@ -158,6 +169,8 @@ export class FilesComponent {
   storageProvider = FileProvider.OsfStorage;
   pageNumber = signal(1);
 
+  allowRevisions = true;
+
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
@@ -300,6 +313,17 @@ export class FilesComponent {
         .uploadFile(file, uploadLink)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
+          catchError((err) => {
+            const uploadLink = err.error.data.links.upload;
+            if (err.status === 409) {
+              if (this.allowRevisions) {
+                return this.filesService.uploadFile(file, uploadLink, this.allowRevisions);
+              } else {
+                // [NM TODO] Show replace file dialog
+              }
+            }
+            return EMPTY;
+          }),
           finalize(() => {
             if (isMultiple) {
               completedUploads++;

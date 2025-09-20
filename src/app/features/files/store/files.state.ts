@@ -289,7 +289,6 @@ export class FilesState {
   getRootFolders(ctx: StateContext<FilesStateModel>, action: GetRootFolders) {
     const state = ctx.getState();
     ctx.patchState({ rootFolders: { ...state.rootFolders, isLoading: true } });
-
     return this.filesService.getFolders(action.folderLink).pipe(
       tap({
         next: (response) =>

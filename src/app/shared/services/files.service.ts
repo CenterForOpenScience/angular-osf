@@ -90,11 +90,17 @@ export class FilesService {
     return this.jsonApiService.get<GetFilesResponse>(filesLink).pipe(map((response) => MapFiles(response.data)));
   }
 
-  uploadFile(file: File, uploadLink: string): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
-    const params = {
-      kind: 'file',
-      name: file.name,
-    };
+  uploadFile(
+    file: File,
+    uploadLink: string,
+    isNewRevision = false
+  ): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
+    const params = isNewRevision
+      ? undefined
+      : {
+          kind: 'file',
+          name: file.name,
+        };
 
     return this.jsonApiService.putFile<AddFileResponse>(uploadLink, file, params).pipe(
       switchMap((event) => {
@@ -106,10 +112,6 @@ export class FilesService {
         }
 
         return of(event);
-      }),
-      catchError((error) => {
-        this.toastService.showError(error.error.message);
-        return throwError(() => error);
       })
     );
   }
@@ -323,7 +325,6 @@ export class FilesService {
     return this.getResourceReferences(resourceUri).pipe(
       switchMap((referenceUrl: string) => {
         if (!referenceUrl) return of([]);
-
         return this.jsonApiService
           .get<JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>>(`${referenceUrl}/configured_storage_addons`)
           .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));

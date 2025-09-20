@@ -133,6 +133,7 @@ export class FileDetailComponent {
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   resourceContributors = select(FilesSelectors.getContributors);
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
+  fileRevisions = select(FilesSelectors.getFileRevisions);
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
@@ -147,6 +148,7 @@ export class FileDetailComponent {
   selectedTab: FileDetailTab = FileDetailTab.Details;
 
   fileGuid = '';
+  fileVersion = '';
 
   embedItems = [
     {
@@ -227,10 +229,7 @@ export class FileDetailComponent {
         })
       )
       .subscribe(() => {
-        const link = this.file()?.links.render;
-        if (link) {
-          this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(this.addViewOnlyToUrl(link));
-        }
+        this.getIframeLink('');
         this.resourceId = this.file()?.target.id || '';
         this.resourceType = this.file()?.target.type || '';
         const fileId = this.file()?.path.replaceAll('/', '');
@@ -265,6 +264,19 @@ export class FileDetailComponent {
       this.actions.getFileMetadata(params['fileGuid']);
     });
     this.dataciteService.logIdentifiableView(this.fileMetadata$).subscribe();
+  }
+
+  getIframeLink(version: string) {
+    const url = this.getMfrUrlWithVersion(version);
+    if (url) {
+      this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+  }
+
+  onOpenRevision(version: string): void {
+    this.fileVersion = version;
+    this.getIframeLink(version);
+    this.isIframeLoading = true;
   }
 
   downloadFile(link: string): void {
@@ -396,13 +408,24 @@ export class FileDetailComponent {
     }
   }
 
-  private addViewOnlyToUrl(url: string): string {
-    if (!this.hasViewOnly()) return url;
+  private getMfrUrlWithVersion(version?: string): string | null {
+    const mfrUrl = this.file()?.links.render;
+    if (!mfrUrl) return null;
+    const mfrUrlObj = new URL(mfrUrl);
+    const encodedDownloadUrl = mfrUrlObj.searchParams.get('url');
+    if (!encodedDownloadUrl) return mfrUrl;
 
-    const viewOnlyParam = getViewOnlyParam();
-    if (!viewOnlyParam) return url;
+    const downloadUrlObj = new URL(decodeURIComponent(encodedDownloadUrl));
 
-    const separator = url.includes('?') ? '&' : '?';
-    return `${url}${separator}view_only=${encodeURIComponent(viewOnlyParam)}`;
+    if (version) downloadUrlObj.searchParams.set('version', version);
+
+    if (this.hasViewOnly()) {
+      const viewOnlyParam = getViewOnlyParam();
+      if (viewOnlyParam) downloadUrlObj.searchParams.set('view_only', viewOnlyParam);
+    }
+
+    mfrUrlObj.searchParams.set('url', downloadUrlObj.toString());
+
+    return mfrUrlObj.toString();
   }
 }
