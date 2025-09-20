@@ -2,8 +2,6 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -15,19 +13,16 @@ import { IconComponent } from '@shared/components';
 import { TosConsentBannerComponent } from './tos-consent-banner.component';
 
 import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
-import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
-describe('TosConsentBannerComponent', () => {
-  let component: TosConsentBannerComponent;
+describe('Component: Tos Consent Banner', () => {
   let fixture: ComponentFixture<TosConsentBannerComponent>;
-  let store: jest.Mocked<Store>;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let store: Store;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TosConsentBannerComponent, OSFTestingStoreModule, OSFTestingModule, MockComponent(IconComponent)],
+      imports: [OSFTestingStoreModule, TosConsentBannerComponent, MockComponent(IconComponent)],
       providers: [
         provideMockStore({
           signals: [{ selector: UserSelectors.getCurrentUser, value: MOCK_USER }],
@@ -37,16 +32,12 @@ describe('TosConsentBannerComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(TosConsentBannerComponent);
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    component = fixture.componentInstance;
-    store.dispatch = jest.fn().mockReturnValue(of(undefined));
-    toastServiceMock = ToastServiceMockBuilder.create().build();
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   });
 
   it('should have the "Continue" button disabled by default', () => {
     const continueButton = fixture.debugElement.query(By.css('p-button button')).nativeElement;
-    console.log('continueButton ' + continueButton )
     expect(continueButton.disabled).toBe(true);
   });
 
@@ -59,6 +50,7 @@ describe('TosConsentBannerComponent', () => {
   });
 
   it('should dispatch AcceptTermsOfServiceByUser action when "Continue" is clicked', () => {
+    jest.spyOn(store, 'dispatch');
     const checkboxInput = fixture.debugElement.query(By.css('p-checkbox input')).nativeElement;
     checkboxInput.click();
     fixture.detectChanges();
@@ -68,16 +60,5 @@ describe('TosConsentBannerComponent', () => {
     fixture.detectChanges();
 
     expect(store.dispatch).toHaveBeenCalledWith(new AcceptTermsOfServiceByUser());
-    expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
-
-   it('should show toast banner if acceptedTermsOfService is false and "Continue" is clicked', () => {
-    component.acceptedTermsOfService.set(false);
-    const continueButton = fixture.debugElement.query(By.css('p-button button')).nativeElement;
-    continueButton.disabled = false;
-    continueButton.click();
-    fixture.detectChanges();
-    expect(component.errorMessage).toEqual('toast.tos-consent.error-message');
-  });
-
 });

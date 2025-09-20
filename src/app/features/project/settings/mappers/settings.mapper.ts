@@ -1,3 +1,4 @@
+import { UserPermissions } from '@osf/shared/enums';
 import { InstitutionsMapper } from '@osf/shared/mappers';
 
 import {
@@ -38,6 +39,7 @@ export class SettingsMapper {
       affiliatedInstitutions: data.embeds
         ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
         : [],
+      currentUserPermissions: data.attributes.current_user_permissions as UserPermissions[],
       lastFetched: Date.now(),
     };
   }

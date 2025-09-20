@@ -6,6 +6,7 @@ export { MetadataDescriptionComponent } from './metadata-description/metadata-de
 export { MetadataFundingComponent } from './metadata-funding/metadata-funding.component';
 export { MetadataLicenseComponent } from './metadata-license/metadata-license.component';
 export { MetadataPublicationDoiComponent } from './metadata-publication-doi/metadata-publication-doi.component';
+export { MetadataRegistrationDoiComponent } from './metadata-registration-doi/metadata-registration-doi.component';
 export { MetadataResourceInformationComponent } from './metadata-resource-information/metadata-resource-information.component';
 export { MetadataSubjectsComponent } from './metadata-subjects/metadata-subjects.component';
 export { MetadataTagsComponent } from './metadata-tags/metadata-tags.component';

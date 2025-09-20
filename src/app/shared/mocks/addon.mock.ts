@@ -11,4 +11,5 @@ export const MOCK_ADDON: AddonModel = {
   credentialsFormat: CredentialsFormat.ACCESS_SECRET_KEYS,
   providerName: 'Test Provider',
   wbKey: 'github',
+  iconUrl: 'https://test.com/icon.png',
 };

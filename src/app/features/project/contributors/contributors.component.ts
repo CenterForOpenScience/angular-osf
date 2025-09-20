@@ -148,13 +148,18 @@ export class ContributorsComponent implements OnInit {
         this.searchControl.enable();
       }
     });
+
+    effect(() => {
+      if (this.isCurrentUserAdminContributor()) {
+        this.actions.getViewOnlyLinks(this.resourceId(), this.resourceType());
+      }
+    });
   }
 
   ngOnInit(): void {
     const id = this.resourceId();
 
     if (id) {
-      this.actions.getViewOnlyLinks(id, this.resourceType());
       this.actions.getResourceDetails(id, this.resourceType());
       this.actions.getContributors(id, this.resourceType());
     }

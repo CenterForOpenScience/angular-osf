@@ -13,7 +13,10 @@ import { LicenseModel, LicensesResponseJsonApi } from '@shared/models';
 export class LicensesService {
   private readonly http = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getAllLicenses(): Observable<LicenseModel[]> {
     return this.http

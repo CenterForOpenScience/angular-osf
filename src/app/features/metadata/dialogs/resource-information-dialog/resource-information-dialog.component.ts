@@ -28,10 +28,7 @@ export class ResourceInformationDialogComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    resourceLanguage: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
+    resourceLanguage: new FormControl(''),
   });
 
   resourceTypeOptions = RESOURCE_TYPE_OPTIONS;

@@ -14,7 +14,10 @@ import { IdName, RegionsResponseJsonApi } from '../models';
 export class RegionsService {
   private readonly http = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getAllRegions(): Observable<IdName[]> {
     return this.http

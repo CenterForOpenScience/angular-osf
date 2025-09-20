@@ -24,7 +24,10 @@ import { JsonApiService } from '@shared/services';
 export class RegistryOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getRegistrationById(id: string): Observable<RegistryOverviewWithMeta> {
     const params = {
@@ -89,7 +92,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}`, payload)
+      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}/`, payload)
       .pipe(map((response) => MapRegistryOverview(response)));
   }
 
@@ -106,7 +109,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}`, payload)
+      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}/`, payload)
       .pipe(map((response) => MapRegistryOverview(response)));
   }
 

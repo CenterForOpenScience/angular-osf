@@ -48,4 +48,9 @@ export class ProjectOverviewSelectors {
   static isProjectAnonymous(state: ProjectOverviewStateModel) {
     return state.isAnonymous;
   }
+
+  @Selector([ProjectOverviewState])
+  static getDuplicatedProject(state: ProjectOverviewStateModel) {
+    return state.duplicatedProject;
+  }
 }

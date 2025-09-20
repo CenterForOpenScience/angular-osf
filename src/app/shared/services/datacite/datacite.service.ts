@@ -13,9 +13,18 @@ import { DataciteEvent } from '@osf/shared/models/datacite/datacite-event.enum';
 export class DataciteService {
   private readonly http: HttpClient = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly webUrl = this.environment.webUrl;
-  private readonly dataciteTrackerRepoId = this.environment.dataciteTrackerRepoId;
-  private readonly dataciteTrackerAddress = this.environment.dataciteTrackerAddress;
+
+  get webUrl() {
+    return this.environment.webUrl;
+  }
+
+  get dataciteTrackerAddress() {
+    return this.environment.dataciteTrackerAddress;
+  }
+
+  get dataciteTrackerRepoId() {
+    return this.environment.dataciteTrackerRepoId;
+  }
 
   logIdentifiableView(trackable: Observable<{ identifiers?: Identifier[] } | null>) {
     return this.watchIdentifiable(trackable, DataciteEvent.VIEW);

@@ -17,9 +17,18 @@ import { MetadataRecordsService } from './metadata-records.service';
 export class MetaTagsService {
   private readonly metadataRecords: MetadataRecordsService = inject(MetadataRecordsService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly webUrl = this.environment.webUrl;
-  private readonly facebookAppId = this.environment.facebookAppId;
-  private readonly twitterHandle = this.environment.twitterHandle;
+
+  get webUrl() {
+    return this.environment.webUrl;
+  }
+
+  get facebookAppId() {
+    return this.environment.facebookAppId;
+  }
+
+  get twitterHandle() {
+    return this.environment.twitterHandle;
+  }
 
   private readonly defaultMetaTags: MetaTagsData = {
     type: 'article',

@@ -43,14 +43,14 @@ import {
 } from '@osf/shared/stores';
 
 @Component({
-  selector: 'osf-contributors',
+  selector: 'osf-registries-contributors',
   imports: [FormsModule, TableModule, ContributorsListComponent, TranslatePipe, Card, Button],
-  templateUrl: './contributors.component.html',
-  styleUrl: './contributors.component.scss',
+  templateUrl: './registries-contributors.component.html',
+  styleUrl: './registries-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class ContributorsComponent implements OnInit {
+export class RegistriesContributorsComponent implements OnInit {
   control = input.required<FormControl>();
 
   readonly destroyRef = inject(DestroyRef);

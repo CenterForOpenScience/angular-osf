@@ -16,11 +16,15 @@ import { Preprint, PreprintAttributesJsonApi, PreprintLinksJsonApi, PreprintRela
 export class PreprintsProjectsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getAvailableProjects(searchTerm: StringOrNull): Observable<IdName[]> {
     const params: Record<string, Primitive> = {};
     params['page'] = 1;
+
     if (searchTerm) {
       params['filter[title]'] = searchTerm;
     }

@@ -47,6 +47,7 @@ import {
   MetadataFundingComponent,
   MetadataLicenseComponent,
   MetadataPublicationDoiComponent,
+  MetadataRegistrationDoiComponent,
   MetadataResourceInformationComponent,
   MetadataSubjectsComponent,
   MetadataTagsComponent,
@@ -99,6 +100,7 @@ import {
     MetadataDateInfoComponent,
     MetadataTagsComponent,
     MetadataTitleComponent,
+    MetadataRegistrationDoiComponent,
   ],
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
@@ -184,6 +186,8 @@ export class MetadataComponent implements OnInit {
       (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
     );
   });
+
+  showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
 
   bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
 

@@ -34,7 +34,6 @@ import { GLOBAL_SEARCH_STATE_DEFAULTS, GlobalSearchStateModel } from './global-s
 export class GlobalSearchState {
   private searchService = inject(GlobalSearchService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly webUrl = this.environment.webUrl;
 
   @Action(FetchResources)
   fetchResources(ctx: StateContext<GlobalSearchStateModel>): Observable<ResourcesData> {
@@ -300,6 +299,9 @@ export class GlobalSearchState {
 
   private buildParamsForIndexCardSearch(state: GlobalSearchStateModel): Record<string, string> {
     const filtersParams: Record<string, string> = {};
+    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
+      filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
     Object.entries(state.filterValues).forEach(([key, value]) => {
       if (value) {
         const filterDefinition = state.filters.find((f) => f.key === key);
@@ -314,17 +316,13 @@ export class GlobalSearchState {
     });
 
     filtersParams['cardSearchFilter[resourceType]'] = getResourceTypeStringFromEnum(state.resourceType);
-    filtersParams['cardSearchFilter[accessService]'] = `${this.webUrl}/`;
+    filtersParams['cardSearchFilter[accessService]'] = `${this.environment.webUrl}/`;
     filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
     filtersParams['page[size]'] = '10';
 
     const sortBy = state.sortBy;
     const sortParam = sortBy.includes('count') && !sortBy.includes('relevance') ? 'sort[integer-value]' : 'sort';
     filtersParams[sortParam] = sortBy;
-
-    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
-      filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
 
     return filtersParams;
   }

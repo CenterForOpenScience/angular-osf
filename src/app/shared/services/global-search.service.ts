@@ -23,7 +23,10 @@ import { JsonApiService } from './json-api.service';
 export class GlobalSearchService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly shareTroveUrl = this.environment.shareTroveUrl;
+
+  get shareTroveUrl() {
+    return this.environment.shareTroveUrl;
+  }
 
   getResources(params: Record<string, string>): Observable<ResourcesData> {
     return this.jsonApiService
@@ -55,10 +58,10 @@ export class GlobalSearchService {
   } {
     let nextUrl: string | undefined;
 
-    const searchResultItems = response.included!.filter(
-      (item): item is SearchResultJsonApi => item.type === 'search-result'
-    );
-    const filterOptionItems = response.included!.filter((item): item is FilterOptionItem => item.type === 'index-card');
+    const searchResultItems =
+      response.included?.filter((item): item is SearchResultJsonApi => item.type === 'search-result') ?? [];
+    const filterOptionItems =
+      response.included?.filter((item): item is FilterOptionItem => item.type === 'index-card') ?? [];
 
     const options = mapFilterOptions(searchResultItems, filterOptionItems);
     const searchResultPage = response?.data?.relationships?.['searchResultPage'] as {

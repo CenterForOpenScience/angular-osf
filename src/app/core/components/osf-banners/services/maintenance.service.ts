@@ -19,7 +19,10 @@ export class MaintenanceService {
   /** Injected Angular `HttpClient` for making API requests. */
   private readonly http = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   /**
    * Fetches the maintenance status from the API and transforms the response.
