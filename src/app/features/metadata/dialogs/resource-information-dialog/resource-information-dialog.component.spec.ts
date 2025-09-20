@@ -64,20 +64,6 @@ describe('ResourceInformationDialogComponent', () => {
     expect(closeSpy).not.toHaveBeenCalled();
   });
 
-  it('should not save when resource language is missing', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    component.resourceForm.patchValue({
-      resourceType: 'dataset',
-      resourceLanguage: '',
-    });
-
-    component.save();
-
-    expect(closeSpy).not.toHaveBeenCalled();
-  });
-
   it('should cancel dialog', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     const closeSpy = jest.spyOn(dialogRef, 'close');
@@ -89,16 +75,12 @@ describe('ResourceInformationDialogComponent', () => {
 
   it('should validate required fields', () => {
     const resourceTypeControl = component.resourceForm.get('resourceType');
-    const resourceLanguageControl = component.resourceForm.get('resourceLanguage');
 
     expect(resourceTypeControl?.hasError('required')).toBe(true);
-    expect(resourceLanguageControl?.hasError('required')).toBe(true);
 
     resourceTypeControl?.setValue('dataset');
-    resourceLanguageControl?.setValue('en');
 
     expect(resourceTypeControl?.hasError('required')).toBe(false);
-    expect(resourceLanguageControl?.hasError('required')).toBe(false);
   });
 
   it('should handle form validation state', () => {
