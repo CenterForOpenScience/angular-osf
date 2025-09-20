@@ -1,5 +1,6 @@
 <section class="h-full" data-test-new-registration-form>
   <osf-sub-header [title]="'registries.new.addNewRegistry' | translate" />
+
   <section class="flex flex-column lg:flex-row flex-1 p-5 gap-4 bg-white w-full">
     <p>
       {{ 'registries.new.infoText1' | translate }}
@@ -7,9 +8,10 @@
       {{ 'registries.new.infoText2' | translate }}
     </p>
   </section>
+
   <section class="flex flex-column flex-1 p-5 gap-4 w-full bg-white">
     <p-card class="w-full">
-      <h2 class="mb-4">{{ ('registries.new.steps.title' | translate) + '1' }}</h2>
+      <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} 1</h2>
       <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.step1' | translate }}</p>
       <div class="flex gap-2">
         <p-button
@@ -30,10 +32,11 @@
         />
       </div>
     </p-card>
+
     <form [formGroup]="draftForm" (ngSubmit)="createDraft()" class="flex flex-column gap-4">
       @if (fromProject) {
         <p-card class="w-full">
-          <h2 class="mb-4">{{ ('registries.new.steps.title' | translate) + '2' }}</h2>
+          <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} 2</h2>
           <p class="mb-3 text-lg font-bold">{{ 'registries.new.steps.step2' | translate }}</p>
           <p class="mb-4">{{ 'registries.new.steps.step2InfoText' | translate }}</p>
           <div class="flex">
@@ -53,8 +56,9 @@
           </div>
         </p-card>
       }
+
       <p-card class="w-full">
-        <h2 class="mb-4">{{ ('registries.new.steps.title' | translate) + (fromProject ? '3' : '2') }}</h2>
+        <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} {{ fromProject ? '3' : '2' }}</h2>
         <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.step3' | translate }}</p>
         <div class="flex">
           <p-select
@@ -69,6 +73,7 @@
           />
         </div>
       </p-card>
+
       <div class="flex justify-content-end">
         <p-button
           data-test-start-registration-button
