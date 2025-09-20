@@ -944,7 +944,7 @@
           "label": "Publication DOI",
           "placeholder": "Enter publication DOI"
         },
-        "updated": "Description updated successfully"
+        "updated": "Publication DOI updated successfully"
       },
       "addMetadata": {
         "title": "Add community metadata record",
