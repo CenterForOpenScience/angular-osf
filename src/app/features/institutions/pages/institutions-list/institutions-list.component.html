@@ -28,14 +28,6 @@
           <p class="text-center">{{ 'common.search.noResultsFound' | translate }}</p>
         }
       </div>
-
-      @if (totalInstitutionsCount() > currentPageSize()) {
-        <osf-custom-paginator
-          [first]="first()"
-          [totalCount]="totalInstitutionsCount()"
-          (pageChanged)="onPageChange($event)"
-        ></osf-custom-paginator>
-      }
     }
   </div>
 </section>

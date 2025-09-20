@@ -534,7 +534,8 @@
     },
     "contributors": {
       "addContributor": "Add Contributor",
-      "searchPlaceholder": "Search contributors",
+      "searchProjectPlaceholder": "Search Project Contributors",
+      "searchRegistrationPlaceholder": "Search Registration Contributors",
       "permissionFilter": "Filter by permission",
       "bibliographyFilter": "Bibliography",
       "permissions": {

@@ -31,7 +31,7 @@ import {
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
+import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
@@ -109,6 +109,11 @@ export class ContributorsComponent implements OnInit {
   readonly currentUser = select(UserSelectors.getCurrentUser);
 
   canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
+  searchPlaceholder = computed(() =>
+    this.resourceType() === ResourceType.Project
+      ? 'project.contributors.searchProjectPlaceholder'
+      : 'project.contributors.searchRegistrationPlaceholder'
+  );
 
   isCurrentUserAdminContributor = computed(() => {
     const currentUserId = this.currentUser()?.id;
