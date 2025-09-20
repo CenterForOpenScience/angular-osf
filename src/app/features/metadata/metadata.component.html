@@ -20,16 +20,18 @@
   >
     <div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
       <div class="col-12 lg:col-6 flex flex-column gap-4">
+        <osf-metadata-title (openEditTitleDialog)="openEditTitleDialog()" [title]="metadata()?.title!" />
+
+        <osf-metadata-description
+          (openEditDescriptionDialog)="openEditDescriptionDialog()"
+          [description]="metadata()?.description!"
+        />
+
         <osf-metadata-date-info [dateCreated]="metadata()?.dateCreated" [dateModified]="metadata()?.dateModified" />
 
         <osf-metadata-contributors
           (openEditContributorDialog)="openEditContributorDialog()"
           [contributors]="bibliographicContributors()"
-        />
-
-        <osf-metadata-description
-          (openEditDescriptionDialog)="openEditDescriptionDialog()"
-          [description]="metadata()?.description!"
         />
 
         <osf-metadata-resource-information

@@ -9,3 +9,4 @@ export { MetadataPublicationDoiComponent } from './metadata-publication-doi/meta
 export { MetadataResourceInformationComponent } from './metadata-resource-information/metadata-resource-information.component';
 export { MetadataSubjectsComponent } from './metadata-subjects/metadata-subjects.component';
 export { MetadataTagsComponent } from './metadata-tags/metadata-tags.component';
+export { MetadataTitleComponent } from './metadata-title/metadata-title.component';
