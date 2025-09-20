@@ -70,7 +70,6 @@ export class OverviewToolbarComponent {
   isCollectionsRoute = input<boolean>(false);
   isAdmin = input.required<boolean>();
   currentResource = input.required<ToolbarResource | null>();
-  projectTitle = input<string>('');
   projectDescription = input<string>('');
   showViewOnlyLinks = input<boolean>(true);
 
@@ -84,13 +83,9 @@ export class OverviewToolbarComponent {
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
   });
 
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  actions = createDispatchMap({
-    clearDuplicatedProject: ClearDuplicatedProject,
-  });
+  actions = createDispatchMap({ clearDuplicatedProject: ClearDuplicatedProject });
 
   readonly forkActionItems = [
     {
@@ -250,16 +245,15 @@ export class OverviewToolbarComponent {
 
   private createShareableContent(): ShareableContent | null {
     const resource = this.currentResource();
-    const title = this.projectTitle();
     const description = this.projectDescription();
 
-    if (!resource?.isPublic || !title) {
+    if (!resource?.isPublic) {
       return null;
     }
 
     return {
       id: resource.id,
-      title,
+      title: resource.title,
       description,
       url: this.buildResourceUrl(resource),
     };
