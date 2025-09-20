@@ -4,9 +4,12 @@
     <p-skeleton width="100%" height="5rem" />
   } @else {
     @if (wikiContent()) {
-      <osf-truncated-text [text]="wikiContent()" [hasContent]="true">
-        <osf-markdown [markdownText]="wikiContent()"></osf-markdown>
-      </osf-truncated-text>
+      <osf-truncated-text
+        [text]="wikiContent()"
+        [maxVisibleLines]="12"
+        [navigateOnReadMore]="true"
+        [link]="wikiLink()"
+      />
     } @else {
       <div [innerHtml]="'project.overview.wiki.noWikiMessage' | translate"></div>
     }
