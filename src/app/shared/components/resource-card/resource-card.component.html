@@ -38,8 +38,13 @@
 
           @if (resource().isPartOf) {
             <div class="flex flex-row gap-1 line-height-3">
-              <p>{{ 'resourceCard.labels.from' | translate }}</p>
-              <a [href]="resource().isPartOf!.absoluteUrl" target="_blank" rel="noopener noreferrer">
+              <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
+              <a
+                class="white-space-normal"
+                [href]="resource().isPartOf!.absoluteUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {{ resource().isPartOf!.name }}
               </a>
             </div>
@@ -47,8 +52,13 @@
 
           @if (resource().isContainedBy) {
             <div class="flex flex-row gap-1 line-height-3">
-              <p>{{ 'resourceCard.labels.from' | translate }}</p>
-              <a [href]="resource().isContainedBy!.absoluteUrl" target="_blank" rel="noopener noreferrer">
+              <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
+              <a
+                class="white-space-normal"
+                [href]="resource().isContainedBy!.absoluteUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {{ resource().isContainedBy!.name }}
               </a>
             </div>
