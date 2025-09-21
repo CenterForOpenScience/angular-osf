@@ -1,7 +1,7 @@
 import { Observable, of, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -93,27 +93,16 @@ export class FilesService {
   uploadFile(
     file: File,
     uploadLink: string,
-    isNewRevision = false
+    isUpdate = false
   ): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
-    const params = isNewRevision
+    const params = isUpdate
       ? undefined
       : {
           kind: 'file',
           name: file.name,
         };
 
-    return this.jsonApiService.putFile<AddFileResponse>(uploadLink, file, params).pipe(
-      switchMap((event) => {
-        if (event.type === HttpEventType.Response && event.body?.data?.id) {
-          const fileId = event.body.data.id.split('/').pop();
-          if (fileId) {
-            return this.getFileGuid(fileId).pipe(map(() => event));
-          }
-        }
-
-        return of(event);
-      })
-    );
+    return this.jsonApiService.putFile<AddFileResponse>(uploadLink, file, params);
   }
 
   updateFileContent(file: File, link: string) {

@@ -17,13 +17,15 @@ import {
   EMPTY,
   filter,
   finalize,
+  forkJoin,
   Observable,
+  of,
   skip,
   switchMap,
   take,
 } from 'rxjs';
 
-import { HttpEventType } from '@angular/common/http';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -70,7 +72,7 @@ import {
 } from '@shared/components';
 import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
 import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
-import { FilesService } from '@shared/services';
+import { CustomConfirmationService, FilesService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -114,6 +116,7 @@ export class FilesComponent {
   private readonly router = inject(Router);
   private readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;
@@ -166,10 +169,9 @@ export class FilesComponent {
 
   sortOptions = ALL_SORT_OPTIONS;
 
-  storageProvider = FileProvider.OsfStorage;
   pageNumber = signal(1);
 
-  allowRevisions = true;
+  allowRevisions = false;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -253,6 +255,8 @@ export class FilesComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         const provider = currentRootFolder.folder?.provider;
+        // [NM TODO] Check if other providers allow revisions
+        this.allowRevisions = provider === FileProvider.OsfStorage;
         this.isGoogleDrive.set(provider === FileProvider.GoogleDrive);
         if (this.isGoogleDrive()) {
           this.setGoogleAccountId();
@@ -298,7 +302,6 @@ export class FilesComponent {
     if (!uploadLink) return;
 
     const fileArray = Array.isArray(files) ? files : [files];
-    const isMultiple = fileArray.length > 1;
     if (fileArray.length === 0) return;
 
     this.fileName.set(fileArray.length === 1 ? fileArray[0].name : `${fileArray.length} files`);
@@ -307,6 +310,7 @@ export class FilesComponent {
 
     let completedUploads = 0;
     const totalFiles = fileArray.length;
+    const conflictFiles: { file: File; link: string }[] = [];
 
     fileArray.forEach((file) => {
       this.filesService
@@ -314,35 +318,65 @@ export class FilesComponent {
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           catchError((err) => {
-            const uploadLink = err.error.data.links.upload;
-            if (err.status === 409) {
+            const conflictLink = err.error?.data?.links?.upload;
+            if (err.status === 409 && conflictLink) {
               if (this.allowRevisions) {
-                return this.filesService.uploadFile(file, uploadLink, this.allowRevisions);
+                return this.filesService.uploadFile(file, conflictLink, true);
               } else {
-                // [NM TODO] Show replace file dialog
+                conflictFiles.push({ file, link: conflictLink });
               }
             }
-            return EMPTY;
-          }),
-          finalize(() => {
-            if (isMultiple) {
-              completedUploads++;
-              const progressPercentage = Math.round((completedUploads / totalFiles) * 100);
-              this.progress.set(progressPercentage);
-
-              if (completedUploads === totalFiles) {
-                this.completeUpload();
-              }
-            } else {
-              this.completeUpload();
-            }
+            return of(new HttpResponse());
           })
         )
         .subscribe((event) => {
           if (event.type === HttpEventType.UploadProgress && event.total) {
-            this.progress.set(Math.round((event.loaded / event.total) * 100));
+            const progressPercentage = Math.round((event.loaded / event.total) * 100);
+            if (totalFiles === 1) {
+              this.progress.set(progressPercentage);
+            }
+          }
+
+          if (event.type === HttpEventType.Response) {
+            completedUploads++;
+
+            if (totalFiles > 1) {
+              const progressPercentage = Math.round((completedUploads / totalFiles) * 100);
+              this.progress.set(progressPercentage);
+            }
+
+            if (completedUploads === totalFiles) {
+              if (conflictFiles.length > 0) {
+                this.openReplaceFileDialog(conflictFiles);
+              } else {
+                this.completeUpload();
+              }
+            }
           }
         });
+    });
+  }
+
+  private openReplaceFileDialog(conflictFiles: { file: File; link: string }[]) {
+    this.customConfirmationService.confirmDelete({
+      headerKey: conflictFiles.length > 1 ? 'files.dialogs.replaceFile.multiple' : 'files.dialogs.replaceFile.single',
+      messageKey: 'files.dialogs.replaceFile.message',
+      messageParams: {
+        name: conflictFiles.map((c) => c.file.name).join(', '),
+      },
+      acceptLabelKey: 'common.buttons.replace',
+      onConfirm: () => {
+        const replaceRequests$ = conflictFiles.map(({ file, link }) =>
+          this.filesService.uploadFile(file, link, true).pipe(
+            takeUntilDestroyed(this.destroyRef),
+            catchError(() => of(null))
+          )
+        );
+
+        forkJoin(replaceRequests$).subscribe({
+          next: () => this.completeUpload(),
+        });
+      },
     });
   }
 
