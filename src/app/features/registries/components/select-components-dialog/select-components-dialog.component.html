@@ -1,6 +1,12 @@
 <p class="mb-2">{{ 'registries.review.selectComponents.description' | translate }}</p>
 
-<p-tree [value]="components" selectionMode="checkbox" class="w-full md:w-[30rem]" [(selection)]="selectedComponents" />
+<p-tree
+  [value]="components"
+  selectionMode="checkbox"
+  class="w-full md:w-[30rem]"
+  [(selection)]="selectedComponents"
+  [propagateSelectionUp]="false"
+/>
 
 <div class="flex justify-content-end gap-2 mt-4">
   <p-button
