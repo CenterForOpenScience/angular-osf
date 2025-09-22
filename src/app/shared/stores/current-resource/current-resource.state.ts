@@ -22,7 +22,7 @@ export class CurrentResourceState {
   getResourceType(ctx: StateContext<CurrentResourceStateModel>, action: GetResource) {
     const state = ctx.getState();
 
-    if (state.currentResource.data?.id === action.resourceId) {
+    if (state.currentResource.data?.id === action.resourceId && !action.refresh) {
       return;
     }
 

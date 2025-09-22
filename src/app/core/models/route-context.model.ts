@@ -2,6 +2,7 @@ export interface RouteContext {
   resourceId: string | undefined;
   providerId?: string;
   isProject: boolean;
+  wikiPageVisible?: boolean;
   isRegistry: boolean;
   isPreprint: boolean;
   preprintReviewsPageVisible?: boolean;
