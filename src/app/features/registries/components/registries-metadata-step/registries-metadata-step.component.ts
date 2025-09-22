@@ -13,19 +13,14 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy } from '@
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  ClearState,
-  DeleteDraft,
-  RegistriesSelectors,
-  UpdateDraft,
-  UpdateStepValidation,
-} from '@osf/features/registries/store';
 import { TextInputComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
 import { ContributorModel, DraftRegistrationModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService } from '@osf/shared/services';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
+
+import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepState } from '../../store';
 
 import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
 import { RegistriesContributorsComponent } from './registries-contributors/registries-contributors.component';
@@ -63,12 +58,12 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
   readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   initialContributors = select(ContributorsSelectors.getContributors);
-  stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  stepsState = select(RegistriesSelectors.getStepsState);
 
   actions = createDispatchMap({
     deleteDraft: DeleteDraft,
     updateDraft: UpdateDraft,
-    updateStepValidation: UpdateStepValidation,
+    updateStepState: UpdateStepState,
     clearState: ClearState,
   });
 
@@ -107,7 +102,7 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
       contributors: this.initialContributors(),
       subjects: this.selectedSubjects(),
     });
-    if (this.stepsValidation()?.[0]?.invalid) {
+    if (this.stepsState()?.[0]?.invalid) {
       this.metadataForm.markAllAsTouched();
     }
   }
@@ -149,7 +144,7 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     if (!this.isDraftDeleted) {
-      this.actions.updateStepValidation('0', this.metadataForm.invalid);
+      this.actions.updateStepState('0', this.metadataForm.invalid, true);
       const changedFields = findChangedFields(
         { title: this.metadataForm.value.title!, description: this.metadataForm.value.description! },
         { title: this.draftRegistration()?.title, description: this.draftRegistration()?.description }

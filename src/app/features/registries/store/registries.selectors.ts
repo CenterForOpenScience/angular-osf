@@ -94,8 +94,8 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getStepsValidation(state: RegistriesStateModel): Record<string, { invalid: boolean }> {
-    return state.stepsValidation;
+  static getStepsState(state: RegistriesStateModel): Record<string, { invalid: boolean; touched: boolean }> {
+    return state.stepsState;
   }
 
   @Selector([RegistriesState])

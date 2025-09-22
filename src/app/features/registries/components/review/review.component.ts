@@ -28,7 +28,14 @@ import {
   SubjectsSelectors,
 } from '@osf/shared/stores';
 
-import { ClearState, DeleteDraft, FetchLicenses, FetchProjectChildren, RegistriesSelectors } from '../../store';
+import {
+  ClearState,
+  DeleteDraft,
+  FetchLicenses,
+  FetchProjectChildren,
+  RegistriesSelectors,
+  UpdateStepState,
+} from '../../store';
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
 import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
 
@@ -83,13 +90,14 @@ export class ReviewComponent {
     clearState: ClearState,
     getProjectsComponents: FetchProjectChildren,
     fetchLicenses: FetchLicenses,
+    updateStepState: UpdateStepState,
   });
 
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  stepsState = select(RegistriesSelectors.getStepsState);
 
-  isDraftInvalid = computed(() => Object.values(this.stepsValidation()).some((step) => step.invalid));
+  isDraftInvalid = computed(() => Object.values(this.stepsState()).some((step) => step.invalid));
 
   licenseOptionsRecord = computed(() => (this.draftRegistration()?.license.options ?? {}) as Record<string, string>);
 
