@@ -1,8 +1,9 @@
-import { MockComponent, MockPipes } from 'ng-mocks';
+import { MockComponent, MockPipes, MockProvider } from 'ng-mocks';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ReviewAction } from '@osf/features/moderation/models';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintRequest } from '@osf/features/preprints/models';
@@ -27,6 +28,7 @@ describe('ModerationStatusBannerComponent', () => {
   const mockProvider = MOCK_PROVIDER;
   const mockReviewAction: ReviewAction = REVIEW_ACTION_MOCK;
   const mockWithdrawalRequest: PreprintRequest = PREPRINT_REQUEST_MOCK;
+  const mockWebUrl = 'https://staging4.osf.io';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -38,6 +40,9 @@ describe('ModerationStatusBannerComponent', () => {
       ],
       providers: [
         TranslationServiceMock,
+        MockProvider(ENVIRONMENT, {
+          webUrl: mockWebUrl,
+        }),
         provideMockStore({
           signals: [
             {
@@ -179,7 +184,7 @@ describe('ModerationStatusBannerComponent', () => {
 
   it('should compute actionCreatorLink with environment webUrl', () => {
     const link = component.actionCreatorLink();
-    expect(link).toBe('https://staging4.osf.io/user-1');
+    expect(link).toBe(`${mockWebUrl}/user-1`);
   });
 
   it('should compute withdrawalRequesterName from latestWithdrawalRequest', () => {

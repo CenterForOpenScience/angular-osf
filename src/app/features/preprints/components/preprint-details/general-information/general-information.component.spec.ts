@@ -1,7 +1,8 @@
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
@@ -24,6 +25,7 @@ describe('GeneralInformationComponent', () => {
   const mockContributors = [MOCK_CONTRIBUTOR];
   const mockInstitutions = [MOCK_INSTITUTION];
   const mockPreprintProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockWebUrl = 'https://staging4.osf.io';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -38,6 +40,9 @@ describe('GeneralInformationComponent', () => {
         ),
       ],
       providers: [
+        MockProvider(ENVIRONMENT, {
+          webUrl: mockWebUrl,
+        }),
         provideMockStore({
           signals: [
             {
@@ -98,7 +103,7 @@ describe('GeneralInformationComponent', () => {
 
   it('should compute node link from preprint', () => {
     const nodeLink = component.nodeLink();
-    expect(nodeLink).toBe('https://staging4.osf.io/node-123');
+    expect(nodeLink).toBe(`${mockWebUrl}/node-123`);
   });
 
   it('should have skeleton data array with 5 null elements', () => {

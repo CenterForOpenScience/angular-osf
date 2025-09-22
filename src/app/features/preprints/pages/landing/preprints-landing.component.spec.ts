@@ -4,6 +4,7 @@ import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   AdvisoryBoardComponent,
   BrowseBySubjectsComponent,
@@ -33,6 +34,7 @@ describe('PreprintsLandingComponent', () => {
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockProvidersToAdvertise = [PREPRINT_PROVIDER_SHORT_INFO_MOCK];
   const mockHighlightedSubjects = SUBJECTS_MOCK;
+  const mockDefaultProvider = 'osf';
 
   beforeEach(async () => {
     routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
@@ -51,12 +53,16 @@ describe('PreprintsLandingComponent', () => {
       ],
       providers: [
         TranslationServiceMock,
+        MockProvider(ENVIRONMENT, {
+          defaultProvider: mockDefaultProvider,
+          supportEmail: 'support@osf.io',
+        }),
         MockProvider(BrandService),
         MockProvider(Router, routerMock),
         provideMockStore({
           signals: [
             {
-              selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'),
+              selector: PreprintProvidersSelectors.getPreprintProviderDetails(mockDefaultProvider),
               value: mockProvider,
             },
             {
