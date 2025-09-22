@@ -17,6 +17,7 @@ export class TruncatedTextComponent implements AfterViewInit {
   readonly maxVisibleLines = input(3);
   readonly navigateOnReadMore = input(false);
   readonly link = input<string[]>([]);
+  readonly hasOwnContent = input(false);
   readonly readMoreLabel = input('truncatedText.readMore');
   readonly hideLabel = input('truncatedText.hide');
   readonly contentElement = viewChild<ElementRef>('textContent');

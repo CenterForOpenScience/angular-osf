@@ -1,11 +1,11 @@
 <div class="flex flex-column gap-3">
-  <div
-    #textContent
-    [innerHTML]="text()"
-    class="text-content"
-    [class.expanded]="isTextExpanded()"
-    [style.--line-clamp]="maxVisibleLines()"
-  ></div>
+  <div #textContent class="text-content" [class.expanded]="isTextExpanded()" [style.--line-clamp]="maxVisibleLines()">
+    @if (hasOwnContent()) {
+      <ng-content></ng-content>
+    } @else {
+      <div [innerHTML]="text()"></div>
+    }
+  </div>
 
   @if (hasOverflowingText()) {
     <p-button class="link-btn-no-padding" link [label]="buttonLabel() | translate" (onClick)="handleButtonClick()" />

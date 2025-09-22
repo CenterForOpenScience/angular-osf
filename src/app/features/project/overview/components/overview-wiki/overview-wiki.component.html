@@ -9,7 +9,10 @@
         [maxVisibleLines]="12"
         [navigateOnReadMore]="true"
         [link]="wikiLink()"
-      />
+        [hasOwnContent]="true"
+      >
+        <osf-markdown [markdownText]="wikiContent()"></osf-markdown>
+      </osf-truncated-text>
     } @else {
       <div [innerHtml]="'project.overview.wiki.noWikiMessage' | translate"></div>
     }
