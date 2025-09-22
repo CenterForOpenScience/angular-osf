@@ -20,7 +20,7 @@ import {
   AddonTermsComponent,
   StorageItemSelectorComponent,
 } from '@osf/shared/components/addons';
-import { AddonServiceNames, AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
+import { AddonServiceNames, AddonType, OperationNames, ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
 import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@osf/shared/models';
 import {
@@ -41,7 +41,6 @@ import {
   UpdateConfiguredAddon,
 } from '@osf/shared/stores';
 
-import { OperationNames } from '../../enums';
 import { AddonConfigMap } from '../../models';
 import { AddonDialogService } from '../../services';
 

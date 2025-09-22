@@ -977,7 +977,8 @@
           "selectFunder": "Select a funder",
           "autoPopulated": "Auto-populated from selection",
           "loadingFunders": "Loading funders...",
-          "description": "Add funding and support information for this project."
+          "description": "Add funding and support information for this project.",
+          "noFundersFound": "No funders found"
         }
       },
       "affiliatedInstitutions": {

@@ -13,15 +13,18 @@ import { AddonCardListComponent } from '@shared/components/addons';
 import { TranslateServiceMock } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores/addons';
 
-import { AddonsComponent } from './addons.component';
+import { SettingsAddonsComponent } from './settings-addons.component';
 
 describe('AddonsComponent', () => {
-  let component: AddonsComponent;
-  let fixture: ComponentFixture<AddonsComponent>;
+  let component: SettingsAddonsComponent;
+  let fixture: ComponentFixture<SettingsAddonsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddonsComponent, ...MockComponents(SubHeaderComponent, SearchInputComponent, AddonCardListComponent)],
+      imports: [
+        SettingsAddonsComponent,
+        ...MockComponents(SubHeaderComponent, SearchInputComponent, AddonCardListComponent),
+      ],
       providers: [
         TranslateServiceMock,
 
@@ -53,7 +56,7 @@ describe('AddonsComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddonsComponent);
+    fixture = TestBed.createComponent(SettingsAddonsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
