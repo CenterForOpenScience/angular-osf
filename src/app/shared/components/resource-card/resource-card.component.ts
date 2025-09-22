@@ -50,11 +50,15 @@ import { UserSecondaryMetadataComponent } from './components/user-secondary-meta
 export class ResourceCardComponent {
   private resourceCardService = inject(ResourceCardService);
   private translateService = inject(TranslateService);
-  ResourceType = ResourceType;
+
   isSmall = toSignal(inject(IS_XSMALL));
+
   resource = input.required<ResourceModel>();
   provider = input<PreprintProviderDetails | null>();
   userRelatedCounts = signal<UserRelatedCounts | null>(null);
+
+  ResourceType = ResourceType;
+  limit = 4;
 
   cardTypeLabel = computed(() => {
     const item = this.resource();
