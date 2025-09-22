@@ -6,6 +6,7 @@
           <label [for]="'funderName-' + $index">
             {{ 'project.metadata.funding.dialog.funderName' | translate }}
           </label>
+
           <p-select
             [id]="'funderName-' + $index"
             formControlName="funderName"
@@ -13,14 +14,14 @@
             optionLabel="label"
             optionValue="value"
             [placeholder]="'project.metadata.funding.dialog.selectFunder' | translate"
-            appendTo="body"
             class="w-full"
             [filter]="true"
             filterBy="label"
             [showClear]="true"
             [loading]="fundersLoading()"
+            [emptyFilterMessage]="filterMessage()"
+            [emptyMessage]="filterMessage()"
             [autoOptionFocus]="false"
-            resetFilterOnHide="false"
             (onChange)="onFunderSelected($event.value, $index)"
             (onFilter)="onFunderSearch($event.filter)"
           />

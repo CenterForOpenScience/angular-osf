@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -9,13 +9,13 @@ import { Select } from 'primeng/select';
 
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { CustomValidators } from '@osf/shared/helpers';
 
-import { Funder, FunderOption, FundingDialogResult, FundingEntryForm, FundingForm, SupplementData } from '../../models';
+import { Funder, FundingDialogResult, FundingEntryForm, FundingForm, SupplementData } from '../../models';
 import { GetFundersList, MetadataSelectors } from '../../store';
 
 @Component({
@@ -28,12 +28,21 @@ export class FundingDialogComponent implements OnInit {
   dialogRef = inject(DynamicDialogRef);
   config = inject(DynamicDialogConfig);
   destroyRef = inject(DestroyRef);
+  translateService = inject(TranslateService);
 
   actions = createDispatchMap({ getFundersList: GetFundersList });
 
   fundersList = select(MetadataSelectors.getFundersList);
   fundersLoading = select(MetadataSelectors.getFundersLoading);
-  funderOptions = signal<FunderOption[]>([]);
+  funderOptions = computed(() => {
+    const funders = this.fundersList() || [];
+    return funders.map((funder) => ({
+      label: funder.name,
+      value: funder.name,
+      id: funder.id,
+      uri: funder.uri,
+    }));
+  });
 
   fundingForm = new FormGroup<FundingForm>({ fundingEntries: new FormArray<FormGroup<FundingEntryForm>>([]) });
 
@@ -41,33 +50,17 @@ export class FundingDialogComponent implements OnInit {
 
   configFunders = this.config.data?.funders;
 
-  constructor() {
-    effect(() => {
-      const funders = this.fundersList() || [];
-      this.funderOptions.set(
-        funders.map((funder) => ({
-          label: funder.name,
-          value: funder.name,
-          id: funder.id,
-          uri: funder.uri,
-        }))
-      );
-    });
-
-    effect(() => {
-      const control = this.fundingForm.controls['fundingEntries'];
-
-      return this.fundersLoading() ? control.disable() : control.enable();
-    });
-  }
+  filterMessage = computed(() =>
+    this.fundersLoading()
+      ? this.translateService.instant('project.metadata.funding.dialog.loadingFunders')
+      : this.translateService.instant('project.metadata.funding.dialog.noFundersFound')
+  );
 
   get fundingEntries() {
     return this.fundingForm.get('fundingEntries') as FormArray<FormGroup<FundingEntryForm>>;
   }
 
   ngOnInit(): void {
-    this.actions.getFundersList();
-
     if (this.configFunders?.length > 0) {
       this.configFunders.forEach((funder: Funder) => {
         this.addFundingEntry({
