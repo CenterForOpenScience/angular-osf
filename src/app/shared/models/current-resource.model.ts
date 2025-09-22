@@ -3,4 +3,5 @@ export interface CurrentResource {
   type: string;
   parentId?: string;
   parentType?: string;
+  wikiEnabled?: boolean;
 }
