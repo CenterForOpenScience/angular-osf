@@ -164,7 +164,9 @@ export class ReviewComponent {
         },
       })
       .onClose.subscribe((selectedComponents) => {
-        this.openConfirmRegistrationDialog(selectedComponents);
+        if (selectedComponents) {
+          this.openConfirmRegistrationDialog(selectedComponents);
+        }
       });
   }
 

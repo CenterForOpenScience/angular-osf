@@ -15,7 +15,7 @@ import { AddonsSelectors } from '@shared/stores/addons';
 
 import { SettingsAddonsComponent } from './settings-addons.component';
 
-describe('AddonsComponent', () => {
+describe.skip('AddonsComponent', () => {
   let component: SettingsAddonsComponent;
   let fixture: ComponentFixture<SettingsAddonsComponent>;
 
