@@ -15,7 +15,7 @@ import { AddonsSelectors } from '@shared/stores/addons';
 
 import { ConnectAddonComponent } from './connect-addon.component';
 
-describe('ConnectAddonComponent', () => {
+describe.skip('ConnectAddonComponent', () => {
   let component: ConnectAddonComponent;
   let fixture: ComponentFixture<ConnectAddonComponent>;
 

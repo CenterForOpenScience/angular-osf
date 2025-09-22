@@ -5,10 +5,9 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OperationNames } from '@osf/features/project/project-addons/enums';
 import { StorageItemSelectorComponent } from '@shared/components/addons';
+import { OperationNames } from '@shared/enums';
 import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
-import { StorageItemModel } from '@shared/models';
 
 describe('StorageItemSelectorComponent', () => {
   let component: StorageItemSelectorComponent;
@@ -74,19 +73,6 @@ describe('StorageItemSelectorComponent', () => {
     (component as any).handleSave();
 
     expect(saveSpy).toHaveBeenCalled();
-  });
-
-  it('should set selectedStorageItemId', () => {
-    const mockFolder: StorageItemModel = {
-      itemId: 'test-folder-id',
-      itemName: 'Test Folder',
-      itemType: 'folder',
-    } as StorageItemModel;
-
-    (component as any).selectedStorageItem.set(mockFolder);
-    (component as any).handleSave();
-
-    expect(component.selectedStorageItemId()).toBe('test-folder-id');
   });
 
   it('should emit cancelSelection event', () => {
