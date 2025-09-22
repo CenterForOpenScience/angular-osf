@@ -25,7 +25,7 @@ describe('AddonCardComponent', () => {
   const mockAddon: AddonModel = {
     id: 'test-addon-id',
     type: 'external-storage-services',
-    displayName: 'Test AddonModel',
+    displayName: 'Test Addon',
     credentialsFormat: CredentialsFormat.OAUTH2,
     supportedFeatures: ['ACCESS'],
     providerName: 'Test Provider',

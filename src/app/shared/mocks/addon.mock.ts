@@ -5,7 +5,7 @@ export const MOCK_ADDON: AddonModel = {
   type: 'addon',
   id: 'id1',
   authUrl: 'https://test.com/auth',
-  displayName: 'Test AddonModel',
+  displayName: 'Test Addon',
   externalServiceName: 'test-service',
   supportedFeatures: ['ACCESS', 'UPDATE'],
   credentialsFormat: CredentialsFormat.ACCESS_SECRET_KEYS,

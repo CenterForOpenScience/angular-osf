@@ -24,7 +24,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { StorageItemSelectorComponent } from '@osf/shared/components/addons';
-import { AddonServiceNames, AddonType } from '@osf/shared/enums';
+import { AddonServiceNames, AddonType, OperationNames } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
 import { AddonModel, ConfiguredAddonModel } from '@osf/shared/models';
 import { AddonFormService, AddonOperationInvocationService, ToastService } from '@osf/shared/services';
@@ -36,7 +36,6 @@ import {
   UpdateConfiguredAddon,
 } from '@osf/shared/stores';
 
-import { OperationNames } from '../../enums';
 import { AddonDialogService } from '../../services/addon-dialog.service';
 
 @Component({
