@@ -98,7 +98,7 @@
   @if (isResourceContributorsLoading()) {
     <p-skeleton width="100%" height="4rem" />
   } @else {
-    @if (contributors()?.length) {
+    @if (contributors()?.length && !hasViewOnly()) {
       <div class="flex flex-column gap-2">
         <h4>{{ 'files.detail.resourceMetadata.fields.contributors' | translate }}</h4>
 

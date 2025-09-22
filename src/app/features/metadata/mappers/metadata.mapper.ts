@@ -1,4 +1,4 @@
-import { ContributorsMapper, LicensesMapper } from '@osf/shared/mappers';
+import { LicensesMapper } from '@osf/shared/mappers';
 
 import { CustomItemMetadataRecord, CustomMetadataJsonApi, Metadata, MetadataJsonApi } from '../models';
 
@@ -12,7 +12,6 @@ export class MetadataMapper {
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
       publicationDoi: response.attributes.article_doi,
-      contributors: ContributorsMapper.fromResponse(response.embeds?.bibliographic_contributors?.data),
       license: LicensesMapper.fromLicenseDataJsonApi(response.embeds?.license?.data),
       nodeLicense: response.attributes.node_license
         ? {

@@ -5,8 +5,9 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
-import { EMPTY, finalize, firstValueFrom, Observable, take } from 'rxjs';
+import { EMPTY, finalize, Observable, take } from 'rxjs';
 
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
@@ -25,6 +26,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MoveFileDialogComponent } from '@osf/features/files/components/move-file-dialog/move-file-dialog.component';
 import { RenameFileDialogComponent } from '@osf/features/files/components/rename-file-dialog/rename-file-dialog.component';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
@@ -39,8 +41,6 @@ import { DataciteService } from '@osf/shared/services/datacite/datacite.service'
 import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-files-tree',
@@ -70,6 +70,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly dialogService = inject(DialogService);
   readonly translateService = inject(TranslateService);
   readonly dataciteService = inject(DataciteService);
+  private readonly environment = inject(ENVIRONMENT);
+  readonly clipboard = inject(Clipboard);
 
   files = input.required<OsfFile[]>();
   totalCount = input<number>(0);
@@ -82,13 +84,11 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
   isDragOver = signal(false);
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router) || this.viewOnly();
-  });
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
-  uploadFileConfirmed = output<File>();
+  uploadFilesConfirmed = output<File[] | File>();
   filesPageChange = output<number>();
 
   foldersStack: OsfFile[] = [];
@@ -113,6 +113,22 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       return [...files];
     }
   });
+
+  constructor() {
+    effect(() => {
+      const currentFolder = this.currentFolder();
+      if (currentFolder) {
+        this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
+      }
+    });
+
+    effect(() => {
+      const storageChanged = this.storage();
+      if (storageChanged) {
+        this.foldersStack = [];
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     if (!this.viewOnly()) {
@@ -163,30 +179,17 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     const files = event.dataTransfer?.files;
 
     if (files && files.length > 0) {
+      const fileArray = Array.from(files);
+      const isMultiple = files.length > 1;
+
       this.customConfirmationService.confirmAccept({
-        headerKey: 'files.dialogs.uploadFile.title',
-        messageParams: { name: files[0].name },
-        messageKey: 'files.dialogs.uploadFile.message',
+        headerKey: isMultiple ? 'files.dialogs.uploadFiles.title' : 'files.dialogs.uploadFile.title',
+        messageParams: isMultiple ? { count: files.length } : { name: files[0].name },
+        messageKey: isMultiple ? 'files.dialogs.uploadFiles.message' : 'files.dialogs.uploadFile.message',
         acceptLabelKey: 'common.buttons.upload',
-        onConfirm: () => this.uploadFileConfirmed.emit(files[0]),
+        onConfirm: () => this.uploadFilesConfirmed.emit(fileArray),
       });
     }
-  }
-
-  constructor() {
-    effect(() => {
-      const currentFolder = this.currentFolder();
-      if (currentFolder) {
-        this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
-      }
-    });
-
-    effect(() => {
-      const storageChanged = this.storage();
-      if (storageChanged) {
-        this.foldersStack = [];
-      }
-    });
   }
 
   openEntry(file: OsfFile) {
@@ -257,7 +260,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   private handleShareAction(file: OsfFile, shareType?: string): void {
     const emailLink = `mailto:?subject=${file.name}&body=${file.links.html}`;
     const twitterLink = `https://twitter.com/intent/tweet?url=${file.links.html}&text=${file.name}&via=OSFramework`;
-    const facebookLink = `https://www.facebook.com/dialog/share?app_id=${environment.facebookAppId}&display=popup&href=${file.links.html}&redirect_uri=${file.links.html}`;
+    const facebookLink = `https://www.facebook.com/dialog/share?app_id=${this.environment.facebookAppId}&display=popup&href=${file.links.html}&redirect_uri=${file.links.html}`;
 
     switch (shareType) {
       case 'email':
@@ -363,21 +366,27 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
             ? this.translateService.instant('files.dialogs.moveFile.title')
             : this.translateService.instant('files.dialogs.copyFile.title');
 
-        this.dialogService.open(MoveFileDialogComponent, {
-          width: '552px',
-          focusOnShow: false,
-          header: header,
-          closeOnEscape: true,
-          modal: true,
-          closable: true,
-          data: {
-            file: file,
-            resourceId: this.resourceId(),
-            action: action,
-            storageName: this.storage()?.label,
-            foldersStack: [...this.foldersStack],
-          },
-        });
+        this.dialogService
+          .open(MoveFileDialogComponent, {
+            width: '552px',
+            focusOnShow: false,
+            header: header,
+            closeOnEscape: true,
+            modal: true,
+            closable: true,
+            data: {
+              file: file,
+              resourceId: this.resourceId(),
+              action: action,
+              storageName: this.storage()?.label,
+              foldersStack: [...this.foldersStack],
+            },
+          })
+          .onClose.subscribe((foldersStack) => {
+            if (foldersStack) {
+              this.foldersStack = [...foldersStack];
+            }
+          });
       });
   }
 
@@ -389,14 +398,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   copyToClipboard(embedHtml: string): void {
-    navigator.clipboard
-      .writeText(embedHtml)
-      .then(() => {
-        this.toastService.showSuccess('files.toast.copiedToClipboard');
-      })
-      .catch((err) => {
-        this.toastService.showError(err.message);
-      });
+    this.clipboard.copy(embedHtml);
+    this.toastService.showSuccess('files.toast.copiedToClipboard');
   }
 
   async dropNode(event: TreeNodeDropEvent) {
@@ -427,17 +430,20 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
     const dropNode = event.dropNode as OsfFile;
     const dragNode = event.dragNode as OsfFile;
-    let path = dropNode?.path;
     const moveLink = dragNode?.links?.move;
-    let parentFolder: OsfFile | null = null;
+    let targetFolder: OsfFile | null = null;
+    let path = '';
 
     if (dropNode?.previousFolder) {
-      parentFolder = await firstValueFrom(this.filesService.getFolder(dropNode.relationships.parentFolderLink));
-      if (!parentFolder.relationships.parentFolderLink) {
-        path = '/';
+      if (this.foldersStack.length > 0) {
+        targetFolder = this.foldersStack[this.foldersStack.length - 1];
+        path = targetFolder?.path || '/';
       } else {
-        path = parentFolder.path;
+        path = '/';
       }
+    } else {
+      targetFolder = dropNode;
+      path = dropNode?.path || '/';
     }
 
     if (!path) {
@@ -449,19 +455,23 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       .pipe(
         take(1),
         finalize(() => {
-          this.actions().setCurrentFolder(dropNode?.previousFolder ? parentFolder : dropNode);
+          if (dropNode?.previousFolder) {
+            if (this.foldersStack.length > 0) {
+              this.foldersStack.pop();
+            }
+            this.actions().setCurrentFolder(targetFolder);
+          } else {
+            if (this.currentFolder()) {
+              this.foldersStack.push(this.currentFolder()!);
+            }
+            this.actions().setCurrentFolder(targetFolder);
+          }
         })
       )
       .subscribe((file) => {
         if (file.id) {
-          if (dropNode?.previousFolder) {
-            const filesLink = parentFolder?.relationships.filesLink;
-
-            if (filesLink) {
-              this.actions().getFiles(filesLink);
-            }
-          } else {
-            const filesLink = dropNode?.relationships.filesLink;
+          const filesLink = targetFolder?.relationships.filesLink;
+          if (filesLink) {
             this.actions().getFiles(filesLink);
           }
         }

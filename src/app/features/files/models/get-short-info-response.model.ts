@@ -1,5 +1,4 @@
-import { ApiData, JsonApiResponse } from '@shared/models';
-import { IdentifiersJsonApiResponse } from '@shared/models/identifiers/identifier-json-api.model';
+import { ApiData, IdentifiersJsonApiResponse, JsonApiResponse } from '@shared/models';
 
 export type GetShortInfoResponse = JsonApiResponse<
   ApiData<

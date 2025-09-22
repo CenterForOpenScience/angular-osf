@@ -2,7 +2,7 @@ import { Store } from '@ngxs/store';
 
 import { effect, inject, Injectable } from '@angular/core';
 
-import { WINDOW } from '@core/factory/window.factory';
+import { WINDOW } from '@core/provider/window.provider';
 import { UserSelectors } from '@osf/core/store/user';
 
 /**
@@ -51,10 +51,15 @@ export class HelpScoutService {
    * - `resourceType`: undefined
    */
   constructor() {
-    this.window.dataLayer = {
-      loggedIn: false,
-      resourceType: undefined,
-    };
+    if (this.window.dataLayer) {
+      this.window.dataLayer.loggedIn = false;
+      this.window.dataLayer.resourceType = undefined;
+    } else {
+      this.window.dataLayer = {
+        loggedIn: false,
+        resourceType: undefined,
+      };
+    }
 
     effect(() => {
       this.window.dataLayer.loggedIn = this.isAuthenticated();

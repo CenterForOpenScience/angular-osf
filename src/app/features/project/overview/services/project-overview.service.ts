@@ -3,21 +3,30 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ComponentsMapper } from '@osf/shared/mappers';
-import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse } from '@osf/shared/models';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { BaseNodeMapper, ComponentsMapper } from '@osf/shared/mappers';
+import {
+  BaseNodeDataJsonApi,
+  BaseNodeModel,
+  ComponentGetResponseJsonApi,
+  ComponentOverview,
+  JsonApiResponse,
+} from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { ProjectOverviewMapper } from '../mappers';
 import { ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
     const params: Record<string, unknown> = {
@@ -67,7 +76,7 @@ export class ProjectOverviewService {
     return this.jsonApiService.post<void>(`${this.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
   }
 
-  duplicateProject(projectId: string, title: string): Observable<void> {
+  duplicateProject(projectId: string, title: string): Observable<BaseNodeModel> {
     const payload = {
       data: {
         type: 'nodes',
@@ -79,7 +88,9 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.jsonApiService.post<void>(`${this.apiUrl}/nodes/`, payload);
+    return this.jsonApiService
+      .post<JsonApiResponse<BaseNodeDataJsonApi, null>>(`${this.apiUrl}/nodes/`, payload)
+      .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
   }
 
   createComponent(

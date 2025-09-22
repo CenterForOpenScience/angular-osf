@@ -11,13 +11,13 @@
   <hr class="break-line" />
 
   <div class="flex column-gap-2">
-    <p-checkbox variant="filled" binary="true" [(ngModel)]="anonymous"></p-checkbox>
-    <p>
+    <p-checkbox variant="filled" inputId="anonymous" binary="true" [(ngModel)]="anonymous"></p-checkbox>
+    <label class="cursor-pointer" for="anonymous">
       {{ 'myProjects.settings.anonymizeContributorList' | translate }}
       <span class="font-italic">
         {{ 'myProjects.settings.ensureNoInformation' | translate }}
       </span>
-    </p>
+    </label>
   </div>
 
   <hr class="break-line" />

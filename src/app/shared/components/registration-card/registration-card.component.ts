@@ -71,6 +71,10 @@ export class RegistrationCardComponent {
     return this.registrationData().revisionState === RevisionReviewStates.RevisionInProgress;
   }
 
+  get isEmbargo(): boolean {
+    return this.registrationData().reviewsState === RegistrationReviewStates.Embargo;
+  }
+
   updateRegistration(id: string): void {
     this.actions
       .createSchemaResponse(id)

@@ -149,7 +149,12 @@
       @if (resource.tags.length) {
         <div class="flex flex-wrap gap-2">
           @for (tag of resource.tags; track tag) {
-            <p-tag [value]="tag" severity="info" />
+            <p-tag
+              class="cursor-pointer hover:bg-black-alpha-10"
+              [value]="tag"
+              severity="info"
+              (click)="tagClicked(tag)"
+            />
           }
         </div>
       } @else {

@@ -58,10 +58,7 @@
         />
 
         @if (!isConfiguredAddonsLoading()) {
-          <osf-addon-card-list
-            [cards]="allConfiguredAddons()"
-            [cardButtonLabel]="'settings.addons.connectAddon.configure' | translate"
-          />
+          <osf-addon-card-list [cards]="allConfiguredAddons()" />
         } @else {
           <div class="flex-1 mt-6 md:mt-8 lg:pt-7">
             <osf-loading-spinner />

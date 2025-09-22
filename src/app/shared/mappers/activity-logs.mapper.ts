@@ -32,6 +32,13 @@ export class ActivityLogsMapper {
             }
           : { id: '', title: '' },
         paramsProject: params.params_project,
+        template_node: params.template_node
+          ? {
+              id: params.template_node.id,
+              url: params.template_node.url,
+              title: params.template_node.title,
+            }
+          : null,
         pointer: params.pointer
           ? {
               category: params.pointer.category,

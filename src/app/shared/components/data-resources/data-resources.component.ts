@@ -21,7 +21,5 @@ export class DataResourcesComponent {
   hasPapers = input<boolean>();
   hasSupplements = input<boolean>();
 
-  resourceUrl = computed(() => {
-    return this.absoluteUrl() + '/resources';
-  });
+  resourceUrl = computed(() => this.absoluteUrl() + '/resources');
 }

@@ -3,22 +3,26 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiService } from '@osf/shared/services';
 
 import { RegistryComponentsMapper } from '../mappers';
 import { RegistryComponentsJsonApiResponse, RegistryComponentsResponseJsonApi } from '../models';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegistryComponentsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getRegistryComponents(registryId: string, page = 1, pageSize = 10): Observable<RegistryComponentsResponseJsonApi> {
     const params: Record<string, unknown> = {
+      'embed[]': 'bibliographic_contributors',
       page: page,
       'page[size]': pageSize,
     };

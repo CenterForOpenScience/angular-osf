@@ -3,12 +3,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NgModule, PLATFORM_ID } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule, provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-
-import { WINDOW, windowFactory } from '@core/factory/window.factory';
 
 import { DynamicDialogRefMock } from './mocks/dynamic-dialog-ref.mock';
 import { EnvironmentTokenMock } from './mocks/environment.token.mock';
@@ -37,11 +35,6 @@ import { TranslationServiceMock } from './mocks/translation.service.mock';
     DynamicDialogRefMock,
     EnvironmentTokenMock,
     ToastServiceMock,
-    {
-      provide: WINDOW,
-      useFactory: windowFactory,
-      deps: [PLATFORM_ID],
-    },
   ],
 })
 export class OSFTestingModule {}

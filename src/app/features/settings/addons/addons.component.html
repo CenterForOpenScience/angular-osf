@@ -62,11 +62,7 @@
         />
 
         @if (!isAuthorizedAddonsLoading()) {
-          <osf-addon-card-list
-            [cards]="allAuthorizedAddons()"
-            [cardButtonLabel]="'settings.addons.form.buttons.reconnect' | translate"
-            [showDangerButton]="true"
-          />
+          <osf-addon-card-list [cards]="allAuthorizedAddons()" [showDangerButton]="true" />
         } @else {
           <div class="mt-8">
             <osf-loading-spinner />

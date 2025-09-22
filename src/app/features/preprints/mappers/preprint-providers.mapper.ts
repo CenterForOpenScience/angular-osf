@@ -3,11 +3,11 @@ import {
   PreprintProviderDetailsJsonApi,
   PreprintProviderShortInfo,
 } from '@osf/features/preprints/models';
-import { SubjectDataJsonApi, SubjectModel } from '@shared/models';
+import { Brand, BrandDataJsonApi, SubjectDataJsonApi, SubjectModel } from '@shared/models';
 
 export class PreprintProvidersMapper {
   static fromPreprintProviderDetailsGetResponse(response: PreprintProviderDetailsJsonApi): PreprintProviderDetails {
-    const brandRaw = response.embeds!.brand.data;
+    const brandRaw = response.embeds!.brand?.data;
     return {
       id: response.id,
       name: response.attributes.name,
@@ -20,16 +20,7 @@ export class PreprintProvidersMapper {
       allowSubmissions: response.attributes.allow_submissions,
       assertionsEnabled: response.attributes.assertions_enabled,
       permissions: response.attributes.permissions,
-      brand: {
-        id: brandRaw.id,
-        name: brandRaw.attributes.name,
-        heroLogoImageUrl: brandRaw.attributes.hero_logo_image,
-        heroBackgroundImageUrl: brandRaw.attributes.hero_background_image,
-        topNavLogoImageUrl: brandRaw.attributes.topnav_logo_image,
-        primaryColor: brandRaw.attributes.primary_color,
-        secondaryColor: brandRaw.attributes.secondary_color,
-        backgroundColor: brandRaw.attributes.background_color,
-      },
+      brand: PreprintProvidersMapper.parseBrand(brandRaw),
       iri: response.links.iri,
       faviconUrl: response.attributes.assets?.favicon,
       squareColorNoTransparentImageUrl: response.attributes.assets?.square_color_no_transparent,
@@ -37,6 +28,26 @@ export class PreprintProvidersMapper {
       facebookAppId: response.attributes.facebook_app_id,
       reviewsCommentsPrivate: response.attributes.reviews_comments_private,
       reviewsCommentsAnonymous: response.attributes.reviews_comments_anonymous,
+    };
+  }
+
+  static parseBrand(brandRaw: BrandDataJsonApi): Brand {
+    if (!brandRaw) {
+      return {
+        primaryColor: 'var(--osf-provider-primary-color)',
+        secondaryColor: 'var(--osf-provider-secondary-color)',
+      } as Brand;
+    }
+
+    return {
+      id: brandRaw.id,
+      name: brandRaw.attributes.name,
+      heroLogoImageUrl: brandRaw.attributes.hero_logo_image,
+      heroBackgroundImageUrl: brandRaw.attributes.hero_background_image,
+      topNavLogoImageUrl: brandRaw.attributes.topnav_logo_image,
+      primaryColor: brandRaw.attributes.primary_color,
+      secondaryColor: brandRaw.attributes.secondary_color,
+      backgroundColor: brandRaw.attributes.background_color,
     };
   }
 

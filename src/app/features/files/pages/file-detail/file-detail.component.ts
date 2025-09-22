@@ -9,6 +9,7 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { switchMap } from 'rxjs';
 
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -24,6 +25,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
@@ -38,7 +40,7 @@ import {
 } from '@osf/features/metadata/store';
 import { LoadingSpinnerComponent, MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
-import { pathJoin } from '@osf/shared/helpers';
+import { getViewOnlyParam, hasViewOnlyParam, pathJoin } from '@osf/shared/helpers';
 import { MetadataTabsModel, OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, MetaTagsService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
@@ -60,8 +62,6 @@ import {
   GetFileResourceMetadata,
   GetFileRevisions,
 } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-file-detail',
@@ -97,10 +97,16 @@ export class FileDetailComponent {
   readonly sanitizer = inject(DomSanitizer);
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
+
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly translateService = inject(TranslateService);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly clipboard = inject(Clipboard);
+
   readonly dataciteService = inject(DataciteService);
+
+  private readonly webUrl = this.environment.webUrl;
 
   private readonly actions = createDispatchMap({
     getFile: GetFile,
@@ -127,6 +133,9 @@ export class FileDetailComponent {
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   resourceContributors = select(FilesSelectors.getContributors);
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
+  fileRevisions = select(FilesSelectors.getFileRevisions);
+
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
@@ -139,6 +148,7 @@ export class FileDetailComponent {
   selectedTab: FileDetailTab = FileDetailTab.Details;
 
   fileGuid = '';
+  fileVersion = '';
 
   embedItems = [
     {
@@ -197,7 +207,7 @@ export class FileDetailComponent {
       type: this.fileCustomMetadata()?.resourceTypeGeneral,
       description:
         this.fileCustomMetadata()?.description ?? this.translateService.instant('files.metaTagDescriptionPlaceholder'),
-      url: pathJoin(environment.webUrl, this.fileGuid),
+      url: pathJoin(this.webUrl, this.fileGuid),
       publishedDate: this.datePipe.transform(file.dateCreated, 'yyyy-MM-dd'),
       modifiedDate: this.datePipe.transform(file.dateModified, 'yyyy-MM-dd'),
       language: this.fileCustomMetadata()?.language,
@@ -219,10 +229,7 @@ export class FileDetailComponent {
         })
       )
       .subscribe(() => {
-        const link = this.file()?.links.render;
-        if (link) {
-          this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(link);
-        }
+        this.getIframeLink('');
         this.resourceId = this.file()?.target.id || '';
         this.resourceType = this.file()?.target.type || '';
         const fileId = this.file()?.path.replaceAll('/', '');
@@ -259,20 +266,27 @@ export class FileDetailComponent {
     this.dataciteService.logIdentifiableView(this.fileMetadata$).subscribe();
   }
 
+  getIframeLink(version: string) {
+    const url = this.getMfrUrlWithVersion(version);
+    if (url) {
+      this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+  }
+
+  onOpenRevision(version: string): void {
+    this.fileVersion = version;
+    this.getIframeLink(version);
+    this.isIframeLoading = true;
+  }
+
   downloadFile(link: string): void {
     this.dataciteService.logIdentifiableDownload(this.fileMetadata$).subscribe();
     window.open(link)?.focus();
   }
 
   copyToClipboard(embedHtml: string): void {
-    navigator.clipboard
-      .writeText(embedHtml)
-      .then(() => {
-        this.toastService.showSuccess('files.detail.toast.copiedToClipboard');
-      })
-      .catch((err) => {
-        this.toastService.showError(err.message);
-      });
+    this.clipboard.copy(embedHtml);
+    this.toastService.showSuccess('files.toast.copiedToClipboard');
   }
 
   deleteEntry(link: string): void {
@@ -392,5 +406,26 @@ export class FileDetailComponent {
       this.selectedCedarTemplate.set(null);
       this.actions.getCedarTemplates();
     }
+  }
+
+  private getMfrUrlWithVersion(version?: string): string | null {
+    const mfrUrl = this.file()?.links.render;
+    if (!mfrUrl) return null;
+    const mfrUrlObj = new URL(mfrUrl);
+    const encodedDownloadUrl = mfrUrlObj.searchParams.get('url');
+    if (!encodedDownloadUrl) return mfrUrl;
+
+    const downloadUrlObj = new URL(decodeURIComponent(encodedDownloadUrl));
+
+    if (version) downloadUrlObj.searchParams.set('version', version);
+
+    if (this.hasViewOnly()) {
+      const viewOnlyParam = getViewOnlyParam();
+      if (viewOnlyParam) downloadUrlObj.searchParams.set('view_only', viewOnlyParam);
+    }
+
+    mfrUrlObj.searchParams.set('url', downloadUrlObj.toString());
+
+    return mfrUrlObj.toString();
   }
 }

@@ -1,0 +1,16 @@
+export const environment = {
+  production: false,
+  webUrl: 'http://localhost:5000',
+  apiDomainUrl: 'http://localhost:8000',
+  shareTroveUrl: 'https://localhost:8003/trove',
+  addonsApiUrl: 'http://localhost:8004/v1',
+  funderApiUrl: 'https://api.crossref.org/',
+  casUrl: 'http://localhost:8080',
+  recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+  twitterHandle: 'OSFramework',
+  facebookAppId: '1022273774556662',
+  supportEmail: 'support@osf.io',
+  defaultProvider: 'osf',
+  dataciteTrackerRepoId: null,
+  dataciteTrackerAddress: 'https://analytics.datacite.org/api/metric',
+};

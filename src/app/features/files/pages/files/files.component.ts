@@ -10,9 +10,22 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, EMPTY, filter, finalize, Observable, skip, switchMap, take } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  finalize,
+  forkJoin,
+  Observable,
+  of,
+  skip,
+  switchMap,
+  take,
+} from 'rxjs';
 
-import { HttpEventType } from '@angular/common/http';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -29,6 +42,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CreateFolder,
   DeleteEntry,
@@ -58,14 +72,12 @@ import {
 } from '@shared/components';
 import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
 import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
-import { FilesService } from '@shared/services';
+import { CustomConfirmationService, FilesService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
 import { FileProvider } from '../../constants';
 import { FilesSelectors } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-files',
@@ -103,6 +115,11 @@ export class FilesComponent {
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly dataciteService = inject(DataciteService);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+
+  private readonly webUrl = this.environment.webUrl;
+  private readonly apiDomainUrl = this.environment.apiDomainUrl;
 
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
@@ -152,8 +169,9 @@ export class FilesComponent {
 
   sortOptions = ALL_SORT_OPTIONS;
 
-  storageProvider = FileProvider.OsfStorage;
   pageNumber = signal(1);
+
+  allowRevisions = false;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -212,8 +230,8 @@ export class FilesComponent {
       const resourceId = this.resourceId();
 
       const resourcePath = this.urlMap.get(this.resourceType()!);
-      const folderLink = `${environment.apiDomainUrl}/v2/${resourcePath}/${resourceId}/files/`;
-      const iriLink = `${environment.webUrl}/${resourceId}`;
+      const folderLink = `${this.apiDomainUrl}/v2/${resourcePath}/${resourceId}/files/`;
+      const iriLink = `${this.webUrl}/${resourceId}`;
 
       this.actions.getResourceDetails(resourceId, this.resourceType()!);
       this.actions.getRootFolders(folderLink);
@@ -237,6 +255,8 @@ export class FilesComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         const provider = currentRootFolder.folder?.provider;
+        // [NM TODO] Check if other providers allow revisions
+        this.allowRevisions = provider === FileProvider.OsfStorage;
         this.isGoogleDrive.set(provider === FileProvider.GoogleDrive);
         if (this.isGoogleDrive()) {
           this.setGoogleAccountId();
@@ -275,38 +295,103 @@ export class FilesComponent {
     });
   }
 
-  uploadFile(file: File): void {
+  uploadFiles(files: File | File[]): void {
     const currentFolder = this.currentFolder();
     const uploadLink = currentFolder?.links.upload;
 
     if (!uploadLink) return;
 
-    this.fileName.set(file.name);
-    this.fileIsUploading.set(true);
+    const fileArray = Array.isArray(files) ? files : [files];
+    if (fileArray.length === 0) return;
 
-    this.filesService
-      .uploadFile(file, uploadLink)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => {
-          this.fileIsUploading.set(false);
-          this.fileName.set('');
-          this.updateFilesList();
-        })
-      )
-      .subscribe((event) => {
-        if (event.type === HttpEventType.UploadProgress && event.total) {
-          this.progress.set(Math.round((event.loaded / event.total) * 100));
-        }
-      });
+    this.fileName.set(fileArray.length === 1 ? fileArray[0].name : `${fileArray.length} files`);
+    this.fileIsUploading.set(true);
+    this.progress.set(0);
+
+    let completedUploads = 0;
+    const totalFiles = fileArray.length;
+    const conflictFiles: { file: File; link: string }[] = [];
+
+    fileArray.forEach((file) => {
+      this.filesService
+        .uploadFile(file, uploadLink)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          catchError((err) => {
+            const conflictLink = err.error?.data?.links?.upload;
+            if (err.status === 409 && conflictLink) {
+              if (this.allowRevisions) {
+                return this.filesService.uploadFile(file, conflictLink, true);
+              } else {
+                conflictFiles.push({ file, link: conflictLink });
+              }
+            }
+            return of(new HttpResponse());
+          })
+        )
+        .subscribe((event) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            const progressPercentage = Math.round((event.loaded / event.total) * 100);
+            if (totalFiles === 1) {
+              this.progress.set(progressPercentage);
+            }
+          }
+
+          if (event.type === HttpEventType.Response) {
+            completedUploads++;
+
+            if (totalFiles > 1) {
+              const progressPercentage = Math.round((completedUploads / totalFiles) * 100);
+              this.progress.set(progressPercentage);
+            }
+
+            if (completedUploads === totalFiles) {
+              if (conflictFiles.length > 0) {
+                this.openReplaceFileDialog(conflictFiles);
+              } else {
+                this.completeUpload();
+              }
+            }
+          }
+        });
+    });
+  }
+
+  private openReplaceFileDialog(conflictFiles: { file: File; link: string }[]) {
+    this.customConfirmationService.confirmDelete({
+      headerKey: conflictFiles.length > 1 ? 'files.dialogs.replaceFile.multiple' : 'files.dialogs.replaceFile.single',
+      messageKey: 'files.dialogs.replaceFile.message',
+      messageParams: {
+        name: conflictFiles.map((c) => c.file.name).join(', '),
+      },
+      acceptLabelKey: 'common.buttons.replace',
+      onConfirm: () => {
+        const replaceRequests$ = conflictFiles.map(({ file, link }) =>
+          this.filesService.uploadFile(file, link, true).pipe(
+            takeUntilDestroyed(this.destroyRef),
+            catchError(() => of(null))
+          )
+        );
+
+        forkJoin(replaceRequests$).subscribe({
+          next: () => this.completeUpload(),
+        });
+      },
+    });
+  }
+
+  private completeUpload(): void {
+    this.fileIsUploading.set(false);
+    this.fileName.set('');
+    this.updateFilesList();
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
+    const files = input.files;
+    if (!files || files.length === 0) return;
 
-    this.uploadFile(file);
+    this.uploadFiles(Array.from(files));
   }
 
   createFolder(): void {
@@ -390,7 +475,8 @@ export class FilesComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    this.router.navigate([file.guid], { relativeTo: this.activeRoute });
+    const url = this.router.createUrlTree([file.guid]).toString();
+    window.open(url, '_blank');
   }
 
   getAddonName(addons: ConfiguredAddonModel[], provider: string): string {

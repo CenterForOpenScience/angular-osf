@@ -1,4 +1,12 @@
 {
+  "webUrl": "",
+  "apiDomainUrl": "",
+  "addonsApiUrl": "",
+  "casUrl": "",
+  "recaptchaSiteKey": "",
+  "dataciteTrackerRepoId": "",
   "sentryDsn": "",
-  "googleTagManagerId": ""
+  "googleTagManagerId": "",
+  "googleFilePickerApiKey": "",
+  "googleFilePickerAppId": 0
 }

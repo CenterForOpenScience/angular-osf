@@ -11,8 +11,8 @@
       } @else {
         @for (item of users(); track $index) {
           <div class="border-divider flex pb-3">
-            <p-checkbox variant="filled" [value]="item" [inputId]="item.id" [(ngModel)]="selectedUsers"></p-checkbox>
-            <label class="label ml-2" [for]="item.id">{{ item.fullName }}</label>
+            <p-checkbox variant="filled" [value]="item" [(ngModel)]="selectedUsers"></p-checkbox>
+            <a class="ml-2 font-bold" [href]="item.id" target="_blank">{{ item.fullName }}</a>
           </div>
         }
 

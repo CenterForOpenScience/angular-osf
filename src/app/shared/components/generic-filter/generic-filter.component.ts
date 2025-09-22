@@ -87,7 +87,7 @@ export class GenericFilterComponent {
       } else {
         return options
           .filter((option) => option?.label)
-          .sort((a, b) => a.label.localeCompare(b.label))
+          .sort((a, b) => b.cardSearchResultCount - a.cardSearchResultCount)
           .map((option) => ({
             ...option,
             label: option.label || '',

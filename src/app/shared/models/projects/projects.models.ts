@@ -2,7 +2,7 @@ import { StringOrNull } from '@osf/shared/helpers';
 
 import { LicenseOptions } from '../license.model';
 
-export interface Project {
+export interface ProjectModel {
   id: string;
   type: string;
   title: string;

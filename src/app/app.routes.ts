@@ -107,18 +107,14 @@ export const routes: Routes = [
         loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
       },
       {
-        path: 'my-profile',
-        loadComponent: () =>
-          import('./features/profile/pages/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
+        path: 'profile',
+        loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
         canActivate: [authGuard],
       },
       {
         path: 'user/:id',
-        loadComponent: () =>
-          import('./features/profile/pages/user-profile/user-profile.component').then(
-            (mod) => mod.UserProfileComponent
-          ),
+        loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
       },
       {

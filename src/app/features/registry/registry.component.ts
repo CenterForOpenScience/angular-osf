@@ -1,17 +1,19 @@
-import { select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
+
+import { map, of } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, inject } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, inject, OnDestroy } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ClearCurrentProvider } from '@core/store/provider';
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
-import { RegistryOverviewSelectors } from './store/registry-overview';
-
-import { environment } from 'src/environments/environment';
+import { GetRegistryById, RegistryOverviewSelectors } from './store/registry-overview';
 
 @Component({
   selector: 'osf-registry',
@@ -21,13 +23,22 @@ import { environment } from 'src/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class RegistryComponent {
+export class RegistryComponent implements OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column';
 
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly environment = inject(ENVIRONMENT);
+
+  private readonly actions = createDispatchMap({
+    getRegistryById: GetRegistryById,
+    clearCurrentProvider: ClearCurrentProvider,
+  });
+
+  private registryId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
   readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
@@ -35,11 +46,22 @@ export class RegistryComponent {
 
   constructor() {
     effect(() => {
+      if (this.registryId()) {
+        this.actions.getRegistryById(this.registryId());
+      }
+    });
+
+    effect(() => {
       if (!this.isRegistryLoading() && this.registry()) {
         this.setMetaTags();
       }
     });
+
     this.dataciteService.logIdentifiableView(this.registry$).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearCurrentProvider();
   }
 
   private setMetaTags(): void {
@@ -50,7 +72,7 @@ export class RegistryComponent {
         description: this.registry()?.description,
         publishedDate: this.datePipe.transform(this.registry()?.dateRegistered, 'yyyy-MM-dd'),
         modifiedDate: this.datePipe.transform(this.registry()?.dateModified, 'yyyy-MM-dd'),
-        url: pathJoin(environment.webUrl, this.registry()?.id ?? ''),
+        url: pathJoin(this.environment.webUrl, this.registry()?.id ?? ''),
         identifier: this.registry()?.id,
         doi: this.registry()?.doi,
         keywords: this.registry()?.tags,

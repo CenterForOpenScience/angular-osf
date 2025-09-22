@@ -1,0 +1,13 @@
+@if (maintenance() && !dismissed()) {
+  <p-message
+    styleClass="w-full"
+    [severity]="maintenance()?.severity"
+    [text]="maintenance()?.message"
+    [closable]="true"
+    (onClose)="dismiss()"
+    class="block p-3"
+    icon="pi pi-info-circle"
+    @fadeInOut
+  >
+  </p-message>
+}

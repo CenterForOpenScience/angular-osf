@@ -3,29 +3,31 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiService } from '@osf/shared/services';
 
-import { BibliographicContributorsMapper, LinkedNodesMapper, LinkedRegistrationsMapper } from '../mappers';
+import { LinkedNodesMapper, LinkedRegistrationsMapper } from '../mappers';
 import {
-  BibliographicContributorsResponse,
   LinkedNodesJsonApiResponse,
   LinkedNodesResponseJsonApi,
   LinkedRegistrationsJsonApiResponse,
   LinkedRegistrationsResponseJsonApi,
-  NodeBibliographicContributor,
 } from '../models';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegistryLinksService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getLinkedNodes(registryId: string, page = 1, pageSize = 10): Observable<LinkedNodesResponseJsonApi> {
     const params: Record<string, unknown> = {
+      'embed[]': 'bibliographic_contributors',
       page: page,
       'page[size]': pageSize,
     };
@@ -43,6 +45,7 @@ export class RegistryLinksService {
 
   getLinkedRegistrations(registryId: string, page = 1, pageSize = 10): Observable<LinkedRegistrationsResponseJsonApi> {
     const params: Record<string, unknown> = {
+      'embed[]': 'bibliographic_contributors',
       page: page,
       'page[size]': pageSize,
     };
@@ -59,28 +62,5 @@ export class RegistryLinksService {
           links: response.links,
         }))
       );
-  }
-
-  getBibliographicContributors(nodeId: string): Observable<NodeBibliographicContributor[]> {
-    const params: Record<string, unknown> = {
-      embed: 'users',
-    };
-
-    return this.jsonApiService
-      .get<BibliographicContributorsResponse>(`${this.apiUrl}/nodes/${nodeId}/bibliographic_contributors/`, params)
-      .pipe(map((response) => BibliographicContributorsMapper.fromApiResponseArray(response.data)));
-  }
-
-  getBibliographicContributorsForRegistration(registrationId: string): Observable<NodeBibliographicContributor[]> {
-    const params: Record<string, unknown> = {
-      embed: 'users',
-    };
-
-    return this.jsonApiService
-      .get<BibliographicContributorsResponse>(
-        `${this.apiUrl}/registrations/${registrationId}/bibliographic_contributors/`,
-        params
-      )
-      .pipe(map((response) => BibliographicContributorsMapper.fromApiResponseArray(response.data)));
   }
 }

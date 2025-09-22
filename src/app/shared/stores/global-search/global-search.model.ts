@@ -13,7 +13,6 @@ export interface GlobalSearchStateModel {
   resourcesCount: number;
   searchText: StringOrNull;
   sortBy: string;
-  self: string;
   first: StringOrNull;
   next: StringOrNull;
   previous: StringOrNull;
@@ -36,7 +35,6 @@ export const GLOBAL_SEARCH_STATE_DEFAULTS = {
   searchText: '',
   sortBy: '-relevance',
   resourceType: ResourceType.Null,
-  self: '',
   first: null,
   next: null,
   previous: null,

@@ -1,12 +1,12 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { RegistryOverview } from '../../models';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { environment } from 'src/environments/environment';
+import { RegistryOverview } from '../../models';
 
 @Component({
   selector: 'osf-short-registration-info',
@@ -16,9 +16,11 @@ import { environment } from 'src/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShortRegistrationInfoComponent {
+  private readonly environment = inject(ENVIRONMENT);
+
   registration = input.required<RegistryOverview>();
 
   get associatedProjectUrl(): string {
-    return `${environment.webUrl}/${this.registration().associatedProjectId}`;
+    return `${this.environment.webUrl}/${this.registration().associatedProjectId}`;
   }
 }

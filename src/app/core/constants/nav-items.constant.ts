@@ -329,7 +329,7 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLink: 'moderation',
         label: 'navigation.moderation',
         visible: false,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
     ],
   },
@@ -352,7 +352,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'my-profile',
-    routerLink: '/my-profile',
+    routerLink: '/profile',
     label: 'navigation.profile',
     icon: 'fas fa-user',
     visible: false,

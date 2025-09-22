@@ -17,7 +17,7 @@ export const collectionModerationRoutes: Routes = [
       import('@osf/features/moderation/pages/collection-moderation/collection-moderation.component').then(
         (m) => m.CollectionModerationComponent
       ),
-    providers: [provideStates([ActivityLogsState])],
+    providers: [provideStates([ActivityLogsState, CollectionsState])],
     children: [
       {
         path: '',
@@ -31,7 +31,7 @@ export const collectionModerationRoutes: Routes = [
             (m) => m.CollectionModerationSubmissionsComponent
           ),
         data: { tab: CollectionModerationTab.AllItems },
-        providers: [provideStates([CollectionsModerationState, CollectionsState])],
+        providers: [provideStates([CollectionsModerationState])],
       },
       {
         path: 'moderators',

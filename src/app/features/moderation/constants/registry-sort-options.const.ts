@@ -13,10 +13,10 @@ export const REGISTRY_SORT_OPTIONS: CustomOption<string>[] = [
   },
   {
     value: RegistrySort.RegisteredNewest,
-    label: 'moderation.sortOption.oldest',
+    label: 'moderation.sortOption.newest',
   },
   {
     value: RegistrySort.RegisteredOldest,
-    label: 'moderation.sortOption.newest',
+    label: 'moderation.sortOption.oldest',
   },
 ];

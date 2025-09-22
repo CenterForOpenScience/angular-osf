@@ -9,7 +9,7 @@
     </div>
 
     <div class="files-table flex flex-column">
-      @if (previousFolder) {
+      @if (previousFolder()) {
         <div class="files-table-row py-2 px-3">
           <div
             tabindex="0"
@@ -25,7 +25,7 @@
       }
 
       @for (file of files(); track $index) {
-        <div class="files-table-row flex align-items-center py-2" [class]="foldersStack.length ? 'pl-6' : 'px-3'">
+        <div class="files-table-row flex align-items-center py-2" [class]="foldersStack().length ? 'pl-6' : 'px-3'">
           <div class="flex align-items-center gap-2">
             @if (file.kind !== 'folder') {
               <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>

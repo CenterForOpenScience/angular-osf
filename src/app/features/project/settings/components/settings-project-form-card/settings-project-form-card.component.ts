@@ -18,7 +18,7 @@ import { NodeDetailsModel, ProjectDetailsModel } from '../../models';
   selector: 'osf-settings-project-form-card',
   imports: [Button, Card, Textarea, TranslatePipe, ReactiveFormsModule, TextInputComponent],
   templateUrl: './settings-project-form-card.component.html',
-  styleUrl: '../../settings.component.scss',
+  styleUrl: 'settings-project-form-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsProjectFormCardComponent {

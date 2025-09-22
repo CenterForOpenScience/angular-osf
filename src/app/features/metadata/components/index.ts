@@ -1,9 +1,13 @@
 export { CedarTemplateFormComponent } from './cedar-template-form/cedar-template-form.component';
 export { MetadataAffiliatedInstitutionsComponent } from './metadata-affiliated-institutions/metadata-affiliated-institutions.component';
 export { MetadataContributorsComponent } from './metadata-contributors/metadata-contributors.component';
+export { MetadataDateInfoComponent } from './metadata-date-info/metadata-date-info.component';
 export { MetadataDescriptionComponent } from './metadata-description/metadata-description.component';
 export { MetadataFundingComponent } from './metadata-funding/metadata-funding.component';
 export { MetadataLicenseComponent } from './metadata-license/metadata-license.component';
 export { MetadataPublicationDoiComponent } from './metadata-publication-doi/metadata-publication-doi.component';
+export { MetadataRegistrationDoiComponent } from './metadata-registration-doi/metadata-registration-doi.component';
 export { MetadataResourceInformationComponent } from './metadata-resource-information/metadata-resource-information.component';
 export { MetadataSubjectsComponent } from './metadata-subjects/metadata-subjects.component';
+export { MetadataTagsComponent } from './metadata-tags/metadata-tags.component';
+export { MetadataTitleComponent } from './metadata-title/metadata-title.component';

@@ -9,6 +9,7 @@ export type IndexCardSearchResponseJsonApi = JsonApiResponse<
     };
     relationships: {
       searchResultPage: {
+        data: { id: string }[];
         links: {
           first: {
             href: string;
@@ -41,6 +42,7 @@ export interface SearchResultJsonApi {
     };
   };
   attributes?: {
+    matchEvidence: (IriMatchEvidence | TextMatchEvidence)[];
     cardSearchResultCount: number;
   };
 }
@@ -64,7 +66,7 @@ interface ResourceMetadataJsonApi {
   dateModified: { '@value': string }[];
   dateWithdrawn: { '@value': string }[];
 
-  creator: MetadataField[];
+  creator: Creator[];
   hasVersion: MetadataField[];
   identifier: { '@value': string }[];
   publisher: MetadataField[];
@@ -111,9 +113,37 @@ interface Usage {
   downloadCount: { '@value': string }[];
 }
 
+interface Creator extends MetadataField {
+  affiliation: MetadataField[];
+}
+
+interface IriMatchEvidence {
+  matchingIri: string;
+  osfmapPropertyPath: string[];
+  propertyPathKey: string;
+  propertyPath: {
+    displayLabel: {
+      '@language': string;
+      '@value': string;
+    }[];
+  }[];
+}
+
+interface TextMatchEvidence {
+  matchingHighlight: string;
+  osfmapPropertyPath: string[];
+  propertyPathKey: string;
+  propertyPath: {
+    displayLabel: {
+      '@language': string;
+      '@value': string;
+    }[];
+  }[];
+}
+
 interface IsContainedBy extends MetadataField {
   funder: MetadataField[];
-  creator: MetadataField[];
+  creator: Creator[];
   rights: MetadataField[];
   qualifiedAttribution: QualifiedAttribution[];
 }

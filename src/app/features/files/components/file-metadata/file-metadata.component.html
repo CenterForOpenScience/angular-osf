@@ -2,15 +2,17 @@
   <div class="flex justify-content-between">
     <h2>{{ 'files.detail.fileMetadata.title' | translate }}</h2>
 
-    <div class="flex gap-2">
-      <p-button severity="secondary" class="btn-icon-only" icon="fas fa-download" (click)="downloadFileMetadata()" />
+    @if (!hasViewOnly()) {
+      <div class="flex gap-2">
+        <p-button severity="secondary" class="btn-icon-only" icon="fas fa-download" (click)="downloadFileMetadata()" />
 
-      <p-button
-        severity="secondary"
-        (onClick)="openEditFileMetadataDialog()"
-        [label]="'files.detail.fileMetadata.edit' | translate"
-      ></p-button>
-    </div>
+        <p-button
+          severity="secondary"
+          (onClick)="openEditFileMetadataDialog()"
+          [label]="'files.detail.fileMetadata.edit' | translate"
+        ></p-button>
+      </div>
+    }
   </div>
 
   @if (isLoading()) {

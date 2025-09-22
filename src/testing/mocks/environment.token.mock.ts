@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '@core/constants/environment.token';
+import { ENVIRONMENT_DO_NO_USE } from '@core/constants/environment.token';
 
 /**
  * Mock provider for Angular's `ENVIRONMENT_INITIALIZER` token used in unit tests.
@@ -21,12 +21,14 @@ import { ENVIRONMENT } from '@core/constants/environment.token';
  * ```
  */
 export const EnvironmentTokenMock = {
-  provide: ENVIRONMENT,
+  provide: ENVIRONMENT_DO_NO_USE,
   useValue: {
     production: false,
-    google: {
-      GOOGLE_FILE_PICKER_API_KEY: 'test-api-key',
-      GOOGLE_FILE_PICKER_APP_ID: 'test-app-id',
-    },
+    apiDomainUrl: 'http://localhost:8000',
+    googleFilePickerApiKey: 'test-api-key',
+    googleFilePickerAppId: 'test-app-id',
+    googleTagManagerId: 'test-goolge-tag-manager-id',
+    addonsApiUrl: 'http://addons.localhost:8000',
+    webUrl: 'http://localhost:4200',
   },
 };

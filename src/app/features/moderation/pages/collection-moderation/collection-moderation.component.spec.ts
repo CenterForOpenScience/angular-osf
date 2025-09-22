@@ -6,11 +6,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { IS_MEDIUM } from '@osf/shared/helpers';
-import { TranslateServiceMock } from '@shared/mocks';
 
 import { CollectionModerationComponent } from './collection-moderation.component';
 
-describe('CollectionModerationComponent', () => {
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
+
+describe('Component: Collection Moderation', () => {
   let component: CollectionModerationComponent;
   let fixture: ComponentFixture<CollectionModerationComponent>;
   let isMediumSubject: BehaviorSubject<boolean>;
@@ -22,6 +23,7 @@ describe('CollectionModerationComponent', () => {
           tab: null,
         },
       },
+      params: { providerId: 'osf' },
     },
   };
 
@@ -33,12 +35,11 @@ describe('CollectionModerationComponent', () => {
     isMediumSubject = new BehaviorSubject<boolean>(true);
 
     await TestBed.configureTestingModule({
-      imports: [CollectionModerationComponent],
+      imports: [CollectionModerationComponent, OSFTestingStoreModule],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
         MockProvider(IS_MEDIUM, isMediumSubject),
-        TranslateServiceMock,
       ],
     }).compileComponents();
 

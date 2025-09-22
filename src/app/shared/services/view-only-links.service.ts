@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiResponse } from '@shared/models';
-import { JsonApiService } from '@shared/services';
 
 import { ResourceType } from '../enums';
 import { ViewOnlyLinksMapper } from '../mappers';
@@ -13,14 +13,18 @@ import {
   ViewOnlyLinksResponseJsonApi,
 } from '../models/view-only-links';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ViewOnlyLinksService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],

@@ -2,22 +2,26 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '@osf/shared/enums';
 import { JsonApiResponse, PaginatedData, ResponseJsonApi, UserDataJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
+import { StringOrNull } from '@shared/helpers';
 
 import { AddModeratorType } from '../enums';
 import { ModerationMapper } from '../mappers';
 import { ModeratorAddModel, ModeratorDataJsonApi, ModeratorModel, ModeratorResponseJsonApi } from '../models';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ModeratorsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Collection, 'providers/collections'],
@@ -25,11 +29,19 @@ export class ModeratorsService {
     [ResourceType.Preprint, 'providers/preprints'],
   ]);
 
-  getModerators(resourceId: string, resourceType: ResourceType): Observable<ModeratorModel[]> {
-    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators`;
+  getModerators(
+    resourceId: string,
+    resourceType: ResourceType,
+    searchValue: StringOrNull
+  ): Observable<ModeratorModel[]> {
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/`;
 
+    const params: Record<string, string> = {};
+    if (searchValue) {
+      params['filter[full_name]'] = searchValue;
+    }
     return this.jsonApiService
-      .get<ModeratorResponseJsonApi>(baseUrl)
+      .get<ModeratorResponseJsonApi>(baseUrl, params)
       .pipe(map((response) => response.data.map((moderator) => ModerationMapper.fromModeratorResponse(moderator))));
   }
 

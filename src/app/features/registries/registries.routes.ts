@@ -5,8 +5,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from '@osf/core/guards';
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
 import { RegistriesState } from '@osf/features/registries/store';
-import { RegistriesProviderSearchState } from '@osf/features/registries/store/registries-provider-search';
 import { CitationsState, ContributorsState, SubjectsState } from '@osf/shared/stores';
+import { RegistrationProviderState } from '@osf/shared/stores/registration-provider';
 
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './store/handlers';
 import { FilesHandlers } from './store/handlers/files.handlers';
@@ -17,7 +17,7 @@ export const registriesRoutes: Routes = [
     path: '',
     component: RegistriesComponent,
     providers: [
-      provideStates([RegistriesState, CitationsState, ContributorsState, SubjectsState, RegistriesProviderSearchState]),
+      provideStates([RegistriesState, CitationsState, ContributorsState, SubjectsState, RegistrationProviderState]),
       ProvidersHandlers,
       ProjectsHandlers,
       LicensesHandlers,
@@ -62,7 +62,9 @@ export const registriesRoutes: Routes = [
           {
             path: ':id/metadata',
             loadComponent: () =>
-              import('./components/metadata/metadata.component').then((mod) => mod.MetadataComponent),
+              import('./components/registries-metadata-step/registries-metadata-step.component').then(
+                (mod) => mod.RegistriesMetadataStepComponent
+              ),
           },
           {
             path: ':id/review',

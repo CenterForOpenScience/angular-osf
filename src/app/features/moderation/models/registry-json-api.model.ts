@@ -1,22 +1,11 @@
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
-import { ResponseJsonApi } from '@osf/shared/models';
+import { RegistrationNodeAttributesJsonApi, ResponseJsonApi } from '@osf/shared/models';
 
 export type RegistryResponseJsonApi = ResponseJsonApi<RegistryDataJsonApi[]>;
 
 export interface RegistryDataJsonApi {
   id: string;
-  attributes: RegistryAttributesJsonApi;
+  attributes: RegistrationNodeAttributesJsonApi;
   embeds: RegistryEmbedsJsonApi;
-}
-
-export interface RegistryAttributesJsonApi {
-  id: string;
-  title: string;
-  revision_state: RevisionReviewStates;
-  reviews_state: RegistrationReviewStates;
-  public: boolean;
-  embargoed: boolean;
-  embargo_end_date: string;
 }
 
 export interface RegistryEmbedsJsonApi {

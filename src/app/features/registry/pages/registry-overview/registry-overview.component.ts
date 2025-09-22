@@ -5,11 +5,20 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 
-import { filter, map, switchMap, tap } from 'rxjs';
+import { map, of, switchMap, tap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
@@ -20,6 +29,7 @@ import {
   RegistrationBlocksDataComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
 import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
@@ -27,7 +37,6 @@ import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { FetchSelectedSubjects, GetBookmarksCollectionId, SubjectsSelectors } from '@osf/shared/stores';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
@@ -95,6 +104,12 @@ export class RegistryOverviewComponent {
       this.areSubjectsLoading()
   );
 
+  canMakeDecision = computed(() => {
+    return !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration;
+  });
+
+  private registryId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+
   readonly schemaResponse = computed(() => {
     const registry = this.registry();
     const index = this.selectedRevisionIndex();
@@ -104,7 +119,8 @@ export class RegistryOverviewComponent {
     const schemaResponses =
       (this.isModeration
         ? registry?.schemaResponses
-        : registry?.schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved)) || [];
+        : registry?.schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved || this.isAdmin)) ||
+      [];
     if (index !== null) {
       return schemaResponses[index];
     }
@@ -135,6 +151,7 @@ export class RegistryOverviewComponent {
     if (this.registry()) {
       return {
         id: this.registry()!.id,
+        title: this.registry()?.title,
         isPublic: this.registry()!.isPublic,
         storage: undefined,
         viewOnlyLinksCount: 0,
@@ -160,13 +177,8 @@ export class RegistryOverviewComponent {
   revisionId: string | null = null;
   isModeration = false;
 
-  userPermissions = computed(() => {
-    return this.registry()?.currentUserPermissions || [];
-  });
-
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  userPermissions = computed(() => this.registry()?.currentUserPermissions || []);
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   get isAdmin(): boolean {
     return this.userPermissions().includes(UserPermissions.Admin);
@@ -177,21 +189,18 @@ export class RegistryOverviewComponent {
   }
 
   constructor() {
-    this.route.parent?.params.subscribe((params) => {
-      const id = params['id'];
-      if (id) {
-        this.actions
-          .getRegistryById(id)
-          .pipe(
-            filter(() => {
-              return !this.registry()?.withdrawn;
-            }),
-            tap(() => {
-              this.actions.getSubjects(id, ResourceType.Registration);
-              this.actions.getInstitutions(id);
-            })
-          )
-          .subscribe();
+    effect(() => {
+      const registry = this.registry();
+
+      if (registry && !registry?.withdrawn) {
+        this.actions.getSubjects(registry?.id, ResourceType.Registration);
+        this.actions.getInstitutions(registry?.id);
+      }
+    });
+
+    effect(() => {
+      if (this.registryId()) {
+        this.actions.getRegistryById(this.registryId());
       }
     });
 
@@ -293,6 +302,7 @@ export class RegistryOverviewComponent {
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             this.router.navigateByUrl(currentUrl);
           });
+
           this.actions.getRegistryById(this.registry()?.id || '');
         }
       });

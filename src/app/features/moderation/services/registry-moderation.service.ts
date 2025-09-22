@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PaginatedData } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
@@ -9,14 +10,16 @@ import { RegistrySort, SubmissionReviewStatus } from '../enums';
 import { RegistryModerationMapper } from '../mappers';
 import { RegistryModeration, RegistryResponseJsonApi, ReviewAction, ReviewActionsResponseJsonApi } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class RegistryModerationService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getRegistrySubmissions(
     provider: string,
@@ -27,7 +30,11 @@ export class RegistryModerationService {
     const filters =
       status === SubmissionReviewStatus.PendingUpdates
         ? `filter[reviews_state]=embargo,accepted&filter[revision_state]=pending_moderation`
-        : `filter[reviews_state]=${status}`;
+        : status === SubmissionReviewStatus.Embargo
+          ? `filter[reviews_state]=embargo,pending_embargo_termination`
+          : status === SubmissionReviewStatus.Removed
+            ? `filter[reviews_state]=withdrawn`
+            : `filter[reviews_state]=${status}`;
 
     const baseUrl = `${this.apiUrl}/providers/registrations/${provider}/registrations/?page=${page}&page[size]=10&${filters}&sort=${sort}`;
     const params = {

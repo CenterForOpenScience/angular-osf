@@ -4,23 +4,23 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ClearCurrentProvider } from '@core/store/provider';
 import {
   LoadingSpinnerComponent,
   ResourceCardComponent,
-  ScheduledBannerComponent,
   SearchInputComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
+import { GetRegistryProviderBrand, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { RegistryServicesComponent } from '../../components';
 import { GetRegistries, RegistriesSelectors } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-registries-landing',
@@ -32,24 +32,36 @@ import { environment } from 'src/environments/environment';
     ResourceCardComponent,
     LoadingSpinnerComponent,
     SubHeaderComponent,
-    ScheduledBannerComponent,
   ],
   templateUrl: './registries-landing.component.html',
   styleUrl: './registries-landing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistriesLandingComponent implements OnInit {
+export class RegistriesLandingComponent implements OnInit, OnDestroy {
   private router = inject(Router);
+  private readonly environment = inject(ENVIRONMENT);
 
-  searchControl = new FormControl<string>('');
+  private actions = createDispatchMap({
+    getRegistries: GetRegistries,
+    getProvider: GetRegistryProviderBrand,
+    clearCurrentProvider: ClearCurrentProvider,
+  });
 
-  private readonly actions = createDispatchMap({ getRegistries: GetRegistries });
-
+  provider = select(RegistrationProviderSelectors.getBrandedProvider);
+  isProviderLoading = select(RegistrationProviderSelectors.isBrandedProviderLoading);
   registries = select(RegistriesSelectors.getRegistries);
   isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
 
+  searchControl = new FormControl<string>('');
+  defaultProvider = this.environment.defaultProvider;
+
   ngOnInit(): void {
     this.actions.getRegistries();
+    this.actions.getProvider(this.defaultProvider);
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearCurrentProvider();
   }
 
   redirectToSearchPageWithValue(): void {
@@ -63,6 +75,6 @@ export class RegistriesLandingComponent implements OnInit {
   }
 
   goToCreateRegistration(): void {
-    this.router.navigate([`/registries/${environment.defaultProvider}/new`]);
+    this.router.navigate([`/registries/${this.defaultProvider}/new`]);
   }
 }

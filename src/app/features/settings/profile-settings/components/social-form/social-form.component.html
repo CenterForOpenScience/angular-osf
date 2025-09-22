@@ -22,7 +22,7 @@
         <input pInputText [placeholder]="placeholder()" formControlName="webAddress" [maxlength]="socialMaxLength" />
 
         @if (hasLinkedField()) {
-          <p-inputgroup-addon class="border-1 grey-border-color md:border-0"> .academia.edu/ </p-inputgroup-addon>
+          <p-inputgroup-addon class="border-1 grey-border-color md:border-0"> {{ linkedDomain() }} </p-inputgroup-addon>
 
           <input
             pInputText

@@ -10,13 +10,13 @@
         <div class="flex justify-content-center p-4">
           <osf-loading-spinner />
         </div>
-      } @else if (components().length === 0) {
+      } @else if (registryComponents().length === 0) {
         <div class="text-center p-6">
           <p>{{ 'registry.components.noComponentsFound' | translate }}</p>
         </div>
       } @else {
-        <div class="flex flex-column gap-4 w-full">
-          @for (component of components(); track component.id) {
+        <div class="flex flex-column gap-4">
+          @for (component of registryComponents(); track component.id) {
             <osf-registration-links-card
               (reviewEmitRegistrationData)="reviewComponentDetails($event)"
               [registrationData]="component"

@@ -4,8 +4,6 @@
   [first]="tableParams().firstRowIndex"
   [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
   [totalRecords]="tableParams().totalRecords"
-  [resizableColumns]="true"
-  [autoLayout]="true"
   [scrollable]="true"
   [sortMode]="'single'"
   [lazy]="true"
@@ -105,12 +103,13 @@
         </td>
         <td>
           @if (isCurrentUserAdminContributor()) {
-            <div>
+            <div class="w-9rem">
               <osf-select
                 [options]="permissionsOptions"
                 [placeholder]="'project.contributors.permissionFilter'"
                 [appendTo]="'body'"
                 [noBorder]="true"
+                [fullWidth]="true"
                 [(selectedValue)]="contributor.permission"
               />
             </div>
@@ -187,7 +186,7 @@
           </td>
         }
         <td>
-          @if (isCurrentUserAdminContributor() || currentUserId() === contributor.userId) {
+          @if (canRemoveContributor().get(contributor.userId)) {
             <p-button
               class="danger-icon-btn"
               icon="fas fa-trash"

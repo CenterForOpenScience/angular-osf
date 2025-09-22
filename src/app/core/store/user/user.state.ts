@@ -8,7 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { removeNullable } from '@osf/shared/helpers';
 import { UserMapper } from '@osf/shared/mappers';
-import { Social, User } from '@osf/shared/models';
+import { SocialModel, User } from '@osf/shared/models';
 
 import { UserService } from '../../services';
 
@@ -18,7 +18,6 @@ import {
   GetCurrentUser,
   GetCurrentUserSettings,
   SetCurrentUser,
-  SetUserAsModerator,
   UpdateProfileSettingsEducation,
   UpdateProfileSettingsEmployment,
   UpdateProfileSettingsSocialLinks,
@@ -211,7 +210,7 @@ export class UserState {
       return;
     }
 
-    let social = {} as Partial<Social>;
+    let social = {} as Partial<SocialModel>;
 
     payload.forEach((item) => {
       social = {
@@ -232,26 +231,6 @@ export class UserState {
         localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
-  }
-
-  @Action(SetUserAsModerator)
-  setUserAsModerator(ctx: StateContext<UserStateModel>) {
-    const state = ctx.getState();
-    const currentUser = state.currentUser.data;
-
-    if (!currentUser) {
-      return;
-    }
-
-    ctx.patchState({
-      currentUser: {
-        ...state.currentUser,
-        data: {
-          ...currentUser,
-          isModerator: true,
-        },
-      },
-    });
   }
 
   @Action(AcceptTermsOfServiceByUser)
@@ -280,6 +259,7 @@ export class UserState {
               },
             },
           });
+          localStorage.setItem('currentUser', JSON.stringify(response));
         }
       })
     );

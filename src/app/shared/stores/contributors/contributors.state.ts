@@ -16,8 +16,8 @@ import {
   SearchUsers,
   UpdateBibliographyFilter,
   UpdateContributor,
+  UpdateContributorsSearchValue,
   UpdatePermissionFilter,
-  UpdateSearchValue,
 } from './contributors.actions';
 import { CONTRIBUTORS_STATE_DEFAULTS, ContributorsStateModel } from './contributors.model';
 
@@ -141,8 +141,8 @@ export class ContributorsState {
       );
   }
 
-  @Action(UpdateSearchValue)
-  updateSearchValue(ctx: StateContext<ContributorsStateModel>, action: UpdateSearchValue) {
+  @Action(UpdateContributorsSearchValue)
+  updateContributorsSearchValue(ctx: StateContext<ContributorsStateModel>, action: UpdateContributorsSearchValue) {
     ctx.patchState({ contributorsList: { ...ctx.getState().contributorsList, searchValue: action.searchValue } });
   }
 

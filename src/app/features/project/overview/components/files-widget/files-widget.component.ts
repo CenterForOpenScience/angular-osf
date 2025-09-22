@@ -19,6 +19,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { FileProvider } from '@osf/features/files/constants';
 import {
   FilesSelectors,
@@ -39,9 +40,7 @@ import {
   OsfFile,
   SelectOption,
 } from '@osf/shared/models';
-import { Project } from '@osf/shared/models/projects';
-
-import { environment } from 'src/environments/environment';
+import { ProjectModel } from '@osf/shared/models/projects';
 
 @Component({
   selector: 'osf-files-widget',
@@ -57,6 +56,7 @@ export class FilesWidgetComponent {
   router = inject(Router);
   activeRoute = inject(ActivatedRoute);
 
+  private readonly environment = inject(ENVIRONMENT);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly files = select(FilesSelectors.getFiles);
@@ -72,7 +72,7 @@ export class FilesWidgetComponent {
   currentRootFolder = model<FileLabelModel | null>(null);
   pageNumber = signal(1);
 
-  readonly osfStorageLabel = 'Osf Storage';
+  readonly osfStorageLabel = 'OSF Storage';
 
   readonly options = computed(() => {
     const components = this.components().filter((component) => this.rootOption().value !== component.id);
@@ -154,14 +154,14 @@ export class FilesWidgetComponent {
 
   private getStorageAddons(projectId: string) {
     const resourcePath = 'nodes';
-    const folderLink = `${environment.apiDomainUrl}/v2/${resourcePath}/${projectId}/files/`;
-    const iriLink = `${environment.webUrl}/${projectId}`;
+    const folderLink = `${this.environment.apiDomainUrl}/v2/${resourcePath}/${projectId}/files/`;
+    const iriLink = `${this.environment.webUrl}/${projectId}`;
     this.actions.getRootFolders(folderLink);
     this.actions.getConfiguredStorageAddons(iriLink);
   }
 
   private flatComponents(
-    components: (Partial<Project> & { children?: Project[] })[] = [],
+    components: (Partial<ProjectModel> & { children?: ProjectModel[] })[] = [],
     parentPath = '..'
   ): SelectOption[] {
     return components.flatMap((component) => {
@@ -218,7 +218,8 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    this.router.navigate(['files', file.guid], { relativeTo: this.activeRoute.parent });
+    const url = this.router.createUrlTree([file.guid]).toString();
+    window.open(url, '_blank');
   }
 
   onFilesPageChange(page: number) {

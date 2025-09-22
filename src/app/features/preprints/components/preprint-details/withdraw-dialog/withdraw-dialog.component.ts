@@ -11,6 +11,7 @@ import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
@@ -18,8 +19,6 @@ import { Preprint, PreprintProviderDetails, PreprintWordGrammar } from '@osf/fea
 import { WithdrawPreprint } from '@osf/features/preprints/store/preprint';
 import { CustomValidators } from '@osf/shared/helpers';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-withdraw-dialog',
@@ -31,9 +30,11 @@ import { environment } from 'src/environments/environment';
 export class WithdrawDialogComponent implements OnInit {
   private readonly config = inject(DynamicDialogConfig);
   private readonly translateService = inject(TranslateService);
+  private readonly environment = inject(ENVIRONMENT);
+
   readonly dialogRef = inject(DynamicDialogRef);
 
-  readonly supportEmail = environment.supportEmail;
+  readonly supportEmail = this.environment.supportEmail;
 
   private provider!: PreprintProviderDetails;
   private preprint!: Preprint;

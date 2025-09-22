@@ -1,3 +1,3 @@
-import { Education, Employment, Social, User } from './user';
+import { Education, Employment, SocialModel, User } from './user';
 
-export type ProfileSettingsUpdate = Partial<Employment>[] | Partial<Education>[] | Partial<Social> | Partial<User>;
+export type ProfileSettingsUpdate = Partial<Employment>[] | Partial<Education>[] | Partial<SocialModel> | Partial<User>;

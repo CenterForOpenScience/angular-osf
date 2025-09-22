@@ -2,18 +2,21 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MapEmail, MapEmails } from '@osf/shared/mappers';
 import { AccountEmailModel, EmailResponseJsonApi, EmailsDataJsonApi, EmailsResponseJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserEmailsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiDomainUrl}/v2/users`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2/users`;
+  }
 
   getEmails(): Observable<AccountEmailModel[]> {
     const params: Record<string, string> = {
@@ -22,7 +25,7 @@ export class UserEmailsService {
     };
 
     return this.jsonApiService
-      .get<EmailsResponseJsonApi>(`${this.baseUrl}/me/settings/emails/`, params)
+      .get<EmailsResponseJsonApi>(`${this.apiUrl}/me/settings/emails/`, params)
       .pipe(map((response) => MapEmails(response.data)));
   }
 
@@ -32,7 +35,7 @@ export class UserEmailsService {
     };
 
     return this.jsonApiService
-      .get<EmailResponseJsonApi>(`${this.baseUrl}/me/settings/emails/${emailId}/`, params)
+      .get<EmailResponseJsonApi>(`${this.apiUrl}/me/settings/emails/${emailId}/`, params)
       .pipe(map((response) => MapEmail(response.data)));
   }
 
@@ -55,7 +58,7 @@ export class UserEmailsService {
     };
 
     return this.jsonApiService
-      .post<EmailResponseJsonApi>(`${this.baseUrl}/${userId}/settings/emails/`, body)
+      .post<EmailResponseJsonApi>(`${this.apiUrl}/${userId}/settings/emails/`, body)
       .pipe(map((response) => MapEmail(response.data)));
   }
 
@@ -71,7 +74,7 @@ export class UserEmailsService {
     };
 
     return this.jsonApiService
-      .patch<EmailsDataJsonApi>(`${this.baseUrl}/me/settings/emails/${emailId}/`, body)
+      .patch<EmailsDataJsonApi>(`${this.apiUrl}/me/settings/emails/${emailId}/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
 
@@ -87,11 +90,11 @@ export class UserEmailsService {
     };
 
     return this.jsonApiService
-      .patch<EmailsDataJsonApi>(`${this.baseUrl}/me/settings/emails/${emailId}/`, body)
+      .patch<EmailsDataJsonApi>(`${this.apiUrl}/me/settings/emails/${emailId}/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
 
   deleteEmail(emailId: string): Observable<void> {
-    return this.jsonApiService.delete(`${this.baseUrl}/me/settings/emails/${emailId}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/me/settings/emails/${emailId}/`);
   }
 }

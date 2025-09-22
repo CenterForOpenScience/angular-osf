@@ -18,6 +18,7 @@ export { MyResourcesService } from './my-resources.service';
 export { NodeLinksService } from './node-links.service';
 export { ProjectRedirectDialogService } from './project-redirect-dialog.service';
 export { RegionsService } from './regions.service';
+export { RegistrationProviderService } from './registration-provider.service';
 export { ResourceGuidService } from './resource.service';
 export { ResourceCardService } from './resource-card.service';
 export { SocialShareService } from './social-share.service';

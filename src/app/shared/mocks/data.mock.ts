@@ -11,7 +11,7 @@ export const MOCK_USER: User = {
   middleNames: '',
   suffix: '',
   dateRegistered: new Date('2024-01-01'),
-  acceptedTermsOfService: true,
+  acceptedTermsOfService: false,
   employment: [
     {
       title: 'Software Engineer',

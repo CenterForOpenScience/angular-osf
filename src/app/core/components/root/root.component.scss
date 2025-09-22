@@ -44,3 +44,43 @@
     }
   }
 }
+
+.layout {
+  display: flex;
+  flex: 1;
+  max-width: 100vw;
+
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    background-color: var(--bg-blue-3);
+  }
+}
+
+.layout.layout-desktop {
+  background-color: var(--dark-blue-1);
+
+  .content-wrapper {
+    position: relative;
+    border-radius: mix.rem(12px);
+    margin: mix.rem(6px);
+  }
+}
+
+.layout.layout-tablet {
+  @include mix.flex-center;
+
+  .content-wrapper {
+    @include mix.flex-column;
+    width: 100%;
+    height: 100%;
+
+    .content {
+      position: relative;
+      @include mix.flex-column;
+      flex: 1;
+    }
+  }
+}

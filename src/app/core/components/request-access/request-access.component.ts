@@ -11,11 +11,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { AuthService, RequestAccessService } from '@osf/core/services';
 import { InputLimits } from '@osf/shared/constants';
 import { LoaderService, ToastService } from '@osf/shared/services';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-request-access',
@@ -27,7 +26,8 @@ import { environment } from 'src/environments/environment';
 export class RequestAccessComponent {
   comment = model('');
 
-  readonly supportEmail = environment.supportEmail;
+  private readonly environment = inject(ENVIRONMENT);
+  readonly supportEmail = this.environment.supportEmail;
   readonly commentLimit = InputLimits.requestAccessComment.maxLength;
 
   private readonly route = inject(ActivatedRoute);

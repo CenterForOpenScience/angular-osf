@@ -1,3 +1,5 @@
+import { ContributorsMapper } from '@osf/shared/mappers';
+
 import { LinkedNode, LinkedNodeJsonApi } from '../models';
 
 export class LinkedNodesMapper {
@@ -13,6 +15,7 @@ export class LinkedNodesMapper {
       isPublic: apiNode.attributes.public,
       htmlUrl: apiNode.links.html,
       apiUrl: apiNode.links.self,
+      contributors: ContributorsMapper.fromResponse(apiNode.embeds.bibliographic_contributors.data) || [],
     };
   }
 }
