@@ -65,7 +65,7 @@ export class ProfileComponent implements OnInit {
   private setupMyProfile(user: User): void {
     this.actions.setUserProfile(user);
     if (user?.iri) {
-      this.actions.setDefaultFilterValue('creator', user.iri);
+      this.actions.setDefaultFilterValue('creator,isContainedBy.creator', user.iri);
     }
   }
 

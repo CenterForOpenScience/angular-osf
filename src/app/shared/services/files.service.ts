@@ -1,7 +1,7 @@
 import { Observable, of, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -90,28 +90,19 @@ export class FilesService {
     return this.jsonApiService.get<GetFilesResponse>(filesLink).pipe(map((response) => MapFiles(response.data)));
   }
 
-  uploadFile(file: File, uploadLink: string): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
-    const params = {
-      kind: 'file',
-      name: file.name,
-    };
+  uploadFile(
+    file: File,
+    uploadLink: string,
+    isUpdate = false
+  ): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
+    const params = isUpdate
+      ? undefined
+      : {
+          kind: 'file',
+          name: file.name,
+        };
 
-    return this.jsonApiService.putFile<AddFileResponse>(uploadLink, file, params).pipe(
-      switchMap((event) => {
-        if (event.type === HttpEventType.Response && event.body?.data?.id) {
-          const fileId = event.body.data.id.split('/').pop();
-          if (fileId) {
-            return this.getFileGuid(fileId).pipe(map(() => event));
-          }
-        }
-
-        return of(event);
-      }),
-      catchError((error) => {
-        this.toastService.showError(error.error.message);
-        return throwError(() => error);
-      })
-    );
+    return this.jsonApiService.putFile<AddFileResponse>(uploadLink, file, params);
   }
 
   updateFileContent(file: File, link: string) {
@@ -323,7 +314,6 @@ export class FilesService {
     return this.getResourceReferences(resourceUri).pipe(
       switchMap((referenceUrl: string) => {
         if (!referenceUrl) return of([]);
-
         return this.jsonApiService
           .get<JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>>(`${referenceUrl}/configured_storage_addons`)
           .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));

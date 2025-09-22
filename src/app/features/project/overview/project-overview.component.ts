@@ -205,6 +205,7 @@ export class ProjectOverviewComponent implements OnInit {
     if (project) {
       return {
         id: project.id,
+        title: project.title,
         isPublic: project.isPublic,
         storage: project.storage,
         viewOnlyLinksCount: project.viewOnlyLinksCount,

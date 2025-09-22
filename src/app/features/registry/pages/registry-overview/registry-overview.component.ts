@@ -151,6 +151,7 @@ export class RegistryOverviewComponent {
     if (this.registry()) {
       return {
         id: this.registry()!.id,
+        title: this.registry()?.title,
         isPublic: this.registry()!.isPublic,
         storage: undefined,
         viewOnlyLinksCount: 0,

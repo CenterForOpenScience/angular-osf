@@ -12,8 +12,8 @@
 
   html,
   body {
-    color: var.$dark-blue-1;
-    font-family: var.$openSans;
+    color: var(--dark-blue-1);
+    font-family: var(--openSans);
     font-weight: 400;
     font-size: var.$base-font-size;
     max-height: 100vh;
@@ -47,7 +47,7 @@
   h3 {
     font-weight: 700;
     text-transform: capitalize;
-    color: var.$dark-blue-1;
+    color: var(--dark-blue-1);
   }
 
   li {
@@ -57,7 +57,7 @@
   a,
   a:visited {
     text-decoration: none;
-    color: var.$pr-blue-1;
+    color: var(--pr-blue-1);
   }
 
   a:hover {

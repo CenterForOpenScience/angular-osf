@@ -16,7 +16,6 @@
     <osf-overview-toolbar
       [isCollectionsRoute]="isCollectionsRoute()"
       [currentResource]="currentResource()"
-      [projectTitle]="project.title"
       [projectDescription]="project.description"
       [isAdmin]="isAdmin"
     />
@@ -49,7 +48,7 @@
 
     <div class="flex flex-column gap-4 left-section">
       @if (isAdmin || canWrite) {
-        <osf-project-wiki />
+        <osf-overview-wiki [resourceId]="currentProject()!.id" />
       }
 
       <osf-files-widget

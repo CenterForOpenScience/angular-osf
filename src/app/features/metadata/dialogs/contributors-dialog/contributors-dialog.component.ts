@@ -65,17 +65,6 @@ export class ContributorsDialogComponent implements OnInit {
 
   currentUser = select(UserSelectors.getCurrentUser);
 
-  isCurrentUserAdminContributor = computed(() => {
-    const currentUserId = this.currentUser()?.id;
-    const initialContributors = this.initialContributors();
-    if (!currentUserId) return false;
-
-    return initialContributors.some(
-      (contributor: ContributorModel) =>
-        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
-    );
-  });
-
   actions = createDispatchMap({
     updateSearchValue: UpdateContributorsSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
@@ -88,6 +77,27 @@ export class ContributorsDialogComponent implements OnInit {
   private readonly resourceType: ResourceType;
   private readonly resourceId: string;
 
+  isCurrentUserAdminContributor = computed(() => {
+    const currentUserId = this.currentUser()?.id;
+    const initialContributors = this.initialContributors();
+    if (!currentUserId) return false;
+
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
+  });
+
+  get searchPlaceholder() {
+    return this.resourceType === ResourceType.Project
+      ? 'project.contributors.searchProjectPlaceholder'
+      : 'project.contributors.searchRegistrationPlaceholder';
+  }
+
+  get hasChanges(): boolean {
+    return JSON.stringify(this.initialContributors()) !== JSON.stringify(this.contributors());
+  }
+
   constructor() {
     this.resourceId = this.config.data?.resourceId;
     this.resourceType = this.config.data?.resourceType;
@@ -95,10 +105,6 @@ export class ContributorsDialogComponent implements OnInit {
     effect(() => {
       this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
     });
-  }
-
-  get hasChanges(): boolean {
-    return JSON.stringify(this.initialContributors()) !== JSON.stringify(this.contributors());
   }
 
   ngOnInit(): void {
