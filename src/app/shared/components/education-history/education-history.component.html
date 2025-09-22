@@ -2,10 +2,10 @@
   @for (education of education(); track $index) {
     <p-accordion-panel value="{{ $index }}" class="accordion-panel">
       <p-accordion-header>
-        <div class="flex flex-row w-full">
+        <div class="flex flex-row w-full min-w-0">
           <p class="truncate-text">{{ education.institution }}</p>
-
-          <p class="font-normal ml-auto mr-5">
+          <p class="spacer"></p>
+          <p class="font-normal ml-auto mr-5 flex-shrink-0">
             {{ education.startMonth | monthYear: education.startYear }} -
             @if (education.ongoing) {
               {{ 'settings.profileSettings.education.ongoing' | translate }}
