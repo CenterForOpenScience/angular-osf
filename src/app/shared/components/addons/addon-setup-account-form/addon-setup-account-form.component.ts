@@ -10,7 +10,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { AddonFormControls, CredentialsFormat } from '@shared/enums';
-import { AddonForm, AddonModel, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { Addon, AddonForm, AuthorizedAccount, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonFormService } from '@shared/services/addons/addon-form.service';
 
 @Component({
@@ -22,7 +22,7 @@ import { AddonFormService } from '@shared/services/addons/addon-form.service';
 export class AddonSetupAccountFormComponent {
   private addonFormService = inject(AddonFormService);
 
-  addon = input.required<AddonModel | AuthorizedAccountModel>();
+  addon = input.required<Addon | AuthorizedAccount>();
   userReferenceId = input.required<string>();
   addonTypeString = input.required<string>();
   isSubmitting = input<boolean>(false);

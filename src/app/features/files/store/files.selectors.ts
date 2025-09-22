@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { ConfiguredAddonModel, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
+import { ConfiguredAddon, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
 
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
@@ -129,7 +129,7 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static getConfiguredStorageAddons(state: FilesStateModel): ConfiguredAddonModel[] | null {
+  static getConfiguredStorageAddons(state: FilesStateModel): ConfiguredAddon[] | null {
     return state.configuredStorageAddons.data;
   }
 

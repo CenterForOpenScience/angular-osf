@@ -1,7 +1,7 @@
 import { CredentialsFormat } from '@shared/enums';
-import { AddonModel } from '@shared/models';
+import { Addon } from '@shared/models';
 
-export const MOCK_ADDON: AddonModel = {
+export const MOCK_ADDON: Addon = {
   type: 'addon',
   id: 'id1',
   authUrl: 'https://test.com/auth',

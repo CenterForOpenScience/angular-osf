@@ -1,4 +1,58 @@
-import { StorageItemModel } from './strorage-item.model';
+import { FormControl } from '@angular/forms';
+
+import { OperationNames } from '@osf/features/project/project-addons/enums';
+import { AddonFormControls } from '@shared/enums';
+import { AuthorizedAccount } from '@shared/models';
+
+export interface AddonForm {
+  [AddonFormControls.AccessKey]?: FormControl<string | null>;
+  [AddonFormControls.SecretKey]?: FormControl<string | null>;
+  [AddonFormControls.HostUrl]?: FormControl<string | null>;
+  [AddonFormControls.Username]?: FormControl<string | null>;
+  [AddonFormControls.Password]?: FormControl<string | null>;
+  [AddonFormControls.PersonalAccessToken]?: FormControl<string | null>;
+  [AddonFormControls.AccountName]: FormControl<string | null>;
+  [AddonFormControls.ApiToken]?: FormControl<string | null>;
+}
+
+export interface AddonTerm {
+  function: string;
+  status: string;
+  type: 'info' | 'danger' | 'warning';
+}
+
+export interface Term {
+  label: string;
+  supportedFeature: string;
+  storage: {
+    true: string;
+    false: string;
+  };
+  citation?: {
+    partial?: string;
+    false?: string;
+  };
+}
+
+export interface StorageItem {
+  itemId?: string;
+  itemName?: string;
+  itemType?: string;
+  itemLink?: string;
+  canBeRoot?: boolean;
+  mayContainRootCandidates?: boolean;
+}
+
+export interface OAuthCallbacks {
+  onSuccess: (addon: AuthorizedAccount) => void;
+  onError?: () => void;
+  onCleanup?: () => void;
+}
+
+export interface OperationInvokeData {
+  operationName: OperationNames;
+  itemId: string;
+}
 
 export interface StorageItemResponseJsonApi {
   item_id?: string;
@@ -72,15 +126,6 @@ export interface OperationInvocationResponseJsonApi {
   };
 }
 
-export interface StorageItem {
-  itemId?: string;
-  itemName?: string;
-  itemType?: string;
-  itemLink?: string;
-  canBeRoot?: boolean;
-  mayContainRootCandidates?: boolean;
-}
-
 export interface OperationInvocation {
   id: string;
   type: string;
@@ -90,6 +135,6 @@ export interface OperationInvocation {
     itemId?: string;
     itemType?: string;
   };
-  operationResult: StorageItemModel[];
+  operationResult: StorageItem[];
   itemCount: number;
 }

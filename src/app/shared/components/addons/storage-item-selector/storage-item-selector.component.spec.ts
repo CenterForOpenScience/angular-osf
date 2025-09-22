@@ -5,7 +5,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OperationNames } from '@osf/features/project/addons/enums';
+import { OperationNames } from '@osf/features/project/project-addons/enums';
 import { StorageItemSelectorComponent } from '@shared/components/addons';
 import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 import { StorageItemModel } from '@shared/models';

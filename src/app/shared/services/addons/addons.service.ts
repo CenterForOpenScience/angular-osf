@@ -8,14 +8,14 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@osf/shared/mappers';
 import {
+  Addon,
   AddonGetResponseJsonApi,
-  AddonModel,
-  AuthorizedAccountModel,
+  AuthorizedAccount,
   AuthorizedAddonGetResponseJsonApi,
   AuthorizedAddonRequestJsonApi,
   AuthorizedAddonResponseJsonApi,
+  ConfiguredAddon,
   ConfiguredAddonGetResponseJsonApi,
-  ConfiguredAddonModel,
   ConfiguredAddonRequestJsonApi,
   ConfiguredAddonResponseJsonApi,
   IncludedAddonData,
@@ -46,7 +46,7 @@ export class AddonsService {
 
   private readonly currentUser = select(UserSelectors.getCurrentUser);
 
-  getAddons(addonType: string): Observable<AddonModel[]> {
+  getAddons(addonType: string): Observable<Addon[]> {
     return this.jsonApiService
       .get<JsonApiResponse<AddonGetResponseJsonApi[], null>>(`${this.apiUrl}/external-${addonType}-services`)
       .pipe(map((response) => response.data.map((item) => AddonMapper.fromResponse(item))));
@@ -73,7 +73,7 @@ export class AddonsService {
       .pipe(map((response) => response.data));
   }
 
-  getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAccountModel[]> {
+  getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAccount[]> {
     const params = {
       [`fields[external-${addonType}-services]`]: 'external_service_name,credentials_format',
     };
@@ -86,7 +86,7 @@ export class AddonsService {
       );
   }
 
-  getAuthorizedStorageOauthToken(accountId: string, addonType: string): Observable<AuthorizedAccountModel> {
+  getAuthorizedStorageOauthToken(accountId: string, addonType: string): Observable<AuthorizedAccount> {
     return this.jsonApiService
       .patch<AuthorizedAddonGetResponseJsonApi>(`${this.apiUrl}/authorized-${addonType}-accounts/${accountId}`, {
         data: {
@@ -102,7 +102,7 @@ export class AddonsService {
       );
   }
 
-  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddonModel[]> {
+  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddon[]> {
     return this.jsonApiService
       .get<
         JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>
@@ -117,7 +117,7 @@ export class AddonsService {
   createAuthorizedAddon(
     addonRequestPayload: AuthorizedAddonRequestJsonApi,
     addonType: string
-  ): Observable<AuthorizedAccountModel> {
+  ): Observable<AuthorizedAccount> {
     return this.jsonApiService
       .post<
         JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
@@ -129,7 +129,7 @@ export class AddonsService {
     addonRequestPayload: AuthorizedAddonRequestJsonApi,
     addonType: string,
     addonId: string
-  ): Observable<AuthorizedAccountModel> {
+  ): Observable<AuthorizedAccount> {
     return this.jsonApiService.http
       .patch<
         JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>

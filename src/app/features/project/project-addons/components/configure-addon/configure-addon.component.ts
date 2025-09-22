@@ -26,7 +26,7 @@ import { SubHeaderComponent } from '@osf/shared/components';
 import { StorageItemSelectorComponent } from '@osf/shared/components/addons';
 import { AddonServiceNames, AddonType } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
-import { AddonModel, ConfiguredAddonModel } from '@osf/shared/models';
+import { Addon, ConfiguredAddon } from '@osf/shared/models';
 import { AddonFormService, AddonOperationInvocationService, ToastService } from '@osf/shared/services';
 import {
   AddonsSelectors,
@@ -70,8 +70,8 @@ export class ConfigureAddonComponent implements OnInit {
   private readonly environment = inject(ENVIRONMENT);
 
   accountNameControl = new FormControl('');
-  storageAddon = signal<AddonModel | null>(null);
-  addon = signal<ConfiguredAddonModel | null>(null);
+  storageAddon = signal<Addon | null>(null);
+  addon = signal<ConfiguredAddon | null>(null);
 
   readonly isGoogleDrive = computed(() => this.storageAddon()?.wbKey === 'googledrive');
 
@@ -138,7 +138,7 @@ export class ConfigureAddonComponent implements OnInit {
   private initializeAddon(): void {
     // TODO this should be reviewed to have the addon be retrieved from the store
     // I have limited my testing because it will create a false/positive test based on the required data
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredAddonModel;
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredAddon;
 
     if (addon) {
       this.storageAddon.set(
@@ -175,7 +175,7 @@ export class ConfigureAddonComponent implements OnInit {
     this.openDisconnectDialog(currentAddon);
   }
 
-  private openDisconnectDialog(addon: ConfiguredAddonModel): void {
+  private openDisconnectDialog(addon: ConfiguredAddon): void {
     const dialogRef = this.addonDialogService.openDisconnectDialog(addon);
 
     dialogRef.subscribe((result) => {

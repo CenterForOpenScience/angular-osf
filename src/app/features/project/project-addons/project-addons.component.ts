@@ -20,13 +20,13 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { Primitive } from '@osf/shared/helpers';
+import { createAddonCardModel, Primitive, sortAddonCardsAlphabetically } from '@osf/shared/helpers';
 import { LoadingSpinnerComponent, SearchInputComponent, SelectComponent, SubHeaderComponent } from '@shared/components';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
 import { isAddonServiceConfigured } from '@shared/helpers';
-import { AddonCardModel } from '@shared/models';
+import { AddonCard } from '@shared/models';
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
@@ -42,7 +42,7 @@ import {
 } from '@shared/stores/addons';
 
 @Component({
-  selector: 'osf-addons',
+  selector: 'osf-project-addons',
   imports: [
     AddonCardListComponent,
     SearchInputComponent,
@@ -57,11 +57,11 @@ import {
     FormsModule,
     LoadingSpinnerComponent,
   ],
-  templateUrl: './addons.component.html',
-  styleUrl: './addons.component.scss',
+  templateUrl: './project-addons.component.html',
+  styleUrl: './project-addons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddonsComponent implements OnInit {
+export class ProjectAddonsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   readonly tabOptions = ADDON_TAB_OPTIONS;
@@ -123,6 +123,10 @@ export class AddonsComponent implements OnInit {
       default:
         return this.isStorageAddonsLoading();
     }
+  });
+
+  isAllAddonsTabLoading = computed(() => {
+    return this.isAddonsLoading() || this.isConfiguredAddonsLoading();
   });
 
   actions = createDispatchMap({
@@ -187,11 +191,11 @@ export class AddonsComponent implements OnInit {
     }
   });
 
-  filteredAddonCards = computed((): AddonCardModel[] => {
+  filteredAddonCards = computed((): AddonCard[] => {
     const searchValue = this.searchValue().toLowerCase();
     const configuredAddons = this.allConfiguredAddonsForCheck();
 
-    return this.currentAddonsState()
+    const addonCards = this.currentAddonsState()
       .filter(
         (card) =>
           card.externalServiceName.toLowerCase().includes(searchValue) ||
@@ -203,12 +207,10 @@ export class AddonsComponent implements OnInit {
           (config) => config.externalServiceName === addon.externalServiceName
         );
 
-        return {
-          addon,
-          isConfigured,
-          configuredAddon,
-        } as AddonCardModel;
+        return createAddonCardModel(addon, isConfigured, configuredAddon);
       });
+
+    return sortAddonCardsAlphabetically(addonCards);
   });
 
   onCategoryChange(value: Primitive): void {

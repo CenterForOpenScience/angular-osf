@@ -7,7 +7,7 @@ import { isCitationAddon } from '@osf/shared/helpers';
 import { AddonTermsComponent } from '@shared/components/addons';
 import { ADDON_TERMS } from '@shared/constants';
 import { MOCK_ADDON } from '@shared/mocks';
-import { AddonModel, AddonTerm } from '@shared/models';
+import { Addon, AddonTerm } from '@shared/models';
 
 jest.mock('@shared/helpers', () => ({
   isCitationAddon: jest.fn(),
@@ -17,7 +17,7 @@ describe('AddonTermsComponent', () => {
   let component: AddonTermsComponent;
   let fixture: ComponentFixture<AddonTermsComponent>;
   const mockIsCitationAddon = isCitationAddon as jest.MockedFunction<typeof isCitationAddon>;
-  const mockAddon: AddonModel = MOCK_ADDON;
+  const mockAddon: Addon = MOCK_ADDON;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,7 +42,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should return terms for regular addon with unsupported features', () => {
-    const addonWithoutFeatures: AddonModel = {
+    const addonWithoutFeatures: Addon = {
       ...mockAddon,
       supportedFeatures: [],
     };
@@ -60,7 +60,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should return terms for regular addon with partial features', () => {
-    const addonWithPartialFeatures: AddonModel = {
+    const addonWithPartialFeatures: Addon = {
       ...mockAddon,
       supportedFeatures: ['FORKING_PARTIAL'],
     };
@@ -76,7 +76,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should replace {provider} placeholder with actual provider name', () => {
-    const customProviderAddon: AddonModel = {
+    const customProviderAddon: Addon = {
       ...mockAddon,
       providerName: 'CustomProvider',
     };
@@ -93,7 +93,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should show all terms when isCitationService is false', () => {
-    const regularAddon: AddonModel = {
+    const regularAddon: Addon = {
       ...mockAddon,
       supportedFeatures: ['STORAGE', 'FORKING'],
     };
@@ -110,7 +110,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should handle citation service without required features', () => {
-    const citationAddonWithoutFeatures: AddonModel = {
+    const citationAddonWithoutFeatures: Addon = {
       ...mockAddon,
       supportedFeatures: [],
     };
@@ -127,7 +127,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should handle citation service with full features', () => {
-    const citationAddonWithFullFeatures: AddonModel = {
+    const citationAddonWithFullFeatures: Addon = {
       ...mockAddon,
       supportedFeatures: ['STORAGE', 'FORKING'],
     };
@@ -160,7 +160,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should handle addon with empty supportedFeatures', () => {
-    const addonWithEmptyFeatures: AddonModel = {
+    const addonWithEmptyFeatures: Addon = {
       ...mockAddon,
       supportedFeatures: [],
     };
@@ -178,7 +178,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should handle addon with partial features only', () => {
-    const addonWithPartialOnly: AddonModel = {
+    const addonWithPartialOnly: Addon = {
       ...mockAddon,
       supportedFeatures: ['STORAGE_PARTIAL', 'FORKING_PARTIAL'],
     };
@@ -195,7 +195,7 @@ describe('AddonTermsComponent', () => {
   });
 
   it('should handle addon with mixed features (full, partial, none)', () => {
-    const addonWithMixedFeatures: AddonModel = {
+    const addonWithMixedFeatures: Addon = {
       ...mockAddon,
       supportedFeatures: ['STORAGE', 'FORKING_PARTIAL'],
     };

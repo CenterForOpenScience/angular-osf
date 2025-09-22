@@ -1,13 +1,13 @@
 import { createSelector, Selector } from '@ngxs/store';
 
 import {
-  AddonModel,
-  AuthorizedAccountModel,
-  ConfiguredAddonModel,
+  Addon,
+  AuthorizedAccount,
+  ConfiguredAddon,
   ConfiguredAddonResponseJsonApi,
   OperationInvocation,
   ResourceReferenceJsonApi,
-  StorageItemModel,
+  StorageItem,
   UserReferenceJsonApi,
 } from '@shared/models';
 
@@ -16,13 +16,13 @@ import { AddonsState } from './addons.state';
 
 export class AddonsSelectors {
   @Selector([AddonsState])
-  static getStorageAddons(state: AddonsStateModel): AddonModel[] {
+  static getStorageAddons(state: AddonsStateModel): Addon[] {
     return state.storageAddons.data;
   }
 
-  static getStorageAddon(id: string): (state: AddonsStateModel) => AddonModel | null {
-    return createSelector([AddonsState], (state: AddonsStateModel): AddonModel | null => {
-      return state.storageAddons.data.find((addon: AddonModel) => addon.id === id) || null;
+  static getStorageAddon(id: string): (state: AddonsStateModel) => Addon | null {
+    return createSelector([AddonsState], (state: AddonsStateModel): Addon | null => {
+      return state.storageAddons.data.find((addon: Addon) => addon.id === id) || null;
     });
   }
 
@@ -32,7 +32,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCitationAddons(state: AddonsStateModel): AddonModel[] {
+  static getCitationAddons(state: AddonsStateModel): Addon[] {
     return state.citationAddons.data;
   }
 
@@ -42,7 +42,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getLinkAddons(state: AddonsStateModel): AddonModel[] {
+  static getLinkAddons(state: AddonsStateModel): Addon[] {
     return state.linkAddons.data;
   }
 
@@ -52,15 +52,13 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
+  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAccount[] {
     return state.authorizedStorageAddons.data;
   }
 
   static getAuthorizedStorageAddonOauthToken(id: string): (state: AddonsStateModel) => string | null {
     return createSelector([AddonsState], (state: AddonsStateModel): string | null => {
-      return (
-        state.authorizedStorageAddons.data.find((addon: AuthorizedAccountModel) => addon.id === id)?.oauthToken || null
-      );
+      return state.authorizedStorageAddons.data.find((addon: AuthorizedAccount) => addon.id === id)?.oauthToken || null;
     });
   }
 
@@ -70,7 +68,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
+  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedAccount[] {
     return state.authorizedCitationAddons.data;
   }
 
@@ -80,7 +78,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedLinkAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
+  static getAuthorizedLinkAddons(state: AddonsStateModel): AuthorizedAccount[] {
     return state.authorizedLinkAddons.data;
   }
 
@@ -90,7 +88,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
+  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredAddon[] {
     return state.configuredStorageAddons.data;
   }
 
@@ -100,7 +98,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
+  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredAddon[] {
     return state.configuredCitationAddons.data;
   }
 
@@ -110,7 +108,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getConfiguredLinkAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
+  static getConfiguredLinkAddons(state: AddonsStateModel): ConfiguredAddon[] {
     return state.configuredLinkAddons.data;
   }
 
@@ -140,7 +138,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAccountModel | null {
+  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAccount | null {
     return state.createdUpdatedAuthorizedAddon.data;
   }
 
@@ -175,7 +173,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getSelectedStorageItem(state: AddonsStateModel): StorageItemModel | null {
+  static getSelectedStorageItem(state: AddonsStateModel): StorageItem | null {
     return state.selectedItemOperationInvocation.data?.operationResult[0] || null;
   }
 

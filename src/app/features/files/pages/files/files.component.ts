@@ -58,7 +58,7 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
 import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
-import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
+import { ConfiguredAddon, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
 import { FilesService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
@@ -139,7 +139,7 @@ export class FilesComponent {
 
   readonly isGoogleDrive = signal<boolean>(false);
   readonly accountId = signal<string>('');
-  readonly selectedRootFolder = signal<StorageItemModel>({});
+  readonly selectedRootFolder = signal<StorageItem>({});
   readonly resourceId = signal<string>('');
 
   readonly progress = signal(0);
@@ -421,7 +421,7 @@ export class FilesComponent {
     window.open(url, '_blank');
   }
 
-  getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
+  getAddonName(addons: ConfiguredAddon[], provider: string): string {
     if (provider === FileProvider.OsfStorage) {
       return this.translateService.instant('files.storageLocation');
     } else {

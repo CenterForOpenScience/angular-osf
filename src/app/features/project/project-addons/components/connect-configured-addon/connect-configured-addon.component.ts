@@ -22,7 +22,7 @@ import {
 } from '@osf/shared/components/addons';
 import { AddonServiceNames, AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
-import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@osf/shared/models';
+import { Addon, AddonTerm, AuthorizedAccount, AuthorizedAddonRequestJsonApi } from '@osf/shared/models';
 import {
   AddonFormService,
   AddonOAuthService,
@@ -81,7 +81,7 @@ export class ConnectConfiguredAddonComponent {
   private route = inject(ActivatedRoute);
   private readonly environment = inject(ENVIRONMENT);
 
-  private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
+  private selectedAccount = signal<AuthorizedAccount>({} as AuthorizedAccount);
 
   readonly isGoogleDrive = computed(() => this.selectedAccount()?.externalServiceName === 'googledrive');
   readonly AddonStepperValue = ProjectAddonsStepperValue;
@@ -90,9 +90,9 @@ export class ConnectConfiguredAddonComponent {
 
   accountNameControl = new FormControl('');
   terms = signal<AddonTerm[]>([]);
-  addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
+  addon = signal<Addon | AuthorizedAccount | null>(null);
   addonAuthUrl = signal<string>('/settings/addons');
-  currentAuthorizedAddonAccounts = signal<AuthorizedAccountModel[]>([]);
+  currentAuthorizedAddonAccounts = signal<AuthorizedAccount[]>([]);
   chosenAccountId = signal('');
   chosenAccountName = signal('');
   selectedStorageItemId = signal('');
@@ -156,7 +156,7 @@ export class ConnectConfiguredAddonComponent {
   });
 
   constructor() {
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAccountModel;
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAccount;
     if (!addon) {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
@@ -171,7 +171,7 @@ export class ConnectConfiguredAddonComponent {
     const addon = this.addon();
     this.selectedAccount.set(
       this.currentAuthorizedAddonAccounts().find((account) => account.id === this.chosenAccountId()) ||
-        ({} as AuthorizedAccountModel)
+        ({} as AuthorizedAccount)
     );
     if (!addon || !this.selectedAccount()) return;
 
@@ -218,7 +218,7 @@ export class ConnectConfiguredAddonComponent {
   handleConfirmAccountConnection(): void {
     this.selectedAccount.set(
       this.currentAuthorizedAddonAccounts().find((account) => account.id === this.chosenAccountId()) ||
-        ({} as AuthorizedAccountModel)
+        ({} as AuthorizedAccount)
     );
 
     if (!this.selectedAccount()) return;
@@ -284,7 +284,7 @@ export class ConnectConfiguredAddonComponent {
 
   private processAuthorizedAddons(
     addonConfig: AddonConfigMap[keyof AddonConfigMap],
-    currentAddon: AddonModel | AuthorizedAccountModel
+    currentAddon: Addon | AuthorizedAccount
   ) {
     const authorizedAddons = addonConfig.getAuthorizedAddons();
     const matchingAddons = this.findMatchingAddons(authorizedAddons, currentAddon);
@@ -302,9 +302,9 @@ export class ConnectConfiguredAddonComponent {
   }
 
   private findMatchingAddons(
-    authorizedAddons: AuthorizedAccountModel[],
-    currentAddon: AddonModel | AuthorizedAccountModel
-  ): AuthorizedAccountModel[] {
+    authorizedAddons: AuthorizedAccount[],
+    currentAddon: Addon | AuthorizedAccount
+  ): AuthorizedAccount[] {
     return authorizedAddons.filter((addon) => addon.externalServiceName === currentAddon.externalServiceName);
   }
 
@@ -335,7 +335,7 @@ export class ConnectConfiguredAddonComponent {
     this.selectedResourceType.set('');
   }
 
-  private startOauthFlow(createdAddon: AuthorizedAccountModel): void {
+  private startOauthFlow(createdAddon: AuthorizedAccount): void {
     this.addonAuthUrl.set(createdAddon.authUrl!);
     window.open(createdAddon.authUrl!, '_blank');
     this.stepper()?.value.set(ProjectAddonsStepperValue.AUTH);

@@ -14,7 +14,7 @@ import { SubHeaderComponent } from '@osf/shared/components';
 import { AddonServiceNames, AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers';
 import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@shared/components/addons';
-import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { Addon, AddonTerm, AuthorizedAccount, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonOAuthService, ToastService } from '@shared/services';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
 
@@ -48,7 +48,7 @@ export class ConnectAddonComponent {
   readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
 
   terms = signal<AddonTerm[]>([]);
-  addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
+  addon = signal<Addon | AuthorizedAccount | null>(null);
   addonAuthUrl = signal<string>('/settings/addons');
 
   addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
@@ -66,7 +66,7 @@ export class ConnectAddonComponent {
   });
 
   constructor() {
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAccountModel;
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAccount;
     if (!addon) {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
@@ -102,7 +102,7 @@ export class ConnectAddonComponent {
     });
   }
 
-  private startOauthFlow(createdAddon: AuthorizedAccountModel): void {
+  private startOauthFlow(createdAddon: AuthorizedAccount): void {
     this.addonAuthUrl.set(createdAddon.authUrl!);
     window.open(createdAddon.authUrl!, '_blank');
     this.stepper()?.value.set(ProjectAddonsStepperValue.AUTH);
@@ -114,7 +114,7 @@ export class ConnectAddonComponent {
     });
   }
 
-  private showSuccessAndRedirect(createdAddon: AuthorizedAccountModel | null): void {
+  private showSuccessAndRedirect(createdAddon: AuthorizedAccount | null): void {
     this.router.navigate([`${this.baseUrl()}/addons`]);
     this.toastService.showSuccess('settings.addons.toast.createSuccess', {
       addonName: AddonServiceNames[createdAddon?.externalServiceName as keyof typeof AddonServiceNames],

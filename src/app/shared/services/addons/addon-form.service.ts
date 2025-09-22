@@ -4,11 +4,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { isAuthorizedAddon } from '@osf/shared/helpers';
 import { AddonFormControls, AddonType, CredentialsFormat } from '@shared/enums';
 import {
+  Addon,
   AddonForm,
-  AddonModel,
-  AuthorizedAccountModel,
+  AuthorizedAccount,
   AuthorizedAddonRequestJsonApi,
-  ConfiguredAddonModel,
+  ConfiguredAddon,
   ConfiguredAddonRequestJsonApi,
 } from '@shared/models';
 
@@ -18,7 +18,7 @@ import {
 export class AddonFormService {
   formBuilder: FormBuilder = inject(FormBuilder);
 
-  initializeForm(addon: AddonModel | AuthorizedAccountModel): FormGroup<AddonForm> {
+  initializeForm(addon: Addon | AuthorizedAccount): FormGroup<AddonForm> {
     if (!addon) {
       return new FormGroup({} as AddonForm);
     }
@@ -51,7 +51,7 @@ export class AddonFormService {
 
   generateAuthorizedAddonPayload(
     formValue: Record<string, unknown>,
-    addon: AddonModel | AuthorizedAccountModel,
+    addon: Addon | AuthorizedAccount,
     userReferenceId: string,
     addonTypeString: string
   ): AuthorizedAddonRequestJsonApi {
@@ -107,15 +107,13 @@ export class AddonFormService {
     };
   }
 
-  private getAddonServiceId(addon: AddonModel | AuthorizedAccountModel): string {
-    return isAuthorizedAddon(addon)
-      ? (addon as AuthorizedAccountModel).externalStorageServiceId
-      : (addon as AddonModel).id;
+  private getAddonServiceId(addon: Addon | AuthorizedAccount): string {
+    return isAuthorizedAddon(addon) ? (addon as AuthorizedAccount).externalStorageServiceId : (addon as Addon).id;
   }
 
   generateConfiguredAddonCreatePayload(
-    addon: AddonModel | AuthorizedAccountModel,
-    selectedAccount: AuthorizedAccountModel,
+    addon: Addon | AuthorizedAccount,
+    selectedAccount: AuthorizedAccount,
     userReferenceId: string,
     resourceUri: string,
     displayName: string,
@@ -163,7 +161,7 @@ export class AddonFormService {
   }
 
   generateConfiguredAddonUpdatePayload(
-    addon: ConfiguredAddonModel,
+    addon: ConfiguredAddon,
     userReferenceId: string,
     resourceUri: string,
     displayName: string,

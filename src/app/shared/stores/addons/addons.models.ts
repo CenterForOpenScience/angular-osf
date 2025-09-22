@@ -1,8 +1,8 @@
 import {
-  AddonModel,
+  Addon,
   AsyncStateModel,
-  AuthorizedAccountModel,
-  ConfiguredAddonModel,
+  AuthorizedAccount,
+  ConfiguredAddon,
   ConfiguredAddonResponseJsonApi,
   OperationInvocation,
   ResourceReferenceJsonApi,
@@ -10,18 +10,18 @@ import {
 } from '@osf/shared/models';
 
 export interface AddonsStateModel {
-  storageAddons: AsyncStateModel<AddonModel[]>;
-  citationAddons: AsyncStateModel<AddonModel[]>;
-  linkAddons: AsyncStateModel<AddonModel[]>;
-  authorizedStorageAddons: AsyncStateModel<AuthorizedAccountModel[]>;
-  authorizedCitationAddons: AsyncStateModel<AuthorizedAccountModel[]>;
-  authorizedLinkAddons: AsyncStateModel<AuthorizedAccountModel[]>;
-  configuredStorageAddons: AsyncStateModel<ConfiguredAddonModel[]>;
-  configuredCitationAddons: AsyncStateModel<ConfiguredAddonModel[]>;
-  configuredLinkAddons: AsyncStateModel<ConfiguredAddonModel[]>;
+  storageAddons: AsyncStateModel<Addon[]>;
+  citationAddons: AsyncStateModel<Addon[]>;
+  linkAddons: AsyncStateModel<Addon[]>;
+  authorizedStorageAddons: AsyncStateModel<AuthorizedAccount[]>;
+  authorizedCitationAddons: AsyncStateModel<AuthorizedAccount[]>;
+  authorizedLinkAddons: AsyncStateModel<AuthorizedAccount[]>;
+  configuredStorageAddons: AsyncStateModel<ConfiguredAddon[]>;
+  configuredCitationAddons: AsyncStateModel<ConfiguredAddon[]>;
+  configuredLinkAddons: AsyncStateModel<ConfiguredAddon[]>;
   addonsUserReference: AsyncStateModel<UserReferenceJsonApi[]>;
   addonsResourceReference: AsyncStateModel<ResourceReferenceJsonApi[]>;
-  createdUpdatedAuthorizedAddon: AsyncStateModel<AuthorizedAccountModel | null>;
+  createdUpdatedAuthorizedAddon: AsyncStateModel<AuthorizedAccount | null>;
   createdUpdatedConfiguredAddon: AsyncStateModel<ConfiguredAddonResponseJsonApi | null>;
   operationInvocation: AsyncStateModel<OperationInvocation | null>;
   selectedItemOperationInvocation: AsyncStateModel<OperationInvocation | null>;

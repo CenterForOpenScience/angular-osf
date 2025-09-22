@@ -3,7 +3,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AuthorizedAccountModel, OAuthCallbacks } from '@shared/models';
+import { AuthorizedAccount, OAuthCallbacks } from '@shared/models';
 import { AddonsSelectors, DeleteAuthorizedAddon, GetAuthorizedStorageOauthToken } from '@shared/stores/addons';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class AddonOAuthService {
   private destroyRef = inject(DestroyRef);
 
   private pendingOauth = signal<boolean>(false);
-  private createdAddon = signal<AuthorizedAccountModel | null>(null);
+  private createdAddon = signal<AuthorizedAccount | null>(null);
   private addonTypeString = signal<string>('');
   private callbacks = signal<OAuthCallbacks | null>(null);
 
@@ -26,7 +26,7 @@ export class AddonOAuthService {
 
   private boundOnVisibilityChange = this.onVisibilityChange.bind(this);
 
-  startOAuthTracking(createdAddon: AuthorizedAccountModel, addonTypeString: string, callbacks: OAuthCallbacks): void {
+  startOAuthTracking(createdAddon: AuthorizedAccount, addonTypeString: string, callbacks: OAuthCallbacks): void {
     this.pendingOauth.set(true);
     this.createdAddon.set(createdAddon);
     this.addonTypeString.set(addonTypeString);
@@ -55,7 +55,7 @@ export class AddonOAuthService {
       .subscribe({
         complete: () => {
           const updatedAddon = this.authorizedStorageAddons().find(
-            (storageAddon: AuthorizedAccountModel) => storageAddon.id === addon.id
+            (storageAddon: AuthorizedAccount) => storageAddon.id === addon.id
           );
 
           if (updatedAddon?.credentialsAvailable && updatedAddon?.authUrl === null) {
@@ -68,7 +68,7 @@ export class AddonOAuthService {
       });
   }
 
-  private completeOauthFlow(updatedAddon?: AuthorizedAccountModel): void {
+  private completeOauthFlow(updatedAddon?: AuthorizedAccount): void {
     this.pendingOauth.set(false);
     document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
 

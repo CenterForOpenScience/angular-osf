@@ -1,7 +1,7 @@
 import { AddonCategory, AddonType, AuthorizedAccountType, ConfiguredAddonType } from '@shared/enums';
-import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
+import { Addon, AuthorizedAccount, ConfiguredAddon } from '@shared/models';
 
-export function isStorageAddon(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): boolean {
+export function isStorageAddon(addon: Addon | AuthorizedAccount | ConfiguredAddon | null): boolean {
   if (!addon) return false;
 
   return (
@@ -11,7 +11,7 @@ export function isStorageAddon(addon: AddonModel | AuthorizedAccountModel | Conf
   );
 }
 
-export function isCitationAddon(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): boolean {
+export function isCitationAddon(addon: Addon | AuthorizedAccount | ConfiguredAddon | null): boolean {
   if (!addon) return false;
 
   return (
@@ -21,7 +21,7 @@ export function isCitationAddon(addon: AddonModel | AuthorizedAccountModel | Con
   );
 }
 
-export function isLinkAddon(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): boolean {
+export function isLinkAddon(addon: Addon | AuthorizedAccount | ConfiguredAddon | null): boolean {
   if (!addon) return false;
 
   return (
@@ -31,7 +31,7 @@ export function isLinkAddon(addon: AddonModel | AuthorizedAccountModel | Configu
   );
 }
 
-export function getAddonTypeString(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): string {
+export function getAddonTypeString(addon: Addon | AuthorizedAccount | ConfiguredAddon | null): string {
   if (!addon) return '';
 
   if (isStorageAddon(addon)) {
@@ -43,7 +43,7 @@ export function getAddonTypeString(addon: AddonModel | AuthorizedAccountModel | 
   }
 }
 
-export function isAuthorizedAddon(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): boolean {
+export function isAuthorizedAddon(addon: Addon | AuthorizedAccount | ConfiguredAddon | null): boolean {
   if (!addon) return false;
 
   return (
@@ -53,7 +53,7 @@ export function isAuthorizedAddon(addon: AddonModel | AuthorizedAccountModel | C
   );
 }
 
-export function isConfiguredAddon(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): boolean {
+export function isConfiguredAddon(addon: Addon | AuthorizedAccount | ConfiguredAddon | null): boolean {
   if (!addon) return false;
 
   return (
@@ -63,7 +63,7 @@ export function isConfiguredAddon(addon: AddonModel | AuthorizedAccountModel | C
   );
 }
 
-export function isAddonServiceConfigured(addon: AddonModel | null, configuredAddons: ConfiguredAddonModel[]): boolean {
+export function isAddonServiceConfigured(addon: Addon | null, configuredAddons: ConfiguredAddon[]): boolean {
   if (!addon) return false;
 
   return configuredAddons.some((configuredAddon) => configuredAddon.externalServiceName === addon.externalServiceName);

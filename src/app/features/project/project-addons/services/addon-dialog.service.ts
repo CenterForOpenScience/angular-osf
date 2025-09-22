@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { AddonServiceNames } from '@osf/shared/enums';
-import { AuthorizedAccountModel, ConfiguredAddonModel } from '@osf/shared/models';
+import { AuthorizedAccount, ConfiguredAddon } from '@osf/shared/models';
 
 import { ConfirmAccountConnectionModalComponent } from '../components/confirm-account-connection-modal/confirm-account-connection-modal.component';
 import { DisconnectAddonModalComponent } from '../components/disconnect-addon-modal/disconnect-addon-modal.component';
@@ -19,7 +19,7 @@ export class AddonDialogService {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
 
-  openDisconnectDialog(addon: ConfiguredAddonModel): Observable<{ success: boolean }> {
+  openDisconnectDialog(addon: ConfiguredAddon): Observable<{ success: boolean }> {
     const dialogRef = this.dialogService.open(DisconnectAddonModalComponent, {
       focusOnShow: false,
       header: this.translateService.instant('settings.addons.configureAddon.disconnect', {
@@ -37,7 +37,7 @@ export class AddonDialogService {
     return dialogRef.onClose;
   }
 
-  openConfirmAccountConnectionDialog(selectedAccount: AuthorizedAccountModel): Observable<{ success: boolean }> {
+  openConfirmAccountConnectionDialog(selectedAccount: AuthorizedAccount): Observable<{ success: boolean }> {
     const dialogRef = this.dialogService.open(ConfirmAccountConnectionModalComponent, {
       focusOnShow: false,
       header: this.translateService.instant('settings.addons.connectAddon.confirmAccount'),

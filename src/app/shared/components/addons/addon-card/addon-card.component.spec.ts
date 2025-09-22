@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 
 import { CredentialsFormat } from '@shared/enums';
 import { MockCustomConfirmationServiceProvider } from '@shared/mocks';
-import { AddonModel } from '@shared/models';
+import { Addon } from '@shared/models';
 import { CustomConfirmationService } from '@shared/services';
 
 import { AddonCardComponent } from './addon-card.component';
@@ -22,7 +22,7 @@ describe('AddonCardComponent', () => {
   let customConfirmationService: CustomConfirmationService;
   let store: Store;
 
-  const mockAddon: AddonModel = {
+  const mockAddon: Addon = {
     id: 'test-addon-id',
     type: 'external-storage-services',
     displayName: 'Test Addon',

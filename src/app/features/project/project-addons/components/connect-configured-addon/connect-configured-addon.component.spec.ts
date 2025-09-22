@@ -11,7 +11,7 @@ import { ActivatedRoute, Navigation, Router, UrlTree } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
 import { CredentialsFormat } from '@shared/enums';
-import { AddonModel } from '@shared/models';
+import { Addon } from '@shared/models';
 import { AddonsSelectors } from '@shared/stores/addons';
 
 import { ConnectConfiguredAddonComponent } from './connect-configured-addon.component';
@@ -20,7 +20,7 @@ describe('ConnectAddonComponent', () => {
   let component: ConnectConfiguredAddonComponent;
   let fixture: ComponentFixture<ConnectConfiguredAddonComponent>;
 
-  const mockAddon: AddonModel = {
+  const mockAddon: Addon = {
     id: 'test-addon-id',
     type: 'external-storage-services',
     displayName: 'Test Addon',
