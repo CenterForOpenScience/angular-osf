@@ -10,10 +10,12 @@ import {
   buildRegistrationLogsUrl,
   getActivityLogsResponse,
 } from '@testing/data/activity-logs/activity-logs.data';
+import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('Service: ActivityLogs', () => {
   let service: ActivityLogsService;
+  const environment = EnvironmentTokenMock;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,7 +32,7 @@ describe('Service: ActivityLogs', () => {
     let result: any;
     service.fetchRegistrationLogs('reg1', 1, 10).subscribe((res) => (result = res));
 
-    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg1', 1, 10));
+    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg1', 1, 10, environment.useValue.apiDomainUrl));
     expect(req.request.method).toBe('GET');
     expect(req.request.params.get('page')).toBe('1');
     expect(req.request.params.get('page[size]')).toBe('10');
@@ -47,7 +49,7 @@ describe('Service: ActivityLogs', () => {
     let result: any;
     service.fetchLogs('proj1', 2, 5).subscribe((res) => (result = res));
 
-    const req = httpMock.expectOne(buildNodeLogsUrl('proj1', 2, 5));
+    const req = httpMock.expectOne(buildNodeLogsUrl('proj1', 2, 5, environment.useValue.apiDomainUrl));
     expect(req.request.method).toBe('GET');
     expect(req.request.params.get('page')).toBe('2');
     expect(req.request.params.get('page[size]')).toBe('5');
@@ -67,7 +69,7 @@ describe('Service: ActivityLogs', () => {
       error: (e) => (errorObj = e),
     });
 
-    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg2', 1, 10));
+    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg2', 1, 10, environment.useValue.apiDomainUrl));
     req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
 
     expect(errorObj).toBeTruthy();
@@ -81,7 +83,7 @@ describe('Service: ActivityLogs', () => {
       error: (e) => (errorObj = e),
     });
 
-    const req = httpMock.expectOne(buildNodeLogsUrl('proj500', 1, 10));
+    const req = httpMock.expectOne(buildNodeLogsUrl('proj500', 1, 10, environment.useValue.apiDomainUrl));
     req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
 
     expect(errorObj).toBeTruthy();

@@ -1,4 +1,6 @@
 export * from './education.model';
 export * from './employment.model';
 export * from './social.model';
+export * from './social-link-view.model';
+export * from './social-links.model';
 export * from './user.models';

@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiService } from '@shared/services';
 
 import {
@@ -27,15 +28,20 @@ import {
   SendMessageResponseJsonApi,
 } from '../models';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class InstitutionsAdminService {
-  private jsonApiService = inject(JsonApiService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
-  private shareTroveUrl = environment.shareTroveUrl;
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get shareTroveUrl() {
+    return this.environment.shareTroveUrl;
+  }
 
   fetchDepartments(institutionId: string): Observable<InstitutionDepartment[]> {
     return this.jsonApiService

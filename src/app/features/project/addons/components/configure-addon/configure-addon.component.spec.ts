@@ -100,7 +100,7 @@ describe('Component: Configure Addon', () => {
     });
 
     it('should valid onInit - action called', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-      const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/addon-operation-invocations/');
+      const request = httpMock.expectOne('http://addons.localhost:8000/addon-operation-invocations/');
       expect(request.request.method).toBe('POST');
       request.flush(getAddonsOperationInvocation());
 
@@ -168,7 +168,7 @@ describe('Component: Configure Addon', () => {
     });
 
     it('should valid onInit - action not called', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-      httpMock.expectNone('https://addons.staging4.osf.io/v1/addon-operation-invocations/');
+      httpMock.expectNone('http://addons.localhost:8000/addon-operation-invocations/');
 
       expect(httpMock.verify).toBeTruthy();
     }));

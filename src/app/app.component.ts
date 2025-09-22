@@ -10,11 +10,10 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
-import { OSFConfigService } from '@core/services/osf-config.service';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';
-import { CookieConsentComponent } from '@shared/components/cookie-consent/cookie-consent.component';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 
@@ -22,7 +21,7 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 @Component({
   selector: 'osf-root',
-  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent, CookieConsentComponent],
+  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +33,7 @@ export class AppComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
-  private readonly osfConfigService = inject(OSFConfigService);
+  private readonly environment = inject(ENVIRONMENT);
 
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
 
@@ -52,7 +51,7 @@ export class AppComponent implements OnInit {
     this.actions.getCurrentUser();
     this.actions.getEmails();
 
-    if (this.osfConfigService.has('googleTagManagerId')) {
+    if (this.environment.googleTagManagerId) {
       this.router.events
         .pipe(
           filter((event) => event instanceof NavigationEnd),

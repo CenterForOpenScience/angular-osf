@@ -8,11 +8,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { OSFConfigService } from '@core/services/osf-config.service';
+import { CookieConsentBannerComponent } from '@core/components/osf-banners/cookie-consent-banner/cookie-consent-banner.component';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser, UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
 
-import { CookieConsentComponent, FullScreenLoaderComponent, ToastComponent } from './shared/components';
+import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 import { TranslateServiceMock } from './shared/mocks';
 import { AppComponent } from './app.component';
 
@@ -22,7 +23,6 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
 describe('Component: App', () => {
   let routerEvents$: Subject<any>;
   let gtmServiceMock: jest.Mocked<GoogleTagManagerService>;
-  let osfConfigServiceMock: OSFConfigService;
   let fixture: ComponentFixture<AppComponent>;
 
   beforeEach(async () => {
@@ -36,7 +36,7 @@ describe('Component: App', () => {
       imports: [
         OSFTestingModule,
         AppComponent,
-        ...MockComponents(ToastComponent, FullScreenLoaderComponent, CookieConsentComponent),
+        ...MockComponents(ToastComponent, FullScreenLoaderComponent, CookieConsentBannerComponent),
       ],
       providers: [
         provideStore([UserState, UserEmailsState]),
@@ -48,16 +48,9 @@ describe('Component: App', () => {
             events: routerEvents$.asObservable(),
           },
         },
-        {
-          provide: OSFConfigService,
-          useValue: {
-            has: jest.fn(),
-          },
-        },
       ],
     }).compileComponents();
 
-    osfConfigServiceMock = TestBed.inject(OSFConfigService);
     fixture = TestBed.createComponent(AppComponent);
   });
 
@@ -81,7 +74,6 @@ describe('Component: App', () => {
 
   describe('Google Tag Manager', () => {
     it('should push GTM tag on NavigationEnd with google tag id', () => {
-      jest.spyOn(osfConfigServiceMock, 'has').mockReturnValue(true);
       fixture.detectChanges();
       const event = new NavigationEnd(1, '/previous', '/current');
 
@@ -93,8 +85,9 @@ describe('Component: App', () => {
       });
     });
 
-    it('should not push GTM tag on NavigationEnd with google tag id', () => {
-      jest.spyOn(osfConfigServiceMock, 'has').mockReturnValue(false);
+    it('should not push GTM tag on NavigationEnd without google tag id', () => {
+      const environment = TestBed.inject(ENVIRONMENT);
+      environment.googleTagManagerId = '';
       fixture.detectChanges();
       const event = new NavigationEnd(1, '/previous', '/current');
 

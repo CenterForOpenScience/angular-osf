@@ -62,3 +62,9 @@ export function isConfiguredAddon(addon: AddonModel | AuthorizedAccountModel | C
     addon.type === ConfiguredAddonType.LINK
   );
 }
+
+export function isAddonServiceConfigured(addon: AddonModel | null, configuredAddons: ConfiguredAddonModel[]): boolean {
+  if (!addon) return false;
+
+  return configuredAddons.some((configuredAddon) => configuredAddon.externalServiceName === addon.externalServiceName);
+}

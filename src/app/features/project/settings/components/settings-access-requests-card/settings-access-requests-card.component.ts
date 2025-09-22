@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'osf-settings-access-requests-card',
   imports: [Checkbox, TranslatePipe, Card, FormsModule],
   templateUrl: './settings-access-requests-card.component.html',
-  styleUrl: '../../settings.component.scss',
+  styleUrl: './settings-access-requests-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsAccessRequestsCardComponent {

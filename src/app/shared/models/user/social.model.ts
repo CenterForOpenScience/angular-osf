@@ -1,4 +1,4 @@
-export interface Social {
+export interface SocialModel {
   ssrn: string;
   orcid: string;
   github: string[];

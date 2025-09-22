@@ -3,7 +3,6 @@ export * from './file-custom-metadata.model';
 export * from './file-revisions.model';
 export * from './file-target.model';
 export * from './files-metadata-fields.model';
-export * from './get-contributors-response.model';
 export * from './get-custom-metadata-response.model';
 export * from './get-file-metadata-response.model';
 export * from './get-file-revisions-response.model';

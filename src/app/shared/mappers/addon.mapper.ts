@@ -25,6 +25,7 @@ export class AddonMapper {
       supportedResourceTypes: response.attributes.supported_resource_types,
       credentialsFormat: response.attributes.credentials_format,
       providerName: response.attributes.display_name,
+      iconUrl: response.attributes.icon_url,
     };
   }
 

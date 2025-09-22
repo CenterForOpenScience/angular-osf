@@ -7,7 +7,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { finalize, take } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
@@ -42,8 +42,11 @@ export class AddResourceDialogComponent {
   private dialogConfig = inject(DynamicDialogConfig);
   private registryId: string = this.dialogConfig.data.id;
 
+  doiDomain = 'https://doi.org/';
   inputLimits = InputLimits;
   isResourceConfirming = signal(false);
+
+  doiLink = computed(() => `${this.doiDomain}${this.currentResource()?.pid}`);
 
   form = new FormGroup<RegistryResourceFormModel>({
     pid: new FormControl<string | null>('', [CustomValidators.requiredTrimmed(), CustomValidators.doiValidator]),
@@ -109,9 +112,9 @@ export class AddResourceDialogComponent {
   closeDialog(): void {
     this.dialogRef.close();
     const currentResource = this.currentResource();
-    if (!currentResource) {
-      throw new Error(this.translateService.instant('resources.errors.noRegistryId'));
+
+    if (currentResource) {
+      this.actions.deleteResource(currentResource.id);
     }
-    this.actions.deleteResource(currentResource.id);
   }
 }

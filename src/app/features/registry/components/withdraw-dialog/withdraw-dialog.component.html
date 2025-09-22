@@ -4,17 +4,18 @@
   <osf-text-input
     [control]="form.controls['text']"
     [label]="'registry.overview.withdrawJustificationLabel' | translate"
-    [placeholder]="'common.labels.optional' | translate"
     [maxLength]="inputLimits.fullName.maxLength"
   >
   </osf-text-input>
 
   <div class="flex justify-content-end gap-2">
-    <p-button [label]="'common.buttons.cancel' | translate" severity="info" (click)="dialogRef.close()"></p-button>
+    <p-button [label]="'common.buttons.cancel' | translate" severity="info" (onClick)="dialogRef.close()"></p-button>
     <p-button
       [label]="'common.buttons.withdraw' | translate"
       severity="danger"
-      (click)="withdrawRegistration()"
+      [disabled]="form.invalid"
+      (onClick)="withdrawRegistration()"
+      [loading]="submitting"
     ></p-button>
   </div>
 </div>

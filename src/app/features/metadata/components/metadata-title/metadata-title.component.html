@@ -1,0 +1,18 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <h2>{{ 'common.labels.title' | translate }}</h2>
+
+    @if (!readonly()) {
+      <p-button
+        severity="secondary"
+        [label]="'common.buttons.edit' | translate"
+        (onClick)="openEditTitleDialog.emit()"
+        data-test-edit-title-button
+      ></p-button>
+    }
+  </div>
+
+  <p data-test-display-node-title class="mt-4">
+    {{ title() }}
+  </p>
+</p-card>

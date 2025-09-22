@@ -23,24 +23,4 @@ export class RegistryLinksSelectors {
   static getLinkedRegistrationsLoading(state: RegistryLinksStateModel) {
     return state.linkedRegistrations.isLoading;
   }
-
-  @Selector([RegistryLinksState])
-  static getBibliographicContributors(state: RegistryLinksStateModel) {
-    return state.bibliographicContributors.data;
-  }
-
-  @Selector([RegistryLinksState])
-  static getBibliographicContributorsNodeId(state: RegistryLinksStateModel) {
-    return state.bibliographicContributors.nodeId;
-  }
-
-  @Selector([RegistryLinksState])
-  static getBibliographicContributorsForRegistration(state: RegistryLinksStateModel) {
-    return state.bibliographicContributorsForRegistration.data;
-  }
-
-  @Selector([RegistryLinksState])
-  static getBibliographicContributorsForRegistrationId(state: RegistryLinksStateModel) {
-    return state.bibliographicContributorsForRegistration.registrationId;
-  }
 }

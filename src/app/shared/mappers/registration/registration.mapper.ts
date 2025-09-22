@@ -87,6 +87,11 @@ export class RegistrationMapper {
       public: registration.attributes.public,
       reviewsState: registration.attributes.reviews_state,
       revisionState: registration.attributes.revision_state,
+      hasData: registration.attributes.has_data,
+      hasAnalyticCode: registration.attributes.has_analytic_code,
+      hasMaterials: registration.attributes.has_materials,
+      hasPapers: registration.attributes.has_papers,
+      hasSupplements: registration.attributes.has_supplements,
       contributors:
         registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
           id: contributor.embeds.users.data.id,

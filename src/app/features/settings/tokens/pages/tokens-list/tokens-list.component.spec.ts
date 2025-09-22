@@ -10,7 +10,8 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterLink } from '@angular/router';
 
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { TokenModel } from '../../models';
 

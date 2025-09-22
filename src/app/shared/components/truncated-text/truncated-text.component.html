@@ -1,30 +1,13 @@
 <div class="flex flex-column gap-3">
-  @if (hasContent()) {
-    <div #textContent class="text-content" [class.expanded]="isTextExpanded()" [style.--line-clamp]="maxVisibleLines()">
+  <div #textContent class="text-content" [class.expanded]="isTextExpanded()" [style.--line-clamp]="maxVisibleLines()">
+    @if (hasOwnContent()) {
       <ng-content></ng-content>
-    </div>
-  } @else {
-    <div
-      #textContent
-      [innerHTML]="text()"
-      class="text-content"
-      [class.expanded]="isTextExpanded()"
-      [style.--line-clamp]="maxVisibleLines()"
-    ></div>
-  }
+    } @else {
+      <div [innerHTML]="text()"></div>
+    }
+  </div>
 
   @if (hasOverflowingText()) {
-    <a
-      class="read-more-link font-bold"
-      (click)="toggleTextExpansion()"
-      (keydown.enter)="toggleTextExpansion()"
-      (keydown.space)="toggleTextExpansion()"
-      role="button"
-      tabindex="0"
-      [attr.aria-expanded]="isTextExpanded()"
-      [attr.aria-controls]="'text-content'"
-    >
-      {{ isTextExpanded() ? ('truncatedText.hide' | translate) : ('truncatedText.readMore' | translate) }}
-    </a>
+    <p-button class="link-btn-no-padding" link [label]="buttonLabel() | translate" (onClick)="handleButtonClick()" />
   }
 </div>

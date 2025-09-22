@@ -9,7 +9,7 @@ export const environment = {
   addonsApiUrl: 'https://addons.test.osf.io/v1',
   funderApiUrl: 'https://api.crossref.org/',
   casUrl: 'https://accounts.test.osf.io',
-  recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+  recaptchaSiteKey: '6LdPCWgUAAAAAKAD7jTctbZwF4sqYQjTYF3c3pOk',
   twitterHandle: 'OSFramework',
   facebookAppId: '1022273774556662',
   supportEmail: 'support@osf.io',

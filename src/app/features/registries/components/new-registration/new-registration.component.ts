@@ -113,7 +113,7 @@ export class NewRegistrationComponent {
           projectId: this.fromProject ? (project ?? undefined) : undefined,
         })
         .subscribe(() => {
-          this.toastService.showSuccess('Draft created successfully');
+          this.toastService.showSuccess('registries.new.createdSuccessfully');
           this.router.navigate(['/registries/drafts/', this.draftRegistration()?.id, 'metadata']);
         });
     }

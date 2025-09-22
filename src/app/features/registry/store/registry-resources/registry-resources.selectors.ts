@@ -23,6 +23,6 @@ export class RegistryResourcesSelectors {
 
   @Selector([RegistryResourcesState])
   static isCurrentResourceLoading(state: RegistryResourcesStateModel): boolean {
-    return state.currentResource.isLoading ?? false;
+    return !!state.currentResource.isLoading;
   }
 }

@@ -4,6 +4,7 @@ import { catchError, EMPTY, forkJoin, Observable, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { getResourceTypeStringFromEnum } from '@shared/helpers';
 import { ResourcesData } from '@shared/models';
 import { GlobalSearchService } from '@shared/services';
@@ -25,8 +26,6 @@ import {
 } from './global-search.actions';
 import { GLOBAL_SEARCH_STATE_DEFAULTS, GlobalSearchStateModel } from './global-search.model';
 
-import { environment } from 'src/environments/environment';
-
 @State<GlobalSearchStateModel>({
   name: 'globalSearch',
   defaults: GLOBAL_SEARCH_STATE_DEFAULTS,
@@ -34,6 +33,7 @@ import { environment } from 'src/environments/environment';
 @Injectable()
 export class GlobalSearchState {
   private searchService = inject(GlobalSearchService);
+  private readonly environment = inject(ENVIRONMENT);
 
   @Action(FetchResources)
   fetchResources(ctx: StateContext<GlobalSearchStateModel>): Observable<ResourcesData> {
@@ -254,6 +254,10 @@ export class GlobalSearchState {
   @Action(SetResourceType)
   setResourceType(ctx: StateContext<GlobalSearchStateModel>, action: SetResourceType) {
     ctx.patchState({ resourceType: action.type });
+    ctx.patchState({ filterOptionsCache: {} });
+    ctx.patchState({ filterValues: {} });
+    ctx.patchState({ filterSearchCache: {} });
+    ctx.patchState({ filterPaginationCache: {} });
   }
 
   @Action(ResetSearchState)
@@ -274,7 +278,6 @@ export class GlobalSearchState {
       resources: { data: response.resources, isLoading: false, error: null },
       filters: filtersWithCachedOptions,
       resourcesCount: response.count,
-      self: response.self,
       first: response.first,
       next: response.next,
       previous: response.previous,
@@ -296,6 +299,9 @@ export class GlobalSearchState {
 
   private buildParamsForIndexCardSearch(state: GlobalSearchStateModel): Record<string, string> {
     const filtersParams: Record<string, string> = {};
+    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
+      filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
     Object.entries(state.filterValues).forEach(([key, value]) => {
       if (value) {
         const filterDefinition = state.filters.find((f) => f.key === key);
@@ -310,17 +316,13 @@ export class GlobalSearchState {
     });
 
     filtersParams['cardSearchFilter[resourceType]'] = getResourceTypeStringFromEnum(state.resourceType);
-    filtersParams['cardSearchFilter[accessService]'] = `${environment.webUrl}/`;
+    filtersParams['cardSearchFilter[accessService]'] = `${this.environment.webUrl}/`;
     filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
     filtersParams['page[size]'] = '10';
 
     const sortBy = state.sortBy;
     const sortParam = sortBy.includes('count') && !sortBy.includes('relevance') ? 'sort[integer-value]' : 'sort';
     filtersParams[sortParam] = sortBy;
-
-    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
-      filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
 
     return filtersParams;
   }

@@ -25,6 +25,8 @@ import { LoadingSpinnerComponent, SearchInputComponent, SelectComponent, SubHead
 import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
+import { isAddonServiceConfigured } from '@shared/helpers';
+import { AddonCardModel } from '@shared/models';
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
@@ -151,6 +153,10 @@ export class AddonsComponent implements OnInit {
     return authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
   });
 
+  allConfiguredAddonsForCheck = computed(() => {
+    return [...this.configuredStorageAddons(), ...this.configuredCitationAddons(), ...this.configuredLinkAddons()];
+  });
+
   resourceReferenceId = computed(() => {
     return this.addonsResourceReference()[0]?.id;
   });
@@ -181,13 +187,28 @@ export class AddonsComponent implements OnInit {
     }
   });
 
-  filteredAddonCards = computed(() => {
+  filteredAddonCards = computed((): AddonCardModel[] => {
     const searchValue = this.searchValue().toLowerCase();
-    return this.currentAddonsState().filter(
-      (card) =>
-        card.externalServiceName.toLowerCase().includes(searchValue) ||
-        card.displayName.toLowerCase().includes(searchValue)
-    );
+    const configuredAddons = this.allConfiguredAddonsForCheck();
+
+    return this.currentAddonsState()
+      .filter(
+        (card) =>
+          card.externalServiceName.toLowerCase().includes(searchValue) ||
+          card.displayName.toLowerCase().includes(searchValue)
+      )
+      .map((addon) => {
+        const isConfigured = isAddonServiceConfigured(addon, configuredAddons);
+        const configuredAddon = configuredAddons.find(
+          (config) => config.externalServiceName === addon.externalServiceName
+        );
+
+        return {
+          addon,
+          isConfigured,
+          configuredAddon,
+        } as AddonCardModel;
+      });
   });
 
   onCategoryChange(value: Primitive): void {

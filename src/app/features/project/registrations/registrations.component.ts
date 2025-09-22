@@ -12,6 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CustomPaginatorComponent,
   LoadingSpinnerComponent,
@@ -20,8 +21,6 @@ import {
 } from '@osf/shared/components';
 
 import { GetRegistrations, RegistrationsSelectors } from './store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-registrations',
@@ -41,6 +40,7 @@ import { environment } from 'src/environments/environment';
 export class RegistrationsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly environment = inject(ENVIRONMENT);
 
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
@@ -57,7 +57,7 @@ export class RegistrationsComponent implements OnInit {
   }
 
   addRegistration(): void {
-    this.router.navigate([`registries/${environment.defaultProvider}/new`], {
+    this.router.navigate([`registries/${this.environment.defaultProvider}/new`], {
       queryParams: { projectId: this.projectId() },
     });
   }

@@ -87,7 +87,6 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   filters = select(GlobalSearchSelectors.getFilters);
   filterValues = select(GlobalSearchSelectors.getFilterValues);
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
-  filterOptionsCache = select(GlobalSearchSelectors.getFilterOptionsCache);
 
   sortBy = select(GlobalSearchSelectors.getSortBy);
   first = select(GlobalSearchSelectors.getFirst);

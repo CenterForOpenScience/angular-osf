@@ -6,7 +6,7 @@
   @if (isLoading()) {
     <p-skeleton width="100%" height="2rem" />
   } @else {
-    <p-accordion [multiple]="true">
+    <p-accordion (onOpen)="onOpenRevision($event)" [multiple]="true">
       @for (item of fileRevisions(); track item.version) {
         <p-accordion-panel [value]="item.version" class="border-none">
           <p-accordion-header class="h-3rem font-normal">

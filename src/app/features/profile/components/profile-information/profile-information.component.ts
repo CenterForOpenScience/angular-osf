@@ -7,8 +7,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { EducationHistoryComponent, EmploymentHistoryComponent } from '@osf/shared/components';
+import { SOCIAL_LINKS } from '@osf/shared/constants';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { User } from '@osf/shared/models';
+
+import { mapUserSocials } from '../../helpers';
 
 @Component({
   selector: 'osf-profile-information',
@@ -27,6 +30,8 @@ export class ProfileInformationComponent {
   isEmploymentAndEducationVisible = computed(
     () => this.currentUser()?.employment?.length || this.currentUser()?.education?.length
   );
+
+  userSocials = computed(() => mapUserSocials(this.currentUser()?.social, SOCIAL_LINKS));
 
   toProfileSettings() {
     this.editProfile.emit();

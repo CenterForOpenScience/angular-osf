@@ -1,4 +1,4 @@
-import { AddResourceRequest } from '@osf/features/registry/models/resources/add-resource-request.model';
+import { AddResourceRequest } from '../models';
 
 export interface AddResourcePayload<T> {
   data: AddResourceRequest<T>;

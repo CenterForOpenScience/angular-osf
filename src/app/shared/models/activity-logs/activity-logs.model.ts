@@ -14,6 +14,7 @@ export interface ActivityLog {
     paramsNode: { id: string; title: string };
     paramsProject: null;
     pointer: Pointer | null;
+    template_node?: { id: string; url: string; title: string } | null;
     preprintProvider?: string | { url: string; name: string } | null;
     addon?: string;
     anonymousLink?: boolean;

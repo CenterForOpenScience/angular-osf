@@ -1,6 +1,4 @@
-import { Social } from '@osf/shared/models';
-
-import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, SocialLinksModel } from '../models';
+import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, SocialLinksModel, SocialModel } from '@osf/shared/models';
 
 export function normalizeValue(value: unknown, key: SocialLinksKeys): unknown {
   if (SOCIAL_KEYS.includes(key)) {
@@ -9,7 +7,7 @@ export function normalizeValue(value: unknown, key: SocialLinksKeys): unknown {
   return value;
 }
 
-export function mapSocialLinkToPayload(link: SocialLinksForm): Partial<Social> {
+export function mapSocialLinkToPayload(link: SocialLinksForm): Partial<SocialModel> {
   const key = link.socialOutput.key as SocialLinksKeys;
   const linkedKey = link.socialOutput.linkedField?.key as SocialLinksKeys;
 
@@ -19,7 +17,7 @@ export function mapSocialLinkToPayload(link: SocialLinksForm): Partial<Social> {
       : [link.webAddress].filter(Boolean)
     : link.webAddress;
 
-  const result: Partial<Social> = { [key]: value };
+  const result: Partial<SocialModel> = { [key]: value };
 
   if (linkedKey) {
     const typeSafeResult = result as Record<SocialLinksKeys, unknown>;
@@ -31,7 +29,7 @@ export function mapSocialLinkToPayload(link: SocialLinksForm): Partial<Social> {
 
 export function hasSocialLinkChanges(
   link: SocialLinksForm,
-  initialSocialLinks: Social,
+  initialSocialLinks: SocialModel,
   socialIndex: number,
   socials: SocialLinksModel[]
 ): boolean {
@@ -41,7 +39,7 @@ export function hasSocialLinkChanges(
   const mappedLink = mapSocialLinkToPayload(link);
   const { key, linkedField } = social;
 
-  const hasChanged = (currentKey: keyof Social) => {
+  const hasChanged = (currentKey: keyof SocialModel) => {
     const current = mappedLink[currentKey];
     const initial = normalizeValue(initialSocialLinks[currentKey], currentKey);
 

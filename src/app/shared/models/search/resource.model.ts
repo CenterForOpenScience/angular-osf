@@ -42,6 +42,7 @@ export interface ResourceModel {
   hasMaterialsResource: boolean;
   hasPapersResource: boolean;
   hasSupplementalResource: boolean;
+  context: StringOrNull;
 }
 
 export interface IsContainedBy extends AbsoluteUrlName {

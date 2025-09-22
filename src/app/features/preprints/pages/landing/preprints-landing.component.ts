@@ -10,6 +10,7 @@ import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnDest
 import { FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   AdvisoryBoardComponent,
   BrowseBySubjectsComponent,
@@ -24,8 +25,6 @@ import {
 import { SearchInputComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { BrandService } from '@shared/services';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-overview',
@@ -49,8 +48,10 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
 
   searchControl = new FormControl<string>('');
 
-  readonly supportEmail = environment.supportEmail;
-  private readonly OSF_PROVIDER_ID = environment.defaultProvider;
+  private readonly environment = inject(ENVIRONMENT);
+
+  readonly supportEmail = this.environment.supportEmail;
+  private readonly OSF_PROVIDER_ID = this.environment.defaultProvider;
 
   private readonly router = inject(Router);
   private readonly actions = createDispatchMap({

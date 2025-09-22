@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SubscriptionFrequency } from '@osf/shared/enums';
 import { NotificationSubscriptionMapper } from '@osf/shared/mappers';
 import {
@@ -11,14 +12,16 @@ import {
 } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationSubscriptionService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiDomainUrl}/v2/subscriptions/`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2/subscriptions/`;
+  }
 
   getAllGlobalNotificationSubscriptions(): Observable<NotificationSubscription[]> {
     const params: Record<string, string> = {
@@ -26,7 +29,7 @@ export class NotificationSubscriptionService {
     };
 
     return this.jsonApiService
-      .get<JsonApiResponse<NotificationSubscriptionGetResponseJsonApi[], null>>(this.baseUrl, params)
+      .get<JsonApiResponse<NotificationSubscriptionGetResponseJsonApi[], null>>(this.apiUrl, params)
       .pipe(
         map((responses) => responses.data.map((response) => NotificationSubscriptionMapper.fromGetResponse(response)))
       );
@@ -36,7 +39,7 @@ export class NotificationSubscriptionService {
     const request = NotificationSubscriptionMapper.toUpdateRequest(id, frequency);
 
     return this.jsonApiService
-      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.baseUrl}${id}/`, request)
+      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.apiUrl}${id}/`, request)
       .pipe(map((response) => NotificationSubscriptionMapper.fromGetResponse(response)));
   }
 }

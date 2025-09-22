@@ -2,7 +2,7 @@ import { JsonApiResponse } from '@shared/models';
 
 import { Education } from './education.model';
 import { Employment } from './employment.model';
-import { Social } from './social.model';
+import { SocialModel } from './social.model';
 
 export type UserResponseJsonApi = JsonApiResponse<UserDataJsonApi, null>;
 
@@ -16,7 +16,7 @@ export interface User {
   suffix?: string;
   education: Education[];
   employment: Employment[];
-  social: Social;
+  social: SocialModel;
   dateRegistered: Date;
   link?: string;
   iri?: string;
@@ -44,7 +44,7 @@ export interface UserDataJsonApi {
     education: Education[];
     middle_names?: string;
     suffix?: string;
-    social: Social;
+    social: SocialModel;
     date_registered: string;
     allow_indexing?: boolean;
     can_view_reviews: boolean;

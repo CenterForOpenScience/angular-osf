@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ActivityLogsMapper } from '@osf/shared/mappers';
 import {
   ActivityLog,
@@ -17,13 +18,12 @@ import { JsonApiService } from '../json-api.service';
 
 import { ActivityLogDisplayService } from './activity-log-display.service';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({ providedIn: 'root' })
 export class ActivityLogsService {
   private jsonApiService = inject(JsonApiService);
   private display = inject(ActivityLogDisplayService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
   private formatActivities(result: PaginatedData<ActivityLog[]>): PaginatedData<ActivityLogWithDisplay[]> {
     return {
@@ -38,7 +38,7 @@ export class ActivityLogsService {
   fetchLogs(projectId: string, page = 1, pageSize: number): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
     const url = `${this.apiUrl}/nodes/${projectId}/logs/`;
     const params: Record<string, unknown> = {
-      'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
+      'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node'],
       page,
       'page[size]': pageSize,
     };
@@ -58,7 +58,7 @@ export class ActivityLogsService {
   ): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
     const url = `${this.apiUrl}/registrations/${registrationId}/logs/`;
     const params: Record<string, unknown> = {
-      'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
+      'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node'],
       page,
       'page[size]': pageSize,
     };

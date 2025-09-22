@@ -155,25 +155,8 @@ export class ReusableFilterComponent {
     }
   }
 
-  getFilterOptions(filter: DiscoverableFilter): FilterOption[] {
-    return filter.options || [];
-  }
-
-  getFilterSearchResults(filter: DiscoverableFilter): FilterOption[] {
-    const searchResults = this.filterSearchResults();
-    return searchResults[filter.key] || [];
-  }
-
   isFilterLoading(filter: DiscoverableFilter): boolean {
     return filter.isLoading || false;
-  }
-
-  isFilterPaginationLoading(filter: DiscoverableFilter): boolean {
-    return filter.isPaginationLoading || false;
-  }
-
-  isFilterSearchLoading(filter: DiscoverableFilter): boolean {
-    return filter.isSearchLoading || false;
   }
 
   getSelectedValue(filterKey: string): string | null {

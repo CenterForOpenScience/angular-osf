@@ -15,6 +15,10 @@ export const viewOnlyInterceptor: HttpInterceptorFn = (
   const viewOnlyParam = getViewOnlyParam(router);
 
   if (!req.url.includes('/api.crossref.org/funders') && viewOnlyParam) {
+    if (req.url.includes('view_only=')) {
+      return next(req);
+    }
+
     const separator = req.url.includes('?') ? '&' : '?';
     const updatedUrl = `${req.url}${separator}view_only=${encodeURIComponent(viewOnlyParam)}`;
 

@@ -11,10 +11,10 @@ export class MyResourcesMapper {
       isPublic: response.attributes.public,
       contributors:
         response.embeds?.bibliographic_contributors?.data?.map((contributor) => ({
-          familyName: contributor.embeds.users.data.attributes.family_name,
-          fullName: contributor.embeds.users.data.attributes.full_name,
-          givenName: contributor.embeds.users.data.attributes.given_name,
-          middleName: contributor.embeds.users.data.attributes.middle_name,
+          familyName: contributor.embeds.users.data?.attributes.family_name,
+          fullName: contributor.embeds.users.data?.attributes.full_name,
+          givenName: contributor.embeds.users.data?.attributes.given_name,
+          middleName: contributor.embeds.users.data?.attributes.middle_name,
         })) ?? [],
     };
   }

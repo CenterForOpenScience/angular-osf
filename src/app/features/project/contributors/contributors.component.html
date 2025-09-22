@@ -1,6 +1,6 @@
 <h1 class="py-5 px-3 md:px-5 xl:px-4">{{ 'navigation.contributors' | translate }}</h1>
 
-<section class="contributors flex flex-column align-items-baseline w-full p-3 pt-4 md:px-5 xl:px-4">
+<section class="contributors flex flex-column align-items-baseline flex-1 w-full p-3 pt-4 md:px-5 xl:px-4">
   @if (isCurrentUserAdminContributor()) {
     <p-button
       [label]="'project.contributors.addContributor' | translate"
@@ -11,10 +11,7 @@
 
   <div class="filters-container flex flex-column xl:flex-row">
     <div class="xl:w-7">
-      <osf-search-input
-        [control]="searchControl"
-        [placeholder]="'project.contributors.searchPlaceholder' | translate"
-      />
+      <osf-search-input [control]="searchControl" [placeholder]="searchPlaceholder() | translate" />
     </div>
 
     <div class="contributors-filter-container flex flex-column md:flex-row xl:w-5">
@@ -88,23 +85,25 @@
     </div>
   }
 
-  <div class="flex flex-column row-gap-4 mt-6 w-full">
-    <h2>{{ 'project.contributors.viewOnly' | translate }}</h2>
+  @if (isCurrentUserAdminContributor()) {
+    <div class="flex flex-column row-gap-4 mt-6 w-full">
+      <h2>{{ 'project.contributors.viewOnly' | translate }}</h2>
 
-    <p>{{ 'project.contributors.createLink' | translate }}</p>
+      <p>{{ 'project.contributors.createLink' | translate }}</p>
 
-    <p-button
-      class="w-10rem"
-      [label]="'project.contributors.createButton' | translate"
-      [disabled]="!canCreateViewLink()"
-      (onClick)="createViewLink()"
-    >
-    </p-button>
+      <p-button
+        class="w-10rem"
+        [label]="'project.contributors.createButton' | translate"
+        [disabled]="!canCreateViewLink()"
+        (onClick)="createViewLink()"
+      >
+      </p-button>
 
-    <osf-view-only-table
-      [isLoading]="isViewOnlyLinksLoading()"
-      [tableData]="viewOnlyLinks()"
-      (deleteLink)="deleteLinkItem($event)"
-    />
-  </div>
+      <osf-view-only-table
+        [isLoading]="isViewOnlyLinksLoading()"
+        [tableData]="viewOnlyLinks()"
+        (deleteLink)="deleteLinkItem($event)"
+      />
+    </div>
+  }
 </section>

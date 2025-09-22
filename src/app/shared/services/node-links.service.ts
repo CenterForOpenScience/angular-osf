@@ -3,19 +3,24 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/shared/services';
-import { ComponentsMapper } from '@shared/mappers/components';
-import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse, MyResourcesItem } from '@shared/models';
-import { NodeLinkJsonApi } from '@shared/models/node-links';
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { environment } from 'src/environments/environment';
+import { ComponentsMapper } from '../mappers';
+import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse, MyResourcesItem } from '../models';
+import { NodeLinkJsonApi } from '../models/node-links';
+
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NodeLinksService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   createNodeLink(
     currentProjectId: string,

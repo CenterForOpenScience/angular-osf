@@ -13,17 +13,17 @@ export class ContributorsMapper {
   static fromResponse(response: ContributorResponse[]): ContributorModel[] {
     return response.map((contributor) => ({
       id: contributor.id,
-      userId: contributor.embeds.users.data.id,
+      userId: contributor.embeds?.users?.data?.id || '',
       type: contributor.type,
       isBibliographic: contributor.attributes.bibliographic,
       isUnregisteredContributor: !!contributor.attributes.unregistered_contributor,
       isCurator: contributor.attributes.is_curator,
       permission: contributor.attributes.permission,
-      fullName: contributor.embeds.users.data.attributes.full_name,
-      givenName: contributor.embeds.users.data.attributes.given_name,
-      familyName: contributor.embeds.users.data.attributes.family_name,
-      education: contributor.embeds.users.data.attributes.education,
-      employment: contributor.embeds.users.data.attributes.employment,
+      fullName: contributor.embeds?.users?.data?.attributes?.full_name || '',
+      givenName: contributor.embeds?.users?.data?.attributes?.given_name || '',
+      familyName: contributor.embeds?.users?.data?.attributes?.family_name || '',
+      education: contributor.embeds?.users?.data?.attributes?.education || '',
+      employment: contributor.embeds?.users?.data?.attributes?.employment || '',
     }));
   }
 
@@ -36,8 +36,8 @@ export class ContributorsMapper {
           ({
             id: user.id,
             fullName: user.attributes.full_name,
-            isBibliographic: false,
-            permission: ContributorPermission.Read,
+            isBibliographic: true,
+            permission: ContributorPermission.Write,
           }) as ContributorAddModel
       ),
       totalCount: response.meta.total,

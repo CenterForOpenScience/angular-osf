@@ -1,6 +1,11 @@
-<osf-sub-header [isLoading]="isFileLoading()" title="{{ file()?.name }}" />
+<osf-sub-header
+  [isLoading]="isFileLoading()"
+  title="{{ file()?.name }}{{
+    fileVersion ? ' (' + ('project.wiki.version.title' | translate) + ' ' + fileVersion + ')' : ''
+  }}"
+/>
 
-<p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1 ml-auto mr-4">
+<p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="ml-auto mr-4">
   <p-tablist>
     <p-tab [value]="FileDetailTab.Details">{{ 'files.detail.tabs.details' | translate }}</p-tab>
     <p-tab [value]="FileDetailTab.Revisions">{{ 'files.detail.tabs.revisions' | translate }}</p-tab>
@@ -12,13 +17,13 @@
   <div class="flex">
     <div class="flex align-items-center gap-2 back-navigation font-semibold">
       <i class="pi pi-angle-left text-base"></i>
-      <a [routerLink]="['../']" class="font-semibold">
+      <a [routerLink]="['../']" queryParamsHandling="merge" class="font-semibold">
         {{ 'files.detail.backToList' | translate }}
       </a>
     </div>
 
     <div class="flex gap-3 ml-auto sm-round-padding-btn">
-      @if (!isAnonymous()) {
+      @if (!isAnonymous() && !hasViewOnly()) {
         <p-button
           severity="secondary"
           [label]="'files.detail.actions.addCommunityMetadata' | translate"
@@ -69,7 +74,7 @@
           </p-menu>
         </div>
       }
-      @if (file() && !isAnonymous()) {
+      @if (file() && !isAnonymous() && !hasViewOnly()) {
         <p-button
           severity="danger"
           [ariaLabel]="'common.buttons.delete' | translate"
@@ -104,11 +109,11 @@
 
     <div class="w-full flex flex-column gap-4 flex-1 lg:w-6">
       @if (selectedTab === FileDetailTab.Revisions) {
-        <osf-file-revisions class="metadata"></osf-file-revisions>
+        <osf-file-revisions (openRevision)="onOpenRevision($event)" class="metadata"></osf-file-revisions>
       } @else if (selectedTab === FileDetailTab.Keywords) {
         <osf-file-keywords class="metadata"></osf-file-keywords>
       } @else {
-        <div class="file-metadata-tabs">
+        <div class="file-metadata-tabs flex flex-column flex-1">
           <osf-metadata-tabs
             [loading]="isLoading()"
             [tabs]="tabs()"
