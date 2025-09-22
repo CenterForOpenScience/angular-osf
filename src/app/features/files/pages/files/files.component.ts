@@ -71,7 +71,7 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
 import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
-import { ConfiguredAddon, FileLabelModel, FilesTreeActions, OsfFile } from '@shared/models';
+import { ConfiguredAddon, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
 import { CustomConfirmationService, FilesService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
