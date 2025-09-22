@@ -1,11 +1,11 @@
 import { AddonCategory, AuthorizedAccountType, ConfiguredAddonType } from '../enums';
 import {
-  Addon,
   AddonGetResponseJsonApi,
-  AuthorizedAccount,
+  AddonModel,
+  AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
-  ConfiguredAddon,
   ConfiguredAddonGetResponseJsonApi,
+  ConfiguredAddonModel,
   IncludedAddonData,
   OperationInvocation,
   OperationInvocationResponseJsonApi,
@@ -13,7 +13,7 @@ import {
 } from '../models';
 
 export class AddonMapper {
-  static fromResponse(response: AddonGetResponseJsonApi): Addon {
+  static fromResponse(response: AddonGetResponseJsonApi): AddonModel {
     return {
       type: response.type,
       id: response.id,
@@ -32,7 +32,7 @@ export class AddonMapper {
   static fromAuthorizedAddonResponse(
     response: AuthorizedAddonGetResponseJsonApi,
     included?: IncludedAddonData[]
-  ): AuthorizedAccount {
+  ): AuthorizedAccountModel {
     const externalServiceData =
       response.relationships?.external_storage_service?.data ||
       response.relationships?.external_citation_service?.data ||
@@ -73,7 +73,7 @@ export class AddonMapper {
     };
   }
 
-  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddon {
+  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddonModel {
     const isLinkAddon = response.type === ConfiguredAddonType.LINK;
     return {
       type: response.type,

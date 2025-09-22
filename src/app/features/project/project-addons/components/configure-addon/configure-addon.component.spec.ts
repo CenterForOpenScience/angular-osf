@@ -15,7 +15,7 @@ import { getAddonsOperationInvocation } from '@testing/data/addons/addons.operat
 import { ToastServiceMock } from '@testing/mocks/toast.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('Component: Configure Addon', () => {
+describe('Component: Configure AddonModel', () => {
   let component: ConfigureAddonComponent;
   let fixture: ComponentFixture<ConfigureAddonComponent>;
 

@@ -1,10 +1,10 @@
-import { Addon, AddonCard, ConfiguredAddon } from '../models';
+import { AddonCardModel, AddonModel, ConfiguredAddonModel } from '../models';
 
 export function createAddonCardModel(
-  addon: Addon,
+  addon: AddonModel,
   isConfigured: boolean,
-  configuredAddon?: ConfiguredAddon
-): AddonCard {
+  configuredAddon?: ConfiguredAddonModel
+): AddonCardModel {
   return {
     type: addon.type,
     id: addon.id,
@@ -17,6 +17,6 @@ export function createAddonCardModel(
   };
 }
 
-export function sortAddonCardsAlphabetically<T extends Addon>(cards: T[]): T[] {
+export function sortAddonCardsAlphabetically<T extends AddonModel>(cards: T[]): T[] {
   return cards.sort((a, b) => a.externalServiceName.localeCompare(b.externalServiceName));
 }

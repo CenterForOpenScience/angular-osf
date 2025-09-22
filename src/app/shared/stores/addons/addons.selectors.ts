@@ -1,9 +1,9 @@
 import { createSelector, Selector } from '@ngxs/store';
 
 import {
-  Addon,
-  AuthorizedAccount,
-  ConfiguredAddon,
+  AddonModel,
+  AuthorizedAccountModel,
+  ConfiguredAddonModel,
   ConfiguredAddonResponseJsonApi,
   OperationInvocation,
   ResourceReferenceJsonApi,
@@ -16,13 +16,13 @@ import { AddonsState } from './addons.state';
 
 export class AddonsSelectors {
   @Selector([AddonsState])
-  static getStorageAddons(state: AddonsStateModel): Addon[] {
+  static getStorageAddons(state: AddonsStateModel): AddonModel[] {
     return state.storageAddons.data;
   }
 
-  static getStorageAddon(id: string): (state: AddonsStateModel) => Addon | null {
-    return createSelector([AddonsState], (state: AddonsStateModel): Addon | null => {
-      return state.storageAddons.data.find((addon: Addon) => addon.id === id) || null;
+  static getStorageAddon(id: string): (state: AddonsStateModel) => AddonModel | null {
+    return createSelector([AddonsState], (state: AddonsStateModel): AddonModel | null => {
+      return state.storageAddons.data.find((addon: AddonModel) => addon.id === id) || null;
     });
   }
 
@@ -32,7 +32,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCitationAddons(state: AddonsStateModel): Addon[] {
+  static getCitationAddons(state: AddonsStateModel): AddonModel[] {
     return state.citationAddons.data;
   }
 
@@ -42,7 +42,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getLinkAddons(state: AddonsStateModel): Addon[] {
+  static getLinkAddons(state: AddonsStateModel): AddonModel[] {
     return state.linkAddons.data;
   }
 
@@ -52,13 +52,15 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAccount[] {
+  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedStorageAddons.data;
   }
 
   static getAuthorizedStorageAddonOauthToken(id: string): (state: AddonsStateModel) => string | null {
     return createSelector([AddonsState], (state: AddonsStateModel): string | null => {
-      return state.authorizedStorageAddons.data.find((addon: AuthorizedAccount) => addon.id === id)?.oauthToken || null;
+      return (
+        state.authorizedStorageAddons.data.find((addon: AuthorizedAccountModel) => addon.id === id)?.oauthToken || null
+      );
     });
   }
 
@@ -68,7 +70,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedAccount[] {
+  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedCitationAddons.data;
   }
 
@@ -78,7 +80,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedLinkAddons(state: AddonsStateModel): AuthorizedAccount[] {
+  static getAuthorizedLinkAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedLinkAddons.data;
   }
 
@@ -88,7 +90,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredAddon[] {
+  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
     return state.configuredStorageAddons.data;
   }
 
@@ -98,7 +100,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredAddon[] {
+  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
     return state.configuredCitationAddons.data;
   }
 
@@ -108,7 +110,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getConfiguredLinkAddons(state: AddonsStateModel): ConfiguredAddon[] {
+  static getConfiguredLinkAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
     return state.configuredLinkAddons.data;
   }
 
@@ -138,7 +140,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAccount | null {
+  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAccountModel | null {
     return state.createdUpdatedAuthorizedAddon.data;
   }
 

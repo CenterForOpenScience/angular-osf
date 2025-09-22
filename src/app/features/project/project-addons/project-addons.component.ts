@@ -26,7 +26,7 @@ import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
 import { isAddonServiceConfigured } from '@shared/helpers';
-import { AddonCard } from '@shared/models';
+import { AddonCardModel } from '@shared/models';
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
@@ -191,7 +191,7 @@ export class ProjectAddonsComponent implements OnInit {
     }
   });
 
-  filteredAddonCards = computed((): AddonCard[] => {
+  filteredAddonCards = computed((): AddonCardModel[] => {
     const searchValue = this.searchValue().toLowerCase();
     const configuredAddons = this.allConfiguredAddonsForCheck();
 

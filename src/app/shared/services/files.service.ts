@@ -22,8 +22,8 @@ import {
 import {
   AddFileResponse,
   ApiData,
-  ConfiguredAddon,
   ConfiguredAddonGetResponseJsonApi,
+  ConfiguredAddonModel,
   ContributorModel,
   ContributorResponse,
   FileLinks,
@@ -310,7 +310,7 @@ export class FilesService {
       .pipe(map((response) => response.data?.[0]?.links?.self ?? ''));
   }
 
-  getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredAddon[]> {
+  getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredAddonModel[]> {
     return this.getResourceReferences(resourceUri).pipe(
       switchMap((referenceUrl: string) => {
         if (!referenceUrl) return of([]);

@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 
-import { AuthorizedAccount } from '@shared/models';
+import { AuthorizedAccountModel } from '@shared/models';
 
 export interface AddonConfigActions {
   getAddons: () => Observable<void>;
-  getAuthorizedAddons: () => AuthorizedAccount[];
+  getAuthorizedAddons: () => AuthorizedAccountModel[];
 }

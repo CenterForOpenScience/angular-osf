@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { AddonType } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
-import { AuthorizedAccount } from '@osf/shared/models';
+import { AuthorizedAccountModel } from '@osf/shared/models';
 import { AddonsService } from '@osf/shared/services';
 
 import {
@@ -152,10 +152,10 @@ export class AddonsState {
       tap((addon) => {
         ctx.setState((state) => {
           const existing = state.authorizedStorageAddons.data.find(
-            (existingAddon: AuthorizedAccount) => existingAddon.id === addon.id
+            (existingAddon: AuthorizedAccountModel) => existingAddon.id === addon.id
           );
           const updatedData = existing
-            ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedAccount) =>
+            ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedAccountModel) =>
                 existingAddon.id === addon.id ? { ...existingAddon, ...addon } : existingAddon
               )
             : [...state.authorizedStorageAddons.data, addon];

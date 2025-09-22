@@ -2,7 +2,7 @@ import { FormControl } from '@angular/forms';
 
 import { OperationNames } from '@osf/features/project/project-addons/enums';
 import { AddonFormControls } from '@shared/enums';
-import { AuthorizedAccount } from '@shared/models';
+import { AuthorizedAccountModel } from '@shared/models';
 
 export interface AddonForm {
   [AddonFormControls.AccessKey]?: FormControl<string | null>;
@@ -44,7 +44,7 @@ export interface StorageItem {
 }
 
 export interface OAuthCallbacks {
-  onSuccess: (addon: AuthorizedAccount) => void;
+  onSuccess: (addon: AuthorizedAccountModel) => void;
   onError?: () => void;
   onCleanup?: () => void;
 }

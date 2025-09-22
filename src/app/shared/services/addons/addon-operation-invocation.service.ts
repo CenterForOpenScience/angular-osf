@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { OperationNames } from '@osf/features/project/project-addons/enums';
-import { AuthorizedAccount, ConfiguredAddon, OperationInvocationRequestJsonApi } from '@shared/models';
+import { AuthorizedAccountModel, ConfiguredAddonModel, OperationInvocationRequestJsonApi } from '@shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +9,7 @@ import { AuthorizedAccount, ConfiguredAddon, OperationInvocationRequestJsonApi }
 export class AddonOperationInvocationService {
   createInitialOperationInvocationPayload(
     operationName: OperationNames,
-    selectedAccount: AuthorizedAccount,
+    selectedAccount: AuthorizedAccountModel,
     itemId?: string
   ): OperationInvocationRequestJsonApi {
     const operationKwargs = this.getOperationKwargs(operationName, itemId);
@@ -38,7 +38,7 @@ export class AddonOperationInvocationService {
   }
 
   createOperationInvocationPayload(
-    addon: ConfiguredAddon,
+    addon: ConfiguredAddonModel,
     operationName: OperationNames,
     itemId: string
   ): OperationInvocationRequestJsonApi {

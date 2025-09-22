@@ -62,7 +62,7 @@ export class GetConfiguredLinkAddons {
 }
 
 export class CreateAuthorizedAddon {
-  static readonly type = '[Addons] Create Authorized Addon';
+  static readonly type = '[Addons] Create Authorized AddonModel';
 
   constructor(
     public payload: AuthorizedAddonRequestJsonApi,
@@ -71,7 +71,7 @@ export class CreateAuthorizedAddon {
 }
 
 export class UpdateAuthorizedAddon {
-  static readonly type = '[Addons] Update Authorized Addon';
+  static readonly type = '[Addons] Update Authorized AddonModel';
 
   constructor(
     public payload: AuthorizedAddonRequestJsonApi,
@@ -81,7 +81,7 @@ export class UpdateAuthorizedAddon {
 }
 
 export class CreateConfiguredAddon {
-  static readonly type = '[Addons] Create Configured Addon';
+  static readonly type = '[Addons] Create Configured AddonModel';
 
   constructor(
     public payload: ConfiguredAddonRequestJsonApi,
@@ -90,7 +90,7 @@ export class CreateConfiguredAddon {
 }
 
 export class UpdateConfiguredAddon {
-  static readonly type = '[Addons] Update Configured Addon';
+  static readonly type = '[Addons] Update Configured AddonModel';
 
   constructor(
     public payload: ConfiguredAddonRequestJsonApi,
@@ -110,7 +110,7 @@ export class GetAddonsResourceReference {
 }
 
 export class DeleteAuthorizedAddon {
-  static readonly type = '[Addons] Delete Authorized Addon';
+  static readonly type = '[Addons] Delete Authorized AddonModel';
 
   constructor(
     public id: string,
@@ -119,7 +119,7 @@ export class DeleteAuthorizedAddon {
 }
 
 export class DeleteConfiguredAddon {
-  static readonly type = '[Addons] Delete Configured Addon';
+  static readonly type = '[Addons] Delete Configured AddonModel';
 
   constructor(
     public id: string,
@@ -128,7 +128,7 @@ export class DeleteConfiguredAddon {
 }
 
 export class CreateAddonOperationInvocation {
-  static readonly type = '[Addons] Create Addon Operation Invocation';
+  static readonly type = '[Addons] Create AddonModel Operation Invocation';
 
   constructor(public payload: OperationInvocationRequestJsonApi) {}
 }

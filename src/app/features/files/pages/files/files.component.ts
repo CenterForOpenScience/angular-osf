@@ -71,7 +71,7 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
 import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
-import { ConfiguredAddon, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
+import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
 import { CustomConfirmationService, FilesService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
@@ -479,7 +479,7 @@ export class FilesComponent {
     window.open(url, '_blank');
   }
 
-  getAddonName(addons: ConfiguredAddon[], provider: string): string {
+  getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
     if (provider === FileProvider.OsfStorage) {
       return this.translateService.instant('files.storageLocation');
     } else {

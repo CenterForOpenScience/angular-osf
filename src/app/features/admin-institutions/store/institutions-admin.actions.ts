@@ -24,7 +24,7 @@ export class FetchInstitutionSearchResults {
 }
 
 export class FetchHasOsfAddonSearch {
-  static readonly type = '[InstitutionsAdmin] Fetch Has OSF Addon Search';
+  static readonly type = '[InstitutionsAdmin] Fetch Has OSF AddonModel Search';
 }
 
 export class FetchStorageRegionSearch {

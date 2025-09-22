@@ -1,4 +1,4 @@
-export interface Addon {
+export interface AddonModel {
   id: string;
   type: string;
   displayName: string;
@@ -15,18 +15,18 @@ export interface Addon {
   wbKey?: string;
 }
 
-export interface AddonCard {
+export interface AddonCardModel {
   id: string;
   type: string;
   displayName: string;
   externalServiceName: string;
   iconUrl?: string;
   isConfigured: boolean;
-  addon: Addon;
-  configuredAddon?: ConfiguredAddon;
+  addon: AddonModel;
+  configuredAddon?: ConfiguredAddonModel;
 }
 
-export interface AuthorizedAccount extends Addon {
+export interface AuthorizedAccountModel extends AddonModel {
   authUrl: string | null;
   authorizedCapabilities: string[];
   authorizedOperationNames: string[];
@@ -38,7 +38,7 @@ export interface AuthorizedAccount extends Addon {
   externalStorageServiceId: string;
 }
 
-export interface ConfiguredAddon extends Addon {
+export interface ConfiguredAddonModel extends AddonModel {
   connectedCapabilities: string[];
   connectedOperationNames: string[];
   currentUserIsOwner: boolean;
