@@ -16,7 +16,7 @@ import {
   SelectComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
-import { Primitive } from '@osf/shared/helpers';
+import { Primitive, sortAddonCardsAlphabetically } from '@osf/shared/helpers';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
@@ -35,7 +35,7 @@ import {
 } from '@shared/stores/addons';
 
 @Component({
-  selector: 'osf-addons',
+  selector: 'osf-settings-addons',
   imports: [
     SubHeaderComponent,
     TabList,
@@ -50,11 +50,11 @@ import {
     TranslatePipe,
     LoadingSpinnerComponent,
   ],
-  templateUrl: './addons.component.html',
-  styleUrl: './addons.component.scss',
+  templateUrl: './settings-addons.component.html',
+  styleUrl: './settings-addons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddonsComponent {
+export class SettingsAddonsComponent {
   readonly tabOptions = ADDON_TAB_OPTIONS;
   readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
@@ -122,7 +122,9 @@ export class AddonsComponent {
     ];
 
     const searchValue = this.searchValue().toLowerCase();
-    return authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
+    const filteredAddons = authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
+
+    return sortAddonCardsAlphabetically(filteredAddons);
   });
 
   readonly userReferenceId = computed(() => {
@@ -185,8 +187,13 @@ export class AddonsComponent {
         if (!addons?.length) {
           action();
         }
+      }
+    });
 
-        this.fetchAllAuthorizedAddons(this.userReferenceId());
+    effect(() => {
+      const userReferenceId = this.userReferenceId();
+      if (userReferenceId) {
+        this.fetchAllAuthorizedAddons(userReferenceId);
       }
     });
 

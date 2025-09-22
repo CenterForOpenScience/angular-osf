@@ -7,7 +7,7 @@ import {
   ConfiguredAddonResponseJsonApi,
   OperationInvocation,
   ResourceReferenceJsonApi,
-  StorageItemModel,
+  StorageItem,
   UserReferenceJsonApi,
 } from '@shared/models';
 
@@ -175,7 +175,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getSelectedStorageItem(state: AddonsStateModel): StorageItemModel | null {
+  static getSelectedStorageItem(state: AddonsStateModel): StorageItem | null {
     return state.selectedItemOperationInvocation.data?.operationResult[0] || null;
   }
 

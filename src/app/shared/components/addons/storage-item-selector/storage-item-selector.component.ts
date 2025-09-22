@@ -27,8 +27,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { OperationNames } from '@osf/features/project/addons/enums';
-import { AddonType, StorageItemType } from '@osf/shared/enums';
+import { AddonType, OperationNames, StorageItemType } from '@osf/shared/enums';
 import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@osf/shared/helpers';
 import { OperationInvokeData, StorageItem } from '@osf/shared/models';
 import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores';

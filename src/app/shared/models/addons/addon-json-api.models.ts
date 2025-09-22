@@ -93,20 +93,6 @@ export interface ConfiguredAddonGetResponseJsonApi {
   };
 }
 
-export interface AddonModel {
-  type: string;
-  id: string;
-  authUrl: string;
-  displayName: string;
-  externalServiceName: string;
-  supportedFeatures: string[];
-  supportedResourceTypes?: string[];
-  credentialsFormat: string;
-  providerName: string;
-  wbKey: string;
-  iconUrl: string;
-}
-
 export interface IncludedAddonData {
   type: string;
   id: string;

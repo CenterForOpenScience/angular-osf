@@ -7,6 +7,7 @@ interface GuidDataJsonApi {
   type: string;
   attributes: {
     guid: string;
+    wiki_enabled: boolean;
   };
   relationships: {
     target?: {

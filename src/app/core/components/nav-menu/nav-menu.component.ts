@@ -50,6 +50,7 @@ export class NavMenuComponent {
       isProject:
         this.currentResource()?.type === CurrentResourceType.Projects &&
         this.currentResourceId() === this.currentResource()?.id,
+      wikiPageVisible: this.currentResource()?.wikiEnabled,
       isRegistry:
         this.currentResource()?.type === CurrentResourceType.Registrations &&
         this.currentResourceId() === this.currentResource()?.id,
@@ -82,7 +83,6 @@ export class NavMenuComponent {
   );
 
   readonly currentResourceId = computed(() => this.currentRoute().resourceId);
-  readonly currentProviderId = computed(() => this.currentRoute().providerId);
   readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
   readonly isPreprintRoute = computed(() => this.currentRoute().isPreprintRoute);
   readonly canUserViewReviews = select(UserSelectors.getCanViewReviews);

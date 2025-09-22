@@ -1,3 +1,4 @@
+export * from './addon-card.helper';
 export * from './addon-type.helper';
 export * from './breakpoints.tokens';
 export * from './browser-tab.helper';

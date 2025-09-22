@@ -14,7 +14,7 @@ import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/compone
 import { ResourceType, SubscriptionEvent, SubscriptionFrequency, UserPermissions } from '@osf/shared/enums';
 import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
-import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores';
+import { DeleteViewOnlyLink, FetchViewOnlyLinks, GetResource, ViewOnlyLinkSelectors } from '@osf/shared/stores';
 
 import {
   ProjectSettingNotificationsComponent,
@@ -87,6 +87,7 @@ export class SettingsComponent implements OnInit {
     deleteViewOnlyLink: DeleteViewOnlyLink,
     deleteProject: DeleteProject,
     deleteInstitution: DeleteInstitution,
+    refreshCurrentResource: GetResource,
   });
 
   accessRequest = signal(false);
@@ -141,6 +142,7 @@ export class SettingsComponent implements OnInit {
   onWikiRequestChange(newValue: boolean): void {
     this.wikiEnabled.set(newValue);
     this.syncSettingsChanges('wiki_enabled', newValue);
+    this.actions.refreshCurrentResource(this.projectId(), true);
   }
 
   onAnyoneCanEditWikiRequestChange(newValue: boolean): void {

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 
-export const addonsRoutes: Routes = [
+export const projectAddonsRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./addons.component').then((mod) => mod.AddonsComponent),
+    loadComponent: () => import('./project-addons.component').then((mod) => mod.ProjectAddonsComponent),
   },
   {
     path: 'connect-addon',
