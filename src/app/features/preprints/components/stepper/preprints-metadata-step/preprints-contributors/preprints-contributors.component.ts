@@ -44,14 +44,14 @@ import {
 } from '@osf/shared/stores';
 
 @Component({
-  selector: 'osf-preprint-contributors',
+  selector: 'osf-preprints-contributors',
   imports: [FormsModule, TableModule, ContributorsListComponent, TranslatePipe, Card, Button, Message],
-  templateUrl: './contributors.component.html',
-  styleUrl: './contributors.component.scss',
+  templateUrl: './preprints-contributors.component.html',
+  styleUrl: './preprints-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class ContributorsComponent implements OnInit {
+export class PreprintsContributorsComponent implements OnInit {
   preprintId = input<string | undefined>('');
 
   readonly destroyRef = inject(DestroyRef);

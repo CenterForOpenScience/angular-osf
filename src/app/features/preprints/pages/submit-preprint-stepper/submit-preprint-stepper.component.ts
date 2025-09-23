@@ -24,7 +24,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   AuthorAssertionsStepComponent,
   FileStepComponent,
-  MetadataStepComponent,
+  PreprintsMetadataStepComponent,
   ReviewStepComponent,
   SupplementsStepComponent,
   TitleAndAbstractStepComponent,
@@ -50,7 +50,7 @@ import { BrandService } from '@shared/services';
     StepperComponent,
     TitleAndAbstractStepComponent,
     FileStepComponent,
-    MetadataStepComponent,
+    PreprintsMetadataStepComponent,
     AuthorAssertionsStepComponent,
     SupplementsStepComponent,
     AuthorAssertionsStepComponent,

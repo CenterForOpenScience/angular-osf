@@ -21,20 +21,20 @@ import {
   SaveLicense,
   UpdatePreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@osf/shared/components';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
-import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-import { LicenseModel, LicenseOptions } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { LicenseModel, LicenseOptions } from '@osf/shared/models';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
-import { ContributorsComponent } from './contributors/contributors.component';
 import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';
+import { PreprintsContributorsComponent } from './preprints-contributors/preprints-contributors.component';
 import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subjects.component';
 
 @Component({
-  selector: 'osf-preprint-metadata',
+  selector: 'osf-preprints-metadata',
   imports: [
-    ContributorsComponent,
+    PreprintsContributorsComponent,
     Button,
     Card,
     ReactiveFormsModule,
@@ -50,11 +50,11 @@ import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subje
     PreprintsSubjectsComponent,
     PreprintsAffiliatedInstitutionsComponent,
   ],
-  templateUrl: './metadata-step.component.html',
-  styleUrl: './metadata-step.component.scss',
+  templateUrl: './preprints-metadata-step.component.html',
+  styleUrl: './preprints-metadata-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MetadataStepComponent implements OnInit {
+export class PreprintsMetadataStepComponent implements OnInit {
   private customConfirmationService = inject(CustomConfirmationService);
   private toastService = inject(ToastService);
   private actions = createDispatchMap({

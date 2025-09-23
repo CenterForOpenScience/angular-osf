@@ -8,20 +8,20 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { MOCK_STORE, TranslateServiceMock } from '@osf/shared/mocks';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
-import { ContributorsComponent } from './contributors.component';
+import { PreprintsContributorsComponent } from './preprints-contributors.component';
 
-describe('ContributorsComponent', () => {
-  let component: ContributorsComponent;
-  let fixture: ComponentFixture<ContributorsComponent>;
+describe('PreprintsContributorsComponent', () => {
+  let component: PreprintsContributorsComponent;
+  let fixture: ComponentFixture<PreprintsContributorsComponent>;
 
   beforeEach(async () => {
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation(() => () => []);
 
     await TestBed.configureTestingModule({
-      imports: [ContributorsComponent, MockPipe(TranslatePipe)],
+      imports: [PreprintsContributorsComponent, MockPipe(TranslatePipe)],
       providers: [
         MockProvider(Store, MOCK_STORE),
         MockProvider(DialogService),
@@ -32,7 +32,7 @@ describe('ContributorsComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContributorsComponent);
+    fixture = TestBed.createComponent(PreprintsContributorsComponent);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('preprintId', '1');

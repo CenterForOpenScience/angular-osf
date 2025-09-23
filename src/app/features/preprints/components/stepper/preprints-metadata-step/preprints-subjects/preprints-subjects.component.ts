@@ -10,6 +10,7 @@ import { FormControl } from '@angular/forms';
 
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { SubjectsComponent } from '@osf/shared/components';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
 import { SubjectModel } from '@osf/shared/models';
 import {
@@ -19,7 +20,6 @@ import {
   SubjectsSelectors,
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
-import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 
 @Component({
   selector: 'osf-preprints-subjects',

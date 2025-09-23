@@ -7,14 +7,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { MOCK_STORE, TranslateServiceMock } from '@osf/shared/mocks';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
-import { MetadataStepComponent } from './metadata-step.component';
+import { PreprintsMetadataStepComponent } from './preprints-metadata-step.component';
 
-describe('MetadataStepComponent', () => {
-  let component: MetadataStepComponent;
-  let fixture: ComponentFixture<MetadataStepComponent>;
+describe('PreprintsMetadataStepComponent', () => {
+  let component: PreprintsMetadataStepComponent;
+  let fixture: ComponentFixture<PreprintsMetadataStepComponent>;
 
   beforeEach(async () => {
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
@@ -31,7 +31,7 @@ describe('MetadataStepComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [MetadataStepComponent, MockPipe(TranslatePipe)],
+      imports: [PreprintsMetadataStepComponent, MockPipe(TranslatePipe)],
       providers: [
         MockProvider(Store, MOCK_STORE),
         MockProvider(ToastService),
@@ -41,7 +41,7 @@ describe('MetadataStepComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MetadataStepComponent);
+    fixture = TestBed.createComponent(PreprintsMetadataStepComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
