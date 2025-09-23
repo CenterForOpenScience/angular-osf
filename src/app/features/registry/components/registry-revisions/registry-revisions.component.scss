@@ -1,9 +1,6 @@
-@use "/styles/variables" as var;
-@use "styles/mixins" as mix;
-
 .accordion-border {
-  border: 1px solid var.$grey-2;
-  border-radius: mix.rem(12px);
+  border: 1px solid var(--grey-2);
+  border-radius: 0.75rem;
   height: max-content !important;
 }
 

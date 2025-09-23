@@ -9,7 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { EducationHistoryComponent, EmploymentHistoryComponent } from '@osf/shared/components';
 import { SOCIAL_LINKS } from '@osf/shared/constants';
 import { IS_MEDIUM } from '@osf/shared/helpers';
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 
 import { mapUserSocials } from '../../helpers';
 
@@ -21,7 +21,7 @@ import { mapUserSocials } from '../../helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileInformationComponent {
-  currentUser = input<User | null>();
+  currentUser = input<UserModel | null>();
   showEdit = input(false);
   editProfile = output<void>();
 

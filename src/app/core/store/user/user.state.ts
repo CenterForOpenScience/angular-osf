@@ -8,7 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { removeNullable } from '@osf/shared/helpers';
 import { UserMapper } from '@osf/shared/mappers';
-import { SocialModel, User } from '@osf/shared/models';
+import { SocialModel, UserModel } from '@osf/shared/models';
 
 import { UserService } from '../../services';
 
@@ -242,13 +242,13 @@ export class UserState {
       return;
     }
 
-    const updatePayload: Partial<User> = {
+    const updatePayload: Partial<UserModel> = {
       acceptedTermsOfService: true,
     };
     const apiRequest = UserMapper.toAcceptedTermsOfServiceRequest(updatePayload);
 
     return this.userService.updateUserAcceptedTermsOfService(currentUser.id, apiRequest).pipe(
-      tap((response: User): void => {
+      tap((response: UserModel): void => {
         if (response.acceptedTermsOfService) {
           ctx.patchState({
             currentUser: {

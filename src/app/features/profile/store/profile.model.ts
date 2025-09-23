@@ -1,7 +1,7 @@
-import { AsyncStateModel, User } from '@osf/shared/models';
+import { AsyncStateModel, UserModel } from '@osf/shared/models';
 
 export interface ProfileStateModel {
-  userProfile: AsyncStateModel<User | null>;
+  userProfile: AsyncStateModel<UserModel | null>;
 }
 
 export const PROFILE_STATE_DEFAULTS: ProfileStateModel = {

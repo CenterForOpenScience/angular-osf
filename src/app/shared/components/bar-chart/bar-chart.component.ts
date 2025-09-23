@@ -4,16 +4,7 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { ChartModule } from 'primeng/chart';
 
 import { isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  input,
-  OnInit,
-  PLATFORM_ID,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit, PLATFORM_ID, signal } from '@angular/core';
 
 import { PIE_CHART_PALETTE } from '@osf/shared/constants';
 import { DatasetInput } from '@osf/shared/models';
@@ -49,17 +40,13 @@ export class BarChartComponent implements OnInit {
   orientation = input<'horizontal' | 'vertical'>('horizontal');
   showExpandedSection = input<boolean>(false);
 
-  options = signal<ChartOptions>({});
-  data = signal<ChartData>({} as ChartData);
+  options = signal<ChartOptions | null>(null);
+  data = signal<ChartData | null>(null);
 
   platformId = inject(PLATFORM_ID);
-  cd = inject(ChangeDetectorRef);
+  readonly PIE_CHART_PALETTE = PIE_CHART_PALETTE;
 
   ngOnInit() {
-    this.initChart();
-  }
-
-  initChart() {
     if (isPlatformBrowser(this.platformId)) {
       const documentStyle = getComputedStyle(document.documentElement);
       const textColorSecondary = documentStyle.getPropertyValue('--dark-blue-1');
@@ -69,8 +56,6 @@ export class BarChartComponent implements OnInit {
 
       this.setChartData(defaultBackgroundColor, defaultBorderColor);
       this.setChartOptions(textColorSecondary, surfaceBorder);
-
-      this.cd.markForCheck();
     }
   }
 
@@ -88,15 +73,12 @@ export class BarChartComponent implements OnInit {
     });
   }
 
-  getColor(index: number): string {
-    return PIE_CHART_PALETTE[index % PIE_CHART_PALETTE.length];
-  }
-
   private setChartOptions(textColorSecondary: string, surfaceBorder: string) {
     this.options.set({
       indexAxis: this.orientation() === 'horizontal' ? 'y' : 'x',
       maintainAspectRatio: false,
-      aspectRatio: 0.8,
+      aspectRatio: 0.9,
+      responsive: true,
       plugins: {
         legend: {
           display: this.showLegend(),

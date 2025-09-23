@@ -10,7 +10,7 @@ import { FormBuilder } from '@angular/forms';
 
 import { UpdateProfileSettingsUser, UserSelectors } from '@osf/core/store/user';
 import { CustomValidators } from '@osf/shared/helpers';
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
 import { hasNameChanges } from '../../helpers';
@@ -35,7 +35,7 @@ export class NameComponent {
 
   readonly actions = createDispatchMap({ updateProfileSettingsUser: UpdateProfileSettingsUser });
   readonly currentUser = select(UserSelectors.getUserNames);
-  readonly previewUser = signal<Partial<User>>({});
+  readonly previewUser = signal<Partial<UserModel>>({});
 
   readonly fb = inject(FormBuilder);
   readonly form = this.fb.group<NameForm>({
@@ -110,7 +110,7 @@ export class NameComponent {
     return hasNameChanges(this.form.controls, user);
   }
 
-  private updateForm(user: Partial<User>) {
+  private updateForm(user: Partial<UserModel>) {
     this.form.patchValue({
       fullName: user.fullName,
       givenName: user.givenName,

@@ -3,7 +3,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { timer } from 'rxjs';
+
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Education } from '@osf/shared/models';
 
@@ -17,12 +20,17 @@ import { EducationHistoryComponent } from '../education-history/education-histor
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EducationHistoryDialogComponent {
-  dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
+  dialogRef = inject(DynamicDialogRef);
   readonly educationHistory = signal<Education[]>([]);
+  readonly isContentVisible = signal(false);
 
   constructor() {
     this.educationHistory.set(this.config.data);
+
+    timer(0)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.isContentVisible.set(true));
   }
 
   close() {
