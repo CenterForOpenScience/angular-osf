@@ -38,13 +38,13 @@ export class AddContributor {
   ) {}
 }
 
-export class UpdateContributor {
-  static readonly type = '[Contributors] Update Contributor';
+export class BulkUpdateContributors {
+  static readonly type = '[Contributors] Bulk Update Contributors';
 
   constructor(
     public resourceId: string | undefined | null,
     public resourceType: ResourceType | undefined,
-    public contributor: ContributorModel
+    public contributors: ContributorModel[]
   ) {}
 }
 

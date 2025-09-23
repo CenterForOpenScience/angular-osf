@@ -9,6 +9,7 @@ export interface ContributorModel {
   isUnregisteredContributor: boolean;
   isCurator: boolean;
   permission: ContributorPermission;
+  index: number;
   fullName: string;
   givenName: string;
   familyName: string;

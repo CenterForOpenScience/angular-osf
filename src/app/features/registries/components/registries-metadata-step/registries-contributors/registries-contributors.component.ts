@@ -36,10 +36,10 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
   GetAllContributors,
-  UpdateContributor,
 } from '@osf/shared/stores';
 
 @Component({
@@ -82,7 +82,7 @@ export class RegistriesContributorsComponent implements OnInit {
   actions = createDispatchMap({
     getContributors: GetAllContributors,
     deleteContributor: DeleteContributor,
-    updateContributor: UpdateContributor,
+    bulkUpdateContributors: BulkUpdateContributors,
     addContributor: AddContributor,
   });
 
@@ -116,13 +116,12 @@ export class RegistriesContributorsComponent implements OnInit {
   save() {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
-    const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.draftId(), ResourceType.DraftRegistration, payload)
-    );
-
-    forkJoin(updateRequests).subscribe(() => {
-      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-    });
+    this.actions
+      .bulkUpdateContributors(this.draftId(), ResourceType.DraftRegistration, updatedContributors)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() =>
+        this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage')
+      );
   }
 
   openAddContributorDialog() {

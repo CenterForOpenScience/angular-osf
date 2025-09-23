@@ -9,10 +9,13 @@
   [lazy]="true"
   [lazyLoadOnInit]="true"
   [customSort]="true"
+  [reorderableColumns]="true"
+  (onRowReorder)="onRowReorder()"
   class="view-only-table"
 >
   <ng-template #header>
     <tr>
+      <th></th>
       <th>{{ 'project.contributors.table.headers.name' | translate }}</th>
       <th>
         <div class="flex align-items-center">
@@ -93,9 +96,15 @@
     </tr>
   </ng-template>
 
-  <ng-template #body let-contributor>
+  <ng-template #body let-contributor let-index="rowIndex">
     @if (contributor.id) {
-      <tr>
+      <tr [pReorderableRow]="index" class="select-none">
+        <td>
+          <div pReorderableRowHandle>
+            <osf-icon [iconClass]="'fas fa-bars'"></osf-icon>
+          </div>
+        </td>
+
         <td>
           <p class="flex align-items-center gap-2">
             <span>{{ contributor.fullName }}</span>

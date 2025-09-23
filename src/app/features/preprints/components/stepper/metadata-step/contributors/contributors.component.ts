@@ -36,10 +36,10 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
   GetAllContributors,
-  UpdateContributor,
 } from '@osf/shared/stores';
 
 @Component({
@@ -69,15 +69,16 @@ export class ContributorsComponent implements OnInit {
     const initialContributors = this.initialContributors();
     if (!currentUserId) return false;
 
-    return initialContributors.some((contributor: ContributorModel) => {
-      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
-    });
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
   });
 
   actions = createDispatchMap({
     getContributors: GetAllContributors,
     deleteContributor: DeleteContributor,
-    updateContributor: UpdateContributor,
+    bulkUpdateContributors: BulkUpdateContributors,
     addContributor: AddContributor,
   });
 
@@ -102,13 +103,12 @@ export class ContributorsComponent implements OnInit {
   save() {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
-    const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.preprintId(), ResourceType.Preprint, payload)
-    );
-
-    forkJoin(updateRequests).subscribe(() => {
-      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-    });
+    this.actions
+      .bulkUpdateContributors(this.preprintId(), ResourceType.Preprint, updatedContributors)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() =>
+        this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage')
+      );
   }
 
   openAddContributorDialog() {

@@ -9,13 +9,13 @@ import { ContributorsService } from '@osf/shared/services';
 
 import {
   AddContributor,
+  BulkUpdateContributors,
   ClearUsers,
   DeleteContributor,
   GetAllContributors,
   ResetContributorsState,
   SearchUsers,
   UpdateBibliographyFilter,
-  UpdateContributor,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
 } from './contributors.actions';
@@ -33,13 +33,13 @@ export class ContributorsState {
   getAllContributors(ctx: StateContext<ContributorsStateModel>, action: GetAllContributors) {
     const state = ctx.getState();
 
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, data: [], isLoading: true, error: null },
-    });
-
     if (!action.resourceId || !action.resourceType) {
       return;
     }
+
+    ctx.patchState({
+      contributorsList: { ...state.contributorsList, data: [], isLoading: true, error: null },
+    });
 
     return this.contributorsService.getAllContributors(action.resourceType, action.resourceId).pipe(
       tap((contributors) => {
@@ -59,13 +59,13 @@ export class ContributorsState {
   addContributor(ctx: StateContext<ContributorsStateModel>, action: AddContributor) {
     const state = ctx.getState();
 
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
-    });
-
     if (!action.resourceId || !action.resourceType) {
       return;
     }
+
+    ctx.patchState({
+      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
+    });
 
     return this.contributorsService.addContributor(action.resourceType, action.resourceId, action.contributor).pipe(
       tap((contributor) => {
@@ -83,47 +83,39 @@ export class ContributorsState {
     );
   }
 
-  @Action(UpdateContributor)
-  updateContributor(ctx: StateContext<ContributorsStateModel>, action: UpdateContributor) {
+  @Action(BulkUpdateContributors)
+  bulkUpdateContributors(ctx: StateContext<ContributorsStateModel>, action: BulkUpdateContributors) {
     const state = ctx.getState();
+
+    if (!action.resourceId || !action.resourceType || !action.contributors.length) {
+      return;
+    }
 
     ctx.patchState({
       contributorsList: { ...state.contributorsList, isLoading: true, error: null },
     });
 
-    if (!action.resourceId || !action.resourceType) {
-      return;
-    }
-
-    return this.contributorsService.updateContributor(action.resourceType, action.resourceId, action.contributor).pipe(
-      tap((updatedContributor) => {
-        const currentState = ctx.getState();
-
-        ctx.patchState({
-          contributorsList: {
-            ...currentState.contributorsList,
-            data: currentState.contributorsList.data.map((contributor) =>
-              contributor.id === updatedContributor.id ? updatedContributor : contributor
-            ),
-            isLoading: false,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-    );
+    return this.contributorsService
+      .bulkUpdateContributors(action.resourceType, action.resourceId, action.contributors)
+      .pipe(
+        tap(() => {
+          ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+        }),
+        catchError((error) => handleSectionError(ctx, 'contributorsList', error))
+      );
   }
 
   @Action(DeleteContributor)
   deleteContributor(ctx: StateContext<ContributorsStateModel>, action: DeleteContributor) {
     const state = ctx.getState();
 
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
-    });
-
     if (!action.resourceId || !action.resourceType) {
       return;
     }
+
+    ctx.patchState({
+      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
+    });
 
     return this.contributorsService
       .deleteContributor(action.resourceType, action.resourceId, action.contributorId)

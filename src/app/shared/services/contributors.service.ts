@@ -1,4 +1,4 @@
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -77,6 +77,28 @@ export class ContributorsService {
       .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor.data)));
   }
 
+  deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
+
+    return this.jsonApiService.delete(baseUrl);
+  }
+
+  bulkUpdateContributors(
+    resourceType: ResourceType,
+    resourceId: string,
+    contributors: ContributorModel[]
+  ): Observable<ContributorModel[]> {
+    if (contributors.length === 0) {
+      return of([]);
+    }
+
+    const updateRequests = contributors.map((contributor) =>
+      this.updateContributor(resourceType, resourceId, contributor)
+    );
+
+    return forkJoin(updateRequests);
+  }
+
   updateContributor(
     resourceType: ResourceType,
     resourceId: string,
@@ -89,11 +111,5 @@ export class ContributorsService {
     return this.jsonApiService
       .patch<ContributorResponse>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor)));
-  }
-
-  deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
-
-    return this.jsonApiService.delete(baseUrl);
   }
 }

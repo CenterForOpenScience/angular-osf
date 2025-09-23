@@ -7,7 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ModeratorPermission } from '@osf/features/moderation/enums';
@@ -17,18 +17,29 @@ import { ContributorPermission } from '@shared/enums';
 
 import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
 import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';
+import { IconComponent } from '../../icon/icon.component';
 import { SelectComponent } from '../../select/select.component';
 
 @Component({
   selector: 'osf-contributors-list',
-  imports: [TranslatePipe, FormsModule, TableModule, Tooltip, Checkbox, Skeleton, Button, SelectComponent],
+  imports: [
+    TranslatePipe,
+    FormsModule,
+    TableModule,
+    Tooltip,
+    Checkbox,
+    Skeleton,
+    Button,
+    SelectComponent,
+    IconComponent,
+  ],
   templateUrl: './contributors-list.component.html',
   styleUrl: './contributors-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
 export class ContributorsListComponent {
-  contributors = input<ContributorModel[]>([]);
+  contributors = model<ContributorModel[]>([]);
   isLoading = input(false);
   showCurator = input(false);
   showEducation = input(true);
@@ -92,5 +103,10 @@ export class ContributorsListComponent {
       modal: true,
       closable: true,
     });
+  }
+
+  onRowReorder() {
+    const reorderedContributors = this.contributors().map((item, i) => ({ ...item, index: i }));
+    this.contributors.set(reorderedContributors);
   }
 }

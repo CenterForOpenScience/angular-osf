@@ -61,7 +61,7 @@
 
   <osf-contributors-list
     class="w-full"
-    [contributors]="contributors()"
+    [(contributors)]="contributors"
     [isLoading]="isContributorsLoading()"
     [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
     [currentUserId]="currentUser()?.id"

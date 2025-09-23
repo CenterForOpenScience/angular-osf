@@ -18,6 +18,7 @@ export class ContributorsMapper {
       isBibliographic: contributor.attributes.bibliographic,
       isUnregisteredContributor: !!contributor.attributes.unregistered_contributor,
       isCurator: contributor.attributes.is_curator,
+      index: contributor.attributes.index,
       permission: contributor.attributes.permission,
       fullName: contributor.embeds?.users?.data?.attributes?.full_name || '',
       givenName: contributor.embeds?.users?.data?.attributes?.given_name || '',
@@ -53,6 +54,7 @@ export class ContributorsMapper {
       isCurator: response.attributes.is_curator,
       isUnregisteredContributor: !!response.attributes.unregistered_contributor,
       permission: response.attributes.permission,
+      index: response.attributes.index,
       fullName: response.embeds.users.data.attributes.full_name,
       givenName: response.embeds.users.data.attributes.given_name,
       familyName: response.embeds.users.data.attributes.family_name,
@@ -71,6 +73,7 @@ export class ContributorsMapper {
         attributes: {
           bibliographic: model.isBibliographic,
           permission: model.permission,
+          index: model.index,
           id: model.id,
         },
         relationships: {
