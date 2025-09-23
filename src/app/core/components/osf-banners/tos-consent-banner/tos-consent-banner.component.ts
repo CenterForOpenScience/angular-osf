@@ -1,17 +1,18 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Message } from 'primeng/message';
 
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { AcceptTermsOfServiceByUser, UserSelectors } from '@core/store/user';
 import { IconComponent } from '@osf/shared/components';
+import { ToastService } from '@osf/shared/services';
 
 /**
  * TosConsentBannerComponent displays a Terms of Service (ToS) consent banner for users who haven't accepted yet.
@@ -34,6 +35,9 @@ import { IconComponent } from '@osf/shared/components';
   templateUrl: './tos-consent-banner.component.html',
 })
 export class TosConsentBannerComponent {
+  private readonly toastService = inject(ToastService);
+  private readonly translateService = inject(TranslateService);
+
   /**
    * NGXS dispatch map for the AcceptTermsOfServiceByUser action.
    */
@@ -48,14 +52,21 @@ export class TosConsentBannerComponent {
    * Local signal tracking whether the user has accepted the Terms of Service via checkbox.
    */
   acceptedTermsOfService = signal(false);
+  errorMessage: string | null = null;
 
   /**
    * Computed signal indicating whether the user has already accepted the Terms of Service.
    */
-  readonly acceptedTermsOfServiceChange = computed(() => {
-    const user = this.currentUser();
-    return user?.acceptedTermsOfService ?? false;
-  });
+  acceptedTermsOfServiceChange = computed(() =>
+    {
+      const user = this.currentUser()
+      /**
+      * if user is authenticated we check whether is accepted terms of service to hide banner or show if not
+      * otherwise user is not authenticated we hide banner always
+      */
+      return  user ? user?.acceptedTermsOfService : true;
+    }
+  );
 
   /**
    * Triggered when the user clicks the Continue button.
@@ -63,6 +74,13 @@ export class TosConsentBannerComponent {
    * - Dispatches `AcceptTermsOfServiceByUser` action otherwise.
    */
   onContinue() {
+    if (!this.acceptedTermsOfService()) {
+      this.errorMessage = this.translateService.instant('toast.tos-consent.errorMessage');
+      this.toastService.showError(this.errorMessage as string);
+      return;
+    }
+
+    this.errorMessage = null;
     this.actions.acceptTermsOfServiceByUser();
   }
 }
