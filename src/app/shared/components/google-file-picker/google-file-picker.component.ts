@@ -8,13 +8,12 @@ import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } fro
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
-import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';
-import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@osf/shared/stores';
 import { AddonType } from '@shared/enums';
 import { StorageItem } from '@shared/models';
-
-import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
+import { GoogleFileDataModel } from '@shared/models/files/google-file.data.model';
+import { GoogleFilePickerModel } from '@shared/models/files/google-file.picker.model';
+import { GoogleFilePickerDownloadService } from '@shared/services';
+import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@shared/stores';
 
 @Component({
   selector: 'osf-google-file-picker',
@@ -26,26 +25,25 @@ import { GoogleFilePickerDownloadService } from './service/google-file-picker.do
 })
 export class GoogleFilePickerComponent implements OnInit {
   private readonly Sentry = inject(SENTRY_TOKEN);
-  private readonly environmnet = inject(ENVIRONMENT);
-  readonly #translateService = inject(TranslateService);
-  readonly #googlePicker = inject(GoogleFilePickerDownloadService);
-
-  public isFolderPicker = input.required<boolean>();
-  public rootFolder = input<StorageItem | null>(null);
-  public accountId = input<string>('');
-  public handleFolderSelection = input<(folder: StorageItem) => void>();
-  currentAddonType = input<string>(AddonType.STORAGE);
-
-  public accessToken = signal<string | null>(null);
-  public visible = signal(false);
-  public isGFPDisabled = signal(true);
-  private readonly apiKey = this.environmnet.googleFilePickerApiKey;
-  private readonly appId = this.environmnet.googleFilePickerAppId;
-
   private readonly store = inject(Store);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly translateService = inject(TranslateService);
+  private readonly googlePicker = inject(GoogleFilePickerDownloadService);
+  private readonly apiKey = this.environment.googleFilePickerApiKey;
+  private readonly appId = this.environment.googleFilePickerAppId;
   private parentId = '';
   private isMultipleSelect!: boolean;
   private title!: string;
+
+  isFolderPicker = input.required<boolean>();
+  rootFolder = input<StorageItem | null>(null);
+  accountId = input<string>('');
+  handleFolderSelection = input<(folder: StorageItem) => void>();
+  currentAddonType = input<string>(AddonType.STORAGE);
+
+  accessToken = signal<string | null>(null);
+  visible = signal(false);
+  isGFPDisabled = signal(true);
 
   private get isPickerConfigured() {
     return !!this.apiKey && !!this.appId;
@@ -59,16 +57,16 @@ export class GoogleFilePickerComponent implements OnInit {
 
     this.parentId = this.isFolderPicker() ? '' : this.rootFolder()?.itemId || '';
     this.title = this.isFolderPicker()
-      ? this.#translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
-      : this.#translateService.instant('settings.addons.configureAddon.google-file-picker.file-folder-title');
+      ? this.translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
+      : this.translateService.instant('settings.addons.configureAddon.google-file-picker.file-folder-title');
     this.isMultipleSelect = !this.isFolderPicker();
 
-    this.#googlePicker.loadScript().subscribe({
+    this.googlePicker.loadScript().subscribe({
       next: () => {
-        this.#googlePicker.loadGapiModules().subscribe({
+        this.googlePicker.loadGapiModules().subscribe({
           next: () => {
-            this.#initializePicker();
-            this.#loadOauthToken();
+            this.initializePicker();
+            this.loadOauthToken();
           },
           error: (err) => this.Sentry.captureException(err, { tags: { feature: 'google-picker auth' } }),
         });
@@ -77,13 +75,7 @@ export class GoogleFilePickerComponent implements OnInit {
     });
   }
 
-  #initializePicker() {
-    if (this.isFolderPicker()) {
-      this.visible.set(true);
-    }
-  }
-
-  public createPicker(): void {
+  createPicker(): void {
     if (!this.isPickerConfigured) return;
     const google = window.google;
 
@@ -111,7 +103,13 @@ export class GoogleFilePickerComponent implements OnInit {
     picker.setVisible(true);
   }
 
-  #loadOauthToken(): void {
+  private initializePicker() {
+    if (this.isFolderPicker()) {
+      this.visible.set(true);
+    }
+  }
+
+  private loadOauthToken(): void {
     if (this.accountId()) {
       this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId(), this.currentAddonType())).subscribe({
         next: () => {
@@ -124,7 +122,7 @@ export class GoogleFilePickerComponent implements OnInit {
     }
   }
 
-  #filePickerCallback(data: GoogleFileDataModel) {
+  private filePickerCallback(data: GoogleFileDataModel) {
     this.handleFolderSelection()?.(
       Object({
         itemName: data.name,
@@ -135,7 +133,7 @@ export class GoogleFilePickerComponent implements OnInit {
 
   pickerCallback(data: GoogleFilePickerModel) {
     if (data.action === window.google.picker.Action.PICKED) {
-      this.#filePickerCallback(data.docs[0]);
+      this.filePickerCallback(data.docs[0]);
     }
   }
 }

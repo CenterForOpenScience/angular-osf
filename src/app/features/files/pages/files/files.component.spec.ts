@@ -22,11 +22,11 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
-import { GoogleFilePickerComponent } from '@osf/shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
 import { testNode } from '@osf/shared/mocks';
 import { OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
+import { GoogleFilePickerComponent } from '@shared/components/google-file-picker/google-file-picker.component';
 
 import { FilesSelectors } from '../../store';
 

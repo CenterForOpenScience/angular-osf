@@ -32,10 +32,9 @@ import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@osf/shared/help
 import { OperationInvokeData, StorageItem } from '@osf/shared/models';
 import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores';
 
+import { GoogleFilePickerComponent } from '../../google-file-picker/google-file-picker.component';
 import { SelectComponent } from '../../select/select.component';
 import { ResourceTypeInfoDialogComponent } from '../resource-type-info-dialog/resource-type-info-dialog.component';
-
-import { GoogleFilePickerComponent } from './google-file-picker/google-file-picker.component';
 
 @Component({
   selector: 'osf-storage-item-selector',

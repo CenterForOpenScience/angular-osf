@@ -3,7 +3,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { timer } from 'rxjs';
+
 import { AfterViewInit, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Employment } from '@osf/shared/models';
 
@@ -27,7 +30,9 @@ export class EmploymentHistoryDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    queueMicrotask(() => this.isContentVisible.set(true));
+    timer(0)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.isContentVisible.set(true));
   }
 
   close() {
