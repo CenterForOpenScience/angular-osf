@@ -132,12 +132,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (!this.viewOnly()) {
-      this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
+      this.dropZoneContainerRef()?.nativeElement?.addEventListener('dragenter', this.dragEnterHandler);
     }
   }
 
   ngOnDestroy(): void {
-    if (!this.viewOnly()) {
+    if (this.dropZoneContainerRef()?.nativeElement) {
       this.dropZoneContainerRef()!.nativeElement.removeEventListener('dragenter', this.dragEnterHandler);
     }
   }

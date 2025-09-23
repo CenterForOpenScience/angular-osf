@@ -6,17 +6,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserSelectors, UserState } from '@core/store/user';
 import { AddonsState } from '@osf/shared/stores';
 
-import { AddonsComponent } from './addons.component';
+import { ProjectAddonsComponent } from './project-addons.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('Component: Addons', () => {
-  let component: AddonsComponent;
-  let fixture: ComponentFixture<AddonsComponent>;
+  let component: ProjectAddonsComponent;
+  let fixture: ComponentFixture<ProjectAddonsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddonsComponent, OSFTestingModule],
+      imports: [ProjectAddonsComponent, OSFTestingModule],
       providers: [
         provideStore([UserState, AddonsState]),
         {
@@ -28,7 +28,7 @@ describe('Component: Addons', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddonsComponent);
+    fixture = TestBed.createComponent(ProjectAddonsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

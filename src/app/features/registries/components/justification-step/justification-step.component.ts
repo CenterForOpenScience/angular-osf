@@ -21,7 +21,7 @@ import {
   DeleteSchemaResponse,
   RegistriesSelectors,
   UpdateSchemaResponse,
-  UpdateStepValidation,
+  UpdateStepState,
 } from '../../store';
 
 @Component({
@@ -39,11 +39,12 @@ export class JustificationStepComponent implements OnDestroy {
   private readonly toastService = inject(ToastService);
 
   readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  readonly stepsState = select(RegistriesSelectors.getStepsState);
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   actions = createDispatchMap({
-    updateStepValidation: UpdateStepValidation,
+    updateStepState: UpdateStepState,
     updateRevision: UpdateSchemaResponse,
     deleteSchemaResponse: DeleteSchemaResponse,
     clearState: ClearState,
@@ -106,7 +107,7 @@ export class JustificationStepComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     if (!this.isDraftDeleted) {
-      this.actions.updateStepValidation('0', this.justificationForm.invalid);
+      this.actions.updateStepState('0', this.justificationForm.invalid, true);
       const changes = findChangedFields(
         { justification: this.justificationForm.value.justification! },
         { justification: this.schemaResponse()?.revisionJustification }

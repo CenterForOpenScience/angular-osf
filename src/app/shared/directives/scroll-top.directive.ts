@@ -18,10 +18,18 @@ export class ScrollTopOnRouteChangeDirective {
         takeUntilDestroyed()
       )
       .subscribe(() => {
-        (this.el.nativeElement as HTMLElement).scrollTo({
-          top: 0,
-          behavior: 'instant',
-        });
+        let route = this.router.routerState.root;
+
+        while (route.firstChild) {
+          route = route.firstChild;
+        }
+
+        if (route.snapshot.data['scrollToTop'] !== false) {
+          (this.el.nativeElement as HTMLElement).scrollTo({
+            top: 0,
+            behavior: 'instant',
+          });
+        }
       });
   }
 }

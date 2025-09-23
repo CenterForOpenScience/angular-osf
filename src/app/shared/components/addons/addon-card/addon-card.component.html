@@ -1,7 +1,12 @@
 <div class="addon-card flex flex-1 gap-4 flex-column p-5">
   <div class="max-h-8rem flex justify-content-center align-items-center">
-    @if (actualAddon()?.iconUrl) {
-      <img class="addon-image" alt="Addon card image" [src]="actualAddon()!.iconUrl" data-test-addon-card-logo />
+    @if (actualAddon()?.externalServiceName) {
+      <img
+        class="addon-image"
+        alt="AddonModel card image"
+        [src]="'assets/icons/addons/' + actualAddon()!.externalServiceName + '.svg'"
+        data-test-addon-card-logo
+      />
     }
   </div>
 

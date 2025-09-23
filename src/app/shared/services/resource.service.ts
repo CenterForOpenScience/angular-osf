@@ -55,6 +55,7 @@ export class ResourceGuidService {
               res.data.type === CurrentResourceType.Preprints
                 ? res.data.relationships.provider?.data.type
                 : res.data.relationships.target?.data.type,
+            wikiEnabled: res.data.attributes.wiki_enabled,
           }) as CurrentResource
       ),
       finalize(() => this.loaderService.hide())

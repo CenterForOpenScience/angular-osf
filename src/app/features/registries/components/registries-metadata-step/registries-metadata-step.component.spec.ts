@@ -39,7 +39,7 @@ describe('RegistriesMetadataStepComponent', () => {
       switch (selector) {
         case RegistriesSelectors.getDraftRegistration:
           return () => MOCK_DRAFT_REGISTRATION;
-        case RegistriesSelectors.getStepsValidation:
+        case RegistriesSelectors.getStepsState:
           return () => [];
         case ContributorsSelectors.getContributors:
           return () => [];

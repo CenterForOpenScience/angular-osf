@@ -10,8 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AddonOperationInvocationService } from '@osf/shared/services';
 import { AddonsSelectors, CreateAddonOperationInvocation } from '@osf/shared/stores';
-
-import { OperationNames } from '../../enums';
+import { OperationNames } from '@shared/enums';
 
 @Component({
   selector: 'osf-confirm-account-connection-modal',

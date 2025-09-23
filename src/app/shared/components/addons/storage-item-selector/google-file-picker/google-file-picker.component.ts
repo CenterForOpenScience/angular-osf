@@ -8,11 +8,11 @@ import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } fro
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import { StorageItemModel } from '@osf/shared/models';
 import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
 import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';
 import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@osf/shared/stores';
 import { AddonType } from '@shared/enums';
+import { StorageItem } from '@shared/models';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 
@@ -31,9 +31,9 @@ export class GoogleFilePickerComponent implements OnInit {
   readonly #googlePicker = inject(GoogleFilePickerDownloadService);
 
   public isFolderPicker = input.required<boolean>();
-  public rootFolder = input<StorageItemModel | null>(null);
+  public rootFolder = input<StorageItem | null>(null);
   public accountId = input<string>('');
-  public handleFolderSelection = input<(folder: StorageItemModel) => void>();
+  public handleFolderSelection = input<(folder: StorageItem) => void>();
   currentAddonType = input<string>(AddonType.STORAGE);
 
   public accessToken = signal<string | null>(null);

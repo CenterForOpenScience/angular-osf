@@ -2,7 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { BarChartComponent, LoadingSpinnerComponent, StatisticCardComponent } from '@shared/components';
@@ -45,26 +45,26 @@ export class InstitutionsSummaryComponent implements OnInit {
   rightsSearch = select(InstitutionsAdminSelectors.getSearchResults);
   rightsLoading = select(InstitutionsAdminSelectors.getSearchResultsLoading);
 
-  departmentLabels: string[] = [];
-  departmentDataset: DatasetInput[] = [];
+  departmentLabels = signal<string[]>([]);
+  departmentDataset = signal<DatasetInput[]>([]);
 
-  projectsLabels: string[] = [];
-  projectDataset: DatasetInput[] = [];
+  projectsLabels = signal<string[]>([]);
+  projectDataset = signal<DatasetInput[]>([]);
 
-  registrationsLabels: string[] = [];
-  registrationsDataset: DatasetInput[] = [];
+  registrationsLabels = signal<string[]>([]);
+  registrationsDataset = signal<DatasetInput[]>([]);
 
-  osfProjectsLabels: string[] = [];
-  osfProjectsDataset: DatasetInput[] = [];
+  osfProjectsLabels = signal<string[]>([]);
+  osfProjectsDataset = signal<DatasetInput[]>([]);
 
-  storageLabels: string[] = [];
-  storageDataset: DatasetInput[] = [];
+  storageLabels = signal<string[]>([]);
+  storageDataset = signal<DatasetInput[]>([]);
 
-  licenceLabels: string[] = [];
-  licenceDataset: DatasetInput[] = [];
+  licenceLabels = signal<string[]>([]);
+  licenceDataset = signal<DatasetInput[]>([]);
 
-  addonLabels: string[] = [];
-  addonDataset: DatasetInput[] = [];
+  addonLabels = signal<string[]>([]);
+  addonDataset = signal<DatasetInput[]>([]);
 
   private readonly actions = createDispatchMap({
     fetchDepartments: FetchInstitutionDepartments,
@@ -75,10 +75,12 @@ export class InstitutionsSummaryComponent implements OnInit {
   });
 
   constructor() {
-    effect(() => {
-      this.setStatisticSummaryData();
-      this.setChartData();
-    });
+    this.setStatisticSummaryDataEffect();
+    this.setDepartmentsEffect();
+    this.setSummaryMetricsEffect();
+    this.setStorageEffect();
+    this.setLicenseEffect();
+    this.setAddonsEffect();
   }
 
   ngOnInit(): void {
@@ -93,102 +95,131 @@ export class InstitutionsSummaryComponent implements OnInit {
     }
   }
 
-  private setStatisticSummaryData(): void {
-    const summary = this.summaryMetrics();
+  private setStatisticSummaryDataEffect(): void {
+    effect(() => {
+      const summary = this.summaryMetrics();
 
-    if (summary) {
-      this.statisticsData = [
-        {
-          label: 'adminInstitutions.summary.totalUsers',
-          value: summary.userCount,
-        },
-        {
-          label: 'adminInstitutions.summary.totalMonthlyLoggedInUsers',
-          value: summary.monthlyLoggedInUserCount,
-        },
-        {
-          label: 'adminInstitutions.summary.totalMonthlyActiveUsers',
-          value: summary.monthlyActiveUserCount,
-        },
-        {
-          label: 'adminInstitutions.summary.osfPublicAndPrivateProjects',
-          value: summary.publicProjectCount + summary.privateProjectCount,
-        },
-        {
-          label: 'adminInstitutions.summary.osfPublicAndEmbargoedRegistrations',
-          value: summary.publicRegistrationCount + summary.embargoedRegistrationCount,
-        },
-        {
-          label: 'adminInstitutions.summary.osfPreprints',
-          value: summary.publishedPreprintCount,
-        },
-        {
-          label: 'adminInstitutions.summary.totalPublicFileCount',
-          value: summary.publicFileCount,
-        },
-        {
-          label: 'adminInstitutions.summary.totalStorageInGb',
-          value: this.convertBytesToGB(summary.storageByteCount),
-        },
-      ];
-    }
+      if (summary) {
+        this.statisticsData = [
+          {
+            label: 'adminInstitutions.summary.totalUsers',
+            value: summary.userCount,
+          },
+          {
+            label: 'adminInstitutions.summary.totalMonthlyLoggedInUsers',
+            value: summary.monthlyLoggedInUserCount,
+          },
+          {
+            label: 'adminInstitutions.summary.totalMonthlyActiveUsers',
+            value: summary.monthlyActiveUserCount,
+          },
+          {
+            label: 'adminInstitutions.summary.osfPublicAndPrivateProjects',
+            value: summary.publicProjectCount + summary.privateProjectCount,
+          },
+          {
+            label: 'adminInstitutions.summary.osfPublicAndEmbargoedRegistrations',
+            value: summary.publicRegistrationCount + summary.embargoedRegistrationCount,
+          },
+          {
+            label: 'adminInstitutions.summary.osfPreprints',
+            value: summary.publishedPreprintCount,
+          },
+          {
+            label: 'adminInstitutions.summary.totalPublicFileCount',
+            value: summary.publicFileCount,
+          },
+          {
+            label: 'adminInstitutions.summary.totalStorageInGb',
+            value: this.convertBytesToGB(summary.storageByteCount),
+          },
+        ];
+      }
+    });
   }
 
-  private setChartData(): void {
-    const departments = this.departments();
-    const summary = this.summaryMetrics();
-    const storage = this.storageRegionSearch();
-    const licenses = this.rightsSearch();
-    const addons = this.hasOsfAddonSearch();
+  private setAddonsEffect(): void {
+    effect(() => {
+      const addons = this.hasOsfAddonSearch();
 
-    this.departmentLabels = departments.map((item) => item.name || '');
-    this.departmentDataset = [{ label: '', data: departments.map((item) => item.numberOfUsers) }];
-
-    this.projectsLabels = ['resourceCard.labels.publicProjects', 'adminInstitutions.summary.privateProjects'].map(
-      (el) => this.translateService.instant(el)
-    );
-    this.projectDataset = [{ label: '', data: [summary.publicProjectCount, summary.privateProjectCount] }];
-
-    this.registrationsLabels = [
-      'resourceCard.labels.publicRegistrations',
-      'adminInstitutions.summary.embargoedRegistrations',
-    ].map((el) => this.translateService.instant(el));
-    this.registrationsDataset = [
-      { label: '', data: [summary.publicRegistrationCount, summary.embargoedRegistrationCount] },
-    ];
-
-    this.osfProjectsLabels = [
-      'adminInstitutions.summary.publicRegistrations',
-      'adminInstitutions.summary.embargoedRegistrations',
-      'adminInstitutions.summary.publicProjects',
-      'adminInstitutions.summary.privateProjects',
-      'common.search.tabs.preprints',
-    ].map((el) => this.translateService.instant(el));
-    this.osfProjectsDataset = [
-      {
-        label: '',
-        data: [
-          summary.publicRegistrationCount,
-          summary.embargoedRegistrationCount,
-          summary.publicProjectCount,
-          summary.privateProjectCount,
-          summary.publishedPreprintCount,
-        ],
-      },
-    ];
-
-    this.storageLabels = storage.map((result) => result.label);
-    this.storageDataset = [{ label: '', data: storage.map((result) => +result.value) }];
-
-    this.licenceLabels = licenses.map((result) => result.label);
-    this.licenceDataset = [{ label: '', data: licenses.map((result) => +result.value) }];
-
-    this.addonLabels = addons.map((result) => result.label);
-    this.addonDataset = [{ label: '', data: addons.map((result) => +result.value) }];
+      this.addonLabels.set(addons.map((result) => result.label));
+      this.addonDataset.set([{ label: '', data: addons.map((result) => +result.value) }]);
+    });
   }
 
   private convertBytesToGB(bytes: number): string {
     const gb = bytes / (1024 * 1024 * 1024);
     return gb.toFixed(1);
+  }
+
+  private setDepartmentsEffect() {
+    effect(() => {
+      const departments = this.departments();
+
+      this.departmentLabels.set(departments.map((item) => item.name || ''));
+      this.departmentDataset.set([{ label: '', data: departments.map((item) => item.numberOfUsers) }]);
+    });
+  }
+
+  private setSummaryMetricsEffect() {
+    effect(() => {
+      const summary = this.summaryMetrics();
+
+      this.projectsLabels.set(
+        ['resourceCard.labels.publicProjects', 'adminInstitutions.summary.privateProjects'].map((el) =>
+          this.translateService.instant(el)
+        )
+      );
+      this.projectDataset.set([{ label: '', data: [summary.publicProjectCount, summary.privateProjectCount] }]);
+
+      this.registrationsLabels.set(
+        ['resourceCard.labels.publicRegistrations', 'adminInstitutions.summary.embargoedRegistrations'].map((el) =>
+          this.translateService.instant(el)
+        )
+      );
+      this.registrationsDataset.set([
+        { label: '', data: [summary.publicRegistrationCount, summary.embargoedRegistrationCount] },
+      ]);
+
+      this.osfProjectsLabels.set(
+        [
+          'adminInstitutions.summary.publicRegistrations',
+          'adminInstitutions.summary.embargoedRegistrations',
+          'adminInstitutions.summary.publicProjects',
+          'adminInstitutions.summary.privateProjects',
+          'common.search.tabs.preprints',
+        ].map((el) => this.translateService.instant(el))
+      );
+      this.osfProjectsDataset.set([
+        {
+          label: '',
+          data: [
+            summary.publicRegistrationCount,
+            summary.embargoedRegistrationCount,
+            summary.publicProjectCount,
+            summary.privateProjectCount,
+            summary.publishedPreprintCount,
+          ],
+        },
+      ]);
+    });
+  }
+
+  private setStorageEffect() {
+    effect(() => {
+      const storage = this.storageRegionSearch();
+
+      this.storageLabels.set(storage.map((result) => result.label));
+      this.storageDataset.set([{ label: '', data: storage.map((result) => +result.value) }]);
+    });
+  }
+
+  private setLicenseEffect() {
+    effect(() => {
+      const licenses = this.rightsSearch();
+
+      this.licenceLabels.set(licenses.map((result) => result.label));
+      this.licenceDataset.set([{ label: '', data: licenses.map((result) => +result.value) }]);
+    });
   }
 }

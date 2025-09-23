@@ -110,6 +110,7 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
+        data: { scrollToTop: false },
         canActivate: [authGuard],
       },
       {

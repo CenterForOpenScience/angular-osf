@@ -43,7 +43,7 @@ import {
   SetUpdatedFields,
   UpdateDraft,
   UpdateSchemaResponse,
-  UpdateStepValidation,
+  UpdateStepState,
 } from './registries.actions';
 import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from './registries.model';
 
@@ -260,13 +260,13 @@ export class RegistriesState {
     );
   }
 
-  @Action(UpdateStepValidation)
-  updateStepValidation(ctx: StateContext<RegistriesStateModel>, { step, invalid }: UpdateStepValidation) {
+  @Action(UpdateStepState)
+  updateStepState(ctx: StateContext<RegistriesStateModel>, { step, invalid, touched }: UpdateStepState) {
     const state = ctx.getState();
     ctx.patchState({
-      stepsValidation: {
-        ...state.stepsValidation,
-        [step]: { invalid },
+      stepsState: {
+        ...state.stepsState,
+        [step]: { invalid, touched },
       },
     });
   }

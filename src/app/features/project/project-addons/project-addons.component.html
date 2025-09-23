@@ -39,7 +39,7 @@
             />
           </div>
         </section>
-        @if (!isAddonsLoading()) {
+        @if (!isAllAddonsTabLoading()) {
           <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
         } @else {
           <div class="flex-1 mt-4 md:mt-8 lg:pt-5">

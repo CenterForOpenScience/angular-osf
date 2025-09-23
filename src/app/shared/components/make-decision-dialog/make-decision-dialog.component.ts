@@ -58,9 +58,19 @@ export class MakeDecisionDialogComponent implements OnInit {
     return provider?.reviewsWorkflow === ModerationType.Post;
   });
 
-  isPendingStatus = computed(() => {
-    return this.currentReviewAction()?.toState === SubmissionReviewStatus.Pending;
-  });
+  isPendingStatus = computed(() => this.currentReviewAction()?.toState === SubmissionReviewStatus.Pending);
+  isAcceptedStatus = computed(() => this.currentReviewAction()?.toState === SubmissionReviewStatus.Accepted);
+
+  isRejectOptionVisible = computed(
+    () => (this.isPreModeration() && this.isPendingStatus()) || (this.isHybridModeration() && this.isPendingStatus())
+  );
+
+  isWithdrawOptionVisible = computed(
+    () =>
+      (this.isPreModeration() && this.isAcceptedStatus()) ||
+      (this.isHybridModeration() && !this.isPendingStatus()) ||
+      this.isPostModeration()
+  );
 
   ngOnInit() {
     this.initForm();
