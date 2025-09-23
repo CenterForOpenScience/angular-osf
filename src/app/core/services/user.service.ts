@@ -8,11 +8,11 @@ import { UserMapper } from '@osf/shared/mappers';
 import {
   JsonApiResponse,
   ProfileSettingsUpdate,
-  User,
   UserAcceptedTermsOfServiceJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
+  UserModel,
   UserResponseJsonApi,
   UserSettings,
   UserSettingsGetResponse,
@@ -25,9 +25,12 @@ import { JsonApiService } from '@shared/services';
 export class UserService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
-  getUserById(userId: string): Observable<User> {
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  getUserById(userId: string): Observable<UserModel> {
     return this.jsonApiService
       .get<UserResponseJsonApi>(`${this.apiUrl}/users/${userId}/`)
       .pipe(map((response) => UserMapper.fromUserGetResponse(response.data)));
@@ -53,7 +56,7 @@ export class UserService {
       .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response)));
   }
 
-  updateUserProfile(userId: string, key: string, data: ProfileSettingsUpdate): Observable<User> {
+  updateUserProfile(userId: string, key: string, data: ProfileSettingsUpdate): Observable<UserModel> {
     const data_formatted =
       // eslint-disable-next-line no-prototype-builtins
       ProfileSettingsKey.User && data.hasOwnProperty('acceptedTermsOfService')
@@ -68,7 +71,7 @@ export class UserService {
       .pipe(map((response) => UserMapper.fromUserGetResponse(response)));
   }
 
-  updateUserAcceptedTermsOfService(userId: string, data: UserAcceptedTermsOfServiceJsonApi): Observable<User> {
+  updateUserAcceptedTermsOfService(userId: string, data: UserAcceptedTermsOfServiceJsonApi): Observable<UserModel> {
     return this.jsonApiService
       .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, {
         data: { type: 'users', id: userId, attributes: data },

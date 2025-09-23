@@ -35,12 +35,15 @@ export const settingsRoutes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('./addons/addons.component').then((mod) => mod.AddonsComponent),
+            loadComponent: () =>
+              import('@osf/features/settings/settings-addons/settings-addons.component').then(
+                (mod) => mod.SettingsAddonsComponent
+              ),
           },
           {
             path: 'connect-addon',
             loadComponent: () =>
-              import('@osf/features/settings/addons/components/connect-addon/connect-addon.component').then(
+              import('@osf/features/settings/settings-addons/components/connect-addon/connect-addon.component').then(
                 (mod) => mod.ConnectAddonComponent
               ),
           },

@@ -32,18 +32,22 @@ export const routes: Routes = [
       {
         path: 'users',
         component: InstitutionsUsersComponent,
+        data: { scrollToTop: false },
       },
       {
         path: 'projects',
         component: InstitutionsProjectsComponent,
+        data: { scrollToTop: false },
       },
       {
         path: 'registrations',
         component: InstitutionsRegistrationsComponent,
+        data: { scrollToTop: false },
       },
       {
         path: 'preprints',
         component: InstitutionsPreprintsComponent,
+        data: { scrollToTop: false },
       },
     ],
   },

@@ -1,8 +1,12 @@
-import { AddonModel } from './addons.models';
-import { ConfiguredAddonModel } from './configured-addon.model';
+import { AddonModel, ConfiguredAddonModel } from '@shared/models';
 
 export interface AddonCardModel {
-  addon: AddonModel;
+  id: string;
+  type: string;
+  displayName: string;
+  externalServiceName: string;
+  iconUrl?: string;
   isConfigured: boolean;
+  addon: AddonModel;
   configuredAddon?: ConfiguredAddonModel;
 }

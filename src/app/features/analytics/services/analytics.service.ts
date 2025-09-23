@@ -16,7 +16,10 @@ import { AnalyticsMetricsGetResponse, AnalyticsMetricsModel, RelatedCountsGetRes
 export class AnalyticsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiDomainUrl = this.environment.apiDomainUrl;
+
+  get apiDomainUrl() {
+    return this.environment.apiDomainUrl;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],

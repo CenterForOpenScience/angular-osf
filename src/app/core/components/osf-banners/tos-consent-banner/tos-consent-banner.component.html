@@ -1,0 +1,48 @@
+@if (!acceptedTermsOfServiceChange()) {
+  <div class="p-3">
+    <p-message styleClass="w-full" severity="warn">
+      <ng-template #container>
+        <div class="flex flex-column w-full">
+          <div class="flex items-center gap-2">
+            <osf-icon iconClass="fas fa-triangle-exclamation"></osf-icon>
+
+            <span class="font-medium">
+              {{ 'toast.tos-consent.message' | translate }}
+              <a class="font-bold" [routerLink]="['/terms-of-use']" target="_blank">
+                {{ 'toast.tos-consent.termsOfUse' | translate }}
+              </a>
+              {{ 'toast.tos-consent.and' | translate }}
+              <a class="font-bold" [routerLink]="['/privacy-policy']" target="_blank">
+                {{ 'toast.tos-consent.privacyPolicy' | translate }}
+              </a>
+            </span>
+          </div>
+
+          <div class="flex align-items-center justify-content-between mt-2">
+            <div class="flex align-items-center gap-2">
+              <p-checkbox
+                [ngModel]="acceptedTermsOfService()"
+                (ngModelChange)="acceptedTermsOfService.set($event)"
+                binary="true"
+                inputId="terms"
+              >
+              </p-checkbox>
+
+              <label for="terms" class="m-0 cursor-pointer">
+                {{ 'toast.tos-consent.haveReadAndAgree' | translate }}
+              </label>
+            </div>
+
+            <p-button
+              link
+              [label]="'toast.tos-consent.continue' | translate"
+              [disabled]="!acceptedTermsOfService()"
+              (onClick)="onContinue()"
+            >
+            </p-button>
+          </div>
+        </div>
+      </ng-template>
+    </p-message>
+  </div>
+}

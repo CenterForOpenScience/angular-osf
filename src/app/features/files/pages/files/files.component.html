@@ -101,7 +101,7 @@
             ></osf-google-file-picker>
           }
         }
-        <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
+        <input #fileInput type="file" multiple class="hidden" (change)="onFileSelected($event)" />
       </div>
     </div>
 
@@ -135,7 +135,7 @@
       [provider]="provider()"
       (folderIsOpening)="folderIsOpening($event)"
       (entryFileClicked)="navigateToFile($event)"
-      (uploadFileConfirmed)="uploadFile($event)"
+      (uploadFilesConfirmed)="uploadFiles($event)"
       (filesPageChange)="onFilesPageChange($event)"
     >
     </osf-files-tree>

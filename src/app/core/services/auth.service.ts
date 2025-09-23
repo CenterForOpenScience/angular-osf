@@ -19,10 +19,19 @@ export class AuthService {
   private readonly cookieService = inject(CookieService);
   private readonly loaderService = inject(LoaderService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2/users/`;
-  private readonly webUrl = this.environment.webUrl;
-  private readonly casUrl = this.environment.casUrl;
   private readonly actions = createDispatchMap({ clearCurrentUser: ClearCurrentUser });
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2/users/`;
+  }
+
+  get webUrl() {
+    return this.environment.webUrl;
+  }
+
+  get casUrl() {
+    return this.environment.casUrl;
+  }
 
   navigateToSignIn(): void {
     this.loaderService.show();

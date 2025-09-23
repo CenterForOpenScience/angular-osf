@@ -1,13 +1,13 @@
 import { Selector } from '@ngxs/store';
 
-import { Education, Employment, SocialModel, User, UserSettings } from '@osf/shared/models';
+import { Education, Employment, SocialModel, UserModel, UserSettings } from '@osf/shared/models';
 
 import { UserStateModel } from './user.model';
 import { UserState } from './user.state';
 
 export class UserSelectors {
   @Selector([UserState])
-  static getCurrentUser(state: UserStateModel): User | null {
+  static getCurrentUser(state: UserStateModel): UserModel | null {
     return state.currentUser.data || localStorage.getItem('currentUser')
       ? JSON.parse(localStorage.getItem('currentUser')!)
       : null;
@@ -39,7 +39,7 @@ export class UserSelectors {
   }
 
   @Selector([UserState])
-  static getUserNames(state: UserStateModel): Partial<User> | null {
+  static getUserNames(state: UserStateModel): Partial<UserModel> | null {
     return state.currentUser.data;
   }
 

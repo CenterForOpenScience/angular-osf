@@ -5,7 +5,7 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { OverviewCollectionsComponent } from '@osf/features/project/overview/components/overview-collections/overview-collections.component';
@@ -35,6 +35,7 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
 })
 export class ResourceMetadataComponent {
   private readonly environment = inject(ENVIRONMENT);
+  private readonly router = inject(Router);
 
   currentResource = input.required<ResourceOverview | null>();
   customCitationUpdated = output<string>();
@@ -50,5 +51,9 @@ export class ResourceMetadataComponent {
 
   onCustomCitationUpdated(citation: string): void {
     this.customCitationUpdated.emit(citation);
+  }
+
+  tagClicked(tag: string) {
+    this.router.navigate(['/search'], { queryParams: { search: tag } });
   }
 }

@@ -19,7 +19,7 @@ export class RegistryModerationMapper {
       embargoed: response.attributes.embargoed,
       embargoEndDate: response.attributes.embargo_end_date,
       actions: [],
-      revisionId: response.embeds?.schema_responses?.data[0]?.id || null,
+      revisionId: response.embeds?.schema_responses?.data?.[0]?.id || null,
     };
   }
 

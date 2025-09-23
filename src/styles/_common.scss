@@ -136,3 +136,9 @@
 .dark-blue-link {
   color: var(--dark-blue-1);
 }
+
+.provider-description {
+  a:hover {
+    color: var(--branding-primary-color);
+  }
+}

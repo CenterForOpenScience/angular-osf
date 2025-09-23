@@ -1,7 +1,7 @@
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 import { UserRelatedCounts } from '@shared/models';
 
-export const MOCK_USER: User = {
+export const MOCK_USER: UserModel = {
   iri: '',
   id: '1',
   fullName: 'John Doe',

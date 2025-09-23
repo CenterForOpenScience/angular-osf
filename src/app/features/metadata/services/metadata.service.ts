@@ -27,9 +27,19 @@ import { CrossRefFundersResponse, CustomItemMetadataRecord, Metadata } from '../
 export class MetadataService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiDomainUrl = this.environment.apiDomainUrl;
-  private readonly funderApiUrl = this.environment.funderApiUrl;
-  private readonly apiUrl = `${this.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get apiDomainUrl() {
+    return this.environment.apiDomainUrl;
+  }
+
+  get funderApiUrl() {
+    return this.environment.funderApiUrl;
+  }
+
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],

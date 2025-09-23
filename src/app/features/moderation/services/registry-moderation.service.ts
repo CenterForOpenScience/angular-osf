@@ -16,7 +16,10 @@ import { RegistryModeration, RegistryResponseJsonApi, ReviewAction, ReviewAction
 export class RegistryModerationService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getRegistrySubmissions(
     provider: string,
@@ -27,7 +30,11 @@ export class RegistryModerationService {
     const filters =
       status === SubmissionReviewStatus.PendingUpdates
         ? `filter[reviews_state]=embargo,accepted&filter[revision_state]=pending_moderation`
-        : `filter[reviews_state]=${status}`;
+        : status === SubmissionReviewStatus.Embargo
+          ? `filter[reviews_state]=embargo,pending_embargo_termination`
+          : status === SubmissionReviewStatus.Removed
+            ? `filter[reviews_state]=withdrawn`
+            : `filter[reviews_state]=${status}`;
 
     const baseUrl = `${this.apiUrl}/providers/registrations/${provider}/registrations/?page=${page}&page[size]=10&${filters}&sort=${sort}`;
     const params = {

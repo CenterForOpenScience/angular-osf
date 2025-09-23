@@ -29,7 +29,10 @@ import {
 export class SettingsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getProjectSettings(nodeId: string): Observable<ProjectSettingsModel> {
     return this.jsonApiService

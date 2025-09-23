@@ -38,6 +38,7 @@ import {
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
 
+import { EditTitleDialogComponent } from './dialogs/edit-title-dialog/edit-title-dialog.component';
 import {
   MetadataAffiliatedInstitutionsComponent,
   MetadataContributorsComponent,
@@ -46,9 +47,11 @@ import {
   MetadataFundingComponent,
   MetadataLicenseComponent,
   MetadataPublicationDoiComponent,
+  MetadataRegistrationDoiComponent,
   MetadataResourceInformationComponent,
   MetadataSubjectsComponent,
   MetadataTagsComponent,
+  MetadataTitleComponent,
 } from './components';
 import {
   AffiliatedInstitutionsDialogComponent,
@@ -64,7 +67,7 @@ import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
   CedarRecordDataBinding,
-  DescriptionResultModel,
+  DialogValueModel,
 } from './models';
 import {
   CreateCedarMetadataRecord,
@@ -96,6 +99,8 @@ import {
     MetadataFundingComponent,
     MetadataDateInfoComponent,
     MetadataTagsComponent,
+    MetadataTitleComponent,
+    MetadataRegistrationDoiComponent,
   ],
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
@@ -181,6 +186,8 @@ export class MetadataComponent implements OnInit {
       (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
     );
   });
+
+  showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
 
   bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
 
@@ -327,21 +334,42 @@ export class MetadataComponent implements OnInit {
     });
   }
 
+  openEditTitleDialog(): void {
+    this.dialogService
+      .open(EditTitleDialogComponent, {
+        header: this.translateService.instant('project.metadata.editTitle'),
+        width: '500px',
+        focusOnShow: false,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: this.metadata()?.title,
+      })
+      .onClose.pipe(
+        filter((result: DialogValueModel) => !!result),
+        switchMap((result) => {
+          if (this.resourceId) {
+            return this.actions.updateMetadata(this.resourceId, this.resourceType(), { title: result.value });
+          }
+          return EMPTY;
+        })
+      )
+      .subscribe(() => this.toastService.showSuccess('project.metadata.titleUpdated'));
+  }
+
   openEditDescriptionDialog(): void {
-    const dialogRef = this.dialogService.open(DescriptionDialogComponent, {
-      header: this.translateService.instant('project.metadata.description.dialog.header'),
-      width: '500px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        currentMetadata: this.metadata(),
-      },
-    });
-    dialogRef.onClose
-      .pipe(
-        filter((result: DescriptionResultModel) => !!result),
+    this.dialogService
+      .open(DescriptionDialogComponent, {
+        header: this.translateService.instant('project.metadata.description.dialog.header'),
+        width: '500px',
+        focusOnShow: false,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: this.metadata()?.description,
+      })
+      .onClose.pipe(
+        filter((result: DialogValueModel) => !!result),
         switchMap((result) => {
           if (this.resourceId) {
             return this.actions.updateMetadata(this.resourceId, this.resourceType(), { description: result.value });
@@ -508,22 +536,16 @@ export class MetadataComponent implements OnInit {
       closeOnEscape: true,
       modal: true,
       closable: true,
-      data: {
-        publicationDoi: this.metadata()?.publicationDoi,
-      },
+      data: this.metadata()?.publicationDoi,
     });
     dialogRef.onClose
       .pipe(
-        filter((result) => !!result),
-        switchMap((result) => {
-          return this.actions.updateMetadata(this.resourceId, this.resourceType(), { article_doi: result });
-        })
+        filter((result: DialogValueModel) => !!result),
+        switchMap((result) =>
+          this.actions.updateMetadata(this.resourceId, this.resourceType(), { article_doi: result.value })
+        )
       )
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess('project.metadata.description.updated');
-        },
-      });
+      .subscribe(() => this.toastService.showSuccess('project.metadata.publicationDoi.updated'));
   }
 
   private loadCedarRecord(recordId: string): void {

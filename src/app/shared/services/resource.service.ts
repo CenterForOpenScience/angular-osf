@@ -26,7 +26,10 @@ export class ResourceGuidService {
   private jsonApiService = inject(JsonApiService);
   private loaderService = inject(LoaderService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -52,6 +55,7 @@ export class ResourceGuidService {
               res.data.type === CurrentResourceType.Preprints
                 ? res.data.relationships.provider?.data.type
                 : res.data.relationships.target?.data.type,
+            wikiEnabled: res.data.attributes.wiki_enabled,
           }) as CurrentResource
       ),
       finalize(() => this.loaderService.hide())

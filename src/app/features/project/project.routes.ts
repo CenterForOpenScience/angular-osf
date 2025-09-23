@@ -111,7 +111,8 @@ export const projectRoutes: Routes = [
       {
         path: 'addons',
         canActivate: [viewOnlyGuard],
-        loadChildren: () => import('../project/addons/addons.routes').then((mod) => mod.addonsRoutes),
+        loadChildren: () =>
+          import('@osf/features/project/project-addons/project-addons.routes').then((mod) => mod.projectAddonsRoutes),
       },
       {
         path: 'links',

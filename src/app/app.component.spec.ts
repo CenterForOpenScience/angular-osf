@@ -8,11 +8,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 
+import { CookieConsentBannerComponent } from '@core/components/osf-banners/cookie-consent-banner/cookie-consent-banner.component';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser, UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
 
-import { CookieConsentComponent, FullScreenLoaderComponent, ToastComponent } from './shared/components';
+import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 import { TranslateServiceMock } from './shared/mocks';
 import { AppComponent } from './app.component';
 
@@ -35,7 +36,7 @@ describe('Component: App', () => {
       imports: [
         OSFTestingModule,
         AppComponent,
-        ...MockComponents(ToastComponent, FullScreenLoaderComponent, CookieConsentComponent),
+        ...MockComponents(ToastComponent, FullScreenLoaderComponent, CookieConsentBannerComponent),
       ],
       providers: [
         provideStore([UserState, UserEmailsState]),

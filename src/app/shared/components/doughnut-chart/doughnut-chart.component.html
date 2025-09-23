@@ -5,24 +5,29 @@
 @if (isLoading()) {
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
-  <div class="flex flex-column justify-content-between h-full">
-    <div class="flex align-items-center justify-content-center w-full h-full">
-      <p-chart class="mt-4" type="doughnut" responsive="true" [data]="data()" [options]="options()"></p-chart>
+  <div class="flex flex-column justify-content-start gap-2 h-full md:gap-4">
+    <div class="h-15rem w-15rem md:h-19rem md:w-19rem">
+      @if (data() && options() && labels().length) {
+        <p-chart type="doughnut" responsive="true" [data]="data()" [options]="options()"></p-chart>
+      }
     </div>
 
     @if (showExpandedSection()) {
-      <div class="resource pt-2 md:pt-4">
+      <div class="resource">
         <p-accordion>
           <p-accordion-panel value="0">
-            <p-accordion-header class="flex flex-row column-gap-3 align-items-center p-0 pb-4">
+            <p-accordion-header class="flex flex-row column-gap-3 align-items-center p-0">
               <h4>{{ title() | translate }}</h4>
             </p-accordion-header>
             <p-accordion-content>
-              <div class="content">
+              <div class="pt-3">
                 @for (label of labels(); let i = $index; track i) {
                   <li class="flex align-items-center justify-content-between gap-3 mb-2">
                     <div class="flex align-items-center gap-2">
-                      <div class="w-1rem h-1rem" [style.background-color]="getColor(i)"></div>
+                      <div
+                        class="w-1rem h-1rem"
+                        [style.background-color]="PIE_CHART_PALETTE[i % PIE_CHART_PALETTE.length]"
+                      ></div>
                       <span>{{ label }}</span>
                     </div>
                     @if (datasets().length) {

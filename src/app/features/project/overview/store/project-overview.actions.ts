@@ -39,6 +39,10 @@ export class DuplicateProject {
   ) {}
 }
 
+export class ClearDuplicatedProject {
+  static readonly type = '[Project Overview] Clear Duplicated Project';
+}
+
 export class ClearProjectOverview {
   static readonly type = '[Project Overview] Clear Project Overview';
 }

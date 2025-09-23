@@ -3,16 +3,16 @@
   [loading]="isProjectsLoading()"
   [options]="projectsOptions()"
   [filter]="true"
-  (onFilter)="handleFilterSearch($event)"
   optionLabel="label"
   optionValue="value"
   appendTo="body"
   [emptyFilterMessage]="filterMessage()"
   [emptyMessage]="filterMessage()"
-  (onChange)="handleProjectChange($event)"
-  [placeholder]="placeholder() | translate"
   [(ngModel)]="selectedProject"
+  [placeholder]="placeholder() | translate"
   [showClear]="showClear() && !!selectedProject()"
+  (onFilter)="handleFilterSearch($event)"
+  (onChange)="handleProjectChange($event)"
 >
   <ng-template #selectedItem let-selectedOption>
     {{ selectedOption.label }}

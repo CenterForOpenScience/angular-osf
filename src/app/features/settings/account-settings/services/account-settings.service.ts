@@ -4,7 +4,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserMapper } from '@osf/shared/mappers';
-import { JsonApiResponse, User, UserDataJsonApi } from '@osf/shared/models';
+import { JsonApiResponse, UserDataJsonApi, UserModel } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { MapAccountSettings, MapExternalIdentities } from '../mappers';
@@ -21,9 +21,12 @@ import {
 export class AccountSettingsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
 
-  updateLocation(userId: string, locationId: string): Observable<User> {
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  updateLocation(userId: string, locationId: string): Observable<UserModel> {
     const body = {
       data: {
         id: userId,
@@ -45,7 +48,7 @@ export class AccountSettingsService {
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
-  updateIndexing(userId: string, allowIndexing: boolean): Observable<User> {
+  updateIndexing(userId: string, allowIndexing: boolean): Observable<UserModel> {
     const body = {
       data: {
         id: userId,

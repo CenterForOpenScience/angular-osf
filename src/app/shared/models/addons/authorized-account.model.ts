@@ -1,18 +1,13 @@
-export interface AuthorizedAccountModel {
-  type: string;
-  id: string;
-  displayName: string;
-  apiBaseUrl: string;
+import { AddonModel } from '@shared/models';
+
+export interface AuthorizedAccountModel extends AddonModel {
   authUrl: string | null;
   authorizedCapabilities: string[];
   authorizedOperationNames: string[];
-  defaultRootFolder: string;
   credentialsAvailable: boolean;
+  apiBaseUrl: string;
+  defaultRootFolder: string;
   oauthToken: string;
   accountOwnerId: string;
   externalStorageServiceId: string;
-  externalServiceName: string;
-  supportedFeatures: string[];
-  providerName: string;
-  credentialsFormat: string;
 }

@@ -16,7 +16,6 @@
     <osf-overview-toolbar
       [isCollectionsRoute]="isCollectionsRoute()"
       [currentResource]="currentResource()"
-      [projectTitle]="project.title"
       [projectDescription]="project.description"
       [canEdit]="isAdmin"
     />
@@ -32,40 +31,14 @@
       />
 
       @if (status && isCollectionsRoute() && collectionProvider()) {
-        @switch (status) {
-          @case (SubmissionReviewStatus.Pending) {
-            <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="warn">
-              {{ 'project.overview.collectionsModeration.pending' | translate }}
-              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
-                {{ collectionProvider()?.name }}</a
-              >
-            </p-message>
-          }
-          @case (SubmissionReviewStatus.Accepted) {
-            <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="success">
-              {{ 'project.overview.collectionsModeration.accepted' | translate }}
-              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
-                {{ collectionProvider()?.name }}</a
-              >
-            </p-message>
-          }
-          @case (SubmissionReviewStatus.Rejected) {
-            <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="error">
-              {{ 'project.overview.collectionsModeration.rejected' | translate }}
-              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
-                {{ collectionProvider()?.name }}</a
-              >
-            </p-message>
-          }
-          @case (SubmissionReviewStatus.Removed) {
-            <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="secondary">
-              {{ 'project.overview.collectionsModeration.removed' | translate }}
-              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
-                {{ collectionProvider()?.name }}</a
-              >
-            </p-message>
-          }
-        }
+        @let submissionOption = SubmissionReviewStatusOptions[status];
+
+        <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="warn">
+          {{ submissionOption.label | translate }}
+          <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
+            {{ collectionProvider()?.name }}
+          </a>
+        </p-message>
       }
     }
 
@@ -75,16 +48,17 @@
 
     <div class="flex flex-column gap-4 left-section">
       @if (isAdmin || canWrite) {
-        <osf-project-wiki />
+        <osf-overview-wiki [resourceId]="currentProject()!.id" />
       }
+
       <osf-files-widget
         [rootOption]="filesRootOption()"
         [components]="components()"
         [areComponentsLoading]="areComponentsLoading()"
       />
 
-      <osf-project-components [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />
-      <osf-linked-resources [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />
+      <osf-project-components [canEdit]="canWrite && !isCollectionsRoute()" />
+      <osf-linked-resources [canEdit]="canWrite && !isCollectionsRoute()" />
       <osf-recent-activity-list [pageSize]="activityPageSize" />
     </div>
 

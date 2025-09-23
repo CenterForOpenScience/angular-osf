@@ -8,5 +8,5 @@ export enum SubmissionReviewStatus {
   Public = 'public',
   Embargo = 'embargo',
   PendingUpdates = 'pending-updates',
-  PendingWithdrawal = 'pending-withdrawal',
+  PendingWithdrawal = 'pending_withdraw',
 }

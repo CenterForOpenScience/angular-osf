@@ -1,7 +1,6 @@
 import { provideStore, Store } from '@ngxs/store';
 
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
 import { AddonsService } from '@osf/shared/services/addons/addons.service';
@@ -18,13 +17,15 @@ import { AddonsState } from './addons.state';
 import { getAddonsAuthorizedStorageData } from '@testing/data/addons/addons.authorized-storage.data';
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('State: Addons', () => {
   let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideStore([AddonsState]), provideHttpClient(), provideHttpClientTesting(), AddonsService],
+      imports: [OSFTestingModule],
+      providers: [provideStore([AddonsState]), AddonsService],
     });
 
     store = TestBed.inject(Store);
@@ -42,7 +43,7 @@ describe('State: Addons', () => {
         const loading = store.selectSignal(AddonsSelectors.getStorageAddonsLoading);
         expect(loading()).toBeTruthy();
 
-        const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/external-storage-services');
+        const request = httpMock.expectOne('http://addons.localhost:8000/external-storage-services');
         expect(request.request.method).toBe('GET');
         request.flush(getAddonsExternalStorageData());
 
@@ -52,6 +53,7 @@ describe('State: Addons', () => {
             credentialsFormat: 'OAUTH2',
             displayName: 'figshare',
             externalServiceName: 'figshare',
+            iconUrl: 'https://addons.staging4.osf.io/static/provider_icons/figshare.svg',
             id: '1d8d9be2-522e-4969-b8fa-bfb45ae13c0d',
             providerName: 'figshare',
             supportedFeatures: ['DOWNLOAD_AS_ZIP', 'FORKING', 'LOGS', 'PERMISSIONS', 'REGISTERING'],
@@ -68,6 +70,7 @@ describe('State: Addons', () => {
             credentialsFormat: 'OAUTH2',
             displayName: 'figshare',
             externalServiceName: 'figshare',
+            iconUrl: 'https://addons.staging4.osf.io/static/provider_icons/figshare.svg',
             id: '1d8d9be2-522e-4969-b8fa-bfb45ae13c0d',
             providerName: 'figshare',
             supportedFeatures: ['DOWNLOAD_AS_ZIP', 'FORKING', 'LOGS', 'PERMISSIONS', 'REGISTERING'],
@@ -95,15 +98,14 @@ describe('State: Addons', () => {
       const loading = store.selectSignal(AddonsSelectors.getStorageAddonsLoading);
       expect(loading()).toBeTruthy();
 
-      const req = httpMock.expectOne('https://addons.staging4.osf.io/v1/external-storage-services');
+      const req = httpMock.expectOne('http://addons.localhost:8000/external-storage-services');
       expect(req.request.method).toBe('GET');
 
       req.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
 
       expect(result).toEqual({
         data: [],
-        error:
-          'Http failure response for https://addons.staging4.osf.io/v1/external-storage-services: 500 Server Error',
+        error: 'Http failure response for http://addons.localhost:8000/external-storage-services: 500 Server Error',
         isLoading: false,
         isSubmitting: false,
       });
@@ -126,7 +128,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/resource-references/reference-id/configured_storage_addons/'
+          'http://addons.localhost:8000/resource-references/reference-id/configured_storage_addons/'
         );
         expect(request.request.method).toBe('GET');
         request.flush(getConfiguredAddonsData());
@@ -173,7 +175,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const req = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/resource-references/reference-id/configured_storage_addons/'
+          'http://addons.localhost:8000/resource-references/reference-id/configured_storage_addons/'
         );
         expect(req.request.method).toBe('GET');
 
@@ -182,7 +184,7 @@ describe('State: Addons', () => {
         expect(result).toEqual({
           data: [],
           error:
-            'Http failure response for https://addons.staging4.osf.io/v1/resource-references/reference-id/configured_storage_addons/: 500 Server Error',
+            'Http failure response for http://addons.localhost:8000/resource-references/reference-id/configured_storage_addons/: 500 Server Error',
           isLoading: false,
           isSubmitting: false,
         });
@@ -206,7 +208,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
+          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
         );
         expect(request.request.method).toBe('GET');
         request.flush(getAddonsAuthorizedStorageData());
@@ -255,7 +257,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
+          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
         );
         expect(request.request.method).toBe('GET');
 
@@ -264,7 +266,7 @@ describe('State: Addons', () => {
         expect(result).toEqual({
           data: [],
           error:
-            'Http failure response for https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format: 500 Server Error',
+            'Http failure response for http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format: 500 Server Error',
           isLoading: false,
           isSubmitting: false,
         });
@@ -287,7 +289,7 @@ describe('State: Addons', () => {
         const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
         expect(loading()).toBeTruthy();
 
-        const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        const request = httpMock.expectOne('http://addons.localhost:8000/authorized-storage-accounts/account-id');
         expect(request.request.method).toBe('PATCH');
         request.flush(getAddonsAuthorizedStorageData(0));
 
@@ -335,12 +337,12 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         let request = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
+          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
         );
         expect(request.request.method).toBe('GET');
         request.flush(getAddonsAuthorizedStorageData());
 
-        request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        request = httpMock.expectOne('http://addons.localhost:8000/authorized-storage-accounts/account-id');
         expect(request.request.method).toBe('PATCH');
         const addonWithToken = getAddonsAuthorizedStorageData(1);
         addonWithToken.data.attributes.oauth_token = 'ya2.34234324534';
@@ -395,7 +397,7 @@ describe('State: Addons', () => {
         const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
         expect(loading()).toBeTruthy();
 
-        const req = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        const req = httpMock.expectOne('http://addons.localhost:8000/authorized-storage-accounts/account-id');
         expect(req.request.method).toBe('PATCH');
 
         req.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
@@ -403,7 +405,7 @@ describe('State: Addons', () => {
         expect(result).toEqual({
           data: [],
           error:
-            'Http failure response for https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id: 500 Server Error',
+            'Http failure response for http://addons.localhost:8000/authorized-storage-accounts/account-id: 500 Server Error',
           isLoading: false,
           isSubmitting: false,
         });

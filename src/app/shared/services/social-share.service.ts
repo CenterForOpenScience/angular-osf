@@ -10,7 +10,10 @@ import { ShareableContent, SocialShareLinks } from '../models';
 })
 export class SocialShareService {
   private readonly environment = inject(ENVIRONMENT);
-  private readonly webUrl = this.environment.webUrl;
+
+  get webUrl() {
+    return this.environment.webUrl;
+  }
 
   generateEmailLink(content: ShareableContent): string {
     const subject = encodeURIComponent(content.title);
