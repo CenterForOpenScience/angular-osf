@@ -3,6 +3,7 @@
     <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
       {{ 'registry.overview.updates' | translate }}
     </p-accordion-header>
+
     <p-accordion-content>
       <div class="flex flex-column gap-2 pt-4 align-items-center justify-content-center">
         @if (revisions().length > 0) {
@@ -13,7 +14,7 @@
               [class.current-revision]="selectedRevisionIndex() === $index"
               styleClass="w-full"
               [label]="revision.label | translate: { version: revisions().length - $index - 1 }"
-              (click)="emitOpenRevision($index)"
+              (onClick)="emitOpenRevision($index)"
             />
           }
 

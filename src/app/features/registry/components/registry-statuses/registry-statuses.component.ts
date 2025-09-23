@@ -7,7 +7,6 @@ import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, HostBinding, inject, input } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 import { CustomConfirmationService } from '@osf/shared/services';
@@ -25,7 +24,6 @@ import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.comp
 })
 export class RegistryStatusesComponent {
   @HostBinding('class') classes = 'flex-1 flex';
-  private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
 

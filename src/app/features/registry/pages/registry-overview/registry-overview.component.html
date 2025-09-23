@@ -11,7 +11,7 @@
       (buttonClick)="handleOpenMakeDecisionDialog()"
     />
 
-    @if (!registry()?.archiving && !registry()?.withdrawn) {
+    @if (showToolbar()) {
       <div class="pb-5 pl-4 ml-auto w-full md:pr-4">
         <osf-overview-toolbar
           [currentResource]="toolbarResource()"
@@ -49,9 +49,11 @@
           </ng-template>
         </p-message>
       }
+
       @if (hasViewOnly()) {
         <osf-view-only-link-message />
       }
+
       <osf-data-resources
         [absoluteUrl]="registry()?.id"
         [hasData]="registry()?.hasData"
