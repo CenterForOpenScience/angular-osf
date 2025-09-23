@@ -1,4 +1,4 @@
-import { Education, Employment, SocialModel, UserModel, UserSettings } from '@osf/shared/models';
+import { Education, Employment, SocialModel, UserModel } from '@osf/shared/models';
 
 export class GetCurrentUser {
   static readonly type = '[User] Get Current User';
@@ -7,18 +7,6 @@ export class GetCurrentUser {
 export class SetCurrentUser {
   static readonly type = '[User] Set Current User';
   constructor(public user: UserModel) {}
-}
-
-export class GetCurrentUserSettings {
-  static readonly type = '[User] Get Current User Settings';
-}
-
-export class UpdateUserSettings {
-  static readonly type = '[User] Update User Settings';
-  constructor(
-    public userId: string,
-    public updatedUserSettings: UserSettings
-  ) {}
 }
 
 export class UpdateProfileSettingsEmployment {

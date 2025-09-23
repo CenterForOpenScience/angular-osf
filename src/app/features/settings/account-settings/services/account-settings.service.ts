@@ -4,14 +4,15 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserMapper } from '@osf/shared/mappers';
-import { JsonApiResponse, UserDataJsonApi, UserModel } from '@osf/shared/models';
+import { UserDataJsonApi, UserModel } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
-import { MapAccountSettings, MapExternalIdentities } from '../mappers';
+import { AccountSettingsMapper, MapExternalIdentities } from '../mappers';
 import {
   AccountSettings,
+  AccountSettingsDataJsonApi,
+  AccountSettingsResponseJsonApi,
   ExternalIdentity,
-  GetAccountSettingsResponseJsonApi,
   ListIdentitiesResponseJsonApi,
 } from '../models';
 
@@ -24,6 +25,26 @@ export class AccountSettingsService {
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  getSettings(): Observable<AccountSettings> {
+    return this.jsonApiService
+      .get<AccountSettingsResponseJsonApi>(`${this.apiUrl}/users/me/settings/`)
+      .pipe(map((response) => AccountSettingsMapper.getAccountSettings(response.data)));
+  }
+
+  updateSettings(userId: string, settings: Record<string, string>): Observable<AccountSettings> {
+    const body = {
+      data: {
+        id: userId,
+        attributes: settings,
+        type: 'user_settings',
+      },
+    };
+
+    return this.jsonApiService
+      .patch<AccountSettingsDataJsonApi>(`${this.apiUrl}/users/${userId}/settings/`, body)
+      .pipe(map((response) => AccountSettingsMapper.getAccountSettings(response)));
   }
 
   updateLocation(userId: string, locationId: string): Observable<UserModel> {
@@ -92,25 +113,5 @@ export class AccountSettingsService {
 
   deleteExternalIdentity(id: string): Observable<void> {
     return this.jsonApiService.delete(`${this.apiUrl}/users/me/settings/identities/${id}/`);
-  }
-
-  getSettings(): Observable<AccountSettings> {
-    return this.jsonApiService
-      .get<JsonApiResponse<GetAccountSettingsResponseJsonApi, null>>(`${this.apiUrl}/users/me/settings/`)
-      .pipe(map((response) => MapAccountSettings(response.data)));
-  }
-
-  updateSettings(userId: string, settings: Record<string, string>): Observable<AccountSettings> {
-    const body = {
-      data: {
-        id: userId,
-        attributes: settings,
-        type: 'user_settings',
-      },
-    };
-
-    return this.jsonApiService
-      .patch<GetAccountSettingsResponseJsonApi>(`${this.apiUrl}/users/${userId}/settings`, body)
-      .pipe(map((response) => MapAccountSettings(response)));
   }
 }

@@ -15,7 +15,9 @@ import { UserSelectors } from '@osf/core/store/user';
 import { LoaderService, ToastService } from '@osf/shared/services';
 import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 import { MOCK_STORE, MOCK_USER, TranslateServiceMock } from '@shared/mocks';
-import { UserSettings } from '@shared/models';
+
+import { AccountSettings } from '../account-settings/models';
+import { AccountSettingsSelectors } from '../account-settings/store';
 
 import { NotificationsComponent } from './notifications.component';
 import { NotificationSubscriptionSelectors } from './store';
@@ -28,7 +30,7 @@ describe('NotificationsComponent', () => {
   let loaderService: LoaderService;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
 
-  const mockUserSettings: UserSettings = {
+  const mockUserSettings: Partial<AccountSettings> = {
     subscribeOsfGeneralEmail: true,
     subscribeOsfHelpEmail: false,
   };
@@ -54,16 +56,13 @@ describe('NotificationsComponent', () => {
       if (selector === UserSelectors.getCurrentUser) {
         return signal(MOCK_USER);
       }
-      if (selector === UserSelectors.getCurrentUserSettings) {
+      if (selector === AccountSettingsSelectors.getAccountSettings) {
         return signal(mockUserSettings);
       }
       if (selector === NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions) {
         return signal(mockNotificationSubscriptions);
       }
-      if (selector === UserSelectors.isUserSettingsLoading) {
-        return signal(false);
-      }
-      if (selector === UserSelectors.isUserSettingsSubmitting) {
+      if (selector === AccountSettingsSelectors.areAccountSettingsLoading) {
         return signal(false);
       }
       if (selector === NotificationSubscriptionSelectors.isLoading) {
