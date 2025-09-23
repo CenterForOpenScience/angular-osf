@@ -11,9 +11,13 @@
       (buttonClick)="handleOpenMakeDecisionDialog()"
     />
 
-    @if (!registry()?.archiving && !registry()?.withdrawn) {
+    @if (showToolbar()) {
       <div class="pb-5 pl-4 ml-auto w-full md:pr-4">
-        <osf-overview-toolbar [currentResource]="toolbarResource()" [showViewOnlyLinks]="false" [isAdmin]="true" />
+        <osf-overview-toolbar
+          [currentResource]="toolbarResource()"
+          [showViewOnlyLinks]="false"
+          [canEdit]="hasAdminAccess() || hasWriteAccess()"
+        />
       </div>
     }
   </div>
@@ -45,9 +49,11 @@
           </ng-template>
         </p-message>
       }
+
       @if (hasViewOnly()) {
         <osf-view-only-link-message />
       }
+
       <osf-data-resources
         [absoluteUrl]="registry()?.id"
         [hasData]="registry()?.hasData"
@@ -61,7 +67,12 @@
         <div class="left-section">
           @if (!isAnonymous()) {
             <div class="flex flex-column gap-4 md:flex-row resource">
-              <osf-registry-statuses [isModeration]="isModeration" [registry]="registry()"></osf-registry-statuses>
+              <osf-registry-statuses
+                [registry]="registry()"
+                [readonly]="hasNoPermissions() || hasReadAccess()"
+                [isModeration]="isModeration"
+              ></osf-registry-statuses>
+
               <osf-registry-revisions
                 [registry]="registry()"
                 [selectedRevisionIndex]="selectedRevisionIndex()"
@@ -70,6 +81,7 @@
                 (continueUpdate)="onContinueUpdateRegistration()"
                 [isModeration]="isModeration"
                 [isSubmitting]="isSchemaResponseLoading()"
+                [readonly]="hasNoPermissions() || hasReadAccess()"
               >
               </osf-registry-revisions>
             </div>
@@ -121,7 +133,7 @@
           <osf-resource-metadata
             [currentResource]="resourceOverview()"
             (customCitationUpdated)="onCustomCitationUpdated($event)"
-            [canWrite]="!hasViewOnly()"
+            [canEdit]="!hasViewOnly() && (hasWriteAccess() || hasAdminAccess())"
           />
         </div>
       </div>

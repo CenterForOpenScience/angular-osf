@@ -68,7 +68,7 @@ export class OverviewToolbarComponent {
   isBookmarked = signal(false);
 
   isCollectionsRoute = input<boolean>(false);
-  isAdmin = input.required<boolean>();
+  canEdit = input.required<boolean>();
   currentResource = input.required<ToolbarResource | null>();
   projectDescription = input<string>('');
   showViewOnlyLinks = input<boolean>(true);

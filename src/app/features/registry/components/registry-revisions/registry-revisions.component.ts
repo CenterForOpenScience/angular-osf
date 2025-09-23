@@ -24,6 +24,7 @@ export class RegistryRevisionsComponent {
   selectedRevisionIndex = input.required<number>();
   isSubmitting = input<boolean>(false);
   isModeration = input<boolean>(false);
+  readonly = input<boolean>(false);
   openRevision = output<number>();
 
   readonly updateRegistration = output<string>();
