@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { Education } from '@osf/shared/models';
 
@@ -16,13 +16,18 @@ import { EducationHistoryComponent } from '../education-history/education-histor
   styleUrl: './education-history-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EducationHistoryDialogComponent {
-  dialogRef = inject(DynamicDialogRef);
+export class EducationHistoryDialogComponent implements AfterViewInit {
   private readonly config = inject(DynamicDialogConfig);
+  dialogRef = inject(DynamicDialogRef);
   readonly educationHistory = signal<Education[]>([]);
+  readonly isContentVisible = signal(false);
 
   constructor() {
     this.educationHistory.set(this.config.data);
+  }
+
+  ngAfterViewInit(): void {
+    queueMicrotask(() => this.isContentVisible.set(true));
   }
 
   close() {
