@@ -15,6 +15,6 @@ import { LicenseModel } from '@shared/models';
 })
 export class MetadataLicenseComponent {
   openEditLicenseDialog = output<void>();
-  hideEditLicense = input<boolean>(false);
+  readonly = input<boolean>(false);
   license = input<LicenseModel | null>(null);
 }

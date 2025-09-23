@@ -175,13 +175,13 @@ export class ProjectOverviewComponent implements OnInit {
   userPermissions = computed(() => this.currentProject()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  get isAdmin(): boolean {
+  isAdmin = computed(() => {
     return this.userPermissions().includes(UserPermissions.Admin);
-  }
+  });
 
-  get canWrite(): boolean {
+  canWrite = computed(() => {
     return this.userPermissions().includes(UserPermissions.Write);
-  }
+  });
 
   resourceOverview = computed(() => {
     const project = this.currentProject();
