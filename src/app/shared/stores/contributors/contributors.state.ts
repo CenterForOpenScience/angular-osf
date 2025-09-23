@@ -9,6 +9,7 @@ import { ContributorsService } from '@osf/shared/services';
 
 import {
   AddContributor,
+  BulkAddContributors,
   BulkUpdateContributors,
   ClearUsers,
   DeleteContributor,
@@ -97,6 +98,28 @@ export class ContributorsState {
 
     return this.contributorsService
       .bulkUpdateContributors(action.resourceType, action.resourceId, action.contributors)
+      .pipe(
+        tap(() => {
+          ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+        }),
+        catchError((error) => handleSectionError(ctx, 'contributorsList', error))
+      );
+  }
+
+  @Action(BulkAddContributors)
+  bulkAddContributors(ctx: StateContext<ContributorsStateModel>, action: BulkAddContributors) {
+    const state = ctx.getState();
+
+    if (!action.resourceId || !action.resourceType || !action.contributors.length) {
+      return;
+    }
+
+    ctx.patchState({
+      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
+    });
+
+    return this.contributorsService
+      .bulkAddContributors(action.resourceType, action.resourceId, action.contributors)
       .pipe(
         tap(() => {
           ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));

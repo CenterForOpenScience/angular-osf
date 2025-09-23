@@ -48,6 +48,16 @@ export class BulkUpdateContributors {
   ) {}
 }
 
+export class BulkAddContributors {
+  static readonly type = '[Contributors] Bulk Add Contributors';
+
+  constructor(
+    public resourceId: string | undefined | null,
+    public resourceType: ResourceType | undefined,
+    public contributors: ContributorAddModel[]
+  ) {}
+}
+
 export class DeleteContributor {
   static readonly type = '[Contributors] Delete Contributor';
 

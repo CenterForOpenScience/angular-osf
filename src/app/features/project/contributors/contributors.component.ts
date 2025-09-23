@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -43,6 +43,7 @@ import {
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
   BulkUpdateContributors,
   ContributorsSelectors,
   CreateViewOnlyLink,
@@ -134,6 +135,7 @@ export class ContributorsComponent implements OnInit {
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,
     bulkUpdateContributors: BulkUpdateContributors,
+    bulkAddContributors: BulkAddContributors,
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
@@ -222,13 +224,12 @@ export class ContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.resourceId(), this.resourceType(), payload)
-          );
-
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-          });
+          this.actions
+            .bulkAddContributors(this.resourceId(), this.resourceType(), res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
         }
       });
   }

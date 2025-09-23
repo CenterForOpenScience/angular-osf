@@ -62,27 +62,6 @@ export class ContributorsService {
       .pipe(map((response) => ContributorsMapper.fromUsersWithPaginationGetResponse(response)));
   }
 
-  addContributor(
-    resourceType: ResourceType,
-    resourceId: string,
-    data: ContributorAddModel
-  ): Observable<ContributorModel> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/`;
-    const type = data.id ? AddContributorType.Registered : AddContributorType.Unregistered;
-
-    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
-
-    return this.jsonApiService
-      .post<JsonApiResponse<ContributorResponse, null>>(baseUrl, contributorData)
-      .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor.data)));
-  }
-
-  deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
-
-    return this.jsonApiService.delete(baseUrl);
-  }
-
   bulkUpdateContributors(
     resourceType: ResourceType,
     resourceId: string,
@@ -111,5 +90,40 @@ export class ContributorsService {
     return this.jsonApiService
       .patch<ContributorResponse>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor)));
+  }
+
+  bulkAddContributors(
+    resourceType: ResourceType,
+    resourceId: string,
+    contributors: ContributorAddModel[]
+  ): Observable<ContributorModel[]> {
+    if (contributors.length === 0) {
+      return of([]);
+    }
+
+    const addRequests = contributors.map((contributor) => this.addContributor(resourceType, resourceId, contributor));
+
+    return forkJoin(addRequests);
+  }
+
+  addContributor(
+    resourceType: ResourceType,
+    resourceId: string,
+    data: ContributorAddModel
+  ): Observable<ContributorModel> {
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/`;
+    const type = data.id ? AddContributorType.Registered : AddContributorType.Unregistered;
+
+    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
+
+    return this.jsonApiService
+      .post<JsonApiResponse<ContributorResponse, null>>(baseUrl, contributorData)
+      .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor.data)));
+  }
+
+  deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
+
+    return this.jsonApiService.delete(baseUrl);
   }
 }

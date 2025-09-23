@@ -7,7 +7,7 @@ import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TableModule } from 'primeng/table';
 
-import { filter, forkJoin, map, of } from 'rxjs';
+import { filter, map, of } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -36,6 +36,7 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
   BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
@@ -83,6 +84,7 @@ export class RegistriesContributorsComponent implements OnInit {
     getContributors: GetAllContributors,
     deleteContributor: DeleteContributor,
     bulkUpdateContributors: BulkUpdateContributors,
+    bulkAddContributors: BulkAddContributors,
     addContributor: AddContributor,
   });
 
@@ -145,13 +147,12 @@ export class RegistriesContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.draftId(), ResourceType.DraftRegistration, payload)
-          );
-
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-          });
+          this.actions
+            .bulkAddContributors(this.draftId(), ResourceType.DraftRegistration, res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
         }
       });
   }

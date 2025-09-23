@@ -7,7 +7,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 
-import { forkJoin } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
@@ -25,6 +24,7 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
   BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
@@ -62,6 +62,7 @@ export class ProjectContributorsStepComponent {
 
   actions = createDispatchMap({
     addContributor: AddContributor,
+    bulkAddContributors: BulkAddContributors,
     bulkUpdateContributors: BulkUpdateContributors,
     deleteContributor: DeleteContributor,
   });
@@ -144,13 +145,12 @@ export class ProjectContributorsStepComponent {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.selectedProject()?.id, ResourceType.Project, payload)
-          );
-
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-          });
+          this.actions
+            .bulkAddContributors(this.selectedProject()?.id, ResourceType.Project, res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
         }
       });
   }
@@ -187,7 +187,7 @@ export class ProjectContributorsStepComponent {
       const isMetadataSaved = this.isProjectMetadataSaved();
       const contributors = this.initialContributors();
 
-      if (isMetadataSaved && contributors.length && !this.projectContributors().length) {
+      if (isMetadataSaved && contributors.length) {
         this.projectContributors.set(JSON.parse(JSON.stringify(contributors)));
       }
     });
