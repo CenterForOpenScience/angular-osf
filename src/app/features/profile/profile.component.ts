@@ -8,7 +8,7 @@ import { UserSelectors } from '@core/store/user';
 import { GlobalSearchComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
 
 import { ProfileInformationComponent } from './components';
@@ -62,7 +62,7 @@ export class ProfileComponent implements OnInit {
       .subscribe(() => this.setSearchFilter());
   }
 
-  private setupMyProfile(user: User): void {
+  private setupMyProfile(user: UserModel): void {
     this.actions.setUserProfile(user);
     if (user?.iri) {
       this.actions.setDefaultFilterValue('creator,isContainedBy.creator', user.iri);

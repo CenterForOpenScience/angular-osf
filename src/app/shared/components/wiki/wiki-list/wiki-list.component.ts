@@ -42,9 +42,7 @@ export class WikiListComponent {
   wikiItemType = WikiItemType;
   expanded = signal(true);
 
-  hasComponentsWikis = computed(() => {
-    return this.componentsList().length > 0;
-  });
+  hasComponentsWikis = computed(() => this.componentsList().length > 0);
 
   isHomeWikiSelected = computed(() => {
     const homeWikiId = this.list()?.find((wiki) => wiki.name.toLowerCase() === 'home')?.id;
@@ -65,6 +63,7 @@ export class WikiListComponent {
         })),
       },
     ];
+
     if (this.hasComponentsWikis()) {
       menu.push({
         type: WikiItemType.Folder,
@@ -86,21 +85,19 @@ export class WikiListComponent {
   });
 
   openAddWikiDialog() {
-    const dialogRef = this.dialogService.open(AddWikiDialogComponent, {
-      header: this.translateService.instant('project.wiki.addNewWiki'),
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      width: '448px',
-      data: {
-        resourceId: this.resourceId(),
-      },
-    });
-
-    dialogRef.onClose.subscribe(() => {
-      this.createWiki.emit();
-    });
+    this.dialogService
+      .open(AddWikiDialogComponent, {
+        header: this.translateService.instant('project.wiki.addNewWiki'),
+        focusOnShow: false,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        width: '448px',
+        data: {
+          resourceId: this.resourceId(),
+        },
+      })
+      .onClose.subscribe(() => this.createWiki.emit());
   }
 
   openDeleteWikiDialog(): void {

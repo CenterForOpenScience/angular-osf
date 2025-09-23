@@ -1,9 +1,9 @@
 import { findChangedFields } from '@osf/shared/helpers';
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 
 import { NameForm } from '../models';
 
-export function hasNameChanges(formValue: NameForm, initialUser: Partial<User>): boolean {
+export function hasNameChanges(formValue: NameForm, initialUser: Partial<UserModel>): boolean {
   const currentValues = {
     fullName: formValue.fullName.value,
     givenName: formValue.givenName.value,

@@ -6,7 +6,7 @@ import { SocialModel } from './social.model';
 
 export type UserResponseJsonApi = JsonApiResponse<UserDataJsonApi, null>;
 
-export interface User {
+export interface UserModel {
   id: string;
   fullName: string;
   givenName: string;
@@ -103,7 +103,7 @@ export interface UserDataResponseJsonApi {
 
 export interface UserData {
   activeFlags: string[];
-  currentUser: User | null;
+  currentUser: UserModel | null;
 }
 
 export interface UserAcceptedTermsOfServiceJsonApi {

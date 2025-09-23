@@ -1,9 +1,9 @@
 import {
-  User,
   UserAcceptedTermsOfServiceJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
+  UserModel,
   UserNamesJsonApi,
   UserSettings,
   UserSettingsGetResponse,
@@ -18,7 +18,7 @@ export class UserMapper {
     };
   }
 
-  static fromUserGetResponse(user: UserDataJsonApi): User {
+  static fromUserGetResponse(user: UserDataJsonApi): UserModel {
     return {
       id: user.id,
       fullName: user.attributes.full_name,
@@ -60,7 +60,7 @@ export class UserMapper {
     };
   }
 
-  static toNamesRequest(name: Partial<User>): UserNamesJsonApi {
+  static toNamesRequest(name: Partial<UserModel>): UserNamesJsonApi {
     return {
       full_name: name.fullName ?? '',
       given_name: name.givenName ?? '',
@@ -70,7 +70,7 @@ export class UserMapper {
     };
   }
 
-  static toAcceptedTermsOfServiceRequest(name: Partial<User>): UserAcceptedTermsOfServiceJsonApi {
+  static toAcceptedTermsOfServiceRequest(name: Partial<UserModel>): UserAcceptedTermsOfServiceJsonApi {
     return {
       accepted_terms_of_service: name.acceptedTermsOfService ?? false,
     };

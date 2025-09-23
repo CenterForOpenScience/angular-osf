@@ -36,7 +36,7 @@ import { FilePayloadJsonApi, OsfFile, PageSchema } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 
 import { FilesMapper } from '../../mappers/files.mapper';
-import { RegistriesSelectors, SetUpdatedFields, UpdateStepValidation } from '../../store';
+import { RegistriesSelectors, SetUpdatedFields, UpdateStepState } from '../../store';
 import { FilesControlComponent } from '../files-control/files-control.component';
 
 @Component({
@@ -82,10 +82,10 @@ export class CustomStepComponent implements OnDestroy {
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly FieldType = FieldType;
-  readonly stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  readonly stepsState = select(RegistriesSelectors.getStepsState);
 
   readonly actions = createDispatchMap({
-    updateStepValidation: UpdateStepValidation,
+    updateStepState: UpdateStepState,
     setUpdatedFields: SetUpdatedFields,
   });
 
@@ -159,7 +159,7 @@ export class CustomStepComponent implements OnDestroy {
 
       this.stepForm.addControl(controlName, control);
     });
-    if (this.stepsValidation()?.[this.step()]?.invalid) {
+    if (this.stepsState()?.[this.step()]?.invalid) {
       this.stepForm.markAllAsTouched();
     }
   }
@@ -176,7 +176,7 @@ export class CustomStepComponent implements OnDestroy {
     if (this.stepForm) {
       this.updateDraft();
       this.stepForm.markAllAsTouched();
-      this.actions.updateStepValidation(this.step(), this.stepForm.invalid);
+      this.actions.updateStepState(this.step(), this.stepForm.invalid, true);
     }
   }
 

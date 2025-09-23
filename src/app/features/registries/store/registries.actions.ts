@@ -78,11 +78,12 @@ export class SaveLicense {
   ) {}
 }
 
-export class UpdateStepValidation {
+export class UpdateStepState {
   static readonly type = '[Registries] Update Step Validation';
   constructor(
     public step: string,
-    public invalid: boolean
+    public invalid: boolean,
+    public touched: boolean
   ) {}
 }
 

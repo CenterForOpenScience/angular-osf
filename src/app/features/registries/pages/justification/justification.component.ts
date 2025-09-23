@@ -4,7 +4,17 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { filter, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, Signal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  Signal,
+  signal,
+  untracked,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
@@ -13,13 +23,7 @@ import { RevisionReviewStates } from '@osf/shared/enums';
 import { StepOption } from '@osf/shared/models';
 import { LoaderService } from '@osf/shared/services';
 
-import {
-  ClearState,
-  FetchSchemaBlocks,
-  FetchSchemaResponse,
-  RegistriesSelectors,
-  UpdateStepValidation,
-} from '../../store';
+import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors, UpdateStepState } from '../../store';
 
 @Component({
   selector: 'osf-justification',
@@ -36,7 +40,7 @@ export class JustificationComponent implements OnDestroy {
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
   readonly pages = select(RegistriesSelectors.getPagesSchema);
-  readonly stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  readonly stepsState = select(RegistriesSelectors.getStepsState);
   readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
   readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
 
@@ -44,7 +48,7 @@ export class JustificationComponent implements OnDestroy {
     getSchemaBlocks: FetchSchemaBlocks,
     clearState: ClearState,
     getSchemaResponse: FetchSchemaResponse,
-    updateStepValidation: UpdateStepValidation,
+    updateStepState: UpdateStepState,
   });
 
   get isReviewPage(): boolean {
@@ -56,11 +60,13 @@ export class JustificationComponent implements OnDestroy {
   revisionId = this.route.snapshot.firstChild?.params['id'] || '';
 
   steps: Signal<StepOption[]> = computed(() => {
+    const isJustificationValid = !!this.schemaResponse()?.revisionJustification;
     this.justificationStep = {
       index: 0,
       value: 'justification',
       label: this.translateService.instant('registries.justification.step'),
-      invalid: false,
+      invalid: !isJustificationValid,
+      touched: isJustificationValid,
       routeLink: 'justification',
       disabled: this.schemaResponse()?.reviewsState !== RevisionReviewStates.RevisionInProgress,
     };
@@ -72,14 +78,15 @@ export class JustificationComponent implements OnDestroy {
       invalid: false,
       routeLink: 'review',
     };
-
+    const stepState = this.stepsState();
     const customSteps = this.pages().map((page, index) => {
       return {
         index: index + 1,
         label: page.title,
         value: page.id,
         routeLink: `${index + 1}`,
-        invalid: this.stepsValidation()?.[index + 1]?.invalid || false,
+        invalid: stepState?.[index + 1]?.invalid || false,
+        touched: stepState?.[index + 1]?.touched || false,
         disabled: this.schemaResponse()?.reviewsState !== RevisionReviewStates.RevisionInProgress,
       };
     });
@@ -139,8 +146,10 @@ export class JustificationComponent implements OnDestroy {
     });
 
     effect(() => {
+      const stepState = untracked(() => this.stepsState());
+
       if (this.currentStepIndex() > 0) {
-        this.actions.updateStepValidation('0', true);
+        this.actions.updateStepState('0', true, stepState?.[0]?.touched || false);
       }
       if (this.pages().length && this.currentStepIndex() > 0 && this.schemaResponseRevisionData()) {
         for (let i = 1; i < this.currentStepIndex(); i++) {
@@ -150,7 +159,7 @@ export class JustificationComponent implements OnDestroy {
               const questionData = this.schemaResponseRevisionData()[question.responseKey!];
               return question.required && (Array.isArray(questionData) ? !questionData.length : !questionData);
             }) || false;
-          this.actions.updateStepValidation(i.toString(), isStepInvalid);
+          this.actions.updateStepState(i.toString(), isStepInvalid, stepState?.[i]?.touched || false);
         }
       }
     });

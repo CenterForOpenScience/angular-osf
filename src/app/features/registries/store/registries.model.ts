@@ -22,7 +22,7 @@ export interface RegistriesStateModel {
   registries: AsyncStateModel<ResourceModel[]>;
   licenses: AsyncStateModel<LicenseModel[]>;
   pagesSchema: AsyncStateModel<PageSchema[]>;
-  stepsValidation: Record<string, { invalid: boolean }>;
+  stepsState: Record<string, { invalid: boolean; touched: boolean }>;
   draftRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
   submittedRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
   files: AsyncStateWithTotalCount<OsfFile[]>;
@@ -65,7 +65,7 @@ export const REGISTRIES_STATE_DEFAULTS: RegistriesStateModel = {
     isLoading: false,
     error: null,
   },
-  stepsValidation: {},
+  stepsState: {},
   registration: {
     data: null,
     isLoading: false,

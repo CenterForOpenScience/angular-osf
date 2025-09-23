@@ -1,26 +1,29 @@
-<div class="resource">
-  <p-accordion (onOpen)="onOpen()">
+<div class="resource p-4">
+  <p-accordion>
     <p-accordion-panel value="0">
       <p-accordion-header class="flex flex-row align-items-start gap-3 p-0">
-        <div class="flex flex-column gap-2">
-          <p class="type">{{ cardTypeLabel() | translate }}</p>
+        <div class="flex flex-column align-items-start gap-2">
+          <p class="type py-1 px-3 font-bold">{{ cardTypeLabel() | translate }}</p>
 
           <div class="flex align-items-center gap-2">
             <h2>
-              <a [href]="resource().absoluteUrl" target="_blank" rel="noopener noreferrer">{{ displayTitle() }}</a>
+              <a class="title-link" [href]="resource().absoluteUrl" target="_blank" rel="noopener noreferrer">
+                {{ displayTitle() }}
+              </a>
             </h2>
+
             @if (isWithdrawn()) {
               <p-tag severity="secondary">{{ 'resourceCard.labels.withdrawn' | translate }}</p-tag>
             }
+
             @let orcidValues = orcids();
             @if (orcidValues.length && orcidValues[0]) {
-              <a [href]="orcidValues[0]" class="orcid-icon-link" target="_blank" rel="noopener noreferrer">
+              <a [href]="orcidValues[0]" class="h-1rem" target="_blank" rel="noopener noreferrer">
                 <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
               </a>
             }
           </div>
 
-          @let limit = 4;
           @if (affiliatedEntities().length > 0) {
             <div class="line-height-3">
               @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
