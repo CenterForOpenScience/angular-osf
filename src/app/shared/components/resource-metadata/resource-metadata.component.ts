@@ -40,7 +40,7 @@ export class ResourceMetadataComponent {
   currentResource = input.required<ResourceOverview | null>();
   customCitationUpdated = output<string>();
   isCollectionsRoute = input<boolean>(false);
-  canWrite = input.required<boolean>();
+  canEdit = input.required<boolean>();
 
   readonly resourceTypes = CurrentResourceType;
   readonly dateFormat = 'MMM d, y, h:mm a';

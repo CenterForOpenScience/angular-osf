@@ -61,12 +61,15 @@ export class ResourceCitationsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
-  isCollectionsRoute = input<boolean>(false);
+
   currentResource = input.required<ResourceOverview | null>();
+  canEdit = input<boolean>(false);
+
   private readonly clipboard = inject(Clipboard);
   private readonly toastService = inject(ToastService);
   private readonly destroy$ = new Subject<void>();
   private readonly filterSubject = new Subject<string>();
+
   customCitation = output<string>();
   defaultCitations = select(CitationsSelectors.getDefaultCitations);
   isCitationsLoading = select(CitationsSelectors.getDefaultCitationsLoading);
@@ -76,16 +79,19 @@ export class ResourceCitationsComponent {
   styledCitation = select(CitationsSelectors.getStyledCitation);
   citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
   isEditMode = signal<boolean>(false);
+
   filterMessage = computed(() => {
     const isLoading = this.isCitationStylesLoading();
     return isLoading
       ? this.translateService.instant('project.overview.metadata.citationLoadingPlaceholder')
       : this.translateService.instant('project.overview.metadata.noCitationStylesFound');
   });
+
   customCitationInput = new FormControl('');
   readonly hasViewOnly = computed(() => {
     return hasViewOnlyParam(this.router);
   });
+
   actions = createDispatchMap({
     getDefaultCitations: GetDefaultCitations,
     getCitationStyles: GetCitationStyles,
