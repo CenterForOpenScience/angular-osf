@@ -29,7 +29,7 @@ import {
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores';
-import { hasViewOnlyParam, IS_XSMALL } from '@shared/helpers';
+import { hasViewOnlyParam, IS_SMALL } from '@shared/helpers';
 
 import { SocialsShareActionItem } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
@@ -66,7 +66,7 @@ export class OverviewToolbarComponent {
   destroyRef = inject(DestroyRef);
   isPublic = signal(false);
   isBookmarked = signal(false);
-  isMobile = toSignal(inject(IS_XSMALL));
+  isMobile = toSignal(inject(IS_SMALL));
 
   isCollectionsRoute = input<boolean>(false);
   canEdit = input.required<boolean>();
