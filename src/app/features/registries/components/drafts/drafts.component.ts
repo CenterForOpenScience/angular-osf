@@ -92,6 +92,7 @@ export class DraftsComponent implements OnDestroy {
     }));
 
     this.defaultSteps[0].invalid = this.isMetaDataInvalid();
+    this.defaultSteps[0].touched = true;
     const customSteps = this.pages().map((page, index) => {
       const pageStep = this.pages()[index];
       const wasTouched =
