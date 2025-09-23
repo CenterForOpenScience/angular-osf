@@ -19,7 +19,7 @@ import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('Component: Add Moderator Dialog', () => {
+describe('AddModeratorDialogComponent', () => {
   let component: AddModeratorDialogComponent;
   let fixture: ComponentFixture<AddModeratorDialogComponent>;
   let mockDialogRef: jest.Mocked<DynamicDialogRef>;

@@ -18,7 +18,7 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('Component: Collection Submission Item', () => {
+describe('CollectionSubmissionItemComponent', () => {
   let component: CollectionSubmissionItemComponent;
   let fixture: ComponentFixture<CollectionSubmissionItemComponent>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;

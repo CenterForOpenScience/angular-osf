@@ -12,7 +12,7 @@ import { MOCK_COLLECTION_SUBMISSION_WITH_GUID } from '@testing/mocks/submission.
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('Component: Collection Submissions List', () => {
+describe('CollectionSubmissionsListComponent', () => {
   let component: CollectionSubmissionsListComponent;
   let fixture: ComponentFixture<CollectionSubmissionsListComponent>;
 

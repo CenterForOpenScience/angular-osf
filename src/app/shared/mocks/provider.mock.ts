@@ -24,4 +24,9 @@ export const MOCK_PROVIDER = {
   iri: '',
   faviconUrl: '',
   squareColorNoTransparentImageUrl: '',
+  primaryCollection: {
+    id: 'collection-1',
+    title: 'Test Collection',
+    description: 'Test collection description',
+  },
 };

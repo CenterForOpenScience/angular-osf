@@ -4,7 +4,7 @@ import { NotificationSettingsComponent } from './notification-settings.component
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('Component: Notification Settings', () => {
+describe('NotificationSettingsComponent', () => {
   let component: NotificationSettingsComponent;
   let fixture: ComponentFixture<NotificationSettingsComponent>;
 

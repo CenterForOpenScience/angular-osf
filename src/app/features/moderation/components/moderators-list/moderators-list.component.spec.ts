@@ -23,7 +23,7 @@ import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('Component: Moderators List', () => {
+describe('ModeratorsListComponent', () => {
   let component: ModeratorsListComponent;
   let fixture: ComponentFixture<ModeratorsListComponent>;
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;

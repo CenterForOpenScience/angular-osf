@@ -8,7 +8,7 @@ import { MyReviewingNavigationComponent } from './my-reviewing-navigation.compon
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('Component: My Reviewing Navigation', () => {
+describe('MyReviewingNavigationComponent', () => {
   let component: MyReviewingNavigationComponent;
   let fixture: ComponentFixture<MyReviewingNavigationComponent>;
 

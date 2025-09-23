@@ -6,7 +6,7 @@ import { BulkUploadComponent } from './bulk-upload.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('Component: Bulk Upload', () => {
+describe('BulkUploadComponent', () => {
   let component: BulkUploadComponent;
   let fixture: ComponentFixture<BulkUploadComponent>;
 
