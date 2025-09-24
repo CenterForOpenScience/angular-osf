@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+import markdownItKatex from '@traptitech/markdown-it-katex';
 import MarkdownIt from 'markdown-it';
-import markdownItKatex from 'markdown-it-katex';
 import markdownItVideo from 'markdown-it-video';
 
 @Component({
@@ -34,6 +34,9 @@ export class MarkdownComponent {
         youtube: { width: 560, height: 315 },
         vimeo: { width: 560, height: 315 },
       })
-      .use(markdownItKatex);
+      .use(markdownItKatex, {
+        output: 'mathml',
+        throwOnError: false,
+      });
   }
 }
