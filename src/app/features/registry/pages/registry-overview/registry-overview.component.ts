@@ -96,7 +96,6 @@ export class RegistryOverviewComponent {
 
   readonly hasWriteAccess = select(RegistryOverviewSelectors.hasWriteAccess);
   readonly hasAdminAccess = select(RegistryOverviewSelectors.hasAdminAccess);
-  readonly hasReadAccess = select(RegistryOverviewSelectors.hasReadAccess);
   readonly hasNoPermissions = select(RegistryOverviewSelectors.hasNoPermissions);
 
   revisionInProgress: SchemaResponse | undefined;
@@ -112,6 +111,11 @@ export class RegistryOverviewComponent {
 
   canMakeDecision = computed(() => {
     return !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration;
+  });
+
+  isRootRegistration = computed(() => {
+    const rootId = this.registry()?.rootParentId;
+    return !rootId || rootId === this.registry()?.id;
   });
 
   private registryId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));

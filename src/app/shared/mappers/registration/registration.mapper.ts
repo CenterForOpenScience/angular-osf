@@ -97,6 +97,7 @@ export class RegistrationMapper {
           id: contributor.embeds.users.data.id,
           fullName: contributor.embeds.users.data.attributes.full_name,
         })) || [],
+      rootParentId: registration.relationships.root?.data?.id,
     };
   }
 

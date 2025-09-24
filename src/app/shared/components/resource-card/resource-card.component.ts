@@ -16,6 +16,7 @@ import { ResourceType } from '@osf/shared/enums';
 import { getSortedContributorsByPermissions, IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceModel, UserRelatedCounts } from '@osf/shared/models';
 import { ResourceCardService } from '@osf/shared/services';
+import { StopPropagationDirective } from '@shared/directives';
 
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
 
@@ -42,6 +43,7 @@ import { UserSecondaryMetadataComponent } from './components/user-secondary-meta
     ProjectSecondaryMetadataComponent,
     PreprintSecondaryMetadataComponent,
     FileSecondaryMetadataComponent,
+    StopPropagationDirective,
   ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',
