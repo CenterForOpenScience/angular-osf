@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
@@ -59,7 +59,7 @@ export class TosConsentBannerComponent {
       * if user is authenticated we check whether is accepted terms of service to hide banner or show if not
       * otherwise user is not authenticated we hide banner always
       */
-      return  user ? user?.acceptedTermsOfService : true;
+      return  user ? user.acceptedTermsOfService : true;
     }
   );
 
