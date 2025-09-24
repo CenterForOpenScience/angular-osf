@@ -105,7 +105,7 @@ describe('InviteModeratorDialogComponent', () => {
     component.moderatorForm.patchValue({
       fullName: 'John Doe',
       email: 'john@example.com',
-      permission: null,
+      permission: undefined,
     });
 
     component.submit();

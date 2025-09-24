@@ -3,7 +3,6 @@ import { MockComponent, MockPipe } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IconComponent } from '@osf/shared/components';
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { DateAgoPipe } from '@osf/shared/pipes';
 
 import { SubmissionReviewStatus } from '../../enums';
@@ -11,36 +10,14 @@ import { RegistryModeration } from '../../models';
 
 import { RegistrySubmissionItemComponent } from './registry-submission-item.component';
 
+import { MOCK_REGISTRY_MODERATIONS } from '@testing/mocks/registry-moderation.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('RegistrySubmissionItemComponent', () => {
   let component: RegistrySubmissionItemComponent;
   let fixture: ComponentFixture<RegistrySubmissionItemComponent>;
 
-  const mockSubmission: RegistryModeration = {
-    id: '1',
-    title: 'Test Registry Submission',
-    revisionStatus: RevisionReviewStates.RevisionPendingModeration,
-    reviewsState: RegistrationReviewStates.Pending,
-    public: false,
-    embargoed: false,
-    embargoEndDate: null,
-    actions: [
-      {
-        id: '1',
-        trigger: 'manual',
-        fromState: 'pending',
-        toState: 'pending',
-        dateModified: '2023-01-01',
-        creator: {
-          id: 'user-1',
-          name: 'John Doe',
-        },
-        comment: 'Registry submission',
-      },
-    ],
-    revisionId: 'revision-1',
-  };
+  const mockSubmission: RegistryModeration = MOCK_REGISTRY_MODERATIONS[0];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

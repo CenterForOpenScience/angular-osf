@@ -4,39 +4,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectComponent } from '@shared/components';
 
-import { ModeratorPermission } from '../../enums';
 import { ModeratorModel } from '../../models';
 
 import { ModeratorsTableComponent } from './moderators-table.component';
 
+import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ModeratorsTableComponent', () => {
   let component: ModeratorsTableComponent;
   let fixture: ComponentFixture<ModeratorsTableComponent>;
 
-  const mockModerators: ModeratorModel[] = [
-    {
-      id: '1',
-      userId: 'user-1',
-      fullName: 'John Doe',
-      email: 'john@example.com',
-      permission: ModeratorPermission.Admin,
-      isActive: true,
-      education: [],
-      employment: [],
-    },
-    {
-      id: '2',
-      userId: 'user-2',
-      fullName: 'Jane Smith',
-      email: 'jane@example.com',
-      permission: ModeratorPermission.Read,
-      isActive: true,
-      education: [],
-      employment: [],
-    },
-  ];
+  const mockModerators: ModeratorModel[] = MOCK_MODERATORS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

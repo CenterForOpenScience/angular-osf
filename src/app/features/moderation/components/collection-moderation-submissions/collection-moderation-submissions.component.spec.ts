@@ -22,7 +22,7 @@ describe('CollectionModerationSubmissionsComponent', () => {
   let component: CollectionModerationSubmissionsComponent;
   let fixture: ComponentFixture<CollectionModerationSubmissionsComponent>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockActivatedRoute: any;
+  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   const mockCollectionProvider = MOCK_PROVIDER;
   const mockSubmissions = [
@@ -113,13 +113,6 @@ describe('CollectionModerationSubmissionsComponent', () => {
 
   it('should compute isLoading correctly', () => {
     expect(component.isLoading()).toBe(false);
-  });
-
-  it('should have actions defined', () => {
-    expect(component.actions).toBeDefined();
-    expect(component.actions.getCollectionDetails).toBeDefined();
-    expect(component.actions.searchCollectionSubmissions).toBeDefined();
-    expect(component.actions.getCollectionSubmissions).toBeDefined();
   });
 
   it('should initialize from query params', () => {

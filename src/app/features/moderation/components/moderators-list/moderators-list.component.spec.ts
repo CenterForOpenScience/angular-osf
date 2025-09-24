@@ -18,6 +18,7 @@ import { ModeratorsSelectors } from '../../store/moderators';
 
 import { ModeratorsListComponent } from './moderators-list.component';
 
+import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
@@ -33,24 +34,7 @@ describe('ModeratorsListComponent', () => {
   const mockResourceType = ResourceType.Preprint;
   const mockCurrentUser = MOCK_USER;
 
-  const mockModerators: ModeratorModel[] = [
-    {
-      id: '1',
-      userId: 'user-1',
-      fullName: 'John Doe',
-      email: 'john@example.com',
-      permission: ModeratorPermission.Admin,
-      isActive: true,
-    },
-    {
-      id: '2',
-      userId: 'user-2',
-      fullName: 'Jane Smith',
-      email: 'jane@example.com',
-      permission: ModeratorPermission.Read,
-      isActive: true,
-    },
-  ];
+  const mockModerators: ModeratorModel[] = MOCK_MODERATORS;
 
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create()
@@ -102,7 +86,7 @@ describe('ModeratorsListComponent', () => {
   it('should return false for admin moderator when user is not admin', () => {
     const nonAdminModerators = mockModerators.map((mod) => ({
       ...mod,
-      permission: ModeratorPermission.Read,
+      permission: ModeratorPermission.Moderator,
     }));
 
     Object.defineProperty(component, 'initialModerators', {
@@ -206,7 +190,7 @@ describe('ModeratorsListComponent', () => {
         userId: 'user-3',
         fullName: 'Bob Wilson',
         email: 'bob@example.com',
-        permission: ModeratorPermission.Read,
+        permission: ModeratorPermission.Moderator,
         isActive: true,
       },
     ];

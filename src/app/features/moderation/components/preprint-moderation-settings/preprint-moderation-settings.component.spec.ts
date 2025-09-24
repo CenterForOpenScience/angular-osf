@@ -3,7 +3,6 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { LoadingSpinnerComponent } from '@shared/components';
 
 import { SettingsSectionControl } from '../../enums';
@@ -12,6 +11,8 @@ import { PreprintModerationSelectors } from '../../store/preprint-moderation';
 
 import { PreprintModerationSettingsComponent } from './preprint-moderation-settings.component';
 
+import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
+import { MOCK_PREPRINT_PROVIDER_MODERATION_INFO } from '@testing/mocks/preprint-provider-moderation-info.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -22,15 +23,7 @@ describe('PreprintModerationSettingsComponent', () => {
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   const mockProviderId = 'test-provider-id';
-  const mockSettings: PreprintProviderModerationInfo = {
-    id: mockProviderId,
-    name: 'Test Provider',
-    submissionCount: 10,
-    reviewsCommentsAnonymous: true,
-    reviewsCommentsPrivate: false,
-    reviewsWorkflow: 'pre_moderation',
-    supportEmail: 'support@test.com',
-  };
+  const mockSettings: PreprintProviderModerationInfo = MOCK_PREPRINT_PROVIDER_MODERATION_INFO;
 
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: mockProviderId }).build();
@@ -39,7 +32,7 @@ describe('PreprintModerationSettingsComponent', () => {
       imports: [PreprintModerationSettingsComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
       providers: [
         MockProvider(ActivatedRoute, mockActivatedRoute),
-        MockProvider(ENVIRONMENT, { supportEmail: 'support@test.com' }),
+        EnvironmentTokenMock,
         provideMockStore({
           signals: [
             { selector: PreprintModerationSelectors.arePreprintProviderLoading, value: false },

@@ -1,6 +1,5 @@
-import { MockComponents, MockPipe } from 'ng-mocks';
+import { MockComponents } from 'ng-mocks';
 
-import { DatePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CustomPaginatorComponent, IconComponent } from '@osf/shared/components';
@@ -9,32 +8,14 @@ import { PreprintReviewActionModel } from '../../models';
 
 import { PreprintRecentActivityListComponent } from './preprint-recent-activity-list.component';
 
+import { MOCK_PREPRINT_REVIEW_ACTIONS } from '@testing/mocks/preprint-review-action.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('PreprintRecentActivityListComponent', () => {
   let component: PreprintRecentActivityListComponent;
   let fixture: ComponentFixture<PreprintRecentActivityListComponent>;
 
-  const mockReviews: PreprintReviewActionModel[] = [
-    {
-      id: '1',
-      fromState: 'pending',
-      toState: 'pending',
-      dateModified: '2023-01-01',
-      creator: {
-        id: 'user-1',
-        name: 'John Doe',
-      },
-      preprint: {
-        id: 'preprint-1',
-        name: 'Test Preprint',
-      },
-      provider: {
-        id: 'provider-1',
-        name: 'Test Provider',
-      },
-    },
-  ];
+  const mockReviews: PreprintReviewActionModel[] = MOCK_PREPRINT_REVIEW_ACTIONS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,7 +23,6 @@ describe('PreprintRecentActivityListComponent', () => {
         PreprintRecentActivityListComponent,
         OSFTestingModule,
         ...MockComponents(IconComponent, CustomPaginatorComponent),
-        MockPipe(DatePipe),
       ],
     }).compileComponents();
 

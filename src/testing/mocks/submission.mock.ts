@@ -1,4 +1,4 @@
-import { PreprintSubmission, PreprintWithdrawalSubmission } from '@osf/features/moderation/models';
+import { PreprintSubmission } from '@osf/features/moderation/models';
 import { CollectionSubmissionWithGuid } from '@shared/models';
 
 export const MOCK_PREPRINT_SUBMISSION: PreprintSubmission = {
@@ -9,27 +9,15 @@ export const MOCK_PREPRINT_SUBMISSION: PreprintSubmission = {
   actions: [
     {
       id: '1',
-      action: 'review',
-      status: 'pending',
-      date: '2023-01-01',
-      user: 'John Doe',
-    },
-  ],
-};
-
-export const MOCK_PREPRINT_WITHDRAWAL_SUBMISSION: PreprintWithdrawalSubmission = {
-  id: '1',
-  preprintId: 'preprint-1',
-  title: 'Test Withdrawal Submission',
-  reviewsState: 'pending',
-  public: false,
-  actions: [
-    {
-      id: '1',
-      action: 'withdrawal_review',
-      status: 'pending',
-      date: '2023-01-01',
-      user: 'John Doe',
+      trigger: 'manual',
+      fromState: 'pending',
+      toState: 'pending',
+      dateModified: '2023-01-01',
+      creator: {
+        id: 'user-1',
+        name: 'John Doe',
+      },
+      comment: 'Test comment',
     },
   ],
 };

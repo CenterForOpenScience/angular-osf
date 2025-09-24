@@ -65,8 +65,4 @@ describe('CollectionSubmissionsListComponent', () => {
     expect(component.submissions()).toEqual([]);
     expect(component.submissions().length).toBe(0);
   });
-
-  it('should have submissions selector defined', () => {
-    expect(component.submissions).toBeDefined();
-  });
 });

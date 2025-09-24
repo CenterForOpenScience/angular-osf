@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistrySubmissionItemComponent } from '@osf/features/moderation/components';
+import { RegistryModeration } from '@osf/features/moderation/models';
 import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 
 import { RegistrySort, SubmissionReviewStatus } from '../../enums';
@@ -11,6 +12,7 @@ import { RegistryModerationSelectors } from '../../store/registry-moderation';
 
 import { RegistrySubmissionsComponent } from './registry-submissions.component';
 
+import { MOCK_REGISTRY_MODERATIONS } from '@testing/mocks/registry-moderation.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -23,56 +25,7 @@ describe('RegistrySubmissionsComponent', () => {
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
 
   const mockProviderId = 'test-provider-id';
-  const mockSubmissions = [
-    {
-      id: '1',
-      title: 'Test Registry 1',
-      revisionStatus: 'pending',
-      reviewsState: 'pending',
-      public: false,
-      embargoed: false,
-      embargoEndDate: null,
-      actions: [
-        {
-          id: '1',
-          trigger: 'manual',
-          fromState: 'pending',
-          toState: 'pending',
-          dateModified: '2023-01-01',
-          creator: {
-            id: 'user-1',
-            name: 'John Doe',
-          },
-          comment: 'Registry submission',
-        },
-      ],
-      revisionId: 'revision-1',
-    },
-    {
-      id: '2',
-      title: 'Test Registry 2',
-      revisionStatus: 'accepted',
-      reviewsState: 'accepted',
-      public: true,
-      embargoed: false,
-      embargoEndDate: null,
-      actions: [
-        {
-          id: '2',
-          trigger: 'manual',
-          fromState: 'pending',
-          toState: 'accepted',
-          dateModified: '2023-01-02',
-          creator: {
-            id: 'user-2',
-            name: 'Jane Doe',
-          },
-          comment: 'Registry approved',
-        },
-      ],
-      revisionId: 'revision-2',
-    },
-  ];
+  const mockSubmissions: RegistryModeration[] = MOCK_REGISTRY_MODERATIONS;
 
   beforeEach(async () => {
     mockRouter = RouterMockBuilder.create().build();

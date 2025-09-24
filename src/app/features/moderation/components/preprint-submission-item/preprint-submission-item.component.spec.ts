@@ -11,32 +11,14 @@ import { PreprintSubmission } from '../../models';
 
 import { PreprintSubmissionItemComponent } from './preprint-submission-item.component';
 
+import { MOCK_PREPRINT_SUBMISSION } from '@testing/mocks/submission.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('PreprintSubmissionItemComponent', () => {
   let component: PreprintSubmissionItemComponent;
   let fixture: ComponentFixture<PreprintSubmissionItemComponent>;
 
-  const mockSubmission: PreprintSubmission = {
-    id: '1',
-    title: 'Test Preprint',
-    reviewsState: 'pending',
-    public: false,
-    actions: [
-      {
-        id: '1',
-        trigger: 'manual',
-        fromState: 'pending',
-        toState: 'pending',
-        dateModified: '2023-01-01',
-        creator: {
-          id: 'user-1',
-          name: 'John Doe',
-        },
-        comment: 'Test comment',
-      },
-    ],
-  };
+  const mockSubmission: PreprintSubmission = MOCK_PREPRINT_SUBMISSION;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
