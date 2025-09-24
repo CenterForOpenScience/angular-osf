@@ -15,19 +15,18 @@ import { IconComponent } from '@shared/components';
 import { TosConsentBannerComponent } from './tos-consent-banner.component';
 
 import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
-import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+
 
 describe('TosConsentBannerComponent', () => {
   let component: TosConsentBannerComponent;
   let fixture: ComponentFixture<TosConsentBannerComponent>;
   let store: jest.Mocked<Store>;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TosConsentBannerComponent, OSFTestingStoreModule, OSFTestingModule, MockComponent(IconComponent)],
+      imports: [TosConsentBannerComponent, OSFTestingStoreModule, MockComponent(IconComponent)],
       providers: [
         provideMockStore({
           signals: [{ selector: UserSelectors.getCurrentUser, value: MOCK_USER }],
@@ -40,13 +39,11 @@ describe('TosConsentBannerComponent', () => {
     store = TestBed.inject(Store) as jest.Mocked<Store>;
     component = fixture.componentInstance;
     store.dispatch = jest.fn().mockReturnValue(of(undefined));
-    toastServiceMock = ToastServiceMockBuilder.create().build();
     fixture.detectChanges();
   });
 
   it('should have the "Continue" button disabled by default', () => {
     const continueButton = fixture.debugElement.query(By.css('p-button button')).nativeElement;
-    console.log('continueButton ' + continueButton )
     expect(continueButton.disabled).toBe(true);
   });
 
@@ -68,16 +65,26 @@ describe('TosConsentBannerComponent', () => {
     fixture.detectChanges();
 
     expect(store.dispatch).toHaveBeenCalledWith(new AcceptTermsOfServiceByUser());
-    expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
 
-   it('should show toast banner if acceptedTermsOfService is false and "Continue" is clicked', () => {
-    component.acceptedTermsOfService.set(false);
-    const continueButton = fixture.debugElement.query(By.css('p-button button')).nativeElement;
-    continueButton.disabled = false;
-    continueButton.click();
-    fixture.detectChanges();
-    expect(component.errorMessage).toEqual('toast.tos-consent.errorMessage');
-  });
+  it('should return true for "acceptedTermsOfServiceChange" when user is null to not show banner', async () => {
+      await TestBed.resetTestingModule()
+        .configureTestingModule({
+          imports: [TosConsentBannerComponent, OSFTestingStoreModule, MockComponent(IconComponent)],
+          providers: [
+            provideMockStore({
+              signals: [{ selector: UserSelectors.getCurrentUser, value: null }],
+            }),
+            TranslationServiceMock,
+          ],
+        })
+        .compileComponents();
+
+      const fixture = TestBed.createComponent(TosConsentBannerComponent);
+      const component = fixture.componentInstance;
+
+      fixture.detectChanges();
+      expect(component.acceptedTermsOfServiceChange()).toBe(true);
+    });
 
 });
