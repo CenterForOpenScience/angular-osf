@@ -2,7 +2,7 @@ import { select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel, AccordionTabOpenEvent } from 'primeng/accordion';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
@@ -12,6 +12,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 
 import { CopyButtonComponent } from '@osf/shared/components';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
+import { StopPropagationDirective } from '@osf/shared/directives';
 
 import { OsfFileRevision } from '../../models';
 import { FilesSelectors } from '../../store';
@@ -32,6 +33,7 @@ import { FilesSelectors } from '../../store';
     CopyButtonComponent,
     Skeleton,
     InfoIconComponent,
+    StopPropagationDirective,
   ],
 })
 export class FileRevisionsComponent {
@@ -43,8 +45,8 @@ export class FileRevisionsComponent {
   readonly isLoading = select(FilesSelectors.isFileRevisionsLoading);
   readonly resourceMetadata = toObservable(select(FilesSelectors.getResourceMetadata));
 
-  onOpenRevision(event: AccordionTabOpenEvent): void {
-    this.openRevision.emit(event.index?.toString());
+  onOpenRevision(version: string): void {
+    this.openRevision.emit(version);
   }
 
   onDownloadRevision(version: string): void {
