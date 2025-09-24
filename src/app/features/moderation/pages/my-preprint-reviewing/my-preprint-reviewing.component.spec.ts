@@ -12,6 +12,8 @@ import { PreprintModerationSelectors } from '../../store/preprint-moderation';
 
 import { MyPreprintReviewingComponent } from './my-preprint-reviewing.component';
 
+import { MOCK_PREPRINT_PROVIDER_MODERATION_INFO } from '@testing/mocks/preprint-provider-moderation-info.mock';
+import { MOCK_PREPRINT_REVIEW_ACTIONS } from '@testing/mocks/preprint-review-action.mock';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -19,65 +21,8 @@ describe('MyPreprintReviewingComponent', () => {
   let component: MyPreprintReviewingComponent;
   let fixture: ComponentFixture<MyPreprintReviewingComponent>;
 
-  const mockPreprintProviders = [
-    {
-      id: 'provider-1',
-      name: 'Test Provider 1',
-      submissionCount: 10,
-      reviewsCommentsAnonymous: true,
-      reviewsCommentsPrivate: false,
-      reviewsWorkflow: 'pre_moderation',
-      supportEmail: 'support@test1.com',
-    },
-    {
-      id: 'provider-2',
-      name: 'Test Provider 2',
-      submissionCount: 5,
-      reviewsCommentsAnonymous: false,
-      reviewsCommentsPrivate: true,
-      reviewsWorkflow: 'post_moderation',
-      supportEmail: 'support@test2.com',
-    },
-  ];
-
-  const mockPreprintReviews = [
-    {
-      id: '1',
-      fromState: 'pending',
-      toState: 'accepted',
-      dateModified: '2023-01-01',
-      creator: {
-        id: 'user-1',
-        name: 'John Doe',
-      },
-      preprint: {
-        id: 'preprint-1',
-        name: 'Test Preprint',
-      },
-      provider: {
-        id: 'provider-1',
-        name: 'Test Provider',
-      },
-    },
-    {
-      id: '2',
-      fromState: 'pending',
-      toState: 'rejected',
-      dateModified: '2023-01-02',
-      creator: {
-        id: 'user-2',
-        name: 'Jane Smith',
-      },
-      preprint: {
-        id: 'preprint-2',
-        name: 'Test Preprint 2',
-      },
-      provider: {
-        id: 'provider-2',
-        name: 'Test Provider 2',
-      },
-    },
-  ];
+  const mockPreprintProviders = [MOCK_PREPRINT_PROVIDER_MODERATION_INFO];
+  const mockPreprintReviews = MOCK_PREPRINT_REVIEW_ACTIONS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
