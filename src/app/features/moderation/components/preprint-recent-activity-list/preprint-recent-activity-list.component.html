@@ -7,23 +7,27 @@
   </div>
 } @else {
   <div class="overflow-auto">
-    @for (item of reviews(); track $index) {
-      <div class="recent-activity-item flex align-items-center justify-content-between py-2 white-space-nowrap">
-        <div class="flex align-items-center gap-1">
-          <osf-icon
-            [class]="reviewStatusIcon[item.toState].value"
-            [iconClass]="reviewStatusIcon[item.toState].icon"
-          ></osf-icon>
-          <span class="ml-2">{{ item.creator.name }}</span>
-          <span>{{ preprintReviewStatus[item.toState].label | translate: { name: item.preprint.name } }}</span>
-          <span>{{ item.provider.name }}</span>
-        </div>
+    <div class="w-max">
+      @for (item of reviews(); track $index) {
+        <div
+          class="recent-activity-item flex w-full align-items-center justify-content-between py-2 white-space-nowrap"
+        >
+          <div class="flex align-items-center gap-1">
+            <osf-icon
+              [class]="reviewStatusIcon[item.toState].value"
+              [iconClass]="reviewStatusIcon[item.toState].icon"
+            ></osf-icon>
+            <span class="ml-2">{{ item.creator.name }}</span>
+            <span>{{ preprintReviewStatus[item.toState].label | translate: { name: item.preprint.name } }}</span>
+            <span>{{ item.provider.name }}</span>
+          </div>
 
-        <p class="flex flex-wrap gap-1 ml-3">
-          {{ item.dateModified | date: 'MMM d, y h:mm a' }}
-        </p>
-      </div>
-    }
+          <p class="flex flex-wrap gap-1 ml-3">
+            {{ item.dateModified | date: 'MMM d, y h:mm a' }}
+          </p>
+        </div>
+      }
+    </div>
   </div>
 
   @if (totalCount() > 10) {
