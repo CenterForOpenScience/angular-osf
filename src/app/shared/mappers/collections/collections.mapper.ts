@@ -4,8 +4,6 @@ import {
 } from '@osf/features/moderation/models';
 import { convertToSnakeCase } from '@osf/shared/helpers';
 import {
-  CollectionContributor,
-  CollectionContributorJsonApi,
   CollectionDetails,
   CollectionDetailsResponseJsonApi,
   CollectionProvider,
@@ -16,19 +14,12 @@ import {
   CollectionSubmissionPayloadJsonApi,
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
+  ContributorShortInfoModel,
   PaginatedData,
   ResponseJsonApi,
 } from '@osf/shared/models';
 
 export class CollectionsMapper {
-  static fromGetCollectionContributorsResponse(response: CollectionContributorJsonApi[]): CollectionContributor[] {
-    return response.map((contributor) => ({
-      id: contributor.embeds.users.data.id,
-      name: contributor.embeds.users.data.attributes.full_name,
-      url: contributor.embeds.users.data.links.html,
-    }));
-  }
-
   static fromGetCollectionProviderResponse(response: CollectionProviderResponseJsonApi): CollectionProvider {
     return {
       id: response.id,
@@ -198,7 +189,7 @@ export class CollectionsMapper {
       dataType: submission.attributes.data_type,
       disease: submission.attributes.disease,
       gradeLevels: submission.attributes.grade_levels,
-      contributors: [] as CollectionContributor[],
+      contributors: [] as ContributorShortInfoModel[],
     }));
   }
 

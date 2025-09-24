@@ -6,18 +6,14 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel, Accordion
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
-import { map, of } from 'rxjs';
-
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { CopyButtonComponent } from '@osf/shared/components';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
 
+import { OsfFileRevision } from '../../models';
 import { FilesSelectors } from '../../store';
 
 @Component({
@@ -39,25 +35,19 @@ import { FilesSelectors } from '../../store';
   ],
 })
 export class FileRevisionsComponent {
-  private readonly dataciteService = inject(DataciteService);
-  private readonly route = inject(ActivatedRoute);
-  private readonly environment = inject(ENVIRONMENT);
-  private readonly webUrl = this.environment.webUrl;
+  fileRevisions = input<OsfFileRevision[] | null>();
 
-  readonly fileRevisions = select(FilesSelectors.getFileRevisions);
+  downloadRevision = output<string>();
+  openRevision = output<string>();
+
   readonly isLoading = select(FilesSelectors.isFileRevisionsLoading);
   readonly resourceMetadata = toObservable(select(FilesSelectors.getResourceMetadata));
-  readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
-  openRevision = output<string>();
 
   onOpenRevision(event: AccordionTabOpenEvent): void {
     this.openRevision.emit(event.index?.toString());
   }
 
-  downloadRevision(version: string): void {
-    this.dataciteService.logIdentifiableDownload(this.resourceMetadata).subscribe();
-    if (this.fileGuid()) {
-      window.open(`${this.webUrl}/download/${this.fileGuid()}/?revision=${version}`)?.focus();
-    }
+  onDownloadRevision(version: string): void {
+    this.downloadRevision.emit(version);
   }
 }

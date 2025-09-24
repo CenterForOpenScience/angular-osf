@@ -158,6 +158,7 @@ export class RegistriesService {
     const params = {
       page,
       'page[size]': pageSize,
+      'filter[parent]': null,
       embed: ['bibliographic_contributors', 'registration_schema', 'provider'],
     };
 

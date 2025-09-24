@@ -2,7 +2,13 @@
   <osf-icon [class]="reviewStatusIcon[status()].value" [iconClass]="reviewStatusIcon[status()].icon"></osf-icon>
 
   <div>
-    <p-button class="link-btn-no-padding" link [label]="submission().title" (onClick)="selected.emit()" />
+    <p-button
+      class="link-btn-no-padding"
+      styleClass="text-left"
+      link
+      [label]="submission().title"
+      (onClick)="selected.emit()"
+    />
 
     @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {
       <div class="flex flex-wrap gap-1 mt-2">

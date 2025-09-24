@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 
 export interface ResourceInformationForm {
-  resourceType: FormControl<string>;
+  resourceType: FormControl<string | null>;
   resourceLanguage: FormControl<string | null>;
 }

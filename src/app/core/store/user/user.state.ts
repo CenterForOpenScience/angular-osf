@@ -1,5 +1,4 @@
 import { Action, State, StateContext } from '@ngxs/store';
-import { patch } from '@ngxs/store/operators';
 
 import { tap } from 'rxjs';
 
@@ -16,13 +15,11 @@ import {
   AcceptTermsOfServiceByUser,
   ClearCurrentUser,
   GetCurrentUser,
-  GetCurrentUserSettings,
   SetCurrentUser,
   UpdateProfileSettingsEducation,
   UpdateProfileSettingsEmployment,
   UpdateProfileSettingsSocialLinks,
   UpdateProfileSettingsUser,
-  UpdateUserSettings,
 } from './user.actions';
 import { USER_STATE_INITIAL, UserStateModel } from './user.model';
 
@@ -88,42 +85,6 @@ export class UserState {
     });
 
     localStorage.setItem('currentUser', JSON.stringify(action.user));
-  }
-
-  @Action(GetCurrentUserSettings)
-  getCurrentUserSettings(ctx: StateContext<UserStateModel>) {
-    ctx.setState(patch({ currentUserSettings: patch({ isLoading: true }) }));
-
-    return this.userService.getCurrentUserSettings().pipe(
-      tap((userSettings) => {
-        ctx.setState(
-          patch({
-            currentUserSettings: patch({
-              data: userSettings,
-              isLoading: false,
-            }),
-          })
-        );
-      })
-    );
-  }
-
-  @Action(UpdateUserSettings)
-  updateUserSettings(ctx: StateContext<UserStateModel>, action: UpdateUserSettings) {
-    ctx.setState(patch({ currentUserSettings: patch({ isSubmitting: true }) }));
-
-    return this.userService.updateUserSettings(action.userId, action.updatedUserSettings).pipe(
-      tap(() => {
-        ctx.setState(
-          patch({
-            currentUserSettings: patch({
-              data: action.updatedUserSettings,
-              isSubmitting: false,
-            }),
-          })
-        );
-      })
-    );
   }
 
   @Action(UpdateProfileSettingsEmployment)
