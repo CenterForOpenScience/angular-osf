@@ -13,6 +13,7 @@ export { InstitutionsService } from './institutions.service';
 export { JsonApiService } from './json-api.service';
 export { LicensesService } from './licenses.service';
 export { LoaderService } from './loader.service';
+export { MenuManagerService } from './menu-manager.service';
 export { MetaTagsService } from './meta-tags.service';
 export { MetadataRecordsService } from './metadata-records.service';
 export { MyResourcesService } from './my-resources.service';
