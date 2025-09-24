@@ -14,18 +14,23 @@ export class AccountSettingsSelectors {
   }
 
   @Selector([AccountSettingsState])
-  static getAccountSettings(state: AccountSettingsStateModel): AccountSettings | undefined {
-    return state.accountSettings;
+  static getAccountSettings(state: AccountSettingsStateModel): AccountSettings | null {
+    return state.accountSettings.data;
+  }
+
+  @Selector([AccountSettingsState])
+  static areAccountSettingsLoading(state: AccountSettingsStateModel): boolean {
+    return state.accountSettings.isLoading;
   }
 
   @Selector([AccountSettingsState])
   static getTwoFactorEnabled(state: AccountSettingsStateModel): boolean {
-    return state.accountSettings?.twoFactorEnabled ?? false;
+    return state.accountSettings.data?.twoFactorEnabled ?? false;
   }
 
   @Selector([AccountSettingsState])
   static getTwoFactorSecret(state: AccountSettingsStateModel): string {
-    return state.accountSettings?.secret ?? '';
+    return state.accountSettings.data?.secret ?? '';
   }
 
   @Selector([AccountSettingsState])

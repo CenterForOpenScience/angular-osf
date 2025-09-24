@@ -1,0 +1,78 @@
+import { ContributorPermission } from '@osf/shared/enums';
+import { ResponseJsonApi, UserDataJsonApi } from '@osf/shared/models';
+
+export type ContributorResponseJsonApi = ResponseJsonApi<ContributorDataJsonApi>;
+export type ContributorsResponseJsonApi = ResponseJsonApi<ContributorDataJsonApi[]>;
+
+export interface ContributorDataJsonApi {
+  id: string;
+  type: string;
+  attributes: ContributorAttributesJsonApi;
+  relationships: ContributorRelationshipsJsonApi;
+  embeds: ContributorEmbedsJsonApi;
+}
+
+export interface ContributorAttributesJsonApi {
+  bibliographic: boolean;
+  index: number;
+  is_curator: boolean;
+  permission: ContributorPermission;
+  unregistered_contributor: string | null;
+}
+
+export interface ContributorRelationshipsJsonApi {
+  users: RelationshipJsonApi<UserRelationshipDataJsonApi>;
+  node: RelationshipJsonApi<NodeRelationshipDataJsonApi>;
+}
+
+export interface ContributorEmbedsJsonApi {
+  users: EmbeddedUsersJsonApi;
+}
+
+export interface ContributorAddRequestModel {
+  type: 'contributors';
+  attributes: {
+    bibliographic: boolean;
+    permission: string;
+    id?: string;
+    full_name?: string;
+    email?: string;
+  };
+  relationships: {
+    users?: {
+      data?: RelationshipUsersDataJsonApi;
+    };
+  };
+}
+
+interface RelationshipUsersDataJsonApi {
+  id?: string;
+  type?: 'users';
+}
+
+interface EmbeddedUsersJsonApi {
+  data: UserDataJsonApi;
+}
+
+interface RelationshipJsonApi<T> {
+  links: {
+    related: LinkWithMetaJsonApi;
+    self?: LinkWithMetaJsonApi;
+  };
+  data?: T | null;
+}
+
+interface LinkWithMetaJsonApi {
+  href: string;
+  meta: Record<string, unknown>;
+}
+
+interface UserRelationshipDataJsonApi {
+  id: string;
+  type: string;
+}
+
+interface NodeRelationshipDataJsonApi {
+  id: string;
+  type: string;
+}

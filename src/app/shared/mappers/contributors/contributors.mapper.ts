@@ -2,28 +2,44 @@ import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
 import {
   ContributorAddModel,
   ContributorAddRequestModel,
+  ContributorDataJsonApi,
   ContributorModel,
-  ContributorResponse,
+  ContributorShortInfoModel,
   PaginatedData,
   ResponseJsonApi,
   UserDataJsonApi,
 } from '@osf/shared/models';
 
 export class ContributorsMapper {
-  static fromResponse(response: ContributorResponse[]): ContributorModel[] {
-    return response.map((contributor) => ({
+  static fromResponse(response: ContributorDataJsonApi[]): ContributorModel[] {
+    return response.map((contributor) => this.fromContributorResponse(contributor));
+  }
+
+  static fromContributorResponse(response: ContributorDataJsonApi): ContributorModel {
+    return {
+      id: response.id,
+      userId: response.embeds?.users?.data?.id || '',
+      type: response.type,
+      isBibliographic: response.attributes.bibliographic,
+      isUnregisteredContributor: !!response.attributes.unregistered_contributor,
+      isCurator: response.attributes.is_curator,
+      permission: response.attributes.permission,
+      index: response.attributes.index,
+      fullName: response.embeds?.users?.data?.attributes?.full_name || '',
+      givenName: response.embeds?.users?.data?.attributes?.given_name || '',
+      familyName: response.embeds?.users?.data?.attributes?.family_name || '',
+      education: response.embeds?.users?.data?.attributes?.education || '',
+      employment: response.embeds?.users?.data?.attributes?.employment || '',
+    };
+  }
+
+  static getContributorShortInfo(response: ContributorDataJsonApi[]): ContributorShortInfoModel[] {
+    const contributors = this.fromResponse(response);
+
+    return contributors.map((contributor) => ({
       id: contributor.id,
-      userId: contributor.embeds?.users?.data?.id || '',
-      type: contributor.type,
-      isBibliographic: contributor.attributes.bibliographic,
-      isUnregisteredContributor: !!contributor.attributes.unregistered_contributor,
-      isCurator: contributor.attributes.is_curator,
-      permission: contributor.attributes.permission,
-      fullName: contributor.embeds?.users?.data?.attributes?.full_name || '',
-      givenName: contributor.embeds?.users?.data?.attributes?.given_name || '',
-      familyName: contributor.embeds?.users?.data?.attributes?.family_name || '',
-      education: contributor.embeds?.users?.data?.attributes?.education || '',
-      employment: contributor.embeds?.users?.data?.attributes?.employment || '',
+      userId: contributor.userId,
+      fullName: contributor.fullName,
     }));
   }
 
@@ -41,23 +57,6 @@ export class ContributorsMapper {
           }) as ContributorAddModel
       ),
       totalCount: response.meta.total,
-    };
-  }
-
-  static fromContributorResponse(response: ContributorResponse): ContributorModel {
-    return {
-      id: response.id,
-      userId: response.embeds.users.data.id,
-      type: response.type,
-      isBibliographic: response.attributes.bibliographic,
-      isCurator: response.attributes.is_curator,
-      isUnregisteredContributor: !!response.attributes.unregistered_contributor,
-      permission: response.attributes.permission,
-      fullName: response.embeds.users.data.attributes.full_name,
-      givenName: response.embeds.users.data.attributes.given_name,
-      familyName: response.embeds.users.data.attributes.family_name,
-      education: response.embeds.users.data.attributes.education,
-      employment: response.embeds.users.data.attributes.employment,
     };
   }
 

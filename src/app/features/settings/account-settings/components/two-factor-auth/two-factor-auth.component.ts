@@ -43,9 +43,7 @@ export class TwoFactorAuthComponent {
 
   dialogRef: DynamicDialogRef | null = null;
 
-  qrCodeLink = computed(() => {
-    return `otpauth://totp/OSF:${this.currentUser()?.email}?secret=${this.accountSettings()?.secret}`;
-  });
+  qrCodeLink = computed(() => `otpauth://totp/OSF:${this.currentUser()?.id}?secret=${this.accountSettings()?.secret}`);
 
   verificationCode = new FormControl(null, {
     validators: [Validators.required],

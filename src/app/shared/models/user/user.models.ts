@@ -1,111 +1,30 @@
-import { JsonApiResponse } from '@shared/models';
-
 import { Education } from './education.model';
 import { Employment } from './employment.model';
 import { SocialModel } from './social.model';
-
-export type UserResponseJsonApi = JsonApiResponse<UserDataJsonApi, null>;
-
-export interface UserModel {
-  id: string;
-  fullName: string;
-  givenName: string;
-  familyName: string;
-  email?: string;
-  middleNames?: string;
-  suffix?: string;
-  education: Education[];
-  employment: Employment[];
-  social: SocialModel;
-  dateRegistered: Date;
-  link?: string;
-  iri?: string;
-  defaultRegionId: string;
-  allowIndexing: boolean | undefined;
-  isModerator?: boolean;
-  canViewReviews: boolean;
-  acceptedTermsOfService: boolean;
-}
-
-export interface UserSettings {
-  subscribeOsfGeneralEmail: boolean;
-  subscribeOsfHelpEmail: boolean;
-}
-
-export interface UserDataJsonApi {
-  id: string;
-  type: string;
-  attributes: {
-    full_name: string;
-    given_name: string;
-    family_name: string;
-    email?: string;
-    employment: Employment[];
-    education: Education[];
-    middle_names?: string;
-    suffix?: string;
-    social: SocialModel;
-    date_registered: string;
-    allow_indexing?: boolean;
-    can_view_reviews: boolean;
-    accepted_terms_of_service: boolean;
-  };
-  relationships: {
-    default_region: {
-      data: {
-        id: string;
-      };
-    };
-  };
-  links: {
-    html: string;
-    profile_image: string;
-    iri: string;
-  };
-}
-
-export interface UserSettingsGetResponse {
-  id: string;
-  type: 'user_settings';
-  attributes: {
-    subscribe_osf_general_email: boolean;
-    subscribe_osf_help_email: boolean;
-  };
-}
-
-export interface UserSettingsUpdateRequest {
-  data: {
-    id: string;
-    type: 'user_settings';
-    attributes: {
-      subscribe_osf_general_email: boolean;
-      subscribe_osf_help_email: boolean;
-    };
-  };
-}
-
-export interface UserNamesJsonApi {
-  full_name: string;
-  given_name: string;
-  family_name: string;
-  middle_names: string;
-  suffix: string;
-}
-
-export interface UserDataResponseJsonApi {
-  meta: {
-    active_flags: string[];
-    current_user: {
-      data: UserDataJsonApi | null;
-    };
-  };
-}
 
 export interface UserData {
   activeFlags: string[];
   currentUser: UserModel | null;
 }
 
-export interface UserAcceptedTermsOfServiceJsonApi {
-  accepted_terms_of_service: boolean;
+export interface UserModel {
+  id: string;
+  acceptedTermsOfService: boolean;
+  active: boolean;
+  allowIndexing: boolean;
+  canViewReviews: boolean;
+  dateRegistered: string;
+  education: Education[];
+  employment: Employment[];
+  familyName: string;
+  fullName: string;
+  givenName: string;
+  middleNames: string;
+  suffix: string;
+  timezone: string;
+  locale: string;
+  social: SocialModel;
+  defaultRegionId: string;
+  link?: string;
+  iri?: string;
 }

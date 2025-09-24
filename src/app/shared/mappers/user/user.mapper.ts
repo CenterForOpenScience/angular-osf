@@ -1,13 +1,10 @@
 import {
   UserAcceptedTermsOfServiceJsonApi,
+  UserAttributesJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
   UserModel,
-  UserNamesJsonApi,
-  UserSettings,
-  UserSettingsGetResponse,
-  UserSettingsUpdateRequest,
 } from '@osf/shared/models';
 
 export class UserMapper {
@@ -21,46 +18,28 @@ export class UserMapper {
   static fromUserGetResponse(user: UserDataJsonApi): UserModel {
     return {
       id: user.id,
+      acceptedTermsOfService: user.attributes.accepted_terms_of_service,
+      active: user.attributes.active,
+      allowIndexing: user.attributes?.allow_indexing,
       fullName: user.attributes.full_name,
       givenName: user.attributes.given_name,
       middleNames: user.attributes.middle_names,
       suffix: user.attributes.suffix,
       familyName: user.attributes.family_name,
-      email: user.attributes.email,
-      dateRegistered: new Date(user.attributes.date_registered),
+      dateRegistered: user.attributes.date_registered,
       link: user.links.html,
       education: user.attributes.education,
       employment: user.attributes.employment,
       iri: user.links.iri,
       social: user.attributes.social,
       defaultRegionId: user.relationships?.default_region?.data?.id,
-      allowIndexing: user.attributes?.allow_indexing,
       canViewReviews: user.attributes.can_view_reviews === true, // [NS] Do not simplify it
-      acceptedTermsOfService: user.attributes.accepted_terms_of_service,
+      timezone: user.attributes.timezone,
+      locale: user.attributes.locale,
     };
   }
 
-  static fromUserSettingsGetResponse(userSettingsResponse: UserSettingsGetResponse): UserSettings {
-    return {
-      subscribeOsfGeneralEmail: userSettingsResponse.attributes.subscribe_osf_general_email,
-      subscribeOsfHelpEmail: userSettingsResponse.attributes.subscribe_osf_help_email,
-    };
-  }
-
-  static toUpdateUserSettingsRequest(userId: string, userSettings: UserSettings): UserSettingsUpdateRequest {
-    return {
-      data: {
-        id: userId,
-        type: 'user_settings',
-        attributes: {
-          subscribe_osf_general_email: userSettings.subscribeOsfGeneralEmail,
-          subscribe_osf_help_email: userSettings.subscribeOsfHelpEmail,
-        },
-      },
-    };
-  }
-
-  static toNamesRequest(name: Partial<UserModel>): UserNamesJsonApi {
+  static toNamesRequest(name: Partial<UserModel>): Partial<UserAttributesJsonApi> {
     return {
       full_name: name.fullName ?? '',
       given_name: name.givenName ?? '',

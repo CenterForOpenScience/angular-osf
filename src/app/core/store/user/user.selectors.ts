@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { Education, Employment, SocialModel, UserModel, UserSettings } from '@osf/shared/models';
+import { Education, Employment, SocialModel, UserModel } from '@osf/shared/models';
 
 import { UserStateModel } from './user.model';
 import { UserState } from './user.state';
@@ -16,21 +16,6 @@ export class UserSelectors {
   @Selector([UserState])
   static getCurrentUserLoading(state: UserStateModel): boolean {
     return state.currentUser.isLoading;
-  }
-
-  @Selector([UserState])
-  static getCurrentUserSettings(state: UserStateModel): UserSettings | null {
-    return state.currentUserSettings.data;
-  }
-
-  @Selector([UserState])
-  static isUserSettingsLoading(state: UserStateModel): boolean {
-    return state.currentUserSettings.isLoading;
-  }
-
-  @Selector([UserState])
-  static isUserSettingsSubmitting(state: UserStateModel): boolean {
-    return state.currentUserSettings.isSubmitting!;
   }
 
   @Selector([UserState])

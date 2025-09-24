@@ -1,4 +1,4 @@
-import { ContributorResponse, MetaJsonApi, RegistrationNodeAttributesJsonApi } from '@osf/shared/models';
+import { ContributorDataJsonApi, MetaJsonApi, RegistrationNodeAttributesJsonApi } from '@osf/shared/models';
 
 export interface LinkedRegistrationJsonApi {
   id: string;
@@ -6,7 +6,7 @@ export interface LinkedRegistrationJsonApi {
   attributes: RegistrationNodeAttributesJsonApi;
   embeds: {
     bibliographic_contributors: {
-      data: ContributorResponse[];
+      data: ContributorDataJsonApi[];
     };
   };
 }
