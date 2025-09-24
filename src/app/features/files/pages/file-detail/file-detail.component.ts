@@ -274,9 +274,11 @@ export class FileDetailComponent {
   }
 
   onOpenRevision(version: string): void {
-    this.fileVersion = version;
-    this.getIframeLink(version);
-    this.isIframeLoading = true;
+    if (this.fileVersion !== version) {
+      this.fileVersion = version;
+      this.getIframeLink(version);
+      this.isIframeLoading = true;
+    }
   }
 
   downloadFile(link: string): void {
