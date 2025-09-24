@@ -15,7 +15,7 @@ export class DataciteService {
   private readonly environment = inject(ENVIRONMENT);
 
   get webUrl() {
-    return this.environment.webUrl;
+    return this.environment.apiDomainUrl;
   }
 
   get dataciteTrackerAddress() {
@@ -34,11 +34,11 @@ export class DataciteService {
     return this.watchIdentifiable(trackable, DataciteEvent.DOWNLOAD);
   }
 
-  logFileDownload(targetId: string, targetType: string) {
+  logFileDownload(targetId: string, targetType: string | undefined) {
     return this.logFile(targetId, targetType, DataciteEvent.DOWNLOAD);
   }
 
-  logFileView(targetId: string, targetType: string) {
+  logFileView(targetId: string, targetType: string | undefined) {
     return this.logFile(targetId, targetType, DataciteEvent.VIEW);
   }
 
@@ -55,8 +55,8 @@ export class DataciteService {
     );
   }
 
-  private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
-    const url = `${this.webUrl}/${targetType}/${targetId}/identifiers`;
+  private logFile(targetId: string, targetType: string | undefined, event: DataciteEvent): Observable<void> {
+    const url = `${this.webUrl}/v2/${targetType}/${targetId}/identifiers`;
     return this.http.get<IdentifiersJsonApiResponse>(url).pipe(
       map((item) => ({
         identifiers: item.data.map<Identifier>((identifierData) => ({

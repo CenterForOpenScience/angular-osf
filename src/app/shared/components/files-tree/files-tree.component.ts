@@ -1,3 +1,5 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
@@ -37,6 +39,7 @@ import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@osf/
 import { FileSizePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { CurrentResourceSelectors } from '@shared/stores';
 
 import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';
@@ -85,6 +88,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   provider = input<string>();
   isDragOver = signal(false);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
+
+  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
@@ -249,10 +254,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   downloadFileOrFolder(file: OsfFile) {
-    if (file.target.id && file.target.type) {
-      this.dataciteService.logFileDownload(file.target.id, file.target.type).subscribe();
-    }
-
+    const resourceType = this.resourceMetadata()?.type ?? 'nodes';
+    this.dataciteService.logFileDownload(this.resourceId(), resourceType).subscribe();
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);
     } else {

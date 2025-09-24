@@ -144,6 +144,7 @@ export class FilesComponent {
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly provider = select(FilesSelectors.getProvider);
   readonly resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
+  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
   readonly rootFolders = select(FilesSelectors.getRootFolders);
   readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
   readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
@@ -436,7 +437,7 @@ export class FilesComponent {
     const folderId = this.currentFolder()?.id ?? '';
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
     const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
-    const resourcePath = this.urlMap.get(this.resourceType()) ?? 'nodes';
+    const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
 
     if (resourceId && folderId) {
       this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
