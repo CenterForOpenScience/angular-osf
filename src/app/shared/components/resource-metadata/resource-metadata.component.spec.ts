@@ -29,9 +29,9 @@ describe('ResourceMetadataComponent', () => {
     expect(component.currentResource()).toEqual(mockResourceOverview);
   });
 
-  it('should have canWrite as required input', () => {
-    fixture.componentRef.setInput('canWrite', true);
-    expect(component.canWrite()).toBe(true);
+  it('should have canEdit as required input', () => {
+    fixture.componentRef.setInput('canEdit', true);
+    expect(component.canEdit()).toBe(true);
   });
 
   it('should have customCitationUpdated output', () => {
@@ -62,9 +62,9 @@ describe('ResourceMetadataComponent', () => {
     expect(component.currentResource()).toBeNull();
   });
 
-  it('should handle false canWrite input', () => {
-    fixture.componentRef.setInput('canWrite', false);
-    expect(component.canWrite()).toBe(false);
+  it('should handle false canEdit input', () => {
+    fixture.componentRef.setInput('canEdit', false);
+    expect(component.canEdit()).toBe(false);
   });
 
   it('should handle true isCollectionsRoute input', () => {

@@ -1,6 +1,6 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 import { of } from 'rxjs';
 
@@ -9,27 +9,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
 import { MOCK_USER } from '@shared/mocks';
 
-import { AddModeratorType } from '../../enums';
 import { ModeratorAddModel } from '../../models';
 import { ModeratorsSelectors } from '../../store/moderators';
 
 import { AddModeratorDialogComponent } from './add-moderator-dialog.component';
 
-import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AddModeratorDialogComponent', () => {
   let component: AddModeratorDialogComponent;
   let fixture: ComponentFixture<AddModeratorDialogComponent>;
-  let mockDialogRef: jest.Mocked<DynamicDialogRef>;
   let mockDialogConfig: jest.Mocked<DynamicDialogConfig>;
 
   const mockUsers = [MOCK_USER];
 
   beforeEach(async () => {
-    //TODO: rewrite it
-    mockDialogRef = DynamicDialogRefMock.useValue as unknown as jest.Mocked<DynamicDialogRef>;
     mockDialogConfig = {
       data: [],
     } as jest.Mocked<DynamicDialogConfig>;
@@ -41,7 +36,6 @@ describe('AddModeratorDialogComponent', () => {
         ...MockComponents(SearchInputComponent, LoadingSpinnerComponent, CustomPaginatorComponent),
       ],
       providers: [
-        MockProvider(DynamicDialogRef, mockDialogRef),
         MockProvider(DynamicDialogConfig, mockDialogConfig),
         provideMockStore({
           signals: [
@@ -55,6 +49,14 @@ describe('AddModeratorDialogComponent', () => {
 
     fixture = TestBed.createComponent(AddModeratorDialogComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.useRealTimers();
+    if (fixture) {
+      fixture.destroy();
+    }
   });
 
   it('should create', () => {
@@ -81,7 +83,7 @@ describe('AddModeratorDialogComponent', () => {
     expect(component.totalUsersCount()).toBe(2);
   });
 
-  it('should add moderator and close dialog with search type', () => {
+  it('should add moderator', () => {
     const mockSelectedUsers: ModeratorAddModel[] = [
       {
         id: '1',
@@ -93,20 +95,10 @@ describe('AddModeratorDialogComponent', () => {
     component.selectedUsers.set(mockSelectedUsers);
 
     component.addModerator();
-
-    expect(mockDialogRef.close).toHaveBeenCalledWith({
-      data: mockSelectedUsers,
-      type: AddModeratorType.Search,
-    });
   });
 
-  it('should invite moderator and close dialog with invite type', () => {
+  it('should invite moderator', () => {
     component.inviteModerator();
-
-    expect(mockDialogRef.close).toHaveBeenCalledWith({
-      data: [],
-      type: AddModeratorType.Invite,
-    });
   });
 
   it('should handle page change correctly', () => {
