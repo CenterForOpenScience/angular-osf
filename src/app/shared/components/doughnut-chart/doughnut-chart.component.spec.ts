@@ -35,10 +35,9 @@ describe('DoughnutChartComponent', () => {
     expect(component.showExpandedSection()).toBe(false);
   });
 
-  it('should test getColor method with various indices', () => {
-    expect(component.getColor(0)).toBeDefined();
-    expect(component.getColor(5)).toBeDefined();
-    expect(component.getColor(10)).toBeDefined();
+  it('should have access to PIE_CHART_PALETTE', () => {
+    expect(component.PIE_CHART_PALETTE).toBeDefined();
+    expect(Array.isArray(component.PIE_CHART_PALETTE)).toBe(true);
   });
 
   it('should handle input updates', () => {

@@ -1,55 +1,110 @@
-import { Store } from '@ngxs/store';
-
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider, MockProviders } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/array-input/array-input.component';
 import { ApplicabilityStatus } from '@osf/features/preprints/enums';
+import { Preprint } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { MOCK_STORE } from '@shared/mocks';
+import { FormSelectComponent } from '@shared/components';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 import { AuthorAssertionsStepComponent } from './author-assertions-step.component';
 
-const mockPreprint = {
-  id: '1',
-  hasCoi: false,
-  coiStatement: null,
-  hasDataLinks: ApplicabilityStatus.NotApplicable,
-  dataLinks: [],
-  whyNoData: null,
-  hasPreregLinks: ApplicabilityStatus.NotApplicable,
-  preregLinks: [],
-  whyNoPrereg: null,
-  preregLinkInfo: null,
-};
+import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
+import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe('AuthorAssertionsStepComponent', () => {
   let component: AuthorAssertionsStepComponent;
   let fixture: ComponentFixture<AuthorAssertionsStepComponent>;
+  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+
+  const mockPreprint: Preprint = PREPRINT_MOCK;
 
   beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === PreprintStepperSelectors.getPreprint) return () => mockPreprint;
-      if (selector === PreprintStepperSelectors.isPreprintSubmitting) return () => false;
-      return () => null;
-    });
+    toastServiceMock = ToastServiceMockBuilder.create().build();
+    customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [AuthorAssertionsStepComponent, MockPipe(TranslatePipe)],
+      imports: [
+        AuthorAssertionsStepComponent,
+        OSFTestingModule,
+        MockComponents(ArrayInputComponent, FormSelectComponent),
+      ],
       providers: [
-        MockProvider(Store, MOCK_STORE),
-        MockProviders(ToastService, CustomConfirmationService, TranslateService),
+        TranslationServiceMock,
+        MockProvider(ToastService, toastServiceMock),
+        MockProvider(CustomConfirmationService, customConfirmationServiceMock),
+        provideMockStore({
+          signals: [
+            {
+              selector: PreprintStepperSelectors.getPreprint,
+              value: mockPreprint,
+            },
+            {
+              selector: PreprintStepperSelectors.isPreprintSubmitting,
+              value: false,
+            },
+          ],
+        }),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuthorAssertionsStepComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize form with preprint data', () => {
+    expect(component.authorAssertionsForm.get('hasCoi')?.value).toBe(false);
+    expect(component.authorAssertionsForm.get('coiStatement')?.value).toBeNull();
+    expect(component.authorAssertionsForm.get('hasDataLinks')?.value).toBe(ApplicabilityStatus.NotApplicable);
+    expect(component.authorAssertionsForm.get('hasPreregLinks')?.value).toBe(ApplicabilityStatus.NotApplicable);
+  });
+
+  it('should emit nextClicked when nextButtonClicked is called', () => {
+    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    component.nextButtonClicked();
+
+    expect(toastServiceMock.showSuccess).toHaveBeenCalledWith(
+      'preprints.preprintStepper.common.successMessages.preprintSaved'
+    );
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
+  it('should show confirmation dialog when backButtonClicked is called with changes', () => {
+    component.authorAssertionsForm.patchValue({ hasCoi: true });
+
+    component.backButtonClicked();
+
+    expect(customConfirmationServiceMock.confirmContinue).toHaveBeenCalledWith({
+      headerKey: 'common.discardChanges.header',
+      messageKey: 'common.discardChanges.message',
+      onConfirm: expect.any(Function),
+      onReject: expect.any(Function),
+    });
+  });
+
+  it('should expose readonly properties', () => {
+    expect(component.CustomValidators).toBeDefined();
+    expect(component.ApplicabilityStatus).toBe(ApplicabilityStatus);
+    expect(component.inputLimits).toBeDefined();
+    expect(component.INPUT_VALIDATION_MESSAGES).toBeDefined();
+    expect(component.preregLinkOptions).toBeDefined();
+    expect(component.linkValidators).toBeDefined();
+  });
+
+  it('should have correct signal values', () => {
+    expect(component.hasCoiValue()).toBe(false);
+    expect(component.hasDataLinks()).toBe(ApplicabilityStatus.NotApplicable);
+    expect(component.hasPreregLinks()).toBe(ApplicabilityStatus.NotApplicable);
   });
 });

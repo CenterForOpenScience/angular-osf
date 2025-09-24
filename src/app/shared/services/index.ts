@@ -8,6 +8,7 @@ export { CustomConfirmationService } from './custom-confirmation.service';
 export { DuplicatesService } from './duplicates.service';
 export { FilesService } from './files.service';
 export { GlobalSearchService } from './global-search.service';
+export { GoogleFilePickerDownloadService } from './google-file-picker.download.service';
 export { InstitutionsService } from './institutions.service';
 export { JsonApiService } from './json-api.service';
 export { LicensesService } from './licenses.service';

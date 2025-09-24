@@ -160,4 +160,10 @@ export interface RegistryOverviewJsonApiRelationships {
       };
     };
   };
+  root: {
+    data: {
+      id: string;
+      type: string;
+    };
+  };
 }

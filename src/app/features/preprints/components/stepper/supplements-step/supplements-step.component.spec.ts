@@ -1,47 +1,65 @@
-import { Store } from '@ngxs/store';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider, MockProviders } from 'ng-mocks';
-
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
+import { AddProjectFormComponent } from '@shared/components';
+import { TranslateServiceMock } from '@shared/mocks';
+import { ToastService } from '@shared/services';
 
 import { SupplementsStepComponent } from './supplements-step.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
 describe('SupplementsStepComponent', () => {
   let component: SupplementsStepComponent;
   let fixture: ComponentFixture<SupplementsStepComponent>;
+  let mockToastService: ReturnType<typeof ToastServiceMock.simple>;
 
   beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      switch (selector) {
-        case PreprintStepperSelectors.getPreprint:
-          return () => ({});
-        case PreprintStepperSelectors.isPreprintSubmitting:
-          return () => false;
-        case PreprintStepperSelectors.getAvailableProjects:
-          return () => [];
-        case PreprintStepperSelectors.areAvailableProjectsLoading:
-          return () => false;
-        case PreprintStepperSelectors.getPreprintProject:
-          return () => null;
-        case PreprintStepperSelectors.isPreprintProjectLoading:
-          return () => false;
-        default:
-          return () => null;
-      }
-    });
+    mockToastService = ToastServiceMock.simple();
 
     await TestBed.configureTestingModule({
-      imports: [SupplementsStepComponent, MockPipe(TranslatePipe)],
+      imports: [SupplementsStepComponent, MockComponent(AddProjectFormComponent), OSFTestingModule],
       providers: [
-        MockProvider(Store, MOCK_STORE),
+        provideMockStore({
+          signals: [
+            {
+              selector: PreprintStepperSelectors.getPreprint,
+              value: {},
+            },
+            {
+              selector: PreprintStepperSelectors.isPreprintSubmitting,
+              value: false,
+            },
+            {
+              selector: PreprintStepperSelectors.getAvailableProjects,
+              value: [],
+            },
+            {
+              selector: PreprintStepperSelectors.areAvailableProjectsLoading,
+              value: false,
+            },
+            {
+              selector: PreprintStepperSelectors.getPreprintProject,
+              value: null,
+            },
+            {
+              selector: PreprintStepperSelectors.isPreprintProjectLoading,
+              value: false,
+            },
+          ],
+        }),
         TranslateServiceMock,
-        MockProviders(ConfirmationService, MessageService),
+        MockProvider(ConfirmationService, {
+          confirm: jest.fn(),
+          close: jest.fn(),
+        }),
+        { provide: ToastService, useValue: mockToastService },
       ],
     }).compileComponents();
 
@@ -52,5 +70,56 @@ describe('SupplementsStepComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call getAvailableProjects when project name changes after debounce', () => {
+    jest.useFakeTimers();
+
+    const getAvailableProjectsSpy = jest.fn();
+    Object.defineProperty(component, 'actions', {
+      value: { getAvailableProjects: getAvailableProjectsSpy },
+      writable: true,
+    });
+
+    component.ngOnInit();
+    component.projectNameControl.setValue('test-project');
+    jest.advanceTimersByTime(500);
+
+    expect(getAvailableProjectsSpy).toHaveBeenCalledWith('test-project');
+    jest.useRealTimers();
+  });
+
+  it('should not call getAvailableProjects if value is the same as selectedProjectId', () => {
+    jest.useFakeTimers();
+    const getAvailableProjectsSpy = jest.fn();
+
+    Object.defineProperty(component, 'actions', {
+      value: { getAvailableProjects: getAvailableProjectsSpy },
+      writable: true,
+    });
+    jest.spyOn(component, 'selectedProjectId').mockReturnValue('test-project');
+
+    component.ngOnInit();
+    component.projectNameControl.setValue('test-project');
+    jest.advanceTimersByTime(500);
+
+    expect(getAvailableProjectsSpy).not.toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it('should handle empty values', () => {
+    jest.useFakeTimers();
+    const getAvailableProjectsSpy = jest.fn();
+    Object.defineProperty(component, 'actions', {
+      value: { getAvailableProjects: getAvailableProjectsSpy },
+      writable: true,
+    });
+
+    component.ngOnInit();
+    component.projectNameControl.setValue('');
+    jest.advanceTimersByTime(500);
+
+    expect(getAvailableProjectsSpy).toHaveBeenCalledWith('');
+    jest.useRealTimers();
   });
 });

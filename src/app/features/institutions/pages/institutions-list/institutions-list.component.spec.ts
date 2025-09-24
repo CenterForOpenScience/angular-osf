@@ -1,8 +1,7 @@
 import { MockProvider } from 'ng-mocks';
 
-import { PaginatorState } from 'primeng/paginator';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
@@ -54,69 +53,38 @@ describe.skip('Component: Institutions List', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update currentPage, first, and call updateQueryParams when page is provided', () => {
-    const paginatorEvent: PaginatorState = {
-      page: 1,
-      first: 20,
-      rows: 10,
-      pageCount: 5,
-    };
-
-    component.onPageChange(paginatorEvent);
-
-    expect(component.currentPage()).toBe(2);
-    expect(component.first()).toBe(20);
-    expect(routerMock.navigate).toHaveBeenCalledWith([], {
-      relativeTo: expect.any(Object),
-      queryParams: {
-        page: '2',
-        size: '10',
-      },
-      queryParamsHandling: 'merge',
-    });
+  it('should initialize with correct default values', () => {
+    expect(component.classes).toBe('flex-1 flex flex-column w-full');
+    expect(component.searchControl).toBeInstanceOf(FormControl);
+    expect(component.searchControl.value).toBe('');
   });
 
-  it('should set currentPage to 1 when page is not provided', () => {
-    const paginatorEvent: PaginatorState = {
-      page: undefined,
-      first: 0,
-      rows: 20,
-      pageCount: 3,
-    };
-
-    component.onPageChange(paginatorEvent);
-
-    expect(component.currentPage()).toBe(1);
-    expect(component.first()).toBe(0);
-    expect(routerMock.navigate).toHaveBeenCalledWith([], {
-      relativeTo: expect.any(Object),
-      queryParams: {
-        page: '1',
-        size: '20',
-      },
-      queryParamsHandling: 'merge',
-    });
+  it('should return institutions from store', () => {
+    const institutions = component.institutions();
+    expect(institutions).toBe(mockInstitutions);
   });
 
-  it('should handle first being undefined', () => {
-    const paginatorEvent: PaginatorState = {
-      page: 2,
-      first: undefined,
-      rows: 15,
-      pageCount: 4,
-    };
+  it('should return loading state from store', () => {
+    const loading = component.institutionsLoading();
+    expect(loading).toBe(false);
+  });
 
-    component.onPageChange(paginatorEvent);
+  it('should handle search control value changes', () => {
+    const searchValue = 'test search';
+    component.searchControl.setValue(searchValue);
 
-    expect(component.currentPage()).toBe(2);
-    expect(component.first()).toBe(0);
-    expect(routerMock.navigate).toHaveBeenCalledWith([], {
-      relativeTo: expect.any(Object),
-      queryParams: {
-        page: '2',
-        size: '15',
-      },
-      queryParamsHandling: 'merge',
-    });
+    expect(component.searchControl.value).toBe(searchValue);
+  });
+
+  it('should handle empty search', () => {
+    component.searchControl.setValue('');
+
+    expect(component.searchControl.value).toBe('');
+  });
+
+  it('should handle null search value', () => {
+    component.searchControl.setValue(null);
+
+    expect(component.searchControl.value).toBe(null);
   });
 });

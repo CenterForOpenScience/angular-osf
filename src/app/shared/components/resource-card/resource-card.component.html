@@ -1,8 +1,8 @@
 <div class="resource p-4">
-  <p-accordion>
+  <p-accordion (onOpen)="onOpen()">
     <p-accordion-panel value="0">
       <p-accordion-header class="flex flex-row align-items-start gap-3 p-0">
-        <div class="flex flex-column align-items-start gap-2">
+        <div osfStopPropagation class="flex flex-column align-items-start gap-2">
           <p class="type py-1 px-3 font-bold">{{ cardTypeLabel() | translate }}</p>
 
           <div class="flex align-items-center gap-2">
@@ -70,7 +70,7 @@
           @if (dateFields().length > 0) {
             <div class="flex flex-column md:flex-row line-height-3">
               @for (dateField of dateFields(); track $index) {
-                <p>{{ dateField.label | translate }}: {{ dateField.date | date: 'MMMM d, y' }}</p>
+                <p>{{ dateField.label | translate }}: {{ dateField.date | date: 'MMMM d, y' : 'UTC' }}</p>
 
                 @if (!$last && !isSmall()) {
                   <p class="mx-1">

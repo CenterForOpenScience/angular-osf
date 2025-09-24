@@ -75,5 +75,6 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     withdrawalJustification: data.attributes.withdrawal_justification,
     dateWithdrawn: data.attributes.date_withdrawn || null,
     embargoEndDate: data.attributes.embargo_end_date || null,
+    rootParentId: data.relationships.root?.data?.id,
   } as RegistryOverview;
 }

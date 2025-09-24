@@ -69,6 +69,7 @@ export interface RegistryOverview {
   withdrawn: boolean;
   withdrawalJustification?: string;
   dateWithdrawn: string | null;
+  rootParentId: string | null;
 }
 
 export interface RegistryOverviewWithMeta {

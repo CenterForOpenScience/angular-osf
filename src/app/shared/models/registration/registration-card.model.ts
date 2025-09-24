@@ -21,4 +21,5 @@ export interface RegistrationCard {
   hasMaterials?: boolean;
   hasPapers?: boolean;
   hasSupplements?: boolean;
+  rootParentId?: string | null;
 }

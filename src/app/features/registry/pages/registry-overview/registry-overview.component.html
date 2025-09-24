@@ -7,6 +7,7 @@
       [showButton]="canMakeDecision()"
       [buttonSeverity]="'success'"
       [buttonLabel]="'moderation.makeDecision.header' | translate"
+      [isButtonDisabled]="!isRootRegistration()"
       [isSubmitting]="areReviewActionsLoading()"
       (buttonClick)="handleOpenMakeDecisionDialog()"
     />
@@ -69,7 +70,7 @@
             <div class="flex flex-column gap-4 md:flex-row resource">
               <osf-registry-statuses
                 [registry]="registry()"
-                [readonly]="hasNoPermissions() || hasReadAccess()"
+                [readonly]="hasNoPermissions() || hasViewOnly()"
                 [isModeration]="isModeration"
               ></osf-registry-statuses>
 
@@ -81,7 +82,7 @@
                 (continueUpdate)="onContinueUpdateRegistration()"
                 [isModeration]="isModeration"
                 [isSubmitting]="isSchemaResponseLoading()"
-                [readonly]="hasNoPermissions() || hasReadAccess()"
+                [readonly]="hasNoPermissions() || hasViewOnly()"
               >
               </osf-registry-revisions>
             </div>
