@@ -39,8 +39,8 @@ export class EditFileMetadataDialogComponent {
     this.fileMetadataForm.patchValue({
       title: fileMetadata.title,
       description: fileMetadata.description,
-      resourceType: fileMetadata.resourceTypeGeneral,
-      resourceLanguage: fileMetadata.language,
+      resourceType: fileMetadata.resourceTypeGeneral.length ? fileMetadata.resourceTypeGeneral : null,
+      resourceLanguage: fileMetadata.language.length ? fileMetadata.language : null,
     });
   }
 
