@@ -6,7 +6,6 @@ import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
@@ -85,7 +84,6 @@ import { FilesSelectors } from '../../store';
     Button,
     Dialog,
     FilesTreeComponent,
-    FloatLabel,
     FormSelectComponent,
     FormsModule,
     GoogleFilePickerComponent,
