@@ -16,3 +16,5 @@ export interface ContributorModel {
   employment: Employment[];
   education: Education[];
 }
+
+export type ContributorShortInfoModel = Pick<ContributorModel, 'id' | 'userId' | 'fullName'>;

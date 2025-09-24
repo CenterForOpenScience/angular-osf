@@ -172,25 +172,3 @@ export interface CollectionSubmissionsSearchPayloadJsonApi {
   };
   type: string;
 }
-
-export interface CollectionContributorJsonApi {
-  id: string;
-  type: string;
-  embeds: {
-    users: {
-      data: {
-        attributes: {
-          full_name: string;
-        };
-        id: string;
-        links: {
-          html: string;
-        };
-      };
-    };
-  };
-}
-
-export interface CollectionContributorsResponseJsonApi extends JsonApiResponse<CollectionContributorJsonApi[], null> {
-  data: CollectionContributorJsonApi[];
-}

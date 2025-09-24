@@ -4,6 +4,7 @@ import {
   ContributorAddRequestModel,
   ContributorDataJsonApi,
   ContributorModel,
+  ContributorShortInfoModel,
   PaginatedData,
   ResponseJsonApi,
   UserDataJsonApi,
@@ -30,6 +31,16 @@ export class ContributorsMapper {
       education: response.embeds?.users?.data?.attributes?.education || '',
       employment: response.embeds?.users?.data?.attributes?.employment || '',
     };
+  }
+
+  static getContributorShortInfo(response: ContributorDataJsonApi[]): ContributorShortInfoModel[] {
+    const contributors = this.fromResponse(response);
+
+    return contributors.map((contributor) => ({
+      id: contributor.id,
+      userId: contributor.userId,
+      fullName: contributor.fullName,
+    }));
   }
 
   static fromUsersWithPaginationGetResponse(
