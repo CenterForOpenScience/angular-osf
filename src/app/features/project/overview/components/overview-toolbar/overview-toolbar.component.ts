@@ -29,7 +29,7 @@ import {
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores';
-import { hasViewOnlyParam, IS_SMALL } from '@shared/helpers';
+import { hasViewOnlyParam, IS_MEDIUM } from '@shared/helpers';
 
 import { SocialsShareActionItem } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
@@ -66,7 +66,7 @@ export class OverviewToolbarComponent {
   destroyRef = inject(DestroyRef);
   isPublic = signal(false);
   isBookmarked = signal(false);
-  isMobile = toSignal(inject(IS_SMALL));
+  isTablet = toSignal(inject(IS_MEDIUM));
 
   isCollectionsRoute = input<boolean>(false);
   canEdit = input.required<boolean>();
@@ -145,7 +145,7 @@ export class OverviewToolbarComponent {
   handleToggleProjectPublicity(): void {
     const resource = this.currentResource();
     if (!resource) return;
-    const dialogWidth = this.isMobile() ? '95vw' : '600px';
+    const dialogWidth = this.isTablet() ? '600px' : '95vw';
 
     const isCurrentlyPublic = resource.isPublic;
     const newPublicStatus = !isCurrentlyPublic;
