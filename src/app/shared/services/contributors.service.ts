@@ -9,7 +9,7 @@ import { ContributorsMapper } from '../mappers';
 import {
   ContributorAddModel,
   ContributorModel,
-  ContributorResponse,
+  ContributorResponseJsonApi,
   JsonApiResponse,
   PaginatedData,
   ResponseJsonApi,
@@ -50,7 +50,7 @@ export class ContributorsService {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
 
     return this.jsonApiService
-      .get<JsonApiResponse<ContributorResponse[], null>>(`${baseUrl}/`)
+      .get<JsonApiResponse<ContributorResponseJsonApi[], null>>(`${baseUrl}/`)
       .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
   }
 
@@ -73,7 +73,7 @@ export class ContributorsService {
     const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
 
     return this.jsonApiService
-      .post<JsonApiResponse<ContributorResponse, null>>(baseUrl, contributorData)
+      .post<JsonApiResponse<ContributorResponseJsonApi, null>>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor.data)));
   }
 
@@ -87,7 +87,7 @@ export class ContributorsService {
     const contributorData = { data: ContributorsMapper.toContributorAddRequest(data) };
 
     return this.jsonApiService
-      .patch<ContributorResponse>(baseUrl, contributorData)
+      .patch<ContributorResponseJsonApi>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor)));
   }
 

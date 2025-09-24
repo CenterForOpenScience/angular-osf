@@ -3,14 +3,14 @@ import {
   ContributorAddModel,
   ContributorAddRequestModel,
   ContributorModel,
-  ContributorResponse,
+  ContributorResponseJsonApi,
   PaginatedData,
   ResponseJsonApi,
   UserDataJsonApi,
 } from '@osf/shared/models';
 
 export class ContributorsMapper {
-  static fromResponse(response: ContributorResponse[]): ContributorModel[] {
+  static fromResponse(response: ContributorResponseJsonApi[]): ContributorModel[] {
     return response.map((contributor) => ({
       id: contributor.id,
       userId: contributor.embeds?.users?.data?.id || '',
@@ -27,6 +27,23 @@ export class ContributorsMapper {
     }));
   }
 
+  static fromContributorResponse(response: ContributorResponseJsonApi): ContributorModel {
+    return {
+      id: response.id,
+      userId: response.embeds.users.data.id,
+      type: response.type,
+      isBibliographic: response.attributes.bibliographic,
+      isCurator: response.attributes.is_curator,
+      isUnregisteredContributor: !!response.attributes.unregistered_contributor,
+      permission: response.attributes.permission,
+      fullName: response.embeds.users.data.attributes.full_name,
+      givenName: response.embeds.users.data.attributes.given_name,
+      familyName: response.embeds.users.data.attributes.family_name,
+      education: response.embeds.users.data.attributes.education,
+      employment: response.embeds.users.data.attributes.employment,
+    };
+  }
+
   static fromUsersWithPaginationGetResponse(
     response: ResponseJsonApi<UserDataJsonApi[]>
   ): PaginatedData<ContributorAddModel[]> {
@@ -41,23 +58,6 @@ export class ContributorsMapper {
           }) as ContributorAddModel
       ),
       totalCount: response.meta.total,
-    };
-  }
-
-  static fromContributorResponse(response: ContributorResponse): ContributorModel {
-    return {
-      id: response.id,
-      userId: response.embeds.users.data.id,
-      type: response.type,
-      isBibliographic: response.attributes.bibliographic,
-      isCurator: response.attributes.is_curator,
-      isUnregisteredContributor: !!response.attributes.unregistered_contributor,
-      permission: response.attributes.permission,
-      fullName: response.embeds.users.data.attributes.full_name,
-      givenName: response.embeds.users.data.attributes.given_name,
-      familyName: response.embeds.users.data.attributes.family_name,
-      education: response.embeds.users.data.attributes.education,
-      employment: response.embeds.users.data.attributes.employment,
     };
   }
 

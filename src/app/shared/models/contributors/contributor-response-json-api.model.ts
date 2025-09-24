@@ -1,22 +1,27 @@
 import { ApiData, Education, Employment } from '@osf/shared/models';
 import { ContributorPermission } from '@shared/enums';
 
-export type ContributorResponse = ApiData<ContributorAttributes, ContributorEmbeds, ContributorRelationships, null>;
+export type ContributorResponseJsonApi = ApiData<
+  ContributorAttributesJsonApi,
+  ContributorEmbedsJsonApi,
+  ContributorRelationshipsJsonApi,
+  null
+>;
 
-export interface ContributorAttributes {
-  index: number;
+export interface ContributorAttributesJsonApi {
   bibliographic: boolean;
+  index: number;
+  is_curator: boolean;
   permission: ContributorPermission;
   unregistered_contributor: string | null;
-  is_curator: boolean;
 }
 
-export interface ContributorRelationships {
+export interface ContributorRelationshipsJsonApi {
   users: Relationship<UserRelationshipData>;
   node: Relationship<NodeRelationshipData>;
 }
 
-export interface ContributorEmbeds {
+export interface ContributorEmbedsJsonApi {
   users: EmbeddedUser;
 }
 
