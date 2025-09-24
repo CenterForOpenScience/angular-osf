@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } f
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import MarkdownIt from 'markdown-it';
+import markdownItKatex from 'markdown-it-katex';
 import markdownItVideo from 'markdown-it-video';
 
 @Component({
@@ -28,9 +29,11 @@ export class MarkdownComponent {
       linkify: true,
       typographer: true,
       breaks: true,
-    }).use(markdownItVideo, {
-      youtube: { width: 560, height: 315 },
-      vimeo: { width: 560, height: 315 },
-    });
+    })
+      .use(markdownItVideo, {
+        youtube: { width: 560, height: 315 },
+        vimeo: { width: 560, height: 315 },
+      })
+      .use(markdownItKatex);
   }
 }

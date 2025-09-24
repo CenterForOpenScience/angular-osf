@@ -1,0 +1,14 @@
+@import "katex/dist/katex.min.css";
+
+.md-editor-container {
+  font-family: inherit;
+
+  .katex {
+    font-size: 1em;
+  }
+
+  .katex-display {
+    margin: 1em 0;
+    text-align: center;
+  }
+}
