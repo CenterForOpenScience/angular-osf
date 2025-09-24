@@ -1,5 +1,5 @@
+import { ContributorPermission } from '@osf/shared/enums';
 import { Education, Employment } from '@osf/shared/models';
-import { ContributorPermission } from '@shared/enums';
 
 export interface ContributorModel {
   id: string;
@@ -9,6 +9,7 @@ export interface ContributorModel {
   isUnregisteredContributor: boolean;
   isCurator: boolean;
   permission: ContributorPermission;
+  index: number;
   fullName: string;
   givenName: string;
   familyName: string;

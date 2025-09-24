@@ -2,45 +2,33 @@ import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
 import {
   ContributorAddModel,
   ContributorAddRequestModel,
+  ContributorDataJsonApi,
   ContributorModel,
-  ContributorResponseJsonApi,
   PaginatedData,
   ResponseJsonApi,
   UserDataJsonApi,
 } from '@osf/shared/models';
 
 export class ContributorsMapper {
-  static fromResponse(response: ContributorResponseJsonApi[]): ContributorModel[] {
-    return response.map((contributor) => ({
-      id: contributor.id,
-      userId: contributor.embeds?.users?.data?.id || '',
-      type: contributor.type,
-      isBibliographic: contributor.attributes.bibliographic,
-      isUnregisteredContributor: !!contributor.attributes.unregistered_contributor,
-      isCurator: contributor.attributes.is_curator,
-      permission: contributor.attributes.permission,
-      fullName: contributor.embeds?.users?.data?.attributes?.full_name || '',
-      givenName: contributor.embeds?.users?.data?.attributes?.given_name || '',
-      familyName: contributor.embeds?.users?.data?.attributes?.family_name || '',
-      education: contributor.embeds?.users?.data?.attributes?.education || '',
-      employment: contributor.embeds?.users?.data?.attributes?.employment || '',
-    }));
+  static fromResponse(response: ContributorDataJsonApi[]): ContributorModel[] {
+    return response.map((contributor) => this.fromContributorResponse(contributor));
   }
 
-  static fromContributorResponse(response: ContributorResponseJsonApi): ContributorModel {
+  static fromContributorResponse(response: ContributorDataJsonApi): ContributorModel {
     return {
       id: response.id,
-      userId: response.embeds.users.data.id,
+      userId: response.embeds?.users?.data?.id || '',
       type: response.type,
       isBibliographic: response.attributes.bibliographic,
-      isCurator: response.attributes.is_curator,
       isUnregisteredContributor: !!response.attributes.unregistered_contributor,
+      isCurator: response.attributes.is_curator,
       permission: response.attributes.permission,
-      fullName: response.embeds.users.data.attributes.full_name,
-      givenName: response.embeds.users.data.attributes.given_name,
-      familyName: response.embeds.users.data.attributes.family_name,
-      education: response.embeds.users.data.attributes.education,
-      employment: response.embeds.users.data.attributes.employment,
+      index: response.attributes.index,
+      fullName: response.embeds?.users?.data?.attributes?.full_name || '',
+      givenName: response.embeds?.users?.data?.attributes?.given_name || '',
+      familyName: response.embeds?.users?.data?.attributes?.family_name || '',
+      education: response.embeds?.users?.data?.attributes?.education || '',
+      employment: response.embeds?.users?.data?.attributes?.employment || '',
     };
   }
 

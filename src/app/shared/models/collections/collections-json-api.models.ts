@@ -191,6 +191,6 @@ export interface CollectionContributorJsonApi {
   };
 }
 
-export interface ContributorsResponseJsonApi extends JsonApiResponse<CollectionContributorJsonApi[], null> {
+export interface CollectionContributorsResponseJsonApi extends JsonApiResponse<CollectionContributorJsonApi[], null> {
   data: CollectionContributorJsonApi[];
 }

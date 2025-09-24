@@ -13,6 +13,7 @@ import {
 import { CollectionsMapper, ReviewActionsMapper } from '../mappers';
 import {
   CollectionContributor,
+  CollectionContributorsResponseJsonApi,
   CollectionDetails,
   CollectionDetailsGetResponseJsonApi,
   CollectionDetailsResponseJsonApi,
@@ -25,7 +26,6 @@ import {
   CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
-  ContributorsResponseJsonApi,
   JsonApiResponse,
   PaginatedData,
   ResponseJsonApi,
@@ -207,9 +207,9 @@ export class CollectionsService {
     };
 
     return this.jsonApiService
-      .get<ContributorsResponseJsonApi>(contributorsUrl, params)
+      .get<CollectionContributorsResponseJsonApi>(contributorsUrl, params)
       .pipe(
-        map((response: ContributorsResponseJsonApi) =>
+        map((response: CollectionContributorsResponseJsonApi) =>
           CollectionsMapper.fromGetCollectionContributorsResponse(response.data)
         )
       );

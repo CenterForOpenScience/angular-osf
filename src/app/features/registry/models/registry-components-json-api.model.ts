@@ -1,4 +1,4 @@
-import { ContributorResponseJsonApi, MetaJsonApi, RegistrationNodeAttributesJsonApi } from '@osf/shared/models';
+import { ContributorDataJsonApi, MetaJsonApi, RegistrationNodeAttributesJsonApi } from '@osf/shared/models';
 
 import { RegistryComponentModel } from './registry-components.models';
 
@@ -8,7 +8,7 @@ export interface RegistryComponentJsonApi {
   attributes: RegistrationNodeAttributesJsonApi;
   embeds: {
     bibliographic_contributors: {
-      data: ContributorResponseJsonApi[];
+      data: ContributorDataJsonApi[];
     };
   };
 }
