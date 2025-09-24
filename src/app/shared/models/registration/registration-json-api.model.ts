@@ -111,6 +111,12 @@ export interface RegistrationRelationshipsJsonApi {
       type: 'licenses';
     };
   };
+  root: {
+    data: {
+      id: string;
+      type: string;
+    };
+  };
 }
 
 export interface RegistrationEmbedsJsonApi {

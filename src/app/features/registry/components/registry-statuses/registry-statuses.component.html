@@ -3,15 +3,16 @@
     <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
       <p class="font-bold">{{ 'registry.overview.statuses.' + registry()?.status + '.text' | translate }}</p>
     </p-accordion-header>
+
     <p-accordion-content>
       <div class="flex flex-column pt-4 gap-2">
-        <h2 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h2>
+        <h3 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h3>
         <p>
           {{
             'registry.overview.statuses.' + registry()?.status + '.long' | translate: { embargoEndDate: embargoEndDate }
           }}
         </p>
-        @if (!hasViewOnly()) {
+        @if (!readonly()) {
           @if (canWithdraw) {
             <p-button
               (onClick)="openWithdrawDialog()"

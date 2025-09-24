@@ -77,7 +77,7 @@
                   routerLinkActive="router-link-active"
                   [label]="'common.buttons.view' | translate"
                 ></p-button>
-                @if (isAccepted || isPending || isEmbargo) {
+                @if (showButtons) {
                   @if (isApproved) {
                     <p-button
                       severity="secondary"

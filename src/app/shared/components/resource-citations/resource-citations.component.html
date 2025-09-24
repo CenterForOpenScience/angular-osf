@@ -44,7 +44,7 @@
                     }
                   </div>
                 }
-                @if (!isCollectionsRoute()) {
+                @if (canEdit()) {
                   <p-divider />
                   <p>{{ 'project.overview.metadata.getMoreCitations' | translate }}</p>
                   <p-select
@@ -81,7 +81,7 @@
               }
             }
           } @else {
-            @if (!isCollectionsRoute()) {
+            @if (canEdit()) {
               <textarea
                 [placeholder]="'project.overview.metadata.customCitationPlaceholder' | translate"
                 pTextarea

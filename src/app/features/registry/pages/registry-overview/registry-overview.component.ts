@@ -31,7 +31,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
-import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
+import { RegistrationReviewStates, ResourceType, RevisionReviewStates } from '@osf/shared/enums';
 import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
@@ -93,6 +93,11 @@ export class RegistryOverviewComponent {
   readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
   readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
+
+  readonly hasWriteAccess = select(RegistryOverviewSelectors.hasWriteAccess);
+  readonly hasAdminAccess = select(RegistryOverviewSelectors.hasAdminAccess);
+  readonly hasNoPermissions = select(RegistryOverviewSelectors.hasNoPermissions);
+
   revisionInProgress: SchemaResponse | undefined;
 
   isLoading = computed(
@@ -108,6 +113,11 @@ export class RegistryOverviewComponent {
     return !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration;
   });
 
+  isRootRegistration = computed(() => {
+    const rootId = this.registry()?.rootParentId;
+    return !rootId || rootId === this.registry()?.id;
+  });
+
   private registryId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   readonly schemaResponse = computed(() => {
@@ -116,11 +126,14 @@ export class RegistryOverviewComponent {
     this.revisionInProgress = registry?.schemaResponses.find(
       (r) => r.reviewsState === RevisionReviewStates.RevisionInProgress
     );
+
     const schemaResponses =
       (this.isModeration
         ? registry?.schemaResponses
-        : registry?.schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved || this.isAdmin)) ||
-      [];
+        : registry?.schemaResponses.filter(
+            (r) => r.reviewsState === RevisionReviewStates.Approved || this.hasAdminAccess()
+          )) || [];
+
     if (index !== null) {
       return schemaResponses[index];
     }
@@ -139,13 +152,17 @@ export class RegistryOverviewComponent {
     const registry = this.registry();
     const subjects = this.subjects();
     const institutions = this.institutions();
+
     if (registry && subjects && institutions) {
       return MapRegistryOverview(registry, subjects, institutions, this.isAnonymous());
     }
+
     return null;
   });
 
   readonly selectedRevisionIndex = signal(0);
+
+  showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn && !this.hasNoPermissions());
 
   toolbarResource = computed(() => {
     if (this.registry()) {
@@ -179,10 +196,6 @@ export class RegistryOverviewComponent {
 
   userPermissions = computed(() => this.registry()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
-
-  get isAdmin(): boolean {
-    return this.userPermissions().includes(UserPermissions.Admin);
-  }
 
   get isInitialState(): boolean {
     return this.registry()?.reviewsState === RegistrationReviewStates.Initial;

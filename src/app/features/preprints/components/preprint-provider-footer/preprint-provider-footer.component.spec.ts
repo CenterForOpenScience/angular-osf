@@ -13,13 +13,42 @@ describe('PreprintProviderFooterComponent', () => {
 
     fixture = TestBed.createComponent(PreprintProviderFooterComponent);
     component = fixture.componentInstance;
-
-    fixture.componentRef.setInput('footerHtml', '');
-
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.componentRef.setInput('footerHtml', '');
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
+  });
+
+  it('should not render section when footerHtml is null', () => {
+    fixture.componentRef.setInput('footerHtml', null);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement;
+    const section = compiled.querySelector('section');
+
+    expect(section).toBeNull();
+  });
+
+  it('should not render section when footerHtml is undefined', () => {
+    fixture.componentRef.setInput('footerHtml', undefined);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement;
+    const section = compiled.querySelector('section');
+
+    expect(section).toBeNull();
+  });
+
+  it('should not render section when footerHtml is empty string', () => {
+    fixture.componentRef.setInput('footerHtml', '');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement;
+    const section = compiled.querySelector('section');
+
+    expect(section).toBeNull();
   });
 });

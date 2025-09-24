@@ -75,6 +75,15 @@ export class RegistrationCardComponent {
     return this.registrationData().reviewsState === RegistrationReviewStates.Embargo;
   }
 
+  get isRootRegistration(): boolean {
+    const registration = this.registrationData();
+    return !registration.rootParentId || registration.id === registration.rootParentId;
+  }
+
+  get showButtons(): boolean {
+    return this.isRootRegistration && (this.isAccepted || this.isPending || this.isEmbargo);
+  }
+
   updateRegistration(id: string): void {
     this.actions
       .createSchemaResponse(id)

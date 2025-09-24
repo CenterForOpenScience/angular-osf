@@ -5,7 +5,7 @@
         <button
           [disabled]="step.disabled"
           class="step-circle"
-          [class.active]="i <= currentStep().index"
+          [class.active]="isStepActive(step)"
           [class.invalid]="step.invalid"
           [class.current]="i === currentStep().index"
           (click)="onStepClick(step)"
@@ -14,7 +14,7 @@
           @if (step.invalid && i !== currentStep().index) {
             <osf-icon iconClass="fas fa-exclamation" />
           } @else {
-            @if (i < currentStep().index) {
+            @if (isStepCompleted(step)) {
               <osf-icon iconClass="fas fa-check" />
             } @else {
               <span>{{ i + 1 }}</span>

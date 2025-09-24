@@ -65,12 +65,12 @@ import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores
 import {
   FilesTreeComponent,
   FormSelectComponent,
+  GoogleFilePickerComponent,
   LoadingSpinnerComponent,
   SearchInputComponent,
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
 import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
 import { CustomConfirmationService, FilesService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
@@ -97,6 +97,7 @@ import { FilesSelectors } from '../../store';
     TableModule,
     TranslatePipe,
     ViewOnlyLinkMessageComponent,
+    GoogleFilePickerComponent,
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',

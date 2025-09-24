@@ -3,6 +3,7 @@ export interface StepOption {
   label: string;
   value: number | string;
   invalid?: boolean;
+  touched?: boolean;
   routeLink?: string;
   disabled?: boolean;
 }

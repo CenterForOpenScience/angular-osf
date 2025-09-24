@@ -3,7 +3,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { timer } from 'rxjs';
+
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Employment } from '@osf/shared/models';
 
@@ -18,11 +21,16 @@ import { EmploymentHistoryComponent } from '../employment-history/employment-his
 })
 export class EmploymentHistoryDialogComponent {
   private readonly config = inject(DynamicDialogConfig);
-  readonly employmentHistory = signal<Employment[]>([]);
   dialogRef = inject(DynamicDialogRef);
+  readonly employmentHistory = signal<Employment[]>([]);
+  readonly isContentVisible = signal(false);
 
   constructor() {
     this.employmentHistory.set(this.config.data);
+
+    timer(0)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.isContentVisible.set(true));
   }
 
   close() {
