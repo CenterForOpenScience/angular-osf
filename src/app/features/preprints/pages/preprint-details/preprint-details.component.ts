@@ -94,8 +94,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly environment = inject(ENVIRONMENT);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
-  private webUrl = this.environment.webUrl;
-
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
@@ -137,6 +135,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     return actions[0];
   });
+
   latestWithdrawalRequest = computed(() => {
     const requests = this.withdrawalRequests();
 
@@ -144,6 +143,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     return requests[0];
   });
+
   latestRequestAction = computed(() => {
     const actions = this.requestActions();
 

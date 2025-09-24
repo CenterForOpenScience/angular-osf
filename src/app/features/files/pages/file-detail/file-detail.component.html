@@ -109,7 +109,12 @@
 
     <div class="w-full flex flex-column gap-4 flex-1 lg:w-6">
       @if (selectedTab === FileDetailTab.Revisions) {
-        <osf-file-revisions (openRevision)="onOpenRevision($event)" class="metadata"></osf-file-revisions>
+        <osf-file-revisions
+          class="metadata"
+          [fileRevisions]="fileRevisions()"
+          (downloadRevision)="downloadRevision($event)"
+          (openRevision)="onOpenRevision($event)"
+        ></osf-file-revisions>
       } @else if (selectedTab === FileDetailTab.Keywords) {
         <osf-file-keywords class="metadata"></osf-file-keywords>
       } @else {
