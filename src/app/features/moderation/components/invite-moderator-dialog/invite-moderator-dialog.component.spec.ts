@@ -1,5 +1,7 @@
 import { MockComponents } from 'ng-mocks';
 
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormSelectComponent, TextInputComponent } from '@shared/components';
@@ -8,19 +10,24 @@ import { ModeratorPermission } from '../../enums';
 
 import { InviteModeratorDialogComponent } from './invite-moderator-dialog.component';
 
+import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('InviteModeratorDialogComponent', () => {
   let component: InviteModeratorDialogComponent;
   let fixture: ComponentFixture<InviteModeratorDialogComponent>;
+  let mockDialogRef: jest.Mocked<DynamicDialogRef>;
 
   beforeEach(async () => {
+    mockDialogRef = DynamicDialogRefMock.useValue as unknown as jest.Mocked<DynamicDialogRef>;
+
     await TestBed.configureTestingModule({
       imports: [
         InviteModeratorDialogComponent,
         OSFTestingModule,
         ...MockComponents(TextInputComponent, FormSelectComponent),
       ],
+      providers: [DynamicDialogRefMock],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InviteModeratorDialogComponent);
@@ -52,11 +59,16 @@ describe('InviteModeratorDialogComponent', () => {
     expect(component.permissionsOptions.length).toBeGreaterThan(0);
   });
 
-  it('should search moderator', () => {
+  it('should search moderator and close dialog', () => {
     component.searchModerator();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith({
+      data: [],
+      type: 1,
+    });
   });
 
-  it('should submit form with valid data', () => {
+  it('should submit form with valid data and close dialog', () => {
     component.moderatorForm.patchValue({
       fullName: 'John Doe',
       email: 'john@example.com',
@@ -64,6 +76,17 @@ describe('InviteModeratorDialogComponent', () => {
     });
 
     component.submit();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith({
+      data: [
+        {
+          fullName: 'John Doe',
+          email: 'john@example.com',
+          permission: ModeratorPermission.Admin,
+        },
+      ],
+      type: 2,
+    });
   });
 
   it('should not submit form with invalid data', () => {
@@ -74,6 +97,8 @@ describe('InviteModeratorDialogComponent', () => {
     });
 
     component.submit();
+
+    expect(mockDialogRef.close).not.toHaveBeenCalled();
   });
 
   it('should use default permission when not provided', () => {
@@ -84,5 +109,16 @@ describe('InviteModeratorDialogComponent', () => {
     });
 
     component.submit();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith({
+      data: [
+        {
+          fullName: 'John Doe',
+          email: 'john@example.com',
+          permission: ModeratorPermission.Moderator,
+        },
+      ],
+      type: 2,
+    });
   });
 });

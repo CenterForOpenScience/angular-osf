@@ -1,6 +1,6 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { of } from 'rxjs';
 
@@ -14,17 +14,21 @@ import { ModeratorsSelectors } from '../../store/moderators';
 
 import { AddModeratorDialogComponent } from './add-moderator-dialog.component';
 
+import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AddModeratorDialogComponent', () => {
   let component: AddModeratorDialogComponent;
   let fixture: ComponentFixture<AddModeratorDialogComponent>;
+  let mockDialogRef: jest.Mocked<DynamicDialogRef>;
   let mockDialogConfig: jest.Mocked<DynamicDialogConfig>;
 
   const mockUsers = [MOCK_USER];
 
   beforeEach(async () => {
+    mockDialogRef = DynamicDialogRefMock.useValue as unknown as jest.Mocked<DynamicDialogRef>;
+
     mockDialogConfig = {
       data: [],
     } as jest.Mocked<DynamicDialogConfig>;
@@ -36,6 +40,7 @@ describe('AddModeratorDialogComponent', () => {
         ...MockComponents(SearchInputComponent, LoadingSpinnerComponent, CustomPaginatorComponent),
       ],
       providers: [
+        DynamicDialogRefMock,
         MockProvider(DynamicDialogConfig, mockDialogConfig),
         provideMockStore({
           signals: [
@@ -54,9 +59,6 @@ describe('AddModeratorDialogComponent', () => {
   afterEach(() => {
     jest.clearAllMocks();
     jest.useRealTimers();
-    if (fixture) {
-      fixture.destroy();
-    }
   });
 
   it('should create', () => {
@@ -95,10 +97,20 @@ describe('AddModeratorDialogComponent', () => {
     component.selectedUsers.set(mockSelectedUsers);
 
     component.addModerator();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith({
+      data: mockSelectedUsers,
+      type: 1,
+    });
   });
 
   it('should invite moderator', () => {
     component.inviteModerator();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith({
+      data: [],
+      type: 2,
+    });
   });
 
   it('should handle page change correctly', () => {
