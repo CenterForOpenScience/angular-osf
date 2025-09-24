@@ -1,14 +1,8 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipe } from 'ng-mocks';
-
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-
-import { BulkUploadComponent } from '@osf/features/moderation/components';
 
 import { RegistrySettingsComponent } from './registry-settings.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('RegistrySettingsComponent', () => {
   let component: RegistrySettingsComponent;
@@ -16,15 +10,7 @@ describe('RegistrySettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrySettingsComponent, MockComponent(BulkUploadComponent), MockPipe(TranslatePipe)],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            queryParams: of({}),
-          },
-        },
-      ],
+      imports: [RegistrySettingsComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrySettingsComponent);

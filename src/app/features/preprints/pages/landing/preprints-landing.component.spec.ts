@@ -4,7 +4,6 @@ import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   AdvisoryBoardComponent,
   BrowseBySubjectsComponent,
@@ -18,6 +17,7 @@ import { BrandService } from '@shared/services';
 
 import { PreprintsLandingComponent } from './preprints-landing.component';
 
+import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_PROVIDER_SHORT_INFO_MOCK } from '@testing/mocks/preprint-provider-short-info.mock';
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
@@ -53,10 +53,7 @@ describe('PreprintsLandingComponent', () => {
       ],
       providers: [
         TranslationServiceMock,
-        MockProvider(ENVIRONMENT, {
-          defaultProvider: mockDefaultProvider,
-          supportEmail: 'support@osf.io',
-        }),
+        EnvironmentTokenMock,
         MockProvider(BrandService),
         MockProvider(Router, routerMock),
         provideMockStore({

@@ -5,7 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { languageCodes } from '@osf/shared/constants';
 import { LanguageCodeModel } from '@osf/shared/models';
@@ -24,10 +24,7 @@ export class ResourceInformationDialogComponent implements OnInit {
   config = inject(DynamicDialogConfig);
 
   resourceForm = new FormGroup<ResourceInformationForm>({
-    resourceType: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
+    resourceType: new FormControl(''),
     resourceLanguage: new FormControl(''),
   });
 

@@ -30,5 +30,7 @@ export const EnvironmentTokenMock = {
     googleTagManagerId: 'test-goolge-tag-manager-id',
     addonsApiUrl: 'http://addons.localhost:8000',
     webUrl: 'http://localhost:4200',
+    supportEmail: 'support@test.com',
+    defaultProvider: 'osf',
   },
 };

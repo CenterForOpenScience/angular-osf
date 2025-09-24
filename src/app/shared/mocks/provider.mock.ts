@@ -28,4 +28,9 @@ export const MOCK_PROVIDER = {
   facebookAppId: null,
   reviewsCommentsPrivate: null,
   reviewsCommentsAnonymous: null,
+  primaryCollection: {
+    id: 'collection-1',
+    title: 'Test Collection',
+    description: 'Test collection description',
+  },
 };
