@@ -1,11 +1,14 @@
 @if (displayBanner()) {
   <div class="cookie-consent-container" @fadeInOut>
     <div class="w-full p-message">
-      <div class="grid flex-row p-message-content">
-        <div class="col">{{ 'toast.cookie-consent.message' | translate }}</div>
-        <div class="col-fixed flex justify-content-end">
+      <div class="grid flex-column p-message-content">
+        <div class="row p-message-text">
+          <i class="pi pi-exclamation-triangle"></i>
+          {{ 'toast.cookie-consent.message' | translate }}
+        </div>
+        <div class="row-fixed flex justify-content-end p-message-button">
           <p-button
-            type="button"
+            variant="text"
             [label]="'toast.cookie-consent.accept' | translate"
             (onClick)="acceptCookies()"
           ></p-button>

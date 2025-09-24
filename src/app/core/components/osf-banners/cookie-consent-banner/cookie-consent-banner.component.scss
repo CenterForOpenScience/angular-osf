@@ -5,19 +5,26 @@
   display: block !important;
 
   .p-message {
-    background-color: #886d3f;
-    color: var(--white);
+    background-color: var(--yellow-2);
+    color: var(--yellow-1);
+
     width: 100%;
     border-radius: var(--p-message-border-radius, 6px);
-    outline-width: var(--p-message-border-width, 1px);
-    outline-style: solid;
 
     .p-message-content {
       display: flex;
-      align-items: center;
       padding: var(--p-message-content-padding, 1.5rem);
       gap: var(--p-message-content-gap, 0.5rem);
       height: 100%;
+
+      .p-message-text {
+        font-weight: bold;
+        align-items: center;
+      }
+
+      .p-message-button {
+        align-items: end;
+      }
     }
   }
 }
