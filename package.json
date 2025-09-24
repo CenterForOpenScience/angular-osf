@@ -5,7 +5,7 @@
     "ng": "ng",
     "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks",
     "build": "ng build",
-    "check:config": "node ./docker/check-config.js",
+    "check:config": "node ./docker/scripts/check-config.js",
     "ci:test": "jest",
     "ci:test:coverage": "jest --coverage",
     "docs": "./node_modules/.bin/compodoc -p tsconfig.docs.json --name 'OSF Angular Documentation' --theme 'laravel' -s",
