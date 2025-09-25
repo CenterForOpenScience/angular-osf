@@ -22,7 +22,13 @@
           @if (reviewData()[question.responseKey!].length) {
             <div class="flex flex-wrap gap-2">
               @for (file of reviewData()[question.responseKey!]; track file.id) {
-                <osf-file-link [file]="file"></osf-file-link>
+                @if (isDraft()) {
+                  <p>{{ file.file_name }}</p>
+                } @else {
+                  <a class="font-bold cursor-pointer" target="_blank" rel="noopener" [href]="file?.file_urls?.html">
+                    {{ file.file_name }}
+                  </a>
+                }
               }
             </div>
           } @else {
