@@ -134,6 +134,7 @@ export class FileDetailComponent {
   resourceContributors = select(FilesSelectors.getContributors);
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
   fileRevisions = select(FilesSelectors.getFileRevisions);
+  isFileRevisionLoading = select(FilesSelectors.isFileRevisionsLoading);
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
@@ -178,9 +179,7 @@ export class FileDetailComponent {
 
   tabs = signal<MetadataTabsModel[]>([]);
 
-  isLoading = computed(() => {
-    return this.isFileLoading();
-  });
+  isLoading = computed(() => this.isFileLoading());
 
   selectedMetadataTab = signal('osf');
 
@@ -188,19 +187,14 @@ export class FileDetailComponent {
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
 
-  private readonly effectMetaTags = effect(() => {
-    const metaTagsData = this.metaTagsData();
-    if (metaTagsData) {
-      this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
-    }
-  });
-
   private readonly metaTagsData = computed(() => {
     if (this.isFileLoading() || this.isFileCustomMetadataLoading() || this.isResourceContributorsLoading()) {
       return null;
     }
+
     const file = this.file();
     if (!file) return null;
+
     return {
       osfGuid: file.guid,
       title: this.fileCustomMetadata()?.title || file.name,
@@ -236,6 +230,7 @@ export class FileDetailComponent {
         if (this.resourceId && this.resourceType) {
           this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
           this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
+
           if (fileId) {
             const storageLink = this.file()?.links.upload || '';
             this.actions.getFileRevisions(storageLink);
@@ -263,6 +258,15 @@ export class FileDetailComponent {
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.actions.getFileMetadata(params['fileGuid']);
     });
+
+    effect(() => {
+      const metaTagsData = this.metaTagsData();
+
+      if (metaTagsData) {
+        this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+      }
+    });
+
     this.dataciteService.logIdentifiableView(this.fileMetadata$).subscribe();
   }
 
@@ -278,6 +282,18 @@ export class FileDetailComponent {
       this.fileVersion = version;
       this.getIframeLink(version);
       this.isIframeLoading = true;
+    }
+  }
+
+  downloadRevision(version: string) {
+    this.dataciteService.logIdentifiableDownload(this.fileMetadata$).subscribe();
+
+    const downloadUrl = this.file()?.links.download;
+    const storageLink = this.file()?.links.upload || '';
+
+    if (downloadUrl) {
+      window.open(`${downloadUrl}/?revision=${version}`)?.focus();
+      this.actions.getFileRevisions(storageLink);
     }
   }
 

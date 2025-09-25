@@ -53,6 +53,10 @@ p-table {
   tr:not(.loading-row) {
     cursor: pointer;
   }
+
+  td {
+    max-width: 20vw;
+  }
 }
 
 .addon-table {

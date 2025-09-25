@@ -2,6 +2,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
+import { timer } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -37,8 +39,10 @@ export class TruncatedTextComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
-      if (this.text()) {
+      const currentText = this.text();
+      if (currentText) {
         this.isTextExpanded.set(false);
+        timer(0).subscribe(() => this.checkTextOverflow());
       }
     });
   }

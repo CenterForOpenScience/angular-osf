@@ -2,9 +2,11 @@
   <div class="flex flex-column gap-4">
     <div class="flex flex-column justify-content-between gap-2 md:flex-row md:align-items-center">
       @if (preprint() && preprintProvider()) {
-        <a pButton severity="secondary" [href]="downloadLink()" (click)="logDownload()">{{
-          'preprints.details.share.downloadPreprint' | translate: { documentType: preprintProvider()?.preprintWord }
-        }}</a>
+        <a pButton severity="secondary" [href]="downloadLink()" (click)="logDownload()">
+          {{
+            'preprints.details.share.downloadPreprint' | translate: { documentType: preprintProvider()?.preprintWord }
+          }}
+        </a>
       }
 
       @if (metrics()) {

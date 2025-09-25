@@ -6,7 +6,6 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { UserMapper } from '@osf/shared/mappers';
 import {
-  JsonApiResponse,
   ProfileSettingsUpdate,
   UserAcceptedTermsOfServiceJsonApi,
   UserData,
@@ -14,8 +13,6 @@ import {
   UserDataResponseJsonApi,
   UserModel,
   UserResponseJsonApi,
-  UserSettings,
-  UserSettingsGetResponse,
 } from '@osf/shared/models';
 import { JsonApiService } from '@shared/services';
 
@@ -42,27 +39,14 @@ export class UserService {
       .pipe(map((response) => UserMapper.fromUserDataGetResponse(response)));
   }
 
-  getCurrentUserSettings(): Observable<UserSettings> {
-    return this.jsonApiService
-      .get<JsonApiResponse<UserSettingsGetResponse, null>>(`${this.apiUrl}/users/me/settings/`)
-      .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response.data)));
-  }
-
-  updateUserSettings(userId: string, userSettings: UserSettings): Observable<UserSettings> {
-    const request = UserMapper.toUpdateUserSettingsRequest(userId, userSettings);
-
-    return this.jsonApiService
-      .patch<UserSettingsGetResponse>(`${this.apiUrl}/users/${userId}/settings/`, request)
-      .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response)));
-  }
-
   updateUserProfile(userId: string, key: string, data: ProfileSettingsUpdate): Observable<UserModel> {
-    const data_formatted =
+    const dataFormatted =
       // eslint-disable-next-line no-prototype-builtins
       ProfileSettingsKey.User && data.hasOwnProperty('acceptedTermsOfService')
         ? { accepted_terms_of_service: true }
         : data;
-    const patchedData = key === ProfileSettingsKey.User ? data_formatted : { [key]: data_formatted };
+
+    const patchedData = key === ProfileSettingsKey.User ? dataFormatted : { [key]: dataFormatted };
 
     return this.jsonApiService
       .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, {

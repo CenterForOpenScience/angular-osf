@@ -1,4 +1,4 @@
-import { BaseNodeAttributesJsonApi, ContributorResponse, MetaJsonApi } from '@osf/shared/models';
+import { BaseNodeAttributesJsonApi, ContributorDataJsonApi, MetaJsonApi } from '@osf/shared/models';
 
 export interface LinkedNodeJsonApi {
   id: string;
@@ -6,7 +6,7 @@ export interface LinkedNodeJsonApi {
   attributes: BaseNodeAttributesJsonApi;
   embeds: {
     bibliographic_contributors: {
-      data: ContributorResponse[];
+      data: ContributorDataJsonApi[];
     };
   };
   links: {

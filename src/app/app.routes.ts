@@ -158,6 +158,21 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: ':id/files/:provider/:fileId',
+        loadComponent: () =>
+          import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
+      },
+      {
+        path: 'project/:id/files/:provider/:fileId',
+        loadComponent: () =>
+          import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
+      },
+      {
+        path: 'project/:id/node/:nodeId/files/:provider/:fileId',
+        loadComponent: () =>
+          import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
+      },
+      {
         path: ':id',
         canMatch: [isFileGuard],
         loadChildren: () => import('./features/files/files.routes').then((m) => m.filesRoutes),
