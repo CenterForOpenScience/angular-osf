@@ -71,6 +71,7 @@ export class RegistrationMapper {
           id: contributor.id,
           fullName: contributor.embeds?.users?.data.attributes.full_name,
         })) || [],
+      currentUserPermissions: registration.attributes.current_user_permissions,
     };
   }
 
@@ -98,6 +99,7 @@ export class RegistrationMapper {
           fullName: contributor.embeds.users.data.attributes.full_name,
         })) || [],
       rootParentId: registration.relationships.root?.data?.id,
+      currentUserPermissions: registration.attributes.current_user_permissions,
     };
   }
 

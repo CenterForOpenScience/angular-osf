@@ -55,23 +55,25 @@
             </div>
             <div class="flex gap-2 mt-1">
               @if (isDraft()) {
-                <p-button
-                  severity="primary"
-                  [label]="'common.buttons.review' | translate"
-                  [routerLink]="['/registries/drafts/', registrationData().id, 'review']"
-                  routerLinkActive="router-link-active"
-                ></p-button>
-                <p-button
-                  severity="secondary"
-                  [label]="'common.buttons.edit' | translate"
-                  [routerLink]="['/registries/drafts/', registrationData().id, 'metadata']"
-                ></p-button>
-                <p-button
-                  severity="danger"
-                  [label]="'common.buttons.delete' | translate"
-                  class="md:ml-auto"
-                  (onClick)="deleteDraft.emit(registrationData().id)"
-                ></p-button>
+                @if (hasAdminAccess) {
+                  <p-button
+                    severity="primary"
+                    [label]="'common.buttons.review' | translate"
+                    [routerLink]="['/registries/drafts/', registrationData().id, 'review']"
+                    routerLinkActive="router-link-active"
+                  />
+                  <p-button
+                    severity="secondary"
+                    [label]="'common.buttons.edit' | translate"
+                    [routerLink]="['/registries/drafts/', registrationData().id, 'metadata']"
+                  />
+                  <p-button
+                    severity="danger"
+                    [label]="'common.buttons.delete' | translate"
+                    class="md:ml-auto"
+                    (onClick)="deleteDraft.emit(registrationData().id)"
+                  />
+                }
               } @else {
                 <p-button
                   severity="primary"

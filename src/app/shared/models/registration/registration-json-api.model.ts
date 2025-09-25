@@ -1,4 +1,4 @@
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 
 import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
 import { LicenseRecordJsonApi } from '../licenses-json-api.model';
@@ -42,6 +42,7 @@ export interface DraftRegistrationAttributesJsonApi {
   tags: string[];
   title: string;
   public?: boolean;
+  current_user_permissions: UserPermissions[];
 }
 
 export interface RegistrationAttributesJsonApi {
@@ -64,6 +65,7 @@ export interface RegistrationAttributesJsonApi {
   pending_registration_approval: boolean;
   pending_embargo_approval: boolean;
   pending_embargo_termination_approval: boolean;
+  current_user_permissions: UserPermissions[];
 }
 
 export interface DraftRegistrationRelationshipsJsonApi {

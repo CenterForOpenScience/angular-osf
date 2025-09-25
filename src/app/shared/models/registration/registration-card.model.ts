@@ -1,4 +1,4 @@
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 
 import { ContributorModel } from '../contributors';
 
@@ -22,4 +22,5 @@ export interface RegistrationCard {
   hasPapers?: boolean;
   hasSupplements?: boolean;
   rootParentId?: string | null;
+  currentUserPermissions: UserPermissions[];
 }

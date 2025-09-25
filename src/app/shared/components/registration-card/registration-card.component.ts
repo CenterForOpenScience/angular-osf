@@ -12,7 +12,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { Router, RouterLink } from '@angular/router';
 
 import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { RegistrationCard } from '@osf/shared/models';
 
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
@@ -38,7 +38,6 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationCardComponent {
-  RegistrationStatus = RegistryStatus;
   RevisionReviewStates = RevisionReviewStates;
   RegistrationReviewStates = RegistrationReviewStates;
   readonly isDraft = input<boolean>(false);
@@ -52,6 +51,10 @@ export class RegistrationCardComponent {
     getSchemaResponse: FetchAllSchemaResponses,
     createSchemaResponse: CreateSchemaResponse,
   });
+
+  get hasAdminAccess(): boolean {
+    return this.registrationData().currentUserPermissions.includes(UserPermissions.Admin);
+  }
 
   get isAccepted(): boolean {
     return this.registrationData().reviewsState === RegistrationReviewStates.Accepted;
@@ -83,7 +86,7 @@ export class RegistrationCardComponent {
   }
 
   get showButtons(): boolean {
-    return this.isRootRegistration && (this.isAccepted || this.isPending || this.isEmbargo);
+    return this.isRootRegistration && (this.isAccepted || this.isPending || this.isEmbargo) && this.hasAdminAccess;
   }
 
   updateRegistration(id: string): void {
