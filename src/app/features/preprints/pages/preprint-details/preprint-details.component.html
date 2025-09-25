@@ -7,10 +7,13 @@
           <p-skeleton width="12rem" height="2.25rem" />
         </div>
       } @else {
-        <div class="flex flex-column gap-3 md:flex-row">
+        <a
+          class="flex flex-column gap-3 custom-light-hover dark-blue-link md:flex-row"
+          [routerLink]="['/preprints', preprintProvider()?.id, 'discover']"
+        >
           <img class="fit-contain" alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
           <h1>{{ preprint()!.title }}</h1>
-        </div>
+        </a>
       }
 
       @if (moderationMode()) {
