@@ -34,11 +34,11 @@ export class DataciteService {
     return this.watchIdentifiable(trackable, DataciteEvent.DOWNLOAD);
   }
 
-  logFileDownload(targetId: string, targetType: string | undefined) {
+  logFileDownload(targetId: string, targetType: string) {
     return this.logFile(targetId, targetType, DataciteEvent.DOWNLOAD);
   }
 
-  logFileView(targetId: string, targetType: string | undefined) {
+  logFileView(targetId: string, targetType: string) {
     return this.logFile(targetId, targetType, DataciteEvent.VIEW);
   }
 
@@ -55,7 +55,7 @@ export class DataciteService {
     );
   }
 
-  private logFile(targetId: string, targetType: string | undefined, event: DataciteEvent): Observable<void> {
+  private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
     const url = `${this.apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`;
     return this.http.get<IdentifiersJsonApiResponse>(url).pipe(
       map((item) => ({
