@@ -52,18 +52,16 @@ export class FilesState {
     });
 
     return this.filesService.getFiles(action.filesLink, '', '', action.page).pipe(
-      tap({
-        next: (response) => {
-          ctx.patchState({
-            moveFileFiles: {
-              data: response.files,
-              isLoading: false,
-              error: null,
-              totalCount: response.meta?.total ?? 0,
-            },
-            isAnonymous: response.meta?.anonymous ?? false,
-          });
-        },
+      tap((response) => {
+        ctx.patchState({
+          moveFileFiles: {
+            data: response.files,
+            isLoading: false,
+            error: null,
+            totalCount: response.meta?.total ?? 0,
+          },
+          isAnonymous: response.meta?.anonymous ?? false,
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'moveFileFiles', error))
     );
@@ -74,18 +72,16 @@ export class FilesState {
     const state = ctx.getState();
     ctx.patchState({ files: { ...state.files, isLoading: true, error: null, totalCount: 0 } });
     return this.filesService.getFiles(action.filesLink, state.search, state.sort, action.page).pipe(
-      tap({
-        next: (response) => {
-          ctx.patchState({
-            files: {
-              data: response.files,
-              isLoading: false,
-              error: null,
-              totalCount: response.meta?.total ?? 0,
-            },
-            isAnonymous: response.meta?.anonymous ?? false,
-          });
-        },
+      tap((response) => {
+        ctx.patchState({
+          files: {
+            data: response.files,
+            isLoading: false,
+            error: null,
+            totalCount: response.meta?.total ?? 0,
+          },
+          isAnonymous: response.meta?.anonymous ?? false,
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'files', error))
     );
@@ -120,15 +116,13 @@ export class FilesState {
   @Action(DeleteEntry)
   deleteEntry(ctx: StateContext<FilesStateModel>, action: DeleteEntry) {
     return this.filesService.deleteEntry(action.link).pipe(
-      tap({
-        next: () => {
-          const selectedFolder = ctx.getState().currentFolder;
-          if (selectedFolder?.relationships.filesLink) {
-            ctx.dispatch(new GetFiles(selectedFolder?.relationships.filesLink));
-          } else {
-            ctx.dispatch(new GetRootFolderFiles(action.resourceId));
-          }
-        },
+      tap(() => {
+        const selectedFolder = ctx.getState().currentFolder;
+        if (selectedFolder?.relationships.filesLink) {
+          ctx.dispatch(new GetFiles(selectedFolder?.relationships.filesLink));
+        } else {
+          ctx.dispatch(new GetRootFolderFiles(action.resourceId));
+        }
       }),
       catchError((error) => handleSectionError(ctx, 'files', error))
     );
@@ -140,15 +134,13 @@ export class FilesState {
     ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
 
     return this.filesService.renameEntry(action.link, action.name).pipe(
-      tap({
-        next: () => {
-          const selectedFolder = ctx.getState().currentFolder;
-          if (selectedFolder?.relationships.filesLink) {
-            ctx.dispatch(new GetFiles(selectedFolder?.relationships.filesLink));
-          } else {
-            ctx.dispatch(new GetRootFolderFiles(action.resourceId));
-          }
-        },
+      tap(() => {
+        const selectedFolder = ctx.getState().currentFolder;
+        if (selectedFolder?.relationships.filesLink) {
+          ctx.dispatch(new GetFiles(selectedFolder?.relationships.filesLink));
+        } else {
+          ctx.dispatch(new GetRootFolderFiles(action.resourceId));
+        }
       }),
       catchError((error) => handleSectionError(ctx, 'files', error))
     );
@@ -176,11 +168,9 @@ export class FilesState {
     ctx.patchState({ tags: { ...state.tags, isLoading: true, error: null } });
 
     return this.filesService.getFileTarget(action.fileGuid).pipe(
-      tap({
-        next: (file) => {
-          ctx.patchState({ openedFile: { data: file, isLoading: false, error: null } });
-          ctx.patchState({ tags: { data: file.tags, isLoading: false, error: null } });
-        },
+      tap((file) => {
+        ctx.patchState({ openedFile: { data: file, isLoading: false, error: null } });
+        ctx.patchState({ tags: { data: file.tags, isLoading: false, error: null } });
       }),
       catchError((error) => handleSectionError(ctx, 'openedFile', error))
     );
@@ -192,10 +182,8 @@ export class FilesState {
     ctx.patchState({ fileMetadata: { ...state.fileMetadata, isLoading: true, error: null } });
 
     return this.filesService.getFileMetadata(action.fileGuid).pipe(
-      tap({
-        next: (metadata) => {
-          ctx.patchState({ fileMetadata: { data: metadata, isLoading: false, error: null } });
-        },
+      tap((metadata) => {
+        ctx.patchState({ fileMetadata: { data: metadata, isLoading: false, error: null } });
       }),
       catchError((error) => handleSectionError(ctx, 'fileMetadata', error))
     );
@@ -207,12 +195,10 @@ export class FilesState {
     ctx.patchState({ fileMetadata: { ...state.fileMetadata, isLoading: true, error: null } });
 
     return this.filesService.patchFileMetadata(action.payload, action.fileGuid).pipe(
-      tap({
-        next: (fileMetadata) => {
-          if (fileMetadata.id) {
-            ctx.patchState({ fileMetadata: { data: fileMetadata, isLoading: false, error: null } });
-          }
-        },
+      tap((fileMetadata) => {
+        if (fileMetadata.id) {
+          ctx.patchState({ fileMetadata: { data: fileMetadata, isLoading: false, error: null } });
+        }
       }),
       catchError((error) => handleSectionError(ctx, 'fileMetadata', error))
     );
@@ -246,10 +232,8 @@ export class FilesState {
     ctx.patchState({ contributors: { ...state.contributors, isLoading: true, error: null } });
 
     return this.filesService.getResourceContributors(action.resourceId, action.resourceType).pipe(
-      tap({
-        next: (contributors) => {
-          ctx.patchState({ contributors: { data: contributors, isLoading: false, error: null } });
-        },
+      tap((contributors) => {
+        ctx.patchState({ contributors: { data: contributors, isLoading: false, error: null } });
       }),
       catchError((error) => handleSectionError(ctx, 'contributors', error))
     );
@@ -261,10 +245,8 @@ export class FilesState {
     ctx.patchState({ fileRevisions: { ...state.fileRevisions, isLoading: true, error: null } });
 
     return this.filesService.getFileRevisions(action.link).pipe(
-      tap({
-        next: (revisions) => {
-          ctx.patchState({ fileRevisions: { data: revisions, isLoading: false, error: null } });
-        },
+      tap((revisions) => {
+        ctx.patchState({ fileRevisions: { data: revisions, isLoading: false, error: null } });
       }),
       catchError((error) => handleSectionError(ctx, 'fileRevisions', error))
     );
@@ -276,10 +258,8 @@ export class FilesState {
     ctx.patchState({ tags: { ...state.tags, isLoading: true, error: null } });
 
     return this.filesService.updateTags(action.tags, action.fileGuid).pipe(
-      tap({
-        next: (file) => {
-          ctx.patchState({ tags: { data: file.tags, isLoading: false, error: null } });
-        },
+      tap((file) => {
+        ctx.patchState({ tags: { data: file.tags, isLoading: false, error: null } });
       }),
       catchError((error) => handleSectionError(ctx, 'tags', error))
     );
@@ -290,17 +270,16 @@ export class FilesState {
     const state = ctx.getState();
     ctx.patchState({ rootFolders: { ...state.rootFolders, isLoading: true } });
     return this.filesService.getFolders(action.folderLink).pipe(
-      tap({
-        next: (response) =>
-          ctx.patchState({
-            rootFolders: {
-              data: response.files,
-              isLoading: false,
-              error: null,
-            },
-            isAnonymous: response.meta?.anonymous ?? false,
-          }),
-      }),
+      tap((response) =>
+        ctx.patchState({
+          rootFolders: {
+            data: response.files,
+            isLoading: false,
+            error: null,
+          },
+          isAnonymous: response.meta?.anonymous ?? false,
+        })
+      ),
       catchError((error) => handleSectionError(ctx, 'rootFolders', error))
     );
   }
@@ -311,16 +290,15 @@ export class FilesState {
     ctx.patchState({ configuredStorageAddons: { ...state.configuredStorageAddons, isLoading: true } });
 
     return this.filesService.getConfiguredStorageAddons(action.resourceUri).pipe(
-      tap({
-        next: (addons) =>
-          ctx.patchState({
-            configuredStorageAddons: {
-              data: addons,
-              isLoading: false,
-              error: null,
-            },
-          }),
-      }),
+      tap((addons) =>
+        ctx.patchState({
+          configuredStorageAddons: {
+            data: addons,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
       catchError((error) => handleSectionError(ctx, 'configuredStorageAddons', error))
     );
   }

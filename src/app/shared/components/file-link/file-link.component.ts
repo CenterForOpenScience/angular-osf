@@ -39,7 +39,7 @@ export class FileLinkComponent {
         .getFileGuid(fileId)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((file) => {
-          this.router.navigate(['/files', file.guid]);
+          this.router.navigate([file.guid]);
         });
     }
   }

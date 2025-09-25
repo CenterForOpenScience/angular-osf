@@ -49,6 +49,7 @@
     "@ngxs/store": "^19.0.0",
     "@primeng/themes": "^19.0.9",
     "@sentry/angular": "^10.10.0",
+    "@traptitech/markdown-it-katex": "^3.6.0",
     "ace-builds": "^1.42.0",
     "angular-google-tag-manager": "^1.11.0",
     "cedar-artifact-viewer": "^0.9.5",

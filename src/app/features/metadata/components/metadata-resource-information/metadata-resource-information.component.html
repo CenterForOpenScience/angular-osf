@@ -22,7 +22,7 @@
   </div>
 
   <div class="mt-4">
-    @if (customItemMetadata()?.resourceTypeGeneral) {
+    @if (customItemMetadata()?.resourceTypeGeneral || customItemMetadata()?.language) {
       <div class="flex-column flex gap-2">
         <p class="inline-block font-bold" data-test-display-resource-type-general>
           <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>

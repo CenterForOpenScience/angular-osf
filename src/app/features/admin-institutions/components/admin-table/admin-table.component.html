@@ -145,7 +145,9 @@
                     {{ getCellValue(currentColumnField) | date: col.dateFormat }}
                   </p>
                 } @else if (!col.dateFormat && currentColumnField) {
-                  <p class="overflow-hidden text-overflow-ellipsis">{{ getCellValue(currentColumnField) }}</p>
+                  <p class="overflow-hidden text-overflow-ellipsis text-center">
+                    {{ getCellValue(currentColumnField) }}
+                  </p>
                 } @else {
                   <p class="overflow-hidden text-overflow-ellipsis text-center">{{ currentColumnField ?? '-' }}</p>
                 }

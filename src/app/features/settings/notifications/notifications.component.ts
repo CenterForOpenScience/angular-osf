@@ -10,11 +10,13 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@core/store/user';
+import { UserSelectors } from '@core/store/user';
 import { InfoIconComponent, SubHeaderComponent } from '@osf/shared/components';
 import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
-import { UserSettings } from '@osf/shared/models';
 import { LoaderService, ToastService } from '@osf/shared/services';
+
+import { AccountSettings } from '../account-settings/models';
+import { AccountSettingsSelectors, GetAccountSettings, UpdateAccountSettings } from '../account-settings/store';
 
 import { SUBSCRIPTION_EVENTS } from './constants';
 import { EmailPreferencesForm, EmailPreferencesFormControls } from './models';
@@ -44,9 +46,9 @@ export class NotificationsComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column';
 
   private readonly actions = createDispatchMap({
-    getCurrentUserSettings: GetCurrentUserSettings,
+    getAccountSettings: GetAccountSettings,
     getAllGlobalNotificationSubscriptions: GetAllGlobalNotificationSubscriptions,
-    updateUserSettings: UpdateUserSettings,
+    updateAccountSettings: UpdateAccountSettings,
     updateNotificationSubscription: UpdateNotificationSubscription,
   });
   private readonly fb = inject(FormBuilder);
@@ -54,12 +56,10 @@ export class NotificationsComponent implements OnInit {
   private readonly loaderService = inject(LoaderService);
 
   private currentUser = select(UserSelectors.getCurrentUser);
-  private emailPreferences = select(UserSelectors.getCurrentUserSettings);
+  private emailPreferences = select(AccountSettingsSelectors.getAccountSettings);
   private notificationSubscriptions = select(NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions);
 
-  isEmailPreferencesLoading = select(UserSelectors.isUserSettingsLoading);
-  isSubmittingEmailPreferences = select(UserSelectors.isUserSettingsSubmitting);
-
+  isEmailPreferencesLoading = select(AccountSettingsSelectors.areAccountSettingsLoading);
   isNotificationSubscriptionsLoading = select(NotificationSubscriptionSelectors.isLoading);
 
   EmailPreferencesFormControls = EmailPreferencesFormControls;
@@ -104,7 +104,7 @@ export class NotificationsComponent implements OnInit {
     }
 
     if (!this.emailPreferences()) {
-      this.actions.getCurrentUserSettings();
+      this.actions.getAccountSettings();
     }
   }
 
@@ -113,10 +113,10 @@ export class NotificationsComponent implements OnInit {
       return;
     }
 
-    const formValue = this.emailPreferencesForm.value as UserSettings;
+    const formValue = this.emailPreferencesForm.value as Partial<AccountSettings>;
 
     this.loaderService.show();
-    this.actions.updateUserSettings(this.currentUser()!.id, formValue).subscribe(() => {
+    this.actions.updateAccountSettings(formValue).subscribe(() => {
       this.loaderService.hide();
       this.toastService.showSuccess('settings.notifications.emailPreferences.successUpdate');
     });

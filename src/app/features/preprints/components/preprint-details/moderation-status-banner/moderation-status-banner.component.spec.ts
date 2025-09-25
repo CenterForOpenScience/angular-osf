@@ -1,9 +1,8 @@
-import { MockComponent, MockPipes, MockProvider } from 'ng-mocks';
+import { MockComponent, MockPipes } from 'ng-mocks';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ReviewAction } from '@osf/features/moderation/models';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintRequest } from '@osf/features/preprints/models';
@@ -13,6 +12,7 @@ import { MOCK_PROVIDER } from '@shared/mocks';
 
 import { ModerationStatusBannerComponent } from './moderation-status-banner.component';
 
+import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
@@ -28,7 +28,6 @@ describe('ModerationStatusBannerComponent', () => {
   const mockProvider = MOCK_PROVIDER;
   const mockReviewAction: ReviewAction = REVIEW_ACTION_MOCK;
   const mockWithdrawalRequest: PreprintRequest = PREPRINT_REQUEST_MOCK;
-  const mockWebUrl = 'https://staging4.osf.io';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -40,9 +39,7 @@ describe('ModerationStatusBannerComponent', () => {
       ],
       providers: [
         TranslationServiceMock,
-        MockProvider(ENVIRONMENT, {
-          webUrl: mockWebUrl,
-        }),
+        EnvironmentTokenMock,
         provideMockStore({
           signals: [
             {
@@ -184,7 +181,7 @@ describe('ModerationStatusBannerComponent', () => {
 
   it('should compute actionCreatorLink with environment webUrl', () => {
     const link = component.actionCreatorLink();
-    expect(link).toBe(`${mockWebUrl}/user-1`);
+    expect(link).toBe(`${EnvironmentTokenMock.useValue.webUrl}/user-1`);
   });
 
   it('should compute withdrawalRequesterName from latestWithdrawalRequest', () => {
