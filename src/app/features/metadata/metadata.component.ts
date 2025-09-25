@@ -197,6 +197,12 @@ export class MetadataComponent implements OnInit {
     return metadata.currentUserPermissions.includes(UserPermissions.Write);
   });
 
+  hasAdminAccess = computed(() => {
+    const metadata = this.metadata();
+    if (!metadata) return false;
+    return metadata.currentUserPermissions.includes(UserPermissions.Admin);
+  });
+
   constructor() {
     effect(() => {
       const records = this.cedarRecords();

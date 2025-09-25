@@ -92,7 +92,7 @@
           (updateSelectedSubjects)="updateSelectedSubjects($event)"
           [isSubjectsUpdating]="isSubjectsUpdating()!"
           [selectedSubjects]="selectedSubjects()"
-          [readonly]="!hasWriteAccess()"
+          [readonly]="!hasAdminAccess()"
         />
       </div>
     </div>
