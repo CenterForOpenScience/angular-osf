@@ -134,6 +134,7 @@ export class FileDetailComponent {
   resourceContributors = select(FilesSelectors.getContributors);
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
   fileRevisions = select(FilesSelectors.getFileRevisions);
+  isFileRevisionLoading = select(FilesSelectors.isFileRevisionsLoading);
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 

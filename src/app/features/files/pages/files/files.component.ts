@@ -57,7 +57,7 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
+import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
@@ -71,7 +71,7 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
 import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
-import { CustomConfirmationService, FilesService } from '@shared/services';
+import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -116,6 +116,7 @@ export class FilesComponent {
   private readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly toastService = inject(ToastService);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;
@@ -388,7 +389,15 @@ export class FilesComponent {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files;
+
     if (!files || files.length === 0) return;
+
+    for (const file of files) {
+      if (file.size >= FILE_SIZE_LIMIT) {
+        this.toastService.showWarn('shared.files.limitText');
+        return;
+      }
+    }
 
     this.uploadFiles(Array.from(files));
   }
