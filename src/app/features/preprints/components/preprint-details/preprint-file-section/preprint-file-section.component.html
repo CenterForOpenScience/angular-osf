@@ -27,7 +27,7 @@
         <p>{{ fileVersionsValue[0].name }}</p>
         <p>{{ 'preprints.details.file.version' | translate: { version: fileVersionsValue[0].id } }}</p>
         <p-button
-          severity="info"
+          severity="secondary"
           [label]="'preprints.details.file.downloadPreviousVersion' | translate"
           (click)="versionsMenu.toggle($event)"
         />
