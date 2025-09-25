@@ -81,14 +81,15 @@
                   </osf-file-menu>
                 </div>
               } @else if (viewOnly() && viewOnlyDownloadable()) {
-                <div class="files-table-cell">
-                  <i
-                    class="fas fa-download blue-text"
-                    (click)="onFileMenuAction({ value: FileMenuType.Download }, file)"
+                <div class="files-table-cell text-center">
+                  <p-button
+                    icon="fas fa-download"
+                    severity="contrast"
+                    text
+                    (onClick)="onFileMenuAction({ value: FileMenuType.Download }, file)"
                     (keydown.enter)="onFileMenuAction({ value: FileMenuType.Download }, file)"
-                    tabindex="1"
                     osfStopPropagation
-                  ></i>
+                  ></p-button>
                 </div>
               }
             </div>

@@ -10,7 +10,6 @@ export { EducationHistoryComponent } from './education-history/education-history
 export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
 export { EmploymentHistoryDialogComponent } from './employment-history-dialog/employment-history-dialog.component';
-export { FileLinkComponent } from './file-link/file-link.component';
 export { FileMenuComponent } from './file-menu/file-menu.component';
 export { FilesTreeComponent } from './files-tree/files-tree.component';
 export { FilterChipsComponent } from './filter-chips/filter-chips.component';

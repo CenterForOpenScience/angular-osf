@@ -29,7 +29,7 @@
       <div class="flex flex-wrap gap-2">
         @for (contributor of contributors(); let last = $last; track contributor.id) {
           <span>
-            <a [routerLink]="['/user', contributor.userId]">{{ contributor.fullName }}</a>
+            <a class="font-bold" [routerLink]="['/user', contributor.userId]">{{ contributor.fullName }}</a>
             @if (!last) {
               <span class="text-gray-500">,</span>
             }
@@ -102,6 +102,7 @@
             }
             @if (section.questions?.length) {
               <osf-registration-blocks-data
+                [isDraft]="true"
                 [questions]="section.questions"
                 [reviewData]="stepsData()"
               ></osf-registration-blocks-data>
@@ -111,6 +112,7 @@
       } @else {
         @if (page.questions?.length) {
           <osf-registration-blocks-data
+            [isDraft]="true"
             [questions]="page.questions"
             [reviewData]="stepsData()"
           ></osf-registration-blocks-data>
