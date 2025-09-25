@@ -258,7 +258,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);
     } else {
-      this.downloadFolder(file.id, false);
+      this.downloadFolder(file.links.download);
     }
   }
 
@@ -347,17 +347,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
-  downloadFolder(folderId: string, rootFolder: boolean): void {
-    const resourceId = this.resourceId();
-    const storageLink = this.currentFolder()?.links?.download ?? '';
-    if (resourceId && folderId) {
-      if (rootFolder) {
-        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
-        window.open(link, '_blank')?.focus();
-      } else {
-        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
-        window.open(link, '_blank')?.focus();
-      }
+  downloadFolder(downloadLink: string): void {
+    if (downloadLink) {
+      const link = this.filesService.getFolderDownloadLink(downloadLink, '', false);
+      window.open(link, '_blank')?.focus();
     }
   }
 
