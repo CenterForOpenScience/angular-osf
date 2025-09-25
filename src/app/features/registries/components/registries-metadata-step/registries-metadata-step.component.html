@@ -13,7 +13,11 @@
 
         <p class="mb-1">{{ 'shared.title.description' | translate }}</p>
 
-        <osf-text-input [inputId]="'registration-title-id'" [control]="metadataForm.controls['title']">
+        <osf-text-input
+          [inputId]="'registration-title-id'"
+          [control]="metadataForm.controls['title']"
+          [maxLength]="titleLimit"
+        >
         </osf-text-input>
       </p-card>
     </section>

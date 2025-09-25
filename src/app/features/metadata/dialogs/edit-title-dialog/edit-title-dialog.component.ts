@@ -7,6 +7,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components';
+import { InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
 
 import { DialogValueModel } from '../../models';
@@ -21,6 +22,8 @@ import { DialogValueModel } from '../../models';
 export class EditTitleDialogComponent {
   dialogRef = inject(DynamicDialogRef);
   config = inject(DynamicDialogConfig);
+
+  titleLimit = InputLimits.title.maxLength;
 
   titleControl = new FormControl(this.config.data || '', [CustomValidators.requiredTrimmed()]);
 
