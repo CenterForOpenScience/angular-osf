@@ -9,11 +9,9 @@ import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType } from '@osf/shared/enums';
 import { Question } from '@osf/shared/models';
 
-import { FileLinkComponent } from '../file-link/file-link.component';
-
 @Component({
   selector: 'osf-registration-blocks-data',
-  imports: [Tag, TranslatePipe, Message, FileLinkComponent],
+  imports: [Tag, TranslatePipe, Message],
   templateUrl: './registration-blocks-data.component.html',
   styleUrl: './registration-blocks-data.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,8 +20,9 @@ export class RegistrationBlocksDataComponent {
   questions = input<Question[]>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reviewData = input<Record<string, any>>({});
-  isOverviewPage = input<boolean>(false);
   updatedFields = input<string[]>([]);
+  isDraft = input<boolean>(false);
+  isOverviewPage = input<boolean>(false);
   isOriginalRevision = input<boolean>(true);
 
   updatedKeysMap = computed<Record<string, boolean>>(() => {

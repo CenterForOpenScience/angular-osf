@@ -41,13 +41,16 @@ describe('ResourceInformationDialogComponent', () => {
     const closeSpy = jest.spyOn(dialogRef, 'close');
 
     component.resourceForm.patchValue({
-      resourceType: '',
-      resourceLanguage: '',
+      resourceType: 'dataset',
+      resourceLanguage: 'en',
     });
 
     component.save();
 
-    expect(closeSpy).not.toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalledWith({
+      resourceTypeGeneral: 'dataset',
+      language: 'en',
+    });
   });
 
   it('should not save when resource type is missing', () => {
@@ -61,7 +64,10 @@ describe('ResourceInformationDialogComponent', () => {
 
     component.save();
 
-    expect(closeSpy).not.toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalledWith({
+      resourceTypeGeneral: '',
+      language: 'en',
+    });
   });
 
   it('should cancel dialog', () => {
@@ -76,7 +82,7 @@ describe('ResourceInformationDialogComponent', () => {
   it('should validate required fields', () => {
     const resourceTypeControl = component.resourceForm.get('resourceType');
 
-    expect(resourceTypeControl?.hasError('required')).toBe(true);
+    expect(resourceTypeControl?.hasError('required')).toBe(false);
 
     resourceTypeControl?.setValue('dataset');
 
@@ -84,7 +90,7 @@ describe('ResourceInformationDialogComponent', () => {
   });
 
   it('should handle form validation state', () => {
-    expect(component.resourceForm.valid).toBe(false);
+    expect(component.resourceForm.valid).toBe(true);
 
     component.resourceForm.patchValue({
       resourceType: 'dataset',

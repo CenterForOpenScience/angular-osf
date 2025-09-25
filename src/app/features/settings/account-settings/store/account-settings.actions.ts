@@ -1,3 +1,5 @@
+import { AccountSettings } from '../models';
+
 export class UpdateRegion {
   static readonly type = '[AccountSettings] Update Region';
 
@@ -40,7 +42,7 @@ export class GetAccountSettings {
 export class UpdateAccountSettings {
   static readonly type = '[AccountSettings] Update Account Settings';
 
-  constructor(public accountSettings: Record<string, string>) {}
+  constructor(public accountSettings: Partial<AccountSettings>) {}
 }
 
 export class DisableTwoFactorAuth {

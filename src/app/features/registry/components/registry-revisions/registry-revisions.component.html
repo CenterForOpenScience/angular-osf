@@ -3,6 +3,7 @@
     <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
       {{ 'registry.overview.updates' | translate }}
     </p-accordion-header>
+
     <p-accordion-content>
       <div class="flex flex-column gap-2 pt-4 align-items-center justify-content-center">
         @if (revisions().length > 0) {
@@ -13,34 +14,37 @@
               [class.current-revision]="selectedRevisionIndex() === $index"
               styleClass="w-full"
               [label]="revision.label | translate: { version: revisions().length - $index - 1 }"
-              (click)="emitOpenRevision($index)"
+              (onClick)="emitOpenRevision($index)"
             />
           }
-          @if (registryAcceptedUnapproved) {
-            <p-button
-              class="w-full"
-              styleClass="w-full"
-              [label]="'registry.overview.reviewUpdate' | translate"
-              [routerLink]="['/registries/revisions/', unApprovedRevisionId, 'review']"
-            />
-          }
-          @if (registryApproved) {
-            <p-button
-              class="w-full"
-              styleClass="w-full"
-              (click)="updateRegistration.emit(registry()?.id!)"
-              [label]="'common.buttons.update' | translate"
-              [loading]="isSubmitting()"
-            />
-          }
-          @if (registryInProgress) {
-            <p-button
-              class="w-full"
-              styleClass="w-full"
-              (click)="continueUpdateHandler()"
-              [label]="'common.buttons.continueUpdate' | translate"
-              [loading]="isSubmitting()"
-            />
+
+          @if (!readonly()) {
+            @if (registryAcceptedUnapproved) {
+              <p-button
+                class="w-full"
+                styleClass="w-full"
+                [label]="'registry.overview.reviewUpdate' | translate"
+                [routerLink]="['/registries/revisions/', unApprovedRevisionId, 'review']"
+              />
+            }
+            @if (registryApproved) {
+              <p-button
+                class="w-full"
+                styleClass="w-full"
+                (click)="updateRegistration.emit(registry()?.id!)"
+                [label]="'common.buttons.update' | translate"
+                [loading]="isSubmitting()"
+              />
+            }
+            @if (registryInProgress) {
+              <p-button
+                class="w-full"
+                styleClass="w-full"
+                (click)="continueUpdateHandler()"
+                [label]="'common.buttons.continueUpdate' | translate"
+                [loading]="isSubmitting()"
+              />
+            }
           }
         }
       </div>

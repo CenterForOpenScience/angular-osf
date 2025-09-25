@@ -8,7 +8,7 @@
         </div>
       } @else {
         <div class="flex flex-column gap-3 md:flex-row">
-          <img alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
+          <img class="fit-contain" alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
           <h1>{{ preprint()!.title }}</h1>
         </div>
       }

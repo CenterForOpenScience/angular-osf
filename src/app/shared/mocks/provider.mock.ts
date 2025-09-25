@@ -20,8 +20,17 @@ export const MOCK_PROVIDER = {
   allowSubmissions: true,
   assertionsEnabled: false,
   reviewsWorkflow: null,
+  permissions: [],
   brand: mockBrand,
   iri: '',
   faviconUrl: '',
   squareColorNoTransparentImageUrl: '',
+  facebookAppId: null,
+  reviewsCommentsPrivate: null,
+  reviewsCommentsAnonymous: null,
+  primaryCollection: {
+    id: 'collection-1',
+    title: 'Test Collection',
+    description: 'Test collection description',
+  },
 };

@@ -1,6 +1,7 @@
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
@@ -54,6 +55,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
     FileMenuComponent,
     StopPropagationDirective,
     CustomPaginatorComponent,
+    Button,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -249,7 +251,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   downloadFileOrFolder(file: OsfFile) {
-    this.dataciteService.logFileDownload(file.target.id, file.target.type).subscribe();
+    if (file.target.id && file.target.type) {
+      this.dataciteService.logFileDownload(file.target.id, file.target.type).subscribe();
+    }
+
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);
     } else {

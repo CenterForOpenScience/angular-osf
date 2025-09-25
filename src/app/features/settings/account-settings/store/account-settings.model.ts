@@ -1,23 +1,19 @@
-import { Institution } from '@shared/models';
+import { AsyncStateModel, Institution } from '@shared/models';
 
 import { AccountSettings, ExternalIdentity } from '../models';
 
 export interface AccountSettingsStateModel {
   externalIdentities: ExternalIdentity[];
-  accountSettings: AccountSettings;
+  accountSettings: AsyncStateModel<AccountSettings | null>;
   userInstitutions: Institution[];
 }
 
 export const ACCOUNT_SETTINGS_STATE_DEFAULTS: AccountSettingsStateModel = {
   externalIdentities: [],
   accountSettings: {
-    twoFactorEnabled: false,
-    twoFactorConfirmed: false,
-    subscribeOsfGeneralEmail: false,
-    subscribeOsfHelpEmail: false,
-    deactivationRequested: false,
-    contactedDeactivation: false,
-    secret: '',
+    data: null,
+    isLoading: false,
+    error: null,
   },
   userInstitutions: [],
 };

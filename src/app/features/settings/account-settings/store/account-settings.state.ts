@@ -5,8 +5,10 @@ import { catchError, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentUser, UserSelectors } from '@core/store/user';
+import { handleSectionError } from '@osf/shared/helpers';
 import { InstitutionsService } from '@shared/services';
 
+import { AccountSettingsMapper } from '../mappers';
 import { AccountSettingsService } from '../services';
 
 import {
@@ -99,9 +101,19 @@ export class AccountSettingsState {
 
   @Action(GetAccountSettings)
   getAccountSettings(ctx: StateContext<AccountSettingsStateModel>) {
+    ctx.patchState({ accountSettings: { ...ctx.getState().accountSettings, isLoading: true } });
+
     return this.accountSettingsService.getSettings().pipe(
-      tap((settings) => ctx.patchState({ accountSettings: settings })),
-      catchError((error) => throwError(() => error))
+      tap((settings) =>
+        ctx.patchState({
+          accountSettings: {
+            data: settings,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
+      catchError((error) => handleSectionError(ctx, 'accountSettings', error))
     );
   }
 
@@ -113,9 +125,21 @@ export class AccountSettingsState {
       return;
     }
 
-    return this.accountSettingsService.updateSettings(currentUser.id, action.accountSettings).pipe(
-      tap((settings) => ctx.patchState({ accountSettings: settings })),
-      catchError((error) => throwError(() => error))
+    ctx.patchState({ accountSettings: { ...ctx.getState().accountSettings, isLoading: true } });
+
+    const payload = AccountSettingsMapper.getEmailSettingsRequest(action.accountSettings);
+
+    return this.accountSettingsService.updateSettings(currentUser.id, payload).pipe(
+      tap((settings) =>
+        ctx.patchState({
+          accountSettings: {
+            data: settings,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
+      catchError((error) => handleSectionError(ctx, 'accountSettings', error))
     );
   }
 
@@ -128,8 +152,16 @@ export class AccountSettingsState {
     }
 
     return this.accountSettingsService.updateSettings(currentUser.id, { two_factor_enabled: 'false' }).pipe(
-      tap((settings) => ctx.patchState({ accountSettings: settings })),
-      catchError((error) => throwError(() => error))
+      tap((settings) =>
+        ctx.patchState({
+          accountSettings: {
+            data: settings,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
+      catchError((error) => handleSectionError(ctx, 'accountSettings', error))
     );
   }
 
@@ -142,8 +174,16 @@ export class AccountSettingsState {
     }
 
     return this.accountSettingsService.updateSettings(currentUser.id, { two_factor_enabled: 'true' }).pipe(
-      tap((settings) => ctx.patchState({ accountSettings: settings })),
-      catchError((error) => throwError(() => error))
+      tap((settings) =>
+        ctx.patchState({
+          accountSettings: {
+            data: settings,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
+      catchError((error) => handleSectionError(ctx, 'accountSettings', error))
     );
   }
 
@@ -156,8 +196,16 @@ export class AccountSettingsState {
     }
 
     return this.accountSettingsService.updateSettings(currentUser.id, { two_factor_verification: action.code }).pipe(
-      tap((settings) => ctx.patchState({ accountSettings: settings })),
-      catchError((error) => throwError(() => error))
+      tap((settings) =>
+        ctx.patchState({
+          accountSettings: {
+            data: settings,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
+      catchError((error) => handleSectionError(ctx, 'accountSettings', error))
     );
   }
 
@@ -170,8 +218,16 @@ export class AccountSettingsState {
     }
 
     return this.accountSettingsService.updateSettings(currentUser.id, { deactivation_requested: 'true' }).pipe(
-      tap((settings) => ctx.patchState({ accountSettings: settings })),
-      catchError((error) => throwError(() => error))
+      tap((settings) =>
+        ctx.patchState({
+          accountSettings: {
+            data: settings,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
+      catchError((error) => handleSectionError(ctx, 'accountSettings', error))
     );
   }
 
@@ -184,8 +240,16 @@ export class AccountSettingsState {
     }
 
     return this.accountSettingsService.updateSettings(currentUser.id, { deactivation_requested: 'false' }).pipe(
-      tap((settings) => ctx.patchState({ accountSettings: settings })),
-      catchError((error) => throwError(() => error))
+      tap((settings) =>
+        ctx.patchState({
+          accountSettings: {
+            data: settings,
+            isLoading: false,
+            error: null,
+          },
+        })
+      ),
+      catchError((error) => handleSectionError(ctx, 'accountSettings', error))
     );
   }
 

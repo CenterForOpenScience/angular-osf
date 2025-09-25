@@ -84,8 +84,19 @@ export class ProjectSelectorComponent {
     effect(() => {
       const currentUser = this.currentUser();
       if (currentUser) {
-        this.actions.getProjects(currentUser.id);
+        this.fetchProjects();
       }
+    });
+
+    effect(() => {
+      const isProjectsLoading = this.isProjectsLoading();
+      const projects = this.projects();
+
+      if (isProjectsLoading || !projects.length) {
+        return;
+      }
+
+      this.projectsLoaded.emit(projects);
     });
 
     effect(() => {
@@ -97,8 +108,6 @@ export class ProjectSelectorComponent {
         this.projectsOptions.set([]);
         return;
       }
-
-      this.projectsLoaded.emit(projects);
 
       const excludeSet = new Set(excludeIds);
       const availableProjects = projects.filter((project) => !excludeSet.has(project.id));
@@ -116,15 +125,22 @@ export class ProjectSelectorComponent {
     this.filterSubject
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((filterValue) => {
-        const currentUser = this.currentUser();
-        if (!currentUser) return;
-
-        const params: Record<string, string> = {
-          'filter[current_user_permissions]': 'admin',
-          'filter[title]': filterValue,
-        };
-
-        this.actions.getProjects(currentUser.id, params);
+        this.fetchProjects(filterValue);
       });
+  }
+
+  private fetchProjects(filterTitle?: string): void {
+    const currentUser = this.currentUser();
+    if (!currentUser) return;
+
+    const params: Record<string, string> = {
+      'filter[current_user_permissions]': 'admin',
+    };
+
+    if (filterTitle && filterTitle.trim()) {
+      params['filter[title]'] = filterTitle;
+    }
+
+    this.actions.getProjects(currentUser.id, params);
   }
 }

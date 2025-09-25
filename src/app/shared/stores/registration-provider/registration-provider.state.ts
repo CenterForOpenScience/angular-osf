@@ -11,7 +11,7 @@ import { handleSectionError } from '@shared/helpers';
 
 import { RegistrationProviderService } from '../../services';
 
-import { GetRegistryProviderBrand } from './registration-provider.actions';
+import { ClearRegistryProvider, GetRegistryProvider } from './registration-provider.actions';
 import {
   RegistrationProviderStateModel as RegistrationProviderStateModel,
   REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS,
@@ -25,8 +25,8 @@ import {
 export class RegistrationProviderState {
   private registrationProvidersService = inject(RegistrationProviderService);
 
-  @Action(GetRegistryProviderBrand)
-  getProviderBrand(ctx: StateContext<RegistrationProviderStateModel>, action: GetRegistryProviderBrand) {
+  @Action(GetRegistryProvider)
+  getRegistryProvider(ctx: StateContext<RegistrationProviderStateModel>, action: GetRegistryProvider) {
     const state = ctx.getState();
 
     const currentProvider = state.currentBrandedProvider.data;
@@ -74,5 +74,10 @@ export class RegistrationProviderState {
       }),
       catchError((error) => handleSectionError(ctx, 'currentBrandedProvider', error))
     );
+  }
+
+  @Action(ClearRegistryProvider)
+  clearRegistryProvider(ctx: StateContext<RegistrationProviderStateModel>) {
+    ctx.setState(patch({ ...REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS }));
   }
 }

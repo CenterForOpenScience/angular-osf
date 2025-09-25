@@ -9,23 +9,20 @@
     }
 
     <div class="flex flex-grow-0 w-full sm:w-30rem">
-      <p-floatlabel class="w-full md:w-56" variant="in">
-        <p-select
-          inputId="in_label"
-          [options]="rootFoldersOptions()"
-          [(ngModel)]="currentRootFolder"
-          styleClass="w-full"
-          variant="filled"
-        >
-          <ng-template #selectedItem let-selectedOption>
-            <p class="provider-name">{{ selectedOption.label }}</p>
-          </ng-template>
-          <ng-template #item let-option>
-            <p class="provider-name">{{ option.label }}</p>
-          </ng-template>
-        </p-select>
-        <label for="in_label">{{ currentRootFolder()?.label }}</label>
-      </p-floatlabel>
+      <p-select
+        inputId="in_label"
+        [options]="rootFoldersOptions()"
+        [(ngModel)]="currentRootFolder"
+        styleClass="w-full"
+        variant="filled"
+      >
+        <ng-template #selectedItem let-selectedOption>
+          <p class="provider-name">{{ selectedOption.label }}</p>
+        </ng-template>
+        <ng-template #item let-option>
+          <p class="provider-name">{{ option.label }}</p>
+        </ng-template>
+      </p-select>
     </div>
 
     <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">

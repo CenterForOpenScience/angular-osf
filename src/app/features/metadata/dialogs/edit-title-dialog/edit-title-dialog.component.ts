@@ -23,7 +23,7 @@ export class EditTitleDialogComponent {
   dialogRef = inject(DynamicDialogRef);
   config = inject(DynamicDialogConfig);
 
-  titleLimit = InputLimits.fullName.maxLength;
+  titleLimit = InputLimits.title.maxLength;
 
   titleControl = new FormControl(this.config.data || '', [CustomValidators.requiredTrimmed()]);
 

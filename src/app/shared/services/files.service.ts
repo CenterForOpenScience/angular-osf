@@ -25,7 +25,7 @@ import {
   ConfiguredAddonGetResponseJsonApi,
   ConfiguredAddonModel,
   ContributorModel,
-  ContributorResponse,
+  ContributorsResponseJsonApi,
   FileLinks,
   FileRelationshipsResponse,
   FileResponse,
@@ -232,9 +232,7 @@ export class FilesService {
 
   getResourceContributors(resourceId: string, resourceType: string): Observable<Partial<ContributorModel>[]> {
     return this.jsonApiService
-      .get<
-        JsonApiResponse<ContributorResponse[], null>
-      >(`${this.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
+      .get<ContributorsResponseJsonApi>(`${this.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
       .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
   }
 

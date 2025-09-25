@@ -1,5 +1,5 @@
+import { ContributorPermission } from '@osf/shared/enums';
 import { Education, Employment } from '@osf/shared/models';
-import { ContributorPermission } from '@shared/enums';
 
 export interface ContributorModel {
   id: string;
@@ -16,3 +16,5 @@ export interface ContributorModel {
   employment: Employment[];
   education: Education[];
 }
+
+export type ContributorShortInfoModel = Pick<ContributorModel, 'id' | 'userId' | 'fullName'>;

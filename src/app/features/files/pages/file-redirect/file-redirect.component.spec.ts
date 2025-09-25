@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FileLinkComponent } from './file-link.component';
+import { FileRedirectComponent } from './file-redirect.component';
 
-describe.skip('FileLinkComponent', () => {
-  let component: FileLinkComponent;
-  let fixture: ComponentFixture<FileLinkComponent>;
+describe.skip('FileRedirectComponent', () => {
+  let component: FileRedirectComponent;
+  let fixture: ComponentFixture<FileRedirectComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileLinkComponent],
+      imports: [FileRedirectComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FileLinkComponent);
+    fixture = TestBed.createComponent(FileRedirectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

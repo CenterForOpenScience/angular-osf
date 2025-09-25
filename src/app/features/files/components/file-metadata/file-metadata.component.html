@@ -4,7 +4,12 @@
 
     @if (!hasViewOnly()) {
       <div class="flex gap-2">
-        <p-button severity="secondary" class="btn-icon-only" icon="fas fa-download" (click)="downloadFileMetadata()" />
+        <p-button
+          severity="secondary"
+          class="btn-icon-only"
+          icon="fas fa-download"
+          (onClick)="downloadFileMetadata()"
+        />
 
         <p-button
           severity="secondary"

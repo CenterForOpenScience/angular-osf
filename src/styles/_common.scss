@@ -80,6 +80,10 @@
   white-space: nowrap;
 }
 
+.word-break-word {
+  word-break: break-word;
+}
+
 // ------------------------- Universal custom hover state -------------------------
 
 .custom-dark-hover:hover:not(:disabled) {

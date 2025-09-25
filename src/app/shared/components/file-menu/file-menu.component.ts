@@ -4,11 +4,12 @@ import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { TieredMenu } from 'primeng/tieredmenu';
 
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { FileMenuType } from '@osf/shared/enums';
 import { FileMenuAction, FileMenuData } from '@osf/shared/models';
+import { MenuManagerService } from '@osf/shared/services';
 import { hasViewOnlyParam } from '@shared/helpers';
 
 @Component({
@@ -19,6 +20,8 @@ import { hasViewOnlyParam } from '@shared/helpers';
 })
 export class FileMenuComponent {
   private router = inject(Router);
+  private menuManager = inject(MenuManagerService);
+  menu = viewChild.required<TieredMenu>('menu');
   action = output<FileMenuAction>();
   isFolder = input<boolean>(false);
 
@@ -129,6 +132,14 @@ export class FileMenuComponent {
     }
     return this.allMenuItems;
   });
+
+  onMenuToggle(event: Event): void {
+    this.menuManager.openMenu(this.menu(), event);
+  }
+
+  onMenuHide(): void {
+    this.menuManager.onMenuHide();
+  }
 
   private emitAction(value: FileMenuType, data?: FileMenuData): void {
     this.action.emit({ value, data } as FileMenuAction);

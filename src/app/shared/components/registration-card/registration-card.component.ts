@@ -18,6 +18,7 @@ import { RegistrationCard } from '@osf/shared/models';
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
 import { IconComponent } from '../icon/icon.component';
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
+import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
 
 @Component({
   selector: 'osf-registration-card',
@@ -30,6 +31,7 @@ import { StatusBadgeComponent } from '../status-badge/status-badge.component';
     StatusBadgeComponent,
     DataResourcesComponent,
     IconComponent,
+    TruncatedTextComponent,
   ],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',
@@ -73,6 +75,15 @@ export class RegistrationCardComponent {
 
   get isEmbargo(): boolean {
     return this.registrationData().reviewsState === RegistrationReviewStates.Embargo;
+  }
+
+  get isRootRegistration(): boolean {
+    const registration = this.registrationData();
+    return !registration.rootParentId || registration.id === registration.rootParentId;
+  }
+
+  get showButtons(): boolean {
+    return this.isRootRegistration && (this.isAccepted || this.isPending || this.isEmbargo);
   }
 
   updateRegistration(id: string): void {

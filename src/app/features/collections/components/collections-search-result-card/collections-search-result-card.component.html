@@ -8,7 +8,7 @@
     {{ 'collections.common.by' | translate }}
     @for (contributor of item?.contributors; track contributor.id) {
       <a [routerLink]="['/user', contributor.id]" class="font-bold cursor-pointer">
-        {{ contributor.name }}{{ $last ? '' : ', ' }}
+        {{ contributor.fullName }}{{ $last ? '' : ', ' }}
       </a>
     }
   </p>

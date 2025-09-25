@@ -1,6 +1,7 @@
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
 
 import { Brand } from '../brand.model';
+import { ContributorShortInfoModel } from '../contributors';
 import { BaseProviderModel } from '../provider';
 
 export interface CollectionProvider extends BaseProviderModel {
@@ -40,12 +41,6 @@ export interface CollectionDetails {
   isPromoted: boolean;
   isPublic: boolean;
   filters: CollectionFilters;
-}
-
-export interface CollectionContributor {
-  id: string;
-  name: string;
-  url: string;
 }
 
 export interface CollectionSubmission {
@@ -88,7 +83,7 @@ export interface CollectionSubmissionWithGuid {
   dataType: string;
   disease: string;
   gradeLevels: string;
-  contributors?: CollectionContributor[];
+  contributors?: ContributorShortInfoModel[];
   creator?: {
     id: string;
     fullName: string;
