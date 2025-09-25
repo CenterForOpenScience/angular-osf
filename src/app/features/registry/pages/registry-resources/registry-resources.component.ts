@@ -62,10 +62,7 @@ export class RegistryResourcesComponent {
     const registry = this.registry();
     if (!registry) return false;
 
-    return (
-      registry.currentUserPermissions.includes(UserPermissions.Admin) ||
-      registry.currentUserPermissions.includes(UserPermissions.Write)
-    );
+    return registry.currentUserPermissions.includes(UserPermissions.Write);
   });
 
   addButtonVisible = computed(() => {

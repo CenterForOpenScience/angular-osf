@@ -47,7 +47,7 @@
     }
 
     <div class="flex flex-column gap-4 left-section">
-      @if (isAdmin() || canWrite()) {
+      @if (canWrite()) {
         <osf-overview-wiki [resourceId]="currentProject()!.id" />
       }
 

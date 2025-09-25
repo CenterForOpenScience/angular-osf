@@ -191,13 +191,10 @@ export class MetadataComponent implements OnInit {
 
   bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
 
-  canEdit = computed(() => {
+  hasWriteAccess = computed(() => {
     const metadata = this.metadata();
     if (!metadata) return false;
-    return (
-      metadata.currentUserPermissions.includes(UserPermissions.Admin) ||
-      metadata.currentUserPermissions.includes(UserPermissions.Write)
-    );
+    return metadata.currentUserPermissions.includes(UserPermissions.Write);
   });
 
   constructor() {

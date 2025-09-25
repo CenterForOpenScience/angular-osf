@@ -31,7 +31,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
-import { RegistrationReviewStates, ResourceType, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
@@ -194,8 +194,16 @@ export class RegistryOverviewComponent {
   revisionId: string | null = null;
   isModeration = false;
 
-  userPermissions = computed(() => this.registry()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+
+  canEdit = computed(() => {
+    const registry = this.registry();
+    if (!registry) return false;
+    return (
+      registry.currentUserPermissions.includes(UserPermissions.Admin) ||
+      registry.currentUserPermissions.includes(UserPermissions.Write)
+    );
+  });
 
   get isInitialState(): boolean {
     return this.registry()?.reviewsState === RegistrationReviewStates.Initial;

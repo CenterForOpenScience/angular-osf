@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, HostBinding, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input } from '@angular/core';
 
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 import { CustomConfirmationService } from '@osf/shared/services';
@@ -28,7 +28,7 @@ export class RegistryStatusesComponent {
   private readonly translateService = inject(TranslateService);
 
   registry = input.required<RegistryOverview | null>();
-  readonly = input<boolean>(false);
+  canEdit = input<boolean>(false);
   isModeration = input<boolean>(false);
 
   readonly RegistryStatus = RegistryStatus;
@@ -36,13 +36,13 @@ export class RegistryStatusesComponent {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly actions = createDispatchMap({ makePublic: MakePublic });
 
-  get canWithdraw(): boolean {
+  canWithdraw = computed(() => {
     return this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration();
-  }
+  });
 
-  get isEmbargo(): boolean {
+  isEmbargo = computed(() => {
     return this.registry()?.status === RegistryStatus.Embargo;
-  }
+  });
 
   get embargoEndDate() {
     const embargoEndDate = this.registry()?.embargoEndDate;
