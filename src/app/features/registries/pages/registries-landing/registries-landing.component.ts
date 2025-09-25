@@ -17,7 +17,11 @@ import {
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
-import { GetRegistryProviderBrand, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
+import {
+  ClearRegistryProvider,
+  GetRegistryProvider,
+  RegistrationProviderSelectors,
+} from '@osf/shared/stores/registration-provider';
 
 import { RegistryServicesComponent } from '../../components';
 import { GetRegistries, RegistriesSelectors } from '../../store';
@@ -43,8 +47,9 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
 
   private actions = createDispatchMap({
     getRegistries: GetRegistries,
-    getProvider: GetRegistryProviderBrand,
+    getProvider: GetRegistryProvider,
     clearCurrentProvider: ClearCurrentProvider,
+    clearRegistryProvider: ClearRegistryProvider,
   });
 
   provider = select(RegistrationProviderSelectors.getBrandedProvider);
@@ -62,6 +67,7 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.actions.clearCurrentProvider();
+    this.actions.clearRegistryProvider();
   }
 
   redirectToSearchPageWithValue(): void {
