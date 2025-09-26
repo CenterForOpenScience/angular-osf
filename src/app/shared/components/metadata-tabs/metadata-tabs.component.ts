@@ -28,6 +28,7 @@ export class MetadataTabsComponent {
   selectedCedarTemplate = input.required<CedarMetadataDataTemplateJsonApi>();
   selectedCedarRecord = input.required<CedarMetadataRecordData | null>();
   cedarFormReadonly = input<boolean>(true);
+  canEdit = input<boolean>(true);
   changeTab = output<string | number>();
   formSubmit = output<CedarRecordDataBinding>();
   cedarFormEdit = output<void>();

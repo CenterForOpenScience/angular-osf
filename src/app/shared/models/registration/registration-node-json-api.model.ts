@@ -21,8 +21,8 @@ export interface RegistrationNodeAttributesJsonApi extends BaseNodeAttributesJso
   pending_registration_approval: boolean;
   pending_withdrawal: boolean;
   provider_specific_metadata: string[];
-  registered_meta: RegisteredMeta;
-  registration_responses: RegistrationResponses;
+  registered_meta: RegisteredMetaJsonApi;
+  registration_responses: RegistrationResponsesJsonApi;
   registration_supplement: string;
   reviews_state: RegistrationReviewStates;
   revision_state: RevisionReviewStates;
@@ -30,7 +30,7 @@ export interface RegistrationNodeAttributesJsonApi extends BaseNodeAttributesJso
   withdrawn: boolean;
 }
 
-export interface RegisteredMetaExtra {
+export interface RegisteredMetaExtraJsonApi {
   data: { name: string };
   nodeId: string;
   sha256: string;
@@ -38,33 +38,33 @@ export interface RegisteredMetaExtra {
   selectedFileName: string;
 }
 
-export interface RegisteredMetaField {
-  extra: RegisteredMetaExtra[];
+export interface RegisteredMetaFieldJsonApi {
+  extra: RegisteredMetaExtraJsonApi[];
   value: string;
 }
 
-export interface RegisteredMeta {
+export interface RegisteredMetaJsonApi {
   summary: { extra: string[]; value: string };
-  uploader: RegisteredMetaField;
+  uploader: RegisteredMetaFieldJsonApi;
 }
 
-export interface FileUrls {
+export interface FileUrlsJsonApi {
   html: string;
   download: string;
 }
 
-export interface FileHashes {
+export interface FileHashesJsonApi {
   sha256: string;
 }
 
-export interface RegistrationUploader {
+export interface RegistrationUploaderJsonApi {
   file_id: string;
   file_name: string;
-  file_urls: FileUrls;
-  file_hashes: FileHashes;
+  file_urls: FileUrlsJsonApi;
+  file_hashes: FileHashesJsonApi;
 }
 
-export interface RegistrationResponses {
+export interface RegistrationResponsesJsonApi {
   summary: string;
-  uploader: RegistrationUploader[];
+  uploader: RegistrationUploaderJsonApi[];
 }

@@ -1,4 +1,5 @@
 import { ApiData, InstitutionsJsonApiResponse, LicenseDataJsonApi, LicenseRecordJsonApi } from '@osf/shared/models';
+import { UserPermissions } from '@shared/enums';
 
 export interface MetadataJsonApiResponse {
   data: MetadataJsonApi;
@@ -17,6 +18,7 @@ export interface MetadataAttributesJsonApi {
   category?: string;
   node_license?: LicenseRecordJsonApi;
   public?: boolean;
+  current_user_permissions: UserPermissions[];
 }
 
 interface MetadataEmbedsJsonApi {

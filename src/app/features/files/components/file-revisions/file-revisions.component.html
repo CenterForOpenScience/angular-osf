@@ -6,11 +6,17 @@
   @if (isLoading()) {
     <p-skeleton width="100%" height="2rem" />
   } @else {
-    <p-accordion (onOpen)="onOpenRevision($event)" [multiple]="true">
+    <p-accordion [multiple]="true">
       @for (item of fileRevisions(); track item.version) {
         <p-accordion-panel [value]="item.version" class="border-none">
           <p-accordion-header class="h-3rem font-normal">
-            {{ item.version }}. {{ item.dateTime | date: 'MMM d, yyyy HH:mm' }}
+            <p-button
+              class="link-btn-no-padding"
+              link
+              [label]="`${item.version }. ${ item.dateTime | date: 'MMM d, yyyy HH:mm' }`"
+              (onClick)="onOpenRevision(item.version)"
+              osfStopPropagation
+            ></p-button>
           </p-accordion-header>
 
           <p-accordion-content>

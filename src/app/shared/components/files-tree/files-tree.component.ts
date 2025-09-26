@@ -1,6 +1,9 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
@@ -33,10 +36,11 @@ import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { StopPropagationDirective } from '@osf/shared/directives';
 import { FileMenuType } from '@osf/shared/enums';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
-import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@osf/shared/models';
+import { FileLabelModel, FileMenuAction, FileMenuFlags, FilesTreeActions, OsfFile } from '@osf/shared/models';
 import { FileSizePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { CurrentResourceSelectors } from '@shared/stores';
 
 import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';
@@ -54,6 +58,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
     FileMenuComponent,
     StopPropagationDirective,
     CustomPaginatorComponent,
+    Button,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -83,8 +88,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   viewOnly = input<boolean>(true);
   viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
+  allowedMenuActions = input<FileMenuFlags>({} as FileMenuFlags);
+  supportUpload = input<boolean>(true);
   isDragOver = signal(false);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
+
+  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
@@ -249,11 +258,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   downloadFileOrFolder(file: OsfFile) {
-    this.dataciteService.logFileDownload(file.target.id, file.target.type).subscribe();
+    const resourceType = this.resourceMetadata()?.type ?? 'nodes';
+    this.dataciteService.logFileDownload(this.resourceId(), resourceType).subscribe();
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);
     } else {
-      this.downloadFolder(file.id, false);
+      this.downloadFolder(file.links.download);
     }
   }
 
@@ -342,17 +352,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
-  downloadFolder(folderId: string, rootFolder: boolean): void {
-    const resourceId = this.resourceId();
-    const storageLink = this.currentFolder()?.links?.download ?? '';
-    if (resourceId && folderId) {
-      if (rootFolder) {
-        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
-        window.open(link, '_blank')?.focus();
-      } else {
-        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
-        window.open(link, '_blank')?.focus();
-      }
+  downloadFolder(downloadLink: string): void {
+    if (downloadLink) {
+      const link = this.filesService.getFolderDownloadLink(downloadLink, '', false);
+      window.open(link, '_blank')?.focus();
     }
   }
 

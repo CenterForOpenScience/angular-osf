@@ -27,6 +27,7 @@ export class MetadataMapper {
       })),
       provider: response.embeds?.provider?.data.id,
       public: response.attributes.public,
+      currentUserPermissions: response.attributes.current_user_permissions,
     };
   }
 

@@ -45,6 +45,21 @@ export interface UserAttributesJsonApi {
   timezone: string;
 }
 
+export interface UserErrorResponseJsonApi {
+  source: Record<string, unknown>;
+  detail: string;
+  meta: UserErrorMetaJsonApi;
+  status: string;
+}
+
+export interface UserErrorMetaJsonApi {
+  full_name: string;
+  family_name: string;
+  given_name: string;
+  middle_names: string;
+  profile_image: string;
+}
+
 interface UserLinksJsonApi {
   html: string;
   iri: string;

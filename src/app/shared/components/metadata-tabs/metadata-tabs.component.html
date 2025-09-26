@@ -21,7 +21,7 @@
                 [template]="selectedCedarTemplate()!"
                 [existingRecord]="selectedCedarRecord()!"
                 [readonly]="cedarFormReadonly()"
-                [showEditButton]="true"
+                [showEditButton]="canEdit()"
                 (emitData)="onCedarFormSubmit($event)"
                 (changeTemplate)="onCedarFormChangeTemplate()"
                 (editMode)="onCedarFormEdit()"

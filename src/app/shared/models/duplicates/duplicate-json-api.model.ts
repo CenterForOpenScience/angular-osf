@@ -1,3 +1,5 @@
+import { ContributorDataJsonApi } from '../contributors';
+
 export interface DuplicateJsonApi {
   id: string;
   type: string;
@@ -11,22 +13,7 @@ export interface DuplicateJsonApi {
   };
   embeds: {
     bibliographic_contributors: {
-      data: {
-        embeds: {
-          users: {
-            data: {
-              id: string;
-              type: string;
-              attributes: {
-                family_name: string;
-                full_name: string;
-                given_name: string;
-                middle_name: string;
-              };
-            };
-          };
-        };
-      }[];
+      data: ContributorDataJsonApi[];
     };
   };
 }

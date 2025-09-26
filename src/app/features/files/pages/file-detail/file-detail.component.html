@@ -111,6 +111,7 @@
       @if (selectedTab === FileDetailTab.Revisions) {
         <osf-file-revisions
           class="metadata"
+          [isLoading]="isFileRevisionLoading()"
           [fileRevisions]="fileRevisions()"
           (downloadRevision)="downloadRevision($event)"
           (openRevision)="onOpenRevision($event)"

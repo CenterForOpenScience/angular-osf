@@ -31,4 +31,7 @@ export const InputLimits = {
   code: {
     maxLength: 6,
   },
+  title: {
+    maxLength: 512,
+  },
 };

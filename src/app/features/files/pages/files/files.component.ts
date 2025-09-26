@@ -6,7 +6,6 @@ import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
@@ -49,6 +48,7 @@ import {
   GetConfiguredStorageAddons,
   GetFiles,
   GetRootFolders,
+  GetStorageSupportedFeatures,
   RenameEntry,
   ResetState,
   SetCurrentFolder,
@@ -58,8 +58,8 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
-import { ResourceType, UserPermissions } from '@osf/shared/enums';
+import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
+import { FileMenuType, ResourceType, SupportedFeature, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
@@ -72,7 +72,7 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
 import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
-import { CustomConfirmationService, FilesService } from '@shared/services';
+import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -85,7 +85,6 @@ import { FilesSelectors } from '../../store';
     Button,
     Dialog,
     FilesTreeComponent,
-    FloatLabel,
     FormSelectComponent,
     FormsModule,
     GoogleFilePickerComponent,
@@ -118,6 +117,7 @@ export class FilesComponent {
   private readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly toastService = inject(ToastService);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;
@@ -137,6 +137,7 @@ export class FilesComponent {
     setCurrentProvider: SetCurrentProvider,
     resetState: ResetState,
     getResourceDetails: GetResourceDetails,
+    getStorageSupportedFeatures: GetStorageSupportedFeatures,
   });
 
   readonly files = select(FilesSelectors.getFiles);
@@ -145,10 +146,12 @@ export class FilesComponent {
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly provider = select(FilesSelectors.getProvider);
   readonly resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
+  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
   readonly rootFolders = select(FilesSelectors.getRootFolders);
   readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
   readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
   readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
+  readonly supportedFeatures = select(FilesSelectors.getStorageSupportedFeatures);
 
   isMedium = toSignal(inject(IS_MEDIUM));
 
@@ -179,6 +182,12 @@ export class FilesComponent {
     [ResourceType.Registration, 'registrations'],
   ]);
 
+  readonly allowedMenuActions = computed(() => {
+    const provider = this.provider();
+    const supportedFeatures = this.supportedFeatures()[provider] || [];
+    return this.mapMenuActions(supportedFeatures);
+  });
+
   readonly rootFoldersOptions = computed(() => {
     const rootFolders = this.rootFolders();
     const addons = this.configuredStorageAddons();
@@ -206,7 +215,13 @@ export class FilesComponent {
     return !details.isRegistration && hasAdminOrWrite;
   });
 
-  readonly isViewOnlyDownloadable = computed(() => this.resourceType() === ResourceType.Registration);
+  readonly isViewOnlyDownloadable = computed(
+    () => this.allowedMenuActions()[FileMenuType.Download] && this.resourceType() === ResourceType.Registration
+  );
+
+  canUploadFiles = computed(
+    () => this.supportedFeatures()[this.provider()]?.includes(SupportedFeature.AddUpdateFiles) && this.canEdit()
+  );
 
   isButtonDisabled = computed(() => this.fileIsUploading() || this.isFilesLoading());
 
@@ -256,11 +271,15 @@ export class FilesComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         const provider = currentRootFolder.folder?.provider;
+        const storageId = currentRootFolder.folder?.id;
         // [NM TODO] Check if other providers allow revisions
         this.allowRevisions = provider === FileProvider.OsfStorage;
         this.isGoogleDrive.set(provider === FileProvider.GoogleDrive);
         if (this.isGoogleDrive()) {
           this.setGoogleAccountId();
+        }
+        if (storageId) {
+          this.actions.getStorageSupportedFeatures(storageId, provider);
         }
         this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
@@ -390,7 +409,15 @@ export class FilesComponent {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files;
+
     if (!files || files.length === 0) return;
+
+    for (const file of files) {
+      if (file.size >= FILE_SIZE_LIMIT) {
+        this.toastService.showWarn('shared.files.limitText');
+        return;
+      }
+    }
 
     this.uploadFiles(Array.from(files));
   }
@@ -429,7 +456,7 @@ export class FilesComponent {
     const folderId = this.currentFolder()?.id ?? '';
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
     const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
-    const resourcePath = this.urlMap.get(this.resourceType()) ?? 'nodes';
+    const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
 
     if (resourceId && folderId) {
       this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
@@ -501,6 +528,23 @@ export class FilesComponent {
         itemId: googleDrive.selectedStorageItemId,
       });
     }
+  }
+
+  private mapMenuActions(supportedFeatures: SupportedFeature[]): Record<FileMenuType, boolean> {
+    return {
+      [FileMenuType.Download]: supportedFeatures.includes(SupportedFeature.DownloadAsZip),
+      [FileMenuType.Rename]: supportedFeatures.includes(SupportedFeature.AddUpdateFiles),
+      [FileMenuType.Delete]: supportedFeatures.includes(SupportedFeature.DeleteFiles),
+      [FileMenuType.Move]:
+        supportedFeatures.includes(SupportedFeature.CopyInto) &&
+        supportedFeatures.includes(SupportedFeature.DeleteFiles) &&
+        supportedFeatures.includes(SupportedFeature.AddUpdateFiles),
+      [FileMenuType.Embed]: true,
+      [FileMenuType.Share]: true,
+      [FileMenuType.Copy]:
+        supportedFeatures.includes(SupportedFeature.CopyInto) &&
+        supportedFeatures.includes(SupportedFeature.AddUpdateFiles),
+    };
   }
 
   openGoogleFilePicker(): void {
