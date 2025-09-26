@@ -1,6 +1,8 @@
 import { ResponseJsonApi } from '@shared/models';
 
-import { DuplicateJsonApi, DuplicatesWithTotal } from 'src/app/shared/models/duplicates';
+import { DuplicateJsonApi, DuplicatesWithTotal } from '../models/duplicates';
+
+import { ContributorsMapper } from './contributors';
 
 export class DuplicatesMapper {
   static fromDuplicatesJsonApiResponse(response: ResponseJsonApi<DuplicateJsonApi[]>): DuplicatesWithTotal {
@@ -14,14 +16,7 @@ export class DuplicatesMapper {
         dateModified: duplicate.attributes.date_modified,
         public: duplicate.attributes.public,
         currentUserPermissions: duplicate.attributes.current_user_permissions,
-        contributors: duplicate.embeds.bibliographic_contributors.data.map((contributor) => ({
-          familyName: contributor.embeds.users.data.attributes.family_name,
-          fullName: contributor.embeds.users.data.attributes.full_name,
-          givenName: contributor.embeds.users.data.attributes.given_name,
-          middleName: contributor.embeds.users.data.attributes.middle_name,
-          id: contributor.embeds.users.data.id,
-          type: contributor.embeds.users.data.type,
-        })),
+        contributors: ContributorsMapper.getContributorShortInfo(duplicate.embeds.bibliographic_contributors.data),
       })),
       totalCount: response.meta.total,
     };

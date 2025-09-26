@@ -11,8 +11,14 @@ import {
 } from '@osf/shared/models';
 
 export class ContributorsMapper {
-  static fromResponse(response: ContributorDataJsonApi[]): ContributorModel[] {
-    return response.map((contributor) => this.fromContributorResponse(contributor));
+  static fromResponse(response: ContributorDataJsonApi[] | undefined): ContributorModel[] {
+    if (!response) {
+      return [];
+    }
+
+    return response
+      .filter((contributor) => !contributor?.embeds?.users?.errors)
+      .map((contributor) => this.fromContributorResponse(contributor));
   }
 
   static fromContributorResponse(response: ContributorDataJsonApi): ContributorModel {
@@ -33,7 +39,7 @@ export class ContributorsMapper {
     };
   }
 
-  static getContributorShortInfo(response: ContributorDataJsonApi[]): ContributorShortInfoModel[] {
+  static getContributorShortInfo(response: ContributorDataJsonApi[] | undefined): ContributorShortInfoModel[] {
     const contributors = this.fromResponse(response);
 
     return contributors.map((contributor) => ({

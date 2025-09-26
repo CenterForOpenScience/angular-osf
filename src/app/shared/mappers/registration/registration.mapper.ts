@@ -9,6 +9,8 @@ import {
   SchemaResponseDataJsonApi,
 } from '@osf/shared/models';
 
+import { ContributorsMapper } from '../contributors';
+
 import { MapRegistryStatus } from './map-registry-status.mapper';
 
 export class RegistrationMapper {
@@ -66,11 +68,7 @@ export class RegistrationMapper {
       registrationTemplate: registration.embeds?.registration_schema?.data?.attributes?.name || '',
       registry: registration.embeds?.provider?.data?.attributes?.name || '',
       public: registration.attributes.public,
-      contributors:
-        registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-          id: contributor.id,
-          fullName: contributor.embeds?.users?.data.attributes.full_name,
-        })) || [],
+      contributors: ContributorsMapper.getContributorShortInfo(registration.embeds?.bibliographic_contributors?.data),
       currentUserPermissions: registration.attributes.current_user_permissions,
     };
   }
@@ -93,11 +91,7 @@ export class RegistrationMapper {
       hasMaterials: registration.attributes.has_materials,
       hasPapers: registration.attributes.has_papers,
       hasSupplements: registration.attributes.has_supplements,
-      contributors:
-        registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-          id: contributor.embeds.users.data.id,
-          fullName: contributor.embeds.users.data.attributes.full_name,
-        })) || [],
+      contributors: ContributorsMapper.getContributorShortInfo(registration.embeds?.bibliographic_contributors?.data),
       rootParentId: registration.relationships.root?.data?.id,
       currentUserPermissions: registration.attributes.current_user_permissions,
     };
