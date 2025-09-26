@@ -1,4 +1,4 @@
-import { select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -7,7 +7,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 
 import { filter, map } from 'rxjs';
 
-import { Component, computed, inject, output } from '@angular/core';
+import { Component, computed, effect, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -18,10 +18,10 @@ import { RouteContext } from '@osf/core/models';
 import { AuthService } from '@osf/core/services';
 import { UserSelectors } from '@osf/core/store/user';
 import { IconComponent } from '@osf/shared/components';
-import { CurrentResourceType, ReviewPermissions } from '@osf/shared/enums';
+import { CurrentResourceType, ResourceType, ReviewPermissions } from '@osf/shared/enums';
 import { getViewOnlyParam } from '@osf/shared/helpers';
 import { WrapFnPipe } from '@osf/shared/pipes';
-import { CurrentResourceSelectors } from '@osf/shared/stores';
+import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-nav-menu',
@@ -38,7 +38,37 @@ export class NavMenuComponent {
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
+  private readonly currentUserPermissions = select(CurrentResourceSelectors.getCurrentUserPermissions);
+  private readonly isResourceDetailsLoading = select(CurrentResourceSelectors.isResourceDetailsLoading);
   private readonly provider = select(ProviderSelectors.getCurrentProvider);
+
+  readonly actions = createDispatchMap({ getResourceDetails: GetResourceDetails });
+
+  readonly resourceType = computed(() => {
+    const type = this.currentResource()?.type;
+
+    switch (type) {
+      case CurrentResourceType.Projects:
+        return ResourceType.Project;
+      case CurrentResourceType.Registrations:
+        return ResourceType.Registration;
+      case CurrentResourceType.Preprints:
+        return ResourceType.Preprint;
+      default:
+        return ResourceType.Project;
+    }
+  });
+
+  constructor() {
+    effect(() => {
+      const resourceId = this.currentResourceId();
+      const resourceType = this.resourceType();
+
+      if (resourceId && resourceType) {
+        this.actions.getResourceDetails(resourceId, resourceType);
+      }
+    });
+  }
 
   readonly mainMenuItems = computed(() => {
     const isAuthenticated = this.isAuthenticated();
@@ -65,7 +95,8 @@ export class NavMenuComponent {
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
       isViewOnly: !!getViewOnlyParam(this.router),
-      permissions: this.currentResource()?.permissions,
+      permissions: this.currentUserPermissions(),
+      isResourceDetailsLoading: this.isResourceDetailsLoading(),
     };
 
     const items = updateMenuItems(filtered, routeContext);

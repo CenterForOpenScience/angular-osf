@@ -14,6 +14,7 @@ export const VIEW_ONLY_PROJECT_MENU_ITEMS: string[] = [
   'project-files',
   'project-wiki',
   'project-analytics',
+  'project-links',
 ];
 
 export const VIEW_ONLY_REGISTRY_MENU_ITEMS: string[] = [
@@ -438,3 +439,15 @@ export const MENU_ITEMS: MenuItem[] = [
     styleClass: 'my-5',
   },
 ];
+
+export const PROJECT_MENU_PERMISSIONS: Record<
+  string,
+  {
+    requiresWrite?: boolean;
+    requiresPermissions?: boolean;
+  }
+> = {
+  'project-addons': { requiresWrite: true },
+  'project-contributors': { requiresPermissions: true },
+  'project-settings': { requiresPermissions: true },
+};

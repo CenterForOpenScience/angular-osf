@@ -46,4 +46,9 @@ export class CurrentResourceSelectors {
   static isResourceWithChildrenLoading(state: CurrentResourceStateModel): boolean {
     return state.resourceChildren.isLoading;
   }
+
+  @Selector([CurrentResourceState])
+  static getCurrentUserPermissions(currentResourceState: CurrentResourceStateModel): string[] {
+    return currentResourceState.resourceDetails.data.currentUserPermissions || [];
+  }
 }

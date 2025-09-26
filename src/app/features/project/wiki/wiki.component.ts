@@ -29,7 +29,6 @@ import {
   DeleteWiki,
   GetCompareVersionContent,
   GetComponentsWikiList,
-  GetResourceDetails,
   GetWikiContent,
   GetWikiList,
   GetWikiModes,
@@ -100,13 +99,11 @@ export class WikiComponent {
     createWikiVersion: CreateWikiVersion,
     getWikiVersionContent: GetWikiVersionContent,
     getCompareVersionContent: GetCompareVersionContent,
-    getResourceDetails: GetResourceDetails,
   });
 
   wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
 
   constructor() {
-    this.actions.getResourceDetails(this.projectId(), ResourceType.Project);
     this.actions
       .getWikiList(ResourceType.Project, this.projectId())
       .pipe(
