@@ -36,7 +36,7 @@ import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { StopPropagationDirective } from '@osf/shared/directives';
 import { FileMenuType } from '@osf/shared/enums';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
-import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@osf/shared/models';
+import { FileLabelModel, FileMenuAction, FileMenuFlags, FilesTreeActions, OsfFile } from '@osf/shared/models';
 import { FileSizePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
@@ -88,6 +88,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   viewOnly = input<boolean>(true);
   viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
+  allowedMenuActions = input<FileMenuFlags>({} as FileMenuFlags);
+  supportUpload = input<boolean>(true);
   isDragOver = signal(false);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
 

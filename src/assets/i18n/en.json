@@ -2454,7 +2454,8 @@
         "accepted": {
           "text": "Public registration",
           "short": "Public",
-          "long": "This public registration is a frozen, non-editable version of this."
+          "long": "This public registration is a frozen, non-editable version of this",
+          "project": "project"
         },
         "embargo": {
           "text": "Embargoed registration",

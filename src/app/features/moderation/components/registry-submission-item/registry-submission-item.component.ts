@@ -39,6 +39,10 @@ export class RegistrySubmissionItemComponent {
     return this.submission().reviewsState === RegistrationReviewStates.Pending;
   }
 
+  get isRejected(): boolean {
+    return this.status() === SubmissionReviewStatus.Rejected;
+  }
+
   toggleHistory() {
     this.showAll = !this.showAll;
   }

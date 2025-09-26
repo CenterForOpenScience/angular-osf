@@ -8,10 +8,20 @@
       <div class="flex flex-column pt-4 gap-2">
         <h3 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h3>
         <p>
-          {{
-            'registry.overview.statuses.' + registry()?.status + '.long' | translate: { embargoEndDate: embargoEndDate }
-          }}
+          <span>
+            {{
+              'registry.overview.statuses.' + registry()?.status + '.long'
+                | translate: { embargoEndDate: embargoEndDate }
+            }}
+          </span>
+
+          @if (isAccepted()) {
+            <a class="font-bold" [routerLink]="['/', registry()?.associatedProjectId]">
+              {{ 'registry.overview.statuses.accepted.project' | translate }}</a
+            >.
+          }
         </p>
+
         @if (canEdit()) {
           @if (canWithdraw()) {
             <p-button
@@ -21,6 +31,7 @@
               styleClass="w-full mt-2"
             ></p-button>
           }
+
           @if (isEmbargo()) {
             <p-button
               (onClick)="openEndEmbargoDialog()"

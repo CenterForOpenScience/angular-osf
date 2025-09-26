@@ -1,9 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, finalize, forkJoin, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { SupportedFeature } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
 import { FilesService, ToastService } from '@osf/shared/services';
 
@@ -22,6 +23,7 @@ import {
   GetMoveFileFiles,
   GetRootFolderFiles,
   GetRootFolders,
+  GetStorageSupportedFeatures,
   RenameEntry,
   ResetState,
   SetCurrentFolder,
@@ -300,6 +302,27 @@ export class FilesState {
         })
       ),
       catchError((error) => handleSectionError(ctx, 'configuredStorageAddons', error))
+    );
+  }
+
+  @Action(GetStorageSupportedFeatures)
+  getStorageSupportedFeatures(ctx: StateContext<FilesStateModel>, action: GetStorageSupportedFeatures) {
+    const state = ctx.getState();
+    if (state.storageSupportedFeatures[action.providerName]) {
+      return EMPTY;
+    }
+    return this.filesService.getExternalStorageService(action.storageId).pipe(
+      tap((addon) => {
+        const providerName = addon.externalServiceName;
+        const currentFeatures = state.storageSupportedFeatures;
+        ctx.patchState({
+          storageSupportedFeatures: {
+            ...currentFeatures,
+            [providerName]: (addon.supportedFeatures ?? []) as SupportedFeature[],
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'storageSupportedFeatures', error))
     );
   }
 
