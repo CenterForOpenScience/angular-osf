@@ -101,13 +101,6 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
             };
           }
 
-          if (menuItem.id === 'project-contributors' || menuItem.id === 'project-settings') {
-            return {
-              ...menuItem,
-              visible: !!ctx.permissions?.length,
-            };
-          }
-
           return menuItem;
         });
 
@@ -147,13 +140,6 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           visible: true,
           expanded: true,
           items: menuItems.map((menuItem) => {
-            if (menuItem.id === 'registration-contributors') {
-              return {
-                ...menuItem,
-                visible: !!ctx.permissions?.length,
-              };
-            }
-
             return {
               ...menuItem,
               routerLink: [ctx.resourceId as string, menuItem.routerLink],
