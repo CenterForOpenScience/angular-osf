@@ -234,10 +234,11 @@
       "confirmEmail": "Confirm email",
       "emailPlaceholder": "email@example.com",
       "password": {
+        "title": "Password",
         "new": "New Password",
         "confirm": "Confirm New Password",
         "mismatch": "Passwords must match.",
-        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number or special character"
+        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number and special character"
       }
     },
     "forgotPassword": {

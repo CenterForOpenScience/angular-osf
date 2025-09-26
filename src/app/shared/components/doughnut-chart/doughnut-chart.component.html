@@ -6,7 +6,7 @@
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
   <div class="flex flex-column justify-content-start gap-2 h-full md:gap-4">
-    <div class="h-15rem w-15rem md:h-19rem md:w-19rem">
+    <div class="flex align-items-center justify-content-center">
       @if (data() && options() && labels().length) {
         <p-chart type="doughnut" responsive="true" [data]="data()" [options]="options()"></p-chart>
       }

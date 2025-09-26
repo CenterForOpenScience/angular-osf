@@ -5,12 +5,10 @@
 @if (isLoading()) {
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
-  <div class="flex flex-column justify-content-start gap-2 h-full md:gap-4">
-    <div class="h-15rem w-15rem md:h-19rem md:w-19rem">
-      @if (data() && options() && labels().length) {
-        <p-chart type="bar" responsive="true" [data]="data()" [options]="options()"></p-chart>
-      }
-    </div>
+  <div class="flex flex-column justify-content-center gap-2 h-full md:gap-4">
+    @if (data() && options() && labels().length) {
+      <p-chart type="bar" responsive="true" [data]="data()" [options]="options()"></p-chart>
+    }
 
     @if (showExpandedSection()) {
       <div class="resource">

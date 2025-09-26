@@ -1,3 +1,5 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
@@ -38,6 +40,7 @@ import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@osf/
 import { FileSizePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { CurrentResourceSelectors } from '@shared/stores';
 
 import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';
@@ -87,6 +90,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   provider = input<string>();
   isDragOver = signal(false);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
+
+  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
@@ -251,14 +256,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   downloadFileOrFolder(file: OsfFile) {
-    if (file.target.id && file.target.type) {
-      this.dataciteService.logFileDownload(file.target.id, file.target.type).subscribe();
-    }
-
+    const resourceType = this.resourceMetadata()?.type ?? 'nodes';
+    this.dataciteService.logFileDownload(this.resourceId(), resourceType).subscribe();
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);
     } else {
-      this.downloadFolder(file.id, false);
+      this.downloadFolder(file.links.download);
     }
   }
 
@@ -347,17 +350,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
-  downloadFolder(folderId: string, rootFolder: boolean): void {
-    const resourceId = this.resourceId();
-    const storageLink = this.currentFolder()?.links?.download ?? '';
-    if (resourceId && folderId) {
-      if (rootFolder) {
-        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
-        window.open(link, '_blank')?.focus();
-      } else {
-        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
-        window.open(link, '_blank')?.focus();
-      }
+  downloadFolder(downloadLink: string): void {
+    if (downloadLink) {
+      const link = this.filesService.getFolderDownloadLink(downloadLink, '', false);
+      window.open(link, '_blank')?.focus();
     }
   }
 

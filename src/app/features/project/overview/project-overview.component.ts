@@ -20,7 +20,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
@@ -200,6 +200,8 @@ export class ProjectOverviewComponent implements OnInit {
       this.areSubjectsLoading()
   );
 
+  currentProject$ = toObservable(this.currentProject);
+
   currentResource = computed(() => {
     const project = this.currentProject();
     if (project) {
@@ -288,6 +290,8 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
+
+    this.dataciteService.logIdentifiableView(this.currentProject$).subscribe();
   }
 
   handleOpenMakeDecisionDialog() {
