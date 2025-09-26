@@ -32,7 +32,7 @@
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      @if (!schemaResponse()?.isOriginalResponse && !isInitialState) {
+      @if (schemaResponse() && !schemaResponse()?.isOriginalResponse && !isInitialState) {
         <p-message class="overview-message w-full" severity="warn">
           <ng-template #container>
             <div>

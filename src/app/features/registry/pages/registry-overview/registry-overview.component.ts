@@ -121,14 +121,14 @@ export class RegistryOverviewComponent {
   readonly schemaResponse = computed(() => {
     const registry = this.registry();
     const index = this.selectedRevisionIndex();
-    this.revisionInProgress = registry?.schemaResponses.find(
+    this.revisionInProgress = registry?.schemaResponses?.find(
       (r) => r.reviewsState === RevisionReviewStates.RevisionInProgress
     );
 
     const schemaResponses =
       (this.isModeration
         ? registry?.schemaResponses
-        : registry?.schemaResponses.filter(
+        : registry?.schemaResponses?.filter(
             (r) => r.reviewsState === RevisionReviewStates.Approved || this.hasAdminAccess()
           )) || [];
 

@@ -20,6 +20,7 @@
       "confirm": "Confirm",
       "disconnect": "Disconnect",
       "revert": "Revert",
+
       "next": "Next",
       "back": "Back",
       "continue": "Continue",
@@ -1355,6 +1356,8 @@
       "rejectRequest": "Reject request",
       "acceptUpdate": "Accept update",
       "rejectUpdate": "Reject update",
+      "acceptWithdrawal": "Accept withdrawal",
+      "rejectWithdrawal": "Reject withdrawal",
       "withdrawRequest": "Withdraw Request",
       "forceWithdraw": "Force Withdraw",
       "forceWithdrawMessage": "Registration will be withdrawn but still have a tombstone page with a justification for withdrawal and a subset of the metadata available",
@@ -1362,6 +1365,8 @@
       "rejectRequestMessage": "Submission will not appear in search results nor will be associated with the collection.",
       "acceptUpdateMessage": "Update will be accepted and registration will be updated",
       "rejectUpdateMessage": "Update will be rejected and registration will remain unchanged",
+      "acceptWithdrawalMessage": "Registration will be withdrawn but still have a tombstone page with a justification for withdrawal and subset of the metadata available.",
+      "rejectWithdrawalMessage": "Submission will remain fully public",
       "withdrawRequestMessage": "Submission will be withdrawn from the collection and will no longer appear in search results.",
       "remarksPlaceholder": "Add remarks to registration admins (optional)",
       "submitDecision": "Submit decision",
@@ -1381,7 +1386,8 @@
       "requested": "Requested",
       "withdrawn": "Withdrawn",
       "by": "by",
-      "embargoEnding": "with embargo ending"
+      "embargoEnding": "with embargo ending",
+      "withdrawalRequested": "Registration withdrawal requested"
     },
     "preprintReviewStatus": {
       "submitted": "submitted a preprint \"{{name}}\" to",
