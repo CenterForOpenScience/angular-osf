@@ -8,8 +8,7 @@ import { Card } from 'primeng/card';
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 
 import { FilterChipsComponent, ReusableFilterComponent } from '@shared/components';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter } from '@shared/models';
+import { DiscoverableFilter, FilterOption } from '@shared/models';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -19,7 +18,7 @@ import {
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
   SetDefaultFilterValue,
-  UpdateFilterValue,
+  UpdateSelectedFilterOption,
 } from '@shared/stores/global-search';
 
 @Component({
@@ -35,7 +34,7 @@ export class FiltersSectionComponent {
     loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
     loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
     loadMoreFilterOptions: LoadMoreFilterOptions,
-    updateFilterValue: UpdateFilterValue,
+    updateSelectedFilterOption: UpdateSelectedFilterOption,
     clearFilterSearchResults: ClearFilterSearchResults,
     setDefaultFilterValue: SetDefaultFilterValue,
     fetchResources: FetchResources,
@@ -43,12 +42,12 @@ export class FiltersSectionComponent {
 
   filtersVisible = model<boolean>();
   filters = select(GlobalSearchSelectors.getFilters);
-  filterValues = select(GlobalSearchSelectors.getFilterValues);
+  selectedFilterOptions = select(GlobalSearchSelectors.getSelectedOptions);
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
 
-  onFilterChanged(event: { filter: DiscoverableFilter; value: StringOrNull }): void {
-    this.actions.updateFilterValue(event.filter.key, event.value);
+  onFilterChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption | null }): void {
+    this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);
     this.actions.fetchResources();
   }
 
@@ -69,7 +68,7 @@ export class FiltersSectionComponent {
   }
 
   onFilterChipRemoved(filterKey: string): void {
-    this.actions.updateFilterValue(filterKey, null);
+    this.actions.updateSelectedFilterOption(filterKey, null);
     this.actions.fetchResources();
   }
 }

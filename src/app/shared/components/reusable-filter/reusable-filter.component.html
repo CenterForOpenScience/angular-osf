@@ -26,12 +26,12 @@
               [filterType]="filter.key"
               [placeholder]="FILTER_PLACEHOLDERS[filter.key] || '' | translate"
               [options]="filter.options || []"
-              [selectedValue]="selectedValues()[filter.key]"
+              [selectedValue]="selectedOptions()[filter.key]?.value ?? null"
               [searchResults]="filterSearchResults()[filter.key] || []"
               [isPaginationLoading]="!!filter.isPaginationLoading"
               [isLoading]="!!filter.isLoading"
               [isSearchLoading]="!!filter.isSearchLoading"
-              (optionChanged)="onFilterChanged(filter, $event)"
+              (optionChanged)="onOptionChanged(filter, $event)"
               (searchTextChanged)="onFilterSearch(filter, $event)"
               (loadMoreOptions)="onLoadMoreOptions(filter)"
             />
@@ -48,7 +48,7 @@
                 <div class="flex align-items-center gap-2">
                   <p-checkbox
                     [binary]="true"
-                    [ngModel]="Boolean(selectedValues()[filter.key])"
+                    [ngModel]="Boolean(selectedOptions()[filter.key])"
                     (onChange)="onCheckboxChange($event, filter)"
                     [inputId]="'checkbox-' + filter.key"
                   />

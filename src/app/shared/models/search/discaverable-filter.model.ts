@@ -1,5 +1,3 @@
-import { SelectOption } from '@shared/models';
-
 export interface DiscoverableFilter {
   key: string;
   label: string;
@@ -20,6 +18,8 @@ export interface DiscoverableFilter {
   filters?: DiscoverableFilter[];
 }
 
-export interface FilterOption extends SelectOption {
+export interface FilterOption {
+  label: string;
+  value: string;
   cardSearchResultCount: number;
 }

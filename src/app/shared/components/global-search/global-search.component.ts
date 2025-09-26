@@ -20,8 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { ResourceType } from '@shared/enums';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, TabOption } from '@shared/models';
+import { DiscoverableFilter, FilterOption, TabOption } from '@shared/models';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -35,7 +34,7 @@ import {
   SetResourceType,
   SetSearchText,
   SetSortBy,
-  UpdateFilterValue,
+  UpdateSelectedFilterOption,
 } from '@shared/stores/global-search';
 
 import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
@@ -74,7 +73,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
     loadMoreFilterOptions: LoadMoreFilterOptions,
     clearFilterSearchResults: ClearFilterSearchResults,
-    updateFilterValue: UpdateFilterValue,
+    updateSelectedFilterOption: UpdateSelectedFilterOption,
     resetSearchState: ResetSearchState,
   });
 
@@ -85,7 +84,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
 
   filters = select(GlobalSearchSelectors.getFilters);
-  filterValues = select(GlobalSearchSelectors.getFilterValues);
+  filterOptions = select(GlobalSearchSelectors.getSelectedOptions);
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
 
   sortBy = select(GlobalSearchSelectors.getSortBy);
@@ -131,12 +130,12 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFilterChanged(event: { filter: DiscoverableFilter; value: StringOrNull }): void {
-    this.actions.updateFilterValue(event.filter.key, event.value);
+  onFilterOptionChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption | null }): void {
+    this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);
 
-    const currentFilters = this.filterValues();
+    const currentFilters = this.filterOptions();
 
-    this.updateUrlWithFilters(currentFilters);
+    this.updateUrlWithFilterOptions(currentFilters);
     this.actions.fetchResources();
   }
 
@@ -167,9 +166,9 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFilterChipRemoved(filterKey: string): void {
-    this.actions.updateFilterValue(filterKey, null);
-    this.updateUrlWithFilters(this.filterValues());
+  onSelectedOptionRemoved(filterKey: string): void {
+    this.actions.updateSelectedFilterOption(filterKey, null);
+    this.updateUrlWithFilterOptions(this.filterOptions());
     this.actions.fetchResources();
   }
 
@@ -177,7 +176,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.currentStep.set(1);
   }
 
-  private updateUrlWithFilters(filterValues: Record<string, StringOrNull>): void {
+  private updateUrlWithFilterOptions(filterValues: Record<string, FilterOption | null>): void {
     const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
 
     Object.keys(queryParams).forEach((key) => {
@@ -186,9 +185,9 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    Object.entries(filterValues).forEach(([key, value]) => {
-      if (value && value.trim() !== '') {
-        queryParams[`filter_${key}`] = value;
+    Object.entries(filterValues).forEach(([key, option]) => {
+      if (option !== null) {
+        queryParams[`filter_${key}`] = JSON.stringify(option);
       }
     });
 
@@ -201,15 +200,16 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   private restoreFiltersFromUrl(): void {
+    //TODO
     const queryParams = this.route.snapshot.queryParams;
-    const filterValues: Record<string, StringOrNull> = {};
+    const filterValues: Record<string, FilterOption> = {};
 
     Object.keys(queryParams).forEach((key) => {
       if (key.startsWith('filter_')) {
         const filterKey = key.replace('filter_', '');
         const filterValue = queryParams[key];
         if (filterValue) {
-          filterValues[filterKey] = filterValue;
+          filterValues[filterKey] = JSON.parse(filterValue) as FilterOption;
         }
       }
     });

@@ -9,7 +9,6 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FILTER_PLACEHOLDERS } from '@osf/shared/constants';
-import { StringOrNull } from '@osf/shared/helpers';
 import { DiscoverableFilter, FilterOption } from '@osf/shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
@@ -37,7 +36,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 })
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
-  selectedValues = input<Record<string, StringOrNull>>({});
+  selectedOptions = input<Record<string, FilterOption | null>>({});
   filterSearchResults = input<Record<string, FilterOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
@@ -46,7 +45,7 @@ export class ReusableFilterComponent {
   readonly Boolean = Boolean;
 
   loadFilterOptions = output<DiscoverableFilter>();
-  filterValueChanged = output<{ filter: DiscoverableFilter; value: StringOrNull }>();
+  filterOptionChanged = output<{ filter: DiscoverableFilter; filterOption: FilterOption | null }>();
   filterSearchChanged = output<{ filter: DiscoverableFilter; searchText: string }>();
   loadMoreFilterOptions = output<DiscoverableFilter>();
 
@@ -137,8 +136,8 @@ export class ReusableFilterComponent {
     }
   }
 
-  onFilterChanged(filter: DiscoverableFilter, value: string | null): void {
-    this.filterValueChanged.emit({ filter, value });
+  onOptionChanged(filter: DiscoverableFilter, filterOption: FilterOption | null): void {
+    this.filterOptionChanged.emit({ filter, filterOption });
   }
 
   onFilterSearch(filter: DiscoverableFilter, searchText: string): void {
@@ -153,7 +152,12 @@ export class ReusableFilterComponent {
 
   onIsPresentFilterToggle(filter: DiscoverableFilter, isChecked: boolean): void {
     const value = isChecked ? 'true' : null;
-    this.filterValueChanged.emit({ filter, value });
+    const filterOption: FilterOption = {
+      label: '',
+      value: String(value),
+      cardSearchResultCount: NaN,
+    };
+    this.filterOptionChanged.emit({ filter, filterOption });
   }
 
   onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {
