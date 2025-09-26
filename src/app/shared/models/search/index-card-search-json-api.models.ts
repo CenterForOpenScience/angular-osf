@@ -4,23 +4,10 @@ export type IndexCardSearchResponseJsonApi = JsonApiResponse<
   {
     attributes: {
       totalResultCount: number;
-      cardSearchFilter?: CardSearchFilterJsonApi[];
     };
     relationships: {
-      searchResultPage: {
-        data: { id: string }[];
-        links: {
-          first: {
-            href: string;
-          };
-          next: {
-            href: string;
-          };
-          prev?: {
-            href: string;
-          };
-        };
-      };
+      searchResultPage: SearchResultPageJsonApi;
+      relatedProperties: RelatedPropertiesJsonApi;
     };
     links: {
       self: string;
@@ -31,6 +18,25 @@ export type IndexCardSearchResponseJsonApi = JsonApiResponse<
 
 export type RelatedPropertyPathDataJsonApi = ApiData<RelatedPropertyPathAttributesJsonApi, null, null, null>;
 export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;
+
+interface SearchResultPageJsonApi {
+  data: { id: string }[];
+  links: {
+    first: {
+      href: string;
+    };
+    next: {
+      href: string;
+    };
+    prev?: {
+      href: string;
+    };
+  };
+}
+
+interface RelatedPropertiesJsonApi {
+  data: { id: string }[];
+}
 
 export interface RelatedPropertyPathAttributesJsonApi {
   propertyPathKey: string;
@@ -63,53 +69,6 @@ export interface RelatedPropertyPathAttributesJsonApi {
   suggestedFilterOperator: string;
   cardSearchResultCount: number;
   osfmapPropertyPath: string[];
-}
-
-export interface CardSearchFilterJsonApi {
-  propertyPathKey: string;
-  propertyPathSet: {
-    '@id': string;
-    displayLabel?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    description?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    link?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    linkText?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    resourceType: {
-      '@id': string;
-    }[];
-    shortFormLabel: {
-      '@language': string;
-      '@value': string;
-    }[];
-  }[][];
-  filterValueSet: {
-    '@id': string;
-    displayLabel?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    resourceType?: {
-      '@id': string;
-    }[];
-    shortFormLabel?: {
-      '@language': string;
-      '@value': string;
-    }[];
-  }[];
-  filterType: {
-    '@id': string;
-  };
 }
 
 export interface SearchResultDataJsonApi {

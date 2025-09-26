@@ -4,7 +4,6 @@ export interface DiscoverableFilter {
   type: 'select' | 'date' | 'checkbox' | 'group';
   operator: string;
   options?: FilterOption[];
-  selectedValues?: FilterOption[];
   description?: string;
   helpLink?: string;
   helpLinkText?: string;
@@ -13,9 +12,6 @@ export interface DiscoverableFilter {
   isLoaded?: boolean;
   isPaginationLoading?: boolean;
   isSearchLoading?: boolean;
-  hasOptions?: boolean;
-  loadOptionsOnExpand?: boolean;
-  filters?: DiscoverableFilter[];
 }
 
 export interface FilterOption {

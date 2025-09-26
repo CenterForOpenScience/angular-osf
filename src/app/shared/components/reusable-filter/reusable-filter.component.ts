@@ -105,12 +105,7 @@ export class ReusableFilterComponent {
       return Boolean(filter.options && filter.options.length > 0);
     }
 
-    return Boolean(
-      (filter.resultCount && filter.resultCount > 0) ||
-        (filter.options && filter.options.length > 0) ||
-        filter.hasOptions ||
-        (filter.selectedValues && filter.selectedValues.length > 0)
-    );
+    return Boolean((filter.resultCount && filter.resultCount > 0) || (filter.options && filter.options.length > 0));
   }
 
   onAccordionToggle(filterKey: string | number | string[] | number[]): void {

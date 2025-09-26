@@ -2,7 +2,8 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 
 import {
   ChangeDetectionStrategy,
@@ -140,8 +141,12 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   onTabChange(resourceTab: ResourceType): void {
-    this.actions.setResourceType(resourceTab);
-    this.updateUrlWithTab(resourceTab);
+    this.actions.setResourceType(resourceTab).subscribe({
+      next: () => {
+        this.updateUrlWithFilterOptions(this.filterOptions()).pipe(switchMap(() => this.updateUrlWithTab(resourceTab)));
+      },
+    });
+
     this.actions.fetchResources();
   }
 
@@ -176,7 +181,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.currentStep.set(1);
   }
 
-  private updateUrlWithFilterOptions(filterValues: Record<string, FilterOption | null>): void {
+  private updateUrlWithFilterOptions(filterValues: Record<string, FilterOption | null>) {
     const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
 
     Object.keys(queryParams).forEach((key) => {
@@ -191,16 +196,17 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'replace',
-      replaceUrl: true,
-    });
+    return fromPromise(
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { ...queryParams },
+        queryParamsHandling: 'replace',
+        replaceUrl: true,
+      })
+    );
   }
 
   private restoreFiltersFromUrl(): void {
-    //TODO
     const queryParams = this.route.snapshot.queryParams;
     const filterValues: Record<string, FilterOption> = {};
 
@@ -219,8 +225,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateUrlWithTab(tab: ResourceType): void {
-    this.router.navigate([], {
+  private updateUrlWithTab(tab: ResourceType) {
+    return this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab: tab !== ResourceType.Null ? tab : null },
       queryParamsHandling: 'merge',

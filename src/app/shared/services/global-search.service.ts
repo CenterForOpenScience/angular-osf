@@ -5,17 +5,15 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MapResources } from '@shared/mappers/search';
 import {
-  CardSearchFilterJsonApi,
   FilterOption,
   FilterOptionItem,
   FilterOptionsResponseJsonApi,
   IndexCardSearchResponseJsonApi,
-  RelatedPropertyPathDataJsonApi,
   ResourcesData,
   SearchResultDataJsonApi,
 } from '@shared/models';
 
-import { CombinedFilterMapper, mapFilterOptions } from '../mappers';
+import { mapFilterOptions, MapFilters } from '../mappers';
 
 import { JsonApiService } from './json-api.service';
 
@@ -77,15 +75,9 @@ export class GlobalSearchService {
   }
 
   private handleResourcesRawResponse(response: IndexCardSearchResponseJsonApi): ResourcesData {
-    const relatedPropertyPathItems = response.included!.filter(
-      (item): item is RelatedPropertyPathDataJsonApi => item.type === 'related-property-path'
-    );
-
-    const appliedFilters: CardSearchFilterJsonApi[] = response.data?.attributes?.cardSearchFilter || [];
-
     return {
       resources: MapResources(response),
-      filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
+      filters: MapFilters(response),
       count: response.data.attributes.totalResultCount,
       self: response.data.links.self,
       first: response.data?.relationships?.searchResultPage.links?.first?.href ?? null,
