@@ -8,7 +8,7 @@ import { Component, computed, inject, input, output, viewChild } from '@angular/
 import { Router } from '@angular/router';
 
 import { FileMenuType } from '@osf/shared/enums';
-import { FileMenuAction, FileMenuData } from '@osf/shared/models';
+import { FileMenuAction, FileMenuData, FileMenuFlags } from '@osf/shared/models';
 import { MenuManagerService } from '@osf/shared/services';
 import { hasViewOnlyParam } from '@shared/helpers';
 
@@ -21,9 +21,10 @@ import { hasViewOnlyParam } from '@shared/helpers';
 export class FileMenuComponent {
   private router = inject(Router);
   private menuManager = inject(MenuManagerService);
+  isFolder = input<boolean>(false);
+  allowedActions = input<FileMenuFlags>({} as FileMenuFlags);
   menu = viewChild.required<TieredMenu>('menu');
   action = output<FileMenuAction>();
-  isFolder = input<boolean>(false);
 
   hasViewOnly = computed(() => {
     return hasViewOnlyParam(this.router);
@@ -108,8 +109,16 @@ export class FileMenuComponent {
 
   menuItems = computed(() => {
     if (this.hasViewOnly()) {
-      const allowedActionsForFiles = [FileMenuType.Download, FileMenuType.Embed, FileMenuType.Share, FileMenuType.Copy];
-      const allowedActionsForFolders = [FileMenuType.Download, FileMenuType.Copy];
+      const allowedActionsForFiles = [
+        FileMenuType.Download,
+        FileMenuType.Embed,
+        FileMenuType.Share,
+        FileMenuType.Copy,
+      ].filter((action) => this.allowedActions()[action]);
+
+      const allowedActionsForFolders = [FileMenuType.Download, FileMenuType.Copy].filter(
+        (action) => this.allowedActions()[action]
+      );
 
       const allowedActions = this.isFolder() ? allowedActionsForFolders : allowedActionsForFiles;
 
@@ -128,9 +137,11 @@ export class FileMenuComponent {
 
     if (this.isFolder()) {
       const disallowedActions = [FileMenuType.Share, FileMenuType.Embed];
-      return this.allMenuItems.filter((item) => !disallowedActions.includes(item.id as FileMenuType));
+      return this.allMenuItems.filter(
+        (item) => !disallowedActions.includes(item.id as FileMenuType) && this.allowedActions()[item.id as FileMenuType]
+      );
     }
-    return this.allMenuItems;
+    return this.allMenuItems.filter((item) => this.allowedActions()[item.id as FileMenuType]);
   });
 
   onMenuToggle(event: Event): void {
