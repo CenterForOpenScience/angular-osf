@@ -7,20 +7,20 @@
     <p-accordion-content>
       <div class="flex flex-column pt-4 gap-2">
         <h3 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h3>
-        <div class="flex">
-          <p>
+        <p>
+          <span>
             {{
               'registry.overview.statuses.' + registry()?.status + '.long'
                 | translate: { embargoEndDate: embargoEndDate }
             }}
-          </p>
+          </span>
 
           @if (isAccepted()) {
-            <a class="font-bold ml-1" [routerLink]="['/', registry()?.associatedProjectId]">
+            <a class="font-bold" [routerLink]="['/', registry()?.associatedProjectId]">
               {{ 'registry.overview.statuses.accepted.project' | translate }}</a
             >.
           }
-        </div>
+        </p>
 
         @if (canEdit()) {
           @if (canWithdraw()) {
