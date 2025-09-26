@@ -17,7 +17,7 @@
         <osf-overview-toolbar
           [currentResource]="toolbarResource()"
           [showViewOnlyLinks]="false"
-          [canEdit]="hasAdminAccess() || hasWriteAccess()"
+          [canEdit]="hasWriteAccess()"
         />
       </div>
     }
@@ -32,7 +32,7 @@
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      @if (!schemaResponse()?.isOriginalResponse && !isInitialState && !hasViewOnly()) {
+      @if (!schemaResponse()?.isOriginalResponse && !isInitialState) {
         <p-message class="overview-message w-full" severity="warn">
           <ng-template #container>
             <div>
@@ -70,7 +70,7 @@
             <div class="flex flex-column gap-4 md:flex-row resource">
               <osf-registry-statuses
                 [registry]="registry()"
-                [readonly]="hasNoPermissions() || hasViewOnly()"
+                [canEdit]="hasAdminAccess()"
                 [isModeration]="isModeration"
               ></osf-registry-statuses>
 
@@ -82,7 +82,7 @@
                 (continueUpdate)="onContinueUpdateRegistration()"
                 [isModeration]="isModeration"
                 [isSubmitting]="isSchemaResponseLoading()"
-                [readonly]="hasNoPermissions() || hasViewOnly()"
+                [canEdit]="hasAdminAccess()"
               >
               </osf-registry-revisions>
             </div>
@@ -134,7 +134,7 @@
           <osf-resource-metadata
             [currentResource]="resourceOverview()"
             (customCitationUpdated)="onCustomCitationUpdated($event)"
-            [canEdit]="!hasViewOnly() && (hasWriteAccess() || hasAdminAccess())"
+            [canEdit]="hasWriteAccess()"
           />
         </div>
       </div>

@@ -6,7 +6,8 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, HostBinding, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 import { CustomConfirmationService } from '@osf/shared/services';
@@ -17,7 +18,7 @@ import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.comp
 
 @Component({
   selector: 'osf-registry-statuses',
-  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, TranslatePipe, Button],
+  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, TranslatePipe, Button, RouterLink],
   templateUrl: './registry-statuses.component.html',
   styleUrl: './registry-statuses.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +29,7 @@ export class RegistryStatusesComponent {
   private readonly translateService = inject(TranslateService);
 
   registry = input.required<RegistryOverview | null>();
-  readonly = input<boolean>(false);
+  canEdit = input<boolean>(false);
   isModeration = input<boolean>(false);
 
   readonly RegistryStatus = RegistryStatus;
@@ -36,13 +37,12 @@ export class RegistryStatusesComponent {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly actions = createDispatchMap({ makePublic: MakePublic });
 
-  get canWithdraw(): boolean {
-    return this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration();
-  }
+  canWithdraw = computed(
+    () => this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration()
+  );
 
-  get isEmbargo(): boolean {
-    return this.registry()?.status === RegistryStatus.Embargo;
-  }
+  isAccepted = computed(() => this.registry()?.reviewsState === RegistrationReviewStates.Accepted);
+  isEmbargo = computed(() => this.registry()?.status === RegistryStatus.Embargo);
 
   get embargoEndDate() {
     const embargoEndDate = this.registry()?.embargoEndDate;

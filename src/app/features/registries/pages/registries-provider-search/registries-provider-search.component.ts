@@ -10,7 +10,11 @@ import { ClearCurrentProvider } from '@core/store/provider';
 import { GlobalSearchComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
-import { GetRegistryProviderBrand, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
+import {
+  ClearRegistryProvider,
+  GetRegistryProvider,
+  RegistrationProviderSelectors,
+} from '@osf/shared/stores/registration-provider';
 
 import { RegistryProviderHeroComponent } from '../../components/registry-provider-hero/registry-provider-hero.component';
 
@@ -26,10 +30,11 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
 
   private actions = createDispatchMap({
-    getProvider: GetRegistryProviderBrand,
+    getProvider: GetRegistryProvider,
     setDefaultFilterValue: SetDefaultFilterValue,
     setResourceType: SetResourceType,
     clearCurrentProvider: ClearCurrentProvider,
+    clearRegistryProvider: ClearRegistryProvider,
   });
 
   provider = select(RegistrationProviderSelectors.getBrandedProvider);
@@ -51,5 +56,6 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.actions.clearCurrentProvider();
+    this.actions.clearRegistryProvider();
   }
 }

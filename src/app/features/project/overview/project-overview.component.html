@@ -17,7 +17,7 @@
       [isCollectionsRoute]="isCollectionsRoute()"
       [currentResource]="currentResource()"
       [projectDescription]="project.description"
-      [canEdit]="isAdmin"
+      [canEdit]="isAdmin()"
     />
   </div>
 
@@ -47,7 +47,7 @@
     }
 
     <div class="flex flex-column gap-4 left-section">
-      @if (isAdmin || canWrite) {
+      @if (canWrite()) {
         <osf-overview-wiki [resourceId]="currentProject()!.id" />
       }
 
@@ -57,8 +57,8 @@
         [areComponentsLoading]="areComponentsLoading()"
       />
 
-      <osf-project-components [canEdit]="canWrite && !isCollectionsRoute()" />
-      <osf-linked-resources [canEdit]="canWrite && !isCollectionsRoute()" />
+      <osf-project-components [canEdit]="canWrite() && !isCollectionsRoute()" />
+      <osf-linked-resources [canEdit]="canWrite() && !isCollectionsRoute()" />
       <osf-recent-activity-list [pageSize]="activityPageSize" />
     </div>
 
@@ -67,7 +67,7 @@
         [currentResource]="resourceOverview()"
         (customCitationUpdated)="onCustomCitationUpdated($event)"
         [isCollectionsRoute]="isCollectionsRoute()"
-        [canEdit]="canWrite"
+        [canEdit]="canWrite()"
       />
     </div>
   </div>

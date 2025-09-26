@@ -1,4 +1,3 @@
-import { RegistrationQuestions } from '@osf/shared/models';
 import { ReviewActionPayload } from '@osf/shared/models/review-action';
 
 export class GetRegistryById {
@@ -16,10 +15,7 @@ export class GetRegistryInstitutions {
 export class GetSchemaBlocks {
   static readonly type = '[Registry Overview] Get Schema Blocks';
 
-  constructor(
-    public schemaLink: string,
-    public questions: RegistrationQuestions
-  ) {}
+  constructor(public schemaLink: string) {}
 }
 
 export class WithdrawRegistration {

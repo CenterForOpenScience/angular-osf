@@ -1,6 +1,7 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 
 import { IdTypeModel } from './common';
+import { Identifier } from './identifiers';
 import { Institution } from './institutions';
 import { LicensesOption } from './license.model';
 import { SubjectModel } from './subject';
@@ -33,12 +34,7 @@ export interface ResourceOverview {
     storageLimitStatus: string;
     storageUsage: string;
   };
-  identifiers?: {
-    id: string;
-    type: string;
-    category: string;
-    value: string;
-  }[];
+  identifiers?: Identifier[];
   supplements?: {
     id: string;
     type: string;

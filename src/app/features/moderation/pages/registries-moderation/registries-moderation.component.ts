@@ -13,7 +13,7 @@ import { ClearCurrentProvider } from '@core/store/provider';
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM, Primitive } from '@osf/shared/helpers';
-import { GetRegistryProviderBrand } from '@osf/shared/stores/registration-provider';
+import { GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
 import { REGISTRY_MODERATION_TABS } from '../../constants';
 import { RegistryModerationTab } from '../../enums';
@@ -44,7 +44,7 @@ export class RegistriesModerationComponent implements OnInit, OnDestroy {
   readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   actions = createDispatchMap({
-    getProvider: GetRegistryProviderBrand,
+    getProvider: GetRegistryProvider,
     clearCurrentProvider: ClearCurrentProvider,
   });
 

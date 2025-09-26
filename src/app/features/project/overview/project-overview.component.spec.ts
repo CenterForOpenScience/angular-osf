@@ -12,18 +12,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { MetaTagsService, ToastService } from '@osf/shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 
 import { ProjectOverviewComponent } from './project-overview.component';
+
+import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 
 describe('ProjectOverviewComponent', () => {
   let fixture: ComponentFixture<ProjectOverviewComponent>;
   let component: ProjectOverviewComponent;
   let store: Store;
+  let dataciteService: jest.Mocked<DataciteService>;
 
   beforeEach(async () => {
     TestBed.overrideComponent(ProjectOverviewComponent, { set: { template: '' } });
-
+    dataciteService = DataciteMockFactory();
     await TestBed.configureTestingModule({
       imports: [ProjectOverviewComponent],
       providers: [
@@ -33,6 +37,7 @@ describe('ProjectOverviewComponent', () => {
 
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
+        { provide: DataciteService, useValue: dataciteService },
 
         { provide: DialogService, useValue: { open: () => ({ onClose: of(null) }) } },
         { provide: TranslateService, useValue: { instant: (k: string) => k } },
@@ -46,8 +51,8 @@ describe('ProjectOverviewComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should log to datacite', () => {
+    expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.currentProject$);
   });
 
   it('dispatches GetActivityLogs with numeric page and pageSize on init', () => {

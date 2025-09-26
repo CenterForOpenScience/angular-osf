@@ -1,9 +1,13 @@
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import {
   ApiData,
+  IdentifiersJsonApiData,
   JsonApiResponseWithMeta,
+  LicenseDataJsonApi,
   MetaAnonymousJsonApi,
-  ProviderDataJsonApi,
+  RegistrationNodeAttributesJsonApi,
+  RegistryProviderDetailsJsonApi,
+  ResponseJsonApi,
   SchemaResponseDataJsonApi,
 } from '@osf/shared/models';
 
@@ -14,7 +18,7 @@ export type GetRegistryOverviewJsonApi = JsonApiResponseWithMeta<
 >;
 
 export type RegistryOverviewJsonApiData = ApiData<
-  RegistryOverviewJsonApiAttributes,
+  RegistrationNodeAttributesJsonApi,
   RegistryOverviewJsonApiEmbed,
   RegistryOverviewJsonApiRelationships,
   null
@@ -87,26 +91,9 @@ export interface RegistryOverviewJsonApiEmbed {
     }[];
   };
   license: {
-    data: {
-      id: string;
-      type: string;
-      attributes: {
-        name: string;
-        text: string;
-        url: string;
-      };
-    };
+    data: LicenseDataJsonApi;
   };
-  identifiers: {
-    data: {
-      id: string;
-      type: string;
-      attributes: {
-        category: string;
-        value: string;
-      };
-    }[];
-  };
+  identifiers: ResponseJsonApi<IdentifiersJsonApiData[]>;
   schema_responses: {
     data: SchemaResponseDataJsonApi[];
   };
@@ -124,7 +111,7 @@ export interface RegistryOverviewJsonApiEmbed {
       };
     }[];
   };
-  provider: { data: ProviderDataJsonApi };
+  provider: { data: RegistryProviderDetailsJsonApi };
 }
 
 export interface RegistryOverviewJsonApiRelationships {

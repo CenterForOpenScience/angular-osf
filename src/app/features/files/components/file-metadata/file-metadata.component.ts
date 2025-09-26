@@ -58,7 +58,7 @@ export class FileMetadataComponent {
 
   downloadFileMetadata(): void {
     if (this.fileGuid()) {
-      window.open(`${this.environment.webUrl}/${this.fileGuid()}/metadata/?format=datacite-json`)?.focus();
+      window.open(`${this.environment.webUrl}/metadata/${this.fileGuid()}`)?.focus();
     }
   }
 

@@ -20,7 +20,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -71,6 +71,7 @@ import { PreprintWarningBannerComponent } from '../../components/preprint-detail
     PreprintWarningBannerComponent,
     ModerationStatusBannerComponent,
     MakeDecisionComponent,
+    RouterLink,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',

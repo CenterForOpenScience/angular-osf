@@ -18,7 +18,7 @@
             />
           }
 
-          @if (!readonly()) {
+          @if (canEdit()) {
             @if (registryAcceptedUnapproved) {
               <p-button
                 class="w-full"

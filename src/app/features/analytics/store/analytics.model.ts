@@ -1,9 +1,9 @@
 import { AsyncStateModel } from '@osf/shared/models/store';
 
-import { AnalyticsMetricsModel, RelatedCountsModel } from '../models';
+import { NodeAnalyticsModel, RelatedCountsModel } from '../models';
 
 export interface AnalyticsStateModel {
-  metrics: AsyncStateModel<AnalyticsMetricsModel[]>;
+  metrics: AsyncStateModel<NodeAnalyticsModel[]>;
   relatedCounts: AsyncStateModel<RelatedCountsModel[]>;
 }
 

@@ -21,7 +21,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
+import { MetadataResourceEnum, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
@@ -190,6 +190,18 @@ export class MetadataComponent implements OnInit {
   showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
 
   bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
+
+  hasWriteAccess = computed(() => {
+    const metadata = this.metadata();
+    if (!metadata) return false;
+    return metadata.currentUserPermissions.includes(UserPermissions.Write);
+  });
+
+  hasAdminAccess = computed(() => {
+    const metadata = this.metadata();
+    if (!metadata) return false;
+    return metadata.currentUserPermissions.includes(UserPermissions.Admin);
+  });
 
   constructor() {
     effect(() => {
