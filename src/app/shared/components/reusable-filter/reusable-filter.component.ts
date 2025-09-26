@@ -46,9 +46,9 @@ export class ReusableFilterComponent {
   readonly Boolean = Boolean;
 
   loadFilterOptions = output<DiscoverableFilter>();
-  filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
-  filterSearchChanged = output<{ filterType: string; searchText: string; filter: DiscoverableFilter }>();
-  loadMoreFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
+  filterValueChanged = output<{ filter: DiscoverableFilter; value: StringOrNull }>();
+  filterSearchChanged = output<{ filter: DiscoverableFilter; searchText: string }>();
+  loadMoreFilterOptions = output<DiscoverableFilter>();
 
   private readonly expandedFilters = signal<Set<string>>(new Set());
 
@@ -137,54 +137,23 @@ export class ReusableFilterComponent {
     }
   }
 
-  onFilterChanged(filterType: string, value: string | null): void {
-    this.filterValueChanged.emit({ filterType, value });
+  onFilterChanged(filter: DiscoverableFilter, value: string | null): void {
+    this.filterValueChanged.emit({ filter, value });
   }
 
-  onFilterSearch(filterType: string, searchText: string): void {
-    const filter = this.filters().find((f) => f.key === filterType);
+  onFilterSearch(filter: DiscoverableFilter, searchText: string): void {
     if (filter) {
-      this.filterSearchChanged.emit({ filterType, searchText, filter });
+      this.filterSearchChanged.emit({ filter, searchText });
     }
   }
 
-  onLoadMoreOptions(filterType: string): void {
-    const filter = this.filters().find((f) => f.key === filterType);
-    if (filter) {
-      this.loadMoreFilterOptions.emit({ filterType, filter });
-    }
-  }
-
-  isFilterLoading(filter: DiscoverableFilter): boolean {
-    return filter.isLoading || false;
-  }
-
-  getSelectedValue(filterKey: string): string | null {
-    return this.selectedValues()[filterKey] || null;
-  }
-
-  getFilterPlaceholder(filterKey: string): string {
-    return this.FILTER_PLACEHOLDERS[filterKey] || '';
-  }
-
-  getFilterLabel(filter: DiscoverableFilter): string {
-    return filter.label || filter.key || '';
-  }
-
-  hasFilterContent(filter: DiscoverableFilter): boolean {
-    return !!(
-      filter.description ||
-      filter.helpLink ||
-      filter.resultCount ||
-      filter.options?.length ||
-      filter.hasOptions ||
-      filter.type === 'group'
-    );
+  onLoadMoreOptions(filter: DiscoverableFilter): void {
+    this.loadMoreFilterOptions.emit(filter);
   }
 
   onIsPresentFilterToggle(filter: DiscoverableFilter, isChecked: boolean): void {
     const value = isChecked ? 'true' : null;
-    this.filterValueChanged.emit({ filterType: filter.key, value });
+    this.filterValueChanged.emit({ filter, value });
   }
 
   onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {

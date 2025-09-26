@@ -103,8 +103,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.searchControl = this.searchControlInput() ?? new FormControl('');
 
-    this.restoreFiltersFromUrl();
     this.restoreTabFromUrl();
+    this.restoreFiltersFromUrl();
     this.restoreSearchFromUrl();
     this.handleSearch();
 
@@ -119,20 +119,20 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.actions.loadFilterOptions(filter.key);
   }
 
-  onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
-    this.actions.loadMoreFilterOptions(event.filterType);
+  onLoadMoreFilterOptions(filter: DiscoverableFilter): void {
+    this.actions.loadMoreFilterOptions(filter.key);
   }
 
-  onFilterSearchChanged(event: { filterType: string; searchText: string; filter: DiscoverableFilter }): void {
+  onFilterSearchChanged(event: { searchText: string; filter: DiscoverableFilter }): void {
     if (event.searchText.trim()) {
-      this.actions.loadFilterOptionsWithSearch(event.filterType, event.searchText);
+      this.actions.loadFilterOptionsWithSearch(event.filter.key, event.searchText);
     } else {
-      this.actions.clearFilterSearchResults(event.filterType);
+      this.actions.clearFilterSearchResults(event.filter.key);
     }
   }
 
-  onFilterChanged(event: { filterType: string; value: StringOrNull }): void {
-    this.actions.updateFilterValue(event.filterType, event.value);
+  onFilterChanged(event: { filter: DiscoverableFilter; value: StringOrNull }): void {
+    this.actions.updateFilterValue(event.filter.key, event.value);
 
     const currentFilters = this.filterValues();
 
@@ -152,7 +152,19 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   onPageChanged(link: string): void {
-    this.actions.getResourcesByLink(link);
+    this.actions.getResourcesByLink(link).subscribe({
+      next: () => {
+        this.scrollToTop();
+      },
+    });
+  }
+
+  scrollToTop() {
+    const contentWrapper = document.querySelector('.content-wrapper') as HTMLElement;
+
+    if (contentWrapper) {
+      contentWrapper.scrollTo({ top: 0, behavior: 'instant' });
+    }
   }
 
   onFilterChipRemoved(filterKey: string): void {

@@ -47,8 +47,8 @@ export class FiltersSectionComponent {
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
 
-  onFilterChanged(event: { filterType: string; value: StringOrNull }): void {
-    this.actions.updateFilterValue(event.filterType, event.value);
+  onFilterChanged(event: { filter: DiscoverableFilter; value: StringOrNull }): void {
+    this.actions.updateFilterValue(event.filter.key, event.value);
     this.actions.fetchResources();
   }
 
@@ -56,15 +56,15 @@ export class FiltersSectionComponent {
     this.actions.loadFilterOptions(filter.key);
   }
 
-  onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
-    this.actions.loadMoreFilterOptions(event.filterType);
+  onLoadMoreFilterOptions(filter: DiscoverableFilter): void {
+    this.actions.loadMoreFilterOptions(filter.key);
   }
 
-  onFilterSearchChanged(event: { filterType: string; searchText: string; filter: DiscoverableFilter }): void {
+  onFilterSearchChanged(event: { searchText: string; filter: DiscoverableFilter }): void {
     if (event.searchText.trim()) {
-      this.actions.loadFilterOptionsWithSearch(event.filterType, event.searchText);
+      this.actions.loadFilterOptionsWithSearch(event.filter.key, event.searchText);
     } else {
-      this.actions.clearFilterSearchResults(event.filterType);
+      this.actions.clearFilterSearchResults(event.filter.key);
     }
   }
 

@@ -51,11 +51,10 @@ export class FilterChipsComponent {
         const filterLabel = labels.find((l) => l.key === key)?.label || key;
         const filterOptionsList = options.find((o) => o.key === key)?.options || [];
         const option = filterOptionsList.find((opt) => opt.value === value || opt.id === value);
-        const displayValue = option?.label || value || '';
+        const displayValue = option?.label || value;
 
         return {
           key,
-          value: value!,
           label: filterLabel,
           displayValue,
         };

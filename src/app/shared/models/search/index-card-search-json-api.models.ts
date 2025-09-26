@@ -1,11 +1,10 @@
-import { AppliedFilter, RelatedPropertyPathAttributes } from '@shared/mappers';
 import { ApiData, JsonApiResponse } from '@shared/models';
 
 export type IndexCardSearchResponseJsonApi = JsonApiResponse<
   {
     attributes: {
       totalResultCount: number;
-      cardSearchFilter?: AppliedFilter[];
+      cardSearchFilter?: CardSearchFilterJsonApi[];
     };
     relationships: {
       searchResultPage: {
@@ -27,10 +26,93 @@ export type IndexCardSearchResponseJsonApi = JsonApiResponse<
       self: string;
     };
   },
-  (IndexCardDataJsonApi | ApiData<RelatedPropertyPathAttributes, null, null, null> | SearchResultJsonApi)[]
+  (IndexCardDataJsonApi | RelatedPropertyPathDataJsonApi | SearchResultDataJsonApi)[]
 >;
 
-export interface SearchResultJsonApi {
+export type RelatedPropertyPathDataJsonApi = ApiData<RelatedPropertyPathAttributesJsonApi, null, null, null>;
+export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;
+
+export interface RelatedPropertyPathAttributesJsonApi {
+  propertyPathKey: string;
+  propertyPath: {
+    '@id': string;
+    displayLabel: {
+      '@language': string;
+      '@value': string;
+    }[];
+    description?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    link?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    linkText?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    resourceType: {
+      '@id': string;
+    }[];
+    shortFormLabel: {
+      '@language': string;
+      '@value': string;
+    }[];
+  }[];
+  suggestedFilterOperator: string;
+  cardSearchResultCount: number;
+  osfmapPropertyPath: string[];
+}
+
+export interface CardSearchFilterJsonApi {
+  propertyPathKey: string;
+  propertyPathSet: {
+    '@id': string;
+    displayLabel?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    description?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    link?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    linkText?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    resourceType: {
+      '@id': string;
+    }[];
+    shortFormLabel: {
+      '@language': string;
+      '@value': string;
+    }[];
+  }[][];
+  filterValueSet: {
+    '@id': string;
+    displayLabel?: {
+      '@language': string;
+      '@value': string;
+    }[];
+    resourceType?: {
+      '@id': string;
+    }[];
+    shortFormLabel?: {
+      '@language': string;
+      '@value': string;
+    }[];
+  }[];
+  filterType: {
+    '@id': string;
+  };
+}
+
+export interface SearchResultDataJsonApi {
   id: string;
   type: 'search-result';
   relationships: {
@@ -46,8 +128,6 @@ export interface SearchResultJsonApi {
     cardSearchResultCount: number;
   };
 }
-
-export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;
 
 interface IndexCardAttributesJsonApi {
   resourceIdentifier: string[];

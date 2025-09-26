@@ -1,93 +1,10 @@
-import { ApiData } from '@osf/shared/models';
-import { DiscoverableFilter } from '@shared/models';
+import { CardSearchFilterJsonApi, DiscoverableFilter, RelatedPropertyPathDataJsonApi } from '@shared/models';
 
-export interface RelatedPropertyPathAttributes {
-  propertyPathKey: string;
-  propertyPath: {
-    '@id': string;
-    displayLabel: {
-      '@language': string;
-      '@value': string;
-    }[];
-    description?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    link?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    linkText?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    resourceType: {
-      '@id': string;
-    }[];
-    shortFormLabel: {
-      '@language': string;
-      '@value': string;
-    }[];
-  }[];
-  suggestedFilterOperator: string;
-  cardSearchResultCount: number;
-  osfmapPropertyPath: string[];
-}
-
-export interface AppliedFilter {
-  propertyPathKey: string;
-  propertyPathSet: {
-    '@id': string;
-    displayLabel?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    description?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    link?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    linkText?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    resourceType: {
-      '@id': string;
-    }[];
-    shortFormLabel: {
-      '@language': string;
-      '@value': string;
-    }[];
-  }[][];
-  filterValueSet: {
-    '@id': string;
-    displayLabel?: {
-      '@language': string;
-      '@value': string;
-    }[];
-    resourceType?: {
-      '@id': string;
-    }[];
-    shortFormLabel?: {
-      '@language': string;
-      '@value': string;
-    }[];
-  }[];
-  filterType: {
-    '@id': string;
-  };
-}
-
-export type RelatedPropertyPathItem = ApiData<RelatedPropertyPathAttributes, null, null, null>;
-
-export function ReusableFilterMapper(item: RelatedPropertyPathItem): DiscoverableFilter {
-  const key = item.attributes.propertyPathKey;
-  const propertyPath = item.attributes.propertyPath?.[0];
+export function ReusableFilterMapper(relatedPropertyPath: RelatedPropertyPathDataJsonApi): DiscoverableFilter {
+  const key = relatedPropertyPath.attributes.propertyPathKey;
+  const propertyPath = relatedPropertyPath.attributes.propertyPath?.[0];
   const label = propertyPath?.displayLabel?.[0]?.['@value'] ?? key;
-  const operator = item.attributes.suggestedFilterOperator ?? 'any-of';
+  const operator = relatedPropertyPath.attributes.suggestedFilterOperator ?? 'any-of';
   const description = propertyPath?.description?.[0]?.['@value'];
   const helpLink = propertyPath?.link?.[0]?.['@value'];
   const helpLinkText = propertyPath?.linkText?.[0]?.['@value'];
@@ -102,22 +19,22 @@ export function ReusableFilterMapper(item: RelatedPropertyPathItem): Discoverabl
     description,
     helpLink,
     helpLinkText,
-    resultCount: item.attributes.cardSearchResultCount,
+    resultCount: relatedPropertyPath.attributes.cardSearchResultCount,
     isLoading: false,
     isLoaded: false,
   };
 }
 
-export function AppliedFilterMapper(appliedFilter: AppliedFilter): DiscoverableFilter {
-  const key = appliedFilter.propertyPathKey;
-  const propertyPath = appliedFilter.propertyPathSet?.[0]?.[0];
+export function AppliedFilterMapper(cardSearchFilter: CardSearchFilterJsonApi): DiscoverableFilter {
+  const key = cardSearchFilter.propertyPathKey;
+  const propertyPath = cardSearchFilter.propertyPathSet?.[0]?.[0];
   const label = propertyPath?.displayLabel?.[0]?.['@value'] ?? key;
-  const operator = appliedFilter.filterType?.['@id']?.replace('trove:', '') ?? 'any-of';
+  const operator = cardSearchFilter.filterType?.['@id']?.replace('trove:', '') ?? 'any-of';
   const description = propertyPath?.description?.[0]?.['@value'];
   const helpLink = propertyPath?.link?.[0]?.['@value'];
   const helpLinkText = propertyPath?.linkText?.[0]?.['@value'];
 
-  const type: DiscoverableFilter['type'] = key === 'dateCreated' ? 'date' : key === 'creator' ? 'checkbox' : 'select';
+  const type = key === 'dateCreated' ? 'date' : key === 'creator' ? 'checkbox' : 'select';
 
   return {
     key,
@@ -132,8 +49,8 @@ export function AppliedFilterMapper(appliedFilter: AppliedFilter): DiscoverableF
 }
 
 export function CombinedFilterMapper(
-  appliedFilters: AppliedFilter[] = [],
-  availableFilters: RelatedPropertyPathItem[] = []
+  appliedFilters: CardSearchFilterJsonApi[] = [],
+  availableFilters: RelatedPropertyPathDataJsonApi[] = []
 ): DiscoverableFilter[] {
   const filterMap = new Map<string, DiscoverableFilter>();
 

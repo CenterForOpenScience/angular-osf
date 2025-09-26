@@ -49,6 +49,8 @@ export class GlobalSearchState {
   @Action(FetchResourcesByLink)
   fetchResourcesByLink(ctx: StateContext<GlobalSearchStateModel>, action: FetchResourcesByLink) {
     if (!action.link) return EMPTY;
+    ctx.patchState({ resources: { ...ctx.getState().resources, isLoading: true } });
+
     return this.searchService
       .getResourcesByLink(action.link)
       .pipe(tap((response) => this.updateResourcesState(ctx, response)));
@@ -254,10 +256,7 @@ export class GlobalSearchState {
   @Action(SetResourceType)
   setResourceType(ctx: StateContext<GlobalSearchStateModel>, action: SetResourceType) {
     ctx.patchState({ resourceType: action.type });
-    ctx.patchState({ filterOptionsCache: {} });
     ctx.patchState({ filterValues: {} });
-    ctx.patchState({ filterSearchCache: {} });
-    ctx.patchState({ filterPaginationCache: {} });
   }
 
   @Action(ResetSearchState)
@@ -268,15 +267,12 @@ export class GlobalSearchState {
   }
 
   private updateResourcesState(ctx: StateContext<GlobalSearchStateModel>, response: ResourcesData) {
-    const state = ctx.getState();
-    const filtersWithCachedOptions = (response.filters || []).map((filter) => {
-      const cachedOptions = state.filterOptionsCache[filter.key];
-      return cachedOptions?.length ? { ...filter, options: cachedOptions, isLoaded: true } : filter;
-    });
-
     ctx.patchState({
       resources: { data: response.resources, isLoading: false, error: null },
-      filters: filtersWithCachedOptions,
+      filterOptionsCache: {},
+      filterSearchCache: {},
+      filterPaginationCache: {},
+      filters: response.filters,
       resourcesCount: response.count,
       first: response.first,
       next: response.next,
