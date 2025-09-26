@@ -56,6 +56,7 @@ export class ResourceGuidService {
                 ? res.data.relationships.provider?.data.type
                 : res.data.relationships.target?.data.type,
             wikiEnabled: res.data.attributes.wiki_enabled,
+            permissions: res.data.attributes.permissions,
           }) as CurrentResource
       ),
       finalize(() => this.loaderService.hide())

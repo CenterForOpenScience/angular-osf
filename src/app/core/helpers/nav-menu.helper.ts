@@ -94,14 +94,21 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
         }
 
         menuItems = menuItems.map((menuItem) => {
-          if (menuItem.id !== 'project-wiki') {
-            return menuItem;
+          if (menuItem.id === 'project-wiki') {
+            return {
+              ...menuItem,
+              visible: ctx.wikiPageVisible,
+            };
           }
 
-          return {
-            ...menuItem,
-            visible: ctx.wikiPageVisible,
-          };
+          if (menuItem.id === 'project-contributors' || menuItem.id === 'project-settings') {
+            return {
+              ...menuItem,
+              visible: !!ctx.permissions?.length,
+            };
+          }
+
+          return menuItem;
         });
 
         return {
@@ -139,11 +146,20 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           ...subItem,
           visible: true,
           expanded: true,
-          items: menuItems.map((menuItem) => ({
-            ...menuItem,
-            routerLink: [ctx.resourceId as string, menuItem.routerLink],
-            queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
-          })),
+          items: menuItems.map((menuItem) => {
+            if (menuItem.id === 'registration-contributors') {
+              return {
+                ...menuItem,
+                visible: !!ctx.permissions?.length,
+              };
+            }
+
+            return {
+              ...menuItem,
+              routerLink: [ctx.resourceId as string, menuItem.routerLink],
+              queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
+            };
+          }),
         };
       }
       return { ...subItem, visible: false, expanded: false };
