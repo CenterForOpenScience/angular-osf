@@ -56,7 +56,7 @@
               <span class="font-bold">{{ 'common.labels.contributors' | translate }}:</span>
               @for (contributor of duplicate.contributors; track contributor.id) {
                 <div>
-                  <a [routerLink]="['/user', contributor.id]" class="font-bold"> {{ contributor.fullName }}</a>
+                  <a class="font-bold" [routerLink]="['/user', contributor.userId]"> {{ contributor.fullName }}</a>
                   <span>{{ $last ? '' : ',' }}</span>
                 </div>
               }

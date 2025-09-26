@@ -1,5 +1,6 @@
 export * from './addon-form-controls.enum';
 export * from './addon-service-names.enum';
+export * from './addon-supported-features.enum';
 export * from './addon-tab.enum';
 export * from './addon-type.enum';
 export * from './addons-category.enum';

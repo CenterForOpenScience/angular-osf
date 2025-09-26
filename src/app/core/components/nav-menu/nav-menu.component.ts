@@ -65,6 +65,7 @@ export class NavMenuComponent {
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
       isViewOnly: !!getViewOnlyParam(this.router),
+      permissions: this.currentResource()?.permissions,
     };
 
     const items = updateMenuItems(filtered, routeContext);

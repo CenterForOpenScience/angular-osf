@@ -56,7 +56,7 @@
 
         <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="showInfoDialog()"></p-button>
 
-        @if (canEdit() && !hasViewOnly()) {
+        @if (canUploadFiles() && !hasViewOnly()) {
           <p-button
             [disabled]="isButtonDisabled()"
             outlined
@@ -128,8 +128,10 @@
       [actions]="filesTreeActions"
       [viewOnly]="!canEdit()"
       [viewOnlyDownloadable]="isViewOnlyDownloadable()"
+      [supportUpload]="canUploadFiles()"
       [resourceId]="resourceId()"
       [provider]="provider()"
+      [allowedMenuActions]="allowedMenuActions()"
       (folderIsOpening)="folderIsOpening($event)"
       (entryFileClicked)="navigateToFile($event)"
       (uploadFilesConfirmed)="uploadFiles($event)"

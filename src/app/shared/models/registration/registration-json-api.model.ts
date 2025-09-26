@@ -1,6 +1,7 @@
 import { RegistrationReviewStates, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 
 import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
+import { ContributorDataJsonApi } from '../contributors';
 import { LicenseRecordJsonApi } from '../licenses-json-api.model';
 
 export interface DraftRegistrationResponseJsonApi {
@@ -130,20 +131,7 @@ export interface RegistrationEmbedsJsonApi {
     };
   };
   bibliographic_contributors?: {
-    data: {
-      id: string;
-      type: 'users';
-      embeds: {
-        users: {
-          data: {
-            attributes: {
-              full_name: string;
-            };
-            id: string;
-          };
-        };
-      };
-    }[];
+    data: ContributorDataJsonApi[];
   };
   provider?: {
     data: {

@@ -34,10 +34,9 @@ describe('MyProjectsTableComponent', () => {
       dateModified: '2024-01-01T10:00:00Z',
       contributors: [
         {
-          familyName: 'John Doe',
+          id: '1',
+          userId: 'user1',
           fullName: 'Jane Smith',
-          middleName: 'Jane Smith',
-          givenName: 'Jane Smith',
         },
       ],
       type: '',
