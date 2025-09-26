@@ -31,7 +31,7 @@ import {
   CollectionsModerationSelectors,
   GetSubmissionsReviewActions,
 } from '@osf/features/moderation/store/collections-moderation';
-import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { Mode, ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { MetaTagsService, ToastService } from '@osf/shared/services';
@@ -129,6 +129,8 @@ export class ProjectOverviewComponent implements OnInit {
   areSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
   currentProject = select(ProjectOverviewSelectors.getProject);
   isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
+  hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -174,14 +176,6 @@ export class ProjectOverviewComponent implements OnInit {
 
   userPermissions = computed(() => this.currentProject()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
-
-  isAdmin = computed(() => {
-    return this.userPermissions().includes(UserPermissions.Admin);
-  });
-
-  canWrite = computed(() => {
-    return this.userPermissions().includes(UserPermissions.Write);
-  });
 
   resourceOverview = computed(() => {
     const project = this.currentProject();

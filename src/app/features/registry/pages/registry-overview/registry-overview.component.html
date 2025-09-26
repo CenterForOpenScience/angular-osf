@@ -135,6 +135,7 @@
             [currentResource]="resourceOverview()"
             (customCitationUpdated)="onCustomCitationUpdated($event)"
             [canEdit]="hasWriteAccess()"
+            [showEditButton]="hasWriteAccess()"
           />
         </div>
       </div>

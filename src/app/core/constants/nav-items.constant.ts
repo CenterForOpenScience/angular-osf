@@ -22,6 +22,7 @@ export const VIEW_ONLY_REGISTRY_MENU_ITEMS: string[] = [
   'registration-wiki',
   'registration-analytics',
   'registration-components',
+  'registration-recent-activity',
 ];
 
 export const PROJECT_MENU_ITEMS: MenuItem[] = [

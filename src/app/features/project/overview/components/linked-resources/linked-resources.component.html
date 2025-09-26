@@ -21,18 +21,19 @@
                 <osf-icon [iconClass]="linkedResource.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
                 <a class="linked-project-title" [href]="linkedResource.id">{{ linkedResource.title }}</a>
               </h2>
-
-              <div>
-                <p-button
-                  class="danger-icon-btn"
-                  icon="fas fa-trash"
-                  severity="danger"
-                  text
-                  [ariaLabel]="'common.buttons.delete' | translate"
-                  (onClick)="openDeleteResourceModal(linkedResource.id)"
-                >
-                </p-button>
-              </div>
+              @if (canEdit()) {
+                <div>
+                  <p-button
+                    class="danger-icon-btn"
+                    icon="fas fa-trash"
+                    severity="danger"
+                    text
+                    [ariaLabel]="'common.buttons.delete' | translate"
+                    (onClick)="openDeleteResourceModal(linkedResource.id)"
+                  >
+                  </p-button>
+                </div>
+              }
             </div>
 
             <div class="component-name flex flex-wrap gap-1">

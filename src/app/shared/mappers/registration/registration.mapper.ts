@@ -95,8 +95,8 @@ export class RegistrationMapper {
       hasSupplements: registration.attributes.has_supplements,
       contributors:
         registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-          id: contributor.embeds.users.data.id,
-          fullName: contributor.embeds.users.data.attributes.full_name,
+          id: contributor.embeds.users?.data?.id,
+          fullName: contributor.embeds.users?.data?.attributes.full_name,
         })) || [],
       rootParentId: registration.relationships.root?.data?.id,
       currentUserPermissions: registration.attributes.current_user_permissions,

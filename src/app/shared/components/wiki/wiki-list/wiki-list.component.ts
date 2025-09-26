@@ -29,7 +29,7 @@ export class WikiListComponent {
   readonly componentsList = input.required<ComponentWiki[]>();
 
   readonly isLoading = input<boolean>(false);
-  readonly viewOnly = input<boolean>(false);
+  readonly canEdit = input<boolean>(false);
 
   readonly deleteWiki = output<void>();
   readonly createWiki = output<void>();
