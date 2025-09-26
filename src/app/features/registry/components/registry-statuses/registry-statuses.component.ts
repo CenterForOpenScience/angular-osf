@@ -41,7 +41,7 @@ export class RegistryStatusesComponent {
     () => this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration()
   );
 
-  isAccepted = computed(() => this.registry()?.reviewsState === RegistrationReviewStates.Accepted);
+  isAccepted = computed(() => this.registry()?.status === RegistryStatus.Accepted);
   isEmbargo = computed(() => this.registry()?.status === RegistryStatus.Embargo);
 
   get embargoEndDate() {
