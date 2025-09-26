@@ -1,4 +1,3 @@
-import { CurrentResourceType } from '@osf/shared/enums';
 import { IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
 import { MapRegistryStatus, RegistrationMapper, RegistrationNodeMapper } from '@osf/shared/mappers/registration';
 
@@ -36,12 +35,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
       middleName: contributor?.embeds?.users?.data?.attributes?.middle_names,
       type: contributor?.embeds?.users?.data?.type,
     })),
-    identifiers: data.embeds?.identifiers?.data.map((identifier) => ({
-      id: identifier.id,
-      type: identifier.type,
-      value: identifier.attributes.value,
-      category: identifier.attributes.category,
-    })),
+    identifiers: IdentifiersMapper.fromJsonApi(data.embeds.identifiers),
     analyticsKey: data.attributes?.analytics_key,
     currentUserCanComment: data.attributes.current_user_can_comment,
     currentUserPermissions: data.attributes.current_user_permissions,
@@ -55,20 +49,11 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     hasMaterials: data.attributes.has_materials,
     hasPapers: data.attributes.has_papers,
     hasSupplements: data.attributes.has_supplements,
-    license: {
-      id: data.embeds?.license?.data?.attributes.name,
-      text: data.embeds?.license?.data?.attributes.text,
-      url: data.embeds?.license?.data?.attributes.url,
-    },
+    license: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
     registrationSchemaLink: data.relationships.registration_schema.links.related.href,
     associatedProjectId: data.relationships?.registered_from?.data?.id,
     schemaResponses: data.embeds?.schema_responses?.data?.map((item) => RegistrationMapper.fromSchemaResponse(item)),
-    provider: {
-      id: data.embeds?.provider.data.id,
-      name: data.embeds?.provider.data.attributes.name,
-      permissions: data.embeds?.provider.data.attributes.permissions,
-      type: CurrentResourceType.Registrations,
-    },
+    provider: RegistrationNodeMapper.getRegistrationProviderShortInfo(data.embeds.provider.data),
     status: MapRegistryStatus(data.attributes),
     revisionStatus: data.attributes.revision_state,
     reviewsState: data.attributes.reviews_state,
