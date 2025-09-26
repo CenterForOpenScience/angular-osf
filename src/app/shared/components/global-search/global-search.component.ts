@@ -2,8 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
-import { fromPromise } from 'rxjs/internal/observable/innerFrom';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -141,13 +140,14 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   onTabChange(resourceTab: ResourceType): void {
-    this.actions.setResourceType(resourceTab).subscribe({
+    this.actions.setResourceType(resourceTab);
+    this.updateUrlWithTab(resourceTab);
+
+    this.actions.fetchResources().subscribe({
       next: () => {
-        this.updateUrlWithFilterOptions(this.filterOptions()).pipe(switchMap(() => this.updateUrlWithTab(resourceTab)));
+        this.updateUrlWithFilterOptions(this.filterOptions());
       },
     });
-
-    this.actions.fetchResources();
   }
 
   onSortChanged(sortBy: string): void {
@@ -196,14 +196,12 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    return fromPromise(
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { ...queryParams },
-        queryParamsHandling: 'replace',
-        replaceUrl: true,
-      })
-    );
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { ...queryParams },
+      queryParamsHandling: 'replace',
+      replaceUrl: true,
+    });
   }
 
   private restoreFiltersFromUrl(): void {
@@ -226,7 +224,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   private updateUrlWithTab(tab: ResourceType) {
-    return this.router.navigate([], {
+    this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab: tab !== ResourceType.Null ? tab : null },
       queryParamsHandling: 'merge',
