@@ -7,12 +7,14 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { filter, finalize, switchMap, take } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { GetResourceMetadata, MetadataSelectors } from '@osf/features/metadata/store';
 import { IconComponent, LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { ResourceType, UserPermissions } from '@shared/enums';
 
 import { AddResourceDialogComponent, EditResourceDialogComponent } from '../../components';
 import { RegistryResource } from '../../models';
@@ -43,24 +45,33 @@ export class RegistryResourcesComponent {
   readonly resources = select(RegistryResourcesSelectors.getResources);
   readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
   readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
+  readonly registry = select(MetadataSelectors.getResourceMetadata);
 
-  registryId = '';
+  registryId = this.route.snapshot.parent?.params['id'];
   isAddingResource = signal(false);
   doiDomain = 'https://doi.org/';
 
   private readonly actions = createDispatchMap({
+    fetchRegistryData: GetResourceMetadata,
     getResources: GetRegistryResources,
     addResource: AddRegistryResource,
     deleteResource: DeleteResource,
   });
 
+  canEdit = computed(() => {
+    const registry = this.registry();
+    if (!registry) return false;
+
+    return registry.currentUserPermissions.includes(UserPermissions.Write);
+  });
+
+  addButtonVisible = computed(() => {
+    return !!this.registry()?.identifiers?.length && this.canEdit();
+  });
+
   constructor() {
-    this.route.parent?.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      this.registryId = params['id'];
-      if (this.registryId) {
-        this.actions.getResources(this.registryId);
-      }
-    });
+    this.actions.fetchRegistryData(this.registryId, ResourceType.Registration);
+    this.actions.getResources(this.registryId);
   }
 
   addResource() {

@@ -20,7 +20,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -71,6 +71,7 @@ import { PreprintWarningBannerComponent } from '../../components/preprint-detail
     PreprintWarningBannerComponent,
     ModerationStatusBannerComponent,
     MakeDecisionComponent,
+    RouterLink,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
@@ -93,8 +94,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
-
-  private webUrl = this.environment.webUrl;
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
@@ -137,6 +136,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     return actions[0];
   });
+
   latestWithdrawalRequest = computed(() => {
     const requests = this.withdrawalRequests();
 
@@ -144,6 +144,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     return requests[0];
   });
+
   latestRequestAction = computed(() => {
     const actions = this.requestActions();
 

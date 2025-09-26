@@ -10,7 +10,6 @@ export { EducationHistoryComponent } from './education-history/education-history
 export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
 export { EmploymentHistoryDialogComponent } from './employment-history-dialog/employment-history-dialog.component';
-export { FileLinkComponent } from './file-link/file-link.component';
 export { FileMenuComponent } from './file-menu/file-menu.component';
 export { FilesTreeComponent } from './files-tree/files-tree.component';
 export { FilterChipsComponent } from './filter-chips/filter-chips.component';
@@ -18,6 +17,7 @@ export { FormSelectComponent } from './form-select/form-select.component';
 export { FullScreenLoaderComponent } from './full-screen-loader/full-screen-loader.component';
 export { GenericFilterComponent } from './generic-filter/generic-filter.component';
 export { GlobalSearchComponent } from './global-search/global-search.component';
+export { GoogleFilePickerComponent } from './google-file-picker/google-file-picker.component';
 export { IconComponent } from './icon/icon.component';
 export { InfoIconComponent } from './info-icon/info-icon.component';
 export { LicenseComponent } from './license/license.component';

@@ -1,60 +1,82 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipes } from 'ng-mocks';
+import { MockComponent, MockPipe } from 'ng-mocks';
 
-import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 
-import { IconComponent } from '@shared/components';
-import { DateAgoPipe } from '@shared/pipes';
+import { IconComponent } from '@osf/shared/components';
+import { DateAgoPipe } from '@osf/shared/pipes';
+
+import { SubmissionReviewStatus } from '../../enums';
+import { RegistryModeration } from '../../models';
 
 import { RegistrySubmissionItemComponent } from './registry-submission-item.component';
 
+import { MOCK_REGISTRY_MODERATIONS } from '@testing/mocks/registry-moderation.mock';
+import { OSFTestingModule } from '@testing/osf.testing.module';
+
 describe('RegistrySubmissionItemComponent', () => {
   let component: RegistrySubmissionItemComponent;
-  let componentRef: ComponentRef<RegistrySubmissionItemComponent>;
   let fixture: ComponentFixture<RegistrySubmissionItemComponent>;
+
+  const mockSubmission: RegistryModeration = MOCK_REGISTRY_MODERATIONS[0];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RegistrySubmissionItemComponent,
-        RouterTestingModule,
-        MockComponent(IconComponent),
-        MockPipes(DateAgoPipe, TranslatePipe),
-      ],
+      imports: [RegistrySubmissionItemComponent, OSFTestingModule, MockComponent(IconComponent), MockPipe(DateAgoPipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrySubmissionItemComponent);
     component = fixture.componentInstance;
-    componentRef = fixture.componentRef;
-
-    const mockSubmission = {
-      id: 'reg1',
-      title: 'Test registry submission',
-      reviewsState: 'pending',
-      public: true,
-      embargoed: false,
-      embargoEndDate: null,
-      actions: [
-        {
-          id: 'a1',
-          fromState: 'pending',
-          toState: 'accepted',
-          dateModified: new Date().toISOString(),
-          creator: { id: 'u1', name: 'Bob' },
-          comment: '',
-        },
-      ],
-    };
-
-    componentRef.setInput('status', 'pending');
-    componentRef.setInput('submission', mockSubmission);
-
+    fixture.componentRef.setInput('status', SubmissionReviewStatus.Pending);
+    fixture.componentRef.setInput('submission', mockSubmission);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have input values', () => {
+    expect(component.status()).toBe(SubmissionReviewStatus.Pending);
+    expect(component.submission()).toEqual(mockSubmission);
+  });
+
+  it('should have constants defined', () => {
+    expect(component.reviewStatusIcon).toBeDefined();
+    expect(component.registryActionLabel).toBeDefined();
+    expect(component.registryActionState).toBeDefined();
+  });
+
+  it('should have default values', () => {
+    expect(component.limitValue).toBe(1);
+    expect(component.showAll).toBe(false);
+  });
+
+  it('should toggle history', () => {
+    expect(component.showAll).toBe(false);
+
+    component.toggleHistory();
+    expect(component.showAll).toBe(true);
+
+    component.toggleHistory();
+    expect(component.showAll).toBe(false);
+  });
+
+  it('should compute isPendingModeration correctly', () => {
+    expect(component.isPendingModeration).toBe(true);
+  });
+
+  it('should compute isPending correctly', () => {
+    expect(component.isPending).toBe(true);
+  });
+
+  it('should accept custom input values', () => {
+    const customStatus = SubmissionReviewStatus.Accepted;
+    const customSubmission = { ...mockSubmission, title: 'Custom Registry Submission' };
+
+    fixture.componentRef.setInput('status', customStatus);
+    fixture.componentRef.setInput('submission', customSubmission);
+
+    expect(component.status()).toBe(customStatus);
+    expect(component.submission()).toEqual(customSubmission);
   });
 });

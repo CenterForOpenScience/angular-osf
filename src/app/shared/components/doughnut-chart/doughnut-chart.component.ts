@@ -4,16 +4,7 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { ChartModule } from 'primeng/chart';
 
 import { isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  input,
-  OnInit,
-  PLATFORM_ID,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit, PLATFORM_ID, signal } from '@angular/core';
 
 import { PIE_CHART_PALETTE } from '@osf/shared/constants';
 import { DatasetInput } from '@osf/shared/models';
@@ -39,7 +30,6 @@ import { ChartData, ChartOptions } from 'chart.js';
 })
 export class DoughnutChartComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly cd = inject(ChangeDetectorRef);
 
   isLoading = input<boolean>(false);
   title = input<string>('');
@@ -48,24 +38,16 @@ export class DoughnutChartComponent implements OnInit {
   showLegend = input<boolean>(false);
   showExpandedSection = input<boolean>(false);
 
-  options = signal<ChartOptions>({});
-  data = signal<ChartData>({} as ChartData);
+  options = signal<ChartOptions<'doughnut'> | null>(null);
+  data = signal<ChartData | null>(null);
+
+  readonly PIE_CHART_PALETTE = PIE_CHART_PALETTE;
 
   ngOnInit() {
-    this.initChart();
-  }
-
-  initChart() {
     if (isPlatformBrowser(this.platformId)) {
       this.setChartData();
       this.setChartOptions();
-
-      this.cd.markForCheck();
     }
-  }
-
-  getColor(index: number): string {
-    return PIE_CHART_PALETTE[index % PIE_CHART_PALETTE.length];
   }
 
   private setChartData() {
@@ -84,6 +66,7 @@ export class DoughnutChartComponent implements OnInit {
 
   private setChartOptions() {
     this.options.set({
+      cutout: '60%',
       maintainAspectRatio: true,
       responsive: true,
       plugins: {

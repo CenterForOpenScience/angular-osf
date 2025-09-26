@@ -1,8 +1,7 @@
-import { AsyncStateModel, User, UserSettings } from '@osf/shared/models';
+import { AsyncStateModel, UserModel } from '@osf/shared/models';
 
 export interface UserStateModel {
-  currentUser: AsyncStateModel<User | null>;
-  currentUserSettings: AsyncStateModel<UserSettings | null>;
+  currentUser: AsyncStateModel<UserModel | null>;
   activeFlags: string[];
 }
 
@@ -10,12 +9,6 @@ export const USER_STATE_INITIAL: UserStateModel = {
   currentUser: {
     data: null,
     isLoading: false,
-    error: null,
-  },
-  currentUserSettings: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
     error: null,
   },
   activeFlags: [],

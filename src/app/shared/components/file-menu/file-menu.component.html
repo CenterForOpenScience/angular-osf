@@ -6,10 +6,10 @@
     variant="text"
     [raised]="true"
     icon="fas fa-ellipsis-v"
-    (click)="menu.toggle($event)"
+    (click)="onMenuToggle($event)"
   ></p-button>
 
-  <p-tieredMenu #menu [model]="menuItems()" appendTo="body" popup>
+  <p-tieredMenu #menu [model]="menuItems()" appendTo="body" popup (onHide)="onMenuHide()">
     <ng-template #item let-item let-hasSubmenu="hasSubmenu">
       <a pRipple class="p-tieredmenu-item-link">
         <span [class]="item.icon" class="p-tieredmenu-item-icon"></span>

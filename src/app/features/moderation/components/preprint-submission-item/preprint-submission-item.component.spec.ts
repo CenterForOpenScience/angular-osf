@@ -1,54 +1,104 @@
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipes } from 'ng-mocks';
+import { MockComponents, MockPipes } from 'ng-mocks';
 
-import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IconComponent } from '@shared/components';
-import { DateAgoPipe } from '@shared/pipes';
+import { IconComponent } from '@osf/shared/components';
+import { DateAgoPipe } from '@osf/shared/pipes';
+
+import { SubmissionReviewStatus } from '../../enums';
+import { PreprintSubmission } from '../../models';
 
 import { PreprintSubmissionItemComponent } from './preprint-submission-item.component';
 
+import { MOCK_PREPRINT_SUBMISSION } from '@testing/mocks/submission.mock';
+import { OSFTestingModule } from '@testing/osf.testing.module';
+
 describe('PreprintSubmissionItemComponent', () => {
   let component: PreprintSubmissionItemComponent;
-  let componentRef: ComponentRef<PreprintSubmissionItemComponent>;
   let fixture: ComponentFixture<PreprintSubmissionItemComponent>;
 
-  const mockSubmission = {
-    id: 'reg1',
-    title: 'Test registry submission',
-    reviewsState: 'pending',
-    public: true,
-    embargoed: false,
-    embargoEndDate: null,
-    actions: [
-      {
-        id: 'a1',
-        fromState: 'pending',
-        toState: 'accepted',
-        dateModified: new Date().toISOString(),
-        creator: { id: 'u1', name: 'Bob' },
-        comment: '',
-      },
-    ],
-  };
+  const mockSubmission: PreprintSubmission = MOCK_PREPRINT_SUBMISSION;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PreprintSubmissionItemComponent, MockComponent(IconComponent), MockPipes(DateAgoPipe, TranslatePipe)],
+      imports: [
+        PreprintSubmissionItemComponent,
+        OSFTestingModule,
+        ...MockComponents(IconComponent),
+        MockPipes(DateAgoPipe, TranslatePipe),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreprintSubmissionItemComponent);
     component = fixture.componentInstance;
-    componentRef = fixture.componentRef;
-
-    componentRef.setInput('status', 'pending');
-    componentRef.setInput('submission', mockSubmission);
-
+    fixture.componentRef.setInput('status', SubmissionReviewStatus.Pending);
+    fixture.componentRef.setInput('submission', mockSubmission);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have input values', () => {
+    expect(component.status()).toBe(SubmissionReviewStatus.Pending);
+    expect(component.submission()).toEqual(mockSubmission);
+  });
+
+  it('should have constants defined', () => {
+    expect(component.reviewStatusIcon).toBeDefined();
+    expect(component.actionLabel).toBeDefined();
+    expect(component.actionState).toBeDefined();
+  });
+
+  it('should have default values', () => {
+    expect(component.limitValue).toBe(1);
+    expect(component.showAll).toBe(false);
+  });
+
+  it('should toggle history', () => {
+    expect(component.showAll).toBe(false);
+
+    component.toggleHistory();
+    expect(component.showAll).toBe(true);
+
+    component.toggleHistory();
+    expect(component.showAll).toBe(false);
+  });
+
+  it('should emit selected event', () => {
+    jest.spyOn(component.selected, 'emit');
+    component.selected.emit();
+    expect(component.selected.emit).toHaveBeenCalled();
+  });
+
+  it('should accept custom input values', () => {
+    const customStatus = SubmissionReviewStatus.Accepted;
+    const customSubmission = {
+      ...mockSubmission,
+      title: 'Custom Preprint',
+      actions: [
+        ...mockSubmission.actions,
+        {
+          id: '2',
+          trigger: 'manual',
+          fromState: 'pending',
+          toState: 'accepted',
+          dateModified: '2023-01-02',
+          creator: {
+            id: 'user-2',
+            name: 'Jane Doe',
+          },
+          comment: 'Approved',
+        },
+      ],
+    };
+
+    fixture.componentRef.setInput('status', customStatus);
+    fixture.componentRef.setInput('submission', customSubmission);
+
+    expect(component.status()).toBe(customStatus);
+    expect(component.submission()).toEqual(customSubmission);
   });
 });

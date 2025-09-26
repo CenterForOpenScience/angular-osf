@@ -6,13 +6,25 @@ import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, EMPTY, filter, finalize, Observable, skip, switchMap, take } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  finalize,
+  forkJoin,
+  Observable,
+  of,
+  skip,
+  switchMap,
+  take,
+} from 'rxjs';
 
-import { HttpEventType } from '@angular/common/http';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -45,21 +57,21 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
+import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
   FormSelectComponent,
+  GoogleFilePickerComponent,
   LoadingSpinnerComponent,
   SearchInputComponent,
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
-import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
-import { FilesService } from '@shared/services';
+import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
+import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -72,7 +84,6 @@ import { FilesSelectors } from '../../store';
     Button,
     Dialog,
     FilesTreeComponent,
-    FloatLabel,
     FormSelectComponent,
     FormsModule,
     GoogleFilePickerComponent,
@@ -84,6 +95,7 @@ import { FilesSelectors } from '../../store';
     TableModule,
     TranslatePipe,
     ViewOnlyLinkMessageComponent,
+    GoogleFilePickerComponent,
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',
@@ -103,6 +115,8 @@ export class FilesComponent {
   private readonly router = inject(Router);
   private readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly toastService = inject(ToastService);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;
@@ -130,6 +144,7 @@ export class FilesComponent {
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly provider = select(FilesSelectors.getProvider);
   readonly resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
+  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
   readonly rootFolders = select(FilesSelectors.getRootFolders);
   readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
   readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
@@ -139,7 +154,7 @@ export class FilesComponent {
 
   readonly isGoogleDrive = signal<boolean>(false);
   readonly accountId = signal<string>('');
-  readonly selectedRootFolder = signal<StorageItemModel>({});
+  readonly selectedRootFolder = signal<StorageItem>({});
   readonly resourceId = signal<string>('');
 
   readonly progress = signal(0);
@@ -155,8 +170,9 @@ export class FilesComponent {
 
   sortOptions = ALL_SORT_OPTIONS;
 
-  storageProvider = FileProvider.OsfStorage;
   pageNumber = signal(1);
+
+  allowRevisions = false;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -240,6 +256,8 @@ export class FilesComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         const provider = currentRootFolder.folder?.provider;
+        // [NM TODO] Check if other providers allow revisions
+        this.allowRevisions = provider === FileProvider.OsfStorage;
         this.isGoogleDrive.set(provider === FileProvider.GoogleDrive);
         if (this.isGoogleDrive()) {
           this.setGoogleAccountId();
@@ -285,7 +303,6 @@ export class FilesComponent {
     if (!uploadLink) return;
 
     const fileArray = Array.isArray(files) ? files : [files];
-    const isMultiple = fileArray.length > 1;
     if (fileArray.length === 0) return;
 
     this.fileName.set(fileArray.length === 1 ? fileArray[0].name : `${fileArray.length} files`);
@@ -294,31 +311,73 @@ export class FilesComponent {
 
     let completedUploads = 0;
     const totalFiles = fileArray.length;
+    const conflictFiles: { file: File; link: string }[] = [];
 
     fileArray.forEach((file) => {
       this.filesService
         .uploadFile(file, uploadLink)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
-          finalize(() => {
-            if (isMultiple) {
-              completedUploads++;
-              const progressPercentage = Math.round((completedUploads / totalFiles) * 100);
-              this.progress.set(progressPercentage);
-
-              if (completedUploads === totalFiles) {
-                this.completeUpload();
+          catchError((err) => {
+            const conflictLink = err.error?.data?.links?.upload;
+            if (err.status === 409 && conflictLink) {
+              if (this.allowRevisions) {
+                return this.filesService.uploadFile(file, conflictLink, true);
+              } else {
+                conflictFiles.push({ file, link: conflictLink });
               }
-            } else {
-              this.completeUpload();
             }
+            return of(new HttpResponse());
           })
         )
         .subscribe((event) => {
           if (event.type === HttpEventType.UploadProgress && event.total) {
-            this.progress.set(Math.round((event.loaded / event.total) * 100));
+            const progressPercentage = Math.round((event.loaded / event.total) * 100);
+            if (totalFiles === 1) {
+              this.progress.set(progressPercentage);
+            }
+          }
+
+          if (event.type === HttpEventType.Response) {
+            completedUploads++;
+
+            if (totalFiles > 1) {
+              const progressPercentage = Math.round((completedUploads / totalFiles) * 100);
+              this.progress.set(progressPercentage);
+            }
+
+            if (completedUploads === totalFiles) {
+              if (conflictFiles.length > 0) {
+                this.openReplaceFileDialog(conflictFiles);
+              } else {
+                this.completeUpload();
+              }
+            }
           }
         });
+    });
+  }
+
+  private openReplaceFileDialog(conflictFiles: { file: File; link: string }[]) {
+    this.customConfirmationService.confirmDelete({
+      headerKey: conflictFiles.length > 1 ? 'files.dialogs.replaceFile.multiple' : 'files.dialogs.replaceFile.single',
+      messageKey: 'files.dialogs.replaceFile.message',
+      messageParams: {
+        name: conflictFiles.map((c) => c.file.name).join(', '),
+      },
+      acceptLabelKey: 'common.buttons.replace',
+      onConfirm: () => {
+        const replaceRequests$ = conflictFiles.map(({ file, link }) =>
+          this.filesService.uploadFile(file, link, true).pipe(
+            takeUntilDestroyed(this.destroyRef),
+            catchError(() => of(null))
+          )
+        );
+
+        forkJoin(replaceRequests$).subscribe({
+          next: () => this.completeUpload(),
+        });
+      },
     });
   }
 
@@ -331,7 +390,15 @@ export class FilesComponent {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files;
+
     if (!files || files.length === 0) return;
+
+    for (const file of files) {
+      if (file.size >= FILE_SIZE_LIMIT) {
+        this.toastService.showWarn('shared.files.limitText');
+        return;
+      }
+    }
 
     this.uploadFiles(Array.from(files));
   }
@@ -370,7 +437,7 @@ export class FilesComponent {
     const folderId = this.currentFolder()?.id ?? '';
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
     const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
-    const resourcePath = this.urlMap.get(this.resourceType()) ?? 'nodes';
+    const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
 
     if (resourceId && folderId) {
       this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();

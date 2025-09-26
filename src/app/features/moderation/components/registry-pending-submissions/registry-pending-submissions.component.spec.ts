@@ -1,43 +1,50 @@
-import { provideStore } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipes, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RegistryPendingSubmissionsComponent } from '@osf/features/moderation/components';
-import { RegistryModerationState } from '@osf/features/moderation/store/registry-moderation';
-import { TranslateServiceMock } from '@shared/mocks';
+import { RegistryModeration } from '@osf/features/moderation/models';
 
-describe.skip('RegistryPendingSubmissionsComponent', () => {
+import { RegistrySort, SubmissionReviewStatus } from '../../enums';
+import { RegistryModerationSelectors } from '../../store/registry-moderation';
+
+import { RegistryPendingSubmissionsComponent } from './registry-pending-submissions.component';
+
+import { MOCK_REGISTRY_MODERATIONS } from '@testing/mocks/registry-moderation.mock';
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+describe('RegistryPendingSubmissionsComponent', () => {
   let component: RegistryPendingSubmissionsComponent;
   let fixture: ComponentFixture<RegistryPendingSubmissionsComponent>;
+  let mockRouter: ReturnType<RouterMockBuilder['build']>;
+  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+
+  const mockProviderId = 'test-provider-id';
+  const mockSubmissions: RegistryModeration[] = MOCK_REGISTRY_MODERATIONS;
 
   beforeEach(async () => {
+    mockRouter = RouterMockBuilder.create().build();
+    mockActivatedRoute = ActivatedRouteMockBuilder.create()
+      .withParams({ providerId: mockProviderId })
+      .withQueryParams({ status: 'pending' })
+      .build();
+
     await TestBed.configureTestingModule({
-      imports: [RegistryPendingSubmissionsComponent, ...MockPipes(TranslatePipe)],
+      imports: [RegistryPendingSubmissionsComponent, OSFTestingModule, ...MockComponents(), TranslatePipe],
       providers: [
-        provideStore([RegistryModerationState]),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: {
-              params: of({ providerId: 'id1' }),
-            },
-            snapshot: {
-              queryParams: {},
-            },
-          },
-        },
-        MockProvider(Router),
-        TranslateServiceMock,
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        MockProvider(Router, mockRouter),
+        MockProvider(ActivatedRoute, mockActivatedRoute),
+        provideMockStore({
+          signals: [
+            { selector: RegistryModerationSelectors.getRegistrySubmissions, value: mockSubmissions },
+            { selector: RegistryModerationSelectors.areRegistrySubmissionLoading, value: false },
+            { selector: RegistryModerationSelectors.getRegistrySubmissionTotalCount, value: 1 },
+          ],
+        }),
       ],
     }).compileComponents();
 
@@ -48,5 +55,72 @@ describe.skip('RegistryPendingSubmissionsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize with default values', () => {
+    expect(component.currentPage()).toBe(1);
+    expect(component.pageSize()).toBe(10);
+    expect(component.first()).toBe(0);
+    expect(component.selectedSortOption()).toBe(RegistrySort.RegisteredNewest);
+    expect(component.selectedReviewOption()).toBeDefined();
+  });
+
+  it('should have submission review options defined', () => {
+    expect(component.submissionReviewOptions).toBeDefined();
+    expect(component.submissionReviewOptions.length).toBeGreaterThan(0);
+  });
+
+  it('should have sort options defined', () => {
+    expect(component.sortOptions).toBeDefined();
+    expect(component.sortOptions.length).toBeGreaterThan(0);
+  });
+
+  it('should have actions defined', () => {
+    expect(component.actions).toBeDefined();
+    expect(component.actions.getRegistrySubmissions).toBeDefined();
+  });
+
+  it('should change review status', () => {
+    component.changeReviewStatus(SubmissionReviewStatus.Accepted);
+    expect(component.selectedReviewOption()).toBe(SubmissionReviewStatus.Accepted);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [],
+      expect.objectContaining({
+        queryParams: { status: SubmissionReviewStatus.Accepted },
+      })
+    );
+  });
+
+  it('should change sort option', () => {
+    component.changeSort(RegistrySort.RegisteredOldest);
+    expect(component.selectedSortOption()).toBe(RegistrySort.RegisteredOldest);
+  });
+
+  it('should handle page change', () => {
+    const mockEvent = { page: 1, first: 10, rows: 10 };
+    component.onPageChange(mockEvent);
+    expect(component.currentPage()).toBe(2);
+    expect(component.first()).toBe(10);
+  });
+
+  it('should handle page change when page is undefined', () => {
+    const mockEvent = { page: undefined, first: 0, rows: 10 };
+    component.onPageChange(mockEvent);
+    expect(component.currentPage()).toBe(1);
+    expect(component.first()).toBe(0);
+  });
+
+  it('should get status from query params on init', () => {
+    expect(component.selectedReviewOption()).toBe(SubmissionReviewStatus.Pending);
+  });
+
+  it('should reset pagination when changing review status', () => {
+    component.currentPage.set(3);
+    component.first.set(20);
+
+    component.changeReviewStatus(SubmissionReviewStatus.Accepted);
+
+    expect(component.currentPage()).toBe(1);
+    expect(component.first()).toBe(0);
   });
 });

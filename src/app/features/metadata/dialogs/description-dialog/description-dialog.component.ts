@@ -4,12 +4,10 @@ import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Textarea } from 'primeng/textarea';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { ProjectOverview } from '@osf/features/project/overview/models';
-
-import { DescriptionResultModel } from '../../models';
+import { DialogValueModel } from '../../models';
 
 @Component({
   selector: 'osf-description-dialog',
@@ -18,24 +16,14 @@ import { DescriptionResultModel } from '../../models';
   styleUrl: './description-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DescriptionDialogComponent implements OnInit {
+export class DescriptionDialogComponent {
   dialogRef = inject(DynamicDialogRef);
   config = inject(DynamicDialogConfig);
 
-  descriptionControl = new FormControl('');
-
-  get currentMetadata(): ProjectOverview | null {
-    return this.config.data ? this.config.data.currentMetadata || null : null;
-  }
-
-  ngOnInit(): void {
-    if (this.currentMetadata && this.currentMetadata.description) {
-      this.descriptionControl.setValue(this.currentMetadata.description);
-    }
-  }
+  descriptionControl = new FormControl(this.config.data || '');
 
   save(): void {
-    this.dialogRef.close({ value: this.descriptionControl.value } as DescriptionResultModel);
+    this.dialogRef.close({ value: this.descriptionControl.value } as DialogValueModel);
   }
 
   cancel(): void {

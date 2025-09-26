@@ -34,8 +34,7 @@ export class OverviewComponentsComponent {
   private translateService = inject(TranslateService);
   isMobile = toSignal(inject(IS_XSMALL));
 
-  isCollectionsRoute = input<boolean>(false);
-  canWrite = input.required<boolean>();
+  canEdit = input.required<boolean>();
 
   currentUser = select(UserSelectors.getCurrentUser);
   currentUserId = computed(() => this.currentUser()?.id);

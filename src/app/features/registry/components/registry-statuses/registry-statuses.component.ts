@@ -7,10 +7,8 @@ import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
-import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { CustomConfirmationService } from '@osf/shared/services';
 
 import { RegistryOverview } from '../../models';
@@ -26,11 +24,11 @@ import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.comp
 })
 export class RegistryStatusesComponent {
   @HostBinding('class') classes = 'flex-1 flex';
-  private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
 
   registry = input.required<RegistryOverview | null>();
+  canEdit = input<boolean>(false);
   isModeration = input<boolean>(false);
 
   readonly RegistryStatus = RegistryStatus;
@@ -38,13 +36,13 @@ export class RegistryStatusesComponent {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly actions = createDispatchMap({ makePublic: MakePublic });
 
-  get canWithdraw(): boolean {
+  canWithdraw = computed(() => {
     return this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration();
-  }
+  });
 
-  get isEmbargo(): boolean {
+  isEmbargo = computed(() => {
     return this.registry()?.status === RegistryStatus.Embargo;
-  }
+  });
 
   get embargoEndDate() {
     const embargoEndDate = this.registry()?.embargoEndDate;
@@ -53,10 +51,6 @@ export class RegistryStatusesComponent {
     }
     return null;
   }
-
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
 
   openWithdrawDialog(): void {
     const registry = this.registry();

@@ -37,6 +37,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         errorMessage = error.error.message || 'common.errorMessages.serverError';
       }
 
+      if (error.status === 409) {
+        return throwError(() => error);
+      }
+
       if (error.status === 401) {
         if (!hasViewOnlyParam(router)) {
           authService.logout();

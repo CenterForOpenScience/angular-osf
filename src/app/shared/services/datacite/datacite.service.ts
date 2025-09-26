@@ -14,8 +14,8 @@ export class DataciteService {
   private readonly http: HttpClient = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
 
-  get webUrl() {
-    return this.environment.webUrl;
+  get apiDomainUrl() {
+    return this.environment.apiDomainUrl;
   }
 
   get dataciteTrackerAddress() {
@@ -56,7 +56,7 @@ export class DataciteService {
   }
 
   private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
-    const url = `${this.webUrl}/${targetType}/${targetId}/identifiers`;
+    const url = `${this.apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`;
     return this.http.get<IdentifiersJsonApiResponse>(url).pipe(
       map((item) => ({
         identifiers: item.data.map<Identifier>((identifierData) => ({

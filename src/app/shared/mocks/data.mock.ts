@@ -1,17 +1,19 @@
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 import { UserRelatedCounts } from '@shared/models';
 
-export const MOCK_USER: User = {
+export const MOCK_USER: UserModel = {
   iri: '',
   id: '1',
   fullName: 'John Doe',
-  email: 'john@example.com',
   givenName: 'John',
   familyName: 'Doe',
   middleNames: '',
   suffix: '',
-  dateRegistered: new Date('2024-01-01'),
+  dateRegistered: '2024-01-01',
   acceptedTermsOfService: false,
+  locale: 'en_US',
+  timezone: 'Etc/UTC',
+  active: true,
   employment: [
     {
       title: 'Software Engineer',

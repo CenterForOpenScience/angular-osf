@@ -13,6 +13,7 @@ describe('SearchHelpTutorialComponent', () => {
     title: 'Test Step',
     description: 'This is a test step',
     position: { top: '10px', left: '20px' },
+    mobilePosition: { top: '10px', left: '20px' },
   };
 
   beforeEach(async () => {

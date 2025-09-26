@@ -93,6 +93,17 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           menuItems = PROJECT_MENU_ITEMS.filter((menuItem) => allowedViewOnlyItems.includes(menuItem.id || ''));
         }
 
+        menuItems = menuItems.map((menuItem) => {
+          if (menuItem.id !== 'project-wiki') {
+            return menuItem;
+          }
+
+          return {
+            ...menuItem,
+            visible: ctx.wikiPageVisible,
+          };
+        });
+
         return {
           ...subItem,
           visible: true,

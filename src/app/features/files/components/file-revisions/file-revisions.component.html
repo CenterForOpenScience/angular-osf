@@ -10,7 +10,13 @@
       @for (item of fileRevisions(); track item.version) {
         <p-accordion-panel [value]="item.version" class="border-none">
           <p-accordion-header class="h-3rem font-normal">
-            {{ item.version }}. {{ item.dateTime | date: 'MMM d, yyyy HH:mm' }}
+            <p-button
+              class="link-btn-no-padding"
+              link
+              [label]="`${item.version }. ${ item.dateTime | date: 'MMM d, yyyy HH:mm' }`"
+              (onClick)="onOpenRevision(item.version)"
+              osfStopPropagation
+            ></p-button>
           </p-accordion-header>
 
           <p-accordion-content>
@@ -46,7 +52,7 @@
                   icon="fas fa-download"
                   variant="text"
                   [label]="'files.detail.revisions.actions.download' | translate"
-                  (onClick)="downloadRevision(item.version)"
+                  (onClick)="onDownloadRevision(item.version)"
                 ></p-button>
 
                 <p class="ml-auto mr-1">{{ item.downloads }}</p>

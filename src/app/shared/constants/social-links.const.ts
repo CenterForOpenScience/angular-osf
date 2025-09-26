@@ -2,20 +2,12 @@ import { SocialLinksModel } from '../models';
 
 export const SOCIAL_LINKS: SocialLinksModel[] = [
   {
-    id: 0,
+    id: 1,
     label: 'settings.profileSettings.social.labels.researcherId',
     address: 'http://researchers.com/rid/',
     placeholder: 'x-xxxx-xxxx',
     key: 'researcherId',
     icon: 'researcherID.png',
-  },
-  {
-    id: 1,
-    label: 'settings.profileSettings.social.labels.orcid',
-    address: 'http://orcid.org/',
-    placeholder: 'xxxx-xxxx-xxxx',
-    key: 'orcid',
-    icon: 'orcid.svg',
   },
   {
     id: 2,

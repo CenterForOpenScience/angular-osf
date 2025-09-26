@@ -97,8 +97,8 @@ describe('GenericFilterComponent', () => {
 
       const filteredOptions = component.filterOptions();
       expect(filteredOptions).toHaveLength(2);
-      expect(filteredOptions[0].label).toBe('Another Valid');
-      expect(filteredOptions[1].label).toBe('Valid Option');
+      expect(filteredOptions[0].label).toBe('Valid Option');
+      expect(filteredOptions[1].label).toBe('Another Valid');
     });
 
     it('should map options correctly', () => {
@@ -122,9 +122,9 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
-      expect(filteredOptions[0].label).toBe('Apple');
-      expect(filteredOptions[1].label).toBe('Banana');
-      expect(filteredOptions[2].label).toBe('Zebra');
+      expect(filteredOptions[0].label).toBe('Zebra');
+      expect(filteredOptions[1].label).toBe('Apple');
+      expect(filteredOptions[2].label).toBe('Banana');
     });
 
     it('should handle dateCreated filter type differently', () => {

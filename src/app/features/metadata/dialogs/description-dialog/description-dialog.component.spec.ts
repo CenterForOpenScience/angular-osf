@@ -26,16 +26,6 @@ describe('DescriptionDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not set description control value when currentProject is null', () => {
-    Object.defineProperty(component, 'currentProject', {
-      get: () => null,
-    });
-
-    component.ngOnInit();
-
-    expect(component.descriptionControl.value).toBe('');
-  });
-
   it('should handle save with valid form', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     jest.spyOn(dialogRef, 'close');

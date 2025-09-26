@@ -11,10 +11,7 @@
 
   <div class="filters-container flex flex-column xl:flex-row">
     <div class="xl:w-7">
-      <osf-search-input
-        [control]="searchControl"
-        [placeholder]="'project.contributors.searchPlaceholder' | translate"
-      />
+      <osf-search-input [control]="searchControl" [placeholder]="searchPlaceholder() | translate" />
     </div>
 
     <div class="contributors-filter-container flex flex-column md:flex-row xl:w-5">

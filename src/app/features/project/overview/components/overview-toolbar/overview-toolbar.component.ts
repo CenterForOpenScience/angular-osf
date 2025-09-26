@@ -12,7 +12,7 @@ import { timer } from 'rxjs';
 
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -29,7 +29,7 @@ import {
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores';
-import { hasViewOnlyParam } from '@shared/helpers';
+import { hasViewOnlyParam, IS_MEDIUM } from '@shared/helpers';
 
 import { SocialsShareActionItem } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
@@ -66,11 +66,11 @@ export class OverviewToolbarComponent {
   destroyRef = inject(DestroyRef);
   isPublic = signal(false);
   isBookmarked = signal(false);
+  isTablet = toSignal(inject(IS_MEDIUM));
 
   isCollectionsRoute = input<boolean>(false);
-  isAdmin = input.required<boolean>();
+  canEdit = input.required<boolean>();
   currentResource = input.required<ToolbarResource | null>();
-  projectTitle = input<string>('');
   projectDescription = input<string>('');
   showViewOnlyLinks = input<boolean>(true);
 
@@ -84,13 +84,9 @@ export class OverviewToolbarComponent {
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
   });
 
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  actions = createDispatchMap({
-    clearDuplicatedProject: ClearDuplicatedProject,
-  });
+  actions = createDispatchMap({ clearDuplicatedProject: ClearDuplicatedProject });
 
   readonly forkActionItems = [
     {
@@ -149,6 +145,7 @@ export class OverviewToolbarComponent {
   handleToggleProjectPublicity(): void {
     const resource = this.currentResource();
     if (!resource) return;
+    const dialogWidth = this.isTablet() ? '600px' : '95vw';
 
     const isCurrentlyPublic = resource.isPublic;
     const newPublicStatus = !isCurrentlyPublic;
@@ -159,7 +156,7 @@ export class OverviewToolbarComponent {
 
     this.dialogService.open(TogglePublicityDialogComponent, {
       focusOnShow: false,
-      width: '40vw',
+      width: dialogWidth,
       header: this.translateService.instant(
         isCurrentlyPublic ? 'project.overview.dialog.makePrivate.header' : 'project.overview.dialog.makePublic.header'
       ),
@@ -250,16 +247,15 @@ export class OverviewToolbarComponent {
 
   private createShareableContent(): ShareableContent | null {
     const resource = this.currentResource();
-    const title = this.projectTitle();
     const description = this.projectDescription();
 
-    if (!resource?.isPublic || !title) {
+    if (!resource?.isPublic) {
       return null;
     }
 
     return {
       id: resource.id,
-      title,
+      title: resource.title,
       description,
       url: this.buildResourceUrl(resource),
     };
