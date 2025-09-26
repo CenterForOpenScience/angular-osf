@@ -9,7 +9,7 @@ import {
   SchemaResponseDataJsonApi,
 } from '@osf/shared/models';
 
-import { MapRegistryStatus } from '../registry';
+import { MapRegistryStatus } from './map-registry-status.mapper';
 
 export class RegistrationMapper {
   static fromDraftRegistrationResponse(response: DraftRegistrationDataJsonApi): DraftRegistrationModel {

@@ -12,6 +12,7 @@
             'registry.overview.statuses.' + registry()?.status + '.long' | translate: { embargoEndDate: embargoEndDate }
           }}
         </p>
+
         @if (canEdit()) {
           @if (canWithdraw()) {
             <p-button
@@ -21,6 +22,7 @@
               styleClass="w-full mt-2"
             ></p-button>
           }
+
           @if (isEmbargo()) {
             <p-button
               (onClick)="openEndEmbargoDialog()"

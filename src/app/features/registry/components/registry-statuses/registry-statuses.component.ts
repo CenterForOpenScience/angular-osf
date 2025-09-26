@@ -36,13 +36,10 @@ export class RegistryStatusesComponent {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly actions = createDispatchMap({ makePublic: MakePublic });
 
-  canWithdraw = computed(() => {
-    return this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration();
-  });
-
-  isEmbargo = computed(() => {
-    return this.registry()?.status === RegistryStatus.Embargo;
-  });
+  canWithdraw = computed(
+    () => this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration()
+  );
+  isEmbargo = computed(() => this.registry()?.status === RegistryStatus.Embargo);
 
   get embargoEndDate() {
     const embargoEndDate = this.registry()?.embargoEndDate;

@@ -109,9 +109,7 @@ export class RegistryOverviewComponent {
       this.areSubjectsLoading()
   );
 
-  canMakeDecision = computed(() => {
-    return !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration;
-  });
+  canMakeDecision = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration);
 
   isRootRegistration = computed(() => {
     const rootId = this.registry()?.rootParentId;
