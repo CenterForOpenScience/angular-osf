@@ -232,7 +232,7 @@ export class FilesService {
     );
   }
 
-  getResourceContributors(resourceId: string, resourceType: string): Observable<Partial<ContributorModel>[]> {
+  getResourceContributors(resourceId: string, resourceType: string): Observable<ContributorModel[]> {
     return this.jsonApiService
       .get<ContributorsResponseJsonApi>(`${this.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
       .pipe(map((response) => ContributorsMapper.getContributors(response.data)));

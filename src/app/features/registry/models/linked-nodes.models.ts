@@ -11,7 +11,7 @@ export interface LinkedNode {
   tags: string[];
   isPublic: boolean;
   contributorsCount?: number;
-  contributors?: ContributorModel[];
+  contributors: ContributorModel[];
   htmlUrl: string;
   apiUrl: string;
 }
@@ -29,7 +29,7 @@ export interface LinkedRegistration {
   contributorsCount?: number;
   reviewsState: RegistrationReviewStates;
   revisionState?: string;
-  contributors?: ContributorModel[];
+  contributors: ContributorModel[];
   currentUserPermissions: string[];
   hasData?: boolean;
   hasAnalyticCode?: boolean;

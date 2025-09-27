@@ -20,13 +20,6 @@ export interface MyResourcesItemGetResponseJsonApi {
   };
 }
 
-export interface MyResourcesContributor {
-  familyName: string;
-  fullName: string;
-  givenName: string;
-  middleName: string;
-}
-
 export interface MyResourcesItem {
   id: string;
   type: string;

@@ -17,7 +17,7 @@ export interface FilesStateModel {
   openedFile: AsyncStateModel<OsfFile | null>;
   fileMetadata: AsyncStateModel<OsfFileCustomMetadata | null>;
   resourceMetadata: AsyncStateModel<ResourceMetadata | null>;
-  contributors: AsyncStateModel<Partial<ContributorModel>[] | null>;
+  contributors: AsyncStateModel<ContributorModel[] | null>;
   fileRevisions: AsyncStateModel<OsfFileRevision[] | null>;
   tags: AsyncStateModel<string[]>;
   rootFolders: AsyncStateModel<OsfFile[] | null>;

@@ -98,18 +98,11 @@
   @if (isResourceContributorsLoading()) {
     <p-skeleton width="100%" height="4rem" />
   } @else {
-    @if (contributors()?.length && !hasViewOnly()) {
+    @if (contributors().length && !hasViewOnly()) {
       <div class="flex flex-column gap-2">
-        <h4>{{ 'files.detail.resourceMetadata.fields.contributors' | translate }}</h4>
+        <h4>{{ 'common.labels.contributors' | translate }}</h4>
 
-        <div class="flex flex-wrap">
-          @for (contributor of contributors(); track $index) {
-            <a [routerLink]="['/user', contributor.userId]" class="font-bold">{{ contributor.fullName }}</a>
-            @if (!$last) {
-              <span>,&nbsp;</span>
-            }
-          }
-        </div>
+        <osf-contributors-list [contributors]="contributors()"></osf-contributors-list>
       </div>
     }
   }

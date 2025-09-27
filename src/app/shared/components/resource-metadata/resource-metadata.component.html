@@ -15,19 +15,13 @@
     </div>
 
     <div class="flex flex-column gap-2">
-      <h3>{{ 'project.overview.metadata.contributors' | translate }}</h3>
+      <h3>{{ 'common.labels.contributors' | translate }}</h3>
 
       <div class="flex flex-wrap gap-1 line-height-2">
-        @if (!resource.isAnonymous) {
-          @for (contributor of resource.contributors; track contributor.id) {
-            <div>
-              <a class="font-bold" [routerLink]="['/user', contributor.id]"> {{ contributor.fullName }}</a>
-              <span>{{ $last ? '' : ',' }}</span>
-            </div>
-          }
-        } @else {
-          <p>{{ 'project.overview.metadata.anonymousContributors' | translate }}</p>
-        }
+        <osf-contributors-list
+          [contributors]="resource.contributors"
+          [anonymous]="!!resource.isAnonymous"
+        ></osf-contributors-list>
       </div>
     </div>
 

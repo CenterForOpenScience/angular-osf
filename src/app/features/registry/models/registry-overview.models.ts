@@ -1,5 +1,6 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import {
+  ContributorModel,
   Identifier,
   IdTypeModel,
   LicenseModel,
@@ -27,7 +28,7 @@ export interface RegistryOverview {
   doi: string;
   tags: string[];
   provider?: ProviderShortInfoModel;
-  contributors: ProjectOverviewContributor[];
+  contributors: ContributorModel[];
   citation: string;
   category: string;
   isFork: boolean;

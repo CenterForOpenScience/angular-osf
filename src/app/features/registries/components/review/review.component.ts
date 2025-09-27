@@ -13,10 +13,10 @@ import { map, of } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { RegistrationBlocksDataComponent } from '@osf/shared/components';
+import { ContributorsListComponent, RegistrationBlocksDataComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType, ResourceType } from '@osf/shared/enums';
 import { InterpolatePipe } from '@osf/shared/pipes';
@@ -45,7 +45,6 @@ import { SelectComponentsDialogComponent } from '../select-components-dialog/sel
     TranslatePipe,
     Card,
     Message,
-    RouterLink,
     Tag,
     Button,
     Accordion,
@@ -54,6 +53,7 @@ import { SelectComponentsDialogComponent } from '../select-components-dialog/sel
     AccordionPanel,
     InterpolatePipe,
     RegistrationBlocksDataComponent,
+    ContributorsListComponent,
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.scss',

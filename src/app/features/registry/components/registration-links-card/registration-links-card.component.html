@@ -35,15 +35,8 @@
           </div>
 
           <div class="flex gap-2 align-items-baseline">
-            <strong>{{ 'project.overview.metadata.contributors' | translate }}:</strong>
-            <span class="contributors">
-              @for (contributor of registrationData().contributors; track contributor.id) {
-                <a class="font-bold" [routerLink]="['/user', contributor.userId]">{{ contributor.fullName }}</a>
-                @if (!$last) {
-                  <span>, </span>
-                }
-              }
-            </span>
+            <strong>{{ 'common.labels.contributors' | translate }}:</strong>
+            <osf-contributors-list [contributors]="registrationData().contributors"></osf-contributors-list>
           </div>
 
           <div class="flex gap-2 align-items-baseline">

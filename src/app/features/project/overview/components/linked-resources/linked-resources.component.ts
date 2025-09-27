@@ -8,9 +8,8 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
 
-import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { NodeLinksSelectors } from '@osf/shared/stores';
 
@@ -19,7 +18,7 @@ import { LinkResourceDialogComponent } from '../link-resource-dialog/link-resour
 
 @Component({
   selector: 'osf-linked-resources',
-  imports: [Button, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, RouterLink],
+  imports: [Button, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, ContributorsListComponent],
   templateUrl: './linked-resources.component.html',
   styleUrl: './linked-resources.component.scss',
   providers: [DialogService],

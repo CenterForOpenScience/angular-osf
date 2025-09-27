@@ -31,6 +31,7 @@ import {
   RegistryOverviewSelectors,
 } from '@osf/features/registry/store/registry-overview';
 import {
+  ContributorsListComponent,
   CustomPaginatorComponent,
   IconComponent,
   LoadingSpinnerComponent,
@@ -56,6 +57,7 @@ import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/sha
     RouterLink,
     CustomPaginatorComponent,
     IconComponent,
+    ContributorsListComponent,
   ],
   templateUrl: './view-duplicates.component.html',
   styleUrl: './view-duplicates.component.scss',

@@ -12,6 +12,6 @@ export interface RegistryComponentModel {
   tags: string[];
   isPublic: boolean;
   contributorsCount?: number;
-  contributors?: ContributorModel[];
+  contributors: ContributorModel[];
   registry?: string;
 }

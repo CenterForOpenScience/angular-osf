@@ -9,7 +9,7 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -19,7 +19,11 @@ import {
   PreprintStepperSelectors,
   SubmitPreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { AffiliatedInstitutionsViewComponent, TruncatedTextComponent } from '@shared/components';
+import {
+  AffiliatedInstitutionsViewComponent,
+  ContributorsListComponent,
+  TruncatedTextComponent,
+} from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
@@ -42,7 +46,7 @@ import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores
     AccordionPanel,
     InterpolatePipe,
     AffiliatedInstitutionsViewComponent,
-    RouterLink,
+    ContributorsListComponent,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
