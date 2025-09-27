@@ -326,24 +326,24 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditContributorDialog(): void {
-    const dialogRef = this.dialogService.open(ContributorsDialogComponent, {
-      width: '800px',
-      header: this.translateService.instant('project.metadata.contributors.editContributors'),
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        resourceId: this.resourceId,
-        resourceType: this.resourceType(),
-      },
-    });
-    dialogRef.onClose.pipe(filter((result) => !!result)).subscribe({
-      next: () => {
+    this.dialogService
+      .open(ContributorsDialogComponent, {
+        header: this.translateService.instant('project.metadata.contributors.editContributors'),
+        focusOnShow: false,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        breakpoints: { '768px': '95vw' },
+        data: {
+          resourceId: this.resourceId,
+          resourceType: this.resourceType(),
+        },
+      })
+      .onClose.pipe(filter((result) => !!result))
+      .subscribe(() => {
         this.actions.getResourceMetadata(this.resourceId, this.resourceType());
         this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
-      },
-    });
+      });
   }
 
   openEditTitleDialog(): void {
