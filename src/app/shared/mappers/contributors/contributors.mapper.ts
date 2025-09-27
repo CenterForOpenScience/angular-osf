@@ -16,26 +16,28 @@ export class ContributorsMapper {
       return [];
     }
 
-    return response
-      .filter((contributor) => !contributor?.embeds?.users?.errors)
-      .map((contributor) => this.fromContributorResponse(contributor));
+    return response.map((contributor) => this.fromContributorResponse(contributor));
   }
 
   static fromContributorResponse(response: ContributorDataJsonApi): ContributorModel {
+    const userEmbed = response.embeds.users;
+    const errorMeta = userEmbed?.errors && userEmbed.errors.length > 0 ? userEmbed.errors[0]?.meta : null;
+    const userData = userEmbed?.data;
+
     return {
       id: response.id,
-      userId: response.embeds?.users?.data?.id || '',
       type: response.type,
       isBibliographic: response.attributes.bibliographic,
       isUnregisteredContributor: !!response.attributes.unregistered_contributor,
       isCurator: response.attributes.is_curator,
       permission: response.attributes.permission,
       index: response.attributes.index,
-      fullName: response.embeds?.users?.data?.attributes?.full_name || '',
-      givenName: response.embeds?.users?.data?.attributes?.given_name || '',
-      familyName: response.embeds?.users?.data?.attributes?.family_name || '',
-      education: response.embeds?.users?.data?.attributes?.education || '',
-      employment: response.embeds?.users?.data?.attributes?.employment || '',
+      userId: errorMeta ? '' : userData?.id || '',
+      fullName: errorMeta ? errorMeta?.full_name : userData?.attributes?.full_name || '',
+      givenName: errorMeta ? errorMeta?.given_name : userData?.attributes?.given_name || '',
+      familyName: errorMeta ? errorMeta?.family_name : userData?.attributes?.family_name || '',
+      education: errorMeta ? [] : userData?.attributes?.education || [],
+      employment: errorMeta ? [] : userData?.attributes?.employment || [],
     };
   }
 
