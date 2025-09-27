@@ -28,7 +28,7 @@ import { UserSelectors } from '@core/store/user';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
-  ContributorsListComponent,
+  ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
@@ -44,7 +44,7 @@ import {
 
 @Component({
   selector: 'osf-preprint-contributors',
-  imports: [FormsModule, TableModule, ContributorsListComponent, TranslatePipe, Card, Button, Message],
+  imports: [FormsModule, TableModule, ContributorsTableComponent, TranslatePipe, Card, Button, Message],
   templateUrl: './contributors.component.html',
   styleUrl: './contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

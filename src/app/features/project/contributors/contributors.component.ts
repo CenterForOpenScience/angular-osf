@@ -28,7 +28,7 @@ import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/compon
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
-  ContributorsListComponent,
+  ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
@@ -70,7 +70,7 @@ import { ResourceInfoModel } from './models';
     TranslatePipe,
     FormsModule,
     TableModule,
-    ContributorsListComponent,
+    ContributorsTableComponent,
     ViewOnlyTableComponent,
   ],
   templateUrl: './contributors.component.html',

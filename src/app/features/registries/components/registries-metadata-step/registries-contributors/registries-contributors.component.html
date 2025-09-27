@@ -1,7 +1,7 @@
 <p-card class="w-full" (focusout)="onFocusOut()">
   <h2 class="mb-2">{{ 'project.overview.metadata.contributors' | translate }}</h2>
 
-  <osf-contributors-list
+  <osf-contributors-table
     class="w-full"
     [contributors]="contributors()"
     [isLoading]="isContributorsLoading()"

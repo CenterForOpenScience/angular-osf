@@ -28,7 +28,7 @@ import { UserSelectors } from '@core/store/user';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
-  ContributorsListComponent,
+  ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
@@ -44,7 +44,7 @@ import {
 
 @Component({
   selector: 'osf-registries-contributors',
-  imports: [FormsModule, TableModule, ContributorsListComponent, TranslatePipe, Card, Button],
+  imports: [FormsModule, TableModule, ContributorsTableComponent, TranslatePipe, Card, Button],
   templateUrl: './registries-contributors.component.html',
   styleUrl: './registries-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

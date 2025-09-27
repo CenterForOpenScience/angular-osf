@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributorsListComponent } from '@shared/components/contributors';
+import { ContributorsTableComponent } from '@shared/components/contributors';
 import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 import { ContributorsState, ProjectsState } from '@shared/stores';
@@ -22,7 +22,7 @@ describe.skip('ProjectContributorsStepComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectContributorsStepComponent, MockComponent(ContributorsListComponent), MockPipe(TranslatePipe)],
+      imports: [ProjectContributorsStepComponent, MockComponent(ContributorsTableComponent), MockPipe(TranslatePipe)],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
