@@ -15,7 +15,7 @@ export class LinkedNodesMapper {
       isPublic: apiNode.attributes.public,
       htmlUrl: apiNode.links.html,
       apiUrl: apiNode.links.self,
-      contributors: ContributorsMapper.fromResponse(apiNode.embeds.bibliographic_contributors.data) || [],
+      contributors: ContributorsMapper.getContributors(apiNode.embeds.bibliographic_contributors.data) || [],
     };
   }
 }

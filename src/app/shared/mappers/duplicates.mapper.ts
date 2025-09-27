@@ -16,7 +16,7 @@ export class DuplicatesMapper {
         dateModified: duplicate.attributes.date_modified,
         public: duplicate.attributes.public,
         currentUserPermissions: duplicate.attributes.current_user_permissions,
-        contributors: ContributorsMapper.getContributorShortInfo(duplicate.embeds.bibliographic_contributors.data),
+        contributors: ContributorsMapper.getContributors(duplicate.embeds.bibliographic_contributors.data),
       })),
       totalCount: response.meta.total,
     };

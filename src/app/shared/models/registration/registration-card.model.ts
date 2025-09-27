@@ -9,7 +9,7 @@ export interface RegistrationCard {
   status: RegistryStatus;
   dateCreated: string;
   dateModified: string;
-  contributors: Partial<ContributorModel>[];
+  contributors: ContributorModel[];
   registrationTemplate: string;
   registry: string;
   resources?: Record<string, string>;

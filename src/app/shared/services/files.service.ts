@@ -235,7 +235,7 @@ export class FilesService {
   getResourceContributors(resourceId: string, resourceType: string): Observable<Partial<ContributorModel>[]> {
     return this.jsonApiService
       .get<ContributorsResponseJsonApi>(`${this.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
-      .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
+      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
   patchFileMetadata(data: PatchFileMetadata, fileGuid: string): Observable<OsfFileCustomMetadata> {

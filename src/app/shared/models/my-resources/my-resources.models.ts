@@ -1,4 +1,4 @@
-import { ContributorDataJsonApi, ContributorShortInfoModel, ResponseJsonApi } from '@shared/models';
+import { ContributorDataJsonApi, ContributorModel, ResponseJsonApi } from '@shared/models';
 
 export type MyResourcesItemResponseJsonApi = ResponseJsonApi<MyResourcesItem[]>;
 
@@ -34,5 +34,5 @@ export interface MyResourcesItem {
   dateCreated: string;
   dateModified: string;
   isPublic: boolean;
-  contributors: ContributorShortInfoModel[];
+  contributors: ContributorModel[];
 }
