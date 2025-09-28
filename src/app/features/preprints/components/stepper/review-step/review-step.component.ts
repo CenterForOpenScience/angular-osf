@@ -11,7 +11,7 @@ import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
-import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
+import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   FetchLicenses,
@@ -59,7 +59,9 @@ export class ReviewStepComponent implements OnInit {
     submitPreprint: SubmitPreprint,
     fetchResourceInstitutions: FetchResourceInstitutions,
   });
+
   provider = input.required<PreprintProviderDetails | undefined>();
+
   preprint = select(PreprintStepperSelectors.getPreprint);
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
@@ -83,16 +85,12 @@ export class ReviewStepComponent implements OnInit {
   }
 
   submitPreprint() {
-    if (this.preprint()?.reviewsState !== ReviewsState.Accepted) {
-      this.actions.submitPreprint().subscribe({
-        complete: () => {
-          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
-          this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
-        },
-      });
-    } else {
-      this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
-    }
+    this.actions.submitPreprint().subscribe({
+      complete: () => {
+        this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
+        this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
+      },
+    });
   }
 
   cancelSubmission() {
