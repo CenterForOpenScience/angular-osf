@@ -1,10 +1,9 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { SortEvent } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
@@ -25,7 +24,7 @@ import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
-import { ProjectRedirectDialogService } from '@osf/shared/services';
+import { CustomDialogService, ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
 @Component({
@@ -41,14 +40,12 @@ import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shar
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
-  providers: [DialogService],
 })
 export class DashboardComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly translateService = inject(TranslateService);
-  private readonly dialogService = inject(DialogService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
 
   readonly isMedium = toSignal(inject(IS_MEDIUM));
@@ -70,11 +67,8 @@ export class DashboardComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
-  readonly existsProjects = computed(() => {
-    return this.projects().length || !!this.searchControl.value?.length;
-  });
+  readonly existsProjects = computed(() => this.projects().length || !!this.searchControl.value?.length);
 
-  dialogRef: DynamicDialogRef | null = null;
   emailAddress = '';
 
   constructor() {
@@ -194,15 +188,8 @@ export class DashboardComponent implements OnInit {
   createProject(): void {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
-    this.dialogService
-      .open(CreateProjectDialogComponent, {
-        width: dialogWidth,
-        focusOnShow: false,
-        header: this.translateService.instant('myProjects.header.createProject'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
-      })
+    this.customDialogService
+      .open(CreateProjectDialogComponent, { header: 'myProjects.header.createProject', width: dialogWidth })
       .onClose.pipe(
         filter((result) => result?.project.id),
         tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),

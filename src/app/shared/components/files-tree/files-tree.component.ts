@@ -1,10 +1,9 @@
 import { select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
@@ -38,7 +37,7 @@ import { FileMenuType } from '@osf/shared/enums';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { FileLabelModel, FileMenuAction, FileMenuFlags, FilesTreeActions, OsfFile } from '@osf/shared/models';
 import { FileSizePipe } from '@osf/shared/pipes';
-import { CustomConfirmationService, FilesService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { CurrentResourceSelectors } from '@shared/stores';
 
@@ -72,8 +71,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly toastService = inject(ToastService);
   readonly route = inject(ActivatedRoute);
   readonly customConfirmationService = inject(CustomConfirmationService);
-  readonly dialogService = inject(DialogService);
-  readonly translateService = inject(TranslateService);
+  readonly customDialogService = inject(CustomDialogService);
   readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
   readonly clipboard = inject(Clipboard);
@@ -314,14 +312,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   confirmRename(file: OsfFile): void {
-    this.dialogService
+    this.customDialogService
       .open(RenameFileDialogComponent, {
+        header: 'files.dialogs.renameFile.title',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('files.dialogs.renameFile.title'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: {
           currentName: file.name,
         },
@@ -364,19 +358,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       .setMoveFileCurrentFolder?.(this.currentFolder())
       .pipe(take(1))
       .subscribe(() => {
-        const header =
-          action === 'move'
-            ? this.translateService.instant('files.dialogs.moveFile.title')
-            : this.translateService.instant('files.dialogs.copyFile.title');
+        const header = action === 'move' ? 'files.dialogs.moveFile.title' : 'files.dialogs.copyFile.title';
 
-        this.dialogService
+        this.customDialogService
           .open(MoveFileDialogComponent, {
+            header,
             width: '552px',
-            focusOnShow: false,
-            header: header,
-            closeOnEscape: true,
-            modal: true,
-            closable: true,
             data: {
               file: file,
               resourceId: this.resourceId(),

@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Menu } from 'primeng/menu';
 import { PaginatorState } from 'primeng/paginator';
 
@@ -41,6 +40,7 @@ import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { IS_SMALL } from '@osf/shared/helpers';
 import { ToolbarResource } from '@osf/shared/models';
 import { Duplicate } from '@osf/shared/models/duplicates';
+import { CustomDialogService } from '@osf/shared/services';
 import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
 
 @Component({
@@ -60,11 +60,9 @@ import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/sha
   templateUrl: './view-duplicates.component.html',
   styleUrl: './view-duplicates.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class ViewDuplicatesComponent {
-  private dialogService = inject(DialogService);
-  private translateService = inject(TranslateService);
+  private customDialogService = inject(CustomDialogService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -178,21 +176,17 @@ export class ViewDuplicatesComponent {
     const dialogWidth = !this.isSmall() ? '95vw' : '450px';
 
     if (toolbarResource) {
-      this.dialogService
+      this.customDialogService
         .open(ForkDialogComponent, {
+          header: 'project.overview.dialog.fork.headerProject',
           width: dialogWidth,
-          focusOnShow: false,
-          header: this.translateService.instant('project.overview.dialog.fork.headerProject'),
-          closeOnEscape: true,
-          modal: true,
-          closable: true,
           data: {
             resource: toolbarResource,
             resourceType: this.resourceType(),
           },
         })
         .onClose.subscribe((result) => {
-          if (result.success) {
+          if (result?.success) {
             const resource = this.currentResource();
             if (resource) {
               this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
@@ -220,14 +214,10 @@ export class ViewDuplicatesComponent {
   private handleDeleteFork(id: string): void {
     const dialogWidth = !this.isSmall() ? '95vw' : '650px';
 
-    this.dialogService
+    this.customDialogService
       .open(DeleteComponentDialogComponent, {
+        header: 'project.overview.dialog.deleteComponent.header',
         width: dialogWidth,
-        focusOnShow: false,
-        header: this.translateService.instant('project.overview.dialog.deleteComponent.header'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: {
           componentId: id,
           resourceType: this.resourceType(),
@@ -237,7 +227,7 @@ export class ViewDuplicatesComponent {
         },
       })
       .onClose.subscribe((result) => {
-        if (result && result.success) {
+        if (result?.success) {
           const resource = this.currentResource();
           if (resource) {
             this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);

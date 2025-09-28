@@ -1,10 +1,9 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
 import { TableModule } from 'primeng/table';
 
 import { filter, forkJoin, map, of } from 'rxjs';
@@ -33,7 +32,7 @@ import {
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
   ContributorsSelectors,
@@ -48,14 +47,12 @@ import {
   templateUrl: './registries-contributors.component.html',
   styleUrl: './registries-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class RegistriesContributorsComponent implements OnInit {
   control = input.required<FormControl>();
 
   readonly destroyRef = inject(DestroyRef);
-  readonly translateService = inject(TranslateService);
-  readonly dialogService = inject(DialogService);
+  readonly customDialogService = inject(CustomDialogService);
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
 
@@ -128,15 +125,11 @@ export class RegistriesContributorsComponent implements OnInit {
   openAddContributorDialog() {
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
 
-    this.dialogService
+    this.customDialogService
       .open(AddContributorDialogComponent, {
+        header: 'project.contributors.addDialog.addRegisteredContributor',
         width: '448px',
         data: addedContributorIds,
-        focusOnShow: false,
-        header: this.translateService.instant('project.contributors.addDialog.addRegisteredContributor'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),
@@ -158,14 +151,10 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   openAddUnregisteredContributorDialog() {
-    this.dialogService
+    this.customDialogService
       .open(AddUnregisteredContributorDialogComponent, {
+        header: 'project.contributors.addDialog.addUnregisteredContributor',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('project.contributors.addDialog.addUnregisteredContributor'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),

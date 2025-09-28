@@ -1,7 +1,6 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { TitleCasePipe } from '@angular/common';
@@ -14,7 +13,7 @@ import { HeaderStyleHelper } from '@osf/shared/helpers';
 import { RegistryProviderDetails } from '@osf/shared/models';
 import { SearchInputComponent } from '@shared/components';
 import { DecodeHtmlPipe } from '@shared/pipes';
-import { BrandService } from '@shared/services';
+import { BrandService, CustomDialogService } from '@shared/services';
 
 @Component({
   selector: 'osf-registry-provider-hero',
@@ -25,8 +24,7 @@ import { BrandService } from '@shared/services';
 })
 export class RegistryProviderHeroComponent implements OnDestroy {
   private readonly router = inject(Router);
-  private readonly translateService = inject(TranslateService);
-  private readonly dialogService = inject(DialogService);
+  private readonly customDialogService = inject(CustomDialogService);
 
   private readonly WHITE = '#ffffff';
   searchControl = input<FormControl>(new FormControl());
@@ -59,13 +57,7 @@ export class RegistryProviderHeroComponent implements OnDestroy {
   }
 
   openHelpDialog() {
-    this.dialogService.open(PreprintsHelpDialogComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('preprints.helpDialog.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.customDialogService.open(PreprintsHelpDialogComponent, { header: 'preprints.helpDialog.header' });
   }
 
   navigateToCreatePage() {
