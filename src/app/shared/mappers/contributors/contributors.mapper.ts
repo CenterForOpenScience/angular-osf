@@ -55,9 +55,7 @@ export class ContributorsMapper {
     }));
   }
 
-  static fromUsersWithPaginationGetResponse(
-    response: ResponseJsonApi<UserDataJsonApi[]>
-  ): PaginatedData<ContributorAddModel[]> {
+  static getPaginatedUsers(response: ResponseJsonApi<UserDataJsonApi[]>): PaginatedData<ContributorAddModel[]> {
     return {
       data: response.data.map(
         (user) =>

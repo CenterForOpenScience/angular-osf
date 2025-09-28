@@ -60,7 +60,7 @@ export class ContributorsService {
 
     return this.jsonApiService
       .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
-      .pipe(map((response) => ContributorsMapper.fromUsersWithPaginationGetResponse(response)));
+      .pipe(map((response) => ContributorsMapper.getPaginatedUsers(response)));
   }
 
   addContributor(

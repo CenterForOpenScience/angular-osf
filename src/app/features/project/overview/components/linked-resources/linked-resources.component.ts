@@ -50,7 +50,7 @@ export class LinkedResourcesComponent {
   openDeleteResourceModal(resourceId: string): void {
     const dialogWidth = this.isMedium() ? '650px' : '95vw';
 
-    const currentLink = this.getCurrentResourceNodeLink(resourceId);
+    const currentLink = this.linkedResources().find((resource) => resource.id === resourceId);
 
     if (!currentLink) return;
 
@@ -65,9 +65,5 @@ export class LinkedResourcesComponent {
         currentLink,
       },
     });
-  }
-
-  private getCurrentResourceNodeLink(resourceId: string) {
-    return this.linkedResources().find((resource) => resource.id === resourceId);
   }
 }
