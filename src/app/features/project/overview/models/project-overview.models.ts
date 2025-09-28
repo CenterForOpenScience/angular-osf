@@ -12,15 +12,6 @@ import {
   MetaAnonymousJsonApi,
 } from '@osf/shared/models';
 
-export interface ProjectOverviewContributor {
-  familyName: string;
-  fullName: string;
-  givenName: string;
-  middleName: string;
-  id: string;
-  type: string;
-}
-
 export interface ProjectOverview {
   id: string;
   type: string;

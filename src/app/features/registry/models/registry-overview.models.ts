@@ -1,4 +1,3 @@
-import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import {
   ContributorModel,
   Identifier,
@@ -72,7 +71,7 @@ export interface RegistrationOverviewModel extends RegistrationNodeModel {
   associatedProjectId: string;
   citation: string;
   provider?: ProviderShortInfoModel;
-  contributors: ProjectOverviewContributor[];
+  contributors: ContributorModel[];
   license?: LicenseModel;
   identifiers?: Identifier[];
   schemaResponses: SchemaResponse[];
