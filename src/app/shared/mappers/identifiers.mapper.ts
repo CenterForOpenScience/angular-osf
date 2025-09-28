@@ -2,7 +2,7 @@ import { Identifier, IdentifiersJsonApiData, ResponseJsonApi } from '@shared/mod
 
 export class IdentifiersMapper {
   static fromJsonApi(response: ResponseJsonApi<IdentifiersJsonApiData[]>): Identifier[] {
-    return response.data.map((rawIdentifier) => {
+    return response?.data.map((rawIdentifier) => {
       return {
         category: rawIdentifier.attributes.category,
         value: rawIdentifier.attributes.value,

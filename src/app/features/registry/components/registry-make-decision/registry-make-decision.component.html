@@ -8,6 +8,9 @@
         @case (SubmissionReviewStatus.Accepted) {
           <span class="capitalize">{{ 'moderation.submissionReview.accepted' | translate }}</span>
         }
+        @case (SubmissionReviewStatus.PendingWithdrawal) {
+          <span class="capitalize">{{ 'moderation.submissionReview.withdrawalRequested' | translate }}</span>
+        }
       }
       <span>{{ action.dateModified | dateAgo }}</span>
       <span>{{ 'moderation.submissionReview.by' | translate }}</span>
@@ -20,20 +23,21 @@
   }
 
   <form [formGroup]="requestForm" class="flex flex-column gap-3">
-    @if (isPendingModeration || isPendingReview) {
+    @if (isPendingModeration || isPendingReview || isPendingWithdrawal) {
       <div class="flex flex-column gap-2">
         <div class="flex gap-2">
           <p-radioButton
             [formControlName]="ModerationDecisionFormControls.Action"
             inputId="accept-action"
-            [value]="
-              isPendingReview ? ReviewActionTrigger.AcceptSubmission : SchemaResponseActionTrigger.AcceptRevision
-            "
+            [value]="acceptValue"
           ></p-radioButton>
           <label for="accept-action" class="m-0 flex gap-2 flex-column">
             @if (isPendingReview) {
               <p class="font-bold">{{ 'moderation.makeDecision.acceptRequest' | translate }}</p>
               <p>{{ 'moderation.makeDecision.acceptRequestMessage' | translate }}</p>
+            } @else if (isPendingWithdrawal) {
+              <p class="font-bold">{{ 'moderation.makeDecision.acceptWithdrawal' | translate }}</p>
+              <p>{{ 'moderation.makeDecision.acceptWithdrawalMessage' | translate }}</p>
             } @else {
               <p class="font-bold">{{ 'moderation.makeDecision.acceptUpdate' | translate }}</p>
               <p>{{ 'moderation.makeDecision.acceptUpdateMessage' | translate }}</p>
@@ -44,14 +48,15 @@
           <p-radioButton
             [formControlName]="ModerationDecisionFormControls.Action"
             inputId="reject-action"
-            [value]="
-              isPendingReview ? ReviewActionTrigger.RejectSubmission : SchemaResponseActionTrigger.RejectRevision
-            "
+            [value]="rejectValue"
           ></p-radioButton>
           <label for="reject-action" class="m-0 flex gap-2 flex-column">
             @if (isPendingReview) {
               <p class="font-bold">{{ 'moderation.makeDecision.rejectRequest' | translate }}</p>
               <p>{{ 'moderation.makeDecision.rejectRequestMessage' | translate }}</p>
+            } @else if (isPendingWithdrawal) {
+              <p class="font-bold">{{ 'moderation.makeDecision.rejectWithdrawal' | translate }}</p>
+              <p>{{ 'moderation.makeDecision.rejectWithdrawalMessage' | translate }}</p>
             } @else {
               <p class="font-bold">{{ 'moderation.makeDecision.rejectUpdate' | translate }}</p>
               <p>{{ 'moderation.makeDecision.rejectUpdateMessage' | translate }}</p>
