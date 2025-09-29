@@ -93,6 +93,17 @@ describe('Component: Files', () => {
               selector: FilesSelectors.getConfiguredStorageAddons,
               value: getConfiguredAddonsMappedData(),
             },
+            {
+              selector: FilesSelectors.getProvider,
+              value: 'osfstorage',
+            },
+            {
+              selector: FilesSelectors.getStorageSupportedFeatures,
+              value: {
+                osfstorage: ['AddUpdateFiles', 'DownloadAsZip', 'DeleteFiles', 'CopyInto'],
+                googledrive: ['AddUpdateFiles', 'DownloadAsZip', 'DeleteFiles', 'CopyInto'],
+              },
+            },
           ],
         }),
       ],

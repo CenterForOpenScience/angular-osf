@@ -5,6 +5,7 @@ export { BrandService } from './brand.service';
 export { CollectionsService } from './collections.service';
 export { ContributorsService } from './contributors.service';
 export { CustomConfirmationService } from './custom-confirmation.service';
+export { CustomDialogService } from './custom-dialog.service';
 export { DuplicatesService } from './duplicates.service';
 export { FilesService } from './files.service';
 export { GlobalSearchService } from './global-search.service';

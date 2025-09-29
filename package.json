@@ -53,7 +53,7 @@
     "ace-builds": "^1.42.0",
     "angular-google-tag-manager": "^1.11.0",
     "cedar-artifact-viewer": "^0.9.5",
-    "cedar-embeddable-editor": "^1.5.0",
+    "cedar-embeddable-editor": "1.2.2",
     "chart.js": "^4.4.9",
     "diff": "^8.0.2",
     "markdown-it": "^14.1.0",

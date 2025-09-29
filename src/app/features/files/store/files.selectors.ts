@@ -90,8 +90,8 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static getContributors(state: FilesStateModel): Partial<ContributorModel>[] | null {
-    return state.contributors.data;
+  static getContributors(state: FilesStateModel): ContributorModel[] {
+    return state.contributors.data || [];
   }
 
   @Selector([FilesState])

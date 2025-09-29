@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { ButtonModule } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
@@ -31,10 +30,10 @@ import {
   CollectionsModerationSelectors,
   GetSubmissionsReviewActions,
 } from '@osf/features/moderation/store/collections-moderation';
-import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { Mode, ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
-import { MetaTagsService, ToastService } from '@osf/shared/services';
+import { CustomDialogService, MetaTagsService, ToastService } from '@osf/shared/services';
 import {
   ClearCollections,
   ClearWiki,
@@ -100,7 +99,7 @@ import {
     ViewOnlyLinkMessageComponent,
     ViewOnlyLinkMessageComponent,
   ],
-  providers: [DialogService, DatePipe],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectOverviewComponent implements OnInit {
@@ -110,8 +109,7 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly dataciteService = inject(DataciteService);
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
@@ -129,6 +127,8 @@ export class ProjectOverviewComponent implements OnInit {
   areSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
   currentProject = select(ProjectOverviewSelectors.getProject);
   isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
+  hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -174,14 +174,6 @@ export class ProjectOverviewComponent implements OnInit {
 
   userPermissions = computed(() => this.currentProject()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
-
-  isAdmin = computed(() => {
-    return this.userPermissions().includes(UserPermissions.Admin);
-  });
-
-  canWrite = computed(() => {
-    return this.userPermissions().includes(UserPermissions.Write);
-  });
 
   resourceOverview = computed(() => {
     const project = this.currentProject();
@@ -297,14 +289,10 @@ export class ProjectOverviewComponent implements OnInit {
   handleOpenMakeDecisionDialog() {
     const dialogWidth = this.isMobile() ? '95vw' : '600px';
 
-    this.dialogService
+    this.customDialogService
       .open(MakeDecisionDialogComponent, {
+        header: 'moderation.makeDecision.header',
         width: dialogWidth,
-        focusOnShow: false,
-        header: this.translateService.instant('moderation.makeDecision.header'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {

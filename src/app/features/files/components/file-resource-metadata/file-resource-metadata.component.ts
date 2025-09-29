@@ -6,15 +6,16 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
+import { ContributorsListComponent } from '@osf/shared/components';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
 
 import { FilesSelectors } from '../../store';
 
 @Component({
   selector: 'osf-file-resource-metadata',
-  imports: [DatePipe, TranslatePipe, Skeleton, RouterLink],
+  imports: [DatePipe, TranslatePipe, Skeleton, ContributorsListComponent],
   templateUrl: './file-resource-metadata.component.html',
   styleUrl: './file-resource-metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

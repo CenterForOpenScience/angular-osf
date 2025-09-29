@@ -11,8 +11,6 @@ import {
   CitationStyle,
   CitationStyleJsonApi,
   CustomCitationPayload,
-  DefaultCitation,
-  DefaultCitationJsonApi,
   JsonApiResponse,
   StyledCitation,
   StyledCitationJsonApi,
@@ -33,15 +31,15 @@ export class CitationsService {
 
   private readonly urlMap = new Map<ResourceType, string>([[ResourceType.Preprint, 'preprints']]);
 
-  fetchDefaultCitation(
+  fetchStyledCitationById(
     resourceType: ResourceType | string,
     resourceId: string,
     citationId: string
-  ): Observable<DefaultCitation> {
+  ): Observable<StyledCitation> {
     const baseUrl = this.getBaseCitationUrl(resourceType, resourceId);
     return this.jsonApiService
-      .get<JsonApiResponse<DefaultCitationJsonApi, null>>(`${baseUrl}/${citationId}/`)
-      .pipe(map((response) => CitationsMapper.fromGetDefaultResponse(response.data)));
+      .get<JsonApiResponse<StyledCitationJsonApi, null>>(`${baseUrl}/${citationId}/`)
+      .pipe(map((response) => CitationsMapper.fromGetStyledCitationResponse(response.data)));
   }
 
   fetchCitationStyles(searchQuery?: string): Observable<CitationStyle[]> {
@@ -58,18 +56,6 @@ export class CitationsService {
     return this.jsonApiService.patch<unknown>(`${this.apiUrl}/${payload.type}/${payload.id}/`, citationData);
   }
 
-  fetchStyledCitation(
-    resourceType: ResourceType | string,
-    resourceId: string,
-    citationStyle: string
-  ): Observable<StyledCitation> {
-    const baseUrl = this.getBaseCitationUrl(resourceType, resourceId);
-
-    return this.jsonApiService
-      .get<JsonApiResponse<StyledCitationJsonApi, null>>(`${baseUrl}/${citationStyle}/`)
-      .pipe(map((response) => CitationsMapper.fromGetStyledCitationResponse(response.data)));
-  }
-
   private getBaseCitationUrl(resourceType: ResourceType | string, resourceId: string): string {
     let resourceTypeString;
 
@@ -80,5 +66,13 @@ export class CitationsService {
     }
 
     return `${this.apiUrl}/${resourceTypeString}/${resourceId}/citation`;
+  }
+
+  fetchCitationStylesFromProvider(resourceType: ResourceType, providerId: string) {
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<CitationStyleJsonApi[], null>
+      >(`${this.apiUrl}/providers/${this.urlMap.get(resourceType)}/${providerId}/citation_styles/`)
+      .pipe(map((response) => CitationsMapper.fromGetCitationStylesResponse(response.data)));
   }
 }

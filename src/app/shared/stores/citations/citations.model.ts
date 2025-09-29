@@ -1,7 +1,7 @@
-import { AsyncStateModel, CitationStyle, DefaultCitation, StyledCitation } from '@osf/shared/models';
+import { AsyncStateModel, CitationStyle, StyledCitation } from '@osf/shared/models';
 
 export interface CitationsStateModel {
-  defaultCitations: AsyncStateModel<DefaultCitation[]>;
+  defaultCitations: AsyncStateModel<StyledCitation[]>;
   citationStyles: AsyncStateModel<CitationStyle[]>;
   styledCitation: AsyncStateModel<StyledCitation | null>;
   customCitation: AsyncStateModel<string>;

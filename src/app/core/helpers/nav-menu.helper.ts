@@ -1,5 +1,4 @@
-import { MenuItem } from 'primeng/api';
-
+import { UserPermissions } from '@osf/shared/enums';
 import { getViewOnlyParamFromUrl } from '@osf/shared/helpers';
 
 import {
@@ -11,12 +10,21 @@ import {
   VIEW_ONLY_REGISTRY_MENU_ITEMS,
 } from '../constants';
 import { RouteContext } from '../models';
+import { CustomMenuItem } from '../models/custom-menu-item.model';
 
-export function filterMenuItems(items: MenuItem[], isAuthenticated: boolean): MenuItem[] {
+function shouldShowMenuItem(menuItem: CustomMenuItem, permissions: UserPermissions[] | undefined): boolean {
+  if (!menuItem.requiredPermission) {
+    return true;
+  }
+
+  return permissions?.length ? permissions.includes(menuItem.requiredPermission) : false;
+}
+
+export function filterMenuItems(items: CustomMenuItem[], isAuthenticated: boolean): CustomMenuItem[] {
   return items.map((item) => {
     const isAuthenticatedItem = AUTHENTICATED_MENU_ITEMS.includes(item.id || '');
 
-    let updatedItem: MenuItem = { ...item, visible: isAuthenticatedItem ? isAuthenticated : item.visible };
+    let updatedItem: CustomMenuItem = { ...item, visible: isAuthenticatedItem ? isAuthenticated : item.visible };
 
     if (item.id === 'home') {
       updatedItem = {
@@ -42,7 +50,7 @@ export function filterMenuItems(items: MenuItem[], isAuthenticated: boolean): Me
   });
 }
 
-export function updateMenuItems(menuItems: MenuItem[], ctx: RouteContext): MenuItem[] {
+export function updateMenuItems(menuItems: CustomMenuItem[], ctx: RouteContext): CustomMenuItem[] {
   return menuItems.map((item) => {
     if (item.id === 'my-resources') {
       return updateMyResourcesMenuItem(item, ctx);
@@ -68,7 +76,7 @@ export function updateMenuItems(menuItems: MenuItem[], ctx: RouteContext): MenuI
   });
 }
 
-function updateMyResourcesMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
+function updateMyResourcesMenuItem(item: CustomMenuItem, ctx: RouteContext): CustomMenuItem {
   const currentUrl = ctx.currentUrl || '';
   const isMyResourcesActive =
     currentUrl.startsWith('/my-projects') ||
@@ -81,7 +89,7 @@ function updateMyResourcesMenuItem(item: MenuItem, ctx: RouteContext): MenuItem 
   };
 }
 
-function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
+function updateProjectMenuItem(item: CustomMenuItem, ctx: RouteContext): CustomMenuItem {
   const hasProject = ctx.isProject && !!ctx.resourceId;
   const items = (item.items || []).map((subItem) => {
     if (subItem.id === 'project-details') {
@@ -94,21 +102,19 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
         }
 
         menuItems = menuItems.map((menuItem) => {
+          const isVisible = shouldShowMenuItem(menuItem, ctx.permissions);
+
           if (menuItem.id === 'project-wiki') {
             return {
               ...menuItem,
-              visible: ctx.wikiPageVisible,
+              visible: ctx.wikiPageVisible && isVisible,
             };
           }
 
-          if (menuItem.id === 'project-contributors' || menuItem.id === 'project-settings') {
-            return {
-              ...menuItem,
-              visible: !!ctx.permissions?.length,
-            };
-          }
-
-          return menuItem;
+          return {
+            ...menuItem,
+            visible: isVisible,
+          };
         });
 
         return {
@@ -130,7 +136,7 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
   return { ...item, visible: hasProject, expanded: hasProject, items };
 }
 
-function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
+function updateRegistryMenuItem(item: CustomMenuItem, ctx: RouteContext): CustomMenuItem {
   const hasRegistry = ctx.isRegistry && !!ctx.resourceId;
   const items = (item.items || []).map((subItem) => {
     if (subItem.id === 'registry-details') {
@@ -142,18 +148,20 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           menuItems = REGISTRATION_MENU_ITEMS.filter((menuItem) => allowedViewOnlyItems.includes(menuItem.id || ''));
         }
 
+        menuItems = menuItems.map((menuItem) => {
+          const isVisible = shouldShowMenuItem(menuItem, ctx.permissions);
+
+          return {
+            ...menuItem,
+            visible: isVisible,
+          };
+        });
+
         return {
           ...subItem,
           visible: true,
           expanded: true,
           items: menuItems.map((menuItem) => {
-            if (menuItem.id === 'registration-contributors') {
-              return {
-                ...menuItem,
-                visible: !!ctx.permissions?.length,
-              };
-            }
-
             return {
               ...menuItem,
               routerLink: [ctx.resourceId as string, menuItem.routerLink],
@@ -179,7 +187,7 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
   return { ...item, expanded: ctx.isRegistry, items };
 }
 
-function updatePreprintMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
+function updatePreprintMenuItem(item: CustomMenuItem, ctx: RouteContext): CustomMenuItem {
   const hasPreprint = ctx.isPreprint && !!ctx.resourceId;
   const items = (item.items || []).map((subItem) => {
     if (subItem.id === 'preprints-details') {
@@ -206,7 +214,7 @@ function updatePreprintMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
   return { ...item, expanded: ctx.isPreprint, items };
 }
 
-function updateCollectionMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
+function updateCollectionMenuItem(item: CustomMenuItem, ctx: RouteContext): CustomMenuItem {
   const isCollections = ctx.isCollections;
 
   const items = (item.items || []).map((subItem) => {

@@ -5,7 +5,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import {
@@ -54,7 +53,7 @@ import { AddonDialogService } from '../../services/addon-dialog.service';
   ],
   templateUrl: './configure-addon.component.html',
   styleUrl: './configure-addon.component.scss',
-  providers: [DialogService, AddonDialogService],
+  providers: [AddonDialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfigureAddonComponent implements OnInit {

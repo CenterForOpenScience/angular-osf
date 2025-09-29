@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <osf-contributors-list
+  <osf-contributors-table
     class="w-full"
     [contributors]="contributors()"
     [isLoading]="isContributorsLoading()"
@@ -67,7 +67,7 @@
     [currentUserId]="currentUser()?.id"
     [showCurator]="true"
     (remove)="removeContributor($event)"
-  ></osf-contributors-list>
+  ></osf-contributors-table>
 
   @if (hasChanges) {
     <div class="flex gap-2 mt-6 w-full">

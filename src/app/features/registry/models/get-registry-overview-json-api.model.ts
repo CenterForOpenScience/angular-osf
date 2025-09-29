@@ -1,6 +1,7 @@
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import {
   ApiData,
+  ContributorDataJsonApi,
   IdentifiersJsonApiData,
   JsonApiResponseWithMeta,
   LicenseDataJsonApi,
@@ -73,22 +74,7 @@ export type RegistrationQuestions = Record<string, string | string[] | { file_id
 
 export interface RegistryOverviewJsonApiEmbed {
   bibliographic_contributors: {
-    data: {
-      embeds: {
-        users: {
-          data: {
-            attributes: {
-              family_name: string;
-              full_name: string;
-              given_name: string;
-              middle_names: string;
-            };
-            id: string;
-            type: string;
-          };
-        };
-      };
-    }[];
+    data: ContributorDataJsonApi[];
   };
   license: {
     data: LicenseDataJsonApi;

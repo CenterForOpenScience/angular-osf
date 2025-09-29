@@ -9,7 +9,7 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -19,7 +19,11 @@ import {
   PreprintStepperSelectors,
   SubmitPreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { AffiliatedInstitutionsViewComponent, TruncatedTextComponent } from '@shared/components';
+import {
+  AffiliatedInstitutionsViewComponent,
+  ContributorsListComponent,
+  TruncatedTextComponent,
+} from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
@@ -42,7 +46,7 @@ import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores
     AccordionPanel,
     InterpolatePipe,
     AffiliatedInstitutionsViewComponent,
-    RouterLink,
+    ContributorsListComponent,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
@@ -59,7 +63,9 @@ export class ReviewStepComponent implements OnInit {
     submitPreprint: SubmitPreprint,
     fetchResourceInstitutions: FetchResourceInstitutions,
   });
+
   provider = input.required<PreprintProviderDetails | undefined>();
+
   preprint = select(PreprintStepperSelectors.getPreprint);
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
@@ -92,6 +98,7 @@ export class ReviewStepComponent implements OnInit {
       });
     } else {
       this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
+      this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
     }
   }
 

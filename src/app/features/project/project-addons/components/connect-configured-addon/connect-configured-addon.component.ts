@@ -4,7 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
@@ -65,7 +65,7 @@ import { AddonDialogService } from '../../services';
     DynamicDialogModule,
   ],
   templateUrl: './connect-configured-addon.component.html',
-  providers: [RadioButtonModule, DialogService, AddonDialogService],
+  providers: [AddonDialogService],
   styleUrl: './connect-configured-addon.component.scss',
 })
 export class ConnectConfiguredAddonComponent {

@@ -151,6 +151,10 @@ export class ReusableFilterComponent {
     }
   }
 
+  onOptionChanged(filter: DiscoverableFilter, filterOption: FilterOption | null): void {
+    this.filterOptionChanged.emit({ filter, filterOption });
+  }
+
   private scrollPanelIntoView(key: string) {
     of(key)
       .pipe(delay(this.SCROLL_DELAY_MS), takeUntilDestroyed(this.destroyRef))
@@ -174,10 +178,6 @@ export class ReusableFilterComponent {
           }
         },
       });
-  }
-
-  onOptionChanged(filter: DiscoverableFilter, filterOption: FilterOption | null): void {
-    this.filterOptionChanged.emit({ filter, filterOption });
   }
 
   onFilterSearch(filter: DiscoverableFilter, searchText: string): void {

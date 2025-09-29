@@ -5,9 +5,13 @@ import { Card } from 'primeng/card';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
-import { DataResourcesComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
+import {
+  ContributorsListComponent,
+  DataResourcesComponent,
+  IconComponent,
+  TruncatedTextComponent,
+} from '@osf/shared/components';
 import { RevisionReviewStates } from '@osf/shared/enums';
 
 import { LinkedNode, LinkedRegistration, RegistryComponentModel } from '../../models';
@@ -22,7 +26,7 @@ import { LinkedNode, LinkedRegistration, RegistryComponentModel } from '../../mo
     DataResourcesComponent,
     TruncatedTextComponent,
     IconComponent,
-    RouterLink,
+    ContributorsListComponent,
   ],
   templateUrl: './registration-links-card.component.html',
   styleUrl: './registration-links-card.component.scss',

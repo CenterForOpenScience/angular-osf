@@ -2,8 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { DialogService } from 'primeng/dynamicdialog';
-
 import { ChangeDetectionStrategy, Component, effect } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -39,7 +37,6 @@ import { GetAccountSettings, GetExternalIdentities, GetUserInstitutions } from '
     AffiliatedInstitutionsComponent,
     TranslatePipe,
   ],
-  providers: [DialogService],
   templateUrl: './account-settings.component.html',
   styleUrl: './account-settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

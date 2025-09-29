@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { filter } from 'rxjs';
 
@@ -22,7 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserSelectors } from '@core/store/user';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
-import { ToastService } from '@osf/shared/services';
+import { CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   FetchResources,
   FetchResourcesByLink,
@@ -49,13 +48,11 @@ import { InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } fro
   templateUrl: './institutions-projects.component.html',
   styleUrl: './institutions-projects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
-  private dialogService = inject(DialogService);
+  private customDialogService = inject(CustomDialogService);
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
-  private translate = inject(TranslateService);
 
   private actions = createDispatchMap({
     sendUserMessage: SendUserMessage,
@@ -137,14 +134,10 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.dialogService
+    this.customDialogService
       .open(ContactDialogComponent, {
+        header: 'adminInstitutions.institutionUsers.sendEmail',
         width: '448px',
-        focusOnShow: false,
-        header: this.translate.instant('adminInstitutions.institutionUsers.sendEmail'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: this.currentUser()?.fullName,
       })
       .onClose.pipe(

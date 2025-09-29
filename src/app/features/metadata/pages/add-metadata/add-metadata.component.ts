@@ -78,7 +78,6 @@ export class AddMetadataComponent implements OnInit {
       if (!records || !cedarTemplatesData) {
         return;
       }
-
       if (recordId) {
         const existingRecord = records.find((record) => {
           return record.id === recordId;

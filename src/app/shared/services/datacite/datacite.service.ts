@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { Identifier, IdentifiersJsonApiResponse } from '@osf/shared/models';
+import { Identifier, IdentifiersResponseJsonApi } from '@osf/shared/models';
 import { DataciteEvent } from '@osf/shared/models/datacite/datacite-event.enum';
 
 @Injectable({
@@ -57,7 +57,7 @@ export class DataciteService {
 
   private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
     const url = `${this.apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`;
-    return this.http.get<IdentifiersJsonApiResponse>(url).pipe(
+    return this.http.get<IdentifiersResponseJsonApi>(url).pipe(
       map((item) => ({
         identifiers: item.data.map<Identifier>((identifierData) => ({
           id: identifierData.id,

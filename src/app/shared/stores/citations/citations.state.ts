@@ -1,6 +1,6 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, forkJoin, Observable, tap } from 'rxjs';
+import { catchError, forkJoin, Observable, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -10,6 +10,7 @@ import { CitationsService } from '@osf/shared/services/citations.service';
 
 import {
   ClearStyledCitation,
+  FetchDefaultProviderCitationStyles,
   GetCitationStyles,
   GetDefaultCitations,
   GetStyledCitation,
@@ -37,7 +38,7 @@ export class CitationsState {
     });
 
     const citationRequests = Object.values(CitationTypes).map((citationType) =>
-      this.citationsService.fetchDefaultCitation(action.resourceType, action.resourceId, citationType)
+      this.citationsService.fetchStyledCitationById(action.resourceType, action.resourceId, citationType)
     );
 
     return forkJoin(citationRequests).pipe(
@@ -45,6 +46,51 @@ export class CitationsState {
         ctx.patchState({
           defaultCitations: {
             data: citations,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'defaultCitations', error))
+    );
+  }
+
+  @Action(FetchDefaultProviderCitationStyles)
+  fetchDefaultProviderCitationStyles(
+    ctx: StateContext<CitationsStateModel>,
+    action: FetchDefaultProviderCitationStyles
+  ) {
+    const state = ctx.getState();
+    ctx.patchState({
+      defaultCitations: {
+        ...state.defaultCitations,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.citationsService.fetchCitationStylesFromProvider(action.resourceType, action.providerId).pipe(
+      switchMap((citationStyles) => {
+        if (citationStyles.length === 0) {
+          return of([[], []]);
+        }
+        const citationRequests = citationStyles.map((style) =>
+          this.citationsService.fetchStyledCitationById(action.resourceType, action.resourceId, style.id)
+        );
+
+        return forkJoin([of(citationStyles), forkJoin(citationRequests)]);
+      }),
+      tap(([citationStyles, citations]) => {
+        const citationsWithTitle = citations.map((citation) => {
+          return {
+            ...citation,
+            title: citationStyles.find((style) => style.id === citation.id)!.title,
+          };
+        });
+        ctx.patchState({
+          defaultCitations: {
+            data: citationsWithTitle,
             isLoading: false,
             isSubmitting: false,
             error: null,
@@ -117,19 +163,21 @@ export class CitationsState {
       },
     });
 
-    return this.citationsService.fetchStyledCitation(action.resourceType, action.resourceId, action.citationStyle).pipe(
-      tap((styledCitation) => {
-        ctx.patchState({
-          styledCitation: {
-            data: styledCitation,
-            isLoading: false,
-            isSubmitting: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'styledCitation', error))
-    );
+    return this.citationsService
+      .fetchStyledCitationById(action.resourceType, action.resourceId, action.citationStyle)
+      .pipe(
+        tap((styledCitation) => {
+          ctx.patchState({
+            styledCitation: {
+              data: styledCitation,
+              isLoading: false,
+              isSubmitting: false,
+              error: null,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'styledCitation', error))
+      );
   }
 
   @Action(ClearStyledCitation)

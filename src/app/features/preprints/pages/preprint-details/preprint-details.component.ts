@@ -3,7 +3,6 @@ import { createDispatchMap, select, Store } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { filter, map, of } from 'rxjs';
@@ -50,7 +49,7 @@ import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/featur
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
-import { MetaTagsService } from '@shared/services';
+import { CustomDialogService, MetaTagsService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
@@ -75,7 +74,7 @@ import { PreprintWarningBannerComponent } from '../../components/preprint-detail
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
-  providers: [DialogService, DatePipe],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintDetailsComponent implements OnInit, OnDestroy {
@@ -86,8 +85,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly store = inject(Store);
-  private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly translateService = inject(TranslateService);
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
@@ -95,7 +94,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly environment = inject(ENVIRONMENT);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
-  private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   private actions = createDispatchMap({
@@ -108,6 +106,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     fetchPreprintRequestActions: FetchPreprintRequestActions,
     clearCurrentProvider: ClearCurrentProvider,
   });
+  providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
@@ -304,36 +303,26 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     this.helpScoutService.unsetResourceType();
   }
 
-  fetchPreprintVersion(preprintVersionId: string) {
-    const currentUrl = this.router.url;
-    const newUrl = currentUrl.replace(/[^/]+$/, preprintVersionId);
-    this.location.replaceState(newUrl);
-    this.fetchPreprint(preprintVersionId);
-  }
-
   handleWithdrawClicked() {
     const dialogWidth = this.isMedium() ? '700px' : '340px';
 
-    const dialogRef = this.dialogService.open(WithdrawDialogComponent, {
-      header: this.translateService.instant('preprints.details.withdrawDialog.title', {
-        preprintWord: this.preprintProvider()!.preprintWord,
-      }),
-      focusOnShow: false,
-      closeOnEscape: true,
-      width: dialogWidth,
-      modal: true,
-      closable: true,
-      data: {
-        preprint: this.preprint(),
-        provider: this.preprintProvider(),
-      },
-    });
-
-    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean)).subscribe({
-      next: () => {
-        this.fetchPreprint(this.preprintId());
-      },
-    });
+    this.customDialogService
+      .open(WithdrawDialogComponent, {
+        header: this.translateService.instant('preprints.details.withdrawDialog.title', {
+          preprintWord: this.preprintProvider()!.preprintWord,
+        }),
+        width: dialogWidth,
+        data: {
+          preprint: this.preprint(),
+          provider: this.preprintProvider(),
+        },
+      })
+      .onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean))
+      .subscribe({
+        next: () => {
+          this.fetchPreprint(this.preprintId());
+        },
+      });
   }
 
   editPreprintClicked() {
@@ -349,9 +338,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private fetchPreprint(preprintId: string) {
+  fetchPreprint(preprintId: string) {
     this.actions.fetchPreprintById(preprintId).subscribe({
       next: () => {
+        this.checkAndSetVersionToTheUrl();
         if (this.preprint()!.currentUserPermissions.length > 0 || this.moderationMode()) {
           this.actions.fetchPreprintReviewActions();
           if (this.preprintWithdrawableState() && (this.currentUserIsAdmin() || this.moderationMode())) {
@@ -396,5 +386,19 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   private hasReadWriteAccess(): boolean {
     return this.preprint()?.currentUserPermissions.includes(UserPermissions.Write) || false;
+  }
+
+  private checkAndSetVersionToTheUrl() {
+    const currentUrl = this.router.url;
+    const newPreprintId = this.preprint()!.id;
+
+    const urlSegments = currentUrl.split('/');
+    const preprintIdFromUrl = urlSegments[urlSegments.length - 1];
+
+    if (preprintIdFromUrl !== newPreprintId) {
+      const newUrl = currentUrl.replace(/[^/]+$/, newPreprintId);
+
+      this.location.replaceState(newUrl);
+    }
   }
 }

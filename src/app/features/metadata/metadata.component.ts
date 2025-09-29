@@ -2,8 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { DialogService } from 'primeng/dynamicdialog';
-
 import { EMPTY, filter, switchMap } from 'rxjs';
 
 import {
@@ -24,7 +22,7 @@ import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/component
 import { MetadataResourceEnum, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   ContributorsSelectors,
   FetchChildrenSubjects,
@@ -34,6 +32,7 @@ import {
   GetAllContributors,
   InstitutionsSelectors,
   SubjectsSelectors,
+  UpdateContributorsSearchValue,
   UpdateResourceInstitutions,
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
@@ -105,13 +104,12 @@ import {
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class MetadataComponent implements OnInit {
   private readonly activeRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dialogService = inject(DialogService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
@@ -128,7 +126,7 @@ export class MetadataComponent implements OnInit {
   metadata = select(MetadataSelectors.getResourceMetadata);
   isMetadataLoading = select(MetadataSelectors.getLoading);
   customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
-  contributors = select(ContributorsSelectors.getContributors);
+  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
@@ -168,6 +166,7 @@ export class MetadataComponent implements OnInit {
     fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,
     updateResourceSubjects: UpdateResourceSubjects,
+    updateContributorsSearchValue: UpdateContributorsSearchValue,
   });
 
   isLoading = computed(() => {
@@ -187,9 +186,7 @@ export class MetadataComponent implements OnInit {
     );
   });
 
-  showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
-
-  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
+  isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
 
   hasWriteAccess = computed(() => {
     const metadata = this.metadata();
@@ -290,8 +287,9 @@ export class MetadataComponent implements OnInit {
     }
   }
 
-  onCedarFormEdit(): void {
-    this.cedarFormReadonly.set(false);
+  toggleEditMode(): void {
+    const editMode = this.cedarFormReadonly();
+    this.cedarFormReadonly.set(!editMode);
   }
 
   onCedarFormSubmit(data: CedarRecordDataBinding): void {
@@ -302,14 +300,25 @@ export class MetadataComponent implements OnInit {
     if (selectedRecord.id) {
       this.actions
         .updateCedarRecord(data, selectedRecord.id, this.resourceId, this.resourceType())
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.cedarFormReadonly.set(true);
-            this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
-            this.actions.getCedarRecords(this.resourceId, this.resourceType());
-          },
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          switchMap(() => this.actions.getCedarRecords(this.resourceId, this.resourceType()))
+        )
+        .subscribe(() => {
+          this.updateSelectedCedarRecord(selectedRecord.id!);
+          this.cedarFormReadonly.set(true);
+          this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
         });
+    }
+  }
+
+  private updateSelectedCedarRecord(recordId: string): void {
+    const records = this.cedarRecords();
+    if (!records) return;
+
+    const record = records.find((r) => r.id === recordId);
+    if (record) {
+      this.selectedCedarRecord.set(record);
     }
   }
 
@@ -326,35 +335,29 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditContributorDialog(): void {
-    const dialogRef = this.dialogService.open(ContributorsDialogComponent, {
-      width: '800px',
-      header: this.translateService.instant('project.metadata.contributors.editContributors'),
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        resourceId: this.resourceId,
-        resourceType: this.resourceType(),
-      },
-    });
-    dialogRef.onClose.pipe(filter((result) => !!result)).subscribe({
-      next: () => {
-        this.actions.getResourceMetadata(this.resourceId, this.resourceType());
-        this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
-      },
-    });
+    this.customDialogService
+      .open(ContributorsDialogComponent, {
+        header: this.translateService.instant('project.metadata.contributors.editContributors'),
+        data: {
+          resourceId: this.resourceId,
+          resourceType: this.resourceType(),
+        },
+      })
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.actions.getResourceMetadata(this.resourceId, this.resourceType());
+          this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
+        }
+
+        this.actions.updateContributorsSearchValue(null);
+      });
   }
 
   openEditTitleDialog(): void {
-    this.dialogService
+    this.customDialogService
       .open(EditTitleDialogComponent, {
-        header: this.translateService.instant('project.metadata.editTitle'),
+        header: 'project.metadata.editTitle',
         width: '500px',
-        focusOnShow: false,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: this.metadata()?.title,
       })
       .onClose.pipe(
@@ -370,14 +373,10 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditDescriptionDialog(): void {
-    this.dialogService
+    this.customDialogService
       .open(DescriptionDialogComponent, {
-        header: this.translateService.instant('project.metadata.description.dialog.header'),
+        header: 'project.metadata.description.dialog.header',
         width: '500px',
-        focusOnShow: false,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: this.metadata()?.description,
       })
       .onClose.pipe(
@@ -394,19 +393,16 @@ export class MetadataComponent implements OnInit {
 
   openEditResourceInformationDialog(): void {
     const currentCustomMetadata = this.customItemMetadata();
-    const dialogRef = this.dialogService.open(ResourceInformationDialogComponent, {
-      header: this.translateService.instant('project.metadata.resourceInformation.dialog.header'),
-      width: '500px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        customItemMetadata: currentCustomMetadata,
-      },
-    });
-    dialogRef.onClose
-      .pipe(
+
+    this.customDialogService
+      .open(ResourceInformationDialogComponent, {
+        header: 'project.metadata.resourceInformation.dialog.header',
+        width: '500px',
+        data: {
+          customItemMetadata: currentCustomMetadata,
+        },
+      })
+      .onClose.pipe(
         filter((result) => !!result && (result.resourceTypeGeneral || result.language)),
         switchMap((result) => {
           const updatedMetadata = {
@@ -422,31 +418,23 @@ export class MetadataComponent implements OnInit {
   onShowResourceInfo() {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
-    this.dialogService.open(ResourceInfoTooltipComponent, {
+    this.customDialogService.open(ResourceInfoTooltipComponent, {
+      header: 'project.metadata.resourceInformation.tooltipDialog.header',
       width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('project.metadata.resourceInformation.tooltipDialog.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: this.resourceNameMap.get(this.resourceType()),
     });
   }
 
   openEditLicenseDialog(): void {
-    const dialogRef = this.dialogService.open(LicenseDialogComponent, {
-      header: this.translateService.instant('project.metadata.license.dialog.header'),
-      width: '600px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        metadata: this.metadata(),
-      },
-    });
-    dialogRef.onClose
-      .pipe(
+    this.customDialogService
+      .open(LicenseDialogComponent, {
+        header: 'project.metadata.license.dialog.header',
+        width: '600px',
+        data: {
+          metadata: this.metadata(),
+        },
+      })
+      .onClose.pipe(
         filter((result) => !!result && result.licenseId),
         switchMap((result) => {
           return this.actions.updateResourceLicense(
@@ -463,19 +451,15 @@ export class MetadataComponent implements OnInit {
   openEditFundingDialog(): void {
     const currentCustomMetadata = this.customItemMetadata();
 
-    const dialogRef = this.dialogService.open(FundingDialogComponent, {
-      header: this.translateService.instant('project.metadata.funding.dialog.header'),
-      width: '600px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        funders: currentCustomMetadata?.funders || [],
-      },
-    });
-    dialogRef.onClose
-      .pipe(
+    this.customDialogService
+      .open(FundingDialogComponent, {
+        header: 'project.metadata.funding.dialog.header',
+        width: '600px',
+        data: {
+          funders: currentCustomMetadata?.funders || [],
+        },
+      })
+      .onClose.pipe(
         filter((result) => !!result && result.fundingEntries),
         switchMap((result) => {
           const updatedMetadata = {
@@ -489,14 +473,10 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditAffiliatedInstitutionsDialog(): void {
-    this.dialogService
+    this.customDialogService
       .open(AffiliatedInstitutionsDialogComponent, {
-        header: this.translateService.instant('project.metadata.affiliatedInstitutions.dialog.header'),
+        header: 'project.metadata.affiliatedInstitutions.dialog.header',
         width: '500px',
-        focusOnShow: false,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: this.affiliatedInstitutions(),
       })
       .onClose.pipe(
@@ -541,17 +521,13 @@ export class MetadataComponent implements OnInit {
   }
 
   private openEditPublicationDoi() {
-    const dialogRef = this.dialogService.open(PublicationDoiDialogComponent, {
-      header: this.translateService.instant('project.metadata.doi.dialog.header'),
-      width: '600px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: this.metadata()?.publicationDoi,
-    });
-    dialogRef.onClose
-      .pipe(
+    this.customDialogService
+      .open(PublicationDoiDialogComponent, {
+        header: 'project.metadata.doi.dialog.header',
+        width: '600px',
+        data: this.metadata()?.publicationDoi,
+      })
+      .onClose.pipe(
         filter((result: DialogValueModel) => !!result),
         switchMap((result) =>
           this.actions.updateMetadata(this.resourceId, this.resourceType(), { article_doi: result.value })
@@ -566,13 +542,18 @@ export class MetadataComponent implements OnInit {
     if (!records) {
       return;
     }
+
     const record = records.find((r) => r.id === recordId);
+
     if (!record) {
       return;
     }
+
     this.selectedCedarRecord.set(record);
     this.cedarFormReadonly.set(true);
+
     const templateId = record.relationships?.template?.data?.id;
+
     if (templateId && templates?.data) {
       const template = templates.data.find((t) => t.id === templateId);
       if (template) {

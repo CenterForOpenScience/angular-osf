@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import type { SortEvent } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
@@ -38,7 +37,7 @@ import {
   GetMyRegistrations,
   MyResourcesSelectors,
 } from '@osf/shared/stores';
-import { ProjectRedirectDialogService } from '@shared/services';
+import { CustomDialogService, ProjectRedirectDialogService } from '@shared/services';
 
 import { CreateProjectDialogComponent } from './components';
 import { MY_PROJECTS_TABS } from './constants';
@@ -60,15 +59,13 @@ import { MyProjectsTab } from './enums';
   ],
   templateUrl: './my-projects.component.html',
   styleUrl: './my-projects.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
-  readonly dialogService = inject(DialogService);
+  readonly customDialogService = inject(CustomDialogService);
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
-  readonly translateService = inject(TranslateService);
   readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
 
   readonly isLoading = signal(false);
@@ -328,14 +325,10 @@ export class MyProjectsComponent implements OnInit {
   createProject(): void {
     const dialogWidth = this.isTablet() ? '850px' : '95vw';
 
-    this.dialogService
+    this.customDialogService
       .open(CreateProjectDialogComponent, {
+        header: 'myProjects.header.createProject',
         width: dialogWidth,
-        focusOnShow: false,
-        header: this.translateService.instant('myProjects.header.createProject'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((result) => result?.project.id),

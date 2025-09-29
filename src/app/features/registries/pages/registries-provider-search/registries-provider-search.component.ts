@@ -1,7 +1,5 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { DialogService } from 'primeng/dynamicdialog';
-
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -24,7 +22,6 @@ import { RegistryProviderHeroComponent } from '../../components/registry-provide
   templateUrl: './registries-provider-search.component.html',
   styleUrl: './registries-provider-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
