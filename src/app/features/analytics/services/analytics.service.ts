@@ -4,11 +4,10 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '@osf/shared/enums';
-import { JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { AnalyticsMetricsMapper, RelatedCountsMapper } from '../mappers';
-import { AnalyticsMetricsGetResponse, AnalyticsMetricsModel, RelatedCountsGetResponse } from '../models';
+import { NodeAnalyticsModel, NodeAnalyticsResponseJsonApi, RelatedCountsGetResponse } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -26,11 +25,11 @@ export class AnalyticsService {
     [ResourceType.Registration, 'registrations'],
   ]);
 
-  getMetrics(resourceId: string, dateRange: string): Observable<AnalyticsMetricsModel> {
+  getMetrics(resourceId: string, dateRange: string): Observable<NodeAnalyticsModel> {
     const baseUrl = `${this.apiDomainUrl}/_/metrics/query/node_analytics`;
 
     return this.jsonApiService
-      .get<JsonApiResponse<AnalyticsMetricsGetResponse, null>>(`${baseUrl}/${resourceId}/${dateRange}/`)
+      .get<NodeAnalyticsResponseJsonApi>(`${baseUrl}/${resourceId}/${dateRange}/`)
       .pipe(map((response) => AnalyticsMetricsMapper.fromResponse(response.data)));
   }
 

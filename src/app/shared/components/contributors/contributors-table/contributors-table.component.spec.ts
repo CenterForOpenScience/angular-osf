@@ -4,23 +4,23 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributorPermission } from '@shared/enums';
-import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY, TranslateServiceMock } from '@shared/mocks';
-import { ContributorModel } from '@shared/models';
+import { ContributorPermission } from '@osf/shared/enums';
+import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY, TranslateServiceMock } from '@osf/shared/mocks';
+import { ContributorModel } from '@osf/shared/models';
 
-import { ContributorsListComponent } from './contributors-list.component';
+import { ContributorsTableComponent } from './contributors-table.component';
 
-describe('ContributorsListComponent', () => {
-  let component: ContributorsListComponent;
-  let fixture: ComponentFixture<ContributorsListComponent>;
+describe('ContributorsTableComponent', () => {
+  let component: ContributorsTableComponent;
+  let fixture: ComponentFixture<ContributorsTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContributorsListComponent],
+      imports: [ContributorsTableComponent],
       providers: [MockProviders(DialogService), TranslateServiceMock],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContributorsListComponent);
+    fixture = TestBed.createComponent(ContributorsTableComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();
@@ -128,6 +128,7 @@ describe('ContributorsListComponent', () => {
       type: 'user',
       isBibliographic: true,
       isCurator: true,
+      index: 0,
       isUnregisteredContributor: false,
       fullName: 'Minimal User',
       givenName: 'Minimal User',

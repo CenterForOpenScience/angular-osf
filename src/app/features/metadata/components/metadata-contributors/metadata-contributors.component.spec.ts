@@ -1,8 +1,9 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { ContributorsListComponent } from '@osf/shared/components';
 import { ContributorModel } from '@osf/shared/models';
 import { MOCK_CONTRIBUTOR, TranslateServiceMock } from '@shared/mocks';
 
@@ -16,7 +17,7 @@ describe('MetadataContributorsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataContributorsComponent],
+      imports: [MetadataContributorsComponent, MockComponent(ContributorsListComponent)],
       providers: [TranslateServiceMock, MockProvider(ActivatedRoute)],
     }).compileComponents();
 

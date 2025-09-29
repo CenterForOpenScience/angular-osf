@@ -1,9 +1,8 @@
 import { createDispatchMap, select, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Menu } from 'primeng/menu';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
@@ -21,7 +20,7 @@ import { IconComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { ShareableContent, ToolbarResource } from '@osf/shared/models';
 import { FileSizePipe } from '@osf/shared/pipes';
-import { SocialShareService, ToastService } from '@osf/shared/services';
+import { CustomDialogService, SocialShareService, ToastService } from '@osf/shared/services';
 import {
   AddResourceToBookmarks,
   BookmarksSelectors,
@@ -56,10 +55,10 @@ import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggl
 })
 export class OverviewToolbarComponent {
   private store = inject(Store);
-  private dialogService = inject(DialogService);
-  private translateService = inject(TranslateService);
+  private customDialogService = inject(CustomDialogService);
   private toastService = inject(ToastService);
   private socialShareService = inject(SocialShareService);
+
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -154,15 +153,11 @@ export class OverviewToolbarComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.isPublic.set(resource.isPublic));
 
-    this.dialogService.open(TogglePublicityDialogComponent, {
-      focusOnShow: false,
+    this.customDialogService.open(TogglePublicityDialogComponent, {
+      header: isCurrentlyPublic
+        ? 'project.overview.dialog.makePrivate.header'
+        : 'project.overview.dialog.makePublic.header',
       width: dialogWidth,
-      header: this.translateService.instant(
-        isCurrentlyPublic ? 'project.overview.dialog.makePrivate.header' : 'project.overview.dialog.makePublic.header'
-      ),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: {
         projectId: resource.id,
         isCurrentlyPublic,
@@ -210,13 +205,10 @@ export class OverviewToolbarComponent {
         : resource?.resourceType === ResourceType.Registration
           ? 'project.overview.dialog.fork.headerRegistry'
           : '';
+
     if (resource) {
-      this.dialogService.open(ForkDialogComponent, {
-        focusOnShow: false,
-        header: this.translateService.instant(headerTranslation),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
+      this.customDialogService.open(ForkDialogComponent, {
+        header: headerTranslation,
         data: {
           resource: resource,
         },
@@ -225,14 +217,8 @@ export class OverviewToolbarComponent {
   }
 
   private handleDuplicateProject(): void {
-    this.dialogService
-      .open(DuplicateDialogComponent, {
-        focusOnShow: false,
-        header: this.translateService.instant('project.overview.dialog.duplicate.header'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
-      })
+    this.customDialogService
+      .open(DuplicateDialogComponent, { header: 'project.overview.dialog.duplicate.header' })
       .onClose.subscribe({
         next: () => {
           const duplicatedProject = this.duplicatedProject();

@@ -23,7 +23,7 @@
       </div>
     }
 
-    @if (isCollectionsRoute() || hasViewOnly()) {
+    @if (isCollectionsRoute() || hasViewOnly() || !canEdit()) {
       @if (isPublic()) {
         <div class="flex gap-2">
           <i class="fas fa-lock-open"></i>

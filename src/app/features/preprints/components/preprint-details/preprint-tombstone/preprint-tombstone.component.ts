@@ -9,12 +9,11 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { TruncatedTextComponent } from '@osf/shared/components';
+import { ContributorsListComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { InterpolatePipe } from '@osf/shared/pipes';
 import {
@@ -42,7 +41,7 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
     AccordionHeader,
     InterpolatePipe,
     DatePipe,
-    RouterLink,
+    ContributorsListComponent,
   ],
   templateUrl: './preprint-tombstone.component.html',
   styleUrl: './preprint-tombstone.component.scss',

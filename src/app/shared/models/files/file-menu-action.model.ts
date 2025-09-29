@@ -8,3 +8,5 @@ export interface FileMenuAction {
 export interface FileMenuData {
   type: string;
 }
+
+export type FileMenuFlags = Record<FileMenuType, boolean>;

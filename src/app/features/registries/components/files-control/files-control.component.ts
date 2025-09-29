@@ -1,11 +1,10 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { EMPTY, filter, finalize, Observable, shareReplay, take } from 'rxjs';
 
@@ -30,7 +29,7 @@ import { FilesTreeComponent, LoadingSpinnerComponent } from '@osf/shared/compone
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { ClearFileDirective } from '@osf/shared/directives';
 import { FilesTreeActions, OsfFile } from '@osf/shared/models';
-import { FilesService, ToastService } from '@osf/shared/services';
+import { CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
 
 import {
   CreateFolder,
@@ -57,7 +56,7 @@ import {
   templateUrl: './files-control.component.html',
   styleUrl: './files-control.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService, TreeDragDropService],
+  providers: [TreeDragDropService],
 })
 export class FilesControlComponent implements OnDestroy {
   attachedFiles = input.required<Partial<OsfFile>[]>();
@@ -68,10 +67,9 @@ export class FilesControlComponent implements OnDestroy {
   filesViewOnly = input<boolean>(false);
 
   private readonly filesService = inject(FilesService);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly destroyRef = inject(DestroyRef);
-  private toastService = inject(ToastService);
+  private readonly toastService = inject(ToastService);
   private readonly helpScoutService = inject(HelpScoutService);
 
   readonly files = select(RegistriesSelectors.getFiles);
@@ -136,14 +134,10 @@ export class FilesControlComponent implements OnDestroy {
 
     if (!newFolderLink) return;
 
-    this.dialogService
+    this.customDialogService
       .open(CreateFolderDialogComponent, {
+        header: 'files.dialogs.createFolder.title',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('files.dialogs.createFolder.title'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(filter((folderName: string) => !!folderName))
       .subscribe((folderName) => {

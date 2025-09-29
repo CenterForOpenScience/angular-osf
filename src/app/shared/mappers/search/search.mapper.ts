@@ -3,7 +3,7 @@ import {
   IndexCardDataJsonApi,
   IndexCardSearchResponseJsonApi,
   ResourceModel,
-  SearchResultJsonApi,
+  SearchResultDataJsonApi,
 } from '@shared/models';
 
 export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResponseJsonApi): ResourceModel[] {
@@ -12,7 +12,7 @@ export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResp
   const searchResultItems = searchResultIds.map(
     (searchResultId) =>
       indexCardSearchResponseJsonApi.included!.find(
-        (item): item is SearchResultJsonApi => item.type === 'search-result' && searchResultId === item.id
+        (item): item is SearchResultDataJsonApi => item.type === 'search-result' && searchResultId === item.id
       )!
   );
   const indexCardItems = searchResultItems.map((searchResult) => {
@@ -128,7 +128,7 @@ export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResp
   return resources;
 }
 
-function parseContext(searchResultJsonApi: SearchResultJsonApi) {
+function parseContext(searchResultJsonApi: SearchResultDataJsonApi) {
   const matchEvidence = searchResultJsonApi.attributes?.matchEvidence;
 
   if (!matchEvidence) return null;

@@ -3,7 +3,7 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@core/store/user';
-import { ContributorsListComponent } from '@shared/components/contributors';
+import { ContributorsTableComponent } from '@osf/shared/components/contributors';
 import { MOCK_CONTRIBUTOR, MOCK_USER } from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
@@ -30,7 +30,7 @@ describe('PreprintsContributorsComponent', () => {
     confirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [PreprintsContributorsComponent, OSFTestingModule, MockComponent(ContributorsListComponent)],
+      imports: [PreprintsContributorsComponent, OSFTestingModule, MockComponent(ContributorsTableComponent)],
       providers: [
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, confirmationServiceMock),
@@ -82,8 +82,6 @@ describe('PreprintsContributorsComponent', () => {
 
   it('should expose readonly properties', () => {
     expect(component.destroyRef).toBeDefined();
-    expect(component.translateService).toBeDefined();
-    expect(component.dialogService).toBeDefined();
     expect(component.toastService).toBeDefined();
     expect(component.customConfirmationService).toBeDefined();
     expect(component.actions).toBeDefined();

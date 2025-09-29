@@ -12,6 +12,7 @@ import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components'
 import { AddonServiceNames } from '@shared/enums';
 import { convertCamelCaseToNormal } from '@shared/helpers';
 import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredLinkAddons } from '@shared/stores';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 @Component({
   selector: 'osf-linked-services',
@@ -29,6 +30,8 @@ export class LinkedServicesComponent implements OnInit {
   isResourceReferenceLoading = select(AddonsSelectors.getAddonsResourceReferenceLoading);
   isConfiguredLinkAddonsLoading = select(AddonsSelectors.getConfiguredLinkAddonsLoading);
   isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
+  hasWriteAccess = select(CurrentResourceSelectors.hasWriteAccess);
+  hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
 
   isLoading = computed(() => {
     return this.isConfiguredLinkAddonsLoading() || this.isResourceReferenceLoading() || this.isCurrentUserLoading();
@@ -43,6 +46,10 @@ export class LinkedServicesComponent implements OnInit {
         AddonServiceNames[item.externalServiceName as keyof typeof AddonServiceNames] || item.externalServiceName,
       convertedResourceType: convertCamelCaseToNormal(item.resourceType || ''),
     }));
+  });
+
+  canManageAddons = computed(() => {
+    return this.hasWriteAccess() || this.hasAdminAccess();
   });
 
   actions = createDispatchMap({

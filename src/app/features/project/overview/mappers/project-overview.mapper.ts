@@ -1,4 +1,4 @@
-import { InstitutionsMapper } from '@shared/mappers';
+import { ContributorsMapper, InstitutionsMapper } from '@shared/mappers';
 import { LicenseModel } from '@shared/models';
 
 import { ProjectOverview, ProjectOverviewGetResponseJsonApi } from '../models';
@@ -36,15 +36,7 @@ export class ProjectOverviewMapper {
       currentUserIsContributorOrGroupMember: response.attributes.current_user_is_contributor_or_group_member,
       wikiEnabled: response.attributes.wiki_enabled,
       customCitation: response.attributes.custom_citation,
-      contributors:
-        response.embeds.bibliographic_contributors?.data?.map((contributor) => ({
-          id: contributor.embeds.users.data.id,
-          familyName: contributor.embeds.users.data.attributes.family_name,
-          fullName: contributor.embeds.users.data.attributes.full_name,
-          givenName: contributor.embeds.users.data.attributes.given_name,
-          middleName: contributor.embeds.users.data.attributes.middle_name,
-          type: contributor.embeds.users.data.type,
-        })) ?? [],
+      contributors: ContributorsMapper.getContributors(response?.embeds?.bibliographic_contributors?.data),
       affiliatedInstitutions: response.embeds.affiliated_institutions
         ? InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions)
         : [],

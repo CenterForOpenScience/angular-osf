@@ -1,6 +1,6 @@
 @if (chips().length > 0) {
   <div class="flex flex-wrap gap-2">
-    @for (chip of chips(); track chip.key + chip.value) {
+    @for (chip of chips(); track chip.key) {
       <p-chip
         [label]="chip.label + ': ' + chip.displayValue"
         removeIcon="fas fa-close"

@@ -2,6 +2,19 @@
   <div class="flex flex-column gap-3">
     <h2>{{ 'project.overview.metadata.tags' | translate }}</h2>
 
-    <osf-tags-input (tagsChanged)="tagsChanged.emit($event)" [tags]="tags()" />
+    @if (readonly()) {
+      <div class="flex flex-wrap gap-2">
+        @for (tag of tags(); track tag) {
+          <p-tag
+            class="cursor-pointer hover:bg-black-alpha-10"
+            [value]="tag"
+            severity="info"
+            (click)="tagClicked(tag)"
+          />
+        }
+      </div>
+    } @else {
+      <osf-tags-input (tagsChanged)="tagsChanged.emit($event)" [tags]="tags()" />
+    }
   </div>
 </p-card>

@@ -1,3 +1,4 @@
+import { SupportedFeature } from '@osf/shared/enums';
 import { ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
 import { ConfiguredAddonModel } from '@shared/models/addons';
 import { AsyncStateModel, AsyncStateWithTotalCount } from '@shared/models/store';
@@ -16,12 +17,13 @@ export interface FilesStateModel {
   openedFile: AsyncStateModel<OsfFile | null>;
   fileMetadata: AsyncStateModel<OsfFileCustomMetadata | null>;
   resourceMetadata: AsyncStateModel<ResourceMetadata | null>;
-  contributors: AsyncStateModel<Partial<ContributorModel>[] | null>;
+  contributors: AsyncStateModel<ContributorModel[] | null>;
   fileRevisions: AsyncStateModel<OsfFileRevision[] | null>;
   tags: AsyncStateModel<string[]>;
   rootFolders: AsyncStateModel<OsfFile[] | null>;
   configuredStorageAddons: AsyncStateModel<ConfiguredAddonModel[] | null>;
   isAnonymous: boolean;
+  storageSupportedFeatures: Record<string, SupportedFeature[]>;
 }
 
 export const FILES_STATE_DEFAULTS: FilesStateModel = {
@@ -83,4 +85,13 @@ export const FILES_STATE_DEFAULTS: FilesStateModel = {
     error: null,
   },
   isAnonymous: false,
+  storageSupportedFeatures: {
+    [FileProvider.OsfStorage]: [
+      SupportedFeature.AddUpdateFiles,
+      SupportedFeature.DeleteFiles,
+      SupportedFeature.DownloadAsZip,
+      SupportedFeature.FileVersions,
+      SupportedFeature.CopyInto,
+    ],
+  },
 };

@@ -15,7 +15,7 @@ export class RegistryComponentsMapper {
       registrationSupplement: apiComponent.attributes.registration_supplement,
       tags: apiComponent.attributes.tags,
       isPublic: apiComponent.attributes.public,
-      contributors: ContributorsMapper.fromResponse(apiComponent.embeds.bibliographic_contributors.data) || [],
+      contributors: ContributorsMapper.getContributors(apiComponent.embeds.bibliographic_contributors.data) || [],
     };
   }
 

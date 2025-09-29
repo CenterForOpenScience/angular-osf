@@ -24,7 +24,7 @@
         [autoOptionFocus]="false"
         [loading]="isPaginationLoading() || isSearchLoading()"
         (onLazyLoad)="loadMoreItems($event)"
-        (onChange)="onValueChange($event)"
+        (onChange)="onOptionChange($event)"
         (onFilter)="onFilterChange($event)"
         [showClear]="!!selectedValue()"
       >

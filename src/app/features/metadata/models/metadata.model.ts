@@ -1,4 +1,5 @@
 import { Identifier, Institution, LicenseModel } from '@osf/shared/models';
+import { UserPermissions } from '@shared/enums';
 
 export interface Metadata {
   id: string;
@@ -20,6 +21,7 @@ export interface Metadata {
     year: string;
   };
   public?: boolean;
+  currentUserPermissions: UserPermissions[];
 }
 
 export interface CustomItemMetadataRecord {

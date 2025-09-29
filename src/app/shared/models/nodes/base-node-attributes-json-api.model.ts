@@ -1,26 +1,26 @@
 import { UserPermissions } from '@osf/shared/enums';
 
 export interface BaseNodeAttributesJsonApi {
-  title: string;
-  description: string;
+  access_requests_enabled: boolean;
+  analytics_key: string;
   category: string;
+  collection: boolean;
+  current_user_can_comment: boolean;
+  current_user_is_contributor: boolean;
+  current_user_is_contributor_or_group_member: boolean;
+  current_user_permissions: UserPermissions[];
   custom_citation: string;
   date_created: string;
   date_modified: string;
-  registration: boolean;
-  preprint: boolean;
+  description: string;
   fork: boolean;
-  collection: boolean;
-  tags: string[];
-  access_requests_enabled: boolean;
   node_license: NodeLicenseJsonApi | null;
-  analytics_key: string;
-  current_user_can_comment: boolean;
-  current_user_permissions: UserPermissions[];
-  current_user_is_contributor: boolean;
-  current_user_is_contributor_or_group_member: boolean;
-  wiki_enabled: boolean;
+  preprint: boolean;
   public: boolean;
+  registration: boolean;
+  tags: string[];
+  title: string;
+  wiki_enabled: boolean;
 }
 
 export interface NodeLicenseJsonApi {

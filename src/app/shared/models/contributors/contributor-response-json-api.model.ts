@@ -1,5 +1,5 @@
 import { ContributorPermission } from '@osf/shared/enums';
-import { ResponseJsonApi, UserDataJsonApi } from '@osf/shared/models';
+import { ResponseJsonApi, UserDataJsonApi, UserErrorResponseJsonApi } from '@osf/shared/models';
 
 export type ContributorResponseJsonApi = ResponseJsonApi<ContributorDataJsonApi>;
 export type ContributorsResponseJsonApi = ResponseJsonApi<ContributorDataJsonApi[]>;
@@ -51,8 +51,9 @@ interface RelationshipUsersDataJsonApi {
   type?: 'users';
 }
 
-interface EmbeddedUsersJsonApi {
+export interface EmbeddedUsersJsonApi {
   data: UserDataJsonApi;
+  errors?: UserErrorResponseJsonApi[];
 }
 
 interface RelationshipJsonApi<T> {

@@ -10,42 +10,31 @@
     <p-accordion (valueChange)="onAccordionToggle($event)">
       @for (filter of groupedFilters().individual; track filter.key) {
         <p-accordion-panel [value]="filter.key">
-          <p-accordion-header>{{ getFilterLabel(filter) }}</p-accordion-header>
+          <p-accordion-header>{{ filter.label || filter.key }}</p-accordion-header>
           <p-accordion-content>
             @if (filter.description) {
-              <p class="text-sm text-gray-600 mb-3">{{ filter.description }}</p>
+              <p class="mb-3">{{ filter.description }}</p>
             }
 
             @if (filter.helpLink && filter.helpLinkText) {
-              <p class="text-sm mb-3">
-                <a
-                  [href]="filter.helpLink"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-primary hover:underline"
-                >
-                  {{ filter.helpLinkText }}
-                </a>
-              </p>
+              <a [href]="filter.helpLink" class="block font-bold mb-3" target="_blank" rel="noopener noreferrer">
+                {{ filter.helpLinkText }}
+              </a>
             }
 
-            @if (hasFilterContent(filter)) {
-              <osf-generic-filter
-                [options]="filter.options || []"
-                [searchResults]="filterSearchResults()[filter.key] || []"
-                [isPaginationLoading]="!!filter.isPaginationLoading"
-                [isLoading]="!!filter.isLoading"
-                [isSearchLoading]="!!filter.isSearchLoading"
-                [selectedValue]="getSelectedValue(filter.key)"
-                [placeholder]="getFilterPlaceholder(filter.key) | translate"
-                [filterType]="filter.key"
-                (valueChanged)="onFilterChanged(filter.key, $event)"
-                (searchTextChanged)="onFilterSearch(filter.key, $event)"
-                (loadMoreOptions)="onLoadMoreOptions(filter.key)"
-              />
-            } @else {
-              <p class="text-sm text-gray-500">{{ 'collections.filters.noOptionsAvailable' | translate }}</p>
-            }
+            <osf-generic-filter
+              [filterType]="filter.key"
+              [placeholder]="FILTER_PLACEHOLDERS[filter.key] || '' | translate"
+              [options]="filter.options || []"
+              [selectedValue]="selectedOptions()[filter.key]?.value ?? null"
+              [searchResults]="filterSearchResults()[filter.key] || []"
+              [isPaginationLoading]="!!filter.isPaginationLoading"
+              [isLoading]="!!filter.isLoading"
+              [isSearchLoading]="!!filter.isSearchLoading"
+              (optionChanged)="onOptionChanged(filter, $event)"
+              (searchTextChanged)="onFilterSearch(filter, $event)"
+              (loadMoreOptions)="onLoadMoreOptions(filter)"
+            />
           </p-accordion-content>
         </p-accordion-panel>
       }
@@ -59,12 +48,12 @@
                 <div class="flex align-items-center gap-2">
                   <p-checkbox
                     [binary]="true"
-                    [ngModel]="Boolean(selectedValues()[filter.key])"
+                    [ngModel]="Boolean(selectedOptions()[filter.key])"
                     (onChange)="onCheckboxChange($event, filter)"
                     [inputId]="'checkbox-' + filter.key"
                   />
                   <label [for]="'checkbox-' + filter.key" class="cursor-pointer m-0">
-                    {{ getFilterLabel(filter) }} ({{ filter.resultCount }})
+                    {{ filter.label || filter.key }} ({{ filter.resultCount }})
                   </label>
                 </div>
               }

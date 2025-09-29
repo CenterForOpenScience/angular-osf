@@ -1,10 +1,9 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { filter, finalize, throttleTime } from 'rxjs';
@@ -16,7 +15,7 @@ import { DeleteEmail, GetEmails, MakePrimary, ResendConfirmation, UserEmailsSele
 import { UserSelectors } from '@osf/core/store/user';
 import { ReadonlyInputComponent } from '@osf/shared/components';
 import { IS_SMALL } from '@osf/shared/helpers';
-import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
 
 import { AccountEmail } from '../../models';
 import { ConfirmationSentDialogComponent } from '../confirmation-sent-dialog/confirmation-sent-dialog.component';
@@ -32,8 +31,7 @@ import { AddEmailComponent } from '../';
 export class ConnectedEmailsComponent {
   readonly isSmall = toSignal(inject(IS_SMALL));
 
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly loaderService = inject(LoaderService);
@@ -62,27 +60,19 @@ export class ConnectedEmailsComponent {
   });
 
   addEmail() {
-    this.dialogService
+    this.customDialogService
       .open(AddEmailComponent, {
+        header: 'settings.accountSettings.connectedEmails.dialog.title',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('settings.accountSettings.connectedEmails.dialog.title'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(filter((email: string) => !!email))
       .subscribe((email) => this.showConfirmationSentDialog(email));
   }
 
   showConfirmationSentDialog(email: string) {
-    this.dialogService.open(ConfirmationSentDialogComponent, {
+    this.customDialogService.open(ConfirmationSentDialogComponent, {
+      header: 'settings.accountSettings.connectedEmails.confirmationSentDialog.header',
       width: '448px',
-      focusOnShow: false,
-      header: this.translateService.instant('settings.accountSettings.connectedEmails.confirmationSentDialog.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: email,
     });
   }

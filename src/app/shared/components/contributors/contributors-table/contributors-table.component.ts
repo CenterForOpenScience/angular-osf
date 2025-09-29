@@ -1,8 +1,7 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
@@ -11,34 +10,22 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, model, out
 import { FormsModule } from '@angular/forms';
 
 import { ModeratorPermission } from '@osf/features/moderation/enums';
+import { EducationHistoryDialogComponent } from '@osf/shared/components/education-history-dialog/education-history-dialog.component';
+import { EmploymentHistoryDialogComponent } from '@osf/shared/components/employment-history-dialog/employment-history-dialog.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { ContributorPermission } from '@osf/shared/enums';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
-import { ContributorPermission } from '@shared/enums';
-
-import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
-import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';
-import { IconComponent } from '../../icon/icon.component';
-import { SelectComponent } from '../../select/select.component';
+import { CustomDialogService } from '@osf/shared/services';
 
 @Component({
-  selector: 'osf-contributors-list',
-  imports: [
-    TranslatePipe,
-    FormsModule,
-    TableModule,
-    Tooltip,
-    Checkbox,
-    Skeleton,
-    Button,
-    SelectComponent,
-    IconComponent,
-  ],
-  templateUrl: './contributors-list.component.html',
-  styleUrl: './contributors-list.component.scss',
+  selector: 'osf-contributors-table',
+  imports: [TranslatePipe, FormsModule, TableModule, Tooltip, Checkbox, Skeleton, Button, SelectComponent],
+  templateUrl: './contributors-table.component.html',
+  styleUrl: './contributors-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
-export class ContributorsListComponent {
+export class ContributorsTableComponent {
   contributors = model<ContributorModel[]>([]);
   isLoading = input(false);
   showCurator = input(false);
@@ -67,8 +54,8 @@ export class ContributorsListComponent {
   });
 
   remove = output<ContributorModel>();
-  dialogService = inject(DialogService);
-  translateService = inject(TranslateService);
+
+  customDialogService = inject(CustomDialogService);
 
   readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
@@ -82,26 +69,18 @@ export class ContributorsListComponent {
   }
 
   openEducationHistory(contributor: ContributorModel) {
-    this.dialogService.open(EducationHistoryDialogComponent, {
+    this.customDialogService.open(EducationHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.education',
       width: '552px',
       data: contributor.education,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.education'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 
   openEmploymentHistory(contributor: ContributorModel) {
-    this.dialogService.open(EmploymentHistoryDialogComponent, {
+    this.customDialogService.open(EmploymentHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.employment',
       width: '552px',
       data: contributor.employment,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.employment'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 

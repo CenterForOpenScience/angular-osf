@@ -7,4 +7,8 @@ export const FileProvider = {
   WebDav: 'webdav',
   S3: 's3',
   GitHub: 'github',
+  Bitbucket: 'bitbucket',
+  GitLab: 'gitlab',
+  Figshare: 'figshare',
+  Dataverse: 'dataverse',
 };
