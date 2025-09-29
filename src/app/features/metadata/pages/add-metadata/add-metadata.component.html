@@ -69,7 +69,7 @@
   }
 } @else {
   <osf-cedar-template-form
-    (editMode)="toggleEditMode()"
+    (toggleEditMode)="toggleEditMode()"
     (emitData)="createRecordMetadata($event)"
     (changeTemplate)="disableSelect()"
     [template]="selectedTemplate"

@@ -1,6 +1,6 @@
 import { provideStore, Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { Subject } from 'rxjs';
 
@@ -12,20 +12,24 @@ import { CookieConsentBannerComponent } from '@core/components/osf-banners/cooki
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser, UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
+import { CustomDialogService } from '@shared/services';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 import { TranslateServiceMock } from './shared/mocks';
 import { AppComponent } from './app.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 describe('Component: App', () => {
   let routerEvents$: Subject<any>;
   let gtmServiceMock: jest.Mocked<GoogleTagManagerService>;
   let fixture: ComponentFixture<AppComponent>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   beforeEach(async () => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
     routerEvents$ = new Subject();
 
     gtmServiceMock = {
@@ -40,6 +44,7 @@ describe('Component: App', () => {
       ],
       providers: [
         provideStore([UserState, UserEmailsState]),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         TranslateServiceMock,
         { provide: GoogleTagManagerService, useValue: gtmServiceMock },
         {

@@ -17,15 +17,17 @@
             <ng-content></ng-content>
           } @else {
             @if (selectedCedarTemplate() && selectedCedarRecord()) {
-              <osf-cedar-template-form
-                [template]="selectedCedarTemplate()!"
-                [existingRecord]="selectedCedarRecord()!"
-                [readonly]="cedarFormReadonly()"
-                [showEditButton]="canEdit()"
-                (emitData)="onCedarFormSubmit($event)"
-                (changeTemplate)="onCedarFormChangeTemplate()"
-                (editMode)="onCedarFormEdit()"
-              />
+              @if (tab.id === selectedCedarRecord()?.id) {
+                <osf-cedar-template-form
+                  [template]="selectedCedarTemplate()!"
+                  [existingRecord]="selectedCedarRecord()!"
+                  [readonly]="cedarFormReadonly()"
+                  [showEditButton]="canEdit()"
+                  (emitData)="onCedarFormSubmit($event)"
+                  (changeTemplate)="onCedarFormChangeTemplate()"
+                  (toggleEditMode)="toggleEditMode()"
+                />
+              }
             } @else {
               <div class="text-center py-8">
                 <p class="text-lg mb-4">{{ 'project.metadata.addMetadata.loadingCedar' | translate }}</p>

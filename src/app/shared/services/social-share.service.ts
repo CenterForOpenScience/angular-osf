@@ -26,7 +26,7 @@ export class SocialShareService {
     const url = encodeURIComponent(content.url);
     const text = encodeURIComponent(content.title);
 
-    return `${SOCIAL_SHARE_URLS.twitter}?url=${url}&text=${text}`;
+    return `${SOCIAL_SHARE_URLS.twitter.preview_url}?url=${url}&text=${text}&via=${SOCIAL_SHARE_URLS.twitter.viaHandle}`;
   }
 
   generateFacebookLink(content: ShareableContent): string {
