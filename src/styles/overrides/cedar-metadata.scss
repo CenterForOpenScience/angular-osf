@@ -1,5 +1,9 @@
 @use "styles/mixins" as mix;
 
+.cedar-editor-container {
+  padding-top: 1rem;
+}
+
 cedar-embeddable-editor,
 cedar-embeddable-metadata-editor,
 cedar-artifact-viewer {
@@ -13,6 +17,15 @@ cedar-artifact-viewer {
     box-sizing: border-box;
     font-family: var(--openSans);
     font-size: 1rem;
+  }
+
+  h1 {
+    font-size: mix.rem(24px);
+  }
+
+  app-cedar-static-rich-text {
+    display: block;
+    padding: 0 5px;
   }
 
   .required {
@@ -39,10 +52,10 @@ cedar-artifact-viewer {
     }
   }
 
-  .mat-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+  .mat-card {
+    &:not([class*="mat-elevation-z"]) {
+      box-shadow: none;
+    }
   }
 
   app-cedar-component-renderer {
@@ -82,6 +95,11 @@ cedar-artifact-viewer {
   }
 
   .mat-expansion-panel {
+    &:not([class*="mat-elevation-z"]) {
+      box-shadow: none;
+      border: 1px solid var(--grey-2);
+    }
+
     border-color: var(--grey-2);
     border-radius: 8px !important;
     margin-bottom: 1rem;

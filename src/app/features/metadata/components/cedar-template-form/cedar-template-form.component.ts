@@ -4,13 +4,11 @@ import { Button } from 'primeng/button';
 
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
   ElementRef,
   input,
-  OnInit,
   output,
   signal,
   viewChild,
@@ -35,12 +33,12 @@ import 'cedar-artifact-viewer';
   styleUrl: './cedar-template-form.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CedarTemplateFormComponent implements OnInit {
+export class CedarTemplateFormComponent {
   emitData = output<CedarRecordDataBinding>();
   changeTemplate = output<void>();
-  editMode = output<void>();
+  toggleEditMode = output<void>();
 
   template = input.required<CedarMetadataDataTemplateJsonApi>();
   existingRecord = input<CedarMetadataRecordData | null>(null);
@@ -59,27 +57,31 @@ export class CedarTemplateFormComponent implements OnInit {
     effect(() => {
       const tpl = this.template();
       if (tpl?.attributes?.template) {
-        this.initializeFormData();
+        this.initializeCedar();
       }
     });
 
     effect(() => {
-      const editor = this.cedarEditor()?.nativeElement;
-      const viewer = this.cedarViewer()?.nativeElement;
-      const metadata = this.existingRecord()?.attributes?.metadata;
-      if (metadata) {
-        if (editor) {
-          editor.instanceObject = metadata;
-        }
-        if (viewer) {
-          viewer.instanceObject = metadata;
-        }
+      const record = this.existingRecord();
+      if (record) {
+        this.initializeCedar();
       }
     });
   }
 
-  ngOnInit() {
+  private initializeCedar(): void {
+    const metadata = this.existingRecord()?.attributes?.metadata;
+    const editor = this.cedarEditor()?.nativeElement;
+    const viewer = this.cedarViewer()?.nativeElement;
+
     this.initializeFormData();
+
+    if (metadata) {
+      if (editor) editor.instanceObject = metadata;
+      if (viewer) viewer.instanceObject = metadata;
+    }
+
+    this.validateCedarMetadata();
   }
 
   onCedarChange(event: Event): void {
@@ -100,8 +102,13 @@ export class CedarTemplateFormComponent implements OnInit {
     this.isValid = !!report?.isValid;
   }
 
-  editModeEmit(): void {
-    this.editMode.emit();
+  toggleEditModeEmit(): void {
+    this.toggleEditMode.emit();
+  }
+
+  cancel() {
+    this.initializeFormData();
+    this.toggleEditModeEmit();
   }
 
   onSubmit() {
