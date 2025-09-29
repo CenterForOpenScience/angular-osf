@@ -3,8 +3,7 @@ import { Chip } from 'primeng/chip';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter } from '@shared/models';
+import { DiscoverableFilter, FilterOption } from '@shared/models';
 
 @Component({
   selector: 'osf-filter-chips',
@@ -13,10 +12,10 @@ import { DiscoverableFilter } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterChipsComponent {
-  filterValues = input<Record<string, StringOrNull>>({});
+  filterOptions = input<Record<string, FilterOption | null>>({});
   filters = input.required<DiscoverableFilter[]>();
 
-  filterRemoved = output<string>();
+  selectedOptionRemoved = output<string>();
 
   filterLabels = computed(() => {
     return this.filters()
@@ -27,35 +26,18 @@ export class FilterChipsComponent {
       }));
   });
 
-  filterOptions = computed(() => {
-    return this.filters()
-      .filter((filter) => filter.key && filter.options)
-      .map((filter) => ({
-        key: filter.key,
-        options: filter.options!.map((opt) => ({
-          id: String(opt.value || ''),
-          value: String(opt.value || ''),
-          label: opt.label,
-        })),
-      }));
-  });
-
   chips = computed(() => {
-    const values = this.filterValues();
-    const labels = this.filterLabels();
     const options = this.filterOptions();
+    const labels = this.filterLabels();
 
-    return Object.entries(values)
-      .filter(([, value]) => value !== null && value !== '')
-      .map(([key, value]) => {
+    return Object.entries(options)
+      .filter(([, value]) => value !== null)
+      .map(([key, option]) => {
         const filterLabel = labels.find((l) => l.key === key)?.label || key;
-        const filterOptionsList = options.find((o) => o.key === key)?.options || [];
-        const option = filterOptionsList.find((opt) => opt.value === value || opt.id === value);
-        const displayValue = option?.label || value || '';
+        const displayValue = option?.label || option?.value;
 
         return {
           key,
-          value: value!,
           label: filterLabel,
           displayValue,
         };
@@ -63,6 +45,6 @@ export class FilterChipsComponent {
   });
 
   removeFilter(filterKey: string): void {
-    this.filterRemoved.emit(filterKey);
+    this.selectedOptionRemoved.emit(filterKey);
   }
 }

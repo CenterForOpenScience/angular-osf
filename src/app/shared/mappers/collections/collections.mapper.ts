@@ -14,7 +14,7 @@ import {
   CollectionSubmissionPayloadJsonApi,
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
-  ContributorShortInfoModel,
+  ContributorModel,
   PaginatedData,
   ResponseJsonApi,
 } from '@osf/shared/models';
@@ -189,7 +189,7 @@ export class CollectionsMapper {
       dataType: submission.attributes.data_type,
       disease: submission.attributes.disease,
       gradeLevels: submission.attributes.grade_levels,
-      contributors: [] as ContributorShortInfoModel[],
+      contributors: [] as ContributorModel[],
     }));
   }
 

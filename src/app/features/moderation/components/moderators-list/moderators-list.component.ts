@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of } from 'rxjs';
 
@@ -25,7 +24,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 
 import { AddModeratorType, ModeratorPermission } from '../../enums';
 import { ModeratorDialogAddModel, ModeratorModel } from '../../models';
@@ -47,16 +46,14 @@ import { ModeratorsTableComponent } from '../moderators-table/moderators-table.c
   templateUrl: './moderators-list.component.html',
   styleUrl: './moderators-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class ModeratorsListComponent implements OnInit {
   searchControl = new FormControl<string>('');
 
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
-  private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
 
   readonly providerId = toSignal(
@@ -76,9 +73,10 @@ export class ModeratorsListComponent implements OnInit {
     const initialModerators = this.initialModerators();
     if (!currentUserId) return false;
 
-    return initialModerators.some((moderator: ModeratorModel) => {
-      return moderator.userId === currentUserId && moderator.permission === ModeratorPermission.Admin;
-    });
+    return initialModerators.some(
+      (moderator: ModeratorModel) =>
+        moderator.userId === currentUserId && moderator.permission === ModeratorPermission.Admin
+    );
   });
 
   actions = createDispatchMap({
@@ -103,15 +101,11 @@ export class ModeratorsListComponent implements OnInit {
   openAddModeratorDialog() {
     const addedModeratorsIds = this.initialModerators().map((x) => x.userId);
 
-    this.dialogService
+    this.customDialogService
       .open(AddModeratorDialogComponent, {
+        header: 'moderation.addModerator',
         width: '448px',
         data: addedModeratorsIds,
-        focusOnShow: false,
-        header: this.translateService.instant('moderation.addModerator'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ModeratorDialogAddModel) => !!res),
@@ -133,14 +127,11 @@ export class ModeratorsListComponent implements OnInit {
   }
 
   openInviteModeratorDialog() {
-    this.dialogService
+    this.customDialogService
       .open(InviteModeratorDialogComponent, {
+        header: 'moderation.inviteModerator',
         width: '448px',
         focusOnShow: false,
-        header: this.translateService.instant('moderation.inviteModerator'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ModeratorDialogAddModel) => !!res),

@@ -1,6 +1,11 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockComponent, MockPipes } from 'ng-mocks';
+
+import { DatePipe } from '@angular/common';
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ContributorsListComponent } from '@osf/shared/components';
 import { CollectionSubmissionWithGuid } from '@shared/models';
 
 import { CollectionsSearchResultCardComponent } from './collections-search-result-card.component';
@@ -17,6 +22,11 @@ describe('CollectionsSearchResultCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [
+        CollectionsSearchResultCardComponent,
+        MockPipes(TranslatePipe, DatePipe),
+        MockComponent(ContributorsListComponent),
+      ],
       imports: [CollectionsSearchResultCardComponent, OSFTestingModule],
     }).compileComponents();
 

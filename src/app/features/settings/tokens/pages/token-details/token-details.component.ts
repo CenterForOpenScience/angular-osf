@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -21,7 +20,6 @@ import { DeleteToken, GetTokenById, TokensSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './token-details.component.html',
   styleUrls: ['./token-details.component.scss'],
-  providers: [DialogService, DynamicDialogRef],
 })
 export class TokenDetailsComponent implements OnInit {
   private readonly customConfirmationService = inject(CustomConfirmationService);

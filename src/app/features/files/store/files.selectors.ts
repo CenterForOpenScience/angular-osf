@@ -1,5 +1,6 @@
 import { Selector } from '@ngxs/store';
 
+import { SupportedFeature } from '@osf/shared/enums';
 import { ConfiguredAddonModel, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
 
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
@@ -89,8 +90,8 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static getContributors(state: FilesStateModel): Partial<ContributorModel>[] | null {
-    return state.contributors.data;
+  static getContributors(state: FilesStateModel): ContributorModel[] {
+    return state.contributors.data || [];
   }
 
   @Selector([FilesState])
@@ -136,5 +137,10 @@ export class FilesSelectors {
   @Selector([FilesState])
   static isConfiguredStorageAddonsLoading(state: FilesStateModel): boolean {
     return state.configuredStorageAddons.isLoading;
+  }
+
+  @Selector([FilesState])
+  static getStorageSupportedFeatures(state: FilesStateModel): Record<string, SupportedFeature[]> {
+    return state.storageSupportedFeatures || {};
   }
 }

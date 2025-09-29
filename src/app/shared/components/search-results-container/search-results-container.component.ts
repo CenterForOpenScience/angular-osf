@@ -20,7 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { searchSortingOptions } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
-import { DiscoverableFilter, ResourceModel, TabOption } from '@osf/shared/models';
+import { DiscoverableFilter, FilterOption, ResourceModel, TabOption } from '@osf/shared/models';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '../resource-card/resource-card.component';
@@ -52,7 +52,7 @@ export class SearchResultsContainerComponent {
   searchCount = input<number>(0);
   selectedSort = input<string>('');
   selectedTab = input<number>(ResourceType.Null);
-  selectedValues = input<Record<string, string | null>>({});
+  selectedOptions = input<Record<string, FilterOption | null>>({});
   first = input<string | null>(null);
   prev = input<string | null>(null);
   next = input<string | null>(null);
@@ -71,9 +71,8 @@ export class SearchResultsContainerComponent {
   readonly searchSortingOptions = searchSortingOptions;
   readonly ResourceType = ResourceType;
 
-  readonly hasSelectedValues = computed(() => {
-    const values = this.selectedValues();
-    return Object.values(values).some((value) => value !== null && value !== '');
+  readonly hasSelectedOptions = computed(() => {
+    return Object.values(this.selectedOptions()).length > 0;
   });
 
   readonly hasFilters = computed(() => this.filters().length > 0);

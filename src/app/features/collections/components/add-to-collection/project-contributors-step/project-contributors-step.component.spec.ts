@@ -5,9 +5,8 @@ import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InfoIconComponent } from '@shared/components';
-import { ContributorsListComponent } from '@shared/components/contributors';
+import { ContributorsListComponent, ContributorsTableComponent } from '@shared/components/contributors';
 import { CustomConfirmationService } from '@shared/services/custom-confirmation.service';
-import { ToastService } from '@shared/services/toast.service';
 import { ContributorsSelectors } from '@shared/stores/contributors';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -29,6 +28,7 @@ describe('ProjectContributorsStepComponent', () => {
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
+      imports: [ProjectContributorsStepComponent, MockComponent(ContributorsTableComponent), MockPipe(TranslatePipe)],
       imports: [
         ProjectContributorsStepComponent,
         OSFTestingModule,

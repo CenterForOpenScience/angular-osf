@@ -1,5 +1,9 @@
 import { MenuItem } from 'primeng/api';
 
+import { UserPermissions } from '@osf/shared/enums';
+
+import { CustomMenuItem } from '../models/custom-menu-item.model';
+
 export const AUTHENTICATED_MENU_ITEMS: string[] = [
   'my-profile',
   'my-resources',
@@ -14,6 +18,7 @@ export const VIEW_ONLY_PROJECT_MENU_ITEMS: string[] = [
   'project-files',
   'project-wiki',
   'project-analytics',
+  'project-links',
 ];
 
 export const VIEW_ONLY_REGISTRY_MENU_ITEMS: string[] = [
@@ -22,9 +27,10 @@ export const VIEW_ONLY_REGISTRY_MENU_ITEMS: string[] = [
   'registration-wiki',
   'registration-analytics',
   'registration-components',
+  'registration-recent-activity',
 ];
 
-export const PROJECT_MENU_ITEMS: MenuItem[] = [
+export const PROJECT_MENU_ITEMS: CustomMenuItem[] = [
   {
     id: 'project-overview',
     label: 'navigation.overview',
@@ -65,6 +71,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.contributors',
     routerLink: 'contributors',
     visible: true,
+    requiredPermission: UserPermissions.Read,
     routerLinkActiveOptions: { exact: true },
   },
   {
@@ -79,6 +86,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.addons',
     routerLink: 'addons',
     visible: true,
+    requiredPermission: UserPermissions.Write,
     routerLinkActiveOptions: { exact: true },
   },
   {
@@ -93,6 +101,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.settings',
     routerLink: 'settings',
     visible: true,
+    requiredPermission: UserPermissions.Read,
     routerLinkActiveOptions: { exact: true },
   },
 ];
@@ -107,7 +116,7 @@ export const PREPRINT_MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
+export const REGISTRATION_MENU_ITEMS: CustomMenuItem[] = [
   {
     id: 'registration-overview',
     label: 'navigation.overview',
@@ -155,6 +164,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.contributors',
     routerLink: 'contributors',
     visible: true,
+    requiredPermission: UserPermissions.Read,
     routerLinkActiveOptions: { exact: true },
   },
   {
@@ -180,7 +190,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-export const MENU_ITEMS: MenuItem[] = [
+export const MENU_ITEMS: CustomMenuItem[] = [
   {
     id: 'home',
     routerLink: '/',

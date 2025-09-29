@@ -17,7 +17,7 @@
             icon="fas fa-plus"
             severity="success"
             outlined
-            [disabled]="viewOnly()"
+            [disabled]="!canEdit()"
             (onClick)="openAddWikiDialog()"
           />
 
@@ -30,7 +30,7 @@
             (onClick)="collapseNavigation()"
           />
         </div>
-        @if (!viewOnly() && list().length) {
+        @if (canEdit() && list().length) {
           @if (!isHomeWikiSelected()) {
             <p-button
               icon="fas fa-trash"
@@ -76,8 +76,7 @@
           <i class="fas fa-forward"></i>
         </p-button>
       </div>
-
-      @if (!viewOnly()) {
+      @if (canEdit()) {
         <p-button
           class="btn-icon-only"
           icon="fas fa-plus"

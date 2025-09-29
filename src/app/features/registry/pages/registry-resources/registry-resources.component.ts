@@ -1,18 +1,19 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { filter, finalize, switchMap, take } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { GetResourceMetadata, MetadataSelectors } from '@osf/features/metadata/store';
 import { IconComponent, LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { ResourceType, UserPermissions } from '@shared/enums';
 
 import { AddResourceDialogComponent, EditResourceDialogComponent } from '../../components';
 import { RegistryResource } from '../../models';
@@ -29,13 +30,11 @@ import {
   templateUrl: './registry-resources.component.html',
   styleUrl: './registry-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class RegistryResourcesComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -43,24 +42,31 @@ export class RegistryResourcesComponent {
   readonly resources = select(RegistryResourcesSelectors.getResources);
   readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
   readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
+  readonly registry = select(MetadataSelectors.getResourceMetadata);
 
-  registryId = '';
+  registryId = this.route.snapshot.parent?.params['id'];
   isAddingResource = signal(false);
   doiDomain = 'https://doi.org/';
 
   private readonly actions = createDispatchMap({
+    fetchRegistryData: GetResourceMetadata,
     getResources: GetRegistryResources,
     addResource: AddRegistryResource,
     deleteResource: DeleteResource,
   });
 
+  canEdit = computed(() => {
+    const registry = this.registry();
+    if (!registry) return false;
+
+    return registry.currentUserPermissions.includes(UserPermissions.Write);
+  });
+
+  addButtonVisible = computed(() => !!this.registry()?.identifiers?.length && this.canEdit());
+
   constructor() {
-    this.route.parent?.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      this.registryId = params['id'];
-      if (this.registryId) {
-        this.actions.getResources(this.registryId);
-      }
-    });
+    this.actions.fetchRegistryData(this.registryId, ResourceType.Registration);
+    this.actions.getResources(this.registryId);
   }
 
   addResource() {
@@ -84,13 +90,9 @@ export class RegistryResourcesComponent {
   }
 
   openAddResourceDialog() {
-    return this.dialogService.open(AddResourceDialogComponent, {
-      header: this.translateService.instant('resources.add'),
+    return this.customDialogService.open(AddResourceDialogComponent, {
+      header: 'resources.add',
       width: '500px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: { id: this.registryId },
     }).onClose;
   }
@@ -98,14 +100,10 @@ export class RegistryResourcesComponent {
   updateResource(resource: RegistryResource) {
     if (!this.registryId) return;
 
-    this.dialogService
+    this.customDialogService
       .open(EditResourceDialogComponent, {
-        header: this.translateService.instant('resources.edit'),
+        header: 'resources.edit',
         width: '500px',
-        focusOnShow: false,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: { id: this.registryId, resource: resource },
       })
       .onClose.pipe(

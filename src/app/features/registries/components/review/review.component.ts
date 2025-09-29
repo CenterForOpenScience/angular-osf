@@ -1,11 +1,10 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { Tag } from 'primeng/tag';
 
@@ -13,14 +12,14 @@ import { map, of } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { RegistrationBlocksDataComponent } from '@osf/shared/components';
+import { ContributorsListComponent, RegistrationBlocksDataComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType, ResourceType } from '@osf/shared/enums';
 import { InterpolatePipe } from '@osf/shared/pipes';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   ContributorsSelectors,
   FetchSelectedSubjects,
@@ -45,7 +44,6 @@ import { SelectComponentsDialogComponent } from '../select-components-dialog/sel
     TranslatePipe,
     Card,
     Message,
-    RouterLink,
     Tag,
     Button,
     Accordion,
@@ -54,18 +52,17 @@ import { SelectComponentsDialogComponent } from '../select-components-dialog/sel
     AccordionPanel,
     InterpolatePipe,
     RegistrationBlocksDataComponent,
+    ContributorsListComponent,
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class ReviewComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly customConfirmationService = inject(CustomConfirmationService);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly environment = inject(ENVIRONMENT);
 
@@ -159,13 +156,10 @@ export class ReviewComponent {
   }
 
   openSelectComponentsForRegistrationDialog(): void {
-    this.dialogService
+    this.customDialogService
       .open(SelectComponentsDialogComponent, {
+        header: 'registries.review.selectComponents.title',
         width: '552px',
-        focusOnShow: false,
-        header: this.translateService.instant('registries.review.selectComponents.title'),
-        closeOnEscape: true,
-        modal: true,
         data: {
           parent: this.draftRegistration()?.branchedFrom,
           components: this.components(),
@@ -179,13 +173,10 @@ export class ReviewComponent {
   }
 
   openConfirmRegistrationDialog(components?: string[]): void {
-    this.dialogService
+    this.customDialogService
       .open(ConfirmRegistrationDialogComponent, {
+        header: 'registries.review.confirmation.title',
         width: '552px',
-        focusOnShow: false,
-        header: this.translateService.instant('registries.review.confirmation.title'),
-        closeOnEscape: true,
-        modal: true,
         data: {
           draftId: this.draftId(),
           projectId:

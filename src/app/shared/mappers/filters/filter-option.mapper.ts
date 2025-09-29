@@ -1,7 +1,7 @@
-import { FilterOption, FilterOptionItem, SearchResultJsonApi } from '@shared/models';
+import { FilterOption, FilterOptionItem, SearchResultDataJsonApi } from '@shared/models';
 
 export function mapFilterOptions(
-  searchResultItems: SearchResultJsonApi[],
+  searchResultItems: SearchResultDataJsonApi[],
   filterOptionItems: FilterOptionItem[]
 ): FilterOption[] {
   return searchResultItems.map((searchResult) => {

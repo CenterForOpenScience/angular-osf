@@ -1,9 +1,14 @@
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import {
   ApiData,
+  ContributorDataJsonApi,
+  IdentifiersJsonApiData,
   JsonApiResponseWithMeta,
+  LicenseDataJsonApi,
   MetaAnonymousJsonApi,
-  ProviderDataJsonApi,
+  RegistrationNodeAttributesJsonApi,
+  RegistryProviderDetailsJsonApi,
+  ResponseJsonApi,
   SchemaResponseDataJsonApi,
 } from '@osf/shared/models';
 
@@ -14,7 +19,7 @@ export type GetRegistryOverviewJsonApi = JsonApiResponseWithMeta<
 >;
 
 export type RegistryOverviewJsonApiData = ApiData<
-  RegistryOverviewJsonApiAttributes,
+  RegistrationNodeAttributesJsonApi,
   RegistryOverviewJsonApiEmbed,
   RegistryOverviewJsonApiRelationships,
   null
@@ -69,44 +74,12 @@ export type RegistrationQuestions = Record<string, string | string[] | { file_id
 
 export interface RegistryOverviewJsonApiEmbed {
   bibliographic_contributors: {
-    data: {
-      embeds: {
-        users: {
-          data: {
-            attributes: {
-              family_name: string;
-              full_name: string;
-              given_name: string;
-              middle_names: string;
-            };
-            id: string;
-            type: string;
-          };
-        };
-      };
-    }[];
+    data: ContributorDataJsonApi[];
   };
   license: {
-    data: {
-      id: string;
-      type: string;
-      attributes: {
-        name: string;
-        text: string;
-        url: string;
-      };
-    };
+    data: LicenseDataJsonApi;
   };
-  identifiers: {
-    data: {
-      id: string;
-      type: string;
-      attributes: {
-        category: string;
-        value: string;
-      };
-    }[];
-  };
+  identifiers: ResponseJsonApi<IdentifiersJsonApiData[]>;
   schema_responses: {
     data: SchemaResponseDataJsonApi[];
   };
@@ -124,7 +97,7 @@ export interface RegistryOverviewJsonApiEmbed {
       };
     }[];
   };
-  provider: { data: ProviderDataJsonApi };
+  provider: { data: RegistryProviderDetailsJsonApi };
 }
 
 export interface RegistryOverviewJsonApiRelationships {

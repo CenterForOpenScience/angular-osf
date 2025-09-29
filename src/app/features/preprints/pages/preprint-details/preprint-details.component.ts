@@ -3,7 +3,6 @@ import { createDispatchMap, select, Store } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { filter, map, of } from 'rxjs';
@@ -20,7 +19,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -50,7 +49,7 @@ import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/featur
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
-import { MetaTagsService } from '@shared/services';
+import { CustomDialogService, MetaTagsService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
@@ -71,10 +70,11 @@ import { PreprintWarningBannerComponent } from '../../components/preprint-detail
     PreprintWarningBannerComponent,
     ModerationStatusBannerComponent,
     MakeDecisionComponent,
+    RouterLink,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
-  providers: [DialogService, DatePipe],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintDetailsComponent implements OnInit, OnDestroy {
@@ -85,8 +85,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly store = inject(Store);
-  private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly translateService = inject(TranslateService);
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
@@ -313,26 +313,23 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   handleWithdrawClicked() {
     const dialogWidth = this.isMedium() ? '700px' : '340px';
 
-    const dialogRef = this.dialogService.open(WithdrawDialogComponent, {
-      header: this.translateService.instant('preprints.details.withdrawDialog.title', {
-        preprintWord: this.preprintProvider()!.preprintWord,
-      }),
-      focusOnShow: false,
-      closeOnEscape: true,
-      width: dialogWidth,
-      modal: true,
-      closable: true,
-      data: {
-        preprint: this.preprint(),
-        provider: this.preprintProvider(),
-      },
-    });
-
-    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean)).subscribe({
-      next: () => {
-        this.fetchPreprint(this.preprintId());
-      },
-    });
+    this.customDialogService
+      .open(WithdrawDialogComponent, {
+        header: this.translateService.instant('preprints.details.withdrawDialog.title', {
+          preprintWord: this.preprintProvider()!.preprintWord,
+        }),
+        width: dialogWidth,
+        data: {
+          preprint: this.preprint(),
+          provider: this.preprintProvider(),
+        },
+      })
+      .onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean))
+      .subscribe({
+        next: () => {
+          this.fetchPreprint(this.preprintId());
+        },
+      });
   }
 
   editPreprintClicked() {

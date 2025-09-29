@@ -19,7 +19,7 @@
     [searchCount]="resourcesCount()"
     [selectedSort]="sortBy()"
     [selectedTab]="resourceType()"
-    [selectedValues]="filterValues()"
+    [selectedOptions]="filterOptions()"
     [first]="first()"
     [prev]="previous()"
     [next]="next()"
@@ -29,21 +29,21 @@
   >
     <div slot="filter-chips">
       <osf-filter-chips
-        [filterValues]="filterValues()"
+        [filterOptions]="filterOptions()"
         [filters]="filters()"
-        (filterRemoved)="onFilterChipRemoved($event)"
+        (selectedOptionRemoved)="onSelectedOptionRemoved($event)"
       />
     </div>
 
     <ng-template #filtersComponent>
       <osf-reusable-filters
         [filters]="filters()"
-        [selectedValues]="filterValues()"
+        [selectedOptions]="filterOptions()"
         [filterSearchResults]="filterSearchCache()"
         [isLoading]="areResourcesLoading()"
         [showEmptyState]="true"
         (loadFilterOptions)="onLoadFilterOptions($event)"
-        (filterValueChanged)="onFilterChanged($event)"
+        (filterOptionChanged)="onFilterOptionChanged($event)"
         (filterSearchChanged)="onFilterSearchChanged($event)"
         (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
       />

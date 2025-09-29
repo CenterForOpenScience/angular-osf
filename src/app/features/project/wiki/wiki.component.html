@@ -5,7 +5,7 @@
       [variant]="wikiModes().view ? undefined : 'outlined'"
       (onClick)="toggleMode(WikiModes.View)"
     />
-    @if (!hasViewOnly()) {
+    @if (hasWriteAccess()) {
       <p-button
         [label]="'project.wiki.edit' | translate"
         [variant]="wikiModes().edit ? undefined : 'outlined'"
@@ -33,7 +33,7 @@
     [isLoading]="isWikiListLoading()"
     [componentsList]="componentsWikiList()"
     [currentWikiId]="currentWikiId()"
-    [viewOnly]="hasViewOnly()"
+    [canEdit]="hasWriteAccess()"
     (createWiki)="onCreateWiki()"
     (deleteWiki)="onDeleteWiki()"
   ></osf-wiki-list>
@@ -46,7 +46,7 @@
       (selectVersion)="onSelectVersion($event)"
     ></osf-view-section>
   }
-  @if (!hasViewOnly() && wikiModes().edit) {
+  @if (hasWriteAccess() && wikiModes().edit) {
     <osf-edit-section
       [currentContent]="previewContent()"
       [versionContent]="versionContent()"

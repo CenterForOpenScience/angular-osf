@@ -9,7 +9,6 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FILTER_PLACEHOLDERS } from '@osf/shared/constants';
-import { StringOrNull } from '@osf/shared/helpers';
 import { DiscoverableFilter, FilterOption } from '@osf/shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
@@ -37,7 +36,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 })
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
-  selectedValues = input<Record<string, StringOrNull>>({});
+  selectedOptions = input<Record<string, FilterOption | null>>({});
   filterSearchResults = input<Record<string, FilterOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
@@ -46,9 +45,9 @@ export class ReusableFilterComponent {
   readonly Boolean = Boolean;
 
   loadFilterOptions = output<DiscoverableFilter>();
-  filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
-  filterSearchChanged = output<{ filterType: string; searchText: string; filter: DiscoverableFilter }>();
-  loadMoreFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
+  filterOptionChanged = output<{ filter: DiscoverableFilter; filterOption: FilterOption | null }>();
+  filterSearchChanged = output<{ filter: DiscoverableFilter; searchText: string }>();
+  loadMoreFilterOptions = output<DiscoverableFilter>();
 
   private readonly expandedFilters = signal<Set<string>>(new Set());
 
@@ -106,12 +105,7 @@ export class ReusableFilterComponent {
       return Boolean(filter.options && filter.options.length > 0);
     }
 
-    return Boolean(
-      (filter.resultCount && filter.resultCount > 0) ||
-        (filter.options && filter.options.length > 0) ||
-        filter.hasOptions ||
-        (filter.selectedValues && filter.selectedValues.length > 0)
-    );
+    return Boolean((filter.resultCount && filter.resultCount > 0) || (filter.options && filter.options.length > 0));
   }
 
   onAccordionToggle(filterKey: string | number | string[] | number[]): void {
@@ -137,54 +131,28 @@ export class ReusableFilterComponent {
     }
   }
 
-  onFilterChanged(filterType: string, value: string | null): void {
-    this.filterValueChanged.emit({ filterType, value });
+  onOptionChanged(filter: DiscoverableFilter, filterOption: FilterOption | null): void {
+    this.filterOptionChanged.emit({ filter, filterOption });
   }
 
-  onFilterSearch(filterType: string, searchText: string): void {
-    const filter = this.filters().find((f) => f.key === filterType);
+  onFilterSearch(filter: DiscoverableFilter, searchText: string): void {
     if (filter) {
-      this.filterSearchChanged.emit({ filterType, searchText, filter });
+      this.filterSearchChanged.emit({ filter, searchText });
     }
   }
 
-  onLoadMoreOptions(filterType: string): void {
-    const filter = this.filters().find((f) => f.key === filterType);
-    if (filter) {
-      this.loadMoreFilterOptions.emit({ filterType, filter });
-    }
-  }
-
-  isFilterLoading(filter: DiscoverableFilter): boolean {
-    return filter.isLoading || false;
-  }
-
-  getSelectedValue(filterKey: string): string | null {
-    return this.selectedValues()[filterKey] || null;
-  }
-
-  getFilterPlaceholder(filterKey: string): string {
-    return this.FILTER_PLACEHOLDERS[filterKey] || '';
-  }
-
-  getFilterLabel(filter: DiscoverableFilter): string {
-    return filter.label || filter.key || '';
-  }
-
-  hasFilterContent(filter: DiscoverableFilter): boolean {
-    return !!(
-      filter.description ||
-      filter.helpLink ||
-      filter.resultCount ||
-      filter.options?.length ||
-      filter.hasOptions ||
-      filter.type === 'group'
-    );
+  onLoadMoreOptions(filter: DiscoverableFilter): void {
+    this.loadMoreFilterOptions.emit(filter);
   }
 
   onIsPresentFilterToggle(filter: DiscoverableFilter, isChecked: boolean): void {
     const value = isChecked ? 'true' : null;
-    this.filterValueChanged.emit({ filterType: filter.key, value });
+    const filterOption: FilterOption = {
+      label: '',
+      value: String(value),
+      cardSearchResultCount: NaN,
+    };
+    this.filterOptionChanged.emit({ filter, filterOption });
   }
 
   onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {

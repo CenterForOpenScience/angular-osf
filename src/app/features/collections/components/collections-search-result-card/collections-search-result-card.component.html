@@ -4,15 +4,15 @@
   <a [href]="item.nodeUrl">
     <p class="card-title font-bold">{{ item?.title }}</p>
   </a>
-  <p>
-    {{ 'collections.common.by' | translate }}
-    @for (contributor of item?.contributors; track contributor.id) {
-      <a [routerLink]="['/user', contributor.id]" class="font-bold cursor-pointer">
-        {{ contributor.fullName }}{{ $last ? '' : ', ' }}
-      </a>
-    }
-  </p>
+
+  <div class="flex gap-1">
+    <p>{{ 'collections.common.by' | translate }}</p>
+
+    <osf-contributors-list [contributors]="item?.contributors || []"></osf-contributors-list>
+  </div>
+
   <p class="card-description">{{ item?.description }}</p>
+
   <p class="flex gap-1 flex-wrap">
     <span>{{ 'collections.common.dateCreated' | translate }}</span>
     <span>{{ item?.dateCreated | date: 'longDate' }}</span>
@@ -20,6 +20,7 @@
     <span>{{ 'collections.common.dateModified' | translate }}</span>
     <span>{{ item?.dateModified | date: 'longDate' }}</span>
   </p>
+
   <div class="font-bold flex flex-wrap">
     @for (attribute of presentSubmissionAttributes(); track attribute.key) {
       @if (!$first) {

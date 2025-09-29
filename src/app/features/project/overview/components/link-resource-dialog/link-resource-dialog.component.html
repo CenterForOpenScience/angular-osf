@@ -84,7 +84,7 @@
           <td>{{ item.dateCreated | date: 'MMM d, y' }}</td>
           <td>{{ item.dateModified | date: 'MMM d, y' }}</td>
           <td>
-            @for (contributor of item.contributors; track contributor.fullName) {
+            @for (contributor of item.contributors; track contributor.id) {
               {{ contributor.fullName }}{{ $last ? '' : ', ' }}
             }
           </td>

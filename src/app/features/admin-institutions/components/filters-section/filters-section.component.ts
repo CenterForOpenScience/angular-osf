@@ -8,8 +8,7 @@ import { Card } from 'primeng/card';
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 
 import { FilterChipsComponent, ReusableFilterComponent } from '@shared/components';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter } from '@shared/models';
+import { DiscoverableFilter, FilterOption } from '@shared/models';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -19,7 +18,7 @@ import {
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
   SetDefaultFilterValue,
-  UpdateFilterValue,
+  UpdateSelectedFilterOption,
 } from '@shared/stores/global-search';
 
 @Component({
@@ -35,7 +34,7 @@ export class FiltersSectionComponent {
     loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
     loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
     loadMoreFilterOptions: LoadMoreFilterOptions,
-    updateFilterValue: UpdateFilterValue,
+    updateSelectedFilterOption: UpdateSelectedFilterOption,
     clearFilterSearchResults: ClearFilterSearchResults,
     setDefaultFilterValue: SetDefaultFilterValue,
     fetchResources: FetchResources,
@@ -43,12 +42,12 @@ export class FiltersSectionComponent {
 
   filtersVisible = model<boolean>();
   filters = select(GlobalSearchSelectors.getFilters);
-  filterValues = select(GlobalSearchSelectors.getFilterValues);
+  selectedFilterOptions = select(GlobalSearchSelectors.getSelectedOptions);
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
 
-  onFilterChanged(event: { filterType: string; value: StringOrNull }): void {
-    this.actions.updateFilterValue(event.filterType, event.value);
+  onFilterChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption | null }): void {
+    this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);
     this.actions.fetchResources();
   }
 
@@ -56,20 +55,20 @@ export class FiltersSectionComponent {
     this.actions.loadFilterOptions(filter.key);
   }
 
-  onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
-    this.actions.loadMoreFilterOptions(event.filterType);
+  onLoadMoreFilterOptions(filter: DiscoverableFilter): void {
+    this.actions.loadMoreFilterOptions(filter.key);
   }
 
-  onFilterSearchChanged(event: { filterType: string; searchText: string; filter: DiscoverableFilter }): void {
+  onFilterSearchChanged(event: { searchText: string; filter: DiscoverableFilter }): void {
     if (event.searchText.trim()) {
-      this.actions.loadFilterOptionsWithSearch(event.filterType, event.searchText);
+      this.actions.loadFilterOptionsWithSearch(event.filter.key, event.searchText);
     } else {
-      this.actions.clearFilterSearchResults(event.filterType);
+      this.actions.clearFilterSearchResults(event.filter.key);
     }
   }
 
   onFilterChipRemoved(filterKey: string): void {
-    this.actions.updateFilterValue(filterKey, null);
+    this.actions.updateSelectedFilterOption(filterKey, null);
     this.actions.fetchResources();
   }
 }

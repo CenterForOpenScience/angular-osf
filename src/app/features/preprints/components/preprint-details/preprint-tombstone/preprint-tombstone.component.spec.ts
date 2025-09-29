@@ -2,13 +2,14 @@ import { MockComponents, MockPipes } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { ContributorsListComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { MOCK_CONTRIBUTOR } from '@osf/shared/mocks';
+import { InterpolatePipe } from '@osf/shared/pipes';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
-import { TruncatedTextComponent } from '@shared/components';
-import { MOCK_CONTRIBUTOR } from '@shared/mocks';
-import { InterpolatePipe } from '@shared/pipes';
+
+import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
 
 import { PreprintTombstoneComponent } from './preprint-tombstone.component';
 
@@ -33,7 +34,7 @@ describe('PreprintTombstoneComponent', () => {
       imports: [
         PreprintTombstoneComponent,
         OSFTestingModule,
-        ...MockComponents(PreprintDoiSectionComponent, TruncatedTextComponent),
+        ...MockComponents(PreprintDoiSectionComponent, TruncatedTextComponent, ContributorsListComponent),
         MockPipes(InterpolatePipe),
       ],
       providers: [

@@ -156,6 +156,15 @@ export class GetConfiguredStorageAddons {
   constructor(public resourceUri: string) {}
 }
 
+export class GetStorageSupportedFeatures {
+  static readonly type = '[Files] Get Storage Supported Features';
+
+  constructor(
+    public storageId: string,
+    public providerName: string
+  ) {}
+}
+
 export class ResetState {
   static readonly type = '[Files] Reset State';
 }

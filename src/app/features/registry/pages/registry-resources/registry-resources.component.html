@@ -1,6 +1,6 @@
 <osf-sub-header
   [title]="'resources.title' | translate"
-  [showButton]="true"
+  [showButton]="addButtonVisible()"
   [isButtonDisabled]="isAddingResource()"
   [buttonLabel]="'resources.add' | translate"
   (buttonClick)="addResource()"
@@ -35,23 +35,25 @@
             </div>
           </div>
 
-          <div class="flex gap-3 ml-auto w-full md:w-auto">
-            <p-button
-              class="w-full md:w-auto"
-              styleClass="w-full md:w-auto"
-              severity="secondary"
-              [label]="'common.buttons.edit' | translate"
-              (onClick)="updateResource(resource)"
-            ></p-button>
+          @if (canEdit()) {
+            <div class="flex gap-3 ml-auto w-full md:w-auto">
+              <p-button
+                class="w-full md:w-auto"
+                styleClass="w-full md:w-auto"
+                severity="secondary"
+                [label]="'common.buttons.edit' | translate"
+                (onClick)="updateResource(resource)"
+              ></p-button>
 
-            <p-button
-              class="w-full md:w-auto"
-              styleClass="w-full md:w-auto"
-              severity="danger"
-              [label]="'common.buttons.delete' | translate"
-              (onClick)="deleteResource(resource.id)"
-            ></p-button>
-          </div>
+              <p-button
+                class="w-full md:w-auto"
+                styleClass="w-full md:w-auto"
+                severity="danger"
+                [label]="'common.buttons.delete' | translate"
+                (onClick)="deleteResource(resource.id)"
+              ></p-button>
+            </div>
+          }
         </div>
       }
     </div>

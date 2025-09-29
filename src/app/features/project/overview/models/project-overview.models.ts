@@ -1,5 +1,7 @@
 import { UserPermissions } from '@osf/shared/enums';
 import {
+  ContributorDataJsonApi,
+  ContributorModel,
   Identifier,
   IdTypeModel,
   Institution,
@@ -9,15 +11,6 @@ import {
   LicensesOption,
   MetaAnonymousJsonApi,
 } from '@osf/shared/models';
-
-export interface ProjectOverviewContributor {
-  familyName: string;
-  fullName: string;
-  givenName: string;
-  middleName: string;
-  id: string;
-  type: string;
-}
 
 export interface ProjectOverview {
   id: string;
@@ -52,7 +45,7 @@ export interface ProjectOverview {
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
-  contributors: ProjectOverviewContributor[];
+  contributors: ContributorModel[];
   customCitation: string | null;
   region?: IdTypeModel;
   affiliatedInstitutions?: Institution[];
@@ -113,22 +106,7 @@ export interface ProjectOverviewGetResponseJsonApi {
       }[];
     };
     bibliographic_contributors: {
-      data: {
-        embeds: {
-          users: {
-            data: {
-              id: string;
-              type: string;
-              attributes: {
-                family_name: string;
-                full_name: string;
-                given_name: string;
-                middle_name: string;
-              };
-            };
-          };
-        };
-      }[];
+      data: ContributorDataJsonApi[];
     };
     license: {
       data: {

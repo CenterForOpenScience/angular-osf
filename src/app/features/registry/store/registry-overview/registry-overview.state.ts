@@ -66,8 +66,8 @@ export class RegistryOverviewState {
           isAnonymous: response.meta?.anonymous ?? false,
         });
 
-        if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
-          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+        if (registryOverview?.registrationSchemaLink) {
+          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink));
         }
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))
@@ -142,8 +142,8 @@ export class RegistryOverviewState {
           },
         });
 
-        if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
-          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+        if (registryOverview?.registrationSchemaLink) {
+          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink));
         }
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))
@@ -169,8 +169,9 @@ export class RegistryOverviewState {
             error: null,
           },
         });
-        if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
-          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+
+        if (registryOverview?.registrationSchemaLink) {
+          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink));
         }
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))

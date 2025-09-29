@@ -78,6 +78,10 @@ export class RegistryMakeDecisionComponent {
     return this.registry.reviewsState === RegistrationReviewStates.Pending;
   }
 
+  get isPendingWithdrawal(): boolean {
+    return this.registry.reviewsState === RegistrationReviewStates.PendingWithdraw;
+  }
+
   get canWithdraw(): boolean {
     return (
       this.registry.reviewsState === RegistrationReviewStates.Accepted &&
@@ -90,6 +94,24 @@ export class RegistryMakeDecisionComponent {
       (this.requestForm.controls[ModerationDecisionFormControls.Comment].touched ||
         this.requestForm.controls[ModerationDecisionFormControls.Comment].dirty)
     );
+  }
+
+  get acceptValue(): string {
+    if (this.isPendingReview) {
+      return ReviewActionTrigger.AcceptSubmission;
+    } else if (this.isPendingWithdrawal) {
+      return ReviewActionTrigger.AcceptWithdrawal;
+    }
+    return SchemaResponseActionTrigger.AcceptRevision;
+  }
+
+  get rejectValue(): string {
+    if (this.isPendingReview) {
+      return ReviewActionTrigger.RejectSubmission;
+    } else if (this.isPendingWithdrawal) {
+      return ReviewActionTrigger.RejectWithdrawal;
+    }
+    return SchemaResponseActionTrigger.RejectRevision;
   }
 
   constructor() {
@@ -122,6 +144,7 @@ export class RegistryMakeDecisionComponent {
     return (
       action === ReviewActionTrigger.RejectSubmission ||
       action === SchemaResponseActionTrigger.RejectRevision ||
+      action === ReviewActionTrigger.RejectWithdrawal ||
       action === ReviewActionTrigger.ForceWithdraw
     );
   }

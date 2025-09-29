@@ -1,6 +1,6 @@
 <section class="flex flex-column flex-1">
   <osf-sub-header
-    [showButton]="true"
+    [showButton]="hasWriteAccess()"
     [buttonLabel]="'project.metadata.addCommunityMetadataRecord.title' | translate"
     [isButtonDisabled]="isLoading()"
     (buttonClick)="openAddRecord()"
@@ -13,6 +13,7 @@
     [selectedCedarTemplate]="selectedCedarTemplate()!"
     [selectedCedarRecord]="selectedCedarRecord()!"
     [cedarFormReadonly]="cedarFormReadonly()"
+    [canEdit]="hasWriteAccess()"
     (changeTab)="onTabChange($event)"
     (formSubmit)="onCedarFormSubmit($event)"
     (cedarFormChangeTemplate)="onCedarFormChangeTemplate()"
@@ -20,11 +21,16 @@
   >
     <div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
       <div class="col-12 lg:col-6 flex flex-column gap-4">
-        <osf-metadata-title (openEditTitleDialog)="openEditTitleDialog()" [title]="metadata()?.title!" />
+        <osf-metadata-title
+          (openEditTitleDialog)="openEditTitleDialog()"
+          [title]="metadata()?.title!"
+          [readonly]="!hasWriteAccess()"
+        />
 
         <osf-metadata-description
           (openEditDescriptionDialog)="openEditDescriptionDialog()"
           [description]="metadata()?.description!"
+          [readonly]="!hasWriteAccess()"
         />
 
         <osf-metadata-date-info [dateCreated]="metadata()?.dateCreated" [dateModified]="metadata()?.dateModified" />
@@ -32,31 +38,39 @@
         <osf-metadata-contributors
           (openEditContributorDialog)="openEditContributorDialog()"
           [contributors]="bibliographicContributors()"
+          [readonly]="!hasWriteAccess()"
         />
 
         <osf-metadata-resource-information
           (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
           (showResourceInfo)="onShowResourceInfo()"
           [customItemMetadata]="customItemMetadata()!"
+          [readonly]="!hasWriteAccess()"
         />
 
         <osf-metadata-funding
           (openEditFundingDialog)="openEditFundingDialog()"
           [funders]="customItemMetadata()?.funders!"
+          [readonly]="!hasWriteAccess()"
         />
 
         <osf-metadata-affiliated-institutions
           (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
           [affiliatedInstitutions]="affiliatedInstitutions()"
+          [readonly]="!hasWriteAccess()"
         />
       </div>
 
       <div class="col-12 lg:col-6 flex flex-column gap-4">
-        <osf-metadata-license (openEditLicenseDialog)="openEditLicenseDialog()" [license]="metadata()?.license!" />
+        <osf-metadata-license
+          (openEditLicenseDialog)="openEditLicenseDialog()"
+          [license]="metadata()?.license!"
+          [readonly]="!hasWriteAccess()"
+        />
 
         <osf-metadata-publication-doi
           (openEditPublicationDoiDialog)="handleEditDoi()"
-          [hideEditDoi]="hideEditDoi()"
+          [hideEditDoi]="hideEditDoi() || !hasWriteAccess()"
           [identifiers]="metadata()?.identifiers!"
           [publicationDoi]="metadata()?.publicationDoi || null"
           [resourceType]="resourceType()"
@@ -66,7 +80,11 @@
           <osf-metadata-registration-doi [identifiers]="metadata()?.identifiers!"></osf-metadata-registration-doi>
         }
 
-        <osf-metadata-tags [tags]="metadata()?.tags || []" (tagsChanged)="onTagsChanged($event)"></osf-metadata-tags>
+        <osf-metadata-tags
+          [tags]="metadata()?.tags || []"
+          (tagsChanged)="onTagsChanged($event)"
+          [readonly]="!hasWriteAccess()"
+        ></osf-metadata-tags>
 
         <osf-metadata-subjects
           (getSubjectChildren)="getSubjectChildren($event)"
@@ -74,6 +92,7 @@
           (updateSelectedSubjects)="updateSelectedSubjects($event)"
           [isSubjectsUpdating]="isSubjectsUpdating()!"
           [selectedSubjects]="selectedSubjects()"
+          [readonly]="!hasAdminAccess()"
         />
       </div>
     </div>
