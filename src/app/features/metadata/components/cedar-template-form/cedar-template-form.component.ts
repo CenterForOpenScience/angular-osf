@@ -4,6 +4,7 @@ import { Button } from 'primeng/button';
 
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
@@ -33,7 +34,7 @@ import 'cedar-artifact-viewer';
   styleUrl: './cedar-template-form.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   encapsulation: ViewEncapsulation.None,
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CedarTemplateFormComponent {
   emitData = output<CedarRecordDataBinding>();
