@@ -15,6 +15,7 @@ export interface ContributorModel {
   familyName: string;
   employment: Employment[];
   education: Education[];
+  deactivated: boolean;
 }
 
 export type ContributorShortInfoModel = Pick<
