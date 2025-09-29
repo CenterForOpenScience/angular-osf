@@ -42,7 +42,7 @@ import { IS_SMALL } from '@osf/shared/helpers';
 import { ToolbarResource } from '@osf/shared/models';
 import { Duplicate } from '@osf/shared/models/duplicates';
 import { CustomDialogService } from '@osf/shared/services';
-import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
+import { ClearDuplicates, CurrentResourceSelectors, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-view-duplicates',
@@ -76,6 +76,7 @@ export class ViewDuplicatesComponent {
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
   totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
+  hasNoPermissions = select(CurrentResourceSelectors.hasNoPermissions);
 
   readonly pageSize = 10;
   readonly UserPermissions = UserPermissions;

@@ -5,7 +5,7 @@
     <osf-loading-spinner />
   } @else {
     <div class="flex flex-column flex-1 gap-4 w-full bg-white py-4 px-3 md:px-5 xl:px-4">
-      @if (canWrite()) {
+      @if (hasWriteAccess()) {
         <osf-settings-project-form-card
           (submitForm)="submitForm($event)"
           (deleteProject)="deleteProject()"
@@ -17,7 +17,7 @@
           [locationText]="'myProjects.settings.storageLocationMessage' | translate"
         ></osf-settings-storage-location-card>
 
-        @if (isAdmin()) {
+        @if (hasAdminAccess()) {
           <osf-settings-view-only-links-card
             id="view-only-links"
             [tableData]="viewOnlyLinks()"
@@ -48,6 +48,7 @@
       />
 
       <osf-settings-project-affiliation
+        [canEdit]="hasWriteAccess()"
         [affiliations]="projectDetails().affiliatedInstitutions"
         (removed)="removeAffiliation($event)"
       ></osf-settings-project-affiliation>

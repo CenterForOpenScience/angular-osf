@@ -1,6 +1,6 @@
 <osf-sub-header
   [title]="'project.analytics.kpi.forks' | translate"
-  [showButton]="true"
+  [showButton]="!hasNoPermissions()"
   [buttonLabel]="'project.overview.actions.forkProjectLabel' | translate"
   (buttonClick)="handleForkResource()"
 />

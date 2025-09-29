@@ -15,11 +15,7 @@ export class RegistryComponentsMapper {
       registrationSupplement: apiComponent.attributes.registration_supplement,
       tags: apiComponent.attributes.tags,
       isPublic: apiComponent.attributes.public,
-      contributors: ContributorsMapper.getContributors(apiComponent.embeds.bibliographic_contributors.data) || [],
+      contributors: ContributorsMapper.getContributors(apiComponent.embeds?.bibliographic_contributors?.data || []),
     };
-  }
-
-  static fromApiResponseArray(apiComponents: RegistryComponentJsonApi[]): RegistryComponentModel[] {
-    return apiComponents.map(this.fromApiResponse);
   }
 }
