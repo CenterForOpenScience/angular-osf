@@ -37,7 +37,7 @@
       }
     }
 
-    @if (!hasNoPermissions()) {
+    @if (isAuthenticated()) {
       <div class="flex ml-auto">
         <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
           @if (resource.storage && !isCollectionsRoute()) {
