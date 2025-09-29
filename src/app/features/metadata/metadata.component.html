@@ -83,7 +83,7 @@
         <osf-metadata-tags
           [tags]="metadata()?.tags || []"
           (tagsChanged)="onTagsChanged($event)"
-          [readonly]="!hasWriteAccess()"
+          [readonly]="!hasAdminAccess()"
         ></osf-metadata-tags>
 
         <osf-metadata-subjects
