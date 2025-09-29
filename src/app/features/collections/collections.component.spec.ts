@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { CollectionsComponent } from './collections.component';
 
@@ -9,7 +10,6 @@ describe('CollectionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CollectionsComponent],
-      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CollectionsComponent);
@@ -19,5 +19,10 @@ describe('CollectionsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render router outlet', () => {
+    const routerOutlet = fixture.debugElement.query(By.css('router-outlet'));
+    expect(routerOutlet).toBeTruthy();
   });
 });
