@@ -87,6 +87,9 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.html'],
+    languageOptions: {
+      parser: angularTemplateParser,
+    },
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {
       '@angular-eslint/template/banana-in-box': ['error'],
