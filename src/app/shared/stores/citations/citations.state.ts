@@ -72,6 +72,9 @@ export class CitationsState {
 
     return this.citationsService.fetchCitationStylesFromProvider(action.resourceType, action.providerId).pipe(
       switchMap((citationStyles) => {
+        if (citationStyles.length === 0) {
+          return of([[], []]);
+        }
         const citationRequests = citationStyles.map((style) =>
           this.citationsService.fetchStyledCitationById(action.resourceType, action.resourceId, style.id)
         );

@@ -8,7 +8,7 @@ export const parseQueryFilterParams = (params: Params): QueryParams => {
   const size = parseInt(params['size'], 10) || 10;
   const search = params['search'] || '';
   const sortColumn = params['sortColumn'] || '';
-  const sortOrder = params['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc;
+  const sortOrder = params['sortOrder'] === 'asc' ? SortOrder.Asc : SortOrder.Desc;
 
   return {
     page,
