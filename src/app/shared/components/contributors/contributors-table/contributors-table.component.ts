@@ -18,9 +18,21 @@ import { ContributorPermission } from '@osf/shared/enums';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 
+import { IconComponent } from '../../icon/icon.component';
+
 @Component({
   selector: 'osf-contributors-table',
-  imports: [TranslatePipe, FormsModule, TableModule, Tooltip, Checkbox, Skeleton, Button, SelectComponent],
+  imports: [
+    TranslatePipe,
+    FormsModule,
+    TableModule,
+    Tooltip,
+    Checkbox,
+    Skeleton,
+    Button,
+    SelectComponent,
+    IconComponent,
+  ],
   templateUrl: './contributors-table.component.html',
   styleUrl: './contributors-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
