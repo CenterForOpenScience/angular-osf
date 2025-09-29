@@ -8,6 +8,7 @@ import { ToastService } from '@shared/services';
 
 import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-confirmation-dialog.component';
 
+import { MOCK_PROJECT } from '@testing/mocks/project.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
@@ -25,11 +26,7 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
     userId: 'user-1',
   };
 
-  const mockProject = {
-    id: 'project-1',
-    title: 'Test Project',
-    description: 'Test project description',
-  };
+  const mockProject = MOCK_PROJECT;
 
   beforeEach(async () => {
     mockDialogRef = {
@@ -86,6 +83,7 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
     expect(component.config.data.project).toBeDefined();
     expect(component.config.data.project.id).toBe('project-1');
     expect(component.config.data.project.title).toBe('Test Project');
+    expect(component.config.data.project.isPublic).toBe(true);
   });
 
   it('should have actions defined', () => {

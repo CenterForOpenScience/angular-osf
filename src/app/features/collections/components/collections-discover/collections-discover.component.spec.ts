@@ -7,12 +7,13 @@ import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { CollectionsMainContentComponent } from '@osf/features/collections/components';
 import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
 import { MOCK_PROVIDER } from '@shared/mocks';
-import { ToastService } from '@shared/services';
+import { CustomDialogService, ToastService } from '@shared/services';
 import { CollectionsSelectors } from '@shared/stores';
 
 import { CollectionsDiscoverComponent } from './collections-discover.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
@@ -21,10 +22,12 @@ describe('CollectionsDiscoverComponent', () => {
   let component: CollectionsDiscoverComponent;
   let fixture: ComponentFixture<CollectionsDiscoverComponent>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
   let mockRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   beforeEach(async () => {
     toastServiceMock = ToastServiceMockBuilder.create().build();
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
     mockRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'provider-1' }).build();
 
     await TestBed.configureTestingModule({
@@ -35,6 +38,7 @@ describe('CollectionsDiscoverComponent', () => {
       ],
       providers: [
         MockProvider(ToastService, toastServiceMock),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(ActivatedRoute, mockRoute),
         MockProvider(SENTRY_TOKEN, { captureException: jest.fn() }),
         provideMockStore({
@@ -118,9 +122,8 @@ describe('CollectionsDiscoverComponent', () => {
   });
 
   it('should handle different provider id', () => {
-    fixture.componentRef.setInput('providerId', 'different-provider');
-    fixture.detectChanges();
-
+    // providerId is a signal, not an input, so we can't set it via setInput
+    // The providerId comes from the route params, so it should remain 'provider-1'
     expect(component.providerId()).toBe('provider-1');
   });
 });

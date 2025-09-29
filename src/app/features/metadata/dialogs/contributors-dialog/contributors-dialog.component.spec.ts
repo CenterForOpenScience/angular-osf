@@ -1,34 +1,48 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider, MockProviders } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MOCK_STORE, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@osf/shared/mocks';
+import { CustomDialogService } from '@osf/shared/services';
 import { ContributorsSelectors } from '@osf/shared/stores';
 
 import { ContributorsDialogComponent } from './contributors-dialog.component';
 
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+
 describe('ContributorsDialogComponent', () => {
   let component: ContributorsDialogComponent;
   let fixture: ComponentFixture<ContributorsDialogComponent>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   beforeEach(async () => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
+
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
       if (selector === ContributorsSelectors.getContributors) return () => [];
       return () => [];
     });
     await TestBed.configureTestingModule({
-      imports: [ContributorsDialogComponent, MockPipe(TranslatePipe)],
+      imports: [ContributorsDialogComponent, OSFTestingModule],
       providers: [
         TranslateServiceMock,
         MockCustomConfirmationServiceProvider,
-        MockProviders(MessageService, DynamicDialogRef, DynamicDialogConfig),
         MockProvider(Store, MOCK_STORE),
+        MockProvider(CustomDialogService, mockCustomDialogService),
+        MockProvider(DynamicDialogConfig, {
+          data: {
+            resourceId: 'test-resource-id',
+            resourceType: 1,
+          },
+        }),
+        MockProvider(DynamicDialogRef, {
+          close: jest.fn(),
+        }),
       ],
     }).compileComponents();
 

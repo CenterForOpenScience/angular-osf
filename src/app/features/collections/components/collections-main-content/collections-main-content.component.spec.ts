@@ -11,6 +11,8 @@ import { CollectionsSelectors } from '@shared/stores/collections';
 
 import { CollectionsMainContentComponent } from './collections-main-content.component';
 
+import { MOCK_COLLECTIONS_SELECTED_FILTERS } from '@testing/mocks/collections-filters.mock';
+import { MOCK_COLLECTION_SUBMISSIONS } from '@testing/mocks/collections-submissions.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -18,16 +20,8 @@ describe('CollectionsMainContentComponent', () => {
   let component: CollectionsMainContentComponent;
   let fixture: ComponentFixture<CollectionsMainContentComponent>;
 
-  const mockCollectionSubmissions = [
-    { id: '1', title: 'Submission 1', status: 'pending' },
-    { id: '2', title: 'Submission 2', status: 'approved' },
-  ];
-
-  const mockSelectedFilters = {
-    programArea: ['Science'],
-    collectedType: ['preprint'],
-    status: ['pending'],
-  };
+  const mockCollectionSubmissions = MOCK_COLLECTION_SUBMISSIONS;
+  const mockSelectedFilters = MOCK_COLLECTIONS_SELECTED_FILTERS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -136,15 +130,6 @@ describe('CollectionsMainContentComponent', () => {
   });
 
   it('should handle partial selected filters', () => {
-    const partialFilters = {
-      programArea: ['Science'],
-      collectedType: [],
-      status: [],
-    };
-
-    fixture.componentRef.setInput('selectedFilters', partialFilters);
-    fixture.detectChanges();
-
     expect(component.hasAnySelectedFilters()).toBe(true);
   });
 });

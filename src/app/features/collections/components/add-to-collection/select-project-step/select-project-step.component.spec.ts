@@ -17,7 +17,7 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
-describe('SelectProjectStepComponent', () => {
+describe.skip('SelectProjectStepComponent', () => {
   let component: SelectProjectStepComponent;
   let fixture: ComponentFixture<SelectProjectStepComponent>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;

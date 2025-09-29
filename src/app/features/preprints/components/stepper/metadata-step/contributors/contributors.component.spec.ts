@@ -6,13 +6,14 @@ import { UserSelectors } from '@core/store/user';
 import { ContributorsTableComponent } from '@shared/components/contributors';
 import { MOCK_CONTRIBUTOR, MOCK_USER } from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@shared/services';
 import { ContributorsSelectors } from '@shared/stores';
 
 import { ContributorsComponent } from './contributors.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
@@ -21,6 +22,7 @@ describe('ContributorsComponent', () => {
   let fixture: ComponentFixture<ContributorsComponent>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
   let confirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR];
   const mockCurrentUser = MOCK_USER;
@@ -28,12 +30,14 @@ describe('ContributorsComponent', () => {
   beforeEach(async () => {
     toastServiceMock = ToastServiceMockBuilder.create().build();
     confirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
       imports: [ContributorsComponent, OSFTestingModule, MockComponent(ContributorsTableComponent)],
       providers: [
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, confirmationServiceMock),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         provideMockStore({
           signals: [
             {
@@ -82,8 +86,7 @@ describe('ContributorsComponent', () => {
 
   it('should expose readonly properties', () => {
     expect(component.destroyRef).toBeDefined();
-    expect(component.translateService).toBeDefined();
-    expect(component.dialogService).toBeDefined();
+    expect(component.customDialogService).toBeDefined();
     expect(component.toastService).toBeDefined();
     expect(component.customConfirmationService).toBeDefined();
     expect(component.actions).toBeDefined();

@@ -12,6 +12,7 @@ import { SelectProjectStepComponent } from '@osf/features/collections/components
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import { LoadingSpinnerComponent } from '@shared/components';
 import { MOCK_PROVIDER, MOCK_USER } from '@shared/mocks';
+import { CustomDialogService } from '@shared/services';
 import { CollectionsSelectors } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -19,6 +20,7 @@ import { AddToCollectionComponent } from './add-to-collection.component';
 
 import { MOCK_PROJECT } from '@testing/mocks/project.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -28,12 +30,14 @@ describe('AddToCollectionComponent', () => {
   let fixture: ComponentFixture<AddToCollectionComponent>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   const mockCollectionProvider = MOCK_PROVIDER;
 
   beforeEach(async () => {
     mockRouter = RouterMockBuilder.create().build();
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: '1' }).build();
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -50,6 +54,7 @@ describe('AddToCollectionComponent', () => {
       providers: [
         MockProvider(ActivatedRoute, mockActivatedRoute),
         MockProvider(Router, mockRouter),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         provideMockStore({
           signals: [
             { selector: CollectionsSelectors.getCollectionProviderLoading, value: false },

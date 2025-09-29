@@ -7,6 +7,7 @@ import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MOCK_USER } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { LinkedServicesComponent } from './linked-services.component';
 
@@ -44,6 +45,8 @@ describe('Component: Linked Services', () => {
             { selector: AddonsSelectors.getAddonsResourceReferenceLoading, value: false },
             { selector: AddonsSelectors.getConfiguredLinkAddons, value: mockConfiguredLinkAddons },
             { selector: AddonsSelectors.getConfiguredLinkAddonsLoading, value: false },
+            { selector: CurrentResourceSelectors.hasWriteAccess, value: true },
+            { selector: CurrentResourceSelectors.hasAdminAccess, value: false },
           ],
         }),
       ],

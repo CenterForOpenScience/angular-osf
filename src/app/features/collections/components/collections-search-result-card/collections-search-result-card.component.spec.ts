@@ -1,7 +1,5 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipes } from 'ng-mocks';
+import { MockComponent } from 'ng-mocks';
 
-import { DatePipe } from '@angular/common';
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -22,12 +20,7 @@ describe('CollectionsSearchResultCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        CollectionsSearchResultCardComponent,
-        MockPipes(TranslatePipe, DatePipe),
-        MockComponent(ContributorsListComponent),
-      ],
-      imports: [CollectionsSearchResultCardComponent, OSFTestingModule],
+      imports: [CollectionsSearchResultCardComponent, OSFTestingModule, MockComponent(ContributorsListComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CollectionsSearchResultCardComponent);

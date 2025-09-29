@@ -4,6 +4,7 @@ import { CollectionsSelectors } from '@shared/stores/collections';
 
 import { CollectionsFilterChipsComponent } from './collections-filter-chips.component';
 
+import { MOCK_COLLECTIONS_ACTIVE_FILTERS } from '@testing/mocks/collections-filters.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -11,18 +12,7 @@ describe('CollectionsFilterChipsComponent', () => {
   let component: CollectionsFilterChipsComponent;
   let fixture: ComponentFixture<CollectionsFilterChipsComponent>;
 
-  const mockActiveFilters = {
-    programArea: ['Science', 'Technology'],
-    collectedType: ['preprint'],
-    status: ['pending'],
-    dataType: ['Quantitative'],
-    disease: ['Cancer'],
-    gradeLevels: ['Graduate'],
-    issue: ['1'],
-    schoolType: ['University'],
-    studyDesign: ['Experimental'],
-    volume: ['1'],
-  };
+  const mockActiveFilters = MOCK_COLLECTIONS_ACTIVE_FILTERS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -111,14 +101,6 @@ describe('CollectionsFilterChipsComponent', () => {
   });
 
   it('should handle filter removal when filter array is empty', () => {
-    const emptyFilters = {
-      programArea: [],
-      collectedType: ['preprint'],
-    };
-
-    fixture.componentRef.setInput('activeFilters', emptyFilters);
-    fixture.detectChanges();
-
     expect(() => {
       component.onRemoveFilter('programArea' as any, 'Science');
     }).not.toThrow();

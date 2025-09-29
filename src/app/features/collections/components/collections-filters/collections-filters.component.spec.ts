@@ -4,6 +4,10 @@ import { CollectionsSelectors } from '@shared/stores/collections';
 
 import { CollectionsFiltersComponent } from './collections-filters.component';
 
+import {
+  MOCK_COLLECTIONS_FILTERS_OPTIONS,
+  MOCK_COLLECTIONS_SELECTED_FILTERS,
+} from '@testing/mocks/collections-filters.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -11,31 +15,8 @@ describe('CollectionsFiltersComponent', () => {
   let component: CollectionsFiltersComponent;
   let fixture: ComponentFixture<CollectionsFiltersComponent>;
 
-  const mockFiltersOptions = {
-    programArea: ['Science', 'Technology', 'Engineering'],
-    collectedType: ['preprint', 'project'],
-    status: ['pending', 'approved', 'rejected'],
-    dataType: ['Quantitative', 'Qualitative'],
-    disease: ['Cancer', 'Diabetes'],
-    gradeLevels: ['Graduate', 'Undergraduate'],
-    issue: ['1', '2', '3'],
-    schoolType: ['University', 'College'],
-    studyDesign: ['Experimental', 'Observational'],
-    volume: ['1', '2', '3'],
-  };
-
-  const mockSelectedFilters = {
-    programArea: ['Science'],
-    collectedType: ['preprint'],
-    status: ['pending'],
-    dataType: ['Quantitative'],
-    disease: ['Cancer'],
-    gradeLevels: ['Graduate'],
-    issue: ['1'],
-    schoolType: ['University'],
-    studyDesign: ['Experimental'],
-    volume: ['1'],
-  };
+  const mockFiltersOptions = MOCK_COLLECTIONS_FILTERS_OPTIONS;
+  const mockSelectedFilters = MOCK_COLLECTIONS_SELECTED_FILTERS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

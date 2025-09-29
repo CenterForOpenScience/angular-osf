@@ -1,6 +1,5 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 
 import { of } from 'rxjs';
@@ -22,10 +21,12 @@ import {
   TruncatedTextComponent,
 } from '@shared/components';
 import { MOCK_PROJECT_OVERVIEW } from '@shared/mocks';
+import { CustomDialogService } from '@shared/services';
 
 import { ViewDuplicatesComponent } from './view-duplicates.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -33,11 +34,12 @@ import { provideMockStore } from '@testing/providers/store-provider.mock';
 describe('Component: View Duplicates', () => {
   let component: ViewDuplicatesComponent;
   let fixture: ComponentFixture<ViewDuplicatesComponent>;
-  let dialogService: DialogService;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   beforeEach(async () => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
     routerMock = RouterMockBuilder.create().build();
     activatedRouteMock = ActivatedRouteMockBuilder.create()
       .withParams({ id: 'rid' })
@@ -69,6 +71,7 @@ describe('Component: View Duplicates', () => {
             { selector: RegistryOverviewSelectors.isRegistryAnonymous, value: false },
           ],
         }),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
         { provide: IS_SMALL, useValue: of(false) },
@@ -78,7 +81,6 @@ describe('Component: View Duplicates', () => {
     fixture = TestBed.createComponent(ViewDuplicatesComponent);
     component = fixture.componentInstance;
 
-    dialogService = fixture.debugElement.injector.get(DialogService);
     fixture.detectChanges();
   });
 
@@ -87,7 +89,9 @@ describe('Component: View Duplicates', () => {
   });
 
   it('should open ForkDialog with width 95vw and refresh on success', () => {
-    const openSpy = jest.spyOn(dialogService, 'open').mockReturnValue({ onClose: of({ success: true }) } as any);
+    const openSpy = jest
+      .spyOn(mockCustomDialogService, 'open')
+      .mockReturnValue({ onClose: of({ success: true }) } as any);
     (component as any).actions = { ...component.actions, getDuplicates: jest.fn() };
 
     component.handleForkResource();
@@ -96,11 +100,7 @@ describe('Component: View Duplicates', () => {
       expect.any(Function),
       expect.objectContaining({
         width: '95vw',
-        focusOnShow: false,
         header: 'project.overview.dialog.fork.headerProject',
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: expect.objectContaining({
           resource: expect.any(Object),
           resourceType: ResourceType.Project,
@@ -115,7 +115,9 @@ describe('Component: View Duplicates', () => {
     (component as any).isSmall = () => true;
     (component as any).actions = { ...component.actions, getDuplicates: jest.fn() };
 
-    const openSpy = jest.spyOn(dialogService, 'open').mockReturnValue({ onClose: of({ success: false }) } as any);
+    const openSpy = jest
+      .spyOn(mockCustomDialogService, 'open')
+      .mockReturnValue({ onClose: of({ success: false }) } as any);
 
     component.handleForkResource();
 
