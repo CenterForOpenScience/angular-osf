@@ -14,7 +14,7 @@
     <osf-search-input [control]="searchControl" [placeholder]="searchPlaceholder | translate" />
   </div>
 
-  <osf-contributors-list
+  <osf-contributors-table
     class="w-full"
     [contributors]="contributors()"
     [showEducation]="false"
@@ -23,7 +23,7 @@
     [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
     [currentUserId]="currentUser()?.id"
     (remove)="removeContributor($event)"
-  ></osf-contributors-list>
+  ></osf-contributors-table>
 
   @if (hasChanges) {
     <div class="flex gap-2 w-full">

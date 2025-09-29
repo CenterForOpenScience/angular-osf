@@ -9,10 +9,10 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { ComponentOverview } from '@shared/models';
@@ -23,7 +23,7 @@ import { DeleteComponentDialogComponent } from '../delete-component-dialog/delet
 
 @Component({
   selector: 'osf-project-components',
-  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, RouterLink],
+  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, ContributorsListComponent],
   templateUrl: './overview-components.component.html',
   styleUrl: './overview-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,7 +70,7 @@ export class OverviewComponentsComponent {
   get isCurrentUserContributor() {
     return (component: ComponentOverview) => {
       const userId = this.currentUserId();
-      return userId ? component.contributors.some((contributor) => contributor.id === userId) : false;
+      return userId ? component.contributors.some((contributor) => contributor.userId === userId) : false;
     };
   }
 

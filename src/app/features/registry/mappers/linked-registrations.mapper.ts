@@ -26,7 +26,7 @@ export class LinkedRegistrationsMapper {
       pendingRegistrationApproval: apiRegistration.attributes.pending_registration_approval,
       registrationSupplement: apiRegistration.attributes.registration_supplement,
       currentUserPermissions: apiRegistration.attributes.current_user_permissions,
-      contributors: ContributorsMapper.fromResponse(apiRegistration.embeds.bibliographic_contributors.data) || [],
+      contributors: ContributorsMapper.getContributors(apiRegistration.embeds.bibliographic_contributors.data) || [],
     };
   }
 }

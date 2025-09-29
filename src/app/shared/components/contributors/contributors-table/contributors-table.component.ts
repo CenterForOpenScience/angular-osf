@@ -11,23 +11,22 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output, si
 import { FormsModule } from '@angular/forms';
 
 import { ModeratorPermission } from '@osf/features/moderation/enums';
+import { EducationHistoryDialogComponent } from '@osf/shared/components/education-history-dialog/education-history-dialog.component';
+import { EmploymentHistoryDialogComponent } from '@osf/shared/components/employment-history-dialog/employment-history-dialog.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { ContributorPermission } from '@osf/shared/enums';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
-import { ContributorPermission } from '@shared/enums';
-
-import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
-import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';
-import { SelectComponent } from '../../select/select.component';
 
 @Component({
-  selector: 'osf-contributors-list',
+  selector: 'osf-contributors-table',
   imports: [TranslatePipe, FormsModule, TableModule, Tooltip, Checkbox, Skeleton, Button, SelectComponent],
-  templateUrl: './contributors-list.component.html',
-  styleUrl: './contributors-list.component.scss',
+  templateUrl: './contributors-table.component.html',
+  styleUrl: './contributors-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class ContributorsListComponent {
+export class ContributorsTableComponent {
   contributors = input<ContributorModel[]>([]);
   isLoading = input(false);
   showCurator = input(false);

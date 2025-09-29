@@ -1,4 +1,4 @@
-import { IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
+import { ContributorsMapper, IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
 import { MapRegistryStatus, RegistrationMapper, RegistrationNodeMapper } from '@osf/shared/mappers/registration';
 
 import { RegistryOverview, RegistryOverviewJsonApiData } from '../models';
@@ -27,14 +27,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     registrationType: data.attributes?.registration_supplement,
     doi: data.attributes?.article_doi,
     tags: data.attributes?.tags,
-    contributors: data.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-      id: contributor?.embeds?.users?.data?.id,
-      familyName: contributor?.embeds?.users?.data?.attributes?.family_name,
-      fullName: contributor?.embeds?.users?.data?.attributes?.full_name,
-      givenName: contributor?.embeds?.users?.data?.attributes?.given_name,
-      middleName: contributor?.embeds?.users?.data?.attributes?.middle_names,
-      type: contributor?.embeds?.users?.data?.type,
-    })),
+    contributors: ContributorsMapper.getContributors(data?.embeds?.bibliographic_contributors?.data),
     identifiers: IdentifiersMapper.fromJsonApi(data.embeds?.identifiers),
     analyticsKey: data.attributes?.analytics_key,
     currentUserCanComment: data.attributes.current_user_can_comment,

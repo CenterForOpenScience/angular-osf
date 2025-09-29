@@ -10,7 +10,7 @@ export class MyResourcesMapper {
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
       isPublic: response.attributes.public,
-      contributors: ContributorsMapper.getContributorShortInfo(response.embeds?.bibliographic_contributors?.data),
+      contributors: ContributorsMapper.getContributors(response.embeds?.bibliographic_contributors?.data),
     };
   }
 }

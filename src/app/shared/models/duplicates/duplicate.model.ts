@@ -1,4 +1,4 @@
-import { ContributorShortInfoModel } from '../contributors';
+import { ContributorModel } from '../contributors';
 
 export interface Duplicate {
   id: string;
@@ -9,7 +9,7 @@ export interface Duplicate {
   dateModified: string;
   public: boolean;
   currentUserPermissions: string[];
-  contributors: ContributorShortInfoModel[];
+  contributors: ContributorModel[];
 }
 
 export interface DuplicatesWithTotal {

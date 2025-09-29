@@ -17,7 +17,7 @@ import { InfoIconComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
-  ContributorsListComponent,
+  ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { AddContributorType, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
@@ -33,7 +33,7 @@ import {
 
 @Component({
   selector: 'osf-project-contributors-step',
-  imports: [Button, Step, StepItem, StepPanel, Tooltip, TranslatePipe, ContributorsListComponent, InfoIconComponent],
+  imports: [Button, Step, StepItem, StepPanel, Tooltip, TranslatePipe, ContributorsTableComponent, InfoIconComponent],
   templateUrl: './project-contributors-step.component.html',
   styleUrl: './project-contributors-step.component.scss',
   providers: [DialogService],

@@ -25,7 +25,7 @@ import { SearchInputComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
-  ContributorsListComponent,
+  ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
@@ -43,7 +43,7 @@ import {
 
 @Component({
   selector: 'osf-contributors-dialog',
-  imports: [Button, SearchInputComponent, TranslatePipe, FormsModule, ContributorsListComponent],
+  imports: [Button, SearchInputComponent, TranslatePipe, FormsModule, ContributorsTableComponent],
   templateUrl: './contributors-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
