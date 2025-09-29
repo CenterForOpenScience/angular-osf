@@ -87,9 +87,6 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.html'],
-    plugins: {
-      '@angular-eslint/template': angularEslintTemplate,
-    },
     languageOptions: {
       parser: angularTemplateParser,
     },

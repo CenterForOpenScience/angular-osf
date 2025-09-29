@@ -377,8 +377,9 @@ export class FileDetailComponent {
     }
   }
 
-  onCedarFormEdit(): void {
-    this.cedarFormReadonly.set(false);
+  toggleEditMode(): void {
+    const editMode = this.cedarFormReadonly();
+    this.cedarFormReadonly.set(!editMode);
   }
 
   onCedarFormSubmit(data: CedarRecordDataBinding): void {
@@ -387,15 +388,31 @@ export class FileDetailComponent {
     if (selectedRecord.id) {
       this.actions
         .updateCedarRecord(data, selectedRecord.id, this.resourceId, ResourceType.File)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.cedarFormReadonly.set(true);
-            this.toastService.showSuccess('files.detail.toast.cedarUpdated');
-            const fileId = this.file()?.path.replaceAll('/', '') || '';
-            this.actions.getCedarRecords(fileId, ResourceType.File);
-          },
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          switchMap(() => {
+            const fileId = this.file()?.path.replaceAll('/', '');
+            if (fileId) {
+              return this.actions.getCedarRecords(fileId, ResourceType.File);
+            }
+            return [];
+          })
+        )
+        .subscribe(() => {
+          this.cedarFormReadonly.set(true);
+          this.updateSelectedCedarRecord(selectedRecord.id!);
+          this.toastService.showSuccess('files.detail.toast.cedarUpdated');
         });
+    }
+  }
+
+  private updateSelectedCedarRecord(recordId: string): void {
+    const records = this.cedarRecords();
+    if (!records) return;
+
+    const record = records.find((r) => r.id === recordId);
+    if (record) {
+      this.selectedCedarRecord.set(record);
     }
   }
 

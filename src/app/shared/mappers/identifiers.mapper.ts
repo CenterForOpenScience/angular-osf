@@ -1,7 +1,7 @@
-import { Identifier, IdentifiersJsonApiData, ResponseJsonApi } from '@shared/models';
+import { Identifier, IdentifiersResponseJsonApi } from '@shared/models';
 
 export class IdentifiersMapper {
-  static fromJsonApi(response: ResponseJsonApi<IdentifiersJsonApiData[]>): Identifier[] {
+  static fromJsonApi(response: IdentifiersResponseJsonApi): Identifier[] {
     return response?.data.map((rawIdentifier) => {
       return {
         category: rawIdentifier.attributes.category,

@@ -39,11 +39,11 @@
       </div>
 
       @if (isEmploymentAndEducationVisible()) {
-        <div class="flex flex-column gap-3 md:flex-row xl:gap-4">
+        <div class="flex flex-column gap-3 md:flex-row xl:gap-4 white-space-nowrap">
           @if (currentUser()?.education?.length) {
-            <div class="flex flex-row align-items-center gap-2">
+            <div class="flex flex-row align-items-center gap-2 overflow-hidden">
               <i class="fas fa-landmark"></i>
-              <h3 class="font-bold">
+              <h3 class="font-bold text-overflow-ellipsis overflow-hidden white-space-nowrap">
                 {{ currentUser()?.education?.[0]?.institution }}
               </h3>
             </div>

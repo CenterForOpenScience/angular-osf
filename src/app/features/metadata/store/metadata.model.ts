@@ -6,10 +6,10 @@ import {
 } from '@osf/features/metadata/models';
 import { AsyncStateModel } from '@shared/models';
 
-import { CrossRefFunder, Metadata } from '../models';
+import { CrossRefFunder, MetadataModel } from '../models';
 
 export interface MetadataStateModel {
-  metadata: AsyncStateModel<Metadata | null>;
+  metadata: AsyncStateModel<MetadataModel | null>;
   customMetadata: AsyncStateModel<CustomItemMetadataRecord | null>;
   fundersList: AsyncStateModel<CrossRefFunder[]>;
   cedarTemplates: AsyncStateModel<CedarMetadataTemplateJsonApi | null>;
