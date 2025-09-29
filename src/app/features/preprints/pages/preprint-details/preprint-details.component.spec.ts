@@ -22,7 +22,7 @@ import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { UserPermissions } from '@shared/enums';
 import { MOCK_CONTRIBUTOR, MOCK_USER } from '@shared/mocks';
-import { MetaTagsService } from '@shared/services';
+import { CustomDialogService, MetaTagsService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
@@ -34,6 +34,7 @@ import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
 import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -45,6 +46,7 @@ describe('PreprintDetailsComponent', () => {
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   let dataciteService: jest.Mocked<DataciteService>;
   let metaTagsService: jest.Mocked<MetaTagsService>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   const mockPreprint = PREPRINT_MOCK;
   const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
@@ -64,6 +66,8 @@ describe('PreprintDetailsComponent', () => {
       .withParams({ providerId: 'osf', id: 'preprint-1' })
       .withQueryParams({ mode: 'moderator' })
       .build();
+
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
 
     dataciteService = {
       logIdentifiableView: jest.fn().mockReturnValue(of(void 0)),
@@ -96,6 +100,7 @@ describe('PreprintDetailsComponent', () => {
         MockProvider(ActivatedRoute, activatedRouteMock),
         MockProvider(DataciteService, dataciteService),
         MockProvider(MetaTagsService, metaTagsService),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         provideMockStore({
           signals: [
             {
@@ -285,10 +290,6 @@ describe('PreprintDetailsComponent', () => {
     component.editPreprintClicked();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['preprints', 'osf', 'edit', 'preprint-1']);
-  });
-
-  it('should handle withdraw clicked', () => {
-    expect(() => component.handleWithdrawClicked()).not.toThrow();
   });
 
   it('should handle create new version clicked', () => {

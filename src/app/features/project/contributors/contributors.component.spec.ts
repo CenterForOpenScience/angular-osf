@@ -97,11 +97,11 @@ describe('Component: Contributors', () => {
     const mockDialogRef = {
       onClose: of({ name: 'Test Link', anonymous: false }),
     };
-    jest.spyOn(component.dialogService, 'open').mockReturnValue(mockDialogRef as any);
+    jest.spyOn(component.customDialogService, 'open').mockReturnValue(mockDialogRef as any);
     jest.spyOn(component.toastService, 'showSuccess');
 
     expect(() => component.createViewLink()).not.toThrow();
-    expect(component.dialogService.open).toHaveBeenCalled();
+    expect(component.customDialogService.open).toHaveBeenCalled();
   });
 
   it('should delete view link with confirmation', () => {

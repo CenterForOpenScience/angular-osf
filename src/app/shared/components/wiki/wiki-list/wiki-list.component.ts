@@ -1,7 +1,6 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Panel } from 'primeng/panel';
 import { PanelMenu } from 'primeng/panelmenu';
 import { Skeleton } from 'primeng/skeleton';
@@ -10,7 +9,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output, si
 import { Router } from '@angular/router';
 
 import { ComponentWiki, Wiki, WikiItemType, WikiMenuItem } from '@osf/shared/models';
-import { CustomConfirmationService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService } from '@osf/shared/services';
 
 import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.component';
 
@@ -20,7 +19,6 @@ import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.compo
   templateUrl: './wiki-list.component.html',
   styleUrl: './wiki-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class WikiListComponent {
   readonly list = input.required<Wiki[]>();
@@ -34,8 +32,7 @@ export class WikiListComponent {
   readonly deleteWiki = output<void>();
   readonly createWiki = output<void>();
 
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly router = inject(Router);
 
@@ -85,13 +82,9 @@ export class WikiListComponent {
   });
 
   openAddWikiDialog() {
-    this.dialogService
+    this.customDialogService
       .open(AddWikiDialogComponent, {
-        header: this.translateService.instant('project.wiki.addNewWiki'),
-        focusOnShow: false,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
+        header: 'project.wiki.addNewWiki',
         width: '448px',
         data: {
           resourceId: this.resourceId(),

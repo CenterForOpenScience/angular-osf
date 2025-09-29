@@ -3,7 +3,6 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,13 +21,14 @@ import { SubmissionReviewStatus } from '../../enums';
   imports: [TranslatePipe, IconComponent, DateAgoPipe, Button],
   templateUrl: './collection-submission-item.component.html',
   styleUrl: './collection-submission-item.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionSubmissionItemComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+
   submission = input.required<CollectionSubmissionWithGuid>();
+
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
 
   readonly reviewStatusIcon = ReviewStatusIcon;

@@ -40,7 +40,10 @@
 
           <div class="flex gap-2 align-items-baseline">
             <strong>{{ 'common.labels.contributors' | translate }}:</strong>
-            <osf-contributors-list [contributors]="registrationData().contributors"></osf-contributors-list>
+            <osf-contributors-list
+              [contributors]="registrationData().contributors"
+              [anonymous]="!registrationData().contributors.length"
+            ></osf-contributors-list>
           </div>
 
           <div class="flex gap-2 align-items-baseline">

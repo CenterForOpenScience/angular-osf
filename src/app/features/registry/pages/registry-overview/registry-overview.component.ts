@@ -1,8 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 
 import { map, of, switchMap, tap } from 'rxjs';
@@ -35,7 +34,7 @@ import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermi
 import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
-import { ToastService } from '@osf/shared/services';
+import { CustomDialogService, ToastService } from '@osf/shared/services';
 import { FetchSelectedSubjects, GetBookmarksCollectionId, SubjectsSelectors } from '@osf/shared/stores';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
@@ -70,7 +69,6 @@ import {
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class RegistryOverviewComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
@@ -78,8 +76,7 @@ export class RegistryOverviewComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
 
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
   readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
@@ -290,19 +287,14 @@ export class RegistryOverviewComponent {
   }
 
   handleOpenMakeDecisionDialog() {
-    const dialogWidth = '600px';
     this.actions
       .getRegistryReviewActions(this.registry()?.id || '')
       .pipe(
         switchMap(() =>
-          this.dialogService
+          this.customDialogService
             .open(RegistryMakeDecisionComponent, {
-              width: dialogWidth,
-              focusOnShow: false,
-              header: this.translateService.instant('moderation.makeDecision.header'),
-              closeOnEscape: true,
-              modal: true,
-              closable: true,
+              header: 'moderation.makeDecision.header',
+              width: '600px',
               data: {
                 registry: this.registry(),
                 revisionId: this.revisionId,

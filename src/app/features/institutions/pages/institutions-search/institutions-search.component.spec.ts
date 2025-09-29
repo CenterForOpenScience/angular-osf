@@ -66,7 +66,7 @@ describe('Component: Institutions Search', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(new FetchInstitutionById(MOCK_INSTITUTION.id));
     expect(store.dispatch).toHaveBeenCalledWith(
-      new SetDefaultFilterValue('affiliation', MOCK_INSTITUTION.iris.join(','))
+      new SetDefaultFilterValue('affiliation,isContainedBy.affiliation', MOCK_INSTITUTION.iris.join(','))
     );
   });
 

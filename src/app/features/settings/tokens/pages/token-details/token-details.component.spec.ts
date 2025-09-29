@@ -7,19 +7,21 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { CustomConfirmationService } from '@shared/services';
+import { CustomConfirmationService, CustomDialogService } from '@shared/services';
 
 import { TokenModel } from '../../models';
 import { TokensSelectors } from '../../store';
 
 import { TokenDetailsComponent } from './token-details.component';
 
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 
 describe('TokenDetailsComponent', () => {
   let component: TokenDetailsComponent;
   let fixture: ComponentFixture<TokenDetailsComponent>;
   let confirmationService: Partial<CustomConfirmationService>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   const mockToken: TokenModel = {
     id: '1',
@@ -44,15 +46,18 @@ describe('TokenDetailsComponent', () => {
   } as unknown as jest.Mocked<Store>;
 
   beforeEach(async () => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
+
     confirmationService = {
       confirmDelete: jest.fn(),
     };
 
     await TestBed.configureTestingModule({
-      imports: [TokenDetailsComponent, OSFTestingStoreModule],
+      imports: [TokenDetailsComponent, OSFTestingModule],
       providers: [
         MockProvider(Store, storeMock),
         MockProvider(CustomConfirmationService, confirmationService),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         {
           provide: ActivatedRoute,
           useValue: {

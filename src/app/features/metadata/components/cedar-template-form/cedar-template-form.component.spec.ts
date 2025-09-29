@@ -66,10 +66,10 @@ describe('CedarTemplateFormComponent', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should emit editMode event', () => {
-    const emitSpy = jest.spyOn(component.editMode, 'emit');
+  it('should emit toggleEditMode event', () => {
+    const emitSpy = jest.spyOn(component.toggleEditMode, 'emit');
 
-    component.editMode.emit();
+    component.toggleEditMode.emit();
 
     expect(emitSpy).toHaveBeenCalled();
   });

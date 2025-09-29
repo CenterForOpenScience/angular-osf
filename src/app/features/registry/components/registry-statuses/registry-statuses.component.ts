@@ -1,16 +1,15 @@
 import { createDispatchMap } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
-import { CustomConfirmationService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService } from '@osf/shared/services';
 
 import { RegistryOverview } from '../../models';
 import { MakePublic } from '../../store/registry-overview';
@@ -25,8 +24,7 @@ import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.comp
 })
 export class RegistryStatusesComponent {
   @HostBinding('class') classes = 'flex-1 flex';
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
 
   registry = input.required<RegistryOverview | null>();
   canEdit = input<boolean>(false);
@@ -54,14 +52,11 @@ export class RegistryStatusesComponent {
 
   openWithdrawDialog(): void {
     const registry = this.registry();
+
     if (registry) {
-      this.dialogService.open(WithdrawDialogComponent, {
+      this.customDialogService.open(WithdrawDialogComponent, {
+        header: 'registry.overview.withdrawRegistration',
         width: '552px',
-        focusOnShow: false,
-        header: this.translateService.instant('registry.overview.withdrawRegistration'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: {
           registryId: registry.id,
         },

@@ -1,9 +1,8 @@
 import { select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
@@ -11,6 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { IS_MEDIUM } from '@osf/shared/helpers';
+import { CustomDialogService } from '@osf/shared/services';
 import { NodeLinksSelectors } from '@osf/shared/stores';
 
 import { DeleteNodeLinkDialogComponent } from '../delete-node-link-dialog/delete-node-link-dialog.component';
@@ -21,12 +21,10 @@ import { LinkResourceDialogComponent } from '../link-resource-dialog/link-resour
   imports: [Button, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, ContributorsListComponent],
   templateUrl: './linked-resources.component.html',
   styleUrl: './linked-resources.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkedResourcesComponent {
-  private dialogService = inject(DialogService);
-  private translateService = inject(TranslateService);
+  private customDialogService = inject(CustomDialogService);
 
   canEdit = input.required<boolean>();
 
@@ -37,13 +35,9 @@ export class LinkedResourcesComponent {
   openLinkProjectModal() {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
-    this.dialogService.open(LinkResourceDialogComponent, {
+    this.customDialogService.open(LinkResourceDialogComponent, {
+      header: 'project.overview.dialog.linkProject.header',
       width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.linkProject.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 
@@ -54,13 +48,9 @@ export class LinkedResourcesComponent {
 
     if (!currentLink) return;
 
-    this.dialogService.open(DeleteNodeLinkDialogComponent, {
+    this.customDialogService.open(DeleteNodeLinkDialogComponent, {
+      header: 'project.overview.dialog.deleteNodeLink.header',
       width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.deleteNodeLink.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: {
         currentLink,
       },

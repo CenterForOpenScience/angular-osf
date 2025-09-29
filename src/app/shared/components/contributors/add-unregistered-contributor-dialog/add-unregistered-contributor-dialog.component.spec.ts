@@ -121,8 +121,8 @@ describe('AddUnregisteredContributorDialogComponent', () => {
     const expectedContributor: ContributorAddModel = {
       fullName: 'John Doe',
       email: 'john@example.com',
-      isBibliographic: false,
-      permission: ContributorPermission.Read,
+      isBibliographic: true,
+      permission: ContributorPermission.Write,
     };
 
     expect(closeSpy).toHaveBeenCalledWith({

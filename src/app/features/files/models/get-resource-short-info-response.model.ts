@@ -1,4 +1,4 @@
-import { ApiData, IdentifiersJsonApiResponse, JsonApiResponse } from '@osf/shared/models';
+import { ApiData, IdentifiersResponseJsonApi, JsonApiResponse } from '@osf/shared/models';
 
 export type GetResourceShortInfoResponse = JsonApiResponse<
   ApiData<
@@ -8,7 +8,7 @@ export type GetResourceShortInfoResponse = JsonApiResponse<
       date_created: string;
       date_modified: string;
     },
-    { identifiers: IdentifiersJsonApiResponse },
+    { identifiers: IdentifiersResponseJsonApi },
     null,
     null
   >,

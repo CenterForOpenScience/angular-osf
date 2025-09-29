@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
+import { DialogService } from 'primeng/dynamicdialog';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
@@ -26,12 +27,13 @@ export const appConfig: ApplicationConfig = {
   providers: [
     APPLICATION_INITIALIZATION_PROVIDER,
     ConfirmationService,
+    DialogService,
+    MessageService,
     {
       provide: ErrorHandler,
       useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
     },
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
-    MessageService,
     provideAnimations(),
     providePrimeNG({
       theme: {

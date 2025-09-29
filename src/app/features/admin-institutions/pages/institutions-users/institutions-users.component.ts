@@ -3,7 +3,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { CheckboxModule } from 'primeng/checkbox';
-import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 
 import { filter } from 'rxjs';
@@ -18,7 +17,7 @@ import { SelectComponent } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { Primitive } from '@osf/shared/helpers';
 import { SearchFilters } from '@osf/shared/models';
-import { ToastService } from '@osf/shared/services';
+import { CustomDialogService, ToastService } from '@osf/shared/services';
 import { SortOrder } from '@shared/enums';
 
 import { AdminTableComponent } from '../../components';
@@ -36,11 +35,10 @@ import { FetchInstitutionUsers, InstitutionsAdminSelectors, SendUserMessage } fr
   templateUrl: './institutions-users.component.html',
   styleUrl: './institutions-users.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class InstitutionsUsersComponent {
-  private readonly translate = inject(TranslateService);
-  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
   private readonly environment = inject(ENVIRONMENT);
@@ -76,7 +74,7 @@ export class InstitutionsUsersComponent {
 
   amountText = computed(() => {
     const count = this.totalCount();
-    return count + ' ' + this.translate.instant('adminInstitutions.summary.totalUsers').toLowerCase();
+    return count + ' ' + this.translateService.instant('adminInstitutions.summary.totalUsers').toLowerCase();
   });
 
   constructor() {
@@ -109,14 +107,10 @@ export class InstitutionsUsersComponent {
   onIconClick(event: TableIconClickEvent): void {
     switch (event.action) {
       case 'sendMessage': {
-        this.dialogService
+        this.customDialogService
           .open(SendEmailDialogComponent, {
+            header: 'adminInstitutions.institutionUsers.sendEmail',
             width: '448px',
-            focusOnShow: false,
-            header: this.translate.instant('adminInstitutions.institutionUsers.sendEmail'),
-            closeOnEscape: true,
-            modal: true,
-            closable: true,
             data: this.currentUser()?.fullName,
           })
           .onClose.pipe(

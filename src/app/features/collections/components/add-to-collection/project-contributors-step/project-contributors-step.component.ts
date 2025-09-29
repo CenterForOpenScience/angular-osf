@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -22,7 +21,7 @@ import {
 import { AddContributorType, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
   ContributorsSelectors,
@@ -36,13 +35,11 @@ import {
   imports: [Button, Step, StepItem, StepPanel, Tooltip, TranslatePipe, ContributorsTableComponent, InfoIconComponent],
   templateUrl: './project-contributors-step.component.html',
   styleUrl: './project-contributors-step.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectContributorsStepComponent {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly translateService = inject(TranslateService);
-  private readonly dialogService = inject(DialogService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
@@ -127,15 +124,11 @@ export class ProjectContributorsStepComponent {
   private openAddContributorDialog() {
     const addedContributorIds = this.projectContributors().map((x) => x.userId);
 
-    this.dialogService
+    this.customDialogService
       .open(AddContributorDialogComponent, {
+        header: 'project.contributors.addDialog.addRegisteredContributor',
         width: '448px',
         data: addedContributorIds,
-        focusOnShow: false,
-        header: this.translateService.instant('project.contributors.addDialog.addRegisteredContributor'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),
@@ -157,14 +150,10 @@ export class ProjectContributorsStepComponent {
   }
 
   private openAddUnregisteredContributorDialog() {
-    this.dialogService
+    this.customDialogService
       .open(AddUnregisteredContributorDialogComponent, {
+        header: 'project.contributors.addDialog.addUnregisteredContributor',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('project.contributors.addDialog.addUnregisteredContributor'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),

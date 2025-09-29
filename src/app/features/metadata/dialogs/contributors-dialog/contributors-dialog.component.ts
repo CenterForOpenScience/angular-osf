@@ -1,9 +1,9 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { filter, forkJoin } from 'rxjs';
 
@@ -30,7 +30,7 @@ import {
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
   ContributorsSelectors,
@@ -46,17 +46,15 @@ import {
   imports: [Button, SearchInputComponent, TranslatePipe, FormsModule, ContributorsTableComponent],
   templateUrl: './contributors-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class ContributorsDialogComponent implements OnInit {
   searchControl = new FormControl<string>('');
 
   readonly destroyRef = inject(DestroyRef);
-  readonly translateService = inject(TranslateService);
+  readonly customDialogService = inject(CustomDialogService);
   readonly toastService = inject(ToastService);
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
-  readonly dialogService = inject(DialogService);
   readonly customConfirmationService = inject(CustomConfirmationService);
 
   isLoading = select(ContributorsSelectors.isContributorsLoading);
@@ -120,15 +118,11 @@ export class ContributorsDialogComponent implements OnInit {
   openAddContributorDialog(): void {
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
 
-    this.dialogService
+    this.customDialogService
       .open(AddContributorDialogComponent, {
+        header: 'project.contributors.addDialog.addRegisteredContributor',
         width: '448px',
         data: addedContributorIds,
-        focusOnShow: false,
-        header: this.translateService.instant('project.contributors.addDialog.addRegisteredContributor'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),
@@ -152,14 +146,10 @@ export class ContributorsDialogComponent implements OnInit {
   }
 
   openAddUnregisteredContributorDialog() {
-    this.dialogService
+    this.customDialogService
       .open(AddUnregisteredContributorDialogComponent, {
+        header: 'project.contributors.addDialog.addUnregisteredContributor',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('project.contributors.addDialog.addUnregisteredContributor'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),

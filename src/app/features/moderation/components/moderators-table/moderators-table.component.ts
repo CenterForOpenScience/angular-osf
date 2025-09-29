@@ -1,7 +1,6 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 
@@ -18,6 +17,7 @@ import {
 } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { TableParameters } from '@osf/shared/models';
+import { CustomDialogService } from '@osf/shared/services';
 
 @Component({
   selector: 'osf-moderators-table',
@@ -25,7 +25,6 @@ import { TableParameters } from '@osf/shared/models';
   templateUrl: './moderators-table.component.html',
   styleUrl: './moderators-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class ModeratorsTableComponent {
   items = input<ModeratorModel[]>([]);
@@ -36,8 +35,7 @@ export class ModeratorsTableComponent {
   update = output<ModeratorModel>();
   remove = output<ModeratorModel>();
 
-  dialogService = inject(DialogService);
-  translateService = inject(TranslateService);
+  customDialogService = inject(CustomDialogService);
 
   readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions = MODERATION_PERMISSIONS;
@@ -54,26 +52,18 @@ export class ModeratorsTableComponent {
   }
 
   openEducationHistory(contributor: ModeratorModel) {
-    this.dialogService.open(EducationHistoryDialogComponent, {
+    this.customDialogService.open(EducationHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.education',
       width: '552px',
       data: contributor.education,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.education'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 
   openEmploymentHistory(contributor: ModeratorModel) {
-    this.dialogService.open(EmploymentHistoryDialogComponent, {
+    this.customDialogService.open(EmploymentHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.employment',
       width: '552px',
       data: contributor.employment,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.employment'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 }

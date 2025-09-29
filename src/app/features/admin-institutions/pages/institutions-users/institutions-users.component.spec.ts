@@ -1,35 +1,38 @@
 import { provideStore } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserState } from '@core/store/user';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
-import { ToastService } from '@osf/shared/services';
+import { CustomDialogService, ToastService } from '@osf/shared/services';
 import { InstitutionsSearchState } from '@osf/shared/stores/institutions-search';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 import { TranslateServiceMock } from '@shared/mocks';
 
 import { InstitutionsUsersComponent } from './institutions-users.component';
 
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+
 describe('InstitutionsUsersComponent', () => {
   let component: InstitutionsUsersComponent;
   let fixture: ComponentFixture<InstitutionsUsersComponent>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   beforeEach(async () => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
       imports: [
         InstitutionsUsersComponent,
         ...MockComponents(AdminTableComponent, SelectComponent, LoadingSpinnerComponent),
-        MockPipe(TranslatePipe),
+        OSFTestingModule,
       ],
       providers: [
         MockProvider(ActivatedRoute, { queryParams: of({}) }),
@@ -37,8 +40,7 @@ describe('InstitutionsUsersComponent', () => {
         TranslateServiceMock,
         MockProvider(ToastService),
         provideStore([InstitutionsAdminState, UserState, InstitutionsSearchState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        MockProvider(CustomDialogService, mockCustomDialogService),
       ],
     }).compileComponents();
 

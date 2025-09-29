@@ -31,7 +31,7 @@ export class MetadataTabsComponent {
   canEdit = input<boolean>(true);
   changeTab = output<string | number>();
   formSubmit = output<CedarRecordDataBinding>();
-  cedarFormEdit = output<void>();
+  toggleFormEdit = output<void>();
   cedarFormChangeTemplate = output<void>();
 
   onCedarFormSubmit(data: CedarRecordDataBinding) {
@@ -42,7 +42,7 @@ export class MetadataTabsComponent {
     this.cedarFormChangeTemplate.emit();
   }
 
-  onCedarFormEdit() {
-    this.cedarFormEdit.emit();
+  toggleEditMode() {
+    this.toggleFormEdit.emit();
   }
 }

@@ -1,8 +1,7 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
@@ -17,6 +16,7 @@ import { SelectComponent } from '@osf/shared/components/select/select.component'
 import { DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { ContributorPermission } from '@osf/shared/enums';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
+import { CustomDialogService } from '@osf/shared/services';
 
 @Component({
   selector: 'osf-contributors-table',
@@ -24,7 +24,6 @@ import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/mod
   templateUrl: './contributors-table.component.html',
   styleUrl: './contributors-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class ContributorsTableComponent {
   contributors = input<ContributorModel[]>([]);
@@ -55,8 +54,8 @@ export class ContributorsTableComponent {
   });
 
   remove = output<ContributorModel>();
-  dialogService = inject(DialogService);
-  translateService = inject(TranslateService);
+
+  customDialogService = inject(CustomDialogService);
 
   readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
@@ -70,26 +69,18 @@ export class ContributorsTableComponent {
   }
 
   openEducationHistory(contributor: ContributorModel) {
-    this.dialogService.open(EducationHistoryDialogComponent, {
+    this.customDialogService.open(EducationHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.education',
       width: '552px',
       data: contributor.education,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.education'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 
   openEmploymentHistory(contributor: ContributorModel) {
-    this.dialogService.open(EmploymentHistoryDialogComponent, {
+    this.customDialogService.open(EmploymentHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.employment',
       width: '552px',
       data: contributor.employment,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.employment'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 }

@@ -12,13 +12,12 @@
             class="w-10rem flex-shrink-0 btn-full-width"
             severity="secondary"
             [label]="'project.metadata.addMetadata.editRecord' | translate"
-            (onClick)="editModeEmit()"
+            (onClick)="toggleEditModeEmit()"
           >
           </p-button>
         }
       </div>
     }
-
     <div class="cedar-editor-container">
       @if (readonly()) {
         <cedar-artifact-viewer
@@ -34,6 +33,7 @@
           [templateObject]="template().attributes.template"
           [metadata]="formData()"
           (change)="onCedarChange($event)"
+          (pointerover)="validateCedarMetadata()"
           (keyup)="onCedarChange($event)"
         ></cedar-embeddable-editor>
       }
@@ -46,7 +46,7 @@
             class="w-10rem btn-full-width"
             severity="secondary"
             [label]="'common.buttons.cancel' | translate"
-            (onClick)="editModeEmit()"
+            (onClick)="toggleEditModeEmit()"
           >
           </p-button>
         } @else {

@@ -155,10 +155,10 @@ describe('PreprintFileSectionComponent', () => {
     expect(label).toBe('preprints.details.file.created');
   });
 
-  it('should return empty string when no reviews workflow', () => {
+  it('should return created label when no reviews workflow', () => {
     fixture.componentRef.setInput('providerReviewsWorkflow', null);
     const label = component.dateLabel();
-    expect(label).toBe('');
+    expect(label).toBe('preprints.details.file.created');
   });
 
   it('should call dataciteService.logIdentifiableDownload when logDownload is called', () => {

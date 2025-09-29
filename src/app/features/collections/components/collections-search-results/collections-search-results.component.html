@@ -11,13 +11,14 @@
             <osf-collections-search-result-card [cardItem]="item"></osf-collections-search-result-card>
           }
 
-          <osf-custom-paginator
-            class="collections-paginator"
-            [totalCount]="totalSubmissions()"
-            [rows]="10"
-            [first]="firstIndex()"
-            (pageChanged)="onPageChange($event)"
-          />
+          <div class="flex justify-content-center">
+            <osf-custom-paginator
+              [totalCount]="totalSubmissions()"
+              [rows]="10"
+              [first]="firstIndex()"
+              (pageChanged)="onPageChange($event)"
+            />
+          </div>
         } @else {
           <h2 class="text-center">
             {{ 'collections.searchResults.noResultsFound' | translate }}
