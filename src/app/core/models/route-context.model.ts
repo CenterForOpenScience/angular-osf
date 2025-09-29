@@ -1,3 +1,5 @@
+import { UserPermissions } from '@osf/shared/enums';
+
 export interface RouteContext {
   resourceId: string | undefined;
   providerId?: string;
@@ -11,6 +13,5 @@ export interface RouteContext {
   isCollections: boolean;
   currentUrl?: string;
   isViewOnly?: boolean;
-  permissions?: string[];
-  isResourceDetailsLoading?: boolean;
+  permissions?: UserPermissions[];
 }
