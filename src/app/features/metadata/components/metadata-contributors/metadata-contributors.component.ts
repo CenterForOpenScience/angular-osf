@@ -4,13 +4,13 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
+import { ContributorsListComponent } from '@osf/shared/components';
 import { ContributorModel } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-metadata-contributors',
-  imports: [Button, Card, TranslatePipe, RouterLink],
+  imports: [Button, Card, TranslatePipe, ContributorsListComponent],
   templateUrl: './metadata-contributors.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

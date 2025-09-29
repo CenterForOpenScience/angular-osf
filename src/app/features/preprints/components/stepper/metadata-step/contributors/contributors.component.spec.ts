@@ -3,7 +3,7 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@core/store/user';
-import { ContributorsListComponent } from '@shared/components/contributors';
+import { ContributorsTableComponent } from '@shared/components/contributors';
 import { MOCK_CONTRIBUTOR, MOCK_USER } from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
@@ -30,7 +30,7 @@ describe('ContributorsComponent', () => {
     confirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [ContributorsComponent, OSFTestingModule, MockComponent(ContributorsListComponent)],
+      imports: [ContributorsComponent, OSFTestingModule, MockComponent(ContributorsTableComponent)],
       providers: [
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, confirmationServiceMock),

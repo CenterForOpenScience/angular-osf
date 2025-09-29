@@ -60,22 +60,9 @@
     <h2>{{ 'preprints.preprintStepper.review.sections.metadata.title' | translate }}</h2>
 
     <section class="flex flex-column gap-2">
-      <h3>{{ 'preprints.preprintStepper.review.sections.metadata.contributors' | translate }}</h3>
+      <h3>{{ 'common.labels.contributors' | translate }}</h3>
 
-      <div class="flex gap-1 line-height-2">
-        @for (contributor of bibliographicContributors(); track contributor.id) {
-          <div>
-            @if (contributor.isUnregisteredContributor) {
-              <span>{{ contributor.fullName }}</span>
-            } @else {
-              <a class="font-bold" [routerLink]="['/user', contributor.id]">
-                {{ contributor.fullName }}
-              </a>
-            }
-            <span>{{ $last ? '' : ',' }}</span>
-          </div>
-        }
-      </div>
+      <osf-contributors-list [contributors]="bibliographicContributors()"></osf-contributors-list>
     </section>
 
     @if (affiliatedInstitutions().length) {

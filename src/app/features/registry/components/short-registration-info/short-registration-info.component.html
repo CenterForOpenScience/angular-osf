@@ -1,33 +1,32 @@
 <div class="mb-3">
-  <h4>{{ 'navigation.contributors' | translate }}</h4>
-  <p>
-    @for (contributor of registration().contributors; track contributor.id) {
-      <span>
-        {{ contributor.fullName }}
-        <span>{{ !$last ? ', ' : '' }}</span>
-      </span>
-    }
-  </p>
+  <h4>{{ 'common.labels.contributors' | translate }}</h4>
+
+  <osf-contributors-list [contributors]="registration().contributors" [readonly]="true"></osf-contributors-list>
 </div>
+
 <div class="mb-3">
   <h4>{{ 'common.labels.description' | translate }}</h4>
   <p>{{ registration().description }}</p>
 </div>
+
 <div class="mb-3 flex flex-wrap">
   <div class="mb-3 w-6">
     <h4>{{ 'registry.overview.metadata.type' | translate }}</h4>
     <p>{{ registration().registrationType }}</p>
   </div>
+
   <div class="mb-3 w-6">
     <h4>{{ 'registry.overview.metadata.registeredDate' | translate }}</h4>
     <p>{{ registration().dateRegistered | date }}</p>
   </div>
 </div>
+
 <div class="mb-3 flex flex-wrap">
   <div class="mb-3 w-6">
     <h4>{{ 'registry.archiving.createdDate' | translate }}</h4>
     <p>{{ registration().dateCreated | date }}</p>
   </div>
+
   <div class="mb-3 w-6">
     <h4>{{ 'registry.overview.metadata.associatedProject' | translate }}</h4>
     <a [routerLink]="['/', registration().associatedProjectId]">{{ associatedProjectUrl }}</a>

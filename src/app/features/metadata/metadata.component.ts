@@ -323,23 +323,20 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditContributorDialog(): void {
-    const dialogRef = this.customDialogService.open(ContributorsDialogComponent, {
-      header: 'project.metadata.contributors.editContributors',
-      width: '800px',
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        resourceId: this.resourceId,
-        resourceType: this.resourceType(),
-      },
-    });
-    dialogRef.onClose.pipe(filter((result) => !!result)).subscribe({
-      next: () => {
+    this.customDialogService
+      .open(ContributorsDialogComponent, {
+        header: this.translateService.instant('project.metadata.contributors.editContributors'),
+        breakpoints: { '768px': '95vw' },
+        data: {
+          resourceId: this.resourceId,
+          resourceType: this.resourceType(),
+        },
+      })
+      .onClose.pipe(filter((result) => !!result))
+      .subscribe(() => {
         this.actions.getResourceMetadata(this.resourceId, this.resourceType());
         this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
-      },
-    });
+      });
   }
 
   openEditTitleDialog(): void {
@@ -444,7 +441,6 @@ export class MetadataComponent implements OnInit {
       .open(FundingDialogComponent, {
         header: 'project.metadata.funding.dialog.header',
         width: '600px',
-
         data: {
           funders: currentCustomMetadata?.funders || [],
         },

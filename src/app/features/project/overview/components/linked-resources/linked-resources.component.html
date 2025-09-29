@@ -38,12 +38,8 @@
 
             <div class="component-name flex flex-wrap gap-1">
               <p>{{ 'common.labels.contributors' | translate }}:</p>
-              @for (contributor of linkedResource.contributors; track contributor.id) {
-                <div>
-                  <a class="font-bold" [routerLink]="['/user', contributor.id]"> {{ contributor.fullName }}</a>
-                  <span>{{ $last ? '' : ',' }}</span>
-                </div>
-              }
+
+              <osf-contributors-list [contributors]="linkedResource.contributors"></osf-contributors-list>
             </div>
             <div class="flex align-items-center gap-1">
               <div class="component-description">

@@ -52,7 +52,7 @@ export class ContributorsService {
 
     return this.jsonApiService
       .get<ContributorsResponseJsonApi>(`${baseUrl}/`)
-      .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
+      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
   searchUsers(value: string, page = 1): Observable<PaginatedData<ContributorAddModel[]>> {
@@ -60,7 +60,7 @@ export class ContributorsService {
 
     return this.jsonApiService
       .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
-      .pipe(map((response) => ContributorsMapper.fromUsersWithPaginationGetResponse(response)));
+      .pipe(map((response) => ContributorsMapper.getPaginatedUsers(response)));
   }
 
   addContributor(
@@ -75,7 +75,7 @@ export class ContributorsService {
 
     return this.jsonApiService
       .post<ContributorResponseJsonApi>(baseUrl, contributorData)
-      .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor.data)));
+      .pipe(map((contributor) => ContributorsMapper.getContributor(contributor.data)));
   }
 
   updateContributor(
@@ -89,7 +89,7 @@ export class ContributorsService {
 
     return this.jsonApiService
       .patch<ContributorDataJsonApi>(baseUrl, contributorData)
-      .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor)));
+      .pipe(map((contributor) => ContributorsMapper.getContributor(contributor)));
   }
 
   deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {

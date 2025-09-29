@@ -1,12 +1,16 @@
-<p-card>
-  @if (registrationData()) {
+@if (registrationData()) {
+  <p-card>
     <div class="flex gap-3 flex-column">
       <div class="flex align-items-center flex-wrap gap-2 w-full">
         <osf-icon [iconClass]="registrationData().isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
 
-        <h2 class="align-self-center">
-          {{ registrationData().title || 'project.registrations.card.noTitle' | translate }}
-        </h2>
+        <p-button
+          class="link-btn-no-padding"
+          styleClass="text-lg"
+          link
+          [label]="registrationData().title || 'project.registrations.card.noTitle' | translate"
+          (click)="reviewEmitRegistrationData.emit(registrationData()!.id)"
+        ></p-button>
       </div>
       <div class="flex flex-wrap flex-column lg:flex-nowrap lg:flex-row justify-content-between gap-5">
         <div class="flex gap-3 flex-column w-full">
@@ -35,15 +39,8 @@
           </div>
 
           <div class="flex gap-2 align-items-baseline">
-            <strong>{{ 'project.overview.metadata.contributors' | translate }}:</strong>
-            <span class="contributors">
-              @for (contributor of registrationData().contributors; track contributor.id) {
-                <a class="font-bold" [routerLink]="['/user', contributor.userId]">{{ contributor.fullName }}</a>
-                @if (!$last) {
-                  <span>, </span>
-                }
-              }
-            </span>
+            <strong>{{ 'common.labels.contributors' | translate }}:</strong>
+            <osf-contributors-list [contributors]="registrationData().contributors"></osf-contributors-list>
           </div>
 
           <div class="flex gap-2 align-items-baseline">
@@ -81,7 +78,7 @@
           <div class="flex gap-2 mt-1">
             <p-button
               severity="primary"
-              [label]="'common.buttons.review' | translate"
+              [label]="'common.buttons.view' | translate"
               (click)="reviewEmitRegistrationData.emit(registrationData()!.id)"
             ></p-button>
 
@@ -113,5 +110,5 @@
         </div>
       </div>
     </div>
-  }
-</p-card>
+  </p-card>
+}
