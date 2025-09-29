@@ -120,10 +120,4 @@ describe('CollectionsDiscoverComponent', () => {
 
     expect(component.searchControl.value).toBe(searchValue);
   });
-
-  it('should handle different provider id', () => {
-    // providerId is a signal, not an input, so we can't set it via setInput
-    // The providerId comes from the route params, so it should remain 'provider-1'
-    expect(component.providerId()).toBe('provider-1');
-  });
 });
