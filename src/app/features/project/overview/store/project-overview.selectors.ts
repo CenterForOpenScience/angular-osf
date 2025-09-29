@@ -1,5 +1,7 @@
 import { Selector } from '@ngxs/store';
 
+import { UserPermissions } from '@osf/shared/enums';
+
 import { ProjectOverviewStateModel } from './project-overview.model';
 import { ProjectOverviewState } from './project-overview.state';
 
@@ -47,5 +49,25 @@ export class ProjectOverviewSelectors {
   @Selector([ProjectOverviewState])
   static isProjectAnonymous(state: ProjectOverviewStateModel) {
     return state.isAnonymous;
+  }
+
+  @Selector([ProjectOverviewState])
+  static getDuplicatedProject(state: ProjectOverviewStateModel) {
+    return state.duplicatedProject;
+  }
+
+  @Selector([ProjectOverviewState])
+  static hasWriteAccess(state: ProjectOverviewStateModel): boolean {
+    return state.project.data?.currentUserPermissions.includes(UserPermissions.Write) || false;
+  }
+
+  @Selector([ProjectOverviewState])
+  static hasAdminAccess(state: ProjectOverviewStateModel): boolean {
+    return state.project.data?.currentUserPermissions.includes(UserPermissions.Admin) || false;
+  }
+
+  @Selector([ProjectOverviewState])
+  static hasNoPermissions(state: ProjectOverviewStateModel): boolean {
+    return !state.project.data?.currentUserPermissions.length;
   }
 }

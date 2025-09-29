@@ -1,5 +1,6 @@
 export * from './addon-form-controls.enum';
 export * from './addon-service-names.enum';
+export * from './addon-supported-features.enum';
 export * from './addon-tab.enum';
 export * from './addon-type.enum';
 export * from './addons-category.enum';
@@ -19,6 +20,7 @@ export * from './metadata-resource.enum';
 export * from './mode.enum';
 export * from './moderation-decision-form-controls.enum';
 export * from './moderation-submit-type.enum';
+export * from './operation-names.enum';
 export * from './profile-addons-stepper.enum';
 export * from './profile-settings-key.enum';
 export * from './registration-review-states.enum';

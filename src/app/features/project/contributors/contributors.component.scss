@@ -1,16 +1,20 @@
-@use "styles/mixins" as mix;
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
 .contributors {
   background-color: var(--white);
-  padding: mix.rem(24px) mix.rem(16px) mix.rem(16px);
-  row-gap: mix.rem(24px);
+  padding: 1.5rem 1rem 1.5rem 1rem;
+  row-gap: 1.5rem;
 
   .filters-container {
-    gap: mix.rem(12px);
+    gap: 0.75rem;
     width: 100%;
 
     .contributors-filter-container {
-      gap: mix.rem(12px);
+      gap: 0.75rem;
     }
   }
 }

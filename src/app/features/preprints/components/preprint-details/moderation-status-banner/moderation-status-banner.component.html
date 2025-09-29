@@ -13,7 +13,7 @@
             </p>
           } @else {
             <p>
-              <a [href]="`${environment.webUrl}/${actionCreatorId()}`">{{ actionCreatorName() }}</a>
+              <a [href]="`${webUrl}/${actionCreatorId()}`">{{ actionCreatorName() }}</a>
               {{ recentActivityLanguage() | translate: { documentType: documentType()?.singular } }}
               {{ labelDate() | date: 'MMM d, y' }}
             </p>

@@ -4,6 +4,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '@osf/shared/enums';
 import { getResourceTypeStringFromEnum, handleSectionError } from '@osf/shared/helpers';
 import { GlobalSearchService } from '@osf/shared/services';
@@ -42,11 +43,9 @@ import {
   SetUpdatedFields,
   UpdateDraft,
   UpdateSchemaResponse,
-  UpdateStepValidation,
+  UpdateStepState,
 } from './registries.actions';
 import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from './registries.model';
-
-import { environment } from 'src/environments/environment';
 
 @State<RegistriesStateModel>({
   name: 'registries',
@@ -56,6 +55,7 @@ import { environment } from 'src/environments/environment';
 export class RegistriesState {
   searchService = inject(GlobalSearchService);
   registriesService = inject(RegistriesService);
+  private readonly environment = inject(ENVIRONMENT);
 
   providersHandler = inject(ProvidersHandlers);
   projectsHandler = inject(ProjectsHandlers);
@@ -74,7 +74,7 @@ export class RegistriesState {
 
     const params: Record<string, string> = {
       'cardSearchFilter[resourceType]': getResourceTypeStringFromEnum(ResourceType.Registration),
-      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
+      'cardSearchFilter[accessService]': `${this.environment.webUrl}/`,
       'page[size]': '10',
     };
 
@@ -260,13 +260,13 @@ export class RegistriesState {
     );
   }
 
-  @Action(UpdateStepValidation)
-  updateStepValidation(ctx: StateContext<RegistriesStateModel>, { step, invalid }: UpdateStepValidation) {
+  @Action(UpdateStepState)
+  updateStepState(ctx: StateContext<RegistriesStateModel>, { step, invalid, touched }: UpdateStepState) {
     const state = ctx.getState();
     ctx.patchState({
-      stepsValidation: {
-        ...state.stepsValidation,
-        [step]: { invalid },
+      stepsState: {
+        ...state.stepsState,
+        [step]: { invalid, touched },
       },
     });
   }

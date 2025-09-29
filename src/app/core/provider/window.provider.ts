@@ -13,10 +13,10 @@ import { inject, InjectionToken, PLATFORM_ID } from '@angular/core';
  * win.localStorage.getItem('token');
  * ```
  */
-export const WINDOW = new InjectionToken<Window | object>('Global Window Object', {
+export const WINDOW = new InjectionToken<Window>('Global Window Object', {
   providedIn: 'root',
   factory: () => {
     const platformId = inject(PLATFORM_ID);
-    return isPlatformBrowser(platformId) ? window : {};
+    return isPlatformBrowser(platformId) ? window : ({} as Window);
   },
 });

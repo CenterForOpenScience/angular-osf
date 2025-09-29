@@ -15,10 +15,8 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums';
-import { Institution, ProjectForm } from '@osf/shared/models';
-import { ProjectModel } from '@osf/shared/models/projects';
-import { FetchRegions, RegionsSelectors } from '@osf/shared/stores';
-import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
+import { Institution, ProjectForm, ProjectModel } from '@osf/shared/models';
+import { FetchRegions, FetchUserInstitutions, InstitutionsSelectors, RegionsSelectors } from '@osf/shared/stores';
 
 import { AffiliatedInstitutionSelectComponent } from '../affiliated-institution-select/affiliated-institution-select.component';
 import { ProjectSelectorComponent } from '../project-selector/project-selector.component';

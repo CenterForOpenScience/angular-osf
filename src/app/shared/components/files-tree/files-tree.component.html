@@ -1,5 +1,5 @@
 <div #dropZoneContainer class="drop-zone-container flex flex-1">
-  @if (!hasViewOnly()) {
+  @if (!hasViewOnly() && supportUpload()) {
     <div
       class="drop-zone"
       [class.active]="isDragOver()"
@@ -27,8 +27,8 @@
         styleClass="w-full md:w-[30rem]"
         class="tree-table"
         (onNodeDrop)="dropNode($event)"
-        [draggableNodes]="!viewOnly()"
-        [droppableNodes]="!viewOnly()"
+        [draggableNodes]="!viewOnly() && supportUpload()"
+        [droppableNodes]="!viewOnly() && supportUpload()"
         draggableScope="self"
         droppableScope="self"
       >
@@ -76,19 +76,21 @@
                   <osf-file-menu
                     (action)="onFileMenuAction($event, file)"
                     [isFolder]="file.kind === 'folder'"
+                    [allowedActions]="allowedMenuActions()"
                     osfStopPropagation
                   >
                   </osf-file-menu>
                 </div>
               } @else if (viewOnly() && viewOnlyDownloadable()) {
-                <div class="files-table-cell">
-                  <i
-                    class="fas fa-download blue-text"
-                    (click)="onFileMenuAction({ value: FileMenuType.Download }, file)"
+                <div class="files-table-cell text-center">
+                  <p-button
+                    icon="fas fa-download"
+                    severity="contrast"
+                    text
+                    (onClick)="onFileMenuAction({ value: FileMenuType.Download }, file)"
                     (keydown.enter)="onFileMenuAction({ value: FileMenuType.Download }, file)"
-                    tabindex="1"
                     osfStopPropagation
-                  ></i>
+                  ></p-button>
                 </div>
               }
             </div>
@@ -105,7 +107,7 @@
       }
       @if (!files().length) {
         <div class="empty-state-container p-4">
-          @if (hasViewOnly()) {
+          @if (hasViewOnly() || !supportUpload()) {
             <h3 class="font-normal mb-4 text-no-transform">{{ 'files.emptyState' | translate }}</h3>
           } @else {
             <div class="drop-text">

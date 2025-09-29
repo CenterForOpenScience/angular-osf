@@ -5,15 +5,14 @@ import { AsyncStateModel, DiscoverableFilter, FilterOption, ResourceModel } from
 export interface GlobalSearchStateModel {
   resources: AsyncStateModel<ResourceModel[]>;
   filters: DiscoverableFilter[];
-  defaultFilterValues: Record<string, string>;
-  filterValues: Record<string, StringOrNull>;
+  defaultFilterOptions: Record<string, string>;
+  selectedFilterOptions: Record<string, FilterOption | null>;
   filterOptionsCache: Record<string, FilterOption[]>;
   filterSearchCache: Record<string, FilterOption[]>;
   filterPaginationCache: Record<string, string>;
   resourcesCount: number;
   searchText: StringOrNull;
   sortBy: string;
-  self: string;
   first: StringOrNull;
   next: StringOrNull;
   previous: StringOrNull;
@@ -27,8 +26,8 @@ export const GLOBAL_SEARCH_STATE_DEFAULTS = {
     error: null,
   },
   filters: [],
-  defaultFilterValues: {},
-  filterValues: {},
+  defaultFilterOptions: {},
+  selectedFilterOptions: {},
   filterOptionsCache: {},
   filterSearchCache: {},
   filterPaginationCache: {},
@@ -36,7 +35,6 @@ export const GLOBAL_SEARCH_STATE_DEFAULTS = {
   searchText: '',
   sortBy: '-relevance',
   resourceType: ResourceType.Null,
-  self: '',
   first: null,
   next: null,
   previous: null,

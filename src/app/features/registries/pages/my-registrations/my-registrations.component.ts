@@ -13,6 +13,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@core/store/user';
 import {
   CustomPaginatorComponent,
@@ -26,8 +27,6 @@ import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import { REGISTRATIONS_TABS } from '../../constants';
 import { RegistrationTab } from '../../enums';
 import { DeleteDraft, FetchDraftRegistrations, FetchSubmittedRegistrations, RegistriesSelectors } from '../../store';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-my-registrations',
@@ -49,11 +48,12 @@ import { environment } from 'src/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyRegistrationsComponent {
-  private router = inject(Router);
+  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
+  private readonly environment = inject(ENVIRONMENT);
 
   readonly isMobile = toSignal(inject(IS_XSMALL));
   readonly tabOptions = REGISTRATIONS_TABS;
@@ -74,7 +74,7 @@ export class MyRegistrationsComponent {
 
   readonly RegistrationTab = RegistrationTab;
 
-  readonly provider = environment.defaultProvider;
+  readonly provider = this.environment.defaultProvider;
 
   selectedTab = signal(RegistrationTab.Submitted);
   itemsPerPage = 10;

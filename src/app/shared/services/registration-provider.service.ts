@@ -2,6 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+
 import { RegistrationProviderMapper } from '../mappers';
 import {
   JsonApiResponse,
@@ -11,20 +13,25 @@ import {
   RegistryProviderDetailsJsonApi,
 } from '../models';
 
-import { JsonApiService } from './';
-
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegistrationProviderService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   getProviderSchemas(providerId: string): Observable<ProviderSchema[]> {
+    const params = {
+      'page[size]': 100,
+    };
     return this.jsonApiService
-      .get<ProvidersResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/schemas/`)
+      .get<ProvidersResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/schemas/`, params)
       .pipe(map((response) => RegistrationProviderMapper.fromProvidersResponse(response)));
   }
 

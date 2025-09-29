@@ -26,7 +26,7 @@ export class AddonTermsComponent {
   });
 
   private getAddonTerms(addon: AddonModel | AuthorizedAccountModel): AddonTerm[] {
-    const supportedFeatures = addon.supportedFeatures;
+    const supportedFeatures = addon.supportedFeatures || [];
     const provider = addon.providerName;
     const isCitationService = isCitationAddon(addon);
 
@@ -58,7 +58,7 @@ export class AddonTermsComponent {
 
       return {
         function: term.label,
-        status: message.replace(/{provider}/g, provider),
+        status: message.replace(/{provider}/g, provider || ''),
         type,
       };
     });

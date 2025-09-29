@@ -4,13 +4,14 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CollectionSubmissionReviewAction,
   CollectionSubmissionReviewActionJsonApi,
 } from '@osf/features/moderation/models';
-import { CollectionsMapper } from '@shared/mappers/collections';
+
+import { CollectionsMapper, ContributorsMapper, ReviewActionsMapper } from '../mappers';
 import {
-  CollectionContributor,
   CollectionDetails,
   CollectionDetailsGetResponseJsonApi,
   CollectionDetailsResponseJsonApi,
@@ -23,25 +24,28 @@ import {
   CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
+  ContributorShortInfoModel,
   ContributorsResponseJsonApi,
   JsonApiResponse,
   PaginatedData,
   ResponseJsonApi,
-} from '@shared/models';
-import { JsonApiService } from '@shared/services';
-import { SetTotalSubmissions } from '@shared/stores/collections';
-
-import { ReviewActionsMapper } from '../mappers';
+} from '../models';
 import { ReviewActionPayload, ReviewActionPayloadJsonApi } from '../models/review-action';
+import { SetTotalSubmissions } from '../stores/collections';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CollectionsService {
-  private jsonApiService = inject(JsonApiService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
   private actions = createDispatchMap({ setTotalSubmissions: SetTotalSubmissions });
 
   getCollectionProvider(collectionName: string): Observable<CollectionProvider> {
@@ -197,18 +201,14 @@ export class CollectionsService {
     >(`${this.apiUrl}/collection_submission_actions/`, params);
   }
 
-  private getCollectionContributors(contributorsUrl: string): Observable<CollectionContributor[]> {
+  private getCollectionContributors(contributorsUrl: string): Observable<ContributorShortInfoModel[]> {
     const params: Record<string, unknown> = {
       'fields[users]': 'full_name',
     };
 
     return this.jsonApiService
       .get<ContributorsResponseJsonApi>(contributorsUrl, params)
-      .pipe(
-        map((response: ContributorsResponseJsonApi) =>
-          CollectionsMapper.fromGetCollectionContributorsResponse(response.data)
-        )
-      );
+      .pipe(map((response) => ContributorsMapper.getContributorShortInfo(response.data)));
   }
 
   private fetchUserCollectionSubmissionsByStatus(

@@ -1,9 +1,11 @@
 <div class="flex flex-column">
   <section>
-    <osf-employment-history [employment]="employmentHistory()"></osf-employment-history>
+    @if (isContentVisible()) {
+      <osf-employment-history [employment]="employmentHistory()"></osf-employment-history>
+    }
   </section>
 
   <div class="flex gap-2 mt-6 justify-content-end w-full">
-    <p-button [label]="'common.buttons.close' | translate" (click)="close()"> </p-button>
+    <p-button [label]="'common.buttons.close' | translate" (click)="close()"></p-button>
   </div>
 </div>

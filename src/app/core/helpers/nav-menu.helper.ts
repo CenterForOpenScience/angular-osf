@@ -1,16 +1,38 @@
 import { MenuItem } from 'primeng/api';
 
+import { UserPermissions } from '@osf/shared/enums';
 import { getViewOnlyParamFromUrl } from '@osf/shared/helpers';
 
 import {
   AUTHENTICATED_MENU_ITEMS,
   PREPRINT_MENU_ITEMS,
   PROJECT_MENU_ITEMS,
+  PROJECT_MENU_PERMISSIONS,
   REGISTRATION_MENU_ITEMS,
   VIEW_ONLY_PROJECT_MENU_ITEMS,
   VIEW_ONLY_REGISTRY_MENU_ITEMS,
 } from '../constants';
 import { RouteContext } from '../models';
+
+function shouldShowMenuItem(menuItemId: string, permissions: string[] | undefined): boolean {
+  const permissionConfig = PROJECT_MENU_PERMISSIONS[menuItemId];
+
+  if (!permissionConfig) {
+    return true;
+  }
+
+  if (permissionConfig.requiresPermissions && (!permissions || !permissions.length)) {
+    return false;
+  }
+
+  if (permissionConfig.requiresWrite) {
+    const hasWritePermission =
+      permissions?.includes(UserPermissions.Write) || permissions?.includes(UserPermissions.Admin);
+    return hasWritePermission || false;
+  }
+
+  return true;
+}
 
 export function filterMenuItems(items: MenuItem[], isAuthenticated: boolean): MenuItem[] {
   return items.map((item) => {
@@ -93,10 +115,26 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           menuItems = PROJECT_MENU_ITEMS.filter((menuItem) => allowedViewOnlyItems.includes(menuItem.id || ''));
         }
 
+        menuItems = menuItems.map((menuItem) => {
+          if (menuItem.id === 'project-wiki') {
+            return {
+              ...menuItem,
+              visible: ctx.wikiPageVisible,
+            };
+          }
+
+          const isVisible = shouldShowMenuItem(menuItem.id || '', ctx.permissions);
+
+          return {
+            ...menuItem,
+            visible: isVisible,
+          };
+        });
+
         return {
           ...subItem,
           visible: true,
-          expanded: true,
+          expanded: !ctx.isResourceDetailsLoading,
           items: menuItems.map((menuItem) => ({
             ...menuItem,
             routerLink: [ctx.resourceId as string, menuItem.routerLink],
@@ -128,11 +166,13 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           ...subItem,
           visible: true,
           expanded: true,
-          items: menuItems.map((menuItem) => ({
-            ...menuItem,
-            routerLink: [ctx.resourceId as string, menuItem.routerLink],
-            queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
-          })),
+          items: menuItems.map((menuItem) => {
+            return {
+              ...menuItem,
+              routerLink: [ctx.resourceId as string, menuItem.routerLink],
+              queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
+            };
+          }),
         };
       }
       return { ...subItem, visible: false, expanded: false };

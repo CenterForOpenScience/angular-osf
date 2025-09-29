@@ -1,15 +1,15 @@
-export interface Social {
-  ssrn: string;
-  orcid: string;
-  github: string[];
-  scholar: string;
-  twitter: string[];
-  linkedIn: string[];
-  impactStory: string;
-  baiduScholar: string;
-  researchGate: string;
-  researcherId: string;
-  profileWebsites: string[];
-  academiaProfileID: string;
+export interface SocialModel {
   academiaInstitution: string;
+  academiaProfileID: string;
+  baiduScholar: string;
+  github: string[];
+  impactStory: string;
+  linkedIn: string[];
+  orcid: string;
+  profileWebsites: string[];
+  researcherId: string;
+  researchGate: string;
+  scholar: string;
+  ssrn: string;
+  twitter: string[];
 }

@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '@shared/enums';
 import { InstitutionsMapper } from '@shared/mappers';
 import {
@@ -12,16 +13,20 @@ import {
   InstitutionsWithMetaJsonApiResponse,
   InstitutionsWithTotalCount,
 } from '@shared/models';
-import { JsonApiService } from '@shared/services';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InstitutionsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Preprint, 'preprints'],
     [ResourceType.Agent, 'users'],
@@ -30,16 +35,8 @@ export class InstitutionsService {
     [ResourceType.DraftRegistration, 'draft_registrations'],
   ]);
 
-  getInstitutions(pageNumber: number, pageSize: number, searchValue?: string): Observable<InstitutionsWithTotalCount> {
+  getInstitutions(searchValue?: string): Observable<InstitutionsWithTotalCount> {
     const params: Record<string, unknown> = {};
-
-    if (pageNumber) {
-      params['page'] = pageNumber;
-    }
-
-    if (pageSize) {
-      params['page[size]'] = pageSize;
-    }
 
     if (searchValue && searchValue.trim()) {
       params['filter[name]'] = searchValue.trim();

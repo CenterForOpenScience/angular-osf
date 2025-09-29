@@ -5,7 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 
-import { map, switchMap, tap } from 'rxjs';
+import { map, of, switchMap, tap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -18,7 +18,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
@@ -93,6 +93,11 @@ export class RegistryOverviewComponent {
   readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
   readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
+
+  readonly hasWriteAccess = select(RegistryOverviewSelectors.hasWriteAccess);
+  readonly hasAdminAccess = select(RegistryOverviewSelectors.hasAdminAccess);
+  readonly hasNoPermissions = select(RegistryOverviewSelectors.hasNoPermissions);
+
   revisionInProgress: SchemaResponse | undefined;
 
   isLoading = computed(
@@ -104,16 +109,29 @@ export class RegistryOverviewComponent {
       this.areSubjectsLoading()
   );
 
+  canMakeDecision = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration);
+
+  isRootRegistration = computed(() => {
+    const rootId = this.registry()?.rootParentId;
+    return !rootId || rootId === this.registry()?.id;
+  });
+
+  private registryId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+
   readonly schemaResponse = computed(() => {
     const registry = this.registry();
     const index = this.selectedRevisionIndex();
-    this.revisionInProgress = registry?.schemaResponses.find(
+    this.revisionInProgress = registry?.schemaResponses?.find(
       (r) => r.reviewsState === RevisionReviewStates.RevisionInProgress
     );
+
     const schemaResponses =
       (this.isModeration
         ? registry?.schemaResponses
-        : registry?.schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved)) || [];
+        : registry?.schemaResponses?.filter(
+            (r) => r.reviewsState === RevisionReviewStates.Approved || this.hasAdminAccess()
+          )) || [];
+
     if (index !== null) {
       return schemaResponses[index];
     }
@@ -132,18 +150,23 @@ export class RegistryOverviewComponent {
     const registry = this.registry();
     const subjects = this.subjects();
     const institutions = this.institutions();
+
     if (registry && subjects && institutions) {
       return MapRegistryOverview(registry, subjects, institutions, this.isAnonymous());
     }
+
     return null;
   });
 
   readonly selectedRevisionIndex = signal(0);
 
+  showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn && !this.hasNoPermissions());
+
   toolbarResource = computed(() => {
     if (this.registry()) {
       return {
         id: this.registry()!.id,
+        title: this.registry()?.title,
         isPublic: this.registry()!.isPublic,
         storage: undefined,
         viewOnlyLinksCount: 0,
@@ -169,12 +192,16 @@ export class RegistryOverviewComponent {
   revisionId: string | null = null;
   isModeration = false;
 
-  userPermissions = computed(() => this.registry()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  get isAdmin(): boolean {
-    return this.userPermissions().includes(UserPermissions.Admin);
-  }
+  canEdit = computed(() => {
+    const registry = this.registry();
+    if (!registry) return false;
+    return (
+      registry.currentUserPermissions.includes(UserPermissions.Admin) ||
+      registry.currentUserPermissions.includes(UserPermissions.Write)
+    );
+  });
 
   get isInitialState(): boolean {
     return this.registry()?.reviewsState === RegistrationReviewStates.Initial;
@@ -187,6 +214,12 @@ export class RegistryOverviewComponent {
       if (registry && !registry?.withdrawn) {
         this.actions.getSubjects(registry?.id, ResourceType.Registration);
         this.actions.getInstitutions(registry?.id);
+      }
+    });
+
+    effect(() => {
+      if (this.registryId()) {
+        this.actions.getRegistryById(this.registryId());
       }
     });
 

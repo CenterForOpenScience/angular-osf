@@ -39,11 +39,6 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getSelf(state: GlobalSearchStateModel): string {
-    return state.self;
-  }
-
-  @Selector([GlobalSearchState])
   static getFirst(state: GlobalSearchStateModel): StringOrNull {
     return state.first;
   }
@@ -64,8 +59,8 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getFilterValues(state: GlobalSearchStateModel): Record<string, StringOrNull> {
-    return state.filterValues;
+  static getSelectedOptions(state: GlobalSearchStateModel): Record<string, FilterOption | null> {
+    return state.selectedFilterOptions;
   }
 
   @Selector([GlobalSearchState])

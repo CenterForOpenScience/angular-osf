@@ -5,7 +5,6 @@
     [title]="'institutions.title' | translate"
     [icon]="'custom-icon-institutions-dark'"
   />
-  <osf-scheduled-banner />
   <div class="flex-column flex flex-1 w-full bg-white p-5">
     <osf-search-input [control]="searchControl" [placeholder]="'institutions.searchInstitutions' | translate" />
 
@@ -29,14 +28,6 @@
           <p class="text-center">{{ 'common.search.noResultsFound' | translate }}</p>
         }
       </div>
-
-      @if (totalInstitutionsCount() > currentPageSize()) {
-        <osf-custom-paginator
-          [first]="first()"
-          [totalCount]="totalInstitutionsCount()"
-          (pageChanged)="onPageChange($event)"
-        ></osf-custom-paginator>
-      }
     }
   </div>
 </section>

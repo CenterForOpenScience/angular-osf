@@ -29,7 +29,7 @@ export class HeaderComponent {
   items = [
     {
       label: 'navigation.myProfile',
-      command: () => this.router.navigate(['my-profile']),
+      command: () => this.router.navigate(['profile']),
     },
     { label: 'navigation.settings', command: () => this.router.navigate(['settings']) },
     {

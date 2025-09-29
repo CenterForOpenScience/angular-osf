@@ -1,13 +1,13 @@
 import { Selector } from '@ngxs/store';
 
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 
 import { ProfileStateModel } from './profile.model';
 import { ProfileState } from '.';
 
 export class ProfileSelectors {
   @Selector([ProfileState])
-  static getUserProfile(state: ProfileStateModel): User | null {
+  static getUserProfile(state: ProfileStateModel): UserModel | null {
     return state.userProfile.data;
   }
 

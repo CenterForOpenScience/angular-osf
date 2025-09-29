@@ -4,16 +4,27 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { Identifier } from '@shared/models';
-import { DataciteEvent } from '@shared/models/datacite/datacite-event.enum';
-import { IdentifiersJsonApiResponse } from '@shared/models/identifiers/identifier-json-api.model';
+import { Identifier, IdentifiersJsonApiResponse } from '@osf/shared/models';
+import { DataciteEvent } from '@osf/shared/models/datacite/datacite-event.enum';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataciteService {
-  private http: HttpClient = inject(HttpClient);
-  private environment = inject(ENVIRONMENT);
+  private readonly http: HttpClient = inject(HttpClient);
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiDomainUrl() {
+    return this.environment.apiDomainUrl;
+  }
+
+  get dataciteTrackerAddress() {
+    return this.environment.dataciteTrackerAddress;
+  }
+
+  get dataciteTrackerRepoId() {
+    return this.environment.dataciteTrackerRepoId;
+  }
 
   logIdentifiableView(trackable: Observable<{ identifiers?: Identifier[] } | null>) {
     return this.watchIdentifiable(trackable, DataciteEvent.VIEW);
@@ -45,7 +56,7 @@ export class DataciteService {
   }
 
   private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
-    const url = `${this.environment.webUrl}/${targetType}/${targetId}/identifiers`;
+    const url = `${this.apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`;
     return this.http.get<IdentifiersJsonApiResponse>(url).pipe(
       map((item) => ({
         identifiers: item.data.map<Identifier>((identifierData) => ({
@@ -68,19 +79,19 @@ export class DataciteService {
    *          or EMPTY if DOI or repo ID is missing.
    */
   private logActivity(event: DataciteEvent, doi: string): Observable<void> {
-    if (!doi || !this.environment.dataciteTrackerRepoId) {
+    if (!doi || !this.dataciteTrackerRepoId) {
       return EMPTY;
     }
     const payload = {
       n: event,
       u: window.location.href,
-      i: this.environment.dataciteTrackerRepoId,
+      i: this.dataciteTrackerRepoId,
       p: doi,
     };
     const headers = {
       'Content-Type': 'application/json',
     };
-    return this.http.post(this.environment.dataciteTrackerAddress, payload, { headers }).pipe(
+    return this.http.post(this.dataciteTrackerAddress, payload, { headers }).pipe(
       map(() => {
         return;
       })

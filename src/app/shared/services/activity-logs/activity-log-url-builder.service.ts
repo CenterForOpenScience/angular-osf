@@ -98,6 +98,15 @@ export class ActivityLogUrlBuilderService {
     return '';
   }
 
+  buildTemplateUrl(log: ActivityLog): string {
+    const templateNode = log.params.template_node;
+
+    if (templateNode?.id) {
+      return this.buildAHrefElement(`/${templateNode.id}`, templateNode.title);
+    }
+    return '';
+  }
+
   buildFileUrl(log: ActivityLog, path: string): string {
     const acceptableLinkedItems = [
       'osf_storage_file_added',

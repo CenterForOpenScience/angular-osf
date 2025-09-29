@@ -1,4 +1,4 @@
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 
 export class FetchUserProfile {
   static readonly type = '[Profile] Fetch User Profile';
@@ -9,5 +9,5 @@ export class FetchUserProfile {
 export class SetUserProfile {
   static readonly type = '[Profile] Set User Profile';
 
-  constructor(public userProfile: User) {}
+  constructor(public userProfile: UserModel) {}
 }

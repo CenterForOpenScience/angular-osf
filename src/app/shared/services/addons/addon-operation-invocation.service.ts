@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { OperationNames } from '@osf/features/project/addons/enums';
+import { OperationNames } from '@osf/shared/enums';
 import { AuthorizedAccountModel, ConfiguredAddonModel, OperationInvocationRequestJsonApi } from '@shared/models';
 
 @Injectable({

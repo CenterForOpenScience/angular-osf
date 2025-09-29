@@ -1,6 +1,6 @@
 <osf-sub-header
   [title]="'resources.title' | translate"
-  [showButton]="true"
+  [showButton]="addButtonVisible()"
   [isButtonDisabled]="isAddingResource()"
   [buttonLabel]="'resources.add' | translate"
   (buttonClick)="addResource()"
@@ -12,7 +12,7 @@
   <div class="flex flex-column bg-white flex-1 p-4 gap-4">
     <p>
       {{ 'resources.description' | translate }}
-      <a class="font-bold" href="https://help.osf.io/article/410-registration-files" target="_blank">
+      <a class="font-bold" href="https://help.osf.io/article/452-open-practice-badges" target="_blank">
         {{ 'common.labels.learnMore' | translate }}
       </a>
     </p>
@@ -28,28 +28,32 @@
 
             <div class="flex flex-column gap-2">
               <h2>{{ resourceName }}</h2>
-              <a class="font-bold" [href]="'https://doi.org/' + resource.pid">https://doi.org/{{ resource.pid }}</a>
+              <a class="font-bold" [href]="doiDomain + resource.pid" target="_blank" rel="noopener noreferrer">
+                {{ doiDomain + resource.pid }}
+              </a>
               <p class="mt-1">{{ resource.description }}</p>
             </div>
           </div>
 
-          <div class="flex gap-3 ml-auto w-full md:w-auto">
-            <p-button
-              class="w-full md:w-auto"
-              styleClass="w-full md:w-auto"
-              severity="secondary"
-              [label]="'common.buttons.edit' | translate"
-              (onClick)="updateResource(resource)"
-            ></p-button>
+          @if (canEdit()) {
+            <div class="flex gap-3 ml-auto w-full md:w-auto">
+              <p-button
+                class="w-full md:w-auto"
+                styleClass="w-full md:w-auto"
+                severity="secondary"
+                [label]="'common.buttons.edit' | translate"
+                (onClick)="updateResource(resource)"
+              ></p-button>
 
-            <p-button
-              class="w-full md:w-auto"
-              styleClass="w-full md:w-auto"
-              severity="danger"
-              [label]="'common.buttons.delete' | translate"
-              (onClick)="deleteResource(resource.id)"
-            ></p-button>
-          </div>
+              <p-button
+                class="w-full md:w-auto"
+                styleClass="w-full md:w-auto"
+                severity="danger"
+                [label]="'common.buttons.delete' | translate"
+                (onClick)="deleteResource(resource.id)"
+              ></p-button>
+            </div>
+          }
         </div>
       }
     </div>

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { User } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models';
 
 import { GENERATIONAL_SUFFIXES, ORDINAL_SUFFIXES } from '../constants/citation-suffix.const';
 
@@ -8,7 +8,7 @@ import { GENERATIONAL_SUFFIXES, ORDINAL_SUFFIXES } from '../constants/citation-s
   name: 'citationFormat',
 })
 export class CitationFormatPipe implements PipeTransform {
-  transform(user: Partial<User> | null | undefined, format: 'apa' | 'mla' = 'apa'): string {
+  transform(user: Partial<UserModel> | null | undefined, format: 'apa' | 'mla' = 'apa'): string {
     if (!user) return '';
 
     const familyName = user.familyName ?? '';
@@ -32,7 +32,7 @@ export class CitationFormatPipe implements PipeTransform {
     return (names || '')
       .trim()
       .split(/\s+/)
-      .map((n) => (/^[a-z]/i.test(n) ? `${n[0].toUpperCase()}.` : ''))
+      .map((n) => (/^\p{L}/u.test(n) ? `${n[0].toUpperCase()}.` : ''))
       .filter(Boolean)
       .join(' ');
   }

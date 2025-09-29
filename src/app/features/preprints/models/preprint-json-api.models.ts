@@ -1,6 +1,6 @@
 import { UserPermissions } from '@osf/shared/enums';
 import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
-import { ContributorResponse, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@osf/shared/models';
+import { ContributorDataJsonApi, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@osf/shared/models';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
@@ -66,7 +66,7 @@ export interface PreprintRelationshipsJsonApi {
 
 export interface PreprintEmbedsJsonApi {
   bibliographic_contributors: {
-    data: ContributorResponse[];
+    data: ContributorDataJsonApi[];
   };
   license: LicenseResponseJsonApi;
   identifiers: {

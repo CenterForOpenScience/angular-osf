@@ -1,6 +1,6 @@
-import { AnalyticsMetricsModel, RelatedCountsModel } from '@osf/features/analytics/models';
+import { NodeAnalyticsModel, RelatedCountsModel } from '@osf/features/analytics/models';
 
-export const MOCK_ANALYTICS_METRICS: AnalyticsMetricsModel = {
+export const MOCK_ANALYTICS_METRICS: NodeAnalyticsModel = {
   id: 'rid',
   type: 'analytics',
   uniqueVisits: [

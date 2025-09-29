@@ -1,5 +1,5 @@
 @if (summaryMetricsLoading()) {
-  <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
+  <div class="flex-1">
     <osf-loading-spinner />
   </div>
 } @else {
@@ -11,79 +11,93 @@
     </div>
 
     <div class="flex flex-wrap mt-4 gap-3 md:gap-4">
-      <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
-        <osf-doughnut-chart
-          [isLoading]="departmentsLoading()"
-          [datasets]="departmentDataset"
-          [labels]="departmentLabels"
-          [showExpandedSection]="true"
-          [title]="'adminInstitutions.summary.totalUsersByDepartment' | translate"
-        />
-      </div>
+      @if (departmentLabels().length > 0) {
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
+          <osf-doughnut-chart
+            [isLoading]="departmentsLoading()"
+            [datasets]="departmentDataset()"
+            [labels]="departmentLabels()"
+            [showExpandedSection]="true"
+            [title]="'adminInstitutions.summary.totalUsersByDepartment' | translate"
+          />
+        </div>
+      }
 
-      <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
-        <osf-doughnut-chart
-          [isLoading]="summaryMetricsLoading()"
-          [datasets]="projectDataset"
-          [labels]="projectsLabels"
-          [showExpandedSection]="true"
-          [title]="'adminInstitutions.summary.publicPrivateProjects' | translate"
-        />
-      </div>
+      @if (projectsLabels().length > 0) {
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
+          <osf-doughnut-chart
+            [isLoading]="summaryMetricsLoading()"
+            [datasets]="projectDataset()"
+            [labels]="projectsLabels()"
+            [showExpandedSection]="true"
+            [title]="'adminInstitutions.summary.publicPrivateProjects' | translate"
+          />
+        </div>
+      }
 
-      <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
-        <osf-doughnut-chart
-          [isLoading]="summaryMetricsLoading()"
-          [datasets]="registrationsDataset"
-          [labels]="registrationsLabels"
-          [showExpandedSection]="true"
-          [title]="'adminInstitutions.summary.publicEmbargoedRegistrations' | translate"
-        />
-      </div>
+      @if (registrationsLabels().length > 0) {
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
+          <osf-doughnut-chart
+            [isLoading]="summaryMetricsLoading()"
+            [datasets]="registrationsDataset()"
+            [labels]="registrationsLabels()"
+            [showExpandedSection]="true"
+            [title]="'adminInstitutions.summary.publicEmbargoedRegistrations' | translate"
+          />
+        </div>
+      }
 
-      <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
-        <osf-doughnut-chart
-          [isLoading]="summaryMetricsLoading()"
-          [datasets]="osfProjectsDataset"
-          [labels]="osfProjectsLabels"
-          [showExpandedSection]="true"
-          [title]="'adminInstitutions.summary.totalOsfObjects' | translate"
-        />
-      </div>
+      @if (osfProjectsLabels().length > 0) {
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
+          <osf-doughnut-chart
+            [isLoading]="summaryMetricsLoading()"
+            [datasets]="osfProjectsDataset()"
+            [labels]="osfProjectsLabels()"
+            [showExpandedSection]="true"
+            [title]="'adminInstitutions.summary.totalOsfObjects' | translate"
+          />
+        </div>
+      }
 
-      <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
-        <osf-bar-chart
-          [isLoading]="rightsLoading()"
-          [datasets]="licenceDataset"
-          [labels]="licenceLabels"
-          [showTicks]="false"
-          [showExpandedSection]="true"
-          [orientation]="'vertical'"
-          [title]="'adminInstitutions.summary.topTenLicenses' | translate"
-        />
-      </div>
+      @if (licenceLabels().length > 0) {
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
+          <osf-bar-chart
+            [isLoading]="rightsLoading()"
+            [datasets]="licenceDataset()"
+            [labels]="licenceLabels()"
+            [showTicks]="false"
+            [showExpandedSection]="true"
+            [orientation]="'vertical'"
+            [title]="'adminInstitutions.summary.topTenLicenses' | translate"
+          />
+        </div>
+      }
 
-      <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
-        <osf-bar-chart
-          [isLoading]="storageRegionSearchLoading()"
-          [datasets]="addonDataset"
-          [labels]="addonLabels"
-          [showTicks]="false"
-          [showExpandedSection]="true"
-          [orientation]="'vertical'"
-          [title]="'adminInstitutions.summary.topTenAddons' | translate"
-        />
-      </div>
+      @if (addonLabels().length > 0) {
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
+          <osf-bar-chart
+            [isLoading]="storageRegionSearchLoading()"
+            [datasets]="addonDataset()"
+            [labels]="addonLabels()"
+            [showTicks]="false"
+            [showExpandedSection]="true"
+            [orientation]="'vertical'"
+            [title]="'adminInstitutions.summary.topTenAddons' | translate"
+          />
+        </div>
+      }
 
-      <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
-        <osf-doughnut-chart
-          [isLoading]="storageRegionSearchLoading()"
-          [datasets]="storageDataset"
-          [labels]="storageLabels"
-          [showExpandedSection]="true"
-          [title]="'adminInstitutions.summary.topStorageRegions' | translate"
-        />
-      </div>
+      @if (storageLabels().length > 0) {
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
+          <osf-doughnut-chart
+            [isLoading]="storageRegionSearchLoading()"
+            [datasets]="storageDataset()"
+            [labels]="storageLabels()"
+            [showExpandedSection]="true"
+            [title]="'adminInstitutions.summary.topStorageRegions' | translate"
+          />
+        </div>
+      }
     </div>
   </div>
 }

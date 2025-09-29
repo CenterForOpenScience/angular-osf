@@ -23,7 +23,7 @@
         <section class="flex flex-column gap-2">
           <h3>{{ 'preprints.details.publicationDoi' | translate }}</h3>
 
-          <a [href]="preprint()?.articleDoiLink">
+          <a class="font-bold word-break-word" [href]="preprint()?.articleDoiLink">
             {{ preprint()?.articleDoiLink }}
           </a>
         </section>

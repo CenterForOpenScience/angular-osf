@@ -4,16 +4,21 @@
   >
     <osf-sub-header
       [title]="registry()!.title"
-      [showButton]="isModeration"
+      [showButton]="canMakeDecision()"
       [buttonSeverity]="'success'"
       [buttonLabel]="'moderation.makeDecision.header' | translate"
+      [isButtonDisabled]="!isRootRegistration()"
       [isSubmitting]="areReviewActionsLoading()"
       (buttonClick)="handleOpenMakeDecisionDialog()"
     />
 
-    @if (!registry()?.archiving && !registry()?.withdrawn) {
+    @if (showToolbar()) {
       <div class="pb-5 pl-4 ml-auto w-full md:pr-4">
-        <osf-overview-toolbar [currentResource]="toolbarResource()" [showViewOnlyLinks]="false" [isAdmin]="true" />
+        <osf-overview-toolbar
+          [currentResource]="toolbarResource()"
+          [showViewOnlyLinks]="false"
+          [canEdit]="hasWriteAccess()"
+        />
       </div>
     }
   </div>
@@ -27,7 +32,7 @@
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      @if (!schemaResponse()?.isOriginalResponse && !isInitialState && !hasViewOnly()) {
+      @if (schemaResponse() && !schemaResponse()?.isOriginalResponse && !isInitialState) {
         <p-message class="overview-message w-full" severity="warn">
           <ng-template #container>
             <div>
@@ -45,9 +50,11 @@
           </ng-template>
         </p-message>
       }
+
       @if (hasViewOnly()) {
         <osf-view-only-link-message />
       }
+
       <osf-data-resources
         [absoluteUrl]="registry()?.id"
         [hasData]="registry()?.hasData"
@@ -61,7 +68,12 @@
         <div class="left-section">
           @if (!isAnonymous()) {
             <div class="flex flex-column gap-4 md:flex-row resource">
-              <osf-registry-statuses [registry]="registry()"></osf-registry-statuses>
+              <osf-registry-statuses
+                [registry]="registry()"
+                [canEdit]="hasAdminAccess()"
+                [isModeration]="isModeration"
+              ></osf-registry-statuses>
+
               <osf-registry-revisions
                 [registry]="registry()"
                 [selectedRevisionIndex]="selectedRevisionIndex()"
@@ -70,6 +82,7 @@
                 (continueUpdate)="onContinueUpdateRegistration()"
                 [isModeration]="isModeration"
                 [isSubmitting]="isSchemaResponseLoading()"
+                [canEdit]="hasAdminAccess()"
               >
               </osf-registry-revisions>
             </div>
@@ -121,7 +134,8 @@
           <osf-resource-metadata
             [currentResource]="resourceOverview()"
             (customCitationUpdated)="onCustomCitationUpdated($event)"
-            [canWrite]="!hasViewOnly()"
+            [canEdit]="hasWriteAccess()"
+            [showEditButton]="hasWriteAccess()"
           />
         </div>
       </div>

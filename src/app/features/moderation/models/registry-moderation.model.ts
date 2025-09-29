@@ -9,7 +9,7 @@ export interface RegistryModeration {
   reviewsState: RegistrationReviewStates;
   public: boolean;
   embargoed: boolean;
-  embargoEndDate?: string;
+  embargoEndDate: string | null;
   actions: ReviewAction[];
   revisionId?: string | null;
 }

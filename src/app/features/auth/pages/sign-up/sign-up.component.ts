@@ -12,6 +12,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SignUpModel } from '@osf/core/models';
 import { AuthService } from '@osf/core/services';
 import { PasswordInputHintComponent, TextInputComponent } from '@osf/shared/components';
@@ -20,8 +21,6 @@ import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/helpers';
 import { ToastService } from '@osf/shared/services';
 
 import { SignUpForm } from '../../models';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-sign-up',
@@ -45,13 +44,14 @@ import { environment } from 'src/environments/environment';
 export class SignUpComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
+  private readonly environment = inject(ENVIRONMENT);
 
   signUpForm = new FormGroup<SignUpForm>({} as SignUpForm);
   passwordRegex: RegExp = PASSWORD_REGEX;
   inputLimits = InputLimits;
   isFormSubmitted = signal(false);
 
-  readonly siteKey = environment.recaptchaSiteKey;
+  readonly siteKey = this.environment.recaptchaSiteKey;
 
   get isPasswordError() {
     return this.signUpForm.controls['password'].errors && this.signUpForm.get('password')?.touched;

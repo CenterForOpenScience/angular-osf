@@ -20,8 +20,9 @@ import {
   OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
@@ -55,8 +56,6 @@ import { ContributorsSelectors } from '@shared/stores';
 
 import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
 
-import { environment } from 'src/environments/environment';
-
 @Component({
   selector: 'osf-preprint-details',
   imports: [
@@ -72,6 +71,7 @@ import { environment } from 'src/environments/environment';
     PreprintWarningBannerComponent,
     ModerationStatusBannerComponent,
     MakeDecisionComponent,
+    RouterLink,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
@@ -92,6 +92,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
+  private readonly environment = inject(ENVIRONMENT);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
@@ -135,6 +136,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     return actions[0];
   });
+
   latestWithdrawalRequest = computed(() => {
     const requests = this.withdrawalRequests();
 
@@ -142,6 +144,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     return requests[0];
   });
+
   latestRequestAction = computed(() => {
     const actions = this.requestActions();
 
@@ -376,7 +379,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         description: this.preprint()?.description,
         publishedDate: this.datePipe.transform(this.preprint()?.datePublished, 'yyyy-MM-dd'),
         modifiedDate: this.datePipe.transform(this.preprint()?.dateModified, 'yyyy-MM-dd'),
-        url: pathJoin(environment.webUrl, this.preprint()?.id ?? ''),
+        url: pathJoin(this.environment.webUrl, this.preprint()?.id ?? ''),
         doi: this.preprint()?.doi,
         keywords: this.preprint()?.tags,
         siteName: 'OSF',

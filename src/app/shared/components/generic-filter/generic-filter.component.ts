@@ -38,7 +38,7 @@ export class GenericFilterComponent {
   placeholder = input<string>('');
   filterType = input<string>('');
 
-  valueChanged = output<string | null>();
+  optionChanged = output<FilterOption | null>();
   searchTextChanged = output<string>();
   loadMoreOptions = output<void>();
 
@@ -87,7 +87,7 @@ export class GenericFilterComponent {
       } else {
         return options
           .filter((option) => option?.label)
-          .sort((a, b) => a.label.localeCompare(b.label))
+          .sort((a, b) => b.cardSearchResultCount - a.cardSearchResultCount)
           .map((option) => ({
             ...option,
             label: option.label || '',
@@ -164,12 +164,12 @@ export class GenericFilterComponent {
     }
   }
 
-  onValueChange(event: SelectChangeEvent): void {
+  onOptionChange(event: SelectChangeEvent): void {
     const options = this.filterOptions();
-    const selectedOption = event.value ? options.find((opt) => opt.value === event.value) : null;
-    this.currentSelectedOption.set(selectedOption || null);
+    const selectedOption = event.value ? (options.find((opt) => opt.value === event.value) ?? null) : null;
+    this.currentSelectedOption.set(selectedOption);
 
-    this.valueChanged.emit(event.value || null);
+    this.optionChanged.emit(selectedOption);
   }
 
   onFilterChange(event: { filter: string }): void {

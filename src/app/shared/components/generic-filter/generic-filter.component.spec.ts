@@ -97,8 +97,8 @@ describe('GenericFilterComponent', () => {
 
       const filteredOptions = component.filterOptions();
       expect(filteredOptions).toHaveLength(2);
-      expect(filteredOptions[0].label).toBe('Another Valid');
-      expect(filteredOptions[1].label).toBe('Valid Option');
+      expect(filteredOptions[0].label).toBe('Valid Option');
+      expect(filteredOptions[1].label).toBe('Another Valid');
     });
 
     it('should map options correctly', () => {
@@ -122,9 +122,9 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
-      expect(filteredOptions[0].label).toBe('Apple');
-      expect(filteredOptions[1].label).toBe('Banana');
-      expect(filteredOptions[2].label).toBe('Zebra');
+      expect(filteredOptions[0].label).toBe('Zebra');
+      expect(filteredOptions[1].label).toBe('Apple');
+      expect(filteredOptions[2].label).toBe('Banana');
     });
 
     it('should handle dateCreated filter type differently', () => {
@@ -263,29 +263,29 @@ describe('GenericFilterComponent', () => {
     });
 
     it('should emit valueChanged when onValueChange is called with a value', () => {
-      jest.spyOn(component.valueChanged, 'emit');
+      jest.spyOn(component.optionChanged, 'emit');
 
       const mockEvent: SelectChangeEvent = {
         originalEvent: new Event('change'),
         value: 'value2',
       };
 
-      component.onValueChange(mockEvent);
+      component.onOptionChange(mockEvent);
 
-      expect(component.valueChanged.emit).toHaveBeenCalledWith('value2');
+      expect(component.optionChanged.emit).toHaveBeenCalledWith('value2');
     });
 
     it('should emit null when onValueChange is called with null value', () => {
-      jest.spyOn(component.valueChanged, 'emit');
+      jest.spyOn(component.optionChanged, 'emit');
 
       const mockEvent: SelectChangeEvent = {
         originalEvent: new Event('change'),
         value: null,
       };
 
-      component.onValueChange(mockEvent);
+      component.onOptionChange(mockEvent);
 
-      expect(component.valueChanged.emit).toHaveBeenCalledWith(null);
+      expect(component.optionChanged.emit).toHaveBeenCalledWith(null);
     });
 
     it('should update currentSelectedOption when onValueChange is called', () => {
@@ -294,7 +294,7 @@ describe('GenericFilterComponent', () => {
         value: 'value3',
       };
 
-      component.onValueChange(mockEvent);
+      component.onOptionChange(mockEvent);
 
       expect(component.currentSelectedOption()).toEqual({ label: 'Option 3', value: 'value3' });
     });
@@ -310,13 +310,13 @@ describe('GenericFilterComponent', () => {
         value: null,
       };
 
-      component.onValueChange(mockEvent);
+      component.onOptionChange(mockEvent);
 
       expect(component.currentSelectedOption()).toBeNull();
     });
 
     it('should trigger onChange event in template', () => {
-      jest.spyOn(component, 'onValueChange');
+      jest.spyOn(component, 'onOptionChange');
 
       const selectElement = fixture.debugElement.query(By.css('p-select'));
       const mockEvent: SelectChangeEvent = {
@@ -326,7 +326,7 @@ describe('GenericFilterComponent', () => {
 
       selectElement.triggerEventHandler('onChange', mockEvent);
 
-      expect(component.onValueChange).toHaveBeenCalledWith(mockEvent);
+      expect(component.onOptionChange).toHaveBeenCalledWith(mockEvent);
     });
   });
 

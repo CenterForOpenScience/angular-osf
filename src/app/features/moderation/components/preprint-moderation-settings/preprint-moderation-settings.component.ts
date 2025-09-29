@@ -13,13 +13,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { LoadingSpinnerComponent } from '@osf/shared/components';
 
 import { PREPRINT_SETTINGS_SECTIONS } from '../../constants';
 import { SettingsSectionControl } from '../../enums';
 import { GetPreprintProvider, PreprintModerationSelectors } from '../../store/preprint-moderation';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-preprint-moderation-settings',
@@ -32,6 +31,7 @@ export class PreprintModerationSettingsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
+  private readonly environment = inject(ENVIRONMENT);
 
   private readonly actions = createDispatchMap({ getPreprintProvider: GetPreprintProvider });
   readonly providerId = toSignal(
@@ -41,7 +41,7 @@ export class PreprintModerationSettingsComponent implements OnInit {
   settingsForm!: FormGroup;
   sections = PREPRINT_SETTINGS_SECTIONS;
 
-  readonly supportEmail = environment.supportEmail;
+  readonly supportEmail = this.environment.supportEmail;
 
   readonly isLoading = select(PreprintModerationSelectors.arePreprintProviderLoading);
 

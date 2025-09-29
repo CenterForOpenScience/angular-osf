@@ -9,7 +9,9 @@ import {
   SchemaResponseDataJsonApi,
 } from '@osf/shared/models';
 
-import { MapRegistryStatus } from '../registry';
+import { ContributorsMapper } from '../contributors';
+
+import { MapRegistryStatus } from './map-registry-status.mapper';
 
 export class RegistrationMapper {
   static fromDraftRegistrationResponse(response: DraftRegistrationDataJsonApi): DraftRegistrationModel {
@@ -66,11 +68,8 @@ export class RegistrationMapper {
       registrationTemplate: registration.embeds?.registration_schema?.data?.attributes?.name || '',
       registry: registration.embeds?.provider?.data?.attributes?.name || '',
       public: registration.attributes.public,
-      contributors:
-        registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-          id: contributor.id,
-          fullName: contributor.embeds?.users?.data.attributes.full_name,
-        })) || [],
+      contributors: ContributorsMapper.getContributorShortInfo(registration.embeds?.bibliographic_contributors?.data),
+      currentUserPermissions: registration.attributes.current_user_permissions,
     };
   }
 
@@ -87,11 +86,14 @@ export class RegistrationMapper {
       public: registration.attributes.public,
       reviewsState: registration.attributes.reviews_state,
       revisionState: registration.attributes.revision_state,
-      contributors:
-        registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-          id: contributor.embeds.users.data.id,
-          fullName: contributor.embeds.users.data.attributes.full_name,
-        })) || [],
+      hasData: registration.attributes.has_data,
+      hasAnalyticCode: registration.attributes.has_analytic_code,
+      hasMaterials: registration.attributes.has_materials,
+      hasPapers: registration.attributes.has_papers,
+      hasSupplements: registration.attributes.has_supplements,
+      contributors: ContributorsMapper.getContributorShortInfo(registration.embeds?.bibliographic_contributors?.data),
+      rootParentId: registration.relationships.root?.data?.id,
+      currentUserPermissions: registration.attributes.current_user_permissions,
     };
   }
 

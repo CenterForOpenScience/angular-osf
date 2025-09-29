@@ -107,18 +107,15 @@ export const routes: Routes = [
         loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
       },
       {
-        path: 'my-profile',
-        loadComponent: () =>
-          import('./features/profile/pages/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
+        path: 'profile',
+        loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
+        data: { scrollToTop: false },
         canActivate: [authGuard],
       },
       {
         path: 'user/:id',
-        loadComponent: () =>
-          import('./features/profile/pages/user-profile/user-profile.component').then(
-            (mod) => mod.UserProfileComponent
-          ),
+        loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
       },
       {
@@ -159,6 +156,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
         data: { skipBreadcrumbs: true },
+      },
+      {
+        path: ':id/files/:provider/:fileId',
+        loadComponent: () =>
+          import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
+      },
+      {
+        path: 'project/:id/files/:provider/:fileId',
+        loadComponent: () =>
+          import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
+      },
+      {
+        path: 'project/:id/node/:nodeId/files/:provider/:fileId',
+        loadComponent: () =>
+          import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },
       {
         path: ':id',

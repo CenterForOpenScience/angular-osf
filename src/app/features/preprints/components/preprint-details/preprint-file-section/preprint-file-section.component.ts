@@ -71,7 +71,6 @@ export class PreprintFileSectionComponent {
 
   dateLabel = computed(() => {
     const reviewsWorkflow = this.providerReviewsWorkflow();
-    if (!reviewsWorkflow) return '';
 
     return reviewsWorkflow === ProviderReviewsWorkflow.PreModeration
       ? 'preprints.details.file.submitted'

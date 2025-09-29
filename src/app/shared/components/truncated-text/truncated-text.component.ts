@@ -1,26 +1,48 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { Button } from 'primeng/button';
+
+import { timer } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, effect, ElementRef, input, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'osf-truncated-text',
   templateUrl: './truncated-text.component.html',
   styleUrls: ['./truncated-text.component.scss'],
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, Button],
 })
 export class TruncatedTextComponent implements AfterViewInit {
   readonly text = input('');
-  readonly hasContent = input<boolean>(false);
   readonly maxVisibleLines = input(3);
+  readonly navigateOnReadMore = input(false);
+  readonly link = input<string[]>([]);
+  readonly hasOwnContent = input(false);
+  readonly readMoreLabel = input('truncatedText.readMore');
+  readonly hideLabel = input('truncatedText.hide');
   readonly contentElement = viewChild<ElementRef>('textContent');
+
+  private readonly router = inject(Router);
+
   isTextExpanded = signal(false);
   hasOverflowingText = signal(false);
 
+  buttonLabel = () => {
+    if (this.navigateOnReadMore()) {
+      return this.readMoreLabel();
+    }
+
+    return this.isTextExpanded() ? this.hideLabel() : this.readMoreLabel();
+  };
+
   constructor() {
     effect(() => {
-      if (this.text()) {
+      const currentText = this.text();
+      if (currentText) {
         this.isTextExpanded.set(false);
+        timer(0).subscribe(() => this.checkTextOverflow());
       }
     });
   }
@@ -37,7 +59,11 @@ export class TruncatedTextComponent implements AfterViewInit {
     this.hasOverflowingText.set(hasOverflow);
   }
 
-  toggleTextExpansion(): void {
-    this.isTextExpanded.update((expanded) => !expanded);
+  handleButtonClick(): void {
+    if (this.navigateOnReadMore()) {
+      this.router.navigate(this.link());
+    } else {
+      this.isTextExpanded.update((expanded) => !expanded);
+    }
   }
 }

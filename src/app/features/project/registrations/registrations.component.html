@@ -1,5 +1,5 @@
 <osf-sub-header
-  [showButton]="true"
+  [showButton]="hasAdminAccess()"
   [buttonLabel]="'project.registrations.addRegistration' | translate"
   [title]="'navigation.registrations' | translate"
   (buttonClick)="addRegistration()"

@@ -31,5 +31,6 @@ export class SocialFormComponent {
 
   readonly hasLinkedField = computed(() => !!this.socialOutput()?.linkedField);
   readonly linkedLabel = computed(() => this.socialOutput()?.linkedField?.label);
+  readonly linkedDomain = computed(() => this.socialOutput()?.linkedField?.address);
   readonly linkedPlaceholder = computed(() => this.socialOutput()?.linkedField?.placeholder);
 }

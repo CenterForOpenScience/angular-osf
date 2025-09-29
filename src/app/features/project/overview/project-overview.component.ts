@@ -7,6 +7,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
+import { distinctUntilChanged, filter, map } from 'rxjs';
+
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -20,7 +22,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
 import { GetRootFolders } from '@osf/features/files/store';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
@@ -29,7 +31,7 @@ import {
   CollectionsModerationSelectors,
   GetSubmissionsReviewActions,
 } from '@osf/features/moderation/store/collections-moderation';
-import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { Mode, ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { MetaTagsService, ToastService } from '@osf/shared/services';
@@ -65,6 +67,7 @@ import {
   OverviewWikiComponent,
   RecentActivityComponent,
 } from './components';
+import { SUBMISSION_REVIEW_STATUS_OPTIONS } from './constants';
 import {
   ClearProjectOverview,
   GetComponents,
@@ -124,10 +127,10 @@ export class ProjectOverviewComponent implements OnInit {
   areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
   subjects = select(SubjectsSelectors.getSelectedSubjects);
   areSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
-
-  readonly activityPageSize = 5;
-  readonly activityDefaultPage = 1;
-  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
+  hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -149,9 +152,9 @@ export class ProjectOverviewComponent implements OnInit {
     getSubjects: FetchSelectedSubjects,
   });
 
-  currentProject = select(ProjectOverviewSelectors.getProject);
-  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-  private currentProject$ = toObservable(this.currentProject);
+  readonly activityPageSize = 5;
+  readonly activityDefaultPage = 1;
+  readonly SubmissionReviewStatusOptions = SUBMISSION_REVIEW_STATUS_OPTIONS;
 
   readonly isCollectionsRoute = computed(() => this.router.url.includes('/collections'));
 
@@ -174,14 +177,6 @@ export class ProjectOverviewComponent implements OnInit {
   userPermissions = computed(() => this.currentProject()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  get isAdmin(): boolean {
-    return this.userPermissions().includes(UserPermissions.Admin);
-  }
-
-  get canWrite(): boolean {
-    return this.userPermissions().includes(UserPermissions.Write);
-  }
-
   resourceOverview = computed(() => {
     const project = this.currentProject();
     const subjects = this.subjects();
@@ -199,11 +194,14 @@ export class ProjectOverviewComponent implements OnInit {
       this.areSubjectsLoading()
   );
 
+  currentProject$ = toObservable(this.currentProject);
+
   currentResource = computed(() => {
     const project = this.currentProject();
     if (project) {
       return {
         id: project.id,
+        title: project.title,
         isPublic: project.isPublic,
         storage: project.storage,
         viewOnlyLinksCount: project.viewOnlyLinksCount,
@@ -260,6 +258,7 @@ export class ProjectOverviewComponent implements OnInit {
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
+    this.setupRouteChangeEffects();
 
     effect(() => {
       const currentProject = this.currentProject();
@@ -277,14 +276,16 @@ export class ProjectOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     const projectId = this.route.snapshot.params['id'] || this.route.parent?.snapshot.params['id'];
+
     if (projectId) {
       this.actions.getProject(projectId);
       this.actions.getBookmarksId();
-      this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
+
+    this.dataciteService.logIdentifiableView(this.currentProject$).subscribe();
   }
 
   handleOpenMakeDecisionDialog() {
@@ -301,7 +302,7 @@ export class ProjectOverviewComponent implements OnInit {
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
-        if (data && data.action) {
+        if (data?.action) {
           this.toastService.showSuccess(`moderation.makeDecision.${data.action}Success`);
           this.goBack();
         }
@@ -312,10 +313,7 @@ export class ProjectOverviewComponent implements OnInit {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 
-    this.router.navigate(['../'], {
-      relativeTo: this.route,
-      queryParams,
-    });
+    this.router.navigate(['../'], { relativeTo: this.route, queryParams });
   }
 
   private setupCollectionsEffects(): void {
@@ -335,6 +333,33 @@ export class ProjectOverviewComponent implements OnInit {
         if (!provider || !resource) return;
 
         this.actions.getCurrentReviewAction(resource.id, provider.primaryCollection.id);
+      }
+    });
+  }
+
+  private setupRouteChangeEffects(): void {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.route.snapshot.params['id'] || this.route.parent?.snapshot.params['id']),
+        filter(Boolean),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((projectId) => {
+        this.actions.clearProjectOverview();
+        this.actions.getProject(projectId);
+        this.actions.getBookmarksId();
+        this.actions.getComponents(projectId);
+        this.actions.getLinkedProjects(projectId);
+        this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
+      });
+
+    effect(() => {
+      const project = this.currentProject();
+
+      if (project?.wikiEnabled) {
+        this.actions.getHomeWiki(ResourceType.Project, project.id);
       }
     });
   }

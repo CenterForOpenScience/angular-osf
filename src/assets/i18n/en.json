@@ -20,6 +20,7 @@
       "confirm": "Confirm",
       "disconnect": "Disconnect",
       "revert": "Revert",
+
       "next": "Next",
       "back": "Back",
       "continue": "Continue",
@@ -50,7 +51,8 @@
       "leaveThisView": "Leave this view",
       "addOneMore": "Add One More",
       "filter": "Filter",
-      "sort": "Sort"
+      "sort": "Sort",
+      "replace": "Replace"
     },
     "accessibility": {
       "help": "Help",
@@ -233,10 +235,11 @@
       "confirmEmail": "Confirm email",
       "emailPlaceholder": "email@example.com",
       "password": {
+        "title": "Password",
         "new": "New Password",
         "confirm": "Confirm New Password",
         "mismatch": "Passwords must match.",
-        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number or special character"
+        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number and special character"
       }
     },
     "forgotPassword": {
@@ -456,7 +459,7 @@
       "accessRequests": "Access Requests",
       "accessRequestsText": "Allow users to request access to this project",
       "wiki": "Wiki",
-      "wikiText": "Enable the wiki In [Dashboard] New and Noteworthy.",
+      "wikiText": "Enable the wiki in {{projectName}}",
       "wikiConfigureTitle": "Configure",
       "wikiConfigureText": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "emailNotifications": "Email Notifications",
@@ -534,7 +537,8 @@
     },
     "contributors": {
       "addContributor": "Add Contributor",
-      "searchPlaceholder": "Search contributors",
+      "searchProjectPlaceholder": "Search Project Contributors",
+      "searchRegistrationPlaceholder": "Search Registration Contributors",
       "permissionFilter": "Filter by permission",
       "bibliographyFilter": "Bibliography",
       "permissions": {
@@ -621,7 +625,8 @@
         "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
       },
       "files": {
-        "title": "Files"
+        "title": "Files",
+        "filesPreview": "Files Preview"
       },
       "components": {
         "title": "Components",
@@ -655,6 +660,7 @@
         "dateUpdated": "Date Updated",
         "license": "License",
         "publication": "Publication DOI",
+        "registrationDOI": "Registration DOI",
         "subjects": "Subjects",
         "tags": "Tags",
         "citation": "Citation",
@@ -827,7 +833,6 @@
       "deleteWikiMessage": "Are you sure you want to delete this wiki page?",
       "addNewWikiPlaceholder": "New wiki name",
       "addWikiSuccess": "Wiki page has been added successfully",
-      "tooltip": "This page is currently connected to the collaborative wiki. All edits made will be visible to contributors with write permission in real time. Changes will be stored but not published until you click the \"Save\" button.",
       "view": "View",
       "edit": "Edit",
       "compare": "Compare",
@@ -875,6 +880,10 @@
     },
     "metadata": {
       "addSubjects": "Add subjects...",
+      "title": "Title",
+      "editTitle": "Edit Title",
+      "editTitlePlaceholder": "Edit title here",
+      "titleUpdated": "Description updated successfully",
       "description": {
         "updated": "Description updated successfully",
         "dialog": {
@@ -937,7 +946,8 @@
           "header": "Edit Publication DOI",
           "label": "Publication DOI",
           "placeholder": "Enter publication DOI"
-        }
+        },
+        "updated": "Publication DOI updated successfully"
       },
       "addMetadata": {
         "title": "Add community metadata record",
@@ -969,7 +979,8 @@
           "selectFunder": "Select a funder",
           "autoPopulated": "Auto-populated from selection",
           "loadingFunders": "Loading funders...",
-          "description": "Add funding and support information for this project."
+          "description": "Add funding and support information for this project.",
+          "noFundersFound": "No funders found"
         }
       },
       "affiliatedInstitutions": {
@@ -1045,7 +1056,11 @@
     "dialogs": {
       "uploadFile": {
         "title": "Upload file",
-        "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
+        "message": "Are you sure you want to upload <span class=\"font-bold\">{{name}}</span>?"
+      },
+      "uploadFiles": {
+        "title": "Upload files",
+        "message": "Are you sure you want to upload <span class=\"font-bold\">{{count}}</span> files?"
       },
       "createFolder": {
         "title": "Create folder",
@@ -1071,16 +1086,21 @@
       "deleteFile": {
         "title": "Delete File",
         "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
+      },
+      "replaceFile": {
+        "single": "Replace file",
+        "multiple": "Replace files",
+        "message": "Are you sure you want to replace <span class=\"font-bold\">{{name}}</span>?"
       }
     },
     "filesBrowserDialog": {
       "title": "Using the OSF Files Browser",
       "seeAllFiles": "See All Files in a Provider",
-      "seeAllFilesDescription": "All connected storage providers are displayed in  the left navbar. Choose one provider to view contents.",
+      "seeAllFilesDescription": "All connected storage providers are displayed in the dropdown above the files list. Choose one provider to view contents.",
       "selectFilesFolders": "Select Files/Folders",
-      "selectFilesFoldersDescription": "Click on a row (outside of the file or folder name) to show further actions in the top toolbar. Click on more rows to select multiple files. To select a range of files, click a file to begin selection and then shift+click another file to select the range.",
-      "openViewFiles": "Open/View Files",
-      "openViewFilesDescription": "Click a file name to go to view the file in the OSF. Opens file in a new tab.",
+      "selectFilesFoldersDescription": "Click on a row (outside of the file or folder name). Click on more rows to select multiple files. To select a range of files, click a file to begin selection and then shift+click another file to select the range. Select the ellipses on the right side of the row to see more file options.",
+      "openViewFiles": "Open/View Files and Folders",
+      "openViewFilesDescription": "Click a file name to go to view the file in the OSF. Opens file in a new tab. Click on the folder to open the contents in the files list.",
       "upload": "Upload",
       "uploadDescription": "There are two ways to upload files. Open the storage provider or folder where you intend to upload files; you can then drag files from your desktop into files list area OR click “Upload Files”, and select your files. Note: File names with special characters may cause unexpected behavior with certain addons.",
       "createFolder": "Create a folder",
@@ -1094,9 +1114,9 @@
       "downloadAllFilesZip": "Download All Files As a Zip",
       "downloadAllFilesZipDescription": "Select the storage provider from the left navigation, and then click “Download As Zip” in the top toolbar.",
       "downloadFolderZip": "Download a Folder as Zip",
-      "downloadFolderZipDescription": "To download a specific folder as a zip, click the vertical ellipses on the folder’s row to open the dropdown. Click “Download”. Alternatively, open the folder and then click “Download As Zip” in the top toolbar.",
+      "downloadFolderZipDescription": "To download a specific folder as a zip, click the vertical ellipses on the folder’s row to open the dropdown. Click “Download”. Alternatively, open the folder and then click “Download As Zip” in the top toolbar.\n\n",
       "downloadFile": "Download a File",
-      "downloadFileDescription": "With the file open: Click the vertical ellipses  to open the dropdown. Click “Download”. From the file list: Click the vertical ellipses of the file to open the dropdown. Click “Download”.",
+      "downloadFileDescription": "With the file open: Click the vertical ellipses to open the dropdown. Click “Download”. From the file list: Click the vertical ellipses of the file to open the dropdown. Click “Download”.\n\n",
       "moreInfo": "For more information please see our",
       "helpGuides": "help guides on project files."
     },
@@ -1336,6 +1356,8 @@
       "rejectRequest": "Reject request",
       "acceptUpdate": "Accept update",
       "rejectUpdate": "Reject update",
+      "acceptWithdrawal": "Accept withdrawal",
+      "rejectWithdrawal": "Reject withdrawal",
       "withdrawRequest": "Withdraw Request",
       "forceWithdraw": "Force Withdraw",
       "forceWithdrawMessage": "Registration will be withdrawn but still have a tombstone page with a justification for withdrawal and a subset of the metadata available",
@@ -1343,6 +1365,8 @@
       "rejectRequestMessage": "Submission will not appear in search results nor will be associated with the collection.",
       "acceptUpdateMessage": "Update will be accepted and registration will be updated",
       "rejectUpdateMessage": "Update will be rejected and registration will remain unchanged",
+      "acceptWithdrawalMessage": "Registration will be withdrawn but still have a tombstone page with a justification for withdrawal and subset of the metadata available.",
+      "rejectWithdrawalMessage": "Submission will remain fully public",
       "withdrawRequestMessage": "Submission will be withdrawn from the collection and will no longer appear in search results.",
       "remarksPlaceholder": "Add remarks to registration admins (optional)",
       "submitDecision": "Submit decision",
@@ -1362,7 +1386,8 @@
       "requested": "Requested",
       "withdrawn": "Withdrawn",
       "by": "by",
-      "embargoEnding": "with embargo ending"
+      "embargoEnding": "with embargo ending",
+      "withdrawalRequested": "Registration withdrawal requested"
     },
     "preprintReviewStatus": {
       "submitted": "submitted a preprint \"{{name}}\" to",
@@ -2338,7 +2363,7 @@
     "new": {
       "addNewRegistry": "Add New Registration",
       "infoText1": "You are submitting to OSF Registries.",
-      "infoText2": "to learn more about other hosted registries",
+      "infoText2": "to learn more about other hosted registries.",
       "steps": {
         "title": "Step",
         "step1": "Do you have content for registration in an existing OSF project?",
@@ -2414,7 +2439,8 @@
       "withdrawRegistration": "Withdraw registration",
       "withdrawDescription": "Withdrawing a registration will remove its content from the OSF, but leave basic metadata behind. The title of a withdrawn registration and its contributor list will remain, as will justification or explanation of the withdrawal, should you wish to provide it. Withdrawn registrations will be marked with a \"withdrawn\" tag. This action is irreversible.",
       "withdrawJustificationLabel": "Please provide your justification for withdrawing this registration.",
-      "makePublicMessage": "Are you sure you want make this registration public ?",
+      "endEmbargo": "End embargo early",
+      "endEmbargoMessage": "By clicking confirm, an email will be sent to project administrator(s) to approve ending the embargo. If approved, this registration, including any components, will be made public immediately. This action is irreversible.",
       "statuses": {
         "pendingRegistrationApproval": {
           "text": "Pending approval",
@@ -2434,12 +2460,13 @@
         "accepted": {
           "text": "Public registration",
           "short": "Public",
-          "long": "This public registration is a frozen, non-editable version of this."
+          "long": "This public registration is a frozen, non-editable version of this",
+          "project": "project"
         },
         "embargo": {
           "text": "Embargoed registration",
           "short": "Embargoed",
-          "long": "This registration is embargoed. It will remain private until {embargoEndDate}."
+          "long": "This registration is embargoed. It will remain private until {{embargoEndDate}}."
         },
         "pendingEmbargoTermination": {
           "text": "Embargoed registration",
@@ -2614,6 +2641,7 @@
       "description": "Description:",
       "provider": "Provider:",
       "license": "License:",
+      "context": "Context",
       "registrationTemplate": "Registration Template:",
       "conflictOfInterestResponse": "Conflict of Interest response:",
       "associatedData": "Associated data:",
@@ -2680,7 +2708,7 @@
   },
   "institutions": {
     "title": "Institutions",
-    "description": "OSF Institutions enhances transparency and increases the visibility of research outputs, accelerating discovery and reuse. Institutional members focus on generating and sharing research, and let OSF Institutions handle the infrastructure. <br /> <a href='https://www.cos.io/products/osf-institutions' target='_blank'>Read more</a>",
+    "description": "OSF Institutions enhances transparency and increases the visibility of research outputs, accelerating discovery and reuse. Institutional members focus on generating and sharing research, and let OSF Institutions handle the infrastructure. <br /> <a class='font-bold' href='https://www.cos.io/products/osf-institutions' target='_blank'>Read more</a>",
     "searchInstitutions": "Search institutions",
     "searchInstitutionsDesctiption": "Please select an institution to apply to your search. Only OSF Institutions member affiliations are discoverable. ",
     "learnMore": "Learn more about OSF Institutions."

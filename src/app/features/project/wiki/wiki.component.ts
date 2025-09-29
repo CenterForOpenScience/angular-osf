@@ -25,6 +25,7 @@ import { ToastService } from '@osf/shared/services';
 import {
   CreateWiki,
   CreateWikiVersion,
+  CurrentResourceSelectors,
   DeleteWiki,
   GetCompareVersionContent,
   GetComponentsWikiList,
@@ -81,6 +82,9 @@ export class WikiComponent {
   isAnonymous = select(WikiSelectors.isWikiAnonymous);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
+  hasWriteAccess = select(CurrentResourceSelectors.hasWriteAccess);
+  hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
+
   actions = createDispatchMap({
     getWikiModes: GetWikiModes,
     toggleMode: ToggleMode,
@@ -108,7 +112,7 @@ export class WikiComponent {
           if (!this.wikiIdFromQueryParams) {
             this.navigateToWiki(this.wikiList()?.[0]?.id || '');
           }
-          if (!this.wikiList()?.length) {
+          if (!this.wikiList()?.length && this.hasWriteAccess()) {
             this.actions.createWiki(ResourceType.Project, this.projectId(), this.homeWikiName);
           }
         })

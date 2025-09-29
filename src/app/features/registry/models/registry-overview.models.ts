@@ -1,15 +1,17 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
-import { RegistrationQuestions } from '@osf/features/registry/models';
 import {
+  Identifier,
   IdTypeModel,
   LicenseModel,
   LicensesOption,
   MetaAnonymousJsonApi,
   ProviderShortInfoModel,
+  RegistrationNodeModel,
+  RegistrationResponses,
   SchemaResponse,
   SubjectModel,
 } from '@osf/shared/models';
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates, UserPermissions } from '@shared/enums';
 
 export interface RegistryOverview {
   id: string;
@@ -33,15 +35,10 @@ export interface RegistryOverview {
   nodeLicense?: LicensesOption;
   license?: LicenseModel;
   licenseUrl?: string;
-  identifiers?: {
-    id: string;
-    type: string;
-    category: string;
-    value: string;
-  }[];
+  identifiers?: Identifier[];
   analyticsKey: string;
   currentUserCanComment: boolean;
-  currentUserPermissions: string[];
+  currentUserPermissions: UserPermissions[];
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
@@ -53,22 +50,32 @@ export interface RegistryOverview {
   hasMaterials: boolean;
   hasPapers: boolean;
   hasSupplements: boolean;
-  questions: RegistrationQuestions;
+  questions: RegistrationResponses;
   registrationSchemaLink: string;
   associatedProjectId: string;
   schemaResponses: SchemaResponse[];
   status: RegistryStatus;
   revisionStatus: RevisionReviewStates;
   reviewsState?: RegistrationReviewStates;
-  links: {
-    files: string;
-  };
   archiving: boolean;
   embargoEndDate: string;
-  currentUserIsModerator: boolean;
   withdrawn: boolean;
   withdrawalJustification?: string;
   dateWithdrawn: string | null;
+  rootParentId: string | null;
+}
+
+export interface RegistrationOverviewModel extends RegistrationNodeModel {
+  type: string;
+  registrationSchemaLink: string;
+  associatedProjectId: string;
+  citation: string;
+  provider?: ProviderShortInfoModel;
+  contributors: ProjectOverviewContributor[];
+  license?: LicenseModel;
+  identifiers?: Identifier[];
+  schemaResponses: SchemaResponse[];
+  status: RegistryStatus;
 }
 
 export interface RegistryOverviewWithMeta {

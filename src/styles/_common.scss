@@ -80,6 +80,10 @@
   white-space: nowrap;
 }
 
+.word-break-word {
+  word-break: break-word;
+}
+
 // ------------------------- Universal custom hover state -------------------------
 
 .custom-dark-hover:hover:not(:disabled) {
@@ -135,4 +139,10 @@
 
 .dark-blue-link {
   color: var(--dark-blue-1);
+}
+
+.provider-description {
+  a:hover {
+    color: var(--branding-primary-color);
+  }
 }

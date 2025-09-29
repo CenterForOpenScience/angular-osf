@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers';
 
-import { AnalyticsMetricsModel, RelatedCountsModel } from '../models';
+import { NodeAnalyticsModel, RelatedCountsModel } from '../models';
 import { AnalyticsService } from '../services';
 
 import { ClearAnalytics, GetMetrics, GetRelatedCounts } from './analytics.actions';
@@ -52,8 +52,8 @@ export class AnalyticsState {
         ctx.patchState({
           metrics: {
             data: exists
-              ? updateItem<AnalyticsMetricsModel>((m) => m.id === metrics.id, metrics)(state.metrics.data)
-              : insertItem<AnalyticsMetricsModel>(metrics)(state.metrics.data),
+              ? updateItem<NodeAnalyticsModel>((m) => m.id === metrics.id, metrics)(state.metrics.data)
+              : insertItem<NodeAnalyticsModel>(metrics)(state.metrics.data),
             isLoading: false,
             error: null,
           },

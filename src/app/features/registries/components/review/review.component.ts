@@ -15,6 +15,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistrationBlocksDataComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType, ResourceType } from '@osf/shared/enums';
@@ -27,11 +28,16 @@ import {
   SubjectsSelectors,
 } from '@osf/shared/stores';
 
-import { ClearState, DeleteDraft, FetchLicenses, FetchProjectChildren, RegistriesSelectors } from '../../store';
+import {
+  ClearState,
+  DeleteDraft,
+  FetchLicenses,
+  FetchProjectChildren,
+  RegistriesSelectors,
+  UpdateStepState,
+} from '../../store';
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
 import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-review',
@@ -61,6 +67,7 @@ export class ReviewComponent {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
+  private readonly environment = inject(ENVIRONMENT);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
@@ -83,19 +90,16 @@ export class ReviewComponent {
     clearState: ClearState,
     getProjectsComponents: FetchProjectChildren,
     fetchLicenses: FetchLicenses,
+    updateStepState: UpdateStepState,
   });
 
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  stepsState = select(RegistriesSelectors.getStepsState);
 
-  isDraftInvalid = computed(() => {
-    return Object.values(this.stepsValidation()).some((step) => step.invalid);
-  });
+  isDraftInvalid = computed(() => Object.values(this.stepsState()).some((step) => step.invalid));
 
-  licenseOptionsRecord = computed(() => {
-    return (this.draftRegistration()?.license.options ?? {}) as Record<string, string>;
-  });
+  licenseOptionsRecord = computed(() => (this.draftRegistration()?.license.options ?? {}) as Record<string, string>);
 
   constructor() {
     if (!this.contributors()?.length) {
@@ -107,7 +111,7 @@ export class ReviewComponent {
 
     effect(() => {
       if (this.draftRegistration()) {
-        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? environment.defaultProvider);
+        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.environment.defaultProvider);
       }
     });
 
@@ -168,7 +172,9 @@ export class ReviewComponent {
         },
       })
       .onClose.subscribe((selectedComponents) => {
-        this.openConfirmRegistrationDialog(selectedComponents);
+        if (selectedComponents) {
+          this.openConfirmRegistrationDialog(selectedComponents);
+        }
       });
   }
 

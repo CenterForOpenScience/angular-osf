@@ -3,22 +3,28 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SubjectMapper } from '@shared/mappers';
 import { SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
-import { JsonApiService } from '@shared/services';
 
 import { ResourceType } from '../enums';
 
-import { environment } from 'src/environments/environment';
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SubjectsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
 
-  defaultProvider = environment.defaultProvider;
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get defaultProvider() {
+    return this.environment.defaultProvider;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],

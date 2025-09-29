@@ -1,13 +1,13 @@
 import { Selector } from '@ngxs/store';
 
-import { Education, Employment, Social, User, UserSettings } from '@osf/shared/models';
+import { Education, Employment, SocialModel, UserModel } from '@osf/shared/models';
 
 import { UserStateModel } from './user.model';
 import { UserState } from './user.state';
 
 export class UserSelectors {
   @Selector([UserState])
-  static getCurrentUser(state: UserStateModel): User | null {
+  static getCurrentUser(state: UserStateModel): UserModel | null {
     return state.currentUser.data || localStorage.getItem('currentUser')
       ? JSON.parse(localStorage.getItem('currentUser')!)
       : null;
@@ -19,27 +19,12 @@ export class UserSelectors {
   }
 
   @Selector([UserState])
-  static getCurrentUserSettings(state: UserStateModel): UserSettings | null {
-    return state.currentUserSettings.data;
-  }
-
-  @Selector([UserState])
-  static isUserSettingsLoading(state: UserStateModel): boolean {
-    return state.currentUserSettings.isLoading;
-  }
-
-  @Selector([UserState])
-  static isUserSettingsSubmitting(state: UserStateModel): boolean {
-    return state.currentUserSettings.isSubmitting!;
-  }
-
-  @Selector([UserState])
   static getShareIndexing(state: UserStateModel): boolean | undefined {
     return state.currentUser.data?.allowIndexing;
   }
 
   @Selector([UserState])
-  static getUserNames(state: UserStateModel): Partial<User> | null {
+  static getUserNames(state: UserStateModel): Partial<UserModel> | null {
     return state.currentUser.data;
   }
 
@@ -54,7 +39,7 @@ export class UserSelectors {
   }
 
   @Selector([UserState])
-  static getSocialLinks(state: UserStateModel): Social | undefined {
+  static getSocialLinks(state: UserStateModel): SocialModel | undefined {
     return state.currentUser.data?.social;
   }
 

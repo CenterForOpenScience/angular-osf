@@ -3,24 +3,41 @@
     <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
       <p class="font-bold">{{ 'registry.overview.statuses.' + registry()?.status + '.text' | translate }}</p>
     </p-accordion-header>
+
     <p-accordion-content>
       <div class="flex flex-column pt-4 gap-2">
-        <h2 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h2>
-        <p>{{ 'registry.overview.statuses.' + registry()?.status + '.long' | translate }}</p>
-        @if (!hasViewOnly()) {
-          @if (canWithdraw) {
+        <h3 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h3>
+        <p>
+          <span>
+            {{
+              'registry.overview.statuses.' + registry()?.status + '.long'
+                | translate: { embargoEndDate: embargoEndDate }
+            }}
+          </span>
+
+          @if (isAccepted()) {
+            <a class="font-bold" [routerLink]="['/', registry()?.associatedProjectId]">
+              {{ 'registry.overview.statuses.accepted.project' | translate }}</a
+            >.
+          }
+        </p>
+
+        @if (canEdit()) {
+          @if (canWithdraw()) {
             <p-button
-              (click)="openWithdrawDialog()"
+              (onClick)="openWithdrawDialog()"
               [label]="'registry.overview.withdrawRegistration' | translate"
               severity="danger"
-              class="ml-auto"
+              styleClass="w-full mt-2"
             ></p-button>
           }
-          @if (registry()?.status === RegistryStatus.Embargo) {
+
+          @if (isEmbargo()) {
             <p-button
-              (click)="openMakePublicDialog()"
-              [label]="'common.labels.makePublic' | translate"
-              class="ml-auto"
+              (onClick)="openEndEmbargoDialog()"
+              severity="danger"
+              [label]="'registry.overview.endEmbargo' | translate"
+              styleClass="w-full mt-2"
             ></p-button>
           }
         }

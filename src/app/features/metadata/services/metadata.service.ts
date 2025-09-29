@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '@osf/shared/enums';
 import { BaseNodeAttributesJsonApi, Identifier, LicenseOptions } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
@@ -20,15 +21,25 @@ import {
 } from '../models';
 import { CrossRefFundersResponse, CustomItemMetadataRecord, Metadata } from '../models/metadata.model';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class MetadataService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiDomainUrl = environment.apiDomainUrl;
-  private readonly apiUrl = `${this.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get apiDomainUrl() {
+    return this.environment.apiDomainUrl;
+  }
+
+  get funderApiUrl() {
+    return this.environment.funderApiUrl;
+  }
+
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
@@ -66,7 +77,7 @@ export class MetadataService {
   }
 
   getFundersList(searchQuery?: string): Observable<CrossRefFundersResponse> {
-    let url = `${environment.funderApiUrl}funders?mailto=support%40osf.io`;
+    let url = `${this.funderApiUrl}funders?mailto=support%40osf.io`;
 
     if (searchQuery && searchQuery.trim()) {
       url += `&query=${encodeURIComponent(searchQuery.trim())}`;

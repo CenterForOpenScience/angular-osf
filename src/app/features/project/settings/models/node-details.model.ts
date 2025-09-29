@@ -7,5 +7,6 @@ export interface NodeDetailsModel {
   isPublic: boolean;
   region: IdName;
   affiliatedInstitutions: Institution[];
+  currentUserPermissions: string[];
   lastFetched: number;
 }

@@ -7,7 +7,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { BreadcrumbComponent } from './breadcrumb.component';
 
-describe('BreadcrumbComponent', () => {
+describe('Component: Breadcrumb', () => {
   let component: BreadcrumbComponent;
   let fixture: ComponentFixture<BreadcrumbComponent>;
 

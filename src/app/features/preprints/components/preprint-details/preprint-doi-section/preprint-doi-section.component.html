@@ -15,7 +15,9 @@
   />
   @if (preprintValue.preprintDoiLink) {
     @if (preprintValue.preprintDoiCreated) {
-      <a [href]="preprintValue.preprintDoiLink">{{ preprintValue.preprintDoiLink }}</a>
+      <a class="font-bold word-break-word" [href]="preprintValue.preprintDoiLink">
+        {{ preprintValue.preprintDoiLink }}
+      </a>
     } @else {
       <p>{{ preprintValue.preprintDoiLink }}</p>
       <p>{{ 'preprints.details.doi.pendingDoiMinted' | translate }}</p>

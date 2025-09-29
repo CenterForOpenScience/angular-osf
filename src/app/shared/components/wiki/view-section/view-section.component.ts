@@ -50,7 +50,7 @@ export class ViewSectionComponent {
   constructor() {
     effect(() => {
       const versions = this.versions();
-      if (versions?.length && this.viewOnly()) {
+      if (versions?.length || this.viewOnly()) {
         this.selectedVersion.set(versions[0]?.id || null);
         this.selectVersion.emit(versions[0]?.id);
       } else {

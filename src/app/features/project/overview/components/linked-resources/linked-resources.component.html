@@ -1,7 +1,7 @@
 <div class="linked-project flex flex-column p-2 pb-4 gap-4">
   <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
     <h2>{{ 'project.overview.linkedProjects.title' | translate }}</h2>
-    @if (!isCollectionsRoute() && canWrite()) {
+    @if (canEdit()) {
       <p-button
         severity="secondary"
         [label]="'project.overview.components.linkProjectsButton' | translate"
@@ -21,18 +21,19 @@
                 <osf-icon [iconClass]="linkedResource.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
                 <a class="linked-project-title" [href]="linkedResource.id">{{ linkedResource.title }}</a>
               </h2>
-
-              <div>
-                <p-button
-                  class="danger-icon-btn"
-                  icon="fas fa-trash"
-                  severity="danger"
-                  text
-                  [ariaLabel]="'common.buttons.delete' | translate"
-                  (onClick)="openDeleteResourceModal(linkedResource.id)"
-                >
-                </p-button>
-              </div>
+              @if (canEdit()) {
+                <div>
+                  <p-button
+                    class="danger-icon-btn"
+                    icon="fas fa-trash"
+                    severity="danger"
+                    text
+                    [ariaLabel]="'common.buttons.delete' | translate"
+                    (onClick)="openDeleteResourceModal(linkedResource.id)"
+                  >
+                  </p-button>
+                </div>
+              }
             </div>
 
             <div class="component-name flex flex-wrap gap-1">

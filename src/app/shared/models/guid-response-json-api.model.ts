@@ -1,3 +1,5 @@
+import { UserPermissions } from '../enums';
+
 import { JsonApiResponse } from './common';
 
 export type GuidedResponseJsonApi = JsonApiResponse<GuidDataJsonApi, null>;
@@ -7,6 +9,8 @@ interface GuidDataJsonApi {
   type: string;
   attributes: {
     guid: string;
+    wiki_enabled: boolean;
+    permissions: UserPermissions[];
   };
   relationships: {
     target?: {

@@ -2,13 +2,16 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+
 import { AddContributorType, ResourceType } from '../enums';
 import { ContributorsMapper } from '../mappers';
 import {
   ContributorAddModel,
+  ContributorDataJsonApi,
   ContributorModel,
-  ContributorResponse,
-  JsonApiResponse,
+  ContributorResponseJsonApi,
+  ContributorsResponseJsonApi,
   PaginatedData,
   ResponseJsonApi,
   UserDataJsonApi,
@@ -16,14 +19,16 @@ import {
 
 import { JsonApiService } from './json-api.service';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class ContributorsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -46,7 +51,7 @@ export class ContributorsService {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
 
     return this.jsonApiService
-      .get<JsonApiResponse<ContributorResponse[], null>>(`${baseUrl}/`)
+      .get<ContributorsResponseJsonApi>(`${baseUrl}/`)
       .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
   }
 
@@ -69,7 +74,7 @@ export class ContributorsService {
     const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
 
     return this.jsonApiService
-      .post<JsonApiResponse<ContributorResponse, null>>(baseUrl, contributorData)
+      .post<ContributorResponseJsonApi>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor.data)));
   }
 
@@ -83,7 +88,7 @@ export class ContributorsService {
     const contributorData = { data: ContributorsMapper.toContributorAddRequest(data) };
 
     return this.jsonApiService
-      .patch<ContributorResponse>(baseUrl, contributorData)
+      .patch<ContributorDataJsonApi>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor)));
   }
 

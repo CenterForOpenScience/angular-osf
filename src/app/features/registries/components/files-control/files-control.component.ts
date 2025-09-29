@@ -28,6 +28,7 @@ import { HelpScoutService } from '@core/services/help-scout.service';
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FilesTreeComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
+import { ClearFileDirective } from '@osf/shared/directives';
 import { FilesTreeActions, OsfFile } from '@osf/shared/models';
 import { FilesService, ToastService } from '@osf/shared/services';
 
@@ -51,6 +52,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
     TranslatePipe,
+    ClearFileDirective,
   ],
   templateUrl: './files-control.component.html',
   styleUrl: './files-control.component.scss',
@@ -118,13 +120,14 @@ export class FilesControlComponent implements OnDestroy {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file && file.size > FILE_SIZE_LIMIT) {
+
+    if (file && file.size >= FILE_SIZE_LIMIT) {
       this.toastService.showWarn('shared.files.limitText');
       return;
     }
     if (!file) return;
 
-    this.uploadFile(file);
+    this.uploadFiles(file);
   }
 
   createFolder(): void {
@@ -166,7 +169,9 @@ export class FilesControlComponent implements OnDestroy {
     return EMPTY;
   }
 
-  uploadFile(file: File): void {
+  uploadFiles(files: File | File[]): void {
+    const fileArray = Array.isArray(files) ? files : [files];
+    const file = fileArray[0];
     const currentFolder = this.currentFolder();
     const uploadLink = currentFolder?.links.upload;
     if (!uploadLink) return;

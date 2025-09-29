@@ -2,6 +2,7 @@ import { finalize, map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { BaseNodeMapper } from '@osf/shared/mappers';
 import {
   BaseNodeDataJsonApi,
@@ -18,15 +19,17 @@ import { CurrentResourceType, ResourceType } from '../enums';
 import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';
 
-import { environment } from 'src/environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
 export class ResourceGuidService {
   private jsonApiService = inject(JsonApiService);
   private loaderService = inject(LoaderService);
-  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private readonly environment = inject(ENVIRONMENT);
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -52,6 +55,8 @@ export class ResourceGuidService {
               res.data.type === CurrentResourceType.Preprints
                 ? res.data.relationships.provider?.data.type
                 : res.data.relationships.target?.data.type,
+            wikiEnabled: res.data.attributes.wiki_enabled,
+            permissions: res.data.attributes.permissions,
           }) as CurrentResource
       ),
       finalize(() => this.loaderService.hide())

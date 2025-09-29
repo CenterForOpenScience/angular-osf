@@ -4,13 +4,12 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentUser } from '@osf/core/store/user';
 import { urlParam } from '@osf/shared/helpers';
 import { JsonApiService, LoaderService } from '@osf/shared/services';
 
 import { SignUpModel } from '../models';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -19,18 +18,29 @@ export class AuthService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly cookieService = inject(CookieService);
   private readonly loaderService = inject(LoaderService);
-  private readonly apiUrl = `${environment.apiDomainUrl}/v2/users/`;
-  private readonly webUrl = environment.webUrl;
+  private readonly environment = inject(ENVIRONMENT);
   private readonly actions = createDispatchMap({ clearCurrentUser: ClearCurrentUser });
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2/users/`;
+  }
+
+  get webUrl() {
+    return this.environment.webUrl;
+  }
+
+  get casUrl() {
+    return this.environment.casUrl;
+  }
 
   navigateToSignIn(): void {
     this.loaderService.show();
-    const loginUrl = `${environment.casUrl}/login?${urlParam({ service: `${this.webUrl}/login` })}`;
+    const loginUrl = `${this.casUrl}/login?${urlParam({ service: `${this.webUrl}/login` })}`;
     window.location.href = loginUrl;
   }
 
   navigateToOrcidSingIn(): void {
-    const loginUrl = `${environment.casUrl}/login?${urlParam({
+    const loginUrl = `${this.casUrl}/login?${urlParam({
       redirectOrcid: 'true',
       service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
     })}`;
@@ -38,7 +48,7 @@ export class AuthService {
   }
 
   navigateToInstitutionSignIn(): void {
-    const loginUrl = `${environment.casUrl}/login?${urlParam({
+    const loginUrl = `${this.casUrl}/login?${urlParam({
       campaign: 'institution',
       service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
     })}`;

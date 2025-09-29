@@ -1,6 +1,7 @@
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 
 import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
+import { ContributorDataJsonApi } from '../contributors';
 import { LicenseRecordJsonApi } from '../licenses-json-api.model';
 
 export interface DraftRegistrationResponseJsonApi {
@@ -42,6 +43,7 @@ export interface DraftRegistrationAttributesJsonApi {
   tags: string[];
   title: string;
   public?: boolean;
+  current_user_permissions: UserPermissions[];
 }
 
 export interface RegistrationAttributesJsonApi {
@@ -53,11 +55,18 @@ export interface RegistrationAttributesJsonApi {
   archiving: boolean;
   public: boolean;
   title: string;
+  has_analytic_code: boolean;
+  has_data: boolean;
+  has_materials: boolean;
+  has_papers: boolean;
+  has_project: boolean;
+  has_supplements: boolean;
   revision_state: RevisionReviewStates;
   reviews_state: RegistrationReviewStates;
   pending_registration_approval: boolean;
   pending_embargo_approval: boolean;
   pending_embargo_termination_approval: boolean;
+  current_user_permissions: UserPermissions[];
 }
 
 export interface DraftRegistrationRelationshipsJsonApi {
@@ -105,6 +114,12 @@ export interface RegistrationRelationshipsJsonApi {
       type: 'licenses';
     };
   };
+  root: {
+    data: {
+      id: string;
+      type: string;
+    };
+  };
 }
 
 export interface RegistrationEmbedsJsonApi {
@@ -116,20 +131,7 @@ export interface RegistrationEmbedsJsonApi {
     };
   };
   bibliographic_contributors?: {
-    data: {
-      id: string;
-      type: 'users';
-      embeds: {
-        users: {
-          data: {
-            attributes: {
-              full_name: string;
-            };
-            id: string;
-          };
-        };
-      };
-    }[];
+    data: ContributorDataJsonApi[];
   };
   provider?: {
     data: {
