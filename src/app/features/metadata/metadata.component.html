@@ -76,14 +76,14 @@
           [resourceType]="resourceType()"
         />
 
-        @if (showRegistrationDoi()) {
+        @if (isRegistrationType()) {
           <osf-metadata-registration-doi [identifiers]="metadata()?.identifiers!"></osf-metadata-registration-doi>
         }
 
         <osf-metadata-tags
           [tags]="metadata()?.tags || []"
           (tagsChanged)="onTagsChanged($event)"
-          [readonly]="!hasAdminAccess()"
+          [readonly]="isRegistrationType() ? !hasAdminAccess() : !hasWriteAccess()"
         ></osf-metadata-tags>
 
         <osf-metadata-subjects
