@@ -14,6 +14,7 @@ import { ResourceType } from '@osf/shared/enums';
 import { IS_SMALL } from '@osf/shared/helpers';
 import { DuplicatesSelectors } from '@osf/shared/stores';
 import {
+  ContributorsListComponent,
   CustomPaginatorComponent,
   IconComponent,
   LoadingSpinnerComponent,
@@ -52,7 +53,8 @@ describe('Component: View Duplicates', () => {
           TruncatedTextComponent,
           LoadingSpinnerComponent,
           CustomPaginatorComponent,
-          IconComponent
+          IconComponent,
+          ContributorsListComponent
         ),
       ],
       providers: [

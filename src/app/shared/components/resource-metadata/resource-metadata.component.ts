@@ -13,6 +13,7 @@ import { CurrentResourceType } from '@osf/shared/enums';
 import { ResourceOverview } from '@shared/models';
 
 import { AffiliatedInstitutionsViewComponent } from '../affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '../contributors-list/contributors-list.component';
 import { ResourceCitationsComponent } from '../resource-citations/resource-citations.component';
 import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
 
@@ -28,6 +29,7 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
     ResourceCitationsComponent,
     OverviewCollectionsComponent,
     AffiliatedInstitutionsViewComponent,
+    ContributorsListComponent,
   ],
   templateUrl: './resource-metadata.component.html',
   styleUrl: './resource-metadata.component.scss',

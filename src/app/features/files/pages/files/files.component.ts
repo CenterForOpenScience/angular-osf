@@ -5,7 +5,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
@@ -72,7 +71,7 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
 import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
-import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
+import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -101,7 +100,7 @@ import { FilesSelectors } from '../../store';
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService, TreeDragDropService],
+  providers: [TreeDragDropService],
 })
 export class FilesComponent {
   googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
@@ -111,7 +110,7 @@ export class FilesComponent {
   private readonly filesService = inject(FilesService);
   private readonly activeRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dialogService = inject(DialogService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly dataciteService = inject(DataciteService);
@@ -428,20 +427,14 @@ export class FilesComponent {
 
     if (!newFolderLink) return;
 
-    this.dialogService
+    this.customDialogService
       .open(CreateFolderDialogComponent, {
+        header: 'files.dialogs.createFolder.title',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('files.dialogs.createFolder.title'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
       })
       .onClose.pipe(
         filter((folderName: string) => !!folderName),
-        switchMap((folderName: string) => {
-          return this.actions.createFolder(newFolderLink, folderName);
-        }),
+        switchMap((folderName: string) => this.actions.createFolder(newFolderLink, folderName)),
         take(1),
         finalize(() => {
           this.updateFilesList();
@@ -473,13 +466,9 @@ export class FilesComponent {
   showInfoDialog() {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
-    this.dialogService.open(FileBrowserInfoComponent, {
+    this.customDialogService.open(FileBrowserInfoComponent, {
+      header: 'files.filesBrowserDialog.title',
       width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('files.filesBrowserDialog.title'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: this.resourceType(),
     });
   }

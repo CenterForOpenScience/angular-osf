@@ -1,7 +1,6 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { TitleCasePipe } from '@angular/common';
@@ -10,6 +9,7 @@ import { FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { CustomDialogService } from '@osf/shared/services';
 import { SearchInputComponent } from '@shared/components';
 import { DecodeHtmlPipe } from '@shared/pipes';
 
@@ -20,12 +20,10 @@ import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints
   imports: [Button, RouterLink, SearchInputComponent, Skeleton, TranslatePipe, DecodeHtmlPipe, TitleCasePipe],
   templateUrl: './preprint-provider-hero.component.html',
   styleUrl: './preprint-provider-hero.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintProviderHeroComponent {
-  translateService = inject(TranslateService);
-  dialogService = inject(DialogService);
+  customDialogService = inject(CustomDialogService);
 
   searchControl = input<FormControl>(new FormControl());
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
@@ -37,12 +35,6 @@ export class PreprintProviderHeroComponent {
   }
 
   openHelpDialog() {
-    this.dialogService.open(PreprintsHelpDialogComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('preprints.helpDialog.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.customDialogService.open(PreprintsHelpDialogComponent, { header: 'preprints.helpDialog.header' });
   }
 }

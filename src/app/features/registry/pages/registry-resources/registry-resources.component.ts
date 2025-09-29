@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { filter, finalize, switchMap, take } from 'rxjs';
 
@@ -13,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { GetResourceMetadata, MetadataSelectors } from '@osf/features/metadata/store';
 import { IconComponent, LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import { ResourceType, UserPermissions } from '@shared/enums';
 
 import { AddResourceDialogComponent, EditResourceDialogComponent } from '../../components';
@@ -31,13 +30,11 @@ import {
   templateUrl: './registry-resources.component.html',
   styleUrl: './registry-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class RegistryResourcesComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -65,9 +62,7 @@ export class RegistryResourcesComponent {
     return registry.currentUserPermissions.includes(UserPermissions.Write);
   });
 
-  addButtonVisible = computed(() => {
-    return !!this.registry()?.identifiers?.length && this.canEdit();
-  });
+  addButtonVisible = computed(() => !!this.registry()?.identifiers?.length && this.canEdit());
 
   constructor() {
     this.actions.fetchRegistryData(this.registryId, ResourceType.Registration);
@@ -95,13 +90,9 @@ export class RegistryResourcesComponent {
   }
 
   openAddResourceDialog() {
-    return this.dialogService.open(AddResourceDialogComponent, {
-      header: this.translateService.instant('resources.add'),
+    return this.customDialogService.open(AddResourceDialogComponent, {
+      header: 'resources.add',
       width: '500px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: { id: this.registryId },
     }).onClose;
   }
@@ -109,14 +100,10 @@ export class RegistryResourcesComponent {
   updateResource(resource: RegistryResource) {
     if (!this.registryId) return;
 
-    this.dialogService
+    this.customDialogService
       .open(EditResourceDialogComponent, {
-        header: this.translateService.instant('resources.edit'),
+        header: 'resources.edit',
         width: '500px',
-        focusOnShow: false,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: { id: this.registryId, resource: resource },
       })
       .onClose.pipe(

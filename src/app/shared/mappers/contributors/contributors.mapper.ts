@@ -11,47 +11,51 @@ import {
 } from '@osf/shared/models';
 
 export class ContributorsMapper {
-  static fromResponse(response: ContributorDataJsonApi[] | undefined): ContributorModel[] {
+  static getContributors(response: ContributorDataJsonApi[] | undefined): ContributorModel[] {
     if (!response) {
       return [];
     }
 
-    return response
-      .filter((contributor) => !contributor?.embeds?.users?.errors)
-      .map((contributor) => this.fromContributorResponse(contributor));
+    return response.map((contributor) => this.getContributor(contributor));
   }
 
-  static fromContributorResponse(response: ContributorDataJsonApi): ContributorModel {
+  static getContributor(response: ContributorDataJsonApi): ContributorModel {
+    const userEmbed = response.embeds.users;
+    const errorMeta = userEmbed?.errors && userEmbed.errors.length > 0 ? userEmbed.errors[0]?.meta : null;
+    const userData = userEmbed?.data;
+
     return {
       id: response.id,
-      userId: response.embeds?.users?.data?.id || '',
       type: response.type,
       isBibliographic: response.attributes.bibliographic,
       isUnregisteredContributor: !!response.attributes.unregistered_contributor,
       isCurator: response.attributes.is_curator,
       permission: response.attributes.permission,
       index: response.attributes.index,
-      fullName: response.embeds?.users?.data?.attributes?.full_name || '',
-      givenName: response.embeds?.users?.data?.attributes?.given_name || '',
-      familyName: response.embeds?.users?.data?.attributes?.family_name || '',
-      education: response.embeds?.users?.data?.attributes?.education || '',
-      employment: response.embeds?.users?.data?.attributes?.employment || '',
+      userId: errorMeta ? '' : userData?.id || '',
+      fullName: errorMeta ? errorMeta?.full_name : userData?.attributes?.full_name || '',
+      givenName: errorMeta ? errorMeta?.given_name : userData?.attributes?.given_name || '',
+      familyName: errorMeta ? errorMeta?.family_name : userData?.attributes?.family_name || '',
+      education: errorMeta ? [] : userData?.attributes?.education || [],
+      employment: errorMeta ? [] : userData?.attributes?.employment || [],
     };
   }
 
   static getContributorShortInfo(response: ContributorDataJsonApi[] | undefined): ContributorShortInfoModel[] {
-    const contributors = this.fromResponse(response);
+    const contributors = this.getContributors(response);
 
     return contributors.map((contributor) => ({
       id: contributor.id,
       userId: contributor.userId,
       fullName: contributor.fullName,
+      isUnregisteredContributor: contributor.isUnregisteredContributor,
+      isBibliographic: contributor.isBibliographic,
+      index: contributor.index,
+      permission: contributor.permission,
     }));
   }
 
-  static fromUsersWithPaginationGetResponse(
-    response: ResponseJsonApi<UserDataJsonApi[]>
-  ): PaginatedData<ContributorAddModel[]> {
+  static getPaginatedUsers(response: ResponseJsonApi<UserDataJsonApi[]>): PaginatedData<ContributorAddModel[]> {
     return {
       data: response.data.map(
         (user) =>

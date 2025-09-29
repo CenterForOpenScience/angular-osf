@@ -60,8 +60,8 @@ export class AddUnregisteredContributorDialogComponent {
     const contributorData: ContributorAddModel = {
       fullName: formData.fullName,
       email: formData.email,
-      isBibliographic: false,
-      permission: ContributorPermission.Read,
+      isBibliographic: true,
+      permission: ContributorPermission.Write,
     };
     const data: ContributorDialogAddModel = { data: [contributorData], type: AddContributorType.Unregistered };
     this.dialogRef.close(data);

@@ -12,11 +12,7 @@
         <h1 class="collections-heading flex align-items-center">{{ collectionProvider()?.name }}</h1>
       </div>
 
-      <p-button
-        [routerLink]="['../add']"
-        class="collections-heading-btn"
-        [label]="'common.buttons.addToCollection' | translate"
-      />
+      <p-button [routerLink]="['../add']" [label]="'common.buttons.addToCollection' | translate" />
     </div>
 
     <div class="search-input-container">

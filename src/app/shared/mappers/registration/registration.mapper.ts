@@ -68,7 +68,7 @@ export class RegistrationMapper {
       registrationTemplate: registration.embeds?.registration_schema?.data?.attributes?.name || '',
       registry: registration.embeds?.provider?.data?.attributes?.name || '',
       public: registration.attributes.public,
-      contributors: ContributorsMapper.getContributorShortInfo(registration.embeds?.bibliographic_contributors?.data),
+      contributors: ContributorsMapper.getContributors(registration.embeds?.bibliographic_contributors?.data),
       currentUserPermissions: registration.attributes.current_user_permissions,
     };
   }
@@ -91,7 +91,7 @@ export class RegistrationMapper {
       hasMaterials: registration.attributes.has_materials,
       hasPapers: registration.attributes.has_papers,
       hasSupplements: registration.attributes.has_supplements,
-      contributors: ContributorsMapper.getContributorShortInfo(registration.embeds?.bibliographic_contributors?.data),
+      contributors: ContributorsMapper.getContributors(registration?.embeds?.bibliographic_contributors?.data),
       rootParentId: registration.relationships.root?.data?.id,
       currentUserPermissions: registration.attributes.current_user_permissions,
     };

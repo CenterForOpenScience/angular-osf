@@ -1,20 +1,20 @@
 import { select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
+import { CustomDialogService } from '@osf/shared/services';
 import { ComponentOverview } from '@shared/models';
 
 import { ProjectOverviewSelectors } from '../../store';
@@ -23,15 +23,14 @@ import { DeleteComponentDialogComponent } from '../delete-component-dialog/delet
 
 @Component({
   selector: 'osf-project-components',
-  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, RouterLink],
+  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, ContributorsListComponent],
   templateUrl: './overview-components.component.html',
   styleUrl: './overview-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewComponentsComponent {
   private router = inject(Router);
-  private dialogService = inject(DialogService);
-  private translateService = inject(TranslateService);
+  private customDialogService = inject(CustomDialogService);
   isMobile = toSignal(inject(IS_XSMALL));
 
   canEdit = input.required<boolean>();
@@ -70,7 +69,7 @@ export class OverviewComponentsComponent {
   get isCurrentUserContributor() {
     return (component: ComponentOverview) => {
       const userId = this.currentUserId();
-      return userId ? component.contributors.some((contributor) => contributor.id === userId) : false;
+      return userId ? component.contributors.some((contributor) => contributor.userId === userId) : false;
     };
   }
 
@@ -91,26 +90,18 @@ export class OverviewComponentsComponent {
   handleAddComponent(): void {
     const dialogWidth = this.isMobile() ? '95vw' : '850px';
 
-    this.dialogService.open(AddComponentDialogComponent, {
+    this.customDialogService.open(AddComponentDialogComponent, {
+      header: 'project.overview.dialog.addComponent.header',
       width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.addComponent.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 
   private handleDeleteComponent(componentId: string): void {
     const dialogWidth = this.isMobile() ? '95vw' : '650px';
 
-    this.dialogService.open(DeleteComponentDialogComponent, {
+    this.customDialogService.open(DeleteComponentDialogComponent, {
+      header: 'project.overview.dialog.deleteComponent.header',
       width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.deleteComponent.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
       data: {
         componentId,
         resourceType: ResourceType.Project,

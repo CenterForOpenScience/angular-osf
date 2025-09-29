@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
@@ -63,7 +62,6 @@ import { CustomConfirmationService, ToastService } from '@shared/services';
   ],
   templateUrl: './file-step.component.html',
   styleUrl: './file-step.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileStepComponent implements OnInit {
@@ -105,15 +103,11 @@ export class FileStepComponent implements OnInit {
 
   versionFileMode = signal<boolean>(false);
 
-  preprintHasPrimaryFile = computed(() => {
-    return !!this.preprint()?.primaryFileId;
-  });
+  preprintHasPrimaryFile = computed(() => !!this.preprint()?.primaryFileId);
 
-  cancelSourceOptionButtonVisible = computed(() => {
-    return (
-      !this.preprintFile() && this.selectedFileSource() !== PreprintFileSource.None && !this.isPreprintFileLoading()
-    );
-  });
+  cancelSourceOptionButtonVisible = computed(
+    () => !this.preprintFile() && this.selectedFileSource() !== PreprintFileSource.None && !this.isPreprintFileLoading()
+  );
 
   projectNameControl = new FormControl<StringOrNull>(null);
 
@@ -129,9 +123,7 @@ export class FileStepComponent implements OnInit {
   nextClicked = output<void>();
   backClicked = output<void>();
 
-  isFileSourceSelected = computed(() => {
-    return this.selectedFileSource() !== PreprintFileSource.None;
-  });
+  isFileSourceSelected = computed(() => this.selectedFileSource() !== PreprintFileSource.None);
 
   ngOnInit() {
     this.actions.getPreprintFilesLinks();

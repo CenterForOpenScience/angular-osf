@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { debounceTime } from 'rxjs';
 
@@ -16,7 +15,7 @@ import { ClearCurrentProvider } from '@core/store/provider';
 import { LoadingSpinnerComponent, SearchInputComponent } from '@osf/shared/components';
 import { HeaderStyleHelper } from '@osf/shared/helpers';
 import { CollectionsFilters } from '@osf/shared/models';
-import { BrandService } from '@osf/shared/services';
+import { BrandService, CustomDialogService } from '@osf/shared/services';
 import {
   ClearCollections,
   ClearCollectionSubmissions,
@@ -44,14 +43,13 @@ import { CollectionsMainContentComponent } from '../collections-main-content';
   ],
   templateUrl: './collections-discover.component.html',
   styleUrl: './collections-discover.component.scss',
-  providers: [DialogService, CollectionsQuerySyncService],
+  providers: [CollectionsQuerySyncService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsDiscoverComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private dialogService = inject(DialogService);
-  private translateService = inject(TranslateService);
+  private customDialogService = inject(CustomDialogService);
   private querySyncService = inject(CollectionsQuerySyncService);
   private destroyRef = inject(DestroyRef);
 
@@ -85,13 +83,7 @@ export class CollectionsDiscoverComponent {
   }
 
   openHelpDialog(): void {
-    this.dialogService.open(CollectionsHelpDialogComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('collections.helpDialog.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.customDialogService.open(CollectionsHelpDialogComponent, { header: 'collections.helpDialog.header' });
   }
 
   onSearchTriggered(searchValue: string): void {

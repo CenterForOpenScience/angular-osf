@@ -24,7 +24,7 @@ import {
   CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
-  ContributorShortInfoModel,
+  ContributorModel,
   ContributorsResponseJsonApi,
   JsonApiResponse,
   PaginatedData,
@@ -201,14 +201,14 @@ export class CollectionsService {
     >(`${this.apiUrl}/collection_submission_actions/`, params);
   }
 
-  private getCollectionContributors(contributorsUrl: string): Observable<ContributorShortInfoModel[]> {
+  private getCollectionContributors(contributorsUrl: string): Observable<ContributorModel[]> {
     const params: Record<string, unknown> = {
       'fields[users]': 'full_name',
     };
 
     return this.jsonApiService
       .get<ContributorsResponseJsonApi>(contributorsUrl, params)
-      .pipe(map((response) => ContributorsMapper.getContributorShortInfo(response.data)));
+      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
   private fetchUserCollectionSubmissionsByStatus(

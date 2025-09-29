@@ -6,7 +6,6 @@ import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 import { RadioButton } from 'primeng/radiobutton';
 import { Skeleton } from 'primeng/skeleton';
@@ -30,6 +29,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddonType, OperationNames, StorageItemType } from '@osf/shared/enums';
 import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@osf/shared/helpers';
 import { OperationInvokeData, StorageItem } from '@osf/shared/models';
+import { CustomDialogService } from '@osf/shared/services';
 import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores';
 
 import { GoogleFilePickerComponent } from '../../google-file-picker/google-file-picker.component';
@@ -57,8 +57,9 @@ import { ResourceTypeInfoDialogComponent } from '../resource-type-info-dialog/re
 })
 export class StorageItemSelectorComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
+  private customDialogService = inject(CustomDialogService);
   private translateService = inject(TranslateService);
-  private dialogService = inject(DialogService);
+
   readonly AddonType = AddonType;
   isMedium = toSignal(inject(IS_MEDIUM));
   isMobile = toSignal(inject(IS_XSMALL));
@@ -253,13 +254,9 @@ export class StorageItemSelectorComponent implements OnInit {
   openInfoDialog() {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
-    this.dialogService.open(ResourceTypeInfoDialogComponent, {
+    this.customDialogService.open(ResourceTypeInfoDialogComponent, {
+      header: 'settings.addons.configureAddon.aboutResourceType',
       width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('settings.addons.configureAddon.aboutResourceType'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 }
