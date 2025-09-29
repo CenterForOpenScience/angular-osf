@@ -1,12 +1,16 @@
-<p-card>
-  @if (registrationData()) {
+@if (registrationData()) {
+  <p-card>
     <div class="flex gap-3 flex-column">
       <div class="flex align-items-center flex-wrap gap-2 w-full">
         <osf-icon [iconClass]="registrationData().isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
 
-        <h2 class="align-self-center">
-          {{ registrationData().title || 'project.registrations.card.noTitle' | translate }}
-        </h2>
+        <p-button
+          class="link-btn-no-padding"
+          styleClass="text-lg"
+          link
+          [label]="registrationData().title || 'project.registrations.card.noTitle' | translate"
+          (click)="reviewEmitRegistrationData.emit(registrationData()!.id)"
+        ></p-button>
       </div>
       <div class="flex flex-wrap flex-column lg:flex-nowrap lg:flex-row justify-content-between gap-5">
         <div class="flex gap-3 flex-column w-full">
@@ -81,7 +85,7 @@
           <div class="flex gap-2 mt-1">
             <p-button
               severity="primary"
-              [label]="'common.buttons.review' | translate"
+              [label]="'common.buttons.view' | translate"
               (click)="reviewEmitRegistrationData.emit(registrationData()!.id)"
             ></p-button>
 
@@ -113,5 +117,5 @@
         </div>
       </div>
     </div>
-  }
-</p-card>
+  </p-card>
+}

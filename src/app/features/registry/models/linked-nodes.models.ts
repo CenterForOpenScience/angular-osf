@@ -10,7 +10,6 @@ export interface LinkedNode {
   dateModified: string;
   tags: string[];
   isPublic: boolean;
-  contributorsCount?: number;
   contributors?: ContributorModel[];
   htmlUrl: string;
   apiUrl: string;
