@@ -1,34 +1,54 @@
-import { provideStore } from '@ngxs/store';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProviders } from 'ng-mocks';
+import { Step, StepItem, StepPanel } from 'primeng/stepper';
 
-import { ConfirmationService } from 'primeng/api';
-
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { InfoIconComponent } from '@shared/components';
 import { ContributorsTableComponent } from '@shared/components/contributors';
-import { TranslateServiceMock } from '@shared/mocks';
-import { ToastService } from '@shared/services';
-import { ContributorsState, ProjectsState } from '@shared/stores';
+import { CustomDialogService, ToastService } from '@shared/services';
+import { CustomConfirmationService } from '@shared/services/custom-confirmation.service';
+import { ContributorsSelectors } from '@shared/stores/contributors';
+import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 import { ProjectContributorsStepComponent } from './project-contributors-step.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe.skip('ProjectContributorsStepComponent', () => {
   let component: ProjectContributorsStepComponent;
   let fixture: ComponentFixture<ProjectContributorsStepComponent>;
+  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   beforeEach(async () => {
+    toastServiceMock = ToastServiceMockBuilder.create().build();
+    customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
-      imports: [ProjectContributorsStepComponent, MockComponent(ContributorsTableComponent), MockPipe(TranslatePipe)],
+      imports: [
+        ProjectContributorsStepComponent,
+        OSFTestingModule,
+        MockComponents(StepPanel, Step, StepItem),
+        ...MockComponents(ContributorsTableComponent, InfoIconComponent),
+      ],
       providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        MockProviders(ToastService, ConfirmationService),
-        TranslateServiceMock,
-        provideStore([ContributorsState, ProjectsState]),
+        MockProvider(ToastService, toastServiceMock),
+        MockProvider(CustomConfirmationService, customConfirmationServiceMock),
+        MockProvider(CustomDialogService, mockCustomDialogService),
+        provideMockStore({
+          signals: [
+            { selector: ContributorsSelectors.getContributors, value: [] },
+            { selector: ContributorsSelectors.isContributorsLoading, value: false },
+            { selector: ProjectsSelectors.getSelectedProject, value: null },
+          ],
+        }),
       ],
     }).compileComponents();
 
@@ -44,5 +64,49 @@ describe.skip('ProjectContributorsStepComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize with input values', () => {
+    expect(component.stepperActiveValue()).toBe(0);
+    expect(component.targetStepValue()).toBe(2);
+    expect(component.isDisabled()).toBe(false);
+  });
+
+  it('should handle step navigation', () => {
+    const navigateSpy = jest.spyOn(component.stepChange, 'emit');
+
+    component.handleEditStep();
+
+    expect(navigateSpy).toHaveBeenCalledWith(component.targetStepValue());
+  });
+
+  it('should handle contributor removal', () => {
+    const mockContributor = { id: '1', name: 'John Doe' } as any;
+
+    expect(() => component.handleRemoveContributor(mockContributor)).not.toThrow();
+  });
+
+  it('should check if contributors changed', () => {
+    expect(component.hasContributorsChanged()).toBeDefined();
+  });
+
+  it('should have contributors data', () => {
+    expect(component.projectContributors()).toBeDefined();
+    expect(component.isContributorsLoading()).toBe(false);
+  });
+
+  it('should handle different input values', () => {
+    fixture.componentRef.setInput('stepperActiveValue', 1);
+    fixture.componentRef.setInput('targetStepValue', 3);
+    fixture.componentRef.setInput('isDisabled', true);
+    fixture.detectChanges();
+
+    expect(component.stepperActiveValue()).toBe(1);
+    expect(component.targetStepValue()).toBe(3);
+    expect(component.isDisabled()).toBe(true);
+  });
+
+  it('should handle form validation', () => {
+    expect(component.hasContributorsChanged()).toBeDefined();
   });
 });

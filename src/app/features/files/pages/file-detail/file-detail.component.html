@@ -129,7 +129,7 @@
             [cedarFormReadonly]="cedarFormReadonly()"
             (changeTab)="onMetadataTabChange($event)"
             (formSubmit)="onCedarFormSubmit($event)"
-            (cedarFormEdit)="onCedarFormEdit()"
+            (toggleFormEdit)="toggleEditMode()"
           >
             <div class="w-full flex flex-column gap-4 flex-1 -mt-4">
               <osf-file-metadata class="metadata"></osf-file-metadata>

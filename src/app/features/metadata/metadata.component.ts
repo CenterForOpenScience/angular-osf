@@ -184,7 +184,7 @@ export class MetadataComponent implements OnInit {
     );
   });
 
-  showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
+  isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
 
   hasWriteAccess = computed(() => {
     const metadata = this.metadata();
@@ -285,8 +285,9 @@ export class MetadataComponent implements OnInit {
     }
   }
 
-  onCedarFormEdit(): void {
-    this.cedarFormReadonly.set(false);
+  toggleEditMode(): void {
+    const editMode = this.cedarFormReadonly();
+    this.cedarFormReadonly.set(!editMode);
   }
 
   onCedarFormSubmit(data: CedarRecordDataBinding): void {
@@ -297,14 +298,25 @@ export class MetadataComponent implements OnInit {
     if (selectedRecord.id) {
       this.actions
         .updateCedarRecord(data, selectedRecord.id, this.resourceId, this.resourceType())
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.cedarFormReadonly.set(true);
-            this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
-            this.actions.getCedarRecords(this.resourceId, this.resourceType());
-          },
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          switchMap(() => this.actions.getCedarRecords(this.resourceId, this.resourceType()))
+        )
+        .subscribe(() => {
+          this.updateSelectedCedarRecord(selectedRecord.id!);
+          this.cedarFormReadonly.set(true);
+          this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
         });
+    }
+  }
+
+  private updateSelectedCedarRecord(recordId: string): void {
+    const records = this.cedarRecords();
+    if (!records) return;
+
+    const record = records.find((r) => r.id === recordId);
+    if (record) {
+      this.selectedCedarRecord.set(record);
     }
   }
 

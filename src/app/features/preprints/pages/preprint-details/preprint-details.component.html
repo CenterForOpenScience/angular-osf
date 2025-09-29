@@ -102,16 +102,16 @@
           <osf-preprint-share-and-download [preprintProvider]="preprintProvider()" />
           <osf-preprint-general-information
             [preprintProvider]="preprintProvider()"
-            (preprintVersionSelected)="fetchPreprintVersion($event)"
+            (preprintVersionSelected)="fetchPreprint($event)"
           />
-          <osf-preprint-additional-info />
+          <osf-preprint-additional-info [preprintProviderId]="providerId()" />
         </section>
       </section>
     } @else {
       <osf-preprint-tombstone
         class="lg:w-6"
         [preprintProvider]="preprintProvider()"
-        (preprintVersionSelected)="fetchPreprintVersion($event)"
+        (preprintVersionSelected)="fetchPreprint($event)"
       />
     }
   </section>

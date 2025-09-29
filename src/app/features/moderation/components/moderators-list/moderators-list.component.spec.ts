@@ -10,7 +10,7 @@ import { ModeratorsTableComponent } from '@osf/features/moderation/components';
 import { ResourceType } from '@osf/shared/enums';
 import { SearchInputComponent } from '@shared/components';
 import { MOCK_USER, TranslateServiceMock } from '@shared/mocks';
-import { CustomConfirmationService } from '@shared/services';
+import { CustomConfirmationService, CustomDialogService } from '@shared/services';
 
 import { ModeratorPermission } from '../../enums';
 import { ModeratorModel } from '../../models';
@@ -21,6 +21,7 @@ import { ModeratorsListComponent } from './moderators-list.component';
 import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -29,6 +30,7 @@ describe('ModeratorsListComponent', () => {
   let fixture: ComponentFixture<ModeratorsListComponent>;
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
   let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   const mockProviderId = 'test-provider-123';
   const mockResourceType = ResourceType.Preprint;
@@ -42,6 +44,7 @@ describe('ModeratorsListComponent', () => {
       .withData({ resourceType: mockResourceType })
       .build();
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -52,6 +55,7 @@ describe('ModeratorsListComponent', () => {
       providers: [
         MockProvider(ActivatedRoute, mockActivatedRoute),
         MockProvider(CustomConfirmationService, customConfirmationServiceMock),
+        MockProvider(CustomDialogService, mockCustomDialogService),
         TranslateServiceMock,
         provideMockStore({
           signals: [

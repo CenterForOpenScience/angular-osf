@@ -26,14 +26,16 @@
             <p>{{ affiliation.name }}</p>
           </div>
 
-          <p-button
-            class="danger-icon-btn"
-            icon="fas fa-trash"
-            severity="danger"
-            text
-            [ariaLabel]="'common.buttons.delete' | translate"
-            (onClick)="removeAffiliation(affiliation)"
-          ></p-button>
+          @if (canEdit()) {
+            <p-button
+              class="danger-icon-btn"
+              icon="fas fa-trash"
+              severity="danger"
+              text
+              [ariaLabel]="'common.buttons.delete' | translate"
+              (onClick)="removeAffiliation(affiliation)"
+            ></p-button>
+          }
         </div>
       }
     </div>

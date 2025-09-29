@@ -78,6 +78,7 @@ export class OverviewToolbarComponent {
   bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
   duplicatedProject = select(ProjectOverviewSelectors.getDuplicatedProject);
+  hasNoPermissions = select(ProjectOverviewSelectors.hasNoPermissions);
   socialsActionItems = computed(() => {
     const shareableContent = this.createShareableContent();
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
