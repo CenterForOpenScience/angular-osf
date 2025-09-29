@@ -57,4 +57,5 @@ export interface ResourceOverview {
   viewOnlyLinksCount?: number;
   associatedProjectId?: string;
   isAnonymous?: boolean;
+  iaUrl?: string | null;
 }

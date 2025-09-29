@@ -693,6 +693,7 @@
         "loading": "Loading metadata...",
         "cedarRecordCreatedSuccessfully": "CEDAR record created successfully",
         "failedToCreateCedarRecord": "Failed to create CEDAR record",
+        "internetArchiveLink": "internet archive link",
         "placeholders": {
           "edit": "Edit description here",
           "add": "Add description here"
