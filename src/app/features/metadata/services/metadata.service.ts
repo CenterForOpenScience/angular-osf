@@ -19,7 +19,7 @@ import {
   MetadataJsonApi,
   MetadataJsonApiResponse,
 } from '../models';
-import { CrossRefFundersResponse, CustomItemMetadataRecord, Metadata } from '../models/metadata.model';
+import { CrossRefFundersResponse, CustomItemMetadataRecord, MetadataModel } from '../models/metadata.model';
 
 @Injectable({
   providedIn: 'root',
@@ -127,7 +127,7 @@ export class MetadataService {
     );
   }
 
-  getResourceMetadata(resourceId: string, resourceType: ResourceType): Observable<Partial<Metadata>> {
+  getResourceMetadata(resourceId: string, resourceType: ResourceType): Observable<Partial<MetadataModel>> {
     const params = this.getMetadataParams(resourceType);
 
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
@@ -141,7 +141,7 @@ export class MetadataService {
     resourceId: string,
     resourceType: ResourceType,
     updates: Partial<BaseNodeAttributesJsonApi>
-  ): Observable<Metadata> {
+  ): Observable<MetadataModel> {
     const payload = {
       data: {
         id: resourceId,
@@ -163,7 +163,7 @@ export class MetadataService {
     resourceType: ResourceType,
     licenseId: string,
     licenseOptions?: LicenseOptions
-  ): Observable<Metadata> {
+  ): Observable<MetadataModel> {
     const payload = {
       data: {
         id: resourceId,

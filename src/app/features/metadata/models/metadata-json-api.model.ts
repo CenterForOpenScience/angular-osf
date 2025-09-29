@@ -1,4 +1,10 @@
-import { ApiData, InstitutionsJsonApiResponse, LicenseDataJsonApi, LicenseRecordJsonApi } from '@osf/shared/models';
+import {
+  ApiData,
+  IdentifiersResponseJsonApi,
+  InstitutionsJsonApiResponse,
+  LicenseDataJsonApi,
+  LicenseRecordJsonApi,
+} from '@osf/shared/models';
 import { UserPermissions } from '@shared/enums';
 
 export interface MetadataJsonApiResponse {
@@ -22,13 +28,11 @@ export interface MetadataAttributesJsonApi {
 }
 
 interface MetadataEmbedsJsonApi {
-  identifiers: {
-    data: { id: string; type: string; attributes: { category: string; value: string } }[];
-  };
+  affiliated_institutions: InstitutionsJsonApiResponse;
+  identifiers: IdentifiersResponseJsonApi;
   license: {
     data: LicenseDataJsonApi;
   };
-  affiliated_institutions: InstitutionsJsonApiResponse;
   provider?: {
     data: { id: string; type: string; attributes: { name: string } };
   };
