@@ -125,7 +125,7 @@ export class MetadataComponent implements OnInit {
   metadata = select(MetadataSelectors.getResourceMetadata);
   isMetadataLoading = select(MetadataSelectors.getLoading);
   customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
-  contributors = select(ContributorsSelectors.getContributors);
+  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
@@ -185,8 +185,6 @@ export class MetadataComponent implements OnInit {
   });
 
   showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
-
-  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
 
   hasWriteAccess = computed(() => {
     const metadata = this.metadata();

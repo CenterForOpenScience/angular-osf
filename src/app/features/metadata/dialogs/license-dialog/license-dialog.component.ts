@@ -7,7 +7,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal, viewChild } from '@angular/core';
 
-import { Metadata } from '@osf/features/metadata/models';
+import { MetadataModel } from '@osf/features/metadata/models';
 import { LicenseComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { LicenseModel, LicenseOptions } from '@shared/models';
 import { LicensesSelectors, LoadAllLicenses } from '@shared/stores/licenses';
@@ -29,7 +29,7 @@ export class LicenseDialogComponent implements OnInit {
 
   selectedLicenseId = signal<string | null>(null);
   selectedLicenseOptions = signal<LicenseOptions | null>(null);
-  metadata: Metadata | null = null;
+  metadata: MetadataModel | null = null;
   isSubmitting = signal<boolean>(false);
 
   licenseComponent = viewChild<LicenseComponent>('licenseComponent');
