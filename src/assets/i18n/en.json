@@ -269,6 +269,8 @@
       "divider": "or",
       "form": {
         "fullName": "Full Name",
+        "givenName": "Given Name",
+        "familyName": "Family Name",
         "fullNamePlaceholder": "John Doe",
         "submit": "Sign Up",
         "terms": {

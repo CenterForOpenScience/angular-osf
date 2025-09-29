@@ -43,6 +43,22 @@
 
         <div class="flex flex-column">
           <osf-text-input
+            [control]="signUpForm.controls['givenName']"
+            [label]="'auth.signUp.form.givenName'"
+            [maxLength]="inputLimits.fullName.maxLength"
+          ></osf-text-input>
+        </div>
+
+        <div class="flex flex-column">
+          <osf-text-input
+            [control]="signUpForm.controls['familyName']"
+            [label]="'auth.signUp.form.familyName'"
+            [maxLength]="inputLimits.fullName.maxLength"
+          ></osf-text-input>
+        </div>
+
+        <div class="flex flex-column">
+          <osf-text-input
             [control]="signUpForm.controls['email1']"
             [label]="'auth.common.email'"
             [placeholder]="'auth.common.emailPlaceholder'"
