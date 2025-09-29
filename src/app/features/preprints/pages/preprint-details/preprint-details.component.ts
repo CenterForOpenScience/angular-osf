@@ -304,13 +304,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     this.helpScoutService.unsetResourceType();
   }
 
-  fetchPreprintVersion(preprintVersionId: string) {
-    const currentUrl = this.router.url;
-    const newUrl = currentUrl.replace(/[^/]+$/, preprintVersionId);
-    this.location.replaceState(newUrl);
-    this.fetchPreprint(preprintVersionId);
-  }
-
   handleWithdrawClicked() {
     const dialogWidth = this.isMedium() ? '700px' : '340px';
 
@@ -349,9 +342,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private fetchPreprint(preprintId: string) {
+  fetchPreprint(preprintId: string) {
     this.actions.fetchPreprintById(preprintId).subscribe({
       next: () => {
+        this.checkAndSetVersionToTheUrl();
         if (this.preprint()!.currentUserPermissions.length > 0 || this.moderationMode()) {
           this.actions.fetchPreprintReviewActions();
           if (this.preprintWithdrawableState() && (this.currentUserIsAdmin() || this.moderationMode())) {
@@ -396,5 +390,19 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   private hasReadWriteAccess(): boolean {
     return this.preprint()?.currentUserPermissions.includes(UserPermissions.Write) || false;
+  }
+
+  private checkAndSetVersionToTheUrl() {
+    const currentUrl = this.router.url;
+    const newPreprintId = this.preprint()!.id;
+
+    const urlSegments = currentUrl.split('/');
+    const preprintIdFromUrl = urlSegments[urlSegments.length - 1];
+
+    if (preprintIdFromUrl !== newPreprintId) {
+      const newUrl = currentUrl.replace(/[^/]+$/, newPreprintId);
+
+      this.location.replaceState(newUrl);
+    }
   }
 }
