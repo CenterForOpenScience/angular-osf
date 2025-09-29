@@ -95,7 +95,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly environment = inject(ENVIRONMENT);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
-  private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   private actions = createDispatchMap({
@@ -108,6 +107,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     fetchPreprintRequestActions: FetchPreprintRequestActions,
     clearCurrentProvider: ClearCurrentProvider,
   });
+  providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);

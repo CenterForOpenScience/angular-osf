@@ -5,24 +5,11 @@ import {
   CitationStyleJsonApi,
   CustomCitationPayload,
   CustomCitationPayloadJsonApi,
-  DefaultCitation,
-  DefaultCitationJsonApi,
   StyledCitation,
   StyledCitationJsonApi,
 } from '../models';
 
 export class CitationsMapper {
-  static fromGetDefaultResponse(response: DefaultCitationJsonApi): DefaultCitation {
-    const citationId = response.id;
-
-    return {
-      id: citationId,
-      type: response.type,
-      citation: response.attributes.citation,
-      title: CITATION_TITLES[citationId as CitationTypes],
-    };
-  }
-
   static fromGetCitationStylesResponse(response: CitationStyleJsonApi[]): CitationStyle[] {
     return response.map((style) => ({
       id: style.id,
@@ -39,6 +26,7 @@ export class CitationsMapper {
       id: response.id,
       type: response.type,
       citation: response.attributes.citation,
+      title: CITATION_TITLES[response.id as CitationTypes],
     };
   }
 

@@ -16,6 +16,16 @@ export class GetCitationStyles {
   constructor(public searchQuery?: string) {}
 }
 
+export class FetchDefaultProviderCitationStyles {
+  static readonly type = '[Citations] Fetch Default Provider Citation Styles';
+
+  constructor(
+    public resourceType: ResourceType,
+    public resourceId: string,
+    public providerId: string
+  ) {}
+}
+
 export class UpdateCustomCitation {
   static readonly type = '[Citations] Update Custom Citation';
 

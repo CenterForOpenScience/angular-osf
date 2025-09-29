@@ -104,7 +104,7 @@
             [preprintProvider]="preprintProvider()"
             (preprintVersionSelected)="fetchPreprint($event)"
           />
-          <osf-preprint-additional-info />
+          <osf-preprint-additional-info [preprintProviderId]="providerId()" />
         </section>
       </section>
     } @else {
