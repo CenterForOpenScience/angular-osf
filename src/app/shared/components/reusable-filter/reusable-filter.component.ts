@@ -4,12 +4,14 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
+import { delay, of } from 'rxjs';
+
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FILTER_PLACEHOLDERS } from '@osf/shared/constants';
-import { StringOrNull } from '@osf/shared/helpers';
 import { DiscoverableFilter, FilterOption } from '@osf/shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
@@ -37,7 +39,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 })
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
-  selectedValues = input<Record<string, StringOrNull>>({});
+  selectedOptions = input<Record<string, FilterOption | null>>({});
   filterSearchResults = input<Record<string, FilterOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
@@ -46,12 +48,12 @@ export class ReusableFilterComponent {
   readonly Boolean = Boolean;
 
   loadFilterOptions = output<DiscoverableFilter>();
-  filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
-  filterSearchChanged = output<{ filterType: string; searchText: string; filter: DiscoverableFilter }>();
-  loadMoreFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
+  filterOptionChanged = output<{ filter: DiscoverableFilter; filterOption: FilterOption | null }>();
+  filterSearchChanged = output<{ filter: DiscoverableFilter; searchText: string }>();
+  loadMoreFilterOptions = output<DiscoverableFilter>();
 
   private readonly expandedFilters = signal<Set<string>>(new Set());
-
+  private destroyRef = inject(DestroyRef);
   readonly FILTER_PLACEHOLDERS = FILTER_PLACEHOLDERS;
 
   readonly hasFilters = computed(() => {
@@ -99,6 +101,8 @@ export class ReusableFilterComponent {
     };
   });
 
+  private readonly SCROLL_DELAY_MS = 300;
+
   shouldShowFilter(filter: DiscoverableFilter): boolean {
     if (!filter || !filter.key) return false;
 
@@ -106,18 +110,16 @@ export class ReusableFilterComponent {
       return Boolean(filter.options && filter.options.length > 0);
     }
 
-    return Boolean(
-      (filter.resultCount && filter.resultCount > 0) ||
-        (filter.options && filter.options.length > 0) ||
-        filter.hasOptions ||
-        (filter.selectedValues && filter.selectedValues.length > 0)
-    );
+    return Boolean((filter.resultCount && filter.resultCount > 0) || (filter.options && filter.options.length > 0));
   }
 
   onAccordionToggle(filterKey: string | number | string[] | number[]): void {
     if (!filterKey) return;
 
     const key = Array.isArray(filterKey) ? filterKey[0]?.toString() : filterKey.toString();
+
+    this.scrollPanelIntoView(key);
+
     const selectedFilter = this.filters().find((filter) => filter.key === key);
 
     if (selectedFilter) {
@@ -137,54 +139,50 @@ export class ReusableFilterComponent {
     }
   }
 
-  onFilterChanged(filterType: string, value: string | null): void {
-    this.filterValueChanged.emit({ filterType, value });
+  onOptionChanged(filter: DiscoverableFilter, filterOption: FilterOption | null): void {
+    this.filterOptionChanged.emit({ filter, filterOption });
   }
 
-  onFilterSearch(filterType: string, searchText: string): void {
-    const filter = this.filters().find((f) => f.key === filterType);
+  private scrollPanelIntoView(key: string) {
+    of(key)
+      .pipe(delay(this.SCROLL_DELAY_MS), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (key) => {
+          const panelContent = document.getElementById(`filter-${key}`);
+          const scrollContainer = document.querySelector('.filters-section');
+
+          if (panelContent && scrollContainer) {
+            const contentRect = panelContent.getBoundingClientRect();
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const newScrollTop = scrollContainer.scrollTop + (contentRect.top - containerRect.top);
+
+            scrollContainer.scrollTo({
+              top: newScrollTop,
+              behavior: 'smooth',
+            });
+          }
+        },
+      });
+  }
+
+  onFilterSearch(filter: DiscoverableFilter, searchText: string): void {
     if (filter) {
-      this.filterSearchChanged.emit({ filterType, searchText, filter });
+      this.filterSearchChanged.emit({ filter, searchText });
     }
   }
 
-  onLoadMoreOptions(filterType: string): void {
-    const filter = this.filters().find((f) => f.key === filterType);
-    if (filter) {
-      this.loadMoreFilterOptions.emit({ filterType, filter });
-    }
-  }
-
-  isFilterLoading(filter: DiscoverableFilter): boolean {
-    return filter.isLoading || false;
-  }
-
-  getSelectedValue(filterKey: string): string | null {
-    return this.selectedValues()[filterKey] || null;
-  }
-
-  getFilterPlaceholder(filterKey: string): string {
-    return this.FILTER_PLACEHOLDERS[filterKey] || '';
-  }
-
-  getFilterLabel(filter: DiscoverableFilter): string {
-    return filter.label || filter.key || '';
-  }
-
-  hasFilterContent(filter: DiscoverableFilter): boolean {
-    return !!(
-      filter.description ||
-      filter.helpLink ||
-      filter.resultCount ||
-      filter.options?.length ||
-      filter.hasOptions ||
-      filter.type === 'group'
-    );
+  onLoadMoreOptions(filter: DiscoverableFilter): void {
+    this.loadMoreFilterOptions.emit(filter);
   }
 
   onIsPresentFilterToggle(filter: DiscoverableFilter, isChecked: boolean): void {
     const value = isChecked ? 'true' : null;
-    this.filterValueChanged.emit({ filterType: filter.key, value });
+    const filterOption: FilterOption = {
+      label: '',
+      value: String(value),
+      cardSearchResultCount: NaN,
+    };
+    this.filterOptionChanged.emit({ filter, filterOption });
   }
 
   onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {
