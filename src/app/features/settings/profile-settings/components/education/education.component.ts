@@ -123,6 +123,10 @@ export class EducationComponent {
       );
     }
 
+    if (formPositions.length !== education.length) {
+      return true;
+    }
+
     return this.educations.value.some((formEducation, index) => {
       const initialEdu = this.educationItems()[index];
       if (!initialEdu) return true;
