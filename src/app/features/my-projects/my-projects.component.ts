@@ -11,6 +11,7 @@ import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
@@ -25,7 +26,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { IS_MEDIUM, parseQueryFilterParams } from '@osf/shared/helpers';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, QueryParams, TableParameters } from '@osf/shared/models';
 import {
   BookmarksSelectors,
@@ -39,6 +40,8 @@ import {
 } from '@osf/shared/stores';
 import { CustomDialogService, ProjectRedirectDialogService } from '@shared/services';
 
+import { MyProjectsQueryService } from './services/my-projects-query.service';
+import { MyProjectsTableParamsService } from './services/my-projects-table-params.service';
 import { CreateProjectDialogComponent } from './components';
 import { MY_PROJECTS_TABS } from './constants';
 import { MyProjectsTab } from './enums';
@@ -67,7 +70,10 @@ export class MyProjectsComponent implements OnInit {
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
+  readonly queryService = inject(MyProjectsQueryService);
+  readonly tableParamsService = inject(MyProjectsTableParamsService);
 
+  readonly bookmarksPageSize = 100;
   readonly isLoading = signal(false);
   readonly isTablet = toSignal(inject(IS_MEDIUM));
   readonly tabOptions = MY_PROJECTS_TABS;
@@ -92,8 +98,8 @@ export class MyProjectsComponent implements OnInit {
   readonly totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
   readonly totalPreprintsCount = select(MyResourcesSelectors.getTotalPreprints);
   readonly totalBookmarksCount = select(MyResourcesSelectors.getTotalBookmarks);
-
   readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
+  readonly isBookmarks = computed(() => this.selectedTab() === MyProjectsTab.Bookmarks);
 
   readonly actions = createDispatchMap({
     getBookmarksCollectionId: GetBookmarksCollectionId,
@@ -108,6 +114,7 @@ export class MyProjectsComponent implements OnInit {
     this.setupQueryParamsEffect();
     this.setupSearchSubscription();
     this.setupTotalRecordsEffect();
+    this.setupBookmarksCollectionEffect();
     this.setupCleanup();
   }
 
@@ -115,211 +122,23 @@ export class MyProjectsComponent implements OnInit {
     this.actions.getBookmarksCollectionId();
   }
 
-  setupCleanup(): void {
-    this.destroyRef.onDestroy(() => {
-      this.actions.clearMyProjects();
-    });
-  }
-
-  setupSearchSubscription(): void {
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchValue) => this.handleSearch(searchValue ?? ''));
-  }
-
-  setupTotalRecordsEffect(): void {
-    effect(() => {
-      const totalRecords = this.getTotalRecordsForCurrentTab();
-      untracked(() => {
-        this.updateTableParams({ totalRecords });
-      });
-    });
-  }
-
-  getTotalRecordsForCurrentTab(): number {
-    switch (this.selectedTab()) {
-      case MyProjectsTab.Projects:
-        return this.totalProjectsCount();
-      case MyProjectsTab.Registrations:
-        return this.totalRegistrationsCount();
-      case MyProjectsTab.Preprints:
-        return this.totalPreprintsCount();
-      case MyProjectsTab.Bookmarks:
-        return this.totalBookmarksCount();
-      default:
-        return 0;
-    }
-  }
-
-  setupQueryParamsEffect(): void {
-    effect(() => {
-      const params = this.queryParams();
-      if (!params) return;
-
-      const { page, size, search, sortColumn, sortOrder } = parseQueryFilterParams(params);
-
-      this.updateComponentState({ page, size, search, sortColumn, sortOrder });
-      this.fetchDataForCurrentTab({
-        page,
-        size,
-        search,
-        sortColumn,
-        sortOrder,
-      });
-    });
-  }
-
-  updateComponentState(params: QueryParams): void {
-    untracked(() => {
-      const size = params.size || DEFAULT_TABLE_PARAMS.rows;
-
-      this.currentPage.set(params.page ?? 1);
-      this.currentPageSize.set(size);
-      this.searchControl.setValue(params.search || '');
-      this.sortColumn.set(params.sortColumn);
-      this.sortOrder.set(params.sortOrder ?? SortOrder.Asc);
-
-      this.updateTableParams({
-        rows: size,
-        firstRowIndex: ((params.page ?? 1) - 1) * size,
-      });
-    });
-  }
-
-  updateTableParams(updates: Partial<TableParameters>): void {
-    this.tableParams.update((current) => ({
-      ...current,
-      ...updates,
-    }));
-  }
-
-  fetchDataForCurrentTab(params: QueryParams): void {
-    this.isLoading.set(true);
-    const filters = this.createFilters(params);
-    const pageNumber = params.page ?? 1;
-    const pageSize = params.size ?? DEFAULT_TABLE_PARAMS.rows;
-
-    let action$;
-    switch (this.selectedTab()) {
-      case MyProjectsTab.Projects:
-        action$ = this.actions.getMyProjects(pageNumber, pageSize, filters);
-        break;
-      case MyProjectsTab.Registrations:
-        action$ = this.actions.getMyRegistrations(pageNumber, pageSize, filters);
-        break;
-      case MyProjectsTab.Preprints:
-        action$ = this.actions.getMyPreprints(pageNumber, pageSize, filters);
-        break;
-      case MyProjectsTab.Bookmarks:
-        if (this.bookmarksCollectionId()) {
-          action$ = this.actions.getMyBookmarks(
-            this.bookmarksCollectionId(),
-            pageNumber,
-            pageSize,
-            filters,
-            ResourceType.Null
-          );
-        }
-        break;
-    }
-
-    action$?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      complete: () => {
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      },
-    });
-  }
-
-  createFilters(params: QueryParams): MyResourcesSearchFilters {
-    return {
-      searchValue: params.search || '',
-      searchFields:
-        this.selectedTab() === MyProjectsTab.Preprints ? ['title', 'tags'] : ['title', 'tags', 'description'],
-      sortColumn: params.sortColumn,
-      sortOrder: params.sortOrder,
-    };
-  }
-
-  handleSearch(searchValue: string): void {
-    const currentParams = this.queryParams() || {};
-    this.updateQueryParams({
-      search: searchValue,
-      page: 1,
-      sortColumn: currentParams['sortColumn'],
-      sortOrder: currentParams['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc,
-    });
-  }
-
-  updateQueryParams(updates: Partial<QueryParams>): void {
-    const currentParams = this.queryParams() || {};
-    const queryParams: Record<string, string> = {};
-
-    if ('page' in updates || currentParams['page']) {
-      queryParams['page'] = updates.page?.toString() ?? currentParams['page'];
-    }
-    if ('size' in updates || currentParams['size']) {
-      queryParams['size'] = updates.size?.toString() ?? currentParams['size'];
-    }
-
-    if ('search' in updates || currentParams['search']) {
-      const search = updates.search ?? currentParams['search'];
-      if (search) {
-        queryParams['search'] = search;
-      }
-    }
-
-    if ('sortColumn' in updates) {
-      if (updates.sortColumn) {
-        queryParams['sortColumn'] = updates.sortColumn;
-        queryParams['sortOrder'] = updates.sortOrder === SortOrder.Desc ? 'desc' : 'asc';
-      }
-    } else if (currentParams['sortColumn']) {
-      queryParams['sortColumn'] = currentParams['sortColumn'];
-      queryParams['sortOrder'] = currentParams['sortOrder'];
-    }
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-    });
-  }
-
   onPageChange(event: TablePageEvent): void {
-    const page = Math.floor(event.first / event.rows) + 1;
-    const currentParams = this.queryParams() || {};
-
-    this.updateQueryParams({
-      page,
-      size: event.rows,
-      sortColumn: currentParams['sortColumn'],
-      sortOrder: currentParams['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc,
-    });
+    const current = this.queryService.getRawParams();
+    this.queryService.handlePageChange(event.first, event.rows, current, this.selectedTab());
   }
 
   onSort(event: SortEvent): void {
     if (event.field) {
-      this.updateQueryParams({
-        sortColumn: event.field,
-        sortOrder: event.order as SortOrder,
-      });
+      const current = this.queryService.getRawParams();
+      this.queryService.handleSort(event.field, event.order as SortOrder, current, this.selectedTab());
     }
   }
 
   onTabChange(tabIndex: number): void {
     this.actions.clearMyProjects();
     this.selectedTab.set(tabIndex);
-    const currentParams = this.queryParams() || {};
-
-    this.updateQueryParams({
-      page: 1,
-      size: currentParams['size'],
-      search: '',
-      sortColumn: undefined,
-      sortOrder: undefined,
-    });
+    const current = this.queryService.getRawParams();
+    this.queryService.handleTabSwitch(current, this.selectedTab());
   }
 
   createProject(): void {
@@ -346,5 +165,169 @@ export class MyProjectsComponent implements OnInit {
   navigateToRegistry(registry: MyResourcesItem): void {
     this.activeProject.set(registry);
     this.router.navigate([registry.id]);
+  }
+
+  private setupCleanup(): void {
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearMyProjects();
+    });
+  }
+
+  private setupSearchSubscription(): void {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((searchValue) => this.handleSearch(searchValue ?? ''));
+  }
+
+  private setupTotalRecordsEffect(): void {
+    effect(() => {
+      const totalRecords = this.getTotalRecordsForCurrentTab();
+      untracked(() => {
+        this.updateTableParams({ totalRecords });
+      });
+    });
+  }
+
+  private setupBookmarksCollectionEffect(): void {
+    effect(() => {
+      const collectionId = this.bookmarksCollectionId();
+      const params = this.queryParams();
+
+      if (collectionId && this.isBookmarks() && params) {
+        untracked(() => {
+          const queryParams = this.queryService.toQueryModel(params);
+          this.updateComponentState(queryParams);
+          this.fetchDataForCurrentTab(queryParams);
+        });
+      }
+    });
+  }
+
+  private getTotalRecordsForCurrentTab(): number {
+    switch (this.selectedTab()) {
+      case MyProjectsTab.Projects:
+        return this.totalProjectsCount();
+      case MyProjectsTab.Registrations:
+        return this.totalRegistrationsCount();
+      case MyProjectsTab.Preprints:
+        return this.totalPreprintsCount();
+      case MyProjectsTab.Bookmarks:
+        return this.totalBookmarksCount();
+      default:
+        return 0;
+    }
+  }
+
+  private setupQueryParamsEffect(): void {
+    effect(() => {
+      const params = this.queryParams();
+      if (!params) return;
+
+      const raw = params;
+
+      if (!this.queryService.hasTabInUrl(raw)) {
+        untracked(() => {
+          const current = this.queryParams() || {};
+          this.queryService.updateParams({ page: 1 }, current, this.selectedTab());
+        });
+        return;
+      }
+
+      untracked(() => {
+        const tabFromUrl = this.queryService.getTabFromUrl(raw);
+        if (tabFromUrl !== null && this.selectedTab() !== tabFromUrl) {
+          this.selectedTab.set(tabFromUrl);
+        }
+
+        if (!this.isBookmarks()) {
+          const queryParams = this.queryService.toQueryModel(raw);
+          this.updateComponentState(queryParams);
+          this.fetchDataForCurrentTab(queryParams);
+        }
+      });
+    });
+  }
+
+  private updateComponentState(params: QueryParams): void {
+    untracked(() => {
+      const size = params.size || DEFAULT_TABLE_PARAMS.rows;
+
+      this.currentPage.set(params.page ?? 1);
+      this.currentPageSize.set(size);
+      this.searchControl.setValue(params.search || '', { emitEvent: false });
+      this.sortColumn.set(params.sortColumn);
+      this.sortOrder.set(params.sortOrder ?? SortOrder.Asc);
+
+      const totalRecords = this.getTotalRecordsForCurrentTab();
+      const tableParams = this.tableParamsService.buildTableParams(size, totalRecords, this.isBookmarks());
+      tableParams.firstRowIndex = ((params.page ?? 1) - 1) * size;
+
+      this.tableParams.set({
+        ...tableParams,
+        rows: size,
+      });
+    });
+  }
+
+  private updateTableParams(updates: Partial<TableParameters>): void {
+    this.tableParams.update((current) => ({
+      ...current,
+      ...updates,
+    }));
+  }
+
+  private fetchDataForCurrentTab(params: QueryParams): void {
+    this.isLoading.set(true);
+    const filters = this.createFilters(params);
+    const pageNumber = params.page ?? 1;
+    const pageSize = params.size ?? DEFAULT_TABLE_PARAMS.rows;
+
+    let action$;
+    switch (this.selectedTab()) {
+      case MyProjectsTab.Projects:
+        action$ = this.actions.getMyProjects(pageNumber, pageSize, filters);
+        break;
+      case MyProjectsTab.Registrations:
+        action$ = this.actions.getMyRegistrations(pageNumber, pageSize, filters);
+        break;
+      case MyProjectsTab.Preprints:
+        action$ = this.actions.getMyPreprints(pageNumber, pageSize, filters);
+        break;
+      case MyProjectsTab.Bookmarks:
+        if (this.bookmarksCollectionId()) {
+          action$ = this.actions.getMyBookmarks(
+            this.bookmarksCollectionId(),
+            pageNumber,
+            this.bookmarksPageSize,
+            filters,
+            ResourceType.Null
+          );
+        }
+        break;
+    }
+
+    action$?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      complete: () => {
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  private createFilters(params: QueryParams): MyResourcesSearchFilters {
+    return {
+      searchValue: params.search || '',
+      searchFields:
+        this.selectedTab() === MyProjectsTab.Preprints ? ['title', 'tags'] : ['title', 'tags', 'description'],
+      sortColumn: params.sortColumn,
+      sortOrder: params.sortOrder,
+    };
+  }
+
+  private handleSearch(searchValue: string): void {
+    const current = this.queryService.getRawParams();
+    this.queryService.handleSearch(searchValue, current, this.selectedTab());
   }
 }
