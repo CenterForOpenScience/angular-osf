@@ -97,8 +97,8 @@ export class SettingsComponent implements OnInit {
   title = signal('');
 
   userPermissions = computed(() => this.projectDetails()?.currentUserPermissions || []);
-  isAdmin = computed(() => this.userPermissions().includes(UserPermissions.Admin));
-  canWrite = computed(() => this.userPermissions().includes(UserPermissions.Write));
+  hasAdminAccess = computed(() => this.userPermissions().includes(UserPermissions.Admin));
+  hasWriteAccess = computed(() => this.userPermissions().includes(UserPermissions.Write));
 
   constructor() {
     this.setupEffects();
@@ -255,7 +255,7 @@ export class SettingsComponent implements OnInit {
     effect(() => {
       const id = this.projectId();
 
-      if (id && this.isAdmin()) {
+      if (id && this.hasAdminAccess()) {
         this.actions.getViewOnlyLinks(id, ResourceType.Project);
       }
     });

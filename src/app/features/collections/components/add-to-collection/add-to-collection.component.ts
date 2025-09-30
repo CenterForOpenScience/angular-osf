@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Stepper } from 'primeng/stepper';
 
 import { Observable } from 'rxjs';
@@ -30,7 +29,7 @@ import {
 import { LoadingSpinnerComponent } from '@shared/components';
 import { HeaderStyleHelper } from '@shared/helpers';
 import { CanDeactivateComponent } from '@shared/models';
-import { BrandService } from '@shared/services';
+import { BrandService, CustomDialogService } from '@shared/services';
 import { CollectionsSelectors, GetCollectionProvider } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -57,15 +56,13 @@ import {
   ],
   templateUrl: './add-to-collection.component.html',
   styleUrl: './add-to-collection.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddToCollectionComponent implements CanDeactivateComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
 
   readonly AddToCollectionSteps = AddToCollectionSteps;
 
@@ -131,22 +128,18 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       userId: this.currentUser()?.id || '',
     };
 
-    const dialogRef = this.dialogService.open(AddToCollectionConfirmationDialogComponent, {
-      width: '500px',
-      focusOnShow: false,
-      header: this.translateService.instant('collections.addToCollection.confirmationDialogHeader'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: { payload, project: this.selectedProject() },
-    });
-
-    dialogRef.onClose.subscribe((result) => {
-      if (result) {
-        this.allowNavigation.set(true);
-        this.router.navigate([this.selectedProject()?.id, 'overview']);
-      }
-    });
+    this.customDialogService
+      .open(AddToCollectionConfirmationDialogComponent, {
+        header: 'collections.addToCollection.confirmationDialogHeader',
+        width: '500px',
+        data: { payload, project: this.selectedProject() },
+      })
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.allowNavigation.set(true);
+          this.router.navigate([this.selectedProject()?.id, 'overview']);
+        }
+      });
   }
 
   private initializeProvider(): void {

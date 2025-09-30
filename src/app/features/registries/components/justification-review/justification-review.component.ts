@@ -1,10 +1,9 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
@@ -13,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RegistrationBlocksDataComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType, RevisionReviewStates } from '@osf/shared/enums';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 
 import { SchemaActionTrigger } from '../../enums';
 import { ClearState, DeleteSchemaResponse, HandleSchemaResponse, RegistriesSelectors } from '../../store';
@@ -25,14 +24,12 @@ import { ConfirmContinueEditingDialogComponent } from '../confirm-continue-editi
   templateUrl: './justification-review.component.html',
   styleUrl: './justification-review.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class JustificationReviewComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly customConfirmationService = inject(CustomConfirmationService);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
@@ -126,13 +123,10 @@ export class JustificationReviewComponent {
   }
 
   continueEditing() {
-    this.dialogService
+    this.customDialogService
       .open(ConfirmContinueEditingDialogComponent, {
+        header: 'registries.justification.confirmContinueEditing.header',
         width: '552px',
-        header: this.translateService.instant('registries.justification.confirmContinueEditing.header'),
-        focusOnShow: false,
-        closeOnEscape: true,
-        modal: true,
         data: {
           revisionId: this.revisionId,
         },

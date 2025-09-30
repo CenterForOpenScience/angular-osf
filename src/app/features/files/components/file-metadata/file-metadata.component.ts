@@ -1,9 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { filter, map, of } from 'rxjs';
@@ -16,6 +15,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { languageCodes } from '@osf/shared/constants';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { LanguageCodeModel } from '@osf/shared/models';
+import { CustomDialogService } from '@osf/shared/services';
 
 import { FileMetadataFields } from '../../constants';
 import { PatchFileMetadata } from '../../models';
@@ -28,14 +28,12 @@ import { EditFileMetadataDialogComponent } from '../edit-file-metadata-dialog/ed
   templateUrl: './file-metadata.component.html',
   styleUrl: './file-metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class FileMetadataComponent {
   private readonly actions = createDispatchMap({ setFileMetadata: SetFileMetadata });
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly environment = inject(ENVIRONMENT);
 
   fileMetadata = select(FilesSelectors.getFileCustomMetadata);
@@ -68,14 +66,10 @@ export class FileMetadataComponent {
   }
 
   openEditFileMetadataDialog() {
-    this.dialogService
+    this.customDialogService
       .open(EditFileMetadataDialogComponent, {
+        header: 'files.detail.fileMetadata.edit',
         width: '448px',
-        focusOnShow: false,
-        header: this.translateService.instant('files.detail.fileMetadata.edit'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
         data: this.fileMetadata(),
       })
       .onClose.pipe(filter((res: PatchFileMetadata) => !!res))

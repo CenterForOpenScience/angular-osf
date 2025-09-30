@@ -55,11 +55,12 @@ export class MyPreprintsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly actions = createDispatchMap({ fetchMyPreprints: FetchMyPreprints });
 
+  private readonly defaultSortColumn = 'dateModified';
   searchControl = new FormControl<string>('');
 
   queryParams = toSignal(this.route.queryParams);
   sortColumn = signal('');
-  sortOrder = signal<SortOrder>(SortOrder.Asc);
+  sortOrder = signal<SortOrder>(SortOrder.Desc);
   currentPage = signal(1);
   currentPageSize = signal(DEFAULT_TABLE_PARAMS.rows);
   tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS, firstRowIndex: 0 });
@@ -179,7 +180,7 @@ export class MyPreprintsComponent {
     return {
       searchValue: params.search,
       searchFields: ['title', 'tags', 'description'],
-      sortColumn: params.sortColumn,
+      sortColumn: params.sortColumn || this.defaultSortColumn,
       sortOrder: params.sortOrder,
     };
   }

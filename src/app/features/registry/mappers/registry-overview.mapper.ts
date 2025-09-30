@@ -1,4 +1,4 @@
-import { IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
+import { ContributorsMapper, IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
 import { MapRegistryStatus, RegistrationMapper, RegistrationNodeMapper } from '@osf/shared/mappers/registration';
 
 import { RegistryOverview, RegistryOverviewJsonApiData } from '../models';
@@ -27,15 +27,8 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     registrationType: data.attributes?.registration_supplement,
     doi: data.attributes?.article_doi,
     tags: data.attributes?.tags,
-    contributors: data.embeds?.bibliographic_contributors?.data.map((contributor) => ({
-      id: contributor?.embeds?.users?.data?.id,
-      familyName: contributor?.embeds?.users?.data?.attributes?.family_name,
-      fullName: contributor?.embeds?.users?.data?.attributes?.full_name,
-      givenName: contributor?.embeds?.users?.data?.attributes?.given_name,
-      middleName: contributor?.embeds?.users?.data?.attributes?.middle_names,
-      type: contributor?.embeds?.users?.data?.type,
-    })),
-    identifiers: IdentifiersMapper.fromJsonApi(data.embeds.identifiers),
+    contributors: ContributorsMapper.getContributors(data?.embeds?.bibliographic_contributors?.data),
+    identifiers: IdentifiersMapper.fromJsonApi(data.embeds?.identifiers),
     analyticsKey: data.attributes?.analytics_key,
     currentUserCanComment: data.attributes.current_user_can_comment,
     currentUserPermissions: data.attributes.current_user_permissions,
@@ -49,11 +42,12 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     hasMaterials: data.attributes.has_materials,
     hasPapers: data.attributes.has_papers,
     hasSupplements: data.attributes.has_supplements,
-    license: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
+    iaUrl: data.attributes.ia_url,
+    license: LicensesMapper.fromLicenseDataJsonApi(data.embeds?.license?.data),
     registrationSchemaLink: data.relationships.registration_schema.links.related.href,
     associatedProjectId: data.relationships?.registered_from?.data?.id,
     schemaResponses: data.embeds?.schema_responses?.data?.map((item) => RegistrationMapper.fromSchemaResponse(item)),
-    provider: RegistrationNodeMapper.getRegistrationProviderShortInfo(data.embeds.provider.data),
+    provider: RegistrationNodeMapper.getRegistrationProviderShortInfo(data.embeds?.provider?.data),
     status: MapRegistryStatus(data.attributes),
     revisionStatus: data.attributes.revision_state,
     reviewsState: data.attributes.reviews_state,
@@ -68,9 +62,9 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
 
 export function MapRegistrationOverview(data: RegistryOverviewJsonApiData) {
   const registrationAttributes = RegistrationNodeMapper.getRegistrationNodeAttributes(data.id, data.attributes);
-  const providerInfo = RegistrationNodeMapper.getRegistrationProviderShortInfo(data.embeds.provider.data);
-  const identifiers = IdentifiersMapper.fromJsonApi(data.embeds.identifiers);
-  const license = LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data);
+  const providerInfo = RegistrationNodeMapper.getRegistrationProviderShortInfo(data.embeds?.provider?.data);
+  const identifiers = IdentifiersMapper.fromJsonApi(data.embeds?.identifiers);
+  const license = LicensesMapper.fromLicenseDataJsonApi(data.embeds?.license?.data);
 
   return {
     ...registrationAttributes,

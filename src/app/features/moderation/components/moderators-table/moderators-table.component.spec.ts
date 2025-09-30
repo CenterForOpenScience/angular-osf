@@ -1,8 +1,9 @@
-import { MockComponent } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectComponent } from '@shared/components';
+import { CustomDialogService } from '@shared/services';
 
 import { ModeratorModel } from '../../models';
 
@@ -10,16 +11,21 @@ import { ModeratorsTableComponent } from './moderators-table.component';
 
 import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 
 describe('ModeratorsTableComponent', () => {
   let component: ModeratorsTableComponent;
   let fixture: ComponentFixture<ModeratorsTableComponent>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   const mockModerators: ModeratorModel[] = MOCK_MODERATORS;
 
   beforeEach(async () => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
       imports: [ModeratorsTableComponent, OSFTestingModule, MockComponent(SelectComponent)],
+      providers: [MockProvider(CustomDialogService, mockCustomDialogService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ModeratorsTableComponent);
@@ -69,30 +75,26 @@ describe('ModeratorsTableComponent', () => {
     expect(component.skeletonData.every((item) => typeof item === 'object')).toBe(true);
   });
 
-  it('should have dialog service injected', () => {
-    expect(component.dialogService).toBeDefined();
-  });
-
-  it('should have translate service injected', () => {
-    expect(component.translateService).toBeDefined();
+  it('should have custom dialog service injected', () => {
+    expect(component.customDialogService).toBeDefined();
   });
 
   it('should open education history dialog', () => {
     const moderator = mockModerators[0];
-    jest.spyOn(component.dialogService, 'open');
+    jest.spyOn(component.customDialogService, 'open');
 
     component.openEducationHistory(moderator);
 
-    expect(component.dialogService.open).toHaveBeenCalled();
+    expect(component.customDialogService.open).toHaveBeenCalled();
   });
 
   it('should open employment history dialog', () => {
     const moderator = mockModerators[0];
-    jest.spyOn(component.dialogService, 'open');
+    jest.spyOn(component.customDialogService, 'open');
 
     component.openEmploymentHistory(moderator);
 
-    expect(component.dialogService.open).toHaveBeenCalled();
+    expect(component.customDialogService.open).toHaveBeenCalled();
   });
 
   it('should handle empty items array', () => {

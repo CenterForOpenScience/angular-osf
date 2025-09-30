@@ -102,7 +102,7 @@
           </p>
         </td>
         <td>
-          @if (isCurrentUserAdminContributor()) {
+          @if (isCurrentUserAdminContributor() && !contributor.deactivated) {
             <div class="w-9rem">
               <osf-select
                 [options]="permissionsOptions"
@@ -134,7 +134,7 @@
               binary="true"
               [(ngModel)]="contributor.isBibliographic"
               [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
-              [readonly]="!isCurrentUserAdminContributor()"
+              [disabled]="!isCurrentUserAdminContributor() || contributor.deactivated"
             ></p-checkbox>
           </div>
         </td>
@@ -154,14 +154,13 @@
         @if (showEmployment()) {
           <td>
             @if (contributor.employment?.length) {
-              <a
-                class="font-bold cursor-pointer"
-                tabindex="0"
-                (click)="openEmploymentHistory(contributor)"
+              <p-button
+                link
+                class="link-btn-no-padding"
+                [label]="'project.contributors.employment.show' | translate"
+                (onClick)="openEmploymentHistory(contributor)"
                 (keydown.enter)="openEmploymentHistory(contributor)"
-              >
-                {{ 'project.contributors.employment.show' | translate }}
-              </a>
+              />
             } @else {
               <span>{{ 'project.contributors.employment.none' | translate }}</span>
             }
@@ -171,14 +170,13 @@
           <td>
             <div class="flex column-gap-2">
               @if (contributor.education?.length) {
-                <a
-                  class="font-bold cursor-pointer"
-                  tabindex="0"
-                  (click)="openEducationHistory(contributor)"
+                <p-button
+                  link
+                  class="link-btn-no-padding"
+                  [label]="'project.contributors.education.show' | translate"
+                  (onClick)="openEducationHistory(contributor)"
                   (keydown.enter)="openEducationHistory(contributor)"
-                >
-                  {{ 'project.contributors.education.show' | translate }}
-                </a>
+                />
               } @else {
                 <span>{{ 'project.contributors.education.none' | translate }}</span>
               }

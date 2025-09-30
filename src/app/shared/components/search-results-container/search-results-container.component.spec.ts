@@ -1,13 +1,11 @@
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ResourceType } from '@shared/enums';
-import { TranslateServiceMock } from '@shared/mocks';
 
 import { SearchResultsContainerComponent } from './search-results-container.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('SearchResultsContainerComponent', () => {
   let component: SearchResultsContainerComponent;
@@ -16,8 +14,7 @@ describe('SearchResultsContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchResultsContainerComponent, NoopAnimationsModule],
-      providers: [TranslateServiceMock, provideHttpClient(), provideHttpClientTesting()],
+      imports: [SearchResultsContainerComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchResultsContainerComponent);
@@ -35,7 +32,7 @@ describe('SearchResultsContainerComponent', () => {
       expect(component.searchCount()).toBe(0);
       expect(component.selectedSort()).toBe('');
       expect(component.selectedTab()).toBe(ResourceType.Null);
-      expect(component.selectedValues()).toEqual({});
+      expect(component.selectedOptions()).toEqual({});
       expect(component.first()).toBeNull();
       expect(component.prev()).toBeNull();
       expect(component.next()).toBeNull();
@@ -45,28 +42,28 @@ describe('SearchResultsContainerComponent', () => {
   });
 
   describe('Computed Properties', () => {
-    it('should compute hasSelectedValues correctly when no values are selected', () => {
-      componentRef.setInput('selectedValues', {});
-      expect(component['hasSelectedValues']()).toBe(false);
+    it('should compute hasSelectedOptions correctly when no values are selected', () => {
+      componentRef.setInput('selectedOptions', {});
+      expect(component.hasSelectedOptions()).toBe(false);
     });
 
-    it('should compute hasSelectedValues correctly when values are selected', () => {
-      componentRef.setInput('selectedValues', { subject: 'psychology', type: 'project' });
-      expect(component['hasSelectedValues']()).toBe(true);
+    it('should compute hasSelectedOptions correctly when values are selected', () => {
+      componentRef.setInput('selectedOptions', { subject: 'psychology', type: 'project' });
+      expect(component.hasSelectedOptions()).toBe(true);
     });
 
-    it('should compute hasSelectedValues correctly when some values are null or empty', () => {
-      componentRef.setInput('selectedValues', { subject: null, type: '', category: 'science' });
-      expect(component['hasSelectedValues']()).toBe(true);
+    it('should compute hasSelectedOptions correctly when some values are null or empty', () => {
+      componentRef.setInput('selectedOptions', { subject: null, type: '', category: 'science' });
+      expect(component.hasSelectedOptions()).toBe(true);
     });
 
-    it('should compute hasSelectedValues correctly when all values are null or empty', () => {
-      componentRef.setInput('selectedValues', { subject: null, type: '', category: '' });
-      expect(component['hasSelectedValues']()).toBe(false);
+    it('should compute hasSelectedOptions correctly when all values are null or empty', () => {
+      componentRef.setInput('selectedOptions', { subject: null, type: '', category: '' });
+      expect(component.hasSelectedOptions()).toBe(true);
     });
 
     it('should compute hasFilters correctly', () => {
-      expect(component['hasFilters']()).toBe(false);
+      expect(component.hasFilters()).toBe(false);
     });
   });
 

@@ -26,8 +26,8 @@ import { ResourceType } from '@shared/enums';
 import { CitationStyle, CustomOption } from '@shared/models';
 import {
   CitationsSelectors,
+  FetchDefaultProviderCitationStyles,
   GetCitationStyles,
-  GetDefaultCitations,
   GetStyledCitation,
   UpdateCustomCitation,
 } from '@shared/stores';
@@ -41,12 +41,13 @@ import {
 })
 export class CitationSectionComponent implements OnInit {
   preprintId = input.required<string>();
+  providerId = input.required<string>();
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
   private readonly filterSubject = new Subject<string>();
   private actions = createDispatchMap({
-    getDefaultCitations: GetDefaultCitations,
+    getDefaultCitations: FetchDefaultProviderCitationStyles,
     getCitationStyles: GetCitationStyles,
     getStyledCitation: GetStyledCitation,
     updateCustomCitation: UpdateCustomCitation,
@@ -72,7 +73,7 @@ export class CitationSectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.actions.getDefaultCitations(ResourceType.Preprint, this.preprintId());
+    this.actions.getDefaultCitations(ResourceType.Preprint, this.preprintId(), this.providerId());
   }
 
   handleCitationStyleFilterSearch(event: SelectFilterEvent) {

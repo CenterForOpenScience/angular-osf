@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 
 import { map, of } from 'rxjs';
@@ -19,6 +18,7 @@ import {
   RegistrationCardComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
+import { CurrentResourceSelectors } from '@shared/stores';
 
 import { GetRegistrations, RegistrationsSelectors } from './store';
 
@@ -34,7 +34,6 @@ import { GetRegistrations, RegistrationsSelectors } from './store';
   ],
   templateUrl: './registrations.component.html',
   styleUrl: './registrations.component.scss',
-  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationsComponent implements OnInit {
@@ -42,6 +41,7 @@ export class RegistrationsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly environment = inject(ENVIRONMENT);
 
+  readonly hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   registrations = select(RegistrationsSelectors.getRegistrations);

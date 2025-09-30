@@ -15,6 +15,7 @@ import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } fr
 import { RegistrationReviewStates, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { RegistrationCard } from '@osf/shared/models';
 
+import { ContributorsListComponent } from '../contributors-list/contributors-list.component';
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
 import { IconComponent } from '../icon/icon.component';
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
@@ -32,6 +33,7 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
     DataResourcesComponent,
     IconComponent,
     TruncatedTextComponent,
+    ContributorsListComponent,
   ],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',

@@ -21,6 +21,8 @@ import {
 } from '@osf/features/files/models';
 import {
   AddFileResponse,
+  AddonGetResponseJsonApi,
+  AddonModel,
   ApiData,
   ConfiguredAddonGetResponseJsonApi,
   ConfiguredAddonModel,
@@ -230,10 +232,10 @@ export class FilesService {
     );
   }
 
-  getResourceContributors(resourceId: string, resourceType: string): Observable<Partial<ContributorModel>[]> {
+  getResourceContributors(resourceId: string, resourceType: string): Observable<ContributorModel[]> {
     return this.jsonApiService
       .get<ContributorsResponseJsonApi>(`${this.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
-      .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
+      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
   patchFileMetadata(data: PatchFileMetadata, fileGuid: string): Observable<OsfFileCustomMetadata> {
@@ -317,5 +319,13 @@ export class FilesService {
           .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));
       })
     );
+  }
+
+  getExternalStorageService(serviceId: string): Observable<AddonModel> {
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<AddonGetResponseJsonApi, null>
+      >(`${this.addonsApiUrl}/configured-storage-addons/${serviceId}/external_storage_service/`)
+      .pipe(map((response) => AddonMapper.fromResponse(response.data)));
   }
 }

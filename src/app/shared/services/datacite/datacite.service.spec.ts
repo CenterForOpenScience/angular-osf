@@ -62,7 +62,7 @@ describe('DataciteService', () => {
   let httpMock: HttpTestingController;
 
   const dataciteTrackerAddress = 'https://tracker.test';
-  const webUrl = 'https://osf.io';
+  const apiDomainUrl = 'https://osf.io';
   const dataciteTrackerRepoId = 'repo-123';
   describe('with proper configuration', () => {
     beforeEach(() => {
@@ -74,7 +74,7 @@ describe('DataciteService', () => {
           {
             provide: ENVIRONMENT,
             useValue: {
-              webUrl,
+              apiDomainUrl,
               dataciteTrackerRepoId,
               dataciteTrackerAddress,
             },
@@ -118,7 +118,7 @@ describe('DataciteService', () => {
       service.logFileView(targetId, targetType).subscribe();
 
       // First request: GET identifiers
-      const reqGet = httpMock.expectOne(`${webUrl}/${targetType}/${targetId}/identifiers`);
+      const reqGet = httpMock.expectOne(`${apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`);
       expect(reqGet.request.method).toBe('GET');
       reqGet.flush({
         data: [
@@ -142,7 +142,7 @@ describe('DataciteService', () => {
       service.logFileDownload(targetId, targetType).subscribe();
 
       // First request: GET identifiers
-      const reqGet = httpMock.expectOne(`${webUrl}/${targetType}/${targetId}/identifiers`);
+      const reqGet = httpMock.expectOne(`${apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`);
       expect(reqGet.request.method).toBe('GET');
       reqGet.flush({
         data: [

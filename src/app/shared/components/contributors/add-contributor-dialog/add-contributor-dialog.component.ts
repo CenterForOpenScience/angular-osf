@@ -97,7 +97,11 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
         filter((searchTerm) => !!searchTerm && searchTerm.trim().length > 0),
         debounceTime(500),
         distinctUntilChanged(),
-        switchMap((searchTerm) => this.actions.searchUsers(searchTerm, this.currentPage())),
+        switchMap((searchTerm) => {
+          this.currentPage.set(1);
+          this.first.set(0);
+          return this.actions.searchUsers(searchTerm, this.currentPage());
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {

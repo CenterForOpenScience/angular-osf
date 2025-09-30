@@ -25,17 +25,9 @@
     </div>
 
     <div class="mb-4">
-      <h4 class="mb-2">{{ 'navigation.contributors' | translate }}</h4>
-      <div class="flex flex-wrap gap-2">
-        @for (contributor of contributors(); let last = $last; track contributor.id) {
-          <span>
-            <a class="font-bold" [routerLink]="['/user', contributor.userId]">{{ contributor.fullName }}</a>
-            @if (!last) {
-              <span class="text-gray-500">,</span>
-            }
-          </span>
-        }
-      </div>
+      <h4 class="mb-2">{{ 'common.labels.contributors' | translate }}</h4>
+
+      <osf-contributors-list [contributors]="contributors()"></osf-contributors-list>
     </div>
 
     <div class="license mb-4">

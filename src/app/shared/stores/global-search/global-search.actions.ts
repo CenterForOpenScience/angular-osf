@@ -1,5 +1,6 @@
 import { ResourceType } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
+import { FilterOption } from '@shared/models';
 
 export class FetchResources {
   static readonly type = '[GlobalSearch] Fetch Resources';
@@ -44,19 +45,19 @@ export class SetDefaultFilterValue {
   ) {}
 }
 
-export class UpdateFilterValue {
-  static readonly type = '[GlobalSearch] Update Filter Value';
+export class UpdateSelectedFilterOption {
+  static readonly type = '[GlobalSearch] Update Selected Filter Option';
 
   constructor(
     public filterKey: string,
-    public value: StringOrNull
+    public filterOption: FilterOption | null
   ) {}
 }
 
 export class LoadFilterOptionsAndSetValues {
   static readonly type = '[GlobalSearch] Load Filter Options And Set Values';
 
-  constructor(public filterValues: Record<string, StringOrNull>) {}
+  constructor(public filterValues: Record<string, FilterOption>) {}
 }
 
 export class LoadFilterOptionsWithSearch {

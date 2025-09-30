@@ -64,6 +64,8 @@ export class SignUpComponent implements OnInit {
   initializeForm(): void {
     this.signUpForm = new FormGroup<SignUpForm>({
       fullName: new FormControl('', { nonNullable: true, validators: CustomValidators.requiredTrimmed() }),
+      givenName: new FormControl('', { nonNullable: true, validators: CustomValidators.requiredTrimmed() }),
+      familyName: new FormControl('', { nonNullable: true, validators: CustomValidators.requiredTrimmed() }),
       email1: new FormControl('', {
         nonNullable: true,
         validators: [CustomValidators.requiredTrimmed(), Validators.email],

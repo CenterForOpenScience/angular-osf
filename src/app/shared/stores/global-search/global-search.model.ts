@@ -5,8 +5,8 @@ import { AsyncStateModel, DiscoverableFilter, FilterOption, ResourceModel } from
 export interface GlobalSearchStateModel {
   resources: AsyncStateModel<ResourceModel[]>;
   filters: DiscoverableFilter[];
-  defaultFilterValues: Record<string, string>;
-  filterValues: Record<string, StringOrNull>;
+  defaultFilterOptions: Record<string, string>;
+  selectedFilterOptions: Record<string, FilterOption | null>;
   filterOptionsCache: Record<string, FilterOption[]>;
   filterSearchCache: Record<string, FilterOption[]>;
   filterPaginationCache: Record<string, string>;
@@ -26,8 +26,8 @@ export const GLOBAL_SEARCH_STATE_DEFAULTS = {
     error: null,
   },
   filters: [],
-  defaultFilterValues: {},
-  filterValues: {},
+  defaultFilterOptions: {},
+  selectedFilterOptions: {},
   filterOptionsCache: {},
   filterSearchCache: {},
   filterPaginationCache: {},

@@ -27,7 +27,7 @@ describe.skip('FilterChipsComponent', () => {
 
   describe('Component Initialization', () => {
     it('should have default input values', () => {
-      expect(component.filterValues()).toEqual({});
+      expect(component.filterOptions()).toEqual({});
       expect(component.filterLabels()).toEqual({});
       expect(component.filterOptions()).toEqual({});
     });
@@ -124,7 +124,7 @@ describe.skip('FilterChipsComponent', () => {
     });
 
     it('should emit filterRemoved when remove button is clicked', () => {
-      const emitSpy = jest.spyOn(component.filterRemoved, 'emit');
+      const emitSpy = jest.spyOn(component.selectedOptionRemoved, 'emit');
 
       const chips = fixture.debugElement.queryAll(By.css('p-chip'));
       chips[0].triggerEventHandler('onRemove', null);
@@ -182,7 +182,7 @@ describe.skip('FilterChipsComponent', () => {
 
   describe('Component Methods', () => {
     it('should call filterRemoved.emit with correct parameter in removeFilter', () => {
-      const emitSpy = jest.spyOn(component.filterRemoved, 'emit');
+      const emitSpy = jest.spyOn(component.selectedOptionRemoved, 'emit');
 
       component.removeFilter('testKey');
 

@@ -1,9 +1,5 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslateService } from '@ngx-translate/core';
-
-import { DialogService } from 'primeng/dynamicdialog';
-
 import { filter } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
@@ -14,6 +10,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';
+import { CustomDialogService } from '@shared/services';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 
@@ -25,14 +22,12 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
 })
 export class AppComponent implements OnInit {
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dialogService = inject(DialogService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly router = inject(Router);
-  private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
 
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
@@ -67,12 +62,9 @@ export class AppComponent implements OnInit {
   }
 
   private showEmailDialog() {
-    this.dialogService.open(ConfirmEmailComponent, {
+    this.customDialogService.open(ConfirmEmailComponent, {
+      header: 'home.confirmEmail.title',
       width: '448px',
-      focusOnShow: false,
-      header: this.translateService.instant('home.confirmEmail.title'),
-      modal: true,
-      closable: false,
       data: this.unverifiedEmails(),
     });
   }

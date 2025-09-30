@@ -18,6 +18,7 @@ import { Institution } from '@osf/shared/models';
 export class SettingsProjectAffiliationComponent {
   affiliations = input<Institution[]>([]);
   removed = output<Institution>();
+  canEdit = input<boolean>(false);
 
   removeAffiliation(affiliation: Institution) {
     this.removed.emit(affiliation);

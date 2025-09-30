@@ -1,5 +1,5 @@
-import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import {
+  ContributorModel,
   Identifier,
   IdTypeModel,
   LicenseModel,
@@ -27,7 +27,7 @@ export interface RegistryOverview {
   doi: string;
   tags: string[];
   provider?: ProviderShortInfoModel;
-  contributors: ProjectOverviewContributor[];
+  contributors: ContributorModel[];
   citation: string;
   category: string;
   isFork: boolean;
@@ -63,6 +63,7 @@ export interface RegistryOverview {
   withdrawalJustification?: string;
   dateWithdrawn: string | null;
   rootParentId: string | null;
+  iaUrl: string | null;
 }
 
 export interface RegistrationOverviewModel extends RegistrationNodeModel {
@@ -71,7 +72,7 @@ export interface RegistrationOverviewModel extends RegistrationNodeModel {
   associatedProjectId: string;
   citation: string;
   provider?: ProviderShortInfoModel;
-  contributors: ProjectOverviewContributor[];
+  contributors: ContributorModel[];
   license?: LicenseModel;
   identifiers?: Identifier[];
   schemaResponses: SchemaResponse[];

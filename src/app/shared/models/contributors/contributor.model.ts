@@ -15,6 +15,10 @@ export interface ContributorModel {
   familyName: string;
   employment: Employment[];
   education: Education[];
+  deactivated: boolean;
 }
 
-export type ContributorShortInfoModel = Pick<ContributorModel, 'id' | 'userId' | 'fullName'>;
+export type ContributorShortInfoModel = Pick<
+  ContributorModel,
+  'id' | 'userId' | 'fullName' | 'isUnregisteredContributor' | 'isBibliographic' | 'index' | 'permission'
+>;

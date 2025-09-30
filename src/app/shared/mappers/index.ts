@@ -8,7 +8,7 @@ export * from './duplicates.mapper';
 export * from './emails.mapper';
 export * from './files/files.mapper';
 export * from './filters/filter-option.mapper';
-export * from './filters/reusable-filter.mapper';
+export * from './filters/filters.mapper';
 export * from './identifiers.mapper';
 export * from './institutions';
 export * from './licenses.mapper';

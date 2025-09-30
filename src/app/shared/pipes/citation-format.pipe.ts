@@ -32,7 +32,7 @@ export class CitationFormatPipe implements PipeTransform {
     return (names || '')
       .trim()
       .split(/\s+/)
-      .map((n) => (/^[a-z]/i.test(n) ? `${n[0].toUpperCase()}.` : ''))
+      .map((n) => (/^\p{L}/u.test(n) ? `${n[0].toUpperCase()}.` : ''))
       .filter(Boolean)
       .join(' ');
   }

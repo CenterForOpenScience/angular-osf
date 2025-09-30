@@ -41,13 +41,15 @@
       <p>
         {{ 'project.linkedServices.noLinkedServices' | translate }}
       </p>
-      <p>
-        {{ 'project.linkedServices.redirectMessage' | translate }}
-        <a routerLink="../addons">
-          {{ 'project.linkedServices.addonsLink' | translate }}
-        </a>
-        {{ 'project.linkedServices.redirectMessageSuffix' | translate }}
-      </p>
+      @if (canManageAddons()) {
+        <p>
+          {{ 'project.linkedServices.redirectMessage' | translate }}
+          <a class="font-bold" routerLink="../addons">
+            {{ 'project.linkedServices.addonsLink' | translate }}
+          </a>
+          {{ 'project.linkedServices.redirectMessageSuffix' | translate }}
+        </p>
+      }
     </div>
   }
 </section>

@@ -52,9 +52,13 @@ export class TosConsentBannerComponent {
   /**
    * Computed signal indicating whether the user has already accepted the Terms of Service.
    */
-  readonly acceptedTermsOfServiceChange = computed(() => {
+  acceptedTermsOfServiceChange = computed(() => {
     const user = this.currentUser();
-    return user?.acceptedTermsOfService ?? false;
+    /**
+     * if user is authenticated we check whether is accepted terms of service to hide banner or show if not
+     * otherwise user is not authenticated we hide banner always
+     */
+    return user ? user.acceptedTermsOfService : true;
   });
 
   /**

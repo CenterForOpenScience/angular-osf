@@ -81,9 +81,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
 
-  currentUserIsAdmin = computed(() => {
-    return this.preprint()?.currentUserPermissions.includes(UserPermissions.Admin) || false;
-  });
+  currentUserIsAdmin = computed(() => this.preprint()?.currentUserPermissions.includes(UserPermissions.Admin) || false);
 
   editAndResubmitMode = computed(() => {
     const providerIsPremod = this.preprintProvider()?.reviewsWorkflow === ProviderReviewsWorkflow.PreModeration;
@@ -130,6 +128,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   currentStep = signal<StepOption>(submitPreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
+  readonly SubmitStepsEnum = PreprintSteps;
   readonly PreprintSteps = PreprintSteps;
 
   constructor() {
@@ -149,8 +148,14 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
     });
   }
 
+  @HostListener('window:beforeunload', ['$event'])
+  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
+    $event.preventDefault();
+    return false;
+  }
+
   canDeactivate(): Observable<boolean> | boolean {
-    return this.hasBeenSubmitted();
+    return this.hasBeenSubmitted() || this.preprint()?.reviewsState === ReviewsState.Accepted;
   }
 
   ngOnInit() {
@@ -181,12 +186,4 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   moveToPreviousStep() {
     this.currentStep.set(this.updateSteps()[this.currentStep()?.index - 1]);
   }
-
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
-  }
-
-  protected readonly SubmitStepsEnum = PreprintSteps;
 }

@@ -2,17 +2,21 @@
   <osf-icon [class]="reviewStatusIcon[status()].value" [iconClass]="reviewStatusIcon[status()].icon"></osf-icon>
 
   <div>
-    <p-button
-      class="link-btn-no-padding"
-      link
-      styleClass="text-left"
-      [label]="submission().title"
-      [routerLink]="['/', submission().id, 'overview']"
-      [queryParams]="{
-        mode: 'moderator',
-        revisionId: isPendingModeration && !isPending ? submission().revisionId : null,
-      }"
-    />
+    @if (isRejected) {
+      <h4>{{ submission().title }}</h4>
+    } @else {
+      <p-button
+        class="link-btn-no-padding"
+        link
+        styleClass="text-left"
+        [label]="submission().title"
+        [routerLink]="['/', submission().id, 'overview']"
+        [queryParams]="{
+          mode: 'moderator',
+          revisionId: isPendingModeration && !isPending ? submission().revisionId : null,
+        }"
+      />
+    }
 
     @if (submission().public && !submission().embargoEndDate) {
       <p class="flex flex-wrap gap-1 mt-2">{{ 'registry.overview.statuses.accepted.text' | translate }}</p>

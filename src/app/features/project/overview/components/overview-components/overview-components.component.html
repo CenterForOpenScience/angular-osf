@@ -53,12 +53,7 @@
             </div>
 
             <div class="component-name flex flex-wrap gap-2">
-              @for (contributor of component.contributors; track contributor.id) {
-                <div>
-                  <a class="font-bold" [routerLink]="['/user', contributor.id]"> {{ contributor.fullName }}</a>
-                  <span>{{ $last ? '' : ',' }}</span>
-                </div>
-              }
+              <osf-contributors-list [contributors]="component.contributors"></osf-contributors-list>
 
               <div class="component-description">
                 <osf-truncated-text [text]="component.description" />
