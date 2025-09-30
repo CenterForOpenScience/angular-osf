@@ -85,5 +85,6 @@ export function MapRegistryOverview(
     affiliatedInstitutions: institutions,
     associatedProjectId: registry.associatedProjectId,
     isAnonymous,
+    iaUrl: registry.iaUrl,
   };
 }

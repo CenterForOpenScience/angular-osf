@@ -4,8 +4,21 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
+import { delay, of } from 'rxjs';
+
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FILTER_PLACEHOLDERS } from '@osf/shared/constants';
@@ -50,7 +63,7 @@ export class ReusableFilterComponent {
   loadMoreFilterOptions = output<DiscoverableFilter>();
 
   private readonly expandedFilters = signal<Set<string>>(new Set());
-
+  private destroyRef = inject(DestroyRef);
   readonly FILTER_PLACEHOLDERS = FILTER_PLACEHOLDERS;
 
   readonly hasFilters = computed(() => {
@@ -98,6 +111,10 @@ export class ReusableFilterComponent {
     };
   });
 
+  constructor(private el: ElementRef) {}
+
+  private readonly SCROLL_DELAY_MS = 100;
+
   shouldShowFilter(filter: DiscoverableFilter): boolean {
     if (!filter || !filter.key) return false;
 
@@ -112,6 +129,9 @@ export class ReusableFilterComponent {
     if (!filterKey) return;
 
     const key = Array.isArray(filterKey) ? filterKey[0]?.toString() : filterKey.toString();
+
+    this.scrollPanelIntoView(key);
+
     const selectedFilter = this.filters().find((filter) => filter.key === key);
 
     if (selectedFilter) {
@@ -133,6 +153,31 @@ export class ReusableFilterComponent {
 
   onOptionChanged(filter: DiscoverableFilter, filterOption: FilterOption | null): void {
     this.filterOptionChanged.emit({ filter, filterOption });
+  }
+
+  private scrollPanelIntoView(key: string) {
+    of(key)
+      .pipe(delay(this.SCROLL_DELAY_MS), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (key) => {
+          const panelContent = this.el.nativeElement.querySelector(
+            `p-accordion-panel[ng-reflect-value="${key}"] p-accordion-content`
+          );
+
+          const scrollContainer = document.querySelector('.filters-section');
+
+          if (panelContent && scrollContainer) {
+            const contentRect = panelContent.getBoundingClientRect();
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const newScrollTop = scrollContainer.scrollTop + (contentRect.top - containerRect.top);
+
+            scrollContainer.scrollTo({
+              top: newScrollTop,
+              behavior: 'smooth',
+            });
+          }
+        },
+      });
   }
 
   onFilterSearch(filter: DiscoverableFilter, searchText: string): void {

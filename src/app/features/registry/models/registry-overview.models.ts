@@ -63,6 +63,7 @@ export interface RegistryOverview {
   withdrawalJustification?: string;
   dateWithdrawn: string | null;
   rootParentId: string | null;
+  iaUrl: string | null;
 }
 
 export interface RegistrationOverviewModel extends RegistrationNodeModel {

@@ -22,6 +22,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import {
@@ -42,7 +43,7 @@ import { IS_SMALL } from '@osf/shared/helpers';
 import { ToolbarResource } from '@osf/shared/models';
 import { Duplicate } from '@osf/shared/models/duplicates';
 import { CustomDialogService } from '@osf/shared/services';
-import { ClearDuplicates, CurrentResourceSelectors, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
+import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-view-duplicates',
@@ -76,7 +77,7 @@ export class ViewDuplicatesComponent {
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
   totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
-  hasNoPermissions = select(CurrentResourceSelectors.hasNoPermissions);
+  isAuthenticated = select(UserSelectors.isAuthenticated);
 
   readonly pageSize = 10;
   readonly UserPermissions = UserPermissions;

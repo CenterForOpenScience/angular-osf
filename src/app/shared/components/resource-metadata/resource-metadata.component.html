@@ -95,6 +95,14 @@
       <div>{{ resource.license?.name ?? ('project.overview.metadata.noLicense' | translate) }}</div>
     </div>
 
+    @if (resource.iaUrl) {
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'project.overview.metadata.internetArchiveLink' | translate }}</h3>
+
+        <div>{{ resource.iaUrl }}</div>
+      </div>
+    }
+
     @if (!resource.isAnonymous) {
       <div class="flex flex-column gap-2">
         <h3>
