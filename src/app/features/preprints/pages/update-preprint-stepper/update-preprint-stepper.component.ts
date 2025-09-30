@@ -155,7 +155,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    return this.hasBeenSubmitted();
+    return this.hasBeenSubmitted() || this.preprint()?.reviewsState === ReviewsState.Accepted;
   }
 
   ngOnInit() {
