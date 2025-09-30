@@ -81,11 +81,11 @@ describe('BrowseBySubjectsComponent', () => {
     expect(links).toHaveLength(2);
     expect(links[0]).toEqual({
       tab: ResourceType.Preprint,
-      filter_subject: 'https://example.com/subjects/mathematics',
+      filter_subject: '{"label":"Mathematics","value":"https://example.com/subjects/mathematics"}',
     });
     expect(links[1]).toEqual({
       tab: ResourceType.Preprint,
-      filter_subject: 'https://example.com/subjects/physics',
+      filter_subject: '{"label":"Physics","value":"https://example.com/subjects/physics"}',
     });
   });
 
@@ -137,7 +137,7 @@ describe('BrowseBySubjectsComponent', () => {
     expect(links).toHaveLength(1);
     expect(links[0]).toEqual({
       tab: ResourceType.Preprint,
-      filter_subject: undefined,
+      filter_subject: '{"label":"Physics"}',
     });
   });
 });

@@ -25,7 +25,8 @@ describe('MetadataLicenseComponent', () => {
   });
 
   it('should initialize with default values', () => {
-    expect(component.hideEditLicense()).toBe(false);
+    expect(component.readonly()).toBe(false);
+    expect(component.license()).toBe(null);
   });
 
   it('should set license input', () => {
@@ -35,11 +36,11 @@ describe('MetadataLicenseComponent', () => {
     expect(component.license()).toEqual(mockLicense);
   });
 
-  it('should set hideEditLicense input', () => {
-    fixture.componentRef.setInput('hideEditLicense', true);
+  it('should set readonly input', () => {
+    fixture.componentRef.setInput('readonly', true);
     fixture.detectChanges();
 
-    expect(component.hideEditLicense()).toBe(true);
+    expect(component.readonly()).toBe(true);
   });
 
   it('should emit openEditLicenseDialog event', () => {

@@ -32,6 +32,7 @@ import {
   GetAllContributors,
   InstitutionsSelectors,
   SubjectsSelectors,
+  UpdateContributorsSearchValue,
   UpdateResourceInstitutions,
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
@@ -165,6 +166,7 @@ export class MetadataComponent implements OnInit {
     fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,
     updateResourceSubjects: UpdateResourceSubjects,
+    updateContributorsSearchValue: UpdateContributorsSearchValue,
   });
 
   isLoading = computed(() => {
@@ -184,7 +186,7 @@ export class MetadataComponent implements OnInit {
     );
   });
 
-  showRegistrationDoi = computed(() => this.resourceType() === ResourceType.Registration);
+  isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
 
   hasWriteAccess = computed(() => {
     const metadata = this.metadata();
@@ -285,8 +287,9 @@ export class MetadataComponent implements OnInit {
     }
   }
 
-  onCedarFormEdit(): void {
-    this.cedarFormReadonly.set(false);
+  toggleEditMode(): void {
+    const editMode = this.cedarFormReadonly();
+    this.cedarFormReadonly.set(!editMode);
   }
 
   onCedarFormSubmit(data: CedarRecordDataBinding): void {
@@ -297,14 +300,25 @@ export class MetadataComponent implements OnInit {
     if (selectedRecord.id) {
       this.actions
         .updateCedarRecord(data, selectedRecord.id, this.resourceId, this.resourceType())
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.cedarFormReadonly.set(true);
-            this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
-            this.actions.getCedarRecords(this.resourceId, this.resourceType());
-          },
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          switchMap(() => this.actions.getCedarRecords(this.resourceId, this.resourceType()))
+        )
+        .subscribe(() => {
+          this.updateSelectedCedarRecord(selectedRecord.id!);
+          this.cedarFormReadonly.set(true);
+          this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
         });
+    }
+  }
+
+  private updateSelectedCedarRecord(recordId: string): void {
+    const records = this.cedarRecords();
+    if (!records) return;
+
+    const record = records.find((r) => r.id === recordId);
+    if (record) {
+      this.selectedCedarRecord.set(record);
     }
   }
 
@@ -324,16 +338,18 @@ export class MetadataComponent implements OnInit {
     this.customDialogService
       .open(ContributorsDialogComponent, {
         header: this.translateService.instant('project.metadata.contributors.editContributors'),
-        breakpoints: { '768px': '95vw' },
         data: {
           resourceId: this.resourceId,
           resourceType: this.resourceType(),
         },
       })
-      .onClose.pipe(filter((result) => !!result))
-      .subscribe(() => {
-        this.actions.getResourceMetadata(this.resourceId, this.resourceType());
-        this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.actions.getResourceMetadata(this.resourceId, this.resourceType());
+          this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
+        }
+
+        this.actions.updateContributorsSearchValue(null);
       });
   }
 

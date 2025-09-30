@@ -32,12 +32,13 @@ export class ContributorsMapper {
       isCurator: response.attributes.is_curator,
       permission: response.attributes.permission,
       index: response.attributes.index,
-      userId: errorMeta ? '' : userData?.id || '',
+      userId: errorMeta ? response?.id?.split('-')[1] : userData?.id || '',
       fullName: errorMeta ? errorMeta?.full_name : userData?.attributes?.full_name || '',
       givenName: errorMeta ? errorMeta?.given_name : userData?.attributes?.given_name || '',
       familyName: errorMeta ? errorMeta?.family_name : userData?.attributes?.family_name || '',
       education: errorMeta ? [] : userData?.attributes?.education || [],
       employment: errorMeta ? [] : userData?.attributes?.employment || [],
+      deactivated: !!errorMeta,
     };
   }
 

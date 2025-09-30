@@ -7,7 +7,7 @@ import { ButtonGroupModule } from 'primeng/buttongroup';
 
 import { filter, map, mergeMap, of, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -23,6 +23,7 @@ import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { WikiModes } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import {
+  ClearWiki,
   CreateWiki,
   CreateWikiVersion,
   CurrentResourceSelectors,
@@ -61,6 +62,7 @@ import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-
 export class WikiComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
 
   WikiModes = WikiModes;
@@ -99,6 +101,7 @@ export class WikiComponent {
     createWikiVersion: CreateWikiVersion,
     getWikiVersionContent: GetWikiVersionContent,
     getCompareVersionContent: GetCompareVersionContent,
+    clearWiki: ClearWiki,
   });
 
   wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
@@ -132,6 +135,10 @@ export class WikiComponent {
         mergeMap((wikiId) => this.actions.getWikiVersions(wikiId))
       )
       .subscribe();
+
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearWiki();
+    });
   }
 
   toggleMode(mode: WikiModes) {

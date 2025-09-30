@@ -15,6 +15,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import { ClearDuplicatedProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { IconComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
@@ -78,6 +79,7 @@ export class OverviewToolbarComponent {
   bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
   duplicatedProject = select(ProjectOverviewSelectors.getDuplicatedProject);
+  isAuthenticated = select(UserSelectors.isAuthenticated);
   socialsActionItems = computed(() => {
     const shareableContent = this.createShareableContent();
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
@@ -86,6 +88,8 @@ export class OverviewToolbarComponent {
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   actions = createDispatchMap({ clearDuplicatedProject: ClearDuplicatedProject });
+
+  readonly ResourceType = ResourceType;
 
   readonly forkActionItems = [
     {
@@ -103,7 +107,6 @@ export class OverviewToolbarComponent {
       },
     },
   ];
-  readonly ResourceType = ResourceType;
 
   get isRegistration(): boolean {
     return this.currentResource()?.resourceType === ResourceType.Registration;

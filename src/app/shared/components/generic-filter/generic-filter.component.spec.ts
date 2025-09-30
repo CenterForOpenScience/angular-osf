@@ -272,7 +272,7 @@ describe('GenericFilterComponent', () => {
 
       component.onOptionChange(mockEvent);
 
-      expect(component.optionChanged.emit).toHaveBeenCalledWith('value2');
+      expect(component.optionChanged.emit).toHaveBeenCalledWith({ label: 'Option 2', value: 'value2' });
     });
 
     it('should emit null when onValueChange is called with null value', () => {

@@ -24,17 +24,17 @@ export class CurrentResourceSelectors {
 
   @Selector([CurrentResourceState])
   static hasWriteAccess(state: CurrentResourceStateModel): boolean {
-    return state.resourceDetails.data?.currentUserPermissions?.includes(UserPermissions.Write) || false;
+    return state.currentResource.data?.permissions?.includes(UserPermissions.Write) || false;
   }
 
   @Selector([CurrentResourceState])
   static hasAdminAccess(state: CurrentResourceStateModel): boolean {
-    return state.resourceDetails.data?.currentUserPermissions?.includes(UserPermissions.Admin) || false;
+    return state.currentResource.data?.permissions?.includes(UserPermissions.Admin) || false;
   }
 
   @Selector([CurrentResourceState])
   static hasNoPermissions(state: CurrentResourceStateModel): boolean {
-    return !state.resourceDetails.data?.currentUserPermissions?.length;
+    return !state.currentResource.data?.permissions?.length;
   }
 
   @Selector([CurrentResourceState])

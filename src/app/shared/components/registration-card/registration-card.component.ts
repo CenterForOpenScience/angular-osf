@@ -58,6 +58,10 @@ export class RegistrationCardComponent {
     return this.registrationData().currentUserPermissions.includes(UserPermissions.Admin);
   }
 
+  get hasWriteAccess(): boolean {
+    return this.registrationData().currentUserPermissions.includes(UserPermissions.Write);
+  }
+
   get isAccepted(): boolean {
     return this.registrationData().reviewsState === RegistrationReviewStates.Accepted;
   }

@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent } from 'ng-mocks';
 
+import { of } from 'rxjs';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -16,13 +18,13 @@ import { TranslationServiceMock } from '@testing/mocks/translation.service.mock'
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('Component: Tos Consent Banner', () => {
+describe('TosConsentBannerComponent', () => {
   let fixture: ComponentFixture<TosConsentBannerComponent>;
-  let store: Store;
+  let store: jest.Mocked<Store>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OSFTestingStoreModule, TosConsentBannerComponent, MockComponent(IconComponent)],
+      imports: [TosConsentBannerComponent, OSFTestingStoreModule, MockComponent(IconComponent)],
       providers: [
         provideMockStore({
           signals: [{ selector: UserSelectors.getCurrentUser, value: MOCK_USER }],
@@ -32,7 +34,8 @@ describe('Component: Tos Consent Banner', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(TosConsentBannerComponent);
-    store = TestBed.inject(Store);
+    store = TestBed.inject(Store) as jest.Mocked<Store>;
+    store.dispatch = jest.fn().mockReturnValue(of(undefined));
     fixture.detectChanges();
   });
 
@@ -50,7 +53,6 @@ describe('Component: Tos Consent Banner', () => {
   });
 
   it('should dispatch AcceptTermsOfServiceByUser action when "Continue" is clicked', () => {
-    jest.spyOn(store, 'dispatch');
     const checkboxInput = fixture.debugElement.query(By.css('p-checkbox input')).nativeElement;
     checkboxInput.click();
     fixture.detectChanges();
@@ -60,5 +62,25 @@ describe('Component: Tos Consent Banner', () => {
     fixture.detectChanges();
 
     expect(store.dispatch).toHaveBeenCalledWith(new AcceptTermsOfServiceByUser());
+  });
+
+  it('should return true for "acceptedTermsOfServiceChange" when user is null to not show banner', async () => {
+    await TestBed.resetTestingModule()
+      .configureTestingModule({
+        imports: [TosConsentBannerComponent, OSFTestingStoreModule, MockComponent(IconComponent)],
+        providers: [
+          provideMockStore({
+            signals: [{ selector: UserSelectors.getCurrentUser, value: null }],
+          }),
+          TranslationServiceMock,
+        ],
+      })
+      .compileComponents();
+
+    const fixture = TestBed.createComponent(TosConsentBannerComponent);
+    const component = fixture.componentInstance;
+
+    fixture.detectChanges();
+    expect(component.acceptedTermsOfServiceChange()).toBe(true);
   });
 });

@@ -1,3 +1,5 @@
+import { UserPermissions } from '@shared/enums';
+
 import { LicenseOptions } from '../license.model';
 import { ProjectModel } from '../projects';
 
@@ -17,4 +19,5 @@ export interface DraftRegistrationModel {
   providerId: string;
   hasProject: boolean;
   components: Partial<ProjectModel>[];
+  currentUserPermissions: UserPermissions[];
 }

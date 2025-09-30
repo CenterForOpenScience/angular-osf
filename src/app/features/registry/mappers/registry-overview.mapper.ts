@@ -42,6 +42,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     hasMaterials: data.attributes.has_materials,
     hasPapers: data.attributes.has_papers,
     hasSupplements: data.attributes.has_supplements,
+    iaUrl: data.attributes.ia_url,
     license: LicensesMapper.fromLicenseDataJsonApi(data.embeds?.license?.data),
     registrationSchemaLink: data.relationships.registration_schema.links.related.href,
     associatedProjectId: data.relationships?.registered_from?.data?.id,

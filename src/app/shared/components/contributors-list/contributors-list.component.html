@@ -4,7 +4,7 @@
   } @else {
     @for (contributor of contributors(); track contributor.id) {
       <div>
-        @if (readonly() || contributor.isUnregisteredContributor || !contributor.userId) {
+        @if (readonly() || contributor.isUnregisteredContributor || contributor.deactivated) {
           <span data-test-contributor-name>{{ contributor.fullName }}{{ $last ? '' : ',' }}</span>
         } @else {
           <a class="font-bold" [routerLink]="['/user', contributor.userId]" data-test-contributor-name>

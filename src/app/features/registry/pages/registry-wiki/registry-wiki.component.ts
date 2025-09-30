@@ -7,7 +7,7 @@ import { ButtonGroup } from 'primeng/buttongroup';
 
 import { filter, map, mergeMap, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -17,6 +17,7 @@ import { ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { WikiModes } from '@osf/shared/models';
 import {
+  ClearWiki,
   GetCompareVersionContent,
   GetComponentsWikiList,
   GetWikiContent,
@@ -47,6 +48,7 @@ import {
 export class RegistryWikiComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   WikiModes = WikiModes;
   wikiModes = select(WikiSelectors.getWikiModes);
@@ -73,6 +75,7 @@ export class RegistryWikiComponent {
     getWikiVersionContent: GetWikiVersionContent,
     getCompareVersionContent: GetCompareVersionContent,
     getComponentsWikiList: GetComponentsWikiList,
+    clearWiki: ClearWiki,
   });
 
   wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
@@ -103,6 +106,10 @@ export class RegistryWikiComponent {
         mergeMap((wikiId) => this.actions.getWikiVersions(wikiId))
       )
       .subscribe();
+
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearWiki();
+    });
   }
 
   toggleMode(mode: WikiModes) {
@@ -110,7 +117,9 @@ export class RegistryWikiComponent {
   }
 
   onSelectVersion(versionId: string) {
-    this.actions.getWikiVersionContent(this.currentWikiId(), versionId);
+    if (versionId) {
+      this.actions.getWikiVersionContent(this.currentWikiId(), versionId);
+    }
   }
 
   onSelectCompareVersion(versionId: string) {

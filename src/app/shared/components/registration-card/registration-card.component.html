@@ -49,7 +49,7 @@
             </div>
             <div class="flex gap-2 mt-1">
               @if (isDraft()) {
-                @if (hasAdminAccess) {
+                @if (hasWriteAccess) {
                   <p-button
                     severity="primary"
                     [label]="'common.buttons.review' | translate"
@@ -61,6 +61,8 @@
                     [label]="'common.buttons.edit' | translate"
                     [routerLink]="['/registries/drafts/', registrationData().id, 'metadata']"
                   />
+                }
+                @if (hasAdminAccess) {
                   <p-button
                     severity="danger"
                     [label]="'common.buttons.delete' | translate"

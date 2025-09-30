@@ -22,6 +22,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import {
@@ -76,6 +77,7 @@ export class ViewDuplicatesComponent {
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
   totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
+  isAuthenticated = select(UserSelectors.isAuthenticated);
 
   readonly pageSize = 10;
   readonly UserPermissions = UserPermissions;

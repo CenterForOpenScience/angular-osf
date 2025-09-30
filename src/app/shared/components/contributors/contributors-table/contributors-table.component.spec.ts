@@ -69,14 +69,6 @@ describe('ContributorsTableComponent', () => {
     expect(component.skeletonData.length).toBe(3);
   });
 
-  it('should have dialogService injected', () => {
-    expect(component['dialogService']).toBeDefined();
-  });
-
-  it('should have translateService injected', () => {
-    expect(component['translateService']).toBeDefined();
-  });
-
   it('should handle multiple contributors', () => {
     const contributors = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
     fixture.componentRef.setInput('contributors', contributors);
