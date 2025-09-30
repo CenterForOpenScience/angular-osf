@@ -3,7 +3,7 @@ const stateName = '[Registry Provider Search]';
 export class GetRegistryProvider {
   static readonly type = `${stateName}  Get Registry Provider`;
 
-  constructor(public providerName: string) {}
+  constructor(public providerId: string) {}
 }
 
 export class ClearRegistryProvider {

@@ -8,4 +8,5 @@ export interface RegistryProviderDetails {
   permissions: ReviewPermissions[];
   brand: Brand | null;
   iri: string;
+  reviewsWorkflow: string;
 }
