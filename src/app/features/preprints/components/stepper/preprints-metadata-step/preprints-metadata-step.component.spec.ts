@@ -13,10 +13,10 @@ import { MOCK_LICENSE } from '@shared/mocks';
 import { LicenseModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
-import { ContributorsComponent } from './contributors/contributors.component';
 import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';
+import { PreprintsContributorsComponent } from './preprints-contributors/preprints-contributors.component';
 import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subjects.component';
-import { MetadataStepComponent } from './metadata-step.component';
+import { PreprintsMetadataStepComponent } from './preprints-metadata-step.component';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
@@ -25,9 +25,9 @@ import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
-describe('MetadataStepComponent', () => {
-  let component: MetadataStepComponent;
-  let fixture: ComponentFixture<MetadataStepComponent>;
+describe('PreprintsMetadataStepComponent', () => {
+  let component: PreprintsMetadataStepComponent;
+  let fixture: ComponentFixture<PreprintsMetadataStepComponent>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
   let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
 
@@ -43,10 +43,10 @@ describe('MetadataStepComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        MetadataStepComponent,
+        PreprintsMetadataStepComponent,
         OSFTestingModule,
         ...MockComponents(
-          ContributorsComponent,
+          PreprintsContributorsComponent,
           PreprintsAffiliatedInstitutionsComponent,
           PreprintsSubjectsComponent,
           IconComponent,
@@ -77,7 +77,7 @@ describe('MetadataStepComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MetadataStepComponent);
+    fixture = TestBed.createComponent(PreprintsMetadataStepComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('provider', mockProvider);
     fixture.detectChanges();

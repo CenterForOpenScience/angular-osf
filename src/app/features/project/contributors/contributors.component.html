@@ -61,11 +61,13 @@
 
   <osf-contributors-table
     class="w-full"
-    [contributors]="contributors()"
+    [(contributors)]="contributors"
     [isLoading]="isContributorsLoading()"
     [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
     [currentUserId]="currentUser()?.id"
     [showCurator]="true"
+    [showInfo]="true"
+    [resourceType]="resourceType()"
     (remove)="removeContributor($event)"
   ></osf-contributors-table>
 

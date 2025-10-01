@@ -7,7 +7,7 @@ import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 
-import { filter, forkJoin } from 'rxjs';
+import { filter } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -35,20 +35,21 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
+  BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
   GetAllContributors,
-  UpdateContributor,
 } from '@osf/shared/stores';
 
 @Component({
-  selector: 'osf-preprint-contributors',
+  selector: 'osf-preprints-contributors',
   imports: [FormsModule, TableModule, ContributorsTableComponent, TranslatePipe, Card, Button, Message],
-  templateUrl: './contributors.component.html',
-  styleUrl: './contributors.component.scss',
+  templateUrl: './preprints-contributors.component.html',
+  styleUrl: './preprints-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContributorsComponent implements OnInit {
+export class PreprintsContributorsComponent implements OnInit {
   preprintId = input<string | undefined>('');
 
   readonly destroyRef = inject(DestroyRef);
@@ -66,15 +67,17 @@ export class ContributorsComponent implements OnInit {
     const initialContributors = this.initialContributors();
     if (!currentUserId) return false;
 
-    return initialContributors.some((contributor: ContributorModel) => {
-      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
-    });
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
   });
 
   actions = createDispatchMap({
     getContributors: GetAllContributors,
     deleteContributor: DeleteContributor,
-    updateContributor: UpdateContributor,
+    bulkUpdateContributors: BulkUpdateContributors,
+    bulkAddContributors: BulkAddContributors,
     addContributor: AddContributor,
   });
 
@@ -99,13 +102,12 @@ export class ContributorsComponent implements OnInit {
   save() {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
-    const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.preprintId(), ResourceType.Preprint, payload)
-    );
-
-    forkJoin(updateRequests).subscribe(() => {
-      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-    });
+    this.actions
+      .bulkUpdateContributors(this.preprintId(), ResourceType.Preprint, updatedContributors)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() =>
+        this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage')
+      );
   }
 
   openAddContributorDialog() {
@@ -125,13 +127,12 @@ export class ContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.preprintId(), ResourceType.Preprint, payload)
-          );
-
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-          });
+          this.actions
+            .bulkAddContributors(this.preprintId(), ResourceType.Preprint, res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
         }
       });
   }

@@ -79,6 +79,10 @@ export class MoveFileDialogComponent {
     return this.currentFolder()?.id === parentFolder?.id;
   });
 
+  get isMoveAction() {
+    return this.config.data.action === 'move';
+  }
+
   constructor() {
     this.initPreviousFolder();
     const filesLink = this.currentFolder()?.relationships?.filesLink;

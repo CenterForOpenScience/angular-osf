@@ -76,7 +76,12 @@
 
         <div class="flex flex-wrap gap-2">
           @for (tag of preprintValue.tags; track tag) {
-            <p-tag [value]="tag" severity="info" />
+            <p-tag
+              class="cursor-pointer hover:bg-black-alpha-10"
+              [value]="tag"
+              severity="info"
+              (click)="tagClicked(tag)"
+            />
           } @empty {
             <p>{{ 'common.labels.none' | translate }}</p>
           }

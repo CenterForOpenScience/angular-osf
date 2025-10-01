@@ -8,7 +8,8 @@ import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { CitationSectionComponent } from '@osf/features/preprints/components/preprint-details/citation-section/citation-section.component';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
@@ -39,6 +40,7 @@ export class AdditionalInfoComponent {
   private actions = createDispatchMap({
     fetchSubjects: FetchSelectedSubjects,
   });
+  private router = inject(Router);
 
   preprintProviderId = input.required<string>();
 
@@ -66,5 +68,9 @@ export class AdditionalInfoComponent {
 
       this.actions.fetchSubjects(this.preprint()!.id, ResourceType.Preprint);
     });
+  }
+
+  tagClicked(tag: string) {
+    this.router.navigate(['/search'], { queryParams: { search: tag } });
   }
 }

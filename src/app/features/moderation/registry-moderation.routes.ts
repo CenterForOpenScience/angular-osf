@@ -20,7 +20,7 @@ export const registryModerationRoutes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'submitted',
+        redirectTo: 'pending',
       },
       {
         path: 'submitted',

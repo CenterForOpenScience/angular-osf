@@ -26,9 +26,7 @@ export class FileMenuComponent {
   menu = viewChild.required<TieredMenu>('menu');
   action = output<FileMenuAction>();
 
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   private readonly allMenuItems: MenuItem[] = [
     {
@@ -95,7 +93,7 @@ export class FileMenuComponent {
     },
     {
       id: FileMenuType.Copy,
-      label: 'common.buttons.copy',
+      label: 'common.buttons.copyTo',
       icon: 'fas fa-copy',
       command: () => this.emitAction(FileMenuType.Copy),
     },

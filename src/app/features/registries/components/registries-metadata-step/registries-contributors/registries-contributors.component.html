@@ -3,7 +3,7 @@
 
   <osf-contributors-table
     class="w-full"
-    [contributors]="contributors()"
+    [(contributors)]="contributors"
     [isLoading]="isContributorsLoading()"
     [currentUserId]="currentUser()?.id"
     [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"

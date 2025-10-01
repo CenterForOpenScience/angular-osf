@@ -6,7 +6,6 @@ import { Button } from 'primeng/button';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 
-import { forkJoin } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
@@ -24,10 +23,11 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
+  BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
   ProjectsSelectors,
-  UpdateContributor,
 } from '@osf/shared/stores';
 
 @Component({
@@ -43,11 +43,11 @@ export class ProjectContributorsStepComponent {
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
-  readonly projectContributors = select(ContributorsSelectors.getContributors);
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
 
-  private initialContributors = signal<ContributorModel[]>([]);
+  private initialContributors = select(ContributorsSelectors.getContributors);
+  readonly projectContributors = signal<ContributorModel[]>([]);
 
   stepperActiveValue = input.required<number>();
   targetStepValue = input.required<number>();
@@ -59,7 +59,8 @@ export class ProjectContributorsStepComponent {
 
   actions = createDispatchMap({
     addContributor: AddContributor,
-    updateContributor: UpdateContributor,
+    bulkAddContributors: BulkAddContributors,
+    bulkUpdateContributors: BulkUpdateContributors,
     deleteContributor: DeleteContributor,
   });
 
@@ -100,17 +101,16 @@ export class ProjectContributorsStepComponent {
       const updatedContributors = findChangedItems(this.initialContributors(), this.projectContributors(), 'id');
 
       if (!updatedContributors.length) {
-        this.initialContributors.set(JSON.parse(JSON.stringify(this.projectContributors())));
+        this.projectContributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
         this.contributorsSaved.emit();
       } else {
-        const updateRequests = updatedContributors.map((payload) =>
-          this.actions.updateContributor(this.selectedProject()?.id, ResourceType.Project, payload)
-        );
-        forkJoin(updateRequests).subscribe(() => {
-          this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-          this.initialContributors.set(JSON.parse(JSON.stringify(this.projectContributors())));
-          this.contributorsSaved.emit();
-        });
+        this.actions
+          .bulkUpdateContributors(this.selectedProject()?.id, ResourceType.Project, updatedContributors)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
+            this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
+            this.contributorsSaved.emit();
+          });
       }
     } else {
       this.contributorsSaved.emit();
@@ -138,13 +138,12 @@ export class ProjectContributorsStepComponent {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.selectedProject()?.id, ResourceType.Project, payload)
-          );
-
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-          });
+          this.actions
+            .bulkAddContributors(this.selectedProject()?.id, ResourceType.Project, res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
         }
       });
   }
@@ -175,10 +174,10 @@ export class ProjectContributorsStepComponent {
   private setupEffects(): void {
     effect(() => {
       const isMetadataSaved = this.isProjectMetadataSaved();
-      const contributors = this.projectContributors();
+      const contributors = this.initialContributors();
 
-      if (isMetadataSaved && contributors.length && !this.initialContributors().length) {
-        this.initialContributors.set(JSON.parse(JSON.stringify(contributors)));
+      if (isMetadataSaved && contributors.length) {
+        this.projectContributors.set(JSON.parse(JSON.stringify(contributors)));
       }
     });
   }

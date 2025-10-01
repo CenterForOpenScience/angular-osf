@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { filter, forkJoin } from 'rxjs';
+import { filter } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -33,10 +33,11 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
+  BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
   UpdateBibliographyFilter,
-  UpdateContributor,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
 } from '@osf/shared/stores';
@@ -69,7 +70,8 @@ export class ContributorsDialogComponent implements OnInit {
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,
     addContributor: AddContributor,
-    updateContributor: UpdateContributor,
+    bulkAddContributors: BulkAddContributors,
+    bulkUpdateContributors: BulkUpdateContributors,
   });
 
   private readonly resourceType: ResourceType;
@@ -133,13 +135,12 @@ export class ContributorsDialogComponent implements OnInit {
           this.openAddUnregisteredContributorDialog();
         } else {
           if (res?.type === AddContributorType.Registered) {
-            const addRequests = res.data.map((payload) =>
-              this.actions.addContributor(this.resourceId, this.resourceType, payload)
-            );
-
-            forkJoin(addRequests).subscribe(() =>
-              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
-            );
+            this.actions
+              .bulkAddContributors(this.resourceId, this.resourceType, res.data)
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe(() =>
+                this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+              );
           }
         }
       });
@@ -199,12 +200,11 @@ export class ContributorsDialogComponent implements OnInit {
   onSave(): void {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
-    const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.resourceId, this.resourceType, payload)
-    );
-
-    forkJoin(updateRequests).subscribe(() => {
-      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-    });
+    this.actions
+      .bulkUpdateContributors(this.resourceId, this.resourceType, updatedContributors)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() =>
+        this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage')
+      );
   }
 }

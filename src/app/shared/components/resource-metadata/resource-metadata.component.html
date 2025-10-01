@@ -106,7 +106,7 @@
     @if (!resource.isAnonymous) {
       <div class="flex flex-column gap-2">
         <h3>
-          {{ (isProject() ? 'project.overview.metadata.publication' : 'registry.overview.metadata.doi') | translate }}
+          {{ (isProject() ? 'project.overview.metadata.projectDOI' : 'registry.overview.metadata.doi') | translate }}
         </h3>
 
         @if (resource.identifiers?.length) {
@@ -118,7 +118,7 @@
             }
           }
         } @else {
-          <p>{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
+          <p>{{ 'project.overview.metadata.noProjectDoi' | translate }}</p>
         }
       </div>
     }
