@@ -1,25 +1,33 @@
-import { throwError } from 'rxjs';
+import { EMPTY, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
 import { ERROR_MESSAGES } from '../constants';
 import { AuthService } from '../services';
 
+export const BYPASS_ERROR_INTERCEPTOR = new HttpContextToken<boolean>(() => false);
+
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
   const loaderService = inject(LoaderService);
   const router = inject(Router);
   const authService = inject(AuthService);
+  const sentry = inject(SENTRY_TOKEN);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       let errorMessage: string;
+      if (req.context.get(BYPASS_ERROR_INTERCEPTOR)) {
+        sentry.captureException(error);
+        return EMPTY;
+      }
 
       if (error.error instanceof ErrorEvent) {
         errorMessage = error.error.message;
