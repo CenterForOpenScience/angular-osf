@@ -1,11 +1,10 @@
 import { EMPTY, filter, map, Observable, of, switchMap, take } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { Identifier, IdentifiersResponseJsonApi } from '@osf/shared/models';
 import { DataciteEvent } from '@osf/shared/models/datacite/datacite-event.enum';
 
@@ -13,7 +12,6 @@ import { DataciteEvent } from '@osf/shared/models/datacite/datacite-event.enum';
   providedIn: 'root',
 })
 export class DataciteService {
-  private readonly Sentry = inject(SENTRY_TOKEN);
   private readonly http: HttpClient = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
 
@@ -91,17 +89,21 @@ export class DataciteService {
       i: this.dataciteTrackerRepoId,
       p: doi,
     };
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-    return this.http.post(this.dataciteTrackerAddress, payload, { headers }).pipe(
-      map(() => {
-        return;
-      }),
-      catchError((err) => {
-        this.Sentry.captureException(err);
-        return of();
-      })
-    );
+    const success = navigator.sendBeacon(this.dataciteTrackerAddress, JSON.stringify(payload));
+    if (success) {
+      return of(void 0);
+    } else {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      const context = new HttpContext();
+      context.set(BYPASS_ERROR_INTERCEPTOR, true);
+      return this.http
+        .post(this.dataciteTrackerAddress, payload, {
+          headers,
+          context,
+        })
+        .pipe(map(() => undefined));
+    }
   }
 }
