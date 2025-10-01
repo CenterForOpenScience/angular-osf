@@ -13,19 +13,19 @@ export function mapFilterOptions(
     if ('title' in filterOptionMetadata) {
       return {
         label: filterOptionMetadata?.title?.[0]?.['@value'],
-        value: id,
+        value: id ?? filterOptionMetadata?.title?.[0]?.['@value'],
         cardSearchResultCount,
       };
     } else if ('displayLabel' in filterOptionMetadata) {
       return {
         label: filterOptionMetadata.displayLabel?.[0]?.['@value'],
-        value: id,
+        value: id ?? filterOptionMetadata?.displayLabel?.[0]?.['@value'],
         cardSearchResultCount,
       };
     } else if ('name' in filterOptionMetadata) {
       return {
         label: filterOptionMetadata.name?.[0]?.['@value'],
-        value: id,
+        value: id ?? filterOptionMetadata?.name?.[0]?.['@value'],
         cardSearchResultCount,
       };
     } else {
