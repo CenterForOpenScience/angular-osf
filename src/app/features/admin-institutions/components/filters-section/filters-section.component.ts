@@ -67,8 +67,11 @@ export class FiltersSectionComponent {
     }
   }
 
-  onFilterChipRemoved(filterKey: string): void {
-    this.actions.updateSelectedFilterOption(filterKey, null);
+  onFilterChipRemoved(event: { filterKey: string; optionRemoved: FilterOption }): void {
+    const updatedOptions = this.selectedFilterOptions()[event.filterKey].filter(
+      (option) => option.value === event.optionRemoved.value
+    );
+    this.actions.updateSelectedFilterOption(event.filterKey, updatedOptions);
     this.actions.fetchResources();
   }
 }

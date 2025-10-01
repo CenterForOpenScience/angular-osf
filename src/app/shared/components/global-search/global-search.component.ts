@@ -171,8 +171,11 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectedOptionRemoved(filterKey: string): void {
-    this.actions.updateSelectedFilterOption(filterKey, null);
+  onSelectedOptionRemoved(event: { filterKey: string; optionRemoved: FilterOption }): void {
+    const updatedOptions = this.filterOptions()[event.filterKey].filter(
+      (option) => option.value !== event.optionRemoved.value
+    );
+    this.actions.updateSelectedFilterOption(event.filterKey, updatedOptions);
     this.updateUrlWithFilterOptions(this.filterOptions());
     this.actions.fetchResources();
   }
