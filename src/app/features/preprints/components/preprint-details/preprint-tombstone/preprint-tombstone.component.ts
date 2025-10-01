@@ -8,7 +8,8 @@ import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnDestroy, output } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -57,6 +58,8 @@ export class PreprintTombstoneComponent implements OnDestroy {
     fetchPreprintById: FetchPreprintById,
     fetchSubjects: FetchSelectedSubjects,
   });
+  private router = inject(Router);
+
   preprintVersionSelected = output<string>();
 
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
@@ -92,5 +95,9 @@ export class PreprintTombstoneComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.actions.resetContributorsState();
+  }
+
+  tagClicked(tag: string) {
+    this.router.navigate(['/search'], { queryParams: { search: tag } });
   }
 }

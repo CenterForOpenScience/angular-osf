@@ -23,10 +23,15 @@
     @if (fileVersions().length) {
       @let fileVersionsValue = fileVersions();
 
-      <div class="flex flex-column align-items-start sm:flex-row sm:justify-content-between sm:align-items-center">
+      <div
+        class="flex flex-column gap-3 align-items-start sm:flex-row sm:justify-content-between sm:align-items-center"
+      >
         <p>{{ fileVersionsValue[0].name }}</p>
-        <p>{{ 'preprints.details.file.version' | translate: { version: fileVersionsValue[0].id } }}</p>
+        <p class="white-space-nowrap">
+          {{ 'preprints.details.file.version' | translate: { version: fileVersionsValue[0].id } }}
+        </p>
         <p-button
+          class="white-space-nowrap"
           severity="secondary"
           [label]="'preprints.details.file.downloadPreviousVersion' | translate"
           (click)="versionsMenu.toggle($event)"
