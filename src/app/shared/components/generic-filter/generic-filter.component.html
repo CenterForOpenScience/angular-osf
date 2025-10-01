@@ -4,34 +4,30 @@
       <osf-loading-spinner />
     </div>
   } @else {
-    <div class="relative">
-      <p-select
-        [id]="filterType()"
-        [options]="filterOptions()"
-        optionLabel="label"
-        optionValue="value"
-        [ngModel]="selectedValue()"
-        [placeholder]="currentSelectedOption() ? currentSelectedOption()?.label : placeholder()"
-        styleClass="w-full"
-        panelStyleClass="max-w-30rem scrollable-panel"
-        appendTo="body"
-        filter
-        resetFilterOnHide="false"
-        [virtualScroll]="true"
-        [virtualScrollItemSize]="25"
-        [lazy]="true"
-        scrollHeight="200px"
-        [autoOptionFocus]="false"
-        [loading]="isPaginationLoading() || isSearchLoading()"
-        (onLazyLoad)="loadMoreItems($event)"
-        (onChange)="onOptionChange($event)"
-        (onFilter)="onFilterChange($event)"
-        [showClear]="!!selectedValue()"
-      >
-        <ng-template #item let-item>
-          <p class="text-base">{{ item.label }} ({{ item.cardSearchResultCount }})</p>
-        </ng-template>
-      </p-select>
-    </div>
+    <p-multiSelect
+      [id]="filterOperator()"
+      [options]="filterOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="selectedOptionValues()"
+      [placeholder]="placeholder()"
+      styleClass="w-full"
+      appendTo="body"
+      filter
+      resetFilterOnHide="false"
+      [showToggleAll]="false"
+      [virtualScroll]="true"
+      [virtualScrollItemSize]="40"
+      scrollHeight="200px"
+      [autoOptionFocus]="false"
+      [loading]="isPaginationLoading() || isSearchLoading()"
+      (onFilter)="onFilterChange($event)"
+      (onChange)="onMultiChange($event)"
+      (onLazyLoad)="loadMoreItems($event)"
+    >
+      <ng-template #item let-item>
+        <p class="text-base">{{ item.label }} ({{ item.cardSearchResultCount }})</p>
+      </ng-template>
+    </p-multiSelect>
   }
 </div>

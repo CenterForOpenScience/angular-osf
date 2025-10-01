@@ -299,9 +299,9 @@ export class GlobalSearchState {
       filtersParams[`cardSearchFilter[${key}][]`] = value;
     });
     Object.entries(state.selectedFilterOptions).forEach(([key, options]) => {
-      const filter = state.filters.find((f) => f.key === key)!;
+      const filter = state.filters.find((f) => f.key === key);
 
-      if (filter.operator === FilterOperator.IsPresent) {
+      if (filter?.operator === FilterOperator.IsPresent) {
         const first = options[0];
         if (first) {
           filtersParams[`cardSearchFilter[${key}][is-present]`] = first.value;

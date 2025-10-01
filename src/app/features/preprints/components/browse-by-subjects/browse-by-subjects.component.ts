@@ -21,10 +21,12 @@ export class BrowseBySubjectsComponent {
   linksToSearchPageForSubject = computed(() => {
     return this.subjects().map((subject) => ({
       tab: ResourceType.Preprint,
-      filter_subject: JSON.stringify({
-        label: subject.name,
-        value: subject.iri,
-      }),
+      filter_subject: JSON.stringify([
+        {
+          label: subject.name,
+          value: subject.iri,
+        },
+      ]),
     }));
   });
   areSubjectsLoading = input.required<boolean>();
