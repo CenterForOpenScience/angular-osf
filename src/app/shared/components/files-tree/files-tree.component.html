@@ -71,7 +71,7 @@
                 {{ file.dateModified | date: 'MMM d, y hh:mm a' }}
               </div>
 
-              @if (!viewOnly() && !viewOnlyDownloadable()) {
+              @if (isSomeFileActionAllowed) {
                 <div class="relative ml-auto">
                   <osf-file-menu
                     (action)="onFileMenuAction($event, file)"
@@ -80,17 +80,6 @@
                     osfStopPropagation
                   >
                   </osf-file-menu>
-                </div>
-              } @else if (viewOnly() && viewOnlyDownloadable()) {
-                <div class="files-table-cell text-center">
-                  <p-button
-                    icon="fas fa-download"
-                    severity="contrast"
-                    text
-                    (onClick)="onFileMenuAction({ value: FileMenuType.Download }, file)"
-                    (keydown.enter)="onFileMenuAction({ value: FileMenuType.Download }, file)"
-                    osfStopPropagation
-                  ></p-button>
                 </div>
               }
             </div>

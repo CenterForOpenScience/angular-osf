@@ -304,7 +304,7 @@ export class FileDetailComponent {
 
   copyToClipboard(embedHtml: string): void {
     this.clipboard.copy(embedHtml);
-    this.toastService.showSuccess('files.toast.copiedToClipboard');
+    this.toastService.showSuccess('files.toast.detail.copiedToClipboard');
   }
 
   deleteEntry(link: string): void {

@@ -24,7 +24,7 @@ export const isProjectGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
 
   if (currentResource && !id.startsWith(currentResource.id)) {
     if (currentResource.type === CurrentResourceType.Projects && currentResource.parentId) {
-      router.navigate(['/', currentResource.parentId, 'files', id]);
+      router.navigate(['/', currentResource.parentId, 'files', id], { queryParamsHandling: 'preserve' });
       return true;
     }
 
@@ -53,7 +53,7 @@ export const isProjectGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
       }
 
       if (resource.type === CurrentResourceType.Projects && resource.parentId) {
-        router.navigate(['/', resource.parentId, 'files', id]);
+        router.navigate(['/', resource.parentId, 'files', id], { queryParamsHandling: 'preserve' });
         return true;
       }
 

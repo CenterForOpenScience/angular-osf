@@ -59,7 +59,7 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { FileMenuType, ResourceType, SupportedFeature, UserPermissions } from '@osf/shared/enums';
-import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
@@ -184,7 +184,21 @@ export class FilesComponent {
   readonly allowedMenuActions = computed(() => {
     const provider = this.provider();
     const supportedFeatures = this.supportedFeatures()[provider] || [];
-    return this.mapMenuActions(supportedFeatures);
+    const hasViewOnly = this.hasViewOnly();
+    const isRegistration = this.resourceType() === ResourceType.Registration;
+    const menuMap = this.mapMenuActions(supportedFeatures);
+
+    const result: Record<FileMenuType, boolean> = { ...menuMap };
+
+    if (hasViewOnly || isRegistration) {
+      const allowed = new Set<FileMenuType>([FileMenuType.Download, FileMenuType.Embed, FileMenuType.Share]);
+
+      (Object.keys(result) as FileMenuType[]).forEach((key) => {
+        result[key] = allowed.has(key) && menuMap[key];
+      });
+    }
+
+    return result;
   });
 
   readonly rootFoldersOptions = computed(() => {
@@ -211,15 +225,16 @@ export class FilesComponent {
       (permission) => permission === UserPermissions.Admin || permission === UserPermissions.Write
     );
 
-    return !details.isRegistration && hasAdminOrWrite;
+    return hasAdminOrWrite;
   });
 
-  readonly isViewOnlyDownloadable = computed(
-    () => this.allowedMenuActions()[FileMenuType.Download] && this.resourceType() === ResourceType.Registration
-  );
+  readonly isRegistration = computed(() => this.resourceType() === ResourceType.Registration);
 
   canUploadFiles = computed(
-    () => this.supportedFeatures()[this.provider()]?.includes(SupportedFeature.AddUpdateFiles) && this.canEdit()
+    () =>
+      this.supportedFeatures()[this.provider()]?.includes(SupportedFeature.AddUpdateFiles) &&
+      this.canEdit() &&
+      !this.isRegistration()
   );
 
   isButtonDisabled = computed(() => this.fileIsUploading() || this.isFilesLoading());
@@ -492,7 +507,12 @@ export class FilesComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    const url = this.router.createUrlTree([file.guid]).toString();
+    let url = file.links?.html ?? '';
+    const viewOnlyParam = this.hasViewOnly();
+    if (viewOnlyParam) {
+      const separator = url.includes('?') ? '&' : '?';
+      url = `${url}${separator}view_only=${getViewOnlyParamFromUrl(this.router.url)}`;
+    }
     window.open(url, '_blank');
   }
 
