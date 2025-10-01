@@ -20,25 +20,32 @@
               {{ duplicate.title }}
             </h2>
 
-            <div>
-              @if (showMoreOptions(duplicate)) {
+            @if (showMoreOptions(duplicate)) {
+              <div>
                 <p-button
                   severity="contrast"
                   icon="fas fa-ellipsis-vertical"
                   raised
                   variant="outlined"
                   [ariaLabel]="'common.buttons.more' | translate"
-                  (onClick)="componentActionMenu.toggle($event)"
+                  (onClick)="menu.toggle($event)"
                 >
                 </p-button>
-              }
 
-              <p-menu appendTo="body" #componentActionMenu [model]="forkActionItems(duplicate.id)" popup>
-                <ng-template #item let-item>
-                  <a class="p-menu-item-link">{{ item.label | translate }}</a>
-                </ng-template>
-              </p-menu>
-            </div>
+                <p-menu appendTo="body" [model]="forkActionItems(duplicate.id)" popup #menu>
+                  <ng-template #item let-item>
+                    <a
+                      class="p-menu-item-link"
+                      (mousedown)="handleMenuAction(item.action, item.resourceId)"
+                      (keydown.enter)="handleMenuAction(item.action, item.resourceId)"
+                      tabindex="0"
+                    >
+                      {{ item.label | translate }}
+                    </a>
+                  </ng-template>
+                </p-menu>
+              </div>
+            }
           </div>
 
           <div class="flex flex-column gap-2">
