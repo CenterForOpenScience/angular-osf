@@ -57,6 +57,8 @@
         [areComponentsLoading]="areComponentsLoading()"
       />
 
+      <osf-overview-parent-project [project]="currentProject()" />
+
       @if (!hasViewOnly()) {
         <osf-project-components [canEdit]="hasWriteAccess() && !isCollectionsRoute()" />
         <osf-linked-resources [canEdit]="hasWriteAccess() && !isCollectionsRoute()" />

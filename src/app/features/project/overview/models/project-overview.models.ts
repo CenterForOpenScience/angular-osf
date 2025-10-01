@@ -55,6 +55,7 @@ export interface ProjectOverview {
     rootFolder: string;
     iri: string;
   };
+  parentId?: string;
   rootParentId?: string;
 }
 

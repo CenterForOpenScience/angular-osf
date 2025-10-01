@@ -645,6 +645,7 @@
         "linkProjectsButton": "Link Projects",
         "noComponentsMessage": "<em>Add components to organize your project.</em>"
       },
+      "parentProject": "Parent Project",
       "linkedProjects": {
         "title": "Linked Projects",
         "noLinkedProjectsMessage": "<em>Link your project.</em>"

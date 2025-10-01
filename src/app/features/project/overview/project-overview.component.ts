@@ -58,6 +58,7 @@ import {
 } from '@shared/components';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
+import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
 import {
   FilesWidgetComponent,
   LinkedResourcesComponent,
@@ -97,7 +98,7 @@ import {
     RouterLink,
     FilesWidgetComponent,
     ViewOnlyLinkMessageComponent,
-    ViewOnlyLinkMessageComponent,
+    OverviewParentProjectComponent,
   ],
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,

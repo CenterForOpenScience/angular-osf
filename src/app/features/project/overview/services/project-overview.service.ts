@@ -37,6 +37,7 @@ export class ProjectOverviewService {
         'license',
         'storage',
         'preprints',
+        'parent',
       ],
       'fields[institutions]': 'assets,description,name',
       'fields[preprints]': 'title,date_created',
@@ -142,5 +143,17 @@ export class ProjectOverviewService {
     return this.jsonApiService
       .get<JsonApiResponse<ComponentGetResponseJsonApi[], null>>(`${this.apiUrl}/nodes/${projectId}/children/`, params)
       .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
+  }
+
+  getParentProject(projectId: string): Observable<ProjectOverviewWithMeta> {
+    const params: Record<string, unknown> = {};
+    return this.jsonApiService
+      .get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/parent/`, params)
+      .pipe(
+        map((response) => ({
+          project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+          meta: response.meta,
+        }))
+      );
   }
 }
