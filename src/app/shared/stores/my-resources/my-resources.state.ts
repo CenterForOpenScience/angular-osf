@@ -141,13 +141,6 @@ export class MyResourcesState {
           action.pageNumber,
           action.pageSize
         ),
-        preprints: this.myResourcesService.getMyBookmarks(
-          action.bookmarksId,
-          ResourceType.Preprint,
-          action.filters,
-          action.pageNumber,
-          action.pageSize
-        ),
         registrations: this.myResourcesService.getMyBookmarks(
           action.bookmarksId,
           ResourceType.Registration,
@@ -157,9 +150,8 @@ export class MyResourcesState {
         ),
       }).pipe(
         tap((results) => {
-          const allData = [...results.projects.data, ...results.preprints.data, ...results.registrations.data];
-          const totalCount =
-            results.projects.meta.total + results.preprints.meta.total + results.registrations.meta.total;
+          const allData = [...results.projects.data, ...results.registrations.data];
+          const totalCount = results.projects.meta.total + results.registrations.meta.total;
 
           ctx.patchState({
             bookmarks: {

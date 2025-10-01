@@ -7,15 +7,15 @@ import { Card } from 'primeng/card';
 import { ChangeDetectionStrategy, Component, effect, input, OnInit, signal } from '@angular/core';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { AffiliatedInstitutionSelectComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { Institution } from '@shared/models';
+import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+import { Institution } from '@osf/shared/models';
 import {
   FetchResourceInstitutions,
   FetchUserInstitutions,
   InstitutionsSelectors,
   UpdateResourceInstitutions,
-} from '@shared/stores/institutions';
+} from '@osf/shared/stores/institutions';
 
 @Component({
   selector: 'osf-preprints-affiliated-institutions',

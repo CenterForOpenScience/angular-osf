@@ -158,6 +158,12 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: 'not-found',
+        loadComponent: () =>
+          import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
+        data: { skipBreadcrumbs: true },
+      },
+      {
         path: ':id/files/:provider/:fileId',
         loadComponent: () =>
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),

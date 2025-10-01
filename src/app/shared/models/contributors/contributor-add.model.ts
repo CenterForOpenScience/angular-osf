@@ -4,4 +4,5 @@ export interface ContributorAddModel {
   permission: string;
   fullName?: string;
   email?: string;
+  index?: number;
 }

@@ -31,7 +31,7 @@ import {
   SetFilesIsLoading,
 } from '@osf/features/files/store';
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
-import { Primitive } from '@osf/shared/helpers';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam, Primitive } from '@osf/shared/helpers';
 import {
   ConfiguredAddonModel,
   FileLabelModel,
@@ -90,6 +90,8 @@ export class FilesWidgetComponent {
     }
     return [];
   });
+
+  readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   private readonly actions = createDispatchMap({
     getFiles: GetFiles,
@@ -218,7 +220,12 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    const url = this.router.createUrlTree([file.guid]).toString();
+    let url = file.links?.html ?? '';
+    const viewOnlyParam = this.hasViewOnly();
+    if (viewOnlyParam) {
+      const separator = url.includes('?') ? '&' : '?';
+      url = `${url}${separator}view_only=${getViewOnlyParamFromUrl(this.router.url)}`;
+    }
     window.open(url, '_blank');
   }
 

@@ -1,5 +1,4 @@
 import { Action, State, StateContext } from '@ngxs/store';
-import { patch } from '@ngxs/store/operators';
 
 import { catchError, of, tap } from 'rxjs';
 
@@ -30,14 +29,14 @@ export class RegistrationProviderState {
     const state = ctx.getState();
 
     const currentProvider = state.currentBrandedProvider.data;
-
-    if (currentProvider?.name === action.providerName) {
+    if (currentProvider && currentProvider?.id === action.providerId) {
       ctx.dispatch(
         new SetCurrentProvider({
-          id: currentProvider.id,
-          name: currentProvider.name,
+          id: currentProvider?.id,
+          name: currentProvider?.name,
           type: CurrentResourceType.Registrations,
-          permissions: currentProvider.permissions,
+          permissions: currentProvider?.permissions,
+          reviewsWorkflow: currentProvider?.reviewsWorkflow,
         })
       );
 
@@ -51,17 +50,15 @@ export class RegistrationProviderState {
       },
     });
 
-    return this.registrationProvidersService.getProviderBrand(action.providerName).pipe(
+    return this.registrationProvidersService.getProviderBrand(action.providerId).pipe(
       tap((provider) => {
-        ctx.setState(
-          patch({
-            currentBrandedProvider: patch({
-              data: provider,
-              isLoading: false,
-              error: null,
-            }),
-          })
-        );
+        ctx.patchState({
+          currentBrandedProvider: {
+            data: provider,
+            isLoading: false,
+            error: null,
+          },
+        });
 
         ctx.dispatch(
           new SetCurrentProvider({
@@ -69,6 +66,7 @@ export class RegistrationProviderState {
             name: provider.name,
             type: CurrentResourceType.Registrations,
             permissions: provider.permissions,
+            reviewsWorkflow: provider.reviewsWorkflow,
           })
         );
       }),
@@ -78,6 +76,6 @@ export class RegistrationProviderState {
 
   @Action(ClearRegistryProvider)
   clearRegistryProvider(ctx: StateContext<RegistrationProviderStateModel>) {
-    ctx.setState(patch({ ...REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS }));
+    ctx.patchState({ ...REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS });
   }
 }

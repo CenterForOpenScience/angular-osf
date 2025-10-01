@@ -6,10 +6,12 @@
     <span>
       {{ 'preprints.selectService.description' | translate }}
     </span>
-    <a href="https://help.osf.io/article/376-preprints-home-page">
+
+    <a class="font-bold" href="https://help.osf.io/article/376-preprints-home-page">
       {{ 'preprints.selectService.learnMore' | translate }}
     </a>
   </p>
+
   <section class="mt-6 grid justify-content-center align-items-start gap-4">
     @if (areProvidersLoading()) {
       @for (_ of skeletonArray; track $index) {
@@ -51,12 +53,14 @@
             />
           </div>
         </p-card>
+
         <ng-template #descriptionTooltip>
           <div [innerHTML]="provider.descriptionHtml | decodeHtml"></div>
         </ng-template>
       }
     }
   </section>
+
   <section class="mt-6 flex flex-row justify-content-end">
     <p-button
       [label]="'common.buttons.next' | translate"

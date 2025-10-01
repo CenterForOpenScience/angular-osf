@@ -59,7 +59,8 @@ export class NavMenuComponent {
       preprintReviewsPageVisible: this.canUserViewReviews(),
       registrationModerationPageVisible:
         this.provider()?.type === CurrentResourceType.Registrations &&
-        this.provider()?.permissions?.includes(ReviewPermissions.ViewSubmissions),
+        this.provider()?.permissions?.includes(ReviewPermissions.ViewSubmissions) &&
+        !!this.provider()?.reviewsWorkflow,
       collectionModerationPageVisible:
         this.provider()?.type === CurrentResourceType.Collections &&
         this.provider()?.permissions?.includes(ReviewPermissions.ViewSubmissions),

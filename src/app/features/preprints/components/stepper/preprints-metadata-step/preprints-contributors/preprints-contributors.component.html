@@ -9,7 +9,7 @@
 
   <osf-contributors-table
     class="w-full"
-    [contributors]="contributors()"
+    [(contributors)]="contributors"
     [currentUserId]="currentUser()?.id"
     [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
     [isLoading]="isContributorsLoading()"

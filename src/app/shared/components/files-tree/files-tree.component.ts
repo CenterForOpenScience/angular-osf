@@ -3,7 +3,6 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
-import { Button } from 'primeng/button';
 import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
@@ -57,7 +56,6 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
     FileMenuComponent,
     StopPropagationDirective,
     CustomPaginatorComponent,
-    Button,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -84,7 +82,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   resourceId = input.required<string>();
   actions = input.required<FilesTreeActions>();
   viewOnly = input<boolean>(true);
-  viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
   allowedMenuActions = input<FileMenuFlags>({} as FileMenuFlags);
   supportUpload = input<boolean>(true);
@@ -103,6 +100,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   first = 0;
 
   readonly FileMenuType = FileMenuType;
+
+  get isSomeFileActionAllowed(): boolean {
+    return Object.keys(this.allowedMenuActions()).length > 0;
+  }
 
   readonly nodes = computed(() => {
     const currentFolder = this.currentFolder();
@@ -389,7 +390,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   copyToClipboard(embedHtml: string): void {
     this.clipboard.copy(embedHtml);
-    this.toastService.showSuccess('files.toast.copiedToClipboard');
+    this.toastService.showSuccess('files.toast.detail.copiedToClipboard');
   }
 
   async dropNode(event: TreeNodeDropEvent) {

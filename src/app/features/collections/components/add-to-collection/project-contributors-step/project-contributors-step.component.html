@@ -39,7 +39,7 @@
       <div class="pt-4 w-full">
         <osf-contributors-table
           class="w-full"
-          [contributors]="projectContributors()"
+          [(contributors)]="projectContributors"
           [isLoading]="isContributorsLoading()"
           (remove)="handleRemoveContributor($event)"
         ></osf-contributors-table>

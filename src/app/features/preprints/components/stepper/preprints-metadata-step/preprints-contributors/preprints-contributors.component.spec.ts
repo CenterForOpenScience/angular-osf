@@ -3,13 +3,13 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@core/store/user';
-import { ContributorsTableComponent } from '@shared/components/contributors';
+import { ContributorsTableComponent } from '@osf/shared/components/contributors';
 import { MOCK_CONTRIBUTOR, MOCK_USER } from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@shared/services';
 import { ContributorsSelectors } from '@shared/stores';
 
-import { ContributorsComponent } from './contributors.component';
+import { PreprintsContributorsComponent } from './preprints-contributors.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
@@ -17,9 +17,9 @@ import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
-describe('ContributorsComponent', () => {
-  let component: ContributorsComponent;
-  let fixture: ComponentFixture<ContributorsComponent>;
+describe('PreprintsContributorsComponent', () => {
+  let component: PreprintsContributorsComponent;
+  let fixture: ComponentFixture<PreprintsContributorsComponent>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
   let confirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
@@ -33,7 +33,7 @@ describe('ContributorsComponent', () => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [ContributorsComponent, OSFTestingModule, MockComponent(ContributorsTableComponent)],
+      imports: [PreprintsContributorsComponent, OSFTestingModule, MockComponent(ContributorsTableComponent)],
       providers: [
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, confirmationServiceMock),
@@ -57,7 +57,7 @@ describe('ContributorsComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContributorsComponent);
+    fixture = TestBed.createComponent(PreprintsContributorsComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('preprintId', 'preprint-1');
   });

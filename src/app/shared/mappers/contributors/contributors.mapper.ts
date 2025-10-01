@@ -81,6 +81,7 @@ export class ContributorsMapper {
         attributes: {
           bibliographic: model.isBibliographic,
           permission: model.permission,
+          index: model.index,
           id: model.id,
         },
         relationships: {

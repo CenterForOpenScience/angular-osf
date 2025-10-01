@@ -1,4 +1,4 @@
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -63,19 +63,20 @@ export class ContributorsService {
       .pipe(map((response) => ContributorsMapper.getPaginatedUsers(response)));
   }
 
-  addContributor(
+  bulkUpdateContributors(
     resourceType: ResourceType,
     resourceId: string,
-    data: ContributorAddModel
-  ): Observable<ContributorModel> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/`;
-    const type = data.id ? AddContributorType.Registered : AddContributorType.Unregistered;
+    contributors: ContributorModel[]
+  ): Observable<ContributorModel[]> {
+    if (contributors.length === 0) {
+      return of([]);
+    }
 
-    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
+    const updateRequests = contributors.map((contributor) =>
+      this.updateContributor(resourceType, resourceId, contributor)
+    );
 
-    return this.jsonApiService
-      .post<ContributorResponseJsonApi>(baseUrl, contributorData)
-      .pipe(map((contributor) => ContributorsMapper.getContributor(contributor.data)));
+    return forkJoin(updateRequests);
   }
 
   updateContributor(
@@ -90,6 +91,35 @@ export class ContributorsService {
     return this.jsonApiService
       .patch<ContributorDataJsonApi>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.getContributor(contributor)));
+  }
+
+  bulkAddContributors(
+    resourceType: ResourceType,
+    resourceId: string,
+    contributors: ContributorAddModel[]
+  ): Observable<ContributorModel[]> {
+    if (contributors.length === 0) {
+      return of([]);
+    }
+
+    const addRequests = contributors.map((contributor) => this.addContributor(resourceType, resourceId, contributor));
+
+    return forkJoin(addRequests);
+  }
+
+  addContributor(
+    resourceType: ResourceType,
+    resourceId: string,
+    data: ContributorAddModel
+  ): Observable<ContributorModel> {
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/`;
+    const type = data.id ? AddContributorType.Registered : AddContributorType.Unregistered;
+
+    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
+
+    return this.jsonApiService
+      .post<ContributorResponseJsonApi>(baseUrl, contributorData)
+      .pipe(map((contributor) => ContributorsMapper.getContributor(contributor.data)));
   }
 
   deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {

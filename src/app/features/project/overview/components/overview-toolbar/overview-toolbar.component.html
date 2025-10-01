@@ -23,7 +23,7 @@
       </div>
     }
 
-    @if (isCollectionsRoute() || hasViewOnly() || !canEdit()) {
+    @if ((isCollectionsRoute() || hasViewOnly() || !canEdit()) && !isRegistration) {
       @if (isPublic()) {
         <div class="flex gap-2">
           <i class="fas fa-lock-open"></i>
@@ -37,16 +37,16 @@
       }
     }
 
-    @if (isAuthenticated()) {
-      <div class="flex ml-auto">
-        <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
-          @if (resource.storage && !isCollectionsRoute()) {
-            <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">
-              {{ +resource.storage.storageUsage | fileSize }}
-            </p>
-          }
+    <div class="flex ml-auto">
+      <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
+        @if (resource.storage && !isCollectionsRoute()) {
+          <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">
+            {{ +resource.storage.storageUsage | fileSize }}
+          </p>
+        }
 
-          <div class="flex gap-2 justify-content-start">
+        <div class="flex gap-2 justify-content-start">
+          @if (isAuthenticated()) {
             @if (showViewOnlyLinks() && canEdit()) {
               <p-button
                 class="flex"
@@ -94,32 +94,32 @@
                 }
               </p-button>
             }
+          }
 
-            @if (resource.isPublic && !hasViewOnly()) {
-              <p-button
-                class="flex"
-                (onClick)="socialsActionMenu.toggle($event)"
-                [pTooltip]="'project.overview.tooltips.share' | translate"
-                tooltipPosition="bottom"
-                [ariaLabel]="'project.overview.tooltips.share' | translate"
-              >
-                <span class="font-bold">{{ socialsActionItems().length }}</span>
-                <i class="fas fa-share-nodes text-2xl"></i>
-                <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems()" popup>
-                  <ng-template #item let-item>
-                    <a class="p-menu-item-link" [href]="item.url" target="_blank" rel="noopener noreferrer">
-                      <div class="social-link flex align-items-center justify-content-center">
-                        <osf-icon [iconClass]="`${item.icon} fa-sm`"></osf-icon>
-                      </div>
-                      {{ item.label | translate }}
-                    </a>
-                  </ng-template>
-                </p-menu>
-              </p-button>
-            }
-          </div>
+          @if (resource.isPublic && !hasViewOnly()) {
+            <p-button
+              class="flex"
+              (onClick)="socialsActionMenu.toggle($event)"
+              [pTooltip]="'project.overview.tooltips.share' | translate"
+              tooltipPosition="bottom"
+              [ariaLabel]="'project.overview.tooltips.share' | translate"
+            >
+              <span class="font-bold">{{ socialsActionItems().length }}</span>
+              <i class="fas fa-share-nodes text-2xl"></i>
+              <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems()" popup>
+                <ng-template #item let-item>
+                  <a class="p-menu-item-link" [href]="item.url" target="_blank" rel="noopener noreferrer">
+                    <div class="social-link flex align-items-center justify-content-center">
+                      <osf-icon [iconClass]="`${item.icon} fa-sm`"></osf-icon>
+                    </div>
+                    {{ item.label | translate }}
+                  </a>
+                </ng-template>
+              </p-menu>
+            </p-button>
+          }
         </div>
       </div>
-    }
+    </div>
   </div>
 }

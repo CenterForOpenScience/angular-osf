@@ -17,7 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ContributorsListComponent, RegistrationBlocksDataComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
-import { FieldType, ResourceType } from '@osf/shared/enums';
+import { FieldType, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { InterpolatePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
@@ -97,6 +97,14 @@ export class ReviewComponent {
   isDraftInvalid = computed(() => Object.values(this.stepsState()).some((step) => step.invalid));
 
   licenseOptionsRecord = computed(() => (this.draftRegistration()?.license.options ?? {}) as Record<string, string>);
+
+  hasAdminAccess = computed(() => {
+    const registry = this.draftRegistration();
+    if (!registry) return false;
+    return registry.currentUserPermissions.includes(UserPermissions.Admin);
+  });
+
+  registerButtonDisabled = computed(() => this.isDraftLoading() || this.isDraftInvalid() || !this.hasAdminAccess());
 
   constructor() {
     if (!this.contributors()?.length) {

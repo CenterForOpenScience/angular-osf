@@ -157,7 +157,7 @@ export class RegistryOverviewComponent {
 
   readonly selectedRevisionIndex = signal(0);
 
-  showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn && !this.hasNoPermissions());
+  showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn);
 
   toolbarResource = computed(() => {
     if (this.registry()) {

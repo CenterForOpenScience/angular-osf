@@ -11,11 +11,11 @@ export { PreprintProviderHeroComponent } from './preprint-provider-hero/preprint
 export { PreprintServicesComponent } from './preprint-services/preprint-services.component';
 export { PreprintsHelpDialogComponent } from './preprints-help-dialog/preprints-help-dialog.component';
 export { AuthorAssertionsStepComponent } from './stepper/author-assertion-step/author-assertions-step.component';
+export { PreprintsMetadataStepComponent } from './stepper/preprints-metadata-step/preprints-metadata-step.component';
 export { SupplementsStepComponent } from './stepper/supplements-step/supplements-step.component';
 export { MakeDecisionComponent } from '@osf/features/preprints/components/preprint-details/make-decision/make-decision.component';
 export { PreprintTombstoneComponent } from '@osf/features/preprints/components/preprint-details/preprint-tombstone/preprint-tombstone.component';
 export { WithdrawDialogComponent } from '@osf/features/preprints/components/preprint-details/withdraw-dialog/withdraw-dialog.component';
 export { FileStepComponent } from '@osf/features/preprints/components/stepper/file-step/file-step.component';
-export { MetadataStepComponent } from '@osf/features/preprints/components/stepper/metadata-step/metadata-step.component';
 export { ReviewStepComponent } from '@osf/features/preprints/components/stepper/review-step/review-step.component';
 export { TitleAndAbstractStepComponent } from '@osf/features/preprints/components/stepper/title-and-abstract-step/title-and-abstract-step.component';

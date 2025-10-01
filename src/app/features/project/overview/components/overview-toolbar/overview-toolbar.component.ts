@@ -89,6 +89,8 @@ export class OverviewToolbarComponent {
 
   actions = createDispatchMap({ clearDuplicatedProject: ClearDuplicatedProject });
 
+  readonly ResourceType = ResourceType;
+
   readonly forkActionItems = [
     {
       label: 'project.overview.actions.forkProject',
@@ -105,7 +107,6 @@ export class OverviewToolbarComponent {
       },
     },
   ];
-  readonly ResourceType = ResourceType;
 
   get isRegistration(): boolean {
     return this.currentResource()?.resourceType === ResourceType.Registration;

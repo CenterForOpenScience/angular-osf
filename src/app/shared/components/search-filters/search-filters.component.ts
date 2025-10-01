@@ -7,16 +7,7 @@ import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 import { delay, of } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  ElementRef,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -65,7 +56,7 @@ export class SearchFiltersComponent {
   readonly FILTER_PLACEHOLDERS = FILTER_PLACEHOLDERS;
 
   private destroyRef = inject(DestroyRef);
-  private readonly SCROLL_DELAY_MS = 100;
+  private readonly SCROLL_DELAY_MS = 300;
 
   readonly visibleFilters = computed(() => {
     return this.filters().filter((filter) => {
@@ -93,8 +84,6 @@ export class SearchFiltersComponent {
       grouped: groupedFilters.sort((a, b) => b.resultCount! - a.resultCount!),
     };
   });
-
-  constructor(private el: ElementRef) {}
 
   onAccordionToggle(filterKey: string): void {
     this.scrollPanelIntoView(filterKey);
@@ -131,10 +120,7 @@ export class SearchFiltersComponent {
       .pipe(delay(this.SCROLL_DELAY_MS), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (key) => {
-          const panelContent = this.el.nativeElement.querySelector(
-            `p-accordion-panel[ng-reflect-value="${key}"] p-accordion-content`
-          );
-
+          const panelContent = document.getElementById(`filter-${key}`);
           const scrollContainer = document.querySelector('.filters-section');
 
           if (panelContent && scrollContainer) {

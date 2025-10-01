@@ -35,6 +35,11 @@ export class RegistryOverviewState {
   @Action(GetRegistryById)
   getRegistryById(ctx: StateContext<RegistryOverviewStateModel>, action: GetRegistryById) {
     const state = ctx.getState();
+
+    if (state.registry.isLoading) {
+      return;
+    }
+
     ctx.patchState({
       registry: {
         ...state.registry,

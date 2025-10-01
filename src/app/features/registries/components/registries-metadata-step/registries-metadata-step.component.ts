@@ -9,7 +9,7 @@ import { TextareaModule } from 'primeng/textarea';
 
 import { tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -19,6 +19,7 @@ import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
 import { ContributorModel, DraftRegistrationModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService } from '@osf/shared/services';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
+import { UserPermissions } from '@shared/enums';
 
 import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepState } from '../../store';
 
@@ -61,6 +62,12 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
   selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   initialContributors = select(ContributorsSelectors.getContributors);
   stepsState = select(RegistriesSelectors.getStepsState);
+
+  hasAdminAccess = computed(() => {
+    const registry = this.draftRegistration();
+    if (!registry) return false;
+    return registry.currentUserPermissions.includes(UserPermissions.Admin);
+  });
 
   actions = createDispatchMap({
     deleteDraft: DeleteDraft,

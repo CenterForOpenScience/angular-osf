@@ -34,6 +34,7 @@ export class RegistrationProviderMapper {
           }
         : null,
       iri: response.links.iri,
+      reviewsWorkflow: response.attributes.reviews_workflow,
     };
   }
 }

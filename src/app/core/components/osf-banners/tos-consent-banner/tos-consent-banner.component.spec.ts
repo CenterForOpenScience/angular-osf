@@ -18,9 +18,7 @@ import { TranslationServiceMock } from '@testing/mocks/translation.service.mock'
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-
 describe('TosConsentBannerComponent', () => {
-  let component: TosConsentBannerComponent;
   let fixture: ComponentFixture<TosConsentBannerComponent>;
   let store: jest.Mocked<Store>;
 
@@ -37,7 +35,6 @@ describe('TosConsentBannerComponent', () => {
 
     fixture = TestBed.createComponent(TosConsentBannerComponent);
     store = TestBed.inject(Store) as jest.Mocked<Store>;
-    component = fixture.componentInstance;
     store.dispatch = jest.fn().mockReturnValue(of(undefined));
     fixture.detectChanges();
   });
@@ -68,23 +65,22 @@ describe('TosConsentBannerComponent', () => {
   });
 
   it('should return true for "acceptedTermsOfServiceChange" when user is null to not show banner', async () => {
-      await TestBed.resetTestingModule()
-        .configureTestingModule({
-          imports: [TosConsentBannerComponent, OSFTestingStoreModule, MockComponent(IconComponent)],
-          providers: [
-            provideMockStore({
-              signals: [{ selector: UserSelectors.getCurrentUser, value: null }],
-            }),
-            TranslationServiceMock,
-          ],
-        })
-        .compileComponents();
+    await TestBed.resetTestingModule()
+      .configureTestingModule({
+        imports: [TosConsentBannerComponent, OSFTestingStoreModule, MockComponent(IconComponent)],
+        providers: [
+          provideMockStore({
+            signals: [{ selector: UserSelectors.getCurrentUser, value: null }],
+          }),
+          TranslationServiceMock,
+        ],
+      })
+      .compileComponents();
 
-      const fixture = TestBed.createComponent(TosConsentBannerComponent);
-      const component = fixture.componentInstance;
+    const fixture = TestBed.createComponent(TosConsentBannerComponent);
+    const component = fixture.componentInstance;
 
-      fixture.detectChanges();
-      expect(component.acceptedTermsOfServiceChange()).toBe(true);
-    });
-
+    fixture.detectChanges();
+    expect(component.acceptedTermsOfServiceChange()).toBe(true);
+  });
 });

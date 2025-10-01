@@ -125,6 +125,7 @@ describe('ContributorsTableComponent', () => {
       fullName: 'Minimal User',
       givenName: 'Minimal User',
       familyName: 'Minimal User',
+      index: 0,
       permission: ContributorPermission.Read,
       education: [],
       employment: [],
