@@ -36,6 +36,7 @@
               (loadMoreOptions)="onLoadMoreFilterOptions(filter)"
             />
           </p-accordion-content>
+          <div [id]="`filter-${filter.key}`"></div>
         </p-accordion-panel>
       }
 
@@ -46,11 +47,9 @@
             <div class="flex flex-column gap-2">
               @for (filter of splitFilters().grouped; track filter.key) {
                 <div class="flex align-items-center gap-2">
-                  <!-- TODO fix - use selectedOptionValues for ngModel -->
-                  <!-- TODO extract into the generic filter component -->
                   <p-checkbox
                     [binary]="true"
-                    [ngModel]="Boolean(selectedOptions()[filter.key])"
+                    [ngModel]="Boolean(selectedOptionValues()[filter.key])"
                     (onChange)="onCheckboxChange($event, filter)"
                     [inputId]="'checkbox-' + filter.key"
                   />
@@ -61,7 +60,7 @@
               }
             </div>
           </p-accordion-content>
-          <div [id]="`filter-${group.key}`"></div>
+          <div id="filter-is-present-group"></div>
         </p-accordion-panel>
       }
     </p-accordion>

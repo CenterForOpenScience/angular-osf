@@ -58,6 +58,15 @@ export class SearchFiltersComponent {
   private destroyRef = inject(DestroyRef);
   private readonly SCROLL_DELAY_MS = 300;
 
+  selectedOptionValues = computed(() =>
+    Object.fromEntries(
+      Object.entries(this.selectedOptions()).map(([key, value]) => [
+        key,
+        value.map((option) => option.value).filter(Boolean)[0],
+      ])
+    )
+  );
+
   readonly visibleFilters = computed(() => {
     return this.filters().filter((filter) => {
       if (!filter || !filter.key) return false;

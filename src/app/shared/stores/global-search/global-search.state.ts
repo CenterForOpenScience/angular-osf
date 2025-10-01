@@ -301,11 +301,10 @@ export class GlobalSearchState {
     Object.entries(state.selectedFilterOptions).forEach(([key, options]) => {
       const filter = state.filters.find((f) => f.key === key);
 
-      if (filter?.operator === FilterOperator.IsPresent) {
-        const first = options[0];
-        if (first) {
-          filtersParams[`cardSearchFilter[${key}][is-present]`] = first.value;
-        }
+      const firstOption = options[0];
+      const isOptionValueBoolean = firstOption.value === 'true' || firstOption.value === 'false';
+      if (filter?.operator === FilterOperator.IsPresent || isOptionValueBoolean) {
+        filtersParams[`cardSearchFilter[${key}][is-present]`] = firstOption.value;
       } else {
         filtersParams[`cardSearchFilter[${key}][]`] = options.map((option) => option.value);
       }
