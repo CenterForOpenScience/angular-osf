@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { registrationModerationGuard } from '@core/guards/registration-moderation.guard';
 import { authGuard } from '@osf/core/guards';
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
 import { RegistriesState } from '@osf/features/registries/store';
@@ -43,7 +44,7 @@ export const registriesRoutes: Routes = [
       },
       {
         path: ':providerId/moderation',
-        canActivate: [authGuard],
+        canActivate: [authGuard, registrationModerationGuard],
         loadChildren: () =>
           import('@osf/features/moderation/registry-moderation.routes').then((c) => c.registryModerationRoutes),
       },

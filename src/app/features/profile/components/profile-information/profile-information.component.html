@@ -21,8 +21,8 @@
       </p>
     </div>
 
-    <div class="flex flex-column gap-4 xl:align-items-end">
-      <div class="flex flex-column gap-3 md:flex-row xl:gap-4">
+    <div class="flex flex-column gap-4 xl:align-items-end xl:flex-1 min-w-0">
+      <div class="flex flex-column gap-3 md:flex-row xl:gap-4 w-full">
         @if (currentUser()?.social?.orcid) {
           <div class="flex flex-row align-items-center gap-2">
             <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
@@ -39,9 +39,9 @@
       </div>
 
       @if (isEmploymentAndEducationVisible()) {
-        <div class="flex flex-column gap-3 md:flex-row xl:gap-4 white-space-nowrap">
+        <div class="flex flex-column gap-3 md:flex-row xl:gap-4 w-full">
           @if (currentUser()?.education?.length) {
-            <div class="flex flex-row align-items-center gap-2 overflow-hidden">
+            <div class="flex flex-row align-items-center gap-2 flex-1 min-w-0">
               <i class="fas fa-landmark"></i>
               <h3 class="font-bold text-overflow-ellipsis overflow-hidden white-space-nowrap">
                 {{ currentUser()?.education?.[0]?.institution }}

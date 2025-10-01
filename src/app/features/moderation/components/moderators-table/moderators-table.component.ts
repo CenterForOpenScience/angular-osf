@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { MODERATION_PERMISSIONS } from '@osf/features/moderation/constants';
 import { ModeratorPermission } from '@osf/features/moderation/enums';
@@ -21,7 +22,7 @@ import { CustomDialogService } from '@osf/shared/services';
 
 @Component({
   selector: 'osf-moderators-table',
-  imports: [TranslatePipe, FormsModule, TableModule, Skeleton, Button, SelectComponent],
+  imports: [TranslatePipe, FormsModule, TableModule, Skeleton, Button, SelectComponent, RouterLink],
   templateUrl: './moderators-table.component.html',
   styleUrl: './moderators-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

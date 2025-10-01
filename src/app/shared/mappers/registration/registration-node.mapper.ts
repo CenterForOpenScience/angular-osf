@@ -85,6 +85,7 @@ export class RegistrationNodeMapper {
       name: provider.attributes.name,
       permissions: provider.attributes.permissions,
       type: CurrentResourceType.Registrations,
+      reviewsWorkflow: provider.attributes.reviews_workflow,
     };
   }
 }
