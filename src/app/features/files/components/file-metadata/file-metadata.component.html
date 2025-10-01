@@ -11,11 +11,13 @@
           (onClick)="downloadFileMetadata()"
         />
 
-        <p-button
-          severity="secondary"
-          (onClick)="openEditFileMetadataDialog()"
-          [label]="'files.detail.fileMetadata.edit' | translate"
-        ></p-button>
+        @if (hasWriteAccess()) {
+          <p-button
+            severity="secondary"
+            (onClick)="openEditFileMetadataDialog()"
+            [label]="'files.detail.fileMetadata.edit' | translate"
+          ></p-button>
+        }
       </div>
     }
   </div>

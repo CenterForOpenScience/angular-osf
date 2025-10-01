@@ -32,6 +32,7 @@ export class FileKeywordsComponent {
   readonly tags = select(FilesSelectors.getFileTags);
   readonly isTagsLoading = select(FilesSelectors.isFileTagsLoading);
   readonly file = select(FilesSelectors.getOpenedFile);
+  readonly hasWriteAccess = select(FilesSelectors.hasWriteAccess);
   readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   keywordControl = new FormControl('', {

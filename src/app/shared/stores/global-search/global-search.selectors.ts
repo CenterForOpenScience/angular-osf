@@ -59,7 +59,7 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getSelectedOptions(state: GlobalSearchStateModel): Record<string, FilterOption | null> {
+  static getSelectedOptions(state: GlobalSearchStateModel): Record<string, FilterOption[]> {
     return state.selectedFilterOptions;
   }
 

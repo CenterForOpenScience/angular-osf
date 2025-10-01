@@ -52,7 +52,7 @@ export class SearchResultsContainerComponent {
   searchCount = input<number>(0);
   selectedSort = input<string>('');
   selectedTab = input<number>(ResourceType.Null);
-  selectedOptions = input<Record<string, FilterOption | null>>({});
+  selectedOptions = input<Record<string, FilterOption[]>>({});
   first = input<string | null>(null);
   prev = input<string | null>(null);
   next = input<string | null>(null);

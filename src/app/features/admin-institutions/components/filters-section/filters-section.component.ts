@@ -7,7 +7,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 
-import { FilterChipsComponent, ReusableFilterComponent } from '@shared/components';
+import { FilterChipsComponent, SearchFiltersComponent } from '@shared/components';
 import { DiscoverableFilter, FilterOption } from '@shared/models';
 import {
   ClearFilterSearchResults,
@@ -23,7 +23,7 @@ import {
 
 @Component({
   selector: 'osf-institution-resource-table-filters',
-  imports: [Button, Card, FilterChipsComponent, TranslatePipe, ReusableFilterComponent],
+  imports: [Button, Card, FilterChipsComponent, TranslatePipe, SearchFiltersComponent],
   templateUrl: './filters-section.component.html',
   styleUrl: './filters-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +46,7 @@ export class FiltersSectionComponent {
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
 
-  onFilterChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption | null }): void {
+  onSelectedFilterOptionsChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption[] }): void {
     this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);
     this.actions.fetchResources();
   }
@@ -59,7 +59,7 @@ export class FiltersSectionComponent {
     this.actions.loadMoreFilterOptions(filter.key);
   }
 
-  onFilterSearchChanged(event: { searchText: string; filter: DiscoverableFilter }): void {
+  onSearchFilterOptions(event: { searchText: string; filter: DiscoverableFilter }): void {
     if (event.searchText.trim()) {
       this.actions.loadFilterOptionsWithSearch(event.filter.key, event.searchText);
     } else {
@@ -67,8 +67,11 @@ export class FiltersSectionComponent {
     }
   }
 
-  onFilterChipRemoved(filterKey: string): void {
-    this.actions.updateSelectedFilterOption(filterKey, null);
+  onFilterChipRemoved(event: { filterKey: string; optionRemoved: FilterOption }): void {
+    const updatedOptions = this.selectedFilterOptions()[event.filterKey].filter(
+      (option) => option.value === event.optionRemoved.value
+    );
+    this.actions.updateSelectedFilterOption(event.filterKey, updatedOptions);
     this.actions.fetchResources();
   }
 }

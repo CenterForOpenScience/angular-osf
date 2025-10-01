@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentProvider } from '@core/store/provider';
 import {
@@ -36,6 +37,7 @@ import { GetRegistries, RegistriesSelectors } from '../../store';
     ResourceCardComponent,
     LoadingSpinnerComponent,
     SubHeaderComponent,
+    ScheduledBannerComponent,
   ],
   templateUrl: './registries-landing.component.html',
   styleUrl: './registries-landing.component.scss',
