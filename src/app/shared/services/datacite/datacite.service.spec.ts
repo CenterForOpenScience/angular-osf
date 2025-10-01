@@ -5,6 +5,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { Identifier } from '@shared/models';
 import { DataciteEvent } from '@shared/models/datacite/datacite-event.enum';
 
@@ -59,18 +60,23 @@ function assertSuccess(
 
 describe('DataciteService', () => {
   let service: DataciteService;
+  let sentry: jest.Mocked<any>;
   let httpMock: HttpTestingController;
 
   const dataciteTrackerAddress = 'https://tracker.test';
   const apiDomainUrl = 'https://osf.io';
   const dataciteTrackerRepoId = 'repo-123';
   describe('with proper configuration', () => {
+    sentry = {
+      captureException: jest.fn(),
+    };
     beforeEach(() => {
       TestBed.configureTestingModule({
         providers: [
           DataciteService,
           provideHttpClient(),
           provideHttpClientTesting(),
+          { provide: SENTRY_TOKEN, useValue: sentry },
           {
             provide: ENVIRONMENT,
             useValue: {
@@ -156,6 +162,35 @@ describe('DataciteService', () => {
 
       // Second request: POST to datacite tracker
       assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.DOWNLOAD);
+    });
+
+    it('should log error to sentry', (done: jest.DoneCallback) => {
+      const doi = 'qwerty';
+      const event = 'view';
+      service.logIdentifiableView(buildObservable(doi)).subscribe({
+        next: () => {},
+        error: () => {
+          throw new Error('The error should have been caught and suppressed by the service.');
+        },
+        complete: () => {
+          expect(sentry.captureException).toHaveBeenCalled();
+
+          done();
+        },
+      });
+
+      const req = httpMock.expectOne(dataciteTrackerAddress);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({
+        n: event,
+        u: window.location.href,
+        i: dataciteTrackerRepoId,
+        p: doi,
+      });
+      expect(req.request.headers.get('Content-Type')).toBe('application/json');
+
+      const mockError = new ProgressEvent('Internal Server Error');
+      req.error(mockError);
     });
   });
 
