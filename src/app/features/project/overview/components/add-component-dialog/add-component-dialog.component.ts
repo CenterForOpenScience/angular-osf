@@ -86,10 +86,10 @@ export class AddComponentDialogComponent implements OnInit {
       const storageLocations = this.storageLocations();
       if (!storageLocations?.length) return;
 
-      const currentStorageLocation = this.componentForm.controls[ComponentFormControls.StorageLocation].value;
-      if (!currentStorageLocation) {
-        const defaultRegion = this.currentUser()?.defaultRegionId || storageLocations[0].id;
-        this.componentForm.controls[ComponentFormControls.StorageLocation].setValue(defaultRegion);
+      const storageLocationControl = this.componentForm.controls[ComponentFormControls.StorageLocation];
+      if (!storageLocationControl.value) {
+        const defaultRegion = this.currentUser()?.defaultRegionId ?? storageLocations[0].id;
+        storageLocationControl.setValue(defaultRegion);
       }
     });
   }
