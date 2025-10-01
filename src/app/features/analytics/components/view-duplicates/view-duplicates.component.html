@@ -41,7 +41,7 @@
             </div>
           </div>
 
-          <div class="component-name flex flex-column gap-2">
+          <div class="flex flex-column gap-2">
             <div class="flex flex-wrap align-items-center gap-1">
               <span class="font-bold">{{ 'common.labels.forked' | translate }}:</span>
               <p>{{ duplicate.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
@@ -58,12 +58,11 @@
               <osf-contributors-list [contributors]="duplicate.contributors"></osf-contributors-list>
             </div>
 
-            <div class="component-description">
-              <div class="flex flex-wrap align-items-baseline gap-1">
-                <span class="font-bold">{{ 'common.labels.description' | translate }}:</span>
-                <osf-truncated-text [text]="duplicate.description" />
-              </div>
-            </div>
+            @if (duplicate.description) {
+              <osf-truncated-text
+                [text]="('resourceCard.labels.descriptionBold' | translate) + duplicate.description"
+              />
+            }
           </div>
           <p-button
             [label]="'common.buttons.view' | translate"

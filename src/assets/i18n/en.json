@@ -21,7 +21,6 @@
       "confirm": "Confirm",
       "disconnect": "Disconnect",
       "revert": "Revert",
-
       "next": "Next",
       "back": "Back",
       "continue": "Continue",
@@ -2650,6 +2649,7 @@
       "dateModified": "Date modified",
       "dateRegistered": "Date registered",
       "description": "Description:",
+      "descriptionBold": "<span class=\"font-bold\">Description: </span>",
       "provider": "Provider:",
       "license": "License:",
       "context": "Context",

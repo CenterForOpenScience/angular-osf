@@ -52,13 +52,17 @@
               </div>
             </div>
 
-            <div class="component-name flex flex-wrap gap-2">
-              <osf-contributors-list [contributors]="component.contributors"></osf-contributors-list>
+            <div class="flex flex-wrap gap-1">
+              <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
 
-              <div class="component-description">
-                <osf-truncated-text [text]="component.description" />
-              </div>
+              <osf-contributors-list [contributors]="component.contributors"></osf-contributors-list>
             </div>
+
+            @if (component.description) {
+              <osf-truncated-text
+                [text]="('resourceCard.labels.descriptionBold' | translate) + component.description"
+              />
+            }
           </div>
         }
       } @else {
