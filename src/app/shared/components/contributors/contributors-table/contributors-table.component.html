@@ -17,54 +17,20 @@
       <th>
         <div class="flex align-items-center">
           <span>{{ 'project.contributors.table.headers.permissions' | translate }}</span>
-          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="permissionsTooltip" tooltipPosition="top"></i>
-          <ng-template #permissionsTooltip>
-            <div class="flex flex-column row-gap-3">
-              <h2>{{ 'project.contributors.permissionInfo.title' | translate }}</h2>
 
-              <div class="inside-list">
-                <p class="font-bold">{{ 'project.contributors.permissions.read' | translate }}</p>
-                <ul class="font-normal ml-4">
-                  <li>{{ 'project.contributors.permissionInfo.viewProjectContent' | translate }}</li>
-                </ul>
-              </div>
-
-              <div class="inside-list">
-                <p class="font-bold">{{ 'project.contributors.permissions.readAndWrite' | translate }}</p>
-                <ul class="font-normal ml-4">
-                  <li>{{ 'project.contributors.permissionInfo.read' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.addComponents' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.editContent' | translate }}</li>
-                </ul>
-              </div>
-
-              <div class="inside-list">
-                <p class="font-bold">{{ 'project.contributors.permissions.administrator' | translate }}</p>
-                <ul class="font-normal ml-4">
-                  <li>{{ 'project.contributors.permissionInfo.readWrite' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.manageContributors' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.deleteRegister' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.publicPrivate' | translate }}</li>
-                </ul>
-              </div>
-            </div>
-          </ng-template>
+          @if (showInfo()) {
+            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="permissionsTooltip" tooltipPosition="top"></i>
+          }
         </div>
       </th>
 
       <th>
         <div class="flex align-items-center justify-content-center">
           <span>{{ 'project.contributors.table.headers.contributor' | translate }}</span>
-          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="contributorTooltip" tooltipPosition="top"></i>
-          <ng-template #contributorTooltip>
-            <div class="flex flex-column row-gap-3">
-              <h2>{{ 'project.contributors.bibliographicContributorInfo.heading' | translate }}</h2>
 
-              <span>
-                {{ 'project.contributors.bibliographicContributorInfo.description' | translate }}
-              </span>
-            </div>
-          </ng-template>
+          @if (showInfo()) {
+            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="contributorTooltip" tooltipPosition="top"></i>
+          }
         </div>
       </th>
 
@@ -72,14 +38,10 @@
         <th>
           <div class="flex align-items-center justify-content-center">
             <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
-            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
-            <ng-template #curatorTooltip>
-              <div class="flex flex-column row-gap-3">
-                <h2>{{ 'project.contributors.curatorInfo.heading' | translate }}</h2>
 
-                <span>{{ 'project.contributors.curatorInfo.description' | translate }}</span>
-              </div>
-            </ng-template>
+            @if (showInfo()) {
+              <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
+            }
           </div>
         </th>
       }
@@ -212,3 +174,96 @@
     </tr>
   </ng-template>
 </p-table>
+
+<ng-template #permissionsTooltip>
+  <div class="flex flex-column row-gap-3">
+    <h2>{{ 'project.contributors.permissionInfo.title' | translate }}</h2>
+
+    <div class="inside-list">
+      <p class="font-bold">{{ 'project.contributors.permissions.read' | translate }}</p>
+      <ul class="font-normal ml-4">
+        <li>
+          {{
+            (isProject() ? 'project.contributors.permissionInfo.viewProjectContent' : 'viewRegistrationContent')
+              | translate
+          }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="inside-list">
+      <p class="font-bold">{{ 'project.contributors.permissions.readAndWrite' | translate }}</p>
+      <ul class="font-normal ml-4">
+        <li>{{ 'project.contributors.permissionInfo.read' | translate }}</li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.addComponents'
+              : 'project.contributors.permissionInfo.editMetadata'
+            ) | translate
+          }}
+        </li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.editContent'
+              : 'project.contributors.permissionInfo.addResourcesLinks'
+            ) | translate
+          }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="inside-list">
+      <p class="font-bold">{{ 'project.contributors.permissions.administrator' | translate }}</p>
+      <ul class="font-normal ml-4">
+        <li>{{ 'project.contributors.permissionInfo.readWrite' | translate }}</li>
+        <li>{{ 'project.contributors.permissionInfo.manageContributors' | translate }}</li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.deleteRegister'
+              : 'project.contributors.permissionInfo.withdrawRegistration'
+            ) | translate
+          }}
+        </li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.publicPrivate'
+              : 'project.contributors.permissionInfo.endEmbargoEarly'
+            ) | translate
+          }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #contributorTooltip>
+  <div class="flex flex-column row-gap-3">
+    <h2>{{ 'project.contributors.bibliographicContributorInfo.heading' | translate }}</h2>
+
+    <span>
+      {{
+        (isProject()
+          ? 'project.contributors.bibliographicContributorInfo.projectDescription'
+          : 'project.contributors.bibliographicContributorInfo.registrationDescription'
+        ) | translate
+      }}
+    </span>
+  </div>
+</ng-template>
+
+<ng-template #curatorTooltip>
+  <div class="flex flex-column row-gap-3">
+    <h2>{{ 'project.contributors.curatorInfo.heading' | translate }}</h2>
+
+    <span>{{
+      (isProject()
+        ? 'project.contributors.curatorInfo.projectDescription'
+        : 'project.contributors.curatorInfo.registrationDescription'
+      ) | translate
+    }}</span>
+  </div>
+</ng-template>

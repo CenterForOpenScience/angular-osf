@@ -32,9 +32,9 @@
     @if (item.id) {
       <tr>
         <td>
-          <p class="flex align-items-center gap-2">
-            <span>{{ item.fullName }}</span>
-          </p>
+          <a class="font-bold" [routerLink]="['/', item.userId]">
+            {{ item.fullName }}
+          </a>
         </td>
         <td>
           <div>

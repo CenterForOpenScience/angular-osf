@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { ResourceType } from '@osf/shared/enums';
 import { Identifier } from '@osf/shared/models';
@@ -22,5 +22,6 @@ export class MetadataPublicationDoiComponent {
   publicationDoi = input<string | null>(null);
   resourceType = input<ResourceType>(ResourceType.Project);
   doiHost = 'https://doi.org/';
-  ResourceType = ResourceType;
+
+  isProject = computed(() => this.resourceType() === ResourceType.Project);
 }
