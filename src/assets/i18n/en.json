@@ -13,6 +13,7 @@
       "close": "Close",
       "download": "Download",
       "copy": "Copy",
+      "copyTo": "Copy to",
       "move": "Move",
       "rename": "Rename",
       "share": "Share",
@@ -1091,7 +1092,7 @@
         "pathError": "Path is not specified!"
       },
       "copyFile": {
-        "title": "Copy file"
+        "title": "Select location to copy file to"
       },
       "deleteFile": {
         "title": "Delete File",

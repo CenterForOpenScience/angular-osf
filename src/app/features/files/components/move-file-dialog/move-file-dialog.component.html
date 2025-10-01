@@ -4,9 +4,7 @@
   </div>
 } @else {
   <div class="flex flex-column gap-2">
-    <div class="flex gap-2">
-      <h2 class="font-normal">{{ storageName }}</h2>
-    </div>
+    <h2 class="font-normal">{{ storageName }}</h2>
 
     <div class="files-table flex flex-column">
       @if (previousFolder()) {
@@ -71,7 +69,7 @@
 
   <p-button
     [disabled]="isFolderSame() || isLoading() || isFilesUpdating()"
-    [label]="(config.data.action === 'move' ? 'common.buttons.move' : 'common.buttons.copy') | translate"
+    [label]="(isMoveAction ? 'common.buttons.move' : 'common.buttons.copy') | translate"
     (onClick)="moveFile()"
   ></p-button>
 </div>
