@@ -15,7 +15,11 @@
 >
   <ng-template #header>
     <tr>
-      <th></th>
+      <th>
+        @if (deactivatedContributors()) {
+          <osf-info-icon [tooltipText]="'project.contributors.reorderDeactivateTooltip'"></osf-info-icon>
+        }
+      </th>
       <th>{{ 'project.contributors.table.headers.name' | translate }}</th>
       <th>
         <div class="flex align-items-center">
@@ -62,9 +66,11 @@
     @if (contributor.id) {
       <tr [pReorderableRow]="index" class="select-none">
         <td>
-          <div pReorderableRowHandle>
-            <osf-icon [iconClass]="'fas fa-bars'"></osf-icon>
-          </div>
+          @if (!deactivatedContributors()) {
+            <div pReorderableRowHandle>
+              <osf-icon [iconClass]="'fas fa-bars'"></osf-icon>
+            </div>
+          }
         </td>
 
         <td>
