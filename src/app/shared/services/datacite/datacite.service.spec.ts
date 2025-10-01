@@ -89,7 +89,7 @@ describe('DataciteService', () => {
     beforeEach(() => {
       Object.defineProperty(navigator, 'sendBeacon', {
         configurable: true,
-        value: jest.fn(() => false), // mock implementation that returns true
+        value: jest.fn(() => false),
       });
       TestBed.configureTestingModule({
         providers: [

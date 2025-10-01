@@ -103,11 +103,7 @@ export class DataciteService {
           headers,
           context,
         })
-        .pipe(
-          map(() => {
-            return;
-          })
-        );
+        .pipe(map(() => undefined));
     }
   }
 }
