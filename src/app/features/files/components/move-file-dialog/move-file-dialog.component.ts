@@ -70,14 +70,7 @@ export class MoveFileDialogComponent {
   first = 0;
   filesLink = '';
 
-  readonly isFolderSame = computed(() => {
-    const stack = this.foldersStack();
-    if (stack.length === 0) {
-      return true;
-    }
-    const parentFolder = stack[stack.length - 1];
-    return this.currentFolder()?.id === parentFolder?.id;
-  });
+  readonly isFolderSame = computed(() => this.currentFolder()?.id === this.config.data.fileFolderId);
 
   get isMoveAction() {
     return this.config.data.action === 'move';

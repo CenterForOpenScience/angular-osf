@@ -371,6 +371,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
               action: action,
               storageName: this.storage()?.label,
               foldersStack: [...this.foldersStack],
+              fileFolderId: this.currentFolder()?.id,
             },
           })
           .onClose.subscribe((foldersStack) => {
@@ -390,7 +391,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   copyToClipboard(embedHtml: string): void {
     this.clipboard.copy(embedHtml);
-    this.toastService.showSuccess('files.toast.detail.copiedToClipboard');
+    this.toastService.showSuccess('files.detail.toast.copiedToClipboard');
   }
 
   async dropNode(event: TreeNodeDropEvent) {
