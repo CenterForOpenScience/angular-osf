@@ -16,6 +16,9 @@ import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
+import { AnalyticsService } from '@shared/services/analytics.service';
+
+
 @Component({
   selector: 'osf-root',
   imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent],
@@ -24,6 +27,7 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
+  private readonly analyticsService = inject(AnalyticsService);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customDialogService = inject(CustomDialogService);
@@ -57,7 +61,27 @@ export class AppComponent implements OnInit {
             event: 'page',
             pageName: event.urlAfterRedirects,
           });
+
+           this.analyticsService.sendCountedUsage({
+            data: {
+              type: 'counted-usage',
+              attributes: {
+                item_guid: "",
+                action_labels: [
+                  "web",
+                  "view"
+                ],
+                pageview_info: {
+                  page_url: document.URL,
+                  page_title: document.title,
+                  referer_url: document.referrer,
+                  route_name: ""
+                }
+              },
+            },
+          });
         });
+
     }
   }
 
