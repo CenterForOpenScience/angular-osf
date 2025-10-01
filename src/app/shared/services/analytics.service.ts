@@ -1,20 +1,35 @@
-import {inject, Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-  private apiUrl = 'https://api.osf.io/_/metrics/events/counted_usage';
+  private readonly apiUrl = 'https://api.osf.io/_/metrics/events/counted_usage';
   private readonly http: HttpClient = inject(HttpClient);
 
+  async sendCountedUsage(guid: string, routeName: string): Promise<void> {
+    const payload = {
+      data: {
+        type: 'counted-usage',
+        attributes: {
+          item_guid: guid,
+          action_labels: ['web', 'view'],
+          pageview_info: {
+            page_url: document.URL,
+            page_title: document.title,
+            referer_url: document.referrer,
+            route_name: `angular-osf-web.${routeName}`,
+          },
+        },
+      },
+    };
 
-  async sendCountedUsage(payload: object): Promise<void> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/vnd.api+json',
     });
 
     this.http.post(this.apiUrl, payload, { headers }).subscribe({
-        next: () => console.log('Usage event sent', payload),
-        error: err => console.error('Error sending usage event', err),
-      });
+      next: () => console.log('Usage event sent', payload),
+      error: (err) => console.error('Error sending usage event', err),
+    });
   }
 }

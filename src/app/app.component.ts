@@ -11,13 +11,11 @@ import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';
 import { CustomDialogService } from '@shared/services';
+import { AnalyticsService } from '@shared/services/analytics.service';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
-
-import { AnalyticsService } from '@shared/services/analytics.service';
-
 
 @Component({
   selector: 'osf-root',
@@ -61,27 +59,7 @@ export class AppComponent implements OnInit {
             event: 'page',
             pageName: event.urlAfterRedirects,
           });
-
-           this.analyticsService.sendCountedUsage({
-            data: {
-              type: 'counted-usage',
-              attributes: {
-                item_guid: "",
-                action_labels: [
-                  "web",
-                  "view"
-                ],
-                pageview_info: {
-                  page_url: document.URL,
-                  page_title: document.title,
-                  referer_url: document.referrer,
-                  route_name: ""
-                }
-              },
-            },
-          });
         });
-
     }
   }
 

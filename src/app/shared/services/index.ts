@@ -1,5 +1,6 @@
 export * from './activity-logs';
 export * from './addons';
+export { AnalyticsService } from './analytics.service';
 export { BookmarksService } from './bookmarks.service';
 export { BrandService } from './brand.service';
 export { CollectionsService } from './collections.service';
@@ -29,4 +30,3 @@ export { SubjectsService } from './subjects.service';
 export { ToastService } from './toast.service';
 export { ViewOnlyLinksService } from './view-only-links.service';
 export { WikiService } from './wiki.service';
-export { AnalyticsService } from './analytics.service';

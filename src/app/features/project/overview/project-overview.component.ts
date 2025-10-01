@@ -56,6 +56,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
@@ -253,6 +254,8 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
+  readonly analyticsService = inject(AnalyticsService);
+
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
@@ -264,6 +267,9 @@ export class ProjectOverviewComponent implements OnInit {
         const rootParentId = currentProject.rootParentId ?? currentProject.id;
         this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
         this.actions.getSubjects(currentProject.id, ResourceType.Project);
+        if (currentProject.isPublic) {
+          this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail');
+        }
       }
     });
   }
