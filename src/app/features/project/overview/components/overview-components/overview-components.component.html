@@ -24,7 +24,7 @@
                 <a class="component-title" [href]="component.id">{{ component.title }}</a>
               </h2>
 
-              @if (!isCurrentUserContributor(component)) {
+              @if (isCurrentUserContributor(component)) {
                 <div>
                   <p-button
                     severity="contrast"
