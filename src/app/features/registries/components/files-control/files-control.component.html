@@ -33,22 +33,11 @@
       </div>
     }
 
-    <div class="flex absolute">
-      <p-dialog
-        [header]="'files.dialogs.uploadFile.title' | translate"
-        [modal]="true"
-        [(visible)]="fileIsUploading"
-        class="upload-dialog"
-      >
-        <div class="flex flex-column align-items-center justify-content-center gap-3 w-full">
-          <span class="p-text-secondary filename">{{ fileName() }}</span>
-          <div class="w-6">
-            <osf-loading-spinner></osf-loading-spinner>
-          </div>
-          <p>{{ progress() }} %</p>
-        </div>
-      </p-dialog>
-    </div>
+    <osf-file-upload-dialog
+      [(visible)]="fileIsUploading"
+      [fileName]="fileName()"
+      [progress]="progress()"
+    ></osf-file-upload-dialog>
 
     <osf-files-tree
       [files]="files()"

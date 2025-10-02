@@ -138,10 +138,8 @@ export class StorageItemSelectorComponent implements OnInit {
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.clearOperationInvocations();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearOperationInvocations();
     });
   }
 

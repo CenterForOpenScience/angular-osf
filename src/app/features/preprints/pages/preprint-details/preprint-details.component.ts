@@ -13,6 +13,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   HostBinding,
   inject,
   OnDestroy,
@@ -50,6 +51,7 @@ import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/prepri
 import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
 import { CustomDialogService, MetaTagsService } from '@shared/services';
+import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
@@ -152,8 +154,16 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     return actions[0];
   });
 
+  private readonly analyticsService = inject(AnalyticsService);
+
   constructor() {
     this.helpScoutService.setResourceType('preprint');
+    effect(() => {
+      const currentPreprint = this.preprint();
+      if (currentPreprint && currentPreprint.isPublic) {
+        this.analyticsService.sendCountedUsage(currentPreprint.id, 'preprint.detail').subscribe();
+      }
+    });
   }
 
   private currentUserIsAdmin = computed(() => {

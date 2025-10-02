@@ -12,6 +12,7 @@ export { EducationHistoryDialogComponent } from './education-history-dialog/educ
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
 export { EmploymentHistoryDialogComponent } from './employment-history-dialog/employment-history-dialog.component';
 export { FileMenuComponent } from './file-menu/file-menu.component';
+export { FileUploadDialogComponent } from './file-upload-dialog/file-upload-dialog.component';
 export { FilesTreeComponent } from './files-tree/files-tree.component';
 export { FilterChipsComponent } from './filter-chips/filter-chips.component';
 export { FormSelectComponent } from './form-select/form-select.component';

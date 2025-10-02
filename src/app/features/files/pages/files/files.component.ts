@@ -4,7 +4,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
@@ -18,7 +17,6 @@ import {
   forkJoin,
   Observable,
   of,
-  skip,
   switchMap,
   take,
 } from 'rxjs';
@@ -63,6 +61,7 @@ import { getViewOnlyParamFromUrl, hasViewOnlyParam, IS_MEDIUM } from '@osf/share
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
+  FileUploadDialogComponent,
   FormSelectComponent,
   GoogleFilePickerComponent,
   LoadingSpinnerComponent,
@@ -82,7 +81,7 @@ import { FilesSelectors } from '../../store';
   selector: 'osf-files',
   imports: [
     Button,
-    Dialog,
+    FileUploadDialogComponent,
     FilesTreeComponent,
     FormSelectComponent,
     FormsModule,
@@ -104,6 +103,7 @@ import { FilesSelectors } from '../../store';
 })
 export class FilesComponent {
   googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
+  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
 
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
@@ -297,6 +297,7 @@ export class FilesComponent {
         }
         this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
+        this.filesTree()?.resetPagination();
       }
     });
 
@@ -307,25 +308,27 @@ export class FilesComponent {
     });
 
     this.searchControl.valueChanges
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
+      .pipe(takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
+        this.filesTree()?.resetPagination();
+
         if (!this.isFolderOpening()) {
           this.updateFilesList();
         }
       });
 
-    this.sortControl.valueChanges.pipe(skip(1), takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
+    this.sortControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
       this.actions.setSort(sort ?? '');
+      this.filesTree()?.resetPagination();
+
       if (!this.isFolderOpening()) {
         this.updateFilesList();
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.resetState();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.resetState();
     });
   }
 
@@ -491,7 +494,7 @@ export class FilesComponent {
     });
   }
 
-  public updateFilesList = (): Observable<void> => {
+  updateFilesList(): Observable<void> {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
       this.filesTreeActions.setFilesIsLoading?.(true);
@@ -499,7 +502,7 @@ export class FilesComponent {
     }
 
     return EMPTY;
-  };
+  }
 
   folderIsOpening(value: boolean): void {
     this.isFolderOpening.set(value);
