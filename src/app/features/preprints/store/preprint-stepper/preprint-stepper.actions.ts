@@ -50,6 +50,12 @@ export class UploadFile {
   constructor(public file: File) {}
 }
 
+export class UpdatePrimaryFileRelationship {
+  static readonly type = '[Preprint Stepper] Update Primary File Relationship';
+
+  constructor(public fileId: string) {}
+}
+
 export class ReuploadFile {
   static readonly type = '[Preprint Stepper] Reupload File';
 

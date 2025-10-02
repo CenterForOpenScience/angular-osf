@@ -1,4 +1,4 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext, Store } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { EMPTY, filter, forkJoin, of, switchMap, tap } from 'rxjs';
@@ -44,6 +44,7 @@ import {
   SetSelectedPreprintProviderId,
   SubmitPreprint,
   UpdatePreprint,
+  UpdatePrimaryFileRelationship,
   UploadFile,
 } from './';
 
@@ -96,6 +97,7 @@ const DefaultState: PreprintStepperStateModel = {
 })
 @Injectable()
 export class PreprintStepperState {
+  private store = inject(Store);
   private preprintsService = inject(PreprintsService);
   private preprintFilesService = inject(PreprintFilesService);
   private fileService = inject(FilesService);
@@ -175,21 +177,31 @@ export class PreprintStepperState {
         const file = event.body!.data;
         const createdFileId = file.id.split('/')[1];
 
-        return this.preprintFilesService.updateFileRelationship(state.preprint.data!.id, createdFileId).pipe(
-          tap((preprint: Preprint) => {
-            ctx.patchState({
-              preprint: {
-                ...ctx.getState().preprint,
-                data: {
-                  ...ctx.getState().preprint.data!,
-                  primaryFileId: preprint.primaryFileId,
-                },
-              },
-            });
-          }),
-          catchError((error) => handleSectionError(ctx, 'preprint', error))
-        );
+        return this.store.dispatch(new UpdatePrimaryFileRelationship(createdFileId));
       })
+    );
+  }
+
+  @Action(UpdatePrimaryFileRelationship)
+  updatePrimaryFileRelationship(ctx: StateContext<PreprintStepperStateModel>, action: UpdatePrimaryFileRelationship) {
+    const state = ctx.getState();
+
+    ctx.setState(patch({ preprint: patch({ isSubmitting: true }) }));
+
+    return this.preprintFilesService.updateFileRelationship(state.preprint.data!.id, action.fileId).pipe(
+      tap((preprint: Preprint) => {
+        ctx.patchState({
+          preprint: {
+            ...ctx.getState().preprint,
+            data: {
+              ...ctx.getState().preprint.data!,
+              primaryFileId: preprint.primaryFileId,
+            },
+            isSubmitting: false,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
   }
 
