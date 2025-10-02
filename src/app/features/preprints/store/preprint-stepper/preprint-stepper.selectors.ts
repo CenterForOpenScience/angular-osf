@@ -87,4 +87,9 @@ export class PreprintStepperSelectors {
   static getCurrentFolder(state: PreprintStepperStateModel) {
     return state.currentFolder;
   }
+
+  @Selector([PreprintStepperState])
+  static getInstitutionsChanged(state: PreprintStepperStateModel) {
+    return state.institutionsChanged;
+  }
 }
