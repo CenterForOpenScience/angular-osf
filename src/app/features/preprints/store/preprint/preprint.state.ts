@@ -1,4 +1,4 @@
-import { Action, State, StateContext, Store } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { append, patch } from '@ngxs/store/operators';
 
 import { tap } from 'rxjs';
@@ -32,7 +32,6 @@ import { DefaultState, PreprintStateModel } from './preprint.model';
 })
 @Injectable()
 export class PreprintState {
-  private store = inject(Store);
   private preprintsService = inject(PreprintsService);
   private fileService = inject(FilesService);
 
@@ -73,9 +72,9 @@ export class PreprintState {
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isLoading: false, data: preprint }) }));
         if (!preprint.dateWithdrawn) {
-          this.store.dispatch(new FetchPreprintFile());
+          ctx.dispatch(new FetchPreprintFile());
         }
-        this.store.dispatch(new FetchPreprintVersionIds());
+        ctx.dispatch(new FetchPreprintVersionIds());
       }),
       catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
@@ -90,7 +89,7 @@ export class PreprintState {
     return this.fileService.getFileById(preprintFileId!).pipe(
       tap((file) => {
         ctx.setState(patch({ preprintFile: patch({ isLoading: false, data: file }) }));
-        this.store.dispatch(new FetchPreprintFileVersions());
+        ctx.dispatch(new FetchPreprintFileVersions());
       }),
       catchError((error) => handleSectionError(ctx, 'preprintFile', error))
     );
