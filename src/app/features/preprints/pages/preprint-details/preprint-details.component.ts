@@ -294,7 +294,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         this.fetchPreprint(this.preprintId());
       },
     });
-    this.dataciteService.logIdentifiableView(this.preprint$).subscribe();
+    this.dataciteService.logIdentifiableView(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   ngOnDestroy() {

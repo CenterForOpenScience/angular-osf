@@ -73,7 +73,7 @@ export class RegistriesContributorsComponent implements OnInit {
   });
 
   initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal([]);
+  contributors = signal<ContributorModel[]>([]);
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
 
@@ -91,7 +91,7 @@ export class RegistriesContributorsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+      this.contributors.set(structuredClone(this.initialContributors()));
     });
   }
 
@@ -100,7 +100,6 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   onFocusOut() {
-    // [NM] TODO: make request to update contributor if changed
     if (this.control()) {
       this.control().markAsTouched();
       this.control().markAsDirty();
@@ -109,7 +108,7 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   cancel() {
-    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    this.contributors.set(structuredClone(this.initialContributors()));
   }
 
   save() {
