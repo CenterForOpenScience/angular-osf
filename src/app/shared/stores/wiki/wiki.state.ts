@@ -139,9 +139,15 @@ export class WikiState {
 
     return this.wikiService.getWikiList(action.resourceType, action.resourceId).pipe(
       tap((response) => {
+        const wiki = response.wikis.sort((a, b) => {
+          if (a.name === 'Home') return -1;
+          if (b.name === 'Home') return 1;
+          return a.name.localeCompare(b.name);
+        });
+
         ctx.patchState({
           wikiList: {
-            data: [...response.wikis],
+            data: [...wiki],
             isLoading: false,
             error: null,
           },

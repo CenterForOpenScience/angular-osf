@@ -129,6 +129,7 @@ export class ProjectOverviewComponent implements OnInit {
   isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
   hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
+  isWikiEnabled = select(ProjectOverviewSelectors.isWikiEnabled);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
