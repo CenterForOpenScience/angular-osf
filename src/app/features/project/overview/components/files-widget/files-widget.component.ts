@@ -220,12 +220,12 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    let url = file.links?.html ?? '';
-    const viewOnlyParam = this.hasViewOnly();
-    if (viewOnlyParam) {
-      const separator = url.includes('?') ? '&' : '?';
-      url = `${url}${separator}view_only=${getViewOnlyParamFromUrl(this.router.url)}`;
-    }
+    const extras = this.hasViewOnly()
+      ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
+      : undefined;
+
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/', file.guid], extras));
+
     window.open(url, '_blank');
   }
 

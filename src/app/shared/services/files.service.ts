@@ -185,16 +185,14 @@ export class FilesService {
       .pipe(map((response) => MapFile(response.data)));
   }
 
-  getFileGuid(id: string, storageId?: string): Observable<OsfFile> {
+  getFileGuid(id: string): Observable<OsfFile> {
     const params = {
       create_guid: 'true',
     };
-    let url = `${this.apiUrl}/files/${id}/`;
-    if (storageId) {
-      url = `${this.apiUrl}/files/${storageId}/${id}/`;
-    }
 
-    return this.jsonApiService.get<GetFileResponse>(url, params).pipe(map((response) => MapFile(response.data)));
+    return this.jsonApiService
+      .get<GetFileResponse>(`${this.apiUrl}/files/${id}/`, params)
+      .pipe(map((response) => MapFile(response.data)));
   }
 
   getFileById(fileGuid: string): Observable<OsfFile> {
