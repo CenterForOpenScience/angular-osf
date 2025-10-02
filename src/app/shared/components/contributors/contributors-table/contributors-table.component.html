@@ -199,8 +199,10 @@
       <ul class="font-normal ml-4">
         <li>
           {{
-            (isProject() ? 'project.contributors.permissionInfo.viewProjectContent' : 'viewRegistrationContent')
-              | translate
+            (isProject()
+              ? 'project.contributors.permissionInfo.viewProjectContent'
+              : 'project.contributors.permissionInfo.viewRegistrationContent'
+            ) | translate
           }}
         </li>
       </ul>
