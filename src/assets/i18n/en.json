@@ -544,6 +544,7 @@
       "searchRegistrationPlaceholder": "Search Registration Contributors",
       "permissionFilter": "Filter by permission",
       "bibliographyFilter": "Bibliography",
+      "reorderDeactivateTooltip": "Remove deactivated contributors in order to enable reordering.",
       "permissions": {
         "administrator": "Administrator",
         "readAndWrite": "Read + Write",

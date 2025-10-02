@@ -18,6 +18,7 @@ import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/mod
 import { CustomDialogService } from '@osf/shared/services';
 
 import { IconComponent } from '../../icon/icon.component';
+import { InfoIconComponent } from '../../info-icon/info-icon.component';
 
 @Component({
   selector: 'osf-contributors-table',
@@ -31,6 +32,7 @@ import { IconComponent } from '../../icon/icon.component';
     Button,
     SelectComponent,
     IconComponent,
+    InfoIconComponent,
   ],
   templateUrl: './contributors-table.component.html',
   styleUrl: './contributors-table.component.scss',
@@ -59,6 +61,8 @@ export class ContributorsTableComponent {
   skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);
 
   isProject = computed(() => this.resourceType() === ResourceType.Project);
+
+  deactivatedContributors = computed(() => this.contributors().some((contributor) => contributor.deactivated));
 
   canRemoveContributor = computed(() => {
     const contributors = this.contributors();

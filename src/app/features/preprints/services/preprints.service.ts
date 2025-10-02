@@ -166,7 +166,7 @@ export class PreprintsService {
   }
 
   getPreprintReviewActions(preprintId: string) {
-    const baseUrl = `${this.apiUrl}/preprints/${preprintId}/review_actions/`;
+    const baseUrl = `${this.apiUrl}/preprints/${preprintId}/review_actions/?embed=creator`;
 
     return this.jsonApiService
       .get<ReviewActionsResponseJsonApi>(baseUrl)

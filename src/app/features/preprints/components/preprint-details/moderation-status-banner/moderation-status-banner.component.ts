@@ -106,9 +106,9 @@ export class ModerationStatusBannerComponent {
     return recentActivityMessageByState[ReviewsState.PendingWithdrawal];
   });
 
-  actionCreatorName = computed(() => this.latestAction()?.creator.name);
+  actionCreatorName = computed(() => this.latestAction()?.creator?.name);
   actionCreatorLink = computed(() => `${this.webUrl}/${this.actionCreatorId()}`);
-  actionCreatorId = computed(() => this.latestAction()?.creator.id);
+  actionCreatorId = computed(() => this.latestAction()?.creator?.id);
   withdrawalRequesterName = computed(() => this.latestWithdrawalRequest()?.creator.name);
   withdrawalRequesterId = computed(() => this.latestWithdrawalRequest()?.creator.id);
 }
