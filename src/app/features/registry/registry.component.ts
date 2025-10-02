@@ -61,7 +61,7 @@ export class RegistryComponent implements OnDestroy {
     effect(() => {
       const currentRegistry = this.registry();
       if (currentRegistry && currentRegistry.isPublic) {
-        this.analyticsService.sendCountedUsage(currentRegistry.id, 'registry.detail');
+        this.analyticsService.sendCountedUsage(currentRegistry.id, 'registry.detail').subscribe();
       }
     });
 

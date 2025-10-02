@@ -1,18 +1,20 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { JsonApiService } from '@osf/shared/services';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
-  private readonly http: HttpClient = inject(HttpClient);
+  private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
 
-  apiDomainUrl() {
+  get apiDomainUrl() {
     return `${this.environment.apiDomainUrl}/_/metrics/events/counted_usage/`;
   }
 
-  async sendCountedUsage(guid: string, routeName: string): Promise<void> {
+  sendCountedUsage(guid: string, routeName: string): Observable<void> {
     const payload = {
       data: {
         type: 'counted-usage',
@@ -29,12 +31,6 @@ export class AnalyticsService {
       },
     };
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/vnd.api+json',
-    });
-    this.http.post(this.apiDomainUrl(), payload, { headers }).subscribe({
-      next: () => console.log('Usage event sent', payload),
-      error: (err) => console.error('Error sending usage event', err),
-    });
+    return this.jsonApiService.post<void>(this.apiDomainUrl, payload);
   }
 }

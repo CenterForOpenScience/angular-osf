@@ -11,7 +11,6 @@ import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';
 import { CustomDialogService } from '@shared/services';
-import { AnalyticsService } from '@shared/services/analytics.service';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 
@@ -25,7 +24,6 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
-  private readonly analyticsService = inject(AnalyticsService);
   private readonly googleTagManagerService = inject(GoogleTagManagerService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customDialogService = inject(CustomDialogService);

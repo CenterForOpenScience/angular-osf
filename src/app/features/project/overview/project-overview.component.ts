@@ -268,7 +268,7 @@ export class ProjectOverviewComponent implements OnInit {
         this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
         this.actions.getSubjects(currentProject.id, ResourceType.Project);
         if (currentProject.isPublic) {
-          this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail');
+          this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail').subscribe();
         }
       }
     });
