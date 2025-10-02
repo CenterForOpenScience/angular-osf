@@ -16,6 +16,7 @@ import {
   input,
   model,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -50,6 +51,8 @@ import { ProjectModel } from '@osf/shared/models/projects';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilesWidgetComponent {
+  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
+
   rootOption = input.required<SelectOption>();
   components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
@@ -71,7 +74,6 @@ export class FilesWidgetComponent {
 
   currentRootFolder = model<FileLabelModel | null>(null);
   pageNumber = signal(1);
-  readonly resetPaginationTrigger = signal(false);
 
   readonly osfStorageLabel = 'OSF Storage';
 
@@ -145,14 +147,12 @@ export class FilesWidgetComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         this.actions.setCurrentFolder(currentRootFolder.folder);
-        this.resetPaginationTrigger.update((v) => !v);
+        this.filesTree()?.resetPagination();
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.resetState();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.resetState();
     });
   }
 

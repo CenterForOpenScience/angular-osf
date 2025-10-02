@@ -103,6 +103,7 @@ import { FilesSelectors } from '../../store';
 })
 export class FilesComponent {
   googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
+  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
 
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
@@ -163,7 +164,6 @@ export class FilesComponent {
   readonly dataLoaded = signal(false);
   readonly searchControl = new FormControl<string>('');
   readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
-  readonly resetPaginationTrigger = signal(false);
 
   currentRootFolder = model<FileLabelModel | null>(null);
 
@@ -297,7 +297,7 @@ export class FilesComponent {
         }
         this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
-        this.resetPaginationTrigger.update((v) => !v);
+        this.filesTree()?.resetPagination();
       }
     });
 
@@ -311,7 +311,7 @@ export class FilesComponent {
       .pipe(takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
-        this.resetPaginationTrigger.update((v) => !v);
+        this.filesTree()?.resetPagination();
 
         if (!this.isFolderOpening()) {
           this.updateFilesList();
@@ -320,17 +320,15 @@ export class FilesComponent {
 
     this.sortControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
       this.actions.setSort(sort ?? '');
-      this.resetPaginationTrigger.update((v) => !v);
+      this.filesTree()?.resetPagination();
 
       if (!this.isFolderOpening()) {
         this.updateFilesList();
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.resetState();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.resetState();
     });
   }
 
