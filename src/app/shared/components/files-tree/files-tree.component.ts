@@ -15,6 +15,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   HostBinding,
@@ -25,6 +26,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -71,6 +73,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly customDialogService = inject(CustomDialogService);
   readonly dataciteService = inject(DataciteService);
+
+  private readonly destroyRef = inject(DestroyRef);
   private readonly environment = inject(ENVIRONMENT);
   readonly clipboard = inject(Clipboard);
 
@@ -258,7 +262,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   downloadFileOrFolder(file: OsfFile) {
     const resourceType = this.resourceMetadata()?.type ?? 'nodes';
-    this.dataciteService.logFileDownload(this.resourceId(), resourceType).subscribe();
+    this.dataciteService
+      .logFileDownload(this.resourceId(), resourceType)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);
     } else {

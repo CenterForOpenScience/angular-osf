@@ -1,12 +1,12 @@
 <div class="flex" [class]="vertical() ? 'flex-column row-gap-2 min-w-max' : 'column-gap-5 row-gap-3 flex-wrap'">
-  <a class="icon-container" [href]="resourceUrl()">
+  <a class="icon-container" [href]="resourceUrl()" target="_blank" rel="noopener noreferrer">
     <osf-icon
       [iconClass]="hasData() ? 'custom-icon-data icon-resource-size' : 'custom-icon-data-dark icon-resource-size'"
     ></osf-icon>
     <p>{{ 'resourceCard.resources.data' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="resourceUrl()">
+  <a class="icon-container" [href]="resourceUrl()" target="_blank" rel="noopener noreferrer">
     <osf-icon
       [iconClass]="
         hasAnalyticCode() ? 'custom-icon-code icon-resource-size' : 'custom-icon-code-dark icon-resource-size'
@@ -15,7 +15,7 @@
     <p>{{ 'resourceCard.resources.analyticCode' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="resourceUrl()">
+  <a class="icon-container" [href]="resourceUrl()" target="_blank" rel="noopener noreferrer">
     <osf-icon
       [iconClass]="
         hasMaterials() ? 'custom-icon-materials icon-resource-size' : 'custom-icon-materials-dark icon-resource-size'
@@ -24,14 +24,14 @@
     <p>{{ 'resourceCard.resources.materials' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="resourceUrl()">
+  <a class="icon-container" [href]="resourceUrl()" target="_blank" rel="noopener noreferrer">
     <osf-icon
       [iconClass]="hasPapers() ? 'custom-icon-papers icon-resource-size' : 'custom-icon-papers-dark icon-resource-size'"
     />
     <p>{{ 'resourceCard.resources.papers' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="resourceUrl()">
+  <a class="icon-container" [href]="resourceUrl()" target="_blank" rel="noopener noreferrer">
     <osf-icon
       [iconClass]="
         hasSupplements()

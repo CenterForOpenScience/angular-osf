@@ -40,10 +40,12 @@ import {
   ReuploadFile,
   SaveLicense,
   SetCurrentFolder,
+  SetInstitutionsChanged,
   SetSelectedPreprintFileSource,
   SetSelectedPreprintProviderId,
   SubmitPreprint,
   UpdatePreprint,
+  UpdatePrimaryFileRelationship,
   UploadFile,
 } from './';
 
@@ -88,6 +90,7 @@ const DefaultState: PreprintStepperStateModel = {
   },
   hasBeenSubmitted: false,
   currentFolder: null,
+  institutionsChanged: false,
 };
 
 @State<PreprintStepperStateModel>({
@@ -175,21 +178,31 @@ export class PreprintStepperState {
         const file = event.body!.data;
         const createdFileId = file.id.split('/')[1];
 
-        return this.preprintFilesService.updateFileRelationship(state.preprint.data!.id, createdFileId).pipe(
-          tap((preprint: Preprint) => {
-            ctx.patchState({
-              preprint: {
-                ...ctx.getState().preprint,
-                data: {
-                  ...ctx.getState().preprint.data!,
-                  primaryFileId: preprint.primaryFileId,
-                },
-              },
-            });
-          }),
-          catchError((error) => handleSectionError(ctx, 'preprint', error))
-        );
+        return ctx.dispatch(new UpdatePrimaryFileRelationship(createdFileId));
       })
+    );
+  }
+
+  @Action(UpdatePrimaryFileRelationship)
+  updatePrimaryFileRelationship(ctx: StateContext<PreprintStepperStateModel>, action: UpdatePrimaryFileRelationship) {
+    const state = ctx.getState();
+
+    ctx.setState(patch({ preprint: patch({ isSubmitting: true }) }));
+
+    return this.preprintFilesService.updateFileRelationship(state.preprint.data!.id, action.fileId).pipe(
+      tap((preprint: Preprint) => {
+        ctx.patchState({
+          preprint: {
+            ...ctx.getState().preprint,
+            data: {
+              ...ctx.getState().preprint.data!,
+              primaryFileId: preprint.primaryFileId,
+            },
+            isSubmitting: false,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
   }
 
@@ -513,5 +526,10 @@ export class PreprintStepperState {
   @Action(SetCurrentFolder)
   setCurrentFolder(ctx: StateContext<PreprintStepperStateModel>, action: SetCurrentFolder) {
     ctx.patchState({ currentFolder: action.folder });
+  }
+
+  @Action(SetInstitutionsChanged)
+  setInstitutionsChanged(ctx: StateContext<PreprintStepperStateModel>, action: SetInstitutionsChanged) {
+    ctx.patchState({ institutionsChanged: action.institutionsChanged });
   }
 }

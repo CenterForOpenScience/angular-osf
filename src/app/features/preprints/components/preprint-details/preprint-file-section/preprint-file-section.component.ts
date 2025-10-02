@@ -7,8 +7,8 @@ import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
@@ -29,6 +29,7 @@ export class PreprintFileSectionComponent {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly datePipe = inject(DatePipe);
   private readonly translateService = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly dataciteService = inject(DataciteService);
 
   providerReviewsWorkflow = input.required<ProviderReviewsWorkflow | null>();
@@ -52,7 +53,7 @@ export class PreprintFileSectionComponent {
   areFileVersionsLoading = select(PreprintSelectors.arePreprintFileVersionsLoading);
 
   logDownload() {
-    this.dataciteService.logIdentifiableDownload(this.preprint$).subscribe();
+    this.dataciteService.logIdentifiableDownload(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   versionMenuItems = computed(() => {

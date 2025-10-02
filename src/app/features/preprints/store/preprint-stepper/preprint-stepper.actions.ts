@@ -50,6 +50,12 @@ export class UploadFile {
   constructor(public file: File) {}
 }
 
+export class UpdatePrimaryFileRelationship {
+  static readonly type = '[Preprint Stepper] Update Primary File Relationship';
+
+  constructor(public fileId: string) {}
+}
+
 export class ReuploadFile {
   static readonly type = '[Preprint Stepper] Reupload File';
 
@@ -142,7 +148,13 @@ export class DeletePreprint {
 }
 
 export class SetCurrentFolder {
-  static readonly type = '[Submit Preprint] Set Current Folder';
+  static readonly type = '[Preprint Stepper] Set Current Folder';
 
   constructor(public folder: OsfFile | null) {}
+}
+
+export class SetInstitutionsChanged {
+  static readonly type = '[Preprint Stepper] Set Institutions Changed';
+
+  constructor(public institutionsChanged: boolean) {}
 }
