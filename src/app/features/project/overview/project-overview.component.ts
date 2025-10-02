@@ -275,7 +275,10 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
 
-    this.dataciteService.logIdentifiableView(this.currentProject$).subscribe();
+    this.dataciteService
+      .logIdentifiableView(this.currentProject$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   handleOpenMakeDecisionDialog() {

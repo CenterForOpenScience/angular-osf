@@ -6,8 +6,8 @@ import { ButtonDirective } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
@@ -27,6 +27,7 @@ export class ShareAndDownloadComponent {
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
 
   private readonly socialShareService = inject(SocialShareService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly dataciteService = inject(DataciteService);
 
   preprint = select(PreprintSelectors.getPreprint);
@@ -50,7 +51,7 @@ export class ShareAndDownloadComponent {
   });
 
   logDownload() {
-    this.dataciteService.logIdentifiableDownload(this.preprint$).subscribe();
+    this.dataciteService.logIdentifiableDownload(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   private shareableContent = computed((): ShareableContent | null => {

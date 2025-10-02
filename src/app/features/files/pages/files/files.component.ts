@@ -467,7 +467,10 @@ export class FilesComponent {
     const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
 
     if (resourceId && folderId) {
-      this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
+      this.dataciteService
+        .logFileDownload(resourceId, resourcePath)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
       if (isRootFolder) {
         const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
         window.open(link, '_blank')?.focus();

@@ -63,7 +63,7 @@ export class ModeratorsListComponent implements OnInit {
     this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
   );
 
-  moderators = signal([]);
+  moderators = signal<ModeratorModel[]>([]);
   initialModerators = select(ModeratorsSelectors.getModerators);
   isModeratorsLoading = select(ModeratorsSelectors.isModeratorsLoading);
   currentUser = select(UserSelectors.getCurrentUser);
@@ -89,7 +89,7 @@ export class ModeratorsListComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.moderators.set(JSON.parse(JSON.stringify(this.initialModerators())));
+      this.moderators.set(structuredClone(this.initialModerators()));
     });
   }
 

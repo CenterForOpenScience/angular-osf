@@ -57,14 +57,9 @@ export class CedarTemplateFormComponent {
   constructor() {
     effect(() => {
       const tpl = this.template();
-      if (tpl?.attributes?.template) {
-        this.initializeCedar();
-      }
-    });
-
-    effect(() => {
       const record = this.existingRecord();
-      if (record) {
+
+      if (tpl?.attributes?.template || record) {
         this.initializeCedar();
       }
     });

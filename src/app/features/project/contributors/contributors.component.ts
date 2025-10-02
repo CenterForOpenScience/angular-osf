@@ -100,7 +100,7 @@ export class ContributorsComponent implements OnInit {
   readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
 
   initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal([]);
+  contributors = signal<ContributorModel[]>([]);
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
@@ -144,7 +144,7 @@ export class ContributorsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+      this.contributors.set(structuredClone(this.initialContributors()));
 
       if (this.isContributorsLoading()) {
         this.searchControl.disable();
@@ -186,7 +186,7 @@ export class ContributorsComponent implements OnInit {
   }
 
   cancel() {
-    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    this.contributors.set(structuredClone(this.initialContributors()));
   }
 
   save() {

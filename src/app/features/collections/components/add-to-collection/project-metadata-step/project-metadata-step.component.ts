@@ -242,10 +242,8 @@ export class ProjectMetadataStepComponent {
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.clearProjects();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearProjects();
     });
   }
 }
