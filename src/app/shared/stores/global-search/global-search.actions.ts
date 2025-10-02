@@ -50,14 +50,14 @@ export class UpdateSelectedFilterOption {
 
   constructor(
     public filterKey: string,
-    public filterOption: FilterOption | null
+    public filterOption: FilterOption[]
   ) {}
 }
 
 export class LoadFilterOptionsAndSetValues {
   static readonly type = '[GlobalSearch] Load Filter Options And Set Values';
 
-  constructor(public filterValues: Record<string, FilterOption>) {}
+  constructor(public filterValues: Record<string, FilterOption[]>) {}
 }
 
 export class LoadFilterOptionsWithSearch {

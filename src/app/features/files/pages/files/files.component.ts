@@ -190,7 +190,7 @@ export class FilesComponent {
 
     const result: Record<FileMenuType, boolean> = { ...menuMap };
 
-    if (hasViewOnly || isRegistration) {
+    if (hasViewOnly || isRegistration || !this.canEdit()) {
       const allowed = new Set<FileMenuType>([FileMenuType.Download, FileMenuType.Embed, FileMenuType.Share]);
 
       (Object.keys(result) as FileMenuType[]).forEach((key) => {

@@ -20,6 +20,7 @@ import { CustomValidators } from '@osf/shared/helpers';
 import { ComponentForm, Institution } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { FetchRegions, RegionsSelectors } from '@osf/shared/stores';
+import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
 
@@ -51,11 +52,14 @@ export class AddComponentDialogComponent implements OnInit {
   currentProject = select(ProjectOverviewSelectors.getProject);
   areRegionsLoading = select(RegionsSelectors.areRegionsLoading);
   isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
+  userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
+  areUserInstitutionsLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);
 
   actions = createDispatchMap({
     createComponent: CreateComponent,
     getComponents: GetComponents,
     getRegions: FetchRegions,
+    fetchUserInstitutions: FetchUserInstitutions,
   });
 
   componentForm = new FormGroup<ComponentForm>({
@@ -96,6 +100,7 @@ export class AddComponentDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.actions.getRegions();
+    this.actions.fetchUserInstitutions();
   }
 
   setSelectedInstitutions(institutions: Institution[]) {

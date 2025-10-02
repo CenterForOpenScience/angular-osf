@@ -127,13 +127,12 @@
           <label for="tags">
             {{ 'collections.addToCollection.form.tags' | translate }}
           </label>
-          @let tagsControl = projectMetadataForm.controls[ProjectMetadataFormControls.Tags];
-          <osf-tags-input [required]="true" [tags]="projectTags()" (tagsChanged)="handleTagsChange($event)" id="tags" />
-          @if (tagsControl.errors?.['required'] && (tagsControl.touched || tagsControl.dirty)) {
-            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-              {{ 'collections.addToCollection.form.fieldRequired' | translate }}
-            </p-message>
-          }
+          <osf-tags-input
+            [required]="false"
+            [tags]="projectTags()"
+            (tagsChanged)="handleTagsChange($event)"
+            id="tags"
+          />
         </div>
 
         <div class="flex justify-content-end gap-3">

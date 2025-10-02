@@ -21,7 +21,6 @@
       "confirm": "Confirm",
       "disconnect": "Disconnect",
       "revert": "Revert",
-
       "next": "Next",
       "back": "Back",
       "continue": "Continue",
@@ -545,6 +544,7 @@
       "searchRegistrationPlaceholder": "Search Registration Contributors",
       "permissionFilter": "Filter by permission",
       "bibliographyFilter": "Bibliography",
+      "reorderDeactivateTooltip": "Remove deactivated contributors in order to enable reordering.",
       "permissions": {
         "administrator": "Administrator",
         "readAndWrite": "Read + Write",
@@ -2650,6 +2650,7 @@
       "dateModified": "Date modified",
       "dateRegistered": "Date registered",
       "description": "Description:",
+      "descriptionBold": "<span class=\"font-bold\">Description: </span>",
       "provider": "Provider:",
       "license": "License:",
       "context": "Context",

@@ -18,10 +18,11 @@ export class FileRedirectComponent {
   private readonly filesService = inject(FilesService);
 
   readonly fileId = this.route.snapshot.paramMap.get('fileId') ?? '';
+  readonly provider = this.route.snapshot.paramMap.get('provider') ?? '';
   constructor() {
     if (this.fileId) {
       this.filesService
-        .getFileGuid(this.fileId)
+        .getFileGuid(this.fileId, this.provider)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((file) => {
           this.router.navigate([file.guid]);

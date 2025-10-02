@@ -6,6 +6,6 @@ export interface ReviewAction {
   fromState: string;
   toState: string;
   dateModified: string;
-  creator: IdName;
+  creator: IdName | null;
   comment: string;
 }

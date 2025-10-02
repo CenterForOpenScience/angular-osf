@@ -36,15 +36,15 @@
     </div>
 
     <ng-template #filtersComponent>
-      <osf-reusable-filters
+      <osf-search-filters
         [filters]="filters()"
         [selectedOptions]="filterOptions()"
         [filterSearchResults]="filterSearchCache()"
         [isLoading]="areResourcesLoading()"
         [showEmptyState]="true"
         (loadFilterOptions)="onLoadFilterOptions($event)"
-        (filterOptionChanged)="onFilterOptionChanged($event)"
-        (filterSearchChanged)="onFilterSearchChanged($event)"
+        (filterOptionSelected)="onSelectedFilterOptionsChanged($event)"
+        (filterOptionsSearch)="onSearchFilterOptions($event)"
         (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
       />
     </ng-template>

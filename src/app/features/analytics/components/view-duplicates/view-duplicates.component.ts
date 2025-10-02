@@ -89,15 +89,18 @@ export class ViewDuplicatesComponent {
   readonly forkActionItems = (resourceId: string) => [
     {
       label: 'project.overview.actions.manageContributors',
-      command: () => this.router.navigate([resourceId, 'contributors']),
+      action: 'manageContributors',
+      resourceId,
     },
     {
       label: 'project.overview.actions.settings',
-      command: () => this.router.navigate([resourceId, 'settings']),
+      action: 'settings',
+      resourceId,
     },
     {
       label: 'project.overview.actions.delete',
-      command: () => this.handleDeleteFork(resourceId),
+      action: 'delete',
+      resourceId,
     },
   ];
 
@@ -173,6 +176,20 @@ export class ViewDuplicatesComponent {
       duplicate.currentUserPermissions.includes(UserPermissions.Admin) ||
       duplicate.currentUserPermissions.includes(UserPermissions.Write)
     );
+  }
+
+  handleMenuAction(action: string, resourceId: string): void {
+    switch (action) {
+      case 'manageContributors':
+        this.router.navigate([resourceId, 'contributors']);
+        break;
+      case 'settings':
+        this.router.navigate([resourceId, 'settings']);
+        break;
+      case 'delete':
+        this.handleDeleteFork(resourceId);
+        break;
+    }
   }
 
   handleForkResource(): void {

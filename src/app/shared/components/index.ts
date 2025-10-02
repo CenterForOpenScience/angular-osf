@@ -37,7 +37,6 @@ export { RegistrationBlocksDataComponent } from './registration-blocks-data/regi
 export { RegistrationCardComponent } from './registration-card/registration-card.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { ResourceMetadataComponent } from './resource-metadata/resource-metadata.component';
-export { ReusableFilterComponent } from './reusable-filter/reusable-filter.component';
 export { SearchHelpTutorialComponent } from './search-help-tutorial/search-help-tutorial.component';
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SearchResultsContainerComponent } from './search-results-container/search-results-container.component';
@@ -52,3 +51,4 @@ export { ToastComponent } from './toast/toast.component';
 export { TruncatedTextComponent } from './truncated-text/truncated-text.component';
 export { ViewOnlyLinkMessageComponent } from './view-only-link-message/view-only-link-message.component';
 export { ViewOnlyTableComponent } from './view-only-table/view-only-table.component';
+export { SearchFiltersComponent } from '@shared/components/search-filters/search-filters.component';

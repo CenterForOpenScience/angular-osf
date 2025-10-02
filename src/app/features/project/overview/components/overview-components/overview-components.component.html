@@ -24,41 +24,45 @@
                 <a class="component-title" [href]="component.id">{{ component.title }}</a>
               </h2>
 
-              <div>
-                @if (isCurrentUserContributor(component)) {
+              @if (!isCurrentUserContributor(component)) {
+                <div>
                   <p-button
                     severity="contrast"
                     icon="fas fa-ellipsis-vertical"
                     raised
                     variant="outlined"
                     [ariaLabel]="'common.buttons.more' | translate"
-                    (onClick)="componentActionMenu.toggle($event)"
+                    (onClick)="menu.toggle($event)"
                   >
                   </p-button>
-                }
 
-                <p-menu appendTo="body" #componentActionMenu [model]="componentActionItems(component)" popup>
-                  <ng-template #item let-item>
-                    <a
-                      class="p-menu-item-link"
-                      (click)="handleMenuAction(item.action, item.componentId)"
-                      (keydown.enter)="handleMenuAction(item.action, item.componentId)"
-                      tabindex="0"
-                    >
-                      {{ item.label | translate }}
-                    </a>
-                  </ng-template>
-                </p-menu>
-              </div>
+                  <p-menu appendTo="body" [model]="componentActionItems(component)" popup #menu>
+                    <ng-template #item let-item>
+                      <a
+                        class="p-menu-item-link"
+                        (mousedown)="handleMenuAction(item.action, item.componentId)"
+                        (keydown.enter)="handleMenuAction(item.action, item.componentId)"
+                        tabindex="0"
+                      >
+                        {{ item.label | translate }}
+                      </a>
+                    </ng-template>
+                  </p-menu>
+                </div>
+              }
             </div>
 
-            <div class="component-name flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-1">
+              <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
+
               <osf-contributors-list [contributors]="component.contributors"></osf-contributors-list>
-
-              <div class="component-description">
-                <osf-truncated-text [text]="component.description" />
-              </div>
             </div>
+
+            @if (component.description) {
+              <osf-truncated-text
+                [text]="('resourceCard.labels.descriptionBold' | translate) + component.description"
+              />
+            }
           </div>
         }
       } @else {
