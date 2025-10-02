@@ -85,6 +85,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   provider = input<string>();
   allowedMenuActions = input<FileMenuFlags>({} as FileMenuFlags);
   supportUpload = input<boolean>(true);
+  resetPaginationTrigger = input<boolean>(false);
   isDragOver = signal(false);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
 
@@ -134,6 +135,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       const storageChanged = this.storage();
       if (storageChanged) {
         this.foldersStack = [];
+      }
+    });
+
+    effect(() => {
+      const trigger = this.resetPaginationTrigger();
+      if (trigger) {
+        this.resetPagination();
       }
     });
   }

@@ -71,6 +71,7 @@ export class FilesWidgetComponent {
 
   currentRootFolder = model<FileLabelModel | null>(null);
   pageNumber = signal(1);
+  readonly resetPaginationTrigger = signal(false);
 
   readonly osfStorageLabel = 'OSF Storage';
 
@@ -144,6 +145,7 @@ export class FilesWidgetComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         this.actions.setCurrentFolder(currentRootFolder.folder);
+        this.resetPaginationTrigger.update((v) => !v);
       }
     });
 
