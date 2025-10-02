@@ -20,6 +20,7 @@ import {
   HostBinding,
   inject,
   input,
+  model,
   OnDestroy,
   output,
   signal,
@@ -85,7 +86,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   provider = input<string>();
   allowedMenuActions = input<FileMenuFlags>({} as FileMenuFlags);
   supportUpload = input<boolean>(true);
-  resetPaginationTrigger = input<boolean>(false);
+  resetPaginationTrigger = model<boolean>(false);
   isDragOver = signal(false);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
 
@@ -482,6 +483,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   resetPagination() {
     this.first = 0;
     this.filesPageChange.emit(1);
+    this.resetPaginationTrigger.set(false);
   }
 
   onFilesPageChange(event: PaginatorState): void {

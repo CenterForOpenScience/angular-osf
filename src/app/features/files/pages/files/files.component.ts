@@ -312,6 +312,7 @@ export class FilesComponent {
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
         this.resetPaginationTrigger.update((v) => !v);
+
         if (!this.isFolderOpening()) {
           this.updateFilesList();
         }
@@ -320,6 +321,7 @@ export class FilesComponent {
     this.sortControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
       this.actions.setSort(sort ?? '');
       this.resetPaginationTrigger.update((v) => !v);
+
       if (!this.isFolderOpening()) {
         this.updateFilesList();
       }
