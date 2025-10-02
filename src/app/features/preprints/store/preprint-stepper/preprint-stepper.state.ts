@@ -1,4 +1,4 @@
-import { Action, State, StateContext, Store } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { EMPTY, filter, forkJoin, of, switchMap, tap } from 'rxjs';
@@ -97,7 +97,6 @@ const DefaultState: PreprintStepperStateModel = {
 })
 @Injectable()
 export class PreprintStepperState {
-  private store = inject(Store);
   private preprintsService = inject(PreprintsService);
   private preprintFilesService = inject(PreprintFilesService);
   private fileService = inject(FilesService);
@@ -177,7 +176,7 @@ export class PreprintStepperState {
         const file = event.body!.data;
         const createdFileId = file.id.split('/')[1];
 
-        return this.store.dispatch(new UpdatePrimaryFileRelationship(createdFileId));
+        return ctx.dispatch(new UpdatePrimaryFileRelationship(createdFileId));
       })
     );
   }
