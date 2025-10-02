@@ -6,15 +6,16 @@
     <input pInputText id="component-title" type="text" [formControlName]="ComponentFormControls.Title" />
   </div>
 
-  @if (currentProject()?.affiliatedInstitutions?.length) {
+  @if (areUserInstitutionsLoading() || userInstitutions().length) {
     <div>
-      <h3 class="font-normal mb-2">
+      <h3 class="font-normal mbx-2">
         {{ 'myProjects.createProject.affiliation.title' | translate }}
       </h3>
 
       <osf-affiliated-institution-select
-        [institutions]="currentProject()?.affiliatedInstitutions || []"
-        [selectedInstitutions]="currentProject()?.affiliatedInstitutions || []"
+        [institutions]="userInstitutions()"
+        [selectedInstitutions]="userInstitutions()"
+        [isLoading]="areUserInstitutionsLoading()"
         (selectedInstitutionsChange)="setSelectedInstitutions($event)"
       />
     </div>

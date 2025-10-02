@@ -60,7 +60,7 @@ export class ContributorsDialogComponent implements OnInit {
 
   isLoading = select(ContributorsSelectors.isContributorsLoading);
   initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal([]);
+  contributors = signal<ContributorModel[]>([]);
 
   currentUser = select(UserSelectors.getCurrentUser);
 
@@ -103,7 +103,7 @@ export class ContributorsDialogComponent implements OnInit {
     this.resourceType = this.config.data?.resourceType;
 
     effect(() => {
-      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+      this.contributors.set(structuredClone(this.initialContributors()));
     });
   }
 
@@ -190,7 +190,7 @@ export class ContributorsDialogComponent implements OnInit {
   }
 
   cancel() {
-    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    this.contributors.set(structuredClone(this.initialContributors()));
   }
 
   onClose(): void {

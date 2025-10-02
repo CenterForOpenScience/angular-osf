@@ -6,7 +6,8 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
@@ -55,6 +56,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsAddonsComponent {
+  private readonly destroyRef = inject(DestroyRef);
   readonly tabOptions = ADDON_TAB_OPTIONS;
   readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
@@ -197,9 +199,9 @@ export class SettingsAddonsComponent {
       }
     });
 
-    this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
-      this.searchValue.set(value ?? '');
-    });
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.searchValue.set(value ?? ''));
   }
 
   private fetchAllAuthorizedAddons(userReferenceId: string): void {

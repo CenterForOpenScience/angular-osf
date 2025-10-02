@@ -12,10 +12,10 @@ import { DiscoverableFilter, FilterOption } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterChipsComponent {
-  filterOptions = input<Record<string, FilterOption | null>>({});
+  filterOptions = input<Record<string, FilterOption[]>>({});
   filters = input.required<DiscoverableFilter[]>();
 
-  selectedOptionRemoved = output<string>();
+  selectedOptionRemoved = output<{ filterKey: string; optionRemoved: FilterOption }>();
 
   filterLabels = computed(() => {
     return this.filters()
@@ -31,20 +31,24 @@ export class FilterChipsComponent {
     const labels = this.filterLabels();
 
     return Object.entries(options)
-      .filter(([, value]) => value !== null)
-      .map(([key, option]) => {
+      .filter(([, value]) => (value?.length ?? 0) > 0)
+      .flatMap(([key, option]) => {
         const filterLabel = labels.find((l) => l.key === key)?.label || key;
-        const displayValue = option?.label || option?.value;
+        const optionArray = option as FilterOption[];
 
-        return {
+        return optionArray.map((opt) => ({
           key,
           label: filterLabel,
-          displayValue,
-        };
+          displayValue: opt?.label || opt?.value,
+          option: opt,
+        }));
       });
   });
 
-  removeFilter(filterKey: string): void {
-    this.selectedOptionRemoved.emit(filterKey);
+  removeFilter(filterKey: string, option: FilterOption): void {
+    this.selectedOptionRemoved.emit({
+      filterKey,
+      optionRemoved: option,
+    });
   }
 }

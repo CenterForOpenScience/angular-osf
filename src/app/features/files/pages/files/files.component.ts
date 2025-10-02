@@ -190,7 +190,7 @@ export class FilesComponent {
 
     const result: Record<FileMenuType, boolean> = { ...menuMap };
 
-    if (hasViewOnly || isRegistration) {
+    if (hasViewOnly || isRegistration || !this.canEdit()) {
       const allowed = new Set<FileMenuType>([FileMenuType.Download, FileMenuType.Embed, FileMenuType.Share]);
 
       (Object.keys(result) as FileMenuType[]).forEach((key) => {
@@ -467,7 +467,10 @@ export class FilesComponent {
     const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
 
     if (resourceId && folderId) {
-      this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
+      this.dataciteService
+        .logFileDownload(resourceId, resourcePath)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
       if (isRootFolder) {
         const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
         window.open(link, '_blank')?.focus();

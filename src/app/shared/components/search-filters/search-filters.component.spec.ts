@@ -6,12 +6,12 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
 import { DiscoverableFilter } from '@shared/models';
 
-import { ReusableFilterComponent } from './reusable-filter.component';
+import { SearchFiltersComponent } from './search-filters.component';
 
 describe.skip('ReusableFilterComponent', () => {
-  let component: ReusableFilterComponent;
-  let fixture: ComponentFixture<ReusableFilterComponent>;
-  let componentRef: ComponentRef<ReusableFilterComponent>;
+  let component: SearchFiltersComponent;
+  let fixture: ComponentFixture<SearchFiltersComponent>;
+  let componentRef: ComponentRef<SearchFiltersComponent>;
 
   const mockFilters: DiscoverableFilter[] = [
     {
@@ -56,10 +56,10 @@ describe.skip('ReusableFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReusableFilterComponent, NoopAnimationsModule],
+      imports: [SearchFiltersComponent, NoopAnimationsModule],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ReusableFilterComponent);
+    fixture = TestBed.createComponent(SearchFiltersComponent);
     component = fixture.componentInstance;
     componentRef = fixture.componentRef;
   });
@@ -78,10 +78,6 @@ describe.skip('ReusableFilterComponent', () => {
 
     it('should have access to FILTER_PLACEHOLDERS constant', () => {
       expect(component.FILTER_PLACEHOLDERS).toBe(FILTER_PLACEHOLDERS);
-    });
-
-    it('should initialize with empty expandedFilters signal', () => {
-      expect(component['expandedFilters']()).toEqual(new Set());
     });
   });
 
@@ -158,81 +154,6 @@ describe.skip('ReusableFilterComponent', () => {
     });
   });
 
-  describe('shouldShowFilter method', () => {
-    it('should return false for null or undefined filter', () => {
-      expect(component.shouldShowFilter(null as unknown as DiscoverableFilter)).toBe(false);
-      expect(component.shouldShowFilter(undefined as unknown as DiscoverableFilter)).toBe(false);
-    });
-
-    it('should return false for filter without key', () => {
-      const filter = { label: 'Test' } as DiscoverableFilter;
-      expect(component.shouldShowFilter(filter)).toBe(false);
-    });
-
-    it('should return true for resourceType/accessService only if they have options', () => {
-      const filterWithOptions = {
-        key: 'resourceType',
-        options: [{ label: 'Test', value: 'test' }],
-      } as DiscoverableFilter;
-      const filterWithoutOptions = { key: 'resourceType' } as DiscoverableFilter;
-
-      expect(component.shouldShowFilter(filterWithOptions)).toBe(true);
-      expect(component.shouldShowFilter(filterWithoutOptions)).toBe(false);
-    });
-
-    it('should return true for filters with result count', () => {
-      const filter = { key: 'subject', resultCount: 10 } as DiscoverableFilter;
-      expect(component.shouldShowFilter(filter)).toBe(true);
-    });
-
-    it('should return true for filters with options', () => {
-      const filter = { key: 'subject', options: [{ label: 'Test', value: 'test' }] } as DiscoverableFilter;
-      expect(component.shouldShowFilter(filter)).toBe(true);
-    });
-
-    it('should return true for filters with hasOptions flag', () => {
-      const filter = { key: 'subject', hasOptions: true } as DiscoverableFilter;
-      expect(component.shouldShowFilter(filter)).toBe(true);
-    });
-
-    it('should return true for filters with selected values', () => {
-      const filter: DiscoverableFilter = {
-        key: 'subject',
-        label: 'Subject',
-        type: 'select',
-        operator: 'eq',
-        selectedValues: [{ label: 'Test', value: 'test', cardSearchResultCount: 0 }],
-      };
-      expect(component.shouldShowFilter(filter)).toBe(true);
-    });
-  });
-
-  describe('Computed Properties', () => {
-    it('should compute hasFilters correctly', () => {
-      componentRef.setInput('filters', []);
-      expect(component.hasFilters()).toBe(false);
-
-      componentRef.setInput('filters', mockFilters);
-      expect(component.hasFilters()).toBe(true);
-    });
-
-    it('should compute visibleFilters correctly', () => {
-      componentRef.setInput('filters', mockFilters);
-      const visible = component.visibleFilters();
-
-      expect(visible.length).toBe(3);
-      expect(visible.map((f) => f.key)).toEqual(['subject', 'resourceType', 'creator']);
-    });
-
-    it('should compute hasVisibleFilters correctly', () => {
-      componentRef.setInput('filters', []);
-      expect(component.hasVisibleFilters()).toBe(false);
-
-      componentRef.setInput('filters', mockFilters);
-      expect(component.hasVisibleFilters()).toBe(true);
-    });
-  });
-
   describe('Event Handling', () => {
     beforeEach(() => {
       componentRef.setInput('filters', mockFilters);
@@ -269,11 +190,11 @@ describe.skip('ReusableFilterComponent', () => {
     });
 
     it('should emit filterValueChanged when filter value changes', () => {
-      spyOn(component.filterOptionChanged, 'emit');
+      spyOn(component.filterOptionSelected, 'emit');
 
-      component.onOptionChanged('subject', 'biology');
+      component.onSelectedFilterOptionsChanged('subject', 'biology');
 
-      expect(component.filterOptionChanged.emit).toHaveBeenCalledWith({
+      expect(component.filterOptionSelected.emit).toHaveBeenCalledWith({
         filterType: 'subject',
         value: 'biology',
       });
@@ -411,13 +332,13 @@ describe.skip('ReusableFilterComponent', () => {
     });
 
     it('should handle filter value change events from generic filter', () => {
-      spyOn(component, 'onOptionChanged');
+      spyOn(component, 'onSelectedFilterOptionsChanged');
 
       const genericFilter = fixture.debugElement.query(By.css('osf-generic-filter'));
       if (genericFilter) {
         genericFilter.componentInstance.valueChanged.emit('new-value');
 
-        expect(component.onOptionChanged).toHaveBeenCalled();
+        expect(component.onSelectedFilterOptionsChanged).toHaveBeenCalled();
       }
     });
   });

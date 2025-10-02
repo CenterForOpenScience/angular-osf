@@ -14,7 +14,7 @@
       }
       <span>{{ action.dateModified | dateAgo }}</span>
       <span>{{ 'moderation.submissionReview.by' | translate }}</span>
-      <span>{{ action.creator.name }}</span>
+      <span>{{ action.creator?.name }}</span>
       @if (embargoEndDate) {
         <span>{{ 'moderation.submissionReview.embargoEnding' | translate }}</span>
         <span>{{ embargoEndDate | date: 'shortDate' }}</span>

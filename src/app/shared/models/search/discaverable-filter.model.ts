@@ -1,8 +1,7 @@
 export interface DiscoverableFilter {
   key: string;
   label: string;
-  type: 'select' | 'date' | 'checkbox' | 'group';
-  operator: string;
+  operator: FilterOperator;
   options?: FilterOption[];
   description?: string;
   helpLink?: string;
@@ -12,6 +11,12 @@ export interface DiscoverableFilter {
   isLoaded?: boolean;
   isPaginationLoading?: boolean;
   isSearchLoading?: boolean;
+}
+
+export enum FilterOperator {
+  AnyOf = 'any-of',
+  Date = 'trove:at-date',
+  IsPresent = 'is-present',
 }
 
 export interface FilterOption {

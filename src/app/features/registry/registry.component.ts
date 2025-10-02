@@ -4,7 +4,7 @@ import { map, of } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, inject, OnDestroy } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -57,7 +57,7 @@ export class RegistryComponent implements OnDestroy {
       }
     });
 
-    this.dataciteService.logIdentifiableView(this.registry$).subscribe();
+    this.dataciteService.logIdentifiableView(this.registry$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   ngOnDestroy(): void {

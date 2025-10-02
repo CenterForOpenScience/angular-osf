@@ -6,7 +6,7 @@ export interface GlobalSearchStateModel {
   resources: AsyncStateModel<ResourceModel[]>;
   filters: DiscoverableFilter[];
   defaultFilterOptions: Record<string, string>;
-  selectedFilterOptions: Record<string, FilterOption | null>;
+  selectedFilterOptions: Record<string, FilterOption[]>;
   filterOptionsCache: Record<string, FilterOption[]>;
   filterSearchCache: Record<string, FilterOption[]>;
   filterPaginationCache: Record<string, string>;

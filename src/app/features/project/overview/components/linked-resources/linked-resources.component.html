@@ -36,18 +36,16 @@
               }
             </div>
 
-            <div class="component-name flex flex-wrap gap-1">
-              <p>{{ 'common.labels.contributors' | translate }}:</p>
+            <div class="flex flex-wrap gap-1">
+              <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
 
               <osf-contributors-list [contributors]="linkedResource.contributors"></osf-contributors-list>
             </div>
-            <div class="flex align-items-center gap-1">
-              <div class="component-description">
-                <osf-truncated-text
-                  [text]="('common.labels.description' | translate) + ': ' + linkedResource.description"
-                />
-              </div>
-            </div>
+            @if (linkedResource.description) {
+              <osf-truncated-text
+                [text]="('resourceCard.labels.descriptionBold' | translate) + linkedResource.description"
+              />
+            }
           </div>
         }
       } @else {

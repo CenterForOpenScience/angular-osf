@@ -2,13 +2,13 @@
   <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
     <osf-loading-spinner />
   </div>
-} @else if (hasVisibleFilters()) {
+} @else if (visibleFilters().length > 0) {
   <div
     [ngClass]="{ 'border-1 grey-border-color border-round-xl px-4': !plainStyle() }"
     class="bg-white flex flex-column gap-2 filters"
   >
-    <p-accordion (valueChange)="onAccordionToggle($event)">
-      @for (filter of groupedFilters().individual; track filter.key) {
+    <p-accordion (valueChange)="onAccordionToggle(String($event))">
+      @for (filter of splitFilters().individual; track filter.key) {
         <p-accordion-panel [value]="filter.key">
           <p-accordion-header>{{ filter.label || filter.key }}</p-accordion-header>
           <p-accordion-content>
@@ -23,32 +23,33 @@
             }
 
             <osf-generic-filter
-              [filterType]="filter.key"
+              [filterOperator]="filter.operator"
               [placeholder]="FILTER_PLACEHOLDERS[filter.key] || '' | translate"
               [options]="filter.options || []"
-              [selectedValue]="selectedOptions()[filter.key]?.value ?? null"
+              [selectedOptions]="selectedOptions()[filter.key] || []"
               [searchResults]="filterSearchResults()[filter.key] || []"
               [isPaginationLoading]="!!filter.isPaginationLoading"
               [isLoading]="!!filter.isLoading"
               [isSearchLoading]="!!filter.isSearchLoading"
-              (optionChanged)="onOptionChanged(filter, $event)"
-              (searchTextChanged)="onFilterSearch(filter, $event)"
-              (loadMoreOptions)="onLoadMoreOptions(filter)"
+              (selectedOptionsChanged)="onSelectedFilterOptionsChanged(filter, $event)"
+              (searchTextChanged)="onSearchFilterOptions(filter, $event)"
+              (loadMoreOptions)="onLoadMoreFilterOptions(filter)"
             />
           </p-accordion-content>
+          <div [id]="`filter-${filter.key}`"></div>
         </p-accordion-panel>
       }
 
-      @for (group of groupedFilters().grouped; track group.key) {
-        <p-accordion-panel [value]="group.key">
-          <p-accordion-header>{{ group.label }}</p-accordion-header>
+      @if (splitFilters().grouped.length > 0) {
+        <p-accordion-panel [value]="'is-present-group'">
+          <p-accordion-header>{{ 'Additional Filters' }}</p-accordion-header>
           <p-accordion-content>
             <div class="flex flex-column gap-2">
-              @for (filter of group.filters; track filter.key) {
+              @for (filter of splitFilters().grouped; track filter.key) {
                 <div class="flex align-items-center gap-2">
                   <p-checkbox
                     [binary]="true"
-                    [ngModel]="Boolean(selectedOptions()[filter.key])"
+                    [ngModel]="Boolean(selectedOptionValues()[filter.key])"
                     (onChange)="onCheckboxChange($event, filter)"
                     [inputId]="'checkbox-' + filter.key"
                   />
@@ -59,13 +60,13 @@
               }
             </div>
           </p-accordion-content>
-          <div [id]="`filter-${group.key}`"></div>
+          <div id="filter-is-present-group"></div>
         </p-accordion-panel>
       }
     </p-accordion>
   </div>
 } @else if (showEmptyState()) {
-  <div class="text-center text-gray-500 py-4">
+  <div class="text-center py-4">
     <p>{{ 'collections.filters.noFiltersAvailable' | translate }}</p>
   </div>
 }

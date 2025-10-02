@@ -1,7 +1,7 @@
 <div class="p-4 flex flex-column gap-2">
   <h2>{{ 'files.detail.keywords.title' | translate }}</h2>
 
-  @if (!hasViewOnly()) {
+  @if (!hasViewOnly() && hasWriteAccess()) {
     <div class="flex align-items-center gap-2">
       <input pInputText class="flex-1" [formControl]="keywordControl" />
 
@@ -19,10 +19,12 @@
       @for (tag of tags(); track $index) {
         <p-chip
           [label]="tag"
-          [removeIcon]="hasViewOnly() ? '' : 'fas fa-close'"
-          [removable]="!hasViewOnly()"
+          [removeIcon]="hasViewOnly() || !hasWriteAccess() ? '' : 'fas fa-close'"
+          [removable]="!hasViewOnly() && hasWriteAccess()"
           (onRemove)="deleteTag(tag)"
         ></p-chip>
+      } @empty {
+        <p>{{ 'project.overview.metadata.noTags' | translate }}</p>
       }
     </div>
   } @else {

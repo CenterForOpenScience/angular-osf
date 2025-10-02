@@ -28,7 +28,7 @@ export class GlobalSearchService {
     return this.environment.shareTroveUrl;
   }
 
-  getResources(params: Record<string, string>): Observable<ResourcesData> {
+  getResources(params: Record<string, string | string[]>): Observable<ResourcesData> {
     return this.jsonApiService
       .get<IndexCardSearchResponseJsonApi>(`${this.shareTroveUrl}/index-card-search`, params)
       .pipe(map((response) => this.handleResourcesRawResponse(response)));
@@ -40,7 +40,9 @@ export class GlobalSearchService {
       .pipe(map((response) => this.handleResourcesRawResponse(response)));
   }
 
-  getFilterOptions(params: Record<string, string>): Observable<{ options: FilterOption[]; nextUrl?: string }> {
+  getFilterOptions(
+    params: Record<string, string | string[]>
+  ): Observable<{ options: FilterOption[]; nextUrl?: string }> {
     return this.jsonApiService
       .get<FilterOptionsResponseJsonApi>(`${this.shareTroveUrl}/index-value-search`, params)
       .pipe(map((response) => this.handleFilterOptionsRawResponse(response)));

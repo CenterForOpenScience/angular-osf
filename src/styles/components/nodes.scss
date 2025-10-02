@@ -5,10 +5,6 @@
   border-radius: mix.rem(12px);
   color: var(--dark-blue-1);
 
-  &-description {
-    border-radius: mix.rem(24px);
-  }
-
   &-container {
     overflow-y: auto;
     max-height: mix.rem(335px);

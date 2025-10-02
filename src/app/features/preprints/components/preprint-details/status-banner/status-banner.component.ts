@@ -87,7 +87,7 @@ export class StatusBannerComponent {
     if (this.isWithdrawalRejected()) {
       return this.latestRequestAction()?.creator.name;
     } else {
-      return this.latestAction()?.creator.name;
+      return this.latestAction()?.creator?.name;
     }
   });
 

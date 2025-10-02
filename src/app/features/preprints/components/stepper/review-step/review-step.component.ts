@@ -7,6 +7,8 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
 
+import { Observable, of, switchMap, tap } from 'rxjs';
+
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -18,6 +20,7 @@ import {
   FetchPreprintProject,
   PreprintStepperSelectors,
   SubmitPreprint,
+  UpdatePrimaryFileRelationship,
 } from '@osf/features/preprints/store/preprint-stepper';
 import {
   AffiliatedInstitutionsViewComponent,
@@ -62,9 +65,11 @@ export class ReviewStepComponent implements OnInit {
     fetchPreprintProject: FetchPreprintProject,
     submitPreprint: SubmitPreprint,
     fetchResourceInstitutions: FetchResourceInstitutions,
+    updatePrimaryFileRelationship: UpdatePrimaryFileRelationship,
   });
 
   provider = input.required<PreprintProviderDetails | undefined>();
+  isCreateNewVersionContext = input<boolean>(false);
 
   preprint = select(PreprintStepperSelectors.getPreprint);
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
@@ -89,17 +94,27 @@ export class ReviewStepComponent implements OnInit {
   }
 
   submitPreprint() {
-    if (this.preprint()?.reviewsState !== ReviewsState.Accepted) {
-      this.actions.submitPreprint().subscribe({
-        complete: () => {
-          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
-          this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
-        },
-      });
-    } else {
-      this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
-      this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
+    const preprint = this.preprint()!;
+    let update$: Observable<void | null> = of(null);
+
+    if (this.isCreateNewVersionContext()) {
+      update$ = this.actions.updatePrimaryFileRelationship(preprint.primaryFileId!);
     }
+
+    update$
+      .pipe(
+        switchMap(() => {
+          if (preprint.reviewsState !== ReviewsState.Accepted) {
+            return this.actions.submitPreprint();
+          }
+          return of(null);
+        }),
+        tap(() => {
+          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
+          this.router.navigate(['/preprints', this.provider()!.id, preprint.id]);
+        })
+      )
+      .subscribe();
   }
 
   cancelSubmission() {

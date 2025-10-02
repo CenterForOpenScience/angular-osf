@@ -46,6 +46,7 @@ function assertSuccess(
   doi: string,
   event: DataciteEvent
 ) {
+  assertSendBeacon(dataciteTrackerAddress, dataciteTrackerRepoId, doi, event);
   const req = httpMock.expectOne(dataciteTrackerAddress);
   expect(req.request.method).toBe('POST');
   expect(req.request.body).toEqual({
@@ -58,6 +59,24 @@ function assertSuccess(
   req.flush({});
 }
 
+function assertSendBeacon(
+  dataciteTrackerAddress: string,
+  dataciteTrackerRepoId: string,
+  doi: string,
+  event: DataciteEvent
+) {
+  expect(navigator.sendBeacon).toBeCalledTimes(1);
+  expect(navigator.sendBeacon).toHaveBeenCalledWith(
+    dataciteTrackerAddress,
+    JSON.stringify({
+      n: event,
+      u: window.location.href,
+      i: dataciteTrackerRepoId,
+      p: doi,
+    })
+  );
+}
+
 describe('DataciteService', () => {
   let service: DataciteService;
   let sentry: jest.Mocked<any>;
@@ -67,10 +86,11 @@ describe('DataciteService', () => {
   const apiDomainUrl = 'https://osf.io';
   const dataciteTrackerRepoId = 'repo-123';
   describe('with proper configuration', () => {
-    sentry = {
-      captureException: jest.fn(),
-    };
     beforeEach(() => {
+      Object.defineProperty(navigator, 'sendBeacon', {
+        configurable: true,
+        value: jest.fn(() => false),
+      });
       TestBed.configureTestingModule({
         providers: [
           DataciteService,
@@ -164,33 +184,15 @@ describe('DataciteService', () => {
       assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.DOWNLOAD);
     });
 
-    it('should log error to sentry', (done: jest.DoneCallback) => {
+    it('navigator success', () => {
+      (navigator.sendBeacon as jest.Mock).mockReturnValueOnce(true);
+
       const doi = 'qwerty';
-      const event = 'view';
-      service.logIdentifiableView(buildObservable(doi)).subscribe({
-        next: () => {},
-        error: () => {
-          throw new Error('The error should have been caught and suppressed by the service.');
-        },
-        complete: () => {
-          expect(sentry.captureException).toHaveBeenCalled();
+      const event = DataciteEvent.VIEW;
+      service.logIdentifiableView(buildObservable(doi)).subscribe();
 
-          done();
-        },
-      });
-
-      const req = httpMock.expectOne(dataciteTrackerAddress);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({
-        n: event,
-        u: window.location.href,
-        i: dataciteTrackerRepoId,
-        p: doi,
-      });
-      expect(req.request.headers.get('Content-Type')).toBe('application/json');
-
-      const mockError = new ProgressEvent('Internal Server Error');
-      req.error(mockError);
+      httpMock.expectNone(dataciteTrackerAddress);
+      assertSendBeacon(dataciteTrackerAddress, dataciteTrackerRepoId, doi, event);
     });
   });
 

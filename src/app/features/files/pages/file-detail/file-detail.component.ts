@@ -135,6 +135,7 @@ export class FileDetailComponent {
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
   fileRevisions = select(FilesSelectors.getFileRevisions);
   isFileRevisionLoading = select(FilesSelectors.isFileRevisionsLoading);
+  hasWriteAccess = select(FilesSelectors.hasWriteAccess);
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
@@ -186,6 +187,8 @@ export class FileDetailComponent {
   selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
+
+  showDeleteButton = computed(() => this.hasWriteAccess() && this.file() && !this.isAnonymous() && !this.hasViewOnly());
 
   private readonly metaTagsData = computed(() => {
     if (this.isFileLoading() || this.isFileCustomMetadataLoading() || this.isResourceContributorsLoading()) {
@@ -267,7 +270,7 @@ export class FileDetailComponent {
       }
     });
 
-    this.dataciteService.logIdentifiableView(this.fileMetadata$).subscribe();
+    this.dataciteService.logIdentifiableView(this.fileMetadata$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   getIframeLink(version: string) {
@@ -286,7 +289,10 @@ export class FileDetailComponent {
   }
 
   downloadRevision(version: string) {
-    this.dataciteService.logIdentifiableDownload(this.fileMetadata$).subscribe();
+    this.dataciteService
+      .logIdentifiableDownload(this.fileMetadata$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
 
     const downloadUrl = this.file()?.links.download;
     const storageLink = this.file()?.links.upload || '';
@@ -298,13 +304,16 @@ export class FileDetailComponent {
   }
 
   downloadFile(link: string): void {
-    this.dataciteService.logIdentifiableDownload(this.fileMetadata$).subscribe();
+    this.dataciteService
+      .logIdentifiableDownload(this.fileMetadata$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
     window.open(link)?.focus();
   }
 
   copyToClipboard(embedHtml: string): void {
     this.clipboard.copy(embedHtml);
-    this.toastService.showSuccess('files.toast.detail.copiedToClipboard');
+    this.toastService.showSuccess('files.detail.toast.copiedToClipboard');
   }
 
   deleteEntry(link: string): void {
@@ -313,9 +322,7 @@ export class FileDetailComponent {
       this.actions
         .deleteEntry(this.resourceId, link)
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          this.router.navigate([redirectUrl]);
-        });
+        .subscribe(() => this.router.navigate([redirectUrl]));
     }
   }
 

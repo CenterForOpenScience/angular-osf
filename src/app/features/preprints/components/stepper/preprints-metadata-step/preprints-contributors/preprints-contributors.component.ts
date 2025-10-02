@@ -58,7 +58,7 @@ export class PreprintsContributorsComponent implements OnInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
 
   initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal([]);
+  contributors = signal<ContributorModel[]>([]);
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   currentUser = select(UserSelectors.getCurrentUser);
 
@@ -87,7 +87,7 @@ export class PreprintsContributorsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+      this.contributors.set(structuredClone(this.initialContributors()));
     });
   }
 
@@ -96,7 +96,7 @@ export class PreprintsContributorsComponent implements OnInit {
   }
 
   cancel() {
-    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    this.contributors.set(structuredClone(this.initialContributors()));
   }
 
   save() {
