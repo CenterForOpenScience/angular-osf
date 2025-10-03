@@ -465,23 +465,15 @@ export class FilesComponent {
 
   downloadFolder(): void {
     const resourceId = this.resourceId();
-    const folderId = this.currentFolder()?.id ?? '';
-    const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
-    const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
     const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
-
-    if (resourceId && folderId) {
+    const downloadLink = this.currentFolder()?.links.download ?? '';
+    if (resourceId && downloadLink) {
       this.dataciteService
         .logFileDownload(resourceId, resourcePath)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe();
-      if (isRootFolder) {
-        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
-        window.open(link, '_blank')?.focus();
-      } else {
-        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
-        window.open(link, '_blank')?.focus();
-      }
+      const link = this.filesService.getFolderDownloadLink(downloadLink);
+      window.open(link, '_blank')?.focus();
     }
   }
 
