@@ -7,16 +7,25 @@ import { map, of } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType, SubscriptionEvent, SubscriptionFrequency, UserPermissions } from '@osf/shared/enums';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
-import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
-import { DeleteViewOnlyLink, FetchViewOnlyLinks, GetResource, ViewOnlyLinkSelectors } from '@osf/shared/stores';
+import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
+import {
+  CurrentResourceSelectors,
+  DeleteViewOnlyLink,
+  FetchViewOnlyLinks,
+  GetResource,
+  GetResourceWithChildren,
+  ViewOnlyLinkSelectors,
+} from '@osf/shared/stores';
 
 import {
+  DeleteProjectDialogComponent,
   ProjectSettingNotificationsComponent,
   SettingsAccessRequestsCardComponent,
   SettingsProjectAffiliationComponent,
@@ -60,8 +69,8 @@ import {
 })
 export class SettingsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly loaderService = inject(LoaderService);
 
@@ -75,6 +84,10 @@ export class SettingsComponent implements OnInit {
   viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
   isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
   currentUser = select(UserSelectors.getCurrentUser);
+  currentProject = select(CurrentResourceSelectors.getCurrentResource);
+  isMedium = toSignal(inject(IS_MEDIUM));
+
+  rootProjectId = computed(() => this.currentProject()?.rootResourceId);
 
   actions = createDispatchMap({
     getSettings: GetProjectSettings,
@@ -88,6 +101,7 @@ export class SettingsComponent implements OnInit {
     deleteProject: DeleteProject,
     deleteInstitution: DeleteInstitution,
     refreshCurrentResource: GetResource,
+    getComponentsTree: GetResourceWithChildren,
   });
 
   accessRequest = signal(false);
@@ -176,18 +190,13 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteProject(): void {
-    this.customConfirmationService.confirmDelete({
-      headerKey: 'project.deleteProject.title',
-      messageParams: { name: this.projectDetails().title },
-      messageKey: 'project.deleteProject.message',
-      onConfirm: () => {
-        this.loaderService.show();
-        this.actions.deleteProject(this.projectId()).subscribe(() => {
-          this.loaderService.hide();
-          this.toastService.showSuccess('project.deleteProject.success');
-          this.router.navigate(['/']);
-        });
-      },
+    const dialogWidth = this.isMedium() ? '500px' : '95vw';
+
+    this.actions.getComponentsTree(this.rootProjectId() || this.projectId(), this.projectId(), ResourceType.Project);
+
+    this.customDialogService.open(DeleteProjectDialogComponent, {
+      header: 'project.deleteProject.dialog.deleteProject',
+      width: dialogWidth,
     });
   }
 
