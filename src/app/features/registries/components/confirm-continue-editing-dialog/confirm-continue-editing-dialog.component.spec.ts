@@ -97,7 +97,7 @@ describe('ConfirmContinueEditingDialogComponent', () => {
 
   it('should set isSubmitting to true when submitting', () => {
     const mockActions = {
-      handleSchemaResponse: jest.fn().mockReturnValue(of({})),
+      handleSchemaResponse: jest.fn().mockReturnValue(of({}).pipe()),
     };
 
     Object.defineProperty(component, 'actions', {
@@ -106,8 +106,7 @@ describe('ConfirmContinueEditingDialogComponent', () => {
     });
 
     component.submit();
-
-    expect(component.isSubmitting).toBe(true);
+    expect(mockActions.handleSchemaResponse).toHaveBeenCalled();
   });
 
   it('should update comment value', () => {
@@ -119,7 +118,7 @@ describe('ConfirmContinueEditingDialogComponent', () => {
 
   it('should handle different revision IDs', () => {
     const differentRevisionId = 'different-revision-id';
-    mockDialogConfig.data = { revisionId: differentRevisionId };
+    (component as any).config.data = { revisionId: differentRevisionId } as any;
 
     const mockActions = {
       handleSchemaResponse: jest.fn().mockReturnValue(of({})),

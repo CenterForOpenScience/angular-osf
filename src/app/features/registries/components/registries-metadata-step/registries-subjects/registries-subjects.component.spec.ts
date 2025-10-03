@@ -25,7 +25,6 @@ describe('RegistriesSubjectsComponent', () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
     await TestBed.configureTestingModule({
       imports: [RegistriesSubjectsComponent, OSFTestingModule],
-      schemas: [],
       providers: [
         MockProvider(ActivatedRoute, mockActivatedRoute),
         provideMockStore({

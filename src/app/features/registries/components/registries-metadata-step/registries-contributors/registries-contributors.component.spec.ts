@@ -34,6 +34,16 @@ describe('RegistriesContributorsComponent', () => {
     { id: '2', userId: 'u2', fullName: 'B', permission: 1 },
   ] as any[];
 
+  beforeAll(() => {
+    if (typeof (globalThis as any).structuredClone !== 'function') {
+      Object.defineProperty(globalThis as any, 'structuredClone', {
+        configurable: true,
+        writable: true,
+        value: (o: unknown) => JSON.parse(JSON.stringify(o)),
+      });
+    }
+  });
+
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
@@ -65,6 +75,8 @@ describe('RegistriesContributorsComponent', () => {
       updateContributor: jest.fn().mockReturnValue(of({})),
       addContributor: jest.fn().mockReturnValue(of({})),
       deleteContributor: jest.fn().mockReturnValue(of({})),
+      bulkUpdateContributors: jest.fn().mockReturnValue(of({})),
+      bulkAddContributors: jest.fn().mockReturnValue(of({})),
     } as any;
     Object.defineProperty(component, 'actions', { value: mockActions });
     fixture.detectChanges();

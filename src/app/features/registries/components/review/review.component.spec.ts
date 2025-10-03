@@ -1,11 +1,20 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
+
+import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { CustomConfirmationService, CustomDialogService } from '@osf/shared/services';
-import { ContributorsSelectors, SubjectsSelectors } from '@shared/stores';
+import {
+  ContributorsListComponent,
+  LoadingSpinnerComponent,
+  RegistrationBlocksDataComponent,
+  SubHeaderComponent,
+} from '@osf/shared/components';
+import { FieldType } from '@osf/shared/enums';
+import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
 import { ReviewComponent } from './review.component';
 
@@ -15,44 +24,60 @@ import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe('ReviewComponent', () => {
   let component: ReviewComponent;
   let fixture: ComponentFixture<ReviewComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
-  let mockCustomConfirmationService: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockDialog: ReturnType<CustomDialogServiceMockBuilder['build']>;
+  let mockConfirm: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let mockToast: ReturnType<ToastServiceMockBuilder['build']>;
 
   beforeEach(async () => {
+    mockRouter = RouterMockBuilder.create().withUrl('/registries/123/review').build();
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
-    mockRouter = RouterMockBuilder.create().withUrl('/x').build();
-    mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
-    mockCustomConfirmationService = CustomConfirmationServiceMockBuilder.create().build();
+
+    mockDialog = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
+    mockConfirm = CustomConfirmationServiceMockBuilder.create()
+      .withConfirmDelete(jest.fn((opts) => opts.onConfirm && opts.onConfirm()))
+      .build();
+    mockToast = ToastServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [ReviewComponent, OSFTestingModule],
+      imports: [
+        ReviewComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          RegistrationBlocksDataComponent,
+          ContributorsListComponent,
+          SubHeaderComponent,
+          LoadingSpinnerComponent
+        ),
+      ],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
         MockProvider(Router, mockRouter),
-        MockProvider(CustomDialogService, mockCustomDialogService as any),
-        MockProvider(CustomConfirmationService, mockCustomConfirmationService as any),
+        MockProvider(ActivatedRoute, mockActivatedRoute),
+        MockProvider(CustomDialogService, mockDialog),
+        MockProvider(CustomConfirmationService, mockConfirm),
+        MockProvider(ToastService, mockToast),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getPagesSchema, value: [] },
             {
               selector: RegistriesSelectors.getDraftRegistration,
-              value: { id: 'draft-1', providerId: 'prov-1', hasProject: false },
+              value: { id: 'draft-1', providerId: 'prov-1', currentUserPermissions: [], hasProject: false },
             },
             { selector: RegistriesSelectors.isDraftSubmitting, value: false },
             { selector: RegistriesSelectors.isDraftLoading, value: false },
             { selector: RegistriesSelectors.getStepsData, value: {} },
+            { selector: RegistriesSelectors.getRegistrationComponents, value: [] },
+            { selector: RegistriesSelectors.getRegistrationLicense, value: null },
+            { selector: RegistriesSelectors.getRegistration, value: { id: 'new-reg-1' } },
+            { selector: RegistriesSelectors.getStepsState, value: { 0: { invalid: false } } },
             { selector: ContributorsSelectors.getContributors, value: [] },
             { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
-            { selector: RegistriesSelectors.getRegistrationComponents, value: [] },
-            { selector: RegistriesSelectors.getRegistrationLicense, value: { options: {} } },
-            { selector: RegistriesSelectors.getRegistration, value: { id: 'new-reg-1' } },
-            { selector: RegistriesSelectors.getStepsState, value: {} },
           ],
         }),
       ],
@@ -65,11 +90,35 @@ describe('ReviewComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.FieldType).toBe(FieldType);
   });
 
-  it('should open confirm registration dialog when no components', () => {
-    (mockCustomDialogService.open as any) = jest.fn().mockReturnValue({ onClose: { subscribe: jest.fn() } });
+  it('should navigate back to previous step', () => {
+    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
+    component.goBack();
+    expect(navSpy).toHaveBeenCalledWith(['../', 0], { relativeTo: TestBed.inject(ActivatedRoute) });
+  });
+
+  it('should open confirmation dialog when deleting draft and navigate on confirm', () => {
+    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigateByUrl');
+    (component as any).actions = {
+      ...component.actions,
+      deleteDraft: jest.fn().mockReturnValue(of({})),
+      clearState: jest.fn(),
+    };
+
+    component.deleteDraft();
+
+    expect(mockConfirm.confirmDelete).toHaveBeenCalled();
+    expect(navSpy).toHaveBeenCalledWith('/registries/prov-1/new');
+  });
+
+  it('should open select components dialog when components exist and chain to confirm', () => {
+    (component as any).components = () => ['c1', 'c2'];
+    (mockDialog.open as jest.Mock).mockReturnValueOnce({ onClose: of(['c1']) } as any);
     component.confirmRegistration();
-    expect(mockCustomDialogService.open).toHaveBeenCalled();
+
+    expect(mockDialog.open).toHaveBeenCalled();
+    expect((mockDialog.open as jest.Mock).mock.calls.length).toBeGreaterThan(1);
   });
 });

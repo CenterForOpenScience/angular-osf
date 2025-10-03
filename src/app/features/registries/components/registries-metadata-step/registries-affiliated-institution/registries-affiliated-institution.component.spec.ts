@@ -1,11 +1,7 @@
-import { MockComponent, MockProvider } from 'ng-mocks';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { RegistriesSelectors } from '@osf/features/registries/store';
 import { InstitutionsSelectors } from '@osf/shared/stores';
-import { AffiliatedInstitutionSelectComponent } from '@shared/components';
 
 import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution.component';
 
@@ -20,14 +16,11 @@ describe('RegistriesAffiliatedInstitutionComponent', () => {
 
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
+
     await TestBed.configureTestingModule({
-      imports: [
-        RegistriesAffiliatedInstitutionComponent,
-        OSFTestingModule,
-        MockComponent(AffiliatedInstitutionSelectComponent),
-      ],
+      imports: [RegistriesAffiliatedInstitutionComponent, OSFTestingModule],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideMockStore({
           signals: [
             { selector: InstitutionsSelectors.getUserInstitutions, value: [] },
@@ -35,7 +28,6 @@ describe('RegistriesAffiliatedInstitutionComponent', () => {
             { selector: InstitutionsSelectors.getResourceInstitutions, value: [] },
             { selector: InstitutionsSelectors.areResourceInstitutionsLoading, value: false },
             { selector: InstitutionsSelectors.areResourceInstitutionsSubmitting, value: false },
-            { selector: RegistriesSelectors.getDraftRegistration, value: { id: 'draft-1' } },
           ],
         }),
       ],
@@ -43,7 +35,6 @@ describe('RegistriesAffiliatedInstitutionComponent', () => {
 
     fixture = TestBed.createComponent(RegistriesAffiliatedInstitutionComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 
@@ -51,7 +42,27 @@ describe('RegistriesAffiliatedInstitutionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set selected institutions from selector on init', () => {
-    expect(component).toBeTruthy();
+  it('should dispatch updateResourceInstitutions on selection', () => {
+    const actionsMock = {
+      updateResourceInstitutions: jest.fn(),
+      fetchUserInstitutions: jest.fn(),
+      fetchResourceInstitutions: jest.fn(),
+    } as any;
+    Object.defineProperty(component, 'actions', { value: actionsMock });
+    const selected = [{ id: 'i2' }] as any;
+    component.institutionsSelected(selected);
+    expect(actionsMock.updateResourceInstitutions).toHaveBeenCalledWith('draft-1', 8, selected);
+  });
+
+  it('should fetch user and resource institutions on init', () => {
+    const actionsMock = {
+      updateResourceInstitutions: jest.fn(),
+      fetchUserInstitutions: jest.fn(),
+      fetchResourceInstitutions: jest.fn(),
+    } as any;
+    Object.defineProperty(component, 'actions', { value: actionsMock });
+    component.ngOnInit();
+    expect(actionsMock.fetchUserInstitutions).toHaveBeenCalled();
+    expect(actionsMock.fetchResourceInstitutions).toHaveBeenCalledWith('draft-1', 8);
   });
 });
