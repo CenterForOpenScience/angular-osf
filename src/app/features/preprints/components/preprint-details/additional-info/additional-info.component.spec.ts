@@ -53,6 +53,7 @@ describe('AdditionalInfoComponent', () => {
 
     fixture = TestBed.createComponent(AdditionalInfoComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('preprintProviderId', 'osf');
     fixture.detectChanges();
   });
 

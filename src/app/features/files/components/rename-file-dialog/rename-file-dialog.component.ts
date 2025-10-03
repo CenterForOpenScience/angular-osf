@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
+import { forbiddenFileNameCharacters, InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
 
 @Component({
@@ -20,13 +20,16 @@ export class RenameFileDialogComponent {
   private readonly dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
 
-  readonly nameLimit = InputLimits.name.maxLength;
-  readonly nameMinLength = InputLimits.name.minLength;
+  readonly nameMaxLength = InputLimits.title.maxLength;
+  readonly nameMinLength = InputLimits.title.minLength;
 
   readonly renameForm = new FormGroup({
     name: new FormControl(this.config.data?.currentName ?? '', {
       nonNullable: true,
-      validators: [CustomValidators.requiredTrimmed()],
+      validators: [
+        CustomValidators.requiredTrimmed(),
+        CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+      ],
     }),
   });
 

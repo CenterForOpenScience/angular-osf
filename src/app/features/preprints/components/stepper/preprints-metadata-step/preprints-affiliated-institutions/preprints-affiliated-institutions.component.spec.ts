@@ -2,7 +2,9 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { AffiliatedInstitutionSelectComponent } from '@shared/components';
 import { MOCK_INSTITUTION } from '@shared/mocks';
 import { Institution } from '@shared/models';
@@ -19,6 +21,7 @@ describe('PreprintsAffiliatedInstitutionsComponent', () => {
   let fixture: ComponentFixture<PreprintsAffiliatedInstitutionsComponent>;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockPreprint: any = { id: 'preprint-1', reviewsState: ReviewsState.Pending };
   const mockUserInstitutions: Institution[] = [MOCK_INSTITUTION];
   const mockResourceInstitutions: Institution[] = [MOCK_INSTITUTION];
 
@@ -52,6 +55,10 @@ describe('PreprintsAffiliatedInstitutionsComponent', () => {
               selector: InstitutionsSelectors.areResourceInstitutionsSubmitting,
               value: false,
             },
+            {
+              selector: PreprintStepperSelectors.getInstitutionsChanged,
+              value: false,
+            },
           ],
         }),
       ],
@@ -60,7 +67,7 @@ describe('PreprintsAffiliatedInstitutionsComponent', () => {
     fixture = TestBed.createComponent(PreprintsAffiliatedInstitutionsComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('provider', mockProvider);
-    fixture.componentRef.setInput('preprintId', 'preprint-1');
+    fixture.componentRef.setInput('preprint', mockPreprint);
     fixture.detectChanges();
   });
 
@@ -70,7 +77,7 @@ describe('PreprintsAffiliatedInstitutionsComponent', () => {
 
   it('should initialize with correct values', () => {
     expect(component.provider()).toBe(mockProvider);
-    expect(component.preprintId()).toBe('preprint-1');
+    expect(component.preprint()!.id).toBe('preprint-1');
     expect(component.userInstitutions()).toBe(mockUserInstitutions);
     expect(component.areUserInstitutionsLoading()).toBe(false);
     expect(component.resourceInstitutions()).toBe(mockResourceInstitutions);
