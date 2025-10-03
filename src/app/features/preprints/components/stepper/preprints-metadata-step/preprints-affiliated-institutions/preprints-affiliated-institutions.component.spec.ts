@@ -21,7 +21,7 @@ describe('PreprintsAffiliatedInstitutionsComponent', () => {
   let fixture: ComponentFixture<PreprintsAffiliatedInstitutionsComponent>;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
-  const mockPreprint: any = { id: 'preprint-1', reviewsState: ReviewsState.Revision };
+  const mockPreprint: any = { id: 'preprint-1', reviewsState: ReviewsState.Pending };
   const mockUserInstitutions: Institution[] = [MOCK_INSTITUTION];
   const mockResourceInstitutions: Institution[] = [MOCK_INSTITUTION];
 
