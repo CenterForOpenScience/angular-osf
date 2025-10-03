@@ -120,10 +120,8 @@ export class ConfigureAddonComponent implements OnInit {
   constructor() {
     this.initializeAddon();
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.clearOperationInvocations();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearOperationInvocations();
     });
 
     effect(() => {

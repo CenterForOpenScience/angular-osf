@@ -1,5 +1,6 @@
 export * from './activity-logs';
 export * from './addons';
+export { AnalyticsService } from './analytics.service';
 export { BookmarksService } from './bookmarks.service';
 export { BrandService } from './brand.service';
 export { CollectionsService } from './collections.service';

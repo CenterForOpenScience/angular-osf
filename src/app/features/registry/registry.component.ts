@@ -10,7 +10,7 @@ import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { pathJoin } from '@osf/shared/helpers';
-import { MetaTagsService } from '@osf/shared/services';
+import { AnalyticsService, MetaTagsService } from '@osf/shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { GetRegistryById, RegistryOverviewSelectors } from './store/registry-overview';
@@ -43,6 +43,7 @@ export class RegistryComponent implements OnDestroy {
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
   readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
   readonly registry$ = toObservable(select(RegistryOverviewSelectors.getRegistry));
+  readonly analyticsService = inject(AnalyticsService);
 
   constructor() {
     effect(() => {
@@ -57,7 +58,15 @@ export class RegistryComponent implements OnDestroy {
       }
     });
 
+    effect(() => {
+      const currentRegistry = this.registry();
+      if (currentRegistry && currentRegistry.isPublic) {
+        this.analyticsService.sendCountedUsage(currentRegistry.id, 'registry.detail').subscribe();
+      }
+    });
+
     this.dataciteService.logIdentifiableView(this.registry$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+
   }
 
   ngOnDestroy(): void {

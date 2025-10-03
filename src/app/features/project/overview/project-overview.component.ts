@@ -56,6 +56,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
@@ -254,6 +255,8 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
+  readonly analyticsService = inject(AnalyticsService);
+
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
@@ -340,6 +343,12 @@ export class ProjectOverviewComponent implements OnInit {
       const project = this.currentProject();
       if (project?.wikiEnabled) {
         this.actions.getHomeWiki(ResourceType.Project, project.id);
+      }
+    });
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject && currentProject.isPublic) {
+        this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail').subscribe();
       }
     });
   }

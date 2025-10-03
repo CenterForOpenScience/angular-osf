@@ -209,7 +209,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       if (file.guid) {
         this.entryFileClicked.emit(file);
       } else {
-        this.filesService.getFileGuid(file.id, file.provider).subscribe((file) => {
+        this.filesService.getFileGuid(file.id).subscribe((file) => {
           this.entryFileClicked.emit(file);
         });
       }

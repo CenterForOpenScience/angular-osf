@@ -12,6 +12,8 @@
 
     @let questions = currentPage().questions || [];
 
+    <ng-container *ngTemplateOutlet="questionList; context: { $implicit: questions }"></ng-container>
+
     @if (currentPage().sections?.length) {
       @for (section of currentPage().sections; track section.id) {
         <p-card>
@@ -29,8 +31,6 @@
           <ng-container *ngTemplateOutlet="questionList; context: { $implicit: section.questions }"></ng-container>
         </p-card>
       }
-    } @else {
-      <ng-container *ngTemplateOutlet="questionList; context: { $implicit: questions }"></ng-container>
     }
 
     <ng-template #questionList let-questions>

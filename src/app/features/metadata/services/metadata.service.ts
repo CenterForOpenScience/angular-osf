@@ -92,16 +92,22 @@ export class MetadataService {
     );
   }
 
-  getMetadataCedarRecords(resourceId: string, resourceType: ResourceType): Observable<CedarMetadataRecordJsonApi> {
+  getMetadataCedarRecords(
+    resourceId: string,
+    resourceType: ResourceType,
+    url?: string
+  ): Observable<CedarMetadataRecordJsonApi> {
     const params: Record<string, unknown> = {
       embed: 'template',
       'page[size]': 20,
     };
 
-    return this.jsonApiService.get<CedarMetadataRecordJsonApi>(
-      `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/cedar_metadata_records/`,
-      params
-    );
+    let cedarUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/cedar_metadata_records/`;
+    if (url) {
+      cedarUrl = `${url}cedar_metadata_records/`;
+    }
+
+    return this.jsonApiService.get<CedarMetadataRecordJsonApi>(cedarUrl, params);
   }
 
   createMetadataCedarRecord(
