@@ -71,6 +71,7 @@ export class ReviewStepComponent implements OnInit {
   provider = input.required<PreprintProviderDetails | undefined>();
 
   preprint = select(PreprintStepperSelectors.getPreprint);
+  preprintFile = select(PreprintStepperSelectors.getPreprintFile);
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   contributors = select(ContributorsSelectors.getContributors);
@@ -94,9 +95,10 @@ export class ReviewStepComponent implements OnInit {
 
   submitPreprint() {
     const preprint = this.preprint()!;
+    const preprintFile = this.preprintFile()!;
 
     this.actions
-      .updatePrimaryFileRelationship(preprint.primaryFileId!)
+      .updatePrimaryFileRelationship(preprintFile.id)
       .pipe(
         switchMap(() => {
           if (preprint.reviewsState !== ReviewsState.Accepted) {
