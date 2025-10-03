@@ -6,7 +6,7 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { languageCodes, resourceTypes } from '@osf/shared/constants';
 
@@ -29,8 +29,8 @@ export class EditFileMetadataDialogComponent {
   fileMetadataForm = new FormGroup({
     title: new FormControl<string | null>(null),
     description: new FormControl<string | null>(null),
-    resourceType: new FormControl<string | null>(null, Validators.required),
-    resourceLanguage: new FormControl<string | null>(null, Validators.required),
+    resourceType: new FormControl<string | null>(null),
+    resourceLanguage: new FormControl<string | null>(null),
   });
 
   constructor() {
@@ -68,8 +68,8 @@ export class EditFileMetadataDialogComponent {
     const formValues: PatchFileMetadata = {
       title: this.fileMetadataForm.get('title')?.value ?? null,
       description: this.fileMetadataForm.get('description')?.value ?? null,
-      resource_type_general: this.fileMetadataForm.get('resourceType')?.value ?? null,
-      language: this.fileMetadataForm.get('resourceLanguage')?.value ?? null,
+      resource_type_general: this.fileMetadataForm.get('resourceType')?.value ?? '',
+      language: this.fileMetadataForm.get('resourceLanguage')?.value ?? '',
     };
 
     this.dialogRef.close(formValues);
