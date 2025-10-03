@@ -19,7 +19,7 @@ describe('TagsComponent', () => {
   let fixture: ComponentFixture<RegistriesTagsComponent>;
   const mockRoute = {
     snapshot: {
-      params: of({ id: 'someId' }),
+      params: { id: 'someId' },
     },
     params: of(''),
   };
@@ -49,5 +49,14 @@ describe('TagsComponent', () => {
   it('should render with label', () => {
     const labelElement = fixture.nativeElement.querySelector('label');
     expect(labelElement.textContent).toEqual('project.overview.metadata.tags (common.labels.optional)');
+  });
+
+  it('should update tags on change', () => {
+    const mockActions = {
+      updateDraft: jest.fn().mockReturnValue(of({})),
+    } as any;
+    Object.defineProperty(component, 'actions', { value: mockActions });
+    component.onTagsChanged(['a', 'b']);
+    expect(mockActions.updateDraft).toHaveBeenCalledWith('someId', { tags: ['a', 'b'] });
   });
 });
