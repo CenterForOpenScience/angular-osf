@@ -11,6 +11,7 @@ import { SubHeaderComponent } from '@shared/components';
 
 import { NewRegistrationComponent } from './new-registration.component';
 
+import { MOCK_PROVIDER_SCHEMAS } from '@testing/mocks/registries.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -22,7 +23,7 @@ describe('NewRegistrationComponent', () => {
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
   const PROJECTS = [{ id: 'p1', title: 'P1' }];
-  const PROVIDER_SCHEMAS = [{ id: 'schema-1' }];
+  const PROVIDER_SCHEMAS = MOCK_PROVIDER_SCHEMAS;
 
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create()

@@ -5,6 +5,7 @@ import { RegistriesSelectors } from '@osf/features/registries/store';
 
 import { DraftRegistrationCustomStepComponent } from './draft-registration-custom-step.component';
 
+import { MOCK_REGISTRIES_PAGE } from '@testing/mocks/registries.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -32,7 +33,7 @@ describe('DraftRegistrationCustomStepComponent', () => {
               selector: RegistriesSelectors.getDraftRegistration,
               value: { id: 'draft-1', providerId: 'prov-1', branchedFrom: { id: 'node-1', filesLink: '/files' } },
             },
-            { selector: RegistriesSelectors.getPagesSchema, value: [{ id: 'page-1', title: 'Page 1', questions: [] }] },
+            { selector: RegistriesSelectors.getPagesSchema, value: [MOCK_REGISTRIES_PAGE] },
             { selector: RegistriesSelectors.getStepsState, value: { 1: { invalid: false } } },
           ],
         }),

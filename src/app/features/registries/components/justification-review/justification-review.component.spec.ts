@@ -12,6 +12,7 @@ import { CustomConfirmationService, CustomDialogService, ToastService } from '@o
 
 import { JustificationReviewComponent } from './justification-review.component';
 
+import { MOCK_PAGES_SCHEMA } from '@testing/mocks/registries.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
@@ -29,12 +30,11 @@ describe('JustificationReviewComponent', () => {
   let mockCustomConfirmationService: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
   let mockToastService: ReturnType<ToastServiceMockBuilder['build']>;
 
-  const MOCK_PAGES = [{ id: 'p1', title: 'P1', questions: [{ responseKey: 'q1', displayText: 'Question 1' }] }] as any;
   const MOCK_SCHEMA_RESPONSE = {
     id: 'rev-1',
     registrationId: 'reg-1',
     reviewsState: RevisionReviewStates.RevisionInProgress,
-    updatedResponseKeys: ['q1'],
+    updatedResponseKeys: ['field1'],
   } as any;
 
   beforeEach(async () => {
@@ -54,7 +54,7 @@ describe('JustificationReviewComponent', () => {
         MockProvider(ToastService, mockToastService),
         provideMockStore({
           signals: [
-            { selector: RegistriesSelectors.getPagesSchema, value: MOCK_PAGES },
+            { selector: RegistriesSelectors.getPagesSchema, value: MOCK_PAGES_SCHEMA },
             { selector: RegistriesSelectors.getSchemaResponse, value: MOCK_SCHEMA_RESPONSE },
             { selector: RegistriesSelectors.getSchemaResponseRevisionData, value: {} },
             { selector: RegistriesSelectors.getUpdatedFields, value: {} },
@@ -126,7 +126,6 @@ describe('JustificationReviewComponent', () => {
     component.deleteDraftUpdate();
     expect(mockCustomConfirmationService.confirmDelete).toHaveBeenCalled();
     const call = (mockCustomConfirmationService.confirmDelete as any).mock.calls[0][0];
-    // Execute onConfirm to simulate user acceptance
     call.onConfirm();
 
     expect(mockActions.deleteSchemaResponse).toHaveBeenCalledWith('rev-1');

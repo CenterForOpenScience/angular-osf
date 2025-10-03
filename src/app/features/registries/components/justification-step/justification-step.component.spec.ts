@@ -25,7 +25,6 @@ describe('JustificationStepComponent', () => {
   let mockToastService: ReturnType<ToastServiceMockBuilder['build']>;
 
   const MOCK_SCHEMA_RESPONSE = {
-    id: 'rev-1',
     registrationId: 'reg-1',
     revisionJustification: 'reason',
   } as any;

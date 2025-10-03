@@ -11,6 +11,7 @@ import { ContributorsSelectors, SubjectsSelectors } from '@shared/stores';
 
 import { DraftsComponent } from './drafts.component';
 
+import { MOCK_DRAFT_REGISTRATION, MOCK_PAGES_SCHEMA } from '@testing/mocks/registries.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -22,8 +23,8 @@ describe('DraftsComponent', () => {
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
 
-  const MOCK_PAGES = [{ id: 'p1', title: 'T1' }];
-  const MOCK_DRAFT = { id: 'd1', title: 't', description: 'd', license: { id: 'l' } } as any;
+  const MOCK_PAGES = MOCK_PAGES_SCHEMA;
+  const MOCK_DRAFT = MOCK_DRAFT_REGISTRATION;
 
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'reg-1' }).build();

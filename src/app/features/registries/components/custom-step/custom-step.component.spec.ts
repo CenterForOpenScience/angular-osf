@@ -6,10 +6,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FilesControlComponent } from '@osf/features/registries/components/files-control/files-control.component';
 import { RegistriesSelectors } from '@osf/features/registries/store';
 import { InfoIconComponent } from '@osf/shared/components';
-import { FieldType } from '@osf/shared/enums';
 
 import { CustomStepComponent } from './custom-step.component';
 
+import { MOCK_REGISTRIES_PAGE, MOCK_STEPS_DATA } from '@testing/mocks/registries.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -21,15 +21,7 @@ describe('CustomStepComponent', () => {
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
 
-  const MOCK_STEPS_DATA = { field1: 'value1', field2: 'value2' } as any;
-  const MOCK_PAGE = {
-    id: 'page-1',
-    title: 'Page 1',
-    questions: [
-      { responseKey: 'field1', fieldType: FieldType.Text, required: true },
-      { responseKey: 'field2', fieldType: FieldType.Text, required: false },
-    ],
-  } as any;
+  const MOCK_PAGE = MOCK_REGISTRIES_PAGE;
 
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ step: 1 }).build();
@@ -76,7 +68,7 @@ describe('CustomStepComponent', () => {
   });
 
   it('should navigate next when goNext called with within pages', () => {
-    Object.defineProperty(component, 'pages', { value: () => [MOCK_PAGE, MOCK_PAGE] });
+    Object.defineProperty(component, 'pages', { value: () => [MOCK_REGISTRIES_PAGE, MOCK_REGISTRIES_PAGE] });
     component.goNext();
     expect(mockRouter.navigate).toHaveBeenCalled();
   });
