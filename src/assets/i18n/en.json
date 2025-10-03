@@ -993,7 +993,9 @@
         "loadingCedar": "Loading CEDAR record...",
         "editRecord": "Edit Record",
         "recordCreatedSuccessfully": "Record created successfully",
-        "recordUpdatedSuccessfully": "Record updated successfully"
+        "recordUpdatedSuccessfully": "Record updated successfully",
+        "copyRecordMetadataUrl": "Copy url to clipboard to share.",
+        "downloadRecordMetadata": "Download Metadata Record"
       },
       "funding": {
         "updated": "Funding information updated successfully",

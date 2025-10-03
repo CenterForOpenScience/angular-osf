@@ -1,6 +1,7 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 import { CommonModule } from '@angular/common';
 import {
@@ -9,13 +10,16 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
   ElementRef,
+  inject,
   input,
   output,
   signal,
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
 import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
 import {
@@ -29,7 +33,7 @@ import 'cedar-artifact-viewer';
 
 @Component({
   selector: 'osf-cedar-template-form',
-  imports: [CommonModule, Button, TranslatePipe],
+  imports: [CommonModule, Button, TranslatePipe, Tooltip],
   templateUrl: './cedar-template-form.component.html',
   styleUrl: './cedar-template-form.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -53,6 +57,12 @@ export class CedarTemplateFormComponent {
   isValid = false;
   cedarEditor = viewChild<ElementRef<CedarEditorElement>>('cedarEditor');
   cedarViewer = viewChild<ElementRef<CedarEditorElement>>('cedarViewer');
+
+  private route = inject(ActivatedRoute);
+  readonly environment = inject(ENVIRONMENT);
+
+  readonly recordId = signal<string>('');
+  readonly downloadUrl = signal<string>('');
 
   constructor() {
     effect(() => {
@@ -82,7 +92,17 @@ export class CedarTemplateFormComponent {
       if (viewer) viewer.instanceObject = metadata;
     }
 
+    const id = this.route.snapshot.paramMap.get('recordId') ?? '';
+    this.recordId.set(id);
+
+    this.downloadUrl.set(`${this.environment.apiDomainUrl}/_/cedar_metadata_records/${id}/metadata_download/`);
+
     this.validateCedarMetadata();
+  }
+
+  copyUrl() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then();
   }
 
   onCedarChange(event: Event): void {

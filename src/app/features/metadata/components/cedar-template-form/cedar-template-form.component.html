@@ -8,13 +8,31 @@
           <h3 class="text-lg text-red-500">{{ 'project.metadata.addMetadata.notPublishedText' | translate }}</h3>
         }
         @if (showEditButton()) {
-          <p-button
-            class="w-10rem flex-shrink-0 btn-full-width"
-            severity="secondary"
-            [label]="'project.metadata.addMetadata.editRecord' | translate"
-            (onClick)="toggleEditModeEmit()"
-          >
-          </p-button>
+          <span class="flex items-center">
+            <a
+              class="flex align-self-center"
+              (click)="copyUrl()"
+              [pTooltip]="'project.metadata.addMetadata.copyRecordMetadataUrl' | translate"
+            >
+              <i class="pi pi-copy"></i>
+            </a>
+            <a
+              class="md:px-4 flex align-self-center"
+              target="_blank"
+              [href]="downloadUrl()"
+              [pTooltip]="'project.metadata.addMetadata.downloadRecordMetadata' | translate"
+            >
+              <i class="pi pi-download"></i>
+            </a>
+
+            <p-button
+              class="tw-w-40 flex-shrink-0 btn-full-width"
+              severity="secondary"
+              [label]="'project.metadata.addMetadata.editRecord' | translate"
+              (onClick)="toggleEditModeEmit()"
+            >
+            </p-button>
+          </span>
         }
       </div>
     }
