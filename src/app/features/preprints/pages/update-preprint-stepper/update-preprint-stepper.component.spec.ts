@@ -1,24 +1,16 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  AuthorAssertionsStepComponent,
-  FileStepComponent,
-  MetadataStepComponent,
-  ReviewStepComponent,
-  SupplementsStepComponent,
-  TitleAndAbstractStepComponent,
-} from '@osf/features/preprints/components';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { PreprintSteps } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { StepperComponent } from '@shared/components';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/helpers';
 import { StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
@@ -58,19 +50,7 @@ describe('UpdatePreprintStepperComponent', () => {
       .build();
 
     await TestBed.configureTestingModule({
-      imports: [
-        UpdatePreprintStepperComponent,
-        OSFTestingModule,
-        ...MockComponents(
-          StepperComponent,
-          TitleAndAbstractStepComponent,
-          FileStepComponent,
-          MetadataStepComponent,
-          AuthorAssertionsStepComponent,
-          SupplementsStepComponent,
-          ReviewStepComponent
-        ),
-      ],
+      imports: [UpdatePreprintStepperComponent, OSFTestingModule],
       providers: [
         MockProvider(BrandService),
         MockProvider(Router, routerMock),
@@ -97,6 +77,7 @@ describe('UpdatePreprintStepperComponent', () => {
           ],
         }),
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UpdatePreprintStepperComponent);

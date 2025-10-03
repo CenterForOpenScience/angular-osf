@@ -49,6 +49,7 @@ export class ActivatedRouteMockBuilder {
 
     const route: Partial<ActivatedRoute> = {
       parent: {
+        params: this.params$.asObservable(),
         snapshot: {
           params: this.paramsObj,
         },

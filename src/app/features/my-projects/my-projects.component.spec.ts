@@ -140,7 +140,7 @@ describe('MyProjectsComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith([], {
       relativeTo: TestBed.inject(ActivatedRoute),
-      queryParams: { page: '1', search: 'query' },
+      queryParams: { page: '1', search: 'query', tab: '1' },
     });
   });
 
@@ -152,7 +152,7 @@ describe('MyProjectsComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith([], {
       relativeTo: TestBed.inject(ActivatedRoute),
-      queryParams: { page: '3', size: '15' },
+      queryParams: { page: '3', size: '15', tab: '1' },
     });
   });
 
@@ -163,7 +163,7 @@ describe('MyProjectsComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith([], {
       relativeTo: TestBed.inject(ActivatedRoute),
-      queryParams: { sortColumn: 'updated', sortOrder: 'desc' },
+      queryParams: { sortColumn: 'updated', sortOrder: 'desc', tab: '1' },
     });
   });
 
@@ -175,7 +175,7 @@ describe('MyProjectsComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith([], {
       relativeTo: TestBed.inject(ActivatedRoute),
-      queryParams: { page: '1', size: undefined },
+      queryParams: { page: '1', tab: '1' },
     });
 
     expect(store.dispatch).toHaveBeenCalled();

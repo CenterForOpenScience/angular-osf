@@ -89,7 +89,7 @@ describe('MyPreprintsComponent', () => {
   it('should initialize with correct default values', () => {
     expect(component.searchControl.value).toBe('');
     expect(component.sortColumn()).toBe('');
-    expect(component.sortOrder()).toBe(SortOrder.Asc);
+    expect(component.sortOrder()).toBe(SortOrder.Desc);
     expect(component.currentPage()).toBe(1);
     expect(component.currentPageSize()).toBe(DEFAULT_TABLE_PARAMS.rows);
   });
