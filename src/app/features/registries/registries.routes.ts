@@ -29,7 +29,7 @@ export const registriesRoutes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'overview',
+        redirectTo: 'discover',
       },
       {
         path: 'discover',
