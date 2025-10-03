@@ -40,7 +40,7 @@
           </div>
         </section>
         @if (!isAllAddonsTabLoading()) {
-          <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+          <osf-addon-card-list [cards]="filteredAddonCards()" [isConnected]="false" />
         } @else {
           <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
             <osf-loading-spinner />
