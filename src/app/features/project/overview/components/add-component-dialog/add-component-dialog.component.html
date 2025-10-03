@@ -14,7 +14,7 @@
 
       <osf-affiliated-institution-select
         [institutions]="userInstitutions()"
-        [selectedInstitutions]="userInstitutions()"
+        [selectedInstitutions]="selectedInstitutions()"
         [isLoading]="areUserInstitutionsLoading()"
         (selectedInstitutionsChange)="setSelectedInstitutions($event)"
       />
