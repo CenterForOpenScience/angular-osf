@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { SupportedFeature } from '@osf/shared/enums';
+import { SupportedFeature, UserPermissions } from '@osf/shared/enums';
 import { ConfiguredAddonModel, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
 
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
@@ -142,5 +142,10 @@ export class FilesSelectors {
   @Selector([FilesState])
   static getStorageSupportedFeatures(state: FilesStateModel): Record<string, SupportedFeature[]> {
     return state.storageSupportedFeatures || {};
+  }
+
+  @Selector([FilesState])
+  static hasWriteAccess(state: FilesStateModel): boolean {
+    return state.openedFile.data?.target?.currentUserPermissions?.includes(UserPermissions.Write) || false;
   }
 }

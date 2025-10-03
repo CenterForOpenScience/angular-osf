@@ -19,14 +19,13 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
   }
 
   const currentResource = store.selectSnapshot(CurrentResourceSelectors.getCurrentResource);
-
   if (currentResource && currentResource.id === id) {
     if (currentResource.type === CurrentResourceType.Files) {
       if (isMetadataPath) {
         return true;
       }
       if (currentResource.parentId) {
-        router.navigate(['/', currentResource.parentId, 'files', id]);
+        router.navigate(['/', currentResource.parentId, 'files', id], { queryParamsHandling: 'preserve' });
         return false;
       }
     }
@@ -46,7 +45,7 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
           return true;
         }
         if (resource.parentId) {
-          router.navigate(['/', resource.parentId, 'files', id]);
+          router.navigate(['/', resource.parentId, 'files', id], { queryParamsHandling: 'preserve' });
           return false;
         }
       }

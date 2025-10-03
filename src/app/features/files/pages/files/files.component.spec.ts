@@ -120,7 +120,6 @@ describe('Component: Files', () => {
               'isLoading',
               'actions',
               'viewOnly',
-              'viewOnlyDownloadable',
               'resourceId',
               'provider',
               'storage',

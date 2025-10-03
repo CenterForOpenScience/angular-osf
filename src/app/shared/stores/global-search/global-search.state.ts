@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { getResourceTypeStringFromEnum } from '@shared/helpers';
-import { ResourcesData } from '@shared/models';
+import { FilterOperator, ResourcesData } from '@shared/models';
 import { GlobalSearchService } from '@shared/services';
 
 import {
@@ -284,7 +284,7 @@ export class GlobalSearchState {
     state: GlobalSearchStateModel,
     filterKey: string,
     valueSearchText?: string
-  ): Record<string, string> {
+  ): Record<string, string | string[]> {
     return {
       ...this.buildParamsForIndexCardSearch(state),
       'page[size]': '200',
@@ -293,21 +293,22 @@ export class GlobalSearchState {
     };
   }
 
-  private buildParamsForIndexCardSearch(state: GlobalSearchStateModel): Record<string, string> {
-    const filtersParams: Record<string, string> = {};
+  private buildParamsForIndexCardSearch(state: GlobalSearchStateModel): Record<string, string | string[]> {
+    const filtersParams: Record<string, string | string[]> = {};
     Object.entries(state.defaultFilterOptions).forEach(([key, value]) => {
       filtersParams[`cardSearchFilter[${key}][]`] = value;
     });
-    Object.entries(state.selectedFilterOptions).forEach(([key, option]) => {
-      if (option) {
-        const filterDefinition = state.filters.find((f) => f.key === key);
-        const operator = filterDefinition?.operator;
+    Object.entries(state.selectedFilterOptions).forEach(([key, options]) => {
+      const filter = state.filters.find((f) => f.key === key);
 
-        if (operator === 'is-present') {
-          filtersParams[`cardSearchFilter[${key}][is-present]`] = option.value;
-        } else {
-          filtersParams[`cardSearchFilter[${key}][]`] = option.value;
+      const firstOptionValue = options[0]?.value;
+      const isOptionValueBoolean = firstOptionValue === 'true' || firstOptionValue === 'false';
+      if (filter?.operator === FilterOperator.IsPresent || isOptionValueBoolean) {
+        if (firstOptionValue) {
+          filtersParams[`cardSearchFilter[${key}][is-present]`] = firstOptionValue;
         }
+      } else {
+        filtersParams[`cardSearchFilter[${key}][]`] = options.map((option) => option.value);
       }
     });
 

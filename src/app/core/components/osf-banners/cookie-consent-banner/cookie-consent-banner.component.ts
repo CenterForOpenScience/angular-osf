@@ -2,10 +2,12 @@ import { CookieService } from 'ngx-cookie-service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Message } from 'primeng/message';
 
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { fadeInOutAnimation } from '@core/animations/fade.in-out.animation';
+import { IconComponent } from '@shared/components';
 
 /**
  * Displays a cookie consent banner until the user accepts.
@@ -19,7 +21,7 @@ import { fadeInOutAnimation } from '@core/animations/fade.in-out.animation';
   selector: 'osf-cookie-consent-banner',
   templateUrl: './cookie-consent-banner.component.html',
   styleUrls: ['./cookie-consent-banner.component.scss'],
-  imports: [Button, TranslatePipe],
+  imports: [Button, TranslatePipe, IconComponent, Message],
   animations: [fadeInOutAnimation],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

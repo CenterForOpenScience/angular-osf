@@ -38,6 +38,7 @@ export class FileMetadataComponent {
 
   fileMetadata = select(FilesSelectors.getFileCustomMetadata);
   isLoading = select(FilesSelectors.isFileMetadataLoading);
+  hasWriteAccess = select(FilesSelectors.hasWriteAccess);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   readonly languageCodes = languageCodes;

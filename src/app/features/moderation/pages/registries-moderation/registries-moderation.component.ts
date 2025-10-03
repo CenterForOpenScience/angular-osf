@@ -48,7 +48,7 @@ export class RegistriesModerationComponent implements OnInit, OnDestroy {
     clearCurrentProvider: ClearCurrentProvider,
   });
 
-  selectedTab = RegistryModerationTab.Submitted;
+  selectedTab = RegistryModerationTab.Pending;
 
   ngOnInit(): void {
     this.selectedTab = this.route.snapshot.firstChild?.data['tab'];

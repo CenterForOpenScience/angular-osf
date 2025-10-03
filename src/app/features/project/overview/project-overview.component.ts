@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { distinctUntilChanged, filter, map } from 'rxjs';
+import { distinctUntilChanged, filter, map, skip, tap } from 'rxjs';
 
 import { CommonModule, DatePipe } from '@angular/common';
 import {
@@ -56,6 +56,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
@@ -129,6 +130,7 @@ export class ProjectOverviewComponent implements OnInit {
   isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
   hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
+  isWikiEnabled = select(ProjectOverviewSelectors.isWikiEnabled);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -172,7 +174,6 @@ export class ProjectOverviewComponent implements OnInit {
     );
   });
 
-  userPermissions = computed(() => this.currentProject()?.currentUserPermissions || []);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   resourceOverview = computed(() => {
@@ -253,19 +254,13 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
+  readonly analyticsService = inject(AnalyticsService);
+
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
-    this.setupRouteChangeEffects();
-
-    effect(() => {
-      const currentProject = this.currentProject();
-      if (currentProject) {
-        const rootParentId = currentProject.rootParentId ?? currentProject.id;
-        this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
-        this.actions.getSubjects(currentProject.id, ResourceType.Project);
-      }
-    });
+    this.setupProjectEffects();
+    this.setupRouteChangeListener();
   }
 
   onCustomCitationUpdated(citation: string): void {
@@ -283,7 +278,10 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
 
-    this.dataciteService.logIdentifiableView(this.currentProject$).subscribe();
+    this.dataciteService
+      .logIdentifiableView(this.currentProject$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   handleOpenMakeDecisionDialog() {
@@ -331,31 +329,48 @@ export class ProjectOverviewComponent implements OnInit {
     });
   }
 
-  private setupRouteChangeEffects(): void {
+  private setupProjectEffects(): void {
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject) {
+        const rootParentId = currentProject.rootParentId ?? currentProject.id;
+        this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+        this.actions.getSubjects(currentProject.id, ResourceType.Project);
+      }
+    });
+    effect(() => {
+      const project = this.currentProject();
+      if (project?.wikiEnabled) {
+        this.actions.getHomeWiki(ResourceType.Project, project.id);
+      }
+    });
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject && currentProject.isPublic) {
+        this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail').subscribe();
+      }
+    });
+  }
+
+  private setupRouteChangeListener(): void {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         map(() => this.route.snapshot.params['id'] || this.route.parent?.snapshot.params['id']),
         filter(Boolean),
         distinctUntilChanged(),
+        skip(1),
+        tap((projectId) => {
+          this.actions.clearProjectOverview();
+          this.actions.getProject(projectId);
+          this.actions.getBookmarksId();
+          this.actions.getComponents(projectId);
+          this.actions.getLinkedProjects(projectId);
+          this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((projectId) => {
-        this.actions.clearProjectOverview();
-        this.actions.getProject(projectId);
-        this.actions.getBookmarksId();
-        this.actions.getComponents(projectId);
-        this.actions.getLinkedProjects(projectId);
-        this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
-      });
-
-    effect(() => {
-      const project = this.currentProject();
-
-      if (project?.wikiEnabled) {
-        this.actions.getHomeWiki(ResourceType.Project, project.id);
-      }
-    });
+      .subscribe();
   }
 
   private setupCleanup(): void {

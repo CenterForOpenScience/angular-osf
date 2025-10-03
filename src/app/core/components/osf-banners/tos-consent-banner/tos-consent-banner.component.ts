@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Message } from 'primeng/message';
 
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -52,16 +52,14 @@ export class TosConsentBannerComponent {
   /**
    * Computed signal indicating whether the user has already accepted the Terms of Service.
    */
-  acceptedTermsOfServiceChange = computed(() =>
-    {
-      const user = this.currentUser()
-      /**
-      * if user is authenticated we check whether is accepted terms of service to hide banner or show if not
-      * otherwise user is not authenticated we hide banner always
-      */
-      return  user ? user.acceptedTermsOfService : true;
-    }
-  );
+  acceptedTermsOfServiceChange = computed(() => {
+    const user = this.currentUser();
+    /**
+     * if user is authenticated we check whether is accepted terms of service to hide banner or show if not
+     * otherwise user is not authenticated we hide banner always
+     */
+    return user ? user.acceptedTermsOfService : true;
+  });
 
   /**
    * Triggered when the user clicks the Continue button.

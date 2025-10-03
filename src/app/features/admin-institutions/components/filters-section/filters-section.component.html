@@ -21,7 +21,7 @@
         />
 
         <div class="filters-section overflow-auto px-4">
-          <osf-reusable-filters
+          <osf-search-filters
             [plainStyle]="true"
             [filters]="filters()"
             [selectedOptions]="selectedFilterOptions()"
@@ -29,8 +29,8 @@
             [isLoading]="areResourcesLoading()"
             [showEmptyState]="true"
             (loadFilterOptions)="onLoadFilterOptions($event)"
-            (filterOptionChanged)="onFilterChanged($event)"
-            (filterSearchChanged)="onFilterSearchChanged($event)"
+            (filterOptionSelected)="onSelectedFilterOptionsChanged($event)"
+            (filterOptionsSearch)="onSearchFilterOptions($event)"
             (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
           />
         </div>

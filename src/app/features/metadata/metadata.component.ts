@@ -307,7 +307,7 @@ export class MetadataComponent implements OnInit {
         .subscribe(() => {
           this.updateSelectedCedarRecord(selectedRecord.id!);
           this.cedarFormReadonly.set(true);
-          this.toastService.showSuccess(this.translateService.instant('files.detail.toast.cedarUpdated'));
+          this.toastService.showSuccess('files.detail.toast.cedarUpdated');
         });
     }
   }
@@ -338,6 +338,7 @@ export class MetadataComponent implements OnInit {
     this.customDialogService
       .open(ContributorsDialogComponent, {
         header: this.translateService.instant('project.metadata.contributors.editContributors'),
+        width: '600px',
         data: {
           resourceId: this.resourceId,
           resourceType: this.resourceType(),

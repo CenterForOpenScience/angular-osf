@@ -19,6 +19,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { SearchFiltersComponent } from '@shared/components/search-filters/search-filters.component';
 import { ResourceType } from '@shared/enums';
 import { DiscoverableFilter, FilterOption, TabOption } from '@shared/models';
 import {
@@ -38,7 +39,6 @@ import {
 } from '@shared/stores/global-search';
 
 import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
-import { ReusableFilterComponent } from '../reusable-filter/reusable-filter.component';
 import { SearchHelpTutorialComponent } from '../search-help-tutorial/search-help-tutorial.component';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { SearchResultsContainerComponent } from '../search-results-container/search-results-container.component';
@@ -50,7 +50,7 @@ import { SearchResultsContainerComponent } from '../search-results-container/sea
     SearchInputComponent,
     SearchResultsContainerComponent,
     TranslatePipe,
-    ReusableFilterComponent,
+    SearchFiltersComponent,
     SearchHelpTutorialComponent,
   ],
   templateUrl: './global-search.component.html',
@@ -122,7 +122,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.actions.loadMoreFilterOptions(filter.key);
   }
 
-  onFilterSearchChanged(event: { searchText: string; filter: DiscoverableFilter }): void {
+  onSearchFilterOptions(event: { searchText: string; filter: DiscoverableFilter }): void {
     if (event.searchText.trim()) {
       this.actions.loadFilterOptionsWithSearch(event.filter.key, event.searchText);
     } else {
@@ -130,7 +130,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFilterOptionChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption | null }): void {
+  onSelectedFilterOptionsChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption[] }): void {
     this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);
 
     const currentFilters = this.filterOptions();
@@ -171,8 +171,11 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectedOptionRemoved(filterKey: string): void {
-    this.actions.updateSelectedFilterOption(filterKey, null);
+  onSelectedOptionRemoved(event: { filterKey: string; optionRemoved: FilterOption }): void {
+    const updatedOptions = this.filterOptions()[event.filterKey].filter(
+      (option) => option.value !== event.optionRemoved.value
+    );
+    this.actions.updateSelectedFilterOption(event.filterKey, updatedOptions);
     this.updateUrlWithFilterOptions(this.filterOptions());
     this.actions.fetchResources();
   }
@@ -181,7 +184,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.currentStep.set(1);
   }
 
-  private updateUrlWithFilterOptions(filterValues: Record<string, FilterOption | null>) {
+  private updateUrlWithFilterOptions(filterValues: Record<string, FilterOption[]>) {
     const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
 
     Object.keys(queryParams).forEach((key) => {
@@ -190,9 +193,9 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       }
     });
 
-    Object.entries(filterValues).forEach(([key, option]) => {
-      if (option !== null) {
-        queryParams[`filter_${key}`] = JSON.stringify(option);
+    Object.entries(filterValues).forEach(([key, options]) => {
+      if (options?.length) {
+        queryParams[`filter_${key}`] = JSON.stringify(options);
       }
     });
 
@@ -206,14 +209,15 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
 
   private restoreFiltersFromUrl(): void {
     const queryParams = this.route.snapshot.queryParams;
-    const filterValues: Record<string, FilterOption> = {};
+    const filterValues: Record<string, FilterOption[]> = {};
 
     Object.keys(queryParams).forEach((key) => {
       if (key.startsWith('filter_')) {
         const filterKey = key.replace('filter_', '');
         const filterValue = queryParams[key];
         if (filterValue) {
-          filterValues[filterKey] = JSON.parse(filterValue) as FilterOption;
+          const parsed = JSON.parse(filterValue);
+          filterValues[filterKey] = Array.isArray(parsed) ? (parsed as FilterOption[]) : [parsed as FilterOption];
         }
       }
     });

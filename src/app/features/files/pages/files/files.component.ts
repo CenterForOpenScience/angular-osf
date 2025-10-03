@@ -4,7 +4,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
@@ -18,7 +17,6 @@ import {
   forkJoin,
   Observable,
   of,
-  skip,
   switchMap,
   take,
 } from 'rxjs';
@@ -59,10 +57,11 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { FileMenuType, ResourceType, SupportedFeature, UserPermissions } from '@osf/shared/enums';
-import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
+  FileUploadDialogComponent,
   FormSelectComponent,
   GoogleFilePickerComponent,
   LoadingSpinnerComponent,
@@ -82,7 +81,7 @@ import { FilesSelectors } from '../../store';
   selector: 'osf-files',
   imports: [
     Button,
-    Dialog,
+    FileUploadDialogComponent,
     FilesTreeComponent,
     FormSelectComponent,
     FormsModule,
@@ -104,6 +103,7 @@ import { FilesSelectors } from '../../store';
 })
 export class FilesComponent {
   googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
+  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
 
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
@@ -184,7 +184,21 @@ export class FilesComponent {
   readonly allowedMenuActions = computed(() => {
     const provider = this.provider();
     const supportedFeatures = this.supportedFeatures()[provider] || [];
-    return this.mapMenuActions(supportedFeatures);
+    const hasViewOnly = this.hasViewOnly();
+    const isRegistration = this.resourceType() === ResourceType.Registration;
+    const menuMap = this.mapMenuActions(supportedFeatures);
+
+    const result: Record<FileMenuType, boolean> = { ...menuMap };
+
+    if (hasViewOnly || isRegistration || !this.canEdit()) {
+      const allowed = new Set<FileMenuType>([FileMenuType.Download, FileMenuType.Embed, FileMenuType.Share]);
+
+      (Object.keys(result) as FileMenuType[]).forEach((key) => {
+        result[key] = allowed.has(key) && menuMap[key];
+      });
+    }
+
+    return result;
   });
 
   readonly rootFoldersOptions = computed(() => {
@@ -211,15 +225,16 @@ export class FilesComponent {
       (permission) => permission === UserPermissions.Admin || permission === UserPermissions.Write
     );
 
-    return !details.isRegistration && hasAdminOrWrite;
+    return hasAdminOrWrite;
   });
 
-  readonly isViewOnlyDownloadable = computed(
-    () => this.allowedMenuActions()[FileMenuType.Download] && this.resourceType() === ResourceType.Registration
-  );
+  readonly isRegistration = computed(() => this.resourceType() === ResourceType.Registration);
 
   canUploadFiles = computed(
-    () => this.supportedFeatures()[this.provider()]?.includes(SupportedFeature.AddUpdateFiles) && this.canEdit()
+    () =>
+      this.supportedFeatures()[this.provider()]?.includes(SupportedFeature.AddUpdateFiles) &&
+      this.canEdit() &&
+      !this.isRegistration()
   );
 
   isButtonDisabled = computed(() => this.fileIsUploading() || this.isFilesLoading());
@@ -282,6 +297,7 @@ export class FilesComponent {
         }
         this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
+        this.filesTree()?.resetPagination();
       }
     });
 
@@ -292,25 +308,27 @@ export class FilesComponent {
     });
 
     this.searchControl.valueChanges
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
+      .pipe(takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
+        this.filesTree()?.resetPagination();
+
         if (!this.isFolderOpening()) {
           this.updateFilesList();
         }
       });
 
-    this.sortControl.valueChanges.pipe(skip(1), takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
+    this.sortControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
       this.actions.setSort(sort ?? '');
+      this.filesTree()?.resetPagination();
+
       if (!this.isFolderOpening()) {
         this.updateFilesList();
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.resetState();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.resetState();
     });
   }
 
@@ -452,7 +470,10 @@ export class FilesComponent {
     const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
 
     if (resourceId && folderId) {
-      this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
+      this.dataciteService
+        .logFileDownload(resourceId, resourcePath)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
       if (isRootFolder) {
         const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
         window.open(link, '_blank')?.focus();
@@ -473,7 +494,7 @@ export class FilesComponent {
     });
   }
 
-  public updateFilesList = (): Observable<void> => {
+  updateFilesList(): Observable<void> {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
       this.filesTreeActions.setFilesIsLoading?.(true);
@@ -481,7 +502,7 @@ export class FilesComponent {
     }
 
     return EMPTY;
-  };
+  }
 
   folderIsOpening(value: boolean): void {
     this.isFolderOpening.set(value);
@@ -492,7 +513,12 @@ export class FilesComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    const url = this.router.createUrlTree([file.guid]).toString();
+    const extras = this.hasViewOnly()
+      ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
+      : undefined;
+
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/', file.guid], extras));
+
     window.open(url, '_blank');
   }
 

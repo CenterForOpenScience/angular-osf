@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -42,6 +42,8 @@ import {
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
+  BulkUpdateContributors,
   ContributorsSelectors,
   CreateViewOnlyLink,
   CurrentResourceSelectors,
@@ -51,7 +53,6 @@ import {
   GetAllContributors,
   GetResourceDetails,
   UpdateBibliographyFilter,
-  UpdateContributor,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
   ViewOnlyLinkSelectors,
@@ -99,7 +100,7 @@ export class ContributorsComponent implements OnInit {
   readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
 
   initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal([]);
+  contributors = signal<ContributorModel[]>([]);
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
@@ -130,7 +131,8 @@ export class ContributorsComponent implements OnInit {
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,
-    updateContributor: UpdateContributor,
+    bulkUpdateContributors: BulkUpdateContributors,
+    bulkAddContributors: BulkAddContributors,
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
@@ -142,7 +144,7 @@ export class ContributorsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+      this.contributors.set(structuredClone(this.initialContributors()));
 
       if (this.isContributorsLoading()) {
         this.searchControl.disable();
@@ -184,19 +186,18 @@ export class ContributorsComponent implements OnInit {
   }
 
   cancel() {
-    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    this.contributors.set(structuredClone(this.initialContributors()));
   }
 
   save() {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
-    const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.resourceId(), this.resourceType(), payload)
-    );
-
-    forkJoin(updateRequests).subscribe(() => {
-      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-    });
+    this.actions
+      .bulkUpdateContributors(this.resourceId(), this.resourceType(), updatedContributors)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() =>
+        this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage')
+      );
   }
 
   openAddContributorDialog() {
@@ -216,13 +217,12 @@ export class ContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.resourceId(), this.resourceType(), payload)
-          );
-
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-          });
+          this.actions
+            .bulkAddContributors(this.resourceId(), this.resourceType(), res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
         }
       });
   }
@@ -260,12 +260,11 @@ export class ContributorsComponent implements OnInit {
         this.actions
           .deleteContributor(this.resourceId(), this.resourceType(), contributor.userId)
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            next: () =>
-              this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
-                name: contributor.fullName,
-              }),
-          });
+          .subscribe(() =>
+            this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
+              name: contributor.fullName,
+            })
+          );
       },
     });
   }

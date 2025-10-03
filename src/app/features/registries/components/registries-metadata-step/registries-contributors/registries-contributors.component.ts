@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 
-import { filter, forkJoin, map, of } from 'rxjs';
+import { filter, map, of } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -35,10 +35,11 @@ import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models'
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  BulkAddContributors,
+  BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
   GetAllContributors,
-  UpdateContributor,
 } from '@osf/shared/stores';
 
 @Component({
@@ -72,14 +73,15 @@ export class RegistriesContributorsComponent implements OnInit {
   });
 
   initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal([]);
+  contributors = signal<ContributorModel[]>([]);
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
 
   actions = createDispatchMap({
     getContributors: GetAllContributors,
     deleteContributor: DeleteContributor,
-    updateContributor: UpdateContributor,
+    bulkUpdateContributors: BulkUpdateContributors,
+    bulkAddContributors: BulkAddContributors,
     addContributor: AddContributor,
   });
 
@@ -89,7 +91,7 @@ export class RegistriesContributorsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+      this.contributors.set(structuredClone(this.initialContributors()));
     });
   }
 
@@ -98,7 +100,6 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   onFocusOut() {
-    // [NM] TODO: make request to update contributor if changed
     if (this.control()) {
       this.control().markAsTouched();
       this.control().markAsDirty();
@@ -107,19 +108,18 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   cancel() {
-    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    this.contributors.set(structuredClone(this.initialContributors()));
   }
 
   save() {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
-    const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.draftId(), ResourceType.DraftRegistration, payload)
-    );
-
-    forkJoin(updateRequests).subscribe(() => {
-      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-    });
+    this.actions
+      .bulkUpdateContributors(this.draftId(), ResourceType.DraftRegistration, updatedContributors)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() =>
+        this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage')
+      );
   }
 
   openAddContributorDialog() {
@@ -139,13 +139,12 @@ export class RegistriesContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.draftId(), ResourceType.DraftRegistration, payload)
-          );
-
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-          });
+          this.actions
+            .bulkAddContributors(this.draftId(), ResourceType.DraftRegistration, res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
+            );
         }
       });
   }

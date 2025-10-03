@@ -6,34 +6,63 @@ import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { ModeratorPermission } from '@osf/features/moderation/enums';
 import { EducationHistoryDialogComponent } from '@osf/shared/components/education-history-dialog/education-history-dialog.component';
 import { EmploymentHistoryDialogComponent } from '@osf/shared/components/employment-history-dialog/employment-history-dialog.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { ContributorPermission } from '@osf/shared/enums';
+import { ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 
+import { IconComponent } from '../../icon/icon.component';
+import { InfoIconComponent } from '../../info-icon/info-icon.component';
+
 @Component({
   selector: 'osf-contributors-table',
-  imports: [TranslatePipe, FormsModule, TableModule, Tooltip, Checkbox, Skeleton, Button, SelectComponent],
+  imports: [
+    TranslatePipe,
+    FormsModule,
+    TableModule,
+    Tooltip,
+    Checkbox,
+    Skeleton,
+    Button,
+    SelectComponent,
+    IconComponent,
+    InfoIconComponent,
+  ],
   templateUrl: './contributors-table.component.html',
   styleUrl: './contributors-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContributorsTableComponent {
-  contributors = input<ContributorModel[]>([]);
+  contributors = model<ContributorModel[]>([]);
   isLoading = input(false);
   showCurator = input(false);
   showEducation = input(true);
   showEmployment = input(true);
+  showInfo = input(false);
+  resourceType = input(ResourceType.Project);
 
   currentUserId = input<string | undefined>(undefined);
   isCurrentUserAdminContributor = input<boolean>(true);
+
+  remove = output<ContributorModel>();
+
+  customDialogService = inject(CustomDialogService);
+
+  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
+  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
+  readonly ContributorPermission = ContributorPermission;
+
+  skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);
+
+  isProject = computed(() => this.resourceType() === ResourceType.Project);
+
+  deactivatedContributors = computed(() => this.contributors().some((contributor) => contributor.deactivated));
 
   canRemoveContributor = computed(() => {
     const contributors = this.contributors();
@@ -53,17 +82,6 @@ export class ContributorsTableComponent {
     return result;
   });
 
-  remove = output<ContributorModel>();
-
-  customDialogService = inject(CustomDialogService);
-
-  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
-  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
-  readonly ModeratorPermission = ModeratorPermission;
-  readonly ContributorPermission = ContributorPermission;
-
-  skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);
-
   removeContributor(contributor: ContributorModel) {
     this.remove.emit(contributor);
   }
@@ -82,5 +100,10 @@ export class ContributorsTableComponent {
       width: '552px',
       data: contributor.employment,
     });
+  }
+
+  onRowReorder() {
+    const reorderedContributors = this.contributors().map((item, i) => ({ ...item, index: i }));
+    this.contributors.set(reorderedContributors);
   }
 }

@@ -40,7 +40,7 @@
       />
     }
     @case (PreprintSteps.Review) {
-      <osf-review-step [provider]="preprintProvider()" />
+      <osf-review-step [provider]="preprintProvider()" [isCreateNewVersionContext]="true" />
     }
   }
 </section>

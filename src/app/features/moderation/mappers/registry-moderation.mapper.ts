@@ -37,10 +37,12 @@ export class RegistryModerationMapper {
       toState: response.attributes.to_state,
       dateModified: response.attributes.date_modified,
       comment: response.attributes.comment,
-      creator: {
-        id: response.embeds.creator.data.id,
-        name: response.embeds.creator.data.attributes.full_name,
-      },
+      creator: response.embeds?.creator
+        ? {
+            id: response.embeds.creator.data.id,
+            name: response.embeds.creator.data.attributes.full_name,
+          }
+        : null,
       trigger: response.attributes.trigger,
     };
   }

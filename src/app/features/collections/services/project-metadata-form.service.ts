@@ -29,7 +29,6 @@ export class ProjectMetadataFormService {
       }),
       [ProjectMetadataFormControls.Tags]: new FormControl([], {
         nonNullable: true,
-        validators: [CustomValidators.requiredArrayValidator()],
       }),
       [ProjectMetadataFormControls.LicenseYear]: new FormControl(this.currentYear.getFullYear().toString(), {
         nonNullable: true,

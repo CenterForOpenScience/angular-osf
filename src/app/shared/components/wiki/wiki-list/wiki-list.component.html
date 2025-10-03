@@ -71,20 +71,41 @@
       </p-panel>
     } @else {
       <div class="mb-2">
-        <p-button class="btn-icon-only" raised outlined severity="contrast" (onClick)="collapseNavigation()">
+        <p-button
+          class="btn-icon-only"
+          styleClass="flex gap-3"
+          raised
+          outlined
+          severity="contrast"
+          (onClick)="collapseNavigation()"
+        >
           <i class="fas fa-list-ul"></i>
           <i class="fas fa-forward"></i>
         </p-button>
       </div>
       @if (canEdit()) {
-        <p-button
-          class="btn-icon-only"
-          icon="fas fa-plus"
-          raised
-          outlined
-          severity="success"
-          (onClick)="openAddWikiDialog()"
-        />
+        <div class="flex gap-2">
+          <p-button
+            class="btn-icon-only"
+            icon="fas fa-plus"
+            raised
+            outlined
+            severity="success"
+            (onClick)="openAddWikiDialog()"
+          />
+          @if (list().length) {
+            @if (!isHomeWikiSelected()) {
+              <p-button
+                class="btn-icon-only"
+                icon="fas fa-trash"
+                raised
+                outlined
+                severity="danger"
+                (onClick)="openDeleteWikiDialog()"
+              />
+            }
+          }
+        </div>
       }
     }
   }

@@ -35,6 +35,7 @@ export interface ContributorAddRequestModel {
     bibliographic: boolean;
     permission: string;
     id?: string;
+    index?: number;
     full_name?: string;
     email?: string;
   };

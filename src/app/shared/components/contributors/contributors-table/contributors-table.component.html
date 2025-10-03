@@ -9,62 +9,35 @@
   [lazy]="true"
   [lazyLoadOnInit]="true"
   [customSort]="true"
+  [reorderableColumns]="true"
+  (onRowReorder)="onRowReorder()"
   class="view-only-table"
 >
   <ng-template #header>
     <tr>
+      <th>
+        @if (deactivatedContributors()) {
+          <osf-info-icon [tooltipText]="'project.contributors.reorderDeactivateTooltip'"></osf-info-icon>
+        }
+      </th>
       <th>{{ 'project.contributors.table.headers.name' | translate }}</th>
       <th>
         <div class="flex align-items-center">
           <span>{{ 'project.contributors.table.headers.permissions' | translate }}</span>
-          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="permissionsTooltip" tooltipPosition="top"></i>
-          <ng-template #permissionsTooltip>
-            <div class="flex flex-column row-gap-3">
-              <h2>{{ 'project.contributors.permissionInfo.title' | translate }}</h2>
 
-              <div class="inside-list">
-                <p class="font-bold">{{ 'project.contributors.permissions.read' | translate }}</p>
-                <ul class="font-normal ml-4">
-                  <li>{{ 'project.contributors.permissionInfo.viewProjectContent' | translate }}</li>
-                </ul>
-              </div>
-
-              <div class="inside-list">
-                <p class="font-bold">{{ 'project.contributors.permissions.readAndWrite' | translate }}</p>
-                <ul class="font-normal ml-4">
-                  <li>{{ 'project.contributors.permissionInfo.read' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.addComponents' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.editContent' | translate }}</li>
-                </ul>
-              </div>
-
-              <div class="inside-list">
-                <p class="font-bold">{{ 'project.contributors.permissions.administrator' | translate }}</p>
-                <ul class="font-normal ml-4">
-                  <li>{{ 'project.contributors.permissionInfo.readWrite' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.manageContributors' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.deleteRegister' | translate }}</li>
-                  <li>{{ 'project.contributors.permissionInfo.publicPrivate' | translate }}</li>
-                </ul>
-              </div>
-            </div>
-          </ng-template>
+          @if (showInfo()) {
+            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="permissionsTooltip" tooltipPosition="top"></i>
+          }
         </div>
       </th>
 
       <th>
         <div class="flex align-items-center justify-content-center">
           <span>{{ 'project.contributors.table.headers.contributor' | translate }}</span>
-          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="contributorTooltip" tooltipPosition="top"></i>
-          <ng-template #contributorTooltip>
-            <div class="flex flex-column row-gap-3">
-              <h2>{{ 'project.contributors.bibliographicContributorInfo.heading' | translate }}</h2>
 
-              <span>
-                {{ 'project.contributors.bibliographicContributorInfo.description' | translate }}
-              </span>
-            </div>
-          </ng-template>
+          @if (showInfo()) {
+            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="contributorTooltip" tooltipPosition="top"></i>
+          }
         </div>
       </th>
 
@@ -72,14 +45,10 @@
         <th>
           <div class="flex align-items-center justify-content-center">
             <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
-            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
-            <ng-template #curatorTooltip>
-              <div class="flex flex-column row-gap-3">
-                <h2>{{ 'project.contributors.curatorInfo.heading' | translate }}</h2>
 
-                <span>{{ 'project.contributors.curatorInfo.description' | translate }}</span>
-              </div>
-            </ng-template>
+            @if (showInfo()) {
+              <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
+            }
           </div>
         </th>
       }
@@ -93,16 +62,24 @@
     </tr>
   </ng-template>
 
-  <ng-template #body let-contributor>
+  <ng-template #body let-contributor let-index="rowIndex">
     @if (contributor.id) {
-      <tr>
+      <tr [pReorderableRow]="index" class="select-none">
+        <td>
+          @if (!deactivatedContributors()) {
+            <div pReorderableRowHandle>
+              <osf-icon [iconClass]="'fas fa-bars'"></osf-icon>
+            </div>
+          }
+        </td>
+
         <td>
           <p class="flex align-items-center gap-2">
             <span>{{ contributor.fullName }}</span>
           </p>
         </td>
         <td>
-          @if (isCurrentUserAdminContributor()) {
+          @if (isCurrentUserAdminContributor() && !contributor.deactivated) {
             <div class="w-9rem">
               <osf-select
                 [options]="permissionsOptions"
@@ -134,7 +111,7 @@
               binary="true"
               [(ngModel)]="contributor.isBibliographic"
               [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
-              [readonly]="!isCurrentUserAdminContributor()"
+              [disabled]="!isCurrentUserAdminContributor() || contributor.deactivated"
             ></p-checkbox>
           </div>
         </td>
@@ -154,14 +131,13 @@
         @if (showEmployment()) {
           <td>
             @if (contributor.employment?.length) {
-              <a
-                class="font-bold cursor-pointer"
-                tabindex="0"
-                (click)="openEmploymentHistory(contributor)"
+              <p-button
+                link
+                class="link-btn-no-padding"
+                [label]="'project.contributors.employment.show' | translate"
+                (onClick)="openEmploymentHistory(contributor)"
                 (keydown.enter)="openEmploymentHistory(contributor)"
-              >
-                {{ 'project.contributors.employment.show' | translate }}
-              </a>
+              />
             } @else {
               <span>{{ 'project.contributors.employment.none' | translate }}</span>
             }
@@ -171,14 +147,13 @@
           <td>
             <div class="flex column-gap-2">
               @if (contributor.education?.length) {
-                <a
-                  class="font-bold cursor-pointer"
-                  tabindex="0"
-                  (click)="openEducationHistory(contributor)"
+                <p-button
+                  link
+                  class="link-btn-no-padding"
+                  [label]="'project.contributors.education.show' | translate"
+                  (onClick)="openEducationHistory(contributor)"
                   (keydown.enter)="openEducationHistory(contributor)"
-                >
-                  {{ 'project.contributors.education.show' | translate }}
-                </a>
+                />
               } @else {
                 <span>{{ 'project.contributors.education.none' | translate }}</span>
               }
@@ -214,3 +189,98 @@
     </tr>
   </ng-template>
 </p-table>
+
+<ng-template #permissionsTooltip>
+  <div class="flex flex-column row-gap-3">
+    <h2>{{ 'project.contributors.permissionInfo.title' | translate }}</h2>
+
+    <div class="inside-list">
+      <p class="font-bold">{{ 'project.contributors.permissions.read' | translate }}</p>
+      <ul class="font-normal ml-4">
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.viewProjectContent'
+              : 'project.contributors.permissionInfo.viewRegistrationContent'
+            ) | translate
+          }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="inside-list">
+      <p class="font-bold">{{ 'project.contributors.permissions.readAndWrite' | translate }}</p>
+      <ul class="font-normal ml-4">
+        <li>{{ 'project.contributors.permissionInfo.read' | translate }}</li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.addComponents'
+              : 'project.contributors.permissionInfo.editMetadata'
+            ) | translate
+          }}
+        </li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.editContent'
+              : 'project.contributors.permissionInfo.addResourcesLinks'
+            ) | translate
+          }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="inside-list">
+      <p class="font-bold">{{ 'project.contributors.permissions.administrator' | translate }}</p>
+      <ul class="font-normal ml-4">
+        <li>{{ 'project.contributors.permissionInfo.readWrite' | translate }}</li>
+        <li>{{ 'project.contributors.permissionInfo.manageContributors' | translate }}</li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.deleteRegister'
+              : 'project.contributors.permissionInfo.withdrawRegistration'
+            ) | translate
+          }}
+        </li>
+        <li>
+          {{
+            (isProject()
+              ? 'project.contributors.permissionInfo.publicPrivate'
+              : 'project.contributors.permissionInfo.endEmbargoEarly'
+            ) | translate
+          }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #contributorTooltip>
+  <div class="flex flex-column row-gap-3">
+    <h2>{{ 'project.contributors.bibliographicContributorInfo.heading' | translate }}</h2>
+
+    <span>
+      {{
+        (isProject()
+          ? 'project.contributors.bibliographicContributorInfo.projectDescription'
+          : 'project.contributors.bibliographicContributorInfo.registrationDescription'
+        ) | translate
+      }}
+    </span>
+  </div>
+</ng-template>
+
+<ng-template #curatorTooltip>
+  <div class="flex flex-column row-gap-3">
+    <h2>{{ 'project.contributors.curatorInfo.heading' | translate }}</h2>
+
+    <span>{{
+      (isProject()
+        ? 'project.contributors.curatorInfo.projectDescription'
+        : 'project.contributors.curatorInfo.registrationDescription'
+      ) | translate
+    }}</span>
+  </div>
+</ng-template>

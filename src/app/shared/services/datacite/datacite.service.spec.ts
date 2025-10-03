@@ -5,6 +5,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { Identifier } from '@shared/models';
 import { DataciteEvent } from '@shared/models/datacite/datacite-event.enum';
 
@@ -45,6 +46,7 @@ function assertSuccess(
   doi: string,
   event: DataciteEvent
 ) {
+  assertSendBeacon(dataciteTrackerAddress, dataciteTrackerRepoId, doi, event);
   const req = httpMock.expectOne(dataciteTrackerAddress);
   expect(req.request.method).toBe('POST');
   expect(req.request.body).toEqual({
@@ -57,8 +59,27 @@ function assertSuccess(
   req.flush({});
 }
 
+function assertSendBeacon(
+  dataciteTrackerAddress: string,
+  dataciteTrackerRepoId: string,
+  doi: string,
+  event: DataciteEvent
+) {
+  expect(navigator.sendBeacon).toBeCalledTimes(1);
+  expect(navigator.sendBeacon).toHaveBeenCalledWith(
+    dataciteTrackerAddress,
+    JSON.stringify({
+      n: event,
+      u: window.location.href,
+      i: dataciteTrackerRepoId,
+      p: doi,
+    })
+  );
+}
+
 describe('DataciteService', () => {
   let service: DataciteService;
+  let sentry: jest.Mocked<any>;
   let httpMock: HttpTestingController;
 
   const dataciteTrackerAddress = 'https://tracker.test';
@@ -66,11 +87,16 @@ describe('DataciteService', () => {
   const dataciteTrackerRepoId = 'repo-123';
   describe('with proper configuration', () => {
     beforeEach(() => {
+      Object.defineProperty(navigator, 'sendBeacon', {
+        configurable: true,
+        value: jest.fn(() => false),
+      });
       TestBed.configureTestingModule({
         providers: [
           DataciteService,
           provideHttpClient(),
           provideHttpClientTesting(),
+          { provide: SENTRY_TOKEN, useValue: sentry },
           {
             provide: ENVIRONMENT,
             useValue: {
@@ -156,6 +182,17 @@ describe('DataciteService', () => {
 
       // Second request: POST to datacite tracker
       assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.DOWNLOAD);
+    });
+
+    it('navigator success', () => {
+      (navigator.sendBeacon as jest.Mock).mockReturnValueOnce(true);
+
+      const doi = 'qwerty';
+      const event = DataciteEvent.VIEW;
+      service.logIdentifiableView(buildObservable(doi)).subscribe();
+
+      httpMock.expectNone(dataciteTrackerAddress);
+      assertSendBeacon(dataciteTrackerAddress, dataciteTrackerRepoId, doi, event);
     });
   });
 

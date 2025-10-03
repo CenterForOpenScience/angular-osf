@@ -6,7 +6,7 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { languageCodes, resourceTypes } from '@osf/shared/constants';
 
@@ -29,8 +29,8 @@ export class EditFileMetadataDialogComponent {
   fileMetadataForm = new FormGroup({
     title: new FormControl<string | null>(null),
     description: new FormControl<string | null>(null),
-    resourceType: new FormControl<string | null>(null),
-    resourceLanguage: new FormControl<string | null>(null),
+    resourceType: new FormControl<string | null>(null, Validators.required),
+    resourceLanguage: new FormControl<string | null>(null, Validators.required),
   });
 
   constructor() {

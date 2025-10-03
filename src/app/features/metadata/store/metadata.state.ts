@@ -178,7 +178,7 @@ export class MetadataState {
         error: null,
       },
     });
-    return this.metadataService.getMetadataCedarRecords(action.resourceId, action.resourceType).pipe(
+    return this.metadataService.getMetadataCedarRecords(action.resourceId, action.resourceType, action.url).pipe(
       tap((response: CedarMetadataRecordJsonApi) => {
         ctx.patchState({
           cedarRecords: {

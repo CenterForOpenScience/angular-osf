@@ -90,7 +90,7 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
     const searchValue = this.searchControl.value;
 
     this.router.navigate(['/search'], {
-      queryParams: { search: searchValue, resourceTab: ResourceType.Preprint },
+      queryParams: { search: searchValue, tab: ResourceType.Preprint },
     });
   }
 }

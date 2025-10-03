@@ -5,6 +5,7 @@ export interface ProviderShortInfoModel {
   name: string;
   type: CurrentResourceType;
   permissions?: ReviewPermissions[];
+  reviewsWorkflow?: string;
 }
 
 export interface BaseProviderModel {

@@ -16,6 +16,7 @@ import {
   input,
   model,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -31,7 +32,7 @@ import {
   SetFilesIsLoading,
 } from '@osf/features/files/store';
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
-import { Primitive } from '@osf/shared/helpers';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam, Primitive } from '@osf/shared/helpers';
 import {
   ConfiguredAddonModel,
   FileLabelModel,
@@ -50,6 +51,8 @@ import { ProjectModel } from '@osf/shared/models/projects';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilesWidgetComponent {
+  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
+
   rootOption = input.required<SelectOption>();
   components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
@@ -90,6 +93,8 @@ export class FilesWidgetComponent {
     }
     return [];
   });
+
+  readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   private readonly actions = createDispatchMap({
     getFiles: GetFiles,
@@ -142,13 +147,12 @@ export class FilesWidgetComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         this.actions.setCurrentFolder(currentRootFolder.folder);
+        this.filesTree()?.resetPagination();
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.resetState();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.resetState();
     });
   }
 
@@ -218,7 +222,12 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    const url = this.router.createUrlTree([file.guid]).toString();
+    const extras = this.hasViewOnly()
+      ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
+      : undefined;
+
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/', file.guid], extras));
+
     window.open(url, '_blank');
   }
 

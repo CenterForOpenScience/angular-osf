@@ -70,4 +70,9 @@ export class ProjectOverviewSelectors {
   static hasNoPermissions(state: ProjectOverviewStateModel): boolean {
     return !state.project.data?.currentUserPermissions.length;
   }
+
+  @Selector([ProjectOverviewState])
+  static isWikiEnabled(state: ProjectOverviewStateModel): boolean {
+    return !!state.project.data?.wikiEnabled;
+  }
 }

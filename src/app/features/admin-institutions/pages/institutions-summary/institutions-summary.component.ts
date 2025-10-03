@@ -143,7 +143,7 @@ export class InstitutionsSummaryComponent implements OnInit {
       const addons = this.hasOsfAddonSearch();
 
       this.addonLabels.set(addons.map((result) => result.label));
-      this.addonDataset.set([{ label: '', data: addons.map((result) => +result.value) }]);
+      this.addonDataset.set([{ label: '', data: addons.map((result) => +result.value).sort((a, b) => b - a) }]);
     });
   }
 
@@ -219,7 +219,7 @@ export class InstitutionsSummaryComponent implements OnInit {
       const licenses = this.rightsSearch();
 
       this.licenceLabels.set(licenses.map((result) => result.label));
-      this.licenceDataset.set([{ label: '', data: licenses.map((result) => +result.value) }]);
+      this.licenceDataset.set([{ label: '', data: licenses.map((result) => +result.value).sort((a, b) => b - a) }]);
     });
   }
 }

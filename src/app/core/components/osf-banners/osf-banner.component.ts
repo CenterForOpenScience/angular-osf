@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { CookieConsentBannerComponent } from './cookie-consent-banner/cookie-consent-banner.component';
 import { MaintenanceBannerComponent } from './maintenance-banner/maintenance-banner.component';
-import { ScheduledBannerComponent } from './scheduled-banner/scheduled-banner.component';
 import { TosConsentBannerComponent } from './tos-consent-banner/tos-consent-banner.component';
 
 /**
@@ -22,12 +21,7 @@ import { TosConsentBannerComponent } from './tos-consent-banner/tos-consent-bann
  */
 @Component({
   selector: 'osf-banner-component',
-  imports: [
-    MaintenanceBannerComponent,
-    ScheduledBannerComponent,
-    CookieConsentBannerComponent,
-    TosConsentBannerComponent,
-  ],
+  imports: [MaintenanceBannerComponent, CookieConsentBannerComponent, TosConsentBannerComponent],
   templateUrl: './osf-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
