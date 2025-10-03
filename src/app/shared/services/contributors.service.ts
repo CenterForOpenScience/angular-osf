@@ -55,6 +55,16 @@ export class ContributorsService {
       .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
+  getRequestAccessContributors(resourceType: ResourceType, resourceId: string): Observable<ContributorModel[]> {
+    const resourcePath = this.urlMap.get(resourceType);
+    const baseUrl = `${this.apiUrl}/${resourcePath}/${resourceId}/requests/`;
+    const params = { 'embed[]': ['creator'] };
+
+    return this.jsonApiService
+      .get<ContributorsResponseJsonApi>(baseUrl, params)
+      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
+  }
+
   searchUsers(value: string, page = 1): Observable<PaginatedData<ContributorAddModel[]>> {
     const baseUrl = `${this.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
 

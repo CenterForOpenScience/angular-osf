@@ -113,6 +113,12 @@ export class AddonFormService {
       : (addon as AddonModel).id;
   }
 
+  private getOperationNames(addonTypeString: string): string[] {
+    return addonTypeString === AddonType.CITATION
+      ? ['list_collection_items', 'list_root_collections', 'get_item_info']
+      : ['list_child_items', 'list_root_items', 'get_item_info'];
+  }
+
   generateConfiguredAddonCreatePayload(
     addon: AddonModel | AuthorizedAccountModel,
     selectedAccount: AuthorizedAccountModel,
@@ -132,7 +138,7 @@ export class AddonFormService {
           display_name: displayName,
           ...(addonTypeString !== AddonType.LINK && { root_folder: selectedStorageItemId }),
           connected_capabilities: ['UPDATE', 'ACCESS'],
-          connected_operation_names: ['list_child_items', 'list_root_items', 'get_item_info'],
+          connected_operation_names: this.getOperationNames(addonTypeString),
           external_service_name: addon.externalServiceName,
           ...(resourceType && { resource_type: resourceType }),
           ...(addonTypeString === AddonType.LINK && { target_id: selectedStorageItemId }),
@@ -180,7 +186,7 @@ export class AddonFormService {
           authorized_resource_uri: resourceUri,
           display_name: displayName,
           connected_capabilities: ['UPDATE', 'ACCESS'],
-          connected_operation_names: ['list_child_items', 'list_root_items', 'get_item_info'],
+          connected_operation_names: this.getOperationNames(addonTypeString),
           external_service_name: addon.externalServiceName,
           ...(resourceType && { resource_type: resourceType }),
           ...(addonTypeString !== AddonType.LINK && { root_folder: selectedStorageItemId }),
