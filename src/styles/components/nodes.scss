@@ -1,0 +1,21 @@
+@use "/styles/mixins" as mix;
+
+.node {
+  border: 1px solid var(--grey-2);
+  border-radius: mix.rem(12px);
+  color: var(--dark-blue-1);
+
+  &-container {
+    overflow-y: auto;
+    max-height: mix.rem(335px);
+  }
+
+  &-wrapper {
+    border: 1px solid var(--grey-2);
+    border-radius: mix.rem(12px);
+  }
+
+  &-title {
+    color: var(--dark-blue-1);
+  }
+}

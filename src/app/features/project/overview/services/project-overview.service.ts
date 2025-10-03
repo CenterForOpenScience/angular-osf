@@ -143,4 +143,17 @@ export class ProjectOverviewService {
       .get<JsonApiResponse<ComponentGetResponseJsonApi[], null>>(`${this.apiUrl}/nodes/${projectId}/children/`, params)
       .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
   }
+
+  getParentProject(projectId: string): Observable<ProjectOverviewWithMeta> {
+    const params: Record<string, unknown> = {
+      'embed[]': ['bibliographic_contributors'],
+      'fields[users]': 'family_name,full_name,given_name,middle_name',
+    };
+    return this.jsonApiService.get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params).pipe(
+      map((response) => ({
+        project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+        meta: response.meta,
+      }))
+    );
+  }
 }

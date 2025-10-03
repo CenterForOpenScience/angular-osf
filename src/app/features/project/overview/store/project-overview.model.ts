@@ -7,6 +7,7 @@ export interface ProjectOverviewStateModel {
   components: AsyncStateModel<ComponentOverview[]>;
   isAnonymous: boolean;
   duplicatedProject: BaseNodeModel | null;
+  parentProject: AsyncStateModel<ProjectOverview | null>;
 }
 
 export const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
@@ -24,4 +25,9 @@ export const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
   },
   isAnonymous: false,
   duplicatedProject: null,
+  parentProject: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
 };

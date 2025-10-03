@@ -9,7 +9,7 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -47,6 +47,7 @@ export class AddComponentDialogComponent implements OnInit {
   destroyRef = inject(DestroyRef);
   ComponentFormControls = ComponentFormControls;
 
+  selectedInstitutions = signal<Institution[]>([]);
   storageLocations = select(RegionsSelectors.getRegions);
   currentUser = select(UserSelectors.getCurrentUser);
   currentProject = select(ProjectOverviewSelectors.getProject);
@@ -86,16 +87,7 @@ export class AddComponentDialogComponent implements OnInit {
   });
 
   constructor() {
-    effect(() => {
-      const storageLocations = this.storageLocations();
-      if (!storageLocations?.length) return;
-
-      const storageLocationControl = this.componentForm.controls[ComponentFormControls.StorageLocation];
-      if (!storageLocationControl.value) {
-        const defaultRegion = this.currentUser()?.defaultRegionId ?? storageLocations[0].id;
-        storageLocationControl.setValue(defaultRegion);
-      }
-    });
+    this.setupEffects();
   }
 
   ngOnInit(): void {
@@ -141,5 +133,31 @@ export class AddComponentDialogComponent implements OnInit {
           this.toastService.showSuccess('project.overview.dialog.toast.addComponent.success');
         },
       });
+  }
+
+  private setupEffects(): void {
+    effect(() => {
+      const storageLocations = this.storageLocations();
+      if (!storageLocations?.length) return;
+
+      const storageLocationControl = this.componentForm.controls[ComponentFormControls.StorageLocation];
+      if (!storageLocationControl.value) {
+        const defaultRegion = this.currentUser()?.defaultRegionId ?? storageLocations[0].id;
+        storageLocationControl.setValue(defaultRegion);
+      }
+    });
+
+    effect(() => {
+      const projectInstitutions = this.currentProject()?.affiliatedInstitutions;
+      const userInstitutions = this.userInstitutions();
+
+      if (projectInstitutions && projectInstitutions.length && userInstitutions.length) {
+        const matchedInstitutions = projectInstitutions
+          .map((projInst) => userInstitutions.find((userInst) => userInst.id === projInst.id))
+          .filter((inst) => inst !== undefined);
+
+        this.selectedInstitutions.set(matchedInstitutions);
+      }
+    });
   }
 }

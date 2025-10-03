@@ -1,3 +1,4 @@
+export { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
 export { ProjectDetailSettingAccordionComponent } from './project-detail-setting-accordion/project-detail-setting-accordion.component';
 export { ProjectSettingNotificationsComponent } from './project-setting-notifications/project-setting-notifications.component';
 export { SettingsAccessRequestsCardComponent } from './settings-access-requests-card/settings-access-requests-card.component';

@@ -4,7 +4,7 @@
       [control]="renameForm.controls['name']"
       [label]="'files.dialogs.renameFile.newName'"
       [placeholder]="'files.dialogs.renameFile.enterNewName'"
-      [maxLength]="nameLimit"
+      [maxLength]="nameMaxLength"
       [minLength]="nameMinLength"
     >
     </osf-text-input>
@@ -14,7 +14,7 @@
         type="button"
         severity="secondary"
         [label]="'common.buttons.cancel' | translate"
-        (click)="onCancel()"
+        (onClick)="onCancel()"
       ></p-button>
       <p-button type="submit" [label]="'common.buttons.rename' | translate" [disabled]="renameForm.invalid"></p-button>
     </div>
