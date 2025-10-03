@@ -15,4 +15,5 @@ import { AddonCardComponent } from '../addon-card/addon-card.component';
 export class AddonCardListComponent {
   cards = input<(AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | AddonCardModel)[]>([]);
   isConnected = input<boolean>(false);
+  hasAdminAccess = input<boolean>(false);
 }

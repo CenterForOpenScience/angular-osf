@@ -24,12 +24,14 @@
               </p>
 
               <div class="flex gap-2">
-                <p-button
-                  icon="fas fa-pencil"
-                  text
-                  (click)="toggleEditMode()"
-                  (keydown.enter)="toggleEditMode()"
-                ></p-button>
+                @if (canRename()) {
+                  <p-button
+                    icon="fas fa-pencil"
+                    text
+                    (click)="toggleEditMode()"
+                    (keydown.enter)="toggleEditMode()"
+                  ></p-button>
+                }
                 <p-button
                   icon="fas fa-trash"
                   severity="danger"

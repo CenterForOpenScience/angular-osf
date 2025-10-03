@@ -26,6 +26,7 @@ export class AddonCardComponent {
 
   readonly card = input<AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | AddonCardModel | null>(null);
   readonly isConnected = input<boolean>(false);
+  readonly hasAdminAccess = input<boolean>(false);
 
   readonly actualAddon = computed(() => {
     const actualCard = this.card();
@@ -52,22 +53,11 @@ export class AddonCardComponent {
 
   readonly canConfigure = computed(() => {
     const isConfigured = this.isConfiguredAddon();
+    const hasAdmin = this.hasAdminAccess();
 
     if (!isConfigured) return true;
 
-    const addon = this.card();
-
-    if (!addon) return true;
-
-    if ('configuredAddon' in addon && addon.configuredAddon) {
-      return addon.configuredAddon.currentUserIsOwner;
-    }
-
-    if ('currentUserIsOwner' in addon) {
-      return addon.currentUserIsOwner;
-    }
-
-    return true;
+    return hasAdmin;
   });
 
   readonly buttonLabel = computed(() => {
