@@ -316,7 +316,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   deleteEntry(link: string): void {
     this.actions().setFilesIsLoading?.(true);
-    this.actions().deleteEntry?.(this.resourceId(), link);
+    this.actions()
+      .deleteEntry?.(this.resourceId(), link)
+      .subscribe(() => this.toastService.showSuccess('files.dialogs.deleteFile.success'));
   }
 
   confirmRename(file: OsfFile): void {
@@ -338,7 +340,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   renameEntry(newName: string, file: OsfFile): void {
     if (newName.trim() && file.links.upload) {
       this.actions().setFilesIsLoading?.(true);
-      this.actions().renameEntry?.(this.resourceId(), file.links.upload, newName);
+
+      this.actions()
+        .renameEntry?.(this.resourceId(), file.links.upload, newName)
+        .subscribe(() => this.toastService.showSuccess('files.dialogs.renameFile.success'));
     }
   }
 
@@ -385,6 +390,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
             this.resetPagination();
             if (foldersStack) {
               this.foldersStack = [...foldersStack];
+
+              if (action === 'copy') {
+                this.toastService.showSuccess('files.dialogs.copyFile.success');
+              }
             }
           });
       });

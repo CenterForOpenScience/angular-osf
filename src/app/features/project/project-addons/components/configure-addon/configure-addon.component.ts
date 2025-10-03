@@ -72,6 +72,7 @@ export class ConfigureAddonComponent implements OnInit {
   addon = signal<ConfiguredAddonModel | null>(null);
 
   readonly isGoogleDrive = computed(() => this.storageAddon()?.wbKey === 'googledrive');
+  readonly canRename = computed(() => this.addon()?.currentUserIsOwner ?? false);
 
   isEditMode = signal<boolean>(false);
   selectedStorageItemId = signal('');

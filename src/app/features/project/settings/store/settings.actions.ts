@@ -1,5 +1,5 @@
 import { SubscriptionFrequency } from '@osf/shared/enums';
-import { UpdateNodeRequestModel } from '@shared/models';
+import { NodeShortInfoModel, UpdateNodeRequestModel } from '@shared/models';
 
 import { ProjectSettingsData } from '../models';
 
@@ -42,7 +42,7 @@ export class UpdateProjectNotificationSubscription {
 export class DeleteProject {
   static readonly type = '[Project Settings] Delete Project';
 
-  constructor(public projectId: string) {}
+  constructor(public projects: NodeShortInfoModel[]) {}
 }
 
 export class DeleteInstitution {

@@ -20,6 +20,16 @@ describe('ContributorsDialogComponent', () => {
   let fixture: ComponentFixture<ContributorsDialogComponent>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
+  beforeAll(() => {
+    if (typeof (globalThis as any).structuredClone !== 'function') {
+      Object.defineProperty(globalThis as any, 'structuredClone', {
+        configurable: true,
+        writable: true,
+        value: (o: unknown) => JSON.parse(JSON.stringify(o)),
+      });
+    }
+  });
+
   beforeEach(async () => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 

@@ -132,7 +132,7 @@ describe('PreprintsLandingComponent', () => {
     component.redirectToSearchPageWithValue();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['/search'], {
-      queryParams: { search: 'test search', resourceTab: ResourceType.Preprint },
+      queryParams: { search: 'test search', tab: ResourceType.Preprint },
     });
   });
 
@@ -142,7 +142,7 @@ describe('PreprintsLandingComponent', () => {
     component.redirectToSearchPageWithValue();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['/search'], {
-      queryParams: { search: '', resourceTab: ResourceType.Preprint },
+      queryParams: { search: '', tab: ResourceType.Preprint },
     });
   });
 
@@ -152,7 +152,7 @@ describe('PreprintsLandingComponent', () => {
     component.redirectToSearchPageWithValue();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['/search'], {
-      queryParams: { search: null, resourceTab: ResourceType.Preprint },
+      queryParams: { search: null, tab: ResourceType.Preprint },
     });
   });
 

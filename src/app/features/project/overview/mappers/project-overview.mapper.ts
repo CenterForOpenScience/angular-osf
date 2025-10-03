@@ -70,6 +70,7 @@ export class ProjectOverviewMapper {
         iri: response.links?.iri,
       },
       rootParentId: response.relationships?.root?.data?.id,
+      parentId: response.relationships?.parent?.data?.id,
     } as ProjectOverview;
   }
 }

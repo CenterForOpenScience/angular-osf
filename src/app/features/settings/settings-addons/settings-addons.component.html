@@ -43,7 +43,7 @@
         </section>
 
         @if (!isAddonsLoading()) {
-          <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+          <osf-addon-card-list [cards]="filteredAddonCards()" [isConnected]="false" [hasAdminAccess]="true" />
         } @else {
           <div class="mt-8">
             <osf-loading-spinner />
@@ -62,7 +62,7 @@
         />
 
         @if (!isAuthorizedAddonsLoading()) {
-          <osf-addon-card-list [cards]="allAuthorizedAddons()" [showDangerButton]="true" />
+          <osf-addon-card-list [cards]="allAuthorizedAddons()" [isConnected]="true" [hasAdminAccess]="true" />
         } @else {
           <div class="mt-8">
             <osf-loading-spinner />

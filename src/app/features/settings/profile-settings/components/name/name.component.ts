@@ -9,6 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder } from '@angular/forms';
 
 import { UpdateProfileSettingsUser, UserSelectors } from '@osf/core/store/user';
+import { forbiddenFileNameCharacters } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
 import { UserModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
@@ -39,10 +40,25 @@ export class NameComponent {
 
   readonly fb = inject(FormBuilder);
   readonly form = this.fb.group<NameForm>({
-    fullName: this.fb.control('', { nonNullable: true, validators: [CustomValidators.requiredTrimmed()] }),
-    givenName: this.fb.control('', { nonNullable: true }),
-    middleNames: this.fb.control('', { nonNullable: true }),
-    familyName: this.fb.control('', { nonNullable: true }),
+    fullName: this.fb.control('', {
+      nonNullable: true,
+      validators: [
+        CustomValidators.requiredTrimmed(),
+        CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+      ],
+    }),
+    givenName: this.fb.control('', {
+      nonNullable: true,
+      validators: CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+    }),
+    middleNames: this.fb.control('', {
+      nonNullable: true,
+      validators: CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+    }),
+    familyName: this.fb.control('', {
+      nonNullable: true,
+      validators: CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+    }),
     suffix: this.fb.control('', { nonNullable: true }),
   });
 

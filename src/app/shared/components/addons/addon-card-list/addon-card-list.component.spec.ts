@@ -28,6 +28,6 @@ describe('AddonCardListComponent', () => {
   });
 
   it('should have default false value', () => {
-    expect(component.showDangerButton()).toBe(false);
+    expect(component.isConnected()).toBe(false);
   });
 });

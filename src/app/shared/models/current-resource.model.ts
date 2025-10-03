@@ -5,6 +5,7 @@ export interface CurrentResource {
   type: string;
   parentId?: string;
   parentType?: string;
+  rootResourceId?: string;
   wikiEnabled?: boolean;
   permissions: UserPermissions[];
 }

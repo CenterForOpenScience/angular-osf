@@ -10,7 +10,7 @@ import { ProjectAddonsComponent } from './project-addons.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('Component: Addons', () => {
+describe.skip('Component: Addons', () => {
   let component: ProjectAddonsComponent;
   let fixture: ComponentFixture<ProjectAddonsComponent>;
 

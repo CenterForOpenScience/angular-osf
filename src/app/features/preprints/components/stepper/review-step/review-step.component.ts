@@ -7,7 +7,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
 
-import { Observable, of, switchMap, tap } from 'rxjs';
+import { of, switchMap, tap } from 'rxjs';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
@@ -69,9 +69,9 @@ export class ReviewStepComponent implements OnInit {
   });
 
   provider = input.required<PreprintProviderDetails | undefined>();
-  isCreateNewVersionContext = input<boolean>(false);
 
   preprint = select(PreprintStepperSelectors.getPreprint);
+  preprintFile = select(PreprintStepperSelectors.getPreprintFile);
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   contributors = select(ContributorsSelectors.getContributors);
@@ -95,13 +95,10 @@ export class ReviewStepComponent implements OnInit {
 
   submitPreprint() {
     const preprint = this.preprint()!;
-    let update$: Observable<void | null> = of(null);
+    const preprintFile = this.preprintFile()!;
 
-    if (this.isCreateNewVersionContext()) {
-      update$ = this.actions.updatePrimaryFileRelationship(preprint.primaryFileId!);
-    }
-
-    update$
+    this.actions
+      .updatePrimaryFileRelationship(preprintFile.id)
       .pipe(
         switchMap(() => {
           if (preprint.reviewsState !== ReviewsState.Accepted) {
