@@ -1,25 +1,6 @@
-<p-table
-  [value]="isLoading() ? skeletonData : contributors()"
-  [rows]="tableParams().rows"
-  [first]="tableParams().firstRowIndex"
-  [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
-  [totalRecords]="tableParams().totalRecords"
-  [scrollable]="true"
-  [sortMode]="'single'"
-  [lazy]="true"
-  [lazyLoadOnInit]="true"
-  [customSort]="true"
-  [reorderableColumns]="!deactivatedContributors()"
-  (onRowReorder)="onRowReorder()"
-  class="view-only-table"
->
+<p-table [value]="isLoading() ? skeletonData : contributors()" [scrollable]="true" class="view-only-table">
   <ng-template #header>
     <tr>
-      <th>
-        @if (deactivatedContributors()) {
-          <osf-info-icon [tooltipText]="'project.contributors.reorderDeactivateTooltip'"></osf-info-icon>
-        }
-      </th>
       <th>{{ 'project.contributors.table.headers.name' | translate }}</th>
       <th>
         <div class="flex align-items-center">
@@ -41,17 +22,15 @@
         </div>
       </th>
 
-      @if (showCurator()) {
-        <th>
-          <div class="flex align-items-center justify-content-center">
-            <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
+      <th>
+        <div class="flex align-items-center justify-content-center">
+          <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
 
-            @if (showInfo()) {
-              <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
-            }
-          </div>
-        </th>
-      }
+          @if (showInfo()) {
+            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
+          }
+        </div>
+      </th>
       @if (showEmployment()) {
         <th>{{ 'project.contributors.table.headers.employment' | translate }}</th>
       }
@@ -64,45 +43,23 @@
 
   <ng-template #body let-contributor let-index="rowIndex">
     @if (contributor.id) {
-      <tr [pReorderableRow]="index" class="select-none">
-        <td>
-          @if (!deactivatedContributors()) {
-            <div pReorderableRowHandle>
-              <osf-icon [iconClass]="'fas fa-bars'"></osf-icon>
-            </div>
-          }
-        </td>
-
+      <tr class="select-none">
         <td>
           <p class="flex align-items-center gap-2">
             <span>{{ contributor.fullName }}</span>
           </p>
         </td>
         <td>
-          @if (isCurrentUserAdminContributor() && !contributor.deactivated) {
-            <div class="w-9rem">
-              <osf-select
-                [options]="permissionsOptions"
-                [placeholder]="'project.contributors.permissionFilter'"
-                [appendTo]="'body'"
-                [noBorder]="true"
-                [fullWidth]="true"
-                [(selectedValue)]="contributor.permission"
-              />
-            </div>
-          } @else {
-            @switch (contributor.permission) {
-              @case (ContributorPermission.Admin) {
-                <span>{{ 'project.contributors.permissions.administrator' | translate }}</span>
-              }
-              @case (ContributorPermission.Write) {
-                <span>{{ 'project.contributors.permissions.readAndWrite' | translate }}</span>
-              }
-              @case (ContributorPermission.Read) {
-                <span>{{ 'project.contributors.permissions.read' | translate }}</span>
-              }
-            }
-          }
+          <div class="w-9rem">
+            <osf-select
+              [options]="permissionsOptions"
+              [placeholder]="'project.contributors.permissionFilter'"
+              [appendTo]="'body'"
+              [noBorder]="true"
+              [fullWidth]="true"
+              [(selectedValue)]="contributor.permission"
+            />
+          </div>
         </td>
         <td>
           <div class="flex align-items-center justify-content-center">
@@ -111,23 +68,21 @@
               binary="true"
               [(ngModel)]="contributor.isBibliographic"
               [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
-              [disabled]="!isCurrentUserAdminContributor() || contributor.deactivated"
+              [disabled]="contributor.deactivated"
             ></p-checkbox>
           </div>
         </td>
-        @if (showCurator()) {
-          <td>
-            <div class="flex align-items-center justify-content-center">
-              <p-checkbox
-                variant="filled"
-                binary="true"
-                [ngModel]="contributor.isCurator"
-                [disabled]="true"
-                [ariaLabel]="'project.contributors.curatorInfo.heading' | translate"
-              ></p-checkbox>
-            </div>
-          </td>
-        }
+        <td>
+          <div class="flex align-items-center justify-content-center">
+            <p-checkbox
+              variant="filled"
+              binary="true"
+              [ngModel]="contributor.isCurator"
+              [disabled]="true"
+              [ariaLabel]="'project.contributors.curatorInfo.heading' | translate"
+            ></p-checkbox>
+          </div>
+        </td>
         @if (showEmployment()) {
           <td>
             @if (contributor.employment?.length) {
@@ -161,22 +116,28 @@
           </td>
         }
         <td>
-          @if (canRemoveContributor().get(contributor.userId)) {
-            <p-button
-              class="danger-icon-btn"
-              icon="fas fa-trash"
-              severity="danger"
-              text
-              [ariaLabel]="'common.buttons.delete' | translate"
-              (onClick)="removeContributor(contributor)"
-              data-test-remove-contributor-button
-            />
-          }
+          <p-button
+            icon="fas fa-check"
+            severity="success"
+            text
+            [ariaLabel]="'common.buttons.accept' | translate"
+            (onClick)="acceptContributor(contributor)"
+            data-test-accept-contributor-button
+          />
+
+          <p-button
+            icon="fas fa-xmark"
+            severity="danger"
+            text
+            [ariaLabel]="'common.buttons.reject' | translate"
+            (onClick)="rejectContributor(contributor)"
+            data-test-reject-contributor-button
+          />
         </td>
       </tr>
     } @else {
       <tr class="loading-row">
-        <td colspan="8">
+        <td colspan="7">
           <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
         </td>
       </tr>
@@ -185,7 +146,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="8" class="text-center">{{ 'project.contributors.table.emptyMessage' | translate }}</td>
+      <td colspan="7" class="text-center">{{ 'project.contributors.table.emptyMessage' | translate }}</td>
     </tr>
   </ng-template>
 </p-table>

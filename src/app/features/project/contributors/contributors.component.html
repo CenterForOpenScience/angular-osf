@@ -87,6 +87,21 @@
     </div>
   }
 
+  @if (showRequestAccessList()) {
+    <h1 class="my-4">{{ 'project.requestAccess.requestForAccess' | translate }}</h1>
+
+    <p class="mb-4">{{ 'project.requestAccess.followingUsers' | translate }}</p>
+
+    <osf-request-access-table
+      class="w-full"
+      [contributors]="requestAccessList()"
+      [isLoading]="areRequestAccessListLoading()"
+      [resourceType]="resourceType()"
+      (accept)="acceptRequest($event)"
+      (reject)="rejectRequest($event)"
+    ></osf-request-access-table>
+  }
+
   @if (isCurrentUserAdminContributor()) {
     <div class="flex flex-column row-gap-4 mt-6 w-full">
       <h2>{{ 'project.contributors.viewOnly' | translate }}</h2>

@@ -7,6 +7,7 @@ export interface ContributorsStateModel {
     permissionFilter: string | null;
     bibliographyFilter: boolean | null;
   };
+  requestAccessList: AsyncStateModel<ContributorModel[]>;
   users: AsyncStateWithTotalCount<ContributorAddModel[]>;
 }
 
@@ -18,6 +19,11 @@ export const CONTRIBUTORS_STATE_DEFAULTS: ContributorsStateModel = {
     searchValue: null,
     permissionFilter: null,
     bibliographyFilter: null,
+  },
+  requestAccessList: {
+    data: [],
+    isLoading: false,
+    error: null,
   },
   users: {
     data: [],

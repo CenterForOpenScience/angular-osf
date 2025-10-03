@@ -5,15 +5,18 @@ import { catchError, of, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers';
-import { ContributorsService } from '@osf/shared/services';
+import { ContributorsService, RequestAccessService } from '@osf/shared/services';
 
 import {
+  AcceptRequestAccess,
   AddContributor,
   BulkAddContributors,
   BulkUpdateContributors,
   ClearUsers,
   DeleteContributor,
   GetAllContributors,
+  GetRequestAccessContributors,
+  RejectRequestAccess,
   ResetContributorsState,
   SearchUsers,
   UpdateBibliographyFilter,
@@ -29,6 +32,7 @@ import { CONTRIBUTORS_STATE_DEFAULTS, ContributorsStateModel } from './contribut
 @Injectable()
 export class ContributorsState {
   private readonly contributorsService = inject(ContributorsService);
+  private readonly requestAccessService = inject(RequestAccessService);
 
   @Action(GetAllContributors)
   getAllContributors(ctx: StateContext<ContributorsStateModel>, action: GetAllContributors) {
@@ -53,6 +57,84 @@ export class ContributorsState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'contributorsList', error))
+    );
+  }
+
+  @Action(GetRequestAccessContributors)
+  getRequestAccessContributors(ctx: StateContext<ContributorsStateModel>, action: GetRequestAccessContributors) {
+    const state = ctx.getState();
+
+    if (!action.resourceId || !action.resourceType) {
+      return;
+    }
+
+    ctx.patchState({
+      requestAccessList: { ...state.requestAccessList, data: [], isLoading: true, error: null },
+    });
+
+    return this.requestAccessService.getRequestAccessList(action.resourceType, action.resourceId).pipe(
+      tap((requestAccessList) => {
+        ctx.patchState({
+          requestAccessList: {
+            ...state.requestAccessList,
+            data: requestAccessList,
+            isLoading: false,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'requestAccessList', error))
+    );
+  }
+
+  @Action(AcceptRequestAccess)
+  acceptRequestAccess(ctx: StateContext<ContributorsStateModel>, action: AcceptRequestAccess) {
+    const state = ctx.getState();
+
+    if (!action.requestId || !action.resourceType) {
+      return;
+    }
+
+    ctx.patchState({
+      requestAccessList: { data: [], isLoading: true, error: null },
+    });
+
+    return this.requestAccessService.acceptRequestAccess(action.resourceType, action.requestId, action.payload).pipe(
+      tap(() => {
+        const dataList = state.requestAccessList.data.filter((item) => item.id !== action.requestId);
+
+        ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+
+        ctx.patchState({
+          requestAccessList: { data: dataList, isLoading: false, error: null },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'requestAccessList', error))
+    );
+  }
+
+  @Action(RejectRequestAccess)
+  rejectRequestAccess(ctx: StateContext<ContributorsStateModel>, action: RejectRequestAccess) {
+    const state = ctx.getState();
+
+    if (!action.requestId || !action.resourceType) {
+      return;
+    }
+
+    ctx.patchState({
+      requestAccessList: { data: [], isLoading: true, error: null },
+    });
+
+    return this.requestAccessService.rejectRequestAccess(action.resourceType, action.requestId).pipe(
+      tap(() => {
+        const dataList = state.requestAccessList.data.filter((item) => item.id !== action.requestId);
+
+        ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+
+        ctx.patchState({
+          requestAccessList: { data: dataList, isLoading: false, error: null },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'requestAccessList', error))
     );
   }
 
