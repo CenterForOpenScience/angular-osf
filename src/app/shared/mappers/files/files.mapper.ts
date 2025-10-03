@@ -1,13 +1,25 @@
 import { FileTargetResponse } from '@osf/features/files/models';
 import {
+  ApiData,
+  FileDataJsonApi,
+  FileDetailsDataJsonApi,
+  FileDetailsModel,
+  FileExtraJsonApi,
+  FileExtraModel,
+  FileFolderDataJsonApi,
+  FileFolderModel,
   FileLinks,
+  FileLinksJsonApi,
+  FileLinksModel,
+  FileModel,
   FileRelationshipsResponse,
   FileResponse,
   FileVersionsResponseJsonApi,
   OsfFile,
   OsfFileVersion,
 } from '@osf/shared/models';
-import { ApiData } from '@shared/models';
+
+import { BaseNodeMapper } from '../nodes';
 
 export function MapFiles(
   files: ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>[]
@@ -92,4 +104,96 @@ export function MapFileVersions(fileVersions: FileVersionsResponseJsonApi): OsfF
       downloadLink: fileVersion.links.download,
     };
   });
+}
+
+export class FilesMapper {
+  static getFileFolder(data: FileFolderDataJsonApi): FileFolderModel {
+    return {
+      id: data.id,
+      name: data.attributes.name,
+      path: data.attributes.path,
+      kind: data.attributes.kind,
+      node: data.attributes.node,
+      provider: data.attributes.provider,
+      links: {
+        upload: data.links.upload,
+        newFolder: data.links.new_folder,
+        storageAddons: data.links.storage_addons,
+        filesLink: data.relationships.files.links.related.href,
+      },
+    };
+  }
+
+  static getFileFolders(data: FileFolderDataJsonApi[]): FileFolderModel[] {
+    return data.map((folder) => this.getFileFolder(folder));
+  }
+
+  static getFile(data: FileDataJsonApi): FileModel {
+    return {
+      id: data.id,
+      guid: data.attributes.guid,
+      name: data.attributes.name,
+      kind: data.attributes.kind,
+      path: data.attributes.path,
+      size: data.attributes.size,
+      materializedPath: data.attributes.materialized_path,
+      dateModified: data.attributes.date_modified,
+      extra: this.getFileExtra(data.attributes.extra),
+      links: this.getFileLinks(data.links),
+      parentFolderId: data.relationships.parent_folder.data?.id || null,
+      parentFolderLink: data.relationships.parent_folder.links.related.href || null,
+      filesLink: data.relationships.files?.links.related.href || null,
+      target: data.embeds?.target ? BaseNodeMapper.getNodeData(data.embeds?.target.data) : undefined,
+      previousFolder: false,
+    };
+  }
+
+  static getFiles(data: FileDataJsonApi[]): FileModel[] {
+    return data.map((file) => this.getFile(file));
+  }
+
+  static getFileDetails(data: FileDetailsDataJsonApi): FileDetailsModel {
+    return {
+      id: data.id,
+      guid: data.attributes.guid,
+      name: data.attributes.name,
+      kind: data.attributes.kind,
+      path: data.attributes.path,
+      size: data.attributes.size,
+      materializedPath: data.attributes.materialized_path,
+      dateModified: data.attributes.date_modified,
+      provider: data.attributes.provider,
+      lastTouched: data.attributes.last_touched,
+      dateCreated: data.attributes.date_created,
+      tags: data.attributes.tags,
+      currentVersion: data.attributes.current_version,
+      showAsUnviewed: data.attributes.show_as_unviewed,
+      extra: this.getFileExtra(data.attributes.extra),
+      links: this.getFileLinks(data.links),
+      target: BaseNodeMapper.getNodeData(data.embeds!.target.data),
+    };
+  }
+
+  static getFileLinks(links: FileLinksJsonApi): FileLinksModel {
+    return {
+      info: links.info,
+      move: links.move,
+      upload: links.upload,
+      delete: links.delete,
+      download: links.download,
+      render: links.render,
+      html: links.html,
+      self: links.self,
+    };
+  }
+
+  static getFileExtra(extra: FileExtraJsonApi): FileExtraModel {
+    return {
+      downloads: extra.downloads,
+      hashes: {
+        md5: extra.hashes.md5,
+        sha256: extra.hashes.sha256,
+      },
+    };
+  }
 }
