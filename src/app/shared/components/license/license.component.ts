@@ -42,6 +42,7 @@ export class LicenseComponent {
   isSubmitting = input<boolean>(false);
   showInternalButtons = input<boolean>(true);
   fullWidthSelect = input<boolean>(false);
+  appendTo = input<string | null>(null);
   selectedLicense = model<LicenseModel | null>(null);
   createLicense = output<{ id: string; licenseOptions: LicenseOptions }>();
   selectLicense = output<LicenseModel>();

@@ -457,6 +457,7 @@ export class FilesComponent {
         finalize(() => {
           this.updateFilesList();
           this.fileIsUploading.set(false);
+          this.toastService.showSuccess('files.dialogs.createFolder.success');
         })
       )
       .subscribe();

@@ -1,12 +1,13 @@
 <p-select
+  class="mt-4 w-full"
   data-test-select-license
   [options]="licenses()"
   [(ngModel)]="selectedLicense"
   optionLabel="name"
-  [class.md:w-full]="fullWidthSelect()"
+  [class]="fullWidthSelect() ? 'md:w-full' : 'md:w-6'"
   [placeholder]="'shared.license.selectLicense' | translate"
+  [appendTo]="appendTo()"
   (onChange)="onSelectLicense($event.value)"
-  class="mt-4 w-full md:w-6"
 />
 @if (selectedLicense()) {
   <p-divider styleClass="mt-3 mb-3" />
