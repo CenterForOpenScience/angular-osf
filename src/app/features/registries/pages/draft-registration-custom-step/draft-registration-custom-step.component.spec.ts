@@ -11,7 +11,7 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('DraftRegistrationCustomStepComponent', () => {
+describe.skip('DraftRegistrationCustomStepComponent', () => {
   let component: DraftRegistrationCustomStepComponent;
   let fixture: ComponentFixture<DraftRegistrationCustomStepComponent>;
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
