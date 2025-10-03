@@ -161,11 +161,13 @@ export class SettingsAddonsComponent {
 
   readonly filteredAddonCards = computed(() => {
     const searchValue = this.searchValue().toLowerCase();
-    return this.currentAddonsState().filter(
+    const filteredAddons = this.currentAddonsState().filter(
       (card) =>
         card.externalServiceName.toLowerCase().includes(searchValue) ||
         card.displayName.toLowerCase().includes(searchValue)
     );
+
+    return sortAddonCardsAlphabetically(filteredAddons);
   });
 
   onCategoryChange(value: Primitive): void {

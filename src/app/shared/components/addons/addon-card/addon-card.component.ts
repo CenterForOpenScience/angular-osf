@@ -57,7 +57,17 @@ export class AddonCardComponent {
 
     if (!isConfigured) return true;
 
-    return hasAdmin;
+    const addon = this.card();
+    if (!addon) return true;
+
+    let isOwner = false;
+    if ('configuredAddon' in addon && addon.configuredAddon) {
+      isOwner = addon.configuredAddon.currentUserIsOwner;
+    } else if ('currentUserIsOwner' in addon) {
+      isOwner = addon.currentUserIsOwner;
+    }
+
+    return hasAdmin || isOwner;
   });
 
   readonly buttonLabel = computed(() => {
