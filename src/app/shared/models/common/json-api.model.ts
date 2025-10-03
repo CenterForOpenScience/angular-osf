@@ -31,6 +31,7 @@ export interface MetaJsonApi {
   total: number;
   per_page: number;
   version: string;
+  anonymous?: boolean;
 }
 
 export interface MetaAnonymousJsonApi {

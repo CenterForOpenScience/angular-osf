@@ -23,7 +23,6 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
-import { GetRootFolders } from '@osf/features/files/store';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   ClearCollectionModeration,
@@ -151,7 +150,6 @@ export class ProjectOverviewComponent implements OnInit {
     clearCollections: ClearCollections,
     clearCollectionModeration: ClearCollectionModeration,
     getComponentsTree: GetResourceWithChildren,
-    getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     getSubjects: FetchSelectedSubjects,
     getParentProject: GetParentProject,
