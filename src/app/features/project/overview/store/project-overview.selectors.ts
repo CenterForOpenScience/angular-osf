@@ -75,4 +75,14 @@ export class ProjectOverviewSelectors {
   static isWikiEnabled(state: ProjectOverviewStateModel): boolean {
     return !!state.project.data?.wikiEnabled;
   }
+
+  @Selector([ProjectOverviewState])
+  static getParentProject(state: ProjectOverviewStateModel) {
+    return state.parentProject.data;
+  }
+
+  @Selector([ProjectOverviewState])
+  static getParentProjectLoading(state: ProjectOverviewStateModel) {
+    return state.parentProject.isLoading;
+  }
 }

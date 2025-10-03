@@ -59,6 +59,7 @@ import {
 import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
+import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
 import {
   FilesWidgetComponent,
   LinkedResourcesComponent,
@@ -71,6 +72,7 @@ import { SUBMISSION_REVIEW_STATUS_OPTIONS } from './constants';
 import {
   ClearProjectOverview,
   GetComponents,
+  GetParentProject,
   GetProjectById,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,
@@ -98,7 +100,7 @@ import {
     RouterLink,
     FilesWidgetComponent,
     ViewOnlyLinkMessageComponent,
-    ViewOnlyLinkMessageComponent,
+    OverviewParentProjectComponent,
   ],
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -131,6 +133,8 @@ export class ProjectOverviewComponent implements OnInit {
   hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
   hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
   isWikiEnabled = select(ProjectOverviewSelectors.isWikiEnabled);
+  parentProject = select(ProjectOverviewSelectors.getParentProject);
+  isParentProjectLoading = select(ProjectOverviewSelectors.getParentProjectLoading);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -150,6 +154,7 @@ export class ProjectOverviewComponent implements OnInit {
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     getSubjects: FetchSelectedSubjects,
+    getParentProject: GetParentProject,
   });
 
   readonly activityPageSize = 5;
@@ -219,15 +224,6 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
-  private readonly effectMetaTags = effect(() => {
-    if (!this.isProjectLoading()) {
-      const metaTagsData = this.metaTagsData();
-      if (metaTagsData) {
-        this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
-      }
-    }
-  });
-
   private readonly metaTagsData = computed(() => {
     const project = this.currentProject();
     if (!project) return null;
@@ -261,6 +257,15 @@ export class ProjectOverviewComponent implements OnInit {
     this.setupCleanup();
     this.setupProjectEffects();
     this.setupRouteChangeListener();
+
+    effect(() => {
+      if (!this.isProjectLoading()) {
+        const metaTagsData = this.metaTagsData();
+        if (metaTagsData) {
+          this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+        }
+      }
+    });
   }
 
   onCustomCitationUpdated(citation: string): void {
@@ -336,6 +341,10 @@ export class ProjectOverviewComponent implements OnInit {
         const rootParentId = currentProject.rootParentId ?? currentProject.id;
         this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
         this.actions.getSubjects(currentProject.id, ResourceType.Project);
+        const parentProjectId = currentProject.parentId;
+        if (parentProjectId) {
+          this.actions.getParentProject(parentProjectId);
+        }
       }
     });
     effect(() => {
