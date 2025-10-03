@@ -37,7 +37,6 @@ export class ProjectOverviewService {
         'license',
         'storage',
         'preprints',
-        'parent',
       ],
       'fields[institutions]': 'assets,description,name',
       'fields[preprints]': 'title,date_created',
@@ -146,14 +145,15 @@ export class ProjectOverviewService {
   }
 
   getParentProject(projectId: string): Observable<ProjectOverviewWithMeta> {
-    const params: Record<string, unknown> = {};
-    return this.jsonApiService
-      .get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/parent/`, params)
-      .pipe(
-        map((response) => ({
-          project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
-          meta: response.meta,
-        }))
-      );
+    const params: Record<string, unknown> = {
+      'embed[]': ['bibliographic_contributors'],
+      'fields[users]': 'family_name,full_name,given_name,middle_name',
+    };
+    return this.jsonApiService.get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params).pipe(
+      map((response) => ({
+        project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+        meta: response.meta,
+      }))
+    );
   }
 }

@@ -185,6 +185,12 @@ export interface ProjectOverviewGetResponseJsonApi {
         type: string;
       };
     };
+    parent?: {
+      data: {
+        id: string;
+        type: string;
+      };
+    };
   };
   links: {
     iri: string;

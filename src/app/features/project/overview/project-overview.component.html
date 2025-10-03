@@ -56,8 +56,9 @@
         [components]="components()"
         [areComponentsLoading]="areComponentsLoading()"
       />
-
-      <osf-overview-parent-project [project]="currentProject()" />
+      @if (parentProject()) {
+        <osf-overview-parent-project [project]="parentProject()!" [isLoading]="isParentProjectLoading()" />
+      }
 
       @if (!hasViewOnly()) {
         <osf-project-components [canEdit]="hasWriteAccess() && !isCollectionsRoute()" />
