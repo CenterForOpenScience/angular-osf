@@ -41,6 +41,7 @@ import {
   GetLinkAddons,
   GetStorageAddons,
 } from '@shared/stores/addons';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 @Component({
   selector: 'osf-project-addons',
@@ -75,6 +76,7 @@ export class ProjectAddonsComponent implements OnInit {
   selectedTab = signal<number>(this.defaultTabValue);
 
   currentUser = select(UserSelectors.getCurrentUser);
+  hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
   addonsResourceReference = select(AddonsSelectors.getAddonsResourceReference);
   addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
   storageAddons = select(AddonsSelectors.getStorageAddons);

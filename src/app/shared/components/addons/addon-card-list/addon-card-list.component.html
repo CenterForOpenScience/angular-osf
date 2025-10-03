@@ -2,7 +2,7 @@
   @if (cards().length) {
     @for (card of cards(); track $index) {
       <div class="col-12 sm:col-6 md:col-6 lg:col-4">
-        <osf-addon-card [card]="card" [showDangerButton]="showDangerButton()" />
+        <osf-addon-card [card]="card" [isConnected]="isConnected()" [hasAdminAccess]="hasAdminAccess()" />
       </div>
     }
   } @else {
