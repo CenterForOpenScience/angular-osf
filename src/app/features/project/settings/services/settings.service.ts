@@ -6,6 +6,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SubscriptionFrequency } from '@osf/shared/enums';
 import { NotificationSubscriptionMapper } from '@osf/shared/mappers';
 import {
+  NodeShortInfoModel,
   NotificationSubscription,
   NotificationSubscriptionGetResponseJsonApi,
   ResponseJsonApi,
@@ -81,8 +82,19 @@ export class SettingsService {
       .pipe(map((response) => SettingsMapper.fromNodeResponse(response)));
   }
 
-  deleteProject(projectId: string): Observable<void> {
-    return this.jsonApiService.delete(`${this.apiUrl}/nodes/${projectId}/`);
+  deleteProject(projects: NodeShortInfoModel[]): Observable<void> {
+    const payload = {
+      data: projects.map((project) => ({
+        type: 'nodes',
+        id: project.id,
+      })),
+    };
+
+    const headers = {
+      'Content-Type': 'application/vnd.api+json; ext=bulk',
+    };
+
+    return this.jsonApiService.delete(`${this.apiUrl}/nodes/`, payload, headers);
   }
 
   deleteInstitution(institutionId: string, projectId: string): Observable<void> {

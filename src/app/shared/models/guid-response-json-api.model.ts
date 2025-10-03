@@ -19,6 +19,9 @@ interface GuidDataJsonApi {
     provider?: {
       data: IdType;
     };
+    root?: {
+      data: IdType;
+    };
   };
 }
 
