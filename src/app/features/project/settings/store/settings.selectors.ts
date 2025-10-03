@@ -22,6 +22,11 @@ export class SettingsSelectors {
   }
 
   @Selector([SettingsState])
+  static isSettingsSubmitting(state: SettingsStateModel): boolean {
+    return state.settings.isSubmitting || false;
+  }
+
+  @Selector([SettingsState])
   static getNotificationSubscriptions(state: SettingsStateModel): NotificationSubscription[] {
     return state.notifications.data;
   }

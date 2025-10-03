@@ -186,7 +186,26 @@ export class SettingsState {
 
   @Action(DeleteProject)
   deleteProject(ctx: StateContext<SettingsStateModel>, action: DeleteProject) {
-    return this.settingsService.deleteProject(action.projectId);
+    const state = ctx.getState();
+
+    ctx.patchState({
+      settings: {
+        ...state.settings,
+        isSubmitting: true,
+      },
+    });
+
+    return this.settingsService.deleteProject(action.projects).pipe(
+      tap(() => {
+        ctx.patchState({
+          settings: {
+            ...state.settings,
+            isSubmitting: false,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'settings', error))
+    );
   }
 
   @Action(DeleteInstitution)

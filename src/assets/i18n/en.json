@@ -1023,8 +1023,13 @@
       }
     },
     "deleteProject": {
-      "title": "Delete project",
-      "message": "Are you sure you want to delete <b>{{name}}</b> project?",
+      "dialog": {
+        "deleteProject": "Delete project and components",
+        "listMessage": "You are about to delete the following:",
+        "warningMessage": "It will no longer be available to you or any other contributors. This is irreversible.",
+        "confirmation": "Type the following to continue:",
+        "noPermissionsMessage": "You don not have permissions to delete this project and its components. <br/><br/> To delete, you must have admin permissions across all objects. Please check your permissions and try again. <br/><br/> Contact support at support@osf.io if you have any questions."
+      },
       "success": "Project has been successfully deleted."
     },
     "deleteInstitution": {

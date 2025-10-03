@@ -12,6 +12,7 @@ export const SETTINGS_STATE_DEFAULTS: SettingsStateModel = {
   settings: {
     data: {} as ProjectSettingsModel,
     isLoading: false,
+    isSubmitting: false,
     error: null,
   },
   projectDetails: {
