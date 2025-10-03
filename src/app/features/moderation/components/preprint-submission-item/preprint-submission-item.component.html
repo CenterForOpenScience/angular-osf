@@ -15,7 +15,7 @@
         <span>{{ actionLabel[action.toState] | translate }}</span>
         <span>{{ action.dateModified | dateAgo }}</span>
         <span>{{ 'moderation.submissionReview.by' | translate }}</span>
-        <span>{{ action.creator.name }}</span>
+        <span>{{ action.creator?.name }}</span>
 
         @if (action.comment.length) {
           <span class="font-italic">- {{ action.comment }}</span>

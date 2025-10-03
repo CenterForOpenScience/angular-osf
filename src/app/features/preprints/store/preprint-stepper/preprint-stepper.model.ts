@@ -16,4 +16,5 @@ export interface PreprintStepperStateModel {
   currentFolder: OsfFile | null;
   preprintProject: AsyncStateModel<IdName | null>;
   hasBeenSubmitted: boolean;
+  institutionsChanged: boolean;
 }

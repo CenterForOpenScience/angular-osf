@@ -104,7 +104,7 @@ export class ResourceCitationsComponent {
     this.setupFilterDebounce();
     this.setupDefaultCitationsEffect();
     this.setupCitationStylesEffect();
-    this.setupDestroyEffect();
+    this.setupCleanup();
   }
 
   setupDefaultCitationsEffect(): void {
@@ -210,7 +210,7 @@ export class ResourceCitationsComponent {
     });
   }
 
-  private setupDestroyEffect(): void {
+  private setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
       this.destroy$.next();
       this.destroy$.complete();

@@ -147,12 +147,10 @@ export class CollectionsDiscoverComponent {
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.clearCollections();
-        HeaderStyleHelper.resetToDefaults();
-        BrandService.resetBranding();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearCollections();
+      HeaderStyleHelper.resetToDefaults();
+      BrandService.resetBranding();
     });
   }
 

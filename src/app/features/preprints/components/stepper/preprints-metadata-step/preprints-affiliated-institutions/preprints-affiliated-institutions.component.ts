@@ -6,7 +6,9 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, effect, input, OnInit, signal } from '@angular/core';
 
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { ReviewsState } from '@osf/features/preprints/enums';
+import { Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintStepperSelectors, SetInstitutionsChanged } from '@osf/features/preprints/store/preprint-stepper';
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { Institution } from '@osf/shared/models';
@@ -26,7 +28,7 @@ import {
 })
 export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
   provider = input.required<PreprintProviderDetails | undefined>();
-  preprintId = input<string>();
+  preprint = input.required<Preprint | null>();
 
   selectedInstitutions = signal<Institution[]>([]);
 
@@ -35,11 +37,13 @@ export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
   resourceInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
   areResourceInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
   areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
+  institutionsChanged = select(PreprintStepperSelectors.getInstitutionsChanged);
 
   private readonly actions = createDispatchMap({
     fetchUserInstitutions: FetchUserInstitutions,
     fetchResourceInstitutions: FetchResourceInstitutions,
     updateResourceInstitutions: UpdateResourceInstitutions,
+    setInstitutionsChanged: SetInstitutionsChanged,
   });
 
   constructor() {
@@ -49,15 +53,24 @@ export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
         this.selectedInstitutions.set([...resourceInstitutions]);
       }
     });
+
+    effect(() => {
+      const userInstitutions = this.userInstitutions();
+      const isCreateFlow = this.preprint()?.reviewsState === ReviewsState.Initial;
+
+      if (userInstitutions.length > 0 && isCreateFlow && !this.institutionsChanged()) {
+        this.actions.setInstitutionsChanged(true);
+        this.onInstitutionsChange(userInstitutions);
+      }
+    });
   }
 
   ngOnInit() {
     this.actions.fetchUserInstitutions();
-    this.actions.fetchResourceInstitutions(this.preprintId()!, ResourceType.Preprint);
+    this.actions.fetchResourceInstitutions(this.preprint()!.id, ResourceType.Preprint);
   }
 
   onInstitutionsChange(institutions: Institution[]): void {
-    this.selectedInstitutions.set(institutions);
-    this.actions.updateResourceInstitutions(this.preprintId()!, ResourceType.Preprint, institutions);
+    this.actions.updateResourceInstitutions(this.preprint()!.id, ResourceType.Preprint, institutions);
   }
 }

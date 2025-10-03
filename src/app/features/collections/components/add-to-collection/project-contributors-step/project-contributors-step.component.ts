@@ -101,7 +101,7 @@ export class ProjectContributorsStepComponent {
       const updatedContributors = findChangedItems(this.initialContributors(), this.projectContributors(), 'id');
 
       if (!updatedContributors.length) {
-        this.projectContributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+        this.projectContributors.set(structuredClone(this.initialContributors()));
         this.contributorsSaved.emit();
       } else {
         this.actions
@@ -177,7 +177,7 @@ export class ProjectContributorsStepComponent {
       const contributors = this.initialContributors();
 
       if (isMetadataSaved && contributors.length) {
-        this.projectContributors.set(JSON.parse(JSON.stringify(contributors)));
+        this.projectContributors.set(structuredClone(contributors));
       }
     });
   }

@@ -56,6 +56,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
@@ -129,6 +130,7 @@ export class ProjectOverviewComponent implements OnInit {
   isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
   hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
+  isWikiEnabled = select(ProjectOverviewSelectors.isWikiEnabled);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -252,6 +254,8 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
+  readonly analyticsService = inject(AnalyticsService);
+
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
@@ -274,7 +278,10 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
 
-    this.dataciteService.logIdentifiableView(this.currentProject$).subscribe();
+    this.dataciteService
+      .logIdentifiableView(this.currentProject$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   handleOpenMakeDecisionDialog() {
@@ -335,6 +342,12 @@ export class ProjectOverviewComponent implements OnInit {
       const project = this.currentProject();
       if (project?.wikiEnabled) {
         this.actions.getHomeWiki(ResourceType.Project, project.id);
+      }
+    });
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject && currentProject.isPublic) {
+        this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail').subscribe();
       }
     });
   }

@@ -31,7 +31,7 @@
         <span>{{ registryActionLabel[action.toState] | translate }}</span>
         <span>{{ action.dateModified | dateAgo }}</span>
         <span>{{ 'moderation.submissionReview.by' | translate }}</span>
-        <span>{{ action.creator.name }}</span>
+        <span>{{ action.creator?.name }}</span>
 
         @if (action.toState === registryActionState.Accepted) {
           <span>{{ 'moderation.withNoEmbargo' | translate }}</span>

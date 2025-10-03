@@ -227,18 +227,21 @@ export class FileDetailComponent {
       )
       .subscribe(() => {
         this.getIframeLink('');
-        this.resourceId = this.file()?.target.id || '';
-        this.resourceType = this.file()?.target.type || '';
-        const fileId = this.file()?.path.replaceAll('/', '');
-        if (this.resourceId && this.resourceType) {
-          this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
-          this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
+        const file = this.file();
+        if (file) {
+          this.resourceId = file.target.id || '';
+          this.resourceType = file.target.type || '';
+          const cedarUrl = file.links.info;
+          if (this.resourceId && this.resourceType) {
+            this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
+            this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
 
-          if (fileId) {
-            const storageLink = this.file()?.links.upload || '';
+            const storageLink = file.links.upload || '';
             this.actions.getFileRevisions(storageLink);
             this.actions.getCedarTemplates();
-            this.actions.getCedarRecords(fileId, ResourceType.File);
+            if (cedarUrl) {
+              this.actions.getCedarRecords(this.resourceId, ResourceType.File, cedarUrl);
+            }
           }
         }
       });
@@ -270,7 +273,7 @@ export class FileDetailComponent {
       }
     });
 
-    this.dataciteService.logIdentifiableView(this.fileMetadata$).subscribe();
+    this.dataciteService.logIdentifiableView(this.fileMetadata$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   getIframeLink(version: string) {
@@ -289,7 +292,10 @@ export class FileDetailComponent {
   }
 
   downloadRevision(version: string) {
-    this.dataciteService.logIdentifiableDownload(this.fileMetadata$).subscribe();
+    this.dataciteService
+      .logIdentifiableDownload(this.fileMetadata$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
 
     const downloadUrl = this.file()?.links.download;
     const storageLink = this.file()?.links.upload || '';
@@ -301,7 +307,10 @@ export class FileDetailComponent {
   }
 
   downloadFile(link: string): void {
-    this.dataciteService.logIdentifiableDownload(this.fileMetadata$).subscribe();
+    this.dataciteService
+      .logIdentifiableDownload(this.fileMetadata$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
     window.open(link)?.focus();
   }
 
@@ -392,9 +401,9 @@ export class FileDetailComponent {
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           switchMap(() => {
-            const fileId = this.file()?.path.replaceAll('/', '');
-            if (fileId) {
-              return this.actions.getCedarRecords(fileId, ResourceType.File);
+            const cedarUrl = this.file()?.links.info;
+            if (cedarUrl) {
+              return this.actions.getCedarRecords(this.resourceId, ResourceType.File, cedarUrl);
             }
             return [];
           })

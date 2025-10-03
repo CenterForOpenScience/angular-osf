@@ -16,6 +16,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -245,14 +246,12 @@ export class ProjectAddonsComponent implements OnInit {
       }
     });
 
-    this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
-      this.searchValue.set(value ?? '');
-    });
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.searchValue.set(value ?? ''));
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.clearConfiguredAddons();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearConfiguredAddons();
     });
   }
 

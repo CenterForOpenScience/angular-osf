@@ -16,6 +16,7 @@ import {
   input,
   model,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -50,6 +51,8 @@ import { ProjectModel } from '@osf/shared/models/projects';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilesWidgetComponent {
+  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
+
   rootOption = input.required<SelectOption>();
   components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
@@ -144,13 +147,12 @@ export class FilesWidgetComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         this.actions.setCurrentFolder(currentRootFolder.folder);
+        this.filesTree()?.resetPagination();
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.resetState();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.resetState();
     });
   }
 
@@ -220,12 +222,12 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    let url = file.links?.html ?? '';
-    const viewOnlyParam = this.hasViewOnly();
-    if (viewOnlyParam) {
-      const separator = url.includes('?') ? '&' : '?';
-      url = `${url}${separator}view_only=${getViewOnlyParamFromUrl(this.router.url)}`;
-    }
+    const extras = this.hasViewOnly()
+      ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
+      : undefined;
+
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/', file.guid], extras));
+
     window.open(url, '_blank');
   }
 

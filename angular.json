@@ -29,7 +29,8 @@
               "cedar-embeddable-editor",
               "cedar-artifact-viewer",
               "markdown-it-video",
-              "ace-builds/src-noconflict/ext-language_tools"
+              "ace-builds/src-noconflict/ext-language_tools",
+              "@traptitech/markdown-it-katex"
             ],
             "assets": [
               "src/assets",
@@ -63,7 +64,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "7MB",
+                  "maximumWarning": "9MB",
                   "maximumError": "10MB"
                 },
                 {

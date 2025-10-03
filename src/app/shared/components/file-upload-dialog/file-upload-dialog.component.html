@@ -1,0 +1,14 @@
+<p-dialog
+  [header]="'files.dialogs.uploadFile.title' | translate"
+  [modal]="true"
+  [(visible)]="visible"
+  class="upload-dialog"
+>
+  <div class="flex flex-column align-items-center justify-content-center gap-3 w-full">
+    <span class="p-text-secondary filename">{{ fileName() }}</span>
+    <div class="w-6">
+      <osf-loading-spinner></osf-loading-spinner>
+    </div>
+    <p>{{ progress() }} %</p>
+  </div>
+</p-dialog>

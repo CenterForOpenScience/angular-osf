@@ -118,7 +118,7 @@ export class CustomStepComponent implements OnDestroy {
     this.stepForm = this.fb.group({});
     let questions = page.questions || [];
     if (page.sections?.length) {
-      questions = page.sections.flatMap((section) => section.questions || []);
+      questions = [...questions, ...page.sections.flatMap((section) => section.questions ?? [])];
     }
     questions?.forEach((q) => {
       const controlName = q.responseKey as string;
