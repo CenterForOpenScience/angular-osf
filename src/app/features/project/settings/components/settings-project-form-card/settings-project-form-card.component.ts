@@ -4,7 +4,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Textarea } from 'primeng/textarea';
 
-import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components';
@@ -33,6 +33,10 @@ export class SettingsProjectFormCardComponent {
     [ProjectFormControls.Title]: new FormControl('', CustomValidators.requiredTrimmed()),
     [ProjectFormControls.Description]: new FormControl(''),
   });
+
+  deleteLabel = computed(() =>
+    this.projectDetails().parentId ? 'myProjects.settings.deleteComponent' : 'myProjects.settings.deleteProject'
+  );
 
   constructor() {
     this.setupFormEffects();

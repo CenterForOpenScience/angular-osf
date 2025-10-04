@@ -442,6 +442,7 @@
       "project": "Project",
       "saveChanges": "Save Changes",
       "deleteProject": "Delete Project",
+      "deleteComponent": "Delete Component",
       "viewOnlyLinks": "View-only Links",
       "viewOnlySubtitle": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "viewOnlyTable": {
