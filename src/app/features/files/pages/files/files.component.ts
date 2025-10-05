@@ -41,7 +41,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CreateFolder,
-  DeleteEntry,
   GetConfiguredStorageAddons,
   GetFiles,
   GetRootFolders,
@@ -51,7 +50,6 @@ import {
   SetCurrentFolder,
   SetCurrentProvider,
   SetFilesIsLoading,
-  SetMoveFileCurrentFolder,
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
@@ -69,7 +67,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
+import { ConfiguredAddonModel, FileFolderModel, FileLabelModel, FileModel, StorageItem } from '@shared/models';
 import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
@@ -123,12 +121,10 @@ export class FilesComponent {
 
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
-    deleteEntry: DeleteEntry,
     getFiles: GetFiles,
     renameEntry: RenameEntry,
     setCurrentFolder: SetCurrentFolder,
     setFilesIsLoading: SetFilesIsLoading,
-    setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
     setSearch: SetSearch,
     setSort: SetSort,
     getRootFolders: GetRootFolders,
@@ -239,20 +235,11 @@ export class FilesComponent {
 
   isButtonDisabled = computed(() => this.fileIsUploading() || this.isFilesLoading());
 
-  readonly filesTreeActions: FilesTreeActions = {
-    setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
-    setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
-    getFiles: (filesLink) => this.actions.getFiles(filesLink, this.pageNumber()),
-    deleteEntry: (resourceId, link) => this.actions.deleteEntry(resourceId, link),
-    renameEntry: (resourceId, link, newName) => this.actions.renameEntry(resourceId, link, newName),
-    setMoveFileCurrentFolder: (folder) => this.actions.setMoveFileCurrentFolder(folder),
-  };
-
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
       if (params['id']) {
         this.resourceId.set(params['id']);
-        this.filesTreeActions.setFilesIsLoading?.(true);
+        this.actions.setFilesIsLoading(true);
       }
     });
 
@@ -271,7 +258,9 @@ export class FilesComponent {
     effect(() => {
       const rootFolders = this.rootFolders();
       if (rootFolders) {
-        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === FileProvider.OsfStorage);
+        const osfRootFolder = rootFolders.find(
+          (folder: FileFolderModel) => folder.provider === FileProvider.OsfStorage
+        );
         if (osfRootFolder) {
           this.currentRootFolder.set({
             label: this.translateService.instant('files.storageLocation'),
@@ -330,6 +319,10 @@ export class FilesComponent {
     this.destroyRef.onDestroy(() => {
       this.actions.resetState();
     });
+  }
+
+  onSetFilesIsLoading(value: boolean): void {
+    this.actions.setFilesIsLoading(value);
   }
 
   uploadFiles(files: File | File[]): void {
@@ -489,9 +482,10 @@ export class FilesComponent {
 
   updateFilesList(): Observable<void> {
     const currentFolder = this.currentFolder();
-    if (currentFolder?.relationships.filesLink) {
-      this.filesTreeActions.setFilesIsLoading?.(true);
-      return this.actions.getFiles(currentFolder?.relationships.filesLink).pipe(take(1));
+    const filesLink = currentFolder?.links.filesLink;
+    if (filesLink) {
+      this.actions.setFilesIsLoading(true);
+      return this.actions.getFiles(filesLink).pipe(take(1));
     }
 
     return EMPTY;
@@ -505,7 +499,7 @@ export class FilesComponent {
     }
   }
 
-  navigateToFile(file: OsfFile) {
+  navigateToFile(file: FileModel) {
     const extras = this.hasViewOnly()
       ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
       : undefined;

@@ -22,16 +22,7 @@
     </div>
   } @else {
     <div class="files-table flex flex-1">
-      <p-tree
-        [value]="nodes()"
-        styleClass="w-full md:w-[30rem]"
-        class="tree-table"
-        (onNodeDrop)="dropNode($event)"
-        [draggableNodes]="!viewOnly() && supportUpload()"
-        [droppableNodes]="!viewOnly() && supportUpload()"
-        draggableScope="self"
-        droppableScope="self"
-      >
+      <p-tree [value]="nodes()" styleClass="w-full md:w-[30rem]" class="tree-table">
         <ng-template let-file pTemplate="default">
           @if (file.previousFolder) {
             <div class="files-table-row" tabindex="0" (click)="openParentFolder()" (keydown.enter)="openParentFolder()">

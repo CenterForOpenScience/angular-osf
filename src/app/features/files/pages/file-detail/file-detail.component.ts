@@ -41,7 +41,7 @@ import {
 import { LoadingSpinnerComponent, MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
 import { getViewOnlyParam, hasViewOnlyParam, pathJoin } from '@osf/shared/helpers';
-import { MetadataTabsModel, OsfFile } from '@osf/shared/models';
+import { FileModel, MetadataTabsModel } from '@osf/shared/models';
 import { CustomConfirmationService, MetaTagsService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
@@ -329,7 +329,7 @@ export class FileDetailComponent {
     }
   }
 
-  confirmDelete(file: OsfFile): void {
+  confirmDelete(file: FileModel): void {
     this.customConfirmationService.confirmDelete({
       headerKey: 'files.dialogs.deleteFile.title',
       messageParams: { name: file.name },

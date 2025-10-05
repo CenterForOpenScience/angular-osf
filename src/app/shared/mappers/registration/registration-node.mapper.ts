@@ -15,6 +15,7 @@ export class RegistrationNodeMapper {
   ): RegistrationNodeModel {
     return {
       id,
+      type: 'registrations',
       accessRequestsEnabled: attributes.access_requests_enabled,
       archiving: attributes.archiving,
       articleDoi: attributes.article_doi,

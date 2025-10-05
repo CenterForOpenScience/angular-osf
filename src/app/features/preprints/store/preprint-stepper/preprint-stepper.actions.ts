@@ -1,7 +1,7 @@
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
 import { StringOrNull } from '@shared/helpers';
-import { LicenseOptions, OsfFile } from '@shared/models';
+import { FileFolderModel, FileModel, LicenseOptions } from '@shared/models';
 
 export class SetSelectedPreprintProviderId {
   static readonly type = '[Preprint Stepper] Set Selected Preprint Provider Id';
@@ -65,7 +65,7 @@ export class ReuploadFile {
 export class CopyFileFromProject {
   static readonly type = '[Preprint Stepper] Copy File From Project';
 
-  constructor(public file: OsfFile) {}
+  constructor(public file: FileModel) {}
 }
 
 export class FetchPreprintPrimaryFile {
@@ -150,7 +150,7 @@ export class DeletePreprint {
 export class SetCurrentFolder {
   static readonly type = '[Preprint Stepper] Set Current Folder';
 
-  constructor(public folder: OsfFile | null) {}
+  constructor(public folder: FileFolderModel | null) {}
 }
 
 export class SetInstitutionsChanged {

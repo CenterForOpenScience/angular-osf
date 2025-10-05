@@ -33,14 +33,7 @@ import {
 } from '@osf/features/files/store';
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
 import { getViewOnlyParamFromUrl, hasViewOnlyParam, Primitive } from '@osf/shared/helpers';
-import {
-  ConfiguredAddonModel,
-  FileLabelModel,
-  FilesTreeActions,
-  NodeShortInfoModel,
-  OsfFile,
-  SelectOption,
-} from '@osf/shared/models';
+import { ConfiguredAddonModel, FileLabelModel, FileModel, NodeShortInfoModel, SelectOption } from '@osf/shared/models';
 import { ProjectModel } from '@osf/shared/models/projects';
 
 @Component({
@@ -104,12 +97,6 @@ export class FilesWidgetComponent {
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     resetState: ResetState,
   });
-
-  readonly filesTreeActions: FilesTreeActions = {
-    setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
-    getFiles: (filesLink) => this.actions.getFiles(filesLink, this.pageNumber()),
-    setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
-  };
 
   get isStorageLoading() {
     return this.isConfiguredStorageAddonsLoading() || this.isRootFoldersLoading();
@@ -221,7 +208,7 @@ export class FilesWidgetComponent {
     }
   }
 
-  navigateToFile(file: OsfFile) {
+  navigateToFile(file: FileModel) {
     const extras = this.hasViewOnly()
       ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
       : undefined;

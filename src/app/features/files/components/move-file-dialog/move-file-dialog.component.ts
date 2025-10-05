@@ -13,16 +13,10 @@ import { catchError } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {
-  FilesSelectors,
-  GetFiles,
-  GetMoveFileFiles,
-  GetRootFolderFiles,
-  SetCurrentFolder,
-  SetMoveFileCurrentFolder,
-} from '@osf/features/files/store';
+import { FilesSelectors, GetFiles, GetRootFolderFiles, SetCurrentFolder } from '@osf/features/files/store';
+import { FileKind } from '@osf/shared/enums';
+import { FileFolderModel, FileLinksModel, FileModel } from '@osf/shared/models';
 import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent } from '@shared/components';
-import { OsfFile } from '@shared/models';
 import { FilesService, ToastService } from '@shared/services';
 
 @Component({
@@ -41,10 +35,10 @@ export class MoveFileDialogComponent {
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
 
-  readonly files = select(FilesSelectors.getMoveFileFiles);
-  readonly filesTotalCount = select(FilesSelectors.getMoveFileFilesTotalCount);
-  readonly isLoading = select(FilesSelectors.isMoveFileFilesLoading);
-  readonly currentFolder = select(FilesSelectors.getMoveFileCurrentFolder);
+  readonly files = select(FilesSelectors.getFiles);
+  readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);
+  readonly isLoading = select(FilesSelectors.isFilesLoading);
+  readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly isFilesUpdating = signal(false);
   readonly rootFolders = select(FilesSelectors.getRootFolders);
 
@@ -53,22 +47,19 @@ export class MoveFileDialogComponent {
 
   readonly provider = select(FilesSelectors.getProvider);
 
-  readonly dispatch = createDispatchMap({
-    getMoveFileFiles: GetMoveFileFiles,
-    setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
-    setCurrentFolder: SetCurrentFolder,
+  readonly actions = createDispatchMap({
     getFiles: GetFiles,
+    setCurrentFolder: SetCurrentFolder,
     getRootFolderFiles: GetRootFolderFiles,
   });
 
-  foldersStack = signal<OsfFile[]>(this.config.data.foldersStack ?? []);
-  previousFolder = signal<OsfFile | null>(null);
+  foldersStack = signal<FileFolderModel[]>(this.config.data.foldersStack ?? []);
+  previousFolder = signal<FileFolderModel | null>(null);
 
   pageNumber = signal(1);
 
   itemsPerPage = 10;
   first = 0;
-  filesLink = '';
 
   readonly isFolderSame = computed(() => this.currentFolder()?.id === this.config.data.fileFolderId);
 
@@ -78,17 +69,13 @@ export class MoveFileDialogComponent {
 
   constructor() {
     this.initPreviousFolder();
-    const filesLink = this.currentFolder()?.relationships?.filesLink;
-    const rootFolders = this.rootFolders();
-    this.filesLink = filesLink ?? rootFolders?.[0].relationships?.filesLink ?? '';
-    if (this.filesLink) {
-      this.dispatch.getMoveFileFiles(this.filesLink, this.pageNumber());
-    }
 
     effect(() => {
       const page = this.pageNumber();
-      if (this.filesLink) {
-        this.dispatch.getMoveFileFiles(this.filesLink, page);
+      const filesLink = this.currentFolder()?.links?.filesLink;
+
+      if (filesLink) {
+        this.actions.getFiles(filesLink, page);
       }
     });
   }
@@ -102,15 +89,19 @@ export class MoveFileDialogComponent {
     }
   }
 
-  openFolder(file: OsfFile) {
-    if (file.kind !== 'folder') return;
-    const current = this.currentFolder();
-    if (current) {
-      this.previousFolder.set(current);
-      this.foldersStack.update((stack) => [...stack, current]);
+  openFolder(file: FileModel | FileFolderModel) {
+    if (file.kind === FileKind.Folder) {
+      const current = this.currentFolder();
+      if (current) {
+        this.previousFolder.set(current);
+        this.foldersStack.update((stack) => [...stack, current]);
+      }
+      const filesLink = (file.links as FileLinksModel).self;
+      if (filesLink) {
+        this.actions.getFiles(filesLink);
+      }
+      this.actions.setCurrentFolder(file as FileFolderModel);
     }
-    this.dispatch.getMoveFileFiles(file.relationships.filesLink);
-    this.dispatch.setMoveFileCurrentFolder(file);
   }
 
   openParentFolder() {
@@ -120,8 +111,8 @@ export class MoveFileDialogComponent {
       this.previousFolder.set(newStack.length > 0 ? newStack[newStack.length - 1] : null);
 
       if (previous) {
-        this.dispatch.setMoveFileCurrentFolder(previous);
-        this.dispatch.getMoveFileFiles(previous.relationships.filesLink);
+        this.actions.setCurrentFolder(previous);
+        this.actions.getFiles(previous.links.filesLink);
       }
       return newStack;
     });
@@ -146,8 +137,8 @@ export class MoveFileDialogComponent {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
-          this.dispatch.setCurrentFolder(this.currentFolder());
-          this.dispatch.setMoveFileCurrentFolder(null);
+          this.actions.setCurrentFolder(this.currentFolder());
+          this.actions.setCurrentFolder(null);
           this.isFilesUpdating.set(false);
           this.dialogRef.close(this.foldersStack());
         }),
@@ -158,13 +149,13 @@ export class MoveFileDialogComponent {
       )
       .subscribe((file) => {
         if (file.id) {
-          const filesLink = this.currentFolder()?.relationships.filesLink;
+          const filesLink = this.currentFolder()?.links.filesLink;
           const rootFolders = this.rootFolders();
           this.resetPagination();
           if (filesLink) {
-            this.dispatch.getFiles(filesLink);
+            this.actions.getFiles(filesLink);
           } else if (rootFolders) {
-            this.dispatch.getMoveFileFiles(rootFolders[0].relationships.filesLink);
+            this.actions.getFiles(rootFolders[0].links.filesLink);
           }
         }
       });

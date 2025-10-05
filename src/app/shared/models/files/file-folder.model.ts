@@ -15,4 +15,5 @@ export interface FileFolderLinks {
   storageAddons: string;
   upload: string;
   filesLink: string;
+  download: string;
 }

@@ -52,4 +52,5 @@ interface FileFolderLinksJsonApi {
   upload: string;
   new_folder: string;
   storage_addons: string;
+  download?: string;
 }

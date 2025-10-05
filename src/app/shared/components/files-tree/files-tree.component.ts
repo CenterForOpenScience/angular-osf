@@ -4,9 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
 import { PaginatorState } from 'primeng/paginator';
-import { Tree, TreeNodeDropEvent } from 'primeng/tree';
-
-import { EMPTY, finalize, Observable, take } from 'rxjs';
+import { Tree } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
@@ -34,9 +32,9 @@ import { MoveFileDialogComponent } from '@osf/features/files/components/move-fil
 import { RenameFileDialogComponent } from '@osf/features/files/components/rename-file-dialog/rename-file-dialog.component';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { StopPropagationDirective } from '@osf/shared/directives';
-import { FileMenuType } from '@osf/shared/enums';
+import { FileKind, FileMenuType } from '@osf/shared/enums';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
-import { FileLabelModel, FileMenuAction, FileMenuFlags, FilesTreeActions, OsfFile } from '@osf/shared/models';
+import { FileFolderModel, FileLabelModel, FileMenuAction, FileMenuFlags, FileModel } from '@osf/shared/models';
 import { FileSizePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
@@ -78,13 +76,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   private readonly environment = inject(ENVIRONMENT);
   readonly clipboard = inject(Clipboard);
 
-  files = input.required<OsfFile[]>();
+  files = input.required<FileModel[]>();
   totalCount = input<number>(0);
   isLoading = input<boolean>();
-  currentFolder = input.required<OsfFile | null>();
+  currentFolder = input.required<FileFolderModel | null>();
   storage = input.required<FileLabelModel | null>();
   resourceId = input.required<string>();
-  actions = input.required<FilesTreeActions>();
+
   viewOnly = input<boolean>(true);
   provider = input<string>();
   allowedMenuActions = input<FileMenuFlags>({} as FileMenuFlags);
@@ -94,12 +92,16 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
-  entryFileClicked = output<OsfFile>();
-  folderIsOpening = output<boolean>();
+  entryFileClicked = output<FileModel>();
   uploadFilesConfirmed = output<File[] | File>();
   filesPageChange = output<number>();
+  setFilesIsLoading = output<boolean>();
+  setCurrentFolder = output<FileFolderModel | null>();
+  deleteEntryAction = output<string>();
+  renameEntryAction = output<{ newName: string; link: string }>();
+  getFiles = output<string>();
 
-  foldersStack: OsfFile[] = [];
+  foldersStack: FileFolderModel[] = [];
   itemsPerPage = 10;
   first = 0;
 
@@ -120,7 +122,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
           previousFolder: hasParent,
         },
         ...files,
-      ] as OsfFile[];
+      ] as FileModel[];
     } else {
       return [...files];
     }
@@ -130,7 +132,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     effect(() => {
       const currentFolder = this.currentFolder();
       if (currentFolder) {
-        this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
+        // this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
       }
     });
 
@@ -204,8 +206,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  openEntry(file: OsfFile) {
-    if (file.kind === 'file') {
+  openEntry(file: FileModel | FileFolderModel) {
+    if (file.kind === FileKind.File) {
       if (file.guid) {
         this.entryFileClicked.emit(file);
       } else {
@@ -219,20 +221,19 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         this.foldersStack.push(current);
       }
       this.resetPagination();
-      this.actions().setFilesIsLoading?.(true);
-      this.folderIsOpening.emit(true);
-      this.actions().setCurrentFolder(file);
+      this.setFilesIsLoading.emit(true);
+      this.setCurrentFolder.emit(file as FileFolderModel);
     }
   }
 
   openParentFolder() {
     const previous = this.foldersStack.pop();
     if (previous) {
-      this.actions().setCurrentFolder(previous);
+      this.setCurrentFolder.emit(previous);
     }
   }
 
-  onFileMenuAction(action: FileMenuAction, file: OsfFile): void {
+  onFileMenuAction(action: FileMenuAction, file: FileModel): void {
     const { value, data } = action;
 
     switch (value) {
@@ -240,7 +241,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         this.downloadFileOrFolder(file);
         break;
       case FileMenuType.Delete:
-        this.confirmDelete(file);
+        this.deleteEntry(file);
         break;
       case FileMenuType.Share:
         this.handleShareAction(file, data?.type);
@@ -260,7 +261,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  downloadFileOrFolder(file: OsfFile) {
+  downloadFileOrFolder(file: FileModel) {
     const resourceType = this.resourceMetadata()?.type ?? 'nodes';
     this.dataciteService
       .logFileDownload(this.resourceId(), resourceType)
@@ -273,7 +274,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  private handleShareAction(file: OsfFile, shareType?: string): void {
+  private handleShareAction(file: FileModel, shareType?: string): void {
     const emailLink = `mailto:?subject=${file.name}&body=${file.links.html}`;
     const twitterLink = `https://twitter.com/intent/tweet?url=${file.links.html}&text=${file.name}&via=OSFramework`;
     const facebookLink = `https://www.facebook.com/dialog/share?app_id=${this.environment.facebookAppId}&display=popup&href=${file.links.html}&redirect_uri=${file.links.html}`;
@@ -291,7 +292,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  private handleEmbedAction(file: OsfFile, embedType?: string): void {
+  private handleEmbedAction(file: FileModel, embedType?: string): void {
     let embedHtml = '';
     if (embedType === 'dynamic') {
       embedHtml = embedDynamicJs.replace('ENCODED_URL', file.links.render);
@@ -304,24 +305,25 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  confirmDelete(file: OsfFile): void {
+  deleteEntry(file: FileModel): void {
     this.customConfirmationService.confirmDelete({
       headerKey: 'files.dialogs.deleteFile.title',
       messageParams: { name: file.name },
       messageKey: 'files.dialogs.deleteFile.message',
       acceptLabelKey: 'common.buttons.remove',
-      onConfirm: () => this.deleteEntry(file.links.delete),
+      onConfirm: () => this.confirmDeleteEntry(file.links.delete),
     });
   }
 
-  deleteEntry(link: string): void {
-    this.actions().setFilesIsLoading?.(true);
-    this.actions()
-      .deleteEntry?.(this.resourceId(), link)
-      .subscribe(() => this.toastService.showSuccess('files.dialogs.deleteFile.success'));
+  confirmDeleteEntry(link: string): void {
+    this.setFilesIsLoading.emit(true);
+    this.deleteEntryAction.emit(link);
+    // this.actions()
+    //   .deleteEntry?.(this.resourceId(), link)
+    //   .subscribe(() => this.toastService.showSuccess('files.dialogs.deleteFile.success'));
   }
 
-  confirmRename(file: OsfFile): void {
+  confirmRename(file: FileModel): void {
     this.customDialogService
       .open(RenameFileDialogComponent, {
         header: 'files.dialogs.renameFile.title',
@@ -337,13 +339,15 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       });
   }
 
-  renameEntry(newName: string, file: OsfFile): void {
+  renameEntry(newName: string, file: FileModel): void {
     if (newName.trim() && file.links.upload) {
-      this.actions().setFilesIsLoading?.(true);
+      this.setFilesIsLoading.emit(true);
+      const link = file.links.upload;
+      this.renameEntryAction.emit({ newName, link });
 
-      this.actions()
-        .renameEntry?.(this.resourceId(), file.links.upload, newName)
-        .subscribe(() => this.toastService.showSuccess('files.dialogs.renameFile.success'));
+      // this.actions()
+      //   .renameEntry?.(this.resourceId(), file.links.upload, newName)
+      //   .subscribe(() => this.toastService.showSuccess('files.dialogs.renameFile.success'));
     }
   }
 
@@ -366,125 +370,43 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  moveFile(file: OsfFile, action: string): void {
-    this.actions()
-      .setMoveFileCurrentFolder?.(this.currentFolder())
-      .pipe(take(1))
-      .subscribe(() => {
-        const header = action === 'move' ? 'files.dialogs.moveFile.title' : 'files.dialogs.copyFile.title';
+  moveFile(file: FileModel, action: string): void {
+    const header = action === 'move' ? 'files.dialogs.moveFile.title' : 'files.dialogs.copyFile.title';
 
-        this.customDialogService
-          .open(MoveFileDialogComponent, {
-            header,
-            width: '552px',
-            data: {
-              file: file,
-              resourceId: this.resourceId(),
-              action: action,
-              storageName: this.storage()?.label,
-              foldersStack: [...this.foldersStack],
-              fileFolderId: this.currentFolder()?.id,
-            },
-          })
-          .onClose.subscribe((foldersStack) => {
-            this.resetPagination();
-            if (foldersStack) {
-              this.foldersStack = [...foldersStack];
+    this.customDialogService
+      .open(MoveFileDialogComponent, {
+        header,
+        width: '552px',
+        data: {
+          file: file,
+          resourceId: this.resourceId(),
+          action: action,
+          storageName: this.storage()?.label,
+          foldersStack: [...this.foldersStack],
+          fileFolderId: this.currentFolder()?.id,
+        },
+      })
+      .onClose.subscribe((foldersStack) => {
+        this.resetPagination();
+        if (foldersStack) {
+          this.foldersStack = [...foldersStack];
 
-              if (action === 'copy') {
-                this.toastService.showSuccess('files.dialogs.copyFile.success');
-              }
-            }
-          });
+          if (action === 'copy') {
+            this.toastService.showSuccess('files.dialogs.copyFile.success');
+          }
+        }
       });
   }
 
-  updateFilesList(currentFolder: OsfFile): Observable<void> {
-    if (currentFolder?.relationships?.filesLink) {
-      return this.actions().getFiles(currentFolder?.relationships.filesLink);
+  updateFilesList(currentFolder: FileFolderModel): void {
+    if (currentFolder?.links?.filesLink) {
+      this.getFiles.emit(currentFolder?.links.filesLink);
     }
-    return EMPTY;
   }
 
   copyToClipboard(embedHtml: string): void {
     this.clipboard.copy(embedHtml);
     this.toastService.showSuccess('files.detail.toast.copiedToClipboard');
-  }
-
-  async dropNode(event: TreeNodeDropEvent) {
-    const dragNode = event.dragNode as OsfFile;
-    const dropNode = event.dropNode as OsfFile;
-
-    this.customConfirmationService.confirmAccept({
-      headerKey: 'files.dialogs.moveFile.title',
-      messageParams: {
-        dragNodeName: dragNode.name,
-        dropNodeName: dropNode.previousFolder ? 'parent folder' : dropNode.name,
-      },
-      messageKey: 'files.dialogs.moveFile.message',
-      onConfirm: async () => {
-        await this.dropFileToFolder(event);
-      },
-      onReject: () => {
-        const filesLink = this.currentFolder()?.relationships.filesLink;
-        if (filesLink) {
-          this.actions().getFiles(filesLink);
-        }
-      },
-    });
-  }
-
-  async dropFileToFolder(event: TreeNodeDropEvent): Promise<void> {
-    this.actions().setFilesIsLoading?.(true);
-
-    const dropNode = event.dropNode as OsfFile;
-    const dragNode = event.dragNode as OsfFile;
-    const moveLink = dragNode?.links?.move;
-    let targetFolder: OsfFile | null = null;
-    let path = '';
-
-    if (dropNode?.previousFolder) {
-      if (this.foldersStack.length > 0) {
-        targetFolder = this.foldersStack[this.foldersStack.length - 1];
-        path = targetFolder?.path || '/';
-      } else {
-        path = '/';
-      }
-    } else {
-      targetFolder = dropNode;
-      path = dropNode?.path || '/';
-    }
-
-    if (!path) {
-      throw new Error('Path is not specified!.');
-    }
-
-    this.filesService
-      .moveFile(moveLink, path, this.resourceId(), this.provider()!, 'move')
-      .pipe(
-        take(1),
-        finalize(() => {
-          if (dropNode?.previousFolder) {
-            if (this.foldersStack.length > 0) {
-              this.foldersStack.pop();
-            }
-            this.actions().setCurrentFolder(targetFolder);
-          } else {
-            if (this.currentFolder()) {
-              this.foldersStack.push(this.currentFolder()!);
-            }
-            this.actions().setCurrentFolder(targetFolder);
-          }
-        })
-      )
-      .subscribe((file) => {
-        if (file.id) {
-          const filesLink = targetFolder?.relationships.filesLink;
-          if (filesLink) {
-            this.actions().getFiles(filesLink);
-          }
-        }
-      });
   }
 
   resetPagination() {

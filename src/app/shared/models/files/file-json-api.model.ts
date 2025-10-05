@@ -1,3 +1,5 @@
+import { FileKind } from '@osf/shared/enums';
+
 import { ResponseJsonApi } from '../common';
 import { BaseNodeDataJsonApi } from '../nodes';
 
@@ -26,17 +28,17 @@ export interface FileDetailsDataJsonApi {
 export interface BaseFileAttributesJsonApi {
   guid: string | null;
   name: string;
-  kind: string;
+  kind: FileKind;
   path: string;
   size: number;
   materialized_path: string;
   date_modified: string;
   extra: FileExtraJsonApi;
+  provider: string;
 }
 
 export interface FileDetailsAttributesJsonApi extends BaseFileAttributesJsonApi {
   checkout: string | null;
-  provider: string;
   last_touched: string | null;
   date_created: string;
   tags: string[];

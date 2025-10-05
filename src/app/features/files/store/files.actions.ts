@@ -1,4 +1,4 @@
-import { OsfFile } from '@osf/shared/models';
+import { FileFolderModel } from '@osf/shared/models';
 
 import { PatchFileMetadata } from '../models';
 
@@ -48,23 +48,23 @@ export class SetSort {
 export class SetCurrentFolder {
   static readonly type = '[Files] Set Current Folder';
 
-  constructor(public folder: OsfFile | null) {}
+  constructor(public folder: FileFolderModel | null) {}
 }
 
-export class SetMoveFileCurrentFolder {
-  static readonly type = '[Files] Set Move File Current Folder';
+// export class SetMoveFileCurrentFolder {
+//   static readonly type = '[Files] Set Move File Current Folder';
 
-  constructor(public folder: OsfFile | null) {}
-}
+//   constructor(public folder: OsfFile | null) {}
+// }
 
-export class GetMoveFileFiles {
-  static readonly type = '[Files] Get Move File Files';
+// export class GetMoveFileFiles {
+//   static readonly type = '[Files] Get Move File Files';
 
-  constructor(
-    public filesLink: string,
-    public page?: number
-  ) {}
-}
+//   constructor(
+//     public filesLink: string,
+//     public page?: number
+//   ) {}
+// }
 
 export class SetCurrentProvider {
   static readonly type = '[Files] Set Current Provider';

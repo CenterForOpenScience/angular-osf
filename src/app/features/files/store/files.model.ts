@@ -1,5 +1,5 @@
 import { SupportedFeature } from '@osf/shared/enums';
-import { ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
+import { ContributorModel, FileDetailsModel, FileFolderModel, FileModel, ResourceMetadata } from '@shared/models';
 import { ConfiguredAddonModel } from '@shared/models/addons';
 import { AsyncStateModel, AsyncStateWithTotalCount } from '@shared/models/store';
 
@@ -7,20 +7,18 @@ import { FileProvider } from '../constants';
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
 export interface FilesStateModel {
-  files: AsyncStateWithTotalCount<OsfFile[]>;
-  moveFileFiles: AsyncStateWithTotalCount<OsfFile[]>;
-  currentFolder: OsfFile | null;
-  moveFileCurrentFolder: OsfFile | null;
+  files: AsyncStateWithTotalCount<FileModel[]>;
+  currentFolder: FileFolderModel | null;
   search: string;
   sort: string;
   provider: (typeof FileProvider)[keyof typeof FileProvider];
-  openedFile: AsyncStateModel<OsfFile | null>;
+  openedFile: AsyncStateModel<FileDetailsModel | null>;
   fileMetadata: AsyncStateModel<OsfFileCustomMetadata | null>;
   resourceMetadata: AsyncStateModel<ResourceMetadata | null>;
   contributors: AsyncStateModel<ContributorModel[] | null>;
   fileRevisions: AsyncStateModel<OsfFileRevision[] | null>;
   tags: AsyncStateModel<string[]>;
-  rootFolders: AsyncStateModel<OsfFile[] | null>;
+  rootFolders: AsyncStateModel<FileFolderModel[] | null>;
   configuredStorageAddons: AsyncStateModel<ConfiguredAddonModel[] | null>;
   isAnonymous: boolean;
   storageSupportedFeatures: Record<string, SupportedFeature[]>;
@@ -33,14 +31,7 @@ export const FILES_STATE_DEFAULTS: FilesStateModel = {
     error: null,
     totalCount: 0,
   },
-  moveFileFiles: {
-    data: [],
-    isLoading: false,
-    error: null,
-    totalCount: 0,
-  },
   currentFolder: null,
-  moveFileCurrentFolder: null,
   search: '',
   sort: 'name',
   provider: FileProvider.OsfStorage,

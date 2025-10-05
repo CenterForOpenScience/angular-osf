@@ -1,7 +1,14 @@
 import { Selector } from '@ngxs/store';
 
 import { SupportedFeature, UserPermissions } from '@osf/shared/enums';
-import { ConfiguredAddonModel, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
+import {
+  ConfiguredAddonModel,
+  ContributorModel,
+  FileDetailsModel,
+  FileFolderModel,
+  FileModel,
+  ResourceMetadata,
+} from '@shared/models';
 
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
@@ -10,7 +17,7 @@ import { FilesState } from './files.state';
 
 export class FilesSelectors {
   @Selector([FilesState])
-  static getFiles(state: FilesStateModel): OsfFile[] {
+  static getFiles(state: FilesStateModel): FileModel[] {
     return state.files.data;
   }
 
@@ -29,30 +36,30 @@ export class FilesSelectors {
     return state.isAnonymous;
   }
 
-  @Selector([FilesState])
-  static getMoveFileFiles(state: FilesStateModel): OsfFile[] {
-    return state.moveFileFiles.data;
-  }
+  // @Selector([FilesState])
+  // static getMoveFileFiles(state: FilesStateModel): OsfFile[] {
+  //   return state.moveFileFiles.data;
+  // }
+
+  // @Selector([FilesState])
+  // static getMoveFileFilesTotalCount(state: FilesStateModel): number {
+  //   return state.moveFileFiles.totalCount;
+  // }
+
+  // @Selector([FilesState])
+  // static isMoveFileFilesLoading(state: FilesStateModel): boolean {
+  //   return state.moveFileFiles.isLoading;
+  // }
 
   @Selector([FilesState])
-  static getMoveFileFilesTotalCount(state: FilesStateModel): number {
-    return state.moveFileFiles.totalCount;
-  }
-
-  @Selector([FilesState])
-  static isMoveFileFilesLoading(state: FilesStateModel): boolean {
-    return state.moveFileFiles.isLoading;
-  }
-
-  @Selector([FilesState])
-  static getCurrentFolder(state: FilesStateModel): OsfFile | null {
+  static getCurrentFolder(state: FilesStateModel): FileFolderModel | null {
     return state.currentFolder;
   }
 
-  @Selector([FilesState])
-  static getMoveFileCurrentFolder(state: FilesStateModel): OsfFile | null {
-    return state.moveFileCurrentFolder;
-  }
+  // @Selector([FilesState])
+  // static getMoveFileCurrentFolder(state: FilesStateModel): OsfFile | null {
+  //   return state.moveFileCurrentFolder;
+  // }
 
   @Selector([FilesState])
   static getProvider(state: FilesStateModel): string {
@@ -60,7 +67,7 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static getOpenedFile(state: FilesStateModel): OsfFile | null {
+  static getOpenedFile(state: FilesStateModel): FileDetailsModel | null {
     return state.openedFile.data;
   }
 
@@ -120,7 +127,7 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static getRootFolders(state: FilesStateModel): OsfFile[] | null {
+  static getRootFolders(state: FilesStateModel): FileFolderModel[] | null {
     return state.rootFolders.data;
   }
 
