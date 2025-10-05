@@ -17,7 +17,7 @@
     <strong> {{ selectedScientist() }}</strong>
   </p>
 
-  <input pInputText class="mt-3" [ngModel]="userInput()" (ngModelChange)="onInputChange($event)" />
+  <input pInputText class="mt-3" [(ngModel)]="userInput" />
 } @else {
   <p [innerHTML]="'project.deleteProject.dialog.noPermissionsMessage' | translate"></p>
 }

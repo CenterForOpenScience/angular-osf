@@ -1,7 +1,7 @@
 import { SubscriptionFrequency } from '@osf/shared/enums';
 import { NodeShortInfoModel, UpdateNodeRequestModel } from '@shared/models';
 
-import { ProjectSettingsData } from '../models';
+import { ProjectSettingsDataJsonApi } from '../models';
 
 export class GetProjectSettings {
   static readonly type = '[Project Settings] Get Project Settings';
@@ -18,7 +18,7 @@ export class GetProjectDetails {
 export class UpdateProjectSettings {
   static readonly type = '[Project Settings] Update Project Settings';
 
-  constructor(public payload: ProjectSettingsData) {}
+  constructor(public payload: ProjectSettingsDataJsonApi) {}
 }
 
 export class UpdateProjectDetails {

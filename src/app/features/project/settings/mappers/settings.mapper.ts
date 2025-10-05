@@ -5,14 +5,14 @@ import { RegionsMapper } from '@osf/shared/mappers/regions';
 import {
   NodeDataJsonApi,
   NodeDetailsModel,
-  ProjectSettingsData,
+  ProjectSettingsDataJsonApi,
   ProjectSettingsModel,
-  ProjectSettingsResponseModel,
+  ProjectSettingsResponseJsonApi,
 } from '../models';
 
 export class SettingsMapper {
   static fromResponse(
-    response: ProjectSettingsResponseModel | ProjectSettingsData,
+    response: ProjectSettingsResponseJsonApi | ProjectSettingsDataJsonApi,
     nodeId: string
   ): ProjectSettingsModel {
     const result = 'data' in response ? response.data : response;
@@ -38,6 +38,7 @@ export class SettingsMapper {
         ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
         : [],
       currentUserPermissions: data.attributes.current_user_permissions as UserPermissions[],
+      rootId: data.relationships.root?.data?.id,
       parentId: data.relationships.parent?.data?.id,
       lastFetched: Date.now(),
     };
