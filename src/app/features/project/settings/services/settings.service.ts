@@ -71,6 +71,7 @@ export class SettingsService {
     const params = {
       'embed[]': ['affiliated_institutions', 'region'],
     };
+
     return this.jsonApiService
       .get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params)
       .pipe(map((response) => SettingsMapper.fromNodeResponse(response.data)));

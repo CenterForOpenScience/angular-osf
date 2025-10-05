@@ -36,6 +36,7 @@ export * from './provider';
 export * from './query-params.model';
 export * from './regions';
 export * from './registration';
+export * from './request-access';
 export * from './resource-metadata.model';
 export * from './resource-overview.model';
 export * from './search';

@@ -8,5 +8,6 @@ export interface NodeDetailsModel {
   region: IdName;
   affiliatedInstitutions: Institution[];
   currentUserPermissions: string[];
+  parentId?: string;
   lastFetched: number;
 }

@@ -66,4 +66,18 @@ export class ContributorsSelectors {
   static isUsersError(state: ContributorsStateModel) {
     return !!state?.users?.error?.length;
   }
+
+  @Selector([ContributorsState])
+  static getRequestAccessList(state: ContributorsStateModel) {
+    if (!state?.requestAccessList?.data) {
+      return [];
+    }
+
+    return state.requestAccessList.data;
+  }
+
+  @Selector([ContributorsState])
+  static areRequestAccessListLoading(state: ContributorsStateModel) {
+    return state.requestAccessList.isLoading;
+  }
 }

@@ -1,6 +1,6 @@
 import { IdentifierAttributes } from '@shared/models';
 
-export interface BaseNodeEmbeds {
+export interface BaseNodeEmbedsJsonApi {
   bibliographic_contributors?: {
     data: ContributorResource[];
   };

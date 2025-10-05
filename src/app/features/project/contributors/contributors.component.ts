@@ -28,6 +28,7 @@ import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
+  RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
@@ -41,6 +42,7 @@ import {
 } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
+  AcceptRequestAccess,
   AddContributor,
   BulkAddContributors,
   BulkUpdateContributors,
@@ -51,7 +53,9 @@ import {
   DeleteViewOnlyLink,
   FetchViewOnlyLinks,
   GetAllContributors,
+  GetRequestAccessContributors,
   GetResourceDetails,
+  RejectRequestAccess,
   UpdateBibliographyFilter,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
@@ -71,6 +75,7 @@ import { ResourceInfoModel } from './models';
     FormsModule,
     TableModule,
     ContributorsTableComponent,
+    RequestAccessTableComponent,
     ViewOnlyTableComponent,
   ],
   templateUrl: './contributors.component.html',
@@ -99,9 +104,11 @@ export class ContributorsComponent implements OnInit {
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
   readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
 
-  initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal<ContributorModel[]>([]);
 
+  readonly initialContributors = select(ContributorsSelectors.getContributors);
+  readonly requestAccessList = select(ContributorsSelectors.getRequestAccessList);
+  readonly areRequestAccessListLoading = select(ContributorsSelectors.areRequestAccessListLoading);
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
   readonly currentUser = select(UserSelectors.getCurrentUser);
@@ -118,10 +125,18 @@ export class ContributorsComponent implements OnInit {
     const initialContributors = this.initialContributors();
     if (!currentUserId) return false;
 
-    return initialContributors.some((contributor: ContributorModel) => {
-      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
-    });
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
   });
+
+  showRequestAccessList = computed(
+    () =>
+      this.isCurrentUserAdminContributor() &&
+      this.requestAccessList().length &&
+      this.resourceType() === ResourceType.Project
+  );
 
   actions = createDispatchMap({
     getViewOnlyLinks: FetchViewOnlyLinks,
@@ -136,6 +151,9 @@ export class ContributorsComponent implements OnInit {
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
+    getRequestAccessContributors: GetRequestAccessContributors,
+    acceptRequestAccess: AcceptRequestAccess,
+    rejectRequestAccess: RejectRequestAccess,
   });
 
   get hasChanges(): boolean {
@@ -166,6 +184,10 @@ export class ContributorsComponent implements OnInit {
     if (id) {
       this.actions.getResourceDetails(id, this.resourceType());
       this.actions.getContributors(id, this.resourceType());
+
+      if (this.resourceType() === ResourceType.Project) {
+        this.actions.getRequestAccessContributors(id, this.resourceType());
+      }
     }
 
     this.setSearchSubscription();
@@ -248,6 +270,38 @@ export class ContributorsComponent implements OnInit {
           });
         }
       });
+  }
+
+  acceptRequest(contributor: ContributorModel) {
+    this.customConfirmationService.confirmAccept({
+      headerKey: 'project.requestAccess.acceptDialog.header',
+      messageKey: 'project.requestAccess.acceptDialog.message',
+      messageParams: { name: contributor.fullName },
+      acceptLabelKey: 'common.buttons.accept',
+      onConfirm: () => {
+        const payload = { permissions: contributor.permission };
+
+        this.actions
+          .acceptRequestAccess(contributor.id, this.resourceId(), this.resourceType(), payload)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => this.toastService.showSuccess('project.requestAccess.acceptDialog.successMessage'));
+      },
+    });
+  }
+
+  rejectRequest(contributor: ContributorModel) {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'project.requestAccess.rejectDialog.header',
+      messageKey: 'project.requestAccess.rejectDialog.message',
+      messageParams: { name: contributor.fullName },
+      acceptLabelKey: 'common.buttons.reject',
+      onConfirm: () => {
+        this.actions
+          .rejectRequestAccess(contributor.id, this.resourceId(), this.resourceType())
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => this.toastService.showSuccess('project.requestAccess.rejectDialog.successMessage'));
+      },
+    });
   }
 
   removeContributor(contributor: ContributorModel) {

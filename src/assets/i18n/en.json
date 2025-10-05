@@ -52,7 +52,9 @@
       "addOneMore": "Add One More",
       "filter": "Filter",
       "sort": "Sort",
-      "replace": "Replace"
+      "replace": "Replace",
+      "accept": "Accept",
+      "reject": "Reject"
     },
     "accessibility": {
       "help": "Help",
@@ -440,6 +442,7 @@
       "project": "Project",
       "saveChanges": "Save Changes",
       "deleteProject": "Delete Project",
+      "deleteComponent": "Delete Component",
       "viewOnlyLinks": "View-only Links",
       "viewOnlySubtitle": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "viewOnlyTable": {
@@ -624,6 +627,20 @@
         "addSuccessMessage": "Contributor {{name}} successfully added.",
         "multipleAddSuccessMessage": "Contributors successfully added.",
         "multipleUpdateSuccessMessage": "Contributors successfully updated."
+      }
+    },
+    "requestAccess": {
+      "requestForAccess": "Requests for Access",
+      "followingUsers": "The following users have requested access to this project.",
+      "acceptDialog": {
+        "header": "Accept access",
+        "message": "Are you sure you want to accept access for <b>{{name}}</b>?",
+        "successMessage": "Access accepted successfully."
+      },
+      "rejectDialog": {
+        "header": "Reject access",
+        "message": "Are you sure you want to reject access for <b>{{name}}</b>?",
+        "successMessage": "Access rejected successfully."
       }
     },
     "overview": {

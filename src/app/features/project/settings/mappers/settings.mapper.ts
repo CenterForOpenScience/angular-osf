@@ -1,5 +1,6 @@
 import { UserPermissions } from '@osf/shared/enums';
 import { InstitutionsMapper } from '@osf/shared/mappers';
+import { RegionsMapper } from '@osf/shared/mappers/regions';
 
 import {
   NodeDataJsonApi,
@@ -32,14 +33,12 @@ export class SettingsMapper {
       title: data.attributes.title,
       description: data.attributes.description,
       isPublic: data.attributes.public,
-      region: {
-        id: data.embeds?.region.data.id,
-        name: data.embeds?.region.data.attributes.name,
-      },
+      region: RegionsMapper.getRegion(data?.embeds?.region?.data),
       affiliatedInstitutions: data.embeds
         ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
         : [],
       currentUserPermissions: data.attributes.current_user_permissions as UserPermissions[],
+      parentId: data.relationships.parent?.data?.id,
       lastFetched: Date.now(),
     };
   }
