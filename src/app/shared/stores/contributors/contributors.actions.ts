@@ -1,3 +1,4 @@
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
 import { ContributorAddModel, ContributorModel, RequestAccessPayload } from '@osf/shared/models';
 
@@ -6,7 +7,9 @@ export class GetAllContributors {
 
   constructor(
     public resourceId: string | undefined | null,
-    public resourceType: ResourceType | undefined
+    public resourceType: ResourceType | undefined,
+    public page = 1,
+    public pageSize = DEFAULT_TABLE_PARAMS.rows
   ) {}
 }
 

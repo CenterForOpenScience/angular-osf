@@ -29,9 +29,10 @@ import {
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
-import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
+import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
@@ -59,8 +60,15 @@ export class PreprintsContributorsComponent implements OnInit {
 
   initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal<ContributorModel[]>([]);
+  contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   currentUser = select(UserSelectors.getCurrentUser);
+
+  readonly tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    totalRecords: this.contributorsTotalCount(),
+    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+  }));
 
   isCurrentUserAdminContributor = computed(() => {
     const currentUserId = this.currentUser()?.id;
