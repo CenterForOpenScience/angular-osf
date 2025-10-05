@@ -3,6 +3,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of } from 'rxjs';
 
@@ -23,7 +24,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent } from '@osf/shared/components';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
+import { TableParameters } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 
 import { AddModeratorType, ModeratorPermission } from '../../enums';
@@ -66,7 +69,14 @@ export class ModeratorsListComponent implements OnInit {
   moderators = signal<ModeratorModel[]>([]);
   initialModerators = select(ModeratorsSelectors.getModerators);
   isModeratorsLoading = select(ModeratorsSelectors.isModeratorsLoading);
+  moderatorsTotalCount = select(ModeratorsSelectors.getModeratorsTotalCount);
   currentUser = select(UserSelectors.getCurrentUser);
+
+  readonly tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    totalRecords: this.moderatorsTotalCount(),
+    paginator: this.moderatorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+  }));
 
   isCurrentUserAdminModerator = computed(() => {
     const currentUserId = this.currentUser()?.id;
@@ -149,6 +159,13 @@ export class ModeratorsListComponent implements OnInit {
           });
         }
       });
+  }
+
+  pageChanged(event: TablePageEvent) {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const pageSize = event.rows;
+
+    this.actions.loadModerators(this.providerId(), this.resourceType(), page, pageSize);
   }
 
   updateModerator(item: ModeratorModel) {
