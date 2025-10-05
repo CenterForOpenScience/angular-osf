@@ -1,5 +1,6 @@
 export * from './activity-logs';
 export * from './addons';
+export * from './addons-query-params.model';
 export * from './brand.json-api.model';
 export * from './brand.model';
 export * from './can-deactivate.interface';

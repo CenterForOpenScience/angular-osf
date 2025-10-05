@@ -19,7 +19,11 @@
     <p-card>
       <p>
         {{ selectedItemLabel() | translate }}
-        <span class="font-bold">{{ selectedStorageItem()?.itemName || (noSelectionLabel() | translate) }}</span>
+        <span class="font-bold">{{
+          selectedStorageItem()
+            ? selectedStorageItem()?.itemName || ('settings.addons.configureAddon.rootDirectory' | translate)
+            : (noSelectionLabel() | translate)
+        }}</span>
       </p>
       <h3 class="mt-4 mb-2">
         {{ 'settings.addons.form.fields.accountName' | translate }}

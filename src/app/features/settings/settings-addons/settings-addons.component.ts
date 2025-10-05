@@ -6,23 +6,32 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  model,
+  OnInit,
+  signal,
+  untracked,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-import {
-  LoadingSpinnerComponent,
-  SearchInputComponent,
-  SelectComponent,
-  SubHeaderComponent,
-} from '@osf/shared/components';
-import { Primitive, sortAddonCardsAlphabetically } from '@osf/shared/helpers';
-import { AddonCardListComponent } from '@shared/components/addons';
+import { LoadingSpinnerComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
+import { sortAddonCardsAlphabetically } from '@osf/shared/helpers';
+import { AddonCardListComponent, AddonsToolbarComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
+import { AddonsQueryParamsService } from '@shared/services/addons-query-params.service';
 import {
   AddonsSelectors,
+  ClearAuthorizedAddons,
   CreateAuthorizedAddon,
   DeleteAuthorizedAddon,
   GetAddonsUserReference,
@@ -44,19 +53,21 @@ import {
     Tab,
     TabPanel,
     TabPanels,
-    SearchInputComponent,
+    AddonsToolbarComponent,
     AddonCardListComponent,
-    SelectComponent,
     FormsModule,
     TranslatePipe,
     LoadingSpinnerComponent,
+    SelectComponent,
   ],
   templateUrl: './settings-addons.component.html',
   styleUrl: './settings-addons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsAddonsComponent {
+export class SettingsAddonsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly queryParamsService = inject(AddonsQueryParamsService);
   readonly tabOptions = ADDON_TAB_OPTIONS;
   readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
@@ -64,7 +75,7 @@ export class SettingsAddonsComponent {
   searchControl = new FormControl<string>('');
   searchValue = signal<string>('');
   selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
-  selectedTab = signal<number>(this.defaultTabValue);
+  selectedTab = model<number>(this.defaultTabValue);
 
   currentUser = select(UserSelectors.getCurrentUser);
   addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
@@ -84,23 +95,44 @@ export class SettingsAddonsComponent {
   isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
   isAuthorizedLinkAddonsLoading = select(AddonsSelectors.getAuthorizedLinkAddonsLoading);
 
-  isAddonsLoading = computed(() => {
-    return (
-      this.isStorageAddonsLoading() ||
-      this.isCitationAddonsLoading() ||
-      this.isLinkAddonsLoading() ||
-      this.isUserReferenceLoading() ||
-      this.isCurrentUserLoading()
-    );
+  currentAddonsLoading = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.isStorageAddonsLoading();
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.isCitationAddonsLoading();
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.isLinkAddonsLoading();
+      default:
+        return this.isStorageAddonsLoading();
+    }
   });
+
+  isAddonsLoading = computed(() => {
+    return this.currentAddonsLoading() || this.isUserReferenceLoading() || this.isCurrentUserLoading();
+  });
+
   isAuthorizedAddonsLoading = computed(() => {
-    return (
-      this.isAuthorizedStorageAddonsLoading() ||
-      this.isAuthorizedCitationAddonsLoading() ||
-      this.isAuthorizedLinkAddonsLoading() ||
-      this.isUserReferenceLoading() ||
-      this.isCurrentUserLoading()
-    );
+    let categoryLoading;
+
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        categoryLoading = this.isAuthorizedStorageAddonsLoading();
+        break;
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        categoryLoading = this.isAuthorizedCitationAddonsLoading();
+        break;
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        categoryLoading = this.isAuthorizedLinkAddonsLoading();
+        break;
+      default:
+        categoryLoading =
+          this.isAuthorizedStorageAddonsLoading() ||
+          this.isAuthorizedCitationAddonsLoading() ||
+          this.isAuthorizedLinkAddonsLoading();
+    }
+
+    return categoryLoading || this.isUserReferenceLoading() || this.isCurrentUserLoading();
   });
 
   actions = createDispatchMap({
@@ -114,14 +146,29 @@ export class SettingsAddonsComponent {
     updateAuthorizedAddon: UpdateAuthorizedAddon,
     getAddonsUserReference: GetAddonsUserReference,
     deleteAuthorizedAddon: DeleteAuthorizedAddon,
+    clearAuthorizedAddons: ClearAuthorizedAddons,
   });
 
   readonly allAuthorizedAddons = computed(() => {
-    const authorizedAddons = [
-      ...this.authorizedStorageAddons(),
-      ...this.authorizedCitationAddons(),
-      ...this.authorizedLinkAddons(),
-    ];
+    let authorizedAddons;
+
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        authorizedAddons = this.authorizedStorageAddons();
+        break;
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        authorizedAddons = this.authorizedCitationAddons();
+        break;
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        authorizedAddons = this.authorizedLinkAddons();
+        break;
+      default:
+        authorizedAddons = [
+          ...this.authorizedStorageAddons(),
+          ...this.authorizedCitationAddons(),
+          ...this.authorizedLinkAddons(),
+        ];
+    }
 
     const searchValue = this.searchValue().toLowerCase();
     const filteredAddons = authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
@@ -170,13 +217,32 @@ export class SettingsAddonsComponent {
     return sortAddonCardsAlphabetically(filteredAddons);
   });
 
-  onCategoryChange(value: Primitive): void {
-    if (typeof value === 'string') {
-      this.selectedCategory.set(value);
+  constructor() {
+    this.setupEffects();
+
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.searchValue.set(value ?? ''));
+
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearAuthorizedAddons();
+    });
+  }
+
+  ngOnInit(): void {
+    const params = this.queryParamsService.readQueryParams(this.route);
+
+    if (params.activeTab !== undefined) {
+      this.selectedTab.set(params.activeTab);
     }
   }
 
-  constructor() {
+  private setupEffects() {
+    effect(() => {
+      const activeTab = this.selectedTab();
+      this.queryParamsService.updateQueryParams(this.route, { activeTab });
+    });
+
     effect(() => {
       if (this.currentUser() && !this.userReferenceId()) {
         this.actions.getAddonsUserReference();
@@ -196,19 +262,32 @@ export class SettingsAddonsComponent {
 
     effect(() => {
       const userReferenceId = this.userReferenceId();
+      const selectedCategory = this.selectedCategory();
       if (userReferenceId) {
-        this.fetchAllAuthorizedAddons(userReferenceId);
+        this.fetchAuthorizedAddonsByCategory(userReferenceId, selectedCategory);
       }
     });
-
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => this.searchValue.set(value ?? ''));
   }
 
-  private fetchAllAuthorizedAddons(userReferenceId: string): void {
-    this.actions.getAuthorizedStorageAddons(userReferenceId);
-    this.actions.getAuthorizedCitationAddons(userReferenceId);
-    this.actions.getAuthorizedLinkAddons(userReferenceId);
+  private fetchAuthorizedAddonsByCategory(userReferenceId: string, category: string): void {
+    untracked(() => {
+      switch (category) {
+        case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+          if (!this.authorizedStorageAddons().length && !this.isAuthorizedStorageAddonsLoading()) {
+            this.actions.getAuthorizedStorageAddons(userReferenceId);
+          }
+          break;
+        case AddonCategory.EXTERNAL_CITATION_SERVICES:
+          if (!this.authorizedCitationAddons().length && !this.isAuthorizedCitationAddonsLoading()) {
+            this.actions.getAuthorizedCitationAddons(userReferenceId);
+          }
+          break;
+        case AddonCategory.EXTERNAL_LINK_SERVICES:
+          if (!this.authorizedLinkAddons().length && !this.isAuthorizedLinkAddonsLoading()) {
+            this.actions.getAuthorizedLinkAddons(userReferenceId);
+          }
+          break;
+      }
+    });
   }
 }

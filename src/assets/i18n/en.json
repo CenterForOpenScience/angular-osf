@@ -1660,7 +1660,8 @@
         "folderName": "Folder name:",
         "selectFolder": "Select",
         "connectedAccount": "Connected to account:",
-        "home": "Home"
+        "home": "Home",
+        "rootDirectory": "Root Directory"
       },
       "connectAddon": {
         "title": "Connect Add-on",

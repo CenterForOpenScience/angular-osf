@@ -124,7 +124,7 @@ export class StorageItemSelectorComponent implements OnInit {
   constructor() {
     effect(() => {
       const initialFolder = this.initiallySelectedStorageItem();
-      if (initialFolder && !this.selectedStorageItem()) {
+      if (initialFolder) {
         this.selectedStorageItem.set(initialFolder);
       }
     });
