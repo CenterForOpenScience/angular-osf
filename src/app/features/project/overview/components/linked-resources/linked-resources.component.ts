@@ -6,10 +6,8 @@ import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { IS_MEDIUM } from '@osf/shared/helpers';
 import { CustomDialogService } from '@osf/shared/services';
 import { NodeLinksSelectors } from '@osf/shared/stores';
 
@@ -30,30 +28,23 @@ export class LinkedResourcesComponent {
 
   linkedResources = select(NodeLinksSelectors.getLinkedResources);
   isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
-  isMedium = toSignal(inject(IS_MEDIUM));
 
   openLinkProjectModal() {
-    const dialogWidth = this.isMedium() ? '850px' : '95vw';
-
     this.customDialogService.open(LinkResourceDialogComponent, {
       header: 'project.overview.dialog.linkProject.header',
-      width: dialogWidth,
+      width: '850px',
     });
   }
 
   openDeleteResourceModal(resourceId: string): void {
-    const dialogWidth = this.isMedium() ? '650px' : '95vw';
-
     const currentLink = this.linkedResources().find((resource) => resource.id === resourceId);
 
     if (!currentLink) return;
 
     this.customDialogService.open(DeleteNodeLinkDialogComponent, {
       header: 'project.overview.dialog.deleteNodeLink.header',
-      width: dialogWidth,
-      data: {
-        currentLink,
-      },
+      width: '650px',
+      data: { currentLink },
     });
   }
 }

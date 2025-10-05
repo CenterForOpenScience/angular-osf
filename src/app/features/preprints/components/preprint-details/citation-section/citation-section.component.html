@@ -29,7 +29,7 @@
             optionLabel="label"
             optionValue="value"
             appendTo="body"
-            [emptyFilterMessage]="filterMessage()"
+            [emptyFilterMessage]="filterMessage() | translate"
             [emptyMessage]="'project.overview.metadata.citationInputPlaceholder' | translate"
             (onChange)="handleGetStyledCitation($event)"
           >

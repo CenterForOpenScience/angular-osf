@@ -1,17 +1,14 @@
-@use "styles/variables" as var;
-@use "styles/mixins" as mix;
-
 :host {
   display: block;
+}
 
-  .addon-card {
-    border: 1px solid var.$grey-2;
-    border-radius: mix.rem(12px);
-  }
+.addon-card {
+  border: 1px solid var(--grey-2);
+  border-radius: 0.75rem;
+}
 
-  .addon-image {
-    height: 7rem;
-    max-width: 60%;
-    object-fit: contain;
-  }
+.addon-image {
+  height: 7rem;
+  max-width: 60%;
+  object-fit: contain;
 }

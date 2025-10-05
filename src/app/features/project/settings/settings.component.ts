@@ -12,7 +12,6 @@ import { ActivatedRoute } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType, SubscriptionEvent, SubscriptionFrequency, UserPermissions } from '@osf/shared/enums';
-import { IS_MEDIUM } from '@osf/shared/helpers';
 import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
 import {
@@ -85,7 +84,6 @@ export class SettingsComponent implements OnInit {
   isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
   currentUser = select(UserSelectors.getCurrentUser);
   currentProject = select(CurrentResourceSelectors.getCurrentResource);
-  isMedium = toSignal(inject(IS_MEDIUM));
 
   rootProjectId = computed(() => this.currentProject()?.rootResourceId);
 
@@ -190,13 +188,11 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteProject(): void {
-    const dialogWidth = this.isMedium() ? '500px' : '95vw';
-
     this.actions.getComponentsTree(this.rootProjectId() || this.projectId(), this.projectId(), ResourceType.Project);
 
     this.customDialogService.open(DeleteProjectDialogComponent, {
       header: 'project.deleteProject.dialog.deleteProject',
-      width: dialogWidth,
+      width: '500px',
     });
   }
 

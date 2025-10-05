@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -28,7 +28,6 @@ export class FundingDialogComponent implements OnInit {
   dialogRef = inject(DynamicDialogRef);
   config = inject(DynamicDialogConfig);
   destroyRef = inject(DestroyRef);
-  translateService = inject(TranslateService);
 
   actions = createDispatchMap({ getFundersList: GetFundersList });
 
@@ -52,8 +51,8 @@ export class FundingDialogComponent implements OnInit {
 
   filterMessage = computed(() =>
     this.fundersLoading()
-      ? this.translateService.instant('project.metadata.funding.dialog.loadingFunders')
-      : this.translateService.instant('project.metadata.funding.dialog.noFundersFound')
+      ? 'project.metadata.funding.dialog.loadingFunders'
+      : 'project.metadata.funding.dialog.noFundersFound'
   );
 
   get fundingEntries() {

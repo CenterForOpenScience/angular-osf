@@ -11,7 +11,7 @@ import { timer } from 'rxjs';
 
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -29,7 +29,7 @@ import {
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores';
-import { hasViewOnlyParam, IS_MEDIUM } from '@shared/helpers';
+import { hasViewOnlyParam } from '@shared/helpers';
 
 import { SocialsShareActionItem } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
@@ -66,7 +66,6 @@ export class OverviewToolbarComponent {
   destroyRef = inject(DestroyRef);
   isPublic = signal(false);
   isBookmarked = signal(false);
-  isTablet = toSignal(inject(IS_MEDIUM));
 
   isCollectionsRoute = input<boolean>(false);
   canEdit = input.required<boolean>();
@@ -147,7 +146,6 @@ export class OverviewToolbarComponent {
   handleToggleProjectPublicity(): void {
     const resource = this.currentResource();
     if (!resource) return;
-    const dialogWidth = this.isTablet() ? '600px' : '95vw';
 
     const isCurrentlyPublic = resource.isPublic;
     const newPublicStatus = !isCurrentlyPublic;
@@ -160,7 +158,7 @@ export class OverviewToolbarComponent {
       header: isCurrentlyPublic
         ? 'project.overview.dialog.makePrivate.header'
         : 'project.overview.dialog.makePublic.header',
-      width: dialogWidth,
+      width: '600px',
       data: {
         projectId: resource.id,
         isCurrentlyPublic,

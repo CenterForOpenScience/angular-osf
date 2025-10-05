@@ -4,7 +4,7 @@
   </div>
 } @else {
   <div class="flex flex-column gap-2">
-    <h2 class="font-normal">{{ storageName }}</h2>
+    <h2 class="font-normal">{{ storageName | translate }}</h2>
 
     <div class="files-table flex flex-column">
       @if (previousFolder()) {

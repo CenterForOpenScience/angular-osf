@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -27,7 +27,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AddonType, OperationNames, StorageItemType } from '@osf/shared/enums';
-import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@osf/shared/helpers';
+import { convertCamelCaseToNormal, IS_XSMALL } from '@osf/shared/helpers';
 import { OperationInvokeData, StorageItem } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores';
@@ -58,10 +58,8 @@ import { ResourceTypeInfoDialogComponent } from '../resource-type-info-dialog/re
 export class StorageItemSelectorComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private customDialogService = inject(CustomDialogService);
-  private translateService = inject(TranslateService);
 
   readonly AddonType = AddonType;
-  isMedium = toSignal(inject(IS_MEDIUM));
   isMobile = toSignal(inject(IS_XSMALL));
 
   isGoogleFilePicker = input.required<boolean>();
@@ -111,15 +109,13 @@ export class StorageItemSelectorComponent implements OnInit {
   isSubmitting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
   readonly homeBreadcrumb: MenuItem = {
     id: '/',
-    label: this.translateService.instant('settings.addons.configureAddon.home'),
+    label: 'settings.addons.configureAddon.home',
     state: {
       operationName: OperationNames.LIST_ROOT_ITEMS,
     },
   };
 
-  actions = createDispatchMap({
-    clearOperationInvocations: ClearOperationInvocations,
-  });
+  actions = createDispatchMap({ clearOperationInvocations: ClearOperationInvocations });
 
   constructor() {
     effect(() => {
@@ -250,11 +246,9 @@ export class StorageItemSelectorComponent implements OnInit {
   }
 
   openInfoDialog() {
-    const dialogWidth = this.isMedium() ? '850px' : '95vw';
-
     this.customDialogService.open(ResourceTypeInfoDialogComponent, {
       header: 'settings.addons.configureAddon.aboutResourceType',
-      width: dialogWidth,
+      width: '850px',
     });
   }
 }

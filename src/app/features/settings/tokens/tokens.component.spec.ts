@@ -4,11 +4,8 @@ import { MockProvider } from 'ng-mocks';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { BehaviorSubject } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IS_SMALL } from '@osf/shared/helpers';
 import { MOCK_STORE } from '@shared/mocks';
 import { CustomDialogService } from '@shared/services';
 
@@ -22,20 +19,17 @@ import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.moc
 describe('TokensComponent', () => {
   let component: TokensComponent;
   let fixture: ComponentFixture<TokensComponent>;
-  let isSmallSubject: BehaviorSubject<boolean>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
   let mockDialogService: ReturnType<DialogServiceMockBuilder['build']>;
 
   beforeEach(async () => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().withOpen(jest.fn()).build();
     mockDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
-    isSmallSubject = new BehaviorSubject<boolean>(false);
 
     await TestBed.configureTestingModule({
       imports: [TokensComponent, OSFTestingModule],
       providers: [
         MockProvider(Store, MOCK_STORE),
-        MockProvider(IS_SMALL, isSmallSubject),
         MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(DialogService, mockDialogService),
       ],
@@ -62,26 +56,6 @@ describe('TokensComponent', () => {
       expect.objectContaining({
         header: 'settings.tokens.form.createTitle',
       })
-    );
-  });
-
-  it('should use width 95vw when IS_SMALL is false', () => {
-    isSmallSubject.next(false);
-    fixture.detectChanges();
-    component.createToken();
-    expect(mockCustomDialogService.open).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({ width: '95vw' })
-    );
-  });
-
-  it('should use width 800px when IS_SMALL is true', () => {
-    isSmallSubject.next(true);
-    fixture.detectChanges();
-    component.createToken();
-    expect(mockCustomDialogService.open).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({ width: '800px ' })
     );
   });
 });

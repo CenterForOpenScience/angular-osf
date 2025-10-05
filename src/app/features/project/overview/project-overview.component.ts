@@ -19,7 +19,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
@@ -31,7 +31,7 @@ import {
   GetSubmissionsReviewActions,
 } from '@osf/features/moderation/store/collections-moderation';
 import { Mode, ResourceType } from '@osf/shared/enums';
-import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { CustomDialogService, MetaTagsService, ToastService } from '@osf/shared/services';
 import {
@@ -117,7 +117,6 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
 
-  isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
@@ -290,12 +289,10 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   handleOpenMakeDecisionDialog() {
-    const dialogWidth = this.isMobile() ? '95vw' : '600px';
-
     this.customDialogService
       .open(MakeDecisionDialogComponent, {
         header: 'moderation.makeDecision.header',
-        width: dialogWidth,
+        width: '600px',
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
