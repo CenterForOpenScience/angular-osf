@@ -19,9 +19,9 @@ import {
   NodeDataJsonApi,
   NodeDetailsModel,
   NodeResponseJsonApi,
-  ProjectSettingsData,
+  ProjectSettingsDataJsonApi,
   ProjectSettingsModel,
-  ProjectSettingsResponseModel,
+  ProjectSettingsResponseJsonApi,
 } from '../models';
 
 @Injectable({
@@ -37,13 +37,13 @@ export class SettingsService {
 
   getProjectSettings(nodeId: string): Observable<ProjectSettingsModel> {
     return this.jsonApiService
-      .get<ProjectSettingsResponseModel>(`${this.apiUrl}/nodes/${nodeId}/settings/`)
+      .get<ProjectSettingsResponseJsonApi>(`${this.apiUrl}/nodes/${nodeId}/settings/`)
       .pipe(map((response) => SettingsMapper.fromResponse(response, nodeId)));
   }
 
-  updateProjectSettings(model: ProjectSettingsData): Observable<ProjectSettingsModel> {
+  updateProjectSettings(model: ProjectSettingsDataJsonApi): Observable<ProjectSettingsModel> {
     return this.jsonApiService
-      .patch<ProjectSettingsResponseModel>(`${this.apiUrl}/nodes/${model.id}/settings/`, { data: model })
+      .patch<ProjectSettingsResponseJsonApi>(`${this.apiUrl}/nodes/${model.id}/settings/`, { data: model })
       .pipe(map((response) => SettingsMapper.fromResponse(response, model.id)));
   }
 

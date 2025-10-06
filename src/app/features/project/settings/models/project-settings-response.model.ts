@@ -1,36 +1,36 @@
-export interface ProjectSettingsAttributes {
-  access_requests_enabled: boolean;
-  anyone_can_edit_wiki: boolean;
-  wiki_enabled: boolean;
-}
-
-export interface RelatedLink {
-  href: string;
-  meta: Record<string, unknown>;
-}
-
-export interface ProjectSettingsRelationships {
-  view_only_links: {
-    links: {
-      related: RelatedLink;
-    };
+export interface ProjectSettingsResponseJsonApi {
+  data: ProjectSettingsDataJsonApi;
+  meta: {
+    version: string;
   };
 }
 
-export interface ProjectSettingsData {
+export interface ProjectSettingsDataJsonApi {
   id: string;
   type: 'node-settings';
-  attributes: ProjectSettingsAttributes;
-  relationships: ProjectSettingsRelationships;
+  attributes: ProjectSettingsAttributesJsonApi;
+  relationships: ProjectSettingsRelationshipsJsonApi;
   links: {
     self: string;
     iri: string;
   };
 }
 
-export interface ProjectSettingsResponseModel {
-  data: ProjectSettingsData;
-  meta: {
-    version: string;
+export interface ProjectSettingsAttributesJsonApi {
+  access_requests_enabled: boolean;
+  anyone_can_edit_wiki: boolean;
+  wiki_enabled: boolean;
+}
+
+interface ProjectSettingsRelationshipsJsonApi {
+  view_only_links: {
+    links: {
+      related: RelatedLinkJsonApi;
+    };
   };
+}
+
+interface RelatedLinkJsonApi {
+  href: string;
+  meta: Record<string, unknown>;
 }

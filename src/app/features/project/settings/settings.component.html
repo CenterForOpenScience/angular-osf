@@ -36,14 +36,14 @@
           (anyoneCanEditWikiEmitValue)="onAnyoneCanEditWikiRequestChange($event)"
           [wikiEnabled]="wikiEnabled()"
           [anyoneCanEditWiki]="anyoneCanEditWiki()"
-          [title]="title()"
+          [title]="projectDetails().title"
           [isPublic]="projectDetails().isPublic"
         />
       }
 
       <osf-project-setting-notifications
         (notificationEmitValue)="onNotificationRequestChange($event)"
-        [title]="title()"
+        [title]="projectDetails().title"
         [notifications]="notifications()"
       />
 
