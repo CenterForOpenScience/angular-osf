@@ -1,6 +1,7 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Menu } from 'primeng/menu';
 import { Tooltip } from 'primeng/tooltip';
 
 import { CommonModule } from '@angular/common';
@@ -33,7 +34,7 @@ import 'cedar-artifact-viewer';
 
 @Component({
   selector: 'osf-cedar-template-form',
-  imports: [CommonModule, Button, TranslatePipe, Tooltip],
+  imports: [CommonModule, Button, TranslatePipe, Tooltip, Menu],
   templateUrl: './cedar-template-form.component.html',
   styleUrl: './cedar-template-form.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -63,6 +64,21 @@ export class CedarTemplateFormComponent {
 
   readonly recordId = signal<string>('');
   readonly downloadUrl = signal<string>('');
+
+  shareItems = [
+    {
+      label: 'files.detail.actions.share.email',
+      command: () => this.handleEmailShare(),
+    },
+    {
+      label: 'files.detail.actions.share.x',
+      command: () => this.handleXShare(),
+    },
+    {
+      label: 'files.detail.actions.share.facebook',
+      command: () => this.handleFacebookShare(),
+    },
+  ];
 
   constructor() {
     effect(() => {
@@ -98,6 +114,15 @@ export class CedarTemplateFormComponent {
     this.downloadUrl.set(`${this.environment.apiDomainUrl}/_/cedar_metadata_records/${id}/metadata_download/`);
 
     this.validateCedarMetadata();
+  }
+
+  downloadFile() {
+    const a = document.createElement('a');
+    a.href = this.downloadUrl();
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(this.downloadUrl());
   }
 
   copyUrl() {
@@ -151,5 +176,24 @@ export class CedarTemplateFormComponent {
     } else {
       this.formData.set(CedarMetadataHelper.buildEmptyMetadata());
     }
+  }
+
+  handleEmailShare(): void {
+    const url = window.location.href;
+    const metadataType = 'OSF Enhanced Metadata';
+    window.location.href = `mailto:?subject=${metadataType ?? ''}&body=${url ?? ''}`;
+  }
+
+  handleXShare(): void {
+    const url = window.location.href;
+    const metadataType = 'OSF Enhanced Metadata';
+    const link = `https://x.com/intent/tweet?url=${url}&text=${metadataType}&via=OSFramework`;
+    window.open(link, '_blank', 'noopener,noreferrer');
+  }
+
+  handleFacebookShare(): void {
+    const url = window.location.href;
+    const link = `https://www.facebook.com/dialog/share?app_id=1022273774556662&display=popup&href=${url}&redirect_uri=${url}`;
+    window.open(link, '_blank', 'noopener,noreferrer');
   }
 }

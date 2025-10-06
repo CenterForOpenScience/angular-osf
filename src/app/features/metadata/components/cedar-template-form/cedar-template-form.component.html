@@ -7,33 +7,45 @@
         } @else {
           <h3 class="text-lg text-red-500">{{ 'project.metadata.addMetadata.notPublishedText' | translate }}</h3>
         }
-        @if (showEditButton()) {
-          <span class="flex items-center">
-            <a
-              class="flex align-self-center"
-              (click)="copyUrl()"
+        <div class="flex items-right">
+            @if (showEditButton()) {
+                <p-button
+                  class="px-2 flex align-self-center"
+                  severity="secondary"
+                  [label]="'project.metadata.addMetadata.editRecord' | translate"
+                  (onClick)="toggleEditModeEmit()"
+                >
+                </p-button>
+            }
+            <p-button
+              severity="secondary"
+              class="btn-icon-only px-2 flex align-self-center"
+              icon="fas fa-copy"
               [pTooltip]="'project.metadata.addMetadata.copyRecordMetadataUrl' | translate"
-            >
-              <i class="pi pi-copy"></i>
-            </a>
-            <a
-              class="md:px-4 flex align-self-center"
-              target="_blank"
-              [href]="downloadUrl()"
-              [pTooltip]="'project.metadata.addMetadata.downloadRecordMetadata' | translate"
-            >
-              <i class="pi pi-download"></i>
-            </a>
+              (click)="copyUrl()"
+            />
 
             <p-button
-              class="tw-w-40 flex-shrink-0 btn-full-width"
               severity="secondary"
-              [label]="'project.metadata.addMetadata.editRecord' | translate"
-              (onClick)="toggleEditModeEmit()"
-            >
-            </p-button>
-          </span>
-        }
+              class="btn-icon-only px-2 flex align-self-center"
+              icon="fas fa-download"
+              [pTooltip]="'project.metadata.addMetadata.downloadRecordMetadata' | translate"
+              (click)="downloadFile()"
+            />
+
+            <p-button
+            severity="secondary"
+            class="btn-icon-only px-2 flex align-self-center"
+            icon="fas fa-share-nodes"
+             (click)="shareMenu.toggle($event)"
+            />
+
+            <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
+                <ng-template #item let-item>
+                  <a class="p-menu-item-link">{{ item.label | translate }}</a>
+                </ng-template>
+            </p-menu>
+        </div>
       </div>
     }
     <div class="cedar-editor-container">
