@@ -1,12 +1,10 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { SOCIAL_ICONS } from '@osf/core/constants';
 import { IconComponent } from '@osf/shared/components';
-import { IS_WEB } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-footer',
@@ -16,7 +14,5 @@ import { IS_WEB } from '@osf/shared/helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
-  isWeb = toSignal(inject(IS_WEB));
-
   readonly socialIcons = SOCIAL_ICONS;
 }

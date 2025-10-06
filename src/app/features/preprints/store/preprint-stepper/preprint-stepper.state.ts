@@ -40,6 +40,7 @@ import {
   ReuploadFile,
   SaveLicense,
   SetCurrentFolder,
+  SetInstitutionsChanged,
   SetSelectedPreprintFileSource,
   SetSelectedPreprintProviderId,
   SubmitPreprint,
@@ -89,6 +90,7 @@ const DefaultState: PreprintStepperStateModel = {
   },
   hasBeenSubmitted: false,
   currentFolder: null,
+  institutionsChanged: false,
 };
 
 @State<PreprintStepperStateModel>({
@@ -524,5 +526,10 @@ export class PreprintStepperState {
   @Action(SetCurrentFolder)
   setCurrentFolder(ctx: StateContext<PreprintStepperStateModel>, action: SetCurrentFolder) {
     ctx.patchState({ currentFolder: action.folder });
+  }
+
+  @Action(SetInstitutionsChanged)
+  setInstitutionsChanged(ctx: StateContext<PreprintStepperStateModel>, action: SetInstitutionsChanged) {
+    ctx.patchState({ institutionsChanged: action.institutionsChanged });
   }
 }

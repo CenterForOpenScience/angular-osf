@@ -72,7 +72,8 @@ export class GetCedarMetadataRecords {
   static readonly type = '[Metadata] Get Cedar Metadata Records';
   constructor(
     public resourceId: string,
-    public resourceType: ResourceType
+    public resourceType: ResourceType,
+    public url?: string
   ) {}
 }
 

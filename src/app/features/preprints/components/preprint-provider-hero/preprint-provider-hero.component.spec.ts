@@ -150,6 +150,7 @@ describe('PreprintProviderHeroComponent', () => {
       closeOnEscape: true,
       modal: true,
       closable: true,
+      breakpoints: { '768px': '95vw' },
     });
   });
 

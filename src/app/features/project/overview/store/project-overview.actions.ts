@@ -73,8 +73,8 @@ export class GetComponents {
   constructor(public projectId: string) {}
 }
 
-export class GetComponentsTree {
-  static readonly type = '[Project Overview] Get Components Tree';
+export class GetParentProject {
+  static readonly type = '[Project Overview] Get Parent Project';
 
   constructor(public projectId: string) {}
 }

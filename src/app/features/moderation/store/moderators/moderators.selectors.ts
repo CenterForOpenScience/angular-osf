@@ -21,8 +21,8 @@ export class ModeratorsSelectors {
   }
 
   @Selector([ModeratorsState])
-  static isModeratorsError(state: ModeratorsStateModel) {
-    return !!state.moderators.error?.length;
+  static getModeratorsTotalCount(state: ModeratorsStateModel): number {
+    return state.moderators.totalCount;
   }
 
   @Selector([ModeratorsState])
@@ -33,11 +33,6 @@ export class ModeratorsSelectors {
   @Selector([ModeratorsState])
   static isUsersLoading(state: ModeratorsStateModel): boolean {
     return state.users.isLoading;
-  }
-
-  @Selector([ModeratorsState])
-  static getUsersError(state: ModeratorsStateModel): string | null {
-    return state.users.error;
   }
 
   @Selector([ModeratorsState])

@@ -27,6 +27,7 @@ export class RegistryModerationMapper {
     return {
       data: response.data.map((x) => this.fromResponse(x)),
       totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
     };
   }
 

@@ -32,17 +32,28 @@ export class ModeratorsService {
   getModerators(
     resourceId: string,
     resourceType: ResourceType,
-    searchValue: StringOrNull
-  ): Observable<ModeratorModel[]> {
+    searchValue: StringOrNull,
+    page: number,
+    pageSize: number
+  ): Observable<PaginatedData<ModeratorModel[]>> {
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/`;
 
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = {
+      page: page.toString(),
+      'page[size]': pageSize.toString(),
+    };
+
     if (searchValue) {
       params['filter[full_name]'] = searchValue;
     }
-    return this.jsonApiService
-      .get<ModeratorResponseJsonApi>(baseUrl, params)
-      .pipe(map((response) => response.data.map((moderator) => ModerationMapper.fromModeratorResponse(moderator))));
+
+    return this.jsonApiService.get<ModeratorResponseJsonApi>(baseUrl, params).pipe(
+      map((response) => ({
+        data: ModerationMapper.getModerators(response.data),
+        totalCount: response.meta.total,
+        pageSize: response.meta.per_page,
+      }))
+    );
   }
 
   addModerator(resourceId: string, resourceType: ResourceType, data: ModeratorAddModel): Observable<ModeratorModel> {

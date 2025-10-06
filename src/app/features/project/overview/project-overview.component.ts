@@ -19,7 +19,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
@@ -31,7 +31,7 @@ import {
   GetSubmissionsReviewActions,
 } from '@osf/features/moderation/store/collections-moderation';
 import { Mode, ResourceType } from '@osf/shared/enums';
-import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { CustomDialogService, MetaTagsService, ToastService } from '@osf/shared/services';
 import {
@@ -56,8 +56,10 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
+import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
 import {
   FilesWidgetComponent,
   LinkedResourcesComponent,
@@ -70,6 +72,7 @@ import { SUBMISSION_REVIEW_STATUS_OPTIONS } from './constants';
 import {
   ClearProjectOverview,
   GetComponents,
+  GetParentProject,
   GetProjectById,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,
@@ -97,7 +100,7 @@ import {
     RouterLink,
     FilesWidgetComponent,
     ViewOnlyLinkMessageComponent,
-    ViewOnlyLinkMessageComponent,
+    OverviewParentProjectComponent,
   ],
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -114,7 +117,6 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
 
-  isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
@@ -130,6 +132,8 @@ export class ProjectOverviewComponent implements OnInit {
   hasWriteAccess = select(ProjectOverviewSelectors.hasWriteAccess);
   hasAdminAccess = select(ProjectOverviewSelectors.hasAdminAccess);
   isWikiEnabled = select(ProjectOverviewSelectors.isWikiEnabled);
+  parentProject = select(ProjectOverviewSelectors.getParentProject);
+  isParentProjectLoading = select(ProjectOverviewSelectors.getParentProjectLoading);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -149,6 +153,7 @@ export class ProjectOverviewComponent implements OnInit {
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     getSubjects: FetchSelectedSubjects,
+    getParentProject: GetParentProject,
   });
 
   readonly activityPageSize = 5;
@@ -218,15 +223,6 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
-  private readonly effectMetaTags = effect(() => {
-    if (!this.isProjectLoading()) {
-      const metaTagsData = this.metaTagsData();
-      if (metaTagsData) {
-        this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
-      }
-    }
-  });
-
   private readonly metaTagsData = computed(() => {
     const project = this.currentProject();
     if (!project) return null;
@@ -253,11 +249,22 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
+  readonly analyticsService = inject(AnalyticsService);
+
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
     this.setupProjectEffects();
     this.setupRouteChangeListener();
+
+    effect(() => {
+      if (!this.isProjectLoading()) {
+        const metaTagsData = this.metaTagsData();
+        if (metaTagsData) {
+          this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+        }
+      }
+    });
   }
 
   onCustomCitationUpdated(citation: string): void {
@@ -275,16 +282,17 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
 
-    this.dataciteService.logIdentifiableView(this.currentProject$).subscribe();
+    this.dataciteService
+      .logIdentifiableView(this.currentProject$)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   handleOpenMakeDecisionDialog() {
-    const dialogWidth = this.isMobile() ? '95vw' : '600px';
-
     this.customDialogService
       .open(MakeDecisionDialogComponent, {
         header: 'moderation.makeDecision.header',
-        width: dialogWidth,
+        width: '600px',
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
@@ -330,12 +338,22 @@ export class ProjectOverviewComponent implements OnInit {
         const rootParentId = currentProject.rootParentId ?? currentProject.id;
         this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
         this.actions.getSubjects(currentProject.id, ResourceType.Project);
+        const parentProjectId = currentProject.parentId;
+        if (parentProjectId) {
+          this.actions.getParentProject(parentProjectId);
+        }
       }
     });
     effect(() => {
       const project = this.currentProject();
       if (project?.wikiEnabled) {
         this.actions.getHomeWiki(ResourceType.Project, project.id);
+      }
+    });
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject && currentProject.isPublic) {
+        this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail').subscribe();
       }
     });
   }

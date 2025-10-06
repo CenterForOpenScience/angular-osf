@@ -20,7 +20,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 
 import { StepperComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
-import { StepOption } from '@osf/shared/models';
+import { PageSchema, Question, StepOption } from '@osf/shared/models';
 import { LoaderService } from '@osf/shared/services';
 import {
   ContributorsSelectors,
@@ -54,6 +54,7 @@ export class DraftsComponent implements OnDestroy {
   initialContributors = select(ContributorsSelectors.getContributors);
   readonly contributors = select(ContributorsSelectors.getContributors);
   readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly registrationLicense = select(RegistriesSelectors.getRegistrationLicense);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,
@@ -72,7 +73,7 @@ export class DraftsComponent implements OnDestroy {
     return (
       !this.draftRegistration()?.title ||
       !this.draftRegistration()?.description ||
-      !this.draftRegistration()?.license?.id ||
+      !this.registrationLicense() ||
       !this.selectedSubjects()?.length ||
       !this.initialContributors()?.length
     );
@@ -95,8 +96,9 @@ export class DraftsComponent implements OnDestroy {
     this.defaultSteps[0].touched = true;
     const customSteps = this.pages().map((page, index) => {
       const pageStep = this.pages()[index];
+      const allQuestions = this.getAllQuestions(pageStep);
       const wasTouched =
-        pageStep?.questions?.some((question) => {
+        allQuestions?.some((question) => {
           const questionData = stepData[question.responseKey!];
           return Array.isArray(questionData) ? questionData.length : questionData;
         }) || false;
@@ -184,8 +186,9 @@ export class DraftsComponent implements OnDestroy {
       if (this.pages().length && this.currentStepIndex() > 0 && this.stepsData()) {
         for (let i = 1; i < this.currentStepIndex(); i++) {
           const pageStep = this.pages()[i - 1];
+          const allQuestions = this.getAllQuestions(pageStep);
           const isStepInvalid =
-            pageStep?.questions?.some((question) => {
+            allQuestions?.some((question) => {
               const questionData = this.stepsData()[question.responseKey!];
               return question.required && (Array.isArray(questionData) ? !questionData.length : !questionData);
             }) || false;
@@ -199,6 +202,13 @@ export class DraftsComponent implements OnDestroy {
     this.currentStepIndex.set(step.index);
     const pageLink = this.steps()[step.index].routeLink;
     this.router.navigate([`/registries/drafts/${this.registrationId}/`, pageLink]);
+  }
+
+  private getAllQuestions(pageStep: PageSchema): Question[] {
+    return [
+      ...(pageStep?.questions ?? []),
+      ...(pageStep?.sections?.flatMap((section) => section.questions ?? []) ?? []),
+    ];
   }
 
   ngOnDestroy(): void {

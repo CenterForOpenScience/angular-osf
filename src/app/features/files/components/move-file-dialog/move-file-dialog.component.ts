@@ -48,8 +48,7 @@ export class MoveFileDialogComponent {
   readonly isFilesUpdating = signal(false);
   readonly rootFolders = select(FilesSelectors.getRootFolders);
 
-  readonly storageName =
-    this.config.data.storageName || this.translateService.instant('files.dialogs.moveFile.osfStorage');
+  readonly storageName = this.config.data.storageName || 'files.dialogs.moveFile.osfStorage';
 
   readonly provider = select(FilesSelectors.getProvider);
 

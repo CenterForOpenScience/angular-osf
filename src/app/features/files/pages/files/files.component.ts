@@ -4,7 +4,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
@@ -18,7 +17,6 @@ import {
   forkJoin,
   Observable,
   of,
-  skip,
   switchMap,
   take,
 } from 'rxjs';
@@ -36,7 +34,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -59,10 +57,11 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { FileMenuType, ResourceType, SupportedFeature, UserPermissions } from '@osf/shared/enums';
-import { getViewOnlyParamFromUrl, hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
+  FileUploadDialogComponent,
   FormSelectComponent,
   GoogleFilePickerComponent,
   LoadingSpinnerComponent,
@@ -82,7 +81,7 @@ import { FilesSelectors } from '../../store';
   selector: 'osf-files',
   imports: [
     Button,
-    Dialog,
+    FileUploadDialogComponent,
     FilesTreeComponent,
     FormSelectComponent,
     FormsModule,
@@ -104,6 +103,7 @@ import { FilesSelectors } from '../../store';
 })
 export class FilesComponent {
   googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
+  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
 
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
@@ -151,8 +151,6 @@ export class FilesComponent {
   readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
   readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
   readonly supportedFeatures = select(FilesSelectors.getStorageSupportedFeatures);
-
-  isMedium = toSignal(inject(IS_MEDIUM));
 
   readonly isGoogleDrive = signal<boolean>(false);
   readonly accountId = signal<string>('');
@@ -297,6 +295,7 @@ export class FilesComponent {
         }
         this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
+        this.filesTree()?.resetPagination();
       }
     });
 
@@ -307,25 +306,27 @@ export class FilesComponent {
     });
 
     this.searchControl.valueChanges
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
+      .pipe(takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
+        this.filesTree()?.resetPagination();
+
         if (!this.isFolderOpening()) {
           this.updateFilesList();
         }
       });
 
-    this.sortControl.valueChanges.pipe(skip(1), takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
+    this.sortControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
       this.actions.setSort(sort ?? '');
+      this.filesTree()?.resetPagination();
+
       if (!this.isFolderOpening()) {
         this.updateFilesList();
       }
     });
 
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.resetState();
-      });
+    this.destroyRef.onDestroy(() => {
+      this.actions.resetState();
     });
   }
 
@@ -454,6 +455,7 @@ export class FilesComponent {
         finalize(() => {
           this.updateFilesList();
           this.fileIsUploading.set(false);
+          this.toastService.showSuccess('files.dialogs.createFolder.success');
         })
       )
       .subscribe();
@@ -461,34 +463,27 @@ export class FilesComponent {
 
   downloadFolder(): void {
     const resourceId = this.resourceId();
-    const folderId = this.currentFolder()?.id ?? '';
-    const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
-    const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
     const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
-
-    if (resourceId && folderId) {
-      this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
-      if (isRootFolder) {
-        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
-        window.open(link, '_blank')?.focus();
-      } else {
-        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
-        window.open(link, '_blank')?.focus();
-      }
+    const downloadLink = this.currentFolder()?.links.download ?? '';
+    if (resourceId && downloadLink) {
+      this.dataciteService
+        .logFileDownload(resourceId, resourcePath)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
+      const link = this.filesService.getFolderDownloadLink(downloadLink);
+      window.open(link, '_blank')?.focus();
     }
   }
 
   showInfoDialog() {
-    const dialogWidth = this.isMedium() ? '850px' : '95vw';
-
     this.customDialogService.open(FileBrowserInfoComponent, {
       header: 'files.filesBrowserDialog.title',
-      width: dialogWidth,
+      width: '850px',
       data: this.resourceType(),
     });
   }
 
-  public updateFilesList = (): Observable<void> => {
+  updateFilesList(): Observable<void> {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
       this.filesTreeActions.setFilesIsLoading?.(true);
@@ -496,7 +491,7 @@ export class FilesComponent {
     }
 
     return EMPTY;
-  };
+  }
 
   folderIsOpening(value: boolean): void {
     this.isFolderOpening.set(value);
@@ -507,12 +502,12 @@ export class FilesComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    let url = file.links?.html ?? '';
-    const viewOnlyParam = this.hasViewOnly();
-    if (viewOnlyParam) {
-      const separator = url.includes('?') ? '&' : '?';
-      url = `${url}${separator}view_only=${getViewOnlyParamFromUrl(this.router.url)}`;
-    }
+    const extras = this.hasViewOnly()
+      ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
+      : undefined;
+
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/', file.guid], extras));
+
     window.open(url, '_blank');
   }
 

@@ -2,13 +2,10 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/helpers';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { TranslateServiceMock } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores/addons';
@@ -52,7 +49,6 @@ describe.skip('AddonsComponent', () => {
           }),
           dispatch: jest.fn(),
         }),
-        MockProvider(IS_XSMALL, of(false)),
       ],
     }).compileComponents();
 

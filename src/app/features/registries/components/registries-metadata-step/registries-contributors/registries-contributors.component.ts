@@ -29,9 +29,10 @@ import {
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
-import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
+import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
@@ -67,15 +68,23 @@ export class RegistriesContributorsComponent implements OnInit {
     const initialContributors = this.initialContributors();
     if (!currentUserId) return false;
 
-    return initialContributors.some((contributor: ContributorModel) => {
-      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
-    });
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
   });
 
   initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal([]);
+  contributors = signal<ContributorModel[]>([]);
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
+
+  readonly tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    totalRecords: this.contributorsTotalCount(),
+    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+  }));
 
   actions = createDispatchMap({
     getContributors: GetAllContributors,
@@ -91,7 +100,7 @@ export class RegistriesContributorsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+      this.contributors.set(structuredClone(this.initialContributors()));
     });
   }
 
@@ -100,7 +109,6 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   onFocusOut() {
-    // [NM] TODO: make request to update contributor if changed
     if (this.control()) {
       this.control().markAsTouched();
       this.control().markAsDirty();
@@ -109,7 +117,7 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   cancel() {
-    this.contributors.set(JSON.parse(JSON.stringify(this.initialContributors())));
+    this.contributors.set(structuredClone(this.initialContributors()));
   }
 
   save() {

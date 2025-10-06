@@ -1,26 +1,23 @@
-import { AsyncStateModel } from '@osf/shared/models';
+import { AsyncStateWithTotalCount } from '@osf/shared/models';
 
 import { ModeratorAddModel, ModeratorModel } from '../../models';
 
-interface ModeratorsDataStateModel extends AsyncStateModel<ModeratorModel[]> {
+export interface ModeratorsStateModel {
+  moderators: ModeratorsDataStateModel;
+  users: AsyncStateWithTotalCount<ModeratorAddModel[]>;
+}
+
+interface ModeratorsDataStateModel extends AsyncStateWithTotalCount<ModeratorModel[]> {
   searchValue: string | null;
 }
 
-interface UsersDataStateModel extends AsyncStateModel<ModeratorAddModel[]> {
-  totalCount: number;
-}
-
-export interface ModeratorsStateModel {
-  moderators: ModeratorsDataStateModel;
-  users: UsersDataStateModel;
-}
-
-export const MODERATORS_STATE_DEFAULTS = {
+export const MODERATORS_STATE_DEFAULTS: ModeratorsStateModel = {
   moderators: {
     data: [],
     isLoading: false,
     error: null,
     searchValue: null,
+    totalCount: 0,
   },
   users: {
     data: [],

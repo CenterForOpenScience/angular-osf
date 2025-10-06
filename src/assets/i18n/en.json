@@ -52,7 +52,9 @@
       "addOneMore": "Add One More",
       "filter": "Filter",
       "sort": "Sort",
-      "replace": "Replace"
+      "replace": "Replace",
+      "accept": "Accept",
+      "reject": "Reject"
     },
     "accessibility": {
       "help": "Help",
@@ -70,9 +72,7 @@
       "toggleProjectVisibility": "Toggle project visibility",
       "tagInput": "Tag input",
       "toggleTreeNode": "Toggle tree node",
-      "copyButtonInfo": "Copy to clipboard button"
-    },
-    "dialogs": {
+      "copyButtonInfo": "Copy to clipboard button",
       "confirmation": "Confirmation"
     },
     "search": {
@@ -195,7 +195,7 @@
     "donate": "Donate",
     "profileSettings": "Profile Settings",
     "accountSettings": "Account Settings",
-    "configureAddonAccounts": "Configure Addon Accounts",
+    "configureAddonAccounts": "Configure add-on & link service accounts",
     "notifications": "Notifications",
     "developerApps": "Developer Apps",
     "personalAccessTokens": "Personal Access Tokens",
@@ -440,6 +440,7 @@
       "project": "Project",
       "saveChanges": "Save Changes",
       "deleteProject": "Delete Project",
+      "deleteComponent": "Delete Component",
       "viewOnlyLinks": "View-only Links",
       "viewOnlySubtitle": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "viewOnlyTable": {
@@ -626,6 +627,20 @@
         "multipleUpdateSuccessMessage": "Contributors successfully updated."
       }
     },
+    "requestAccess": {
+      "requestForAccess": "Requests for Access",
+      "followingUsers": "The following users have requested access to this project.",
+      "acceptDialog": {
+        "header": "Accept access",
+        "message": "Are you sure you want to accept access for <b>{{name}}</b>?",
+        "successMessage": "Access accepted successfully."
+      },
+      "rejectDialog": {
+        "header": "Reject access",
+        "message": "Are you sure you want to reject access for <b>{{name}}</b>?",
+        "successMessage": "Access rejected successfully."
+      }
+    },
     "overview": {
       "header": {
         "privateProject": "Private Project",
@@ -645,6 +660,7 @@
         "linkProjectsButton": "Link Projects",
         "noComponentsMessage": "<em>Add components to organize your project.</em>"
       },
+      "parentProject": "Parent Project",
       "linkedProjects": {
         "title": "Linked Projects",
         "noLinkedProjectsMessage": "<em>Link your project.</em>"
@@ -1023,8 +1039,13 @@
       }
     },
     "deleteProject": {
-      "title": "Delete project",
-      "message": "Are you sure you want to delete <b>{{name}}</b> project?",
+      "dialog": {
+        "deleteProject": "Delete project and components",
+        "listMessage": "You are about to delete the following:",
+        "warningMessage": "It will no longer be available to you or any other contributors. This is irreversible.",
+        "confirmation": "Type the following to continue:",
+        "noPermissionsMessage": "You don not have permissions to delete this project and its components. <br/><br/> To delete, you must have admin permissions across all objects. Please check your permissions and try again. <br/><br/> Contact support at support@osf.io if you have any questions."
+      },
       "success": "Project has been successfully deleted."
     },
     "deleteInstitution": {
@@ -1076,32 +1097,39 @@
       "createFolder": {
         "title": "Create folder",
         "folderName": "New folder name",
-        "folderNamePlaceholder": "Please enter a folder name"
+        "folderNamePlaceholder": "Please enter a folder name",
+        "success": "Folder successfully created."
       },
       "renameFile": {
         "title": "Rename file",
         "newName": "New name",
         "enterNewName": "Enter new name",
-        "renameLabel": "Please rename the file"
+        "renameLabel": "Please rename the file",
+        "success": "File successfully renamed."
       },
       "moveFile": {
         "cannotMove": "Cannot move to the same folder",
         "title": "Move file",
         "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
         "storage": "OSF Storage",
-        "pathError": "Path is not specified!"
+        "pathError": "Path is not specified!",
+        "success": "File successfully moved."
       },
       "copyFile": {
-        "title": "Select location to copy file to"
+        "title": "Select location to copy file to",
+        "success": "File successfully copied."
       },
       "deleteFile": {
         "title": "Delete File",
-        "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
+        "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?",
+        "success": "File successfully deleted."
       },
       "replaceFile": {
         "single": "Replace file",
         "multiple": "Replace files",
-        "message": "Are you sure you want to replace <span class=\"font-bold\">{{name}}</span>?"
+        "message": "Are you sure you want to replace <span class=\"font-bold\">{{name}}</span>?",
+        "successOne": "File successfully replaced.",
+        "successMultiple": "File successfully replaced."
       }
     },
     "filesBrowserDialog": {
@@ -1630,7 +1658,8 @@
         "folderName": "Folder name:",
         "selectFolder": "Select",
         "connectedAccount": "Connected to account:",
-        "home": "Home"
+        "home": "Home",
+        "rootDirectory": "Root Directory"
       },
       "connectAddon": {
         "title": "Connect Add-on",

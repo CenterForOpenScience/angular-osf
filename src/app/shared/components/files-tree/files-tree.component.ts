@@ -15,6 +15,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   HostBinding,
@@ -25,6 +26,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -71,6 +73,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly customDialogService = inject(CustomDialogService);
   readonly dataciteService = inject(DataciteService);
+
+  private readonly destroyRef = inject(DestroyRef);
   private readonly environment = inject(ENVIRONMENT);
   readonly clipboard = inject(Clipboard);
 
@@ -205,7 +209,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       if (file.guid) {
         this.entryFileClicked.emit(file);
       } else {
-        this.filesService.getFileGuid(file.id, file.provider).subscribe((file) => {
+        this.filesService.getFileGuid(file.id).subscribe((file) => {
           this.entryFileClicked.emit(file);
         });
       }
@@ -258,7 +262,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   downloadFileOrFolder(file: OsfFile) {
     const resourceType = this.resourceMetadata()?.type ?? 'nodes';
-    this.dataciteService.logFileDownload(this.resourceId(), resourceType).subscribe();
+    this.dataciteService
+      .logFileDownload(this.resourceId(), resourceType)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);
     } else {
@@ -309,7 +316,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   deleteEntry(link: string): void {
     this.actions().setFilesIsLoading?.(true);
-    this.actions().deleteEntry?.(this.resourceId(), link);
+    this.actions()
+      .deleteEntry?.(this.resourceId(), link)
+      .subscribe(() => this.toastService.showSuccess('files.dialogs.deleteFile.success'));
   }
 
   confirmRename(file: OsfFile): void {
@@ -331,7 +340,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   renameEntry(newName: string, file: OsfFile): void {
     if (newName.trim() && file.links.upload) {
       this.actions().setFilesIsLoading?.(true);
-      this.actions().renameEntry?.(this.resourceId(), file.links.upload, newName);
+
+      this.actions()
+        .renameEntry?.(this.resourceId(), file.links.upload, newName)
+        .subscribe(() => this.toastService.showSuccess('files.dialogs.renameFile.success'));
     }
   }
 
@@ -349,7 +361,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   downloadFolder(downloadLink: string): void {
     if (downloadLink) {
-      const link = this.filesService.getFolderDownloadLink(downloadLink, '', false);
+      const link = this.filesService.getFolderDownloadLink(downloadLink);
       window.open(link, '_blank')?.focus();
     }
   }
@@ -378,6 +390,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
             this.resetPagination();
             if (foldersStack) {
               this.foldersStack = [...foldersStack];
+
+              if (action === 'copy') {
+                this.toastService.showSuccess('files.dialogs.copyFile.success');
+              }
             }
           });
       });

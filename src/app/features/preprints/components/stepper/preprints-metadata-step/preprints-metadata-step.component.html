@@ -18,13 +18,14 @@
     [licenses]="licenses()"
     [selectedLicenseId]="createdPreprint()?.licenseId"
     [selectedLicenseOptions]="createdPreprint()?.licenseOptions"
+    [fullWidthSelect]="true"
     (createLicense)="createLicense($event)"
     (selectLicense)="selectLicense($event)"
   />
 </p-card>
 
 <div class="mt-4">
-  <osf-preprints-affiliated-institutions [preprintId]="createdPreprint()?.id" [provider]="provider()" />
+  <osf-preprints-affiliated-institutions [preprint]="createdPreprint()" [provider]="provider()" />
 </div>
 
 <div class="mt-4">
@@ -60,8 +61,8 @@
 
   <p-datePicker
     inputId="publicationDate"
-    class="half-width-datepicker"
-    styleClass="w-full md:w-6 mt-4"
+    class="w-full"
+    styleClass="mt-4"
     [formControl]="metadataForm.controls['originalPublicationDate']"
     [iconDisplay]="'input'"
     [showIcon]="true"

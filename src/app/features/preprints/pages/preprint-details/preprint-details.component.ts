@@ -13,6 +13,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   HostBinding,
   inject,
   OnDestroy,
@@ -47,9 +48,10 @@ import {
 } from '@osf/features/preprints/store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
+import { pathJoin } from '@osf/shared/helpers';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
 import { CustomDialogService, MetaTagsService } from '@shared/services';
+import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
@@ -92,7 +94,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
@@ -152,8 +153,16 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     return actions[0];
   });
 
+  private readonly analyticsService = inject(AnalyticsService);
+
   constructor() {
     this.helpScoutService.setResourceType('preprint');
+    effect(() => {
+      const currentPreprint = this.preprint();
+      if (currentPreprint && currentPreprint.isPublic) {
+        this.analyticsService.sendCountedUsage(currentPreprint.id, 'preprint.detail').subscribe();
+      }
+    });
   }
 
   private currentUserIsAdmin = computed(() => {
@@ -294,7 +303,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         this.fetchPreprint(this.preprintId());
       },
     });
-    this.dataciteService.logIdentifiableView(this.preprint$).subscribe();
+    this.dataciteService.logIdentifiableView(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   ngOnDestroy() {
@@ -304,14 +313,12 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   handleWithdrawClicked() {
-    const dialogWidth = this.isMedium() ? '700px' : '340px';
-
     this.customDialogService
       .open(WithdrawDialogComponent, {
         header: this.translateService.instant('preprints.details.withdrawDialog.title', {
           preprintWord: this.preprintProvider()!.preprintWord,
         }),
-        width: dialogWidth,
+        width: '700px',
         data: {
           preprint: this.preprint(),
           provider: this.preprintProvider(),

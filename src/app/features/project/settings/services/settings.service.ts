@@ -6,6 +6,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SubscriptionFrequency } from '@osf/shared/enums';
 import { NotificationSubscriptionMapper } from '@osf/shared/mappers';
 import {
+  NodeShortInfoModel,
   NotificationSubscription,
   NotificationSubscriptionGetResponseJsonApi,
   ResponseJsonApi,
@@ -18,9 +19,9 @@ import {
   NodeDataJsonApi,
   NodeDetailsModel,
   NodeResponseJsonApi,
-  ProjectSettingsData,
+  ProjectSettingsDataJsonApi,
   ProjectSettingsModel,
-  ProjectSettingsResponseModel,
+  ProjectSettingsResponseJsonApi,
 } from '../models';
 
 @Injectable({
@@ -36,13 +37,13 @@ export class SettingsService {
 
   getProjectSettings(nodeId: string): Observable<ProjectSettingsModel> {
     return this.jsonApiService
-      .get<ProjectSettingsResponseModel>(`${this.apiUrl}/nodes/${nodeId}/settings/`)
+      .get<ProjectSettingsResponseJsonApi>(`${this.apiUrl}/nodes/${nodeId}/settings/`)
       .pipe(map((response) => SettingsMapper.fromResponse(response, nodeId)));
   }
 
-  updateProjectSettings(model: ProjectSettingsData): Observable<ProjectSettingsModel> {
+  updateProjectSettings(model: ProjectSettingsDataJsonApi): Observable<ProjectSettingsModel> {
     return this.jsonApiService
-      .patch<ProjectSettingsResponseModel>(`${this.apiUrl}/nodes/${model.id}/settings/`, { data: model })
+      .patch<ProjectSettingsResponseJsonApi>(`${this.apiUrl}/nodes/${model.id}/settings/`, { data: model })
       .pipe(map((response) => SettingsMapper.fromResponse(response, model.id)));
   }
 
@@ -70,6 +71,7 @@ export class SettingsService {
     const params = {
       'embed[]': ['affiliated_institutions', 'region'],
     };
+
     return this.jsonApiService
       .get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params)
       .pipe(map((response) => SettingsMapper.fromNodeResponse(response.data)));
@@ -81,8 +83,19 @@ export class SettingsService {
       .pipe(map((response) => SettingsMapper.fromNodeResponse(response)));
   }
 
-  deleteProject(projectId: string): Observable<void> {
-    return this.jsonApiService.delete(`${this.apiUrl}/nodes/${projectId}/`);
+  deleteProject(projects: NodeShortInfoModel[]): Observable<void> {
+    const payload = {
+      data: projects.map((project) => ({
+        type: 'nodes',
+        id: project.id,
+      })),
+    };
+
+    const headers = {
+      'Content-Type': 'application/vnd.api+json; ext=bulk',
+    };
+
+    return this.jsonApiService.delete(`${this.apiUrl}/nodes/`, payload, headers);
   }
 
   deleteInstitution(institutionId: string, projectId: string): Observable<void> {

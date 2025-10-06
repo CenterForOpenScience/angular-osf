@@ -40,6 +40,7 @@
         <osf-contributors-table
           class="w-full"
           [(contributors)]="projectContributors"
+          [tableParams]="tableParams()"
           [isLoading]="isContributorsLoading()"
           (remove)="handleRemoveContributor($event)"
         ></osf-contributors-table>

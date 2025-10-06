@@ -1,4 +1,4 @@
-import { SendMessageRequest } from '@osf/features/admin-institutions/models';
+import { SendMessageRequest } from '../models';
 
 export function sendMessageRequestMapper(request: SendMessageRequest) {
   return {

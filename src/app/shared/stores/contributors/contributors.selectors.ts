@@ -43,8 +43,8 @@ export class ContributorsSelectors {
   }
 
   @Selector([ContributorsState])
-  static isContributorsError(state: ContributorsStateModel) {
-    return !!state?.contributorsList?.error?.length;
+  static getContributorsTotalCount(state: ContributorsStateModel) {
+    return state?.contributorsList?.totalCount || 0;
   }
 
   @Selector([ContributorsState])
@@ -63,7 +63,16 @@ export class ContributorsSelectors {
   }
 
   @Selector([ContributorsState])
-  static isUsersError(state: ContributorsStateModel) {
-    return !!state?.users?.error?.length;
+  static getRequestAccessList(state: ContributorsStateModel) {
+    if (!state?.requestAccessList?.data) {
+      return [];
+    }
+
+    return state.requestAccessList.data;
+  }
+
+  @Selector([ContributorsState])
+  static areRequestAccessListLoading(state: ContributorsStateModel) {
+    return state.requestAccessList.isLoading;
   }
 }

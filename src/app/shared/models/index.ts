@@ -1,5 +1,6 @@
 export * from './activity-logs';
 export * from './addons';
+export * from './addons-query-params.model';
 export * from './brand.json-api.model';
 export * from './brand.model';
 export * from './can-deactivate.interface';
@@ -36,6 +37,7 @@ export * from './provider';
 export * from './query-params.model';
 export * from './regions';
 export * from './registration';
+export * from './request-access';
 export * from './resource-metadata.model';
 export * from './resource-overview.model';
 export * from './search';

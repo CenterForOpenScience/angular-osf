@@ -11,15 +11,19 @@
   } @else {
     @if (expanded()) {
       <p-panel showHeader="false">
-        <div class="flex align-items-center justify-content-between mt-3 mb-2">
-          <p-button
-            [label]="'project.wiki.addNewWiki' | translate"
-            icon="fas fa-plus"
-            severity="success"
-            outlined
-            [disabled]="!canEdit()"
-            (onClick)="openAddWikiDialog()"
-          />
+        <div
+          class="flex align-items-center mt-3 mb-2"
+          [class]="canEdit() ? 'justify-content-between' : 'justify-content-end'"
+        >
+          @if (canEdit()) {
+            <p-button
+              [label]="'project.wiki.addNewWiki' | translate"
+              icon="fas fa-plus"
+              severity="success"
+              outlined
+              (onClick)="openAddWikiDialog()"
+            />
+          }
 
           <p-button
             class="btn-icon-only"

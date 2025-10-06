@@ -16,7 +16,7 @@
           [value]="true"
           [formControl]="authorAssertionsForm.controls['hasCoi']"
         />
-        <label for="coi-yes">{{ 'common.labels.yes' | translate }}</label>
+        <label class="cursor-pointer" for="coi-yes">{{ 'common.labels.yes' | translate }}</label>
       </div>
 
       <div class="flex flex-row gap-2">
@@ -26,7 +26,7 @@
           [value]="false"
           [formControl]="authorAssertionsForm.controls['hasCoi']"
         />
-        <label for="coi-no">{{ 'common.labels.no' | translate }}</label>
+        <label class="cursor-pointer" for="coi-no">{{ 'common.labels.no' | translate }}</label>
       </div>
     </div>
 
@@ -68,7 +68,7 @@
           [value]="ApplicabilityStatus.Applicable"
           [formControl]="authorAssertionsForm.controls['hasDataLinks']"
         />
-        <label for="publicDataAvailable">{{ 'common.labels.available' | translate }}</label>
+        <label class="cursor-pointer" for="publicDataAvailable"> {{ 'common.labels.available' | translate }} </label>
       </div>
 
       <div class="flex flex-row gap-2">
@@ -78,7 +78,9 @@
           [value]="ApplicabilityStatus.Unavailable"
           [formControl]="authorAssertionsForm.controls['hasDataLinks']"
         />
-        <label for="publicDataUnavailable">{{ 'common.labels.unavailable' | translate }}</label>
+        <label class="cursor-pointer" for="publicDataUnavailable">
+          {{ 'common.labels.unavailable' | translate }}
+        </label>
       </div>
 
       <div class="flex flex-row gap-2">
@@ -88,7 +90,9 @@
           [value]="ApplicabilityStatus.NotApplicable"
           [formControl]="authorAssertionsForm.controls['hasDataLinks']"
         />
-        <label for="publicDataNotApplicable">{{ 'common.labels.notApplicable' | translate }}</label>
+        <label class="cursor-pointer" for="publicDataNotApplicable">
+          {{ 'common.labels.notApplicable' | translate }}
+        </label>
       </div>
     </div>
 
@@ -144,7 +148,7 @@
         [value]="ApplicabilityStatus.Applicable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="preregistrationAvailable">{{ 'common.labels.available' | translate }}</label>
+      <label class="cursor-pointer" for="preregistrationAvailable"> {{ 'common.labels.available' | translate }} </label>
     </div>
 
     <div class="flex flex-row gap-2">
@@ -154,7 +158,9 @@
         [value]="ApplicabilityStatus.Unavailable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="preregistrationUnavailable">{{ 'common.labels.unavailable' | translate }}</label>
+      <label class="cursor-pointer" for="preregistrationUnavailable">
+        {{ 'common.labels.unavailable' | translate }}
+      </label>
     </div>
 
     <div class="flex flex-row gap-2">
@@ -164,7 +170,9 @@
         [value]="ApplicabilityStatus.NotApplicable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="preregistrationNotApplicable">{{ 'common.labels.notApplicable' | translate }}</label>
+      <label class="cursor-pointer" for="preregistrationNotApplicable">
+        {{ 'common.labels.notApplicable' | translate }}
+      </label>
     </div>
   </div>
   @let hasPreregLinks = authorAssertionsForm.value.hasPreregLinks!;
@@ -191,7 +199,7 @@
       </p-message>
     }
   } @else {
-    <div class="mt-4 w-12 md:w-6">
+    <div class="mt-4 w-12">
       <osf-form-select
         [control]="authorAssertionsForm.controls['preregLinkInfo']"
         [options]="preregLinkOptions"

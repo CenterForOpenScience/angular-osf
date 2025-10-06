@@ -43,9 +43,14 @@ export class JsonApiService {
     });
   }
 
-  patch<T>(url: string, body: unknown, params?: Record<string, unknown>): Observable<T> {
+  patch<T>(
+    url: string,
+    body: unknown,
+    params?: Record<string, unknown>,
+    headers?: Record<string, string>
+  ): Observable<T> {
     return this.http
-      .patch<JsonApiResponse<T, null>>(url, body, { params: this.buildHttpParams(params) })
+      .patch<JsonApiResponse<T, null>>(url, body, { params: this.buildHttpParams(params), headers })
       .pipe(map((response) => response.data));
   }
 
@@ -68,7 +73,7 @@ export class JsonApiService {
     });
   }
 
-  delete(url: string, body?: unknown): Observable<void> {
-    return this.http.delete<void>(url, { body: body });
+  delete(url: string, body?: unknown, headers?: Record<string, string>): Observable<void> {
+    return this.http.delete<void>(url, { body, headers });
   }
 }

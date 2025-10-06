@@ -53,12 +53,15 @@ export class LicensesService {
           },
         },
         attributes: {
-          ...(licenseOptions && {
-            node_license: {
-              copyright_holders: [licenseOptions.copyrightHolders],
-              year: licenseOptions.year,
-            },
-          }),
+          node_license: licenseOptions
+            ? {
+                copyright_holders: [licenseOptions.copyrightHolders],
+                year: licenseOptions.year,
+              }
+            : {
+                copyright_holders: [],
+                year: '',
+              },
         },
       },
     };

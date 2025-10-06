@@ -31,6 +31,16 @@ describe('Component: Contributors', () => {
 
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
 
+  beforeAll(() => {
+    if (typeof (globalThis as any).structuredClone !== 'function') {
+      Object.defineProperty(globalThis as any, 'structuredClone', {
+        configurable: true,
+        writable: true,
+        value: (o: unknown) => JSON.parse(JSON.stringify(o)),
+      });
+    }
+  });
+
   beforeEach(async () => {
     jest.useFakeTimers();
 

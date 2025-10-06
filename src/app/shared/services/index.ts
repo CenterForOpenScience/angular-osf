@@ -1,5 +1,6 @@
 export * from './activity-logs';
 export * from './addons';
+export { AnalyticsService } from './analytics.service';
 export { BookmarksService } from './bookmarks.service';
 export { BrandService } from './brand.service';
 export { CollectionsService } from './collections.service';
@@ -22,6 +23,7 @@ export { NodeLinksService } from './node-links.service';
 export { ProjectRedirectDialogService } from './project-redirect-dialog.service';
 export { RegionsService } from './regions.service';
 export { RegistrationProviderService } from './registration-provider.service';
+export { RequestAccessService } from './request-access.service';
 export { ResourceGuidService } from './resource.service';
 export { ResourceCardService } from './resource-card.service';
 export { SocialShareService } from './social-share.service';

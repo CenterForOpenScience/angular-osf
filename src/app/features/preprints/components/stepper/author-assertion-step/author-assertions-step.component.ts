@@ -57,9 +57,7 @@ import { CustomConfirmationService, ToastService } from '@shared/services';
 export class AuthorAssertionsStepComponent {
   private toastService = inject(ToastService);
   private confirmationService = inject(CustomConfirmationService);
-  private actions = createDispatchMap({
-    updatePreprint: UpdatePreprint,
-  });
+  private actions = createDispatchMap({ updatePreprint: UpdatePreprint });
 
   readonly CustomValidators = CustomValidators;
   readonly ApplicabilityStatus = ApplicabilityStatus;

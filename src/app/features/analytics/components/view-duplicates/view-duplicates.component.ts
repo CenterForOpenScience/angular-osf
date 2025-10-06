@@ -39,7 +39,6 @@ import {
   TruncatedTextComponent,
 } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_SMALL } from '@osf/shared/helpers';
 import { ToolbarResource } from '@osf/shared/models';
 import { Duplicate } from '@osf/shared/models/duplicates';
 import { CustomDialogService } from '@osf/shared/services';
@@ -83,7 +82,6 @@ export class ViewDuplicatesComponent {
   readonly UserPermissions = UserPermissions;
 
   currentPage = signal<string>('1');
-  isSmall = toSignal(inject(IS_SMALL));
   firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * this.pageSize);
 
   readonly forkActionItems = (resourceId: string) => [
@@ -194,13 +192,12 @@ export class ViewDuplicatesComponent {
 
   handleForkResource(): void {
     const toolbarResource = this.toolbarResource();
-    const dialogWidth = !this.isSmall() ? '95vw' : '450px';
 
     if (toolbarResource) {
       this.customDialogService
         .open(ForkDialogComponent, {
           header: 'project.overview.dialog.fork.headerProject',
-          width: dialogWidth,
+          width: '450px',
           data: {
             resource: toolbarResource,
             resourceType: this.resourceType(),
@@ -233,12 +230,10 @@ export class ViewDuplicatesComponent {
   }
 
   private handleDeleteFork(id: string): void {
-    const dialogWidth = !this.isSmall() ? '95vw' : '650px';
-
     this.customDialogService
       .open(DeleteComponentDialogComponent, {
         header: 'project.overview.dialog.deleteComponent.header',
-        width: dialogWidth,
+        width: '650px',
         data: {
           componentId: id,
           resourceType: this.resourceType(),

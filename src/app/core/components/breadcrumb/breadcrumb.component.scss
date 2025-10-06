@@ -1,7 +1,5 @@
-@use "styles/variables" as var;
-
 .breadcrumbs {
-  color: var(--header-color, var.$dark-blue-1);
+  color: var(--header-color, var(--dark-blue-1));
   font-weight: 600;
   text-transform: capitalize;
   background-color: var(--header-background-color);

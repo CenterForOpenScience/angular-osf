@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
 
 import { EMPTY, filter, finalize, Observable, shareReplay, take } from 'rxjs';
 
@@ -25,7 +24,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
-import { FilesTreeComponent, LoadingSpinnerComponent } from '@osf/shared/components';
+import { FilesTreeComponent, FileUploadDialogComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { ClearFileDirective } from '@osf/shared/directives';
 import { FilesTreeActions, OsfFile } from '@osf/shared/models';
@@ -47,7 +46,7 @@ import {
     FilesTreeComponent,
     Button,
     LoadingSpinnerComponent,
-    Dialog,
+    FileUploadDialogComponent,
     FormsModule,
     ReactiveFormsModule,
     TranslatePipe,

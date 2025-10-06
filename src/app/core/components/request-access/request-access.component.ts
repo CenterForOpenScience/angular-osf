@@ -12,9 +12,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { AuthService, RequestAccessService } from '@osf/core/services';
+import { AuthService } from '@core/services';
 import { InputLimits } from '@osf/shared/constants';
-import { LoaderService, ToastService } from '@osf/shared/services';
+import { LoaderService, RequestAccessService, ToastService } from '@osf/shared/services';
 
 @Component({
   selector: 'osf-request-access',

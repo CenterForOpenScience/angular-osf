@@ -66,8 +66,7 @@ export const registryRoutes: Routes = [
       {
         path: 'contributors',
         canActivate: [viewOnlyGuard],
-        loadComponent: () =>
-          import('../project/contributors/contributors.component').then((mod) => mod.ContributorsComponent),
+        loadComponent: () => import('../contributors/contributors.component').then((mod) => mod.ContributorsComponent),
         data: { resourceType: ResourceType.Registration },
         providers: [provideStates([ContributorsState, ViewOnlyLinkState])],
       },

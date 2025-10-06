@@ -93,6 +93,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   constructor() {
     this.initializeProvider();
     this.setupEffects();
+    this.setupCleanup();
   }
 
   handleProjectSelected(): void {
@@ -155,22 +156,22 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
 
   private setupEffects(): void {
     effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.actions.clearAddToCollectionState();
-        this.allowNavigation.set(false);
-
-        HeaderStyleHelper.resetToDefaults();
-        BrandService.resetBranding();
-      });
-    });
-
-    effect(() => {
       const provider = this.collectionProvider();
 
       if (provider && provider.brand) {
         BrandService.applyBranding(provider.brand);
         HeaderStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
       }
+    });
+  }
+
+  private setupCleanup() {
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearAddToCollectionState();
+      this.allowNavigation.set(false);
+
+      HeaderStyleHelper.resetToDefaults();
+      BrandService.resetBranding();
     });
   }
 

@@ -1,3 +1,4 @@
+import { DEFAULT_TABLE_PARAMS } from '../constants';
 import {
   ActivityLog,
   ActivityLogJsonApi,
@@ -163,6 +164,7 @@ export class ActivityLogsMapper {
     return {
       data: logs.data.map((log) => this.fromActivityLogJsonApi(log, isAnonymous)),
       totalCount: logs.meta.total ?? 0,
+      pageSize: logs.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
       isAnonymous,
     };
   }

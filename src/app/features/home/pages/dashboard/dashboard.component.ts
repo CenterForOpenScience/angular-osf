@@ -9,7 +9,7 @@ import { TablePageEvent } from 'primeng/table';
 import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
 import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -23,7 +23,6 @@ import {
 } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
-import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
 import { CustomDialogService, ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
@@ -49,8 +48,6 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
-
-  readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   readonly searchControl = new FormControl<string>('');
   readonly activeProject = signal<MyResourcesItem | null>(null);
@@ -188,10 +185,8 @@ export class DashboardComponent implements OnInit {
   }
 
   createProject(): void {
-    const dialogWidth = this.isMedium() ? '850px' : '95vw';
-
     this.customDialogService
-      .open(CreateProjectDialogComponent, { header: 'myProjects.header.createProject', width: dialogWidth })
+      .open(CreateProjectDialogComponent, { header: 'myProjects.header.createProject', width: '850px' })
       .onClose.pipe(
         filter((result) => result?.project.id),
         tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),

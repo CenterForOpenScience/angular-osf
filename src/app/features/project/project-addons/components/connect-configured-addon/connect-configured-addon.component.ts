@@ -82,7 +82,7 @@ export class ConnectConfiguredAddonComponent {
 
   private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
 
-  readonly isGoogleDrive = computed(() => this.addon()?.externalServiceName === 'googledrive');
+  readonly isGoogleDrive = computed(() => this.addon()?.wbKey === 'googledrive');
   readonly AddonStepperValue = ProjectAddonsStepperValue;
   readonly AddonType = AddonType;
   readonly stepper = viewChild(Stepper);

@@ -145,6 +145,7 @@ export class RegistriesService {
           return {
             data,
             totalCount: response.meta?.total,
+            pageSize: response.meta.per_page,
           };
         })
       );
@@ -172,6 +173,7 @@ export class RegistriesService {
           return {
             data,
             totalCount: response.meta?.total,
+            pageSize: response.meta.per_page,
           };
         })
       );

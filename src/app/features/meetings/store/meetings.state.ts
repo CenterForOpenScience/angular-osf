@@ -29,13 +29,13 @@ import { MeetingsStateModel } from './meetings.model';
 })
 @Injectable()
 export class MeetingsState {
-  #meetingsService = inject(MeetingsService);
+  meetingsService = inject(MeetingsService);
 
   @Action(GetAllMeetings)
   getAllMeetings(ctx: StateContext<MeetingsStateModel>, action: GetAllMeetings) {
     ctx.setState(patch({ meetings: patch({ isLoading: true }) }));
 
-    return this.#meetingsService.getAllMeetings(action.pageNumber, action.pageSize, action.filters).pipe(
+    return this.meetingsService.getAllMeetings(action.pageNumber, action.pageSize, action.filters).pipe(
       tap((meetingsWithPaging) => {
         ctx.setState(
           patch({
@@ -55,7 +55,7 @@ export class MeetingsState {
     ctx.setState(patch({ meetings: patch({ isLoading: true }) }));
     ctx.setState(patch({ meetingSubmissions: patch({ isLoading: true }) }));
 
-    return this.#meetingsService.getMeetingById(action.meetingId).pipe(
+    return this.meetingsService.getMeetingById(action.meetingId).pipe(
       tap((meeting) => {
         ctx.setState(
           patch({
@@ -72,7 +72,7 @@ export class MeetingsState {
   getMeetingSubmissions(ctx: StateContext<MeetingsStateModel>, action: GetMeetingSubmissions) {
     ctx.setState(patch({ meetingSubmissions: patch({ isLoading: true }) }));
 
-    return this.#meetingsService
+    return this.meetingsService
       .getMeetingSubmissions(action.meetingId, action.pageNumber, action.pageSize, action.filters)
       .pipe(
         tap((meetingSubmissionsWithPaging) => {

@@ -14,5 +14,6 @@ import { AddonCardComponent } from '../addon-card/addon-card.component';
 })
 export class AddonCardListComponent {
   cards = input<(AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | AddonCardModel)[]>([]);
-  showDangerButton = input<boolean>(false);
+  isConnected = input<boolean>(false);
+  hasAdminAccess = input<boolean>(false);
 }

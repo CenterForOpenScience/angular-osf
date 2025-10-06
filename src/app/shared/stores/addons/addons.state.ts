@@ -10,6 +10,7 @@ import { AuthorizedAccountModel } from '@osf/shared/models';
 import { AddonsService } from '@osf/shared/services';
 
 import {
+  ClearAuthorizedAddons,
   ClearConfiguredAddons,
   ClearOperationInvocations,
   CreateAddonOperationInvocation,
@@ -567,7 +568,7 @@ export class AddonsState {
           },
         });
 
-        if (response.operationName === 'get_item_info' && response.operationResult[0]?.itemName) {
+        if (response.operationName === 'get_item_info' && response.invocationStatus === 'SUCCESS') {
           ctx.patchState({
             selectedItemOperationInvocation: {
               data: response,
@@ -582,6 +583,32 @@ export class AddonsState {
     );
   }
 
+  @Action(ClearAuthorizedAddons)
+  clearAuthorizedAddons(ctx: StateContext<AddonsStateModel>) {
+    ctx.patchState({
+      authorizedStorageAddons: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+      authorizedCitationAddons: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+      authorizedLinkAddons: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+      addonsResourceReference: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+    });
+  }
+
   @Action(ClearConfiguredAddons)
   clearConfiguredAddons(ctx: StateContext<AddonsStateModel>) {
     ctx.patchState({
@@ -591,6 +618,11 @@ export class AddonsState {
         error: null,
       },
       configuredCitationAddons: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+      configuredLinkAddons: {
         data: [],
         isLoading: false,
         error: null,
