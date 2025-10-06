@@ -100,6 +100,7 @@ export class PreprintsProjectsService {
           ...(description && { description }),
           category: 'project',
           ...(templateFrom && { template_from: templateFrom }),
+          public: true,
         },
         relationships: {
           region: {
