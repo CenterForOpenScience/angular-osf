@@ -188,7 +188,7 @@ export class CedarTemplateFormComponent {
 
   handleFacebookShare(): void {
     const url = window.location.href;
-    const link = `https://www.facebook.com/dialog/share?app_id=${this.environment.facebookAppId}&display=popup&href=${url}&redirect_uri=${url}`;
+    const link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 }
