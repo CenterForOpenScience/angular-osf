@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -122,11 +122,29 @@ export class ProjectOverviewService {
       params['region'] = region;
     }
 
-    if (affiliatedInstitutions.length) {
-      params['affiliated_institutions'] = affiliatedInstitutions;
-    }
+    return this.jsonApiService
+      .post<JsonApiResponse<BaseNodeDataJsonApi, null>>(`${this.apiUrl}/nodes/${projectId}/children/`, payload, params)
+      .pipe(
+        switchMap((response) => {
+          const componentId = response.data.id;
 
-    return this.jsonApiService.post<void>(`${this.apiUrl}/nodes/${projectId}/children/`, payload, params);
+          if (affiliatedInstitutions.length) {
+            const affiliationsPayload = {
+              data: affiliatedInstitutions.map((id) => ({
+                type: 'institutions',
+                id,
+              })),
+            };
+
+            return this.jsonApiService.patch<void>(
+              `${this.apiUrl}/nodes/${componentId}/relationships/institutions/`,
+              affiliationsPayload
+            );
+          }
+
+          return of(undefined);
+        })
+      );
   }
 
   deleteComponent(componentId: string): Observable<void> {
