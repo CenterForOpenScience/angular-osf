@@ -64,6 +64,7 @@ export class CedarTemplateFormComponent {
 
   readonly recordId = signal<string>('');
   readonly downloadUrl = signal<string>('');
+  readonly schemaName = signal<string>('');
 
   shareItems = [
     {
@@ -90,6 +91,7 @@ export class CedarTemplateFormComponent {
 
     effect(() => {
       const record = this.existingRecord();
+      this.schemaName.set(record?.embeds?.template.data.attributes.schema_name || '');
       if (record) {
         this.initializeCedar();
       }
@@ -175,20 +177,18 @@ export class CedarTemplateFormComponent {
 
   handleEmailShare(): void {
     const url = window.location.href;
-    const metadataType = 'OSF Enhanced Metadata';
-    window.location.href = `mailto:?subject=${metadataType ?? ''}&body=${url ?? ''}`;
+    window.location.href = `mailto:?subject=${this.schemaName()}&body=${url}`;
   }
 
   handleXShare(): void {
     const url = window.location.href;
-    const metadataType = 'OSF Enhanced Metadata';
-    const link = `https://x.com/intent/tweet?url=${url}&text=${metadataType}&via=OSFramework`;
+    const link = `https://x.com/intent/tweet?url=${url}&text=${this.schemaName()}&via=OSFramework`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
   handleFacebookShare(): void {
     const url = window.location.href;
-    const link = `https://www.facebook.com/dialog/share?app_id=1022273774556662&display=popup&href=${url}&redirect_uri=${url}`;
+    const link = `https://www.facebook.com/dialog/share?app_id=${this.environment.facebookAppId}&display=popup&href=${url}&redirect_uri=${url}`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 }

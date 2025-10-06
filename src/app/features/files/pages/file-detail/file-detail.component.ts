@@ -353,7 +353,7 @@ export class FileDetailComponent {
   }
 
   handleFacebookShare(): void {
-    const link = `https://www.facebook.com/dialog/share?app_id=1022273774556662&display=popup&href=${this.file()?.links?.html ?? ''}&redirect_uri=${this.file()?.links?.html ?? ''}`;
+    const link = `https://www.facebook.com/dialog/share?app_id=${this.environment.facebookAppId}&display=popup&href=${this.file()?.links?.html ?? ''}&redirect_uri=${this.file()?.links?.html ?? ''}`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
