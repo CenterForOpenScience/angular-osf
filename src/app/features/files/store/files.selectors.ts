@@ -148,4 +148,9 @@ export class FilesSelectors {
   static hasWriteAccess(state: FilesStateModel): boolean {
     return state.openedFile.data?.target?.currentUserPermissions?.includes(UserPermissions.Write) || false;
   }
+
+  @Selector([FilesState])
+  static hasAdminAccess(state: FilesStateModel): boolean {
+    return state.openedFile.data?.target?.currentUserPermissions?.includes(UserPermissions.Admin) || false;
+  }
 }

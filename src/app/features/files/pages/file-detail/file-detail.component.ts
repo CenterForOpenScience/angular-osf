@@ -136,8 +136,11 @@ export class FileDetailComponent {
   fileRevisions = select(FilesSelectors.getFileRevisions);
   isFileRevisionLoading = select(FilesSelectors.isFileRevisionsLoading);
   hasWriteAccess = select(FilesSelectors.hasWriteAccess);
-
+  hasAdminAccess = select(FilesSelectors.hasAdminAccess);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  canManageFiles = computed(() => {
+    return this.hasWriteAccess() || this.hasAdminAccess();
+  });
 
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
