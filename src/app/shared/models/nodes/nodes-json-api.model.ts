@@ -17,6 +17,7 @@ export interface CreateProjectPayloadJsoApi {
       description?: string;
       category: 'project';
       template_from?: string;
+      public: boolean;
     };
     relationships: {
       region: {

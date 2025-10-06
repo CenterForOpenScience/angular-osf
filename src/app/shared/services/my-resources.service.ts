@@ -181,6 +181,7 @@ export class MyResourcesService {
           ...(description && { description }),
           category: 'project',
           ...(templateFrom && { template_from: templateFrom }),
+          public: false,
         },
         relationships: {
           region: {
