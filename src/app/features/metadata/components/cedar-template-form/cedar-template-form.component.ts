@@ -117,12 +117,7 @@ export class CedarTemplateFormComponent {
   }
 
   downloadFile() {
-    const a = document.createElement('a');
-    a.href = this.downloadUrl();
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(this.downloadUrl());
+    window.open(this.downloadUrl(), '_blank');
   }
 
   copyUrl() {

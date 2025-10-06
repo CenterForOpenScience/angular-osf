@@ -22,7 +22,7 @@
             class="btn-icon-only px-2 flex align-self-center"
             icon="fas fa-copy"
             [pTooltip]="'project.metadata.addMetadata.copyRecordMetadataUrl' | translate"
-            (click)="copyUrl()"
+            (onClick)="copyUrl()"
           />
 
           <p-button
@@ -30,19 +30,19 @@
             class="btn-icon-only px-2 flex align-self-center"
             icon="fas fa-download"
             [pTooltip]="'project.metadata.addMetadata.downloadRecordMetadata' | translate"
-            (click)="downloadFile()"
+            (onClick)="downloadFile()"
           />
 
           <p-button
             severity="secondary"
             class="btn-icon-only px-2 flex align-self-center"
             icon="fas fa-share-nodes"
-            (click)="shareMenu.toggle($event)"
+            (onClick)="shareMenu.toggle($event)"
           />
 
           <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
             <ng-template #item let-item>
-              <a class="p-menu-item-link">{{ item.label | translate }}</a>
+              <a class="p-menu-item-link no-underline">{{ item.label | translate }}</a>
             </ng-template>
           </p-menu>
         </div>
