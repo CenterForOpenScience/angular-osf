@@ -5,7 +5,6 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { SearchInputComponent, SelectComponent } from '@osf/shared/components';
-import { Primitive } from '@osf/shared/helpers';
 import { SelectOption } from '@osf/shared/models';
 import { AddonsQueryParamsService } from '@osf/shared/services/addons-query-params.service';
 
@@ -36,12 +35,6 @@ export class AddonsToolbarComponent implements OnInit {
 
     if (params.addonType) {
       this.selectedCategory.set(params.addonType);
-    }
-  }
-
-  onCategoryChange(value: Primitive): void {
-    if (typeof value === 'string') {
-      this.selectedCategory.set(value);
     }
   }
 }

@@ -14,7 +14,7 @@ export class AddonsQueryParamsService {
   updateQueryParams(route: ActivatedRoute, params: AddonsQueryParams): void {
     const queryParams: Record<string, string> = {};
 
-    if (params.activeTab) {
+    if (params.activeTab !== undefined) {
       queryParams['activeTab'] = params.activeTab.toString();
     }
 
