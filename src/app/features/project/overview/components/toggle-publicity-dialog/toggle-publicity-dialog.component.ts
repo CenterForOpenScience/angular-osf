@@ -17,19 +17,19 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ComponentsSelectionListComponent } from '@osf/shared/components';
+import { ComponentsSelectionListComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { UserPermissions } from '@osf/shared/enums';
 import { ComponentCheckboxItemModel } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
 
 import { TogglePublicityStep } from '../../enums';
-import { PrivacyStatusModel } from '../../models/privacy-status.model';
+import { PrivacyStatusModel } from '../../models';
 import { ProjectOverviewSelectors, UpdateProjectPublicStatus } from '../../store';
 
 @Component({
   selector: 'osf-toggle-publicity-dialog',
-  imports: [Button, TranslatePipe, ComponentsSelectionListComponent],
+  imports: [Button, TranslatePipe, ComponentsSelectionListComponent, LoadingSpinnerComponent],
   templateUrl: './toggle-publicity-dialog.component.html',
   styleUrl: './toggle-publicity-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,21 +46,19 @@ export class TogglePublicityDialogComponent {
 
   actions = createDispatchMap({ updateProjectPublicStatus: UpdateProjectPublicStatus });
 
-  private projectId = signal(this.dialogConfig.data.projectId);
+  projectId = signal(this.dialogConfig.data.projectId);
   isCurrentlyPublic = signal(this.dialogConfig.data.isCurrentlyPublic);
+
   messageKey = computed(() =>
     this.isCurrentlyPublic()
       ? 'project.overview.dialog.makePrivate.message'
       : 'project.overview.dialog.makePublic.message'
   );
 
-  step: TogglePublicityStep = TogglePublicityStep.Confirmation;
-
+  step = signal(TogglePublicityStep.Information);
   componentsList: WritableSignal<ComponentCheckboxItemModel[]> = signal([]);
 
-  get isConfirmationStep() {
-    return this.step === TogglePublicityStep.Confirmation;
-  }
+  isInformationStep = computed(() => this.step() === TogglePublicityStep.Information);
 
   constructor() {
     effect(() => {
@@ -80,16 +78,17 @@ export class TogglePublicityDialogComponent {
   }
 
   toggleProjectPublicity() {
-    if (this.step === TogglePublicityStep.Confirmation && this.components().length > 1) {
-      this.step = TogglePublicityStep.ComponentSelection;
+    if (this.isInformationStep() && this.components().length > 1) {
+      this.step.set(TogglePublicityStep.Selection);
       this.dialogConfig.header = this.translateService.instant('project.overview.dialog.changePrivacySettings');
       return;
     }
 
-    const payload: PrivacyStatusModel[] =
-      this.step === TogglePublicityStep.ComponentSelection
-        ? this.componentsList().map((item) => ({ id: item.id, public: item.checked }))
-        : [{ id: this.projectId(), public: !this.isCurrentlyPublic() }];
+    const payload: PrivacyStatusModel[] = !this.isInformationStep()
+      ? this.componentsList()
+          .filter((item) => !item.disabled)
+          .map((item) => ({ id: item.id, public: item.checked }))
+      : [{ id: this.projectId(), public: !this.isCurrentlyPublic() }];
 
     this.actions
       .updateProjectPublicStatus(payload)
@@ -97,11 +96,7 @@ export class TogglePublicityDialogComponent {
       .subscribe({
         next: () => {
           this.dialogRef.close();
-          this.toastService.showSuccess(
-            !this.isCurrentlyPublic()
-              ? 'project.overview.dialog.toast.makePublic.success'
-              : 'project.overview.dialog.toast.makePrivate.success'
-          );
+          this.toastService.showSuccess('project.overview.dialog.toast.changePrivacySettings.success');
         },
       });
   }

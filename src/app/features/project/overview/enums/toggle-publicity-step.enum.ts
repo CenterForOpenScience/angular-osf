@@ -1,4 +1,4 @@
 export enum TogglePublicityStep {
-  Confirmation = 1,
-  ComponentSelection = 2,
+  Information = 1,
+  Selection = 2,
 }

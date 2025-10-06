@@ -747,11 +747,8 @@
         "uncheckedComponents": "Unchecked components will be private.",
         "privacySettingsPermissionTooltip": "You must have admin permission on this component to be able to change privacy settings",
         "toast": {
-          "makePublic": {
-            "success": "Project has been made public successfully"
-          },
-          "makePrivate": {
-            "success": "Project has been made private successfully"
+          "changePrivacySettings": {
+            "success": "Privacy settings have been successfully updated."
           },
           "addComponent": {
             "success": "Component has been created successfully"

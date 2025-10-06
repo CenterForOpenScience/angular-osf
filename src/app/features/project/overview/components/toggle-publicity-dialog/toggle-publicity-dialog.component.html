@@ -1,17 +1,21 @@
 <div>
-  @if (isConfirmationStep) {
-    <div [innerHTML]="messageKey() | translate"></div>
+  @if (isSubmitting()) {
+    <osf-loading-spinner></osf-loading-spinner>
   } @else {
-    <div>
-      <p>{{ 'project.overview.dialog.adjustPrivacySetting' | translate }}</p>
-      <p class="mt-4">{{ 'project.overview.dialog.checkedProjects' | translate }}</p>
-      <p class="mt-3">{{ 'project.overview.dialog.uncheckedComponents' | translate }}</p>
+    @if (isInformationStep()) {
+      <div [innerHTML]="messageKey() | translate"></div>
+    } @else {
+      <div>
+        <p>{{ 'project.overview.dialog.adjustPrivacySetting' | translate }}</p>
+        <p class="mt-4">{{ 'project.overview.dialog.checkedProjects' | translate }}</p>
+        <p class="mt-3">{{ 'project.overview.dialog.uncheckedComponents' | translate }}</p>
 
-      <osf-components-selection-list
-        [components]="componentsList()"
-        [disabledTooltip]="'project.overview.dialog.privacySettingsPermissionTooltip'"
-      ></osf-components-selection-list>
-    </div>
+        <osf-components-selection-list
+          [components]="componentsList()"
+          [disabledTooltip]="'project.overview.dialog.privacySettingsPermissionTooltip'"
+        ></osf-components-selection-list>
+      </div>
+    }
   }
 
   <div class="flex mt-5 gap-3 justify-content-between md:justify-content-end">
@@ -24,10 +28,9 @@
       class="w-full md:w-auto"
     />
     <p-button
-      [label]="'common.buttons.continue' | translate"
+      [label]="(isInformationStep() ? 'common.buttons.continue' : 'common.buttons.confirm') | translate"
       (onClick)="toggleProjectPublicity()"
       [disabled]="isSubmitting()"
-      [loading]="isSubmitting()"
       styleClass="w-full"
       class="w-full md:w-auto"
     />
