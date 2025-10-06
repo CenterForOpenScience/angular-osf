@@ -72,9 +72,7 @@
       "toggleProjectVisibility": "Toggle project visibility",
       "tagInput": "Tag input",
       "toggleTreeNode": "Toggle tree node",
-      "copyButtonInfo": "Copy to clipboard button"
-    },
-    "dialogs": {
+      "copyButtonInfo": "Copy to clipboard button",
       "confirmation": "Confirmation"
     },
     "search": {

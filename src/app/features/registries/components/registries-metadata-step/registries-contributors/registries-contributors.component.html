@@ -4,6 +4,7 @@
   <osf-contributors-table
     class="w-full"
     [(contributors)]="contributors"
+    [tableParams]="tableParams()"
     [isLoading]="isContributorsLoading()"
     [currentUserId]="currentUser()?.id"
     [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"

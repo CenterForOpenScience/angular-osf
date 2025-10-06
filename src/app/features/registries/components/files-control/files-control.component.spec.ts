@@ -1,12 +1,11 @@
 import { MockProvider } from 'ng-mocks';
 
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { IS_WEB } from '@osf/shared/helpers';
 import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
 
 import { FilesControlComponent } from './files-control.component';
@@ -20,8 +19,7 @@ import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock'
 describe('Component: File Control', () => {
   let component: FilesControlComponent;
   let fixture: ComponentFixture<FilesControlComponent>;
-  let isWebSubject: BehaviorSubject<boolean>;
-  let helpScountService: HelpScoutService;
+  let helpScoutService: HelpScoutService;
   let mockFilesService: jest.Mocked<FilesService>;
   let mockDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
   let mockToastService: ReturnType<ToastServiceMockBuilder['build']>;
@@ -32,8 +30,6 @@ describe('Component: File Control', () => {
   } as any;
 
   beforeEach(async () => {
-    isWebSubject = new BehaviorSubject<boolean>(true);
-
     mockFilesService = { uploadFile: jest.fn(), getFileGuid: jest.fn() } as any;
     mockDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     mockToastService = ToastServiceMockBuilder.create().build();
@@ -42,7 +38,6 @@ describe('Component: File Control', () => {
     await TestBed.configureTestingModule({
       imports: [FilesControlComponent, OSFTestingModule],
       providers: [
-        MockProvider(IS_WEB, isWebSubject),
         MockProvider(FilesService, mockFilesService),
         MockProvider(CustomDialogService, mockDialogService),
         MockProvider(ToastService, mockToastService),
@@ -65,7 +60,7 @@ describe('Component: File Control', () => {
       ],
     }).compileComponents();
 
-    helpScountService = TestBed.inject(HelpScoutService);
+    helpScoutService = TestBed.inject(HelpScoutService);
     fixture = TestBed.createComponent(FilesControlComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('attachedFiles', []);
@@ -82,7 +77,7 @@ describe('Component: File Control', () => {
   });
 
   it('should called the helpScoutService', () => {
-    expect(helpScountService.setResourceType).toHaveBeenCalledWith('files');
+    expect(helpScoutService.setResourceType).toHaveBeenCalledWith('files');
   });
 
   it('should open create folder dialog and trigger files update', () => {

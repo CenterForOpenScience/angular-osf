@@ -46,18 +46,21 @@ export class ContributorsState {
       contributorsList: { ...state.contributorsList, data: [], isLoading: true, error: null },
     });
 
-    return this.contributorsService.getAllContributors(action.resourceType, action.resourceId).pipe(
-      tap((contributors) => {
-        ctx.patchState({
-          contributorsList: {
-            ...state.contributorsList,
-            data: contributors,
-            isLoading: false,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-    );
+    return this.contributorsService
+      .getAllContributors(action.resourceType, action.resourceId, action.page, action.pageSize)
+      .pipe(
+        tap((res) => {
+          ctx.patchState({
+            contributorsList: {
+              ...state.contributorsList,
+              data: res.data,
+              isLoading: false,
+              totalCount: res.totalCount,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'contributorsList', error))
+      );
   }
 
   @Action(GetRequestAccessContributors)
@@ -88,8 +91,6 @@ export class ContributorsState {
 
   @Action(AcceptRequestAccess)
   acceptRequestAccess(ctx: StateContext<ContributorsStateModel>, action: AcceptRequestAccess) {
-    const state = ctx.getState();
-
     if (!action.requestId || !action.resourceType) {
       return;
     }
@@ -100,13 +101,8 @@ export class ContributorsState {
 
     return this.requestAccessService.acceptRequestAccess(action.resourceType, action.requestId, action.payload).pipe(
       tap(() => {
-        const dataList = state.requestAccessList.data.filter((item) => item.id !== action.requestId);
-
         ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
-
-        ctx.patchState({
-          requestAccessList: { data: dataList, isLoading: false, error: null },
-        });
+        ctx.dispatch(new GetRequestAccessContributors(action.resourceId, action.resourceType));
       }),
       catchError((error) => handleSectionError(ctx, 'requestAccessList', error))
     );
@@ -114,8 +110,6 @@ export class ContributorsState {
 
   @Action(RejectRequestAccess)
   rejectRequestAccess(ctx: StateContext<ContributorsStateModel>, action: RejectRequestAccess) {
-    const state = ctx.getState();
-
     if (!action.requestId || !action.resourceType) {
       return;
     }
@@ -126,13 +120,8 @@ export class ContributorsState {
 
     return this.requestAccessService.rejectRequestAccess(action.resourceType, action.requestId).pipe(
       tap(() => {
-        const dataList = state.requestAccessList.data.filter((item) => item.id !== action.requestId);
-
         ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
-
-        ctx.patchState({
-          requestAccessList: { data: dataList, isLoading: false, error: null },
-        });
+        ctx.dispatch(new GetRequestAccessContributors(action.resourceId, action.resourceType));
       }),
       catchError((error) => handleSectionError(ctx, 'requestAccessList', error))
     );
@@ -151,16 +140,8 @@ export class ContributorsState {
     });
 
     return this.contributorsService.addContributor(action.resourceType, action.resourceId, action.contributor).pipe(
-      tap((contributor) => {
-        const currentState = ctx.getState();
-
-        ctx.patchState({
-          contributorsList: {
-            ...currentState.contributorsList,
-            data: [...currentState.contributorsList.data, contributor],
-            isLoading: false,
-          },
-        });
+      tap(() => {
+        ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
       }),
       catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
@@ -226,13 +207,7 @@ export class ContributorsState {
       .deleteContributor(action.resourceType, action.resourceId, action.contributorId)
       .pipe(
         tap(() => {
-          ctx.patchState({
-            contributorsList: {
-              ...state.contributorsList,
-              data: state.contributorsList.data.filter((contributor) => contributor.userId !== action.contributorId),
-              isLoading: false,
-            },
-          });
+          ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
         }),
         catchError((error) => handleSectionError(ctx, 'contributorsList', error))
       );

@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { EMPTY, filter, switchMap } from 'rxjs';
 
@@ -14,13 +14,12 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MetadataResourceEnum, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
@@ -110,7 +109,6 @@ export class MetadataComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customDialogService = inject(CustomDialogService);
-  private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly environment = inject(ENVIRONMENT);
@@ -139,7 +137,6 @@ export class MetadataComponent implements OnInit {
   areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
 
   provider = this.environment.defaultProvider;
-  isMedium = toSignal(inject(IS_MEDIUM));
 
   private readonly resourceNameMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'project'],
@@ -337,7 +334,7 @@ export class MetadataComponent implements OnInit {
   openEditContributorDialog(): void {
     this.customDialogService
       .open(ContributorsDialogComponent, {
-        header: this.translateService.instant('project.metadata.contributors.editContributors'),
+        header: 'project.metadata.contributors.editContributors',
         width: '600px',
         data: {
           resourceId: this.resourceId,
@@ -417,11 +414,9 @@ export class MetadataComponent implements OnInit {
   }
 
   onShowResourceInfo() {
-    const dialogWidth = this.isMedium() ? '850px' : '95vw';
-
     this.customDialogService.open(ResourceInfoTooltipComponent, {
       header: 'project.metadata.resourceInformation.tooltipDialog.header',
-      width: dialogWidth,
+      width: '850px',
       data: this.resourceNameMap.get(this.resourceType()),
     });
   }
@@ -504,9 +499,9 @@ export class MetadataComponent implements OnInit {
   handleEditDoi(): void {
     if (this.resourceType() === ResourceType.Project) {
       this.customConfirmationService.confirmDelete({
-        headerKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.header'),
-        messageKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.message'),
-        acceptLabelKey: this.translateService.instant('common.buttons.create'),
+        headerKey: 'project.metadata.doi.dialog.createConfirm.header',
+        messageKey: 'project.metadata.doi.dialog.createConfirm.message',
+        acceptLabelKey: 'common.buttons.create',
         acceptLabelType: 'primary',
         onConfirm: () => {
           this.actions.createDoi(this.resourceId, this.resourceType()).subscribe({

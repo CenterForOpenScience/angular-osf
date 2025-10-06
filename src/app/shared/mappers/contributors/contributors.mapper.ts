@@ -68,6 +68,7 @@ export class ContributorsMapper {
           }) as ContributorAddModel
       ),
       totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
     };
   }
 

@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 
@@ -30,13 +30,14 @@ import {
   ContributorsTableComponent,
   RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
-import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { BIBLIOGRAPHY_OPTIONS, DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
   ContributorModel,
   SelectOption,
+  TableParameters,
   ViewOnlyLinkJsonApi,
   ViewOnlyLinkModel,
 } from '@osf/shared/models';
@@ -110,8 +111,15 @@ export class ContributorsComponent implements OnInit {
   readonly requestAccessList = select(ContributorsSelectors.getRequestAccessList);
   readonly areRequestAccessListLoading = select(ContributorsSelectors.areRequestAccessListLoading);
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
   readonly currentUser = select(UserSelectors.getCurrentUser);
+
+  readonly tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    totalRecords: this.contributorsTotalCount(),
+    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+  }));
 
   canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
   searchPlaceholder = computed(() =>
@@ -321,6 +329,13 @@ export class ContributorsComponent implements OnInit {
           );
       },
     });
+  }
+
+  pageChanged(event: TablePageEvent) {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const pageSize = event.rows;
+
+    this.actions.getContributors(this.resourceId(), this.resourceType(), page, pageSize);
   }
 
   createViewLink() {

@@ -4,6 +4,14 @@ import { AddModeratorType, ModeratorPermission } from '../enums';
 import { ModeratorAddModel, ModeratorAddRequestModel, ModeratorDataJsonApi, ModeratorModel } from '../models';
 
 export class ModerationMapper {
+  static getModerators(data: ModeratorDataJsonApi[]): ModeratorModel[] {
+    if (!data?.length) {
+      return [];
+    }
+
+    return data.map((moderator) => this.fromModeratorResponse(moderator));
+  }
+
   static fromModeratorResponse(response: ModeratorDataJsonApi): ModeratorModel {
     return {
       id: response.id,
@@ -28,6 +36,7 @@ export class ModerationMapper {
           }) as ModeratorAddModel
       ),
       totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
     };
   }
 

@@ -43,8 +43,8 @@ export class ContributorsSelectors {
   }
 
   @Selector([ContributorsState])
-  static isContributorsError(state: ContributorsStateModel) {
-    return !!state?.contributorsList?.error?.length;
+  static getContributorsTotalCount(state: ContributorsStateModel) {
+    return state?.contributorsList?.totalCount || 0;
   }
 
   @Selector([ContributorsState])
@@ -60,11 +60,6 @@ export class ContributorsSelectors {
   @Selector([ContributorsState])
   static isUsersLoading(state: ContributorsStateModel) {
     return state?.users?.isLoading || false;
-  }
-
-  @Selector([ContributorsState])
-  static isUsersError(state: ContributorsStateModel) {
-    return !!state?.users?.error?.length;
   }
 
   @Selector([ContributorsState])

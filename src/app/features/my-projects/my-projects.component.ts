@@ -75,7 +75,7 @@ export class MyProjectsComponent implements OnInit {
 
   readonly bookmarksPageSize = 100;
   readonly isLoading = signal(false);
-  readonly isTablet = toSignal(inject(IS_MEDIUM));
+  readonly isMedium = toSignal(inject(IS_MEDIUM));
   readonly tabOptions = MY_PROJECTS_TABS;
   readonly tabOption = MyProjectsTab;
 
@@ -142,12 +142,10 @@ export class MyProjectsComponent implements OnInit {
   }
 
   createProject(): void {
-    const dialogWidth = this.isTablet() ? '850px' : '95vw';
-
     this.customDialogService
       .open(CreateProjectDialogComponent, {
         header: 'myProjects.header.createProject',
-        width: dialogWidth,
+        width: '850px',
       })
       .onClose.pipe(
         filter((result) => result?.project.id),

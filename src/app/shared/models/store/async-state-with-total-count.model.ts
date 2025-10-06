@@ -1,5 +1,5 @@
 import { AsyncStateModel } from './async-state.model';
 
-export type AsyncStateWithTotalCount<T> = AsyncStateModel<T> & {
+export interface AsyncStateWithTotalCount<T> extends AsyncStateModel<T> {
   totalCount: number;
-};
+}

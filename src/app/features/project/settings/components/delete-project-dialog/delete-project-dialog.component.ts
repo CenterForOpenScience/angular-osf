@@ -12,11 +12,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { DeleteProject, SettingsSelectors } from '@osf/features/project/settings/store';
 import { ScientistsNames } from '@osf/shared/constants';
+import { UserPermissions } from '@osf/shared/enums';
 import { ToastService } from '@osf/shared/services';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
-import { UserPermissions } from '@shared/enums';
+
+import { DeleteProject, SettingsSelectors } from '../../store';
 
 @Component({
   selector: 'osf-delete-project-dialog',
@@ -28,6 +29,7 @@ import { UserPermissions } from '@shared/enums';
 export class DeleteProjectDialogComponent {
   private toastService = inject(ToastService);
   private router = inject(Router);
+
   dialogRef = inject(DynamicDialogRef);
   destroyRef = inject(DestroyRef);
 
@@ -42,9 +44,7 @@ export class DeleteProjectDialogComponent {
     const projects = this.projects();
     if (!projects || !projects.length) return false;
 
-    return projects.every((project) => {
-      return project.permissions?.includes(UserPermissions.Admin);
-    });
+    return projects.every((project) => project.permissions?.includes(UserPermissions.Admin));
   });
 
   selectedScientist = computed(() => {
@@ -52,22 +52,14 @@ export class DeleteProjectDialogComponent {
     return names[Math.floor(Math.random() * names.length)];
   });
 
-  actions = createDispatchMap({
-    deleteProject: DeleteProject,
-  });
+  actions = createDispatchMap({ deleteProject: DeleteProject });
 
-  isInputValid(): boolean {
-    return this.userInput() === this.selectedScientist();
-  }
-
-  onInputChange(value: string): void {
-    this.userInput.set(value);
-  }
+  isInputValid = computed(() => this.userInput() === this.selectedScientist());
 
   handleDeleteProject(): void {
     const projects = this.projects();
 
-    if (!projects || !projects.length) return;
+    if (!projects?.length) return;
 
     this.actions
       .deleteProject(projects)

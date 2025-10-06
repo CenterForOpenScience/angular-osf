@@ -47,12 +47,26 @@ export class ContributorsService {
     return `${this.apiUrl}/${resourcePath}/${resourceId}/contributors`;
   }
 
-  getAllContributors(resourceType: ResourceType, resourceId: string): Observable<ContributorModel[]> {
+  getAllContributors(
+    resourceType: ResourceType,
+    resourceId: string,
+    page: number,
+    pageSize: number
+  ): Observable<PaginatedData<ContributorModel[]>> {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
 
-    return this.jsonApiService
-      .get<ContributorsResponseJsonApi>(`${baseUrl}/`)
-      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
+    const params = {
+      page: page,
+      'page[size]': pageSize,
+    };
+
+    return this.jsonApiService.get<ContributorsResponseJsonApi>(`${baseUrl}/`, params).pipe(
+      map((response) => ({
+        data: ContributorsMapper.getContributors(response.data),
+        totalCount: response.meta.total,
+        pageSize: response.meta.per_page,
+      }))
+    );
   }
 
   getRequestAccessContributors(resourceType: ResourceType, resourceId: string): Observable<ContributorModel[]> {

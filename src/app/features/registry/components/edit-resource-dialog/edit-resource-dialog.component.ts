@@ -1,7 +1,5 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslateService } from '@ngx-translate/core';
-
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { finalize, take } from 'rxjs';
@@ -26,7 +24,6 @@ import { ResourceFormComponent } from '../resource-form/resource-form.component'
 export class EditResourceDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly isCurrentResourceLoading = select(RegistryResourcesSelectors.isCurrentResourceLoading);
-  private translateService = inject(TranslateService);
 
   private dialogConfig = inject(DynamicDialogConfig);
   private registryId: string = this.dialogConfig.data.id;
@@ -38,9 +35,7 @@ export class EditResourceDialogComponent {
     description: new FormControl<string | null>(''),
   });
 
-  private readonly actions = createDispatchMap({
-    updateResource: UpdateResource,
-  });
+  private readonly actions = createDispatchMap({ updateResource: UpdateResource });
 
   constructor() {
     this.form.patchValue({
@@ -60,10 +55,6 @@ export class EditResourceDialogComponent {
       resource_type: this.form.controls['resourceType'].value ?? '',
       description: this.form.controls['description'].value ?? '',
     };
-
-    if (!this.resource.id) {
-      throw new Error(this.translateService.instant('resources.errors.noRegistryId'));
-    }
 
     this.actions
       .updateResource(this.registryId, this.resource.id, addResource)
