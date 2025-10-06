@@ -361,7 +361,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   downloadFolder(downloadLink: string): void {
     if (downloadLink) {
-      const link = this.filesService.getFolderDownloadLink(downloadLink, '', false);
+      const link = this.filesService.getFolderDownloadLink(downloadLink);
       window.open(link, '_blank')?.focus();
     }
   }

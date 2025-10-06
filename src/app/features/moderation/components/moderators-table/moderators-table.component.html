@@ -3,14 +3,13 @@
   [rows]="tableParams().rows"
   [first]="tableParams().firstRowIndex"
   [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
+  [paginator]="tableParams().paginator"
   [totalRecords]="tableParams().totalRecords"
-  [resizableColumns]="true"
-  [autoLayout]="true"
-  [scrollable]="true"
-  [sortMode]="'single'"
+  paginatorDropdownAppendTo="body"
+  [scrollable]="tableParams().scrollable"
   [lazy]="true"
   [lazyLoadOnInit]="true"
-  [customSort]="true"
+  (onPage)="onPageChange($event)"
   class="view-only-table"
 >
   <ng-template #header>

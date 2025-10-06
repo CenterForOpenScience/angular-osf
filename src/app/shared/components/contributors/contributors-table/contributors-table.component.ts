@@ -3,20 +3,20 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Skeleton } from 'primeng/skeleton';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { EducationHistoryDialogComponent } from '@osf/shared/components/education-history-dialog/education-history-dialog.component';
-import { EmploymentHistoryDialogComponent } from '@osf/shared/components/employment-history-dialog/employment-history-dialog.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
-import { DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 
+import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
+import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';
 import { IconComponent } from '../../icon/icon.component';
 import { InfoIconComponent } from '../../info-icon/info-icon.component';
 
@@ -41,6 +41,7 @@ import { InfoIconComponent } from '../../info-icon/info-icon.component';
 export class ContributorsTableComponent {
   contributors = model<ContributorModel[]>([]);
   isLoading = input(false);
+  tableParams = input.required<TableParameters>();
   showCurator = input(false);
   showEducation = input(true);
   showEmployment = input(true);
@@ -51,10 +52,10 @@ export class ContributorsTableComponent {
   isCurrentUserAdminContributor = input<boolean>(true);
 
   remove = output<ContributorModel>();
+  pageChanged = output<TablePageEvent>();
 
   customDialogService = inject(CustomDialogService);
 
-  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
   readonly ContributorPermission = ContributorPermission;
 
@@ -105,5 +106,9 @@ export class ContributorsTableComponent {
   onRowReorder() {
     const reorderedContributors = this.contributors().map((item, i) => ({ ...item, index: i }));
     this.contributors.set(reorderedContributors);
+  }
+
+  onPageChange(event: TablePageEvent): void {
+    this.pageChanged.emit(event);
   }
 }

@@ -34,7 +34,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -57,7 +57,7 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { FileMenuType, ResourceType, SupportedFeature, UserPermissions } from '@osf/shared/enums';
-import { getViewOnlyParamFromUrl, hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
@@ -151,8 +151,6 @@ export class FilesComponent {
   readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
   readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
   readonly supportedFeatures = select(FilesSelectors.getStorageSupportedFeatures);
-
-  isMedium = toSignal(inject(IS_MEDIUM));
 
   readonly isGoogleDrive = signal<boolean>(false);
   readonly accountId = signal<string>('');
@@ -465,32 +463,22 @@ export class FilesComponent {
 
   downloadFolder(): void {
     const resourceId = this.resourceId();
-    const folderId = this.currentFolder()?.id ?? '';
-    const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
-    const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
     const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
-
-    if (resourceId && folderId) {
+    const downloadLink = this.currentFolder()?.links.download ?? '';
+    if (resourceId && downloadLink) {
       this.dataciteService
         .logFileDownload(resourceId, resourcePath)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe();
-      if (isRootFolder) {
-        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
-        window.open(link, '_blank')?.focus();
-      } else {
-        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
-        window.open(link, '_blank')?.focus();
-      }
+      const link = this.filesService.getFolderDownloadLink(downloadLink);
+      window.open(link, '_blank')?.focus();
     }
   }
 
   showInfoDialog() {
-    const dialogWidth = this.isMedium() ? '850px' : '95vw';
-
     this.customDialogService.open(FileBrowserInfoComponent, {
       header: 'files.filesBrowserDialog.title',
-      width: dialogWidth,
+      width: '850px',
       data: this.resourceType(),
     });
   }

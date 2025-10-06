@@ -1,0 +1,17 @@
+<section class="grid">
+  <div class="col-12 md:col-6 lg:col-3">
+    <osf-select
+      [placeholder]="'settings.addons.filters.addonType'"
+      [options]="categoryOptions()"
+      [(selectedValue)]="selectedCategory"
+      [fullWidth]="true"
+    />
+  </div>
+  <div class="col-12 md:col-6 lg:col-9">
+    <osf-search-input
+      class="w-full"
+      [control]="searchControl()"
+      [placeholder]="'settings.addons.filters.search' | translate"
+    />
+  </div>
+</section>

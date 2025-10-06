@@ -14,7 +14,7 @@
     <h3 class="text-center" data-test-addon-card-title>{{ actualAddon()?.displayName }}</h3>
 
     <div class="flex justify-content-center align-items-center md:gap-5 md:mt-3 btn-container">
-      @if (showDangerButton()) {
+      @if (isConnected()) {
         <p-button
           [label]="'settings.addons.form.buttons.disable' | translate"
           severity="danger"
@@ -26,6 +26,8 @@
       <p-button
         [label]="buttonLabel() | translate"
         severity="secondary"
+        [disabled]="!canConfigure()"
+        [class.opacity-0]="!canConfigure()"
         (onClick)="!isConfiguredAddon() ? onConnectAddon() : onConfigureAddon()"
       ></p-button>
     </div>

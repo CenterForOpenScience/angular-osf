@@ -7,13 +7,11 @@ import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
 import { CustomDialogService } from '@osf/shared/services';
 import { ComponentOverview } from '@shared/models';
 
@@ -31,7 +29,6 @@ import { DeleteComponentDialogComponent } from '../delete-component-dialog/delet
 export class OverviewComponentsComponent {
   private router = inject(Router);
   private customDialogService = inject(CustomDialogService);
-  isMobile = toSignal(inject(IS_XSMALL));
 
   canEdit = input.required<boolean>();
 
@@ -88,24 +85,17 @@ export class OverviewComponentsComponent {
   }
 
   handleAddComponent(): void {
-    const dialogWidth = this.isMobile() ? '95vw' : '850px';
-
     this.customDialogService.open(AddComponentDialogComponent, {
       header: 'project.overview.dialog.addComponent.header',
-      width: dialogWidth,
+      width: '850px',
     });
   }
 
   private handleDeleteComponent(componentId: string): void {
-    const dialogWidth = this.isMobile() ? '95vw' : '650px';
-
     this.customDialogService.open(DeleteComponentDialogComponent, {
       header: 'project.overview.dialog.deleteComponent.header',
-      width: dialogWidth,
-      data: {
-        componentId,
-        resourceType: ResourceType.Project,
-      },
+      width: '650px',
+      data: { componentId, resourceType: ResourceType.Project },
     });
   }
 }

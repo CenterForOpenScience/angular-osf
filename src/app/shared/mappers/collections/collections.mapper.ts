@@ -143,6 +143,7 @@ export class CollectionsMapper {
           : undefined,
       })),
       totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
     };
   }
 

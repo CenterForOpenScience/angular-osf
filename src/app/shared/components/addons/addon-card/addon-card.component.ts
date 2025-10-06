@@ -25,7 +25,8 @@ export class AddonCardComponent {
   private readonly actions = createDispatchMap({ deleteAuthorizedAddon: DeleteAuthorizedAddon });
 
   readonly card = input<AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | AddonCardModel | null>(null);
-  readonly showDangerButton = input<boolean>(false);
+  readonly isConnected = input<boolean>(false);
+  readonly hasAdminAccess = input<boolean>(false);
 
   readonly actualAddon = computed(() => {
     const actualCard = this.card();
@@ -50,8 +51,34 @@ export class AddonCardComponent {
     return isConfiguredAddon(actualCard);
   });
 
+  readonly canConfigure = computed(() => {
+    const isConfigured = this.isConfiguredAddon();
+    const hasAdmin = this.hasAdminAccess();
+
+    if (!isConfigured) return true;
+
+    const addon = this.card();
+    if (!addon) return true;
+
+    let isOwner = false;
+    if ('configuredAddon' in addon && addon.configuredAddon) {
+      isOwner = addon.configuredAddon.currentUserIsOwner;
+    } else if ('currentUserIsOwner' in addon) {
+      isOwner = addon.currentUserIsOwner;
+    }
+
+    return hasAdmin || isOwner;
+  });
+
   readonly buttonLabel = computed(() => {
-    return this.isConfiguredAddon() ? 'settings.addons.form.buttons.configure' : 'settings.addons.form.buttons.connect';
+    const isConfigured = this.isConfiguredAddon();
+    const isConnected = this.isConnected();
+
+    if (isConfigured) {
+      return 'settings.addons.form.buttons.configure';
+    }
+
+    return isConnected ? 'settings.addons.form.buttons.reconnect' : 'settings.addons.form.buttons.connect';
   });
 
   onConnectAddon(): void {

@@ -170,13 +170,10 @@ export class FilesService {
     );
   }
 
-  getFolderDownloadLink(storageLink: string, folderId: string, isRootFolder: boolean): string {
-    const separator = storageLink.includes('?') ? '&' : '?';
+  getFolderDownloadLink(link: string): string {
+    const separator = link.includes('?') ? '&' : '?';
 
-    if (isRootFolder) {
-      return `${storageLink}${separator}zip=`;
-    }
-    return `${storageLink}${folderId}/${separator}zip=`;
+    return `${link}${separator}zip=`;
   }
 
   getFileTarget(fileGuid: string): Observable<OsfFile> {

@@ -54,7 +54,9 @@
       "sort": "Sort",
       "replace": "Replace",
       "selectAll": "Select All",
-      "removeAll": "Remove All"
+      "removeAll": "Remove All",
+      "accept": "Accept",
+      "reject": "Reject"
     },
     "accessibility": {
       "help": "Help",
@@ -72,9 +74,7 @@
       "toggleProjectVisibility": "Toggle project visibility",
       "tagInput": "Tag input",
       "toggleTreeNode": "Toggle tree node",
-      "copyButtonInfo": "Copy to clipboard button"
-    },
-    "dialogs": {
+      "copyButtonInfo": "Copy to clipboard button",
       "confirmation": "Confirmation"
     },
     "search": {
@@ -442,6 +442,7 @@
       "project": "Project",
       "saveChanges": "Save Changes",
       "deleteProject": "Delete Project",
+      "deleteComponent": "Delete Component",
       "viewOnlyLinks": "View-only Links",
       "viewOnlySubtitle": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "viewOnlyTable": {
@@ -626,6 +627,20 @@
         "addSuccessMessage": "Contributor {{name}} successfully added.",
         "multipleAddSuccessMessage": "Contributors successfully added.",
         "multipleUpdateSuccessMessage": "Contributors successfully updated."
+      }
+    },
+    "requestAccess": {
+      "requestForAccess": "Requests for Access",
+      "followingUsers": "The following users have requested access to this project.",
+      "acceptDialog": {
+        "header": "Accept access",
+        "message": "Are you sure you want to accept access for <b>{{name}}</b>?",
+        "successMessage": "Access accepted successfully."
+      },
+      "rejectDialog": {
+        "header": "Reject access",
+        "message": "Are you sure you want to reject access for <b>{{name}}</b>?",
+        "successMessage": "Access rejected successfully."
       }
     },
     "overview": {
@@ -1650,7 +1665,8 @@
         "folderName": "Folder name:",
         "selectFolder": "Select",
         "connectedAccount": "Connected to account:",
-        "home": "Home"
+        "home": "Home",
+        "rootDirectory": "Root Directory"
       },
       "connectAddon": {
         "title": "Connect Add-on",

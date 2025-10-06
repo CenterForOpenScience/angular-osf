@@ -39,6 +39,7 @@ export class PreprintModerationMapper {
     return {
       data: response.data.map((x) => this.fromResponse(x)),
       totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
     };
   }
 
@@ -64,6 +65,7 @@ export class PreprintModerationMapper {
         actions: [],
       })),
       totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
       pendingCount: response.meta.reviews_state_counts.pending,
       acceptedCount: response.meta.reviews_state_counts.accepted,
       rejectedCount: response.meta.reviews_state_counts.rejected,
@@ -82,6 +84,7 @@ export class PreprintModerationMapper {
         actions: [],
       })),
       totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
       pendingCount: response.meta.requests_state_counts.pending,
       acceptedCount: response.meta.requests_state_counts.accepted,
       rejectedCount: response.meta.requests_state_counts.rejected,

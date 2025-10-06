@@ -72,6 +72,7 @@ export class ConfigureAddonComponent implements OnInit {
   addon = signal<ConfiguredAddonModel | null>(null);
 
   readonly isGoogleDrive = computed(() => this.storageAddon()?.wbKey === 'googledrive');
+  readonly canRename = computed(() => this.addon()?.currentUserIsOwner ?? false);
 
   isEditMode = signal<boolean>(false);
   selectedStorageItemId = signal('');
@@ -187,9 +188,11 @@ export class ConfigureAddonComponent implements OnInit {
   toggleEditMode(): void {
     if (!this.isEditMode()) {
       this.resetConfigurationForm();
+      this.handleCreateOperationInvocation(OperationNames.LIST_ROOT_ITEMS, this.selectedStorageItemId());
+    } else {
+      this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.addon()!.selectedStorageItemId);
     }
 
-    this.handleCreateOperationInvocation(OperationNames.LIST_ROOT_ITEMS, this.selectedStorageItemId());
     this.isEditMode.set(!this.isEditMode());
   }
 

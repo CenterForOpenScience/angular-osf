@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 
@@ -28,19 +28,22 @@ import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
+  RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
-import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { BIBLIOGRAPHY_OPTIONS, DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
   ContributorModel,
   SelectOption,
+  TableParameters,
   ViewOnlyLinkJsonApi,
   ViewOnlyLinkModel,
 } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
+  AcceptRequestAccess,
   AddContributor,
   BulkAddContributors,
   BulkUpdateContributors,
@@ -51,7 +54,9 @@ import {
   DeleteViewOnlyLink,
   FetchViewOnlyLinks,
   GetAllContributors,
+  GetRequestAccessContributors,
   GetResourceDetails,
+  RejectRequestAccess,
   UpdateBibliographyFilter,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
@@ -71,6 +76,7 @@ import { ResourceInfoModel } from './models';
     FormsModule,
     TableModule,
     ContributorsTableComponent,
+    RequestAccessTableComponent,
     ViewOnlyTableComponent,
   ],
   templateUrl: './contributors.component.html',
@@ -99,12 +105,21 @@ export class ContributorsComponent implements OnInit {
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
   readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
 
-  initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal<ContributorModel[]>([]);
 
+  readonly initialContributors = select(ContributorsSelectors.getContributors);
+  readonly requestAccessList = select(ContributorsSelectors.getRequestAccessList);
+  readonly areRequestAccessListLoading = select(ContributorsSelectors.areRequestAccessListLoading);
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
   readonly currentUser = select(UserSelectors.getCurrentUser);
+
+  readonly tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    totalRecords: this.contributorsTotalCount(),
+    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+  }));
 
   canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
   searchPlaceholder = computed(() =>
@@ -118,10 +133,18 @@ export class ContributorsComponent implements OnInit {
     const initialContributors = this.initialContributors();
     if (!currentUserId) return false;
 
-    return initialContributors.some((contributor: ContributorModel) => {
-      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
-    });
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
   });
+
+  showRequestAccessList = computed(
+    () =>
+      this.isCurrentUserAdminContributor() &&
+      this.requestAccessList().length &&
+      this.resourceType() === ResourceType.Project
+  );
 
   actions = createDispatchMap({
     getViewOnlyLinks: FetchViewOnlyLinks,
@@ -136,6 +159,9 @@ export class ContributorsComponent implements OnInit {
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
+    getRequestAccessContributors: GetRequestAccessContributors,
+    acceptRequestAccess: AcceptRequestAccess,
+    rejectRequestAccess: RejectRequestAccess,
   });
 
   get hasChanges(): boolean {
@@ -166,6 +192,10 @@ export class ContributorsComponent implements OnInit {
     if (id) {
       this.actions.getResourceDetails(id, this.resourceType());
       this.actions.getContributors(id, this.resourceType());
+
+      if (this.resourceType() === ResourceType.Project) {
+        this.actions.getRequestAccessContributors(id, this.resourceType());
+      }
     }
 
     this.setSearchSubscription();
@@ -250,6 +280,38 @@ export class ContributorsComponent implements OnInit {
       });
   }
 
+  acceptRequest(contributor: ContributorModel) {
+    this.customConfirmationService.confirmAccept({
+      headerKey: 'project.requestAccess.acceptDialog.header',
+      messageKey: 'project.requestAccess.acceptDialog.message',
+      messageParams: { name: contributor.fullName },
+      acceptLabelKey: 'common.buttons.accept',
+      onConfirm: () => {
+        const payload = { permissions: contributor.permission };
+
+        this.actions
+          .acceptRequestAccess(contributor.id, this.resourceId(), this.resourceType(), payload)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => this.toastService.showSuccess('project.requestAccess.acceptDialog.successMessage'));
+      },
+    });
+  }
+
+  rejectRequest(contributor: ContributorModel) {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'project.requestAccess.rejectDialog.header',
+      messageKey: 'project.requestAccess.rejectDialog.message',
+      messageParams: { name: contributor.fullName },
+      acceptLabelKey: 'common.buttons.reject',
+      onConfirm: () => {
+        this.actions
+          .rejectRequestAccess(contributor.id, this.resourceId(), this.resourceType())
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => this.toastService.showSuccess('project.requestAccess.rejectDialog.successMessage'));
+      },
+    });
+  }
+
   removeContributor(contributor: ContributorModel) {
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
@@ -267,6 +329,13 @@ export class ContributorsComponent implements OnInit {
           );
       },
     });
+  }
+
+  pageChanged(event: TablePageEvent) {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const pageSize = event.rows;
+
+    this.actions.getContributors(this.resourceId(), this.resourceType(), page, pageSize);
   }
 
   createViewLink() {

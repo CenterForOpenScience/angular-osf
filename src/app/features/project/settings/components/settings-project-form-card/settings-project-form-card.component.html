@@ -34,12 +34,7 @@
     </div>
 
     <div class="flex justify-content-end w-full flex-0 border-top-1 pt-4 border-gray-300">
-      <p-button
-        (onClick)="deleteProject.emit()"
-        severity="danger"
-        [label]="'myProjects.settings.deleteProject' | translate"
-        class="btn-full-width sm:w-10rem md:ml-auto"
-      ></p-button>
+      <p-button (onClick)="deleteProject.emit()" severity="danger" [label]="deleteLabel() | translate"></p-button>
     </div>
   </form>
 </p-card>

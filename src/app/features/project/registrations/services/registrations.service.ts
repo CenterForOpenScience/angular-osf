@@ -35,6 +35,7 @@ export class RegistrationsService {
         return {
           data,
           totalCount: response.meta?.total,
+          pageSize: response.meta.per_page,
         };
       })
     );

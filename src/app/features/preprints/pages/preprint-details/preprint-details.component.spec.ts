@@ -296,11 +296,6 @@ describe('PreprintDetailsComponent', () => {
     expect(() => component.createNewVersionClicked()).not.toThrow();
   });
 
-  it('should handle fetch preprint version', () => {
-    const newVersionId = 'preprint-2';
-    expect(() => component.fetchPreprintVersion(newVersionId)).not.toThrow();
-  });
-
   it('should have correct CSS classes', () => {
     expect(component.classes).toBe('flex-1 flex flex-column w-full');
   });

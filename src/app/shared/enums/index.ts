@@ -26,6 +26,7 @@ export * from './profile-settings-key.enum';
 export * from './registration-review-states.enum';
 export * from './registry-resource.enum';
 export * from './registry-status.enum';
+export * from './request-access-trigger.enum';
 export * from './resource-search-mode.enum';
 export * from './resource-type.enum';
 export * from './reusable-filter-type.enum';

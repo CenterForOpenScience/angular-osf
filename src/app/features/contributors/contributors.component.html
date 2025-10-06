@@ -63,12 +63,14 @@
     class="w-full"
     [(contributors)]="contributors"
     [isLoading]="isContributorsLoading()"
+    [tableParams]="tableParams()"
     [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
     [currentUserId]="currentUser()?.id"
     [showCurator]="true"
     [showInfo]="true"
     [resourceType]="resourceType()"
     (remove)="removeContributor($event)"
+    (pageChanged)="pageChanged($event)"
   ></osf-contributors-table>
 
   @if (hasChanges) {
@@ -85,6 +87,21 @@
       <p-button class="w-3" styleClass="w-full" (onClick)="save()" [label]="'common.buttons.save' | translate">
       </p-button>
     </div>
+  }
+
+  @if (showRequestAccessList()) {
+    <h1 class="my-4">{{ 'project.requestAccess.requestForAccess' | translate }}</h1>
+
+    <p class="mb-4">{{ 'project.requestAccess.followingUsers' | translate }}</p>
+
+    <osf-request-access-table
+      class="w-full"
+      [contributors]="requestAccessList()"
+      [isLoading]="areRequestAccessListLoading()"
+      [resourceType]="resourceType()"
+      (accept)="acceptRequest($event)"
+      (reject)="rejectRequest($event)"
+    ></osf-request-access-table>
   }
 
   @if (isCurrentUserAdminContributor()) {

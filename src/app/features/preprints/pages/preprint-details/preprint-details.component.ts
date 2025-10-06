@@ -48,7 +48,7 @@ import {
 } from '@osf/features/preprints/store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
+import { pathJoin } from '@osf/shared/helpers';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
 import { CustomDialogService, MetaTagsService } from '@shared/services';
 import { AnalyticsService } from '@shared/services/analytics.service';
@@ -94,7 +94,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
@@ -314,14 +313,12 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   handleWithdrawClicked() {
-    const dialogWidth = this.isMedium() ? '700px' : '340px';
-
     this.customDialogService
       .open(WithdrawDialogComponent, {
         header: this.translateService.instant('preprints.details.withdrawDialog.title', {
           preprintWord: this.preprintProvider()!.preprintWord,
         }),
-        width: dialogWidth,
+        width: '700px',
         data: {
           preprint: this.preprint(),
           provider: this.preprintProvider(),

@@ -3,7 +3,7 @@ import { TableParameters } from '@shared/models';
 export const DEFAULT_TABLE_PARAMS: TableParameters = {
   rows: 10,
   paginator: true,
-  scrollable: false,
+  scrollable: true,
   rowsPerPageOptions: [5, 10, 25],
   totalRecords: 3,
   firstRowIndex: 0,

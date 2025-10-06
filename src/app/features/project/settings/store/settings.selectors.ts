@@ -1,5 +1,6 @@
 import { Selector } from '@ngxs/store';
 
+import { UserPermissions } from '@osf/shared/enums';
 import { NotificationSubscription } from '@osf/shared/models';
 
 import { SettingsStateModel } from './settings.model';
@@ -34,5 +35,15 @@ export class SettingsSelectors {
   @Selector([SettingsState])
   static areNotificationsLoading(state: SettingsStateModel): boolean {
     return state.notifications.isLoading;
+  }
+
+  @Selector([SettingsState])
+  static hasWriteAccess(state: SettingsStateModel): boolean {
+    return state.projectDetails.data?.currentUserPermissions?.includes(UserPermissions.Write) || false;
+  }
+
+  @Selector([SettingsState])
+  static hasAdminAccess(state: SettingsStateModel): boolean {
+    return state.projectDetails.data?.currentUserPermissions?.includes(UserPermissions.Admin) || false;
   }
 }

@@ -19,7 +19,9 @@
     [items]="moderators()"
     [isLoading]="isModeratorsLoading()"
     [currentUserId]="currentUser()?.id"
+    [tableParams]="tableParams()"
     [isCurrentUserAdminModerator]="isCurrentUserAdminModerator()"
+    (pageChanged)="pageChanged($event)"
     (update)="updateModerator($event)"
     (remove)="removeModerator($event)"
   />

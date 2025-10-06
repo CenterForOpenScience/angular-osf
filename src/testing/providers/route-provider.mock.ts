@@ -1,4 +1,4 @@
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { ActivatedRoute } from '@angular/router';
 
@@ -40,11 +40,6 @@ export class ActivatedRouteMockBuilder {
   }
 
   build(): Partial<ActivatedRoute> {
-    const parent = {
-      params: of(this.paramsObj),
-      snapshot: { params: this.paramsObj },
-    } as Partial<ActivatedRoute>;
-
     const paramMap = {
       get: jest.fn((key: string) => this.paramsObj[key]),
       has: jest.fn((key: string) => key in this.paramsObj),
@@ -53,7 +48,12 @@ export class ActivatedRouteMockBuilder {
     };
 
     const route: Partial<ActivatedRoute> = {
-      parent: parent as ActivatedRoute,
+      parent: {
+        params: this.params$.asObservable(),
+        snapshot: {
+          params: this.paramsObj,
+        },
+      } as any,
       snapshot: {
         params: this.paramsObj,
         queryParams: this.queryParamsObj,
