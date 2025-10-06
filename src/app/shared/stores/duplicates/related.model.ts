@@ -3,11 +3,11 @@ import { AsyncStateWithTotalCount } from '@osf/shared/models';
 import { Duplicate } from 'src/app/shared/models/duplicates';
 
 export interface DuplicatesStateModel {
-  duplicates: AsyncStateWithTotalCount<Duplicate[]>;
+  related: AsyncStateWithTotalCount<Duplicate[]>;
 }
 
 export const DUPLICATES_DEFAULTS: DuplicatesStateModel = {
-  duplicates: {
+  related: {
     data: [],
     isLoading: false,
     isSubmitting: false,

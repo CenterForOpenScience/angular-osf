@@ -10,7 +10,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
 import { ResourceType } from '@osf/shared/enums';
-import { DuplicatesSelectors } from '@osf/shared/stores';
+import { IS_SMALL } from '@osf/shared/helpers';
+import { RelatedSelectors } from '@osf/shared/stores';
 import {
   ContributorsListComponent,
   CustomPaginatorComponent,
@@ -22,7 +23,7 @@ import {
 import { MOCK_PROJECT_OVERVIEW } from '@shared/mocks';
 import { CustomDialogService } from '@shared/services';
 
-import { ViewDuplicatesComponent } from './view-duplicates.component';
+import { ViewRelatedProjectsComponent } from './view-related-projects.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
@@ -31,8 +32,8 @@ import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('Component: View Duplicates', () => {
-  let component: ViewDuplicatesComponent;
-  let fixture: ComponentFixture<ViewDuplicatesComponent>;
+  let component: ViewRelatedProjectsComponent;
+  let fixture: ComponentFixture<ViewRelatedProjectsComponent>;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
@@ -47,7 +48,7 @@ describe('Component: View Duplicates', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        ViewDuplicatesComponent,
+        ViewRelatedProjectsComponent,
         OSFTestingModule,
         ...MockComponents(
           SubHeaderComponent,
@@ -61,9 +62,9 @@ describe('Component: View Duplicates', () => {
       providers: [
         provideMockStore({
           signals: [
-            { selector: DuplicatesSelectors.getDuplicates, value: [] },
-            { selector: DuplicatesSelectors.getDuplicatesLoading, value: false },
-            { selector: DuplicatesSelectors.getDuplicatesTotalCount, value: 0 },
+            { selector: RelatedSelectors.getRelated, value: [] },
+            { selector: RelatedSelectors.getRelatedLoading, value: false },
+            { selector: RelatedSelectors.getRelatedTotalCount, value: 0 },
             { selector: ProjectOverviewSelectors.getProject, value: MOCK_PROJECT_OVERVIEW },
             { selector: ProjectOverviewSelectors.isProjectAnonymous, value: false },
             { selector: RegistryOverviewSelectors.getRegistry, value: undefined },
@@ -76,7 +77,7 @@ describe('Component: View Duplicates', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ViewDuplicatesComponent);
+    fixture = TestBed.createComponent(ViewRelatedProjectsComponent);
     component = fixture.componentInstance;
 
     fixture.detectChanges();

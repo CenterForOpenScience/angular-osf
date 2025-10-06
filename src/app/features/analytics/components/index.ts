@@ -1,2 +1,2 @@
 export { AnalyticsKpiComponent } from './analytics-kpi/analytics-kpi.component';
-export { ViewDuplicatesComponent } from './view-duplicates/view-duplicates.component';
+export { ViewRelatedProjectsComponent } from '@osf/features/analytics/components/view-related-projects/view-related-projects.component';

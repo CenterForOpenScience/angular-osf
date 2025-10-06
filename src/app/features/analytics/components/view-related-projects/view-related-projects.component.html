@@ -1,26 +1,26 @@
 <osf-sub-header
-  [title]="'project.analytics.kpi.forks' | translate"
+  [title]="title()"
   [showButton]="isAuthenticated()"
   [buttonLabel]="'project.overview.actions.forkProjectLabel' | translate"
   (buttonClick)="handleForkResource()"
 />
 
 <div class="flex flex-column flex-1 bg-white gap-5 p-3 sm:p-4">
-  @if (!isDuplicatesLoading() && currentResource()) {
-    @if (!duplicates().length) {
-      <p class="mt-5 text-center">{{ 'project.overview.dialog.fork.noForksMessage' | translate }}</p>
+  @if (!isLoading() && currentResource()) {
+    @if (!items().length) {
+      <p class="mt-5 text-center">{{ emptyScreenMessage() }}</p>
     } @else {
-      <p>{{ 'project.overview.dialog.fork.forksMessage' | translate }}</p>
+      <p>{{ message() }}</p>
 
-      @for (duplicate of duplicates(); track duplicate.id) {
+      @for (relatedItem of items(); track relatedItem.id) {
         <div class="duplicate-wrapper flex flex-column gap-3 p-3 sm:p-4">
           <div class="flex justify-content-between align-items-center">
             <h2 class="flex align-items-center gap-2">
-              <osf-icon [iconClass]="duplicate.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
-              {{ duplicate.title }}
+              <osf-icon [iconClass]="relatedItem.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
+              {{ relatedItem.title }}
             </h2>
 
-            @if (showMoreOptions(duplicate)) {
+            @if (showMoreOptions(relatedItem)) {
               <div>
                 <p-button
                   severity="contrast"
@@ -32,7 +32,7 @@
                 >
                 </p-button>
 
-                <p-menu appendTo="body" [model]="forkActionItems(duplicate.id)" popup #menu>
+                <p-menu appendTo="body" [model]="forkActionItems(relatedItem.id)" popup #menu>
                   <ng-template #item let-item>
                     <a
                       class="p-menu-item-link"
@@ -51,31 +51,33 @@
           <div class="flex flex-column gap-2">
             <div class="flex flex-wrap align-items-center gap-1">
               <span class="font-bold">{{ 'common.labels.forked' | translate }}:</span>
-              <p>{{ duplicate.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
+              <p>{{ relatedItem.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
             </div>
 
             <div class="flex flex-wrap align-items-center gap-1">
               <span class="font-bold">{{ 'common.labels.lastUpdated' | translate }}:</span>
-              <p>{{ duplicate.dateModified | date: 'MMM d, y, h:mm a' }}</p>
+              <p>{{ relatedItem.dateModified | date: 'MMM d, y, h:mm a' }}</p>
             </div>
 
             <div class="flex flex-wrap align-items-center gap-1">
               <span class="font-bold">{{ 'common.labels.contributors' | translate }}:</span>
 
-              <osf-contributors-list [contributors]="duplicate.contributors"></osf-contributors-list>
+              <osf-contributors-list [contributors]="relatedItem.contributors"></osf-contributors-list>
             </div>
 
-            @if (duplicate.description) {
+            @if (relatedItem.description) {
               <osf-truncated-text
-                [text]="('resourceCard.labels.descriptionBold' | translate) + duplicate.description"
+                [text]="('resourceCard.labels.descriptionBold' | translate) + relatedItem.description"
               />
             }
           </div>
-          <p-button
-            [label]="'common.buttons.view' | translate"
-            severity="secondary"
-            [routerLink]="['/', duplicate.id]"
-          />
+          @if (isShowingDuplicates()) {
+            <p-button
+              [label]="'common.buttons.view' | translate"
+              severity="secondary"
+              [routerLink]="['/', relatedItem.id]"
+            />
+          }
         </div>
       }
 

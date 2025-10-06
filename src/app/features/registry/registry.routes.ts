@@ -5,13 +5,7 @@ import { Routes } from '@angular/router';
 import { viewOnlyGuard } from '@osf/core/guards';
 import { ResourceType } from '@osf/shared/enums';
 import { LicensesService } from '@osf/shared/services';
-import {
-  CitationsState,
-  ContributorsState,
-  DuplicatesState,
-  SubjectsState,
-  ViewOnlyLinkState,
-} from '@osf/shared/stores';
+import { CitationsState, ContributorsState, RelatedState, SubjectsState, ViewOnlyLinkState } from '@osf/shared/stores';
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
@@ -77,13 +71,13 @@ export const registryRoutes: Routes = [
         providers: [provideStates([AnalyticsState])],
       },
       {
-        path: 'analytics/duplicates',
+        path: 'analytics/related-projects/:type',
         data: { resourceType: ResourceType.Registration },
         loadComponent: () =>
-          import('../analytics/components/view-duplicates/view-duplicates.component').then(
-            (mod) => mod.ViewDuplicatesComponent
+          import('../analytics/components/view-related-projects/view-related-projects.component').then(
+            (mod) => mod.ViewRelatedProjectsComponent
           ),
-        providers: [provideStates([DuplicatesState])],
+        providers: [provideStates([RelatedState])],
       },
       {
         path: 'files',

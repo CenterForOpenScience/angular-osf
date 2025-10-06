@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
@@ -16,6 +16,7 @@ import {
   DestroyRef,
   effect,
   inject,
+  OnInit,
   Signal,
   signal,
 } from '@angular/core';
@@ -23,6 +24,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
+import { RelatedItemsType } from '@osf/features/analytics/enums/related-items-type';
 import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import {
@@ -41,11 +43,11 @@ import {
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { ToolbarResource } from '@osf/shared/models';
 import { Duplicate } from '@osf/shared/models/duplicates';
-import { CustomDialogService, LoaderService } from '@osf/shared/services';
-import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates, GetResourceWithChildren } from '@osf/shared/stores';
+import { CustomDialogService } from '@osf/shared/services';
+import { ClearDuplicates, GetAllDuplicates, GetAllLinkedProjects, RelatedSelectors } from '@osf/shared/stores';
 
 @Component({
-  selector: 'osf-view-duplicates',
+  selector: 'osf-view-related-projects',
   imports: [
     SubHeaderComponent,
     TranslatePipe,
@@ -59,25 +61,54 @@ import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates, GetResourceWith
     IconComponent,
     ContributorsListComponent,
   ],
-  templateUrl: './view-duplicates.component.html',
-  styleUrl: './view-duplicates.component.scss',
+  templateUrl: './view-related-projects.component.html',
+  styleUrl: './view-related-projects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ViewDuplicatesComponent {
+export class ViewRelatedProjectsComponent implements OnInit {
   private customDialogService = inject(CustomDialogService);
   private loaderService = inject(LoaderService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private translateService = inject(TranslateService);
   private project = select(ProjectOverviewSelectors.getProject);
   private registration = select(RegistryOverviewSelectors.getRegistry);
   private isProjectAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   private isRegistryAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
+  private itemType = signal<RelatedItemsType | null>(null);
 
-  duplicates = select(DuplicatesSelectors.getDuplicates);
-  isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
-  totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
+  items = select(RelatedSelectors.getRelated);
+  isLoading = select(RelatedSelectors.getRelatedLoading);
+  totalDuplicates = select(RelatedSelectors.getRelatedTotalCount);
   isAuthenticated = select(UserSelectors.isAuthenticated);
+
+  title = computed(() => {
+    switch (this.itemType()) {
+      case RelatedItemsType.Duplicates:
+        return this.translateService.instant('project.analytics.kpi.forks');
+      case RelatedItemsType.Linked:
+        return this.translateService.instant('project.analytics.viewRelated.linkedProjectsTitle');
+    }
+  });
+
+  emptyScreenMessage = computed(() => {
+    switch (this.itemType()) {
+      case RelatedItemsType.Duplicates:
+        return this.translateService.instant('project.overview.dialog.fork.noForksMessage');
+      case RelatedItemsType.Linked:
+        return this.translateService.instant('project.analytics.viewRelated.noLinkedProjectsMessage');
+    }
+  });
+
+  message = computed(() => {
+    switch (this.itemType()) {
+      case RelatedItemsType.Duplicates:
+        return this.translateService.instant('project.overview.dialog.fork.forksMessage');
+      case RelatedItemsType.Linked:
+        return this.translateService.instant('project.analytics.viewRelated.linkedProjectsMessage');
+    }
+  });
 
   readonly pageSize = 10;
   readonly UserPermissions = UserPermissions;
@@ -123,11 +154,18 @@ export class ViewDuplicatesComponent {
     getProject: GetProjectById,
     getRegistration: GetRegistryById,
     getDuplicates: GetAllDuplicates,
+    getLinkedProjects: GetAllLinkedProjects,
     clearDuplicates: ClearDuplicates,
     clearProject: ClearProjectOverview,
     clearRegistration: ClearRegistryOverview,
     getComponentsTree: GetResourceWithChildren,
   });
+
+  ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      this.itemType.set((params.get('type') as RelatedItemsType) ?? RelatedItemsType.Duplicates);
+    });
+  }
 
   constructor() {
     effect(() => {
@@ -142,9 +180,16 @@ export class ViewDuplicatesComponent {
 
     effect(() => {
       const resource = this.currentResource();
-
-      if (resource) {
-        this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+      if (!resource) {
+        return;
+      }
+      switch (this.itemType()) {
+        case RelatedItemsType.Duplicates:
+          this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+          break;
+        case RelatedItemsType.Linked:
+          this.actions.getLinkedProjects(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+          break;
       }
     });
 
@@ -173,9 +218,14 @@ export class ViewDuplicatesComponent {
 
   showMoreOptions(duplicate: Duplicate) {
     return (
-      duplicate.currentUserPermissions.includes(UserPermissions.Admin) ||
-      duplicate.currentUserPermissions.includes(UserPermissions.Write)
+      this.isShowingDuplicates() &&
+      (duplicate.currentUserPermissions.includes(UserPermissions.Admin) ||
+        duplicate.currentUserPermissions.includes(UserPermissions.Write))
     );
+  }
+
+  isShowingDuplicates() {
+    return this.itemType() == RelatedItemsType.Duplicates;
   }
 
   handleMenuAction(action: string, resourceId: string): void {

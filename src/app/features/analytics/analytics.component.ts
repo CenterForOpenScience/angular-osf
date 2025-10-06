@@ -33,7 +33,7 @@ import { DatasetInput } from '@osf/shared/models';
 
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
-import { DateRange } from './enums';
+import { DateRange, RelatedItemsType } from './enums';
 import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from './store';
 
 @Component({
@@ -134,7 +134,11 @@ export class AnalyticsComponent implements OnInit {
   }
 
   navigateToDuplicates() {
-    this.router.navigate(['duplicates'], { relativeTo: this.route });
+    this.router.navigate(['related-projects', RelatedItemsType.Duplicates], { relativeTo: this.route });
+  }
+
+  navigateToLinkedProjects() {
+    this.router.navigate(['related-projects', RelatedItemsType.Linked], { relativeTo: this.route });
   }
 
   private setData() {

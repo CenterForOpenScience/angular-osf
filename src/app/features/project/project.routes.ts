@@ -9,8 +9,8 @@ import {
   CitationsState,
   CollectionsState,
   ContributorsState,
-  DuplicatesState,
   NodeLinksState,
+  RelatedState,
   SubjectsState,
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
@@ -96,13 +96,13 @@ export const projectRoutes: Routes = [
         providers: [provideStates([AnalyticsState])],
       },
       {
-        path: 'analytics/duplicates',
+        path: 'analytics/related-projects/:type',
         data: { resourceType: ResourceType.Project },
         loadComponent: () =>
-          import('../analytics/components/view-duplicates/view-duplicates.component').then(
-            (mod) => mod.ViewDuplicatesComponent
+          import('@osf/features/analytics/components/view-related-projects/view-related-projects.component').then(
+            (mod) => mod.ViewRelatedProjectsComponent
           ),
-        providers: [provideStates([DuplicatesState])],
+        providers: [provideStates([RelatedState])],
       },
       {
         path: 'wiki',
