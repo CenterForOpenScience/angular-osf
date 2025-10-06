@@ -1,8 +1,22 @@
-<div class="dialog-container">
-  <div [innerHTML]="messageKey() | translate"></div>
+<div>
+  @if (isConfirmationStep) {
+    <div [innerHTML]="messageKey() | translate"></div>
+  } @else {
+    <div>
+      <p>{{ 'project.overview.dialog.adjustPrivacySetting' | translate }}</p>
+      <p class="mt-4">{{ 'project.overview.dialog.checkedProjects' | translate }}</p>
+      <p class="mt-3">{{ 'project.overview.dialog.uncheckedComponents' | translate }}</p>
+
+      <osf-components-selection-list
+        [components]="componentsList()"
+        [disabledTooltip]="'project.overview.dialog.privacySettingsPermissionTooltip'"
+      ></osf-components-selection-list>
+    </div>
+  }
+
   <div class="flex mt-5 gap-3 justify-content-between md:justify-content-end">
     <p-button
-      [label]="'project.overview.dialog.makePublic.cancelButton' | translate"
+      [label]="'common.buttons.cancel' | translate"
       severity="info"
       (onClick)="dialogRef.close()"
       [disabled]="isSubmitting()"
@@ -10,11 +24,7 @@
       class="w-full md:w-auto"
     />
     <p-button
-      [label]="
-        isCurrentlyPublic()
-          ? ('project.overview.dialog.makePrivate.confirmButton' | translate)
-          : ('project.overview.dialog.makePublic.confirmButton' | translate)
-      "
+      [label]="'common.buttons.continue' | translate"
       (onClick)="toggleProjectPublicity()"
       [disabled]="isSubmitting()"
       [loading]="isSubmitting()"

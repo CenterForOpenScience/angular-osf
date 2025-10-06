@@ -39,8 +39,9 @@ export class AddToCollectionConfirmationDialogComponent {
     if (!payload || !project) return;
 
     this.isSubmitting.set(true);
+    const projectPayload = [{ id: project.id as string, public: true }];
 
-    const updatePublicStatus$ = project.isPublic ? of(null) : this.actions.updateProjectPublicStatus(project.id, true);
+    const updatePublicStatus$ = project.isPublic ? of(null) : this.actions.updateProjectPublicStatus(projectPayload);
 
     const createSubmission$ = this.actions.createCollectionSubmission(payload);
 

@@ -1,0 +1,20 @@
+<div class="flex gap-1" [class.disabled]="item().disabled">
+  <p-checkbox
+    variant="filled"
+    binary="true"
+    [inputId]="item().id"
+    [(ngModel)]="item().checked"
+    [disabled]="item().disabled"
+  ></p-checkbox>
+
+  <label [for]="item().id" class="item-title mb-0">
+    {{ item().title }}
+    @if (item().isCurrent) {
+      <span> ({{ 'myProjects.settings.current' | translate }}) </span>
+    }
+  </label>
+
+  @if (item().disabled && !item().isCurrent && tooltipText().length) {
+    <osf-info-icon [tooltipText]="tooltipText() | translate"></osf-info-icon>
+  }
+</div>

@@ -2,6 +2,8 @@ export { AddProjectFormComponent } from './add-project-form/add-project-form.com
 export { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select/affiliated-institution-select.component';
 export { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view/affiliated-institutions-view.component';
 export { BarChartComponent } from './bar-chart/bar-chart.component';
+export { ComponentCheckboxItemComponent } from './component-checkbox-item/component-checkbox-item.component';
+export { ComponentsSelectionListComponent } from './components-selection-list/components-selection-list.component';
 export { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 export { ContributorsListComponent } from './contributors-list/contributors-list.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';

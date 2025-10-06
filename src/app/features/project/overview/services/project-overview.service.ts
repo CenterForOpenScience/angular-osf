@@ -15,7 +15,7 @@ import {
 import { JsonApiService } from '@osf/shared/services';
 
 import { ProjectOverviewMapper } from '../mappers';
-import { ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';
+import { PrivacyStatusModel, ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -52,18 +52,18 @@ export class ProjectOverviewService {
     );
   }
 
-  updateProjectPublicStatus(projectId: string, isPublic: boolean): Observable<void> {
+  updateProjectPublicStatus(data: PrivacyStatusModel[]): Observable<BaseNodeModel[]> {
     const payload = {
-      data: {
-        id: projectId,
-        type: 'nodes',
-        attributes: {
-          public: isPublic,
-        },
-      },
+      data: data.map((item) => ({ id: item.id, type: 'nodes', attributes: { public: item.public } })),
     };
 
-    return this.jsonApiService.patch<void>(`${this.apiUrl}/nodes/${projectId}/`, payload);
+    const headers = {
+      'Content-Type': 'application/vnd.api+json; ext=bulk',
+    };
+
+    return this.jsonApiService
+      .patch<BaseNodeDataJsonApi[]>(`${this.apiUrl}/nodes/`, payload, undefined, headers)
+      .pipe(map((res) => BaseNodeMapper.getNodesData(res)));
   }
 
   forkResource(projectId: string, resourceType: string): Observable<void> {

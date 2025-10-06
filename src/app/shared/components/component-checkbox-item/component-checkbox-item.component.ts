@@ -2,12 +2,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Checkbox } from 'primeng/checkbox';
 
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { InfoIconComponent } from '@osf/shared/components';
+import { ComponentCheckboxItemModel } from '@osf/shared/models';
 
-import { ViewOnlyLinkComponentItem } from '../../models';
+import { InfoIconComponent } from '../info-icon/info-icon.component';
 
 @Component({
   selector: 'osf-component-checkbox-item',
@@ -17,10 +17,6 @@ import { ViewOnlyLinkComponentItem } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComponentCheckboxItemComponent {
-  item = input.required<ViewOnlyLinkComponentItem>();
-  checkboxChange = output<void>();
-
-  onCheckboxChange(): void {
-    this.checkboxChange.emit();
-  }
+  item = model.required<ComponentCheckboxItemModel>();
+  tooltipText = input('');
 }
