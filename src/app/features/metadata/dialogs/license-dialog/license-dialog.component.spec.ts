@@ -1,34 +1,34 @@
-import { Store } from '@ngxs/store';
-
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_LICENSE, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
+import { LicenseComponent, LoadingSpinnerComponent } from '@shared/components';
+import { MOCK_LICENSE } from '@shared/mocks';
 import { LicensesSelectors } from '@shared/stores/licenses';
 
 import { LicenseDialogComponent } from './license-dialog.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('LicenseDialogComponent', () => {
   let component: LicenseDialogComponent;
   let fixture: ComponentFixture<LicenseDialogComponent>;
 
   beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === LicensesSelectors.getLicenses) return () => [MOCK_LICENSE];
-      if (selector === LicensesSelectors.getLoading) return () => false;
-      return () => null;
-    });
-
     await TestBed.configureTestingModule({
-      imports: [LicenseDialogComponent],
+      imports: [LicenseDialogComponent, OSFTestingModule, ...MockComponents(LoadingSpinnerComponent, LicenseComponent)],
       providers: [
-        TranslateServiceMock,
         MockProvider(DynamicDialogRef),
         MockProvider(DynamicDialogConfig),
-        MockProvider(Store, MOCK_STORE),
+        provideMockStore({
+          signals: [
+            { selector: LicensesSelectors.getLicenses, value: [MOCK_LICENSE] },
+            { selector: LicensesSelectors.getLoading, value: false },
+          ],
+        }),
       ],
     }).compileComponents();
 

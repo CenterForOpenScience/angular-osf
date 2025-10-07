@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_PROJECT_IDENTIFIERS, TranslateServiceMock } from '@osf/shared/mocks';
+import { MOCK_PROJECT_IDENTIFIERS } from '@osf/shared/mocks';
 import { Identifier } from '@osf/shared/models';
 
 import { MetadataPublicationDoiComponent } from './metadata-publication-doi.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataPublicationDoiComponent', () => {
   let component: MetadataPublicationDoiComponent;
@@ -13,8 +15,7 @@ describe('MetadataPublicationDoiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataPublicationDoiComponent],
-      providers: [TranslateServiceMock],
+      imports: [MetadataPublicationDoiComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataPublicationDoiComponent);

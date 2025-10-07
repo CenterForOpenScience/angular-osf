@@ -4,9 +4,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
-
 import { ResourceInformationDialogComponent } from './resource-information-dialog.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ResourceInformationDialogComponent', () => {
   let component: ResourceInformationDialogComponent;
@@ -14,8 +14,8 @@ describe('ResourceInformationDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResourceInformationDialogComponent],
-      providers: [TranslateServiceMock, MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
+      imports: [ResourceInformationDialogComponent, OSFTestingModule],
+      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResourceInformationDialogComponent);
