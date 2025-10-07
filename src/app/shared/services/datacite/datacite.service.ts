@@ -3,7 +3,7 @@ import { EMPTY, filter, map, Observable, of, switchMap, take } from 'rxjs';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors';
+import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { Identifier, IdentifiersResponseJsonApi } from '@osf/shared/models';
 import { DataciteEvent } from '@osf/shared/models/datacite/datacite-event.enum';

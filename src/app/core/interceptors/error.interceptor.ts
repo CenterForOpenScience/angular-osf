@@ -1,7 +1,7 @@
 import { EMPTY, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -12,7 +12,7 @@ import { LoaderService, ToastService } from '@osf/shared/services';
 import { ERROR_MESSAGES } from '../constants';
 import { AuthService } from '../services';
 
-export const BYPASS_ERROR_INTERCEPTOR = new HttpContextToken<boolean>(() => false);
+import { BYPASS_ERROR_INTERCEPTOR } from './error-interceptor.tokens';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
