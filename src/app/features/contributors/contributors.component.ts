@@ -36,6 +36,7 @@ import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
   ContributorModel,
+  RequestAccessModel,
   SelectOption,
   TableParameters,
   ViewOnlyLinkJsonApi,
@@ -274,32 +275,32 @@ export class ContributorsComponent implements OnInit {
       });
   }
 
-  acceptRequest(contributor: ContributorModel) {
+  acceptRequest(requestAccessItem: RequestAccessModel) {
     this.customConfirmationService.confirmAccept({
       headerKey: 'project.requestAccess.acceptDialog.header',
       messageKey: 'project.requestAccess.acceptDialog.message',
-      messageParams: { name: contributor.fullName },
+      messageParams: { name: requestAccessItem.creator.fullName },
       acceptLabelKey: 'common.buttons.accept',
       onConfirm: () => {
-        const payload = { permissions: contributor.permission };
+        const payload = { permissions: requestAccessItem.requestedPermissions };
 
         this.actions
-          .acceptRequestAccess(contributor.id, this.resourceId(), this.resourceType(), payload)
+          .acceptRequestAccess(requestAccessItem.id, this.resourceId(), this.resourceType(), payload)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => this.toastService.showSuccess('project.requestAccess.acceptDialog.successMessage'));
       },
     });
   }
 
-  rejectRequest(contributor: ContributorModel) {
+  rejectRequest(requestAccessItem: RequestAccessModel) {
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.requestAccess.rejectDialog.header',
       messageKey: 'project.requestAccess.rejectDialog.message',
-      messageParams: { name: contributor.fullName },
+      messageParams: { name: requestAccessItem.creator.fullName },
       acceptLabelKey: 'common.buttons.reject',
       onConfirm: () => {
         this.actions
-          .rejectRequestAccess(contributor.id, this.resourceId(), this.resourceType())
+          .rejectRequestAccess(requestAccessItem.id, this.resourceId(), this.resourceType())
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => this.toastService.showSuccess('project.requestAccess.rejectDialog.successMessage'));
       },

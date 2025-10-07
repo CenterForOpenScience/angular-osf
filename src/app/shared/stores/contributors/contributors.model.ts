@@ -1,4 +1,4 @@
-import { ContributorAddModel, ContributorModel } from '@osf/shared/models';
+import { ContributorAddModel, ContributorModel, RequestAccessModel } from '@osf/shared/models';
 import { AsyncStateModel, AsyncStateWithTotalCount } from '@osf/shared/models/store';
 
 export interface ContributorsStateModel {
@@ -7,7 +7,7 @@ export interface ContributorsStateModel {
     permissionFilter: string | null;
     bibliographyFilter: boolean | null;
   };
-  requestAccessList: AsyncStateModel<ContributorModel[]>;
+  requestAccessList: AsyncStateModel<RequestAccessModel[]>;
   users: AsyncStateWithTotalCount<ContributorAddModel[]>;
 }
 

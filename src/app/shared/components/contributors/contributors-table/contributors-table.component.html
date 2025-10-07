@@ -112,7 +112,7 @@
               binary="true"
               [(ngModel)]="contributor.isBibliographic"
               [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
-              [disabled]="!hasAdminAccess() || contributor.deactivated"
+              [disabled]="!hasAdminAccess() || contributor.deactivated || contributor.isCurator"
             ></p-checkbox>
           </div>
         </td>
