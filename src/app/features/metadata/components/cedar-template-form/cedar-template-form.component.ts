@@ -122,7 +122,7 @@ export class CedarTemplateFormComponent {
 
   readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
 
-  downloadFile() {
+  downloadMetadadaRecord() {
     if (this.fileGuid()) {
       window.open(`${this.environment.webUrl}/metadata/${this.fileGuid()}`)?.focus();
     } else {
