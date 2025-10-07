@@ -131,11 +131,7 @@ export class ContributorsComponent implements OnInit {
   );
 
   showRequestAccessList = computed(
-    () =>
-      this.hasAdminAccess() &&
-      this.resourceAccessRequestEnabled() &&
-      this.resourceType() === ResourceType.Project &&
-      this.requestAccessList().length
+    () => this.hasAdminAccess() && this.resourceType() === ResourceType.Project && this.requestAccessList().length
   );
 
   actions = createDispatchMap({
@@ -199,11 +195,7 @@ export class ContributorsComponent implements OnInit {
     });
 
     effect(() => {
-      if (
-        this.resourceType() === ResourceType.Project &&
-        this.hasAdminAccess() &&
-        this.resourceAccessRequestEnabled()
-      ) {
+      if (this.resourceType() === ResourceType.Project && this.hasAdminAccess()) {
         this.actions.getRequestAccessContributors(this.resourceId(), this.resourceType());
       }
     });
