@@ -7,7 +7,7 @@
     [tableParams]="tableParams()"
     [isLoading]="isContributorsLoading()"
     [currentUserId]="currentUser()?.id"
-    [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
+    [hasAdminAccess]="isCurrentUserAdminContributor()"
     (remove)="removeContributor($event)"
   />
 

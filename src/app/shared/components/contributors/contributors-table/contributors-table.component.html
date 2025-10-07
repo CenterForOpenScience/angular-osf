@@ -9,7 +9,7 @@
   [scrollable]="tableParams().scrollable"
   [lazy]="true"
   [lazyLoadOnInit]="true"
-  [reorderableColumns]="!deactivatedContributors()"
+  [reorderableColumns]="!deactivatedContributors() && hasAdminAccess()"
   (onRowReorder)="onRowReorder()"
   (onPage)="onPageChange($event)"
   class="view-only-table"
@@ -67,7 +67,7 @@
     @if (contributor.id) {
       <tr [pReorderableRow]="index" class="select-none">
         <td>
-          @if (!deactivatedContributors()) {
+          @if (!deactivatedContributors() && hasAdminAccess()) {
             <div pReorderableRowHandle>
               <osf-icon [iconClass]="'fas fa-bars'"></osf-icon>
             </div>
@@ -80,7 +80,7 @@
           </p>
         </td>
         <td>
-          @if (isCurrentUserAdminContributor() && !contributor.deactivated) {
+          @if (hasAdminAccess() && !contributor.deactivated) {
             <div class="w-9rem">
               <osf-select
                 [options]="permissionsOptions"
@@ -112,7 +112,7 @@
               binary="true"
               [(ngModel)]="contributor.isBibliographic"
               [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
-              [disabled]="!isCurrentUserAdminContributor() || contributor.deactivated"
+              [disabled]="!hasAdminAccess() || contributor.deactivated"
             ></p-checkbox>
           </div>
         </td>

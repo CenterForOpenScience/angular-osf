@@ -48,6 +48,21 @@ export class CurrentResourceSelectors {
   }
 
   @Selector([CurrentResourceState])
+  static hasResourceWriteAccess(state: CurrentResourceStateModel): boolean {
+    return state.resourceDetails.data?.currentUserPermissions?.includes(UserPermissions.Write) || false;
+  }
+
+  @Selector([CurrentResourceState])
+  static hasResourceAdminAccess(state: CurrentResourceStateModel): boolean {
+    return state.resourceDetails.data?.currentUserPermissions?.includes(UserPermissions.Admin) || false;
+  }
+
+  @Selector([CurrentResourceState])
+  static resourceAccessRequestEnabled(state: CurrentResourceStateModel): boolean {
+    return state.resourceDetails.data?.accessRequestsEnabled;
+  }
+
+  @Selector([CurrentResourceState])
   static getCurrentUserPermissions(currentResourceState: CurrentResourceStateModel): string[] {
     return currentResourceState.resourceDetails.data.currentUserPermissions || [];
   }

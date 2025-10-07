@@ -113,6 +113,8 @@ export class ContributorsComponent implements OnInit {
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  readonly hasAdminAccess = select(CurrentResourceSelectors.hasResourceAdminAccess);
+  readonly resourceAccessRequestEnabled = select(CurrentResourceSelectors.resourceAccessRequestEnabled);
   readonly currentUser = select(UserSelectors.getCurrentUser);
 
   readonly tableParams = computed<TableParameters>(() => ({
@@ -128,22 +130,12 @@ export class ContributorsComponent implements OnInit {
       : 'project.contributors.searchRegistrationPlaceholder'
   );
 
-  isCurrentUserAdminContributor = computed(() => {
-    const currentUserId = this.currentUser()?.id;
-    const initialContributors = this.initialContributors();
-    if (!currentUserId) return false;
-
-    return initialContributors.some(
-      (contributor: ContributorModel) =>
-        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
-    );
-  });
-
   showRequestAccessList = computed(
     () =>
-      this.isCurrentUserAdminContributor() &&
-      this.requestAccessList().length &&
-      this.resourceType() === ResourceType.Project
+      this.hasAdminAccess() &&
+      this.resourceAccessRequestEnabled() &&
+      this.resourceType() === ResourceType.Project &&
+      this.requestAccessList().length
   );
 
   actions = createDispatchMap({
@@ -169,6 +161,27 @@ export class ContributorsComponent implements OnInit {
   }
 
   constructor() {
+    this.setupEffects();
+  }
+
+  ngOnInit(): void {
+    const id = this.resourceId();
+
+    if (id) {
+      this.actions.getResourceDetails(id, this.resourceType());
+      this.actions.getContributors(id, this.resourceType());
+    }
+
+    this.setSearchSubscription();
+  }
+
+  private setSearchSubscription() {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => this.actions.updateSearchValue(res ?? null));
+  }
+
+  setupEffects() {
     effect(() => {
       this.contributors.set(structuredClone(this.initialContributors()));
 
@@ -180,31 +193,20 @@ export class ContributorsComponent implements OnInit {
     });
 
     effect(() => {
-      if (this.isCurrentUserAdminContributor()) {
+      if (this.hasAdminAccess()) {
         this.actions.getViewOnlyLinks(this.resourceId(), this.resourceType());
       }
     });
-  }
 
-  ngOnInit(): void {
-    const id = this.resourceId();
-
-    if (id) {
-      this.actions.getResourceDetails(id, this.resourceType());
-      this.actions.getContributors(id, this.resourceType());
-
-      if (this.resourceType() === ResourceType.Project) {
-        this.actions.getRequestAccessContributors(id, this.resourceType());
+    effect(() => {
+      if (
+        this.resourceType() === ResourceType.Project &&
+        this.hasAdminAccess() &&
+        this.resourceAccessRequestEnabled()
+      ) {
+        this.actions.getRequestAccessContributors(this.resourceId(), this.resourceType());
       }
-    }
-
-    this.setSearchSubscription();
-  }
-
-  private setSearchSubscription() {
-    this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => this.actions.updateSearchValue(res ?? null));
+    });
   }
 
   onPermissionChange(value: ContributorPermission): void {

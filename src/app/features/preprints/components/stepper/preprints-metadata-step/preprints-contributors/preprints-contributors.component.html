@@ -12,7 +12,7 @@
     [(contributors)]="contributors"
     [tableParams]="tableParams()"
     [currentUserId]="currentUser()?.id"
-    [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
+    [hasAdminAccess]="isCurrentUserAdminContributor()"
     [isLoading]="isContributorsLoading()"
     (remove)="removeContributor($event)"
   />
