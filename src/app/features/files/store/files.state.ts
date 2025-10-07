@@ -20,7 +20,6 @@ import {
   GetFileResourceMetadata,
   GetFileRevisions,
   GetFiles,
-  GetRootFolderFiles,
   GetRootFolders,
   GetStorageSupportedFeatures,
   RenameEntry,
@@ -28,7 +27,6 @@ import {
   SetCurrentFolder,
   SetCurrentProvider,
   SetFileMetadata,
-  SetFilesIsLoading,
   SetSearch,
   SetSort,
   UpdateTags,
@@ -73,9 +71,10 @@ export class FilesState {
     ctx.patchState({ files: { ...state.files, isLoading: true, error: null, totalCount: 0 } });
     return this.filesService.getFiles(action.filesLink, state.search, state.sort, action.page).pipe(
       tap((response) => {
+        const newData = action.page === 1 ? response.files : [...(state.files.data ?? []), ...response.files];
         ctx.patchState({
           files: {
-            data: response.files,
+            data: newData,
             isLoading: false,
             error: null,
             totalCount: response.meta?.total ?? 0,
@@ -85,12 +84,6 @@ export class FilesState {
       }),
       catchError((error) => handleSectionError(ctx, 'files', error))
     );
-  }
-
-  @Action(SetFilesIsLoading)
-  setFilesIsLoading(ctx: StateContext<FilesStateModel>, action: SetFilesIsLoading) {
-    const state = ctx.getState();
-    ctx.patchState({ files: { ...state.files, isLoading: action.isLoading, error: null } });
   }
 
   @Action(SetCurrentFolder)
@@ -115,14 +108,17 @@ export class FilesState {
 
   @Action(DeleteEntry)
   deleteEntry(ctx: StateContext<FilesStateModel>, action: DeleteEntry) {
+    const state = ctx.getState();
+    ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
     return this.filesService.deleteEntry(action.link).pipe(
       tap(() => {
-        const selectedFolder = ctx.getState().currentFolder;
-        if (selectedFolder?.links.filesLink) {
-          ctx.dispatch(new GetFiles(selectedFolder?.links.filesLink));
-        } else {
-          ctx.dispatch(new GetRootFolderFiles(action.resourceId));
-        }
+        ctx.patchState({ files: { ...state.files, isLoading: false, error: null } });
+        // const selectedFolder = ctx.getState().currentFolder;
+        // if (selectedFolder?.links.filesLink) {
+        //   ctx.dispatch(new GetFiles(selectedFolder?.links.filesLink));
+        // } else {
+        //   ctx.dispatch(new GetRootFolderFiles(action.resourceId));
+        // }
       }),
       catchError((error) => handleSectionError(ctx, 'files', error))
     );
@@ -135,12 +131,13 @@ export class FilesState {
 
     return this.filesService.renameEntry(action.link, action.name).pipe(
       tap(() => {
-        const selectedFolder = ctx.getState().currentFolder;
-        if (selectedFolder?.links.filesLink) {
-          ctx.dispatch(new GetFiles(selectedFolder?.links.filesLink));
-        } else {
-          ctx.dispatch(new GetRootFolderFiles(action.resourceId));
-        }
+        ctx.patchState({ files: { ...state.files, isLoading: false, error: null } });
+        // const selectedFolder = ctx.getState().currentFolder;
+        // if (selectedFolder?.links.filesLink) {
+        //   ctx.dispatch(new GetFiles(selectedFolder?.links.filesLink));
+        // } else {
+        //   ctx.dispatch(new GetRootFolderFiles(action.resourceId));
+        // }
       }),
       catchError((error) => handleSectionError(ctx, 'files', error))
     );

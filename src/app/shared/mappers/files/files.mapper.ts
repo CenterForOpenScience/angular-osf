@@ -1,3 +1,4 @@
+import { FileKind } from '@osf/shared/enums';
 import {
   FileDataJsonApi,
   FileDetailsDataJsonApi,
@@ -5,6 +6,7 @@ import {
   FileExtraJsonApi,
   FileExtraModel,
   FileFolderDataJsonApi,
+  FileFolderLinks,
   FileFolderModel,
   FileLinksJsonApi,
   FileLinksModel,
@@ -115,5 +117,23 @@ export class FilesMapper {
         downloadLink: fileVersion.links.download,
       };
     });
+  }
+
+  static mapFileToFolder(file: FileModel): FileFolderModel {
+    return {
+      id: file.id,
+      kind: FileKind.Folder,
+      name: file.name,
+      node: file.target?.id ?? '',
+      path: file.path,
+      provider: file.provider,
+      links: {
+        newFolder: file.links.upload + '?kind=folder',
+        storageAddons: '',
+        upload: file.links.upload,
+        filesLink: file.filesLink ?? '',
+        download: file.links.upload,
+      } as FileFolderLinks,
+    };
   }
 }

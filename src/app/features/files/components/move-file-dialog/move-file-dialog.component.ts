@@ -4,8 +4,9 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PaginatorState } from 'primeng/paginator';
+import { ScrollerModule } from 'primeng/scroller';
 import { Tooltip } from 'primeng/tooltip';
+import { TreeScrollIndexChangeEvent } from 'primeng/tree';
 
 import { finalize, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -15,13 +16,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FilesSelectors, GetFiles, GetRootFolderFiles, SetCurrentFolder } from '@osf/features/files/store';
 import { FileKind } from '@osf/shared/enums';
-import { FileFolderModel, FileLinksModel, FileModel } from '@osf/shared/models';
-import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent } from '@shared/components';
+import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
+import { FileFolderModel, FileModel } from '@osf/shared/models';
+import { IconComponent, LoadingSpinnerComponent } from '@shared/components';
 import { FilesService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-move-file-dialog',
-  imports: [Button, LoadingSpinnerComponent, Tooltip, TranslatePipe, IconComponent, CustomPaginatorComponent],
+  imports: [Button, LoadingSpinnerComponent, Tooltip, TranslatePipe, IconComponent, ScrollerModule],
   templateUrl: './move-file-dialog.component.html',
   styleUrl: './move-file-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,9 +59,8 @@ export class MoveFileDialogComponent {
   previousFolder = signal<FileFolderModel | null>(null);
 
   pageNumber = signal(1);
-
+  isLoadingMore = signal(false);
   itemsPerPage = 10;
-  first = 0;
 
   readonly isFolderSame = computed(() => this.currentFolder()?.id === this.config.data.fileFolderId);
 
@@ -71,11 +72,15 @@ export class MoveFileDialogComponent {
     this.initPreviousFolder();
 
     effect(() => {
-      const page = this.pageNumber();
-      const filesLink = this.currentFolder()?.links?.filesLink;
-
-      if (filesLink) {
-        this.actions.getFiles(filesLink, page);
+      // const page = this.pageNumber();
+      // const filesLink = this.currentFolder()?.links?.filesLink;
+      // if (filesLink) {
+      //   this.actions.getFiles(filesLink, page);
+      // }
+    });
+    effect(() => {
+      if (!this.isLoading()) {
+        this.isLoadingMore.set(false);
       }
     });
   }
@@ -96,11 +101,8 @@ export class MoveFileDialogComponent {
         this.previousFolder.set(current);
         this.foldersStack.update((stack) => [...stack, current]);
       }
-      const filesLink = (file.links as FileLinksModel).self;
-      if (filesLink) {
-        this.actions.getFiles(filesLink);
-      }
-      this.actions.setCurrentFolder(file as FileFolderModel);
+      const folder = FilesMapper.mapFileToFolder(file as FileModel);
+      this.actions.setCurrentFolder(folder);
     }
   }
 
@@ -138,36 +140,33 @@ export class MoveFileDialogComponent {
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.actions.setCurrentFolder(this.currentFolder());
-          this.actions.setCurrentFolder(null);
           this.isFilesUpdating.set(false);
-          this.dialogRef.close(this.foldersStack());
         }),
         catchError((error) => {
           this.toastService.showError(error.error.message);
           return throwError(() => error);
         })
       )
-      .subscribe((file) => {
-        if (file.id) {
-          const filesLink = this.currentFolder()?.links.filesLink;
-          const rootFolders = this.rootFolders();
-          this.resetPagination();
-          if (filesLink) {
-            this.actions.getFiles(filesLink);
-          } else if (rootFolders) {
-            this.actions.getFiles(rootFolders[0].links.filesLink);
-          }
-        }
+      .subscribe(() => {
+        this.dialogRef.close({ foldersStack: this.foldersStack(), success: true });
       });
   }
 
-  resetPagination() {
-    this.first = 0;
-    this.pageNumber.set(1);
+  private loadNextPage(): void {
+    const total = this.filesTotalCount();
+    const loaded = this.files().length;
+    const nextPage = Math.floor(loaded / this.itemsPerPage) + 1;
+
+    if (!this.isLoadingMore() && loaded < total) {
+      this.isLoadingMore.set(true);
+      this.actions.getFiles(this.currentFolder()?.links.filesLink ?? '', nextPage);
+    }
   }
 
-  onFilesPageChange(event: PaginatorState): void {
-    this.pageNumber.set(event.page! + 1);
-    this.first = event.first!;
+  onScrollIndexChange(event: TreeScrollIndexChangeEvent) {
+    const loaded = this.files().length;
+    if (event.last >= loaded - 1) {
+      this.loadNextPage();
+    }
   }
 }

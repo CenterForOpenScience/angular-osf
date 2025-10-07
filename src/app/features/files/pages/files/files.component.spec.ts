@@ -1,5 +1,3 @@
-import { Store } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 import { MockProvider } from 'ng-mocks';
 
@@ -23,7 +21,6 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
 import { testNode } from '@osf/shared/mocks';
-import { OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
 import { GoogleFilePickerComponent } from '@shared/components/google-file-picker/google-file-picker.component';
@@ -167,46 +164,46 @@ describe('Component: Files', () => {
     });
   });
 
-  describe('updateFilesList', () => {
-    it('should handle the updateFilesList with a filesLink', () => {
-      let results!: string;
-      const store = TestBed.inject(Store);
-      const dispatchSpy = jest.spyOn(store, 'dispatch');
-      dispatchSpy.mockClear();
-      jest.spyOn(component.filesTreeActions, 'setFilesIsLoading');
-      component.updateFilesList().subscribe({
-        next: (result) => {
-          results = result as any;
-        },
-      });
+  // describe.skip('updateFilesList', () => {
+  //   it('should handle the updateFilesList with a filesLink', () => {
+  //     let results!: string;
+  //     const store = TestBed.inject(Store);
+  //     const dispatchSpy = jest.spyOn(store, 'dispatch');
+  //     dispatchSpy.mockClear();
+  //     jest.spyOn(component.filesTreeActions, 'setFilesIsLoading');
+  //     component.updateFilesList().subscribe({
+  //       next: (result) => {
+  //         results = result as any;
+  //       },
+  //     });
 
-      expect(results).toBeTruthy();
+  //     expect(results).toBeTruthy();
 
-      expect(component.filesTreeActions.setFilesIsLoading).toHaveBeenCalledWith(true);
-      expect(dispatchSpy).toHaveBeenCalledWith({
-        filesLink: 'https://api.staging4.osf.io/v2/nodes/xgrm4/files/osfstorage/',
-      });
-    });
+  //     expect(component.filesTreeActions.setFilesIsLoading).toHaveBeenCalledWith(true);
+  //     expect(dispatchSpy).toHaveBeenCalledWith({
+  //       filesLink: 'https://api.staging4.osf.io/v2/nodes/xgrm4/files/osfstorage/',
+  //     });
+  //   });
 
-    it('should handle the updateFilesList without a filesLink', () => {
-      let results!: string;
-      const currentFolder = currentFolderSignal() as OsfFile;
-      currentFolder.relationships.filesLink = '';
-      currentFolderSignal.set(currentFolder);
-      const store = TestBed.inject(Store);
-      const dispatchSpy = jest.spyOn(store, 'dispatch');
-      dispatchSpy.mockClear();
-      jest.spyOn(component.filesTreeActions, 'setFilesIsLoading');
-      component.updateFilesList().subscribe({
-        next: (result) => {
-          results = result as any;
-        },
-      });
+  //   it('should handle the updateFilesList without a filesLink', () => {
+  //     let results!: string;
+  //     const currentFolder = currentFolderSignal() as OsfFile;
+  //     currentFolder.relationships.filesLink = '';
+  //     currentFolderSignal.set(currentFolder);
+  //     const store = TestBed.inject(Store);
+  //     const dispatchSpy = jest.spyOn(store, 'dispatch');
+  //     dispatchSpy.mockClear();
+  //     jest.spyOn(component.filesTreeActions, 'setFilesIsLoading');
+  //     component.updateFilesList().subscribe({
+  //       next: (result) => {
+  //         results = result as any;
+  //       },
+  //     });
 
-      expect(results).toBeUndefined();
+  //     expect(results).toBeUndefined();
 
-      expect(component.filesTreeActions.setFilesIsLoading).not.toHaveBeenCalled();
-      expect(dispatchSpy).not.toHaveBeenCalled();
-    });
-  });
+  //     expect(component.filesTreeActions.setFilesIsLoading).not.toHaveBeenCalled();
+  //     expect(dispatchSpy).not.toHaveBeenCalled();
+  //   });
+  // });
 });

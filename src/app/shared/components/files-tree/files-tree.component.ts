@@ -3,8 +3,7 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
-import { PaginatorState } from 'primeng/paginator';
-import { Tree } from 'primeng/tree';
+import { Tree, TreeScrollIndexChangeEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
@@ -34,13 +33,13 @@ import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { StopPropagationDirective } from '@osf/shared/directives';
 import { FileKind, FileMenuType } from '@osf/shared/enums';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
+import { FilesMapper } from '@osf/shared/mappers';
 import { FileFolderModel, FileLabelModel, FileMenuAction, FileMenuFlags, FileModel } from '@osf/shared/models';
 import { FileSizePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { CurrentResourceSelectors } from '@shared/stores';
 
-import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
@@ -55,7 +54,6 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
     LoadingSpinnerComponent,
     FileMenuComponent,
     StopPropagationDirective,
-    CustomPaginatorComponent,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -94,16 +92,24 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   entryFileClicked = output<FileModel>();
   uploadFilesConfirmed = output<File[] | File>();
-  filesPageChange = output<number>();
-  setFilesIsLoading = output<boolean>();
-  setCurrentFolder = output<FileFolderModel | null>();
+  setCurrentFolder = output<FileFolderModel>();
   deleteEntryAction = output<string>();
   renameEntryAction = output<{ newName: string; link: string }>();
-  getFiles = output<string>();
+  loadFiles = output<{ link: string; page: number }>();
 
   foldersStack: FileFolderModel[] = [];
   itemsPerPage = 10;
-  first = 0;
+
+  isLoadingMore = signal(false);
+  scrollHeight = input<string>('300px');
+  virtualScrollItemSize = 46;
+
+  visibleFilesCount = computed((): number => {
+    const height = parseInt(this.scrollHeight(), 10);
+    return Math.ceil(height / this.virtualScrollItemSize);
+  });
+
+  isCopyMoveDialogOpened = false;
 
   readonly FileMenuType = FileMenuType;
 
@@ -140,6 +146,19 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       const storageChanged = this.storage();
       if (storageChanged) {
         this.foldersStack = [];
+      }
+    });
+
+    effect(() => {
+      if (!this.isLoading()) {
+        this.isLoadingMore.set(false);
+      }
+    });
+
+    effect(() => {
+      const loaded = this.files().length;
+      if (loaded < this.visibleFilesCount()) {
+        this.loadNextPage();
       }
     });
   }
@@ -220,9 +239,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       if (current) {
         this.foldersStack.push(current);
       }
-      this.resetPagination();
-      this.setFilesIsLoading.emit(true);
-      this.setCurrentFolder.emit(file as FileFolderModel);
+      const folder = FilesMapper.mapFileToFolder(file as FileModel);
+      this.setCurrentFolder.emit(folder);
     }
   }
 
@@ -267,10 +285,11 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       .logFileDownload(this.resourceId(), resourceType)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
-    if (file.kind === 'file') {
+    if (file.kind === FileKind.File) {
       this.downloadFile(file.links.download);
     } else {
-      this.downloadFolder(file.links.download);
+      const folder = FilesMapper.mapFileToFolder(file as FileModel);
+      this.downloadFolder(folder.links.download);
     }
   }
 
@@ -307,16 +326,16 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   deleteEntry(file: FileModel): void {
     this.customConfirmationService.confirmDelete({
-      headerKey: 'files.dialogs.deleteFile.title',
+      headerKey: file.kind === FileKind.Folder ? 'files.dialogs.deleteFolder.title' : 'files.dialogs.deleteFile.title',
       messageParams: { name: file.name },
-      messageKey: 'files.dialogs.deleteFile.message',
+      messageKey:
+        file.kind === FileKind.Folder ? 'files.dialogs.deleteFolder.message' : 'files.dialogs.deleteFile.message',
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => this.confirmDeleteEntry(file.links.delete),
     });
   }
 
   confirmDeleteEntry(link: string): void {
-    this.setFilesIsLoading.emit(true);
     this.deleteEntryAction.emit(link);
     // this.actions()
     //   .deleteEntry?.(this.resourceId(), link)
@@ -341,7 +360,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   renameEntry(newName: string, file: FileModel): void {
     if (newName.trim() && file.links.upload) {
-      this.setFilesIsLoading.emit(true);
       const link = file.links.upload;
       this.renameEntryAction.emit({ newName, link });
 
@@ -372,7 +390,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   moveFile(file: FileModel, action: string): void {
     const header = action === 'move' ? 'files.dialogs.moveFile.title' : 'files.dialogs.copyFile.title';
-
+    this.isCopyMoveDialogOpened = true;
     this.customDialogService
       .open(MoveFileDialogComponent, {
         header,
@@ -386,22 +404,22 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
           fileFolderId: this.currentFolder()?.id,
         },
       })
-      .onClose.subscribe((foldersStack) => {
-        this.resetPagination();
-        if (foldersStack) {
-          this.foldersStack = [...foldersStack];
-
-          if (action === 'copy') {
-            this.toastService.showSuccess('files.dialogs.copyFile.success');
+      .onClose.subscribe((result) => {
+        if (result) {
+          if (result.foldersStack) {
+            this.foldersStack = [...result.foldersStack];
+          }
+          if (result.success) {
+            const messageType = action === 'move' ? 'moveFile' : 'copyFile';
+            this.toastService.showSuccess(`files.dialogs.${messageType}.success`);
+            this.loadFiles.emit({
+              link: this.currentFolder()?.links.filesLink ?? '',
+              page: 1,
+            });
           }
         }
+        this.isCopyMoveDialogOpened = false;
       });
-  }
-
-  updateFilesList(currentFolder: FileFolderModel): void {
-    if (currentFolder?.links?.filesLink) {
-      this.getFiles.emit(currentFolder?.links.filesLink);
-    }
   }
 
   copyToClipboard(embedHtml: string): void {
@@ -409,13 +427,24 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     this.toastService.showSuccess('files.detail.toast.copiedToClipboard');
   }
 
-  resetPagination() {
-    this.first = 0;
-    this.filesPageChange.emit(1);
+  private loadNextPage(): void {
+    const total = this.totalCount();
+    const loaded = this.files().length;
+    const nextPage = Math.floor(loaded / this.itemsPerPage) + 1;
+
+    if (!this.isLoadingMore() && loaded < total) {
+      this.isLoadingMore.set(true);
+      this.loadFiles.emit({
+        link: this.currentFolder()?.links.filesLink ?? '',
+        page: nextPage,
+      });
+    }
   }
 
-  onFilesPageChange(event: PaginatorState): void {
-    this.filesPageChange.emit(event.page! + 1);
-    this.first = event.first!;
+  onScrollIndexChange(event: TreeScrollIndexChangeEvent) {
+    const loaded = this.files().length;
+    if (event.last >= loaded - 1) {
+      this.loadNextPage();
+    }
   }
 }

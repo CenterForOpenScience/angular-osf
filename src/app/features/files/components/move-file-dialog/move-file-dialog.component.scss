@@ -12,6 +12,7 @@
   &-row {
     border-bottom: 1px solid var(--grey-2);
     color: var(--dark-blue-1);
+    height: mix.rem(44px);
   }
 
   &-row:last-child {

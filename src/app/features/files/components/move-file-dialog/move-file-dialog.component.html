@@ -1,4 +1,4 @@
-@if (isLoading() || isFilesUpdating()) {
+@if ((isLoading() || isFilesUpdating()) && !isLoadingMore()) {
   <div class="w-8rem ml-auto mr-auto">
     <osf-loading-spinner></osf-loading-spinner>
   </div>
@@ -22,39 +22,44 @@
         </div>
       }
 
-      @for (file of files(); track $index) {
-        <div class="files-table-row flex align-items-center py-2" [class]="foldersStack().length ? 'pl-6' : 'px-3'">
-          <div class="flex align-items-center gap-2 w-full">
-            @if (file.kind !== 'folder') {
-              <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>
-              <div class="filename-link overflow-ellipsis disabled">{{ file?.name ?? '' }}</div>
-            } @else if (config.data.file.id === file.id) {
-              <osf-icon class="disabled-icon" iconClass="fas fa-folder disabled-icon"></osf-icon>
+      <p-virtualscroller
+        [items]="files()"
+        [itemSize]="44"
+        scrollHeight="350px"
+        (onScrollIndexChange)="onScrollIndexChange($event)"
+        [loading]="isLoadingMore()"
+        [showLoader]="true"
+      >
+        <ng-template #item let-item let-options="options">
+          <div class="files-table-row flex align-items-center py-2" [class]="foldersStack().length ? 'pl-6' : 'px-3'">
+            <div class="flex align-items-center gap-2 w-full">
+              @if (item.kind !== 'folder') {
+                <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>
+                <div class="filename-link overflow-ellipsis disabled">{{ item?.name ?? '' }}</div>
+              } @else if (config.data.file.id === item.id) {
+                <osf-icon class="disabled-icon" iconClass="fas fa-folder disabled-icon"></osf-icon>
 
-              <div class="filename-link overflow-ellipsis" [pTooltip]="'files.dialogs.moveFile.cannotMove' | translate">
-                {{ file?.name ?? '' }}
-              </div>
-            } @else {
-              <p-button
-                class="filename-link link-btn-no-padding overflow-ellipsis font-normal"
-                icon="fas fa-folder"
-                severity="secondary"
-                [link]="true"
-                [label]="file?.name ?? ''"
-                (onClick)="openFolder(file)"
-              />
-            }
+                <div
+                  class="filename-link overflow-ellipsis"
+                  [pTooltip]="'files.dialogs.moveFile.cannotMove' | translate"
+                >
+                  {{ item?.name ?? '' }}
+                </div>
+              } @else {
+                <p-button
+                  class="filename-link link-btn-no-padding overflow-ellipsis font-normal"
+                  icon="fas fa-folder"
+                  severity="secondary"
+                  [link]="true"
+                  [label]="item?.name ?? ''"
+                  (onClick)="openFolder(item)"
+                />
+              }
+            </div>
           </div>
-        </div>
-      }
-      @if (filesTotalCount() > itemsPerPage) {
-        <osf-custom-paginator
-          class="mt-1 border-top-1 border-200"
-          [first]="first"
-          [totalCount]="filesTotalCount()"
-          (pageChanged)="onFilesPageChange($event)"
-        />
-      }
+        </ng-template>
+      </p-virtualscroller>
+
       @if (!files().length) {
         <div class="flex justify-content-center p-4">
           <h3 class="font-normal text-no-transform">{{ 'files.emptyState' | translate }}</h3>

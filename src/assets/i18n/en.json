@@ -1125,6 +1125,11 @@
         "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?",
         "success": "File successfully deleted."
       },
+      "deleteFolder": {
+        "title": "Delete Folder",
+        "message": "Are you sure you want to delete the folder <span class=\"font-bold\">{{name}}</span> and all its contents?",
+        "success": "Folder successfully deleted."
+      },
       "replaceFile": {
         "single": "Replace file",
         "multiple": "Replace files",

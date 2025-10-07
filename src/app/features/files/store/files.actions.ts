@@ -17,17 +17,10 @@ export class GetFiles {
   ) {}
 }
 
-export class SetFilesIsLoading {
-  static readonly type = '[Files] Set Files Loading';
-
-  constructor(public isLoading: boolean) {}
-}
-
 export class RenameEntry {
   static readonly type = '[Files] Rename entry';
 
   constructor(
-    public resourceId: string,
     public link: string,
     public name: string
   ) {}
@@ -138,10 +131,7 @@ export class CreateFolder {
 export class DeleteEntry {
   static readonly type = '[Files] Delete entry';
 
-  constructor(
-    public resourceId: string,
-    public link: string
-  ) {}
+  constructor(public link: string) {}
 }
 
 export class GetRootFolders {

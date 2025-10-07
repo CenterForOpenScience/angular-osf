@@ -43,7 +43,8 @@
     [resourceId]="selectedRoot!"
     [provider]="provider()"
     (entryFileClicked)="navigateToFile($event)"
-    (filesPageChange)="onFilesPageChange($event)"
+    (loadFiles)="onLoadFiles($event)"
+    (setCurrentFolder)="setCurrentFolder($event)"
   >
   </osf-files-tree>
 </section>

@@ -26,6 +26,7 @@ import {
   ContributorsResponseJsonApi,
   FileDetailsModel,
   FileDetailsResponseJsonApi,
+  FileFolderDataJsonApi,
   FileFolderModel,
   FileFolderResponseJsonApi,
   FileFoldersResponseJsonApi,
@@ -115,10 +116,8 @@ export class FilesService {
     return this.jsonApiService.put(link, file, params);
   }
 
-  createFolder(link: string, folderName: string): Observable<FileFolderModel> {
-    return this.jsonApiService
-      .put<FileFolderResponseJsonApi>(link, null, { name: folderName })
-      .pipe(map((response) => FilesMapper.getFileFolder(response.data)));
+  createFolder(link: string, folderName: string) {
+    return this.jsonApiService.put<FileFolderDataJsonApi>(link, null, { name: folderName });
   }
 
   getFolder(link: string): Observable<FileFolderModel> {
@@ -140,7 +139,7 @@ export class FilesService {
     return this.jsonApiService.post(link, body);
   }
 
-  moveFile(link: string, path: string, resourceId: string, provider: string, action: string): Observable<FileModel> {
+  moveFile(link: string, path: string, resourceId: string, provider: string, action: string) {
     const body = {
       action: action,
       path: path,
@@ -148,9 +147,7 @@ export class FilesService {
       resource: resourceId,
     };
 
-    return this.jsonApiService
-      .post<FileResponseJsonApi>(link, body)
-      .pipe(map((response) => FilesMapper.getFile(response.data)));
+    return this.jsonApiService.post<FileResponseJsonApi>(link, body);
   }
 
   getFolderDownloadLink(link: string): string {
