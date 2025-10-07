@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
-import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
+import { Checkbox } from 'primeng/checkbox';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
@@ -168,7 +168,7 @@ export class LinkResourceDialogComponent {
     this.dialogRef.close();
   }
 
-  handleToggleNodeLink($event: CheckboxChangeEvent, resource: MyResourcesItem) {
+  handleToggleNodeLink(resource: MyResourcesItem) {
     const currentProjectId = this.currentProject()?.id;
 
     if (!currentProjectId) {
@@ -196,12 +196,13 @@ export class LinkResourceDialogComponent {
     };
 
     untracked(() => {
+      const currentProjectId = this.currentProject()?.id;
+      if (!currentProjectId) return;
+
       if (resourceType === ResourceType.Project) {
-        const currentProjectId = this.currentProject()?.id;
-        if (!currentProjectId) return;
         this.actions.getProjects(this.currentPage(), this.tableRows, searchFilters, searchMode, currentProjectId);
       } else if (resourceType === ResourceType.Registration) {
-        this.actions.getRegistrations(this.currentPage(), this.tableRows, searchFilters);
+        this.actions.getRegistrations(this.currentPage(), this.tableRows, searchFilters, searchMode, currentProjectId);
       }
     });
   }

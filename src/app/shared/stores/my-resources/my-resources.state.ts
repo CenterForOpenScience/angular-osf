@@ -64,7 +64,13 @@ export class MyResourcesState {
     });
 
     return this.myResourcesService
-      .getMyRegistrations(action.filters, action.pageNumber, action.pageSize, action.searchMode)
+      .getMyRegistrations(
+        action.filters,
+        action.pageNumber,
+        action.pageSize,
+        action.searchMode,
+        action.rootRegistrationId
+      )
       .pipe(
         tap((res) => {
           ctx.patchState({
