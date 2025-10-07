@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { TranslateServiceMock } from '@shared/mocks';
+
 import { AddonsToolbarComponent } from './addons-toolbar.component';
 
 describe('AddonsToolbarComponent', () => {
@@ -12,6 +14,7 @@ describe('AddonsToolbarComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AddonsToolbarComponent],
       providers: [
+        TranslateServiceMock,
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { queryParams: {} } },

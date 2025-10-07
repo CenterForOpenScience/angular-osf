@@ -12,6 +12,7 @@ describe('ComponentCheckboxItemComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ComponentCheckboxItemComponent);
+    fixture.componentRef.setInput('item', { id: '1', name: 'Test Item', checked: false });
     component = fixture.componentInstance;
 
     fixture.detectChanges();

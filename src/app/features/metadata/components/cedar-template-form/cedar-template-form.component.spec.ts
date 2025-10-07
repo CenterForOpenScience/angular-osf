@@ -1,10 +1,15 @@
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
 import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models';
 import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK, TranslateServiceMock } from '@shared/mocks';
 
 import { CedarTemplateFormComponent } from './cedar-template-form.component';
+
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 
 describe('CedarTemplateFormComponent', () => {
   let component: CedarTemplateFormComponent;
@@ -13,9 +18,11 @@ describe('CedarTemplateFormComponent', () => {
   const mockTemplate: CedarMetadataDataTemplateJsonApi = CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK;
 
   beforeEach(async () => {
+    const activatedRoute = ActivatedRouteMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
       imports: [CedarTemplateFormComponent],
-      providers: [TranslateServiceMock],
+      providers: [TranslateServiceMock, MockProvider(ActivatedRoute, activatedRoute)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CedarTemplateFormComponent);
