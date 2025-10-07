@@ -9,8 +9,9 @@ export class BaseNodeMapper {
     return this.getAllDescendants(data, parentId).map((item) => ({
       id: item.id,
       title: item.attributes.title,
+      isPublic: item.attributes.public,
+      permissions: item.attributes.current_user_permissions,
       parentId: item.relationships.parent?.data?.id,
-      permissions: item.attributes.current_user_permissions || [],
     }));
   }
 

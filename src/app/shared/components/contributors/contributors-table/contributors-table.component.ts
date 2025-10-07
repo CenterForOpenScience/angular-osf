@@ -49,7 +49,7 @@ export class ContributorsTableComponent {
   resourceType = input(ResourceType.Project);
 
   currentUserId = input<string | undefined>(undefined);
-  isCurrentUserAdminContributor = input<boolean>(true);
+  hasAdminAccess = input<boolean>(true);
 
   remove = output<ContributorModel>();
   pageChanged = output<TablePageEvent>();
@@ -68,14 +68,16 @@ export class ContributorsTableComponent {
   canRemoveContributor = computed(() => {
     const contributors = this.contributors();
     const currentUserId = this.currentUserId();
-    const isAdmin = this.isCurrentUserAdminContributor();
+    const isAdmin = this.hasAdminAccess();
     const adminCount = contributors.filter((c) => c.permission === ContributorPermission.Admin).length;
 
     const result = new Map<string, boolean>();
 
     for (const c of contributors) {
-      const canRemove =
-        (isAdmin || currentUserId === c.userId) && !(c.permission === ContributorPermission.Admin && adminCount <= 1);
+      const isOwnAccount = currentUserId === c.userId;
+      const isLastAdmin = c.permission === ContributorPermission.Admin && adminCount <= 1;
+
+      const canRemove = (isAdmin || isOwnAccount) && !isLastAdmin;
 
       result.set(c.userId, canRemove);
     }

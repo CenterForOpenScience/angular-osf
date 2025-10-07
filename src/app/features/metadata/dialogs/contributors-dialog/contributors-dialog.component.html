@@ -21,7 +21,7 @@
     [isLoading]="isLoading()"
     [showEmployment]="false"
     [showEducation]="false"
-    [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
+    [hasAdminAccess]="isCurrentUserAdminContributor()"
     [currentUserId]="currentUser()?.id"
     (remove)="removeContributor($event)"
   ></osf-contributors-table>

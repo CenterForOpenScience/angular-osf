@@ -73,17 +73,29 @@ export class ProjectOverviewState {
         },
       });
     }
-    return this.projectOverviewService.updateProjectPublicStatus(action.projectId, action.isPublic).pipe(
-      tap(() => {
-        if (state.project.data) {
+
+    return this.projectOverviewService.updateProjectPublicStatus(action.payload).pipe(
+      tap((res) => {
+        const project = res.find((item) => item.id === state.project.data?.id);
+
+        if (project) {
+          const updatedComponents = state.components.data.map((component) => {
+            const updatedComponent = res.find((item) => item.id === component.id);
+            return updatedComponent ? { ...component, public: updatedComponent.isPublic } : component;
+          });
+
           ctx.patchState({
             project: {
               ...state.project,
               data: {
                 ...state.project.data!,
-                isPublic: action.isPublic,
+                isPublic: project.isPublic,
               },
               isSubmitting: false,
+            },
+            components: {
+              ...state.components,
+              data: updatedComponents,
             },
           });
         }

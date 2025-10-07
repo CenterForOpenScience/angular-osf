@@ -36,7 +36,10 @@ export class RegistrySubmissionItemComponent {
   }
 
   get isPending(): boolean {
-    return this.submission().reviewsState === RegistrationReviewStates.Pending;
+    return (
+      this.submission().reviewsState === RegistrationReviewStates.Pending ||
+      this.submission().reviewsState === RegistrationReviewStates.PendingWithdraw
+    );
   }
 
   get isRejected(): boolean {

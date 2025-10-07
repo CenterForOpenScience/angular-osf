@@ -53,6 +53,8 @@
       "filter": "Filter",
       "sort": "Sort",
       "replace": "Replace",
+      "selectAll": "Select All",
+      "removeAll": "Remove All",
       "accept": "Accept",
       "reject": "Reject"
     },
@@ -452,7 +454,7 @@
       },
       "viewOnlyLinkCreated": "View only link successfully created.",
       "viewOnlyLinkDeleted": "View only link successfully deleted.",
-      "viewOnlyLinkCurrentProject": "(current component)",
+      "current": "Current",
       "anonymizeContributorList": "Anonymize contributor list for this link (e.g., for blind peer review).",
       "ensureNoInformation": "Ensure the wiki pages, files, registration forms and add-ons do not contain identifying information.",
       "linkName": "Link name",
@@ -739,12 +741,14 @@
           "cancelButton": "Cancel",
           "message": "<ul><li>&#8226; Public duplicates and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
         },
+        "changePrivacySettings": "Change privacy settings",
+        "adjustPrivacySetting": "Adjust your privacy settings by checking the boxes below.",
+        "checkedProjects": "Checked projects and components will be public.",
+        "uncheckedComponents": "Unchecked components will be private.",
+        "privacySettingsPermissionTooltip": "You must have admin permission on this component to be able to change privacy settings",
         "toast": {
-          "makePublic": {
-            "success": "Project has been made public successfully"
-          },
-          "makePrivate": {
-            "success": "Project has been made private successfully"
+          "changePrivacySettings": {
+            "success": "Privacy settings have been successfully updated."
           },
           "addComponent": {
             "success": "Component has been created successfully"
@@ -992,7 +996,9 @@
         "loadingCedar": "Loading CEDAR record...",
         "editRecord": "Edit Record",
         "recordCreatedSuccessfully": "Record created successfully",
-        "recordUpdatedSuccessfully": "Record updated successfully"
+        "recordUpdatedSuccessfully": "Record updated successfully",
+        "copyRecordMetadataUrl": "Copy url to clipboard to share.",
+        "downloadRecordMetadata": "Download Metadata Record"
       },
       "funding": {
         "updated": "Funding information updated successfully",
