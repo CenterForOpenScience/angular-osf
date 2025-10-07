@@ -17,13 +17,16 @@
             >
             </p-button>
           }
-          <p-button
-            severity="secondary"
-            class="btn-icon-only px-2 flex align-self-center"
-            icon="fas fa-copy"
-            [pTooltip]="'project.metadata.addMetadata.copyRecordMetadataUrl' | translate"
-            (onClick)="copyUrl()"
-          />
+
+          @if (!fileGuid()) {
+            <p-button
+              severity="secondary"
+              class="btn-icon-only px-2 flex align-self-center"
+              icon="fas fa-copy"
+              [pTooltip]="'project.metadata.addMetadata.copyRecordMetadataUrl' | translate"
+              (onClick)="copyUrl()"
+            />
+          }
 
           <p-button
             severity="secondary"
@@ -33,18 +36,20 @@
             (onClick)="downloadFile()"
           />
 
-          <p-button
-            severity="secondary"
-            class="btn-icon-only px-2 flex align-self-center"
-            icon="fas fa-share-nodes"
-            (onClick)="shareMenu.toggle($event)"
-          />
+          @if (!fileGuid()) {
+            <p-button
+              severity="secondary"
+              class="btn-icon-only px-2 flex align-self-center"
+              icon="fas fa-share-nodes"
+              (onClick)="shareMenu.toggle($event)"
+            />
 
-          <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
-            <ng-template #item let-item>
-              <a class="p-menu-item-link no-underline">{{ item.label | translate }}</a>
-            </ng-template>
-          </p-menu>
+            <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
+              <ng-template #item let-item>
+                <a class="p-menu-item-link no-underline">{{ item.label | translate }}</a>
+              </ng-template>
+            </p-menu>
+          }
         </div>
       </div>
     }
