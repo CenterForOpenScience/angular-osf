@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Panel } from 'primeng/panel';
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { CustomDialogService } from '@osf/shared/services';
@@ -21,7 +21,7 @@ import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-s
   styleUrl: './edit-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditSectionComponent implements OnInit {
+export class EditSectionComponent {
   readonly currentContent = input.required<string>();
   readonly versionContent = input.required<string>();
   readonly isSaving = input<boolean>(false);
@@ -54,11 +54,12 @@ export class EditSectionComponent implements OnInit {
         this.initialContent = versionContent;
       }
     });
-  }
 
-  ngOnInit(): void {
-    this.content = this.currentContent();
-    this.initialContent = this.currentContent();
+    effect(() => {
+      const currentContent = this.currentContent();
+      this.content = currentContent;
+      this.initialContent = currentContent;
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
