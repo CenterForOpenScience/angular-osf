@@ -237,6 +237,10 @@ export class FilesComponent {
 
   isButtonDisabled = computed(() => this.fileIsUploading() || this.isFilesLoading());
 
+  isGoogleDriveButtonDisabled = computed(
+    () => this.isButtonDisabled() || (this.googleFilePickerComponent()?.isGFPDisabled() ?? false)
+  );
+
   readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
     setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),

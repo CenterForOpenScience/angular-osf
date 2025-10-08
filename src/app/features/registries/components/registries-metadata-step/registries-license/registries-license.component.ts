@@ -5,15 +5,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
 import { LicenseComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
-import { CustomValidators } from '@osf/shared/helpers';
 import { LicenseModel, LicenseOptions } from '@osf/shared/models';
 
 @Component({
@@ -29,7 +28,6 @@ export class RegistriesLicenseComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly environment = inject(ENVIRONMENT);
   private readonly draftId = this.route.snapshot.params['id'];
-  private readonly fb = inject(FormBuilder);
 
   actions = createDispatchMap({ fetchLicenses: FetchLicenses, saveLicense: SaveLicense });
   licenses = select(RegistriesSelectors.getLicenses);
@@ -39,11 +37,6 @@ export class RegistriesLicenseComponent {
   draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
   currentYear = new Date();
-  licenseYear = this.currentYear;
-  licenseForm = this.fb.group({
-    year: [this.currentYear.getFullYear().toString(), CustomValidators.requiredTrimmed()],
-    copyrightHolders: ['', CustomValidators.requiredTrimmed()],
-  });
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
@@ -59,11 +52,29 @@ export class RegistriesLicenseComponent {
 
     effect(() => {
       const selectedLicense = this.selectedLicense();
-      if (selectedLicense) {
+      if (!selectedLicense) {
+        return;
+      }
+
+      this.control().patchValue({
+        id: selectedLicense.id,
+      });
+    });
+
+    effect(() => {
+      const licenses = this.licenses();
+      const selectedLicense = untracked(() => this.selectedLicense());
+
+      if (!licenses.length || !selectedLicense) {
+        return;
+      }
+
+      if (!licenses.find((license) => license.id === selectedLicense.id)) {
         this.control().patchValue({
-          id: selectedLicense.id,
-          // [NM] TODO: Add validation for license options
+          id: null,
         });
+        this.control().markAsTouched();
+        this.control().updateValueAndValidity();
       }
     });
   }

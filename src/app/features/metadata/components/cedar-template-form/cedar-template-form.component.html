@@ -7,15 +7,45 @@
         } @else {
           <h3 class="text-lg text-red-500">{{ 'project.metadata.addMetadata.notPublishedText' | translate }}</h3>
         }
-        @if (showEditButton()) {
+        <div class="flex items-right">
+          @if (showEditButton()) {
+            <p-button
+              class="px-2 flex align-self-center"
+              severity="secondary"
+              [label]="'project.metadata.addMetadata.editRecord' | translate"
+              (onClick)="toggleEditModeEmit()"
+            >
+            </p-button>
+          }
           <p-button
-            class="w-10rem flex-shrink-0 btn-full-width"
             severity="secondary"
-            [label]="'project.metadata.addMetadata.editRecord' | translate"
-            (onClick)="toggleEditModeEmit()"
-          >
-          </p-button>
-        }
+            class="btn-icon-only px-2 flex align-self-center"
+            icon="fas fa-copy"
+            [pTooltip]="'project.metadata.addMetadata.copyRecordMetadataUrl' | translate"
+            (onClick)="copyUrl()"
+          />
+
+          <p-button
+            severity="secondary"
+            class="btn-icon-only px-2 flex align-self-center"
+            icon="fas fa-download"
+            [pTooltip]="'project.metadata.addMetadata.downloadRecordMetadata' | translate"
+            (onClick)="downloadFile()"
+          />
+
+          <p-button
+            severity="secondary"
+            class="btn-icon-only px-2 flex align-self-center"
+            icon="fas fa-share-nodes"
+            (onClick)="shareMenu.toggle($event)"
+          />
+
+          <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
+            <ng-template #item let-item>
+              <a class="p-menu-item-link no-underline">{{ item.label | translate }}</a>
+            </ng-template>
+          </p-menu>
+        </div>
       </div>
     }
     <div class="cedar-editor-container">

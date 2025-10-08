@@ -157,6 +157,9 @@ export class AddComponentDialogComponent implements OnInit {
           .filter((inst) => inst !== undefined);
 
         this.selectedInstitutions.set(matchedInstitutions);
+
+        const institutionIds = matchedInstitutions.map((inst) => inst.id);
+        this.componentForm.get(ComponentFormControls.Affiliations)?.setValue(institutionIds);
       }
     });
   }

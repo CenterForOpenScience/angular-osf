@@ -25,17 +25,26 @@ export class AffiliatedInstitutionSelectComponent {
   isSelectAllDisabled = computed(() => {
     const institutions = this.institutions();
     const selected = this.selectedInstitutions();
-    return institutions.length === 0 || institutions.length === selected.length;
+    const selectedInstitutionsAvailableToModify = selected.filter((selected) =>
+      institutions.some((inst) => inst.id === selected.id)
+    );
+    return institutions.length === 0 || institutions.length === selectedInstitutionsAvailableToModify.length;
   });
 
   isRemoveAllDisabled = computed(() => this.selectedInstitutions().length === 0);
 
   removeAll() {
-    this.selectedInstitutions.set([]);
+    const institutionsUnableToModify = this.selectedInstitutions().filter(
+      (selected) => !this.institutions().some((inst) => inst.id === selected.id)
+    );
+    this.selectedInstitutions.set([...institutionsUnableToModify]);
   }
 
   selectAll() {
-    this.selectedInstitutions.set([...this.institutions()]);
+    const institutionsUnableToModify = this.selectedInstitutions().filter(
+      (selected) => !this.institutions().some((inst) => inst.id === selected.id)
+    );
+    this.selectedInstitutions.set([...this.institutions(), ...institutionsUnableToModify]);
   }
 
   selectDeselectInstitution(institution: Institution) {

@@ -1,6 +1,6 @@
 import { map, Observable } from 'rxjs';
 
-import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpEvent, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse } from '@osf/shared/models';
@@ -47,10 +47,11 @@ export class JsonApiService {
     url: string,
     body: unknown,
     params?: Record<string, unknown>,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
+    context?: HttpContext
   ): Observable<T> {
     return this.http
-      .patch<JsonApiResponse<T, null>>(url, body, { params: this.buildHttpParams(params), headers })
+      .patch<JsonApiResponse<T, null>>(url, body, { params: this.buildHttpParams(params), headers, context })
       .pipe(map((response) => response.data));
   }
 

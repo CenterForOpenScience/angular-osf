@@ -148,7 +148,6 @@ export class OverviewToolbarComponent {
     if (!resource) return;
 
     const isCurrentlyPublic = resource.isPublic;
-    const newPublicStatus = !isCurrentlyPublic;
 
     timer(100)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -162,7 +161,6 @@ export class OverviewToolbarComponent {
       data: {
         projectId: resource.id,
         isCurrentlyPublic,
-        newPublicStatus,
       },
     });
   }

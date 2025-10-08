@@ -54,6 +54,7 @@ export class DraftsComponent implements OnDestroy {
   initialContributors = select(ContributorsSelectors.getContributors);
   readonly contributors = select(ContributorsSelectors.getContributors);
   readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly registrationLicense = select(RegistriesSelectors.getRegistrationLicense);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,
@@ -72,7 +73,7 @@ export class DraftsComponent implements OnDestroy {
     return (
       !this.draftRegistration()?.title ||
       !this.draftRegistration()?.description ||
-      !this.draftRegistration()?.license?.id ||
+      !this.registrationLicense() ||
       !this.selectedSubjects()?.length ||
       !this.initialContributors()?.length
     );

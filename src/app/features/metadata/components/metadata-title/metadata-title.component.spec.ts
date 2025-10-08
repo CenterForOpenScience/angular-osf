@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@osf/shared/mocks';
-
 import { MetadataTitleComponent } from './metadata-title.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataTitleComponent', () => {
   let component: MetadataTitleComponent;
@@ -12,8 +12,7 @@ describe('MetadataTitleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataTitleComponent],
-      providers: [TranslateServiceMock],
+      imports: [MetadataTitleComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataTitleComponent);

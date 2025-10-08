@@ -9,13 +9,13 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { LoadingSpinnerComponent, TextInputComponent } from '@osf/shared/components';
+import { ComponentCheckboxItemComponent, LoadingSpinnerComponent, TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
+import { ComponentCheckboxItemModel } from '@osf/shared/models';
 import { CurrentResourceSelectors, GetResourceWithChildren } from '@osf/shared/stores';
 
 import { ResourceInfoModel, ViewOnlyLinkComponentItem } from '../../models';
-import { ComponentCheckboxItemComponent } from '../component-checkbox-item/component-checkbox-item.component';
 
 @Component({
   selector: 'osf-create-view-link-dialog',
@@ -45,17 +45,17 @@ export class CreateViewLinkDialogComponent implements OnInit {
   readonly isLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
   readonly actions = createDispatchMap({ getComponents: GetResourceWithChildren });
 
-  componentsList: WritableSignal<ViewOnlyLinkComponentItem[]> = signal([]);
+  componentsList: WritableSignal<ComponentCheckboxItemModel[]> = signal([]);
 
   constructor() {
     effect(() => {
       const currentResource = this.config.data as ResourceInfoModel;
       const components = this.components();
 
-      const items: ViewOnlyLinkComponentItem[] = components.map((item) => ({
+      const items: ComponentCheckboxItemModel[] = components.map((item) => ({
         id: item.id,
         title: item.title,
-        isCurrentResource: currentResource.id === item.id,
+        isCurrent: currentResource.id === item.id,
         parentId: item.parentId,
         checked: currentResource.id === item.id,
         disabled: currentResource.id === item.id,
@@ -63,7 +63,7 @@ export class CreateViewLinkDialogComponent implements OnInit {
 
       const updatedItems = items.map((item) => ({
         ...item,
-        disabled: item.isCurrentResource ? item.disabled : !this.isParentChecked(item, items),
+        disabled: item.isCurrent ? item.disabled : !this.isParentChecked(item, items),
       }));
 
       this.componentsList.set(updatedItems);
@@ -89,7 +89,7 @@ export class CreateViewLinkDialogComponent implements OnInit {
 
       return updatedItems.map((item) => ({
         ...item,
-        disabled: item.isCurrentResource ? item.disabled : !this.isParentChecked(item, updatedItems),
+        disabled: item.isCurrent ? item.disabled : !this.isParentChecked(item, updatedItems),
       }));
     });
   }

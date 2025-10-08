@@ -74,7 +74,7 @@ describe('Component: Create View Link Dialog', () => {
     const currentResourceItem = component.componentsList().find((item) => item.id === 'project-123');
     expect(currentResourceItem?.checked).toBe(true);
     expect(currentResourceItem?.disabled).toBe(true);
-    expect(currentResourceItem?.isCurrentResource).toBe(true);
+    expect(currentResourceItem?.isCurrent).toBe(true);
   });
 
   it('should uncheck children when parent is unchecked', () => {

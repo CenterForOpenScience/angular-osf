@@ -5,20 +5,25 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ContributorsListComponent } from '@osf/shared/components';
 import { ContributorModel } from '@osf/shared/models';
-import { MOCK_CONTRIBUTOR, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_CONTRIBUTOR } from '@shared/mocks';
 
 import { MetadataContributorsComponent } from './metadata-contributors.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 
 describe('MetadataContributorsComponent', () => {
   let component: MetadataContributorsComponent;
   let fixture: ComponentFixture<MetadataContributorsComponent>;
-
+  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR];
 
   beforeEach(async () => {
+    activatedRouteMock = ActivatedRouteMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
-      imports: [MetadataContributorsComponent, MockComponent(ContributorsListComponent)],
-      providers: [TranslateServiceMock, MockProvider(ActivatedRoute)],
+      imports: [MetadataContributorsComponent, MockComponent(ContributorsListComponent), OSFTestingModule],
+      providers: [MockProvider(ActivatedRoute, activatedRouteMock)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataContributorsComponent);

@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -58,6 +58,7 @@ import { ResourceTypeInfoDialogComponent } from '../resource-type-info-dialog/re
 export class StorageItemSelectorComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private customDialogService = inject(CustomDialogService);
+  private translateService = inject(TranslateService);
 
   readonly AddonType = AddonType;
   isMobile = toSignal(inject(IS_XSMALL));
@@ -86,30 +87,31 @@ export class StorageItemSelectorComponent implements OnInit {
   initialResourceType = signal<string>('');
   breadcrumbItems = signal<MenuItem[]>([]);
 
-  selectedItemLabel = computed(() => {
-    return this.currentAddonType() === AddonType.LINK
+  selectedItemLabel = computed(() =>
+    this.currentAddonType() === AddonType.LINK
       ? 'settings.addons.configureAddon.linkedItem'
-      : 'settings.addons.configureAddon.selectedFolder';
-  });
+      : 'settings.addons.configureAddon.selectedFolder'
+  );
 
-  noSelectionLabel = computed(() => {
-    return this.currentAddonType() === AddonType.LINK
+  noSelectionLabel = computed(() =>
+    this.currentAddonType() === AddonType.LINK
       ? 'settings.addons.configureAddon.noLinkedItem'
-      : 'settings.addons.configureAddon.noFolderSelected';
-  });
+      : 'settings.addons.configureAddon.noFolderSelected'
+  );
 
-  resourceTypeOptions = computed(() => {
-    return this.supportedResourceTypes().map((type) => ({
+  resourceTypeOptions = computed(() =>
+    this.supportedResourceTypes().map((type) => ({
       label: convertCamelCaseToNormal(type),
       value: type,
-    }));
-  });
+    }))
+  );
+
   initiallySelectedStorageItem = select(AddonsSelectors.getSelectedStorageItem);
   isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
   isSubmitting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
   readonly homeBreadcrumb: MenuItem = {
     id: '/',
-    label: 'settings.addons.configureAddon.home',
+    label: this.translateService.instant('settings.addons.configureAddon.home'),
     state: {
       operationName: OperationNames.LIST_ROOT_ITEMS,
     },
