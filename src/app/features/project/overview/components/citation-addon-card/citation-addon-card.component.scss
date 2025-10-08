@@ -1,0 +1,45 @@
+@use "/styles/mixins" as mix;
+
+.citation-addon-card {
+  border: 1px solid var(--grey-2);
+  border-radius: mix.rem(12px);
+}
+
+.citation-header {
+  border-bottom: 1px solid var(--grey-2);
+
+  &-title {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &-actions {
+    width: 15%;
+    text-align: right;
+  }
+}
+
+.citations-container {
+  max-height: mix.rem(300px);
+  overflow-y: auto;
+}
+
+.citation-item {
+  border-bottom: 1px solid var(--grey-2);
+}
+
+.citation-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.citation-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.citation-actions {
+  width: 15%;
+  text-align: right;
+}

@@ -94,8 +94,15 @@ export class AddonOperationInvocationService {
       return {};
     }
 
-    const isChildOperation =
-      operationName === OperationNames.LIST_CHILD_ITEMS || operationName === OperationNames.LIST_COLLECTION_ITEMS;
+    const isCitationCollectionOperation = operationName === OperationNames.LIST_COLLECTION_ITEMS;
+
+    if (isCitationCollectionOperation) {
+      return {
+        collection_id: itemId,
+      };
+    }
+
+    const isChildOperation = operationName === OperationNames.LIST_CHILD_ITEMS;
 
     return {
       item_id: itemId,

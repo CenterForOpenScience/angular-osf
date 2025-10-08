@@ -5,6 +5,7 @@ export interface StorageItemResponseJsonApi {
   item_link?: string;
   can_be_root?: boolean;
   may_contain_root_candidates?: boolean;
+  csl?: Record<string, unknown>;
 }
 
 export interface OperationResultJsonApi {

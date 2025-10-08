@@ -5,4 +5,5 @@ export interface StorageItem {
   itemLink?: string;
   canBeRoot?: boolean;
   mayContainRootCandidates?: boolean;
+  csl?: Record<string, unknown>;
 }
