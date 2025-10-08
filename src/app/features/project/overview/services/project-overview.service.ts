@@ -1,8 +1,10 @@
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { BaseNodeMapper, ComponentsMapper } from '@osf/shared/mappers';
 import {
@@ -167,11 +169,17 @@ export class ProjectOverviewService {
       'embed[]': ['bibliographic_contributors'],
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
-    return this.jsonApiService.get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params).pipe(
-      map((response) => ({
-        project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
-        meta: response.meta,
-      }))
-    );
+
+    const context = new HttpContext();
+    context.set(BYPASS_ERROR_INTERCEPTOR, true);
+
+    return this.jsonApiService
+      .get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params, context)
+      .pipe(
+        map((response) => ({
+          project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+          meta: response.meta,
+        }))
+      );
   }
 }
