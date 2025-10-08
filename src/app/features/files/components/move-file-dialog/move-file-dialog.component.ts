@@ -62,6 +62,7 @@ export class MoveFileDialogComponent {
   readonly components = select(CurrentResourceSelectors.getResourceWithChildren);
   readonly areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
   readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isMoveDialogConfiguredStorageAddonsLoading);
+  readonly isRootFoldersLoading = select(FilesSelectors.isMoveDialogRootFoldersLoading);
 
   readonly provider = select(FilesSelectors.getProvider);
 
@@ -77,14 +78,16 @@ export class MoveFileDialogComponent {
   storageProvider = signal<string>(this.config.data.storageProvider ?? FileProvider.OsfStorage);
   previousFolder = signal<FileFolderModel | null>(null);
 
-  pageNumber = signal(1);
   isLoadingMore = signal(false);
   itemsPerPage = 10;
+  initialFolder = this.config.data.initialFolder;
+  private lastFolderId: string | null = null;
+  private fileProjectId = this.config.data.resourceId;
 
-  readonly isFolderSame = computed(() => this.currentFolder()?.id === this.config.data.fileFolderId);
+  readonly isFolderSame = computed(() => this.currentFolder()?.id === this.initialFolder?.id);
 
   readonly isDestinationLoading = computed(
-    () => this.isConfiguredStorageAddonsLoading() || this.areComponentsLoading()
+    () => this.isConfiguredStorageAddonsLoading() || this.areComponentsLoading() || this.isRootFoldersLoading()
   );
 
   readonly showFilesLoading = computed(
@@ -109,9 +112,14 @@ export class MoveFileDialogComponent {
 
     effect(() => {
       const folder = this.currentFolder();
-      if (folder && !this.isDestinationLoading()) {
-        this.actions.getMoveDialogFiles(folder.links.filesLink, 1);
-      }
+      const isLoading = this.isDestinationLoading();
+
+      if (isLoading) return;
+
+      if (!folder || folder.id === this.lastFolderId) return;
+
+      this.lastFolderId = folder.id;
+      this.actions.getMoveDialogFiles(folder.links.filesLink, 1);
     });
 
     effect(() => {
@@ -150,7 +158,6 @@ export class MoveFileDialogComponent {
 
       if (previous) {
         this.actions.setMoveDialogCurrentFolder(previous);
-        this.actions.getMoveDialogFiles(previous.links.filesLink);
       }
       return newStack;
     });
@@ -159,27 +166,24 @@ export class MoveFileDialogComponent {
   moveFile(): void {
     const path = this.currentFolder()?.path;
 
+    const provider = this.currentFolder()?.provider || this.provider();
+
     if (!path) {
       throw new Error(this.translateService.instant('files.dialogs.moveFile.pathError'));
     }
 
     this.isFilesUpdating.set(true);
     this.filesService
-      .moveFile(
-        this.config.data.file.links.move,
-        path,
-        this.config.data.resourceId,
-        this.provider(),
-        this.config.data.action
-      )
+      .moveFile(this.config.data.file.links.move, path, this.fileProjectId, provider, this.config.data.action)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
-          this.actions.setCurrentFolder(this.currentFolder());
+          this.actions.setCurrentFolder(this.initialFolder);
           this.actions.setMoveDialogCurrentFolder(null);
           this.isFilesUpdating.set(false);
         }),
         catchError((error) => {
+          this.dialogRef.close();
           this.toastService.showError(error.error.message);
           return throwError(() => error);
         })
@@ -207,7 +211,8 @@ export class MoveFileDialogComponent {
     }
   }
 
-  onProjectChange() {
+  onProjectChange(projectId: string) {
+    this.fileProjectId = projectId;
     this.foldersStack.set([]);
     this.previousFolder.set(null);
   }

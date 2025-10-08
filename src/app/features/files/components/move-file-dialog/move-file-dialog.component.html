@@ -3,7 +3,7 @@
   [components]="components()"
   [areComponentsLoading]="areComponentsLoading()"
   [storageProvider]="storageProvider()"
-  (selectProject)="onProjectChange()"
+  (selectProject)="onProjectChange($event)"
 ></osf-file-select-destination>
 
 @if (showFilesLoading()) {

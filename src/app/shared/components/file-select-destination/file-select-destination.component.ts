@@ -33,6 +33,7 @@ import {
   SetMoveDialogCurrentFolder,
 } from '@osf/features/files/store';
 import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { Primitive } from '@osf/shared/helpers';
 import { ConfiguredAddonModel, FileLabelModel, NodeShortInfoModel, SelectOption } from '@osf/shared/models';
 
@@ -50,7 +51,7 @@ export class FileSelectDestinationComponent implements OnInit {
   storageProvider = input.required<string>();
   components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
-  selectProject = output();
+  selectProject = output<string>();
 
   private readonly environment = inject(ENVIRONMENT);
   private readonly destroyRef = inject(DestroyRef);
@@ -84,8 +85,8 @@ export class FileSelectDestinationComponent implements OnInit {
   }
 
   readonly options = computed(() => {
-    const options = [...this.buildOptions(this.components())];
-    return options;
+    const components = this.components().filter((c) => this.getHasWriteAccess(c));
+    return [...this.buildOptions(components)];
   });
 
   readonly storageAddons = computed(() => {
@@ -99,6 +100,9 @@ export class FileSelectDestinationComponent implements OnInit {
     }
     return [];
   });
+
+  private getHasWriteAccess = (project: NodeShortInfoModel): boolean =>
+    !!project?.permissions.includes(UserPermissions.Write);
 
   constructor() {
     effect(() => {
@@ -124,7 +128,7 @@ export class FileSelectDestinationComponent implements OnInit {
   }
 
   onChangeProject(value: Primitive) {
-    this.selectProject.emit();
+    this.selectProject.emit(value as string);
     this.getStorageAddons(value as string);
   }
 

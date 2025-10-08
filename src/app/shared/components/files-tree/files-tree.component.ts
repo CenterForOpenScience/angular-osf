@@ -400,7 +400,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
           action: action,
           storageProvider: this.storage()?.folder.provider,
           foldersStack: [...this.foldersStack],
-          fileFolderId: this.currentFolder()?.id,
+          initialFolder: structuredClone(this.currentFolder()),
         },
       })
       .onClose.subscribe((result) => {
