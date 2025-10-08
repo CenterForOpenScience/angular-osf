@@ -5,9 +5,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
-import { filter, map, of } from 'rxjs';
+import { catchError, EMPTY, filter, map, of } from 'rxjs';
 
 import { DatePipe, Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -50,7 +51,7 @@ import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/featur
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { pathJoin } from '@osf/shared/helpers';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
-import { CustomDialogService, MetaTagsService } from '@shared/services';
+import { CustomDialogService, MetaTagsService, ToastService } from '@shared/services';
 import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
@@ -83,6 +84,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly helpScoutService = inject(HelpScoutService);
+  private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
@@ -337,12 +339,23 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   createNewVersionClicked() {
-    this.actions.createNewVersion(this.preprintId()).subscribe({
-      complete: () => {
-        const newVersionPreprint = this.store.selectSnapshot(PreprintStepperSelectors.getPreprint);
-        this.router.navigate(['preprints', this.providerId(), 'new-version', newVersionPreprint!.id]);
-      },
-    });
+    this.actions
+      .createNewVersion(this.preprintId())
+      .pipe(
+        catchError((e) => {
+          if (e instanceof HttpErrorResponse && e.status === 409) {
+            this.toastService.showError(e.error.errors[0].detail);
+          }
+
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        complete: () => {
+          const newVersionPreprint = this.store.selectSnapshot(PreprintStepperSelectors.getPreprint);
+          this.router.navigate(['preprints', this.providerId(), 'new-version', newVersionPreprint!.id]);
+        },
+      });
   }
 
   fetchPreprint(preprintId: string) {

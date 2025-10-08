@@ -13,7 +13,7 @@
         />
 
         <osf-settings-storage-location-card
-          [location]="projectDetails().region.name"
+          [location]="projectDetails().region?.name ?? ''"
           [locationText]="'myProjects.settings.storageLocationMessage' | translate"
         ></osf-settings-storage-location-card>
 
