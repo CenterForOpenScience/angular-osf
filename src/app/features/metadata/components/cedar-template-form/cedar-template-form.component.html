@@ -8,16 +8,6 @@
           <h3 class="text-lg text-red-500">{{ 'project.metadata.addMetadata.notPublishedText' | translate }}</h3>
         }
         <div class="flex items-right">
-          @if (showEditButton()) {
-            <p-button
-              class="px-2 flex align-self-center"
-              severity="secondary"
-              [label]="'project.metadata.addMetadata.editRecord' | translate"
-              (onClick)="toggleEditModeEmit()"
-            >
-            </p-button>
-          }
-
           @if (!fileGuid()) {
             <p-button
               severity="secondary"
@@ -49,6 +39,16 @@
                 <a class="p-menu-item-link no-underline">{{ item.label | translate }}</a>
               </ng-template>
             </p-menu>
+          }
+
+          @if (showEditButton()) {
+            <p-button
+              class="px-2 flex align-self-center"
+              severity="secondary"
+              [label]="'project.metadata.addMetadata.editRecord' | translate"
+              (onClick)="toggleEditModeEmit()"
+            >
+            </p-button>
           }
         </div>
       </div>
