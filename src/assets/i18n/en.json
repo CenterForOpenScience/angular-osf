@@ -2543,6 +2543,11 @@
           "text": "Update pending",
           "short": "Update pending approval",
           "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
+        },
+        "initialApproved": {
+          "text": "Pending",
+          "short": "Pending admin contributor approval",
+          "long": "This registration is awaiting approval by all admin contributors or after 48 hours has passed. An email will notify all registration contributors of the decision. If the registration is pending after 48 hours has passed, contact support at {{email}}."
         }
       },
       "metadata": {
@@ -2660,7 +2665,8 @@
       "inProgress": "Update in progress",
       "pendingModeration": "Pending moderation",
       "withdrawn": "Withdrawn",
-      "updatePendingApproval": "Update pending approval"
+      "updatePendingApproval": "Update pending approval",
+      "initialApproved": "Pending"
     }
   },
   "resourceCard": {
