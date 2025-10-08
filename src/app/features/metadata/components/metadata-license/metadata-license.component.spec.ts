@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_LICENSE, TranslateServiceMock } from '@osf/shared/mocks';
+import { MOCK_LICENSE } from '@osf/shared/mocks';
 
 import { MetadataLicenseComponent } from './metadata-license.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataLicenseComponent', () => {
   let component: MetadataLicenseComponent;
@@ -12,8 +14,7 @@ describe('MetadataLicenseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataLicenseComponent],
-      providers: [TranslateServiceMock],
+      imports: [MetadataLicenseComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataLicenseComponent);

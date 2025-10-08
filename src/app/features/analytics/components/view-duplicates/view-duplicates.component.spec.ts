@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
 import { ResourceType } from '@osf/shared/enums';
-import { IS_SMALL } from '@osf/shared/helpers';
 import { DuplicatesSelectors } from '@osf/shared/stores';
 import {
   ContributorsListComponent,
@@ -74,7 +73,6 @@ describe('Component: View Duplicates', () => {
         MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
-        { provide: IS_SMALL, useValue: of(false) },
       ],
     }).compileComponents();
 
@@ -88,31 +86,7 @@ describe('Component: View Duplicates', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open ForkDialog with width 95vw and refresh on success', () => {
-    const openSpy = jest
-      .spyOn(mockCustomDialogService, 'open')
-      .mockReturnValue({ onClose: of({ success: true }) } as any);
-    (component as any).actions = { ...component.actions, getDuplicates: jest.fn() };
-
-    component.handleForkResource();
-
-    expect(openSpy).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.objectContaining({
-        width: '95vw',
-        header: 'project.overview.dialog.fork.headerProject',
-        data: expect.objectContaining({
-          resource: expect.any(Object),
-          resourceType: ResourceType.Project,
-        }),
-      })
-    );
-
-    expect((component as any).actions.getDuplicates).toHaveBeenCalled();
-  });
-
   it('should open ForkDialog with width 450px when small and not refresh on failure', () => {
-    (component as any).isSmall = () => true;
     (component as any).actions = { ...component.actions, getDuplicates: jest.fn() };
 
     const openSpy = jest

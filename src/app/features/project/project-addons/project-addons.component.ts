@@ -13,21 +13,24 @@ import {
   DestroyRef,
   effect,
   inject,
+  model,
   OnInit,
   signal,
+  untracked,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { createAddonCardModel, Primitive, sortAddonCardsAlphabetically } from '@osf/shared/helpers';
-import { LoadingSpinnerComponent, SearchInputComponent, SelectComponent, SubHeaderComponent } from '@shared/components';
-import { AddonCardListComponent } from '@shared/components/addons';
+import { createAddonCardModel, sortAddonCardsAlphabetically } from '@osf/shared/helpers';
+import { LoadingSpinnerComponent, SelectComponent, SubHeaderComponent } from '@shared/components';
+import { AddonCardListComponent, AddonsToolbarComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
 import { isAddonServiceConfigured } from '@shared/helpers';
 import { AddonCardModel } from '@shared/models';
+import { AddonsQueryParamsService } from '@shared/services/addons-query-params.service';
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
@@ -47,8 +50,7 @@ import { CurrentResourceSelectors } from '@shared/stores/current-resource';
   selector: 'osf-project-addons',
   imports: [
     AddonCardListComponent,
-    SearchInputComponent,
-    SelectComponent,
+    AddonsToolbarComponent,
     SubHeaderComponent,
     Tab,
     TabList,
@@ -58,6 +60,7 @@ import { CurrentResourceSelectors } from '@shared/stores/current-resource';
     TranslatePipe,
     FormsModule,
     LoadingSpinnerComponent,
+    SelectComponent,
   ],
   templateUrl: './project-addons.component.html',
   styleUrl: './project-addons.component.scss',
@@ -66,6 +69,7 @@ import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 export class ProjectAddonsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  private queryParamsService = inject(AddonsQueryParamsService);
   readonly tabOptions = ADDON_TAB_OPTIONS;
   readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
@@ -73,7 +77,7 @@ export class ProjectAddonsComponent implements OnInit {
   searchControl = new FormControl<string>('');
   searchValue = signal<string>('');
   selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
-  selectedTab = signal<number>(this.defaultTabValue);
+  selectedTab = model<number>(this.defaultTabValue);
 
   currentUser = select(UserSelectors.getCurrentUser);
   hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
@@ -104,13 +108,26 @@ export class ProjectAddonsComponent implements OnInit {
     );
   });
   isConfiguredAddonsLoading = computed(() => {
-    return (
-      this.isConfiguredStorageAddonsLoading() ||
-      this.isConfiguredCitationAddonsLoading() ||
-      this.isConfiguredLinkAddonsLoading() ||
-      this.isResourceReferenceLoading() ||
-      this.isCurrentUserLoading()
-    );
+    let categoryLoading;
+
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        categoryLoading = this.isConfiguredStorageAddonsLoading();
+        break;
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        categoryLoading = this.isConfiguredCitationAddonsLoading();
+        break;
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        categoryLoading = this.isConfiguredLinkAddonsLoading();
+        break;
+      default:
+        categoryLoading =
+          this.isConfiguredStorageAddonsLoading() ||
+          this.isConfiguredCitationAddonsLoading() ||
+          this.isConfiguredLinkAddonsLoading();
+    }
+
+    return categoryLoading || this.isResourceReferenceLoading() || this.isCurrentUserLoading();
   });
 
   isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
@@ -129,7 +146,7 @@ export class ProjectAddonsComponent implements OnInit {
   });
 
   isAllAddonsTabLoading = computed(() => {
-    return this.isAddonsLoading() || this.isConfiguredAddonsLoading();
+    return this.currentAddonsLoading() || this.isConfiguredAddonsLoading();
   });
 
   actions = createDispatchMap({
@@ -150,18 +167,41 @@ export class ProjectAddonsComponent implements OnInit {
   });
 
   allConfiguredAddons = computed(() => {
-    const authorizedAddons = [
-      ...this.configuredStorageAddons(),
-      ...this.configuredCitationAddons(),
-      ...this.configuredLinkAddons(),
-    ];
+    let authorizedAddons;
+
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        authorizedAddons = this.configuredStorageAddons();
+        break;
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        authorizedAddons = this.configuredCitationAddons();
+        break;
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        authorizedAddons = this.configuredLinkAddons();
+        break;
+      default:
+        authorizedAddons = [
+          ...this.configuredStorageAddons(),
+          ...this.configuredCitationAddons(),
+          ...this.configuredLinkAddons(),
+        ];
+    }
 
     const searchValue = this.searchValue().toLowerCase();
     return authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
   });
 
   allConfiguredAddonsForCheck = computed(() => {
-    return [...this.configuredStorageAddons(), ...this.configuredCitationAddons(), ...this.configuredLinkAddons()];
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.configuredStorageAddons();
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.configuredCitationAddons();
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.configuredLinkAddons();
+      default:
+        return [];
+    }
   });
 
   resourceReferenceId = computed(() => {
@@ -216,13 +256,33 @@ export class ProjectAddonsComponent implements OnInit {
     return sortAddonCardsAlphabetically(addonCards);
   });
 
-  onCategoryChange(value: Primitive): void {
-    if (typeof value === 'string') {
-      this.selectedCategory.set(value);
+  constructor() {
+    this.setupEffects();
+
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.searchValue.set(value ?? ''));
+
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearConfiguredAddons();
+    });
+  }
+
+  ngOnInit(): void {
+    const projectId = this.route.parent?.parent?.snapshot.params['id'];
+
+    if (projectId && !this.addonsResourceReference().length) {
+      this.actions.getAddonsResourceReference(projectId);
+    }
+
+    const params = this.queryParamsService.readQueryParams(this.route);
+
+    if (params.activeTab !== undefined) {
+      this.selectedTab.set(params.activeTab);
     }
   }
 
-  constructor() {
+  private setupEffects() {
     effect(() => {
       if (this.currentUser() && !this.userReferenceId()) {
         this.actions.getAddonsUserReference();
@@ -243,31 +303,37 @@ export class ProjectAddonsComponent implements OnInit {
 
     effect(() => {
       const resourceReferenceId = this.resourceReferenceId();
+      const selectedCategory = this.selectedCategory();
       if (resourceReferenceId) {
-        this.fetchAllConfiguredAddons(resourceReferenceId);
+        this.fetchConfiguredAddonsByCategory(resourceReferenceId, selectedCategory);
       }
     });
 
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => this.searchValue.set(value ?? ''));
-
-    this.destroyRef.onDestroy(() => {
-      this.actions.clearConfiguredAddons();
+    effect(() => {
+      const activeTab = this.selectedTab();
+      this.queryParamsService.updateQueryParams(this.route, { activeTab });
     });
   }
 
-  ngOnInit(): void {
-    const projectId = this.route.parent?.parent?.snapshot.params['id'];
-
-    if (projectId && !this.addonsResourceReference().length) {
-      this.actions.getAddonsResourceReference(projectId);
-    }
-  }
-
-  private fetchAllConfiguredAddons(resourceReferenceId: string): void {
-    this.actions.getConfiguredStorageAddons(resourceReferenceId);
-    this.actions.getConfiguredCitationAddons(resourceReferenceId);
-    this.actions.getConfiguredLinkAddons(resourceReferenceId);
+  private fetchConfiguredAddonsByCategory(resourceReferenceId: string, category: string): void {
+    untracked(() => {
+      switch (category) {
+        case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+          if (!this.configuredStorageAddons().length && !this.isConfiguredStorageAddonsLoading()) {
+            this.actions.getConfiguredStorageAddons(resourceReferenceId);
+          }
+          break;
+        case AddonCategory.EXTERNAL_CITATION_SERVICES:
+          if (!this.configuredCitationAddons().length && !this.isConfiguredCitationAddonsLoading()) {
+            this.actions.getConfiguredCitationAddons(resourceReferenceId);
+          }
+          break;
+        case AddonCategory.EXTERNAL_LINK_SERVICES:
+          if (!this.configuredLinkAddons().length && !this.isConfiguredLinkAddonsLoading()) {
+            this.actions.getConfiguredLinkAddons(resourceReferenceId);
+          }
+          break;
+      }
+    });
   }
 }

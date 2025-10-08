@@ -17,10 +17,11 @@
   <osf-contributors-table
     class="w-full"
     [(contributors)]="contributors"
-    [showEducation]="false"
-    [showEmployment]="false"
+    [tableParams]="tableParams()"
     [isLoading]="isLoading()"
-    [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
+    [showEmployment]="false"
+    [showEducation]="false"
+    [hasAdminAccess]="isCurrentUserAdminContributor()"
     [currentUserId]="currentUser()?.id"
     (remove)="removeContributor($event)"
   ></osf-contributors-table>

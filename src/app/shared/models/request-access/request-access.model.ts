@@ -1,3 +1,5 @@
+import { ContributorPermission } from '@osf/shared/enums';
+
 import { UserModel } from '../user';
 
 export interface RequestAccessModel {
@@ -8,6 +10,8 @@ export interface RequestAccessModel {
   created: string;
   modified: string;
   dateLastTransitioned: string;
-  requestedPermissions: string | null;
+  requestedPermissions: ContributorPermission;
   creator: UserModel;
+  isBibliographic: boolean;
+  isCurator: boolean;
 }

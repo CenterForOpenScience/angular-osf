@@ -2,8 +2,10 @@ import { select } from '@ngxs/store';
 
 import { map, Observable } from 'rxjs';
 
+import { HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@osf/shared/mappers';
@@ -87,19 +89,24 @@ export class AddonsService {
   }
 
   getAuthorizedStorageOauthToken(accountId: string, addonType: string): Observable<AuthorizedAccountModel> {
+    const context = new HttpContext();
+    context.set(BYPASS_ERROR_INTERCEPTOR, true);
+
     return this.jsonApiService
-      .patch<AuthorizedAddonGetResponseJsonApi>(`${this.apiUrl}/authorized-${addonType}-accounts/${accountId}`, {
-        data: {
-          id: accountId,
-          type: `authorized-${addonType}-accounts`,
-          attributes: { serialize_oauth_token: 'true' },
+      .patch<AuthorizedAddonGetResponseJsonApi>(
+        `${this.apiUrl}/authorized-${addonType}-accounts/${accountId}`,
+        {
+          data: {
+            id: accountId,
+            type: `authorized-${addonType}-accounts`,
+            attributes: { serialize_oauth_token: 'true' },
+          },
         },
-      })
-      .pipe(
-        map((response) => {
-          return AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi);
-        })
-      );
+        {},
+        {},
+        context
+      )
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi)));
   }
 
   getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddonModel[]> {
@@ -107,11 +114,7 @@ export class AddonsService {
       .get<
         JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>
       >(`${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/`)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item));
-        })
-      );
+      .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));
   }
 
   createAuthorizedAddon(

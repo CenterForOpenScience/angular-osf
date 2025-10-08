@@ -76,7 +76,7 @@
                 [inputId]="item.id"
                 [ngModel]="isItemLinked()(item.id)"
                 [binary]="true"
-                (onChange)="handleToggleNodeLink($event, item)"
+                (onChange)="handleToggleNodeLink(item)"
               />
               <span class="overflow-ellipsis">{{ item.title }}</span>
             </p>

@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 
 import { PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
-import { ContributorModel, SelectOption } from '@osf/shared/models';
+import { RequestAccessModel, SelectOption } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 
 import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
@@ -26,45 +26,45 @@ import { SelectComponent } from '../../select/select.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestAccessTableComponent {
-  contributors = input.required<ContributorModel[]>();
+  requestAccessList = input.required<RequestAccessModel[]>();
   isLoading = input(false);
   resourceType = input(ResourceType.Project);
   showEmployment = input(true);
   showEducation = input(true);
   showInfo = input(true);
 
-  accept = output<ContributorModel>();
-  reject = output<ContributorModel>();
+  accept = output<RequestAccessModel>();
+  reject = output<RequestAccessModel>();
 
   customDialogService = inject(CustomDialogService);
 
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
 
-  skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);
+  skeletonData = Array.from({ length: 3 }, () => ({}) as RequestAccessModel);
 
   isProject = computed(() => this.resourceType() === ResourceType.Project);
 
-  acceptContributor(contributor: ContributorModel) {
-    this.accept.emit(contributor);
+  acceptContributor(requestAccessItem: RequestAccessModel) {
+    this.accept.emit(requestAccessItem);
   }
 
-  rejectContributor(contributor: ContributorModel) {
-    this.reject.emit(contributor);
+  rejectContributor(requestAccessItem: RequestAccessModel) {
+    this.reject.emit(requestAccessItem);
   }
 
-  openEducationHistory(contributor: ContributorModel) {
+  openEducationHistory(requestAccessItem: RequestAccessModel) {
     this.customDialogService.open(EducationHistoryDialogComponent, {
       header: 'project.contributors.table.headers.education',
       width: '552px',
-      data: contributor.education,
+      data: requestAccessItem.creator.education,
     });
   }
 
-  openEmploymentHistory(contributor: ContributorModel) {
+  openEmploymentHistory(requestAccessItem: RequestAccessModel) {
     this.customDialogService.open(EmploymentHistoryDialogComponent, {
       header: 'project.contributors.table.headers.employment',
       width: '552px',
-      data: contributor.employment,
+      data: requestAccessItem.creator.employment,
     });
   }
 }

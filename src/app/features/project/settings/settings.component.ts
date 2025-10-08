@@ -4,19 +4,17 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType, SubscriptionEvent, SubscriptionFrequency, UserPermissions } from '@osf/shared/enums';
-import { IS_MEDIUM } from '@osf/shared/helpers';
+import { ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
 import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
 import {
-  CurrentResourceSelectors,
   DeleteViewOnlyLink,
   FetchViewOnlyLinks,
   GetResource,
@@ -34,7 +32,7 @@ import {
   SettingsViewOnlyLinksCardComponent,
   SettingsWikiCardComponent,
 } from './components';
-import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData } from './models';
+import { ProjectDetailsModel, ProjectSettingsAttributesJsonApi, ProjectSettingsDataJsonApi } from './models';
 import {
   DeleteInstitution,
   DeleteProject,
@@ -76,18 +74,16 @@ export class SettingsComponent implements OnInit {
 
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
+  currentUser = select(UserSelectors.getCurrentUser);
   settings = select(SettingsSelectors.getSettings);
   notifications = select(SettingsSelectors.getNotificationSubscriptions);
   areNotificationsLoading = select(SettingsSelectors.areNotificationsLoading);
   projectDetails = select(SettingsSelectors.getProjectDetails);
   areProjectDetailsLoading = select(SettingsSelectors.areProjectDetailsLoading);
+  hasAdminAccess = select(SettingsSelectors.hasAdminAccess);
+  hasWriteAccess = select(SettingsSelectors.hasWriteAccess);
   viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
   isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
-  currentUser = select(UserSelectors.getCurrentUser);
-  currentProject = select(CurrentResourceSelectors.getCurrentResource);
-  isMedium = toSignal(inject(IS_MEDIUM));
-
-  rootProjectId = computed(() => this.currentProject()?.rootResourceId);
 
   actions = createDispatchMap({
     getSettings: GetProjectSettings,
@@ -108,11 +104,6 @@ export class SettingsComponent implements OnInit {
   wikiEnabled = signal(false);
   anyoneCanEditWiki = signal(false);
   anyoneCanComment = signal(false);
-  title = signal('');
-
-  userPermissions = computed(() => this.projectDetails()?.currentUserPermissions || []);
-  hasAdminAccess = computed(() => this.userPermissions().includes(UserPermissions.Admin));
-  hasWriteAccess = computed(() => this.userPermissions().includes(UserPermissions.Write));
 
   constructor() {
     this.setupEffects();
@@ -190,14 +181,19 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteProject(): void {
-    const dialogWidth = this.isMedium() ? '500px' : '95vw';
+    this.loaderService.show();
 
-    this.actions.getComponentsTree(this.rootProjectId() || this.projectId(), this.projectId(), ResourceType.Project);
-
-    this.customDialogService.open(DeleteProjectDialogComponent, {
-      header: 'project.deleteProject.dialog.deleteProject',
-      width: dialogWidth,
-    });
+    this.actions
+      .getComponentsTree(this.projectDetails()?.rootId || this.projectId(), this.projectId(), ResourceType.Project)
+      .subscribe({
+        next: () => {
+          this.loaderService.hide();
+          this.customDialogService.open(DeleteProjectDialogComponent, {
+            header: 'project.deleteProject.dialog.deleteProject',
+            width: '500px',
+          });
+        },
+      });
   }
 
   removeAffiliation(affiliation: Institution): void {
@@ -217,7 +213,7 @@ export class SettingsComponent implements OnInit {
   }
 
   private syncSettingsChanges(changedField: string, value: boolean): void {
-    const payload: Partial<ProjectSettingsAttributes> = {};
+    const payload: Partial<ProjectSettingsAttributesJsonApi> = {};
 
     switch (changedField) {
       case 'access_requests_enabled':
@@ -231,7 +227,7 @@ export class SettingsComponent implements OnInit {
       id: this.projectId(),
       type: 'node-settings',
       attributes: { ...payload },
-    } as ProjectSettingsData;
+    } as ProjectSettingsDataJsonApi;
 
     this.loaderService.show();
 
@@ -250,14 +246,6 @@ export class SettingsComponent implements OnInit {
         this.wikiEnabled.set(settings.attributes.wikiEnabled);
         this.anyoneCanEditWiki.set(settings.attributes.anyoneCanEditWiki);
         this.anyoneCanComment.set(settings.attributes.anyoneCanComment);
-      }
-    });
-
-    effect(() => {
-      const project = this.projectDetails();
-
-      if (project) {
-        this.title.set(project.title);
       }
     });
 

@@ -11,7 +11,7 @@
           <span>
             {{
               'registry.overview.statuses.' + registry()?.status + '.long'
-                | translate: { embargoEndDate: embargoEndDate }
+                | translate: { embargoEndDate: embargoEndDate, email: supportEmail }
             }}
           </span>
 

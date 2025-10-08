@@ -94,7 +94,7 @@ export class MyResourcesService {
 
     let url;
     if (searchMode === ResourceSearchMode.All) {
-      url = `${this.apiUrl}/${endpoint}/`;
+      url = `${this.apiUrl}/${endpoint}`;
     } else {
       url = endpoint.startsWith('collections/') ? `${this.apiUrl}/${endpoint}` : `${this.apiUrl}/users/me/${endpoint}`;
     }
@@ -122,9 +122,18 @@ export class MyResourcesService {
     filters?: MyResourcesSearchFilters,
     pageNumber?: number,
     pageSize?: number,
-    searchMode?: ResourceSearchMode
+    searchMode?: ResourceSearchMode,
+    rootProjectId?: string
   ): Observable<MyResourcesItemResponseJsonApi> {
-    return this.getResources('registrations/', filters, pageNumber, pageSize, 'registrations', searchMode);
+    return this.getResources(
+      'registrations/',
+      filters,
+      pageNumber,
+      pageSize,
+      'registrations',
+      searchMode,
+      rootProjectId
+    );
   }
 
   getMyPreprints(
@@ -181,6 +190,7 @@ export class MyResourcesService {
           ...(description && { description }),
           category: 'project',
           ...(templateFrom && { template_from: templateFrom }),
+          public: false,
         },
         relationships: {
           region: {

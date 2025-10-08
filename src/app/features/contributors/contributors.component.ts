@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 
@@ -30,13 +30,15 @@ import {
   ContributorsTableComponent,
   RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
-import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { BIBLIOGRAPHY_OPTIONS, DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
   ContributorModel,
+  RequestAccessModel,
   SelectOption,
+  TableParameters,
   ViewOnlyLinkJsonApi,
   ViewOnlyLinkModel,
 } from '@osf/shared/models';
@@ -110,8 +112,17 @@ export class ContributorsComponent implements OnInit {
   readonly requestAccessList = select(ContributorsSelectors.getRequestAccessList);
   readonly areRequestAccessListLoading = select(ContributorsSelectors.areRequestAccessListLoading);
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  readonly hasAdminAccess = select(CurrentResourceSelectors.hasResourceAdminAccess);
+  readonly resourceAccessRequestEnabled = select(CurrentResourceSelectors.resourceAccessRequestEnabled);
   readonly currentUser = select(UserSelectors.getCurrentUser);
+
+  readonly tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    totalRecords: this.contributorsTotalCount(),
+    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+  }));
 
   canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
   searchPlaceholder = computed(() =>
@@ -120,22 +131,8 @@ export class ContributorsComponent implements OnInit {
       : 'project.contributors.searchRegistrationPlaceholder'
   );
 
-  isCurrentUserAdminContributor = computed(() => {
-    const currentUserId = this.currentUser()?.id;
-    const initialContributors = this.initialContributors();
-    if (!currentUserId) return false;
-
-    return initialContributors.some(
-      (contributor: ContributorModel) =>
-        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
-    );
-  });
-
   showRequestAccessList = computed(
-    () =>
-      this.isCurrentUserAdminContributor() &&
-      this.requestAccessList().length &&
-      this.resourceType() === ResourceType.Project
+    () => this.hasAdminAccess() && this.resourceType() === ResourceType.Project && this.requestAccessList().length
   );
 
   actions = createDispatchMap({
@@ -161,6 +158,27 @@ export class ContributorsComponent implements OnInit {
   }
 
   constructor() {
+    this.setupEffects();
+  }
+
+  ngOnInit(): void {
+    const id = this.resourceId();
+
+    if (id) {
+      this.actions.getResourceDetails(id, this.resourceType());
+      this.actions.getContributors(id, this.resourceType());
+    }
+
+    this.setSearchSubscription();
+  }
+
+  private setSearchSubscription() {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => this.actions.updateSearchValue(res ?? null));
+  }
+
+  setupEffects() {
     effect(() => {
       this.contributors.set(structuredClone(this.initialContributors()));
 
@@ -172,31 +190,16 @@ export class ContributorsComponent implements OnInit {
     });
 
     effect(() => {
-      if (this.isCurrentUserAdminContributor()) {
+      if (this.hasAdminAccess()) {
         this.actions.getViewOnlyLinks(this.resourceId(), this.resourceType());
       }
     });
-  }
 
-  ngOnInit(): void {
-    const id = this.resourceId();
-
-    if (id) {
-      this.actions.getResourceDetails(id, this.resourceType());
-      this.actions.getContributors(id, this.resourceType());
-
-      if (this.resourceType() === ResourceType.Project) {
-        this.actions.getRequestAccessContributors(id, this.resourceType());
+    effect(() => {
+      if (this.resourceType() === ResourceType.Project && this.hasAdminAccess()) {
+        this.actions.getRequestAccessContributors(this.resourceId(), this.resourceType());
       }
-    }
-
-    this.setSearchSubscription();
-  }
-
-  private setSearchSubscription() {
-    this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((res) => this.actions.updateSearchValue(res ?? null));
+    });
   }
 
   onPermissionChange(value: ContributorPermission): void {
@@ -272,32 +275,32 @@ export class ContributorsComponent implements OnInit {
       });
   }
 
-  acceptRequest(contributor: ContributorModel) {
+  acceptRequest(requestAccessItem: RequestAccessModel) {
     this.customConfirmationService.confirmAccept({
       headerKey: 'project.requestAccess.acceptDialog.header',
       messageKey: 'project.requestAccess.acceptDialog.message',
-      messageParams: { name: contributor.fullName },
+      messageParams: { name: requestAccessItem.creator.fullName },
       acceptLabelKey: 'common.buttons.accept',
       onConfirm: () => {
-        const payload = { permissions: contributor.permission };
+        const payload = { permissions: requestAccessItem.requestedPermissions };
 
         this.actions
-          .acceptRequestAccess(contributor.id, this.resourceId(), this.resourceType(), payload)
+          .acceptRequestAccess(requestAccessItem.id, this.resourceId(), this.resourceType(), payload)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => this.toastService.showSuccess('project.requestAccess.acceptDialog.successMessage'));
       },
     });
   }
 
-  rejectRequest(contributor: ContributorModel) {
+  rejectRequest(requestAccessItem: RequestAccessModel) {
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.requestAccess.rejectDialog.header',
       messageKey: 'project.requestAccess.rejectDialog.message',
-      messageParams: { name: contributor.fullName },
+      messageParams: { name: requestAccessItem.creator.fullName },
       acceptLabelKey: 'common.buttons.reject',
       onConfirm: () => {
         this.actions
-          .rejectRequestAccess(contributor.id, this.resourceId(), this.resourceType())
+          .rejectRequestAccess(requestAccessItem.id, this.resourceId(), this.resourceType())
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => this.toastService.showSuccess('project.requestAccess.rejectDialog.successMessage'));
       },
@@ -321,6 +324,13 @@ export class ContributorsComponent implements OnInit {
           );
       },
     });
+  }
+
+  pageChanged(event: TablePageEvent) {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const pageSize = event.rows;
+
+    this.actions.getContributors(this.resourceId(), this.resourceType(), page, pageSize);
   }
 
   createViewLink() {

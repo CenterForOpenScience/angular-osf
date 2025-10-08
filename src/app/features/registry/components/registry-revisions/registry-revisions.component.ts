@@ -43,7 +43,7 @@ export class RegistryRevisionsComponent {
 
     schemaResponses = this.isModeration()
       ? schemaResponses
-      : schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved);
+      : schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved || r.isOriginalResponse);
 
     return schemaResponses.map((response, index) => {
       const onlyOne = schemaResponses.length === 1;

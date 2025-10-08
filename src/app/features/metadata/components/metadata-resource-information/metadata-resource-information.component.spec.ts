@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
-import { TranslateServiceMock } from '@shared/mocks';
 
 import { MetadataResourceInformationComponent } from './metadata-resource-information.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataResourceInformationComponent', () => {
   let component: MetadataResourceInformationComponent;
@@ -17,8 +18,7 @@ describe('MetadataResourceInformationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataResourceInformationComponent],
-      providers: [TranslateServiceMock],
+      imports: [MetadataResourceInformationComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataResourceInformationComponent);

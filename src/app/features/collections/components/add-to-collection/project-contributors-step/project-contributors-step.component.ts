@@ -8,7 +8,17 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { filter } from 'rxjs/operators';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { InfoIconComponent } from '@osf/shared/components';
@@ -17,9 +27,10 @@ import {
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { AddContributorType, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
-import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
+import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
@@ -44,10 +55,17 @@ export class ProjectContributorsStepComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
 
   private initialContributors = select(ContributorsSelectors.getContributors);
   readonly projectContributors = signal<ContributorModel[]>([]);
+
+  readonly tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    totalRecords: this.contributorsTotalCount(),
+    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+  }));
 
   stepperActiveValue = input.required<number>();
   targetStepValue = input.required<number>();

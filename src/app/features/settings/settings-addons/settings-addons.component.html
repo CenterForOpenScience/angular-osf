@@ -1,6 +1,6 @@
 <osf-sub-header [title]="'settings.addons.header.title' | translate" [icon]="'fas fa-gear'" />
 <section class="flex-column flex flex-1">
-  <p-tabs [value]="selectedTab()" class="flex-1">
+  <p-tabs [(value)]="selectedTab" class="flex-1">
     <p-tablist class="pr-5 pl-5 hidden md:flex md:flex-column">
       <p-tab [value]="AddonTabValue.ALL_ADDONS" data-test-addons-tab-all-addons>
         {{ 'settings.addons.tabs.allAddons' | translate }}
@@ -23,24 +23,11 @@
           {{ 'settings.addons.description' | translate }}
         </p>
 
-        <section class="grid">
-          <div class="col-12 md:col-6 lg:col-3">
-            <osf-select
-              [placeholder]="'settings.addons.filters.addonType'"
-              [options]="categoryOptions"
-              [(selectedValue)]="selectedCategory"
-              (changeValue)="onCategoryChange($event)"
-              [fullWidth]="true"
-            />
-          </div>
-          <div class="col-12 md:col-6 lg:col-9">
-            <osf-search-input
-              class="w-full"
-              [control]="searchControl"
-              [placeholder]="'settings.addons.filters.search' | translate"
-            />
-          </div>
-        </section>
+        <osf-addons-toolbar
+          [categoryOptions]="categoryOptions"
+          [searchControl]="searchControl"
+          [(selectedCategory)]="selectedCategory"
+        />
 
         @if (!isAddonsLoading()) {
           <osf-addon-card-list [cards]="filteredAddonCards()" [isConnected]="false" [hasAdminAccess]="true" />
@@ -55,10 +42,10 @@
         <p>
           {{ 'settings.addons.connectedDescription' | translate }}
         </p>
-        <osf-search-input
-          class="flex-1"
-          [control]="searchControl"
-          [placeholder]="'settings.addons.filters.search' | translate"
+        <osf-addons-toolbar
+          [categoryOptions]="categoryOptions"
+          [searchControl]="searchControl"
+          [(selectedCategory)]="selectedCategory"
         />
 
         @if (!isAuthorizedAddonsLoading()) {

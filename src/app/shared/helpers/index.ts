@@ -1,5 +1,6 @@
 export * from './addon-card.helper';
 export * from './addon-type.helper';
+export * from './addons-query-params.helper';
 export * from './breakpoints.tokens';
 export * from './browser-tab.helper';
 export * from './camel-case';

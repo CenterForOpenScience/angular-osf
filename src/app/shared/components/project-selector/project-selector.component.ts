@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 
@@ -36,7 +36,6 @@ import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 })
 export class ProjectSelectorComponent {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly translateService = inject(TranslateService);
   private readonly filterSubject = new Subject<string>();
 
   projects = select(ProjectsSelectors.getProjects);
@@ -53,16 +52,13 @@ export class ProjectSelectorComponent {
 
   projectsOptions = signal<CustomOption<ProjectModel>[]>([]);
 
-  filterMessage = computed(() => {
-    const isLoading = this.isProjectsLoading();
-    return isLoading
-      ? this.translateService.instant('collections.addToCollection.form.loadingPlaceholder')
-      : this.translateService.instant('collections.addToCollection.form.noProjectsFound');
-  });
+  filterMessage = computed(() =>
+    this.isProjectsLoading()
+      ? 'collections.addToCollection.form.loadingPlaceholder'
+      : 'collections.addToCollection.form.noProjectsFound'
+  );
 
-  actions = createDispatchMap({
-    getProjects: GetProjects,
-  });
+  actions = createDispatchMap({ getProjects: GetProjects });
 
   constructor() {
     this.setupEffects();

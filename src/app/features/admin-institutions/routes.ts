@@ -1,5 +1,3 @@
-import { provideStates } from '@ngxs/store';
-
 import { Routes } from '@angular/router';
 
 import {
@@ -12,13 +10,10 @@ import {
 
 import { AdminInstitutionsComponent } from './admin-institutions.component';
 
-import { InstitutionsAdminState } from 'src/app/features/admin-institutions/store';
-
 export const routes: Routes = [
   {
     path: '',
     component: AdminInstitutionsComponent,
-    providers: [provideStates([InstitutionsAdminState])],
     children: [
       {
         path: '',

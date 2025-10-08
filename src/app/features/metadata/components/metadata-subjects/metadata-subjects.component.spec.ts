@@ -3,41 +3,22 @@ import { MockComponent } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubjectsComponent } from '@osf/shared/components';
-import { TranslateServiceMock } from '@osf/shared/mocks';
 import { SubjectModel } from '@osf/shared/models';
 
 import { MetadataSubjectsComponent } from './metadata-subjects.component';
+
+import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataSubjectsComponent', () => {
   let component: MetadataSubjectsComponent;
   let fixture: ComponentFixture<MetadataSubjectsComponent>;
 
-  const mockSubjects: SubjectModel[] = [
-    {
-      id: 'subject-1',
-      name: 'Computer Science',
-      children: [
-        {
-          id: 'subject-1-1',
-          name: 'Artificial Intelligence',
-          children: [],
-          parent: null,
-        },
-        {
-          id: 'subject-1-2',
-          name: 'Machine Learning',
-          children: [],
-          parent: null,
-        },
-      ],
-      parent: null,
-    },
-  ];
+  const mockSubjects: SubjectModel[] = SUBJECTS_MOCK;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataSubjectsComponent, MockComponent(SubjectsComponent)],
-      providers: [TranslateServiceMock],
+      imports: [MetadataSubjectsComponent, MockComponent(SubjectsComponent), OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataSubjectsComponent);

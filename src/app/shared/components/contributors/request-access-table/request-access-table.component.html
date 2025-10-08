@@ -1,4 +1,4 @@
-<p-table [value]="isLoading() ? skeletonData : contributors()" [scrollable]="true" class="view-only-table">
+<p-table [value]="isLoading() ? skeletonData : requestAccessList()" [scrollable]="true" class="view-only-table">
   <ng-template #header>
     <tr>
       <th>{{ 'project.contributors.table.headers.name' | translate }}</th>
@@ -46,7 +46,7 @@
       <tr class="select-none">
         <td>
           <p class="flex align-items-center gap-2">
-            <span>{{ contributor.fullName }}</span>
+            <span>{{ contributor.creator.fullName }}</span>
           </p>
         </td>
         <td>
@@ -57,7 +57,7 @@
               [appendTo]="'body'"
               [noBorder]="true"
               [fullWidth]="true"
-              [(selectedValue)]="contributor.permission"
+              [(selectedValue)]="contributor.requestedPermissions"
             />
           </div>
         </td>
@@ -68,7 +68,7 @@
               binary="true"
               [(ngModel)]="contributor.isBibliographic"
               [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
-              [disabled]="contributor.deactivated"
+              [disabled]="contributor.isCurator"
             ></p-checkbox>
           </div>
         </td>
@@ -85,7 +85,7 @@
         </td>
         @if (showEmployment()) {
           <td>
-            @if (contributor.employment?.length) {
+            @if (contributor.creator.employment?.length) {
               <p-button
                 link
                 class="link-btn-no-padding"
@@ -101,7 +101,7 @@
         @if (showEducation()) {
           <td>
             <div class="flex column-gap-2">
-              @if (contributor.education?.length) {
+              @if (contributor.creator.education?.length) {
                 <p-button
                   link
                   class="link-btn-no-padding"

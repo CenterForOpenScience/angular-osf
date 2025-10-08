@@ -28,7 +28,7 @@ describe('CollectionsDiscoverComponent', () => {
   beforeEach(async () => {
     toastServiceMock = ToastServiceMockBuilder.create().build();
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
-    mockRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'provider-1' }).build();
+    mockRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: 'provider-1' }).build();
 
     await TestBed.configureTestingModule({
       imports: [

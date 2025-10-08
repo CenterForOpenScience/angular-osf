@@ -7,14 +7,14 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.component';
-import { FooterComponent } from '@core/components/footer/footer.component';
-import { HeaderComponent } from '@core/components/header/header.component';
-import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
+import { IS_WEB } from '@osf/shared/helpers';
 
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
+import { FooterComponent } from '../footer/footer.component';
+import { HeaderComponent } from '../header/header.component';
 import { OSFBannerComponent } from '../osf-banners/osf-banner.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
+import { TopnavComponent } from '../topnav/topnav.component';
 
 import { RootComponent } from './root.component';
 
@@ -24,11 +24,9 @@ describe('Component: Root', () => {
   let component: RootComponent;
   let fixture: ComponentFixture<RootComponent>;
   let isWebSubject: BehaviorSubject<boolean>;
-  let isMobileSubject: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
     isWebSubject = new BehaviorSubject<boolean>(true);
-    isMobileSubject = new BehaviorSubject<boolean>(false);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -44,11 +42,7 @@ describe('Component: Root', () => {
           OSFBannerComponent
         ),
       ],
-      providers: [
-        MockProvider(IS_WEB, isWebSubject),
-        MockProvider(IS_XSMALL, isMobileSubject),
-        MockProvider(ConfirmationService),
-      ],
+      providers: [MockProvider(IS_WEB, isWebSubject), MockProvider(ConfirmationService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RootComponent);
@@ -80,15 +74,6 @@ describe('Component: Root', () => {
 
     expect(desktopLayout).toBeFalsy();
     expect(tabletLayout).toBeTruthy();
-  });
-
-  it('should hide breadcrumb in tablet layout when mobile', () => {
-    isWebSubject.next(false);
-    isMobileSubject.next(true);
-    fixture.detectChanges();
-
-    const breadcrumb = fixture.nativeElement.querySelector('osf-breadcrumb');
-    expect(breadcrumb).toBeFalsy();
   });
 
   it('should contain confirm dialog component', () => {

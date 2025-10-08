@@ -44,7 +44,9 @@
 
             <p class="font-normal mt-2">
               {{ selectedItemLabel() | translate }}
-              <span class="font-bold">{{ selectedStorageItem()?.itemName }}</span>
+              <span class="font-bold">{{
+                selectedStorageItem()?.itemName || ('settings.addons.configureAddon.rootDirectory' | translate)
+              }}</span>
             </p>
           </p-card>
         </div>

@@ -53,6 +53,8 @@
       "filter": "Filter",
       "sort": "Sort",
       "replace": "Replace",
+      "selectAll": "Select All",
+      "removeAll": "Remove All",
       "accept": "Accept",
       "reject": "Reject"
     },
@@ -72,9 +74,7 @@
       "toggleProjectVisibility": "Toggle project visibility",
       "tagInput": "Tag input",
       "toggleTreeNode": "Toggle tree node",
-      "copyButtonInfo": "Copy to clipboard button"
-    },
-    "dialogs": {
+      "copyButtonInfo": "Copy to clipboard button",
       "confirmation": "Confirmation"
     },
     "search": {
@@ -442,6 +442,7 @@
       "project": "Project",
       "saveChanges": "Save Changes",
       "deleteProject": "Delete Project",
+      "deleteComponent": "Delete Component",
       "viewOnlyLinks": "View-only Links",
       "viewOnlySubtitle": "Create a link to share this project so those who have the link can view—but not edit—the project.",
       "viewOnlyTable": {
@@ -453,7 +454,7 @@
       },
       "viewOnlyLinkCreated": "View only link successfully created.",
       "viewOnlyLinkDeleted": "View only link successfully deleted.",
-      "viewOnlyLinkCurrentProject": "(current component)",
+      "current": "Current",
       "anonymizeContributorList": "Anonymize contributor list for this link (e.g., for blind peer review).",
       "ensureNoInformation": "Ensure the wiki pages, files, registration forms and add-ons do not contain identifying information.",
       "linkName": "Link name",
@@ -740,12 +741,14 @@
           "cancelButton": "Cancel",
           "message": "<ul><li>&#8226; Public duplicates and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
         },
+        "changePrivacySettings": "Change privacy settings",
+        "adjustPrivacySetting": "Adjust your privacy settings by checking the boxes below.",
+        "checkedProjects": "Checked projects and components will be public.",
+        "uncheckedComponents": "Unchecked components will be private.",
+        "privacySettingsPermissionTooltip": "You must have admin permission on this component to be able to change privacy settings",
         "toast": {
-          "makePublic": {
-            "success": "Project has been made public successfully"
-          },
-          "makePrivate": {
-            "success": "Project has been made private successfully"
+          "changePrivacySettings": {
+            "success": "Privacy settings have been successfully updated."
           },
           "addComponent": {
             "success": "Component has been created successfully"
@@ -993,7 +996,9 @@
         "loadingCedar": "Loading CEDAR record...",
         "editRecord": "Edit Record",
         "recordCreatedSuccessfully": "Record created successfully",
-        "recordUpdatedSuccessfully": "Record updated successfully"
+        "recordUpdatedSuccessfully": "Record updated successfully",
+        "copyRecordMetadataUrl": "Copy url to clipboard to share.",
+        "downloadRecordMetadata": "Download Metadata Record"
       },
       "funding": {
         "updated": "Funding information updated successfully",
@@ -1665,7 +1670,8 @@
         "folderName": "Folder name:",
         "selectFolder": "Select",
         "connectedAccount": "Connected to account:",
-        "home": "Home"
+        "home": "Home",
+        "rootDirectory": "Root Directory"
       },
       "connectAddon": {
         "title": "Connect Add-on",
@@ -2543,6 +2549,11 @@
           "text": "Update pending",
           "short": "Update pending approval",
           "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
+        },
+        "initialApproved": {
+          "text": "Pending",
+          "short": "Pending admin contributor approval",
+          "long": "This registration is awaiting approval by all admin contributors or after 48 hours has passed. An email will notify all registration contributors of the decision. If the registration is pending after 48 hours has passed, contact support at {{email}}."
         }
       },
       "metadata": {
@@ -2660,7 +2671,8 @@
       "inProgress": "Update in progress",
       "pendingModeration": "Pending moderation",
       "withdrawn": "Withdrawn",
-      "updatePendingApproval": "Update pending approval"
+      "updatePendingApproval": "Update pending approval",
+      "initialApproved": "Pending"
     }
   },
   "resourceCard": {
@@ -2844,6 +2856,10 @@
       "totalPreprints": "Total Preprints",
       "downloadsLastDays": "Downloads (last 30 days)",
       "noData": "No preprints found"
+    },
+    "requestAccessErrorDialog": {
+      "title": "Can't Request Access",
+      "detailsMessage": "The user has their request access feature turned off. Reach out to the user by sending an email message by pressing the \"Back\" button below."
     }
   },
   "resources": {

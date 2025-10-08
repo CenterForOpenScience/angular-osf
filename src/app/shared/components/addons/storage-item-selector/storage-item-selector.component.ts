@@ -27,7 +27,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AddonType, OperationNames, StorageItemType } from '@osf/shared/enums';
-import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@osf/shared/helpers';
+import { convertCamelCaseToNormal, IS_XSMALL } from '@osf/shared/helpers';
 import { OperationInvokeData, StorageItem } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores';
@@ -61,7 +61,6 @@ export class StorageItemSelectorComponent implements OnInit {
   private translateService = inject(TranslateService);
 
   readonly AddonType = AddonType;
-  isMedium = toSignal(inject(IS_MEDIUM));
   isMobile = toSignal(inject(IS_XSMALL));
 
   isGoogleFilePicker = input.required<boolean>();
@@ -88,24 +87,25 @@ export class StorageItemSelectorComponent implements OnInit {
   initialResourceType = signal<string>('');
   breadcrumbItems = signal<MenuItem[]>([]);
 
-  selectedItemLabel = computed(() => {
-    return this.currentAddonType() === AddonType.LINK
+  selectedItemLabel = computed(() =>
+    this.currentAddonType() === AddonType.LINK
       ? 'settings.addons.configureAddon.linkedItem'
-      : 'settings.addons.configureAddon.selectedFolder';
-  });
+      : 'settings.addons.configureAddon.selectedFolder'
+  );
 
-  noSelectionLabel = computed(() => {
-    return this.currentAddonType() === AddonType.LINK
+  noSelectionLabel = computed(() =>
+    this.currentAddonType() === AddonType.LINK
       ? 'settings.addons.configureAddon.noLinkedItem'
-      : 'settings.addons.configureAddon.noFolderSelected';
-  });
+      : 'settings.addons.configureAddon.noFolderSelected'
+  );
 
-  resourceTypeOptions = computed(() => {
-    return this.supportedResourceTypes().map((type) => ({
+  resourceTypeOptions = computed(() =>
+    this.supportedResourceTypes().map((type) => ({
       label: convertCamelCaseToNormal(type),
       value: type,
-    }));
-  });
+    }))
+  );
+
   initiallySelectedStorageItem = select(AddonsSelectors.getSelectedStorageItem);
   isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
   isSubmitting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
@@ -117,14 +117,12 @@ export class StorageItemSelectorComponent implements OnInit {
     },
   };
 
-  actions = createDispatchMap({
-    clearOperationInvocations: ClearOperationInvocations,
-  });
+  actions = createDispatchMap({ clearOperationInvocations: ClearOperationInvocations });
 
   constructor() {
     effect(() => {
       const initialFolder = this.initiallySelectedStorageItem();
-      if (initialFolder && !this.selectedStorageItem()) {
+      if (initialFolder) {
         this.selectedStorageItem.set(initialFolder);
       }
     });
@@ -250,11 +248,9 @@ export class StorageItemSelectorComponent implements OnInit {
   }
 
   openInfoDialog() {
-    const dialogWidth = this.isMedium() ? '850px' : '95vw';
-
     this.customDialogService.open(ResourceTypeInfoDialogComponent, {
       header: 'settings.addons.configureAddon.aboutResourceType',
-      width: dialogWidth,
+      width: '850px',
     });
   }
 }

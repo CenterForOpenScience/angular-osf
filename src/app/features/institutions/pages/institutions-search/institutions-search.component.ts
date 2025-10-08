@@ -33,7 +33,7 @@ export class InstitutionsSearchComponent implements OnInit {
   readonly resourceTabOptions = SEARCH_TAB_OPTIONS;
 
   ngOnInit(): void {
-    const institutionId = this.route.snapshot.params['institution-id'];
+    const institutionId = this.route.snapshot.params['institutionId'];
     if (institutionId) {
       this.actions.fetchInstitution(institutionId).subscribe({
         next: () => {

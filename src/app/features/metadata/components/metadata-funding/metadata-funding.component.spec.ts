@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Funder } from '@osf/features/metadata/models';
-import { MOCK_FUNDERS, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_FUNDERS } from '@shared/mocks';
 
 import { MetadataFundingComponent } from './metadata-funding.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataFundingComponent', () => {
   let component: MetadataFundingComponent;
@@ -13,8 +15,7 @@ describe('MetadataFundingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataFundingComponent],
-      providers: [TranslateServiceMock],
+      imports: [MetadataFundingComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataFundingComponent);

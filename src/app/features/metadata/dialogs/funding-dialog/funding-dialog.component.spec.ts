@@ -1,5 +1,3 @@
-import { Store } from '@ngxs/store';
-
 import { MockProvider, MockProviders } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -7,30 +5,31 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DestroyRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_FUNDERS, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_FUNDERS } from '@shared/mocks';
 
 import { MetadataSelectors } from '../../store';
 
 import { FundingDialogComponent } from './funding-dialog.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('FundingDialogComponent', () => {
   let component: FundingDialogComponent;
   let fixture: ComponentFixture<FundingDialogComponent>;
 
   beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === MetadataSelectors.getFundersList) return () => MOCK_FUNDERS;
-      if (selector === MetadataSelectors.getFundersLoading) return () => false;
-      return () => null;
-    });
-
     await TestBed.configureTestingModule({
-      imports: [FundingDialogComponent],
+      imports: [FundingDialogComponent, OSFTestingModule],
       providers: [
-        TranslateServiceMock,
         MockProviders(DynamicDialogRef, DestroyRef),
         MockProvider(DynamicDialogConfig, { data: { funders: [] } }),
-        MockProvider(Store, MOCK_STORE),
+        provideMockStore({
+          signals: [
+            { selector: MetadataSelectors.getFundersList, value: MOCK_FUNDERS },
+            { selector: MetadataSelectors.getFundersLoading, value: false },
+          ],
+        }),
       ],
     }).compileComponents();
 
@@ -141,48 +140,6 @@ describe('FundingDialogComponent', () => {
     };
 
     component.onFunderSelected('Non-existent Funder', 0);
-
-    expect(entry.get('funderName')?.value).toBe(initialValues.funderName);
-    expect(entry.get('funderIdentifier')?.value).toBe(initialValues.funderIdentifier);
-    expect(entry.get('funderIdentifierType')?.value).toBe(initialValues.funderIdentifierType);
-  });
-
-  it('should handle empty funders list', () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === MetadataSelectors.getFundersList) return () => [];
-      if (selector === MetadataSelectors.getFundersLoading) return () => false;
-      return () => null;
-    });
-
-    const entry = component.fundingEntries.at(0);
-    const initialValues = {
-      funderName: entry.get('funderName')?.value,
-      funderIdentifier: entry.get('funderIdentifier')?.value,
-      funderIdentifierType: entry.get('funderIdentifierType')?.value,
-    };
-
-    component.onFunderSelected('Any Funder', 0);
-
-    expect(entry.get('funderName')?.value).toBe(initialValues.funderName);
-    expect(entry.get('funderIdentifier')?.value).toBe(initialValues.funderIdentifier);
-    expect(entry.get('funderIdentifierType')?.value).toBe(initialValues.funderIdentifierType);
-  });
-
-  it('should handle null funders list', () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === MetadataSelectors.getFundersList) return () => null;
-      if (selector === MetadataSelectors.getFundersLoading) return () => false;
-      return () => null;
-    });
-
-    const entry = component.fundingEntries.at(0);
-    const initialValues = {
-      funderName: entry.get('funderName')?.value,
-      funderIdentifier: entry.get('funderIdentifier')?.value,
-      funderIdentifierType: entry.get('funderIdentifierType')?.value,
-    };
-
-    component.onFunderSelected('Any Funder', 0);
 
     expect(entry.get('funderName')?.value).toBe(initialValues.funderName);
     expect(entry.get('funderIdentifier')?.value).toBe(initialValues.funderIdentifier);

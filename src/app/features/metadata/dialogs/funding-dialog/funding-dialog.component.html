@@ -19,7 +19,7 @@
             filterBy="label"
             [showClear]="true"
             [loading]="fundersLoading()"
-            [emptyFilterMessage]="filterMessage()"
+            [emptyFilterMessage]="filterMessage() | translate"
             [emptyMessage]="filterMessage()"
             [autoOptionFocus]="false"
             (onChange)="onFunderSelected($event.value, $index)"

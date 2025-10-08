@@ -3,7 +3,7 @@
     <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
   }
 
-  <div class="flex gap-2">
+  <div class="flex flex-wrap gap-2">
     @if (institutions().length) {
       @for (institution of institutions(); track institution.id) {
         <a

@@ -6,7 +6,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { RequestAccessTrigger, ResourceType } from '../enums';
 import { RequestAccessMapper } from '../mappers/request-access';
-import { ContributorModel, RequestAccessPayload, RequestAccessResponseJsonApi } from '../models';
+import { RequestAccessModel, RequestAccessPayload, RequestAccessResponseJsonApi } from '../models';
 
 import { JsonApiService } from './json-api.service';
 
@@ -34,13 +34,13 @@ export class RequestAccessService {
     return `${this.apiUrl}/${resourcePath}/${resourceId}/requests`;
   }
 
-  getRequestAccessList(resourceType: ResourceType, resourceId: string): Observable<ContributorModel[]> {
+  getRequestAccessList(resourceType: ResourceType, resourceId: string): Observable<RequestAccessModel[]> {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
     const params = { 'embed[]': ['creator'], 'filter[machine_state]': 'pending' };
 
     return this.jsonApiService
       .get<RequestAccessResponseJsonApi>(`${baseUrl}/`, params)
-      .pipe(map((response) => RequestAccessMapper.convertToContributorModels(response.data)));
+      .pipe(map((response) => RequestAccessMapper.getRequestAccessList(response.data)));
   }
 
   acceptRequestAccess(

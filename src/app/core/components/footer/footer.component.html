@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <div class="footer-socials flex justify-content-center align-items-center" [class]="isWeb() ? 'my-3' : 'my-4'">
+    <div class="footer-socials flex justify-content-center align-items-center my-4">
       @for (icon of socialIcons; track icon.name) {
         <a
           class="social-link flex align-items-center justify-content-center"
@@ -20,8 +20,7 @@
   </div>
 
   <div
-    class="footer-secondary-nav flex flex-column justify-content-center align-items-center md:flex-row md:justify-content-between"
-    [class.mt-4]="!isWeb()"
+    class="footer-secondary-nav flex flex-column justify-content-center align-items-center mt-4 md:flex-row md:justify-content-between xl:mt-0"
   >
     <div class="footer-links flex flex-wrap justify-content-center mt-1">
       <a routerLink="/terms-of-use">{{ 'footer.links.termsOfUse' | translate }}</a>

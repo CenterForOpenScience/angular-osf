@@ -112,7 +112,7 @@ export class GoogleFilePickerComponent implements OnInit {
   private loadOauthToken(): void {
     if (this.accountId()) {
       this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId(), this.currentAddonType())).subscribe({
-        next: () => {
+        complete: () => {
           this.accessToken.set(
             this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
           );

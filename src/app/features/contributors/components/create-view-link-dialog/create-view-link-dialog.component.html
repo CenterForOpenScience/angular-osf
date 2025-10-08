@@ -34,7 +34,11 @@
   } @else {
     <div class="flex flex-column gap-2">
       @for (item of componentsList(); track item.id) {
-        <osf-component-checkbox-item [item]="item" (checkboxChange)="onCheckboxChange(item)" />
+        <osf-component-checkbox-item
+          [item]="item"
+          [tooltipText]="'myProjects.settings.parentsNeedToBeChecked'"
+          (checkboxChange)="onCheckboxChange(item)"
+        />
       }
     </div>
   }

@@ -9,7 +9,7 @@
 
   <div class="flex-column flex flex-1 w-full">
     <p-tabs [value]="selectedTab()" (valueChange)="onTabChange(+$event)" class="flex-1">
-      @if (isTablet()) {
+      @if (isMedium()) {
         <p-tablist class="pr-5 pl-5">
           @for (tab of tabOptions; track $index) {
             <p-tab [value]="tab.value">{{ tab.label | translate }}</p-tab>
@@ -18,7 +18,7 @@
       }
 
       <p-tabpanels class="p-3 sm:p-5 flex-1">
-        @if (!isTablet()) {
+        @if (!isMedium()) {
           <osf-select
             class="block mb-4"
             [options]="tabOptions"

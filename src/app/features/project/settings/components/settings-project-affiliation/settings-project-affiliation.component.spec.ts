@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Institution } from '@osf/shared/models';
+import { InstitutionsSelectors } from '@osf/shared/stores';
 import { MOCK_INSTITUTION } from '@shared/mocks';
 
 import { SettingsProjectAffiliationComponent } from './settings-project-affiliation.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('SettingsProjectAffiliationComponent', () => {
   let component: SettingsProjectAffiliationComponent;
@@ -16,6 +18,11 @@ describe('SettingsProjectAffiliationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SettingsProjectAffiliationComponent, OSFTestingModule],
+      providers: [
+        provideMockStore({
+          signals: [{ selector: InstitutionsSelectors.getUserInstitutions, value: [] }],
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SettingsProjectAffiliationComponent);

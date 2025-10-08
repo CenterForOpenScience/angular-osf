@@ -2,9 +2,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -16,7 +16,6 @@ import {
   EmploymentHistoryDialogComponent,
   SelectComponent,
 } from '@osf/shared/components';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { TableParameters } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 
@@ -30,19 +29,24 @@ import { CustomDialogService } from '@osf/shared/services';
 export class ModeratorsTableComponent {
   items = input<ModeratorModel[]>([]);
   isLoading = input(false);
+  tableParams = input.required<TableParameters>();
   currentUserId = input.required<string | undefined>();
   isCurrentUserAdminModerator = input.required<boolean>();
 
   update = output<ModeratorModel>();
   remove = output<ModeratorModel>();
+  pageChanged = output<TablePageEvent>();
 
   customDialogService = inject(CustomDialogService);
 
-  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions = MODERATION_PERMISSIONS;
   readonly ModeratorPermission = ModeratorPermission;
 
   skeletonData: ModeratorModel[] = Array.from({ length: 3 }, () => ({}) as ModeratorModel);
+
+  onPageChange(event: TablePageEvent): void {
+    this.pageChanged.emit(event);
+  }
 
   updatePermission(item: ModeratorModel) {
     this.update.emit(item);

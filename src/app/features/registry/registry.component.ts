@@ -66,7 +66,6 @@ export class RegistryComponent implements OnDestroy {
     });
 
     this.dataciteService.logIdentifiableView(this.registry$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-
   }
 
   ngOnDestroy(): void {
