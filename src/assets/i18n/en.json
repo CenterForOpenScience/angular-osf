@@ -388,19 +388,22 @@
       }
     },
     "confirmEmail": {
-      "isMerge": {
+      "merge": {
         "title": "Merge account",
         "description": "Would you like to merge ",
-        "description2": "into your account? This action is irreversible."
+        "description2": "into your account? This action is irreversible.",
+        "goToEmails": "Merge account",
+        "emailNotAdded": "{{name}} has not been merged into your account.",
+        "emailVerified": "{{name}} has been merged into your account."
       },
-      "isNotMerge": {
+      "add": {
         "title": "Add alternative email",
         "description": "Do you want to add ",
-        "description2": "to your profile ?"
-      },
-      "goToEmails": "Add email",
-      "emailNotAdded": "{{name}} has not been added to your account.",
-      "emailVerified": "{{name}} has been added to your account."
+        "description2": "to your profile ?",
+        "goToEmails": "Add email",
+        "emailNotAdded": "{{name}} has not been added to your account.",
+        "emailVerified": "{{name}} has been added to your account."
+      }
     }
   },
   "myProjects": {

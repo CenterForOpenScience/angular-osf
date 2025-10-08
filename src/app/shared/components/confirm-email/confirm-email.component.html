@@ -3,14 +3,14 @@
     <p class="font-normal">
       {{
         email.isMerge
-          ? ('home.confirmEmail.isMerge.description' | translate)
-          : ('home.confirmEmail.isNotMerge.description' | translate)
+          ? ('home.confirmEmail.merge.description' | translate)
+          : ('home.confirmEmail.add.description' | translate)
       }}
       <span class="inline font-bold">{{ email.emailAddress }}</span>
       {{
         email.isMerge
-          ? ('home.confirmEmail.isMerge.description2' | translate)
-          : ('home.confirmEmail.isNotMerge.description2' | translate)
+          ? ('home.confirmEmail.merge.description2' | translate)
+          : ('home.confirmEmail.add.description2' | translate)
       }}
     </p>
 
@@ -27,7 +27,11 @@
         class="w-full"
         styleClass="w-full"
         (onClick)="verifyEmail()"
-        [label]="'home.confirmEmail.goToEmails' | translate"
+        [label]="
+          email.isMerge
+            ? ('home.confirmEmail.merge.goToEmails' | translate)
+            : ('home.confirmEmail.add.goToEmails' | translate)
+        "
       ></p-button>
     </div>
   } @else {

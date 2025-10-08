@@ -64,9 +64,7 @@ export class AppComponent implements OnInit {
   private showEmailDialog() {
     const unverifiedEmailsData = this.unverifiedEmails();
     this.customDialogService.open(ConfirmEmailComponent, {
-      header: unverifiedEmailsData[0].isMerge
-        ? 'home.confirmEmail.isMerge.title'
-        : 'home.confirmEmail.isNotMerge.title',
+      header: unverifiedEmailsData[0].isMerge ? 'home.confirmEmail.merge.title' : 'home.confirmEmail.add.title',
       width: '448px',
       data: unverifiedEmailsData,
     });
