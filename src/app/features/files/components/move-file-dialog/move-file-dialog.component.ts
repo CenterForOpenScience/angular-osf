@@ -166,15 +166,13 @@ export class MoveFileDialogComponent {
   moveFile(): void {
     const path = this.currentFolder()?.path;
 
-    const provider = this.currentFolder()?.provider || this.provider();
-
     if (!path) {
       throw new Error(this.translateService.instant('files.dialogs.moveFile.pathError'));
     }
 
     this.isFilesUpdating.set(true);
     this.filesService
-      .moveFile(this.config.data.file.links.move, path, this.fileProjectId, provider, this.config.data.action)
+      .moveFile(this.config.data.file.links.move, path, this.fileProjectId, this.provider(), this.config.data.action)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {

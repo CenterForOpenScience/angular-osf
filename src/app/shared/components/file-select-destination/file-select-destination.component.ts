@@ -30,6 +30,7 @@ import {
   GetMoveDialogConfiguredStorageAddons,
   GetMoveDialogRootFolders,
   GetStorageSupportedFeatures,
+  SetCurrentProvider,
   SetMoveDialogCurrentFolder,
 } from '@osf/features/files/store';
 import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
@@ -69,6 +70,7 @@ export class FileSelectDestinationComponent implements OnInit {
     getRootFolders: GetMoveDialogRootFolders,
     getConfiguredStorageAddons: GetMoveDialogConfiguredStorageAddons,
     getStorageSupportedFeatures: GetStorageSupportedFeatures,
+    setCurrentProvider: SetCurrentProvider,
   });
 
   readonly osfStorageLabel = 'OSF Storage';
@@ -121,9 +123,12 @@ export class FileSelectDestinationComponent implements OnInit {
   }
 
   onStorageChange(value: Primitive) {
-    const folder = this.storageAddons().find((option) => option.folder.id === value);
-    if (folder) {
-      this.currentRootFolder.set(folder);
+    const rootFolder = this.storageAddons().find((option) => option.folder.id === value);
+    if (rootFolder) {
+      this.currentRootFolder.set(rootFolder);
+      if (rootFolder.folder.provider) {
+        this.actions.setCurrentProvider(rootFolder.folder.provider);
+      }
     }
   }
 
