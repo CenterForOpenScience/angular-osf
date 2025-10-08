@@ -14,16 +14,32 @@ import { catchError } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { FilesSelectors, GetFiles, GetRootFolderFiles, SetCurrentFolder } from '@osf/features/files/store';
-import { FileKind } from '@osf/shared/enums';
+import {
+  FilesSelectors,
+  GetMoveDialogFiles,
+  SetCurrentFolder,
+  SetMoveDialogCurrentFolder,
+} from '@osf/features/files/store';
+import { FileKind, ResourceType } from '@osf/shared/enums';
 import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
 import { FileFolderModel, FileModel } from '@osf/shared/models';
-import { IconComponent, LoadingSpinnerComponent } from '@shared/components';
+import { CurrentResourceSelectors, GetResourceDetails, GetResourceWithChildren } from '@osf/shared/stores';
+import { FileSelectDestinationComponent, IconComponent, LoadingSpinnerComponent } from '@shared/components';
 import { FilesService, ToastService } from '@shared/services';
+
+import { FileProvider } from '../../constants';
 
 @Component({
   selector: 'osf-move-file-dialog',
-  imports: [Button, LoadingSpinnerComponent, Tooltip, TranslatePipe, IconComponent, ScrollerModule],
+  imports: [
+    Button,
+    LoadingSpinnerComponent,
+    Tooltip,
+    TranslatePipe,
+    IconComponent,
+    ScrollerModule,
+    FileSelectDestinationComponent,
+  ],
   templateUrl: './move-file-dialog.component.html',
   styleUrl: './move-file-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,25 +53,28 @@ export class MoveFileDialogComponent {
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
 
-  readonly files = select(FilesSelectors.getFiles);
-  readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);
-  readonly isLoading = select(FilesSelectors.isFilesLoading);
-  readonly currentFolder = select(FilesSelectors.getCurrentFolder);
+  readonly files = select(FilesSelectors.getMoveDialogFiles);
+  readonly filesTotalCount = select(FilesSelectors.getMoveDialogFilesTotalCount);
+  readonly isLoading = select(FilesSelectors.isMoveDialogFilesLoading);
+  readonly currentFolder = select(FilesSelectors.getMoveDialogCurrentFolder);
   readonly isFilesUpdating = signal(false);
-  readonly rootFolders = select(FilesSelectors.getRootFolders);
-
-  readonly storageName =
-    this.config.data.storageName || this.translateService.instant('files.dialogs.moveFile.osfStorage');
+  readonly currentProject = select(CurrentResourceSelectors.getCurrentResource);
+  readonly components = select(CurrentResourceSelectors.getResourceWithChildren);
+  readonly areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
+  readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isMoveDialogConfiguredStorageAddonsLoading);
 
   readonly provider = select(FilesSelectors.getProvider);
 
   readonly actions = createDispatchMap({
-    getFiles: GetFiles,
+    getMoveDialogFiles: GetMoveDialogFiles,
+    setMoveDialogCurrentFolder: SetMoveDialogCurrentFolder,
     setCurrentFolder: SetCurrentFolder,
-    getRootFolderFiles: GetRootFolderFiles,
+    getResourceDetails: GetResourceDetails,
+    getComponentsTree: GetResourceWithChildren,
   });
 
   foldersStack = signal<FileFolderModel[]>(this.config.data.foldersStack ?? []);
+  storageProvider = signal<string>(this.config.data.storageProvider ?? FileProvider.OsfStorage);
   previousFolder = signal<FileFolderModel | null>(null);
 
   pageNumber = signal(1);
@@ -64,20 +83,37 @@ export class MoveFileDialogComponent {
 
   readonly isFolderSame = computed(() => this.currentFolder()?.id === this.config.data.fileFolderId);
 
+  readonly isDestinationLoading = computed(
+    () => this.isConfiguredStorageAddonsLoading() || this.areComponentsLoading()
+  );
+
+  readonly showFilesLoading = computed(
+    () => this.isDestinationLoading() || ((this.isLoading() || this.isFilesUpdating()) && !this.isLoadingMore())
+  );
+
+  readonly buttonDisabled = computed(
+    () => this.isLoading() || this.isFilesUpdating() || this.isFolderSame() || this.isDestinationLoading()
+  );
+
   get isMoveAction() {
     return this.config.data.action === 'move';
   }
 
   constructor() {
     this.initPreviousFolder();
+    const currentProject = this.currentProject();
+    if (currentProject) {
+      const rootParentId = currentProject.rootResourceId ?? currentProject.id;
+      this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+    }
 
     effect(() => {
-      // const page = this.pageNumber();
-      // const filesLink = this.currentFolder()?.links?.filesLink;
-      // if (filesLink) {
-      //   this.actions.getFiles(filesLink, page);
-      // }
+      const folder = this.currentFolder();
+      if (folder && !this.isDestinationLoading()) {
+        this.actions.getMoveDialogFiles(folder.links.filesLink, 1);
+      }
     });
+
     effect(() => {
       if (!this.isLoading()) {
         this.isLoadingMore.set(false);
@@ -102,7 +138,7 @@ export class MoveFileDialogComponent {
         this.foldersStack.update((stack) => [...stack, current]);
       }
       const folder = FilesMapper.mapFileToFolder(file as FileModel);
-      this.actions.setCurrentFolder(folder);
+      this.actions.setMoveDialogCurrentFolder(folder);
     }
   }
 
@@ -113,8 +149,8 @@ export class MoveFileDialogComponent {
       this.previousFolder.set(newStack.length > 0 ? newStack[newStack.length - 1] : null);
 
       if (previous) {
-        this.actions.setCurrentFolder(previous);
-        this.actions.getFiles(previous.links.filesLink);
+        this.actions.setMoveDialogCurrentFolder(previous);
+        this.actions.getMoveDialogFiles(previous.links.filesLink);
       }
       return newStack;
     });
@@ -140,6 +176,7 @@ export class MoveFileDialogComponent {
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.actions.setCurrentFolder(this.currentFolder());
+          this.actions.setMoveDialogCurrentFolder(null);
           this.isFilesUpdating.set(false);
         }),
         catchError((error) => {
@@ -159,7 +196,7 @@ export class MoveFileDialogComponent {
 
     if (!this.isLoadingMore() && loaded < total) {
       this.isLoadingMore.set(true);
-      this.actions.getFiles(this.currentFolder()?.links.filesLink ?? '', nextPage);
+      this.actions.getMoveDialogFiles(this.currentFolder()?.links.filesLink ?? '', nextPage);
     }
   }
 
@@ -168,5 +205,10 @@ export class MoveFileDialogComponent {
     if (event.last >= loaded - 1) {
       this.loadNextPage();
     }
+  }
+
+  onProjectChange() {
+    this.foldersStack.set([]);
+    this.previousFolder.set(null);
   }
 }

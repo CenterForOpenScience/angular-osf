@@ -52,4 +52,5 @@ export { ToastComponent } from './toast/toast.component';
 export { TruncatedTextComponent } from './truncated-text/truncated-text.component';
 export { ViewOnlyLinkMessageComponent } from './view-only-link-message/view-only-link-message.component';
 export { ViewOnlyTableComponent } from './view-only-table/view-only-table.component';
+export { FileSelectDestinationComponent } from '@shared/components/file-select-destination/file-select-destination.component';
 export { SearchFiltersComponent } from '@shared/components/search-filters/search-filters.component';

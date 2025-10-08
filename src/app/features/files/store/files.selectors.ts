@@ -36,30 +36,30 @@ export class FilesSelectors {
     return state.isAnonymous;
   }
 
-  // @Selector([FilesState])
-  // static getMoveFileFiles(state: FilesStateModel): OsfFile[] {
-  //   return state.moveFileFiles.data;
-  // }
+  @Selector([FilesState])
+  static getMoveDialogFiles(state: FilesStateModel): FileModel[] {
+    return state.moveDialogFiles.data;
+  }
 
-  // @Selector([FilesState])
-  // static getMoveFileFilesTotalCount(state: FilesStateModel): number {
-  //   return state.moveFileFiles.totalCount;
-  // }
+  @Selector([FilesState])
+  static getMoveDialogFilesTotalCount(state: FilesStateModel): number {
+    return state.moveDialogFiles.totalCount;
+  }
 
-  // @Selector([FilesState])
-  // static isMoveFileFilesLoading(state: FilesStateModel): boolean {
-  //   return state.moveFileFiles.isLoading;
-  // }
+  @Selector([FilesState])
+  static isMoveDialogFilesLoading(state: FilesStateModel): boolean {
+    return state.moveDialogFiles.isLoading;
+  }
 
   @Selector([FilesState])
   static getCurrentFolder(state: FilesStateModel): FileFolderModel | null {
     return state.currentFolder;
   }
 
-  // @Selector([FilesState])
-  // static getMoveFileCurrentFolder(state: FilesStateModel): OsfFile | null {
-  //   return state.moveFileCurrentFolder;
-  // }
+  @Selector([FilesState])
+  static getMoveDialogCurrentFolder(state: FilesStateModel): FileFolderModel | null {
+    return state.moveDialogCurrentFolder;
+  }
 
   @Selector([FilesState])
   static getProvider(state: FilesStateModel): string {
@@ -144,6 +144,26 @@ export class FilesSelectors {
   @Selector([FilesState])
   static isConfiguredStorageAddonsLoading(state: FilesStateModel): boolean {
     return state.configuredStorageAddons.isLoading;
+  }
+
+  @Selector([FilesState])
+  static getMoveDialogRootFolders(state: FilesStateModel): FileFolderModel[] | null {
+    return state.moveDialogRootFolders.data;
+  }
+
+  @Selector([FilesState])
+  static isMoveDialogRootFoldersLoading(state: FilesStateModel): boolean {
+    return state.moveDialogRootFolders.isLoading;
+  }
+
+  @Selector([FilesState])
+  static getMoveDialogConfiguredStorageAddons(state: FilesStateModel): ConfiguredAddonModel[] | null {
+    return state.moveDialogConfiguredStorageAddons.data;
+  }
+
+  @Selector([FilesState])
+  static isMoveDialogConfiguredStorageAddonsLoading(state: FilesStateModel): boolean {
+    return state.moveDialogConfiguredStorageAddons.isLoading;
   }
 
   @Selector([FilesState])

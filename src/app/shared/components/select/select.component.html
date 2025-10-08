@@ -9,6 +9,7 @@
   [disabled]="disabled()"
   [(ngModel)]="selectedValue"
   (ngModelChange)="changeValue.emit($event)"
+  [loading]="loading()"
 >
   <ng-template #selectedItem let-selectedOption>
     {{ selectedOption.label | translate }}

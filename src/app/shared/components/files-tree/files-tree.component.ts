@@ -77,7 +77,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   files = input.required<FileModel[]>();
   totalCount = input<number>(0);
   isLoading = input<boolean>();
-  currentFolder = input.required<FileFolderModel | null>();
+  currentFolder = input.required<FileFolderModel>();
   storage = input.required<FileLabelModel | null>();
   resourceId = input.required<string>();
 
@@ -93,6 +93,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   entryFileClicked = output<FileModel>();
   uploadFilesConfirmed = output<File[] | File>();
   setCurrentFolder = output<FileFolderModel>();
+  setMoveDialogCurrentFolder = output<FileFolderModel>();
   deleteEntryAction = output<string>();
   renameEntryAction = output<{ newName: string; link: string }>();
   loadFiles = output<{ link: string; page: number }>();
@@ -108,8 +109,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     const height = parseInt(this.scrollHeight(), 10);
     return Math.ceil(height / this.virtualScrollItemSize);
   });
-
-  isCopyMoveDialogOpened = false;
 
   readonly FileMenuType = FileMenuType;
 
@@ -389,8 +388,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   moveFile(file: FileModel, action: string): void {
+    this.setMoveDialogCurrentFolder.emit(this.currentFolder());
     const header = action === 'move' ? 'files.dialogs.moveFile.title' : 'files.dialogs.copyFile.title';
-    this.isCopyMoveDialogOpened = true;
     this.customDialogService
       .open(MoveFileDialogComponent, {
         header,
@@ -399,7 +398,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
           file: file,
           resourceId: this.resourceId(),
           action: action,
-          storageName: this.storage()?.label,
+          storageProvider: this.storage()?.folder.provider,
           foldersStack: [...this.foldersStack],
           fileFolderId: this.currentFolder()?.id,
         },
@@ -418,7 +417,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
             });
           }
         }
-        this.isCopyMoveDialogOpened = false;
       });
   }
 

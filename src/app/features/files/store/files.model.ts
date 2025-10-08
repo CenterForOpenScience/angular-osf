@@ -8,7 +8,9 @@ import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
 export interface FilesStateModel {
   files: AsyncStateWithTotalCount<FileModel[]>;
+  moveDialogFiles: AsyncStateWithTotalCount<FileModel[]>;
   currentFolder: FileFolderModel | null;
+  moveDialogCurrentFolder: FileFolderModel | null;
   search: string;
   sort: string;
   provider: (typeof FileProvider)[keyof typeof FileProvider];
@@ -19,7 +21,9 @@ export interface FilesStateModel {
   fileRevisions: AsyncStateModel<OsfFileRevision[] | null>;
   tags: AsyncStateModel<string[]>;
   rootFolders: AsyncStateModel<FileFolderModel[] | null>;
+  moveDialogRootFolders: AsyncStateModel<FileFolderModel[] | null>;
   configuredStorageAddons: AsyncStateModel<ConfiguredAddonModel[] | null>;
+  moveDialogConfiguredStorageAddons: AsyncStateModel<ConfiguredAddonModel[] | null>;
   isAnonymous: boolean;
   storageSupportedFeatures: Record<string, SupportedFeature[]>;
 }
@@ -31,7 +35,14 @@ export const FILES_STATE_DEFAULTS: FilesStateModel = {
     error: null,
     totalCount: 0,
   },
+  moveDialogFiles: {
+    data: [],
+    isLoading: false,
+    error: null,
+    totalCount: 0,
+  },
   currentFolder: null,
+  moveDialogCurrentFolder: null,
   search: '',
   sort: 'name',
   provider: FileProvider.OsfStorage,
@@ -71,6 +82,16 @@ export const FILES_STATE_DEFAULTS: FilesStateModel = {
     error: null,
   },
   configuredStorageAddons: {
+    data: [],
+    isLoading: true,
+    error: null,
+  },
+  moveDialogRootFolders: {
+    data: [],
+    isLoading: true,
+    error: null,
+  },
+  moveDialogConfiguredStorageAddons: {
     data: [],
     isLoading: true,
     error: null,

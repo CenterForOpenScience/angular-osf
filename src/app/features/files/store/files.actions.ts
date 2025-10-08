@@ -2,12 +2,6 @@ import { FileFolderModel } from '@osf/shared/models';
 
 import { PatchFileMetadata } from '../models';
 
-export class GetRootFolderFiles {
-  static readonly type = '[Files] Get Root Folder Files';
-
-  constructor(public resourceId: string) {}
-}
-
 export class GetFiles {
   static readonly type = '[Files] Get Files';
 
@@ -44,20 +38,20 @@ export class SetCurrentFolder {
   constructor(public folder: FileFolderModel | null) {}
 }
 
-// export class SetMoveFileCurrentFolder {
-//   static readonly type = '[Files] Set Move File Current Folder';
+export class SetMoveDialogCurrentFolder {
+  static readonly type = '[Files] Set Move Dialog Current Folder';
 
-//   constructor(public folder: OsfFile | null) {}
-// }
+  constructor(public folder: FileFolderModel | null) {}
+}
 
-// export class GetMoveFileFiles {
-//   static readonly type = '[Files] Get Move File Files';
+export class GetMoveDialogFiles {
+  static readonly type = '[Files] Get Move Dialog Files';
 
-//   constructor(
-//     public filesLink: string,
-//     public page?: number
-//   ) {}
-// }
+  constructor(
+    public filesLink: string,
+    public page?: number
+  ) {}
+}
 
 export class SetCurrentProvider {
   static readonly type = '[Files] Set Current Provider';
@@ -142,6 +136,18 @@ export class GetRootFolders {
 
 export class GetConfiguredStorageAddons {
   static readonly type = '[Files] Get ConfiguredStorageAddons';
+
+  constructor(public resourceUri: string) {}
+}
+
+export class GetMoveDialogRootFolders {
+  static readonly type = '[Files] Get Move Dialog Folders';
+
+  constructor(public folderLink: string) {}
+}
+
+export class GetMoveDialogConfiguredStorageAddons {
+  static readonly type = '[Files] Get Move Dialog ConfiguredStorageAddons';
 
   constructor(public resourceUri: string) {}
 }

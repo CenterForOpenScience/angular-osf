@@ -90,7 +90,7 @@
   <section class="mt-4">
     @if (selectedProjectId()) {
       <osf-files-tree
-        [currentFolder]="currentFolder()"
+        [currentFolder]="currentFolder()!"
         [files]="projectFiles()"
         [totalCount]="projectFiles().length"
         [storage]="null"

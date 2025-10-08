@@ -111,8 +111,8 @@
     <osf-files-tree
       [files]="files()"
       [totalCount]="filesTotalCount()"
-      [currentFolder]="currentFolder()"
-      [storage]="currentRootFolder()"
+      [currentFolder]="currentFolder()!"
+      [storage]="currentRootFolder()!"
       [isLoading]="isFilesLoading()"
       [viewOnly]="!canEdit()"
       [supportUpload]="canUploadFiles()"
@@ -126,6 +126,7 @@
       (uploadFilesConfirmed)="uploadFiles($event)"
       (loadFiles)="onLoadFiles($event)"
       (setCurrentFolder)="setCurrentFolder($event)"
+      (setMoveDialogCurrentFolder)="setMoveDialogCurrentFolder($event)"
     >
     </osf-files-tree>
   </div>

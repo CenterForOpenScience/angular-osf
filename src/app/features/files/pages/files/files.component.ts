@@ -38,6 +38,7 @@ import {
   ResetState,
   SetCurrentFolder,
   SetCurrentProvider,
+  SetMoveDialogCurrentFolder,
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
@@ -112,6 +113,7 @@ export class FilesComponent {
     deleteEntry: DeleteEntry,
     renameEntry: RenameEntry,
     setCurrentFolder: SetCurrentFolder,
+    setMoveDialogCurrentFolder: SetMoveDialogCurrentFolder,
     setSearch: SetSearch,
     setSort: SetSort,
     getRootFolders: GetRootFolders,
@@ -203,7 +205,7 @@ export class FilesComponent {
 
   readonly canEdit = computed(() => {
     const details = this.resourceDetails();
-    const hasAdminOrWrite = details.currentUserPermissions.some(
+    const hasAdminOrWrite = details.currentUserPermissions?.some(
       (permission) => permission === UserPermissions.Admin || permission === UserPermissions.Write
     );
 
@@ -477,6 +479,10 @@ export class FilesComponent {
     this.actions.setCurrentFolder(folder);
   }
 
+  setMoveDialogCurrentFolder(folder: FileFolderModel) {
+    this.actions.setMoveDialogCurrentFolder(folder);
+  }
+
   deleteEntry(link: string) {
     this.actions.deleteEntry(link).subscribe(() => {
       this.toastService.showSuccess('files.dialogs.deleteFile.success');
@@ -491,14 +497,6 @@ export class FilesComponent {
       this.updateFilesList();
     });
   }
-
-  // folderIsOpening(value: boolean): void {
-  //   this.isFolderOpening.set(value);
-  //   if (value) {
-  //     this.searchControl.setValue('');
-  //     this.sortControl.setValue(ALL_SORT_OPTIONS[0].value);
-  //   }
-  // }
 
   navigateToFile(file: FileModel) {
     const extras = this.hasViewOnly()

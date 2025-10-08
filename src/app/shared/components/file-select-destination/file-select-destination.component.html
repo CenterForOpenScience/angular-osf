@@ -1,13 +1,13 @@
-<section class="flex flex-column p-4 gap-4">
-  <h2>{{ 'project.overview.files.filesPreview' | translate }}</h2>
-  <osf-select
-    class="w-full"
-    [options]="options()"
-    [(selectedValue)]="selectedRoot"
-    (changeValue)="onChangeProject($event)"
-    [fullWidth]="true"
-    [disabled]="isStorageLoading"
-  />
+<osf-select
+  class="w-full"
+  [options]="options()"
+  [selectedValue]="selectedProject()?.value"
+  (changeValue)="onChangeProject($event)"
+  [fullWidth]="true"
+  [disabled]="isStorageLoading"
+  [loading]="isLoading"
+/>
+<div class="my-3">
   @if (isStorageLoading) {
     <div class="flex pl-1 gap-3">
       <p-skeleton width="6rem" height="2.5rem" />
@@ -23,9 +23,15 @@
               severity="contrast"
               variant="text"
               [styleClass]="option.folder.id === currentRootFolder()?.folder?.id ? 'text-600' : 'text-500'"
-              [disabled]="isFilesLoading()"
+              [disabled]="isFilesLoading() || !hasAddUpdateFeature(option.folder.provider)"
               [label]="option.label"
               [raised]="option.folder.id === currentRootFolder()?.folder?.id"
+              [pTooltip]="
+                !hasAddUpdateFeature(option.folder.provider)
+                  ? ('files.dialogs.moveFile.noMovePermission' | translate)
+                  : null
+              "
+              tooltipPosition="top"
             >
             </p-button>
           </p-tab>
@@ -33,18 +39,4 @@
       </p-tablist>
     </p-tabs>
   }
-
-  <osf-files-tree
-    [files]="files()"
-    [totalCount]="filesTotalCount()"
-    [currentFolder]="currentFolder()!"
-    [storage]="currentRootFolder()!"
-    [isLoading]="isFilesLoading() || isStorageLoading"
-    [resourceId]="selectedRoot!"
-    [provider]="provider()"
-    (entryFileClicked)="navigateToFile($event)"
-    (loadFiles)="onLoadFiles($event)"
-    (setCurrentFolder)="setCurrentFolder($event)"
-  >
-  </osf-files-tree>
-</section>
+</div>
