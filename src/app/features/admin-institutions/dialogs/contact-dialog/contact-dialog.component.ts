@@ -76,9 +76,6 @@ export class ContactDialogComponent {
       permission: formValue.permission,
       ccSender: formValue.ccSender || false,
       allowReplyToSender: formValue.allowReplyToSender || false,
-      ...(this.selectedOption() === ContactOption.RequestAccess && {
-        selectedAccess: formValue.selectedAccess,
-      }),
     };
 
     this.dialogRef.close(data);
