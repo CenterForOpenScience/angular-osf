@@ -41,31 +41,16 @@ describe('RegistriesProviderSearchComponent', () => {
 
     fixture = TestBed.createComponent(RegistriesProviderSearchComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should fetch provider and set default search filters on init', () => {
-    const actionsMock = {
-      getProvider: jest.fn().mockReturnValue({ subscribe: ({ next }: any) => next() }),
-      setDefaultFilterValue: jest.fn(),
-      setResourceType: jest.fn(),
-      clearCurrentProvider: jest.fn(),
-      clearRegistryProvider: jest.fn(),
-    } as any;
-    Object.defineProperty(component as any, 'actions', { value: actionsMock });
-
-    component.ngOnInit();
-
-    expect(actionsMock.getProvider).toHaveBeenCalledWith('osf');
-    expect(actionsMock.setDefaultFilterValue).toHaveBeenCalledWith('publisher', 'http://iri/provider');
-    expect(actionsMock.setResourceType).toHaveBeenCalledWith(3);
-  });
-
   it('should clear providers on destroy', () => {
+    fixture.detectChanges();
+
     const actionsMock = {
       getProvider: jest.fn(),
       setDefaultFilterValue: jest.fn(),

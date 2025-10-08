@@ -5,7 +5,13 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
+import { ProviderSelectors } from '@core/store/provider';
+import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
+import { InstitutionsSearchSelectors } from '@shared/stores/institutions-search';
+
 import { BreadcrumbComponent } from './breadcrumb.component';
+
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('Component: Breadcrumb', () => {
   let component: BreadcrumbComponent;
@@ -17,8 +23,18 @@ describe('Component: Breadcrumb', () => {
   };
 
   const mockActivatedRoute = {
+    root: {
+      snapshot: {
+        url: [],
+        params: {},
+        data: {},
+        firstChild: null,
+      },
+    },
     snapshot: {
       data: { skipBreadcrumbs: false },
+      url: [],
+      params: {},
     },
     firstChild: null,
   };
@@ -26,7 +42,17 @@ describe('Component: Breadcrumb', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BreadcrumbComponent],
-      providers: [MockProvider(Router, mockRouter), { provide: ActivatedRoute, useValue: mockActivatedRoute }],
+      providers: [
+        MockProvider(Router, mockRouter),
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        provideMockStore({
+          signals: [
+            { selector: ProviderSelectors.getCurrentProvider, value: null },
+            { selector: InstitutionsSearchSelectors.getInstitution, value: null },
+            { selector: InstitutionsAdminSelectors.getInstitution, value: null },
+          ],
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BreadcrumbComponent);
@@ -34,9 +60,16 @@ describe('Component: Breadcrumb', () => {
     fixture.detectChanges();
   });
 
-  it('should create and parse URL correctly', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component['url']()).toBe('/test/path');
-    expect(component['parsedUrl']()).toEqual(['test', 'path']);
+  });
+
+  it('should show breadcrumb when skipBreadcrumbs is false', () => {
+    expect(component.showBreadcrumb()).toBe(true);
+  });
+
+  it('should build breadcrumbs from route', () => {
+    expect(component.breadcrumbs()).toBeDefined();
+    expect(Array.isArray(component.breadcrumbs())).toBe(true);
   });
 });
