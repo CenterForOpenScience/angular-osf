@@ -6,7 +6,7 @@ export interface NodeDetailsModel {
   title: string;
   description: string;
   isPublic: boolean;
-  region: IdName;
+  region: IdName | null;
   affiliatedInstitutions: Institution[];
   currentUserPermissions: UserPermissions[];
   rootId?: string;
