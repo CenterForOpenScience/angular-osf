@@ -144,7 +144,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   }
 
   private initializeProvider(): void {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('providerId');
     if (!id) {
       this.router.navigate(['/not-found']);
       return;

@@ -16,6 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
+import { GetRegistryProvider } from '@shared/stores/registration-provider';
 
 import { CreateDraft, GetProjects, GetProviderSchemas, RegistriesSelectors } from '../../store';
 
@@ -41,6 +42,7 @@ export class NewRegistrationComponent {
   readonly isProjectsLoading = select(RegistriesSelectors.isProjectsLoading);
   readonly user = select(UserSelectors.getCurrentUser);
   actions = createDispatchMap({
+    getProvider: GetRegistryProvider,
     getProjects: GetProjects,
     getProviderSchemas: GetProviderSchemas,
     createDraft: CreateDraft,
@@ -63,6 +65,7 @@ export class NewRegistrationComponent {
     if (userId) {
       this.actions.getProjects(userId, '');
     }
+    this.actions.getProvider(this.providerId);
     this.actions.getProviderSchemas(this.providerId);
     effect(() => {
       const providerSchema = this.draftForm.get('providerSchema')?.value;

@@ -36,7 +36,7 @@ export const registriesRoutes: Routes = [
         loadComponent: () => import('@osf/features/registries/pages').then((c) => c.RegistriesLandingComponent),
       },
       {
-        path: ':name',
+        path: ':providerId',
         loadComponent: () =>
           import('@osf/features/registries/pages/registries-provider-search/registries-provider-search.component').then(
             (c) => c.RegistriesProviderSearchComponent
