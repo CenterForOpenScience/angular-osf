@@ -1,6 +1,6 @@
 import { createDispatchMap } from '@ngxs/store';
 
-import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -97,12 +97,18 @@ export class CollectionsService {
           return of([]);
         }
 
-        const contributorUrls = response.data.map(
-          (submission) => submission.embeds.guid.data.relationships!.bibliographic_contributors!.links.related.href
-        );
-        const contributorRequests = contributorUrls.map((url) => this.getCollectionContributors(url));
         const totalCount = response.meta?.total ?? 0;
         this.actions.setTotalSubmissions(totalCount);
+
+        const contributorRequests = response.data.map((submission) =>
+          this.getCollectionContributors(
+            submission.embeds.guid.data.relationships!.bibliographic_contributors!.links.related.href
+          ).pipe(catchError(() => of([])))
+        );
+
+        if (!contributorRequests.length) {
+          return of([]);
+        }
 
         return forkJoin(contributorRequests).pipe(
           map((contributorsArrays) =>
