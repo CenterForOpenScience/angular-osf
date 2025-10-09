@@ -136,11 +136,18 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.openContactDialog(event);
+  }
+
+  private openContactDialog(event: TableIconClickEvent, defaultData?: ContactDialogData): void {
     this.customDialogService
       .open(ContactDialogComponent, {
         header: 'adminInstitutions.institutionUsers.sendEmail',
         width: '448px',
-        data: this.currentUser()?.fullName,
+        data: {
+          currentUserFullName: this.currentUser()?.fullName,
+          defaultContactData: defaultData,
+        },
       })
       .onClose.pipe(
         filter((value) => !!value),
@@ -179,9 +186,17 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
         .pipe(
           catchError((e) => {
             if (e instanceof HttpErrorResponse && e.status === 403) {
-              this.customDialogService.open(RequestAccessErrorDialogComponent, {
-                header: 'adminInstitutions.requestAccessErrorDialog.title',
-              });
+              this.customDialogService
+                .open(RequestAccessErrorDialogComponent, {
+                  header: 'adminInstitutions.requestAccessErrorDialog.title',
+                })
+                .onClose.pipe(
+                  filter((value) => !!value),
+                  takeUntilDestroyed(this.destroyRef)
+                )
+                .subscribe(() =>
+                  this.openContactDialog(event, { ...emailData, selectedOption: ContactOption.SendMessage })
+                );
             }
 
             return EMPTY;
