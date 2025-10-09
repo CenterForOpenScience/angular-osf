@@ -41,10 +41,19 @@ export class ConfirmEmailComponent {
     this.actions
       .deleteEmail(this.email.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        let showSuccessText = isMerge ? 'home.confirmEmail.merge.emailNotAdded' : 'home.confirmEmail.add.emailNotAdded';
-        this.toastService.showSuccess(showSuccessText, { name: this.email.emailAddress });
-        this.dialogRef.close();
+      .subscribe({
+        next: () => {
+          let showSuccessText = isMerge
+            ? 'home.confirmEmail.merge.emailNotAdded'
+            : 'home.confirmEmail.add.emailNotAdded';
+          this.toastService.showSuccess(showSuccessText, { name: this.email.emailAddress });
+          this.dialogRef.close();
+        },
+        error: () => {
+          let showErrorText = isMerge ? 'home.confirmEmail.merge.denyError' : 'home.confirmEmail.add.denyError';
+          this.toastService.showError(showErrorText, { name: this.email.emailAddress });
+          this.dialogRef.close();
+        },
       });
   }
 
@@ -61,7 +70,11 @@ export class ConfirmEmailComponent {
           this.toastService.showSuccess(showSuccessText, { name: this.email.emailAddress });
           this.dialogRef.close();
         },
-        error: () => this.dialogRef.close(),
+        error: () => {
+          let showErrorText = isMerge ? 'home.confirmEmail.merge.verifyError' : 'home.confirmEmail.add.verifyError';
+          this.toastService.showError(showErrorText, { name: this.email.emailAddress });
+          this.dialogRef.close();
+        },
       });
   }
 }
