@@ -367,10 +367,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     if (newName.trim() && file.links.upload) {
       const link = file.links.upload;
       this.renameEntryAction.emit({ newName, link });
-
-      // this.actions()
-      //   .renameEntry?.(this.resourceId(), file.links.upload, newName)
-      //   .subscribe(() => this.toastService.showSuccess('files.dialogs.renameFile.success'));
     }
   }
 
@@ -395,27 +391,18 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   moveFile(file: FileModel, action: string): void {
     this.setMoveDialogCurrentFolder.emit(this.currentFolder());
-    this.customDialogService
-      .open(MoveFileDialogComponent, {
-        header: 'files.dialogs.moveFile.title',
-        width: '552px',
-        data: {
-          files: [file],
-          resourceId: this.resourceId(),
-          action: action,
-          storageProvider: this.storage()?.folder.provider,
-          foldersStack: structuredClone(this.foldersStack),
-          initialFolder: structuredClone(this.currentFolder()),
-        },
-      })
-      .onClose.subscribe((result) => {
-        if (result) {
-          // this.loadFiles.emit({
-          //   link: this.currentFolder()?.links.filesLink ?? '',
-          //   page: 1,
-          // });
-        }
-      });
+    this.customDialogService.open(MoveFileDialogComponent, {
+      header: 'files.dialogs.moveFile.title',
+      width: '552px',
+      data: {
+        files: [file],
+        resourceId: this.resourceId(),
+        action: action,
+        storageProvider: this.storage()?.folder.provider,
+        foldersStack: structuredClone(this.foldersStack),
+        initialFolder: structuredClone(this.currentFolder()),
+      },
+    });
   }
 
   copyToClipboard(embedHtml: string): void {
