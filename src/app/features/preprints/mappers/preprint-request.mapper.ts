@@ -1,5 +1,6 @@
 import { PreprintRequestType } from '@osf/features/preprints/enums';
 import { PreprintRequest, PreprintRequestDataJsonApi } from '@osf/features/preprints/models';
+import { UserMapper } from '@osf/shared/mappers';
 
 export class PreprintRequestMapper {
   static toWithdrawPreprintPayload(preprintId: string, justification: string) {
@@ -23,6 +24,8 @@ export class PreprintRequestMapper {
   }
 
   static fromPreprintRequest(data: PreprintRequestDataJsonApi): PreprintRequest {
+    const creator = UserMapper.getUserInfo(data.embeds.creator);
+
     return {
       id: data.id,
       comment: data.attributes.comment,
@@ -30,8 +33,8 @@ export class PreprintRequestMapper {
       machineState: data.attributes.machine_state,
       dateLastTransitioned: data.attributes.date_last_transitioned,
       creator: {
-        id: data.embeds.creator.data.id,
-        name: data.embeds.creator.data.attributes.full_name,
+        id: creator?.id || '',
+        name: creator?.fullName || '',
       },
     };
   }

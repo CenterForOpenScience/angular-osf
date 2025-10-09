@@ -279,7 +279,7 @@ export class ContributorsComponent implements OnInit {
     this.customConfirmationService.confirmAccept({
       headerKey: 'project.requestAccess.acceptDialog.header',
       messageKey: 'project.requestAccess.acceptDialog.message',
-      messageParams: { name: requestAccessItem.creator.fullName },
+      messageParams: { name: requestAccessItem.creator?.fullName },
       acceptLabelKey: 'common.buttons.accept',
       onConfirm: () => {
         const payload = { permissions: requestAccessItem.requestedPermissions };
@@ -296,7 +296,7 @@ export class ContributorsComponent implements OnInit {
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.requestAccess.rejectDialog.header',
       messageKey: 'project.requestAccess.rejectDialog.message',
-      messageParams: { name: requestAccessItem.creator.fullName },
+      messageParams: { name: requestAccessItem.creator?.fullName },
       acceptLabelKey: 'common.buttons.reject',
       onConfirm: () => {
         this.actions

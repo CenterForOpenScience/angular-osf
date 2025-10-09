@@ -98,7 +98,7 @@ export class CollectionsService {
         }
 
         const contributorUrls = response.data.map(
-          (submission) => submission.embeds.guid.data.relationships.bibliographic_contributors.links.related.href
+          (submission) => submission.embeds.guid.data.relationships!.bibliographic_contributors!.links.related.href
         );
         const contributorRequests = contributorUrls.map((url) => this.getCollectionContributors(url));
         const totalCount = response.meta?.total ?? 0;
