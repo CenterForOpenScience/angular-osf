@@ -120,13 +120,16 @@ export class ContributorsService {
   bulkAddContributors(
     resourceType: ResourceType,
     resourceId: string,
-    contributors: ContributorAddModel[]
+    contributors: ContributorAddModel[],
+    childNodeIds?: string[]
   ): Observable<ContributorModel[]> {
     if (contributors.length === 0) {
       return of([]);
     }
 
-    const addRequests = contributors.map((contributor) => this.addContributor(resourceType, resourceId, contributor));
+    const addRequests = contributors.map((contributor) =>
+      this.addContributor(resourceType, resourceId, contributor, childNodeIds)
+    );
 
     return forkJoin(addRequests);
   }
@@ -134,12 +137,13 @@ export class ContributorsService {
   addContributor(
     resourceType: ResourceType,
     resourceId: string,
-    data: ContributorAddModel
+    data: ContributorAddModel,
+    childNodeIds?: string[]
   ): Observable<ContributorModel> {
     const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/`;
     const type = data.id ? AddContributorType.Registered : AddContributorType.Unregistered;
 
-    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
+    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type, childNodeIds) };
 
     return this.jsonApiService
       .post<ContributorResponseJsonApi>(baseUrl, contributorData)

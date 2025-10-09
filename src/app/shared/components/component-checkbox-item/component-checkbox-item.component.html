@@ -7,7 +7,7 @@
     [disabled]="item().disabled"
   ></p-checkbox>
 
-  <label [for]="item().id" class="item-title mb-0">
+  <label [for]="item().id" class="item-title mb-0" [class.cursor-pointer]="!item().disabled">
     {{ item().title }}
     @if (item().isCurrent) {
       <span> ({{ 'myProjects.settings.current' | translate }}) </span>

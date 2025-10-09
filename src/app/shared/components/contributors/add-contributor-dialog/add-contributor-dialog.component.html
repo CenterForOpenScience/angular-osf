@@ -1,5 +1,5 @@
 <div class="flex flex-column">
-  @if (isSearchState) {
+  @if (isSearchState()) {
     <osf-search-input
       [control]="searchControl"
       [placeholder]="'project.contributors.addDialog.placeholder' | translate"
@@ -41,7 +41,7 @@
         />
       </div>
     }
-  } @else {
+  } @else if (isDetailsState()) {
     <div>
       <p>{{ 'project.contributors.addDialog.selectPermissions' | translate }}</p>
 
@@ -50,6 +50,18 @@
           <osf-add-contributor-item [contributor]="user"></osf-add-contributor-item>
         }
       </div>
+    </div>
+  } @else if (isComponentsState()) {
+    <div class="flex flex-column gap-4">
+      <p
+        [innerHTML]="
+          'project.contributors.addDialog.addingContributorsTo'
+            | translate: { names: contributorNames(), projectName: resourceName() }
+        "
+      ></p>
+      <p>{{ 'project.contributors.addDialog.addContributorsToComponents' | translate }}</p>
+
+      <osf-components-selection-list [(components)]="components" />
     </div>
   }
 
@@ -68,7 +80,7 @@
       class="w-full"
       styleClass="w-full"
       (click)="addContributor()"
-      [label]="'common.buttons.next' | translate"
+      [label]="buttonLabel() | translate"
       [disabled]="!selectedUsers().length"
       data-test-add-contributor-button
     >
