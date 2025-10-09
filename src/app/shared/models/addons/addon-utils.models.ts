@@ -42,4 +42,5 @@ export interface OAuthCallbacks {
 export interface OperationInvokeData {
   operationName: OperationNames;
   itemId: string;
+  pageCursor?: string;
 }

@@ -323,6 +323,23 @@ export class ConnectConfiguredAddonComponent {
     this.actions.createAddonOperationInvocation(payload);
   }
 
+  handleCreateOperationInvocationWithCursor(operationName: OperationNames, itemId: string, pageCursor?: string): void {
+    const selectedAccount = this.currentAuthorizedAddonAccounts().find(
+      (account) => account.id === this.chosenAccountId()
+    );
+
+    if (!selectedAccount) return;
+
+    const payload = this.operationInvocationService.createInitialOperationInvocationPayload(
+      operationName,
+      selectedAccount,
+      itemId,
+      pageCursor
+    );
+
+    this.actions.createAddonOperationInvocation(payload);
+  }
+
   handleNavigateToAccountSelection(): void {
     this.resetConfigurationForm();
     this.stepper()?.value.set(ProjectAddonsStepperValue.CHOOSE_ACCOUNT);

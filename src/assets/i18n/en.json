@@ -56,7 +56,8 @@
       "selectAll": "Select All",
       "removeAll": "Remove All",
       "accept": "Accept",
-      "reject": "Reject"
+      "reject": "Reject",
+      "loadMore": "Load more"
     },
     "accessibility": {
       "help": "Help",
