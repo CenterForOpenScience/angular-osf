@@ -2,6 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -15,7 +16,7 @@ import { RegistryModeration } from '../../models';
 
 @Component({
   selector: 'osf-registry-submission-item',
-  imports: [IconComponent, DateAgoPipe, Button, TranslatePipe, RouterLink],
+  imports: [IconComponent, DateAgoPipe, Button, TranslatePipe, RouterLink, DatePipe],
   templateUrl: './registry-submission-item.component.html',
   styleUrl: './registry-submission-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
