@@ -2870,7 +2870,7 @@
     },
     "requestAccessErrorDialog": {
       "title": "Can't Request Access",
-      "detailsMessage": "The user has their request access feature turned off. Reach out to the user by sending an email message by pressing the \"Back\" button below."
+      "detailsMessage": "The user has the request access feature turned off, or you already have access. Reach out to the user by sending an email message by pressing the \"Back\" button below."
     }
   },
   "resources": {
