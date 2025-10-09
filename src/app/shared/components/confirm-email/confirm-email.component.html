@@ -1,9 +1,17 @@
 <div class="flex flex-column gap-6">
   @if (!isSubmitting()) {
     <p class="font-normal">
-      {{ 'home.confirmEmail.description' | translate }}
+      {{
+        email.isMerge
+          ? ('home.confirmEmail.merge.description' | translate)
+          : ('home.confirmEmail.add.description' | translate)
+      }}
       <span class="inline font-bold">{{ email.emailAddress }}</span>
-      {{ 'home.confirmEmail.description2' | translate }}
+      {{
+        email.isMerge
+          ? ('home.confirmEmail.merge.description2' | translate)
+          : ('home.confirmEmail.add.description2' | translate)
+      }}
     </p>
 
     <div class="flex w-full justify-content-center gap-2">
@@ -19,7 +27,11 @@
         class="w-full"
         styleClass="w-full"
         (onClick)="verifyEmail()"
-        [label]="'home.confirmEmail.goToEmails' | translate"
+        [label]="
+          email.isMerge
+            ? ('home.confirmEmail.merge.goToEmails' | translate)
+            : ('home.confirmEmail.add.goToEmails' | translate)
+        "
       ></p-button>
     </div>
   } @else {

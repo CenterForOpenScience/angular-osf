@@ -4,14 +4,12 @@
       {{ 'settings.profileSettings.employment.title' | translate: { index: index() + 1 } }}
     </h2>
 
-    @if (showRemove()) {
-      <p-button
-        [label]="'common.buttons.remove' | translate"
-        severity="danger"
-        variant="text"
-        (onClick)="remove.emit()"
-      />
-    }
+    <p-button
+      [label]="'common.buttons.remove' | translate"
+      severity="danger"
+      variant="text"
+      (onClick)="remove.emit()"
+    />
   </div>
 
   <div class="flex flex-column row-gap-4">

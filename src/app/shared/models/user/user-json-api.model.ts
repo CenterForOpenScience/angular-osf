@@ -19,6 +19,11 @@ export interface UserAcceptedTermsOfServiceJsonApi {
   accepted_terms_of_service: boolean;
 }
 
+export interface UserDataErrorResponseJsonApi {
+  data?: UserDataJsonApi;
+  errors?: UserErrorResponseJsonApi[];
+}
+
 export interface UserDataJsonApi {
   id: string;
   type: string;

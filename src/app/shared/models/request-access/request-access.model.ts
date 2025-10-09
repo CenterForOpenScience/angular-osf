@@ -11,7 +11,7 @@ export interface RequestAccessModel {
   modified: string;
   dateLastTransitioned: string;
   requestedPermissions: ContributorPermission;
-  creator: UserModel;
+  creator: Partial<UserModel> | null;
   isBibliographic: boolean;
   isCurator: boolean;
 }

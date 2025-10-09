@@ -1,5 +1,5 @@
 import { PreprintRequestMachineState, PreprintRequestType } from '@osf/features/preprints/enums';
-import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiResponse, UserDataErrorResponseJsonApi } from '@osf/shared/models';
 
 export type PreprintRequestsJsonApiResponse = JsonApiResponse<PreprintRequestDataJsonApi[], null>;
 
@@ -20,17 +20,5 @@ interface PreprintRequestAttributesJsonApi {
 }
 
 interface PreprintRequestEmbedsJsonApi {
-  creator: {
-    data: UserModelJsonApi;
-  };
-}
-
-interface UserModelJsonApi {
-  id: string;
-  type: 'users';
-  attributes: UserAttributesJsonApi;
-}
-
-interface UserAttributesJsonApi {
-  full_name: string;
+  creator: UserDataErrorResponseJsonApi;
 }

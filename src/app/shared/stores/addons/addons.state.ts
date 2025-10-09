@@ -559,9 +559,20 @@ export class AddonsState {
 
     return this.addonsService.createAddonOperationInvocation(action.payload).pipe(
       tap((response) => {
+        const isLoadMore = !!action.payload.data.attributes.operation_kwargs['page_cursor'];
+        const existingData = state.operationInvocation.data;
+        const shouldMerge = isLoadMore && existingData;
+
+        const mergedResponse = shouldMerge
+          ? {
+              ...response,
+              operationResult: [...existingData.operationResult, ...response.operationResult],
+            }
+          : response;
+
         ctx.patchState({
           operationInvocation: {
-            data: response,
+            data: mergedResponse,
             isLoading: false,
             isSubmitting: false,
             error: null,

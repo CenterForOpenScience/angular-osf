@@ -1,7 +1,7 @@
 import { ContributorPermission } from '@osf/shared/enums';
 
 import { ResponseJsonApi } from '../common';
-import { UserDataJsonApi } from '../user';
+import { UserDataErrorResponseJsonApi } from '../user';
 
 export type RequestAccessResponseJsonApi = ResponseJsonApi<RequestAccessDataJsonApi[]>;
 
@@ -23,7 +23,5 @@ export interface RequestAccessAttributesJsonApi {
 }
 
 export interface RequestAccessEmbedsJsonApi {
-  creator: {
-    data: UserDataJsonApi;
-  };
+  creator: UserDataErrorResponseJsonApi;
 }

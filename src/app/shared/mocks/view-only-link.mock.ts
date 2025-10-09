@@ -1,5 +1,4 @@
-import { ViewOnlyLinkComponentItem } from '@osf/features/project/contributors/models';
-import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/shared/models';
+import { ComponentCheckboxItemModel, PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/shared/models';
 
 export const MOCK_VIEW_ONLY_LINK: ViewOnlyLinkModel = {
   id: 'test-link-1',
@@ -21,10 +20,10 @@ export const MOCK_VIEW_ONLY_LINK: ViewOnlyLinkModel = {
   anonymous: false,
 };
 
-export const MOCK_VIEW_ONLY_LINK_COMPONENT_ITEM: ViewOnlyLinkComponentItem = {
+export const MOCK_VIEW_ONLY_LINK_COMPONENT_ITEM: ComponentCheckboxItemModel = {
   id: 'test-id',
   title: 'Test Component',
-  isCurrentResource: false,
+  isCurrent: false,
   disabled: false,
   checked: false,
   parentId: null,

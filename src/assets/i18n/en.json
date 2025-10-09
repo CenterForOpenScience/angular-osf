@@ -56,7 +56,8 @@
       "selectAll": "Select All",
       "removeAll": "Remove All",
       "accept": "Accept",
-      "reject": "Reject"
+      "reject": "Reject",
+      "loadMore": "Load more"
     },
     "accessibility": {
       "help": "Help",
@@ -388,12 +389,26 @@
       }
     },
     "confirmEmail": {
-      "title": "Add alternative email",
-      "description": "Do you want to add ",
-      "description2": "to your profile ?",
-      "goToEmails": "Add email",
-      "emailNotAdded": "{{name}} has not been added to your account.",
-      "emailVerified": "{{name}} has been added to your account."
+      "merge": {
+        "title": "Merge account?",
+        "description": "Would you like to merge ",
+        "description2": "into your account? This action is irreversible.",
+        "goToEmails": "Merge account",
+        "emailNotAdded": "{{name}} has not been merged into your account.",
+        "emailVerified": "{{name}} has been merged into your account.",
+        "verifyError": "There was a problem merging {{name}} into your account.",
+        "denyError": "There was a problem canceling the request to merge {{name}} into your account."
+      },
+      "add": {
+        "title": "Add alternative email?",
+        "description": "Do you want to add ",
+        "description2": "to your profile ?",
+        "goToEmails": "Add email",
+        "emailNotAdded": "{{name}} has not been added to your account.",
+        "emailVerified": "{{name}} has been added to your account.",
+        "verifyError": "There was a problem adding {{name} to your account.",
+        "denyError": "There was a problem canceling the request to add {{name}} to your account."
+      }
     }
   },
   "myProjects": {
@@ -994,7 +1009,7 @@
         "youAlreadyAddedText": "You have already added a record for this template",
         "youAlreadyAdded": "Already Added",
         "loadingCedar": "Loading CEDAR record...",
-        "editRecord": "Edit Record",
+        "editRecord": "Edit",
         "recordCreatedSuccessfully": "Record created successfully",
         "recordUpdatedSuccessfully": "Record updated successfully",
         "copyRecordMetadataUrl": "Copy url to clipboard to share.",
@@ -2863,7 +2878,7 @@
     },
     "requestAccessErrorDialog": {
       "title": "Can't Request Access",
-      "detailsMessage": "The user has their request access feature turned off. Reach out to the user by sending an email message by pressing the \"Back\" button below."
+      "detailsMessage": "The user has the request access feature turned off, or you already have access. Reach out to the user by sending an email message by pressing the \"Back\" button below."
     }
   },
   "resources": {

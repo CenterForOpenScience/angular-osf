@@ -36,11 +36,13 @@ export class ContactDialogComponent {
   form: FormGroup;
 
   constructor() {
+    const defaultContactData = this.config.data.defaultContactData as ContactDialogData;
+    this.selectedOption.set(defaultContactData?.selectedOption ?? ContactOption.RequestAccess);
     this.form = this.fb.group({
-      permission: [''],
-      emailContent: [''],
-      ccSender: [false],
-      allowReplyToSender: [false],
+      permission: [defaultContactData?.permission ?? ''],
+      emailContent: [defaultContactData?.emailContent ?? ''],
+      ccSender: [defaultContactData?.ccSender ?? false],
+      allowReplyToSender: [defaultContactData?.allowReplyToSender ?? false],
     });
 
     this.updateValidation();
