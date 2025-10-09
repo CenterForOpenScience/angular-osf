@@ -2,8 +2,9 @@ import { Selector } from '@ngxs/store';
 
 import {
   DraftRegistrationModel,
+  FileFolderModel,
+  FileModel,
   LicenseModel,
-  OsfFile,
   PageSchema,
   ProviderSchema,
   RegistrationCard,
@@ -144,7 +145,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getFiles(state: RegistriesStateModel): OsfFile[] {
+  static getFiles(state: RegistriesStateModel): FileModel[] {
     return state.files.data;
   }
 
@@ -164,7 +165,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getCurrentFolder(state: RegistriesStateModel): OsfFile | null {
+  static getCurrentFolder(state: RegistriesStateModel): FileFolderModel | null {
     return state.currentFolder;
   }
 

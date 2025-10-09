@@ -1,12 +1,18 @@
-@if (isLoading() || isFilesUpdating()) {
+<osf-file-select-destination
+  [projectId]="currentProject()?.id!"
+  [components]="components()"
+  [areComponentsLoading]="areComponentsLoading()"
+  [storageProvider]="storageProvider()"
+  (selectProject)="onProjectChange($event)"
+></osf-file-select-destination>
+
+@if (showFilesLoading()) {
   <div class="w-8rem ml-auto mr-auto">
     <osf-loading-spinner></osf-loading-spinner>
   </div>
 } @else {
   <div class="flex flex-column gap-2">
-    <h2 class="font-normal">{{ storageName | translate }}</h2>
-
-    <div class="files-table flex flex-column">
+    <div class="files-table flex flex-column relative">
       @if (previousFolder()) {
         <div class="files-table-row py-2 px-3">
           <div
@@ -21,41 +27,49 @@
           </div>
         </div>
       }
+      @if (files().length) {
+        <p-virtualscroller
+          [items]="files()"
+          [itemSize]="44"
+          scrollHeight="250px"
+          [lazy]="true"
+          (onScrollIndexChange)="onScrollIndexChange($event)"
+        >
+          <ng-template #item let-item let-options="options">
+            <div class="files-table-row flex align-items-center py-2" [class]="foldersStack().length ? 'pl-6' : 'px-3'">
+              <div class="flex align-items-center gap-2 w-full">
+                @if (item.kind !== 'folder') {
+                  <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>
+                  <div class="filename-link overflow-ellipsis disabled">{{ item?.name ?? '' }}</div>
+                } @else if (config.data.file.id === item.id) {
+                  <osf-icon class="disabled-icon" iconClass="fas fa-folder disabled-icon"></osf-icon>
 
-      @for (file of files(); track $index) {
-        <div class="files-table-row flex align-items-center py-2" [class]="foldersStack().length ? 'pl-6' : 'px-3'">
-          <div class="flex align-items-center gap-2 w-full">
-            @if (file.kind !== 'folder') {
-              <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>
-              <div class="filename-link overflow-ellipsis disabled">{{ file?.name ?? '' }}</div>
-            } @else if (config.data.file.id === file.id) {
-              <osf-icon class="disabled-icon" iconClass="fas fa-folder disabled-icon"></osf-icon>
-
-              <div class="filename-link overflow-ellipsis" [pTooltip]="'files.dialogs.moveFile.cannotMove' | translate">
-                {{ file?.name ?? '' }}
+                  <div
+                    class="filename-link overflow-ellipsis"
+                    [pTooltip]="'files.dialogs.moveFile.cannotMove' | translate"
+                  >
+                    {{ item?.name ?? '' }}
+                  </div>
+                } @else {
+                  <p-button
+                    class="filename-link link-btn-no-padding overflow-ellipsis font-normal"
+                    icon="fas fa-folder"
+                    severity="secondary"
+                    [link]="true"
+                    [label]="item?.name ?? ''"
+                    (onClick)="openFolder(item)"
+                  />
+                }
               </div>
-            } @else {
-              <p-button
-                class="filename-link link-btn-no-padding overflow-ellipsis font-normal"
-                icon="fas fa-folder"
-                severity="secondary"
-                [link]="true"
-                [label]="file?.name ?? ''"
-                (click)="openFolder(file)"
-              />
-            }
+            </div>
+          </ng-template>
+        </p-virtualscroller>
+        @if (isLoadingMore()) {
+          <div class="loading-overlay">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
           </div>
-        </div>
-      }
-      @if (filesTotalCount() > itemsPerPage) {
-        <osf-custom-paginator
-          class="mt-1 border-top-1 border-200"
-          [first]="first"
-          [totalCount]="filesTotalCount()"
-          (pageChanged)="onFilesPageChange($event)"
-        />
-      }
-      @if (!files().length) {
+        }
+      } @else {
         <div class="flex justify-content-center p-4">
           <h3 class="font-normal text-no-transform">{{ 'files.emptyState' | translate }}</h3>
         </div>
@@ -68,7 +82,7 @@
   <p-button severity="info" [label]="'common.buttons.cancel' | translate" (onClick)="dialogRef.close()"></p-button>
 
   <p-button
-    [disabled]="isFolderSame() || isLoading() || isFilesUpdating()"
+    [disabled]="buttonDisabled()"
     [label]="(isMoveAction ? 'common.buttons.move' : 'common.buttons.copy') | translate"
     (onClick)="moveFile()"
   ></p-button>

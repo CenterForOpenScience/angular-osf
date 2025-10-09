@@ -111,19 +111,22 @@
     <osf-files-tree
       [files]="files()"
       [totalCount]="filesTotalCount()"
-      [currentFolder]="currentFolder()"
-      [storage]="currentRootFolder()"
+      [currentFolder]="currentFolder()!"
+      [storage]="currentRootFolder()!"
       [isLoading]="isFilesLoading()"
-      [actions]="filesTreeActions"
       [viewOnly]="!canEdit()"
       [supportUpload]="canUploadFiles()"
       [resourceId]="resourceId()"
       [provider]="provider()"
       [allowedMenuActions]="allowedMenuActions()"
-      (folderIsOpening)="folderIsOpening($event)"
+      [scrollHeight]="'500px'"
       (entryFileClicked)="navigateToFile($event)"
+      (deleteEntryAction)="deleteEntry($event)"
+      (renameEntryAction)="renameEntry($event)"
       (uploadFilesConfirmed)="uploadFiles($event)"
-      (filesPageChange)="onFilesPageChange($event)"
+      (loadFiles)="onLoadFiles($event)"
+      (setCurrentFolder)="setCurrentFolder($event)"
+      (setMoveDialogCurrentFolder)="setMoveDialogCurrentFolder($event)"
     >
     </osf-files-tree>
   </div>

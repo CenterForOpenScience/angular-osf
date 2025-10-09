@@ -122,6 +122,15 @@ export class AddonMapper {
             csl: operationResult.csl,
           },
         ];
+
+    const cursors = isOperationResult
+      ? {
+          ...(operationResult.this_sample_cursor && { thisSampleCursor: operationResult.this_sample_cursor }),
+          ...(operationResult.first_sample_cursor && { firstSampleCursor: operationResult.first_sample_cursor }),
+          ...(operationResult.next_sample_cursor && { nextSampleCursor: operationResult.next_sample_cursor }),
+        }
+      : {};
+
     return {
       type: response.type,
       id: response.id,
@@ -133,6 +142,7 @@ export class AddonMapper {
       },
       itemCount: isOperationResult ? operationResult.total_count : 0,
       operationResult: mappedOperationResult,
+      ...cursors,
     };
   }
 }

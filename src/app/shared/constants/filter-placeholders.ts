@@ -7,5 +7,5 @@ export const FILTER_PLACEHOLDERS: Record<string, string> = {
   isPartOfCollection: 'common.search.filterPlaceholders.isPartOfCollection',
   dateCreated: 'common.search.filterPlaceholders.dateCreated',
   creator: 'common.search.filterPlaceholders.creator',
-  resourceType: 'common.search.filterPlaceholders.resourceType',
+  resourceNature: 'common.search.filterPlaceholders.resourceType',
 };

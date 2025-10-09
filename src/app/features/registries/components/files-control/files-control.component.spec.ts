@@ -92,14 +92,6 @@ describe('Component: File Control', () => {
     expect(updateSpy).toHaveBeenCalled();
   });
 
-  it('should update files list when relationships.filesLink present', (done) => {
-    const setLoadingSpy = jest.spyOn(component.filesTreeActions, 'setFilesIsLoading' as any);
-    component.updateFilesList().subscribe(() => {
-      expect(setLoadingSpy).toHaveBeenCalledWith(true);
-      done();
-    });
-  });
-
   it('should upload files, update progress and select uploaded file', () => {
     const file = new File(['data'], 'test.txt', { type: 'text/plain' });
     const progress = { type: 1, loaded: 50, total: 100 } as any;
@@ -122,10 +114,5 @@ describe('Component: File Control', () => {
       done();
     });
     component.selectFile(file);
-  });
-
-  it('should set folder opening state', () => {
-    component.folderIsOpening(true);
-    expect(component.isFolderOpening()).toBe(true);
   });
 });

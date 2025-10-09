@@ -173,6 +173,5 @@ describe.skip('SettingsComponent', () => {
     expect(component.wikiEnabled()).toBe(false);
     expect(component.anyoneCanEditWiki()).toBe(false);
     expect(component.anyoneCanComment()).toBe(false);
-    expect(component.title()).toBe('');
   });
 });

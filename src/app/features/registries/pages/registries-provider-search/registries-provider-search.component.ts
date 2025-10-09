@@ -40,9 +40,9 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
   searchControl = new FormControl('');
 
   ngOnInit(): void {
-    const providerName = this.route.snapshot.params['name'];
-    if (providerName) {
-      this.actions.getProvider(providerName).subscribe({
+    const providerId = this.route.snapshot.params['providerId'];
+    if (providerId) {
+      this.actions.getProvider(providerId).subscribe({
         next: () => {
           this.actions.setDefaultFilterValue('publisher', this.provider()!.iri!);
           this.actions.setResourceType(ResourceType.Registration);

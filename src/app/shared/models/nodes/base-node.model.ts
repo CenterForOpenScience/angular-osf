@@ -20,4 +20,5 @@ export interface BaseNodeModel {
   currentUserIsContributor: boolean;
   wikiEnabled: boolean;
   rootParentId?: string;
+  type: string;
 }

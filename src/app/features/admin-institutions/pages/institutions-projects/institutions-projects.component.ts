@@ -4,8 +4,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { filter } from 'rxjs';
+import { catchError, EMPTY, filter } from 'rxjs';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,6 +20,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@core/store/user';
+import { RequestAccessErrorDialogComponent } from '@osf/features/admin-institutions/components/request-access-error-dialog/request-access-error-dialog.component';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
 import { CustomDialogService, ToastService } from '@osf/shared/services';
@@ -174,7 +176,18 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
           bccSender: emailData.ccSender,
           replyTo: emailData.allowReplyToSender,
         })
-        .pipe(takeUntilDestroyed(this.destroyRef))
+        .pipe(
+          catchError((e) => {
+            if (e instanceof HttpErrorResponse && e.status === 403) {
+              this.customDialogService.open(RequestAccessErrorDialogComponent, {
+                header: 'adminInstitutions.requestAccessErrorDialog.title',
+              });
+            }
+
+            return EMPTY;
+          }),
+          takeUntilDestroyed(this.destroyRef)
+        )
         .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.requestSent'));
     }
   }

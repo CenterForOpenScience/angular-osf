@@ -1,5 +1,5 @@
 <osf-sub-header [title]="'navigation.wiki' | translate">
-  <p-buttongroup class="ml-auto">
+  <p-buttonGroup class="ml-auto">
     <p-button
       [label]="'project.wiki.view' | translate"
       [variant]="wikiModes().view ? undefined : 'outlined'"
@@ -17,7 +17,7 @@
       [variant]="wikiModes().compare ? undefined : 'outlined'"
       (onClick)="toggleMode(WikiModes.Compare)"
     />
-  </p-buttongroup>
+  </p-buttonGroup>
 </osf-sub-header>
 
 @if (hasViewOnly()) {

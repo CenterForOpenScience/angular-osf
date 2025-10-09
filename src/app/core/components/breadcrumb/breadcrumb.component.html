@@ -2,8 +2,8 @@
   <div class="breadcrumbs flex align-items-center gap-2 md:p-5 md:pb-0 xl:p-0">
     <osf-icon iconClass="fas fa-home"></osf-icon>
     <p>/</p>
-    @for (url of parsedUrl(); track $index; let l = $last) {
-      {{ url }}
+    @for (breadcrumb of breadcrumbs(); track $index; let l = $last) {
+      {{ breadcrumb }}
       @if (!l) {
         /
       }

@@ -75,6 +75,7 @@ export class StorageItemSelectorComponent implements OnInit {
   selectedStorageItemId = model<string>('/');
   selectedStorageItemUrl = model<string>('');
   operationInvoke = output<OperationInvokeData>();
+  operationInvokeWithCursor = output<OperationInvokeData>();
   save = output<void>();
   cancelSelection = output<void>();
   readonly OperationNames = OperationNames;
@@ -109,6 +110,7 @@ export class StorageItemSelectorComponent implements OnInit {
   initiallySelectedStorageItem = select(AddonsSelectors.getSelectedStorageItem);
   isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
   isSubmitting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
+  operationInvocation = select(AddonsSelectors.getOperationInvocation);
   readonly homeBreadcrumb: MenuItem = {
     id: '/',
     label: this.translateService.instant('settings.addons.configureAddon.home'),
@@ -180,6 +182,14 @@ export class StorageItemSelectorComponent implements OnInit {
     return this.hasInputChanged() || this.hasFolderChanged() || this.hasResourceTypeChanged();
   });
 
+  readonly showLoadMoreButton = computed(() => {
+    const invocation = this.operationInvocation();
+    if (!invocation?.nextSampleCursor || !invocation?.thisSampleCursor) {
+      return false;
+    }
+    return invocation.nextSampleCursor > invocation.thisSampleCursor;
+  });
+
   handleCreateOperationInvocation(
     operationName: OperationNames,
     itemId: string,
@@ -194,6 +204,19 @@ export class StorageItemSelectorComponent implements OnInit {
     });
 
     this.trimBreadcrumbs(itemId);
+  }
+
+  handleLoadMore(): void {
+    const invocation = this.operationInvocation();
+    if (!invocation?.nextSampleCursor) {
+      return;
+    }
+
+    this.operationInvokeWithCursor.emit({
+      operationName: invocation.operationName as OperationNames,
+      itemId: invocation.operationKwargs.itemId || '/',
+      pageCursor: invocation.nextSampleCursor,
+    });
   }
 
   handleSave(): void {

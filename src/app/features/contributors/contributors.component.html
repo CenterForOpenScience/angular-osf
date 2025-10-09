@@ -96,7 +96,7 @@
 
     <osf-request-access-table
       class="w-full"
-      [contributors]="requestAccessList()"
+      [requestAccessList]="requestAccessList()"
       [isLoading]="areRequestAccessListLoading()"
       [resourceType]="resourceType()"
       (accept)="acceptRequest($event)"

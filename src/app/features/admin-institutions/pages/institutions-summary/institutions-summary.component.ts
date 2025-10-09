@@ -84,7 +84,7 @@ export class InstitutionsSummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const institutionId = this.route.parent?.snapshot.params['institution-id'];
+    const institutionId = this.route.parent?.snapshot.params['institutionId'];
 
     if (institutionId) {
       this.actions.fetchSearchResults('rights');

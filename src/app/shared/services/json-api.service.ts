@@ -11,10 +11,8 @@ import { JsonApiResponse } from '@osf/shared/models';
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
 
-  get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
-    return this.http.get<T>(url, {
-      params: this.buildHttpParams(params),
-    });
+  get<T>(url: string, params?: Record<string, unknown>, context?: HttpContext): Observable<T> {
+    return this.http.get<T>(url, { params: this.buildHttpParams(params), context });
   }
 
   private buildHttpParams(params?: Record<string, unknown>): HttpParams {
@@ -38,9 +36,7 @@ export class JsonApiService {
   }
 
   post<T>(url: string, body?: unknown, params?: Record<string, unknown>): Observable<T> {
-    return this.http.post<T>(url, body, {
-      params: this.buildHttpParams(params),
-    });
+    return this.http.post<T>(url, body, { params: this.buildHttpParams(params) });
   }
 
   patch<T>(

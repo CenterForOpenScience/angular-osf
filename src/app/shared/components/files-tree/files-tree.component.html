@@ -16,96 +16,98 @@
     </div>
   }
 
-  @if (isLoading()) {
+  @if (isLoading() && !isLoadingMore()) {
     <div class="flex flex-1">
       <osf-loading-spinner></osf-loading-spinner>
     </div>
   } @else {
-    <div class="files-table flex flex-1">
-      <p-tree
-        [value]="nodes()"
-        styleClass="w-full md:w-[30rem]"
-        class="tree-table"
-        (onNodeDrop)="dropNode($event)"
-        [draggableNodes]="!viewOnly() && supportUpload()"
-        [droppableNodes]="!viewOnly() && supportUpload()"
-        draggableScope="self"
-        droppableScope="self"
-      >
-        <ng-template let-file pTemplate="default">
-          @if (file.previousFolder) {
-            <div class="files-table-row" tabindex="0" (click)="openParentFolder()" (keydown.enter)="openParentFolder()">
-              <div class="flex align-items-center gap-2">
-                <i class="fas fa-sm fa-angle-left"></i>
-                <i class="fas fa-folder"></i>
-                {{ file.name ?? '' }}
-              </div>
-            </div>
-          } @else {
-            <div class="files-table-row" (click)="openEntry(file)" (keydown.enter)="openEntry(file)" tabindex="0">
-              <div class="flex gap-2 table-cell" [class.pl-6]="foldersStack.length">
-                @if (file.kind !== 'folder') {
-                  <div class="flex gap-2 min-w-0">
-                    <i class="fas fa-file blue-icon"></i>
-                    <span class="entry-title blue-text">{{ file?.name ?? '' }}</span>
-                  </div>
-                } @else {
+    <div class="flex-1">
+      <div class="files-table flex">
+        <p-tree
+          [value]="nodes()"
+          (onScrollIndexChange)="onScrollIndexChange($event)"
+          [scrollHeight]="scrollHeight()"
+          [virtualScroll]="true"
+          [virtualScrollItemSize]="virtualScrollItemSize"
+          styleClass="w-full md:w-[30rem]"
+          class="tree-table"
+          [loading]="isLoadingMore()"
+        >
+          <ng-template let-file pTemplate="default">
+            @if (file.previousFolder) {
+              <div
+                class="files-table-row"
+                tabindex="0"
+                (click)="openParentFolder()"
+                (keydown.enter)="openParentFolder()"
+              >
+                <div class="flex align-items-center gap-2">
+                  <i class="fas fa-sm fa-angle-left"></i>
                   <i class="fas fa-folder"></i>
-                  <div class="table-cell entry-title">
-                    {{ file?.name ?? '' }}
+                  {{ file.name ?? '' }}
+                </div>
+              </div>
+            } @else {
+              <div class="files-table-row" (click)="openEntry(file)" (keydown.enter)="openEntry(file)" tabindex="0">
+                <div class="flex gap-2 table-cell" [class.pl-6]="foldersStack.length">
+                  @if (file.kind !== 'folder') {
+                    <div class="flex gap-2 min-w-0">
+                      <i class="fas fa-file blue-icon"></i>
+                      <span class="entry-title blue-text">{{ file?.name ?? '' }}</span>
+                    </div>
+                  } @else {
+                    <i class="fas fa-folder"></i>
+                    <div class="table-cell entry-title">
+                      {{ file?.name ?? '' }}
+                    </div>
+                  }
+                </div>
+
+                <div class="files-table-cell">
+                  @if (file.extra.downloads) {
+                    {{
+                      file.kind === 'file' ? file.extra.downloads + ' ' + ('common.labels.downloads' | translate) : ''
+                    }}
+                  }
+                </div>
+
+                <div class="files-table-cell">
+                  {{ file.size | fileSize }}
+                </div>
+
+                <div class="files-table-cell">
+                  {{ file.dateModified | date: 'MMM d, y hh:mm a' }}
+                </div>
+
+                @if (isSomeFileActionAllowed) {
+                  <div class="relative ml-auto">
+                    <osf-file-menu
+                      (action)="onFileMenuAction($event, file)"
+                      [isFolder]="file.kind === 'folder'"
+                      [allowedActions]="allowedMenuActions()"
+                      osfStopPropagation
+                    >
+                    </osf-file-menu>
                   </div>
                 }
               </div>
+            }
+          </ng-template>
+        </p-tree>
 
-              <div class="files-table-cell">
-                @if (file.extra.downloads) {
-                  {{ file.kind === 'file' ? file.extra.downloads + ' ' + ('common.labels.downloads' | translate) : '' }}
-                }
+        @if (!files().length) {
+          <div class="empty-state-container p-4">
+            @if (hasViewOnly() || !supportUpload()) {
+              <h3 class="font-normal mb-4 text-no-transform">{{ 'files.emptyState' | translate }}</h3>
+            } @else {
+              <div class="drop-text">
+                <i class="fa-solid fa-cloud-arrow-up text-5xl"></i>
+                <p class="text-xl">{{ 'files.dropText' | translate }}</p>
               </div>
-
-              <div class="files-table-cell">
-                {{ file.size | fileSize }}
-              </div>
-
-              <div class="files-table-cell">
-                {{ file.dateModified | date: 'MMM d, y hh:mm a' }}
-              </div>
-
-              @if (isSomeFileActionAllowed) {
-                <div class="relative ml-auto">
-                  <osf-file-menu
-                    (action)="onFileMenuAction($event, file)"
-                    [isFolder]="file.kind === 'folder'"
-                    [allowedActions]="allowedMenuActions()"
-                    osfStopPropagation
-                  >
-                  </osf-file-menu>
-                </div>
-              }
-            </div>
-          }
-        </ng-template>
-      </p-tree>
-      @if (totalCount() > itemsPerPage) {
-        <osf-custom-paginator
-          class="mt-1 border-top-1 border-200"
-          [first]="first"
-          [totalCount]="totalCount()"
-          (pageChanged)="onFilesPageChange($event)"
-        />
-      }
-      @if (!files().length) {
-        <div class="empty-state-container p-4">
-          @if (hasViewOnly() || !supportUpload()) {
-            <h3 class="font-normal mb-4 text-no-transform">{{ 'files.emptyState' | translate }}</h3>
-          } @else {
-            <div class="drop-text">
-              <i class="fa-solid fa-cloud-arrow-up text-5xl"></i>
-              <p class="text-xl">{{ 'files.dropText' | translate }}</p>
-            </div>
-          }
-        </div>
-      }
+            }
+          </div>
+        }
+      </div>
     </div>
   }
 </div>

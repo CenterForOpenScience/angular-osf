@@ -23,6 +23,7 @@ export class SelectComponent {
   fullWidth = input(false);
   noBorder = input(false);
   disabled = input(false);
+  loading = input(false);
 
   changeValue = output<Primitive>();
 }

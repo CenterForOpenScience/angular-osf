@@ -1,0 +1,42 @@
+<osf-select
+  class="w-full"
+  [options]="options()"
+  [selectedValue]="selectedProject()?.value"
+  (changeValue)="onChangeProject($event)"
+  [fullWidth]="true"
+  [disabled]="isStorageLoading"
+  [loading]="isLoading"
+/>
+<div class="my-3">
+  @if (isStorageLoading) {
+    <div class="flex pl-1 gap-3">
+      <p-skeleton width="6rem" height="2.5rem" />
+      <p-skeleton width="6rem" height="2.5rem" />
+      <p-skeleton width="6rem" height="2.5rem" />
+    </div>
+  } @else {
+    <p-tabs [value]="currentRootFolder()?.folder?.id || ''" (valueChange)="onStorageChange($event)" scrollable>
+      <p-tablist>
+        @for (option of storageAddons(); track option.folder.id) {
+          <p-tab class="p-1" [value]="option.folder.id">
+            <p-button
+              severity="contrast"
+              variant="text"
+              [styleClass]="option.folder.id === currentRootFolder()?.folder?.id ? 'text-600' : 'text-500'"
+              [disabled]="isFilesLoading() || !hasAddUpdateFeature(option.folder.provider)"
+              [label]="option.label"
+              [raised]="option.folder.id === currentRootFolder()?.folder?.id"
+              [pTooltip]="
+                !hasAddUpdateFeature(option.folder.provider)
+                  ? ('files.dialogs.moveFile.noMovePermission' | translate)
+                  : null
+              "
+              tooltipPosition="top"
+            >
+            </p-button>
+          </p-tab>
+        }
+      </p-tablist>
+    </p-tabs>
+  }
+</div>

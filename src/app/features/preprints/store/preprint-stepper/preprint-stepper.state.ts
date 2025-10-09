@@ -15,8 +15,8 @@ import {
   PreprintsProjectsService,
   PreprintsService,
 } from '@osf/features/preprints/services';
+import { FileModel } from '@osf/shared/models';
 import { handleSectionError } from '@shared/helpers';
-import { OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import {
@@ -228,7 +228,7 @@ export class PreprintStepperState {
     ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
 
     return this.fileService.getFileById(primaryFileId).pipe(
-      tap((file: OsfFile) => {
+      tap((file: FileModel) => {
         ctx.setState(
           patch({
             preprintFile: patch({
@@ -266,7 +266,7 @@ export class PreprintStepperState {
     ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
 
     return this.preprintFilesService.getProjectFiles(action.projectId).pipe(
-      tap((files: OsfFile[]) => {
+      tap((files: FileModel[]) => {
         ctx.setState(
           patch({
             projectFiles: patch({
@@ -294,7 +294,7 @@ export class PreprintStepperState {
     ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
 
     return this.fileService.getFilesWithoutFiltering(action.filesLink).pipe(
-      tap((files: OsfFile[]) => {
+      tap((files: FileModel[]) => {
         ctx.setState(
           patch({
             projectFiles: patch({
@@ -326,7 +326,7 @@ export class PreprintStepperState {
     return this.fileService
       .copyFileToAnotherLocation(action.file.links.move, action.file.provider, createdPreprintId)
       .pipe(
-        switchMap((file: OsfFile) => {
+        switchMap((file: FileModel) => {
           const fileIdAfterCopy = file.id.split('/')[1];
 
           return this.preprintFilesService.updateFileRelationship(createdPreprintId, fileIdAfterCopy).pipe(

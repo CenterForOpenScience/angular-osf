@@ -27,7 +27,7 @@ import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FilesTreeComponent, FileUploadDialogComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { ClearFileDirective } from '@osf/shared/directives';
-import { FilesTreeActions, OsfFile } from '@osf/shared/models';
+import { FileModel } from '@osf/shared/models';
 import { CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
 
 import {
@@ -37,7 +37,6 @@ import {
   RegistriesSelectors,
   SetCurrentFolder,
   SetFilesIsLoading,
-  SetMoveFileCurrentFolder,
 } from '../../store';
 
 @Component({
@@ -58,8 +57,8 @@ import {
   providers: [TreeDragDropService],
 })
 export class FilesControlComponent implements OnDestroy {
-  attachedFiles = input.required<Partial<OsfFile>[]>();
-  attachFile = output<OsfFile>();
+  attachedFiles = input.required<Partial<FileModel>[]>();
+  attachFile = output<FileModel>();
   filesLink = input.required<string>();
   projectId = input.required<string>();
   provider = input.required<string>();
@@ -89,15 +88,7 @@ export class FilesControlComponent implements OnDestroy {
     setFilesIsLoading: SetFilesIsLoading,
     setCurrentFolder: SetCurrentFolder,
     getRootFolders: GetRootFolders,
-    setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
   });
-
-  readonly filesTreeActions: FilesTreeActions = {
-    setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
-    setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
-    getFiles: (filesLink) => this.actions.getFiles(filesLink),
-    setMoveFileCurrentFolder: (folder) => this.actions.setMoveFileCurrentFolder(folder),
-  };
 
   constructor() {
     this.helpScoutService.setResourceType('files');
@@ -154,9 +145,9 @@ export class FilesControlComponent implements OnDestroy {
 
   updateFilesList(): Observable<void> {
     const currentFolder = this.currentFolder();
-    if (currentFolder?.relationships.filesLink) {
-      this.filesTreeActions.setFilesIsLoading?.(true);
-      return this.actions.getFiles(currentFolder?.relationships.filesLink).pipe(take(1));
+    if (currentFolder?.links.filesLink) {
+      this.actions.setFilesIsLoading(true);
+      return this.actions.getFiles(currentFolder?.links.filesLink).pipe(take(1));
     }
 
     return EMPTY;
@@ -203,13 +194,9 @@ export class FilesControlComponent implements OnDestroy {
       });
   }
 
-  selectFile(file: OsfFile): void {
+  selectFile(file: FileModel): void {
     if (this.filesViewOnly()) return;
     this.attachFile.emit(file);
-  }
-
-  folderIsOpening(value: boolean): void {
-    this.isFolderOpening.set(value);
   }
 
   ngOnDestroy(): void {

@@ -33,7 +33,7 @@ export class SettingsMapper {
       title: data.attributes.title,
       description: data.attributes.description,
       isPublic: data.attributes.public,
-      region: RegionsMapper.getRegion(data?.embeds?.region?.data),
+      region: data.embeds ? RegionsMapper.getRegion(data?.embeds?.region?.data) : null,
       affiliatedInstitutions: data.embeds
         ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
         : [],

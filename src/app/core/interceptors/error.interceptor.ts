@@ -57,6 +57,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 403) {
+        const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
+        if (error.url && requestAccessRegex.test(error.url)) {
+          loaderService.hide();
+          return throwError(() => error);
+        }
+
         if (error.url?.includes('v2/nodes/')) {
           const match = error.url.match(/\/nodes\/([^/]+)/);
           const id = match ? match[1] : null;

@@ -106,11 +106,7 @@ export class AddonsService {
         {},
         context
       )
-      .pipe(
-        map((response) => {
-          return AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi);
-        })
-      );
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi)));
   }
 
   getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddonModel[]> {
@@ -118,11 +114,7 @@ export class AddonsService {
       .get<
         JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>
       >(`${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/`)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item));
-        })
-      );
+      .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));
   }
 
   createAuthorizedAddon(

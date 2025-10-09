@@ -76,6 +76,9 @@
         [currentAddonType]="addonTypeString()"
         [supportedResourceTypes]="supportedResourceTypes()"
         (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
+        (operationInvokeWithCursor)="
+          handleCreateOperationInvocationWithCursor($event.operationName, $event.itemId, $event.pageCursor)
+        "
         [(selectedStorageItemId)]="selectedStorageItemId"
         [(selectedStorageItemUrl)]="selectedStorageItemUrl"
         [(selectedResourceType)]="selectedResourceType"

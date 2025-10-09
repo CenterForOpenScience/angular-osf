@@ -318,7 +318,8 @@ export class GlobalSearchState {
     filtersParams['page[size]'] = '10';
 
     const sortBy = state.sortBy;
-    const sortParam = sortBy.includes('count') && !sortBy.includes('relevance') ? 'sort[integer-value]' : 'sort';
+    const sortParam =
+      sortBy.toLowerCase().includes('count') && !sortBy.includes('relevance') ? 'sort[integer-value]' : 'sort';
     filtersParams[sortParam] = sortBy;
 
     return filtersParams;

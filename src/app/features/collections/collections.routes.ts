@@ -28,11 +28,11 @@ export const collectionsRoutes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: ':id',
-        redirectTo: ':id/discover',
+        path: ':providerId',
+        redirectTo: ':providerId/discover',
       },
       {
-        path: ':id/discover',
+        path: ':providerId/discover',
         pathMatch: 'full',
         loadComponent: () =>
           import('@osf/features/collections/components/collections-discover/collections-discover.component').then(
@@ -41,7 +41,7 @@ export const collectionsRoutes: Routes = [
         providers: [provideStates([CollectionsState])],
       },
       {
-        path: ':id/add',
+        path: ':providerId/add',
         pathMatch: 'full',
         loadComponent: () =>
           import('@osf/features/collections/components/add-to-collection/add-to-collection.component').then(

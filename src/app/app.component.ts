@@ -62,10 +62,11 @@ export class AppComponent implements OnInit {
   }
 
   private showEmailDialog() {
+    const unverifiedEmailsData = this.unverifiedEmails();
     this.customDialogService.open(ConfirmEmailComponent, {
-      header: 'home.confirmEmail.title',
+      header: unverifiedEmailsData[0].isMerge ? 'home.confirmEmail.merge.title' : 'home.confirmEmail.add.title',
       width: '448px',
-      data: this.unverifiedEmails(),
+      data: unverifiedEmailsData,
     });
   }
 }

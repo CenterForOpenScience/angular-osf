@@ -161,6 +161,24 @@ export class ConfigureAddonComponent implements OnInit {
     this.actions.createAddonOperationInvocation(payload);
   }
 
+  handleCreateOperationInvocationWithCursor(
+    operationName: OperationNames,
+    folderId: string,
+    pageCursor?: string
+  ): void {
+    const addon = this.addon();
+    if (!addon) return;
+
+    const payload = this.operationInvocationService.createOperationInvocationPayload(
+      addon,
+      operationName,
+      folderId,
+      pageCursor
+    );
+
+    this.actions.createAddonOperationInvocation(payload);
+  }
+
   ngOnInit(): void {
     this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedStorageItemId());
   }

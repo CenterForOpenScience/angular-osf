@@ -18,6 +18,11 @@ export function MapRegistryStatus(
     registry.reviews_state === RegistrationReviewStates.Accepted
   ) {
     return RegistryStatus.UpdatePendingApproval;
+  } else if (
+    registry.reviews_state === RegistrationReviewStates.Pending &&
+    registry.revision_state === RevisionReviewStates.RevisionPendingModeration
+  ) {
+    return RegistryStatus.Pending;
   } else if (registry.revision_state === RevisionReviewStates.Unapproved) {
     return RegistryStatus.Unapproved;
   } else if (registry.reviews_state === RegistrationReviewStates.PendingWithdrawRequest) {
@@ -34,6 +39,11 @@ export function MapRegistryStatus(
     return RegistryStatus.PendingWithdraw;
   } else if (registry.reviews_state === RegistrationReviewStates.Withdrawn) {
     return RegistryStatus.Withdrawn;
+  } else if (
+    registry.reviews_state === RegistrationReviewStates.Initial &&
+    registry.revision_state === RevisionReviewStates.Approved
+  ) {
+    return RegistryStatus.InitialApproved;
   } else {
     return RegistryStatus.None;
   }

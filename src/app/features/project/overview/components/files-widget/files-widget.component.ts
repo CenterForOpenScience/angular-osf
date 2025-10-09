@@ -16,7 +16,6 @@ import {
   input,
   model,
   signal,
-  viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -29,16 +28,15 @@ import {
   GetRootFolders,
   ResetState,
   SetCurrentFolder,
-  SetFilesIsLoading,
 } from '@osf/features/files/store';
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
 import { getViewOnlyParamFromUrl, hasViewOnlyParam, Primitive } from '@osf/shared/helpers';
 import {
   ConfiguredAddonModel,
+  FileFolderModel,
   FileLabelModel,
-  FilesTreeActions,
+  FileModel,
   NodeShortInfoModel,
-  OsfFile,
   SelectOption,
 } from '@osf/shared/models';
 import { ProjectModel } from '@osf/shared/models/projects';
@@ -51,8 +49,6 @@ import { ProjectModel } from '@osf/shared/models/projects';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilesWidgetComponent {
-  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
-
   rootOption = input.required<SelectOption>();
   components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
@@ -99,17 +95,10 @@ export class FilesWidgetComponent {
   private readonly actions = createDispatchMap({
     getFiles: GetFiles,
     setCurrentFolder: SetCurrentFolder,
-    setFilesIsLoading: SetFilesIsLoading,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     resetState: ResetState,
   });
-
-  readonly filesTreeActions: FilesTreeActions = {
-    setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
-    getFiles: (filesLink) => this.actions.getFiles(filesLink, this.pageNumber()),
-    setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
-  };
 
   get isStorageLoading() {
     return this.isConfiguredStorageAddonsLoading() || this.isRootFoldersLoading();
@@ -147,7 +136,15 @@ export class FilesWidgetComponent {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
         this.actions.setCurrentFolder(currentRootFolder.folder);
-        this.filesTree()?.resetPagination();
+      }
+    });
+
+    effect(() => {
+      const currentFolder = this.currentFolder();
+      if (currentFolder) {
+        this.pageNumber.set(1);
+        const filesLink = currentFolder.links?.filesLink ?? '';
+        this.actions.getFiles(filesLink, 1);
       }
     });
 
@@ -221,7 +218,7 @@ export class FilesWidgetComponent {
     }
   }
 
-  navigateToFile(file: OsfFile) {
+  navigateToFile(file: FileModel) {
     const extras = this.hasViewOnly()
       ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
       : undefined;
@@ -231,7 +228,11 @@ export class FilesWidgetComponent {
     window.open(url, '_blank');
   }
 
-  onFilesPageChange(page: number) {
-    this.pageNumber.set(page);
+  onLoadFiles(event: { link: string; page: number }) {
+    this.actions.getFiles(event.link, event.page);
+  }
+
+  setCurrentFolder(folder: FileFolderModel) {
+    this.actions.setCurrentFolder(folder);
   }
 }

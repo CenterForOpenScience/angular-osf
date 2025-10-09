@@ -13,4 +13,5 @@ export enum RegistryStatus {
   PendingModeration = 'pendingModeration',
   Withdrawn = 'withdrawn',
   UpdatePendingApproval = 'updatePendingApproval',
+  InitialApproved = 'initialApproved',
 }

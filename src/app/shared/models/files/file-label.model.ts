@@ -1,6 +1,6 @@
-import { OsfFile } from './file.model';
+import { FileFolderModel } from './file-folder.model';
 
 export interface FileLabelModel {
   label: string;
-  folder: OsfFile;
+  folder: FileFolderModel;
 }
