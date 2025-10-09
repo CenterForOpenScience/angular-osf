@@ -1,14 +1,7 @@
 <form [formGroup]="employmentForm">
   <div formArrayName="positions" class="flex flex-column row-gap-4">
-    @if (positions.controls.length) {
-      @for (position of positions.controls; track index; let index = $index) {
-        <osf-employment-form
-          [group]="position"
-          [index]="index"
-          [showRemove]="positions.controls.length > 1"
-          (remove)="removePosition(index)"
-        ></osf-employment-form>
-      }
+    @for (position of positions.controls; track index; let index = $index) {
+      <osf-employment-form [group]="position" [index]="index" (remove)="removePosition(index)"></osf-employment-form>
     }
   </div>
 </form>

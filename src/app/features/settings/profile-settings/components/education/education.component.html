@@ -1,14 +1,7 @@
 <form [formGroup]="educationForm">
   <div formArrayName="educations" class="flex flex-column row-gap-4">
-    @if (educations.controls.length) {
-      @for (education of educations.controls; track $index; let index = $index) {
-        <osf-education-form
-          [group]="education"
-          [index]="index"
-          [showRemove]="educations.controls.length > 1"
-          (remove)="removeEducation(index)"
-        ></osf-education-form>
-      }
+    @for (education of educations.controls; track $index; let index = $index) {
+      <osf-education-form [group]="education" [index]="index" (remove)="removeEducation(index)"></osf-education-form>
     }
   </div>
 </form>

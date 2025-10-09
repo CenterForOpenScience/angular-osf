@@ -55,11 +55,7 @@ export class EmploymentComponent {
   }
 
   removePosition(index: number): void {
-    if (this.positions.length > 1) {
-      this.positions.removeAt(index);
-    } else {
-      this.positions.reset();
-    }
+    this.positions.removeAt(index);
   }
 
   addPosition(): void {
@@ -93,11 +89,11 @@ export class EmploymentComponent {
       return;
     }
 
-    const formattedEmployment = this.positions.value.map((position) => mapFormToEmployment(position));
+    const employments = this.positions.value.map(mapFormToEmployment);
     this.loaderService.show();
 
     this.actions
-      .updateProfileSettingsEmployment(formattedEmployment)
+      .updateProfileSettingsEmployment(employments)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -111,18 +107,6 @@ export class EmploymentComponent {
   hasFormChanges(): boolean {
     const employment = this.employment();
     const formPositions = this.positions.value;
-
-    if (!employment?.length) {
-      return formPositions.some(
-        (position) =>
-          position.title?.trim() ||
-          position.institution?.trim() ||
-          position.department?.trim() ||
-          position.startDate ||
-          position.endDate ||
-          position.ongoing
-      );
-    }
 
     if (formPositions.length !== employment.length) {
       return true;
@@ -157,15 +141,11 @@ export class EmploymentComponent {
     const employment = this.employment();
     this.positions.clear();
 
-    if (!employment?.length) {
-      this.addPosition();
-      this.cd.markForCheck();
-      return;
+    if (employment?.length) {
+      employment
+        .map((x) => mapEmploymentToForm(x))
+        .forEach((x) => this.positions.push(this.createEmploymentFormGroup(x)));
     }
-
-    employment
-      .map((x) => mapEmploymentToForm(x))
-      .forEach((x) => this.positions.push(this.createEmploymentFormGroup(x)));
 
     this.cd.markForCheck();
   }
