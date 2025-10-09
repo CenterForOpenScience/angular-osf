@@ -9,7 +9,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -41,6 +41,7 @@ import { DownloadType } from '../../enums';
     Skeleton,
     StopPropagationDirective,
     DatePipe,
+    NgClass,
   ],
   templateUrl: './admin-table.component.html',
   styleUrl: './admin-table.component.scss',
@@ -149,12 +150,5 @@ export class AdminTableComponent {
 
   switchPage(link: string) {
     this.pageSwitched.emit(link);
-  }
-
-  getLinkUrl(value: string | number | TableCellLink | undefined): string {
-    if (this.isLink(value)) {
-      return value.url;
-    }
-    return '';
   }
 }
