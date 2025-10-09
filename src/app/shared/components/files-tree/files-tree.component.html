@@ -32,6 +32,10 @@
           styleClass="w-full md:w-[30rem]"
           class="tree-table"
           [loading]="isLoadingMore()"
+          selectionMode="multiple"
+          [selection]="selectedFiles()"
+          (onNodeSelect)="onNodeSelect($event)"
+          (onNodeUnselect)="onNodeUnselect($event)"
         >
           <ng-template let-file pTemplate="default">
             @if (file.previousFolder) {
@@ -48,17 +52,28 @@
                 </div>
               </div>
             } @else {
-              <div class="files-table-row" (click)="openEntry(file)" (keydown.enter)="openEntry(file)" tabindex="0">
+              <div class="files-table-row" tabindex="0">
                 <div class="flex gap-2 table-cell" [class.pl-6]="foldersStack.length">
                   @if (file.kind !== 'folder') {
-                    <div class="flex gap-2 min-w-0">
+                    <div
+                      class="flex gap-2 min-w-0 hover:underline py-1"
+                      (click)="openEntry($event, file)"
+                      (keydown.enter)="openEntry($event, file)"
+                      tabindex="0"
+                    >
                       <i class="fas fa-file blue-icon"></i>
                       <span class="entry-title blue-text">{{ file?.name ?? '' }}</span>
                     </div>
                   } @else {
-                    <i class="fas fa-folder"></i>
-                    <div class="table-cell entry-title">
-                      {{ file?.name ?? '' }}
+                    <div
+                      class="flex gap-2 hover:underline py-1"
+                      (click)="openEntry($event, file)"
+                      (keydown.enter)="openEntry($event, file)"
+                    >
+                      <i class="fas fa-folder"></i>
+                      <div class="table-cell entry-title">
+                        {{ file?.name ?? '' }}
+                      </div>
                     </div>
                   }
                 </div>
@@ -79,7 +94,7 @@
                   {{ file.dateModified | date: 'MMM d, y hh:mm a' }}
                 </div>
 
-                @if (isSomeFileActionAllowed) {
+                @if (isSomeFileActionAllowed && !selectedFiles().length) {
                   <div class="relative ml-auto">
                     <osf-file-menu
                       (action)="onFileMenuAction($event, file)"

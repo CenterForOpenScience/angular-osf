@@ -53,6 +53,7 @@ export class FileSelectDestinationComponent implements OnInit {
   components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
   selectProject = output<string>();
+  selectStorage = output();
 
   private readonly environment = inject(ENVIRONMENT);
   private readonly destroyRef = inject(DestroyRef);
@@ -112,6 +113,7 @@ export class FileSelectDestinationComponent implements OnInit {
       if (currentRootFolder) {
         if (!this.initialSetup) {
           this.actions.setCurrentFolder(currentRootFolder.folder);
+          this.actions.setCurrentProvider(currentRootFolder.folder.provider);
         }
         this.initialSetup = false;
       }
@@ -130,6 +132,7 @@ export class FileSelectDestinationComponent implements OnInit {
         this.actions.setCurrentProvider(rootFolder.folder.provider);
       }
     }
+    this.selectStorage.emit();
   }
 
   onChangeProject(value: Primitive) {

@@ -139,12 +139,13 @@ export class FilesService {
     return this.jsonApiService.post(link, body);
   }
 
-  moveFile(link: string, path: string, resourceId: string, provider: string, action: string) {
+  moveFile(link: string, path: string, resourceId: string, provider: string, action: string, replace?: boolean) {
     const body = {
       action: action,
       path: path,
       provider: provider,
       resource: resourceId,
+      conflict: replace ? 'replace' : undefined,
     };
 
     return this.jsonApiService.post<FileResponseJsonApi>(link, body);

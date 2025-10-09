@@ -30,6 +30,13 @@ export class CustomConfirmationService {
       accept: () => {
         options.onConfirm();
       },
+      reject: () => {
+        if (options.onReject) {
+          options.onReject();
+        } else {
+          this.confirmationService.close();
+        }
+      },
     });
   }
 

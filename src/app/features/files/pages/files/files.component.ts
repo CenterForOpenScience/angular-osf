@@ -60,7 +60,12 @@ import { ConfiguredAddonModel, FileFolderModel, FileLabelModel, FileModel, Stora
 import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
-import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
+import {
+  CreateFolderDialogComponent,
+  FileBrowserInfoComponent,
+  FilesSelectionActionsComponent,
+  MoveFileDialogComponent,
+} from '../../components';
 import { FileProvider } from '../../constants';
 import { FilesSelectors } from '../../store';
 
@@ -82,6 +87,7 @@ import { FilesSelectors } from '../../store';
     TranslatePipe,
     ViewOnlyLinkMessageComponent,
     GoogleFilePickerComponent,
+    FilesSelectionActionsComponent,
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',
@@ -148,6 +154,8 @@ export class FilesComponent {
   readonly searchControl = new FormControl<string>('');
   readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
 
+  foldersStack = [] as FileFolderModel[];
+
   currentRootFolder = model<FileLabelModel | null>(null);
 
   fileIsUploading = signal(false);
@@ -157,6 +165,7 @@ export class FilesComponent {
   pageNumber = signal(1);
 
   allowRevisions = false;
+  filesSelection: FileModel[] = [];
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -275,6 +284,7 @@ export class FilesComponent {
         }
         this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
+        this.filesSelection = [];
       }
     });
 
@@ -405,6 +415,54 @@ export class FilesComponent {
     this.updateFilesList();
   }
 
+  onFileTreeSelected(file: FileModel): void {
+    this.filesSelection = [...this.filesSelection, file];
+  }
+
+  onFileTreeUnselected(file: FileModel): void {
+    this.filesSelection = this.filesSelection.filter((f) => f.id !== file.id);
+  }
+
+  onClearSelection(): void {
+    this.filesSelection = [];
+  }
+
+  onDeleteSelected(): void {
+    if (!this.filesSelection.length) return;
+
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'files.dialogs.deleteMultipleItems.title',
+      messageKey: 'files.dialogs.deleteMultipleItems.message',
+      messageParams: {
+        name: this.filesSelection.map((f) => f.name).join(', '),
+      },
+      acceptLabelKey: 'common.buttons.delete',
+      onConfirm: () => {
+        const deleteRequests$ = this.filesSelection.map((file) =>
+          this.actions.deleteEntry(file.links.delete).pipe(catchError(() => of(null)))
+        );
+
+        forkJoin(deleteRequests$)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              this.toastService.showSuccess('files.dialogs.deleteFile.success');
+              this.filesSelection = [];
+              this.updateFilesList();
+            },
+          });
+      },
+    });
+  }
+
+  onMoveSelected(): void {
+    this.moveFiles(this.filesSelection, 'move');
+  }
+
+  onCopySelected(): void {
+    this.moveFiles(this.filesSelection, 'copy');
+  }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files;
@@ -419,6 +477,29 @@ export class FilesComponent {
     }
 
     this.uploadFiles(Array.from(files));
+  }
+
+  moveFiles(files: FileModel[], action: string): void {
+    const currentFolder = this.currentFolder();
+    this.actions.setMoveDialogCurrentFolder(currentFolder);
+    this.customDialogService
+      .open(MoveFileDialogComponent, {
+        header: 'files.dialogs.moveFile.title',
+        width: '552px',
+        data: {
+          files: files,
+          resourceId: this.resourceId(),
+          action: action,
+          storageProvider: this.provider(),
+          foldersStack: this.foldersStack,
+          initialFolder: structuredClone(this.currentFolder()),
+        },
+      })
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.filesSelection = [];
+        }
+      });
   }
 
   createFolder(): void {
@@ -547,5 +628,9 @@ export class FilesComponent {
   openGoogleFilePicker(): void {
     this.googleFilePickerComponent()?.createPicker();
     this.updateFilesList();
+  }
+
+  onUpdateFoldersStack(newStack: FileFolderModel[]): void {
+    this.foldersStack = [...newStack];
   }
 }

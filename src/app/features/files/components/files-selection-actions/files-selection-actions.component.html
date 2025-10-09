@@ -1,0 +1,47 @@
+@if (selectedFiles().length > 0) {
+  <div class="flex align-items-center flex-wrap gap-2 p-1 -mb-2">
+    <div>
+      <span class="mr-2">
+        <b>{{ selectedFiles().length }}</b> {{ 'files.selectedFiles' | translate }}
+      </span>
+
+      <p-button
+        icon="fas fa-times"
+        severity="secondary"
+        outlined
+        raised
+        [label]="'common.buttons.cancel' | translate"
+        (onClick)="clearSelection.emit()"
+      />
+    </div>
+    @if (canUpdateFiles()) {
+      <div class="flex gap-2 ml-auto">
+        <p-button
+          icon="fas fa-arrows-alt"
+          outlined
+          raised
+          [label]="'common.buttons.move' | translate"
+          (onClick)="moveSelected.emit()"
+        />
+
+        <p-button
+          icon="fas fa-copy"
+          severity="success"
+          outlined
+          raised
+          [label]="'common.buttons.copyTo' | translate"
+          (onClick)="copySelected.emit()"
+        />
+
+        <p-button
+          icon="fas fa-trash"
+          severity="danger"
+          outlined
+          raised
+          [label]="'common.buttons.delete' | translate"
+          (onClick)="deleteSelected.emit()"
+        />
+      </div>
+    }
+  </div>
+}

@@ -24,84 +24,98 @@
         </ng-template>
       </p-select>
     </div>
+    @if (filesSelection.length) {
+      <osf-files-selection-actions
+        [canUpdateFiles]="canUploadFiles()"
+        [selectedFiles]="filesSelection"
+        (deleteSelected)="onDeleteSelected()"
+        (moveSelected)="onMoveSelected()"
+        (copySelected)="onCopySelected()"
+        (clearSelection)="onClearSelection()"
+      ></osf-files-selection-actions>
+    } @else {
+      <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">
+        <div class="flex flex-column gap-2 w-full sm:flex-row md:w-max">
+          <osf-search-input
+            [control]="searchControl"
+            class="w-full sm:w-9 xl:w-30rem"
+            [placeholder]="'files.searchPlaceholder' | translate"
+          />
 
-    <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">
-      <div class="flex flex-column gap-2 w-full sm:flex-row md:w-max">
-        <osf-search-input
-          [control]="searchControl"
-          class="w-full sm:w-9 xl:w-30rem"
-          [placeholder]="'files.searchPlaceholder' | translate"
-        />
-
-        <div class="sm:w-3 md:w-max">
-          <osf-form-select
-            [control]="sortControl"
-            [options]="sortOptions"
-            [placeholder]="'files.sort.placeholder'"
-            [fullWidth]="true"
-          ></osf-form-select>
+          <div class="sm:w-3 md:w-max">
+            <osf-form-select
+              [control]="sortControl"
+              [options]="sortOptions"
+              [placeholder]="'files.sort.placeholder'"
+              [fullWidth]="true"
+            ></osf-form-select>
+          </div>
         </div>
-      </div>
 
-      <div class="flex flex-column align-items-center w-full gap-2 sm:flex-row md:w-max">
-        <p-button
-          [disabled]="isButtonDisabled()"
-          outlined
-          raised
-          (onClick)="downloadFolder()"
-          [icon]="'fas fa-download'"
-          [label]="'files.actions.downloadAsZip' | translate"
-        >
-        </p-button>
-
-        <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="showInfoDialog()"></p-button>
-
-        @if (canUploadFiles() && !hasViewOnly()) {
+        <div class="flex flex-column align-items-center w-full gap-2 sm:flex-row md:w-max">
           <p-button
             [disabled]="isButtonDisabled()"
             outlined
             raised
-            severity="success"
-            [icon]="'fas fa-plus'"
-            [label]="'files.actions.createFolder' | translate"
-            (onClick)="createFolder()"
+            (onClick)="downloadFolder()"
+            [icon]="'fas fa-download'"
+            [label]="'files.actions.downloadAsZip' | translate"
           >
           </p-button>
 
           <p-button
-            [disabled]="isButtonDisabled()"
-            outlined
-            raised
-            severity="success"
-            [icon]="'fas fa-upload'"
-            [label]="'files.actions.uploadFile' | translate"
-            (onClick)="fileInput.click()"
-          >
-          </p-button>
+            icon="fas fa-info-circle blue-icon"
+            severity="secondary"
+            text
+            (onClick)="showInfoDialog()"
+          ></p-button>
 
-          @if (isGoogleDrive()) {
+          @if (canUploadFiles() && !hasViewOnly()) {
             <p-button
-              [disabled]="isGoogleDriveButtonDisabled()"
+              [disabled]="isButtonDisabled()"
               outlined
               raised
               severity="success"
-              [icon]="'fa-brands fa-google-plus-g'"
-              [label]="'files.actions.addFromDrive' | translate"
-              (onClick)="googleFilePickerComponent()?.createPicker()"
+              [icon]="'fas fa-plus'"
+              [label]="'files.actions.createFolder' | translate"
+              (onClick)="createFolder()"
             >
             </p-button>
-            <osf-google-file-picker
-              [rootFolder]="selectedRootFolder()"
-              [accountId]="accountId()"
-              [isFolderPicker]="false"
-              [handleFolderSelection]="updateFilesList"
-            ></osf-google-file-picker>
-          }
-        }
-        <input #fileInput type="file" multiple class="hidden" (change)="onFileSelected($event)" />
-      </div>
-    </div>
 
+            <p-button
+              [disabled]="isButtonDisabled()"
+              outlined
+              raised
+              severity="success"
+              [icon]="'fas fa-upload'"
+              [label]="'files.actions.uploadFile' | translate"
+              (onClick)="fileInput.click()"
+            >
+            </p-button>
+
+            @if (isGoogleDrive()) {
+              <p-button
+                [disabled]="isGoogleDriveButtonDisabled()"
+                outlined
+                raised
+                severity="success"
+                [icon]="'fa-brands fa-google-plus-g'"
+                [label]="'files.actions.addFromDrive' | translate"
+                (onClick)="googleFilePickerComponent()?.createPicker()"
+              >
+              </p-button>
+              <osf-google-file-picker
+                [rootFolder]="selectedRootFolder()"
+                [accountId]="accountId()"
+                [isFolderPicker]="false"
+                [handleFolderSelection]="updateFilesList"
+              ></osf-google-file-picker>
+            }
+          }
+          <input #fileInput type="file" multiple class="hidden" (chTreeange)="onFileSelected($event)" />
+        </div>
+      </div>
+    }
     <osf-file-upload-dialog
       [(visible)]="fileIsUploading"
       [fileName]="fileName()"
@@ -120,6 +134,10 @@
       [provider]="provider()"
       [allowedMenuActions]="allowedMenuActions()"
       [scrollHeight]="'500px'"
+      [selectedFiles]="filesSelection"
+      (selectFile)="onFileTreeSelected($event)"
+      (unselectFile)="onFileTreeUnselected($event)"
+      (clearSelection)="onClearSelection()"
       (entryFileClicked)="navigateToFile($event)"
       (deleteEntryAction)="deleteEntry($event)"
       (renameEntryAction)="renameEntry($event)"
@@ -127,6 +145,7 @@
       (loadFiles)="onLoadFiles($event)"
       (setCurrentFolder)="setCurrentFolder($event)"
       (setMoveDialogCurrentFolder)="setMoveDialogCurrentFolder($event)"
+      (updateFoldersStack)="onUpdateFoldersStack($event)"
     >
     </osf-files-tree>
   </div>

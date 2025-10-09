@@ -8,6 +8,7 @@ export interface DeleteConfirmationOptions {
   acceptLabelKey?: string;
   acceptLabelType?: string;
   onConfirm: () => void;
+  onReject?: () => void;
 }
 
 export interface AcceptConfirmationOptions {

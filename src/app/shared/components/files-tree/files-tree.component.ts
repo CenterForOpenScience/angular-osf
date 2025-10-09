@@ -3,7 +3,7 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
-import { Tree, TreeScrollIndexChangeEvent } from 'primeng/tree';
+import { Tree, TreeNodeSelectEvent, TreeScrollIndexChangeEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
@@ -80,15 +80,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   currentFolder = input.required<FileFolderModel>();
   storage = input.required<FileLabelModel | null>();
   resourceId = input.required<string>();
-
   viewOnly = input<boolean>(true);
   provider = input<string>();
   allowedMenuActions = input<FileMenuFlags>({} as FileMenuFlags);
   supportUpload = input<boolean>(true);
-  isDragOver = signal(false);
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
-
-  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
+  selectedFiles = input<FileModel[]>([]);
+  scrollHeight = input<string>('300px');
 
   entryFileClicked = output<FileModel>();
   uploadFilesConfirmed = output<File[] | File>();
@@ -97,20 +94,26 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   deleteEntryAction = output<string>();
   renameEntryAction = output<{ newName: string; link: string }>();
   loadFiles = output<{ link: string; page: number }>();
+  selectFile = output<FileModel>();
+  unselectFile = output<FileModel>();
+  clearSelection = output<void>();
+  updateFoldersStack = output<FileFolderModel[]>();
+
+  readonly FileMenuType = FileMenuType;
+  readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
   foldersStack: FileFolderModel[] = [];
   itemsPerPage = 10;
-
-  isLoadingMore = signal(false);
-  scrollHeight = input<string>('300px');
   virtualScrollItemSize = 46;
 
+  isDragOver = signal(false);
+  isLoadingMore = signal(false);
+
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
   visibleFilesCount = computed((): number => {
     const height = parseInt(this.scrollHeight(), 10);
     return Math.ceil(height / this.virtualScrollItemSize);
   });
-
-  readonly FileMenuType = FileMenuType;
 
   get isSomeFileActionAllowed(): boolean {
     return Object.keys(this.allowedMenuActions()).length > 0;
@@ -145,6 +148,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       const storageChanged = this.storage();
       if (storageChanged) {
         this.foldersStack = [];
+        this.updateFoldersStack.emit(this.foldersStack);
       }
     });
 
@@ -224,7 +228,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  openEntry(file: FileModel | FileFolderModel) {
+  openEntry(event: Event, file: FileModel | FileFolderModel) {
+    event.stopPropagation();
     if (file.kind === FileKind.File) {
       if (file.guid) {
         this.entryFileClicked.emit(file);
@@ -237,17 +242,21 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       const current = this.currentFolder();
       if (current) {
         this.foldersStack.push(current);
+        this.updateFoldersStack.emit(this.foldersStack);
       }
       const folder = FilesMapper.mapFileToFolder(file as FileModel);
       this.setCurrentFolder.emit(folder);
+      this.clearSelection.emit();
     }
   }
 
   openParentFolder() {
     const previous = this.foldersStack.pop();
+    this.updateFoldersStack.emit(this.foldersStack);
     if (previous) {
       this.setCurrentFolder.emit(previous);
     }
+    this.clearSelection.emit();
   }
 
   onFileMenuAction(action: FileMenuAction, file: FileModel): void {
@@ -336,9 +345,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   confirmDeleteEntry(link: string): void {
     this.deleteEntryAction.emit(link);
-    // this.actions()
-    //   .deleteEntry?.(this.resourceId(), link)
-    //   .subscribe(() => this.toastService.showSuccess('files.dialogs.deleteFile.success'));
   }
 
   confirmRename(file: FileModel): void {
@@ -389,33 +395,25 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   moveFile(file: FileModel, action: string): void {
     this.setMoveDialogCurrentFolder.emit(this.currentFolder());
-    const header = action === 'move' ? 'files.dialogs.moveFile.title' : 'files.dialogs.copyFile.title';
     this.customDialogService
       .open(MoveFileDialogComponent, {
-        header,
+        header: 'files.dialogs.moveFile.title',
         width: '552px',
         data: {
-          file: file,
+          files: [file],
           resourceId: this.resourceId(),
           action: action,
           storageProvider: this.storage()?.folder.provider,
-          foldersStack: [...this.foldersStack],
+          foldersStack: structuredClone(this.foldersStack),
           initialFolder: structuredClone(this.currentFolder()),
         },
       })
       .onClose.subscribe((result) => {
         if (result) {
-          if (result.foldersStack) {
-            this.foldersStack = [...result.foldersStack];
-          }
-          if (result.success) {
-            const messageType = action === 'move' ? 'moveFile' : 'copyFile';
-            this.toastService.showSuccess(`files.dialogs.${messageType}.success`);
-            this.loadFiles.emit({
-              link: this.currentFolder()?.links.filesLink ?? '',
-              page: 1,
-            });
-          }
+          // this.loadFiles.emit({
+          //   link: this.currentFolder()?.links.filesLink ?? '',
+          //   page: 1,
+          // });
         }
       });
   }
@@ -444,5 +442,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     if (event.last >= loaded - 1) {
       this.loadNextPage();
     }
+  }
+
+  onNodeSelect(event: TreeNodeSelectEvent) {
+    this.selectFile.emit(event.node as FileModel);
+  }
+
+  onNodeUnselect(event: TreeNodeSelectEvent) {
+    this.unselectFile.emit(event.node as FileModel);
   }
 }

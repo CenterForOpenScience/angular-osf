@@ -8,7 +8,7 @@ import { ScrollerModule } from 'primeng/scroller';
 import { Tooltip } from 'primeng/tooltip';
 import { TreeScrollIndexChangeEvent } from 'primeng/tree';
 
-import { finalize, throwError } from 'rxjs';
+import { finalize, forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
@@ -25,7 +25,7 @@ import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
 import { FileFolderModel, FileModel } from '@osf/shared/models';
 import { CurrentResourceSelectors, GetResourceDetails, GetResourceWithChildren } from '@osf/shared/stores';
 import { FileSelectDestinationComponent, IconComponent, LoadingSpinnerComponent } from '@shared/components';
-import { FilesService, ToastService } from '@shared/services';
+import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 
 import { FileProvider } from '../../constants';
 
@@ -47,11 +47,11 @@ import { FileProvider } from '../../constants';
 export class MoveFileDialogComponent {
   readonly config = inject(DynamicDialogConfig);
   readonly dialogRef = inject(DynamicDialogRef);
-
   private readonly filesService = inject(FilesService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
 
   readonly files = select(FilesSelectors.getMoveDialogFiles);
   readonly filesTotalCount = select(FilesSelectors.getMoveDialogFilesTotalCount);
@@ -63,7 +63,6 @@ export class MoveFileDialogComponent {
   readonly areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
   readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isMoveDialogConfiguredStorageAddonsLoading);
   readonly isRootFoldersLoading = select(FilesSelectors.isMoveDialogRootFoldersLoading);
-
   readonly provider = select(FilesSelectors.getProvider);
 
   readonly actions = createDispatchMap({
@@ -77,14 +76,16 @@ export class MoveFileDialogComponent {
   foldersStack = signal<FileFolderModel[]>(this.config.data.foldersStack ?? []);
   storageProvider = signal<string>(this.config.data.storageProvider ?? FileProvider.OsfStorage);
   previousFolder = signal<FileFolderModel | null>(null);
-
   isLoadingMore = signal(false);
+
   itemsPerPage = 10;
-  initialFolder = this.config.data.initialFolder;
   private lastFolderId: string | null = null;
+  private initialFolder = this.config.data.initialFolder;
   private fileProjectId = this.config.data.resourceId;
 
   readonly isFolderSame = computed(() => this.currentFolder()?.id === this.initialFolder?.id);
+
+  readonly fileIdsInList = computed(() => new Set((this.config.data.files as FileModel[]).map((f) => f.id)));
 
   readonly isDestinationLoading = computed(
     () => this.isConfiguredStorageAddonsLoading() || this.areComponentsLoading() || this.isRootFoldersLoading()
@@ -163,32 +164,96 @@ export class MoveFileDialogComponent {
     });
   }
 
-  moveFile(): void {
+  moveFiles(): void {
     const path = this.currentFolder()?.path;
-
     if (!path) {
       throw new Error(this.translateService.instant('files.dialogs.moveFile.pathError'));
     }
 
     this.isFilesUpdating.set(true);
-    this.filesService
-      .moveFile(this.config.data.file.links.move, path, this.fileProjectId, this.provider(), this.config.data.action)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => {
-          this.actions.setCurrentFolder(this.initialFolder);
-          this.actions.setMoveDialogCurrentFolder(null);
-          this.isFilesUpdating.set(false);
-        }),
-        catchError((error) => {
-          this.dialogRef.close();
-          this.toastService.showError(error.error.message);
-          return throwError(() => error);
-        })
-      )
-      .subscribe(() => {
-        this.dialogRef.close({ foldersStack: this.foldersStack(), success: true });
-      });
+    const action = this.config.data.action;
+    const files: FileModel[] = this.config.data.files;
+    const totalFiles = files.length;
+    let completed = 0;
+    const conflictFiles: { file: FileModel; link: string }[] = [];
+
+    files.forEach((file) => {
+      const link = file.links.move;
+      this.filesService
+        .moveFile(link, path, this.fileProjectId, this.provider(), action)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          catchError((error) => {
+            if (error.status === 409) {
+              conflictFiles.push({ file, link });
+            } else {
+              this.toastService.showError(error.error?.message ?? 'Error');
+            }
+            return of(null);
+          }),
+          finalize(() => {
+            completed++;
+            if (completed === totalFiles) {
+              if (conflictFiles.length > 0) {
+                this.openReplaceMoveDialog(conflictFiles, path, action);
+              } else {
+                this.showToast(action);
+                this.completeMove();
+              }
+            }
+          })
+        )
+        .subscribe();
+    });
+  }
+
+  private openReplaceMoveDialog(
+    conflictFiles: { file: FileModel; link: string }[],
+    path: string,
+    action: string
+  ): void {
+    this.customConfirmationService.confirmDelete({
+      headerKey: conflictFiles.length > 1 ? 'files.dialogs.replaceFile.multiple' : 'files.dialogs.replaceFile.single',
+      messageKey: 'files.dialogs.replaceFile.message',
+      messageParams: {
+        name: conflictFiles.map((c) => c.file.name).join(', '),
+      },
+      acceptLabelKey: 'common.buttons.replace',
+      onConfirm: () => {
+        const replaceRequests$ = conflictFiles.map(({ link }) =>
+          this.filesService.moveFile(link, path, this.fileProjectId, this.provider(), action, true).pipe(
+            takeUntilDestroyed(this.destroyRef),
+            catchError(() => of(null))
+          )
+        );
+
+        forkJoin(replaceRequests$).subscribe({
+          next: () => {
+            this.showToast(action);
+            this.completeMove();
+          },
+        });
+      },
+      onReject: () => {
+        const totalFiles = this.config.data.files.length;
+        if (totalFiles > conflictFiles.length) {
+          this.showToast(action);
+        }
+        this.completeMove();
+      },
+    });
+  }
+
+  private showToast(action: string): void {
+    const messageType = action === 'move' ? 'moveFile' : 'copyFile';
+    this.toastService.showSuccess(`files.dialogs.${messageType}.success`);
+  }
+
+  private completeMove(): void {
+    this.isFilesUpdating.set(false);
+    this.actions.setCurrentFolder(this.initialFolder);
+    this.actions.setMoveDialogCurrentFolder(null);
+    this.dialogRef.close(true);
   }
 
   private loadNextPage(): void {
@@ -211,6 +276,11 @@ export class MoveFileDialogComponent {
 
   onProjectChange(projectId: string) {
     this.fileProjectId = projectId;
+    this.foldersStack.set([]);
+    this.previousFolder.set(null);
+  }
+
+  onStorageChange() {
     this.foldersStack.set([]);
     this.previousFolder.set(null);
   }

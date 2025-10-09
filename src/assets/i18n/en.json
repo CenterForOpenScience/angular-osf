@@ -1111,25 +1111,29 @@
         "newName": "New name",
         "enterNewName": "Enter new name",
         "renameLabel": "Please rename the file",
-        "success": "File successfully renamed."
+        "success": "Successfully renamed."
       },
       "moveFile": {
         "cannotMove": "Cannot move to the same folder",
-        "title": "Move file",
+        "title": "Select Destination",
         "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
         "storage": "OSF Storage",
         "pathError": "Path is not specified!",
-        "success": "File successfully moved.",
+        "success": "Successfully moved.",
         "noMovePermission": "Cannot move or copy to this file provider"
       },
       "copyFile": {
-        "title": "Select location to copy file to",
         "success": "File successfully copied."
       },
       "deleteFile": {
         "title": "Delete File",
         "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?",
-        "success": "File successfully deleted."
+        "success": "Successfully deleted."
+      },
+      "deleteMultipleItems": {
+        "title": "Delete items",
+        "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?",
+        "success": "Successfully deleted."
       },
       "deleteFolder": {
         "title": "Delete Folder",
@@ -1140,8 +1144,7 @@
         "single": "Replace file",
         "multiple": "Replace files",
         "message": "Are you sure you want to replace <span class=\"font-bold\">{{name}}</span>?",
-        "successOne": "File successfully replaced.",
-        "successMultiple": "File successfully replaced."
+        "success": "Successfully replaced."
       }
     },
     "filesBrowserDialog": {
@@ -1239,7 +1242,8 @@
           "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
         }
       }
-    }
+    },
+    "selectedFiles": "item(s) selected"
   },
   "collections": {
     "helpDialog": {
