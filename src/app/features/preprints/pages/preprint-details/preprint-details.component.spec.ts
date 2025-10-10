@@ -16,7 +16,7 @@ import { AdditionalInfoComponent } from '@osf/features/preprints/components/prep
 import { GeneralInformationComponent } from '@osf/features/preprints/components/preprint-details/general-information/general-information.component';
 import { PreprintFileSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-file-section/preprint-file-section.component';
 import { PreprintWarningBannerComponent } from '@osf/features/preprints/components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
-import { ShareAndDownloadComponent } from '@osf/features/preprints/components/preprint-details/share-and-downlaod/share-and-download.component';
+import { ShareAndDownloadComponent } from '@osf/features/preprints/components/preprint-details/share-and-download/share-and-download.component';
 import { ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';

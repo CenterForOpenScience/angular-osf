@@ -29,6 +29,7 @@ export class RenameFileDialogComponent {
       validators: [
         CustomValidators.requiredTrimmed(),
         CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+        CustomValidators.noPeriodAtEnd(),
       ],
     }),
   });
