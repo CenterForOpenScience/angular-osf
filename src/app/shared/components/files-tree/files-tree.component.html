@@ -32,7 +32,7 @@
           styleClass="w-full md:w-[30rem]"
           class="tree-table"
           [loading]="isLoadingMore()"
-          selectionMode="multiple"
+          [selectionMode]="selectionMode()"
           [selection]="selectedFiles()"
           (onNodeSelect)="onNodeSelect($event)"
           (onNodeUnselect)="onNodeUnselect($event)"

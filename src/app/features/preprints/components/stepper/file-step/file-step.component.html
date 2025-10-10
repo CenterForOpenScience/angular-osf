@@ -94,6 +94,7 @@
         [files]="projectFiles()"
         [totalCount]="projectFiles().length"
         [storage]="null"
+        [selectionMode]="null"
         [isLoading]="areProjectFilesLoading() || isCurrentFolderLoading()"
         [resourceId]="selectedProjectId()!"
         (entryFileClicked)="selectProjectFile($event)"
