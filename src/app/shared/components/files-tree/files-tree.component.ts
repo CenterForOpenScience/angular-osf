@@ -86,6 +86,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   supportUpload = input<boolean>(true);
   selectedFiles = input<FileModel[]>([]);
   scrollHeight = input<string>('300px');
+  selectionMode = input<'multiple' | null>('multiple');
 
   entryFileClicked = output<FileModel>();
   uploadFilesConfirmed = output<File[] | File>();

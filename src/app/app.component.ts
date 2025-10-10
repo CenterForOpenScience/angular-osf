@@ -1,6 +1,6 @@
-import { createDispatchMap, select } from '@ngxs/store';
+import { Actions, createDispatchMap, ofActionSuccessful, select } from '@ngxs/store';
 
-import { filter } from 'rxjs';
+import { filter, take } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly router = inject(Router);
   private readonly environment = inject(ENVIRONMENT);
-
+  private readonly actions$ = inject(Actions);
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
 
   unverifiedEmails = select(UserEmailsSelectors.getUnverifiedEmails);
@@ -44,7 +44,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.actions.getCurrentUser();
-    this.actions.getEmails();
+
+    this.actions$
+      .pipe(
+        ofActionSuccessful(GetCurrentUser),
+        take(1)
+      )
+      .subscribe(() => {
+        this.actions.getEmails();
+      });
 
     if (this.environment.googleTagManagerId) {
       this.router.events

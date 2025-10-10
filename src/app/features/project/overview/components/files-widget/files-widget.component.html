@@ -42,6 +42,7 @@
     [isLoading]="isFilesLoading() || isStorageLoading"
     [resourceId]="selectedRoot!"
     [provider]="provider()"
+    [selectionMode]="null"
     (entryFileClicked)="navigateToFile($event)"
     (loadFiles)="onLoadFiles($event)"
     (setCurrentFolder)="setCurrentFolder($event)"
