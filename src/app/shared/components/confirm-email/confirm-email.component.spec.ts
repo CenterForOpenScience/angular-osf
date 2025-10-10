@@ -76,7 +76,7 @@ describe('ConfirmEmailComponent', () => {
     component.closeDialog();
     jest.runAllTimers();
 
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.emailNotAdded', {
+    expect(mockToastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.add.emailNotAdded', {
       name: mockEmail.emailAddress,
     });
   });
@@ -98,7 +98,7 @@ describe('ConfirmEmailComponent', () => {
     component.verifyEmail();
     jest.runAllTimers();
 
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.emailVerified', {
+    expect(mockToastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.add.emailVerified', {
       name: mockEmail.emailAddress,
     });
   });

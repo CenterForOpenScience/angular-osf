@@ -72,10 +72,10 @@ describe('AddContributorDialogComponent', () => {
   });
 
   it('should check isSearchState getter', () => {
-    expect(component['isSearchState']).toBe(true);
+    expect(component['isSearchState']()).toBe(true);
 
     component['currentState'].set(AddDialogState.Details);
-    expect(component['isSearchState']).toBe(false);
+    expect(component['isSearchState']()).toBe(false);
   });
 
   it('should add contributor and close dialog when in details state', () => {
@@ -104,10 +104,10 @@ describe('AddContributorDialogComponent', () => {
   });
 
   it('should handle search state transitions', () => {
-    expect(component['isSearchState']).toBe(true);
+    expect(component['isSearchState']()).toBe(true);
     expect(component['isInitialState']()).toBe(true);
 
     component['currentState'].set(AddDialogState.Details);
-    expect(component['isSearchState']).toBe(false);
+    expect(component['isSearchState']()).toBe(false);
   });
 });
