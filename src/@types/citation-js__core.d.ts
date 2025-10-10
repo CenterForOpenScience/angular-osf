@@ -9,6 +9,17 @@ declare module '@citation-js/core' {
         lang: string;
       }
     ): string;
+
+    static plugins: {
+      config: {
+        get(plugin: string): {
+          templates: {
+            add(id: string, template: string): void;
+            has(id: string): boolean;
+          };
+        };
+      };
+    };
   }
 }
 

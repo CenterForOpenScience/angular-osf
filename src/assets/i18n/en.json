@@ -688,6 +688,10 @@
         "title": "Recent Activity",
         "noActivity": "No recent activity"
       },
+      "citations": {
+        "copyCitation": "Copy citation",
+        "viewOriginal": "View original file"
+      },
       "collectionsModeration": {
         "pending": "Pending entry into\u00A0",
         "accepted": "Included in\u00A0",

@@ -1,41 +1,47 @@
-@if (citationItems().length > 0) {
-  <div class="citation-addon-card p-3 flex flex-column gap-3">
-    <h3 class="mb-2">{{ addon().displayName }}</h3>
+<div class="citation-addon-card p-3 flex flex-column gap-3">
+  <h3 class="mb-2">{{ addon().displayName }}</h3>
 
-    <p-select
-      class="w-full"
-      [placeholder]="'project.overview.metadata.citationInputPlaceholder' | translate"
-      [loading]="isCitationStylesLoading()"
-      [options]="citationStylesOptions()"
-      [filter]="true"
-      (onFilter)="handleCitationStyleFilterSearch($event)"
-      optionLabel="label"
-      optionValue="value"
-      appendTo="body"
-      [emptyFilterMessage]="filterMessage() | translate"
-      [emptyMessage]="'project.overview.metadata.citationInputPlaceholder' | translate"
-      (onChange)="handleCitationStyleChange($event)"
-    >
-      <ng-template #selectedItem let-selectedOption>
-        {{ selectedOption.label }}
-      </ng-template>
-    </p-select>
+  <p-select
+    class="w-full"
+    [placeholder]="'project.overview.metadata.citationInputPlaceholder' | translate"
+    [loading]="isCitationStylesLoading() || isStyleLoading()"
+    [options]="citationStylesOptions()"
+    [filter]="true"
+    (onFilter)="handleCitationStyleFilterSearch($event)"
+    optionLabel="label"
+    optionValue="value"
+    appendTo="body"
+    [emptyFilterMessage]="filterMessage() | translate"
+    [emptyMessage]="'project.overview.metadata.citationInputPlaceholder' | translate"
+    (onChange)="handleCitationStyleChange($event)"
+  >
+    <ng-template #selectedItem let-selectedOption>
+      {{ selectedOption.label }}
+    </ng-template>
+  </p-select>
 
+  @if (citationItems().length && !isOperationInvocationSubmitting()) {
     <div class="citations-container flex flex-column gap-3 mt-3">
-      @for (item of formattedCitations(); track item.itemId) {
-        <div class="citation-item flex justify-content-between pb-2 align-items-center">
-          <div class="citation-content flex align-items-center gap-2">
-            <i class="pi pi-file text-600 flex-shrink-0"></i>
-            <span class="citation-text text-sm">
-              {{ item.citation }}
-            </span>
-          </div>
-          <div class="flex gap-3 justify-content-end mr-2 citation-actions">
-            <i class="fa fa-copy cursor-pointer"></i>
-            <i class="fa fa-external-link cursor-pointer"></i>
-          </div>
-        </div>
+      @for (item of citationItems(); track item.itemId) {
+        <osf-citation-item
+          [citation]="formatCitation(item, selectedCitationStyle())"
+          [itemUrl]="getItemUrl(item)"
+          [level]="0"
+        />
+      }
+      @for (collection of collectionItems(); track collection.itemId) {
+        <osf-citation-collection-item
+          [addon]="addon()"
+          [collection]="collection"
+          [level]="0"
+          [selectedCitationStyle]="selectedCitationStyle()"
+        />
       }
     </div>
-  </div>
-}
+  } @else if (!citationItems().length && isOperationInvocationSubmitting()) {
+    <p-skeleton width="100%" height="6rem" />
+  } @else if (!citationItems().length && !isOperationInvocationSubmitting()) {
+    <!--  TODO RNa add placeholder for empty addon-->
+    <p></p>
+  }
+</div>

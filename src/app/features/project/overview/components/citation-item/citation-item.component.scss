@@ -1,0 +1,14 @@
+.citation-item {
+  border-bottom: 1px solid var(--grey-2);
+}
+
+.citation-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hidden-link {
+  pointer-events: none;
+  visibility: hidden;
+}

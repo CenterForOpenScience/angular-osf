@@ -34,13 +34,16 @@ import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { CustomDialogService, MetaTagsService, ToastService } from '@osf/shared/services';
 import {
+  AddonsSelectors,
   ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   CurrentResourceSelectors,
   FetchSelectedSubjects,
+  GetAddonsResourceReference,
   GetBookmarksCollectionId,
   GetCollectionProvider,
+  GetConfiguredCitationAddons,
   GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
@@ -48,7 +51,6 @@ import {
   SubjectsSelectors,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
-import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredCitationAddons } from '@osf/shared/stores/addons';
 import {
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,

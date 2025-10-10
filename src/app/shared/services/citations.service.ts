@@ -56,6 +56,11 @@ export class CitationsService {
     return this.jsonApiService.patch<unknown>(`${this.apiUrl}/${payload.type}/${payload.id}/`, citationData);
   }
 
+  fetchCustomCitationFile(styleId: string): Observable<string> {
+    const url = `${this.environment.webUrl}/static/vendor/bower_components/styles/${styleId}.csl`;
+    return this.jsonApiService.get<string>(url);
+  }
+
   private getBaseCitationUrl(resourceType: ResourceType | string, resourceId: string): string {
     let resourceTypeString;
 
