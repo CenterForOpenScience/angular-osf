@@ -160,8 +160,8 @@ describe('ComponentsSelectionListComponent', () => {
     component.selectAll();
 
     const result = component.components();
-    expect(result[0].checked).toBe(true); // non-disabled, now checked
-    expect(result[1].checked).toBe(false); // disabled, remains unchecked
+    expect(result[0].checked).toBe(true);
+    expect(result[1].checked).toBe(false);
   });
 
   it('should work with empty array', () => {
