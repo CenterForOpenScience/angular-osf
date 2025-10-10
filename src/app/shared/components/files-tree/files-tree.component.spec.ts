@@ -2,12 +2,10 @@ import { MockProvider } from 'ng-mocks';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { of } from 'rxjs';
-
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FileLabelModel, FilesTreeActions, OsfFile } from '@shared/models';
+import { FileFolderModel, FileLabelModel } from '@shared/models';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { CurrentResourceSelectors } from '@shared/stores';
@@ -24,7 +22,7 @@ describe('FilesTreeComponent', () => {
   let fixture: ComponentFixture<FilesTreeComponent>;
   let dataciteMock: jest.Mocked<DataciteService>;
 
-  const mockFolderFile: OsfFile = {
+  const mockFolderFile: FileFolderModel = {
     ...OSF_FILE_MOCK,
     kind: 'folder',
     name: 'Test Folder',
@@ -33,15 +31,6 @@ describe('FilesTreeComponent', () => {
   const mockStorage: FileLabelModel = {
     label: 'OSF Storage',
     folder: mockFolderFile,
-  };
-
-  const mockActions: FilesTreeActions = {
-    setCurrentFolder: jest.fn().mockReturnValue(of(void 0)),
-    getFiles: jest.fn().mockReturnValue(of(void 0)),
-    deleteEntry: jest.fn().mockReturnValue(of(void 0)),
-    renameEntry: jest.fn().mockReturnValue(of(void 0)),
-    setMoveFileCurrentFolder: jest.fn().mockReturnValue(of(void 0)),
-    setFilesIsLoading: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -66,7 +55,6 @@ describe('FilesTreeComponent', () => {
     fixture.componentRef.setInput('currentFolder', null);
     fixture.componentRef.setInput('storage', mockStorage);
     fixture.componentRef.setInput('resourceId', 'resource-123');
-    fixture.componentRef.setInput('actions', mockActions);
     fixture.detectChanges();
   });
 
@@ -79,7 +67,6 @@ describe('FilesTreeComponent', () => {
     expect(component.currentFolder()).toBe(null);
     expect(component.storage()).toEqual(mockStorage);
     expect(component.resourceId()).toBe('resource-123');
-    expect(component.actions()).toEqual(mockActions);
   });
 
   it('should log Download', () => {
