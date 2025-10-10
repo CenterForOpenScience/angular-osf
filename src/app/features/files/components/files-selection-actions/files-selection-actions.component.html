@@ -14,8 +14,9 @@
         (onClick)="clearSelection.emit()"
       />
     </div>
-    @if (canUpdateFiles()) {
-      <div class="flex gap-2 ml-auto">
+
+    <div class="flex gap-2 ml-auto">
+      @if (canUpdateFiles()) {
         <p-button
           icon="fas fa-arrows-alt"
           outlined
@@ -23,16 +24,17 @@
           [label]="'common.buttons.move' | translate"
           (onClick)="moveSelected.emit()"
         />
+      }
 
-        <p-button
-          icon="fas fa-copy"
-          severity="success"
-          outlined
-          raised
-          [label]="'common.buttons.copyTo' | translate"
-          (onClick)="copySelected.emit()"
-        />
-
+      <p-button
+        icon="fas fa-copy"
+        severity="success"
+        outlined
+        raised
+        [label]="'common.buttons.copyTo' | translate"
+        (onClick)="copySelected.emit()"
+      />
+      @if (canUpdateFiles()) {
         <p-button
           icon="fas fa-trash"
           severity="danger"
@@ -41,7 +43,7 @@
           [label]="'common.buttons.delete' | translate"
           (onClick)="deleteSelected.emit()"
         />
-      </div>
-    }
+      }
+    </div>
   </div>
 }

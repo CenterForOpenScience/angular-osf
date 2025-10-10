@@ -138,13 +138,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   constructor() {
     effect(() => {
-      const currentFolder = this.currentFolder();
-      if (currentFolder) {
-        // this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
-      }
-    });
-
-    effect(() => {
       const storageChanged = this.storage();
       if (storageChanged) {
         this.foldersStack = [];

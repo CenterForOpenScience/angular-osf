@@ -112,7 +112,7 @@
               ></osf-google-file-picker>
             }
           }
-          <input #fileInput type="file" multiple class="hidden" (chTreeange)="onFileSelected($event)" />
+          <input #fileInput type="file" multiple class="hidden" (change)="onFileSelected($event)" />
         </div>
       </div>
     }

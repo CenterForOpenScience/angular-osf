@@ -20,7 +20,7 @@ import {
   SetCurrentFolder,
   SetMoveDialogCurrentFolder,
 } from '@osf/features/files/store';
-import { FileKind, ResourceType } from '@osf/shared/enums';
+import { FileKind, ResourceType, SupportedFeature } from '@osf/shared/enums';
 import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
 import { FileFolderModel, FileModel } from '@osf/shared/models';
 import { CurrentResourceSelectors, GetResourceDetails, GetResourceWithChildren } from '@osf/shared/stores';
@@ -64,6 +64,7 @@ export class MoveFileDialogComponent {
   readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isMoveDialogConfiguredStorageAddonsLoading);
   readonly isRootFoldersLoading = select(FilesSelectors.isMoveDialogRootFoldersLoading);
   readonly provider = select(FilesSelectors.getProvider);
+  readonly supportedFeatures = select(FilesSelectors.getStorageSupportedFeatures);
 
   readonly actions = createDispatchMap({
     getMoveDialogFiles: GetMoveDialogFiles,
@@ -95,8 +96,18 @@ export class MoveFileDialogComponent {
     () => this.isDestinationLoading() || ((this.isLoading() || this.isFilesUpdating()) && !this.isLoadingMore())
   );
 
+  readonly hasAddUpdateFeature = computed(() => {
+    const features = this.supportedFeatures()[this.provider()];
+    return !!features && features.includes(SupportedFeature.AddUpdateFiles);
+  });
+
   readonly buttonDisabled = computed(
-    () => this.isLoading() || this.isFilesUpdating() || this.isFolderSame() || this.isDestinationLoading()
+    () =>
+      this.isLoading() ||
+      this.isFilesUpdating() ||
+      this.isFolderSame() ||
+      this.isDestinationLoading() ||
+      !this.hasAddUpdateFeature()
   );
 
   get isMoveAction() {
