@@ -102,9 +102,11 @@ export class MetadataService {
       'page[size]': 20,
     };
 
+    // [NS] TODO: Check if it can be simplified
     let cedarUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/cedar_metadata_records/`;
+
     if (url) {
-      cedarUrl = `${url}cedar_metadata_records/`;
+      cedarUrl = this.getMetadataUrl(url);
     }
 
     return this.jsonApiService.get<CedarMetadataRecordJsonApi>(cedarUrl, params);
@@ -211,5 +213,17 @@ export class MetadataService {
     }
 
     return params;
+  }
+
+  private getMetadataUrl(url: string): string {
+    const parsedUrl = new URL(url);
+
+    if (!parsedUrl.pathname.endsWith('/')) {
+      parsedUrl.pathname += '/';
+    }
+
+    parsedUrl.pathname += 'cedar_metadata_records/';
+
+    return parsedUrl.toString();
   }
 }

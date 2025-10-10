@@ -14,6 +14,11 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
 
   const id = segments[0]?.path;
   const isMetadataPath = segments[1]?.path === 'metadata';
+
+  const urlObj = new URL(window.location.href);
+  const viewOnly = urlObj.searchParams.get('view_only');
+  const extras = viewOnly ? { queryParams: { view_only: viewOnly } } : {};
+
   if (!id) {
     return false;
   }
@@ -25,7 +30,7 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
         return true;
       }
       if (currentResource.parentId) {
-        router.navigate(['/', currentResource.parentId, 'files', id], { queryParamsHandling: 'preserve' });
+        router.navigate(['/', currentResource.parentId, 'files', id], extras);
         return false;
       }
     }
@@ -45,7 +50,7 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
           return true;
         }
         if (resource.parentId) {
-          router.navigate(['/', resource.parentId, 'files', id], { queryParamsHandling: 'preserve' });
+          router.navigate(['/', resource.parentId, 'files', id], extras);
           return false;
         }
       }

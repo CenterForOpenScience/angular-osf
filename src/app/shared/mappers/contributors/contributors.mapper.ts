@@ -20,7 +20,8 @@ export class ContributorsMapper {
   }
 
   static getContributor(response: ContributorDataJsonApi): ContributorModel {
-    const userEmbed = response.embeds.users;
+    const userEmbed = response.embeds?.users;
+
     const errorMeta = userEmbed?.errors && userEmbed.errors.length > 0 ? userEmbed.errors[0]?.meta : null;
     const userData = userEmbed?.data;
 
