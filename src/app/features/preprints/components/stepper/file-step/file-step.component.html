@@ -94,9 +94,10 @@
         [files]="projectFiles()"
         [totalCount]="projectFiles().length"
         [storage]="null"
-        [isLoading]="areProjectFilesLoading()"
+        [isLoading]="areProjectFilesLoading() || isCurrentFolderLoading()"
         [resourceId]="selectedProjectId()!"
         (entryFileClicked)="selectProjectFile($event)"
+        (setCurrentFolder)="setCurrentFolder($event)"
       />
     }
   </section>

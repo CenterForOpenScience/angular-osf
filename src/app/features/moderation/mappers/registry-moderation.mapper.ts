@@ -33,7 +33,7 @@ export class RegistryModerationMapper {
   }
 
   static fromActionResponse(response: ReviewActionsDataJsonApi): ReviewAction {
-    const creator = UserMapper.getUserInfo(response.embeds.creator);
+    const creator = UserMapper.getUserInfo(response.embeds?.creator);
 
     return {
       id: response.id,
@@ -41,7 +41,7 @@ export class RegistryModerationMapper {
       toState: response.attributes.to_state,
       dateModified: response.attributes.date_modified,
       comment: response.attributes.comment,
-      creator: response.embeds?.creator
+      creator: creator
         ? {
             id: creator?.id || '',
             name: creator?.fullName || '',

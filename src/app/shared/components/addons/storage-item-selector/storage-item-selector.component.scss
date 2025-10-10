@@ -3,7 +3,6 @@
 .folders-table {
   min-width: 100%;
   border-radius: mix.rem(8px);
-  overflow-x: auto;
   border: 1px solid var(--grey-2);
 
   &-heading {
@@ -20,7 +19,6 @@
     height: mix.rem(44px);
     border-bottom: 1px solid var(--grey-2);
     padding: 0 mix.rem(27px);
-    min-width: max-content;
 
     .folder-link {
       color: var(--dark-blue-1);

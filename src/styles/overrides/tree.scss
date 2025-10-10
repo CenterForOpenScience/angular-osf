@@ -52,7 +52,12 @@
 
     .p-tree-node-selected {
       .files-table-row {
-        background: var(--bg-blue-3);
+        color: var(--white);
+        background: var(--pr-blue-1);
+
+        .blue-icon {
+          color: var(--white);
+        }
       }
     }
   }

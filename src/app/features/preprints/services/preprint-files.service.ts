@@ -12,7 +12,8 @@ import {
   PreprintLinksJsonApi,
   PreprintRelationshipsJsonApi,
 } from '@osf/features/preprints/models';
-import { ApiData } from '@osf/shared/models';
+import { ApiData, FileFolderModel, FileFolderResponseJsonApi, FileFoldersResponseJsonApi } from '@osf/shared/models';
+import { FilesMapper } from '@shared/mappers';
 import { FilesService, JsonApiService } from '@shared/services';
 
 @Injectable({
@@ -64,16 +65,12 @@ export class PreprintFilesService {
     );
   }
 
-  getProjectFiles(projectId: string): Observable<any[]> {
+  getProjectRootFolder(projectId: string): Observable<FileFolderModel> {
     return this.jsonApiService.get<any>(`${this.apiUrl}/nodes/${projectId}/files/`).pipe(
-      switchMap((response: any) => {
+      switchMap((response: FileFoldersResponseJsonApi) => {
         return this.jsonApiService
-          .get<any>(response.data[0].relationships.root_folder.links.related.href)
-          .pipe(
-            switchMap((fileResponse) =>
-              this.filesService.getFilesWithoutFiltering(fileResponse.data.relationships.files.links.related.href)
-            )
-          );
+          .get<FileFolderResponseJsonApi>(response.data[0].relationships.root_folder.links.related.href)
+          .pipe(map((folder) => FilesMapper.getFileFolder(folder.data)));
       })
     );
   }
