@@ -97,6 +97,7 @@
         [isLoading]="areProjectFilesLoading()"
         [resourceId]="selectedProjectId()!"
         (entryFileClicked)="selectProjectFile($event)"
+        (setCurrentFolder)="setCurrentFolder($event)"
       />
     }
   </section>

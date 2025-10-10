@@ -40,7 +40,7 @@ import {
   SetSelectedPreprintFileSource,
   UploadFile,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { FileModel } from '@osf/shared/models';
+import { FileFolderModel, FileModel } from '@osf/shared/models';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
 import { StringOrNull } from '@shared/helpers';
 import { CustomConfirmationService, ToastService } from '@shared/services';
@@ -209,5 +209,10 @@ export class FileStepComponent implements OnInit {
     }
 
     this.actions.setSelectedFileSource(PreprintFileSource.None);
+  }
+
+  setCurrentFolder(folder: FileFolderModel) {
+    this.actions.setCurrentFolder(folder);
+    this.actions.getProjectFilesByLink(folder.links.filesLink);
   }
 }
