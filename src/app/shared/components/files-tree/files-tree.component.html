@@ -56,13 +56,13 @@
                 <div class="flex gap-2 table-cell" [class.pl-6]="foldersStack.length">
                   @if (file.kind !== 'folder') {
                     <div
-                      class="flex gap-2 min-w-0 hover:underline py-1"
+                      class="flex align-items-center gap-2 min-w-0 hover:underline py-1"
                       (click)="openEntry($event, file)"
                       (keydown.enter)="openEntry($event, file)"
                       tabindex="0"
                     >
                       <i class="fas fa-file blue-icon"></i>
-                      <span class="entry-title blue-text">{{ file?.name ?? '' }}</span>
+                      <span class="entry-title">{{ file?.name ?? '' }}</span>
                     </div>
                   } @else {
                     <div
