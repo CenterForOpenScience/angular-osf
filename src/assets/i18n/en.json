@@ -1131,7 +1131,7 @@
         "success": "Successfully renamed."
       },
       "moveFile": {
-        "cannotMove": "Cannot move to the same folder",
+        "cannotMove": "Cannot move or copy to this folder",
         "title": "Select Destination",
         "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
         "storage": "OSF Storage",

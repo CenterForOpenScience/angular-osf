@@ -99,7 +99,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   clearSelection = output<void>();
   updateFoldersStack = output<FileFolderModel[]>();
 
-  readonly FileMenuType = FileMenuType;
   readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
   foldersStack: FileFolderModel[] = [];
@@ -137,13 +136,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   });
 
   constructor() {
-    effect(() => {
-      const currentFolder = this.currentFolder();
-      if (currentFolder) {
-        // this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
-      }
-    });
-
     effect(() => {
       const storageChanged = this.storage();
       if (storageChanged) {

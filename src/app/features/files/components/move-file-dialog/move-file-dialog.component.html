@@ -42,7 +42,7 @@
                 @if (item.kind !== 'folder') {
                   <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>
                   <div class="filename-link overflow-ellipsis disabled">{{ item?.name ?? '' }}</div>
-                } @else if (fileIdsInList().has(item.id)) {
+                } @else if (fileIdsInList().has(item.id) || !hasAddUpdateFeature()) {
                   <osf-icon class="disabled-icon" iconClass="fas fa-folder disabled-icon"></osf-icon>
 
                   <div

@@ -48,7 +48,6 @@ export class MetaTagsService {
 
   private readonly metaTagClass = 'osf-dynamic-meta';
 
-  // data from all active routed components that set meta tags
   private metaTagStack: { metaTagsData: MetaTagsData; componentDestroyRef: DestroyRef }[] = [];
 
   constructor(
@@ -83,12 +82,10 @@ export class MetaTagsService {
   }
 
   private metaTagStackWithout(destroyRefToRemove: DestroyRef) {
-    // get a copy of `this.metaTagStack` minus any entries with the given destroyRef
     return this.metaTagStack.filter(({ componentDestroyRef }) => componentDestroyRef !== destroyRefToRemove);
   }
 
   private applyNearestMetaTags() {
-    // apply the meta tags for the nearest active route that called `updateMetaTags` (if any)
     const nearest = this.metaTagStack.at(-1);
     if (nearest) {
       this.applyMetaTagsData(nearest.metaTagsData);
@@ -102,18 +99,17 @@ export class MetaTagsService {
     const headTags = this.getHeadTags(combinedData);
     of(metaTagsData.osfGuid)
       .pipe(
-        switchMap(
-          (osfid) =>
-            osfid // with an osf id, try getting schema.org json-ld from backend
-              ? this.getSchemaDotOrgJsonLdHeadTag(osfid).pipe(
-                  tap((jsonLdHeadTag) => {
-                    if (jsonLdHeadTag) {
-                      headTags.push(jsonLdHeadTag);
-                    }
-                  }),
-                  catchError(() => of(null)) // if it doesn't work, ignore and continue with given head tags
-                )
-              : of(null) // without osfid, continue with only given head tags
+        switchMap((osfid) =>
+          osfid
+            ? this.getSchemaDotOrgJsonLdHeadTag(osfid).pipe(
+                tap((jsonLdHeadTag) => {
+                  if (jsonLdHeadTag) {
+                    headTags.push(jsonLdHeadTag);
+                  }
+                }),
+                catchError(() => of(null))
+              )
+            : of(null)
         ),
         tap(() => this.applyHeadTags(headTags)),
         tap(() => this.dispatchZoteroEvent())

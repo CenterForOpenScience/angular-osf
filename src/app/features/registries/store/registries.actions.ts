@@ -130,7 +130,10 @@ export class ClearState {
 export class GetFiles {
   static readonly type = '[Registries] Get Files';
 
-  constructor(public filesLink: string) {}
+  constructor(
+    public filesLink: string,
+    public page: number
+  ) {}
 }
 
 export class SetFilesIsLoading {

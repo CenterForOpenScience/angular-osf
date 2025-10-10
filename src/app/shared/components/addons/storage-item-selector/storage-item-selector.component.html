@@ -57,15 +57,15 @@
           @let itemId = folder.itemId || '/';
           @let isLinkDisabled = !folder.mayContainRootCandidates || folder.itemType !== StorageItemType.Folder;
           <div class="folders-table-row relative">
-            <div class="flex gap-2 flex-1">
-              <div tabindex="0" class="flex align-items-center gap-2">
+            <div class="flex gap-2 flex-1 max-w-full">
+              <div tabindex="0" class="flex align-items-center gap-2 w-11">
                 <i class="{{ folder.itemType === StorageItemType.Folder ? 'fas fa-folder' : 'fas fa-file' }}"></i>
                 @if (isLinkDisabled) {
-                  <span class="folder-link-disabled">{{ folder.itemName }}</span>
+                  <span class="folder-link-disabled overflow-ellipsis">{{ folder.itemName }}</span>
                 } @else {
                   <a
                     tabindex="0"
-                    class="cursor-pointer folder-link"
+                    class="cursor-pointer folder-link overflow-ellipsis"
                     (keydown.enter)="
                       handleCreateOperationInvocation(
                         operationName,

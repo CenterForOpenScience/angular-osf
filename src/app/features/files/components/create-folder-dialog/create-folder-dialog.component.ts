@@ -26,6 +26,7 @@ export class CreateFolderDialogComponent {
       validators: [
         CustomValidators.requiredTrimmed(),
         CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+        CustomValidators.noPeriodAtEnd(),
       ],
     }),
   });

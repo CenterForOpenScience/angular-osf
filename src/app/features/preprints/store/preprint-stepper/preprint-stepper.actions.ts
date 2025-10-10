@@ -78,8 +78,8 @@ export class FetchAvailableProjects {
   constructor(public searchTerm: StringOrNull) {}
 }
 
-export class FetchProjectFiles {
-  static readonly type = '[Preprint Stepper] Get Project Files';
+export class SetProjectRootFolder {
+  static readonly type = '[Preprint Stepper] Set Project Root Folder';
 
   constructor(public projectId: string) {}
 }

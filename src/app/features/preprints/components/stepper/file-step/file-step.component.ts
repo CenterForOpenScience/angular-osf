@@ -8,7 +8,7 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, EMPTY, switchMap } from 'rxjs';
 
 import { NgClass, TitleCasePipe } from '@angular/common';
 import {
@@ -32,15 +32,15 @@ import {
   FetchAvailableProjects,
   FetchPreprintFilesLinks,
   FetchPreprintPrimaryFile,
-  FetchProjectFiles,
   FetchProjectFilesByLink,
   PreprintStepperSelectors,
   ReuploadFile,
   SetCurrentFolder,
+  SetProjectRootFolder,
   SetSelectedPreprintFileSource,
   UploadFile,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { FileModel } from '@osf/shared/models';
+import { FileFolderModel, FileModel } from '@osf/shared/models';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
 import { StringOrNull } from '@shared/helpers';
 import { CustomConfirmationService, ToastService } from '@shared/services';
@@ -74,7 +74,7 @@ export class FileStepComponent implements OnInit {
     reuploadFile: ReuploadFile,
     fetchPreprintFile: FetchPreprintPrimaryFile,
     getAvailableProjects: FetchAvailableProjects,
-    getFilesForSelectedProject: FetchProjectFiles,
+    setProjectRootFolder: SetProjectRootFolder,
     getProjectFilesByLink: FetchProjectFilesByLink,
     copyFileFromProject: CopyFileFromProject,
     setCurrentFolder: SetCurrentFolder,
@@ -99,6 +99,7 @@ export class FileStepComponent implements OnInit {
   areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
 
   currentFolder = select(PreprintStepperSelectors.getCurrentFolder);
+  isCurrentFolderLoading = select(PreprintStepperSelectors.isCurrentFolderLoading);
   selectedProjectId = signal<StringOrNull>(null);
 
   versionFileMode = signal<boolean>(false);
@@ -180,7 +181,19 @@ export class FileStepComponent implements OnInit {
     }
 
     this.selectedProjectId.set(event.value);
-    this.actions.getFilesForSelectedProject(event.value);
+    this.actions
+      .setProjectRootFolder(event.value)
+      .pipe(
+        switchMap(() => {
+          const filesLink = this.currentFolder()?.links.filesLink;
+          if (filesLink) {
+            return this.actions.getProjectFilesByLink(filesLink);
+          } else {
+            return EMPTY;
+          }
+        })
+      )
+      .subscribe();
   }
 
   selectProjectFile(file: FileModel) {
@@ -209,5 +222,13 @@ export class FileStepComponent implements OnInit {
     }
 
     this.actions.setSelectedFileSource(PreprintFileSource.None);
+  }
+
+  setCurrentFolder(folder: FileFolderModel) {
+    if (this.currentFolder()?.id === folder.id) {
+      return;
+    }
+    this.actions.setCurrentFolder(folder);
+    this.actions.getProjectFilesByLink(folder.links.filesLink);
   }
 }

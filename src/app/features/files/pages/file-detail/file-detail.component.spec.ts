@@ -1,4 +1,3 @@
-// Dependencies
 import { Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';

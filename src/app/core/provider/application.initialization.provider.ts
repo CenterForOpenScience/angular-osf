@@ -37,7 +37,7 @@ export function initializeApplication() {
         dsn,
         environment: environment.production ? 'production' : 'development',
         maxBreadcrumbs: 50,
-        sampleRate: 1.0, // error sample rate
+        sampleRate: 1.0,
         integrations: [],
       });
     }

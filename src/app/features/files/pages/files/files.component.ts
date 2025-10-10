@@ -499,6 +499,11 @@ export class FilesComponent {
         if (result) {
           this.filesSelection = [];
         }
+        const currentRootFolder = this.currentRootFolder();
+        const provider = currentRootFolder?.folder?.provider;
+        if (provider) {
+          this.actions.setCurrentProvider(provider);
+        }
       });
   }
 
@@ -619,9 +624,7 @@ export class FilesComponent {
         supportedFeatures.includes(SupportedFeature.AddUpdateFiles),
       [FileMenuType.Embed]: true,
       [FileMenuType.Share]: true,
-      [FileMenuType.Copy]:
-        supportedFeatures.includes(SupportedFeature.CopyInto) &&
-        supportedFeatures.includes(SupportedFeature.AddUpdateFiles),
+      [FileMenuType.Copy]: true,
     };
   }
 

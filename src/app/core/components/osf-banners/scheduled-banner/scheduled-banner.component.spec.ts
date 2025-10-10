@@ -87,7 +87,7 @@ describe('Component: Scheduled Banner', () => {
     expect(showBanner()).toBeTruthy();
     const parent = fixture.nativeElement.querySelector('[data-test-banner-parent]');
     const link = fixture.nativeElement.querySelector('[data-test-banner-href]');
-    expect(parent.style.backgroundColor).toBe('rgb(18, 52, 86)'); // hex to rgb
+    expect(parent.style.backgroundColor).toBe('rgb(18, 52, 86)');
     expect(link.getAttribute('href')).toBe('');
   });
 

@@ -64,7 +64,7 @@ export const PROJECT_MENU_ITEMS: CustomMenuItem[] = [
     label: 'navigation.registrations',
     routerLink: 'registrations',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-contributors',
@@ -72,7 +72,7 @@ export const PROJECT_MENU_ITEMS: CustomMenuItem[] = [
     routerLink: 'contributors',
     visible: true,
     requiredPermission: UserPermissions.Read,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-analytics',
@@ -87,14 +87,14 @@ export const PROJECT_MENU_ITEMS: CustomMenuItem[] = [
     routerLink: 'addons',
     visible: true,
     requiredPermission: UserPermissions.Write,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-linked-services',
     label: 'navigation.linkedServices',
     routerLink: 'links',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-settings',
@@ -102,7 +102,7 @@ export const PROJECT_MENU_ITEMS: CustomMenuItem[] = [
     routerLink: 'settings',
     visible: true,
     requiredPermission: UserPermissions.Read,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
 ];
 

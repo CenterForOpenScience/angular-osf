@@ -341,8 +341,8 @@ export class RegistriesState {
   }
 
   @Action(GetFiles)
-  getFiles(ctx: StateContext<RegistriesStateModel>, { filesLink }: GetFiles) {
-    return this.filesHandlers.getProjectFiles(ctx, { filesLink });
+  getFiles(ctx: StateContext<RegistriesStateModel>, { filesLink, page }: GetFiles) {
+    return this.filesHandlers.getProjectFiles(ctx, { filesLink, page });
   }
 
   @Action(GetRootFolders)
