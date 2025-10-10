@@ -3,16 +3,17 @@ import { MockProvider } from 'ng-mocks';
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceCardComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
-import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE, MOCK_USER_RELATED_COUNTS, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE, MOCK_USER_RELATED_COUNTS } from '@shared/mocks';
 import { ResourceModel } from '@shared/models';
 import { ResourceCardService } from '@shared/services';
 
-describe.skip('ResourceCardComponent', () => {
+import { OSFTestingModule } from '@testing/osf.testing.module';
+
+describe('ResourceCardComponent', () => {
   let component: ResourceCardComponent;
   let fixture: ComponentFixture<ResourceCardComponent>;
 
@@ -23,14 +24,12 @@ describe.skip('ResourceCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResourceCardComponent],
+      imports: [ResourceCardComponent, OSFTestingModule],
       providers: [
         MockProvider(ResourceCardService, {
           getUserRelatedCounts: jest.fn().mockReturnValue(of(mockUserCounts)),
         }),
         MockProvider(IS_XSMALL, of(false)),
-        TranslateServiceMock,
-        provideNoopAnimations(),
       ],
     }).compileComponents();
 
@@ -46,8 +45,8 @@ describe.skip('ResourceCardComponent', () => {
     expect(component.ResourceType).toBe(ResourceType);
   });
 
-  it('should have item as required model input', () => {
-    fixture.componentRef.setInput('item', mockResource);
+  it('should have resource as required model input', () => {
+    fixture.componentRef.setInput('resource', mockResource);
     expect(component.resource()).toEqual(mockResource);
   });
 
@@ -55,8 +54,8 @@ describe.skip('ResourceCardComponent', () => {
     expect(component.isSmall()).toBe(false);
   });
 
-  it('should return early when item is null', () => {
-    fixture.componentRef.setInput('item', null);
+  it('should return early when resource is null', () => {
+    fixture.componentRef.setInput('resource', null);
 
     const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
 
@@ -66,7 +65,7 @@ describe.skip('ResourceCardComponent', () => {
   });
 
   it('should return early when data is already loaded', () => {
-    fixture.componentRef.setInput('item', mockAgentResource);
+    fixture.componentRef.setInput('resource', mockAgentResource);
     component.dataIsLoaded = true;
 
     const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
@@ -77,7 +76,7 @@ describe.skip('ResourceCardComponent', () => {
   });
 
   it('should return early when resource type is not Agent', () => {
-    fixture.componentRef.setInput('item', mockResource);
+    fixture.componentRef.setInput('resource', mockResource);
 
     const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
 
@@ -87,7 +86,7 @@ describe.skip('ResourceCardComponent', () => {
   });
 
   it('should call service when all conditions are met', () => {
-    fixture.componentRef.setInput('item', mockAgentResource);
+    fixture.componentRef.setInput('resource', mockAgentResource);
     component.dataIsLoaded = false;
 
     const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
@@ -97,12 +96,12 @@ describe.skip('ResourceCardComponent', () => {
     expect(getUserCountsSpy).toHaveBeenCalledWith('user-123');
   });
 
-  it('should handle item with id that does not contain slash', () => {
-    const mockItemWithoutSlash = {
+  it('should handle resource with absoluteUrl containing user id', () => {
+    const mockResourceWithDifferentUrl = {
       ...mockAgentResource,
-      id: 'simple-id-without-slash',
+      absoluteUrl: 'https://api.osf.io/v2/users/simple-id-without-slash',
     };
-    fixture.componentRef.setInput('item', mockItemWithoutSlash);
+    fixture.componentRef.setInput('resource', mockResourceWithDifferentUrl);
     component.dataIsLoaded = false;
 
     const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');

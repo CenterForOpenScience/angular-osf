@@ -6,10 +6,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InputLimits } from '@shared/constants';
 import { AddContributorType, ContributorPermission } from '@shared/enums/contributors';
-import { TranslateServiceMock } from '@shared/mocks';
 import { ContributorAddModel } from '@shared/models';
 
 import { AddUnregisteredContributorDialogComponent } from './add-unregistered-contributor-dialog.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddUnregisteredContributorDialogComponent', () => {
   let component: AddUnregisteredContributorDialogComponent;
@@ -19,8 +20,8 @@ describe('AddUnregisteredContributorDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddUnregisteredContributorDialogComponent],
-      providers: [MockProviders(DynamicDialogRef), TranslateServiceMock],
+      imports: [AddUnregisteredContributorDialogComponent, OSFTestingModule],
+      providers: [MockProviders(DynamicDialogRef)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddUnregisteredContributorDialogComponent);

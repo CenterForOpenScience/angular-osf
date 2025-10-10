@@ -1,17 +1,20 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
+import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
+import { RegistriesSelectors } from '@osf/features/registries/store';
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { RegistrationCard } from '@osf/shared/models';
-import { DataResourcesComponent, IconComponent } from '@shared/components';
-import { StatusBadgeComponent } from '@shared/components/status-badge/status-badge.component';
-import { MOCK_REGISTRATION, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_REGISTRATION } from '@shared/mocks';
 
 import { RegistrationCardComponent } from './registration-card.component';
 
-describe.skip('RegistrationCardComponent', () => {
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+describe('RegistrationCardComponent', () => {
   let component: RegistrationCardComponent;
   let fixture: ComponentFixture<RegistrationCardComponent>;
 
@@ -19,11 +22,14 @@ describe.skip('RegistrationCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RegistrationCardComponent,
-        ...MockComponents(StatusBadgeComponent, DataResourcesComponent, IconComponent),
+      imports: [RegistrationCardComponent, OSFTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [
+        provideMockStore({
+          signals: [{ selector: RegistriesSelectors.getSchemaResponse, value: signal(null) }],
+        }),
+        MockProvider(ActivatedRoute),
       ],
-      providers: [TranslateServiceMock, MockProvider(ActivatedRoute), MockProvider(Router)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationCardComponent);

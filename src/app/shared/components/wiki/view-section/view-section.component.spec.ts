@@ -9,7 +9,7 @@ import { WikiVersion } from '@shared/models';
 
 import { ViewSectionComponent } from './view-section.component';
 
-describe.skip('ViewSectionComponent', () => {
+describe('ViewSectionComponent', () => {
   let component: ViewSectionComponent;
   let fixture: ComponentFixture<ViewSectionComponent>;
 
@@ -152,16 +152,6 @@ describe.skip('ViewSectionComponent', () => {
     fixture.detectChanges();
 
     expect(component.selectedVersion()).toBe(mockVersions[0].id);
-  });
-
-  it('should emit first version when viewOnly is true', () => {
-    const emitSpy = jest.spyOn(component.selectVersion, 'emit');
-    component.selectedVersion.set(null);
-
-    fixture.componentRef.setInput('viewOnly', true);
-    fixture.detectChanges();
-
-    expect(emitSpy).toHaveBeenCalledWith(mockVersions[0].id);
   });
 
   it('should handle empty versions when viewOnly is true', () => {

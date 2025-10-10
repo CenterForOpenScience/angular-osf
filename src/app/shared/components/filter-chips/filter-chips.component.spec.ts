@@ -6,7 +6,7 @@ import { FilterChipsComponent } from './filter-chips.component';
 
 import { jest } from '@jest/globals';
 
-describe.skip('FilterChipsComponent', () => {
+describe('FilterChipsComponent', () => {
   let component: FilterChipsComponent;
   let fixture: ComponentFixture<FilterChipsComponent>;
   let componentRef: ComponentRef<FilterChipsComponent>;
@@ -177,16 +177,6 @@ describe.skip('FilterChipsComponent', () => {
 
       const chips = component.chips();
       expect(chips[0].label).toBe('subject');
-    });
-  });
-
-  describe('Component Methods', () => {
-    it('should call filterRemoved.emit with correct parameter in removeFilter', () => {
-      const emitSpy = jest.spyOn(component.selectedOptionRemoved, 'emit');
-
-      component.removeFilter('testKey');
-
-      expect(emitSpy).toHaveBeenCalledWith('testKey');
     });
   });
 

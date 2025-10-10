@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_CONTRIBUTOR, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_CONTRIBUTOR } from '@shared/mocks';
 
 import { ContributorsListComponent } from './contributors-list.component';
 
@@ -13,7 +13,6 @@ describe('ContributorsListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ContributorsListComponent, OSFTestingModule],
-      providers: [TranslateServiceMock],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContributorsListComponent);

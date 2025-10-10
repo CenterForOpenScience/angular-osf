@@ -3,7 +3,8 @@ import { FormControl, Validators } from '@angular/forms';
 
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { TextInputComponent } from '@shared/components';
-import { TranslateServiceMock } from '@shared/mocks';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('TextInputComponent', () => {
   let component: TextInputComponent;
@@ -11,8 +12,7 @@ describe('TextInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TextInputComponent],
-      providers: [TranslateServiceMock],
+      imports: [TextInputComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TextInputComponent);

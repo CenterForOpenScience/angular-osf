@@ -4,10 +4,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { AddonFormControls } from '@shared/enums';
-import { MOCK_ADDON, MOCK_USER, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_ADDON, MOCK_USER } from '@shared/mocks';
 import { AddonFormService } from '@shared/services/addons/addon-form.service';
 
 import { AddonSetupAccountFormComponent } from './addon-setup-account-form.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddonSetupAccountFormComponent', () => {
   let component: AddonSetupAccountFormComponent;
@@ -21,8 +23,8 @@ describe('AddonSetupAccountFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddonSetupAccountFormComponent],
-      providers: [TranslateServiceMock, MockProvider(AddonFormService, mockAddonFormService)],
+      imports: [AddonSetupAccountFormComponent, OSFTestingModule],
+      providers: [MockProvider(AddonFormService, mockAddonFormService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddonSetupAccountFormComponent);

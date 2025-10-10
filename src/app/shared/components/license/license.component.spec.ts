@@ -1,11 +1,12 @@
-import { MockComponents, MockPipe } from 'ng-mocks';
+import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LicenseComponent, TextInputComponent, TruncatedTextComponent } from '@shared/components';
-import { MOCK_LICENSE, TranslateServiceMock } from '@shared/mocks';
+import { LicenseComponent, TextInputComponent } from '@shared/components';
+import { MOCK_LICENSE } from '@shared/mocks';
 import { LicenseModel, LicenseOptions } from '@shared/models';
-import { InterpolatePipe } from '@shared/pipes';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('LicenseComponent', () => {
   let component: LicenseComponent;
@@ -29,12 +30,7 @@ describe('LicenseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        LicenseComponent,
-        ...MockComponents(TextInputComponent, TruncatedTextComponent),
-        MockPipe(InterpolatePipe),
-      ],
-      providers: [TranslateServiceMock],
+      imports: [LicenseComponent, ...MockComponents(TextInputComponent), OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LicenseComponent);
