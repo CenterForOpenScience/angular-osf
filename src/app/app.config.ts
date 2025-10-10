@@ -49,7 +49,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor])),
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
-    provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: false })),
+    provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: true })),
     provideZoneChangeDetection({ eventCoalescing: true }),
     SENTRY_PROVIDER,
   ],
