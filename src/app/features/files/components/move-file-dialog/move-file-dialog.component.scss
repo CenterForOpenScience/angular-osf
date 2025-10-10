@@ -5,6 +5,17 @@
   flex: 1;
 }
 
+.loading-overlay {
+  @include mix.flex-center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
 .files-table {
   border: 1px solid var(--grey-2);
   border-radius: mix.rem(8px);
@@ -12,6 +23,7 @@
   &-row {
     border-bottom: 1px solid var(--grey-2);
     color: var(--dark-blue-1);
+    height: mix.rem(44px);
   }
 
   &-row:last-child {

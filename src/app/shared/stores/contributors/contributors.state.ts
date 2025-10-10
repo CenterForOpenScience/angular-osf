@@ -182,7 +182,7 @@ export class ContributorsState {
     });
 
     return this.contributorsService
-      .bulkAddContributors(action.resourceType, action.resourceId, action.contributors)
+      .bulkAddContributors(action.resourceType, action.resourceId, action.contributors, action.childNodeIds)
       .pipe(
         tap(() => {
           ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));

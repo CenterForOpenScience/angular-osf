@@ -1,6 +1,6 @@
 import { MetaJsonApi } from '../common';
 import { BaseNodeDataJsonApi } from '../nodes';
-import { UserDataJsonApi } from '../user';
+import { UserDataErrorResponseJsonApi } from '../user';
 
 export interface ViewOnlyLinksResponseJsonApi {
   data: ViewOnlyLinkJsonApi[];
@@ -18,9 +18,7 @@ export interface ViewOnlyLinkJsonApi {
     name: string;
   };
   embeds: {
-    creator: {
-      data: UserDataJsonApi;
-    };
+    creator: UserDataErrorResponseJsonApi;
     nodes: {
       data: BaseNodeDataJsonApi[];
     };

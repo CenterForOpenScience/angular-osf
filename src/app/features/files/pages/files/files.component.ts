@@ -7,19 +7,7 @@ import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  EMPTY,
-  filter,
-  finalize,
-  forkJoin,
-  Observable,
-  of,
-  switchMap,
-  take,
-} from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, forkJoin, of, switchMap, take } from 'rxjs';
 
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
@@ -50,8 +38,7 @@ import {
   ResetState,
   SetCurrentFolder,
   SetCurrentProvider,
-  SetFilesIsLoading,
-  SetMoveFileCurrentFolder,
+  SetMoveDialogCurrentFolder,
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
@@ -69,11 +56,16 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItem } from '@shared/models';
+import { ConfiguredAddonModel, FileFolderModel, FileLabelModel, FileModel, StorageItem } from '@shared/models';
 import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
-import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
+import {
+  CreateFolderDialogComponent,
+  FileBrowserInfoComponent,
+  FilesSelectionActionsComponent,
+  MoveFileDialogComponent,
+} from '../../components';
 import { FileProvider } from '../../constants';
 import { FilesSelectors } from '../../store';
 
@@ -95,6 +87,7 @@ import { FilesSelectors } from '../../store';
     TranslatePipe,
     ViewOnlyLinkMessageComponent,
     GoogleFilePickerComponent,
+    FilesSelectionActionsComponent,
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',
@@ -103,7 +96,6 @@ import { FilesSelectors } from '../../store';
 })
 export class FilesComponent {
   googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
-  filesTree = viewChild<FilesTreeComponent>(FilesTreeComponent);
 
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
@@ -123,12 +115,11 @@ export class FilesComponent {
 
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
-    deleteEntry: DeleteEntry,
     getFiles: GetFiles,
+    deleteEntry: DeleteEntry,
     renameEntry: RenameEntry,
     setCurrentFolder: SetCurrentFolder,
-    setFilesIsLoading: SetFilesIsLoading,
-    setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
+    setMoveDialogCurrentFolder: SetMoveDialogCurrentFolder,
     setSearch: SetSearch,
     setSort: SetSort,
     getRootFolders: GetRootFolders,
@@ -163,16 +154,18 @@ export class FilesComponent {
   readonly searchControl = new FormControl<string>('');
   readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
 
+  foldersStack = [] as FileFolderModel[];
+
   currentRootFolder = model<FileLabelModel | null>(null);
 
   fileIsUploading = signal(false);
-  isFolderOpening = signal(false);
 
   sortOptions = ALL_SORT_OPTIONS;
 
   pageNumber = signal(1);
 
   allowRevisions = false;
+  filesSelection: FileModel[] = [];
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -219,7 +212,7 @@ export class FilesComponent {
 
   readonly canEdit = computed(() => {
     const details = this.resourceDetails();
-    const hasAdminOrWrite = details.currentUserPermissions.some(
+    const hasAdminOrWrite = details.currentUserPermissions?.some(
       (permission) => permission === UserPermissions.Admin || permission === UserPermissions.Write
     );
 
@@ -241,20 +234,10 @@ export class FilesComponent {
     () => this.isButtonDisabled() || (this.googleFilePickerComponent()?.isGFPDisabled() ?? false)
   );
 
-  readonly filesTreeActions: FilesTreeActions = {
-    setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
-    setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
-    getFiles: (filesLink) => this.actions.getFiles(filesLink, this.pageNumber()),
-    deleteEntry: (resourceId, link) => this.actions.deleteEntry(resourceId, link),
-    renameEntry: (resourceId, link, newName) => this.actions.renameEntry(resourceId, link, newName),
-    setMoveFileCurrentFolder: (folder) => this.actions.setMoveFileCurrentFolder(folder),
-  };
-
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
       if (params['id']) {
         this.resourceId.set(params['id']);
-        this.filesTreeActions.setFilesIsLoading?.(true);
       }
     });
 
@@ -273,7 +256,9 @@ export class FilesComponent {
     effect(() => {
       const rootFolders = this.rootFolders();
       if (rootFolders) {
-        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === FileProvider.OsfStorage);
+        const osfRootFolder = rootFolders.find(
+          (folder: FileFolderModel) => folder.provider === FileProvider.OsfStorage
+        );
         if (osfRootFolder) {
           this.currentRootFolder.set({
             label: this.translateService.instant('files.storageLocation'),
@@ -299,7 +284,7 @@ export class FilesComponent {
         }
         this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
-        this.filesTree()?.resetPagination();
+        this.filesSelection = [];
       }
     });
 
@@ -309,24 +294,26 @@ export class FilesComponent {
       }
     });
 
+    effect(() => {
+      const currentFolder = this.currentFolder();
+      if (currentFolder) {
+        this.pageNumber.set(1);
+        this.updateFilesList();
+      }
+    });
+
     this.searchControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
-        this.filesTree()?.resetPagination();
 
-        if (!this.isFolderOpening()) {
-          this.updateFilesList();
-        }
+        this.updateFilesList();
       });
 
     this.sortControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((sort) => {
       this.actions.setSort(sort ?? '');
-      this.filesTree()?.resetPagination();
 
-      if (!this.isFolderOpening()) {
-        this.updateFilesList();
-      }
+      this.updateFilesList();
     });
 
     this.destroyRef.onDestroy(() => {
@@ -334,10 +321,13 @@ export class FilesComponent {
     });
   }
 
+  onLoadFiles(event: { link: string; page: number }) {
+    this.actions.getFiles(event.link, event.page);
+  }
+
   uploadFiles(files: File | File[]): void {
     const currentFolder = this.currentFolder();
     const uploadLink = currentFolder?.links.upload;
-
     if (!uploadLink) return;
 
     const fileArray = Array.isArray(files) ? files : [files];
@@ -425,6 +415,54 @@ export class FilesComponent {
     this.updateFilesList();
   }
 
+  onFileTreeSelected(file: FileModel): void {
+    this.filesSelection = [...this.filesSelection, file];
+  }
+
+  onFileTreeUnselected(file: FileModel): void {
+    this.filesSelection = this.filesSelection.filter((f) => f.id !== file.id);
+  }
+
+  onClearSelection(): void {
+    this.filesSelection = [];
+  }
+
+  onDeleteSelected(): void {
+    if (!this.filesSelection.length) return;
+
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'files.dialogs.deleteMultipleItems.title',
+      messageKey: 'files.dialogs.deleteMultipleItems.message',
+      messageParams: {
+        name: this.filesSelection.map((f) => f.name).join(', '),
+      },
+      acceptLabelKey: 'common.buttons.delete',
+      onConfirm: () => {
+        const deleteRequests$ = this.filesSelection.map((file) =>
+          this.actions.deleteEntry(file.links.delete).pipe(catchError(() => of(null)))
+        );
+
+        forkJoin(deleteRequests$)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              this.toastService.showSuccess('files.dialogs.deleteFile.success');
+              this.filesSelection = [];
+              this.updateFilesList();
+            },
+          });
+      },
+    });
+  }
+
+  onMoveSelected(): void {
+    this.moveFiles(this.filesSelection, 'move');
+  }
+
+  onCopySelected(): void {
+    this.moveFiles(this.filesSelection, 'copy');
+  }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files;
@@ -439,6 +477,29 @@ export class FilesComponent {
     }
 
     this.uploadFiles(Array.from(files));
+  }
+
+  moveFiles(files: FileModel[], action: string): void {
+    const currentFolder = this.currentFolder();
+    this.actions.setMoveDialogCurrentFolder(currentFolder);
+    this.customDialogService
+      .open(MoveFileDialogComponent, {
+        header: 'files.dialogs.moveFile.title',
+        width: '552px',
+        data: {
+          files: files,
+          resourceId: this.resourceId(),
+          action: action,
+          storageProvider: this.provider(),
+          foldersStack: this.foldersStack,
+          initialFolder: structuredClone(this.currentFolder()),
+        },
+      })
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.filesSelection = [];
+        }
+      });
   }
 
   createFolder(): void {
@@ -487,25 +548,38 @@ export class FilesComponent {
     });
   }
 
-  updateFilesList(): Observable<void> {
+  updateFilesList() {
     const currentFolder = this.currentFolder();
-    if (currentFolder?.relationships.filesLink) {
-      this.filesTreeActions.setFilesIsLoading?.(true);
-      return this.actions.getFiles(currentFolder?.relationships.filesLink).pipe(take(1));
-    }
-
-    return EMPTY;
-  }
-
-  folderIsOpening(value: boolean): void {
-    this.isFolderOpening.set(value);
-    if (value) {
-      this.searchControl.setValue('');
-      this.sortControl.setValue(ALL_SORT_OPTIONS[0].value);
+    const filesLink = currentFolder?.links.filesLink;
+    if (filesLink) {
+      this.actions.getFiles(filesLink, this.pageNumber());
     }
   }
 
-  navigateToFile(file: OsfFile) {
+  setCurrentFolder(folder: FileFolderModel) {
+    this.actions.setCurrentFolder(folder);
+  }
+
+  setMoveDialogCurrentFolder(folder: FileFolderModel) {
+    this.actions.setMoveDialogCurrentFolder(folder);
+  }
+
+  deleteEntry(link: string) {
+    this.actions.deleteEntry(link).subscribe(() => {
+      this.toastService.showSuccess('files.dialogs.deleteFile.success');
+      this.updateFilesList();
+    });
+  }
+
+  renameEntry(event: { newName: string; link: string }) {
+    const { newName, link } = event;
+    this.actions.renameEntry(link, newName).subscribe(() => {
+      this.toastService.showSuccess('files.dialogs.renameFile.success');
+      this.updateFilesList();
+    });
+  }
+
+  navigateToFile(file: FileModel) {
     const extras = this.hasViewOnly()
       ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
       : undefined;
@@ -521,10 +595,6 @@ export class FilesComponent {
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';
     }
-  }
-
-  onFilesPageChange(page: number) {
-    this.pageNumber.set(page);
   }
 
   private setGoogleAccountId(): void {
@@ -558,5 +628,9 @@ export class FilesComponent {
   openGoogleFilePicker(): void {
     this.googleFilePickerComponent()?.createPicker();
     this.updateFilesList();
+  }
+
+  onUpdateFoldersStack(newStack: FileFolderModel[]): void {
+    this.foldersStack = [...newStack];
   }
 }

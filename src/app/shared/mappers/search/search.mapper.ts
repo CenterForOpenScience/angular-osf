@@ -52,7 +52,7 @@ export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResp
       creators: (resourceMetadata.creator ?? []).map((creator) => ({
         absoluteUrl: creator?.['@id'],
         name: creator?.name?.[0]?.['@value'],
-        affiliationAbsoluteUrl: creator.affiliation?.[0]?.['@id'] ?? null,
+        affiliationsAbsoluteUrl: (creator.affiliation ?? []).map((affiliation) => affiliation?.['@id']),
       })),
       affiliations: (resourceMetadata.affiliation ?? []).map((affiliation) => ({
         absoluteUrl: affiliation?.['@id'],
@@ -104,7 +104,7 @@ export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResp
         creators: (isContainedBy?.creator ?? []).map((creator) => ({
           absoluteUrl: creator?.['@id'],
           name: creator?.name?.[0]?.['@value'],
-          affiliationAbsoluteUrl: creator.affiliation?.[0]?.['@id'] ?? null,
+          affiliationsAbsoluteUrl: (creator.affiliation ?? []).map((affiliation) => affiliation?.['@id']),
         })),
         qualifiedAttribution: (isContainedBy?.qualifiedAttribution ?? []).map((qualifiedAttribution) => ({
           agentId: qualifiedAttribution?.agent?.[0]?.['@id'],

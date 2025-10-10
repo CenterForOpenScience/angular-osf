@@ -8,7 +8,7 @@ export function mapFormToEmployment(employment: EmploymentForm): Employment {
     title: employment.title,
     department: employment.department,
     institution: employment.institution,
-    startYear: employment.startDate?.getFullYear() ?? new Date().getFullYear(),
+    startYear: employment.startDate?.getFullYear() ?? null,
     startMonth: employment.startDate?.getMonth() + 1,
     endYear: employment.ongoing ? null : (employment.endDate?.getFullYear() ?? null),
     endMonth: employment.ongoing ? null : employment.endDate ? employment.endDate.getMonth() + 1 : null,
@@ -21,16 +21,15 @@ export function mapEmploymentToForm(employment: Employment): EmploymentForm {
     title: employment.title,
     department: employment.department,
     institution: employment.institution,
-    startDate: new Date(+employment.startYear, employment.startMonth - 1),
+    startDate: new Date(employment.startYear, employment.startMonth - 1),
     endDate: employment.ongoing
       ? null
       : employment.endYear && employment.endMonth
-        ? new Date(+employment.endYear, employment.endMonth - 1)
+        ? new Date(employment.endYear, employment.endMonth - 1)
         : null,
     ongoing: employment.ongoing,
   };
 }
-
 export function hasEmploymentChanges(formEmployment: EmploymentForm, initialEmployment: Employment): boolean {
   const formattedFormEmployment = mapFormToEmployment(formEmployment);
 

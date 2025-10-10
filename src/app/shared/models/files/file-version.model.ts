@@ -1,4 +1,4 @@
-export interface OsfFileVersion {
+export interface FileVersionModel {
   id: string;
   size: number;
   dateCreated: Date;

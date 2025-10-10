@@ -144,8 +144,8 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  updateQueryParams(isSearch = false): void {
-    const page = isSearch ? 1 : Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
+  updateQueryParams(isPageReset = false): void {
+    const page = isPageReset ? 1 : Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
     const queryParams = {
       page,
       rows: this.tableParams().rows,
@@ -175,7 +175,7 @@ export class DashboardComponent implements OnInit {
     if (event.field) {
       this.sortColumn.set(event.field);
       this.sortOrder.set(event.order as SortOrder);
-      this.updateQueryParams();
+      this.updateQueryParams(true);
     }
   }
 

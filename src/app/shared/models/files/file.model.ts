@@ -1,46 +1,54 @@
-import { OsfFileTarget } from '@osf/features/files/models';
+import { BaseNodeModel } from '../nodes';
 
-export interface OsfFile {
+import { FileKind } from './../../enums/file-kind.enum';
+
+export interface BaseFileModel {
   id: string;
-  guid: string;
+  guid: string | null;
   name: string;
-  kind: string;
+  kind: FileKind;
   path: string;
   size: number;
-  provider: string;
   materializedPath: string;
-  lastTouched: null;
   dateModified: string;
+  extra: FileExtraModel;
+}
+
+export interface FileModel extends BaseFileModel {
+  links: FileLinksModel;
+  filesLink: string | null;
+  target?: BaseNodeModel;
+  previousFolder: boolean;
+  provider: string;
+}
+
+export interface FileDetailsModel extends BaseFileModel {
+  lastTouched: string | null;
   dateCreated: string;
-  extra: {
-    hashes: {
-      md5: string;
-      sha256: string;
-    };
-    downloads: number;
-  };
-  tags: [];
-  currentUserCanComment: boolean;
+  tags: string[];
   currentVersion: number;
   showAsUnviewed: boolean;
-  links: {
-    info: string;
-    move: string;
-    upload: string;
-    delete: string;
-    download: string;
-    self: string;
-    html: string;
-    render: string;
-    newFolder: string;
-  };
-  relationships: {
-    parentFolderLink: string;
-    parentFolderId: string;
-    filesLink: string;
-    uploadLink: string;
-    newFolderLink: string;
-  };
-  target: OsfFileTarget;
-  previousFolder: boolean;
+  links: FileLinksModel;
+  target: BaseNodeModel;
+}
+
+export interface FileExtraModel {
+  hashes: FileHashesModel;
+  downloads: number;
+}
+
+interface FileHashesModel {
+  md5: string;
+  sha256: string;
+}
+
+export interface FileLinksModel {
+  info: string;
+  move: string;
+  upload: string;
+  delete: string;
+  download: string;
+  render: string;
+  html: string;
+  self: string;
 }

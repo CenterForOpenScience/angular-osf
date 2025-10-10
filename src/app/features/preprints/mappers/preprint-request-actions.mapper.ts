@@ -1,8 +1,11 @@
 import { PreprintRequestAction, PreprintRequestActionDataJsonApi } from '@osf/features/preprints/models';
+import { UserMapper } from '@osf/shared/mappers';
 import { StringOrNull } from '@shared/helpers';
 
 export class PreprintRequestActionsMapper {
   static fromPreprintRequestActions(data: PreprintRequestActionDataJsonApi): PreprintRequestAction {
+    const creator = UserMapper.getUserInfo(data.embeds.creator);
+
     return {
       id: data.id,
       trigger: data.attributes.trigger,
@@ -11,8 +14,8 @@ export class PreprintRequestActionsMapper {
       toState: data.attributes.to_state,
       dateModified: data.attributes.date_modified,
       creator: {
-        id: data.embeds.creator.data.id,
-        name: data.embeds.creator.data.attributes.full_name,
+        id: creator?.id || '',
+        name: creator?.fullName || '',
       },
     };
   }

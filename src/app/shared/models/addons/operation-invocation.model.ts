@@ -11,4 +11,7 @@ export interface OperationInvocation {
   };
   operationResult: StorageItem[];
   itemCount: number;
+  thisSampleCursor?: string;
+  firstSampleCursor?: string;
+  nextSampleCursor?: string;
 }

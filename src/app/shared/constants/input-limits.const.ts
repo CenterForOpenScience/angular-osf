@@ -37,4 +37,4 @@ export const InputLimits = {
   },
 };
 
-export const forbiddenFileNameCharacters = /[()<>~!@$&*:;,"'\\|/?]/;
+export const forbiddenFileNameCharacters = /[()<>~!@$&*#%^:;,"'\\|/?]/;

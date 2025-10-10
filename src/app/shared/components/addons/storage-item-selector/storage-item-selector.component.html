@@ -104,6 +104,16 @@
           <p>{{ 'settings.addons.configureAddon.noFolders' | translate }}</p>
         </div>
       }
+      @if (showLoadMoreButton() && !isOperationInvocationSubmitting()) {
+        <div class="flex justify-content-center my-3">
+          <p-button
+            link
+            [label]="'common.buttons.loadMore' | translate"
+            severity="secondary"
+            (onClick)="handleLoadMore()"
+          ></p-button>
+        </div>
+      }
     </div>
   }
 

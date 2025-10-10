@@ -2,8 +2,9 @@ import {
   AsyncStateModel,
   AsyncStateWithTotalCount,
   DraftRegistrationModel,
+  FileFolderModel,
+  FileModel,
   LicenseModel,
-  OsfFile,
   PageSchema,
   ProviderSchema,
   RegistrationCard,
@@ -25,10 +26,9 @@ export interface RegistriesStateModel {
   stepsState: Record<string, { invalid: boolean; touched: boolean }>;
   draftRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
   submittedRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
-  files: AsyncStateWithTotalCount<OsfFile[]>;
-  currentFolder: OsfFile | null;
-  moveFileCurrentFolder: OsfFile | null;
-  rootFolders: AsyncStateModel<OsfFile[] | null>;
+  files: AsyncStateWithTotalCount<FileModel[]>;
+  currentFolder: FileFolderModel | null;
+  rootFolders: AsyncStateModel<FileFolderModel[] | null>;
   schemaResponse: AsyncStateModel<SchemaResponse | null>;
   updatedFields: Record<string, unknown>;
 }
@@ -91,7 +91,6 @@ export const REGISTRIES_STATE_DEFAULTS: RegistriesStateModel = {
     totalCount: 0,
   },
   currentFolder: null,
-  moveFileCurrentFolder: null,
   rootFolders: {
     data: null,
     isLoading: false,

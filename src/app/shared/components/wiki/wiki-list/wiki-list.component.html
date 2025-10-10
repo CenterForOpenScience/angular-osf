@@ -47,7 +47,7 @@
           }
         }
         <div class="flex flex-column justify-center mt-4 flex-1">
-          <p-panelmenu [model]="wikiMenu()" [multiple]="true" class="w-full flex flex-1 flex-column">
+          <p-panelMenu [model]="wikiMenu()" [multiple]="true" class="w-full flex flex-1 flex-column">
             <ng-template #item let-item>
               <div class="flex align-items-center p-2 cursor-pointer" [class.active]="item.id === currentWikiId()">
                 @switch (item.type) {
@@ -70,7 +70,7 @@
                 }
               </div>
             </ng-template>
-          </p-panelmenu>
+          </p-panelMenu>
         </div>
       </p-panel>
     } @else {

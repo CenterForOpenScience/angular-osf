@@ -27,10 +27,11 @@ export class AddonOperationInvocationService {
   createInitialOperationInvocationPayload(
     operationName: OperationNames,
     selectedAccount: AuthorizedAccountModel,
-    itemId?: string
+    itemId?: string,
+    pageCursor?: string
   ): OperationInvocationRequestJsonApi {
     const addonSpecificOperationName = this.getAddonSpecificOperationName(operationName, selectedAccount);
-    const operationKwargs = this.getOperationKwargs(addonSpecificOperationName, itemId);
+    const operationKwargs = this.getOperationKwargs(addonSpecificOperationName, itemId, pageCursor);
 
     return {
       data: {
@@ -58,10 +59,11 @@ export class AddonOperationInvocationService {
   createOperationInvocationPayload(
     addon: ConfiguredAddonModel,
     operationName: OperationNames,
-    itemId: string
+    itemId: string,
+    pageCursor?: string
   ): OperationInvocationRequestJsonApi {
     const addonSpecificOperationName = this.getAddonSpecificOperationName(operationName, addon);
-    const operationKwargs = this.getOperationKwargs(addonSpecificOperationName, itemId);
+    const operationKwargs = this.getOperationKwargs(addonSpecificOperationName, itemId, pageCursor);
 
     return {
       data: {
@@ -86,20 +88,31 @@ export class AddonOperationInvocationService {
     };
   }
 
-  private getOperationKwargs(operationName: OperationNames, itemId?: string): Record<string, unknown> {
+  private getOperationKwargs(
+    operationName: OperationNames,
+    itemId?: string,
+    pageCursor?: string
+  ): Record<string, unknown> {
     const isRootOperation =
       operationName === OperationNames.LIST_ROOT_ITEMS || operationName === OperationNames.LIST_ROOT_COLLECTIONS;
 
-    if (!itemId || isRootOperation) {
-      return {};
+    const baseKwargs: Record<string, unknown> = {};
+
+    if (itemId && !isRootOperation) {
+      baseKwargs['item_id'] = itemId;
     }
 
     const isChildOperation =
       operationName === OperationNames.LIST_CHILD_ITEMS || operationName === OperationNames.LIST_COLLECTION_ITEMS;
 
-    return {
-      item_id: itemId,
-      ...(isChildOperation && { item_type: 'FOLDER' }),
-    };
+    if (isChildOperation) {
+      baseKwargs['item_type'] = 'FOLDER';
+    }
+
+    if (pageCursor) {
+      baseKwargs['page_cursor'] = pageCursor;
+    }
+
+    return baseKwargs;
   }
 }

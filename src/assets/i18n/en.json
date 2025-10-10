@@ -56,7 +56,8 @@
       "selectAll": "Select All",
       "removeAll": "Remove All",
       "accept": "Accept",
-      "reject": "Reject"
+      "reject": "Reject",
+      "loadMore": "Load more"
     },
     "accessibility": {
       "help": "Help",
@@ -388,12 +389,26 @@
       }
     },
     "confirmEmail": {
-      "title": "Add alternative email",
-      "description": "Do you want to add ",
-      "description2": "to your profile ?",
-      "goToEmails": "Add email",
-      "emailNotAdded": "{{name}} has not been added to your account.",
-      "emailVerified": "{{name}} has been added to your account."
+      "merge": {
+        "title": "Merge account?",
+        "description": "Would you like to merge ",
+        "description2": "into your account? This action is irreversible.",
+        "goToEmails": "Merge account",
+        "emailNotAdded": "{{name}} has not been merged into your account.",
+        "emailVerified": "{{name}} has been merged into your account.",
+        "verifyError": "There was a problem merging {{name}} into your account.",
+        "denyError": "There was a problem canceling the request to merge {{name}} into your account."
+      },
+      "add": {
+        "title": "Add alternative email?",
+        "description": "Do you want to add ",
+        "description2": "to your profile ?",
+        "goToEmails": "Add email",
+        "emailNotAdded": "{{name}} has not been added to your account.",
+        "emailVerified": "{{name}} has been added to your account.",
+        "verifyError": "There was a problem adding {{name} to your account.",
+        "denyError": "There was a problem canceling the request to add {{name}} to your account."
+      }
     }
   },
   "myProjects": {
@@ -576,6 +591,8 @@
         "cancel": "Cancel",
         "next": "Next",
         "selectPermissions": "Please select which permissions you want to give to contributor",
+        "addingContributorsTo": "Adding contributor(s) <b>{{names}}</b> to <b>{{projectName}}</b>.",
+        "addContributorsToComponents": "You can also add the contributor(s) to any components on which you are an admin.",
         "bibliographicContributor": "Bibliographic Contributor",
         "addUnregisteredContributor": "Add Unregistered Contributor",
         "addRegisteredContributor": "Add Registered Contributor",
@@ -994,7 +1011,7 @@
         "youAlreadyAddedText": "You have already added a record for this template",
         "youAlreadyAdded": "Already Added",
         "loadingCedar": "Loading CEDAR record...",
-        "editRecord": "Edit Record",
+        "editRecord": "Edit",
         "recordCreatedSuccessfully": "Record created successfully",
         "recordUpdatedSuccessfully": "Record updated successfully",
         "copyRecordMetadataUrl": "Copy url to clipboard to share.",
@@ -1111,31 +1128,40 @@
         "newName": "New name",
         "enterNewName": "Enter new name",
         "renameLabel": "Please rename the file",
-        "success": "File successfully renamed."
+        "success": "Successfully renamed."
       },
       "moveFile": {
         "cannotMove": "Cannot move to the same folder",
-        "title": "Move file",
+        "title": "Select Destination",
         "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
         "storage": "OSF Storage",
         "pathError": "Path is not specified!",
-        "success": "File successfully moved."
+        "success": "Successfully moved.",
+        "noMovePermission": "Cannot move or copy to this file provider"
       },
       "copyFile": {
-        "title": "Select location to copy file to",
         "success": "File successfully copied."
       },
       "deleteFile": {
         "title": "Delete File",
         "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?",
-        "success": "File successfully deleted."
+        "success": "Successfully deleted."
+      },
+      "deleteMultipleItems": {
+        "title": "Delete items",
+        "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?",
+        "success": "Successfully deleted."
+      },
+      "deleteFolder": {
+        "title": "Delete Folder",
+        "message": "Are you sure you want to delete the folder <span class=\"font-bold\">{{name}}</span> and all its contents?",
+        "success": "Folder successfully deleted."
       },
       "replaceFile": {
         "single": "Replace file",
         "multiple": "Replace files",
         "message": "Are you sure you want to replace <span class=\"font-bold\">{{name}}</span>?",
-        "successOne": "File successfully replaced.",
-        "successMultiple": "File successfully replaced."
+        "success": "Successfully replaced."
       }
     },
     "filesBrowserDialog": {
@@ -1233,7 +1259,8 @@
           "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
         }
       }
-    }
+    },
+    "selectedFiles": "item(s) selected"
   },
   "collections": {
     "helpDialog": {
@@ -2543,6 +2570,11 @@
           "text": "Update pending",
           "short": "Update pending approval",
           "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
+        },
+        "initialApproved": {
+          "text": "Pending",
+          "short": "Pending admin contributor approval",
+          "long": "This registration is awaiting approval by all admin contributors or after 48 hours has passed. An email will notify all registration contributors of the decision. If the registration is pending after 48 hours has passed, contact support at {{email}}."
         }
       },
       "metadata": {
@@ -2660,7 +2692,8 @@
       "inProgress": "Update in progress",
       "pendingModeration": "Pending moderation",
       "withdrawn": "Withdrawn",
-      "updatePendingApproval": "Update pending approval"
+      "updatePendingApproval": "Update pending approval",
+      "initialApproved": "Pending"
     }
   },
   "resourceCard": {
@@ -2847,7 +2880,7 @@
     },
     "requestAccessErrorDialog": {
       "title": "Can't Request Access",
-      "detailsMessage": "The user has their request access feature turned off. Reach out to the user by sending an email message by pressing the \"Back\" button below."
+      "detailsMessage": "The user has the request access feature turned off, or you already have access. Reach out to the user by sending an email message by pressing the \"Back\" button below."
     }
   },
   "resources": {

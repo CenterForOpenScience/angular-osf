@@ -135,6 +135,9 @@
               [(selectedStorageItemUrl)]="selectedStorageItemUrl"
               [(selectedResourceType)]="selectedResourceType"
               (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
+              (operationInvokeWithCursor)="
+                handleCreateOperationInvocationWithCursor($event.operationName, $event.itemId, $event.pageCursor)
+              "
               (save)="handleCreateConfiguredAddon()"
               (cancelSelection)="handleNavigateToAccountSelection()"
             />

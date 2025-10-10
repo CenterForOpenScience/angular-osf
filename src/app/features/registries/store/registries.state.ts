@@ -39,7 +39,6 @@ import {
   RegisterDraft,
   SaveLicense,
   SetCurrentFolder,
-  SetMoveFileCurrentFolder,
   SetUpdatedFields,
   UpdateDraft,
   UpdateSchemaResponse,
@@ -354,11 +353,6 @@ export class RegistriesState {
   @Action(CreateFolder)
   createFolder(ctx: StateContext<RegistriesStateModel>, action: CreateFolder) {
     return this.filesHandlers.createFolder(ctx, action);
-  }
-
-  @Action(SetMoveFileCurrentFolder)
-  setMoveFileCurrentFolder(ctx: StateContext<RegistriesStateModel>, action: SetMoveFileCurrentFolder) {
-    ctx.patchState({ moveFileCurrentFolder: action.folder });
   }
 
   @Action(SetCurrentFolder)

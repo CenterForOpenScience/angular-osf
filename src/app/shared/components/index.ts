@@ -14,6 +14,7 @@ export { EducationHistoryDialogComponent } from './education-history-dialog/educ
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
 export { EmploymentHistoryDialogComponent } from './employment-history-dialog/employment-history-dialog.component';
 export { FileMenuComponent } from './file-menu/file-menu.component';
+export { FileSelectDestinationComponent } from './file-select-destination/file-select-destination.component';
 export { FileUploadDialogComponent } from './file-upload-dialog/file-upload-dialog.component';
 export { FilesTreeComponent } from './files-tree/files-tree.component';
 export { FilterChipsComponent } from './filter-chips/filter-chips.component';
@@ -40,6 +41,7 @@ export { RegistrationBlocksDataComponent } from './registration-blocks-data/regi
 export { RegistrationCardComponent } from './registration-card/registration-card.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { ResourceMetadataComponent } from './resource-metadata/resource-metadata.component';
+export { SearchFiltersComponent } from './search-filters/search-filters.component';
 export { SearchHelpTutorialComponent } from './search-help-tutorial/search-help-tutorial.component';
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SearchResultsContainerComponent } from './search-results-container/search-results-container.component';
@@ -54,4 +56,3 @@ export { ToastComponent } from './toast/toast.component';
 export { TruncatedTextComponent } from './truncated-text/truncated-text.component';
 export { ViewOnlyLinkMessageComponent } from './view-only-link-message/view-only-link-message.component';
 export { ViewOnlyTableComponent } from './view-only-table/view-only-table.component';
-export { SearchFiltersComponent } from '@shared/components/search-filters/search-filters.component';

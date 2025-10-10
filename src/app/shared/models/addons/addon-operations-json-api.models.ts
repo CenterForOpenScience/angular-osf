@@ -10,6 +10,9 @@ export interface StorageItemResponseJsonApi {
 export interface OperationResultJsonApi {
   items: StorageItemResponseJsonApi[];
   total_count: number;
+  this_sample_cursor?: string;
+  first_sample_cursor?: string;
+  next_sample_cursor?: string;
 }
 
 export interface OperationInvocationRequestJsonApi {

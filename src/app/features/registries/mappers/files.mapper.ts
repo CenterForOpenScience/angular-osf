@@ -1,7 +1,7 @@
-import { FilePayloadJsonApi, OsfFile } from '@osf/shared/models';
+import { FileModel, FilePayloadJsonApi } from '@osf/shared/models';
 
 export class FilesMapper {
-  static toFilePayload(file: OsfFile): FilePayloadJsonApi {
+  static toFilePayload(file: FileModel): FilePayloadJsonApi {
     return {
       file_id: file.id,
       file_name: file.name,

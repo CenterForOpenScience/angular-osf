@@ -8,6 +8,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 import { CustomConfirmationService, CustomDialogService } from '@osf/shared/services';
 
@@ -25,6 +26,9 @@ import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.comp
 export class RegistryStatusesComponent {
   @HostBinding('class') classes = 'flex-1 flex';
   private readonly customDialogService = inject(CustomDialogService);
+  private readonly environment = inject(ENVIRONMENT);
+
+  readonly supportEmail = this.environment.supportEmail;
 
   registry = input.required<RegistryOverview | null>();
   canEdit = input<boolean>(false);

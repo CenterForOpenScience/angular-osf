@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiResponse, UserDataErrorResponseJsonApi } from '@osf/shared/models';
 
 export type ReviewActionsResponseJsonApi = JsonApiResponse<ReviewActionsDataJsonApi[], null>;
 
@@ -20,17 +20,5 @@ interface ReviewActionAttributesJsonApi {
 }
 
 interface ReviewActionEmbedsJsonApi {
-  creator: {
-    data: UserModelJsonApi;
-  };
-}
-
-interface UserModelJsonApi {
-  id: string;
-  type: 'users';
-  attributes: UserAttributesJsonApi;
-}
-
-interface UserAttributesJsonApi {
-  full_name: string;
+  creator: UserDataErrorResponseJsonApi;
 }

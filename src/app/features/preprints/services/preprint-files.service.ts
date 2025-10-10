@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { map, Observable, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
@@ -11,7 +12,7 @@ import {
   PreprintLinksJsonApi,
   PreprintRelationshipsJsonApi,
 } from '@osf/features/preprints/models';
-import { ApiData, GetFileResponse, GetFilesResponse, OsfFile } from '@osf/shared/models';
+import { ApiData } from '@osf/shared/models';
 import { FilesService, JsonApiService } from '@shared/services';
 
 @Injectable({
@@ -50,7 +51,7 @@ export class PreprintFilesService {
   }
 
   getPreprintFilesLinks(id: string): Observable<PreprintFilesLinks> {
-    return this.jsonApiService.get<GetFilesResponse>(`${this.apiUrl}/preprints/${id}/files/`).pipe(
+    return this.jsonApiService.get<any>(`${this.apiUrl}/preprints/${id}/files/`).pipe(
       map((response) => {
         const rel = response.data[0].relationships;
         const links = response.data[0].links;
@@ -63,11 +64,11 @@ export class PreprintFilesService {
     );
   }
 
-  getProjectFiles(projectId: string): Observable<OsfFile[]> {
-    return this.jsonApiService.get<GetFilesResponse>(`${this.apiUrl}/nodes/${projectId}/files/`).pipe(
-      switchMap((response: GetFilesResponse) => {
+  getProjectFiles(projectId: string): Observable<any[]> {
+    return this.jsonApiService.get<any>(`${this.apiUrl}/nodes/${projectId}/files/`).pipe(
+      switchMap((response: any) => {
         return this.jsonApiService
-          .get<GetFileResponse>(response.data[0].relationships.root_folder.links.related.href)
+          .get<any>(response.data[0].relationships.root_folder.links.related.href)
           .pipe(
             switchMap((fileResponse) =>
               this.filesService.getFilesWithoutFiltering(fileResponse.data.relationships.files.links.related.href)

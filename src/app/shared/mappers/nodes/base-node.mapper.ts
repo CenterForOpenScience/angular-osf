@@ -18,6 +18,7 @@ export class BaseNodeMapper {
   static getNodeData(data: BaseNodeDataJsonApi): BaseNodeModel {
     return {
       id: data.id,
+      type: data.type,
       title: data.attributes.title,
       description: data.attributes.description,
       category: data.attributes.category,

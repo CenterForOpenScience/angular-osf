@@ -14,6 +14,7 @@ export class RequestAccessMapper {
 
   static getRequestAccessItem(data: RequestAccessDataJsonApi): RequestAccessModel {
     const attributes = data.attributes;
+    const creator = UserMapper.getUserInfo(data.embeds.creator);
 
     return {
       id: data.id,
@@ -24,7 +25,7 @@ export class RequestAccessMapper {
       modified: attributes.modified,
       dateLastTransitioned: attributes.date_last_transitioned,
       requestedPermissions: attributes.requested_permissions || ContributorPermission.Read,
-      creator: UserMapper.fromUserGetResponse(data.embeds.creator.data),
+      creator: creator,
       isBibliographic: attributes.request_type == RequestAccessType.Access,
       isCurator: attributes.request_type === RequestAccessType.InstitutionalRequest,
     };

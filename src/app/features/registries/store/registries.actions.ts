@@ -1,8 +1,8 @@
 import {
   DraftRegistrationAttributesJsonApi,
   DraftRegistrationRelationshipsJsonApi,
+  FileFolderModel,
   LicenseOptions,
-  OsfFile,
 } from '@osf/shared/models';
 
 import { SchemaActionTrigger } from '../enums';
@@ -157,13 +157,7 @@ export class CreateFolder {
 export class SetCurrentFolder {
   static readonly type = '[Registries] Set Current Folder';
 
-  constructor(public folder: OsfFile | null) {}
-}
-
-export class SetMoveFileCurrentFolder {
-  static readonly type = '[Registries] Set Move File Current Folder';
-
-  constructor(public folder: OsfFile | null) {}
+  constructor(public folder: FileFolderModel | null) {}
 }
 
 export class FetchAllSchemaResponses {

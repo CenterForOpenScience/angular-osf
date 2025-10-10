@@ -4,6 +4,8 @@ import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { Tooltip } from 'primeng/tooltip';
 
+import { map, of } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -18,6 +20,7 @@ import {
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -31,8 +34,6 @@ import {
 } from '@osf/features/metadata/models';
 
 import 'cedar-artifact-viewer';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map, of } from 'rxjs';
 
 @Component({
   selector: 'osf-cedar-template-form',

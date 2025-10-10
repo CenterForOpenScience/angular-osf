@@ -8,7 +8,7 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
 
-import { debounceTime, distinctUntilChanged, Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { NgClass, TitleCasePipe } from '@angular/common';
 import {
@@ -40,9 +40,9 @@ import {
   SetSelectedPreprintFileSource,
   UploadFile,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { FileModel } from '@osf/shared/models';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
 import { StringOrNull } from '@shared/helpers';
-import { FilesTreeActions, OsfFile } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 @Component({
@@ -110,15 +110,6 @@ export class FileStepComponent implements OnInit {
   );
 
   projectNameControl = new FormControl<StringOrNull>(null);
-
-  filesTreeActions: FilesTreeActions = {
-    setCurrentFolder: (folder: OsfFile | null): Observable<void> => {
-      return this.actions.setCurrentFolder(folder);
-    },
-    getFiles: (filesLink: string): Observable<void> => {
-      return this.actions.getProjectFilesByLink(filesLink);
-    },
-  };
 
   nextClicked = output<void>();
   backClicked = output<void>();
@@ -192,7 +183,7 @@ export class FileStepComponent implements OnInit {
     this.actions.getFilesForSelectedProject(event.value);
   }
 
-  selectProjectFile(file: OsfFile) {
+  selectProjectFile(file: FileModel) {
     this.actions.copyFileFromProject(file).subscribe({
       next: () => {
         this.actions.fetchPreprintFile();

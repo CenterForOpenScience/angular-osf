@@ -1,3 +1,5 @@
+import { UserDataErrorResponseJsonApi } from '@osf/shared/models';
+
 export interface CollectionSubmissionReviewActionJsonApi {
   id: string;
   type: 'collection-submission-actions';
@@ -10,31 +12,13 @@ export interface CollectionSubmissionReviewActionJsonApi {
     date_modified: string;
   };
   embeds: {
-    creator: {
-      data: {
-        attributes: {
-          full_name: string;
-        };
-      };
-    };
+    creator: UserDataErrorResponseJsonApi;
   };
   relationships: {
-    collection: {
-      date: {
-        id: string;
-        type: 'collections';
-      };
-    };
     target: {
       data: {
         id: string;
         type: 'collection-submission';
-      };
-    };
-    creator: {
-      data: {
-        id: string;
-        type: 'users';
       };
     };
   };

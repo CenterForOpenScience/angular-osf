@@ -2,6 +2,7 @@ import {
   UserAcceptedTermsOfServiceJsonApi,
   UserAttributesJsonApi,
   UserData,
+  UserDataErrorResponseJsonApi,
   UserDataJsonApi,
   UserDataResponseJsonApi,
   UserModel,
@@ -52,6 +53,25 @@ export class UserMapper {
   static toAcceptedTermsOfServiceRequest(name: Partial<UserModel>): UserAcceptedTermsOfServiceJsonApi {
     return {
       accepted_terms_of_service: name.acceptedTermsOfService ?? false,
+    };
+  }
+
+  static getUserInfo(response: UserDataErrorResponseJsonApi | undefined): Partial<UserModel> | null {
+    if (!response) {
+      return null;
+    }
+
+    const data = response.data;
+    const errors = response.errors;
+    const errorMeta = errors && errors.length > 0 ? errors[0].meta : null;
+
+    return {
+      id: errorMeta ? undefined : data?.id,
+      fullName: errorMeta ? errorMeta?.full_name : data?.attributes?.full_name || '',
+      givenName: errorMeta ? errorMeta?.given_name : data?.attributes?.given_name || '',
+      familyName: errorMeta ? errorMeta?.family_name : data?.attributes?.family_name || '',
+      education: errorMeta ? [] : data?.attributes?.education || [],
+      employment: errorMeta ? [] : data?.attributes?.employment || [],
     };
   }
 }
