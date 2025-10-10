@@ -39,14 +39,13 @@ describe.skip('Component: Configure Addon', () => {
     },
     paramMap: of(new Map()),
     queryParamMap: of(new Map()),
-    // ... if you use `route.root`, add a dummy root too
     root: {},
   };
 
   describe('addon present', () => {
     beforeEach(async () => {
       const mockRouter = {
-        url: '/project/abc123/addons/configure', // mock the actual URL used in your component
+        url: '/project/abc123/addons/configure',
         navigate: jest.fn(),
         getCurrentNavigation: jest.fn().mockReturnValue({
           extras: {
@@ -141,7 +140,7 @@ describe.skip('Component: Configure Addon', () => {
   describe('addon not-present', () => {
     beforeEach(async () => {
       const mockRouter = {
-        url: '/project/abc123/addons/configure', // mock the actual URL used in your component
+        url: '/project/abc123/addons/configure',
         navigate: jest.fn(),
         getCurrentNavigation: jest.fn().mockReturnValue({
           extras: {

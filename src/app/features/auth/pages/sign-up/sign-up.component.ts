@@ -110,8 +110,8 @@ export class SignUpComponent implements OnInit {
     });
   }
 
-  navigateToOrcidSingIn(): void {
-    this.authService.navigateToOrcidSingIn();
+  navigateToOrcidSignIn(): void {
+    this.authService.navigateToOrcidSignIn();
   }
 
   navigateToInstitutionSingIn(): void {
