@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
 import { ContributorAddModel } from '@shared/models';
 
 import { AddContributorItemComponent } from './add-contributor-item.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddContributorItemComponent', () => {
   let component: AddContributorItemComponent;
@@ -19,8 +20,7 @@ describe('AddContributorItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddContributorItemComponent],
-      providers: [TranslateServiceMock],
+      imports: [AddContributorItemComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddContributorItemComponent);

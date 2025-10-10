@@ -52,10 +52,6 @@ export class CurrentResourceState {
   getResourceDetails(ctx: StateContext<CurrentResourceStateModel>, action: GetResourceDetails) {
     const state = ctx.getState();
 
-    if (state.resourceDetails.data?.id === action.resourceId) {
-      return;
-    }
-
     ctx.patchState({
       resourceDetails: {
         ...state.resourceDetails,

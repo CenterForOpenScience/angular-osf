@@ -4,9 +4,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@osf/shared/mocks';
-
 import { EducationHistoryDialogComponent } from './education-history-dialog.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('EducationHistoryDialogComponent', () => {
   let component: EducationHistoryDialogComponent;
@@ -14,8 +14,8 @@ describe('EducationHistoryDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EducationHistoryDialogComponent],
-      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig), TranslateServiceMock],
+      imports: [EducationHistoryDialogComponent, OSFTestingModule],
+      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EducationHistoryDialogComponent);

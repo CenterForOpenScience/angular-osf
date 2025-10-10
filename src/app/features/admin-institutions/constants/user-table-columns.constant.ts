@@ -1,5 +1,7 @@
 import { TableColumn } from '../models';
 
+const defaultDateFormat = 'MMM d, y';
+
 export const userTableColumns: TableColumn[] = [
   {
     field: 'userName',
@@ -26,18 +28,18 @@ export const userTableColumns: TableColumn[] = [
     field: 'accountCreationDate',
     header: 'adminInstitutions.institutionUsers.accountCreated',
     sortable: true,
-    dateFormat: 'dd/MM/yyyy',
+    dateFormat: defaultDateFormat,
   },
   {
     field: 'monthLasLogin',
     header: 'adminInstitutions.institutionUsers.lastLogin',
     sortable: true,
-    dateFormat: 'dd/MM/yyyy',
+    dateFormat: defaultDateFormat,
   },
   {
     field: 'monthLastActive',
     header: 'adminInstitutions.institutionUsers.lastActive',
     sortable: true,
-    dateFormat: 'dd/MM/yyyy',
+    dateFormat: defaultDateFormat,
   },
 ];

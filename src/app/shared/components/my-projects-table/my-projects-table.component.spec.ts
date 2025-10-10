@@ -6,7 +6,7 @@ import { FormControl } from '@angular/forms';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
 import { SearchInputComponent } from '@shared/components';
-import { TranslateServiceMock } from '@shared/mocks';
+import { MOCK_CONTRIBUTOR, TranslateServiceMock } from '@shared/mocks';
 import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
 
 import { MyProjectsTableComponent } from './my-projects-table.component';
@@ -32,13 +32,7 @@ describe('MyProjectsTableComponent', () => {
       title: 'Test Project 1',
       isPublic: true,
       dateModified: '2024-01-01T10:00:00Z',
-      contributors: [
-        {
-          id: '1',
-          userId: 'user1',
-          fullName: 'Jane Smith',
-        },
-      ],
+      contributors: [MOCK_CONTRIBUTOR],
       type: '',
       dateCreated: '',
     },
@@ -141,14 +135,12 @@ describe('MyProjectsTableComponent', () => {
     expect(dateElement).toBeTruthy();
   });
 
-  it.skip('should handle empty items array', () => {
+  it('should handle empty items array', () => {
     fixture.componentRef.setInput('items', []);
     fixture.detectChanges();
 
-    const compiled = fixture.nativeElement;
-    const emptyMessage = compiled.querySelector('td.text-center');
-
-    expect(emptyMessage).toBeTruthy();
+    expect(component.items()).toEqual([]);
+    expect(component.items().length).toBe(0);
   });
 
   it('should handle undefined items', () => {

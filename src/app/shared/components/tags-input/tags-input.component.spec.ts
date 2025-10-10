@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
-
 import { TagsInputComponent } from './tags-input.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('TagsInputComponent', () => {
   let component: TagsInputComponent;
@@ -10,8 +10,7 @@ describe('TagsInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TagsInputComponent],
-      providers: [TranslateServiceMock],
+      imports: [TagsInputComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TagsInputComponent);

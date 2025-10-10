@@ -74,7 +74,8 @@ export class ContributorsMapper {
 
   static toContributorAddRequest(
     model: ContributorAddModel,
-    type = AddContributorType.Registered
+    type = AddContributorType.Registered,
+    childNodeIds?: string[]
   ): ContributorAddRequestModel {
     if (type === AddContributorType.Registered) {
       return {
@@ -84,6 +85,7 @@ export class ContributorsMapper {
           permission: model.permission,
           index: model.index,
           id: model.id,
+          child_nodes: childNodeIds || [],
         },
         relationships: {
           users: {

@@ -1,4 +1,4 @@
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates, UserPermissions } from '@shared/enums';
 import { RegistrationCard } from '@shared/models';
 
 export const MOCK_REGISTRATION: RegistrationCard = {
@@ -22,4 +22,5 @@ export const MOCK_REGISTRATION: RegistrationCard = {
   hasMaterials: true,
   hasPapers: false,
   hasSupplements: true,
+  currentUserPermissions: [UserPermissions.Admin, UserPermissions.Write, UserPermissions.Read],
 };

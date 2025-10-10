@@ -6,7 +6,7 @@ import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
-import { OsfFile } from '@shared/models';
+import { FileFolderModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 import { FileStepComponent } from './file-step.component';
@@ -27,8 +27,8 @@ describe('FileStepComponent', () => {
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockPreprint: Preprint = PREPRINT_MOCK;
-  const mockProjectFiles: OsfFile[] = [OSF_FILE_MOCK];
-  const mockPreprintFile: OsfFile = OSF_FILE_MOCK;
+  const mockProjectFiles: FileFolderModel[] = [OSF_FILE_MOCK];
+  const mockPreprintFile: FileFolderModel = OSF_FILE_MOCK;
 
   const mockAvailableProjects = [
     { id: 'project-1', title: 'Test Project 1' },
@@ -168,14 +168,6 @@ describe('FileStepComponent', () => {
     expect(component.versionFileMode()).toBe(false);
   });
 
-  it('should handle project file selection', () => {
-    const mockFile: OsfFile = OSF_FILE_MOCK;
-
-    component.selectProjectFile(mockFile);
-
-    expect(mockFile).toBeDefined();
-  });
-
   it('should handle version file confirmation', () => {
     confirmationServiceMock.confirmContinue.mockImplementation(({ onConfirm }) => {
       onConfirm();
@@ -208,7 +200,6 @@ describe('FileStepComponent', () => {
 
   it('should expose readonly properties', () => {
     expect(component.PreprintFileSource).toBe(PreprintFileSource);
-    expect(component.filesTreeActions).toBeDefined();
   });
 
   it('should have correct form control', () => {

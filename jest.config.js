@@ -71,13 +71,9 @@ module.exports = {
     '<rootDir>/src/app/features/settings/addons/',
     '<rootDir>/src/app/features/settings/tokens/store/',
     '<rootDir>/src/app/shared/components/file-menu/',
-    '<rootDir>/src/app/shared/components/files-tree/',
     '<rootDir>/src/app/shared/components/line-chart/',
-    '<rootDir>/src/app/shared/components/make-decision-dialog/',
     '<rootDir>/src/app/shared/components/pie-chart/',
-    '<rootDir>/src/app/shared/components/resource-citations/',
     '<rootDir>/src/app/shared/components/reusable-filter/',
     '<rootDir>/src/app/shared/components/wiki/edit-section/',
-    '<rootDir>/src/app/shared/components/wiki/wiki-list/',
   ],
 };

@@ -59,7 +59,7 @@ export interface QualifiedAttribution {
 }
 
 export interface Creator extends AbsoluteUrlName {
-  affiliationAbsoluteUrl: StringOrNull;
+  affiliationsAbsoluteUrl: string[];
 }
 
 export interface AbsoluteUrlName {

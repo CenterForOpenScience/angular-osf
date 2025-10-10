@@ -38,6 +38,7 @@ export interface ContributorAddRequestModel {
     index?: number;
     full_name?: string;
     email?: string;
+    child_nodes?: string[];
   };
   relationships: {
     users?: {

@@ -10,6 +10,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './preprint-warning-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintWarningBannerComponent {
-  //
-}
+export class PreprintWarningBannerComponent {}

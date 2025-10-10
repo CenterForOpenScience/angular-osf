@@ -1,222 +1,270 @@
-import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+
+import { DiscoverableFilter, FilterOperator, FilterOption } from '@shared/models';
 
 import { FilterChipsComponent } from './filter-chips.component';
 
-import { jest } from '@jest/globals';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe.skip('FilterChipsComponent', () => {
+describe('FilterChipsComponent', () => {
   let component: FilterChipsComponent;
   let fixture: ComponentFixture<FilterChipsComponent>;
-  let componentRef: ComponentRef<FilterChipsComponent>;
+
+  const mockFilters: DiscoverableFilter[] = [
+    {
+      key: 'subject',
+      label: 'Subject',
+      operator: FilterOperator.IsPresent,
+      resultCount: 100,
+      options: [
+        { label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 },
+        { label: 'Biology', value: 'biology', cardSearchResultCount: 30 },
+      ],
+    },
+    {
+      key: 'resourceType',
+      label: 'Resource Type',
+      operator: FilterOperator.IsPresent,
+      resultCount: 75,
+      options: [
+        { label: 'Project', value: 'project', cardSearchResultCount: 40 },
+        { label: 'Registration', value: 'registration', cardSearchResultCount: 35 },
+      ],
+    },
+  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FilterChipsComponent],
+      imports: [FilterChipsComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilterChipsComponent);
     component = fixture.componentInstance;
-    componentRef = fixture.componentRef;
   });
 
   it('should create', () => {
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 
-  describe('Component Initialization', () => {
-    it('should have default input values', () => {
+  describe('Inputs', () => {
+    it('should accept filters as required input', () => {
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.detectChanges();
+
+      expect(component.filters()).toEqual(mockFilters);
+    });
+
+    it('should have default empty object for filterOptions', () => {
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.detectChanges();
+
       expect(component.filterOptions()).toEqual({});
-      expect(component.filterLabels()).toEqual({});
-      expect(component.filterOptions()).toEqual({});
     });
 
-    it('should not display anything when no chips are present', () => {
+    it('should accept filterOptions input', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        subject: [
+          { label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 },
+          { label: 'Biology', value: 'biology', cardSearchResultCount: 30 },
+        ],
+      };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
       fixture.detectChanges();
-      const chipContainer = fixture.debugElement.query(By.css('.flex.flex-wrap'));
-      expect(chipContainer).toBeFalsy();
+
+      expect(component.filterOptions()).toEqual(filterOptions);
     });
   });
 
-  describe('Chips Display', () => {
-    beforeEach(() => {
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-        resourceType: 'project',
-      });
-      componentRef.setInput('filterLabels', {
-        subject: 'Subject',
-        resourceType: 'Resource Type',
-      });
-      componentRef.setInput('filterOptions', {
-        subject: [{ id: 'psychology', value: 'psychology', label: 'Psychology' }],
-        resourceType: [{ id: 'project', value: 'project', label: 'Project' }],
-      });
+  describe('filterLabels computed', () => {
+    it('should create labels from filters', () => {
+      fixture.componentRef.setInput('filters', mockFilters);
       fixture.detectChanges();
+
+      const labels = component.filterLabels();
+      expect(labels.length).toBe(2);
+      expect(labels).toContainEqual({ key: 'subject', label: 'Subject' });
+      expect(labels).toContainEqual({ key: 'resourceType', label: 'Resource Type' });
     });
 
-    it('should display chips for selected values', () => {
-      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
-      expect(chips.length).toBe(2);
+    it('should filter out filters without key or label', () => {
+      const filtersWithMissing: DiscoverableFilter[] = [
+        ...mockFilters,
+        { key: '', label: 'No Key', operator: FilterOperator.IsPresent, resultCount: 10, options: [] },
+        { key: 'noLabel', label: '', operator: FilterOperator.IsPresent, resultCount: 10, options: [] },
+      ];
+
+      fixture.componentRef.setInput('filters', filtersWithMissing);
+      fixture.detectChanges();
+
+      const labels = component.filterLabels();
+      expect(labels.length).toBe(2);
+      expect(labels.map((l) => l.key)).toEqual(['subject', 'resourceType']);
     });
 
-    it('should display correct chip labels and values', () => {
-      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
-      const chipLabels = chips.map((chip) => chip.nativeElement.getAttribute('ng-reflect-label'));
+    it('should return empty array when filters are empty', () => {
+      fixture.componentRef.setInput('filters', []);
+      fixture.detectChanges();
 
-      expect(chipLabels).toContain('Subject : Psychology');
-      expect(chipLabels).toContain('Resource Type : Project');
-    });
-
-    it('should display remove button for each chip', () => {
-      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
-      expect(chips.length).toBe(2);
-
-      chips.forEach((chip) => {
-        const removableAttr = chip.nativeElement.getAttribute('ng-reflect-removable');
-        const removeIconAttr = chip.nativeElement.getAttribute('ng-reflect-remove-icon');
-        expect(removableAttr === 'true' || removeIconAttr).toBeTruthy();
-      });
+      const labels = component.filterLabels();
+      expect(labels).toEqual([]);
     });
   });
 
-  describe('Single Chip Behavior', () => {
-    beforeEach(() => {
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-      });
-      componentRef.setInput('filterLabels', {
-        subject: 'Subject',
-      });
-      componentRef.setInput('filterOptions', {
-        subject: [{ id: 'psychology', value: 'psychology', label: 'Psychology' }],
-      });
+  describe('chips computed', () => {
+    it('should create chips from filterOptions', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        subject: [{ label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 }],
+        resourceType: [{ label: 'Project', value: 'project', cardSearchResultCount: 40 }],
+      };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
       fixture.detectChanges();
+
+      const chips = component.chips();
+      expect(chips.length).toBe(2);
     });
 
-    it('should display single chip correctly', () => {
-      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
+    it('should filter out empty filter options', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        subject: [{ label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 }],
+        resourceType: [],
+      };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
+      fixture.detectChanges();
+
+      const chips = component.chips();
       expect(chips.length).toBe(1);
+      expect(chips[0].key).toBe('subject');
     });
 
-    it('should still display remove button for single chip', () => {
-      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
-      expect(chips.length).toBe(1);
+    it('should use filter label from filterLabels', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        subject: [{ label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 }],
+      };
 
-      const removableAttr = chips[0].nativeElement.getAttribute('ng-reflect-removable');
-      const removeIconAttr = chips[0].nativeElement.getAttribute('ng-reflect-remove-icon');
-      expect(removableAttr === 'true' || removeIconAttr).toBeTruthy();
-    });
-  });
-
-  describe('Event Emissions', () => {
-    beforeEach(() => {
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-        resourceType: 'project',
-      });
-      componentRef.setInput('filterLabels', {
-        subject: 'Subject',
-        resourceType: 'Resource Type',
-      });
-      fixture.detectChanges();
-    });
-
-    it('should emit filterRemoved when remove button is clicked', () => {
-      const emitSpy = jest.spyOn(component.selectedOptionRemoved, 'emit');
-
-      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
-      chips[0].triggerEventHandler('onRemove', null);
-
-      expect(emitSpy).toHaveBeenCalledWith('subject');
-    });
-  });
-
-  describe('Chips Computed Property', () => {
-    it('should filter out null and empty values', () => {
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-        resourceType: null,
-        creator: '',
-        funder: 'nsf',
-      });
-      componentRef.setInput('filterLabels', {
-        subject: 'Subject',
-        funder: 'Funder',
-      });
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
       fixture.detectChanges();
 
       const chips = component.chips();
-      expect(chips.length).toBe(2);
-      expect(chips.map((c) => c.key)).toEqual(['subject', 'funder']);
+      expect(chips[0].label).toBe('Subject');
     });
 
-    it('should use raw value when no option label is found', () => {
-      componentRef.setInput('selectedValues', {
-        subject: 'unknown-subject',
-      });
-      componentRef.setInput('filterLabels', {
-        subject: 'Subject',
-      });
-      componentRef.setInput('filterOptions', {
-        subject: [{ id: 'psychology', value: 'psychology', label: 'Psychology' }],
-      });
+    it('should use key as label when filter label not found', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        unknownKey: [{ label: 'Unknown', value: 'unknown', cardSearchResultCount: 10 }],
+      };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
       fixture.detectChanges();
 
       const chips = component.chips();
-      expect(chips[0].displayValue).toBe('unknown-subject');
+      expect(chips[0].label).toBe('unknownKey');
     });
 
-    it('should use filter key as label when no label is provided', () => {
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-      });
-      componentRef.setInput('filterLabels', {});
+    it('should use option label as displayValue', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        subject: [{ label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 }],
+      };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
       fixture.detectChanges();
 
       const chips = component.chips();
-      expect(chips[0].label).toBe('subject');
+      expect(chips[0].displayValue).toBe('Psychology');
     });
-  });
 
-  describe('Component Methods', () => {
-    it('should call filterRemoved.emit with correct parameter in removeFilter', () => {
-      const emitSpy = jest.spyOn(component.selectedOptionRemoved, 'emit');
+    it('should use option value as displayValue when label is missing', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        subject: [{ value: 'psychology', cardSearchResultCount: 50 } as FilterOption],
+      };
 
-      component.removeFilter('testKey');
-
-      expect(emitSpy).toHaveBeenCalledWith('testKey');
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('should handle empty filter options gracefully', () => {
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-      });
-      componentRef.setInput('filterLabels', {
-        subject: 'Subject',
-      });
-      componentRef.setInput('filterOptions', {});
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
       fixture.detectChanges();
 
       const chips = component.chips();
       expect(chips[0].displayValue).toBe('psychology');
     });
 
-    it('should handle undefined filter options gracefully', () => {
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-      });
-      componentRef.setInput('filterLabels', {
-        subject: 'Subject',
-      });
+    it('should handle multiple options for single filter', () => {
+      const filterOptions: Record<string, FilterOption[]> = {
+        subject: [
+          { label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 },
+          { label: 'Biology', value: 'biology', cardSearchResultCount: 30 },
+        ],
+      };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', filterOptions);
       fixture.detectChanges();
 
-      expect(() => fixture.detectChanges()).not.toThrow();
       const chips = component.chips();
-      expect(chips[0].displayValue).toBe('psychology');
+      expect(chips.length).toBe(2);
+      expect(chips[0].displayValue).toBe('Psychology');
+      expect(chips[1].displayValue).toBe('Biology');
+    });
+
+    it('should return empty array when filterOptions is empty', () => {
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.componentRef.setInput('filterOptions', {});
+      fixture.detectChanges();
+
+      const chips = component.chips();
+      expect(chips).toEqual([]);
+    });
+  });
+
+  describe('removeFilter', () => {
+    it('should emit selectedOptionRemoved with correct data', () => {
+      const emitSpy = jest.fn();
+      component.selectedOptionRemoved.subscribe(emitSpy);
+
+      const mockOption: FilterOption = { label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.detectChanges();
+
+      component.removeFilter('subject', mockOption);
+
+      expect(emitSpy).toHaveBeenCalledWith({
+        filterKey: 'subject',
+        optionRemoved: mockOption,
+      });
+    });
+
+    it('should emit with different filter keys', () => {
+      const emitSpy = jest.fn();
+      component.selectedOptionRemoved.subscribe(emitSpy);
+
+      const mockOption1: FilterOption = { label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 };
+      const mockOption2: FilterOption = { label: 'Project', value: 'project', cardSearchResultCount: 40 };
+
+      fixture.componentRef.setInput('filters', mockFilters);
+      fixture.detectChanges();
+
+      component.removeFilter('subject', mockOption1);
+      component.removeFilter('resourceType', mockOption2);
+
+      expect(emitSpy).toHaveBeenCalledTimes(2);
+      expect(emitSpy).toHaveBeenNthCalledWith(1, {
+        filterKey: 'subject',
+        optionRemoved: mockOption1,
+      });
+      expect(emitSpy).toHaveBeenNthCalledWith(2, {
+        filterKey: 'resourceType',
+        optionRemoved: mockOption2,
+      });
     });
   });
 });

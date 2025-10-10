@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
-
 import { BarChartComponent } from './bar-chart.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
@@ -10,8 +10,7 @@ describe('BarChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BarChartComponent],
-      providers: [TranslateServiceMock],
+      imports: [BarChartComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BarChartComponent);

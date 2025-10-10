@@ -1,18 +1,20 @@
-import { Store } from '@ngxs/store';
-
-import { MockProvider, MockProviders } from 'ng-mocks';
+import { MockComponents, MockProviders } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
+import { AddContributorItemComponent } from '@shared/components/contributors/add-contributor-item/add-contributor-item.component';
 import { AddContributorType, AddDialogState } from '@shared/enums/contributors';
-import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 import { ContributorAddModel } from '@shared/models';
 import { ContributorsSelectors } from '@shared/stores';
 
 import { AddContributorDialogComponent } from './add-contributor-dialog.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AddContributorDialogComponent', () => {
   let component: AddContributorDialogComponent;
@@ -21,19 +23,26 @@ describe('AddContributorDialogComponent', () => {
   let closeSpy: jest.SpyInstance;
 
   beforeEach(async () => {
-    MOCK_STORE.selectSignal.mockImplementation((selector) => {
-      if (selector === ContributorsSelectors.getUsers) return () => signal([]);
-      if (selector === ContributorsSelectors.isUsersLoading) return () => signal(false);
-      if (selector === ContributorsSelectors.getUsersTotalCount) return () => signal(0);
-      return () => null;
-    });
-
     await TestBed.configureTestingModule({
-      imports: [AddContributorDialogComponent],
+      imports: [
+        AddContributorDialogComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          SearchInputComponent,
+          LoadingSpinnerComponent,
+          CustomPaginatorComponent,
+          AddContributorItemComponent
+        ),
+      ],
       providers: [
+        provideMockStore({
+          signals: [
+            { selector: ContributorsSelectors.getUsers, value: signal([]) },
+            { selector: ContributorsSelectors.isUsersLoading, value: false },
+            { selector: ContributorsSelectors.getUsersTotalCount, value: 0 },
+          ],
+        }),
         MockProviders(DynamicDialogRef, DynamicDialogConfig),
-        TranslateServiceMock,
-        MockProvider(Store, MOCK_STORE),
       ],
     }).compileComponents();
 
@@ -63,10 +72,10 @@ describe('AddContributorDialogComponent', () => {
   });
 
   it('should check isSearchState getter', () => {
-    expect(component['isSearchState']).toBe(true);
+    expect(component['isSearchState']()).toBe(true);
 
     component['currentState'].set(AddDialogState.Details);
-    expect(component['isSearchState']).toBe(false);
+    expect(component['isSearchState']()).toBe(false);
   });
 
   it('should add contributor and close dialog when in details state', () => {
@@ -95,10 +104,10 @@ describe('AddContributorDialogComponent', () => {
   });
 
   it('should handle search state transitions', () => {
-    expect(component['isSearchState']).toBe(true);
+    expect(component['isSearchState']()).toBe(true);
     expect(component['isInitialState']()).toBe(true);
 
     component['currentState'].set(AddDialogState.Details);
-    expect(component['isSearchState']).toBe(false);
+    expect(component['isSearchState']()).toBe(false);
   });
 });

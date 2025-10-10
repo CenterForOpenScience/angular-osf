@@ -4,7 +4,7 @@ export { AdditionalInfoComponent } from './preprint-details/additional-info/addi
 export { GeneralInformationComponent } from './preprint-details/general-information/general-information.component';
 export { ModerationStatusBannerComponent } from './preprint-details/moderation-status-banner/moderation-status-banner.component';
 export { PreprintFileSectionComponent } from './preprint-details/preprint-file-section/preprint-file-section.component';
-export { ShareAndDownloadComponent } from './preprint-details/share-and-downlaod/share-and-download.component';
+export { ShareAndDownloadComponent } from './preprint-details/share-and-download/share-and-download.component';
 export { StatusBannerComponent } from './preprint-details/status-banner/status-banner.component';
 export { PreprintProviderFooterComponent } from './preprint-provider-footer/preprint-provider-footer.component';
 export { PreprintProviderHeroComponent } from './preprint-provider-hero/preprint-provider-hero.component';

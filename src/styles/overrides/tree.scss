@@ -49,6 +49,17 @@
     .p-tree-empty-message {
       display: none;
     }
+
+    .p-tree-node-selected {
+      .files-table-row {
+        color: var(--white);
+        background: var(--pr-blue-1);
+
+        .blue-icon {
+          color: var(--white);
+        }
+      }
+    }
   }
 
   .empty-state-container {

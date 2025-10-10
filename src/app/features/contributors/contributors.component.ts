@@ -31,18 +31,20 @@ import {
   RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ContributorPermission, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import {
+  ComponentCheckboxItemModel,
   ContributorDialogAddModel,
   ContributorModel,
+  NodeShortInfoModel,
   RequestAccessModel,
   SelectOption,
   TableParameters,
   ViewOnlyLinkJsonApi,
   ViewOnlyLinkModel,
 } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
 import {
   AcceptRequestAccess,
   AddContributor,
@@ -57,6 +59,7 @@ import {
   GetAllContributors,
   GetRequestAccessContributors,
   GetResourceDetails,
+  GetResourceWithChildren,
   RejectRequestAccess,
   UpdateBibliographyFilter,
   UpdateContributorsSearchValue,
@@ -91,6 +94,7 @@ export class ContributorsComponent implements OnInit {
   readonly customDialogService = inject(CustomDialogService);
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
+  readonly loaderService = inject(LoaderService);
 
   private readonly route = inject(ActivatedRoute);
   private readonly resourceId = toSignal(
@@ -100,6 +104,7 @@ export class ContributorsComponent implements OnInit {
 
   viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
   resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
+  resourceChildren = select(CurrentResourceSelectors.getResourceWithChildren);
 
   readonly selectedPermission = signal<ContributorPermission | null>(null);
   readonly selectedBibliography = signal<boolean | null>(null);
@@ -132,7 +137,11 @@ export class ContributorsComponent implements OnInit {
   );
 
   showRequestAccessList = computed(
-    () => this.hasAdminAccess() && this.resourceType() === ResourceType.Project && this.requestAccessList().length
+    () =>
+      this.resourceAccessRequestEnabled() &&
+      this.hasAdminAccess() &&
+      this.resourceType() === ResourceType.Project &&
+      this.requestAccessList().length
   );
 
   actions = createDispatchMap({
@@ -151,6 +160,7 @@ export class ContributorsComponent implements OnInit {
     getRequestAccessContributors: GetRequestAccessContributors,
     acceptRequestAccess: AcceptRequestAccess,
     rejectRequestAccess: RejectRequestAccess,
+    getResourceWithChildren: GetResourceWithChildren,
   });
 
   get hasChanges(): boolean {
@@ -196,7 +206,11 @@ export class ContributorsComponent implements OnInit {
     });
 
     effect(() => {
-      if (this.resourceType() === ResourceType.Project && this.hasAdminAccess()) {
+      if (
+        this.resourceType() === ResourceType.Project &&
+        this.hasAdminAccess() &&
+        this.resourceAccessRequestEnabled()
+      ) {
         this.actions.getRequestAccessContributors(this.resourceId(), this.resourceType());
       }
     });
@@ -227,29 +241,61 @@ export class ContributorsComponent implements OnInit {
 
   openAddContributorDialog() {
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
+    const rootParentId = this.resourceDetails().rootParentId ?? this.resourceId();
 
-    this.customDialogService
-      .open(AddContributorDialogComponent, {
-        header: 'project.contributors.addDialog.addRegisteredContributor',
-        width: '448px',
-        data: addedContributorIds,
-      })
-      .onClose.pipe(
-        filter((res: ContributorDialogAddModel) => !!res),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((res: ContributorDialogAddModel) => {
-        if (res.type === AddContributorType.Unregistered) {
-          this.openAddUnregisteredContributorDialog();
-        } else {
-          this.actions
-            .bulkAddContributors(this.resourceId(), this.resourceType(), res.data)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() =>
-              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
-            );
-        }
+    this.loaderService.show();
+
+    this.actions
+      .getResourceWithChildren(rootParentId, this.resourceId(), this.resourceType())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.loaderService.hide();
+
+        const components = this.mapNodesToComponentCheckboxItems(this.resourceChildren(), this.resourceId());
+
+        this.customDialogService
+          .open(AddContributorDialogComponent, {
+            header: 'project.contributors.addDialog.addRegisteredContributor',
+            width: '448px',
+            data: {
+              addedContributorIds,
+              components,
+              resourceName: this.resourceDetails().title,
+            },
+          })
+          .onClose.pipe(
+            filter((res: ContributorDialogAddModel) => !!res),
+            takeUntilDestroyed(this.destroyRef)
+          )
+          .subscribe((res: ContributorDialogAddModel) => {
+            if (res.type === AddContributorType.Unregistered) {
+              this.openAddUnregisteredContributorDialog();
+            } else {
+              this.addContributorsToComponents(res);
+            }
+          });
       });
+  }
+
+  private mapNodesToComponentCheckboxItems(
+    nodes: NodeShortInfoModel[],
+    currentResourceId: string | undefined
+  ): ComponentCheckboxItemModel[] {
+    return nodes.map((node) => ({
+      id: node.id,
+      title: node.title,
+      isCurrent: node.id === currentResourceId,
+      disabled: node.id === currentResourceId || !node.permissions.includes(UserPermissions.Admin),
+      checked: node.id === currentResourceId,
+      parentId: node.parentId,
+    }));
+  }
+
+  private addContributorsToComponents(result: ContributorDialogAddModel): void {
+    this.actions
+      .bulkAddContributors(this.resourceId(), this.resourceType(), result.data, result.childNodeIds)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
   }
 
   openAddUnregisteredContributorDialog() {

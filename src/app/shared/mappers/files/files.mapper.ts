@@ -52,7 +52,7 @@ export class FilesMapper {
       dateModified: data.attributes.date_modified,
       extra: this.getFileExtra(data.attributes.extra),
       links: this.getFileLinks(data.links),
-      filesLink: data.relationships.files?.links.related.href || null,
+      filesLink: data.relationships?.files?.links.related.href ?? null,
       target: data.embeds?.target ? BaseNodeMapper.getNodeData(data.embeds?.target.data) : undefined,
       previousFolder: false,
       provider: data.attributes.provider,

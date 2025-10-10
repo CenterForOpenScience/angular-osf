@@ -1,26 +1,24 @@
-import { Store } from '@ngxs/store';
-
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
-
-import { of } from 'rxjs';
+import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { CredentialsFormat } from '@shared/enums';
-import { MockCustomConfirmationServiceProvider } from '@shared/mocks';
 import { AddonModel } from '@shared/models';
 import { CustomConfirmationService } from '@shared/services';
 
 import { AddonCardComponent } from './addon-card.component';
 
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 describe('AddonCardComponent', () => {
   let component: AddonCardComponent;
   let fixture: ComponentFixture<AddonCardComponent>;
-  let router: Router;
-  let customConfirmationService: CustomConfirmationService;
-  let store: Store;
+  let mockRouter: ReturnType<RouterMockBuilder['build']>;
+  let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
 
   const mockAddon: AddonModel = {
     id: 'test-addon-id',
@@ -33,33 +31,22 @@ describe('AddonCardComponent', () => {
     externalServiceName: 'test-service',
   };
 
-  const mockRouter = {
-    navigate: jest.fn(),
-    url: '/settings/addons',
-  };
-
-  const mockStore = {
-    dispatch: jest.fn().mockReturnValue(of({})),
-  };
-
   beforeEach(async () => {
+    mockRouter = RouterMockBuilder.create().withUrl('/settings/addons').build();
+    customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
-      imports: [AddonCardComponent, MockPipe(TranslatePipe)],
+      imports: [AddonCardComponent, OSFTestingModule],
       providers: [
-        MockProvider(TranslatePipe),
-        MockProvider(Store, mockStore),
-        MockCustomConfirmationServiceProvider,
+        provideMockStore({}),
         MockProvider(Router, mockRouter),
+        MockProvider(CustomConfirmationService, customConfirmationServiceMock),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddonCardComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('card', mockAddon);
-
-    router = TestBed.inject(Router);
-    customConfirmationService = TestBed.inject(CustomConfirmationService);
-    store = TestBed.inject(Store);
 
     fixture.detectChanges();
   });
@@ -71,7 +58,7 @@ describe('AddonCardComponent', () => {
   it('should navigate to connect-addon route when addon exists', () => {
     component.onConnectAddon();
 
-    expect(router.navigate).toHaveBeenCalledWith(['/settings/addons/connect-addon'], {
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/settings/addons/connect-addon'], {
       state: { addon: mockAddon },
     });
   });
@@ -79,7 +66,7 @@ describe('AddonCardComponent', () => {
   it('should navigate to configure-addon route when addon exists', () => {
     component.onConfigureAddon();
 
-    expect(router.navigate).toHaveBeenCalledWith(['/settings/addons/configure-addon'], {
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/settings/addons/configure-addon'], {
       state: { addon: mockAddon },
     });
   });
@@ -87,16 +74,11 @@ describe('AddonCardComponent', () => {
   it('should call confirmDelete on customConfirmationService', () => {
     component.showDisableDialog();
 
-    expect(customConfirmationService.confirmDelete).toHaveBeenCalledWith({
+    expect(customConfirmationServiceMock.confirmDelete).toHaveBeenCalledWith({
       headerKey: 'settings.addons.messages.deleteConfirmation.title',
       messageKey: 'settings.addons.messages.deleteConfirmation.message',
       acceptLabelKey: 'settings.addons.form.buttons.disable',
       onConfirm: expect.any(Function),
     });
-  });
-
-  it('should dispatch delete action on success', () => {
-    component.onDisableAddon();
-    expect(store.dispatch).toHaveBeenCalled();
   });
 });

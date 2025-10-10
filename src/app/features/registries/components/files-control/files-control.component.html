@@ -50,6 +50,8 @@
       [provider]="provider()"
       (entryFileClicked)="selectFile($event)"
       (uploadFilesConfirmed)="uploadFiles($event)"
+      (loadFiles)="onLoadFiles($event)"
+      (setCurrentFolder)="setCurrentFolder($event)"
     >
     </osf-files-tree>
   </div>

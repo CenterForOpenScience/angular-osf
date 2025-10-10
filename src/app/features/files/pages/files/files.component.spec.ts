@@ -115,12 +115,15 @@ describe('Component: Files', () => {
               'files',
               'currentFolder',
               'isLoading',
-              'actions',
               'viewOnly',
               'resourceId',
               'provider',
               'storage',
               'totalCount',
+              'allowedMenuActions',
+              'supportUpload',
+              'selectedFiles',
+              'scrollHeight',
             ]),
           ],
         },
@@ -164,46 +167,30 @@ describe('Component: Files', () => {
     });
   });
 
-  // describe.skip('updateFilesList', () => {
-  //   it('should handle the updateFilesList with a filesLink', () => {
-  //     let results!: string;
-  //     const store = TestBed.inject(Store);
-  //     const dispatchSpy = jest.spyOn(store, 'dispatch');
-  //     dispatchSpy.mockClear();
-  //     jest.spyOn(component.filesTreeActions, 'setFilesIsLoading');
-  //     component.updateFilesList().subscribe({
-  //       next: (result) => {
-  //         results = result as any;
-  //       },
-  //     });
+  describe('updateFilesList', () => {
+    it('should call updateFilesList without errors when filesLink exists', () => {
+      expect(() => component.updateFilesList()).not.toThrow();
+    });
 
-  //     expect(results).toBeTruthy();
+    it('should not throw when filesLink is null', () => {
+      const mockFolder: any = {
+        id: 'folder-123',
+        kind: 'folder',
+        name: 'Test Folder',
+        node: 'node-456',
+        path: '/test',
+        provider: 'osfstorage',
+        links: {
+          newFolder: '/test/new',
+          storageAddons: '/addons',
+          upload: '/upload',
+          filesLink: '',
+          download: '/download',
+        },
+      };
+      currentFolderSignal.set(mockFolder);
 
-  //     expect(component.filesTreeActions.setFilesIsLoading).toHaveBeenCalledWith(true);
-  //     expect(dispatchSpy).toHaveBeenCalledWith({
-  //       filesLink: 'https://api.staging4.osf.io/v2/nodes/xgrm4/files/osfstorage/',
-  //     });
-  //   });
-
-  //   it('should handle the updateFilesList without a filesLink', () => {
-  //     let results!: string;
-  //     const currentFolder = currentFolderSignal() as OsfFile;
-  //     currentFolder.relationships.filesLink = '';
-  //     currentFolderSignal.set(currentFolder);
-  //     const store = TestBed.inject(Store);
-  //     const dispatchSpy = jest.spyOn(store, 'dispatch');
-  //     dispatchSpy.mockClear();
-  //     jest.spyOn(component.filesTreeActions, 'setFilesIsLoading');
-  //     component.updateFilesList().subscribe({
-  //       next: (result) => {
-  //         results = result as any;
-  //       },
-  //     });
-
-  //     expect(results).toBeUndefined();
-
-  //     expect(component.filesTreeActions.setFilesIsLoading).not.toHaveBeenCalled();
-  //     expect(dispatchSpy).not.toHaveBeenCalled();
-  //   });
-  // });
+      expect(() => component.updateFilesList()).not.toThrow();
+    });
+  });
 });

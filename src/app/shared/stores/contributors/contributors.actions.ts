@@ -57,7 +57,8 @@ export class BulkAddContributors {
   constructor(
     public resourceId: string | undefined | null,
     public resourceType: ResourceType | undefined,
-    public contributors: ContributorAddModel[]
+    public contributors: ContributorAddModel[],
+    public childNodeIds?: string[]
   ) {}
 }
 
