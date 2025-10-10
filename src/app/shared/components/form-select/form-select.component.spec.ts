@@ -1,11 +1,12 @@
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 import { SelectOption } from '@osf/shared/models';
-import { TranslateServiceMock } from '@shared/mocks';
 
 import { FormSelectComponent } from './form-select.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('FormSelectComponent', () => {
   let component: FormSelectComponent;
@@ -21,8 +22,7 @@ describe('FormSelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormSelectComponent, ReactiveFormsModule],
-      providers: [TranslateServiceMock],
+      imports: [FormSelectComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FormSelectComponent);

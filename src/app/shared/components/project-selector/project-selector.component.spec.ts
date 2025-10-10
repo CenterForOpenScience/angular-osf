@@ -1,18 +1,16 @@
 import { provideStore } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserState } from '@core/store/user';
-import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 import { ProjectsState } from '@shared/stores';
 
 import { ProjectSelectorComponent } from './project-selector.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ProjectSelectorComponent', () => {
   let component: ProjectSelectorComponent;
@@ -20,14 +18,8 @@ describe('ProjectSelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectSelectorComponent, MockPipe(TranslatePipe)],
-      providers: [
-        TranslateServiceMock,
-        MockProvider(ToastService),
-        provideStore([ProjectsState, UserState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      imports: [ProjectSelectorComponent, OSFTestingModule],
+      providers: [MockProvider(ToastService), provideStore([ProjectsState, UserState])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectSelectorComponent);

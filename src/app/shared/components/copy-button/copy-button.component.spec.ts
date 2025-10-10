@@ -3,10 +3,11 @@ import { MockProviders } from 'ng-mocks';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { CopyButtonComponent } from './copy-button.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('CopyButtonComponent', () => {
   let component: CopyButtonComponent;
@@ -16,8 +17,8 @@ describe('CopyButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CopyButtonComponent],
-      providers: [MockProviders(Clipboard, ToastService), TranslateServiceMock],
+      imports: [CopyButtonComponent, OSFTestingModule],
+      providers: [MockProviders(Clipboard, ToastService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CopyButtonComponent);

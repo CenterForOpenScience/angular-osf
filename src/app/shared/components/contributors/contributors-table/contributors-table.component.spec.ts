@@ -1,27 +1,46 @@
-import { MockProviders } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContributorPermission } from '@osf/shared/enums';
-import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY, TranslateServiceMock } from '@osf/shared/mocks';
-import { ContributorModel } from '@osf/shared/models';
+import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from '@osf/shared/mocks';
+import { ContributorModel, TableParameters } from '@osf/shared/models';
 
 import { ContributorsTableComponent } from './contributors-table.component';
 
-describe.skip('ContributorsTableComponent', () => {
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
+
+describe('ContributorsTableComponent', () => {
   let component: ContributorsTableComponent;
   let fixture: ComponentFixture<ContributorsTableComponent>;
+  let mockDialogService: ReturnType<DialogServiceMockBuilder['build']>;
+
+  const mockTableParams: TableParameters = {
+    rows: 10,
+    paginator: true,
+    scrollable: false,
+    rowsPerPageOptions: [10, 25, 50],
+    totalRecords: 0,
+    firstRowIndex: 0,
+    defaultSortOrder: null,
+    defaultSortColumn: null,
+  };
 
   beforeEach(async () => {
+    mockDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
+
     await TestBed.configureTestingModule({
-      imports: [ContributorsTableComponent],
-      providers: [MockProviders(DialogService), TranslateServiceMock],
+      imports: [ContributorsTableComponent, OSFTestingModule],
+      providers: [MockProvider(DialogService, mockDialogService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContributorsTableComponent);
     component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('tableParams', mockTableParams);
 
     fixture.detectChanges();
   });

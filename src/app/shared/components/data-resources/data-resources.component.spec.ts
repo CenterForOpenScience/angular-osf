@@ -1,31 +1,24 @@
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { TranslateServiceMock } from '@shared/mocks';
-
 import { DataResourcesComponent } from './data-resources.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 
 describe('DataResourcesComponent', () => {
   let component: DataResourcesComponent;
   let fixture: ComponentFixture<DataResourcesComponent>;
-
-  const mockRoute = {
-    snapshot: {
-      data: {},
-    },
-    firstChild: null,
-  };
+  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   beforeEach(async () => {
+    activatedRouteMock = ActivatedRouteMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
-      imports: [DataResourcesComponent],
-      providers: [
-        TranslateServiceMock,
-        {
-          provide: ActivatedRoute,
-          useValue: mockRoute,
-        },
-      ],
+      imports: [DataResourcesComponent, OSFTestingModule],
+      providers: [MockProvider(ActivatedRoute, activatedRouteMock)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DataResourcesComponent);

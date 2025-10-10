@@ -1,9 +1,8 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PasswordInputHintComponent } from './password-input-hint.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('PasswordInputHintComponent', () => {
   let component: PasswordInputHintComponent;
@@ -11,8 +10,7 @@ describe('PasswordInputHintComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PasswordInputHintComponent, MockPipe(TranslatePipe)],
-      providers: [MockProvider(TranslateService)],
+      imports: [PasswordInputHintComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PasswordInputHintComponent);
