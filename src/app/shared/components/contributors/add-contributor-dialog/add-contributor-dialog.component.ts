@@ -9,14 +9,25 @@ import { PaginatorState } from 'primeng/paginator';
 
 import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { AddContributorType, AddDialogState } from '@osf/shared/enums';
-import { ContributorAddModel, ContributorDialogAddModel } from '@osf/shared/models';
+import { ComponentCheckboxItemModel, ContributorAddModel, ContributorDialogAddModel } from '@osf/shared/models';
 import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores';
 
+import { ComponentsSelectionListComponent } from '../../components-selection-list/components-selection-list.component';
 import { CustomPaginatorComponent } from '../../custom-paginator/custom-paginator.component';
 import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '../../search-input/search-input.component';
@@ -33,38 +44,47 @@ import { AddContributorItemComponent } from '../add-contributor-item/add-contrib
     LoadingSpinnerComponent,
     CustomPaginatorComponent,
     AddContributorItemComponent,
+    ComponentsSelectionListComponent,
   ],
   templateUrl: './add-contributor-dialog.component.html',
   styleUrl: './add-contributor-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddContributorDialogComponent implements OnInit, OnDestroy {
-  dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
   private readonly destroyRef = inject(DestroyRef);
-  readonly config = inject(DynamicDialogConfig);
+  private readonly config = inject(DynamicDialogConfig);
+  private readonly actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
 
-  users = select(ContributorsSelectors.getUsers);
-  isLoading = select(ContributorsSelectors.isUsersLoading);
-  totalUsersCount = select(ContributorsSelectors.getUsersTotalCount);
-  isInitialState = signal(true);
+  readonly users = select(ContributorsSelectors.getUsers);
+  readonly isLoading = select(ContributorsSelectors.isUsersLoading);
+  readonly totalUsersCount = select(ContributorsSelectors.getUsersTotalCount);
 
-  currentState = signal(AddDialogState.Search);
-  currentPage = signal(1);
-  first = signal(0);
-  pageSize = signal(10);
+  readonly searchControl = new FormControl<string>('');
+  readonly isInitialState = signal(true);
+  readonly currentState = signal(AddDialogState.Search);
+  readonly currentPage = signal(1);
+  readonly first = signal(0);
+  readonly pageSize = signal(DEFAULT_TABLE_PARAMS.rows);
+  readonly selectedUsers = signal<ContributorAddModel[]>([]);
+  readonly components = signal<ComponentCheckboxItemModel[]>([]);
+  readonly resourceName = signal<string>('');
 
-  selectedUsers = signal<ContributorAddModel[]>([]);
-  searchControl = new FormControl<string>('');
+  readonly contributorNames = computed(() =>
+    this.selectedUsers()
+      .map((user) => user.fullName)
+      .join(', ')
+  );
 
-  actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
-
-  get isSearchState() {
-    return this.currentState() === AddDialogState.Search;
-  }
+  readonly isSearchState = computed(() => this.currentState() === AddDialogState.Search);
+  readonly isDetailsState = computed(() => this.currentState() === AddDialogState.Details);
+  readonly isComponentsState = computed(() => this.currentState() === AddDialogState.Components);
+  readonly hasComponents = computed(() => this.components().length > 0);
+  readonly buttonLabel = computed(() => (this.isComponentsState() ? 'common.buttons.done' : 'common.buttons.next'));
 
   ngOnInit(): void {
+    this.initializeDialogData();
     this.setSearchSubscription();
-    this.selectedUsers.set([]);
   }
 
   ngOnDestroy(): void {
@@ -72,34 +92,74 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   }
 
   addContributor(): void {
-    if (this.currentState() === AddDialogState.Details) {
-      const dialogData: ContributorDialogAddModel = { data: this.selectedUsers(), type: AddContributorType.Registered };
-      this.dialogRef.close(dialogData);
+    const state = this.currentState();
+
+    if (state === AddDialogState.Search) {
+      this.currentState.set(AddDialogState.Details);
+      return;
     }
 
-    this.currentState.set(AddDialogState.Details);
+    if (state === AddDialogState.Details) {
+      this.currentState.set(this.hasComponents() ? AddDialogState.Components : AddDialogState.Search);
+
+      if (!this.hasComponents()) {
+        this.closeDialogWithData();
+      }
+      return;
+    }
+
+    if (state === AddDialogState.Components) {
+      this.closeDialogWithData();
+    }
   }
 
-  addUnregistered() {
-    const dialogData: ContributorDialogAddModel = { data: [], type: AddContributorType.Unregistered };
-    this.dialogRef.close(dialogData);
+  addUnregistered(): void {
+    this.dialogRef.close({
+      data: [],
+      type: AddContributorType.Unregistered,
+    });
   }
 
-  pageChanged(event: PaginatorState) {
+  pageChanged(event: PaginatorState): void {
     this.currentPage.set(event.page ? this.currentPage() + 1 : 1);
     this.first.set(event.first ?? 0);
     this.actions.searchUsers(this.searchControl.value, this.currentPage());
   }
 
-  private setSearchSubscription() {
+  private initializeDialogData(): void {
+    this.selectedUsers.set([]);
+
+    const { components, resourceName } = this.config.data || {};
+
+    if (components) {
+      this.components.set(components);
+    }
+
+    if (resourceName) {
+      this.resourceName.set(resourceName);
+    }
+  }
+
+  private closeDialogWithData(): void {
+    const childNodeIds = this.components()
+      .filter((c) => c.checked && !c.isCurrent)
+      .map((c) => c.id);
+
+    this.dialogRef.close({
+      data: this.selectedUsers(),
+      type: AddContributorType.Registered,
+      childNodeIds: childNodeIds.length > 0 ? childNodeIds : undefined,
+    } as ContributorDialogAddModel);
+  }
+
+  private setSearchSubscription(): void {
     this.searchControl.valueChanges
       .pipe(
         filter((searchTerm) => !!searchTerm && searchTerm.trim().length > 0),
         debounceTime(500),
         distinctUntilChanged(),
         switchMap((searchTerm) => {
-          this.currentPage.set(1);
-          this.first.set(0);
+          this.resetPagination();
           return this.actions.searchUsers(searchTerm, this.currentPage());
         }),
         takeUntilDestroyed(this.destroyRef)
@@ -108,5 +168,10 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
         this.isInitialState.set(false);
         this.selectedUsers.set([]);
       });
+  }
+
+  private resetPagination(): void {
+    this.currentPage.set(1);
+    this.first.set(0);
   }
 }

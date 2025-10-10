@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Primitive } from '@shared/helpers';
-import { TranslateServiceMock } from '@shared/mocks';
 import { SelectOption } from '@shared/models';
 
 import { SelectComponent } from './select.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('SelectComponent', () => {
   let component: SelectComponent;
@@ -24,8 +25,7 @@ describe('SelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SelectComponent],
-      providers: [TranslateServiceMock],
+      imports: [SelectComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SelectComponent);

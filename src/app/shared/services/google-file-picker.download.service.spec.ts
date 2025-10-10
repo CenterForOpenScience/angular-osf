@@ -61,12 +61,10 @@ describe('Service: Google File Picker Download', () => {
   it('should emit error when script fails to load', (done) => {
     const mockScriptElement: Partial<HTMLScriptElement> = {};
 
-    // Mock document
     const mockDocument = {
       createElement: jest.fn(() => mockScriptElement),
       body: {
         appendChild: jest.fn(() => {
-          // Simulate async error after appendChild
           setTimeout(() => {
             mockScriptElement.onerror?.(new Event('error'));
           }, 0);
@@ -75,7 +73,6 @@ describe('Service: Google File Picker Download', () => {
       querySelector: jest.fn(() => null),
     };
 
-    // Re-instantiate service with mocked document
     const service = new GoogleFilePickerDownloadService(mockDocument as unknown as Document);
 
     service.loadScript().subscribe({
@@ -89,7 +86,6 @@ describe('Service: Google File Picker Download', () => {
 
   describe('loadGapiModules', () => {
     beforeEach(() => {
-      // Mock window.gapi
       (globalThis as any).gapi = {
         load: jest.fn(),
       };
@@ -118,7 +114,7 @@ describe('Service: Google File Picker Download', () => {
       });
 
       const config = (globalThis.gapi.load as jest.Mock).mock.calls[0][1];
-      config.callback(); // simulate success
+      config.callback();
     });
 
     it('should emit error when GAPI fails to load', (done) => {
@@ -131,7 +127,7 @@ describe('Service: Google File Picker Download', () => {
       });
 
       const config = (globalThis.gapi.load as jest.Mock).mock.calls[0][1];
-      config.onerror(); // simulate failure
+      config.onerror();
     });
 
     it('should emit error on GAPI timeout', (done) => {
@@ -144,7 +140,7 @@ describe('Service: Google File Picker Download', () => {
       });
 
       const config = (globalThis.gapi.load as jest.Mock).mock.calls[0][1];
-      config.ontimeout(); // simulate timeout
+      config.ontimeout();
     });
   });
 });

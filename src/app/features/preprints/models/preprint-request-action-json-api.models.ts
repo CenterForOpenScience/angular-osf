@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiResponse, UserDataErrorResponseJsonApi } from '@osf/shared/models';
 
 export type PreprintRequestActionsJsonApiResponse = JsonApiResponse<PreprintRequestActionDataJsonApi[], null>;
 
@@ -19,17 +19,5 @@ interface PreprintRequestActionsAttributesJsonApi {
 }
 
 interface PreprintRequestEmbedsJsonApi {
-  creator: {
-    data: UserModelJsonApi;
-  };
-}
-
-interface UserModelJsonApi {
-  id: string;
-  type: 'users';
-  attributes: UserAttributesJsonApi;
-}
-
-interface UserAttributesJsonApi {
-  full_name: string;
+  creator: UserDataErrorResponseJsonApi;
 }

@@ -1,11 +1,11 @@
+import { UserDataErrorResponseJsonApi } from '@osf/shared/models';
+
 export interface ReviewActionJsonApi {
   id: string;
   type: 'review-actions';
   attributes: ReviewActionAttributesJsonApi;
   embeds: {
-    creator: {
-      data: UserModelJsonApi;
-    };
+    creator: UserDataErrorResponseJsonApi;
     target: {
       data: PreprintModelJsonApi;
     };

@@ -1,3 +1,4 @@
+import { UserMapper } from '@osf/shared/mappers';
 import { PaginatedData } from '@osf/shared/models';
 
 import {
@@ -32,16 +33,18 @@ export class RegistryModerationMapper {
   }
 
   static fromActionResponse(response: ReviewActionsDataJsonApi): ReviewAction {
+    const creator = UserMapper.getUserInfo(response.embeds?.creator);
+
     return {
       id: response.id,
       fromState: response.attributes.from_state,
       toState: response.attributes.to_state,
       dateModified: response.attributes.date_modified,
       comment: response.attributes.comment,
-      creator: response.embeds?.creator
+      creator: creator
         ? {
-            id: response.embeds.creator.data.id,
-            name: response.embeds.creator.data.attributes.full_name,
+            id: creator?.id || '',
+            name: creator?.fullName || '',
           }
         : null,
       trigger: response.attributes.trigger,

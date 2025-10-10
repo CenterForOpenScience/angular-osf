@@ -23,7 +23,10 @@
     }
 
     @if (submission().embargoEndDate) {
-      <p class="flex flex-wrap gap-1 mt-2">{{ 'moderation.registryEmbargoedWithEndDate' | translate }}</p>
+      <p class="flex flex-wrap gap-1 mt-2">
+        {{ 'moderation.registryEmbargoedWithEndDate' | translate }}
+        {{ submission().embargoEndDate | date: 'MMM d, y' }}
+      </p>
     }
 
     @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {

@@ -1,378 +1,242 @@
-import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
-import { DiscoverableFilter } from '@shared/models';
+import { DiscoverableFilter, FilterOperator, FilterOption } from '@shared/models';
 
 import { SearchFiltersComponent } from './search-filters.component';
 
-describe.skip('ReusableFilterComponent', () => {
+import { OSFTestingModule } from '@testing/osf.testing.module';
+
+describe('SearchFiltersComponent', () => {
   let component: SearchFiltersComponent;
   let fixture: ComponentFixture<SearchFiltersComponent>;
-  let componentRef: ComponentRef<SearchFiltersComponent>;
 
   const mockFilters: DiscoverableFilter[] = [
     {
       key: 'subject',
       label: 'Subject',
-      type: 'select',
-      operator: 'eq',
-      description: 'Filter by subject area',
-      helpLink: 'https://help.example.com/subjects',
-      helpLinkText: 'Learn about subjects',
+      operator: FilterOperator.IsPresent,
       resultCount: 150,
-      hasOptions: true,
       options: [
-        { label: 'Psychology', value: 'psychology', cardSearchResultCount: 0 },
-        { label: 'Biology', value: 'biology', cardSearchResultCount: 0 },
+        { label: 'Psychology', value: 'psychology', cardSearchResultCount: 10 },
+        { label: 'Biology', value: 'biology', cardSearchResultCount: 20 },
       ],
     },
     {
       key: 'resourceType',
       label: 'Resource Type',
-      type: 'select',
-      operator: 'eq',
+      operator: FilterOperator.IsPresent,
+      resultCount: 100,
       options: [
-        { label: 'Project', value: 'project', cardSearchResultCount: 0 },
-        { label: 'Registration', value: 'registration', cardSearchResultCount: 0 },
+        { label: 'Project', value: 'project', cardSearchResultCount: 50 },
+        { label: 'Registration', value: 'registration', cardSearchResultCount: 30 },
       ],
     },
     {
-      key: 'creator',
-      label: 'Creator',
-      type: 'select',
-      operator: 'eq',
-      hasOptions: true,
-    },
-    {
-      key: 'accessService',
-      label: 'Access Service',
-      type: 'select',
-      operator: 'eq',
+      key: 'hasData',
+      label: 'Has Data',
+      operator: FilterOperator.IsPresent,
+      resultCount: 75,
     },
   ];
 
+  const mockSelectedOptions: Record<string, FilterOption[]> = {
+    subject: [{ label: 'Psychology', value: 'psychology', cardSearchResultCount: 10 }],
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchFiltersComponent, NoopAnimationsModule],
+      imports: [SearchFiltersComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchFiltersComponent);
     component = fixture.componentInstance;
-    componentRef = fixture.componentRef;
   });
 
   it('should create', () => {
+    fixture.componentRef.setInput('filters', []);
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 
-  describe('Component Initialization', () => {
-    it('should have default input values', () => {
-      expect(component.filters()).toEqual([]);
-      expect(component.selectedOptions()).toEqual({});
-      expect(component.isLoading()).toBe(false);
-      expect(component.showEmptyState()).toBe(true);
-    });
+  it('should have default input values', () => {
+    fixture.detectChanges();
 
-    it('should have access to FILTER_PLACEHOLDERS constant', () => {
-      expect(component.FILTER_PLACEHOLDERS).toBe(FILTER_PLACEHOLDERS);
+    expect(component.filters()).toEqual([]);
+    expect(component.selectedOptions()).toEqual({});
+    expect(component.filterSearchResults()).toEqual({});
+    expect(component.isLoading()).toBe(false);
+    expect(component.showEmptyState()).toBe(true);
+    expect(component.plainStyle()).toBe(false);
+  });
+
+  it('should have access to FILTER_PLACEHOLDERS constant', () => {
+    fixture.componentRef.setInput('filters', []);
+    fixture.detectChanges();
+
+    expect(component.FILTER_PLACEHOLDERS).toEqual(FILTER_PLACEHOLDERS);
+  });
+
+  it('should compute visibleFilters correctly', () => {
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const visibleFilters = component.visibleFilters();
+
+    expect(visibleFilters.length).toBe(3);
+  });
+
+  it('should filter out invalid filters in visibleFilters', () => {
+    const filtersWithInvalid = [
+      ...mockFilters,
+      { key: '', label: 'Invalid', operator: FilterOperator.IsPresent } as DiscoverableFilter,
+      {
+        key: 'noCount',
+        label: 'No Count',
+        operator: FilterOperator.IsPresent,
+        resultCount: 0,
+        options: [],
+      } as DiscoverableFilter,
+    ];
+
+    fixture.componentRef.setInput('filters', filtersWithInvalid);
+    fixture.detectChanges();
+
+    const visibleFilters = component.visibleFilters();
+
+    expect(visibleFilters.length).toBe(3);
+  });
+
+  it('should compute splitFilters correctly', () => {
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const splitFilters = component.splitFilters();
+
+    expect(splitFilters.individual.length).toBe(0);
+    expect(splitFilters.grouped.length).toBe(3);
+    expect(splitFilters.grouped[0].operator).toBe(FilterOperator.IsPresent);
+  });
+
+  it('should compute selectedOptionValues from selectedOptions', () => {
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.componentRef.setInput('selectedOptions', mockSelectedOptions);
+    fixture.detectChanges();
+
+    const selectedValues = component.selectedOptionValues();
+
+    expect(selectedValues).toEqual({ subject: 'psychology' });
+  });
+
+  it('should emit loadFilterOptions when onAccordionToggle is called', () => {
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const emitSpy = jest.spyOn(component.loadFilterOptions, 'emit');
+
+    component.onAccordionToggle('subject');
+
+    expect(emitSpy).toHaveBeenCalledWith(mockFilters[0]);
+  });
+
+  it('should not emit loadFilterOptions when filter not found', () => {
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const emitSpy = jest.spyOn(component.loadFilterOptions, 'emit');
+
+    component.onAccordionToggle('nonexistent');
+
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should emit filterOptionSelected when onSelectedFilterOptionsChanged is called', () => {
+    const filter = mockFilters[0];
+    const options = [{ label: 'Test', value: 'test', cardSearchResultCount: 5 }];
+
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const emitSpy = jest.spyOn(component.filterOptionSelected, 'emit');
+
+    component.onSelectedFilterOptionsChanged(filter, options);
+
+    expect(emitSpy).toHaveBeenCalledWith({ filter, filterOption: options });
+  });
+
+  it('should emit filterOptionsSearch when onSearchFilterOptions is called', () => {
+    const filter = mockFilters[0];
+    const searchText = 'test search';
+
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const emitSpy = jest.spyOn(component.filterOptionsSearch, 'emit');
+
+    component.onSearchFilterOptions(filter, searchText);
+
+    expect(emitSpy).toHaveBeenCalledWith({ filter, searchText });
+  });
+
+  it('should emit loadMoreFilterOptions when onLoadMoreFilterOptions is called', () => {
+    const filter = mockFilters[0];
+
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const emitSpy = jest.spyOn(component.loadMoreFilterOptions, 'emit');
+
+    component.onLoadMoreFilterOptions(filter);
+
+    expect(emitSpy).toHaveBeenCalledWith(filter);
+  });
+
+  it('should emit filterOptionSelected when onCheckboxChange is called with checked', () => {
+    const filter = mockFilters[2];
+    const event = { checked: true } as any;
+
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
+
+    const emitSpy = jest.spyOn(component.filterOptionSelected, 'emit');
+
+    component.onCheckboxChange(event, filter);
+
+    expect(emitSpy).toHaveBeenCalledWith({
+      filter,
+      filterOption: [{ label: '', value: 'true', cardSearchResultCount: NaN }],
     });
   });
 
-  describe('Loading State', () => {
-    beforeEach(() => {
-      componentRef.setInput('isLoading', true);
-      fixture.detectChanges();
-    });
+  it('should emit filterOptionSelected when onCheckboxChange is called with unchecked', () => {
+    const filter = mockFilters[2];
+    const event = { checked: false } as any;
 
-    it('should display loading state when isLoading is true', () => {
-      const loadingElement = fixture.debugElement.query(By.css('.text-center.text-gray-500 p'));
-      expect(loadingElement).toBeTruthy();
-      expect(loadingElement.nativeElement.textContent.trim()).toBe('Loading filters...');
-    });
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.detectChanges();
 
-    it('should not display filters or empty state when loading', () => {
-      const accordion = fixture.debugElement.query(By.css('p-accordion'));
-      const emptyState = fixture.debugElement.query(By.css('.text-center.text-gray-500.py-4'));
+    const emitSpy = jest.spyOn(component.filterOptionSelected, 'emit');
 
-      expect(accordion).toBeFalsy();
-      expect(emptyState).toBeFalsy();
-    });
+    component.onCheckboxChange(event, filter);
+
+    expect(emitSpy).toHaveBeenCalledWith({ filter, filterOption: [] });
   });
 
-  describe('Empty State', () => {
-    beforeEach(() => {
-      componentRef.setInput('filters', []);
-      componentRef.setInput('showEmptyState', true);
-      fixture.detectChanges();
-    });
+  it('should handle empty filters array', () => {
+    fixture.componentRef.setInput('filters', []);
+    fixture.detectChanges();
 
-    it('should display empty state when no filters and showEmptyState is true', () => {
-      const emptyState = fixture.debugElement.query(By.css('.text-center.text-gray-500.py-4 p'));
-      expect(emptyState).toBeTruthy();
-      expect(emptyState.nativeElement.textContent.trim()).toBe('No filters available');
-    });
-
-    it('should not display empty state when showEmptyState is false', () => {
-      componentRef.setInput('showEmptyState', false);
-      fixture.detectChanges();
-
-      const emptyState = fixture.debugElement.query(By.css('.text-center.text-gray-500.py-4'));
-      expect(emptyState).toBeFalsy();
-    });
+    expect(component.visibleFilters()).toEqual([]);
+    expect(component.splitFilters().individual).toEqual([]);
+    expect(component.splitFilters().grouped).toEqual([]);
   });
 
-  describe('Filters Display', () => {
-    beforeEach(() => {
-      componentRef.setInput('filters', mockFilters);
-      componentRef.setInput('selectedValues', {
-        subject: 'psychology',
-        creator: 'John Doe',
-      });
-      fixture.detectChanges();
-    });
+  it('should handle empty selectedOptions', () => {
+    fixture.componentRef.setInput('filters', mockFilters);
+    fixture.componentRef.setInput('selectedOptions', {});
+    fixture.detectChanges();
 
-    it('should display accordion when filters are visible', () => {
-      const accordion = fixture.debugElement.query(By.css('p-accordion'));
-      expect(accordion).toBeTruthy();
-    });
-
-    it('should display visible filters in accordion panels', () => {
-      const panels = fixture.debugElement.queryAll(By.css('p-accordion-panel'));
-      expect(panels.length).toBe(3);
-    });
-
-    it('should display correct filter labels', () => {
-      const headers = fixture.debugElement.queryAll(By.css('p-accordion-header'));
-      const headerTexts = headers.map((h) => h.nativeElement.textContent.trim());
-
-      expect(headerTexts).toContain('Subject');
-      expect(headerTexts).toContain('Resource Type');
-      expect(headerTexts).toContain('Creator');
-    });
-  });
-
-  describe('Event Handling', () => {
-    beforeEach(() => {
-      componentRef.setInput('filters', mockFilters);
-      fixture.detectChanges();
-    });
-
-    it('should emit loadFilterOptions when accordion is toggled and filter needs options', () => {
-      spyOn(component.loadFilterOptions, 'emit');
-
-      const filterNeedingOptions: DiscoverableFilter = {
-        key: 'creator',
-        label: 'Creator',
-        type: 'select',
-        operator: 'eq',
-        hasOptions: true,
-      };
-      componentRef.setInput('filters', [filterNeedingOptions]);
-      fixture.detectChanges();
-
-      component.onAccordionToggle('creator');
-
-      expect(component.loadFilterOptions.emit).toHaveBeenCalledWith({
-        filterType: 'creator',
-        filter: filterNeedingOptions,
-      });
-    });
-
-    it('should not emit loadFilterOptions when filter already has options', () => {
-      spyOn(component.loadFilterOptions, 'emit');
-
-      component.onAccordionToggle('subject');
-
-      expect(component.loadFilterOptions.emit).not.toHaveBeenCalled();
-    });
-
-    it('should emit filterValueChanged when filter value changes', () => {
-      spyOn(component.filterOptionSelected, 'emit');
-
-      component.onSelectedFilterOptionsChanged('subject', 'biology');
-
-      expect(component.filterOptionSelected.emit).toHaveBeenCalledWith({
-        filterType: 'subject',
-        value: 'biology',
-      });
-    });
-
-    it('should handle array filterKey in onAccordionToggle', () => {
-      spyOn(component.loadFilterOptions, 'emit');
-
-      component.onAccordionToggle(['subject', 'other']);
-
-      expect(component['expandedFilters']().has('subject')).toBe(true);
-    });
-
-    it('should handle empty filterKey in onAccordionToggle', () => {
-      const initialExpanded = new Set(component['expandedFilters']());
-
-      component.onAccordionToggle('');
-      component.onAccordionToggle(null as unknown as string);
-
-      expect(component['expandedFilters']()).toEqual(initialExpanded);
-    });
-  });
-
-  describe('Helper Methods', () => {
-    const testFilter: DiscoverableFilter = {
-      key: 'subject',
-      label: 'Subject',
-      type: 'select',
-      operator: 'eq',
-      description: 'Test description',
-      helpLink: 'https://help.test.com',
-      helpLinkText: 'Custom help text',
-      resultCount: 42,
-      options: [{ label: 'Test Option', value: 'test' }],
-      isLoading: true,
-    };
-
-    it('should return correct filter options', () => {
-      expect(component.getFilterOptions(testFilter)).toEqual(testFilter.options || []);
-      expect(component.getFilterOptions({} as DiscoverableFilter)).toEqual([]);
-    });
-
-    it('should return correct loading state', () => {
-      expect(component.isFilterLoading(testFilter)).toBe(true);
-      expect(component.isFilterLoading({} as DiscoverableFilter)).toBe(false);
-    });
-
-    it('should return correct selected value', () => {
-      componentRef.setInput('selectedValues', { subject: 'psychology' });
-
-      expect(component.getSelectedValue('subject')).toBe('psychology');
-      expect(component.getSelectedValue('nonexistent')).toBe(null);
-    });
-
-    it('should return correct filter placeholder', () => {
-      expect(component.getFilterPlaceholder('subject')).toBe('Select subject');
-      expect(component.getFilterPlaceholder('unknown')).toBe('Search...');
-    });
-
-    it('should return correct filter description', () => {
-      expect(component.getFilterDescription(testFilter)).toBe('Test description');
-      expect(component.getFilterDescription({} as DiscoverableFilter)).toBe(null);
-    });
-
-    it('should return correct filter help link', () => {
-      expect(component.getFilterHelpLink(testFilter)).toBe('https://help.test.com');
-      expect(component.getFilterHelpLink({} as DiscoverableFilter)).toBe(null);
-    });
-
-    it('should return correct filter help link text', () => {
-      expect(component.getFilterHelpLinkText(testFilter)).toBe('Custom help text');
-      expect(component.getFilterHelpLinkText({} as DiscoverableFilter)).toBe('Learn more');
-    });
-
-    it('should return correct filter label with fallbacks', () => {
-      expect(component.getFilterLabel(testFilter)).toBe('Subject');
-      expect(component.getFilterLabel({ key: 'test' } as DiscoverableFilter)).toBe('test');
-      expect(component.getFilterLabel({} as DiscoverableFilter)).toBe('Filter');
-    });
-
-    it('should determine filter content correctly', () => {
-      expect(component.hasFilterContent(testFilter)).toBe(true);
-
-      const emptyFilter = {} as DiscoverableFilter;
-      expect(component.hasFilterContent(emptyFilter)).toBe(false);
-
-      const filterWithOnlyHasOptions = { hasOptions: true } as DiscoverableFilter;
-      expect(component.hasFilterContent(filterWithOnlyHasOptions)).toBe(true);
-    });
-  });
-
-  describe('Expanded Filters State', () => {
-    beforeEach(() => {
-      componentRef.setInput('filters', mockFilters);
-      fixture.detectChanges();
-    });
-
-    it('should toggle expanded state correctly', () => {
-      expect(component['expandedFilters']().has('subject')).toBe(false);
-
-      component.onAccordionToggle('subject');
-      expect(component['expandedFilters']().has('subject')).toBe(true);
-
-      component.onAccordionToggle('subject');
-      expect(component['expandedFilters']().has('subject')).toBe(false);
-    });
-
-    it('should handle multiple expanded filters', () => {
-      component.onAccordionToggle('subject');
-      component.onAccordionToggle('creator');
-
-      expect(component['expandedFilters']().has('subject')).toBe(true);
-      expect(component['expandedFilters']().has('creator')).toBe(true);
-    });
-  });
-
-  describe('Integration Tests', () => {
-    beforeEach(() => {
-      componentRef.setInput('filters', mockFilters);
-      componentRef.setInput('selectedValues', { subject: 'psychology' });
-      fixture.detectChanges();
-    });
-
-    it('should pass correct props to generic filter components', () => {
-      const genericFilters = fixture.debugElement.queryAll(By.css('osf-generic-filter'));
-      expect(genericFilters.length).toBeGreaterThan(0);
-
-      const subjectFilter = genericFilters.find((gf) => gf.componentInstance.filterType === 'subject');
-
-      if (subjectFilter) {
-        expect(subjectFilter.componentInstance.selectedValue).toBe('psychology');
-        expect(subjectFilter.componentInstance.placeholder).toBe('Select subject');
-        expect(subjectFilter.componentInstance.editable).toBe(true);
-      }
-    });
-
-    it('should handle filter value change events from generic filter', () => {
-      spyOn(component, 'onSelectedFilterOptionsChanged');
-
-      const genericFilter = fixture.debugElement.query(By.css('osf-generic-filter'));
-      if (genericFilter) {
-        genericFilter.componentInstance.valueChanged.emit('new-value');
-
-        expect(component.onSelectedFilterOptionsChanged).toHaveBeenCalled();
-      }
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('should handle malformed filter data gracefully', () => {
-      const malformedFilters = [
-        null,
-        undefined,
-        { key: null },
-        { key: '', label: '' },
-        { key: 'valid', options: null },
-      ] as unknown as DiscoverableFilter[];
-
-      expect(() => {
-        componentRef.setInput('filters', malformedFilters);
-        fixture.detectChanges();
-      }).not.toThrow();
-    });
-
-    it('should handle empty selected values', () => {
-      componentRef.setInput('selectedValues', {});
-      componentRef.setInput('filters', mockFilters);
-      fixture.detectChanges();
-
-      expect(component.getSelectedValue('subject')).toBe(null);
-    });
-
-    it('should handle filters without required properties', () => {
-      const minimalFilter = { key: 'minimal' } as DiscoverableFilter;
-
-      expect(component.getFilterLabel(minimalFilter)).toBe('minimal');
-      expect(component.getFilterDescription(minimalFilter)).toBe(null);
-      expect(component.hasFilterContent(minimalFilter)).toBe(false);
-    });
+    expect(component.selectedOptionValues()).toEqual({});
   });
 });

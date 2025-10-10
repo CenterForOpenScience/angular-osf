@@ -85,7 +85,12 @@ export class PreprintStepperSelectors {
 
   @Selector([PreprintStepperState])
   static getCurrentFolder(state: PreprintStepperStateModel) {
-    return state.currentFolder;
+    return state.currentFolder.data;
+  }
+
+  @Selector([PreprintStepperState])
+  static isCurrentFolderLoading(state: PreprintStepperStateModel) {
+    return state.currentFolder.isLoading;
   }
 
   @Selector([PreprintStepperState])

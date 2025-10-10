@@ -65,7 +65,6 @@ describe.skip('State: ActivityLogs', () => {
     (httpMock: HttpTestingController) => {
       store.dispatch(new GetRegistrationActivityLogs('reg500', 1, 10)).subscribe();
 
-      // loading true
       expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
 
       const req = httpMock.expectOne(buildRegistrationLogsUrl('reg500', 1, 10, environment.useValue.apiDomainUrl));

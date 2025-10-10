@@ -39,7 +39,7 @@ export class AuthService {
     window.location.href = loginUrl;
   }
 
-  navigateToOrcidSingIn(): void {
+  navigateToOrcidSignIn(): void {
     const loginUrl = `${this.casUrl}/login?${urlParam({
       redirectOrcid: 'true',
       service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,

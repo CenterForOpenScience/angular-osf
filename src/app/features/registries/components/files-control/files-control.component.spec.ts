@@ -73,7 +73,6 @@ describe('Component: File Control', () => {
 
   it('should have a default value', () => {
     expect(component.fileIsUploading()).toBeFalsy();
-    expect(component.isFolderOpening()).toBeFalsy();
   });
 
   it('should called the helpScoutService', () => {

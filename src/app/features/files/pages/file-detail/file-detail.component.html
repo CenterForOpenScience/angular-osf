@@ -23,7 +23,7 @@
     </div>
 
     <div class="flex gap-3 ml-auto sm-round-padding-btn">
-      @if (!isAnonymous() && !hasViewOnly()) {
+      @if (!isAnonymous() && !hasViewOnly() && hasWriteAccess()) {
         <p-button
           severity="secondary"
           [label]="'files.detail.actions.addCommunityMetadata' | translate"

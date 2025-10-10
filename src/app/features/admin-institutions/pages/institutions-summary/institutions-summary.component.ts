@@ -207,10 +207,27 @@ export class InstitutionsSummaryComponent implements OnInit {
 
   private setStorageEffect() {
     effect(() => {
-      const storage = this.storageRegionSearch();
+      const storages = this.storageRegionSearch();
 
-      this.storageLabels.set(storage.map((result) => result.label));
-      this.storageDataset.set([{ label: '', data: storage.map((result) => +result.value) }]);
+      const aggregatedMap = storages.reduce((acc, current) => {
+        const currentValue = acc.get(current.label) ?? 0;
+        acc.set(current.label, currentValue + +current.value);
+        return acc;
+      }, new Map<string, number>());
+
+      const aggregatedResults = Array.from(aggregatedMap.entries()).map(([label, value]) => ({
+        label: label,
+        value: value,
+      }));
+
+      this.storageLabels.set(aggregatedResults.map((result) => result.label));
+
+      this.storageDataset.set([
+        {
+          label: '',
+          data: aggregatedResults.map((result) => result.value),
+        },
+      ]);
     });
   }
 

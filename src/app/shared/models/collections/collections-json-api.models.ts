@@ -1,4 +1,10 @@
-import { BrandDataJsonApi, CollectionsProviderAttributesJsonApi, JsonApiResponse } from '@shared/models';
+import {
+  BaseNodeDataJsonApi,
+  BrandDataJsonApi,
+  CollectionsProviderAttributesJsonApi,
+  JsonApiResponse,
+  UserDataErrorResponseJsonApi,
+} from '@shared/models';
 
 export interface CollectionProviderResponseJsonApi {
   id: string;
@@ -94,44 +100,9 @@ export interface CollectionSubmissionWithGuidJsonApi {
   };
   embeds: {
     guid: {
-      data: {
-        id: string;
-        type: string;
-        attributes: {
-          title: string;
-          description: string;
-          category: string;
-          date_created: string;
-          date_modified: string;
-          public: boolean;
-        };
-        links: {
-          html: string;
-        };
-        relationships: {
-          bibliographic_contributors: {
-            links: {
-              related: {
-                href: string;
-              };
-            };
-          };
-        };
-      };
+      data: BaseNodeDataJsonApi;
     };
-    creator?: {
-      data: {
-        attributes: {
-          full_name: string;
-        };
-        id: string;
-      };
-    };
-  };
-  links: {
-    meta: {
-      total: number;
-    };
+    creator?: UserDataErrorResponseJsonApi;
   };
 }
 

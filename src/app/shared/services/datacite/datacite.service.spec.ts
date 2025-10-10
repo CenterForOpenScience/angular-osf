@@ -143,7 +143,6 @@ describe('DataciteService', () => {
 
       service.logFileView(targetId, targetType).subscribe();
 
-      // First request: GET identifiers
       const reqGet = httpMock.expectOne(`${apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`);
       expect(reqGet.request.method).toBe('GET');
       reqGet.flush({
@@ -156,7 +155,6 @@ describe('DataciteService', () => {
         ],
       });
 
-      // Second request: POST to datacite tracker
       assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.VIEW);
     });
 
@@ -167,7 +165,6 @@ describe('DataciteService', () => {
 
       service.logFileDownload(targetId, targetType).subscribe();
 
-      // First request: GET identifiers
       const reqGet = httpMock.expectOne(`${apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`);
       expect(reqGet.request.method).toBe('GET');
       reqGet.flush({
@@ -180,7 +177,6 @@ describe('DataciteService', () => {
         ],
       });
 
-      // Second request: POST to datacite tracker
       assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.DOWNLOAD);
     });
 

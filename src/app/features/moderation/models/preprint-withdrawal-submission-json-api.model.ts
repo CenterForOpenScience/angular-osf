@@ -1,4 +1,4 @@
-import { JsonApiResponseWithMeta, MetaJsonApi } from '@osf/shared/models';
+import { JsonApiResponseWithMeta, MetaJsonApi, UserDataErrorResponseJsonApi } from '@osf/shared/models';
 
 export type PreprintSubmissionWithdrawalResponseJsonApi = JsonApiResponseWithMeta<
   PreprintWithdrawalSubmissionDataJsonApi[],
@@ -35,12 +35,5 @@ interface PreprintWithdrawalSubmissionEmbedsJsonApi {
       };
     };
   };
-  creator: {
-    data: {
-      id: string;
-      attributes: {
-        full_name: string;
-      };
-    };
-  };
+  creator: UserDataErrorResponseJsonApi;
 }

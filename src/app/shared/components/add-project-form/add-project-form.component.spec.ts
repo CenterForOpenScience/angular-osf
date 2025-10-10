@@ -1,44 +1,28 @@
-import { provideStore, Store } from '@ngxs/store';
-
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { UserSelectors, UserState } from '@core/store/user';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
+import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
-import { MOCK_STORE, MOCK_USER } from '@osf/shared/mocks';
+import { MOCK_USER } from '@osf/shared/mocks';
 import { ProjectForm } from '@osf/shared/models';
 import { ProjectModel } from '@osf/shared/models/projects';
-import { GetMyProjects, MyResourcesState } from '@osf/shared/stores';
+import { InstitutionsSelectors, ProjectsSelectors, RegionsSelectors } from '@osf/shared/stores';
 import { AffiliatedInstitutionSelectComponent, ProjectSelectorComponent } from '@shared/components';
-import { InstitutionsState } from '@shared/stores/institutions';
-import { RegionsState } from '@shared/stores/regions';
 
 import { AddProjectFormComponent } from './add-project-form.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AddProjectFormComponent', () => {
   let component: AddProjectFormComponent;
   let fixture: ComponentFixture<AddProjectFormComponent>;
-  let store: Store;
-
-  const mockProjects = [
-    { id: '1', title: 'Project 1' },
-    { id: '2', title: 'Project 2' },
-  ];
-
-  const mockAffiliations = [
-    { id: 'aff1', name: 'Affiliation 1', assets: { logo: 'logo1.png' } },
-    { id: 'aff2', name: 'Affiliation 2', assets: { logo: 'logo2.png' } },
-  ];
 
   const createProjectForm = (): FormGroup<ProjectForm> => {
     return new FormGroup<ProjectForm>({
@@ -62,36 +46,49 @@ describe('AddProjectFormComponent', () => {
     });
   };
 
-  const createMockStoreState = () => ({
-    myResources: { projects: mockProjects, loading: false, error: null },
-    institutions: { userInstitutions: mockAffiliations, loading: false, error: null },
-    regions: { regions: { data: [], loading: false, error: null } },
-  });
-
   beforeEach(async () => {
-    MOCK_STORE.selectSignal.mockImplementation((selector) => {
-      if (selector === UserSelectors.getCurrentUser) return () => signal(MOCK_USER);
-      return () => null;
-    });
-
     await TestBed.configureTestingModule({
       imports: [
         AddProjectFormComponent,
-        MockPipe(TranslatePipe),
-        MockComponents(ProjectSelectorComponent, AffiliatedInstitutionSelectComponent),
+        OSFTestingModule,
+        ...MockComponents(AffiliatedInstitutionSelectComponent, ProjectSelectorComponent),
       ],
       providers: [
-        provideStore([MyResourcesState, InstitutionsState, RegionsState, UserState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        provideMockStore({
+          signals: [
+            {
+              selector: UserSelectors.getCurrentUser,
+              value: signal(MOCK_USER),
+            },
+            {
+              selector: ProjectsSelectors.getProjects,
+              value: signal([]),
+            },
+            {
+              selector: ProjectsSelectors.getProjectsLoading,
+              value: signal(false),
+            },
+            {
+              selector: RegionsSelectors.getRegions,
+              value: signal([]),
+            },
+            {
+              selector: RegionsSelectors.areRegionsLoading,
+              value: signal(false),
+            },
+            {
+              selector: InstitutionsSelectors.getUserInstitutions,
+              value: signal([]),
+            },
+            {
+              selector: InstitutionsSelectors.areUserInstitutionsLoading,
+              value: signal(false),
+            },
+          ],
+        }),
         MockProvider(DynamicDialogRef, { close: jest.fn() }),
-        MockProvider(TranslateService),
-        MockProvider(Store, MOCK_STORE),
       ],
     }).compileComponents();
-
-    store = TestBed.inject(Store);
-    store.reset(createMockStoreState());
 
     fixture = TestBed.createComponent(AddProjectFormComponent);
     component = fixture.componentInstance;
@@ -103,14 +100,6 @@ describe('AddProjectFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should load projects on init', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-    const action = new GetMyProjects(1, DEFAULT_TABLE_PARAMS.rows, {});
-
-    store.dispatch(action);
-    expect(dispatchSpy).toHaveBeenCalledWith(action);
   });
 
   it('should update template when onTemplateChange is called with a project', () => {

@@ -27,7 +27,7 @@ import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FilesTreeComponent, FileUploadDialogComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { ClearFileDirective } from '@osf/shared/directives';
-import { FileModel } from '@osf/shared/models';
+import { FileFolderModel, FileModel } from '@osf/shared/models';
 import { CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
 
 import {
@@ -80,7 +80,6 @@ export class FilesControlComponent implements OnDestroy {
   readonly dataLoaded = signal(false);
 
   fileIsUploading = signal(false);
-  isFolderOpening = signal(false);
 
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
@@ -101,6 +100,13 @@ export class FilesControlComponent implements OnDestroy {
           .subscribe(() => {
             this.dataLoaded.set(true);
           });
+      }
+    });
+
+    effect(() => {
+      const currentFolder = this.currentFolder();
+      if (currentFolder) {
+        this.updateFilesList().subscribe();
       }
     });
   }
@@ -147,7 +153,7 @@ export class FilesControlComponent implements OnDestroy {
     const currentFolder = this.currentFolder();
     if (currentFolder?.links.filesLink) {
       this.actions.setFilesIsLoading(true);
-      return this.actions.getFiles(currentFolder?.links.filesLink).pipe(take(1));
+      return this.actions.getFiles(currentFolder?.links.filesLink, 1).pipe(take(1));
     }
 
     return EMPTY;
@@ -197,6 +203,14 @@ export class FilesControlComponent implements OnDestroy {
   selectFile(file: FileModel): void {
     if (this.filesViewOnly()) return;
     this.attachFile.emit(file);
+  }
+
+  onLoadFiles(event: { link: string; page: number }) {
+    this.actions.getFiles(event.link, event.page);
+  }
+
+  setCurrentFolder(folder: FileFolderModel) {
+    this.actions.setCurrentFolder(folder);
   }
 
   ngOnDestroy(): void {

@@ -3,9 +3,9 @@ import { MockProvider } from 'ng-mocks';
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
-
 import { DoughnutChartComponent } from './doughnut-chart.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('DoughnutChartComponent', () => {
   let component: DoughnutChartComponent;
@@ -13,8 +13,8 @@ describe('DoughnutChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DoughnutChartComponent],
-      providers: [TranslateServiceMock, MockProvider(PLATFORM_ID, 'server')],
+      imports: [DoughnutChartComponent, OSFTestingModule],
+      providers: [MockProvider(PLATFORM_ID, 'server')],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DoughnutChartComponent);

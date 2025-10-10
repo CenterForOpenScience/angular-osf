@@ -37,31 +37,44 @@ export class ConfirmEmailComponent {
   }
 
   closeDialog() {
-    let isMerge = this.email.isMerge;
+    const isMerge = this.email.isMerge;
     this.actions
       .deleteEmail(this.email.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        let showSuccessText = isMerge ? 'home.confirmEmail.merge.emailNotAdded' : 'home.confirmEmail.add.emailNotAdded';
-        this.toastService.showSuccess(showSuccessText, { name: this.email.emailAddress });
-        this.dialogRef.close();
+      .subscribe({
+        next: () => {
+          const showSuccessText = isMerge
+            ? 'home.confirmEmail.merge.emailNotAdded'
+            : 'home.confirmEmail.add.emailNotAdded';
+          this.toastService.showSuccess(showSuccessText, { name: this.email.emailAddress });
+          this.dialogRef.close();
+        },
+        error: () => {
+          const showErrorText = isMerge ? 'home.confirmEmail.merge.denyError' : 'home.confirmEmail.add.denyError';
+          this.toastService.showError(showErrorText, { name: this.email.emailAddress });
+          this.dialogRef.close();
+        },
       });
   }
 
   verifyEmail() {
-    let isMerge = this.email.isMerge;
+    const isMerge = this.email.isMerge;
     this.actions
       .verifyEmail(this.email.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          let showSuccessText = isMerge
+          const showSuccessText = isMerge
             ? 'home.confirmEmail.merge.emailVerified'
             : 'home.confirmEmail.add.emailVerified';
           this.toastService.showSuccess(showSuccessText, { name: this.email.emailAddress });
           this.dialogRef.close();
         },
-        error: () => this.dialogRef.close(),
+        error: () => {
+          const showErrorText = isMerge ? 'home.confirmEmail.merge.verifyError' : 'home.confirmEmail.add.verifyError';
+          this.toastService.showError(showErrorText, { name: this.email.emailAddress });
+          this.dialogRef.close();
+        },
       });
   }
 }

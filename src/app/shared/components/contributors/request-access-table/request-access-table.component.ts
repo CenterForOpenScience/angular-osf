@@ -56,7 +56,7 @@ export class RequestAccessTableComponent {
     this.customDialogService.open(EducationHistoryDialogComponent, {
       header: 'project.contributors.table.headers.education',
       width: '552px',
-      data: requestAccessItem.creator.education,
+      data: requestAccessItem.creator?.education,
     });
   }
 
@@ -64,7 +64,7 @@ export class RequestAccessTableComponent {
     this.customDialogService.open(EmploymentHistoryDialogComponent, {
       header: 'project.contributors.table.headers.employment',
       width: '552px',
-      data: requestAccessItem.creator.employment,
+      data: requestAccessItem.creator?.employment,
     });
   }
 }

@@ -19,6 +19,8 @@ import {
   ResponseJsonApi,
 } from '@osf/shared/models';
 
+import { UserMapper } from '../user';
+
 export class CollectionsMapper {
   static fromGetCollectionProviderResponse(response: CollectionProviderResponseJsonApi): CollectionProvider {
     return {
@@ -113,35 +115,39 @@ export class CollectionsMapper {
     response: ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
   ): PaginatedData<CollectionSubmissionWithGuid[]> {
     return {
-      data: response.data.map((submission) => ({
-        id: submission.id,
-        type: submission.type,
-        nodeId: submission.embeds.guid.data.id,
-        nodeUrl: submission.embeds.guid.data.links.html,
-        title: submission.embeds.guid.data.attributes.title,
-        description: submission.embeds.guid.data.attributes.description,
-        category: submission.embeds.guid.data.attributes.category,
-        dateCreated: submission.embeds.guid.data.attributes.date_created,
-        dateModified: submission.embeds.guid.data.attributes.date_modified,
-        public: submission.embeds.guid.data.attributes.public,
-        reviewsState: submission.attributes.reviews_state,
-        collectedType: submission.attributes.collected_type,
-        status: submission.attributes.status,
-        volume: submission.attributes.volume,
-        issue: submission.attributes.issue,
-        programArea: submission.attributes.program_area,
-        schoolType: submission.attributes.school_type,
-        studyDesign: submission.attributes.study_design,
-        dataType: submission.attributes.data_type,
-        disease: submission.attributes.disease,
-        gradeLevels: submission.attributes.grade_levels,
-        creator: submission.embeds.creator
-          ? {
-              id: submission.embeds.creator.data.id,
-              fullName: submission.embeds.creator.data.attributes.full_name,
-            }
-          : undefined,
-      })),
+      data: response.data.map((submission) => {
+        const creator = UserMapper.getUserInfo(submission.embeds.creator);
+
+        return {
+          id: submission.id,
+          type: submission.type,
+          nodeId: submission.embeds.guid.data.id,
+          nodeUrl: submission.embeds.guid.data.links.html,
+          title: submission.embeds.guid.data.attributes.title,
+          description: submission.embeds.guid.data.attributes.description,
+          category: submission.embeds.guid.data.attributes.category,
+          dateCreated: submission.embeds.guid.data.attributes.date_created,
+          dateModified: submission.embeds.guid.data.attributes.date_modified,
+          public: submission.embeds.guid.data.attributes.public,
+          reviewsState: submission.attributes.reviews_state,
+          collectedType: submission.attributes.collected_type,
+          status: submission.attributes.status,
+          volume: submission.attributes.volume,
+          issue: submission.attributes.issue,
+          programArea: submission.attributes.program_area,
+          schoolType: submission.attributes.school_type,
+          studyDesign: submission.attributes.study_design,
+          dataType: submission.attributes.data_type,
+          disease: submission.attributes.disease,
+          gradeLevels: submission.attributes.grade_levels,
+          creator: creator
+            ? {
+                id: creator?.id,
+                fullName: creator?.fullName,
+              }
+            : undefined,
+        } as CollectionSubmissionWithGuid;
+      }),
       totalCount: response.meta.total,
       pageSize: response.meta.per_page,
     };
@@ -161,7 +167,7 @@ export class CollectionsMapper {
       comment: action.attributes.comment,
       targetId: action.relationships.target.data.id,
       targetNodeId: action.relationships.target.data.id.split('-')[0],
-      createdBy: action.embeds.creator.data.attributes.full_name,
+      createdBy: UserMapper.getUserInfo(action.embeds.creator)?.fullName || '',
     }));
   }
 

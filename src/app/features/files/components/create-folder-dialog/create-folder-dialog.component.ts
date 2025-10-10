@@ -7,7 +7,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
+import { forbiddenFileNameCharacters, InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
 
 @Component({
@@ -23,7 +23,11 @@ export class CreateFolderDialogComponent {
   readonly folderForm = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
-      validators: [CustomValidators.requiredTrimmed()],
+      validators: [
+        CustomValidators.requiredTrimmed(),
+        CustomValidators.forbiddenCharactersValidator(forbiddenFileNameCharacters),
+        CustomValidators.noPeriodAtEnd(),
+      ],
     }),
   });
 
