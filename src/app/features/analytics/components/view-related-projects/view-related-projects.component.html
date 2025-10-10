@@ -1,8 +1,8 @@
 <osf-sub-header
   [title]="title()"
   [showButton]="isAuthenticated()"
-  [buttonLabel]="'project.overview.actions.forkProjectLabel' | translate"
-  (buttonClick)="handleForkResource()"
+  [buttonLabel]="mainActionMessage()"
+  (buttonClick)="handleMainAction()"
 />
 
 <div class="flex flex-column flex-1 bg-white gap-5 p-3 sm:p-4">
@@ -71,13 +71,11 @@
               />
             }
           </div>
-          @if (isShowingDuplicates()) {
-            <p-button
-              [label]="'common.buttons.view' | translate"
-              severity="secondary"
-              [routerLink]="['/', relatedItem.id]"
-            />
-          }
+          <p-button
+            [label]="'common.buttons.view' | translate"
+            severity="secondary"
+            [routerLink]="['/', relatedItem.id]"
+          />
         </div>
       }
 

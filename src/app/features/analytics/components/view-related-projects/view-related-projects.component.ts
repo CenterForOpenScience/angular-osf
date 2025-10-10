@@ -25,7 +25,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { RelatedItemsType } from '@osf/features/analytics/enums/related-items-type';
-import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
+import {
+  DeleteComponentDialogComponent,
+  ForkDialogComponent,
+  LinkResourceDialogComponent,
+} from '@osf/features/project/overview/components';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import {
   ClearRegistryOverview,
@@ -41,6 +45,7 @@ import {
   TruncatedTextComponent,
 } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { ToolbarResource } from '@osf/shared/models';
 import { Duplicate } from '@osf/shared/models/duplicates';
 import { CustomDialogService } from '@osf/shared/services';
@@ -82,6 +87,7 @@ export class ViewRelatedProjectsComponent implements OnInit {
   isLoading = select(RelatedSelectors.getRelatedLoading);
   totalDuplicates = select(RelatedSelectors.getRelatedTotalCount);
   isAuthenticated = select(UserSelectors.isAuthenticated);
+  isMedium = toSignal(inject(IS_MEDIUM));
 
   title = computed(() => {
     switch (this.itemType()) {
@@ -107,6 +113,15 @@ export class ViewRelatedProjectsComponent implements OnInit {
         return this.translateService.instant('project.overview.dialog.fork.forksMessage');
       case RelatedItemsType.Linked:
         return this.translateService.instant('project.analytics.viewRelated.linkedProjectsMessage');
+    }
+  });
+
+  mainActionMessage = computed(() => {
+    switch (this.itemType()) {
+      case RelatedItemsType.Duplicates:
+        return this.translateService.instant('project.overview.actions.forkProjectLabel');
+      case RelatedItemsType.Linked:
+        return this.translateService.instant('project.overview.components.linkProjectsButton');
     }
   });
 
@@ -240,6 +255,26 @@ export class ViewRelatedProjectsComponent implements OnInit {
         this.handleDeleteFork(resourceId);
         break;
     }
+  }
+  handleMainAction() {
+    switch (this.itemType()) {
+      case RelatedItemsType.Duplicates:
+        this.handleForkResource();
+        return;
+
+      case RelatedItemsType.Linked:
+        this.openLinkProjectModal();
+        return;
+    }
+  }
+
+  openLinkProjectModal() {
+    const dialogWidth = this.isMedium() ? '850px' : '95vw';
+
+    this.customDialogService.open(LinkResourceDialogComponent, {
+      header: 'project.overview.dialog.linkProject.header',
+      width: dialogWidth,
+    });
   }
 
   handleForkResource(): void {
