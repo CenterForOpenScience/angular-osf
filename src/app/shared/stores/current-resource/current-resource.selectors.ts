@@ -61,9 +61,4 @@ export class CurrentResourceSelectors {
   static resourceAccessRequestEnabled(state: CurrentResourceStateModel): boolean {
     return state.resourceDetails.data?.accessRequestsEnabled;
   }
-
-  @Selector([CurrentResourceState])
-  static getCurrentUserPermissions(currentResourceState: CurrentResourceStateModel): string[] {
-    return currentResourceState.resourceDetails.data.currentUserPermissions || [];
-  }
 }

@@ -26,9 +26,9 @@ import {
 })
 export class RegistrationRecentActivityComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
-  readonly #environment = inject(ENVIRONMENT);
+  readonly environment = inject(ENVIRONMENT);
 
-  readonly pageSize = this.#environment.activityLogs?.pageSize ?? ACTIVITY_LOGS_DEFAULT_PAGE_SIZE;
+  readonly pageSize = this.environment.activityLogs?.pageSize ?? ACTIVITY_LOGS_DEFAULT_PAGE_SIZE;
 
   private readonly registrationId: string = (this.route.snapshot.params['id'] ??
     this.route.parent?.snapshot.params['id']) as string;

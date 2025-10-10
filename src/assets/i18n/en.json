@@ -591,6 +591,8 @@
         "cancel": "Cancel",
         "next": "Next",
         "selectPermissions": "Please select which permissions you want to give to contributor",
+        "addingContributorsTo": "Adding contributor(s) <b>{{names}}</b> to <b>{{projectName}}</b>.",
+        "addContributorsToComponents": "You can also add the contributor(s) to any components on which you are an admin.",
         "bibliographicContributor": "Bibliographic Contributor",
         "addUnregisteredContributor": "Add Unregistered Contributor",
         "addRegisteredContributor": "Add Registered Contributor",
