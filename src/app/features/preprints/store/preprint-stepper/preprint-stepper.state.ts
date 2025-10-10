@@ -15,7 +15,7 @@ import {
   PreprintsProjectsService,
   PreprintsService,
 } from '@osf/features/preprints/services';
-import { FileModel } from '@osf/shared/models';
+import { FileFolderModel, FileModel } from '@osf/shared/models';
 import { handleSectionError } from '@shared/helpers';
 import { FilesService } from '@shared/services';
 
@@ -33,7 +33,6 @@ import {
   FetchPreprintFilesLinks,
   FetchPreprintPrimaryFile,
   FetchPreprintProject,
-  FetchProjectFiles,
   FetchProjectFilesByLink,
   PreprintStepperStateModel,
   ResetState,
@@ -41,6 +40,7 @@ import {
   SaveLicense,
   SetCurrentFolder,
   SetInstitutionsChanged,
+  SetProjectRootFolder,
   SetSelectedPreprintFileSource,
   SetSelectedPreprintProviderId,
   SubmitPreprint,
@@ -89,7 +89,11 @@ const DefaultState: PreprintStepperStateModel = {
     error: null,
   },
   hasBeenSubmitted: false,
-  currentFolder: null,
+  currentFolder: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
   institutionsChanged: false,
 };
 
@@ -261,16 +265,21 @@ export class PreprintStepperState {
     );
   }
 
-  @Action(FetchProjectFiles)
-  getProjectFiles(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFiles) {
-    ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
-
-    return this.preprintFilesService.getProjectFiles(action.projectId).pipe(
-      tap((files: FileModel[]) => {
+  @Action(SetProjectRootFolder)
+  setProjectRootFolder(ctx: StateContext<PreprintStepperStateModel>, action: SetProjectRootFolder) {
+    ctx.setState(
+      patch({
+        currentFolder: patch({
+          isLoading: true,
+        }),
+      })
+    );
+    return this.preprintFilesService.getProjectRootFolder(action.projectId).pipe(
+      tap((folder: FileFolderModel) => {
         ctx.setState(
           patch({
-            projectFiles: patch({
-              data: files,
+            currentFolder: patch({
+              data: folder,
               isLoading: false,
             }),
           })
@@ -279,12 +288,13 @@ export class PreprintStepperState {
       catchError((error) => {
         ctx.setState(
           patch({
-            projectFiles: patch({
-              data: [],
+            currentFolder: patch({
+              data: null,
+              isLoading: false,
             }),
           })
         );
-        return handleSectionError(ctx, 'projectFiles', error);
+        return handleSectionError(ctx, 'currentFolder', error);
       })
     );
   }
@@ -525,7 +535,13 @@ export class PreprintStepperState {
 
   @Action(SetCurrentFolder)
   setCurrentFolder(ctx: StateContext<PreprintStepperStateModel>, action: SetCurrentFolder) {
-    ctx.patchState({ currentFolder: action.folder });
+    ctx.setState(
+      patch({
+        currentFolder: patch({
+          data: action.folder,
+        }),
+      })
+    );
   }
 
   @Action(SetInstitutionsChanged)
