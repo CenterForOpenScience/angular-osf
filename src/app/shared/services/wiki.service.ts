@@ -92,9 +92,13 @@ export class WikiService {
   }
 
   getWikiList(resourceType: ResourceType, resourceId: string): Observable<WikisWithMeta> {
+    const params: Record<string, unknown> = {
+      'page[size]': 100,
+    };
+
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
 
-    return this.jsonApiService.get<WikiJsonApiResponseWithMeta>(baseUrl).pipe(
+    return this.jsonApiService.get<WikiJsonApiResponseWithMeta>(baseUrl, params).pipe(
       map((response) => ({
         wikis: response.data.map((wiki) => WikiMapper.fromGetWikiResponse(wiki)),
         meta: response.meta,
@@ -104,14 +108,19 @@ export class WikiService {
 
   getComponentsWikiList(resourceType: ResourceType, resourceId: string): Observable<ComponentWiki[]> {
     const resourcePath = this.urlMap.get(resourceType);
+    const params: Record<string, unknown> = {
+      embed: 'wikis',
+      'page[size]': 100,
+    };
     return this.jsonApiService
-      .get<ComponentsWikiJsonApiResponse>(`${this.apiUrl}/${resourcePath}/${resourceId}/children/?embed=wikis`)
+      .get<ComponentsWikiJsonApiResponse>(`${this.apiUrl}/${resourcePath}/${resourceId}/children/`, params)
       .pipe(map((response) => response.data.map((component) => WikiMapper.fromGetComponentsWikiResponse(component))));
   }
 
   getWikiVersions(wikiId: string): Observable<WikiVersion[]> {
     const params: Record<string, unknown> = {
       embed: 'user',
+      'page[size]': 100,
       'fields[users]': 'full_name',
     };
 
