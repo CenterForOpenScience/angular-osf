@@ -13,6 +13,7 @@ export * from './form-validation.helper';
 export * from './get-resource-types.helper';
 export * from './header-style.helper';
 export * from './http.helper';
+export * from './normalize-quotes';
 export * from './password.helper';
 export * from './path-join.helper';
 export * from './remove-nullable.helper';

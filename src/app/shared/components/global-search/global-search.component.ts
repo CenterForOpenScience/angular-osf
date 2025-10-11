@@ -21,6 +21,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { SearchFiltersComponent } from '@shared/components/search-filters/search-filters.component';
 import { ResourceType } from '@shared/enums';
+import { normalizeQuotes } from '@shared/helpers';
 import { DiscoverableFilter, FilterOption, TabOption } from '@shared/models';
 import {
   ClearFilterSearchResults,
@@ -248,7 +249,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (newValue) => {
           if (!newValue) newValue = null;
-          this.actions.setSearchText(newValue);
+          this.actions.setSearchText(normalizeQuotes(newValue));
           this.router.navigate([], {
             relativeTo: this.route,
             queryParams: { search: newValue },
