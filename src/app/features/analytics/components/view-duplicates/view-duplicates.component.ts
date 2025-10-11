@@ -41,8 +41,8 @@ import {
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { ToolbarResource } from '@osf/shared/models';
 import { Duplicate } from '@osf/shared/models/duplicates';
-import { CustomDialogService } from '@osf/shared/services';
-import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
+import { CustomDialogService, LoaderService } from '@osf/shared/services';
+import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates, GetResourceWithChildren } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-view-duplicates',
@@ -65,6 +65,7 @@ import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/sha
 })
 export class ViewDuplicatesComponent {
   private customDialogService = inject(CustomDialogService);
+  private loaderService = inject(LoaderService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -125,6 +126,7 @@ export class ViewDuplicatesComponent {
     clearDuplicates: ClearDuplicates,
     clearProject: ClearProjectOverview,
     clearRegistration: ClearRegistryOverview,
+    getComponentsTree: GetResourceWithChildren,
   });
 
   constructor() {
@@ -230,25 +232,38 @@ export class ViewDuplicatesComponent {
   }
 
   private handleDeleteFork(id: string): void {
-    this.customDialogService
-      .open(DeleteComponentDialogComponent, {
-        header: 'project.overview.dialog.deleteComponent.header',
-        width: '650px',
-        data: {
-          componentId: id,
-          resourceType: this.resourceType(),
-          isForksContext: true,
-          currentPage: parseInt(this.currentPage()),
-          pageSize: this.pageSize,
-        },
-      })
-      .onClose.subscribe((result) => {
-        if (result?.success) {
-          const resource = this.currentResource();
-          if (resource) {
-            this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
-          }
-        }
-      });
+    const resourceType = this.resourceType();
+    if (!resourceType) return;
+
+    this.loaderService.show();
+
+    this.actions.getComponentsTree(id, id, resourceType).subscribe({
+      next: () => {
+        this.loaderService.hide();
+        this.customDialogService
+          .open(DeleteComponentDialogComponent, {
+            header: 'project.overview.dialog.deleteComponent.header',
+            width: '650px',
+            data: {
+              componentId: id,
+              resourceType: resourceType,
+              isForksContext: true,
+              currentPage: parseInt(this.currentPage()),
+              pageSize: this.pageSize,
+            },
+          })
+          .onClose.subscribe((result) => {
+            if (result?.success) {
+              const resource = this.currentResource();
+              if (resource) {
+                this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+              }
+            }
+          });
+      },
+      error: () => {
+        this.loaderService.hide();
+      },
+    });
   }
 }

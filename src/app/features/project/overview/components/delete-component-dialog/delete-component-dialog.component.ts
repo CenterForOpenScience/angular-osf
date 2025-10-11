@@ -5,21 +5,24 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
+import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
+import { DeleteProject, SettingsSelectors } from '@osf/features/project/settings/store';
 import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
 import { ScientistsNames } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { ToastService } from '@osf/shared/services';
+import { CurrentResourceSelectors } from '@osf/shared/stores';
 
-import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
+import { GetComponents, ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-delete-component-dialog',
-  imports: [TranslatePipe, Button, InputText, FormsModule],
+  imports: [TranslatePipe, Button, InputText, FormsModule, Skeleton],
   templateUrl: './delete-component-dialog.component.html',
   styleUrl: './delete-component-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,7 +36,9 @@ export class DeleteComponentDialogComponent {
   scientistNames = ScientistsNames;
   project = select(ProjectOverviewSelectors.getProject);
   registration = select(RegistryOverviewSelectors.getRegistry);
-  isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
+  isSubmitting = select(SettingsSelectors.isSettingsSubmitting);
+  isLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
+  components = select(CurrentResourceSelectors.getResourceWithChildren);
   userInput = signal('');
   selectedScientist = computed(() => {
     const names = Object.values(this.scientistNames);
@@ -52,9 +57,21 @@ export class DeleteComponentDialogComponent {
     return null;
   });
 
+  hasAdminAccessForAllComponents = computed(() => {
+    const components = this.components();
+    if (!components || !components.length) return false;
+
+    return components.every((component) => component.permissions?.includes(UserPermissions.Admin));
+  });
+
+  hasSubcomponents = computed(() => {
+    const components = this.components();
+    return components && components.length > 1;
+  });
+
   actions = createDispatchMap({
     getComponents: GetComponents,
-    deleteComponent: DeleteComponent,
+    deleteComponent: DeleteProject,
   });
 
   isInputValid(): boolean {
@@ -66,25 +83,24 @@ export class DeleteComponentDialogComponent {
   }
 
   handleDeleteComponent(): void {
-    const resource = this.currentResource();
-    const componentId = this.componentId();
+    const components = this.components();
 
-    if (!componentId || !resource) return;
+    if (!components?.length) return;
 
     this.actions
-      .deleteComponent(componentId)
+      .deleteComponent(components)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.dialogRef.close({ success: true });
 
           const isForksContext = this.dialogConfig.data.isForksContext;
+          const resource = this.currentResource();
 
-          if (!isForksContext) {
+          if (!isForksContext && resource) {
             this.actions.getComponents(resource.id);
           }
-        },
-        complete: () => {
+
           this.toastService.showSuccess('project.overview.dialog.toast.deleteComponent.success');
         },
       });

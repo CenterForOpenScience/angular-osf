@@ -823,11 +823,14 @@
           }
         },
         "deleteComponent": {
-          "header": "Are you sure you want to delete this component?",
+          "header": "Delete component",
           "confirmButton": "Delete",
           "cancelButton": "Cancel",
           "message": "It will no longer be available to other contributors on the project.",
-          "confirmation": "Type the following to continue:"
+          "listMessage": "You are about to delete the following:",
+          "warningMessage": "This component contains subcomponents. To delete this component, you must also delete all subcomponents. This action is irreversible.",
+          "confirmation": "Type the following to continue:",
+          "noPermissionsMessage": "You do not have permissions to delete this component and its subcomponents. <br/><br/> To delete, you must have admin permissions across all objects. Please check your permissions and try again. <br/><br/> Contact support at support@osf.io if you have any questions."
         },
         "deleteNodeLink": {
           "header": "Delete Link",

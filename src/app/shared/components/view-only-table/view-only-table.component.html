@@ -1,4 +1,4 @@
-@if (isLoading() || tableData().items.length) {
+@if (isLoading() || tableData().items?.length) {
   <p-table [value]="isLoading() ? skeletonData : tableData().items" class="view-only-table">
     <ng-template #header>
       <tr>
@@ -35,14 +35,15 @@
             {{ item.name }}
           </td>
           <td>
-            <div class="relative flex align-items-center">
+            <div class="relative">
               <input
                 [id]="item.link"
                 [attr.aria-label]="'Link for ' + item.link"
                 pInputText
-                class="h-auto text-base w-max py-2 pl-3 pr-5"
+                class="h-auto text-base w-full py-2 pl-3 pr-5"
                 type="text"
                 [value]="item.link"
+                readonly
               />
 
               <osf-copy-button class="icon-copy-btn absolute" [copyItem]="item.link"></osf-copy-button>
