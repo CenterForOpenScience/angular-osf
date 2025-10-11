@@ -1,4 +1,4 @@
-import { EMPTY, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
@@ -26,7 +26,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       let errorMessage: string;
       if (req.context.get(BYPASS_ERROR_INTERCEPTOR)) {
         sentry.captureException(error);
-        return EMPTY;
+        return throwError(() => error);
       }
 
       if (error.error instanceof ErrorEvent) {

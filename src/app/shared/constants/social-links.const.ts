@@ -12,7 +12,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   {
     id: 2,
     label: 'settings.profileSettings.social.labels.linkedIn',
-    address: 'https://linkedin.com/',
+    address: 'https://linkedin.com/in/',
     placeholder: 'in/userID, profie/view?profileID, or pub/pubID',
     key: 'linkedIn',
     icon: 'linkedin.svg',

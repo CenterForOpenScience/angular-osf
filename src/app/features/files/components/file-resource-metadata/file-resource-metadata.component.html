@@ -98,11 +98,11 @@
   @if (isResourceContributorsLoading()) {
     <p-skeleton width="100%" height="4rem" />
   } @else {
-    @if (contributors().length && !hasViewOnly()) {
+    @if (hasViewOnly() || contributors().length) {
       <div class="flex flex-column gap-2">
         <h4>{{ 'common.labels.contributors' | translate }}</h4>
 
-        <osf-contributors-list [contributors]="contributors()"></osf-contributors-list>
+        <osf-contributors-list [contributors]="contributors()" [anonymous]="hasViewOnly()"></osf-contributors-list>
       </div>
     }
   }

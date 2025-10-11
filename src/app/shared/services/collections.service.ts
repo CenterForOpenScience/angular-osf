@@ -2,8 +2,10 @@ import { createDispatchMap } from '@ngxs/store';
 
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
+import { HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import {
   CollectionSubmissionReviewAction,
@@ -212,8 +214,11 @@ export class CollectionsService {
       'fields[users]': 'full_name',
     };
 
+    const context = new HttpContext();
+    context.set(BYPASS_ERROR_INTERCEPTOR, true);
+
     return this.jsonApiService
-      .get<ContributorsResponseJsonApi>(contributorsUrl, params)
+      .get<ContributorsResponseJsonApi>(contributorsUrl, params, context)
       .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 

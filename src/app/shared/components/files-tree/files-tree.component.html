@@ -54,29 +54,15 @@
             } @else {
               <div class="files-table-row" tabindex="0">
                 <div class="flex gap-2 table-cell" [class.pl-6]="foldersStack.length">
-                  @if (file.kind !== 'folder') {
-                    <div
-                      class="flex align-items-center gap-2 min-w-0 hover:underline py-1"
-                      (click)="openEntry($event, file)"
-                      (keydown.enter)="openEntry($event, file)"
-                      tabindex="0"
-                    >
-                      <i class="fas fa-file blue-icon"></i>
-                      <span class="entry-title">{{ file?.name ?? '' }}</span>
-                    </div>
-                  } @else {
-                    <div
-                      class="flex gap-2 hover:underline py-1"
-                      (click)="openEntry($event, file)"
-                      (keydown.enter)="openEntry($event, file)"
-                      tabindex="0"
-                    >
-                      <i class="fas fa-folder"></i>
-                      <div class="table-cell entry-title">
-                        {{ file?.name ?? '' }}
-                      </div>
-                    </div>
-                  }
+                  <div
+                    class="flex align-items-center gap-2 hover:underline py-1 max-w-full"
+                    (click)="openEntry($event, file)"
+                    (keydown.enter)="openEntry($event, file)"
+                    tabindex="0"
+                  >
+                    <i [class]="file.kind !== 'folder' ? 'fas fa-file blue-icon' : 'fas fa-folder'"></i>
+                    <span class="entry-title">{{ file?.name ?? '' }}</span>
+                  </div>
                 </div>
 
                 <div class="files-table-cell">
