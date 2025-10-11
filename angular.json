@@ -33,6 +33,7 @@
               "@traptitech/markdown-it-katex"
             ],
             "assets": [
+              "src/favicon.ico",
               "src/assets",
               {
                 "glob": "**/*",
