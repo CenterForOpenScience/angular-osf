@@ -33,9 +33,7 @@ export class DeveloperAppsListComponent implements OnInit {
   readonly developerApplications = select(DeveloperAppsSelectors.getDeveloperApps);
 
   ngOnInit(): void {
-    if (!this.developerApplications().length) {
-      this.actions.getDeveloperApps();
-    }
+    this.actions.getDeveloperApps();
   }
 
   deleteApp(developerApp: DeveloperApp): void {
