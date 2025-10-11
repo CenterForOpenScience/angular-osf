@@ -80,11 +80,29 @@ export class GlobalSearchService {
     return {
       resources: MapResources(response),
       filters: MapFilters(response),
-      count: response.data.attributes.totalResultCount,
+      count: this.parseTotalCount(response),
       self: response.data.links.self,
       first: response.data?.relationships?.searchResultPage.links?.first?.href ?? null,
       next: response.data?.relationships?.searchResultPage.links?.next?.href ?? null,
       previous: response.data?.relationships?.searchResultPage.links?.prev?.href ?? null,
     };
+  }
+
+  private parseTotalCount(response: IndexCardSearchResponseJsonApi) {
+    let totalCount = 0;
+    const rawTotalCount = response.data.attributes.totalResultCount;
+
+    if (typeof rawTotalCount === 'number') {
+      totalCount = rawTotalCount;
+    } else if (
+      typeof rawTotalCount === 'object' &&
+      rawTotalCount !== null &&
+      '@id' in rawTotalCount &&
+      String(rawTotalCount['@id']).includes('ten-thousands-and-more')
+    ) {
+      totalCount = 10000;
+    }
+
+    return totalCount;
   }
 }

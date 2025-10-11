@@ -29,6 +29,7 @@
         <osf-files-selection-actions
           [canUpdateFiles]="canUploadFiles()"
           [selectedFiles]="filesSelection"
+          [hasViewOnly]="hasViewOnly()"
           (deleteSelected)="onDeleteSelected()"
           (moveSelected)="onMoveSelected()"
           (copySelected)="onCopySelected()"
