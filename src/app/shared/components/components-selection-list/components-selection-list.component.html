@@ -21,7 +21,11 @@
     />
   </div>
 
-  @for (item of components(); track item.id) {
-    <osf-component-checkbox-item [item]="item" [tooltipText]="disabledTooltip()" />
+  @for (item of components(); track item.id; let idx = $index) {
+    <osf-component-checkbox-item
+      [item]="item"
+      [tooltipText]="disabledTooltip()"
+      (itemChange)="onItemChange($event, idx)"
+    />
   }
 </div>
