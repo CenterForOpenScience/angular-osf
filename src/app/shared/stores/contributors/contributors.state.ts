@@ -207,7 +207,9 @@ export class ContributorsState {
       .deleteContributor(action.resourceType, action.resourceId, action.contributorId)
       .pipe(
         tap(() => {
-          ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+          if (!action.skipRefresh) {
+            ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+          }
         }),
         catchError((error) => handleSectionError(ctx, 'contributorsList', error))
       );

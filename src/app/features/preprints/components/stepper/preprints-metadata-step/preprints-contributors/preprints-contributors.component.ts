@@ -22,6 +22,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import {
@@ -57,6 +58,7 @@ export class PreprintsContributorsComponent implements OnInit {
   readonly customDialogService = inject(CustomDialogService);
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly router = inject(Router);
 
   initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal<ContributorModel[]>([]);
@@ -169,6 +171,8 @@ export class PreprintsContributorsComponent implements OnInit {
   }
 
   removeContributor(contributor: ContributorModel) {
+    const isDeletingSelf = contributor.userId === this.currentUser()?.id;
+
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
       messageKey: 'project.contributors.removeDialog.message',
@@ -176,13 +180,18 @@ export class PreprintsContributorsComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.preprintId(), ResourceType.Preprint, contributor.userId)
+          .deleteContributor(this.preprintId(), ResourceType.Preprint, contributor.userId, isDeletingSelf)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
-            next: () =>
+            next: () => {
               this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
                 name: contributor.fullName,
-              }),
+              });
+
+              if (isDeletingSelf) {
+                this.router.navigate(['/']);
+              }
+            },
           });
       },
     });

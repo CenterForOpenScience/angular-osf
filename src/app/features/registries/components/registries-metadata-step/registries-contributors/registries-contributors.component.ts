@@ -21,7 +21,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import {
@@ -59,6 +59,7 @@ export class RegistriesContributorsComponent implements OnInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
 
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   currentUser = select(UserSelectors.getCurrentUser);
@@ -182,6 +183,8 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   removeContributor(contributor: ContributorModel) {
+    const isDeletingSelf = contributor.userId === this.currentUser()?.id;
+
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
       messageKey: 'project.contributors.removeDialog.message',
@@ -189,13 +192,18 @@ export class RegistriesContributorsComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.draftId(), ResourceType.DraftRegistration, contributor.userId)
+          .deleteContributor(this.draftId(), ResourceType.DraftRegistration, contributor.userId, isDeletingSelf)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
-            next: () =>
+            next: () => {
               this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
                 name: contributor.fullName,
-              }),
+              });
+
+              if (isDeletingSelf) {
+                this.router.navigate(['/']);
+              }
+            },
           });
       },
     });

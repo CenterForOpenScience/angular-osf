@@ -8,10 +8,6 @@ export const SUBSCRIPTION_EVENTS: SubscriptionEventModel[] = [
     labelKey: 'settings.notifications.notificationPreferences.items.files',
   },
   {
-    event: SubscriptionEvent.GlobalMentions,
-    labelKey: 'settings.notifications.notificationPreferences.items.mentions',
-  },
-  {
     event: SubscriptionEvent.GlobalReviews,
     labelKey: 'settings.notifications.notificationPreferences.items.preprints',
   },
