@@ -9,7 +9,7 @@
         <p-skeleton width="12rem" height="37px"></p-skeleton>
       } @else {
         <h1 data-test-page-heading class="flex align-items-center word-break-word">
-          {{ title() }}
+          {{ title() | fixSpecialChar }}
           @if (tooltip()) {
             <i
               class="fas fa-circle-info ml-1 blue-icon cursor-pointer"

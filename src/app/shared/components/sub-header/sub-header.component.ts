@@ -5,9 +5,11 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { FixSpecialCharPipe } from '@osf/shared/pipes';
+
 @Component({
   selector: 'osf-sub-header',
-  imports: [Button, Tooltip, Skeleton, SafeHtmlPipe],
+  imports: [Button, Tooltip, Skeleton, SafeHtmlPipe, FixSpecialCharPipe],
   templateUrl: './sub-header.component.html',
   styleUrl: './sub-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
