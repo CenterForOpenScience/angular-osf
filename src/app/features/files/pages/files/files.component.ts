@@ -159,6 +159,7 @@ export class FilesComponent {
   currentRootFolder = model<FileLabelModel | null>(null);
 
   fileIsUploading = signal(false);
+  isMoveDialogOpened = signal(false);
 
   sortOptions = ALL_SORT_OPTIONS;
 
@@ -482,6 +483,7 @@ export class FilesComponent {
   moveFiles(files: FileModel[], action: string): void {
     const currentFolder = this.currentFolder();
     this.actions.setMoveDialogCurrentFolder(currentFolder);
+    this.isMoveDialogOpened.set(true);
     this.customDialogService
       .open(MoveFileDialogComponent, {
         header: 'files.dialogs.moveFile.title',
@@ -499,12 +501,17 @@ export class FilesComponent {
         if (result) {
           this.filesSelection = [];
         }
-        const currentRootFolder = this.currentRootFolder();
-        const provider = currentRootFolder?.folder?.provider;
-        if (provider) {
-          this.actions.setCurrentProvider(provider);
-        }
+        this.isMoveDialogOpened.set(false);
+        this.resetProvider();
       });
+  }
+
+  resetProvider() {
+    const currentRootFolder = this.currentRootFolder();
+    const provider = currentRootFolder?.folder?.provider;
+    if (provider) {
+      this.actions.setCurrentProvider(provider);
+    }
   }
 
   createFolder(): void {

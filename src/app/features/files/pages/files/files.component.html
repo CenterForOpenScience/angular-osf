@@ -25,14 +25,16 @@
       </p-select>
     </div>
     @if (filesSelection.length) {
-      <osf-files-selection-actions
-        [canUpdateFiles]="canUploadFiles()"
-        [selectedFiles]="filesSelection"
-        (deleteSelected)="onDeleteSelected()"
-        (moveSelected)="onMoveSelected()"
-        (copySelected)="onCopySelected()"
-        (clearSelection)="onClearSelection()"
-      ></osf-files-selection-actions>
+      @if (!isMoveDialogOpened()) {
+        <osf-files-selection-actions
+          [canUpdateFiles]="canUploadFiles()"
+          [selectedFiles]="filesSelection"
+          (deleteSelected)="onDeleteSelected()"
+          (moveSelected)="onMoveSelected()"
+          (copySelected)="onCopySelected()"
+          (clearSelection)="onClearSelection()"
+        ></osf-files-selection-actions>
+      }
     } @else {
       <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">
         <div class="flex flex-column gap-2 w-full sm:flex-row md:w-max">
@@ -146,6 +148,7 @@
       (setCurrentFolder)="setCurrentFolder($event)"
       (setMoveDialogCurrentFolder)="setMoveDialogCurrentFolder($event)"
       (updateFoldersStack)="onUpdateFoldersStack($event)"
+      (resetFilesProvider)="resetProvider()"
     >
     </osf-files-tree>
   </div>

@@ -99,6 +99,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   unselectFile = output<FileModel>();
   clearSelection = output<void>();
   updateFoldersStack = output<FileFolderModel[]>();
+  resetFilesProvider = output<void>();
 
   readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
@@ -384,18 +385,22 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   moveFile(file: FileModel, action: string): void {
     this.setMoveDialogCurrentFolder.emit(this.currentFolder());
-    this.customDialogService.open(MoveFileDialogComponent, {
-      header: 'files.dialogs.moveFile.title',
-      width: '552px',
-      data: {
-        files: [file],
-        resourceId: this.resourceId(),
-        action: action,
-        storageProvider: this.storage()?.folder.provider,
-        foldersStack: structuredClone(this.foldersStack),
-        initialFolder: structuredClone(this.currentFolder()),
-      },
-    });
+    this.customDialogService
+      .open(MoveFileDialogComponent, {
+        header: 'files.dialogs.moveFile.title',
+        width: '552px',
+        data: {
+          files: [file],
+          resourceId: this.resourceId(),
+          action: action,
+          storageProvider: this.storage()?.folder.provider,
+          foldersStack: structuredClone(this.foldersStack),
+          initialFolder: structuredClone(this.currentFolder()),
+        },
+      })
+      .onClose.subscribe(() => {
+        this.resetFilesProvider.emit();
+      });
   }
 
   copyToClipboard(embedHtml: string): void {
