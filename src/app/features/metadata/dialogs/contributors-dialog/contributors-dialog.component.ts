@@ -19,6 +19,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent } from '@osf/shared/components';
@@ -58,6 +59,7 @@ export class ContributorsDialogComponent implements OnInit {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
   readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly router = inject(Router);
 
   isLoading = select(ContributorsSelectors.isContributorsLoading);
   initialContributors = select(ContributorsSelectors.getContributors);
@@ -178,6 +180,8 @@ export class ContributorsDialogComponent implements OnInit {
   }
 
   removeContributor(contributor: ContributorModel): void {
+    const isDeletingSelf = contributor.userId === this.currentUser()?.id;
+
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
       messageKey: 'project.contributors.removeDialog.message',
@@ -185,13 +189,19 @@ export class ContributorsDialogComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.resourceId, this.resourceType, contributor.userId)
+          .deleteContributor(this.resourceId, this.resourceType, contributor.userId, isDeletingSelf)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
-            next: () =>
+            next: () => {
               this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
                 name: contributor.fullName,
-              }),
+              });
+
+              if (isDeletingSelf) {
+                this.dialogRef.close();
+                this.router.navigate(['/']);
+              }
+            },
           });
       },
     });

@@ -20,7 +20,9 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import { InfoIconComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
@@ -53,10 +55,12 @@ export class ProjectContributorsStepComponent {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly router = inject(Router);
 
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
+  readonly currentUser = select(UserSelectors.getCurrentUser);
 
   private initialContributors = select(ContributorsSelectors.getContributors);
   readonly projectContributors = signal<ContributorModel[]>([]);
@@ -91,6 +95,8 @@ export class ProjectContributorsStepComponent {
   }
 
   handleRemoveContributor(contributor: ContributorModel) {
+    const isDeletingSelf = contributor.userId === this.currentUser()?.id;
+
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
       messageKey: 'project.contributors.removeDialog.message',
@@ -98,13 +104,18 @@ export class ProjectContributorsStepComponent {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.selectedProject()?.id, ResourceType.Project, contributor.userId)
+          .deleteContributor(this.selectedProject()?.id, ResourceType.Project, contributor.userId, isDeletingSelf)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
-            next: () =>
+            next: () => {
               this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
                 name: contributor.fullName,
-              }),
+              });
+
+              if (isDeletingSelf) {
+                this.router.navigate(['/']);
+              }
+            },
           });
       },
     });
