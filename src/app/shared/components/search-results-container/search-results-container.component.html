@@ -22,7 +22,7 @@
         }
 
         <h4 class="result-count">
-          @if (searchCount() > 10000) {
+          @if (searchCount() >= 10000) {
             10 000+ {{ 'collections.searchResults.results' | translate }}
           } @else if (searchCount() > 0) {
             {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}

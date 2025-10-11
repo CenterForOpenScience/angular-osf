@@ -3,7 +3,7 @@ import { ApiData, JsonApiResponse } from '@shared/models';
 export type IndexCardSearchResponseJsonApi = JsonApiResponse<
   {
     attributes: {
-      totalResultCount: number;
+      totalResultCount: number | { '@id': string };
     };
     relationships: {
       searchResultPage: SearchResultPageJsonApi;
