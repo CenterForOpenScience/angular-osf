@@ -37,7 +37,10 @@ export class AddonDialogService {
     return dialogRef.onClose;
   }
 
-  openConfirmAccountConnectionDialog(selectedAccount: AuthorizedAccountModel): Observable<{ success: boolean }> {
+  openConfirmAccountConnectionDialog(
+    selectedAccount: AuthorizedAccountModel,
+    isGoogleDrive = false
+  ): Observable<{ success: boolean }> {
     const dialogRef = this.dialogService.open(ConfirmAccountConnectionModalComponent, {
       focusOnShow: false,
       header: this.translateService.instant('settings.addons.connectAddon.confirmAccount'),
@@ -49,6 +52,7 @@ export class AddonDialogService {
           accountName: selectedAccount.displayName,
         }),
         selectedAccount,
+        isGoogleDrive,
       },
     });
 

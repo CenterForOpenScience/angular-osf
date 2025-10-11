@@ -180,7 +180,11 @@ export class ConfigureAddonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedStorageItemId());
+    if (!this.isGoogleDrive()) {
+      this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedStorageItemId());
+    } else {
+      this.isEditMode.set(true);
+    }
   }
 
   handleDisconnectAccount(): void {
@@ -206,8 +210,16 @@ export class ConfigureAddonComponent implements OnInit {
   toggleEditMode(): void {
     if (!this.isEditMode()) {
       this.resetConfigurationForm();
-      this.handleCreateOperationInvocation(OperationNames.LIST_ROOT_ITEMS, this.selectedStorageItemId());
+      if (!this.isGoogleDrive()) {
+        this.handleCreateOperationInvocation(OperationNames.LIST_ROOT_ITEMS, this.selectedStorageItemId());
+      } else {
+        this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedStorageItemId());
+      }
     } else {
+      if (this.isGoogleDrive()) {
+        this.router.navigate([`${this.baseUrl()}/addons`]);
+        return;
+      }
       this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.addon()!.selectedStorageItemId);
     }
 

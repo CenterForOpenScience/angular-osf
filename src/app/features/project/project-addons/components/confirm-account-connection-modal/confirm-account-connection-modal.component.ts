@@ -32,7 +32,14 @@ export class ConfirmAccountConnectionModalComponent {
 
   handleConnectAddonAccount(): void {
     const selectedAccount = this.dialogConfig.data.selectedAccount;
+    const isGoogleDrive = this.dialogConfig.data.isGoogleDrive;
+
     if (!selectedAccount) return;
+
+    if (isGoogleDrive) {
+      this.dialogRef.close({ success: true });
+      return;
+    }
 
     const payload = this.operationInvocationService.createInitialOperationInvocationPayload(
       OperationNames.LIST_ROOT_ITEMS,

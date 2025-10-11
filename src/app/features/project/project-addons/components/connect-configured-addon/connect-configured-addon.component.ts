@@ -222,7 +222,10 @@ export class ConnectConfiguredAddonComponent {
 
     if (!this.selectedAccount()) return;
 
-    const dialogRef = this.addonDialogService.openConfirmAccountConnectionDialog(this.selectedAccount());
+    const dialogRef = this.addonDialogService.openConfirmAccountConnectionDialog(
+      this.selectedAccount(),
+      this.isGoogleDrive()
+    );
 
     dialogRef.subscribe((result) => {
       if (result?.success) {
