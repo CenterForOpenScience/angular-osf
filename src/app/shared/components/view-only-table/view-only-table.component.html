@@ -1,4 +1,4 @@
-@if (isLoading() || tableData().items?.length) {
+@if (isLoading() || (tableData().items && tableData().items.length)) {
   <p-table [value]="isLoading() ? skeletonData : tableData().items" class="view-only-table">
     <ng-template #header>
       <tr>
