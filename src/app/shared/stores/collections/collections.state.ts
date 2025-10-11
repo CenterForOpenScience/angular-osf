@@ -99,11 +99,9 @@ export class CollectionsState {
         isLoading: true,
       },
     });
-
-    return this.collectionsService.fetchProjectCollections(action.projectId).pipe(
+    return this.collectionsService.fetchProjectCollections(action.projectId, true, false).pipe(
       switchMap((res) => {
-        const collections = res.filter((collection) => !collection.bookmarks);
-
+        const collections = res;
         if (!collections.length) {
           return of([]);
         }

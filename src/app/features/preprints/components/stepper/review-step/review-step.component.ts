@@ -98,7 +98,7 @@ export class ReviewStepComponent implements OnInit {
     const preprintFile = this.preprintFile()!;
 
     this.actions
-      .updatePrimaryFileRelationship(preprintFile.id ?? preprint.primaryFileId)
+      .updatePrimaryFileRelationship(preprintFile?.id ?? preprint.primaryFileId)
       .pipe(
         switchMap(() => {
           if (preprint.reviewsState !== ReviewsState.Accepted) {

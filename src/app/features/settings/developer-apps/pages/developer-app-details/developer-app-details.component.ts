@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
@@ -38,6 +39,7 @@ import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, Res
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DynamicDialogRef],
 })
 export class DeveloperAppDetailsComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);

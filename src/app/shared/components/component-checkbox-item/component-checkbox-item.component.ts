@@ -19,4 +19,8 @@ import { InfoIconComponent } from '../info-icon/info-icon.component';
 export class ComponentCheckboxItemComponent {
   item = model.required<ComponentCheckboxItemModel>();
   tooltipText = input('');
+
+  onCheckboxChange(checked: boolean) {
+    this.item.set({ ...this.item(), checked });
+  }
 }
