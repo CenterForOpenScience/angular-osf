@@ -55,7 +55,10 @@
             <div class="flex flex-wrap gap-1">
               <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
 
-              <osf-contributors-list [contributors]="component.contributors"></osf-contributors-list>
+              <osf-contributors-list
+                [contributors]="component.contributors"
+                [anonymous]="hasViewOnly() && anonymous()"
+              ></osf-contributors-list>
             </div>
 
             @if (component.description) {

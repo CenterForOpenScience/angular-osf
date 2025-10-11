@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { CustomDialogService, LoaderService } from '@osf/shared/services';
 import { GetResourceWithChildren } from '@osf/shared/stores';
 import { ComponentOverview } from '@shared/models';
@@ -33,12 +34,14 @@ export class OverviewComponentsComponent {
   private loaderService = inject(LoaderService);
 
   canEdit = input.required<boolean>();
+  anonymous = input<boolean>(false);
 
   currentUser = select(UserSelectors.getCurrentUser);
   currentUserId = computed(() => this.currentUser()?.id);
   components = select(ProjectOverviewSelectors.getComponents);
   isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
   project = select(ProjectOverviewSelectors.getProject);
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   actions = createDispatchMap({
     getComponentsTree: GetResourceWithChildren,
