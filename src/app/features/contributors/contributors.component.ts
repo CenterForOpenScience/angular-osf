@@ -20,7 +20,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
@@ -97,6 +97,7 @@ export class ContributorsComponent implements OnInit {
   readonly loaderService = inject(LoaderService);
 
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly resourceId = toSignal(
     this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
   );
@@ -354,6 +355,8 @@ export class ContributorsComponent implements OnInit {
   }
 
   removeContributor(contributor: ContributorModel) {
+    const isDeletingSelf = contributor.userId === this.currentUser()?.id;
+
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
       messageKey: 'project.contributors.removeDialog.message',
@@ -361,13 +364,17 @@ export class ContributorsComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.resourceId(), this.resourceType(), contributor.userId)
+          .deleteContributor(this.resourceId(), this.resourceType(), contributor.userId, isDeletingSelf)
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(() =>
+          .subscribe(() => {
             this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
               name: contributor.fullName,
-            })
-          );
+            });
+
+            if (isDeletingSelf) {
+              this.router.navigate(['/']);
+            }
+          });
       },
     });
   }

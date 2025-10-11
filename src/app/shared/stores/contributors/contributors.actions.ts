@@ -68,7 +68,8 @@ export class DeleteContributor {
   constructor(
     public resourceId: string | undefined | null,
     public resourceType: ResourceType | undefined,
-    public contributorId: string
+    public contributorId: string,
+    public skipRefresh = false
   ) {}
 }
 

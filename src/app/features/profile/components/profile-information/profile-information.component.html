@@ -87,7 +87,7 @@
       <div class="card w-full p-3 md:p-4 xl:w-6">
         <h2 class="mb-3">{{ 'settings.profileSettings.tabs.employment' | translate }}</h2>
 
-        <osf-employment-history [employment]="currentUser()?.employment"></osf-employment-history>
+        <osf-employment-history [employment]="currentUser()?.employment | sortByDate"></osf-employment-history>
       </div>
     }
 
@@ -95,7 +95,7 @@
       <div class="card w-full p-3 md:p-4 xl:w-6">
         <h2 class="mb-3">{{ 'settings.profileSettings.tabs.education' | translate }}</h2>
 
-        <osf-education-history [education]="currentUser()?.education"></osf-education-history>
+        <osf-education-history [education]="currentUser()?.education | sortByDate"></osf-education-history>
       </div>
     }
   </div>
