@@ -15,12 +15,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserEmailsState } from '@core/store/user-emails';
 import { SetCurrentUser, UserState } from '@osf/core/store/user';
 import { AddEmailComponent, ConfirmationSentDialogComponent } from '@osf/features/settings/account-settings/components';
-import { MOCK_USER, MockCustomConfirmationServiceProvider } from '@shared/mocks';
 import { CustomConfirmationService, LoaderService, ToastService } from '@shared/services';
 
 import { AccountSettingsState } from '../../store';
 
 import { ConnectedEmailsComponent } from './connected-emails.component';
+
+import { MOCK_USER, MockCustomConfirmationServiceProvider } from '@testing/mocks';
 
 describe('ConnectedEmailsComponent', () => {
   let component: ConnectedEmailsComponent;

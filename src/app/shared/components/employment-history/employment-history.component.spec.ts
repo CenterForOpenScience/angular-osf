@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { MOCK_EMPLOYMENT } from '@osf/shared/mocks';
-
 import { EmploymentHistoryComponent } from './employment-history.component';
 
+import { MOCK_EMPLOYMENT } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('EmploymentHistoryComponent', () => {

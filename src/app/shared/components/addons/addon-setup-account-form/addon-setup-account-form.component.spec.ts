@@ -4,11 +4,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { AddonFormControls } from '@shared/enums';
-import { MOCK_ADDON, MOCK_USER } from '@shared/mocks';
 import { AddonFormService } from '@shared/services/addons/addon-form.service';
 
 import { AddonSetupAccountFormComponent } from './addon-setup-account-form.component';
 
+import { MOCK_ADDON, MOCK_USER } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddonSetupAccountFormComponent', () => {

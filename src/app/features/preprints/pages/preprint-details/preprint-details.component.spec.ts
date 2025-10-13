@@ -21,13 +21,13 @@ import { ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { UserPermissions } from '@shared/enums';
-import { MOCK_CONTRIBUTOR, MOCK_USER } from '@shared/mocks';
 import { CustomDialogService, MetaTagsService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
 
+import { MOCK_CONTRIBUTOR, MOCK_USER } from '@testing/mocks';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';

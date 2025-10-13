@@ -5,11 +5,11 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LicenseComponent, LoadingSpinnerComponent } from '@shared/components';
-import { MOCK_LICENSE } from '@shared/mocks';
 import { LicensesSelectors } from '@shared/stores/licenses';
 
 import { LicenseDialogComponent } from './license-dialog.component';
 
+import { MOCK_LICENSE } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

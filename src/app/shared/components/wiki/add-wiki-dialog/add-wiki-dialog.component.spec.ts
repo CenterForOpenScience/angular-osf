@@ -8,10 +8,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { WikiSelectors } from '@osf/shared/stores';
-import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { AddWikiDialogComponent } from './add-wiki-dialog.component';
+
+import { MOCK_STORE, TranslateServiceMock } from '@testing/mocks';
 
 describe('AddWikiDialogComponent', () => {
   let component: AddWikiDialogComponent;

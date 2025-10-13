@@ -3,11 +3,11 @@ import { MockComponent } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ViewOnlyTableComponent } from '@osf/shared/components';
-import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK } from '@osf/shared/mocks';
 import { PaginatedViewOnlyLinksModel } from '@osf/shared/models';
 
 import { SettingsViewOnlyLinksCardComponent } from './settings-view-only-links-card.component';
 
+import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('SettingsViewOnlyLinksCardComponent', () => {

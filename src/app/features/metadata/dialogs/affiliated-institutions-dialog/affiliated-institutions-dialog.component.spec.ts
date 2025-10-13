@@ -4,13 +4,13 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_INSTITUTION, TranslateServiceMock } from '@osf/shared/mocks';
 import { Institution } from '@osf/shared/models';
 import { InstitutionsSelectors } from '@osf/shared/stores';
 import { AffiliatedInstitutionSelectComponent } from '@shared/components';
 
 import { AffiliatedInstitutionsDialogComponent } from './affiliated-institutions-dialog.component';
 
+import { MOCK_INSTITUTION, TranslateServiceMock } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

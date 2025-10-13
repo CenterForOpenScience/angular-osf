@@ -13,7 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MeetingsState } from '@osf/features/meetings/store';
 import { parseQueryFilterParams } from '@osf/shared/helpers';
-import { MOCK_MEETING } from '@osf/shared/mocks';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
@@ -22,6 +21,8 @@ import { MeetingsFeatureCardComponent } from '../../components';
 import { MEETINGS_FEATURE_CARDS, PARTNER_ORGANIZATIONS } from '../../constants';
 
 import { MeetingsLandingComponent } from './meetings-landing.component';
+
+import { MOCK_MEETING } from '@testing/mocks';
 
 const mockQueryParams = {
   page: 1,

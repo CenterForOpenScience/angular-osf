@@ -5,10 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ContributorsListComponent } from '@osf/shared/components';
 import { ContributorModel } from '@osf/shared/models';
-import { MOCK_CONTRIBUTOR } from '@shared/mocks';
 
 import { MetadataContributorsComponent } from './metadata-contributors.component';
 
+import { MOCK_CONTRIBUTOR } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 

@@ -7,10 +7,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserSelectors } from '@osf/core/store/user';
 import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
 import { AddonCardListComponent } from '@shared/components/addons';
-import { TranslateServiceMock } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores/addons';
 
 import { SettingsAddonsComponent } from './settings-addons.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe.skip('AddonsComponent', () => {
   let component: SettingsAddonsComponent;

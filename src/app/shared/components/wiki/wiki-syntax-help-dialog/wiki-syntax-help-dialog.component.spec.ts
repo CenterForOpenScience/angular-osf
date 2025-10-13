@@ -4,9 +4,9 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
-
 import { WikiSyntaxHelpDialogComponent } from './wiki-syntax-help-dialog.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('WikiSyntaxHelpDialogComponent', () => {
   let component: WikiSyntaxHelpDialogComponent;

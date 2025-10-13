@@ -13,10 +13,10 @@ import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
 import { CustomDialogService, ToastService } from '@osf/shared/services';
 import { InstitutionsSearchState } from '@osf/shared/stores/institutions-search';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
-import { TranslateServiceMock } from '@shared/mocks';
 
 import { InstitutionsUsersComponent } from './institutions-users.component';
 
+import { TranslateServiceMock } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 

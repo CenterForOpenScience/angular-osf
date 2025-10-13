@@ -9,11 +9,11 @@ import { By } from '@angular/platform-browser';
 
 import { AcceptTermsOfServiceByUser } from '@core/store/user';
 import { UserSelectors } from '@osf/core/store/user';
-import { MOCK_USER } from '@osf/shared/mocks';
 import { IconComponent } from '@shared/components';
 
 import { TosConsentBannerComponent } from './tos-consent-banner.component';
 
+import { MOCK_USER } from '@testing/mocks';
 import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

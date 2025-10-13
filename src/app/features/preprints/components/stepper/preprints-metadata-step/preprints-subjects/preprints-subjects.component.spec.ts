@@ -7,10 +7,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { MOCK_STORE, TranslateServiceMock } from '@osf/shared/mocks';
 import { SubjectsSelectors } from '@osf/shared/stores';
 
 import { PreprintsSubjectsComponent } from './preprints-subjects.component';
+
+import { MOCK_STORE, TranslateServiceMock } from '@testing/mocks';
 
 describe('PreprintsSubjectsComponent', () => {
   let component: PreprintsSubjectsComponent;

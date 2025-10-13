@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_RESOURCE_OVERVIEW } from '@shared/mocks';
 import { ResourceOverview } from '@shared/models';
 
 import { ResourceMetadataComponent } from './resource-metadata.component';
+
+import { MOCK_RESOURCE_OVERVIEW } from '@testing/mocks';
 
 describe('ResourceMetadataComponent', () => {
   let component: ResourceMetadataComponent;

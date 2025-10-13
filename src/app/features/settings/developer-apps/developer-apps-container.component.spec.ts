@@ -8,10 +8,11 @@ import { Subject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/components';
-import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { DeveloperAppsContainerComponent } from './developer-apps-container.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('DeveloperAppsContainerComponent', () => {
   let component: DeveloperAppsContainerComponent;

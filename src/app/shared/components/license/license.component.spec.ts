@@ -3,9 +3,9 @@ import { MockComponents } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LicenseComponent, TextInputComponent } from '@shared/components';
-import { MOCK_LICENSE } from '@shared/mocks';
 import { LicenseModel, LicenseOptions } from '@shared/models';
 
+import { MOCK_LICENSE } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('LicenseComponent', () => {

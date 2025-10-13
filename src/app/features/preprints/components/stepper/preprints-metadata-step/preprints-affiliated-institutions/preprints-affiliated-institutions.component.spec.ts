@@ -6,12 +6,12 @@ import { ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { AffiliatedInstitutionSelectComponent } from '@shared/components';
-import { MOCK_INSTITUTION } from '@shared/mocks';
 import { Institution } from '@shared/models';
 import { InstitutionsSelectors } from '@shared/stores/institutions';
 
 import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions.component';
 
+import { MOCK_INSTITUTION } from '@testing/mocks';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

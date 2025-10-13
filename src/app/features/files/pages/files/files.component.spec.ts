@@ -20,7 +20,6 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
-import { testNode } from '@osf/shared/mocks';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
 import { GoogleFilePickerComponent } from '@shared/components/google-file-picker/google-file-picker.component';
@@ -31,6 +30,7 @@ import { FilesComponent } from './files.component';
 
 import { getConfiguredAddonsMappedData } from '@testing/data/addons/addons.configured.data';
 import { getNodeFilesMappedData } from '@testing/data/files/node.data';
+import { testNode } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

@@ -19,11 +19,11 @@ import {
   SubHeaderComponent,
   TruncatedTextComponent,
 } from '@shared/components';
-import { MOCK_PROJECT_OVERVIEW } from '@shared/mocks';
 import { CustomDialogService } from '@shared/services';
 
 import { ViewDuplicatesComponent } from './view-duplicates.component';
 
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';

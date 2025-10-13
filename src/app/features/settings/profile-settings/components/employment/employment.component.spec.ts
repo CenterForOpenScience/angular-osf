@@ -11,14 +11,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateProfileSettingsEmployment, UserSelectors } from '@core/store/user';
 import { EmploymentFormComponent } from '@osf/features/settings/profile-settings/components';
-import {
-  CustomConfirmationServiceMock,
-  MOCK_EMPLOYMENT,
-  MockCustomConfirmationServiceProvider,
-} from '@osf/shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { EmploymentComponent } from './employment.component';
+
+import { CustomConfirmationServiceMock, MOCK_EMPLOYMENT, MockCustomConfirmationServiceProvider } from '@testing/mocks';
 
 describe('EmploymentComponent', () => {
   let component: EmploymentComponent;

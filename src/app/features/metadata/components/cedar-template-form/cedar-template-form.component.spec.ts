@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
 import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models';
-import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@shared/mocks';
 
 import { CedarTemplateFormComponent } from './cedar-template-form.component';
 
+import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('CedarTemplateFormComponent', () => {

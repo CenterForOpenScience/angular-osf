@@ -4,10 +4,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { MarkdownComponent } from '@shared/components';
-import { TranslateServiceMock } from '@shared/mocks';
 import { WikiVersion } from '@shared/models';
 
 import { ViewSectionComponent } from './view-section.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('ViewSectionComponent', () => {
   let component: ViewSectionComponent;

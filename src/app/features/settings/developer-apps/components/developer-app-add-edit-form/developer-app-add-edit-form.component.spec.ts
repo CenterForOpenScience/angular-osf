@@ -9,12 +9,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { DeveloperAppsState } from '../../store';
 
 import { DeveloperAppAddEditFormComponent } from './developer-app-add-edit-form.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('CreateDeveloperAppComponent', () => {
   let component: DeveloperAppAddEditFormComponent;

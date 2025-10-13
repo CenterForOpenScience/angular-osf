@@ -3,7 +3,7 @@ export * from './analytics.mock';
 export * from './base-node.mock';
 export { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from './cedar-metadata-data-template-json-api.mock';
 export * from './contributors.mock';
-export * from './custom-сonfirmation.service.mock';
+export * from './custom-confirmation.service.mock';
 export * from './data.mock';
 export { MOCK_EDUCATION } from './education.mock';
 export { MOCK_EMPLOYMENT } from './employment.mock';

@@ -10,12 +10,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserState } from '@osf/core/store/user';
-import { MOCK_INSTITUTION } from '@shared/mocks/institution.mock';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 import { AccountSettingsState } from '../../store';
 
 import { AffiliatedInstitutionsComponent } from './affiliated-institutions.component';
+
+import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 
 describe('AffiliatedInstitutionsComponent', () => {
   let component: AffiliatedInstitutionsComponent;

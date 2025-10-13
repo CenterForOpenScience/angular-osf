@@ -4,7 +4,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_CONTRIBUTOR, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@osf/shared/mocks';
 import { ContributorModel } from '@osf/shared/models';
 import { CustomDialogService } from '@osf/shared/services';
 import { ContributorsSelectors } from '@osf/shared/stores';
@@ -13,6 +12,7 @@ import { ContributorsTableComponent } from '@shared/components/contributors';
 
 import { ContributorsDialogComponent } from './contributors-dialog.component';
 
+import { MOCK_CONTRIBUTOR, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

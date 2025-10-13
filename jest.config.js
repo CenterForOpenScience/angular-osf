@@ -32,6 +32,7 @@ module.exports = {
     '!src/app/**/*.routes.{ts.js}',
     '!src/app/**/*.models.{ts.js}',
     '!src/app/**/*.model.{ts.js}',
+    '!src/app/**/models/*.{ts,js}',
     '!src/app/**/*.route.{ts,js}',
     '!src/app/**/*.enum.{ts,js}',
     '!src/app/**/*.type.{ts,js}',

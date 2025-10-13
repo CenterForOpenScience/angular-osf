@@ -5,7 +5,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { ContributorsListComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { MOCK_CONTRIBUTOR } from '@osf/shared/mocks';
 import { InterpolatePipe } from '@osf/shared/pipes';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
@@ -13,6 +12,7 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
 
 import { PreprintTombstoneComponent } from './preprint-tombstone.component';
 
+import { MOCK_CONTRIBUTOR } from '@testing/mocks';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';

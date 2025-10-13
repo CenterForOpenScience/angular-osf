@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { isCitationAddon } from '@osf/shared/helpers';
 import { AddonTermsComponent } from '@shared/components/addons';
 import { ADDON_TERMS } from '@shared/constants';
-import { MOCK_ADDON } from '@shared/mocks';
 import { AddonModel, AddonTerm } from '@shared/models';
 
+import { MOCK_ADDON } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 jest.mock('@shared/helpers', () => ({

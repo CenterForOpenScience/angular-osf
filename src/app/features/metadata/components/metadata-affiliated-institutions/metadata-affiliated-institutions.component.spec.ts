@@ -3,10 +3,10 @@ import { MockComponent } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components';
-import { MOCK_PROJECT_AFFILIATED_INSTITUTIONS } from '@osf/shared/mocks';
 
 import { MetadataAffiliatedInstitutionsComponent } from './metadata-affiliated-institutions.component';
 
+import { MOCK_PROJECT_AFFILIATED_INSTITUTIONS } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataAffiliatedInstitutionsComponent', () => {

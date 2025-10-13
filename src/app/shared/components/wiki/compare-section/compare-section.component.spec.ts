@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { TranslateServiceMock } from '@shared/mocks';
 import { WikiVersion } from '@shared/models';
 
 import { CompareSectionComponent } from './compare-section.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('CompareSectionComponent', () => {
   let component: CompareSectionComponent;

@@ -13,13 +13,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MyProjectsTab } from '@osf/features/my-projects/enums';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
-import { MOCK_STORE } from '@osf/shared/mocks';
 import { BookmarksSelectors, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@shared/components';
 import { ProjectRedirectDialogService } from '@shared/services';
 
 import { MyProjectsComponent } from './my-projects.component';
 
+import { MOCK_STORE } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MyProjectsComponent', () => {

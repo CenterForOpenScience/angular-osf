@@ -1,6 +1,6 @@
 import { ProjectOverview } from '@osf/features/project/overview/models';
 
-import { Identifier } from '../models';
+import { Identifier } from '../../app/shared/models';
 
 export const MOCK_PROJECT_AFFILIATED_INSTITUTIONS = [
   {

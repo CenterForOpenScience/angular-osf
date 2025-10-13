@@ -4,13 +4,13 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_RESOURCE_OVERVIEW } from '@shared/mocks';
 import { ResourceOverview } from '@shared/models';
 import { ToastService } from '@shared/services';
 import { CitationsSelectors } from '@shared/stores';
 
 import { ResourceCitationsComponent } from './resource-citations.component';
 
+import { MOCK_RESOURCE_OVERVIEW } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';

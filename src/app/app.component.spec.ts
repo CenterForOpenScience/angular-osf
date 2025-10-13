@@ -14,8 +14,9 @@ import { GetCurrentUser, UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
 import { CustomDialogService } from '@shared/services';
 
+import { TranslateServiceMock } from '../testing/mocks';
+
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
-import { TranslateServiceMock } from './shared/mocks';
 import { AppComponent } from './app.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';

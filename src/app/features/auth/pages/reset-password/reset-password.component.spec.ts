@@ -9,7 +9,8 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '@osf/core/services';
 import { ResetPasswordComponent } from '@osf/features/auth/pages';
 import { PasswordInputHintComponent } from '@osf/shared/components';
-import { TranslateServiceMock } from '@osf/shared/mocks';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('ResetPasswordComponent', () => {
   let component: ResetPasswordComponent;

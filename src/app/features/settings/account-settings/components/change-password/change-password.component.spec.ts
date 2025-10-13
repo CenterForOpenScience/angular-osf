@@ -9,12 +9,13 @@ import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
 import { LoaderService, ToastService } from '@shared/services';
 
 import { AccountSettingsState } from '../../store';
 
 import { ChangePasswordComponent } from './change-password.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('ChangePasswordComponent', () => {
   let component: ChangePasswordComponent;

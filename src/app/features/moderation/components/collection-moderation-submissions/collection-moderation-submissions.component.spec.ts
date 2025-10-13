@@ -6,13 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CollectionSubmissionsListComponent } from '@osf/features/moderation/components';
 import { CollectionsSelectors } from '@osf/shared/stores';
 import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent, SelectComponent } from '@shared/components';
-import { MOCK_PROVIDER } from '@shared/mocks';
 
 import { SubmissionReviewStatus } from '../../enums';
 import { CollectionsModerationSelectors } from '../../store/collections-moderation';
 
 import { CollectionModerationSubmissionsComponent } from './collection-moderation-submissions.component';
 
+import { MOCK_PROVIDER } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';

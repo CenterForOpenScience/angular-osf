@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MOCK_USER } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
@@ -13,6 +12,7 @@ import { LinkedServicesComponent } from './linked-services.component';
 
 import { getConfiguredAddonsMappedData } from '@testing/data/addons/addons.configured.data';
 import { getResourceReferencesData } from '@testing/data/files/resource-references.data';
+import { MOCK_USER } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

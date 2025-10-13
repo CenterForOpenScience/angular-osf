@@ -13,12 +13,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 
 import { UserState } from '@osf/core/store/user';
-import { MockCustomConfirmationServiceProvider } from '@shared/mocks';
 import { CustomConfirmationService } from '@shared/services';
 
 import { AccountSettingsState } from '../../store';
 
 import { TwoFactorAuthComponent } from './two-factor-auth.component';
+
+import { MockCustomConfirmationServiceProvider } from '@testing/mocks';
 
 describe('TwoFactorAuthComponent', () => {
   let component: TwoFactorAuthComponent;

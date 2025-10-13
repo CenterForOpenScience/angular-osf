@@ -11,13 +11,13 @@ import { ProjectMetadataStepComponent } from '@osf/features/collections/componen
 import { SelectProjectStepComponent } from '@osf/features/collections/components/add-to-collection/select-project-step/select-project-step.component';
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import { LoadingSpinnerComponent } from '@shared/components';
-import { MOCK_PROVIDER, MOCK_USER } from '@shared/mocks';
 import { CustomDialogService } from '@shared/services';
 import { CollectionsSelectors } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 import { AddToCollectionComponent } from './add-to-collection.component';
 
+import { MOCK_PROVIDER, MOCK_USER } from '@testing/mocks';
 import { MOCK_PROJECT } from '@testing/mocks/project.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';

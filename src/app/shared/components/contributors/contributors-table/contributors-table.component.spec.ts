@@ -5,11 +5,11 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContributorPermission } from '@osf/shared/enums';
-import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from '@osf/shared/mocks';
 import { ContributorModel, TableParameters } from '@osf/shared/models';
 
 import { ContributorsTableComponent } from './contributors-table.component';
 
+import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
 

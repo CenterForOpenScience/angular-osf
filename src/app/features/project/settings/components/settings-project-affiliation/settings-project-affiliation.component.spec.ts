@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Institution } from '@osf/shared/models';
 import { InstitutionsSelectors } from '@osf/shared/stores';
-import { MOCK_INSTITUTION } from '@shared/mocks';
 
 import { SettingsProjectAffiliationComponent } from './settings-project-affiliation.component';
 
+import { MOCK_INSTITUTION } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

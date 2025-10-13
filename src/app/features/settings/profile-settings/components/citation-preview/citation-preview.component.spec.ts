@@ -4,10 +4,11 @@ import { MockPipes } from 'ng-mocks';
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_USER } from '@osf/shared/mocks';
 import { CitationFormatPipe } from '@shared/pipes';
 
 import { CitationPreviewComponent } from './citation-preview.component';
+
+import { MOCK_USER } from '@testing/mocks';
 
 describe('CitationPreviewComponent', () => {
   let component: CitationPreviewComponent;
