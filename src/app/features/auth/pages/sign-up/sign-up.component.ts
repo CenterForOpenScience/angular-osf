@@ -71,7 +71,7 @@ export class SignUpComponent implements OnInit {
       }),
       password: new FormControl('', {
         nonNullable: true,
-        validators: [CustomValidators.requiredTrimmed(), Validators.pattern(PASSWORD_REGEX)],
+        validators: [CustomValidators.requiredTrimmed(), Validators.minLength(8), Validators.pattern(PASSWORD_REGEX)],
       }),
       acceptedTermsOfService: new FormControl(false, {
         nonNullable: true,
