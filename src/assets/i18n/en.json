@@ -1651,7 +1651,7 @@
       "header": {
         "title": "Add-ons"
       },
-      "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options. Add-ons can also be linked directly from Project page.",
+      "description": "Sync your projects with external services to help stay connected and organized. Select a category from the dropdown and browse the options.",
       "connectedDescription": "Manage your connected Add-ons, re-authorize, disconnect account, or disconnect project",
       "tabs": {
         "allAddons": "All Add-ons",
