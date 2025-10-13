@@ -1443,7 +1443,7 @@
       "acceptWithdrawalMessage": "Registration will be withdrawn but still have a tombstone page with a justification for withdrawal and subset of the metadata available.",
       "rejectWithdrawalMessage": "Submission will remain fully public",
       "withdrawRequestMessage": "Submission will be withdrawn from the collection and will no longer appear in search results.",
-      "remarksPlaceholder": "Add remarks to registration admins (optional)",
+      "remarksPlaceholder": "Add remarks to registration admins",
       "submitDecision": "Submit decision",
       "goBackLink": "< Back to list of submissions",
       "acceptSuccess": "Submission has been accepted successfully",
