@@ -36,6 +36,7 @@ import { CustomDialogService, MetaTagsService, ToastService } from '@osf/shared/
 import {
   AddonsSelectors,
   ClearCollections,
+  ClearConfiguredAddons,
   ClearWiki,
   CollectionsSelectors,
   CurrentResourceSelectors,
@@ -156,6 +157,7 @@ export class ProjectOverviewComponent implements OnInit {
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
     clearCollectionModeration: ClearCollectionModeration,
+    clearConfiguredAddons: ClearConfiguredAddons,
     getComponentsTree: GetResourceWithChildren,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     getSubjects: FetchSelectedSubjects,
@@ -377,6 +379,7 @@ export class ProjectOverviewComponent implements OnInit {
         skip(1),
         tap((projectId) => {
           this.actions.clearProjectOverview();
+          this.actions.clearConfiguredAddons();
           this.actions.getProject(projectId);
           this.actions.getBookmarksId();
           this.actions.getComponents(projectId);
@@ -394,6 +397,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.clearWiki();
       this.actions.clearCollections();
       this.actions.clearCollectionModeration();
+      this.actions.clearConfiguredAddons();
     });
   }
 
@@ -407,7 +411,7 @@ export class ProjectOverviewComponent implements OnInit {
 
     effect(() => {
       const resourceReference = this.addonsResourceReference();
-      if (resourceReference.length && !this.configuredCitationAddons().length) {
+      if (resourceReference.length) {
         this.actions.getConfiguredCitationAddons(resourceReference[0].id);
       }
     });
