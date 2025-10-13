@@ -45,13 +45,12 @@
                     <span class="text-red-500">*</span>
                   }
                 </h3>
-
-                @if (q.helpText) {
-                  <osf-info-icon [tooltipText]="q.helpText" tooltipPosition="top"></osf-info-icon>
-                }
               </div>
               @if (q.paragraphText) {
                 <p class="mb-3">{{ q.paragraphText }}</p>
+              }
+              @if (q.helpText && q.fieldType !== FieldType.Radio && q.fieldType !== FieldType.Checkbox) {
+                <p>{{ q.helpText }}</p>
               }
             </label>
             @if (q.exampleText) {
