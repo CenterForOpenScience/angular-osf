@@ -18,7 +18,7 @@ import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../topnav/topnav.component';
 
 @Component({
-  selector: 'osf-root',
+  selector: 'osf-layout',
   imports: [
     BreadcrumbComponent,
     CommonModule,
@@ -32,11 +32,11 @@ import { TopnavComponent } from '../topnav/topnav.component';
     TopnavComponent,
     TranslatePipe,
   ],
-  templateUrl: './root.component.html',
-  styleUrls: ['./root.component.scss'],
+  templateUrl: './layout.component.html',
+  styleUrls: ['./layout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RootComponent {
+export class LayoutComponent {
   isWeb = toSignal(inject(IS_WEB));
   isMedium = toSignal(inject(IS_MEDIUM));
 }
