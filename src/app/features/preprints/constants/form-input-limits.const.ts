@@ -13,7 +13,7 @@ export const formInputLimits = {
     minLength: 25,
   },
   decisionComment: {
-    maxLength: 100,
+    maxLength: 1000,
   },
   requestDecisionJustification: {
     minLength: 20,
