@@ -23,7 +23,6 @@ import { CreateDeveloperApp, DeveloperAppsSelectors, UpdateDeveloperApp } from '
   templateUrl: './developer-app-add-edit-form.component.html',
   styleUrl: './developer-app-add-edit-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DynamicDialogRef],
 })
 export class DeveloperAppAddEditFormComponent implements OnInit {
   readonly isEditMode = input(false);

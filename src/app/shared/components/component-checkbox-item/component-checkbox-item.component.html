@@ -3,7 +3,8 @@
     variant="filled"
     binary="true"
     [inputId]="item().id"
-    [(ngModel)]="item().checked"
+    [ngModel]="item().checked"
+    (ngModelChange)="onCheckboxChange($event)"
     [disabled]="item().disabled"
   ></p-checkbox>
 

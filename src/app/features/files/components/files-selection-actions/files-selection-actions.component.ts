@@ -16,6 +16,7 @@ import { FileModel } from '@osf/shared/models';
 export class FilesSelectionActionsComponent {
   selectedFiles = input<FileModel[]>([]);
   canUpdateFiles = input<boolean>(true);
+  hasViewOnly = input<boolean>(false);
   copySelected = output<void>();
   moveSelected = output<void>();
   deleteSelected = output<void>();

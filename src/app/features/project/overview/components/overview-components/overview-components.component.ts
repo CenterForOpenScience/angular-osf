@@ -1,4 +1,4 @@
-import { select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -12,7 +12,9 @@ import { Router } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { CustomDialogService } from '@osf/shared/services';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
+import { CustomDialogService, LoaderService } from '@osf/shared/services';
+import { GetResourceWithChildren } from '@osf/shared/stores';
 import { ComponentOverview } from '@shared/models';
 
 import { ProjectOverviewSelectors } from '../../store';
@@ -29,13 +31,21 @@ import { DeleteComponentDialogComponent } from '../delete-component-dialog/delet
 export class OverviewComponentsComponent {
   private router = inject(Router);
   private customDialogService = inject(CustomDialogService);
+  private loaderService = inject(LoaderService);
 
   canEdit = input.required<boolean>();
+  anonymous = input<boolean>(false);
 
   currentUser = select(UserSelectors.getCurrentUser);
   currentUserId = computed(() => this.currentUser()?.id);
   components = select(ProjectOverviewSelectors.getComponents);
   isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
+  project = select(ProjectOverviewSelectors.getProject);
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+
+  actions = createDispatchMap({
+    getComponentsTree: GetResourceWithChildren,
+  });
 
   readonly componentActionItems = (component: ComponentOverview) => {
     const baseItems = [
@@ -92,10 +102,23 @@ export class OverviewComponentsComponent {
   }
 
   private handleDeleteComponent(componentId: string): void {
-    this.customDialogService.open(DeleteComponentDialogComponent, {
-      header: 'project.overview.dialog.deleteComponent.header',
-      width: '650px',
-      data: { componentId, resourceType: ResourceType.Project },
+    const project = this.project();
+    if (!project) return;
+
+    this.loaderService.show();
+
+    this.actions.getComponentsTree(project.rootParentId || project.id, componentId, ResourceType.Project).subscribe({
+      next: () => {
+        this.loaderService.hide();
+        this.customDialogService.open(DeleteComponentDialogComponent, {
+          header: 'project.overview.dialog.deleteComponent.header',
+          width: '650px',
+          data: { componentId, resourceType: ResourceType.Project },
+        });
+      },
+      error: () => {
+        this.loaderService.hide();
+      },
     });
   }
 }

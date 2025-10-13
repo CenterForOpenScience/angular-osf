@@ -14,36 +14,37 @@
         (onClick)="clearSelection.emit()"
       />
     </div>
+    @if (!hasViewOnly()) {
+      <div class="flex gap-2 ml-auto">
+        @if (canUpdateFiles()) {
+          <p-button
+            icon="fas fa-arrows-alt"
+            outlined
+            raised
+            [label]="'common.buttons.move' | translate"
+            (onClick)="moveSelected.emit()"
+          />
+        }
 
-    <div class="flex gap-2 ml-auto">
-      @if (canUpdateFiles()) {
         <p-button
-          icon="fas fa-arrows-alt"
+          icon="fas fa-copy"
+          severity="success"
           outlined
           raised
-          [label]="'common.buttons.move' | translate"
-          (onClick)="moveSelected.emit()"
+          [label]="'common.buttons.copyTo' | translate"
+          (onClick)="copySelected.emit()"
         />
-      }
-
-      <p-button
-        icon="fas fa-copy"
-        severity="success"
-        outlined
-        raised
-        [label]="'common.buttons.copyTo' | translate"
-        (onClick)="copySelected.emit()"
-      />
-      @if (canUpdateFiles()) {
-        <p-button
-          icon="fas fa-trash"
-          severity="danger"
-          outlined
-          raised
-          [label]="'common.buttons.delete' | translate"
-          (onClick)="deleteSelected.emit()"
-        />
-      }
-    </div>
+        @if (canUpdateFiles()) {
+          <p-button
+            icon="fas fa-trash"
+            severity="danger"
+            outlined
+            raised
+            [label]="'common.buttons.delete' | translate"
+            (onClick)="deleteSelected.emit()"
+          />
+        }
+      </div>
+    }
   </div>
 }

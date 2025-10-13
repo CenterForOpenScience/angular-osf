@@ -80,7 +80,9 @@ export class ResourceGuidService {
     const resourcePath = this.urlMap.get(resourceType);
 
     return this.jsonApiService
-      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${this.apiUrl}/${resourcePath}/?filter[root]=${rootParentId}`)
+      .get<
+        ResponseJsonApi<BaseNodeDataJsonApi[]>
+      >(`${this.apiUrl}/${resourcePath}/?filter[root]=${rootParentId}&page[size]=100`)
       .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data, resourceId)));
   }
 }

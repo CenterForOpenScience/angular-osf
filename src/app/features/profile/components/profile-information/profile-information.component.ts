@@ -10,12 +10,21 @@ import { EducationHistoryComponent, EmploymentHistoryComponent } from '@osf/shar
 import { SOCIAL_LINKS } from '@osf/shared/constants';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { UserModel } from '@osf/shared/models';
+import { SortByDatePipe } from '@osf/shared/pipes';
 
 import { mapUserSocials } from '../../helpers';
 
 @Component({
   selector: 'osf-profile-information',
-  imports: [Button, EmploymentHistoryComponent, EducationHistoryComponent, TranslatePipe, DatePipe, NgOptimizedImage],
+  imports: [
+    Button,
+    EmploymentHistoryComponent,
+    EducationHistoryComponent,
+    TranslatePipe,
+    DatePipe,
+    NgOptimizedImage,
+    SortByDatePipe,
+  ],
   templateUrl: './profile-information.component.html',
   styleUrl: './profile-information.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

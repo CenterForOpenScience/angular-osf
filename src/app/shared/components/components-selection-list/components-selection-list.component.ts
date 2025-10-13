@@ -31,6 +31,13 @@ export class ComponentsSelectionListComponent {
       .every((item) => !item.checked)
   );
 
+  onItemChange(changedItem: ComponentCheckboxItemModel, index: number) {
+    const updatedComponents = [...this.components()];
+    updatedComponents[index] = { ...changedItem };
+
+    this.components.set(updatedComponents);
+  }
+
   removeAll() {
     const filteredItems = this.components().map((item) => ({ ...item, checked: item.disabled ? item.checked : false }));
 

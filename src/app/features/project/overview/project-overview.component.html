@@ -60,8 +60,9 @@
         <osf-overview-parent-project [project]="parentProject()!" [isLoading]="isParentProjectLoading()" />
       }
 
+      <osf-project-components [canEdit]="hasWriteAccess() && !isCollectionsRoute()" [anonymous]="isAnonymous()" />
+
       @if (!hasViewOnly()) {
-        <osf-project-components [canEdit]="hasWriteAccess() && !isCollectionsRoute()" />
         <osf-linked-resources [canEdit]="hasWriteAccess() && !isCollectionsRoute()" />
       }
 
