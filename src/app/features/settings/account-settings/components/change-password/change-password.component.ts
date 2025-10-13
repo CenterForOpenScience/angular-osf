@@ -20,7 +20,8 @@ import {
 } from '@angular/forms';
 
 import { AuthService } from '@osf/core/services';
-import { CustomValidators, FormValidationHelper } from '@osf/shared/helpers';
+import { PasswordInputHintComponent } from '@osf/shared/components';
+import { CustomValidators, FormValidationHelper, PASSWORD_REGEX } from '@osf/shared/helpers';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
 import { AccountSettingsPasswordForm, AccountSettingsPasswordFormControls } from '../../models';
@@ -28,7 +29,7 @@ import { UpdatePassword } from '../../store';
 
 @Component({
   selector: 'osf-change-password',
-  imports: [Card, ReactiveFormsModule, Password, CommonModule, Button, TranslatePipe],
+  imports: [Card, ReactiveFormsModule, Password, CommonModule, Button, TranslatePipe, PasswordInputHintComponent],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,11 +48,7 @@ export class ChangePasswordComponent implements OnInit {
     }),
     [AccountSettingsPasswordFormControls.NewPassword]: new FormControl('', {
       nonNullable: true,
-      validators: [
-        CustomValidators.requiredTrimmed(),
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d!@#$%^&*])[A-Za-z\d!@#$%^&*_]{8,}$/),
-      ],
+      validators: [CustomValidators.requiredTrimmed(), Validators.minLength(8), Validators.pattern(PASSWORD_REGEX)],
     }),
     [AccountSettingsPasswordFormControls.ConfirmPassword]: new FormControl('', {
       nonNullable: true,

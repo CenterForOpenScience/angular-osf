@@ -243,7 +243,12 @@
         "new": "New Password",
         "confirm": "Confirm New Password",
         "mismatch": "Passwords must match.",
-        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number and special character"
+        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number and special character",
+        "validation": {
+          "required": "Password is required.",
+          "minlength": "Password must be at least 8 characters long.",
+          "pattern": "Password must include lowercase, uppercase, and at least one number and special character."
+        }
       }
     },
     "forgotPassword": {
@@ -1172,7 +1177,7 @@
       "seeAllFiles": "See All Files in a Provider",
       "seeAllFilesDescription": "All connected storage providers are displayed in the dropdown above the files list. Choose one provider to view contents.",
       "selectFilesFolders": "Select Files/Folders",
-      "selectFilesFoldersDescription": "Click on a row (outside of the file or folder name). Click on more rows to select multiple files. To select a range of files, click a file to begin selection and then shift+click another file to select the range. Select the ellipses on the right side of the row to see more file options.",
+      "selectFilesFoldersDescription": "Click on a row (outside of the file or folder name). Click on more rows to select multiple files. Select the ellipses on the right side of the row to see more file options.",
       "openViewFiles": "Open/View Files and Folders",
       "openViewFilesDescription": "Click a file name to go to view the file in the OSF. Opens file in a new tab. Click on the folder to open the contents in the files list.",
       "upload": "Upload",
@@ -1902,14 +1907,10 @@
           "newPassword": "New password",
           "newPasswordPlaceholder": "Enter your new password",
           "confirmPassword": "Confirm password",
-          "confirmPasswordPlaceholder": "Confirm your new password",
-          "passwordRequirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number or special character"
+          "confirmPasswordPlaceholder": "Confirm your new password"
         },
         "validation": {
           "oldPasswordRequired": "Old password is required",
-          "newPasswordRequired": "New password is required",
-          "newPasswordMinLength": "Password must be at least 8 characters long.",
-          "newPasswordPattern": "Password must include lowercase, uppercase, and at least one number or special character.",
           "confirmPasswordRequired": "Please confirm your password",
           "passwordsDoNotMatch": "Passwords do not match",
           "sameAsOldPassword": "New password must be different from old password"
