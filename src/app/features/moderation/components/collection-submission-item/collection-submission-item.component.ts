@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
-import { IconComponent } from '@osf/shared/components';
+import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { CollectionSubmissionWithGuid } from '@osf/shared/models';
 import { DateAgoPipe } from '@osf/shared/pipes';
 import { CollectionsSelectors } from '@osf/shared/stores';
@@ -18,7 +18,7 @@ import { SubmissionReviewStatus } from '../../enums';
 
 @Component({
   selector: 'osf-submission-item',
-  imports: [TranslatePipe, IconComponent, DateAgoPipe, Button],
+  imports: [TranslatePipe, IconComponent, DateAgoPipe, Button, TruncatedTextComponent],
   templateUrl: './collection-submission-item.component.html',
   styleUrl: './collection-submission-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

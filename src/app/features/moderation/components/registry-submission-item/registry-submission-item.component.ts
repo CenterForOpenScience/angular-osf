@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { IconComponent } from '@osf/shared/components';
+import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { DateAgoPipe } from '@osf/shared/pipes';
 
 import { REGISTRY_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
@@ -14,7 +14,7 @@ import { RegistryModeration } from '../../models';
 
 @Component({
   selector: 'osf-registry-submission-item',
-  imports: [IconComponent, DateAgoPipe, Button, TranslatePipe, DatePipe],
+  imports: [IconComponent, DateAgoPipe, Button, TranslatePipe, DatePipe, TruncatedTextComponent],
   templateUrl: './registry-submission-item.component.html',
   styleUrl: './registry-submission-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

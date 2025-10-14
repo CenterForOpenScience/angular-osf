@@ -48,7 +48,7 @@
     </div>
 
     @if (action.comment) {
-      <p class="font-italic mt-2">- {{ action.comment }}</p>
+      <osf-truncated-text class="block font-italic mt-2" [text]="action.comment" />
     }
   </div>
 }
