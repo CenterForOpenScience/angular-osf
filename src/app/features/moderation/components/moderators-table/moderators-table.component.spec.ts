@@ -3,6 +3,7 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectComponent } from '@shared/components';
+import { TableParameters } from '@shared/models';
 import { CustomDialogService } from '@shared/services';
 
 import { ModeratorModel } from '../../models';
@@ -13,12 +14,22 @@ import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 
-describe.skip('ModeratorsTableComponent', () => {
+describe('ModeratorsTableComponent', () => {
   let component: ModeratorsTableComponent;
   let fixture: ComponentFixture<ModeratorsTableComponent>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
   const mockModerators: ModeratorModel[] = MOCK_MODERATORS;
+  const mockTableParams: TableParameters = {
+    rows: 10,
+    paginator: true,
+    scrollable: false,
+    rowsPerPageOptions: [10, 25, 50],
+    totalRecords: 0,
+    firstRowIndex: 0,
+    defaultSortOrder: null,
+    defaultSortColumn: null,
+  };
 
   beforeEach(async () => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
@@ -30,6 +41,10 @@ describe.skip('ModeratorsTableComponent', () => {
 
     fixture = TestBed.createComponent(ModeratorsTableComponent);
     component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('tableParams', mockTableParams);
+    fixture.componentRef.setInput('currentUserId', 'test-user-id');
+    fixture.componentRef.setInput('isCurrentUserAdminModerator', false);
   });
 
   it('should create', () => {
@@ -42,6 +57,7 @@ describe.skip('ModeratorsTableComponent', () => {
     fixture.componentRef.setInput('isLoading', true);
     fixture.componentRef.setInput('currentUserId', 'current-user-123');
     fixture.componentRef.setInput('isCurrentUserAdminModerator', true);
+    fixture.componentRef.setInput('tableParams', mockTableParams);
 
     fixture.detectChanges();
 
@@ -49,6 +65,7 @@ describe.skip('ModeratorsTableComponent', () => {
     expect(component.isLoading()).toBe(true);
     expect(component.currentUserId()).toBe('current-user-123');
     expect(component.isCurrentUserAdminModerator()).toBe(true);
+    expect(component.tableParams()).toEqual(mockTableParams);
   });
 
   it('should emit update event when updatePermission is called', () => {
@@ -99,6 +116,9 @@ describe.skip('ModeratorsTableComponent', () => {
 
   it('should handle empty items array', () => {
     fixture.componentRef.setInput('items', []);
+    fixture.componentRef.setInput('tableParams', mockTableParams);
+    fixture.componentRef.setInput('currentUserId', 'test-user-id');
+    fixture.componentRef.setInput('isCurrentUserAdminModerator', false);
 
     fixture.detectChanges();
 
@@ -107,6 +127,8 @@ describe.skip('ModeratorsTableComponent', () => {
 
   it('should handle undefined currentUserId', () => {
     fixture.componentRef.setInput('currentUserId', undefined);
+    fixture.componentRef.setInput('tableParams', mockTableParams);
+    fixture.componentRef.setInput('isCurrentUserAdminModerator', false);
 
     fixture.detectChanges();
 
