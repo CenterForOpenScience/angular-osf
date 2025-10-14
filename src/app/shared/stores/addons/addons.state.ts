@@ -29,6 +29,7 @@ import {
   GetConfiguredLinkAddons,
   GetConfiguredStorageAddons,
   GetLinkAddons,
+  GetRedirectAddons,
   GetStorageAddons,
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
@@ -112,6 +113,30 @@ export class AddonsState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'linkAddons', error))
+    );
+  }
+
+  @Action(GetRedirectAddons)
+  getRedirectAddons(ctx: StateContext<AddonsStateModel>) {
+    const state = ctx.getState();
+    ctx.patchState({
+      redirectAddons: {
+        ...state.redirectAddons,
+        isLoading: true,
+      },
+    });
+
+    return this.addonsService.getAddons(AddonType.REDIRECT).pipe(
+      tap((addons) => {
+        ctx.patchState({
+          redirectAddons: {
+            data: addons,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'redirectAddons', error))
     );
   }
 

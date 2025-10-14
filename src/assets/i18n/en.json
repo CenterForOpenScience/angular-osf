@@ -1669,7 +1669,8 @@
       "categories": {
         "additionalService": "Additional Storage",
         "citationManager": "Citation Manager",
-        "linkedServices": "Linked Services"
+        "linkedServices": "Linked Services",
+        "otherServices": "Other Services"
       },
       "toast": {
         "updateSuccess": "Successfully updated {{addonName}} add-on configuration",

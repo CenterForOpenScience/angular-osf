@@ -16,6 +16,10 @@ export class GetLinkAddons {
   static readonly type = '[Addons] Get Link Addons';
 }
 
+export class GetRedirectAddons {
+  static readonly type = '[Addons] Get Other Addons';
+}
+
 export class GetAuthorizedStorageAddons {
   static readonly type = '[Addons] Get Authorized Storage Addons';
 

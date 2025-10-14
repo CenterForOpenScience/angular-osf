@@ -13,6 +13,7 @@ export interface AddonsStateModel {
   storageAddons: AsyncStateModel<AddonModel[]>;
   citationAddons: AsyncStateModel<AddonModel[]>;
   linkAddons: AsyncStateModel<AddonModel[]>;
+  redirectAddons: AsyncStateModel<AddonModel[]>;
   authorizedStorageAddons: AsyncStateModel<AuthorizedAccountModel[]>;
   authorizedCitationAddons: AsyncStateModel<AuthorizedAccountModel[]>;
   authorizedLinkAddons: AsyncStateModel<AuthorizedAccountModel[]>;
@@ -39,6 +40,11 @@ export const ADDONS_DEFAULTS: AddonsStateModel = {
     error: null,
   },
   linkAddons: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  redirectAddons: {
     data: [],
     isLoading: false,
     error: null,
