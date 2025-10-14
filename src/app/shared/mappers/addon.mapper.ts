@@ -26,6 +26,7 @@ export class AddonMapper {
       credentialsFormat: response.attributes.credentials_format,
       providerName: response.attributes.display_name,
       iconUrl: response.attributes.icon_url,
+      redirectUrl: response.attributes.redirect_url,
     };
   }
 

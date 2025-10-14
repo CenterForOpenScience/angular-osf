@@ -2,6 +2,7 @@ export enum AddonType {
   STORAGE = 'storage',
   CITATION = 'citation',
   LINK = 'link',
+  REDIRECT = 'redirect', // Redirect addons will not have authorized accounts or configured addons
 }
 
 export enum AuthorizedAccountType {
