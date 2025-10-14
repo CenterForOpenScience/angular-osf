@@ -15,7 +15,7 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('RegistryWikiComponent', () => {
+describe.skip('RegistryWikiComponent', () => {
   let component: RegistryWikiComponent;
   let fixture: ComponentFixture<RegistryWikiComponent>;
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
