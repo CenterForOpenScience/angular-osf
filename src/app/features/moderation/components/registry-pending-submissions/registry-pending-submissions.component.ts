@@ -19,10 +19,12 @@ import {
   LoadingSpinnerComponent,
   SelectComponent,
 } from '@osf/shared/components';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { Primitive } from '@osf/shared/helpers';
 
 import { PENDING_SUBMISSION_REVIEW_OPTIONS, REGISTRY_SORT_OPTIONS } from '../../constants';
 import { RegistrySort, SubmissionReviewStatus } from '../../enums';
+import { RegistryModeration } from '../../models';
 import { GetRegistrySubmissions, RegistryModerationSelectors } from '../../store/registry-moderation';
 import { RegistrySubmissionItemComponent } from '../registry-submission-item/registry-submission-item.component';
 
@@ -91,6 +93,24 @@ export class RegistryPendingSubmissionsComponent implements OnInit {
     this.currentPage.set(event.page ? event.page + 1 : 1);
     this.first.set(event.first ?? 0);
     this.fetchSubmissions();
+  }
+
+  navigateToRegistration(item: RegistryModeration) {
+    const isPendingModeration = item.revisionStatus === RevisionReviewStates.RevisionPendingModeration;
+    const isPending =
+      item.reviewsState === RegistrationReviewStates.Pending ||
+      item.reviewsState === RegistrationReviewStates.PendingWithdraw;
+
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/', item.id, 'overview'], {
+        queryParams: {
+          mode: 'moderator',
+          revisionId: isPendingModeration && !isPending ? item.revisionId : null,
+        },
+      })
+    );
+
+    window.open(url, '_blank');
   }
 
   private getStatusFromQueryParams() {
