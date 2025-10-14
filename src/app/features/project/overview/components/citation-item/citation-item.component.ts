@@ -16,12 +16,12 @@ import { ToastService } from '@shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CitationItemComponent {
-  private clipboard = inject(Clipboard);
-  private toastService = inject(ToastService);
+  private readonly clipboard = inject(Clipboard);
+  private readonly toastService = inject(ToastService);
 
-  citation = input.required<string>();
-  itemUrl = input<string>('');
-  level = input<number>(0);
+  readonly citation = input.required<string>();
+  readonly itemUrl = input<string>('');
+  readonly level = input<number>(0);
 
   copyCitation(): void {
     this.clipboard.copy(this.citation());

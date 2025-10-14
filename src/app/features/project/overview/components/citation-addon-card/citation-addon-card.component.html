@@ -23,14 +23,10 @@
       </ng-template>
     </p-select>
 
-    @if ((citationItems().length || collectionItems().length) && !isOperationInvocationSubmitting()) {
+    @if ((formattedCitationItems().length || collectionItems().length) && !isOperationInvocationSubmitting()) {
       <div class="citations-container flex flex-column px-3 py-2 gap-3 mt-2">
-        @for (item of citationItems(); track item.itemId) {
-          <osf-citation-item
-            [citation]="formatCitation(item, selectedCitationStyle())"
-            [itemUrl]="getItemUrl(item)"
-            [level]="0"
-          />
+        @for (item of formattedCitationItems(); track item.item.itemId) {
+          <osf-citation-item [citation]="item.formattedCitation" [itemUrl]="item.itemUrl" [level]="0" />
         }
         @for (collection of collectionItems(); track collection.itemId) {
           <osf-citation-collection-item

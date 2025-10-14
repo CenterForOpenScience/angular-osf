@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -18,19 +18,21 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { OperationNames, StorageItemType } from '@osf/shared/enums';
-import { CitationStyle, ConfiguredAddonModel, CustomOption, StorageItem } from '@osf/shared/models';
-import { AddonOperationInvocationService, CslStyleManagerService } from '@osf/shared/services';
-import { CitationsSelectors, GetCitationStyles } from '@osf/shared/stores';
-import { AddonsSelectors, CreateCitationAddonOperationInvocation } from '@osf/shared/stores/addons';
+import { DEFAULT_CITATION_STYLE } from '@osf/features/project/overview/constants';
+import { OperationNames, StorageItemType } from '@shared/enums';
+import { formatCitation, getItemUrl } from '@shared/helpers';
+import { CitationStyle, ConfiguredAddonModel, CustomOption, StorageItem } from '@shared/models';
+import { AddonOperationInvocationService, CslStyleManagerService } from '@shared/services';
+import { CitationsSelectors, GetCitationStyles } from '@shared/stores';
+import { AddonsSelectors, CreateCitationAddonOperationInvocation } from '@shared/stores/addons';
 
 import '@citation-js/plugin-csl';
 
+import { FormattedCitationItem } from '../../models';
 import { CitationCollectionItemComponent } from '../citation-collection-item/citation-collection-item.component';
 import { CitationItemComponent } from '../citation-item/citation-item.component';
-
-import { Cite } from '@citation-js/core';
 
 @Component({
   selector: 'osf-citation-addon-card',
@@ -40,60 +42,66 @@ import { Cite } from '@citation-js/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CitationAddonCardComponent implements OnInit {
-  private operationInvocationService = inject(AddonOperationInvocationService);
-  private cslStyleManager = inject(CslStyleManagerService);
-  private destroyRef = inject(DestroyRef);
-  private filterSubject = new Subject<string>();
-  private destroy$ = new Subject<void>();
+  private readonly operationInvocationService = inject(AddonOperationInvocationService);
+  private readonly cslStyleManager = inject(CslStyleManagerService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly filterSubject = new Subject<string>();
 
-  addon = input.required<ConfiguredAddonModel>();
+  readonly addon = input.required<ConfiguredAddonModel>();
 
-  allCitationOperationInvocations = select(AddonsSelectors.getAllCitationOperationInvocations);
+  readonly allCitationOperationInvocations = select(AddonsSelectors.getAllCitationOperationInvocations);
 
-  operationInvocation = computed(() => {
+  readonly operationInvocation = computed(() => {
     const addonId = this.addon().id;
     const invocations = this.allCitationOperationInvocations();
-    return invocations[addonId]?.data || null;
+    return invocations[addonId]?.data ?? null;
   });
 
-  isOperationInvocationSubmitting = computed(() => {
+  readonly isOperationInvocationSubmitting = computed(() => {
     const addonId = this.addon().id;
     const invocations = this.allCitationOperationInvocations();
-    return invocations[addonId]?.isSubmitting || false;
+    return invocations[addonId]?.isSubmitting ?? false;
   });
 
-  citationStyles = select(CitationsSelectors.getCitationStyles);
-  isCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
+  readonly citationStyles = select(CitationsSelectors.getCitationStyles);
+  readonly isCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
 
-  citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
-  selectedCitationStyle = signal<string>('apa');
-  isStyleLoading = signal<boolean>(false);
+  readonly citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
+  readonly selectedCitationStyle = signal<string>(DEFAULT_CITATION_STYLE);
+  readonly isStyleLoading = signal<boolean>(false);
 
-  filterMessage = computed(() =>
+  readonly filterMessage = computed(() =>
     this.isCitationStylesLoading()
       ? 'project.overview.metadata.citationLoadingPlaceholder'
       : 'project.overview.metadata.noCitationStylesFound'
   );
 
-  actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     createCitationAddonOperationInvocation: CreateCitationAddonOperationInvocation,
     getCitationStyles: GetCitationStyles,
   });
 
-  collectionItems = computed<StorageItem[]>(() => {
+  readonly collectionItems = computed<StorageItem[]>(() => {
     const invocation = this.operationInvocation();
-    if (!invocation || !invocation.operationResult) {
-      return [];
-    }
-    return invocation.operationResult.filter((item) => item.itemType === StorageItemType.Collection);
+    const result = invocation?.operationResult ?? [];
+    return result.filter((item) => item.itemType === StorageItemType.Collection);
   });
 
-  citationItems = computed<StorageItem[]>(() => {
+  readonly citationItems = computed<StorageItem[]>(() => {
     const invocation = this.operationInvocation();
-    if (!invocation || !invocation.operationResult) {
-      return [];
-    }
-    return invocation.operationResult.filter((item) => item.itemType === StorageItemType.Document && item.csl);
+    const result = invocation?.operationResult ?? [];
+    return result.filter((item) => item.itemType === StorageItemType.Document && !!item.csl);
+  });
+
+  readonly formattedCitationItems = computed<FormattedCitationItem[]>(() => {
+    const items = this.citationItems();
+    const style = this.selectedCitationStyle();
+
+    return items.map((item) => ({
+      item,
+      formattedCitation: formatCitation(item, style),
+      itemUrl: getItemUrl(item),
+    }));
   });
 
   constructor() {
@@ -103,6 +111,11 @@ export class CitationAddonCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadCitationData();
+    this.initializeCitationStyles();
+  }
+
+  private loadCitationData(): void {
     const addon = this.addon();
     const payload = this.operationInvocationService.createOperationInvocationPayload(
       addon,
@@ -111,9 +124,14 @@ export class CitationAddonCardComponent implements OnInit {
     );
 
     this.actions.createCitationAddonOperationInvocation(payload, addon.id);
-    this.actions.getCitationStyles('');
+  }
 
-    this.cslStyleManager.ensureStyleLoaded('apa').pipe(takeUntil(this.destroy$)).subscribe();
+  private initializeCitationStyles(): void {
+    this.actions.getCitationStyles('');
+    this.cslStyleManager
+      .ensureStyleLoaded(DEFAULT_CITATION_STYLE)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   handleCitationStyleFilterSearch(event: SelectFilterEvent): void {
@@ -123,42 +141,34 @@ export class CitationAddonCardComponent implements OnInit {
 
   handleCitationStyleChange(event: SelectChangeEvent): void {
     const styleId = event.value.id;
+    this.loadCitationStyle(styleId);
+  }
+
+  private loadCitationStyle(styleId: string): void {
     this.isStyleLoading.set(true);
 
     this.cslStyleManager
       .ensureStyleLoaded(styleId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
-          this.selectedCitationStyle.set(styleId);
-          this.isStyleLoading.set(false);
-        },
-        error: () => {
-          this.isStyleLoading.set(false);
-          this.selectedCitationStyle.set(styleId);
-        },
+        next: () => this.onStyleLoadSuccess(styleId),
+        error: () => this.onStyleLoadError(styleId),
       });
   }
 
-  formatCitation(item: StorageItem, style: string): string {
-    if (!item.csl) return item.itemName || '';
-
-    const cite = new Cite(item.csl);
-    const citation = cite.format('bibliography', {
-      format: 'text',
-      template: style,
-      lang: 'en-US',
-    });
-    return citation.trim();
+  private onStyleLoadSuccess(styleId: string): void {
+    this.selectedCitationStyle.set(styleId);
+    this.isStyleLoading.set(false);
   }
 
-  getItemUrl(item: StorageItem): string {
-    return (item.csl?.['URL'] as string) || '';
+  private onStyleLoadError(styleId: string): void {
+    this.selectedCitationStyle.set(styleId);
+    this.isStyleLoading.set(false);
   }
 
   private setupFilterDebounce(): void {
     this.filterSubject
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((filterValue) => {
         this.actions.getCitationStyles(filterValue);
       });
@@ -178,8 +188,6 @@ export class CitationAddonCardComponent implements OnInit {
 
   private setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.destroy$.next();
-      this.destroy$.complete();
       this.cslStyleManager.clearCache();
     });
   }

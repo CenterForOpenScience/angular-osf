@@ -21,21 +21,20 @@
   </div>
 
   @if (isExpanded()) {
-    @for (child of children(); track child.item.itemId) {
-      @if (isCollection(child.item)) {
-        <osf-citation-collection-item
-          [addon]="addon()"
-          [collection]="child.item"
-          [level]="level() + 1"
-          [selectedCitationStyle]="selectedCitationStyle()"
-        />
-      } @else if (isDocument(child.item)) {
-        <osf-citation-item
-          [citation]="formatCitation(child.item, selectedCitationStyle())"
-          [itemUrl]="getItemUrl(child.item)"
-          [level]="level() + 1"
-        />
-      }
+    @for (collectionChild of collectionChildren(); track collectionChild.item.itemId) {
+      <osf-citation-collection-item
+        [addon]="addon()"
+        [collection]="collectionChild.item"
+        [level]="level() + 1"
+        [selectedCitationStyle]="selectedCitationStyle()"
+      />
+    }
+    @for (formattedDoc of formattedDocumentChildren(); track formattedDoc.item.itemId) {
+      <osf-citation-item
+        [citation]="formattedDoc.formattedCitation"
+        [itemUrl]="formattedDoc.itemUrl"
+        [level]="level() + 1"
+      />
     }
   }
 </div>
