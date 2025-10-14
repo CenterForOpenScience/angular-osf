@@ -16,6 +16,7 @@ export interface TokenGetResponseJsonApi {
 
 interface TokenAttributesJsonApi {
   name: string;
+  token_id: string;
 }
 
 interface TokenEmbedsJsonApi {

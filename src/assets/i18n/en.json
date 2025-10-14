@@ -326,11 +326,6 @@
         "title": "Browse the latest research",
         "subtitle": "Check out the latest preprints hosted on OSF covering a variety of research areas",
         "button": "View Preprints"
-      },
-      "hosting": {
-        "title": "Hosting a conference or meeting?",
-        "subtitle": "Use the OSF for Meetings service to provide a central location for conference submissions",
-        "button": "View Meetings"
       }
     },
     "loggedOut": {
@@ -672,7 +667,7 @@
       },
       "wiki": {
         "title": "Wiki",
-        "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
+        "noWikiMessage": "Click the “Edit” to add important information, links, or images here to describe your project."
       },
       "files": {
         "title": "Files",
@@ -2889,7 +2884,8 @@
   },
   "resources": {
     "title": "Resources",
-    "description": "Link a DOI from a repository to your registration by clicking “Add resource” button. Contributors affirmed to adhere to the criteria for each badge.",
+    "linkDoi": "Link a DOI from a repository to your registration by clicking “Add resource” button.",
+    "description": " Contributors affirmed to adhere to the criteria for each badge.",
     "add": "Add Resource",
     "edit": "Edit Resource",
     "delete": "Delete Resource",
