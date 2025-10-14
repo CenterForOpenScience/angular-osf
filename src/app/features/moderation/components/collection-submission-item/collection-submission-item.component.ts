@@ -32,6 +32,7 @@ export class CollectionSubmissionItemComponent {
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
 
   readonly reviewStatusIcon = ReviewStatusIcon;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
 
   currentReviewAction = computed(() => {
     const actions = this.submission().actions;
@@ -57,11 +58,13 @@ export class CollectionSubmissionItemComponent {
     const currentStatus = this.activatedRoute.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus, mode: 'moderation' } : {};
 
-    this.router.navigate(['../', this.submission().nodeId], {
-      relativeTo: this.activatedRoute,
-      queryParams,
-    });
-  }
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['../', this.submission().nodeId], {
+        relativeTo: this.activatedRoute,
+        queryParams,
+      })
+    );
 
-  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+    window.open(url, '_blank');
+  }
 }

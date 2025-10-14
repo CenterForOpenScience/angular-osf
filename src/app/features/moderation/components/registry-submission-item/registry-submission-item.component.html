@@ -10,11 +10,7 @@
         link
         styleClass="text-left"
         [label]="submission().title"
-        [routerLink]="['/', submission().id, 'overview']"
-        [queryParams]="{
-          mode: 'moderator',
-          revisionId: isPendingModeration && !isPending ? submission().revisionId : null,
-        }"
+        (onClick)="selected.emit()"
       />
     }
 

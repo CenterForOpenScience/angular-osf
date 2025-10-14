@@ -3,11 +3,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { IconComponent } from '@osf/shared/components';
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { DateAgoPipe } from '@osf/shared/pipes';
 
 import { REGISTRY_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
@@ -16,7 +14,7 @@ import { RegistryModeration } from '../../models';
 
 @Component({
   selector: 'osf-registry-submission-item',
-  imports: [IconComponent, DateAgoPipe, Button, TranslatePipe, RouterLink, DatePipe],
+  imports: [IconComponent, DateAgoPipe, Button, TranslatePipe, DatePipe],
   templateUrl: './registry-submission-item.component.html',
   styleUrl: './registry-submission-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,23 +23,14 @@ export class RegistrySubmissionItemComponent {
   status = input.required<SubmissionReviewStatus>();
   submission = input.required<RegistryModeration>();
 
+  selected = output<void>();
+
   readonly reviewStatusIcon = ReviewStatusIcon;
   readonly registryActionLabel = REGISTRY_ACTION_LABEL;
   readonly registryActionState = ActionStatus;
 
   limitValue = 1;
   showAll = false;
-
-  get isPendingModeration(): boolean {
-    return this.submission().revisionStatus === RevisionReviewStates.RevisionPendingModeration;
-  }
-
-  get isPending(): boolean {
-    return (
-      this.submission().reviewsState === RegistrationReviewStates.Pending ||
-      this.submission().reviewsState === RegistrationReviewStates.PendingWithdraw
-    );
-  }
 
   get isRejected(): boolean {
     return this.status() === SubmissionReviewStatus.Rejected;
