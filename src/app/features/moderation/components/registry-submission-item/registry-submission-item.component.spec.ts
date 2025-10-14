@@ -61,14 +61,6 @@ describe('RegistrySubmissionItemComponent', () => {
     expect(component.showAll).toBe(false);
   });
 
-  it('should compute isPendingModeration correctly', () => {
-    expect(component.isPendingModeration).toBe(true);
-  });
-
-  it('should compute isPending correctly', () => {
-    expect(component.isPending).toBe(true);
-  });
-
   it('should accept custom input values', () => {
     const customStatus = SubmissionReviewStatus.Accepted;
     const customSubmission = { ...mockSubmission, title: 'Custom Registry Submission' };

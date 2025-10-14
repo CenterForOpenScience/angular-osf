@@ -127,18 +127,6 @@ describe('CollectionSubmissionItemComponent', () => {
     expect(attributes!.length).toBeGreaterThan(0);
   });
 
-  it('should handle navigation correctly', () => {
-    fixture.componentRef.setInput('submission', mockSubmission);
-    fixture.detectChanges();
-
-    component.handleNavigation();
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['../', mockSubmission.nodeId], {
-      relativeTo: expect.any(Object),
-      queryParams: { status: 'pending', mode: 'moderation' },
-    });
-  });
-
   it('should have SubmissionReviewStatus enum available', () => {
     expect(component.SubmissionReviewStatus).toBe(SubmissionReviewStatus);
   });

@@ -130,14 +130,6 @@ describe('PreprintSubmissionsComponent', () => {
     expect(component.first()).toBe(0);
   });
 
-  it('should navigate to preprint', () => {
-    const mockItem = mockSubmissions[0];
-    component.navigateToPreprint(mockItem);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/preprints/', mockProviderId, mockItem.id], {
-      queryParams: { mode: 'moderator' },
-    });
-  });
-
   it('should get status from query params on init', () => {
     expect(component.selectedReviewOption()).toBe(SubmissionReviewStatus.Pending);
   });

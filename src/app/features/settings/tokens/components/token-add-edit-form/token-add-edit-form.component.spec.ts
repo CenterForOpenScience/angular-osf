@@ -190,7 +190,7 @@ describe('TokenAddEditFormComponent', () => {
 
     component.handleSubmitForm();
 
-    expect(showDialogSpy).toHaveBeenCalledWith(MOCK_TOKEN.name, MOCK_TOKEN.id);
+    expect(showDialogSpy).toHaveBeenCalledWith(MOCK_TOKEN.name, MOCK_TOKEN.tokenId);
   });
 
   it('should show success toast and navigate after updating token', () => {
