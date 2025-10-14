@@ -24,6 +24,7 @@ import {
 } from '@osf/features/preprints/store/preprint-providers';
 import { SearchInputComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
+import { normalizeQuotes } from '@shared/helpers';
 import { BrandService } from '@shared/services';
 
 @Component({
@@ -87,7 +88,7 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
   }
 
   redirectToSearchPageWithValue() {
-    const searchValue = this.searchControl.value;
+    const searchValue = normalizeQuotes(this.searchControl.value);
 
     this.router.navigate(['/search'], {
       queryParams: { search: searchValue, tab: ResourceType.Preprint },

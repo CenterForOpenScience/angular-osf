@@ -4,8 +4,10 @@
   @if (user()) {
     <osf-profile-information [currentUser]="user()" [showEdit]="isMyProfile()" (editProfile)="toProfileSettings()" />
 
-    <div class="mt-6">
-      <osf-global-search [resourceTabOptions]="resourceTabOptions" />
-    </div>
+    @if (defaultSearchFiltersInitialized()) {
+      <div class="mt-6">
+        <osf-global-search [resourceTabOptions]="resourceTabOptions" />
+      </div>
+    }
   }
 }
