@@ -5,16 +5,10 @@ import { OperationNames, StorageItemType } from '@shared/enums';
 import { ConfiguredAddonModel, StorageItem } from '@shared/models';
 import { AddonOperationInvocationService, AddonsService } from '@shared/services';
 
+import { AddonTreeItem } from '../../models';
 import { CitationItemComponent } from '../citation-item/citation-item.component';
 
 import { Cite } from '@citation-js/core';
-
-export interface TreeItem {
-  item: StorageItem;
-  children: TreeItem[];
-  expanded: boolean;
-  loading: boolean;
-}
 
 @Component({
   selector: 'osf-citation-collection-item',
@@ -31,7 +25,7 @@ export class CitationCollectionItemComponent implements OnInit {
   level = input<number>(0);
   selectedCitationStyle = input.required<string>();
 
-  treeItem = signal<TreeItem | null>(null);
+  treeItem = signal<AddonTreeItem | null>(null);
 
   isExpanded = computed(() => this.treeItem()?.expanded || false);
   isLoading = computed(() => this.treeItem()?.loading || false);

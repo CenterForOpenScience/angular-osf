@@ -6,7 +6,7 @@ import { BUILT_IN_STYLES } from '@shared/constants';
 
 import { CitationsService } from './citations.service';
 
-import { Cite } from '@citation-js/core';
+import * as Cite from '@citation-js/core';
 
 @Injectable({
   providedIn: 'root',

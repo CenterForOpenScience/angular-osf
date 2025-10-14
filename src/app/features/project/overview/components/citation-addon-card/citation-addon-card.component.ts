@@ -23,7 +23,7 @@ import { OperationNames, StorageItemType } from '@osf/shared/enums';
 import { CitationStyle, ConfiguredAddonModel, CustomOption, StorageItem } from '@osf/shared/models';
 import { AddonOperationInvocationService, CslStyleManagerService } from '@osf/shared/services';
 import { CitationsSelectors, GetCitationStyles } from '@osf/shared/stores';
-import { AddonsSelectors, CreateAddonOperationInvocation } from '@osf/shared/stores/addons';
+import { AddonsSelectors, CreateCitationAddonOperationInvocation } from '@osf/shared/stores/addons';
 
 import '@citation-js/plugin-csl';
 
@@ -48,8 +48,20 @@ export class CitationAddonCardComponent implements OnInit {
 
   addon = input.required<ConfiguredAddonModel>();
 
-  operationInvocation = select(AddonsSelectors.getOperationInvocation);
-  isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
+  allCitationOperationInvocations = select(AddonsSelectors.getAllCitationOperationInvocations);
+
+  operationInvocation = computed(() => {
+    const addonId = this.addon().id;
+    const invocations = this.allCitationOperationInvocations();
+    return invocations[addonId]?.data || null;
+  });
+
+  isOperationInvocationSubmitting = computed(() => {
+    const addonId = this.addon().id;
+    const invocations = this.allCitationOperationInvocations();
+    return invocations[addonId]?.isSubmitting || false;
+  });
+
   citationStyles = select(CitationsSelectors.getCitationStyles);
   isCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
 
@@ -64,7 +76,7 @@ export class CitationAddonCardComponent implements OnInit {
   );
 
   actions = createDispatchMap({
-    createAddonOperationInvocation: CreateAddonOperationInvocation,
+    createCitationAddonOperationInvocation: CreateCitationAddonOperationInvocation,
     getCitationStyles: GetCitationStyles,
   });
 
@@ -98,7 +110,7 @@ export class CitationAddonCardComponent implements OnInit {
       addon.selectedStorageItemId
     );
 
-    this.actions.createAddonOperationInvocation(payload);
+    this.actions.createCitationAddonOperationInvocation(payload, addon.id);
     this.actions.getCitationStyles('');
 
     this.cslStyleManager.ensureStyleLoaded('apa').pipe(takeUntil(this.destroy$)).subscribe();

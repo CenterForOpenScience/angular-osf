@@ -25,6 +25,7 @@ export interface AddonsStateModel {
   createdUpdatedConfiguredAddon: AsyncStateModel<ConfiguredAddonResponseJsonApi | null>;
   operationInvocation: AsyncStateModel<OperationInvocation | null>;
   selectedItemOperationInvocation: AsyncStateModel<OperationInvocation | null>;
+  citationOperationInvocations: Record<string, AsyncStateModel<OperationInvocation | null>>;
 }
 
 export const ADDONS_DEFAULTS: AddonsStateModel = {
@@ -110,4 +111,5 @@ export const ADDONS_DEFAULTS: AddonsStateModel = {
     isSubmitting: false,
     error: null,
   },
+  citationOperationInvocations: {},
 };
