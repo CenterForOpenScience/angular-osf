@@ -66,16 +66,16 @@ export class ProfileComponent implements OnInit {
   private setupMyProfile(user: UserModel): void {
     this.actions.setUserProfile(user);
     if (user?.iri) {
-      this.defaultSearchFiltersInitialized.set(true);
       this.actions.setDefaultFilterValue('creator,isContainedBy.creator', user.iri);
+      this.defaultSearchFiltersInitialized.set(true);
     }
   }
 
   private setSearchFilter(): void {
     const currentUser = this.user();
     if (currentUser?.iri) {
-      this.defaultSearchFiltersInitialized.set(true);
       this.actions.setDefaultFilterValue('creator,isContainedBy.creator', currentUser.iri);
+      this.defaultSearchFiltersInitialized.set(true);
     }
   }
 }
