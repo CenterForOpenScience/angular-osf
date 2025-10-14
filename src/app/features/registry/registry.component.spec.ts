@@ -25,14 +25,14 @@ describe('RegistryComponent', () => {
     const mockStore = {
       selectSignal: jest.fn((selector: any) => {
         if (selector === RegistryOverviewSelectors.getRegistry) {
-          return registrySignal; // return a signal, not an observable
+          return registrySignal;
         }
         return signal(null);
       }),
     };
 
     await TestBed.configureTestingModule({
-      imports: [RegistryComponent], // standalone component
+      imports: [RegistryComponent],
       providers: [
         { provide: Store, useValue: mockStore },
         DatePipe,
