@@ -6,10 +6,10 @@ import { NgZone } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CopyButtonComponent } from '@shared/components';
-import { MOCK_TOKEN } from '@shared/mocks';
 
 import { TokenCreatedDialogComponent } from './token-created-dialog.component';
 
+import { MOCK_TOKEN } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('TokenCreatedDialogComponent', () => {

@@ -10,12 +10,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserEmailsState } from '@core/store/user-emails';
-import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { AccountSettingsState } from '../../store';
 
 import { AddEmailComponent } from './add-email.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('AddEmailComponent', () => {
   let component: AddEmailComponent;

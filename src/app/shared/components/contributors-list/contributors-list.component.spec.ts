@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_CONTRIBUTOR } from '@shared/mocks';
-
 import { ContributorsListComponent } from './contributors-list.component';
 
+import { MOCK_CONTRIBUTOR } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ContributorsListComponent', () => {

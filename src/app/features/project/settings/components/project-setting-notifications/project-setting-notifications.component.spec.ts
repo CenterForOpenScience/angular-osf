@@ -5,10 +5,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectDetailSettingAccordionComponent } from '@osf/features/project/settings/components';
 import { NotificationDescriptionPipe } from '@osf/features/project/settings/pipes';
 import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
-import { MOCK_NOTIFICATION_SUBSCRIPTIONS } from '@osf/shared/mocks';
 
 import { ProjectSettingNotificationsComponent } from './project-setting-notifications.component';
 
+import { MOCK_NOTIFICATION_SUBSCRIPTIONS } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ProjectSettingNotificationsComponent', () => {

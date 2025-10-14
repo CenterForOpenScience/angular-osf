@@ -4,6 +4,6 @@
   [isPreprintProviderLoading]="isPreprintProviderLoading()"
 />
 
-@if (preprintProvider()) {
+@if (defaultSearchFiltersInitialized()) {
   <osf-global-search [searchControlInput]="searchControl" [provider]="preprintProvider() ?? null" />
 }

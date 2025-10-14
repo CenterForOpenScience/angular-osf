@@ -5,10 +5,10 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CurrentResourceSelectors } from '@osf/shared/stores';
-import { MOCK_RESOURCE_INFO, MOCK_RESOURCE_WITH_CHILDREN } from '@shared/mocks';
 
 import { CreateViewLinkDialogComponent } from './create-view-link-dialog.component';
 
+import { MOCK_RESOURCE_INFO, MOCK_RESOURCE_WITH_CHILDREN } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

@@ -9,11 +9,12 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { MOCK_STORE, MOCK_USER } from '@osf/shared/mocks';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 import { HeaderComponent } from './header.component';
+
+import { MOCK_STORE, MOCK_USER } from '@testing/mocks';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

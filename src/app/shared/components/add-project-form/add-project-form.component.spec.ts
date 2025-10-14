@@ -9,7 +9,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
-import { MOCK_USER } from '@osf/shared/mocks';
 import { ProjectForm } from '@osf/shared/models';
 import { ProjectModel } from '@osf/shared/models/projects';
 import { InstitutionsSelectors, ProjectsSelectors, RegionsSelectors } from '@osf/shared/stores';
@@ -17,6 +16,7 @@ import { AffiliatedInstitutionSelectComponent, ProjectSelectorComponent } from '
 
 import { AddProjectFormComponent } from './add-project-form.component';
 
+import { MOCK_USER } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

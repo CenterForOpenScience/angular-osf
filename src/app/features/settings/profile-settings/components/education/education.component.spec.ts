@@ -10,15 +10,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateProfileSettingsEducation, UserSelectors } from '@core/store/user';
 import { EducationFormComponent } from '@osf/features/settings/profile-settings/components';
+import { ToastService } from '@shared/services';
+
+import { EducationComponent } from './education.component';
+
 import {
   CustomConfirmationServiceMock,
   MOCK_EDUCATION,
   MockCustomConfirmationServiceProvider,
   TranslateServiceMock,
-} from '@osf/shared/mocks';
-import { ToastService } from '@shared/services';
-
-import { EducationComponent } from './education.component';
+} from '@testing/mocks';
 
 describe('EducationComponent', () => {
   let component: EducationComponent;

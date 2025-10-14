@@ -17,8 +17,8 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
 import { IS_WEB } from '@shared/helpers';
-import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS, MOCK_RESOURCE_OVERVIEW } from '@shared/mocks';
 
+import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS, MOCK_RESOURCE_OVERVIEW } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';

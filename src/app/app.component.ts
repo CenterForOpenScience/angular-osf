@@ -45,14 +45,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.actions.getCurrentUser();
 
-    this.actions$
-      .pipe(
-        ofActionSuccessful(GetCurrentUser),
-        take(1)
-      )
-      .subscribe(() => {
-        this.actions.getEmails();
-      });
+    this.actions$.pipe(ofActionSuccessful(GetCurrentUser), take(1)).subscribe(() => {
+      this.actions.getEmails();
+    });
 
     if (this.environment.googleTagManagerId) {
       this.router.events

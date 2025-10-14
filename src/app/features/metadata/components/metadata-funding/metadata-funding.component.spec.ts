@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Funder } from '@osf/features/metadata/models';
-import { MOCK_FUNDERS } from '@shared/mocks';
 
 import { MetadataFundingComponent } from './metadata-funding.component';
 
+import { MOCK_FUNDERS } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataFundingComponent', () => {

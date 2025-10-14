@@ -9,7 +9,6 @@ import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { IconComponent, LicenseComponent, TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-import { MOCK_LICENSE } from '@shared/mocks';
 import { LicenseModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
@@ -18,6 +17,7 @@ import { PreprintsContributorsComponent } from './preprints-contributors/preprin
 import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subjects.component';
 import { PreprintsMetadataStepComponent } from './preprints-metadata-step.component';
 
+import { MOCK_LICENSE } from '@testing/mocks';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { OSFTestingModule } from '@testing/osf.testing.module';

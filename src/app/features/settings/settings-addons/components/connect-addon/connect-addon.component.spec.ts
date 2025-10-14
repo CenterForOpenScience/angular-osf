@@ -10,10 +10,11 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Navigation, Router, UrlTree } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { MOCK_ADDON } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores/addons';
 
 import { ConnectAddonComponent } from './connect-addon.component';
+
+import { MOCK_ADDON } from '@testing/mocks';
 
 describe.skip('ConnectAddonComponent', () => {
   let component: ConnectAddonComponent;

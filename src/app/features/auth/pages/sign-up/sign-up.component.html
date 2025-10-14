@@ -89,7 +89,7 @@
             autocomplete="new-password"
             styleClass="w-full"
           ></p-password>
-          <osf-password-input-hint [isError]="isPasswordError" />
+          <osf-password-input-hint [control]="signUpForm.controls['password']" />
         </div>
 
         <div class="flex mt-1">

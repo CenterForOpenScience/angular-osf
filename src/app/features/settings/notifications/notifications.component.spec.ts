@@ -14,7 +14,6 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { UserSelectors } from '@osf/core/store/user';
 import { LoaderService, ToastService } from '@osf/shared/services';
 import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
-import { MOCK_STORE, MOCK_USER, TranslateServiceMock } from '@shared/mocks';
 
 import { AccountSettings } from '../account-settings/models';
 import { AccountSettingsSelectors } from '../account-settings/store';
@@ -22,6 +21,7 @@ import { AccountSettingsSelectors } from '../account-settings/store';
 import { NotificationsComponent } from './notifications.component';
 import { NotificationSubscriptionSelectors } from './store';
 
+import { MOCK_STORE, MOCK_USER, TranslateServiceMock } from '@testing/mocks';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe('NotificationsComponent', () => {

@@ -9,7 +9,6 @@ import { UserSelectors } from '@core/store/user';
 import { ModeratorsTableComponent } from '@osf/features/moderation/components';
 import { ResourceType } from '@osf/shared/enums';
 import { SearchInputComponent } from '@shared/components';
-import { MOCK_USER, TranslateServiceMock } from '@shared/mocks';
 import { CustomConfirmationService, CustomDialogService } from '@shared/services';
 
 import { ModeratorPermission } from '../../enums';
@@ -18,6 +17,7 @@ import { ModeratorsSelectors } from '../../store/moderators';
 
 import { ModeratorsListComponent } from './moderators-list.component';
 
+import { MOCK_USER, TranslateServiceMock } from '@testing/mocks';
 import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';

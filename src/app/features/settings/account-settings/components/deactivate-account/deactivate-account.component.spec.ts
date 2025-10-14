@@ -12,7 +12,6 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { MOCK_STORE } from '@osf/shared/mocks';
 import { ToastService } from '@osf/shared/services';
 
 import { AccountSettingsService } from '../../services';
@@ -21,6 +20,8 @@ import { CancelDeactivationComponent } from '../cancel-deactivation/cancel-deact
 import { DeactivationWarningComponent } from '../deactivation-warning/deactivation-warning.component';
 
 import { DeactivateAccountComponent } from './deactivate-account.component';
+
+import { MOCK_STORE } from '@testing/mocks';
 
 describe('DeactivateAccountComponent', () => {
   let component: DeactivateAccountComponent;

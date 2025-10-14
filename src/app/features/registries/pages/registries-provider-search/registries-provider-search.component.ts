@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -36,6 +36,7 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
 
   provider = select(RegistrationProviderSelectors.getBrandedProvider);
   isProviderLoading = select(RegistrationProviderSelectors.isBrandedProviderLoading);
+  defaultSearchFiltersInitialized = signal<boolean>(false);
 
   searchControl = new FormControl('');
 
@@ -46,6 +47,7 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
         next: () => {
           this.actions.setDefaultFilterValue('publisher', this.provider()!.iri!);
           this.actions.setResourceType(ResourceType.Registration);
+          this.defaultSearchFiltersInitialized.set(true);
         },
       });
     }

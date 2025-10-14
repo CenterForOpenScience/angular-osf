@@ -9,7 +9,7 @@
         [iconClass]="reviewStatusIcon[submission().reviewsState].icon"
       ></osf-icon>
 
-      <p-button class="link-btn-no-padding" link (click)="handleNavigation()" [label]="submission().title" />
+      <p-button class="link-btn-no-padding" link (onClick)="handleNavigation()" [label]="submission().title" />
     </div>
 
     <p class="flex flex-wrap gap-1 mt-2">
@@ -48,7 +48,7 @@
     </div>
 
     @if (action.comment) {
-      <p class="font-italic mt-2">- {{ action.comment }}</p>
+      <osf-truncated-text class="block font-italic mt-2" [text]="action.comment" />
     }
   </div>
 }

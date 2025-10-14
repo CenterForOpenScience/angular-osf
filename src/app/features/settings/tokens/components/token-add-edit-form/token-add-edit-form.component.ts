@@ -64,9 +64,7 @@ export class TokenAddEditFormComponent implements OnInit {
   });
 
   constructor() {
-    effect(() => {
-      return this.isLoading() ? this.tokenForm.disable() : this.tokenForm.enable();
-    });
+    effect(() => (this.isLoading() ? this.tokenForm.disable() : this.tokenForm.enable()));
   }
 
   ngOnInit(): void {
@@ -97,7 +95,7 @@ export class TokenAddEditFormComponent implements OnInit {
           const tokens = this.store.selectSignal(TokensSelectors.getTokens);
           const newToken = tokens()[0];
           this.dialogRef.close();
-          this.showTokenCreatedDialog(newToken.name, newToken.id);
+          this.showTokenCreatedDialog(newToken.name, newToken.tokenId);
         },
       });
     } else {

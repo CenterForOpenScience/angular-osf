@@ -3,7 +3,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { SafeHtmlPipe } from 'primeng/menu';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -29,6 +29,7 @@ export class InstitutionsSearchComponent implements OnInit {
 
   institution = select(InstitutionsSearchSelectors.getInstitution);
   isInstitutionLoading = select(InstitutionsSearchSelectors.getInstitutionLoading);
+  defaultSearchFiltersInitialized = signal<boolean>(false);
 
   readonly resourceTabOptions = SEARCH_TAB_OPTIONS;
 
@@ -41,6 +42,7 @@ export class InstitutionsSearchComponent implements OnInit {
             'affiliation,isContainedBy.affiliation',
             this.institution().iris.join(',')
           );
+          this.defaultSearchFiltersInitialized.set(true);
         },
       });
     }

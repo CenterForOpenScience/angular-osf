@@ -1,6 +1,6 @@
 import { ContributorPermission } from '@shared/enums';
 
-import { ContributorModel } from '../models';
+import { ContributorModel } from '../../app/shared/models';
 
 export const MOCK_CONTRIBUTOR: ContributorModel = {
   id: 'contributor-1',

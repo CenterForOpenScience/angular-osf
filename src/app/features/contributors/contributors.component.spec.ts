@@ -8,18 +8,18 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContributorPermission } from '@shared/enums';
-import {
-  MOCK_CONTRIBUTOR,
-  MOCK_CONTRIBUTOR_WITHOUT_HISTORY,
-  MOCK_PAGINATED_VIEW_ONLY_LINKS,
-  MOCK_RESOURCE_INFO,
-} from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
 import { CustomConfirmationService } from '@shared/services';
 import { ContributorsSelectors, CurrentResourceSelectors, ViewOnlyLinkSelectors } from '@shared/stores';
 
 import { ContributorsComponent } from './contributors.component';
 
+import {
+  MOCK_CONTRIBUTOR,
+  MOCK_CONTRIBUTOR_WITHOUT_HISTORY,
+  MOCK_PAGINATED_VIEW_ONLY_LINKS,
+  MOCK_RESOURCE_INFO,
+} from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

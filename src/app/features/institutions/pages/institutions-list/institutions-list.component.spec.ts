@@ -5,10 +5,10 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
-import { MOCK_INSTITUTION } from '@shared/mocks/institution.mock';
 
 import { InstitutionsListComponent } from './institutions-list.component';
 
+import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';

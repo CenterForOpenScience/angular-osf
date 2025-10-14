@@ -6,12 +6,12 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_STORE } from '@shared/mocks';
 import { CustomDialogService } from '@shared/services';
 
 import { GetScopes } from './store';
 import { TokensComponent } from './tokens.component';
 
+import { MOCK_STORE } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';

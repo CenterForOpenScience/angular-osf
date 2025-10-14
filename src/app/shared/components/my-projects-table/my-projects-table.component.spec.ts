@@ -6,10 +6,11 @@ import { FormControl } from '@angular/forms';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
 import { SearchInputComponent } from '@shared/components';
-import { MOCK_CONTRIBUTOR, TranslateServiceMock } from '@shared/mocks';
 import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
 
 import { MyProjectsTableComponent } from './my-projects-table.component';
+
+import { MOCK_CONTRIBUTOR, TranslateServiceMock } from '@testing/mocks';
 
 describe('MyProjectsTableComponent', () => {
   let component: MyProjectsTableComponent;

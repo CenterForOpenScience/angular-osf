@@ -10,12 +10,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors, UserState } from '@osf/core/store/user';
 import { RegionsSelectors, RegionsState } from '@osf/shared/stores';
-import { MOCK_STORE } from '@shared/mocks';
 import { LoaderService, ToastService } from '@shared/services';
 
 import { AccountSettingsState } from '../../store';
 
 import { DefaultStorageLocationComponent } from './default-storage-location.component';
+
+import { MOCK_STORE } from '@testing/mocks';
 
 describe('DefaultStorageLocationComponent', () => {
   let component: DefaultStorageLocationComponent;

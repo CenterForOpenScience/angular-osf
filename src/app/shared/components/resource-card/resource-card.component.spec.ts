@@ -7,10 +7,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceCardComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
-import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE, MOCK_USER_RELATED_COUNTS } from '@shared/mocks';
 import { ResourceModel } from '@shared/models';
 import { ResourceCardService } from '@shared/services';
 
+import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE, MOCK_USER_RELATED_COUNTS } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ResourceCardComponent', () => {

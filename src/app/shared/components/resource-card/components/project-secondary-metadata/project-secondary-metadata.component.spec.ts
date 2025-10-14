@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceType } from '@shared/enums';
-import { MOCK_RESOURCE } from '@shared/mocks';
 import { ResourceModel } from '@shared/models';
 
 import { ProjectSecondaryMetadataComponent } from './project-secondary-metadata.component';
 
+import { MOCK_RESOURCE } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ProjectSecondaryMetadataComponent', () => {

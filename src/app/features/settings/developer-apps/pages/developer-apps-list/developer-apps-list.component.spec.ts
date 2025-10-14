@@ -10,11 +10,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
-import { MOCK_DEVELOPER_APP } from '@shared/mocks/developer-app.mock';
 
 import { DeveloperAppsState } from '../../store';
 
 import { DeveloperAppsListComponent } from './developer-apps-list.component';
+
+import { MOCK_DEVELOPER_APP } from '@testing/mocks/developer-app.mock';
 
 describe('DeveloperApplicationsListComponent', () => {
   let component: DeveloperAppsListComponent;

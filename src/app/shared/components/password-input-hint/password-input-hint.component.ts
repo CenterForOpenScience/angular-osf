@@ -1,16 +1,26 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-
-import { BooleanOrNullOrUndefined } from '@osf/shared/helpers';
+import { CommonModule } from '@angular/common';
+import { Component, input } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'osf-password-input-hint',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, CommonModule],
   templateUrl: './password-input-hint.component.html',
   styleUrl: './password-input-hint.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordInputHintComponent {
-  isError = input<BooleanOrNullOrUndefined>(false);
+  control = input<AbstractControl | null>(null);
+
+  get validationError(): string | null {
+    const ctrl = this.control();
+    if (!ctrl || !ctrl.errors || !ctrl.touched) return null;
+
+    if (ctrl.errors['required']) return 'required';
+    if (ctrl.errors['minlength']) return 'minlength';
+    if (ctrl.errors['pattern']) return 'pattern';
+
+    return null;
+  }
 }

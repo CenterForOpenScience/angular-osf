@@ -11,7 +11,11 @@
 } @else {
   <div class="flex flex-column bg-white flex-1 p-4 gap-4">
     <p>
-      {{ 'resources.description' | translate }}
+      @if (addButtonVisible()) {
+        <span>{{ 'resources.linkDoi' | translate }}</span>
+      }
+
+      <span>{{ 'resources.description' | translate }}</span>
       <a class="font-bold" href="https://help.osf.io/article/452-open-practice-badges" target="_blank">
         {{ 'common.labels.learnMore' | translate }}
       </a>

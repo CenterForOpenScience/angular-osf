@@ -1,4 +1,4 @@
-import { BaseNodeModel } from '../models';
+import { BaseNodeModel } from '../../app/shared/models';
 
 export const testNode: BaseNodeModel = {
   id: 'abc123',

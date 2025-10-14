@@ -1,4 +1,4 @@
-import { CustomConfirmationService } from '@shared/services';
+import { CustomConfirmationService } from '@osf/shared/services';
 
 export const CustomConfirmationServiceMock = {
   confirmDelete: jest.fn(),

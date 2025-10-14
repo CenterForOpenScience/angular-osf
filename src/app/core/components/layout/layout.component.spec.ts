@@ -16,13 +16,13 @@ import { OSFBannerComponent } from '../osf-banners/osf-banner.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { TopnavComponent } from '../topnav/topnav.component';
 
-import { RootComponent } from './root.component';
+import { LayoutComponent } from './layout.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('Component: Root', () => {
-  let component: RootComponent;
-  let fixture: ComponentFixture<RootComponent>;
+  let component: LayoutComponent;
+  let fixture: ComponentFixture<LayoutComponent>;
   let isWebSubject: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('Component: Root', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        RootComponent,
+        LayoutComponent,
         OSFTestingModule,
         ...MockComponents(
           HeaderComponent,
@@ -45,7 +45,7 @@ describe('Component: Root', () => {
       providers: [MockProvider(IS_WEB, isWebSubject), MockProvider(ConfirmationService)],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RootComponent);
+    fixture = TestBed.createComponent(LayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

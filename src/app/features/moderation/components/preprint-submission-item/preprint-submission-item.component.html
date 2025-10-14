@@ -18,7 +18,7 @@
         <span>{{ action.creator?.name }}</span>
 
         @if (action.comment.length) {
-          <span class="font-italic">- {{ action.comment }}</span>
+          <osf-truncated-text class="font-italic" [text]="action.comment" />
         }
       </div>
     }

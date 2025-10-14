@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_PROJECT_IDENTIFIERS } from '@osf/shared/mocks';
 import { Identifier } from '@osf/shared/models';
 
 import { MetadataRegistrationDoiComponent } from './metadata-registration-doi.component';
 
+import { MOCK_PROJECT_IDENTIFIERS } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataRegistrationDoiComponent', () => {

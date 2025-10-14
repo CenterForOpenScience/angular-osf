@@ -11,13 +11,13 @@ import {
   IconComponent,
   TruncatedTextComponent,
 } from '@shared/components';
-import { MOCK_CONTRIBUTOR, MOCK_INSTITUTION } from '@shared/mocks';
 import { ContributorsSelectors, InstitutionsSelectors } from '@shared/stores';
 
 import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
 
 import { GeneralInformationComponent } from './general-information.component';
 
+import { MOCK_CONTRIBUTOR, MOCK_INSTITUTION } from '@testing/mocks';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { OSFTestingModule } from '@testing/osf.testing.module';

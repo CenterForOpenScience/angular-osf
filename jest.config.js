@@ -28,10 +28,13 @@ module.exports = {
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
     'src/app/**/*.{ts,js}',
+    '!src/app/core/themes/**',
     '!src/app/app.config.ts',
     '!src/app/**/*.routes.{ts.js}',
     '!src/app/**/*.models.{ts.js}',
     '!src/app/**/*.model.{ts.js}',
+    '!src/app/**/models/*.{ts,js}',
+    '!src/app/shared/models/**',
     '!src/app/**/*.route.{ts,js}',
     '!src/app/**/*.enum.{ts,js}',
     '!src/app/**/*.type.{ts,js}',
@@ -43,10 +46,10 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 15,
-      functions: 18.22,
-      lines: 43.77,
-      statements: 44.42,
+      branches: 24.1,
+      functions: 28.73,
+      lines: 56.52,
+      statements: 56.82,
     },
   },
   watchPathIgnorePatterns: [

@@ -8,11 +8,12 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { MOCK_PROVIDER, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
 
 import { ReviewStepComponent } from './review-step.component';
+
+import { MOCK_PROVIDER, MOCK_STORE, TranslateServiceMock } from '@testing/mocks';
 
 describe('ReviewStepComponent', () => {
   let component: ReviewStepComponent;

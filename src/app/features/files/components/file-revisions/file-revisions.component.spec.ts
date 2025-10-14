@@ -5,11 +5,11 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilesSelectors } from '@osf/features/files/store';
-import { MOCK_STORE } from '@shared/mocks';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { FileRevisionsComponent } from './file-revisions.component';
 
+import { MOCK_STORE } from '@testing/mocks';
 import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 

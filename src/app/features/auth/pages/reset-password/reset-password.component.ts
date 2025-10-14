@@ -30,17 +30,16 @@ export class ResetPasswordComponent {
 
   resetPasswordForm: ResetPasswordFormGroupType = this.fb.group(
     {
-      newPassword: ['', [CustomValidators.requiredTrimmed(), Validators.pattern(this.passwordRegex)]],
+      newPassword: [
+        '',
+        [CustomValidators.requiredTrimmed(), Validators.minLength(8), Validators.pattern(this.passwordRegex)],
+      ],
       confirmNewPassword: ['', CustomValidators.requiredTrimmed()],
     },
     {
       validators: CustomValidators.passwordMatchValidator('newPassword', 'confirmNewPassword'),
     }
   );
-
-  get isNewPasswordError() {
-    return this.resetPasswordForm.get('newPassword')?.errors && this.resetPasswordForm.get('newPassword')?.touched;
-  }
 
   get isMismatchError(): boolean {
     return (

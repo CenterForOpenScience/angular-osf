@@ -22,10 +22,11 @@ import {
 import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { RegionsSelectors } from '@osf/shared/stores';
-import { MOCK_STORE, MOCK_USER, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { AccountSettingsComponent } from './account-settings.component';
+
+import { MOCK_STORE, MOCK_USER, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@testing/mocks';
 
 describe('AccountSettingsComponent', () => {
   let component: AccountSettingsComponent;

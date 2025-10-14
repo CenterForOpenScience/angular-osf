@@ -5,11 +5,11 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContributorPermission, ResourceType } from '@osf/shared/enums';
-import { MOCK_USER } from '@osf/shared/mocks';
 import { RequestAccessModel } from '@osf/shared/models';
 
 import { RequestAccessTableComponent } from './request-access-table.component';
 
+import { MOCK_USER } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
 

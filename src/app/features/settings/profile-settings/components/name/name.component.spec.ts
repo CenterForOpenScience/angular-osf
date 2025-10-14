@@ -11,10 +11,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateProfileSettingsUser, UserSelectors } from '@core/store/user';
 import { CitationPreviewComponent, NameFormComponent } from '@osf/features/settings/profile-settings/components';
-import { MOCK_USER, MockCustomConfirmationServiceProvider } from '@osf/shared/mocks';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 import { NameComponent } from './name.component';
+
+import { MOCK_USER, MockCustomConfirmationServiceProvider } from '@testing/mocks';
 
 describe('NameComponent', () => {
   let component: NameComponent;

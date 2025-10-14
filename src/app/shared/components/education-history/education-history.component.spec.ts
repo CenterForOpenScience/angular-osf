@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_EDUCATION } from '@shared/mocks';
-
 import { EducationHistoryComponent } from './education-history.component';
 
+import { MOCK_EDUCATION } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('EducationHistoryComponent', () => {

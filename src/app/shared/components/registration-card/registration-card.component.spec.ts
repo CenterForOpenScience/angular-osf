@@ -7,10 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 import { RegistriesSelectors } from '@osf/features/registries/store';
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { RegistrationCard } from '@osf/shared/models';
-import { MOCK_REGISTRATION } from '@shared/mocks';
 
 import { RegistrationCardComponent } from './registration-card.component';
 
+import { MOCK_REGISTRATION } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

@@ -6,12 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { CollectionsMainContentComponent } from '@osf/features/collections/components';
 import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
-import { MOCK_PROVIDER } from '@shared/mocks';
 import { CustomDialogService, ToastService } from '@shared/services';
 import { CollectionsSelectors } from '@shared/stores';
 
 import { CollectionsDiscoverComponent } from './collections-discover.component';
 
+import { MOCK_PROVIDER } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';

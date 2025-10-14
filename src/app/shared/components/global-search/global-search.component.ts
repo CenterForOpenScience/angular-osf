@@ -249,10 +249,11 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (newValue) => {
           if (!newValue) newValue = null;
-          this.actions.setSearchText(normalizeQuotes(newValue));
+          const normalizedValue = normalizeQuotes(newValue);
+          this.actions.setSearchText(normalizedValue);
           this.router.navigate([], {
             relativeTo: this.route,
-            queryParams: { search: newValue },
+            queryParams: { search: normalizedValue },
             queryParamsHandling: 'merge',
           });
           this.actions.fetchResources();

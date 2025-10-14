@@ -58,15 +58,6 @@
             severity="success"
           />
         </div>
-
-        <div class="hosting-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between">
-          <div class="text-container">
-            <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
-            <p class="m-t-12">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>
-          </div>
-
-          <p-button routerLink="/meetings" [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
-        </div>
       </div>
     } @else {
       <osf-sub-header

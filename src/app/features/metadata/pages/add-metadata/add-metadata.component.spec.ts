@@ -7,13 +7,13 @@ import { CedarTemplateFormComponent } from '@osf/features/metadata/components';
 import { ResourceType } from '@osf/shared/enums';
 import { ToastService } from '@osf/shared/services';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@shared/mocks';
 
 import { CedarMetadataDataTemplateJsonApi } from '../../models';
 import { MetadataSelectors } from '../../store';
 
 import { AddMetadataComponent } from './add-metadata.component';
 
+import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks';
 import { MOCK_CEDAR_METADATA_RECORD_DATA } from '@testing/mocks/cedar-metadata-record.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';

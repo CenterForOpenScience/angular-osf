@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_PROVIDER } from '@shared/mocks';
-
 import { PreprintModerationTab } from '../../enums';
 
 import { MyReviewingNavigationComponent } from './my-reviewing-navigation.component';
 
+import { MOCK_PROVIDER } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MyReviewingNavigationComponent', () => {

@@ -15,11 +15,11 @@ import {
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 import { ViewOnlyLinkSelectors } from '@osf/shared/stores';
-import { MOCK_VIEW_ONLY_LINK } from '@shared/mocks';
 
 import { SettingsComponent } from './settings.component';
 import { SettingsSelectors } from './store';
 
+import { MOCK_VIEW_ONLY_LINK } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';

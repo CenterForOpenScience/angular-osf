@@ -7,9 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '@osf/core/services';
 import { PasswordInputHintComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
-import { TranslateServiceMock } from '@shared/mocks';
 
 import { SignUpComponent } from './sign-up.component';
+
+import { TranslateServiceMock } from '@testing/mocks';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;

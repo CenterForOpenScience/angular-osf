@@ -7,10 +7,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { SocialModel, UserModel } from '@osf/shared/models';
 import { EducationHistoryComponent, EmploymentHistoryComponent } from '@shared/components';
-import { MOCK_USER } from '@shared/mocks';
 
 import { ProfileInformationComponent } from './profile-information.component';
 
+import { MOCK_USER } from '@testing/mocks';
 import { MOCK_EDUCATION, MOCK_EMPLOYMENT } from '@testing/mocks/user-employment-education.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 

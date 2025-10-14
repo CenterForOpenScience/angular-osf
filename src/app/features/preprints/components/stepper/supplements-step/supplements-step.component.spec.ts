@@ -6,11 +6,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { AddProjectFormComponent } from '@shared/components';
-import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { SupplementsStepComponent } from './supplements-step.component';
 
+import { TranslateServiceMock } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';

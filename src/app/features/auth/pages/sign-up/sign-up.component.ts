@@ -47,15 +47,10 @@ export class SignUpComponent implements OnInit {
   private readonly environment = inject(ENVIRONMENT);
 
   signUpForm = new FormGroup<SignUpForm>({} as SignUpForm);
-  passwordRegex: RegExp = PASSWORD_REGEX;
   inputLimits = InputLimits;
   isFormSubmitted = signal(false);
 
   readonly siteKey = this.environment.recaptchaSiteKey;
-
-  get isPasswordError() {
-    return this.signUpForm.controls['password'].errors && this.signUpForm.get('password')?.touched;
-  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -76,7 +71,7 @@ export class SignUpComponent implements OnInit {
       }),
       password: new FormControl('', {
         nonNullable: true,
-        validators: [CustomValidators.requiredTrimmed(), Validators.pattern(this.passwordRegex)],
+        validators: [CustomValidators.requiredTrimmed(), Validators.minLength(8), Validators.pattern(PASSWORD_REGEX)],
       }),
       acceptedTermsOfService: new FormControl(false, {
         nonNullable: true,

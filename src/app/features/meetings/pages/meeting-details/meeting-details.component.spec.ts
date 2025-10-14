@@ -14,9 +14,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MeetingsSelectors } from '@osf/features/meetings/store';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { MOCK_MEETING, MOCK_MEETING_SUBMISSIONS, MOCK_STORE } from '@shared/mocks';
 
 import { MeetingDetailsComponent } from './meeting-details.component';
+
+import { MOCK_MEETING, MOCK_MEETING_SUBMISSIONS, MOCK_STORE } from '@testing/mocks';
 
 const mockActivatedRoute = {
   params: of({ id: 'test-meeting-id' }),

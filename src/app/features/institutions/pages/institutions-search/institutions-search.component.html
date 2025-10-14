@@ -20,6 +20,8 @@
       <p [innerHtml]="institution().description | safeHtml"></p>
     </div>
 
-    <osf-global-search [resourceTabOptions]="resourceTabOptions" />
+    @if (defaultSearchFiltersInitialized()) {
+      <osf-global-search [resourceTabOptions]="resourceTabOptions" />
+    }
   }
 </section>

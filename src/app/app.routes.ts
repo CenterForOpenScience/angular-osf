@@ -18,7 +18,7 @@ import { LicensesService } from './shared/services';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./core/components/root/root.component').then((mod) => mod.RootComponent),
+    loadComponent: () => import('./core/components/layout/layout.component').then((mod) => mod.LayoutComponent),
     children: [
       {
         path: '',

@@ -10,12 +10,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ProjectFormControls } from '@osf/shared/enums';
-import { MOCK_STORE } from '@osf/shared/mocks';
 import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 import { AddProjectFormComponent } from '@shared/components';
 
 import { CreateProjectDialogComponent } from './create-project-dialog.component';
 
+import { MOCK_STORE } from '@testing/mocks';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('CreateProjectDialogComponent', () => {

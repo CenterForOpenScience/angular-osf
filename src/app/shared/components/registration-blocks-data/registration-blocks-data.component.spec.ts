@@ -3,9 +3,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { MOCK_REVIEW } from '@shared/mocks';
-
 import { RegistrationBlocksDataComponent } from './registration-blocks-data.component';
+
+import { MOCK_REVIEW } from '@testing/mocks';
 
 describe('RegistrationBlocksDataComponent', () => {
   let component: RegistrationBlocksDataComponent;

@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -37,6 +37,7 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
 
   searchControl = new FormControl('');
+  defaultSearchFiltersInitialized = signal<boolean>(false);
 
   ngOnInit() {
     this.actions.getPreprintProviderById(this.providerId).subscribe({
@@ -46,6 +47,7 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
         if (provider) {
           this.actions.setDefaultFilterValue('publisher', provider.iri);
           this.actions.setResourceType(ResourceType.Preprint);
+          this.defaultSearchFiltersInitialized.set(true);
 
           BrandService.applyBranding(provider.brand);
           HeaderStyleHelper.applyHeaderStyles(
