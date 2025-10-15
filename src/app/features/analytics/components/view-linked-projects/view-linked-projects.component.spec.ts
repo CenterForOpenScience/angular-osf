@@ -2,8 +2,6 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { PaginatorState } from 'primeng/paginator';
 
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -84,19 +82,6 @@ describe('Component: View Duplicates', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should open ForkDialog with width 450px when small and not refresh on failure', () => {
-    (component as any).actions = { ...component.actions, getDuplicates: jest.fn() };
-
-    const openSpy = jest
-      .spyOn(mockCustomDialogService, 'open')
-      .mockReturnValue({ onClose: of({ success: false }) } as any);
-
-    component.handleForkResource();
-
-    expect(openSpy).toHaveBeenCalledWith(expect.any(Function), expect.objectContaining({ width: '450px' }));
-    expect((component as any).actions.getDuplicates).not.toHaveBeenCalled();
   });
 
   it('should update currentPage when page is defined', () => {

@@ -21,7 +21,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import {
   ClearRegistryOverview,
@@ -36,8 +35,7 @@ import {
   SubHeaderComponent,
   TruncatedTextComponent,
 } from '@osf/shared/components';
-import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { GetResourceWithChildren } from '@osf/shared/stores';
+import { ResourceType } from '@osf/shared/enums';
 import { ClearLinkedProjects, GetAllLinkedProjects, LinkedProjectsSelectors } from '@shared/stores/linked-projects';
 
 @Component({
@@ -65,13 +63,11 @@ export class ViewLinkedProjectsComponent {
   private project = select(ProjectOverviewSelectors.getProject);
   private registration = select(RegistryOverviewSelectors.getRegistry);
 
-  duplicates = select(LinkedProjectsSelectors.getLinkedProjects);
-  isDuplicatesLoading = select(LinkedProjectsSelectors.getLinkedProjectsLoading);
-  totalDuplicates = select(LinkedProjectsSelectors.getLinkedProjectsTotalCount);
-  isAuthenticated = select(UserSelectors.isAuthenticated);
+  linkedProjects = select(LinkedProjectsSelectors.getLinkedProjects);
+  isLoading = select(LinkedProjectsSelectors.getLinkedProjectsLoading);
+  totalLinkedProjects = select(LinkedProjectsSelectors.getLinkedProjectsTotalCount);
 
   readonly pageSize = 10;
-  readonly UserPermissions = UserPermissions;
 
   currentPage = signal<string>('1');
   firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * this.pageSize);
@@ -100,7 +96,6 @@ export class ViewLinkedProjectsComponent {
     clearLinkedProjects: ClearLinkedProjects,
     clearProject: ClearProjectOverview,
     clearRegistration: ClearRegistryOverview,
-    getComponentsTree: GetResourceWithChildren,
   });
 
   constructor() {
