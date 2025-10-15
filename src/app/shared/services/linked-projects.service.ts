@@ -4,10 +4,9 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { NodeDataJsonApi } from '@osf/features/project/settings/models';
 
 import { BaseNodeMapper } from '../mappers';
-import { NodeModel, PaginatedData, ResponseJsonApi } from '../models';
+import { BaseNodeDataJsonApi, NodeModel, PaginatedData, ResponseJsonApi } from '../models';
 
 import { JsonApiService } from './json-api.service';
 
@@ -42,7 +41,9 @@ export class LinkedProjectsService {
     }
 
     return this.jsonApiService
-      .get<ResponseJsonApi<NodeDataJsonApi[]>>(`${this.apiUrl}/${resourceType}/${resourceId}/linked_by_nodes/`, params)
+      .get<
+        ResponseJsonApi<BaseNodeDataJsonApi[]>
+      >(`${this.apiUrl}/${resourceType}/${resourceId}/linked_by_nodes/`, params)
       .pipe(map((res) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(res)));
   }
 }

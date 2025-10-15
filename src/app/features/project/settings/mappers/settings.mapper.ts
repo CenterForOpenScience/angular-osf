@@ -1,9 +1,9 @@
 import { UserPermissions } from '@osf/shared/enums';
 import { InstitutionsMapper } from '@osf/shared/mappers';
 import { RegionsMapper } from '@osf/shared/mappers/regions';
+import { BaseNodeDataJsonApi } from '@shared/models';
 
 import {
-  NodeDataJsonApi,
   NodeDetailsModel,
   ProjectSettingsDataJsonApi,
   ProjectSettingsModel,
@@ -27,7 +27,7 @@ export class SettingsMapper {
     } as ProjectSettingsModel;
   }
 
-  static fromNodeResponse(data: NodeDataJsonApi): NodeDetailsModel {
+  static fromNodeResponse(data: BaseNodeDataJsonApi): NodeDetailsModel {
     return {
       id: data.id,
       title: data.attributes.title,

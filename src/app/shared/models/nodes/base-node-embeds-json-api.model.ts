@@ -1,17 +1,27 @@
-import { IdentifierAttributes } from '@shared/models';
+import {
+  ContributorDataJsonApi,
+  IdentifierAttributes,
+  IdentifiersJsonApiData,
+  InstitutionDataJsonApi,
+  LicenseDataJsonApi,
+  RegionDataJsonApi,
+} from '@shared/models';
 
 export interface BaseNodeEmbedsJsonApi {
-  bibliographic_contributors?: {
-    data: ContributorResource[];
+  affiliated_institutions?: {
+    data: InstitutionDataJsonApi[];
   };
-  license?: {
-    data: LicenseResource;
+  bibliographic_contributors?: {
+    data: ContributorDataJsonApi[];
   };
   identifiers?: {
-    data: IdentifierResource[];
+    data: IdentifiersJsonApiData[];
   };
-  affiliated_institutions?: {
-    data: InstitutionResource[];
+  license?: {
+    data: LicenseDataJsonApi;
+  };
+  region?: {
+    data: RegionDataJsonApi;
   };
 }
 

@@ -6,6 +6,8 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SubscriptionFrequency } from '@osf/shared/enums';
 import { NotificationSubscriptionMapper } from '@osf/shared/mappers';
 import {
+  BaseNodeDataJsonApi,
+  NodeResponseJsonApi,
   NodeShortInfoModel,
   NotificationSubscription,
   NotificationSubscriptionGetResponseJsonApi,
@@ -16,9 +18,7 @@ import { JsonApiService } from '@shared/services';
 
 import { SettingsMapper } from '../mappers';
 import {
-  NodeDataJsonApi,
   NodeDetailsModel,
-  NodeResponseJsonApi,
   ProjectSettingsDataJsonApi,
   ProjectSettingsModel,
   ProjectSettingsResponseJsonApi,
@@ -79,7 +79,7 @@ export class SettingsService {
 
   updateProjectById(model: UpdateNodeRequestModel): Observable<NodeDetailsModel> {
     return this.jsonApiService
-      .patch<NodeDataJsonApi>(`${this.apiUrl}/nodes/${model?.data?.id}/`, model)
+      .patch<BaseNodeDataJsonApi>(`${this.apiUrl}/nodes/${model?.data?.id}/`, model)
       .pipe(map((response) => SettingsMapper.fromNodeResponse(response)));
   }
 

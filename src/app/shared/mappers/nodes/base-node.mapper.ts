@@ -1,4 +1,3 @@
-import { NodeDataJsonApi } from '@osf/features/project/settings/models';
 import {
   BaseNodeDataJsonApi,
   BaseNodeModel,
@@ -14,11 +13,11 @@ export class BaseNodeMapper {
     return data.map((item) => this.getNodeData(item));
   }
 
-  static getNodesWithEmbedsData(data: NodeDataJsonApi[]): NodeModel[] {
+  static getNodesWithEmbedsData(data: BaseNodeDataJsonApi[]): NodeModel[] {
     return data.map((item) => this.getNodeWithEmbedsData(item));
   }
 
-  static getNodesWithEmbedsAndTotalData(response: ResponseJsonApi<NodeDataJsonApi[]>): PaginatedData<NodeModel[]> {
+  static getNodesWithEmbedsAndTotalData(response: ResponseJsonApi<BaseNodeDataJsonApi[]>): PaginatedData<NodeModel[]> {
     return {
       data: BaseNodeMapper.getNodesWithEmbedsData(response.data),
       totalCount: response.meta.total,
@@ -64,11 +63,11 @@ export class BaseNodeMapper {
     };
   }
 
-  static getNodeWithEmbedsData(data: NodeDataJsonApi): NodeModel {
+  static getNodeWithEmbedsData(data: BaseNodeDataJsonApi): NodeModel {
     const baseNode = BaseNodeMapper.getNodeData(data);
     return {
       ...baseNode,
-      bibliographicContributors: ContributorsMapper.getContributors(data.embeds.bibliographic_contributors?.data),
+      bibliographicContributors: ContributorsMapper.getContributors(data.embeds?.bibliographic_contributors?.data),
     };
   }
 

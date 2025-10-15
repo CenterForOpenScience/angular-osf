@@ -4,10 +4,9 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { NodeDataJsonApi } from '@osf/features/project/settings/models';
 
 import { BaseNodeMapper } from '../mappers';
-import { NodeModel, PaginatedData, ResponseJsonApi } from '../models';
+import { BaseNodeDataJsonApi, NodeModel, PaginatedData, ResponseJsonApi } from '../models';
 
 import { JsonApiService } from './json-api.service';
 
@@ -42,7 +41,7 @@ export class DuplicatesService {
     }
 
     return this.jsonApiService
-      .get<ResponseJsonApi<NodeDataJsonApi[]>>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
+      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
       .pipe(map((res) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(res)));
   }
 }
