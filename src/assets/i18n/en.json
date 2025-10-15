@@ -688,6 +688,10 @@
         "title": "Recent Activity",
         "noActivity": "No recent activity"
       },
+      "citations": {
+        "copyCitation": "Copy citation",
+        "viewOriginal": "View original file"
+      },
       "collectionsModeration": {
         "pending": "Pending entry into\u00A0",
         "accepted": "Included in\u00A0",
@@ -719,6 +723,7 @@
         "customCitationPlaceholder": "Enter custom citation",
         "citeAs": "Cite as:",
         "noCitationStylesFound": "No results found",
+        "noCitations": "No citations",
         "affiliatedInstitutions": "Affiliated Institutions",
         "affiliatedInstitutionsDescription": "This is a service provided by the OSF and is automatically applied to your registration. If you are not sure if your institution has signed up for this service, you can look for their name in this list.",
         "noDescription": "No description",
@@ -868,7 +873,9 @@
           "email": "Email",
           "x": "X",
           "linkedIn": "LinkedIn",
-          "facebook": "Facebook"
+          "facebook": "Facebook",
+          "mastodon": "Mastodon",
+          "bluesky": "Bluesky"
         }
       },
       "tooltips": {

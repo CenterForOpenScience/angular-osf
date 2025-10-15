@@ -10,4 +10,6 @@ export interface SocialShareLinks {
   twitter: string;
   facebook: string;
   linkedIn: string;
+  mastodon: string;
+  bluesky: string;
 }

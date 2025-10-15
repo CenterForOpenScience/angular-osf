@@ -281,6 +281,16 @@ export class OverviewToolbarComponent {
         icon: 'fab fa-facebook-f',
         url: shareLinks.facebook,
       },
+      {
+        label: 'project.overview.actions.socials.mastodon',
+        icon: 'fab fa-mastodon',
+        url: shareLinks.mastodon,
+      },
+      {
+        label: 'project.overview.actions.socials.bluesky',
+        icon: 'fab fa-bluesky',
+        url: shareLinks.bluesky,
+      },
     ];
   }
 }

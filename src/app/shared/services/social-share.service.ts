@@ -37,11 +37,21 @@ export class SocialShareService {
 
   generateLinkedInLink(content: ShareableContent): string {
     const url = encodeURIComponent(content.url);
-    const title = encodeURIComponent(content.title);
-    const summary = encodeURIComponent(content.description || content.title);
-    const source = encodeURIComponent('OSF');
 
-    return `${SOCIAL_SHARE_URLS.linkedIn}?mini=true&url=${url}&title=${title}&summary=${summary}&source=${source}`;
+    return `${SOCIAL_SHARE_URLS.linkedIn}?url=${url}`;
+  }
+
+  generateMastodonLink(content: ShareableContent): string {
+    const url = encodeURIComponent(content.url);
+    const text = encodeURIComponent(content.title);
+
+    return `${SOCIAL_SHARE_URLS.mastodon}?url=${url}&text=${text}`;
+  }
+
+  generateBlueskyLink(content: ShareableContent): string {
+    const text = encodeURIComponent(`${content.title} ${content.url}`);
+
+    return `${SOCIAL_SHARE_URLS.bluesky}?text=${text}`;
   }
 
   generateAllSharingLinks(content: ShareableContent): SocialShareLinks {
@@ -50,6 +60,8 @@ export class SocialShareService {
       twitter: this.generateTwitterLink(content),
       facebook: this.generateFacebookLink(content),
       linkedIn: this.generateLinkedInLink(content),
+      mastodon: this.generateMastodonLink(content),
+      bluesky: this.generateBlueskyLink(content),
     };
   }
 

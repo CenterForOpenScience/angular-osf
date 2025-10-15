@@ -15,6 +15,7 @@ import {
   ClearOperationInvocations,
   CreateAddonOperationInvocation,
   CreateAuthorizedAddon,
+  CreateCitationAddonOperationInvocation,
   CreateConfiguredAddon,
   DeleteAuthorizedAddon,
   DeleteConfiguredAddon,
@@ -594,6 +595,62 @@ export class AddonsState {
     );
   }
 
+  @Action(CreateCitationAddonOperationInvocation)
+  createCitationAddonOperationInvocation(
+    ctx: StateContext<AddonsStateModel>,
+    action: CreateCitationAddonOperationInvocation
+  ) {
+    const state = ctx.getState();
+    const existingInvocation = state.citationOperationInvocations[action.addonId] || {
+      data: null,
+      isLoading: false,
+      isSubmitting: false,
+      error: null,
+    };
+
+    ctx.patchState({
+      citationOperationInvocations: {
+        ...state.citationOperationInvocations,
+        [action.addonId]: {
+          ...existingInvocation,
+          isSubmitting: true,
+        },
+      },
+    });
+
+    return this.addonsService.createAddonOperationInvocation(action.payload).pipe(
+      tap((response) => {
+        const currentState = ctx.getState();
+        ctx.patchState({
+          citationOperationInvocations: {
+            ...currentState.citationOperationInvocations,
+            [action.addonId]: {
+              data: response,
+              isLoading: false,
+              isSubmitting: false,
+              error: null,
+            },
+          },
+        });
+      }),
+      catchError((error) => {
+        const currentState = ctx.getState();
+        ctx.patchState({
+          citationOperationInvocations: {
+            ...currentState.citationOperationInvocations,
+            [action.addonId]: {
+              data: null,
+              isLoading: false,
+              isSubmitting: false,
+              error: error,
+            },
+          },
+        });
+        return handleSectionError(ctx, 'citationOperationInvocations', error);
+      })
+    );
+  }
+
   @Action(ClearAuthorizedAddons)
   clearAuthorizedAddons(ctx: StateContext<AddonsStateModel>) {
     ctx.patchState({
@@ -659,6 +716,7 @@ export class AddonsState {
         isLoading: false,
         error: null,
       },
+      citationOperationInvocations: {},
     });
   }
 }

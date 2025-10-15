@@ -133,6 +133,15 @@ export class CreateAddonOperationInvocation {
   constructor(public payload: OperationInvocationRequestJsonApi) {}
 }
 
+export class CreateCitationAddonOperationInvocation {
+  static readonly type = '[Addons] Create Citation Addon Operation Invocation';
+
+  constructor(
+    public payload: OperationInvocationRequestJsonApi,
+    public addonId: string
+  ) {}
+}
+
 export class ClearAuthorizedAddons {
   static readonly type = '[Addons] Clear Authorized Addons';
 }

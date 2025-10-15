@@ -56,6 +56,22 @@
       >
         <osf-icon [iconClass]="`fab fa-linkedin-in fa-xl`" />
       </a>
+      <a
+        class="social-link flex align-items-center justify-content-center"
+        [href]="mastodonShareLink()"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <osf-icon [iconClass]="`fab fa-mastodon fa-xl`" />
+      </a>
+      <a
+        class="social-link flex align-items-center justify-content-center"
+        [href]="blueskyShareLink()"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <osf-icon [iconClass]="`fab fa-bluesky fa-xl`" />
+      </a>
     </div>
   </div>
 </p-card>

@@ -109,6 +109,7 @@ export class AddonMapper {
           itemLink: item.item_link,
           canBeRoot: item.can_be_root ?? true,
           mayContainRootCandidates: item.may_contain_root_candidates ?? isLinkAddon,
+          csl: item.csl,
         }))
       : [
           {
@@ -118,6 +119,7 @@ export class AddonMapper {
             itemLink: operationResult.item_link,
             canBeRoot: operationResult.can_be_root ?? true,
             mayContainRootCandidates: operationResult.may_contain_root_candidates ?? isLinkAddon,
+            csl: operationResult.csl,
           },
         ];
 

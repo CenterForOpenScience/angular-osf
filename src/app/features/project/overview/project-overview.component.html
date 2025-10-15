@@ -66,6 +66,12 @@
         <osf-linked-resources [canEdit]="hasWriteAccess() && !isCollectionsRoute()" />
       }
 
+      @if (configuredCitationAddons().length) {
+        @for (addon of configuredCitationAddons(); track addon.id) {
+          <osf-citation-addon-card [addon]="addon" />
+        }
+      }
+
       <osf-recent-activity-list [pageSize]="activityPageSize" />
     </div>
 

@@ -1,6 +1,6 @@
 import { map, Observable } from 'rxjs';
 
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -23,6 +23,7 @@ import { JsonApiService } from './json-api.service';
 })
 export class CitationsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly http = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
 
   get apiUrl() {
@@ -54,6 +55,11 @@ export class CitationsService {
     const citationData = CitationsMapper.toUpdateCustomCitationRequest(payload);
 
     return this.jsonApiService.patch<unknown>(`${this.apiUrl}/${payload.type}/${payload.id}/`, citationData);
+  }
+
+  fetchCustomCitationFile(styleId: string): Observable<string> {
+    const url = `/static/vendor/bower_components/styles/${styleId}.csl`;
+    return this.http.get(url, { responseType: 'text' });
   }
 
   private getBaseCitationUrl(resourceType: ResourceType | string, resourceId: string): string {

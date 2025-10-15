@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { OperationNames } from '@osf/shared/enums';
+import { OperationNames, StorageItemType } from '@osf/shared/enums';
 import { isCitationAddon } from '@osf/shared/helpers';
 import { AuthorizedAccountModel, ConfiguredAddonModel, OperationInvocationRequestJsonApi } from '@shared/models';
 
@@ -102,11 +102,18 @@ export class AddonOperationInvocationService {
       baseKwargs['item_id'] = itemId;
     }
 
-    const isChildOperation =
-      operationName === OperationNames.LIST_CHILD_ITEMS || operationName === OperationNames.LIST_COLLECTION_ITEMS;
+    const isCitationCollectionOperation = operationName === OperationNames.LIST_COLLECTION_ITEMS;
+
+    if (isCitationCollectionOperation) {
+      return {
+        collection_id: itemId,
+      };
+    }
+
+    const isChildOperation = operationName === OperationNames.LIST_CHILD_ITEMS;
 
     if (isChildOperation) {
-      baseKwargs['item_type'] = 'FOLDER';
+      baseKwargs['item_type'] = StorageItemType.Folder;
     }
 
     if (pageCursor) {

@@ -183,4 +183,23 @@ export class AddonsSelectors {
   static getDeleteStorageAddonSubmitting(state: AddonsStateModel): boolean {
     return state.createdUpdatedConfiguredAddon.isSubmitting || false;
   }
+
+  @Selector([AddonsState])
+  static getAllCitationOperationInvocations(state: AddonsStateModel): AddonsStateModel['citationOperationInvocations'] {
+    return state.citationOperationInvocations || {};
+  }
+
+  @Selector([AddonsState])
+  static getCitationOperationInvocation(addonId: string): (state: AddonsStateModel) => OperationInvocation | null {
+    return createSelector([AddonsState], (state: AddonsStateModel): OperationInvocation | null => {
+      return state.citationOperationInvocations?.[addonId]?.data || null;
+    });
+  }
+
+  @Selector([AddonsState])
+  static getCitationOperationInvocationSubmitting(addonId: string): (state: AddonsStateModel) => boolean {
+    return createSelector([AddonsState], (state: AddonsStateModel): boolean => {
+      return state.citationOperationInvocations?.[addonId]?.isSubmitting || false;
+    });
+  }
 }
