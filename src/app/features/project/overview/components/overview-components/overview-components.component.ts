@@ -101,6 +101,14 @@ export class OverviewComponentsComponent {
     });
   }
 
+  navigateToComponent(componentId: string): void {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/', componentId], { queryParamsHandling: 'preserve' })
+    );
+
+    window.open(url, '_self');
+  }
+
   private handleDeleteComponent(componentId: string): void {
     const project = this.project();
     if (!project) return;

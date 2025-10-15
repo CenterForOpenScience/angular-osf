@@ -26,7 +26,7 @@ export class ProjectOverviewMapper {
             year: response.attributes.node_license.year,
           }
         : undefined,
-      license: response.embeds.license?.data?.attributes as LicenseModel,
+      license: response.embeds?.license?.data?.attributes as LicenseModel,
       doi: response.attributes.doi,
       publicationDoi: response.attributes.publication_doi,
       analyticsKey: response.attributes.analytics_key,
@@ -37,16 +37,16 @@ export class ProjectOverviewMapper {
       wikiEnabled: response.attributes.wiki_enabled,
       customCitation: response.attributes.custom_citation,
       contributors: ContributorsMapper.getContributors(response?.embeds?.bibliographic_contributors?.data),
-      affiliatedInstitutions: response.embeds.affiliated_institutions
+      affiliatedInstitutions: response.embeds?.affiliated_institutions
         ? InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions)
         : [],
-      identifiers: response.embeds.identifiers?.data.map((identifier) => ({
+      identifiers: response.embeds?.identifiers?.data.map((identifier) => ({
         id: identifier.id,
         type: identifier.type,
         value: identifier.attributes.value,
         category: identifier.attributes.category,
       })),
-      ...(response.embeds.storage?.data &&
+      ...(response.embeds?.storage?.data &&
         !response.embeds.storage?.errors && {
           storage: {
             id: response.embeds.storage.data.id,
@@ -55,7 +55,7 @@ export class ProjectOverviewMapper {
             storageLimitStatus: response.embeds.storage.data.attributes.storage_limit_status,
           },
         }),
-      supplements: response.embeds.preprints?.data.map((preprint) => ({
+      supplements: response.embeds?.preprints?.data.map((preprint) => ({
         id: preprint.id,
         type: preprint.type,
         title: preprint.attributes.title,
