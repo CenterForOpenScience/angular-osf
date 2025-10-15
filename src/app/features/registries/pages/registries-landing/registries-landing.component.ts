@@ -23,6 +23,7 @@ import {
   GetRegistryProvider,
   RegistrationProviderSelectors,
 } from '@osf/shared/stores/registration-provider';
+import { normalizeQuotes } from '@shared/helpers';
 
 import { RegistryServicesComponent } from '../../components';
 import { GetRegistries, RegistriesSelectors } from '../../store';
@@ -73,7 +74,7 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
   }
 
   redirectToSearchPageWithValue(): void {
-    const searchValue = this.searchControl.value;
+    const searchValue = normalizeQuotes(this.searchControl.value);
 
     this.router.navigate(['/search'], { queryParams: { search: searchValue, tab: ResourceType.Registration } });
   }

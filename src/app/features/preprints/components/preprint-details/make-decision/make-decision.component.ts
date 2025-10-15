@@ -179,7 +179,7 @@ export class MakeDecisionComponent {
     const limit = formInputLimits.decisionComment.maxLength;
     return this.translateService.instant('preprints.details.decision.commentLengthError', {
       limit,
-      difference: Math.abs(limit - this.reviewerComment()!.length).toString(),
+      length: this.reviewerComment()!.length,
     });
   });
 

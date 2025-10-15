@@ -10,11 +10,7 @@
         link
         styleClass="text-left"
         [label]="submission().title"
-        [routerLink]="['/', submission().id, 'overview']"
-        [queryParams]="{
-          mode: 'moderator',
-          revisionId: isPendingModeration && !isPending ? submission().revisionId : null,
-        }"
+        (onClick)="selected.emit()"
       />
     }
 
@@ -41,7 +37,7 @@
         }
 
         @if (action.comment.length) {
-          <span class="font-italic">- {{ action.comment }}</span>
+          <osf-truncated-text class="font-italic" [text]="action.comment" />
         }
       </div>
     }

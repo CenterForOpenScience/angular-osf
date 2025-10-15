@@ -2409,7 +2409,7 @@
           "post": "Submission will no longer be publicly available."
         },
         "commentPlaceholder": "Explain the reasoning behind your decision (optional)",
-        "commentLengthError": "Comment is {{difference}} character(s) too long (maximum is {{limit}}).",
+        "commentLengthError": "Comment is {{length}} character(s) too long (maximum is {{limit}}).",
         "withdrawalJustification": "Reason for withdrawal (optional, will be publicly displayed)",
         "denialJustification": "Reason for denial (required, not publicly visible)",
         "justificationRequiredError": "Request decision justification can't be blank",
