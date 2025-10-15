@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.duplicate-wrapper {
+  border: 1px solid var(--grey-2);
+  border-radius: 0.75rem;
+  color: var(--dark-blue-1);
+}

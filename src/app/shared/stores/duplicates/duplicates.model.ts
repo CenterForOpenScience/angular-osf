@@ -1,9 +1,7 @@
-import { AsyncStateWithTotalCount } from '@osf/shared/models';
-
-import { Duplicate } from 'src/app/shared/models/duplicates';
+import { AsyncStateWithTotalCount, NodeModel } from '@osf/shared/models';
 
 export interface DuplicatesStateModel {
-  duplicates: AsyncStateWithTotalCount<Duplicate[]>;
+  duplicates: AsyncStateWithTotalCount<NodeModel[]>;
 }
 
 export const DUPLICATES_DEFAULTS: DuplicatesStateModel = {

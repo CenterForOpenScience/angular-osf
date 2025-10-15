@@ -91,7 +91,7 @@
       [isLoading]="isRelatedCountsLoading()"
       [title]="'project.analytics.kpi.forks'"
       [value]="relatedCounts()?.forksCount"
-      [showButton]="true"
+      [showButton]="(relatedCounts()?.forksCount ?? 0) > 0"
       [buttonLabel]="'project.analytics.kpi.viewForks'"
       (buttonClick)="navigateToDuplicates()"
     ></osf-analytics-kpi>
@@ -100,8 +100,9 @@
       [isLoading]="isRelatedCountsLoading()"
       [title]="'project.analytics.kpi.linksToThisProject'"
       [value]="relatedCounts()?.linksToCount"
-      [showButton]="false"
+      [showButton]="(relatedCounts()?.linksToCount ?? 0) > 0"
       [buttonLabel]="'project.analytics.kpi.viewLinks'"
+      (buttonClick)="navigateToLinkedProjects()"
     ></osf-analytics-kpi>
 
     <osf-analytics-kpi

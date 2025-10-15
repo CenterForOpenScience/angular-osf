@@ -539,6 +539,11 @@
         "viewForks": "View duplicates",
         "viewLinks": "View links"
       },
+      "viewRelated": {
+        "linkedProjectsTitle": "Linked Projects",
+        "linkedProjectsMessage": "Linked Projects you have permission to view are shown here.",
+        "noLinkedProjectsMessage": "No Linked Projects found."
+      },
       "charts": {
         "showAnalytics": "Show analytics for date range:",
         "pastWeek": "Past week",

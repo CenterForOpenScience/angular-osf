@@ -12,6 +12,7 @@ import { GlobalSearchState } from '@shared/stores/global-search';
 import { InstitutionsState } from '@shared/stores/institutions';
 import { InstitutionsSearchState } from '@shared/stores/institutions-search';
 import { LicensesState } from '@shared/stores/licenses';
+import { LinkedProjectsState } from '@shared/stores/linked-projects';
 import { MyResourcesState } from '@shared/stores/my-resources';
 import { RegionsState } from '@shared/stores/regions';
 
@@ -34,4 +35,5 @@ export const STATES = [
   CurrentResourceState,
   GlobalSearchState,
   BannersState,
+  LinkedProjectsState,
 ];

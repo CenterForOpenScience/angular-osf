@@ -1,5 +1,6 @@
 import {
   BaseNodeDataJsonApi,
+  ContributorDataJsonApi,
   InstitutionsJsonApiResponse,
   RegionDataJsonApi,
   ResponseDataJsonApi,
@@ -12,8 +13,11 @@ export interface NodeDataJsonApi extends BaseNodeDataJsonApi {
 }
 
 interface NodeEmbedsJsonApi {
-  region: {
+  region?: {
     data: RegionDataJsonApi;
   };
-  affiliated_institutions: InstitutionsJsonApiResponse;
+  affiliated_institutions?: InstitutionsJsonApiResponse;
+  bibliographic_contributors?: {
+    data: ContributorDataJsonApi[];
+  };
 }

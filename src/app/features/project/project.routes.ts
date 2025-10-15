@@ -96,6 +96,15 @@ export const projectRoutes: Routes = [
         providers: [provideStates([AnalyticsState])],
       },
       {
+        path: 'analytics/linked-projects',
+        data: { resourceType: ResourceType.Project },
+        loadComponent: () =>
+          import('../analytics/components/view-linked-projects/view-linked-projects.component').then(
+            (mod) => mod.ViewLinkedProjectsComponent
+          ),
+        providers: [provideStates([DuplicatesState])],
+      },
+      {
         path: 'analytics/duplicates',
         data: { resourceType: ResourceType.Project },
         loadComponent: () =>

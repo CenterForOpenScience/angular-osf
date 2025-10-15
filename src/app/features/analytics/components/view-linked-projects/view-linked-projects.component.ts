@@ -23,7 +23,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
+import { DeleteComponentDialogComponent } from '@osf/features/project/overview/components';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import {
   ClearRegistryOverview,
@@ -39,12 +39,12 @@ import {
   TruncatedTextComponent,
 } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { BaseNodeModel, ToolbarResource } from '@osf/shared/models';
 import { CustomDialogService, LoaderService } from '@osf/shared/services';
-import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates, GetResourceWithChildren } from '@osf/shared/stores';
+import { GetResourceWithChildren } from '@osf/shared/stores';
+import { ClearLinkedProjects, GetAllLinkedProjects, LinkedProjectsSelectors } from '@shared/stores/linked-projects';
 
 @Component({
-  selector: 'osf-view-duplicates',
+  selector: 'osf-view-linked-nodes',
   imports: [
     SubHeaderComponent,
     TranslatePipe,
@@ -59,11 +59,11 @@ import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates, GetResourceWith
     ContributorsListComponent,
     DatePipe,
   ],
-  templateUrl: './view-duplicates.component.html',
-  styleUrl: './view-duplicates.component.scss',
+  templateUrl: './view-linked-projects.component.html',
+  styleUrl: './view-linked-projects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ViewDuplicatesComponent {
+export class ViewLinkedProjectsComponent {
   private customDialogService = inject(CustomDialogService);
   private loaderService = inject(LoaderService);
   private route = inject(ActivatedRoute);
@@ -74,9 +74,9 @@ export class ViewDuplicatesComponent {
   private isProjectAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   private isRegistryAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
 
-  duplicates = select(DuplicatesSelectors.getDuplicates);
-  isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
-  totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
+  duplicates = select(LinkedProjectsSelectors.getLinkedProjects);
+  isDuplicatesLoading = select(LinkedProjectsSelectors.getLinkedProjectsLoading);
+  totalDuplicates = select(LinkedProjectsSelectors.getLinkedProjectsTotalCount);
   isAuthenticated = select(UserSelectors.isAuthenticated);
 
   readonly pageSize = 10;
@@ -122,8 +122,8 @@ export class ViewDuplicatesComponent {
   actions = createDispatchMap({
     getProject: GetProjectById,
     getRegistration: GetRegistryById,
-    getDuplicates: GetAllDuplicates,
-    clearDuplicates: ClearDuplicates,
+    getLinkedProjects: GetAllLinkedProjects,
+    clearLinkedProjects: ClearLinkedProjects,
     clearProject: ClearProjectOverview,
     clearRegistration: ClearRegistryOverview,
     getComponentsTree: GetResourceWithChildren,
@@ -144,76 +144,11 @@ export class ViewDuplicatesComponent {
       const resource = this.currentResource();
 
       if (resource) {
-        this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+        this.actions.getLinkedProjects(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
       }
     });
 
     this.setupCleanup();
-  }
-
-  toolbarResource = computed(() => {
-    const resource = this.currentResource();
-    const resourceType = this.resourceType();
-    if (resource && resourceType) {
-      const isAnonymous =
-        resourceType === ResourceType.Project ? this.isProjectAnonymous() : this.isRegistryAnonymous();
-
-      return {
-        id: resource.id,
-        isPublic: resource.isPublic,
-        storage: undefined,
-        viewOnlyLinksCount: 0,
-        forksCount: resource.forksCount,
-        resourceType: resourceType,
-        isAnonymous,
-      } as ToolbarResource;
-    }
-    return null;
-  });
-
-  showMoreOptions(duplicate: BaseNodeModel) {
-    return (
-      duplicate.currentUserPermissions.includes(UserPermissions.Admin) ||
-      duplicate.currentUserPermissions.includes(UserPermissions.Write)
-    );
-  }
-
-  handleMenuAction(action: string, resourceId: string): void {
-    switch (action) {
-      case 'manageContributors':
-        this.router.navigate([resourceId, 'contributors']);
-        break;
-      case 'settings':
-        this.router.navigate([resourceId, 'settings']);
-        break;
-      case 'delete':
-        this.handleDeleteFork(resourceId);
-        break;
-    }
-  }
-
-  handleForkResource(): void {
-    const toolbarResource = this.toolbarResource();
-
-    if (toolbarResource) {
-      this.customDialogService
-        .open(ForkDialogComponent, {
-          header: 'project.overview.dialog.fork.headerProject',
-          width: '450px',
-          data: {
-            resource: toolbarResource,
-            resourceType: this.resourceType(),
-          },
-        })
-        .onClose.subscribe((result) => {
-          if (result?.success) {
-            const resource = this.currentResource();
-            if (resource) {
-              this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
-            }
-          }
-        });
-    }
   }
 
   onPageChange(event: PaginatorState): void {
@@ -225,7 +160,7 @@ export class ViewDuplicatesComponent {
 
   setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.actions.clearDuplicates();
+      this.actions.clearLinkedProjects();
       this.actions.clearProject();
       this.actions.clearRegistration();
     });
@@ -256,7 +191,7 @@ export class ViewDuplicatesComponent {
             if (result?.success) {
               const resource = this.currentResource();
               if (resource) {
-                this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+                this.actions.getLinkedProjects(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
               }
             }
           });

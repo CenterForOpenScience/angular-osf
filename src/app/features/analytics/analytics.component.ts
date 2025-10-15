@@ -137,6 +137,9 @@ export class AnalyticsComponent implements OnInit {
     this.router.navigate(['duplicates'], { relativeTo: this.route });
   }
 
+  navigateToLinkedProjects() {
+    this.router.navigate(['linked-projects'], { relativeTo: this.route });
+  }
   private setData() {
     const analytics = this.analytics();
 

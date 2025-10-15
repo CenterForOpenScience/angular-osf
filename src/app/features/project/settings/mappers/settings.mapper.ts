@@ -33,8 +33,8 @@ export class SettingsMapper {
       title: data.attributes.title,
       description: data.attributes.description,
       isPublic: data.attributes.public,
-      region: data.embeds ? RegionsMapper.getRegion(data?.embeds?.region?.data) : null,
-      affiliatedInstitutions: data.embeds
+      region: data.embeds?.region ? RegionsMapper.getRegion(data?.embeds?.region?.data) : null,
+      affiliatedInstitutions: data.embeds?.affiliated_institutions
         ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
         : [],
       currentUserPermissions: data.attributes.current_user_permissions as UserPermissions[],
