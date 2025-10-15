@@ -7,7 +7,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { NodeDataJsonApi } from '@osf/features/project/settings/models';
 
 import { BaseNodeMapper } from '../mappers';
-import { NodesWithTotal, ResponseJsonApi } from '../models';
+import { NodeModel, PaginatedData, ResponseJsonApi } from '../models';
 
 import { JsonApiService } from './json-api.service';
 
@@ -27,7 +27,7 @@ export class DuplicatesService {
     resourceType: string,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<NodesWithTotal> {
+  ): Observable<PaginatedData<NodeModel[]>> {
     const params: Record<string, unknown> = {
       embed: 'bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',

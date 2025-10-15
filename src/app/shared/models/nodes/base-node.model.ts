@@ -26,10 +26,5 @@ export interface BaseNodeModel {
 }
 
 export interface NodeModel extends BaseNodeModel {
-  bibliographic_contributors?: ContributorModel[];
-}
-
-export interface NodesWithTotal {
-  data: NodeModel[];
-  totalCount: number;
+  bibliographicContributors?: ContributorModel[];
 }

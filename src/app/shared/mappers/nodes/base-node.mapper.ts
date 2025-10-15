@@ -4,7 +4,7 @@ import {
   BaseNodeModel,
   NodeModel,
   NodeShortInfoModel,
-  NodesWithTotal,
+  PaginatedData,
   ResponseJsonApi,
 } from '@osf/shared/models';
 import { ContributorsMapper } from '@shared/mappers';
@@ -18,8 +18,12 @@ export class BaseNodeMapper {
     return data.map((item) => this.getNodeWithEmbedsData(item));
   }
 
-  static getNodesWithEmbedsAndTotalData(response: ResponseJsonApi<NodeDataJsonApi[]>): NodesWithTotal {
-    return { data: BaseNodeMapper.getNodesWithEmbedsData(response.data), totalCount: response.meta.total };
+  static getNodesWithEmbedsAndTotalData(response: ResponseJsonApi<NodeDataJsonApi[]>): PaginatedData<NodeModel[]> {
+    return {
+      data: BaseNodeMapper.getNodesWithEmbedsData(response.data),
+      totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
+    };
   }
 
   static getNodesWithChildren(data: BaseNodeDataJsonApi[], parentId: string): NodeShortInfoModel[] {
@@ -64,7 +68,7 @@ export class BaseNodeMapper {
     const baseNode = BaseNodeMapper.getNodeData(data);
     return {
       ...baseNode,
-      bibliographic_contributors: ContributorsMapper.getContributors(data.embeds.bibliographic_contributors?.data),
+      bibliographicContributors: ContributorsMapper.getContributors(data.embeds.bibliographic_contributors?.data),
     };
   }
 
