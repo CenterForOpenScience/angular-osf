@@ -1,4 +1,4 @@
-@for (question of questions(); track question.responseKey) {
+@for (question of questions(); track question.id) {
   <div [class.mb-4]="!$last">
     <h4 class="mb-2" [class.text-lg]="isOverviewPage()">
       {{ question.displayText }}
@@ -11,7 +11,7 @@
     @if (reviewData()[question.responseKey!]) {
       @switch (question.fieldType) {
         @case (FieldType.Text) {
-          <p>{{ reviewData()[question.responseKey!] }}</p>
+          <p class="preserve-whitespace">{{ reviewData()[question.responseKey!] }}</p>
         }
         @case (FieldType.Checkbox) {
           @for (option of reviewData()[question.responseKey!]; track option) {
@@ -36,7 +36,7 @@
           }
         }
         @default {
-          <p>{{ reviewData()[question.responseKey!] }}</p>
+          <p class="preserve-whitespace">{{ reviewData()[question.responseKey!] }}</p>
         }
       }
     } @else {

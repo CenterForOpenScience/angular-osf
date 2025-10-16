@@ -7,7 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { catchError, EMPTY, filter, map, of } from 'rxjs';
 
-import { DatePipe, Location } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -87,7 +87,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly location = inject(Location);
   private readonly store = inject(Store);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customDialogService = inject(CustomDialogService);
@@ -416,9 +415,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     const preprintIdFromUrl = urlSegments[urlSegments.length - 1];
 
     if (preprintIdFromUrl !== newPreprintId) {
-      const newUrl = currentUrl.replace(/[^/]+$/, newPreprintId);
-
-      this.location.replaceState(newUrl);
+      this.router.navigate(['../', newPreprintId], {
+        relativeTo: this.route,
+        replaceUrl: true,
+      });
     }
   }
 }
