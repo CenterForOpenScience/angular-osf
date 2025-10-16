@@ -2415,7 +2415,7 @@
           "label": "Withdraw submission",
           "post": "Submission will no longer be publicly available."
         },
-        "commentPlaceholder": "Explain the reasoning behind your decision (optional)",
+        "commentPlaceholder": "Explain the reasoning behind your decision",
         "commentLengthError": "Comment is {{length}} character(s) too long (maximum is {{limit}}).",
         "withdrawalJustification": "Reason for withdrawal (optional, will be publicly displayed)",
         "denialJustification": "Reason for denial (required, not publicly visible)",

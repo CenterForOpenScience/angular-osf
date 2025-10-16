@@ -1,4 +1,4 @@
-import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
+import { ProviderReviewsWorkflow } from '../enums';
 
 export const decisionSettings = {
   comments: {

@@ -24,16 +24,16 @@ import {
   SubmitReviewsDecision,
 } from '@osf/features/preprints/store/preprint';
 import { InputLimits } from '@osf/shared/constants';
-import { StringOrNull } from '@shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers';
 
 @Component({
-  selector: 'osf-make-decision',
+  selector: 'osf-preprint-make-decision',
   imports: [Button, TranslatePipe, TitleCasePipe, Dialog, Tooltip, RadioButton, FormsModule, Textarea, Message],
-  templateUrl: './make-decision.component.html',
-  styleUrl: './make-decision.component.scss',
+  templateUrl: './preprint-make-decision.component.html',
+  styleUrl: './preprint-make-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MakeDecisionComponent {
+export class PreprintMakeDecisionComponent {
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly actions = createDispatchMap({
@@ -104,9 +104,9 @@ export class MakeDecisionComponent {
     return 'preprints.details.decision.submitButton.modifyDecision';
   });
 
-  submitButtonDisabled = computed(() => {
-    return (!this.decisionChanged() && !this.commentEdited()) || this.commentExceedsLimit();
-  });
+  submitButtonDisabled = computed(
+    () => (!this.decisionChanged() && !this.commentEdited()) || this.commentExceedsLimit()
+  );
 
   acceptOptionExplanation = computed(() => {
     const reviewsWorkflow = this.provider().reviewsWorkflow;
@@ -172,7 +172,7 @@ export class MakeDecisionComponent {
     const comment = this.reviewerComment();
     if (!comment) return false;
 
-    return comment.length > formInputLimits.decisionComment.maxLength;
+    return comment.length > this.decisionCommentLimit;
   });
 
   commentLengthErrorMessage = computed(() =>

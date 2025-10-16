@@ -12,9 +12,6 @@ export const formInputLimits = {
   withdrawalJustification: {
     minLength: 25,
   },
-  decisionComment: {
-    maxLength: 10000,
-  },
   requestDecisionJustification: {
     minLength: 20,
   },
