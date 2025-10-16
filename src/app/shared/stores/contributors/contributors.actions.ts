@@ -62,6 +62,15 @@ export class BulkAddContributors {
   ) {}
 }
 
+export class BulkAddContributorsFromParentProject {
+  static readonly type = '[Contributors] Bulk Add Contributors From Parent Project';
+
+  constructor(
+    public resourceId: string | undefined | null,
+    public resourceType: ResourceType | undefined
+  ) {}
+}
+
 export class DeleteContributor {
   static readonly type = '[Contributors] Delete Contributor';
 

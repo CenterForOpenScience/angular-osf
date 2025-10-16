@@ -49,6 +49,7 @@ import {
   AcceptRequestAccess,
   AddContributor,
   BulkAddContributors,
+  BulkAddContributorsFromParentProject,
   BulkUpdateContributors,
   ContributorsSelectors,
   CreateViewOnlyLink,
@@ -155,6 +156,7 @@ export class ContributorsComponent implements OnInit {
     deleteContributor: DeleteContributor,
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
+    bulkAddContributorsFromParentProject: BulkAddContributorsFromParentProject,
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
@@ -269,7 +271,9 @@ export class ContributorsComponent implements OnInit {
             takeUntilDestroyed(this.destroyRef)
           )
           .subscribe((res: ContributorDialogAddModel) => {
-            if (res.type === AddContributorType.Unregistered) {
+            if (res.type === AddContributorType.ParentProject) {
+              this.addContributorsFromParentProjectToComponents();
+            } else if (res.type === AddContributorType.Unregistered) {
               this.openAddUnregisteredContributorDialog();
             } else {
               this.addContributorsToComponents(res);
@@ -295,6 +299,13 @@ export class ContributorsComponent implements OnInit {
   private addContributorsToComponents(result: ContributorDialogAddModel): void {
     this.actions
       .bulkAddContributors(this.resourceId(), this.resourceType(), result.data, result.childNodeIds)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
+  }
+
+  private addContributorsFromParentProjectToComponents(): void {
+    this.actions
+      .bulkAddContributorsFromParentProject(this.resourceId(), this.resourceType())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
   }

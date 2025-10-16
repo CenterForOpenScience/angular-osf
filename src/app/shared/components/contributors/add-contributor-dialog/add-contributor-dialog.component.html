@@ -65,6 +65,19 @@
     </div>
   }
 
+  @if (this.isSearchState()) {
+    <div class="flex mt-2">
+      <p-button
+        class="w-full"
+        styleClass="w-full"
+        (click)="addSourceProjectContributors()"
+        [label]="'add Source Project Contributors' | translate"
+        data-test-add-contributor-button
+      >
+      </p-button>
+    </div>
+  }
+
   <div class="flex gap-2 mt-6">
     <p-button
       class="w-full"

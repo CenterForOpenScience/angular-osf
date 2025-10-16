@@ -38,6 +38,7 @@ import { CustomConfirmationService, CustomDialogService, ToastService } from '@o
 import {
   AddContributor,
   BulkAddContributors,
+  BulkAddContributorsFromParentProject,
   BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
@@ -89,6 +90,7 @@ export class PreprintsContributorsComponent implements OnInit {
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
     addContributor: AddContributor,
+    bulkAddContributorsFromParentProject: BulkAddContributorsFromParentProject,
   });
 
   get hasChanges(): boolean {
@@ -134,7 +136,9 @@ export class PreprintsContributorsComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((res: ContributorDialogAddModel) => {
-        if (res.type === AddContributorType.Unregistered) {
+        if (res.type === AddContributorType.ParentProject) {
+          this.addContributorsFromParentProjectToComponents();
+        } else if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
           this.actions
@@ -145,6 +149,13 @@ export class PreprintsContributorsComponent implements OnInit {
             );
         }
       });
+  }
+
+  private addContributorsFromParentProjectToComponents(): void {
+    this.actions
+      .bulkAddContributorsFromParentProject(this.preprintId(), ResourceType.Preprint)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
   }
 
   openAddUnregisteredContributorDialog() {

@@ -113,6 +113,10 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  addSourceProjectContributors(): void {
+    this.closeDialogWithData(AddContributorType.ParentProject);
+  }
+
   addUnregistered(): void {
     this.dialogRef.close({
       data: [],
@@ -140,14 +144,14 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  private closeDialogWithData(): void {
+  private closeDialogWithData(AddContributorTypeValue = AddContributorType.Registered): void {
     const childNodeIds = this.components()
       .filter((c) => c.checked && !c.isCurrent)
       .map((c) => c.id);
 
     this.dialogRef.close({
       data: this.selectedUsers(),
-      type: AddContributorType.Registered,
+      type: AddContributorTypeValue,
       childNodeIds: childNodeIds.length > 0 ? childNodeIds : undefined,
     } as ContributorDialogAddModel);
   }
