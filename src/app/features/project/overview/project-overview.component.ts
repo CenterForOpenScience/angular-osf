@@ -34,13 +34,17 @@ import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { CustomDialogService, MetaTagsService, ToastService } from '@osf/shared/services';
 import {
+  AddonsSelectors,
   ClearCollections,
+  ClearConfiguredAddons,
   ClearWiki,
   CollectionsSelectors,
   CurrentResourceSelectors,
   FetchSelectedSubjects,
+  GetAddonsResourceReference,
   GetBookmarksCollectionId,
   GetCollectionProvider,
+  GetConfiguredCitationAddons,
   GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
@@ -60,6 +64,7 @@ import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
 import {
+  CitationAddonCardComponent,
   FilesWidgetComponent,
   LinkedResourcesComponent,
   OverviewComponentsComponent,
@@ -100,6 +105,7 @@ import {
     FilesWidgetComponent,
     ViewOnlyLinkMessageComponent,
     OverviewParentProjectComponent,
+    CitationAddonCardComponent,
   ],
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -133,6 +139,9 @@ export class ProjectOverviewComponent implements OnInit {
   isWikiEnabled = select(ProjectOverviewSelectors.isWikiEnabled);
   parentProject = select(ProjectOverviewSelectors.getParentProject);
   isParentProjectLoading = select(ProjectOverviewSelectors.getParentProjectLoading);
+  addonsResourceReference = select(AddonsSelectors.getAddonsResourceReference);
+  configuredCitationAddons = select(AddonsSelectors.getConfiguredCitationAddons);
+  operationInvocation = select(AddonsSelectors.getOperationInvocation);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -148,10 +157,13 @@ export class ProjectOverviewComponent implements OnInit {
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
     clearCollectionModeration: ClearCollectionModeration,
+    clearConfiguredAddons: ClearConfiguredAddons,
     getComponentsTree: GetResourceWithChildren,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     getSubjects: FetchSelectedSubjects,
     getParentProject: GetParentProject,
+    getAddonsResourceReference: GetAddonsResourceReference,
+    getConfiguredCitationAddons: GetConfiguredCitationAddons,
   });
 
   readonly activityPageSize = 5;
@@ -254,6 +266,7 @@ export class ProjectOverviewComponent implements OnInit {
     this.setupCleanup();
     this.setupProjectEffects();
     this.setupRouteChangeListener();
+    this.setupAddonsEffects();
 
     effect(() => {
       if (!this.isProjectLoading()) {
@@ -366,6 +379,7 @@ export class ProjectOverviewComponent implements OnInit {
         skip(1),
         tap((projectId) => {
           this.actions.clearProjectOverview();
+          this.actions.clearConfiguredAddons();
           this.actions.getProject(projectId);
           this.actions.getBookmarksId();
           this.actions.getComponents(projectId);
@@ -383,6 +397,23 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.clearWiki();
       this.actions.clearCollections();
       this.actions.clearCollectionModeration();
+      this.actions.clearConfiguredAddons();
+    });
+  }
+
+  private setupAddonsEffects(): void {
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject && !this.addonsResourceReference().length) {
+        this.actions.getAddonsResourceReference(currentProject.id);
+      }
+    });
+
+    effect(() => {
+      const resourceReference = this.addonsResourceReference();
+      if (resourceReference.length) {
+        this.actions.getConfiguredCitationAddons(resourceReference[0].id);
+      }
     });
   }
 }

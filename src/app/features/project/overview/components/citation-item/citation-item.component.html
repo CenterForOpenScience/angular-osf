@@ -1,0 +1,30 @@
+<div
+  class="citation-item flex flex-1 justify-content-between gap-3 pb-2 align-items-center"
+  [style.padding-left.rem]="level() * 2"
+>
+  <div class="flex flex-1 min-w-0 align-items-center gap-2 ml-1">
+    <osf-icon iconClass="fa fa-file" />
+    <span class="citation-text text-sm">
+      {{ citation() }}
+    </span>
+  </div>
+  <div class="flex gap-3 justify-content-end mr-2 text-right">
+    <osf-icon
+      [pTooltip]="'project.overview.citations.copyCitation' | translate"
+      tooltipPosition="top"
+      iconClass="fa fa-copy cursor-pointer"
+      (click)="copyCitation()"
+    />
+
+    <a
+      [pTooltip]="'project.overview.citations.viewOriginal' | translate"
+      [class.hidden-link]="!itemUrl()"
+      [href]="itemUrl()"
+      class="text-black-alpha-90"
+      target="_blank"
+      rel="noopener"
+    >
+      <osf-icon iconClass="fa fa-external-link" />
+    </a>
+  </div>
+</div>

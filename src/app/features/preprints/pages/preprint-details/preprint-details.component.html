@@ -1,4 +1,4 @@
-<div class="flex-column xl:mt-6 flex-1">
+<div class="flex flex-column xl:mt-6 flex-1">
   <section class="flex flex-column py-5 px-3 gap-4 md:py-6 md:px-4">
     <div class="flex flex-column justify-content-between md:flex-row">
       @if (isPreprintProviderLoading() || isPreprintLoading()) {
@@ -11,8 +11,13 @@
           class="flex flex-column gap-3 custom-light-hover dark-blue-link md:flex-row"
           [routerLink]="['/preprints', preprintProvider()?.id, 'discover']"
         >
-          <img class="fit-contain" alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
-          <h1>{{ preprint()!.title }}</h1>
+          <img
+            class="fit-contain"
+            alt="Provider Logo"
+            height="36"
+            [src]="preprintProvider()?.brand?.heroLogoImageUrl"
+          />
+          <h1>{{ preprint()?.title }}</h1>
         </a>
       }
 

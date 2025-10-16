@@ -1,0 +1,40 @@
+<div class="flex flex-column gap-3">
+  <div
+    class="citation-item flex justify-content-between gap-3 pb-2 align-items-center"
+    [style.padding-left.rem]="level() * 2"
+  >
+    <div class="citation-content flex align-items-center gap-2 ml-1">
+      @if (isLoading()) {
+        <osf-icon iconClass="fa fa-spinner fa-spin" />
+      } @else {
+        <osf-icon
+          [iconClass]="isExpanded() ? 'fa fa-minus' : 'fa fa-plus'"
+          class="cursor-pointer"
+          (click)="toggleExpand()"
+        />
+      }
+      <osf-icon iconClass="fa fa-folder" />
+      <span class="citation-text text-sm">
+        {{ collection().itemName }}
+      </span>
+    </div>
+  </div>
+
+  @if (isExpanded()) {
+    @for (collectionChild of collectionChildren(); track collectionChild.item.itemId) {
+      <osf-citation-collection-item
+        [addon]="addon()"
+        [collection]="collectionChild.item"
+        [level]="level() + 1"
+        [selectedCitationStyle]="selectedCitationStyle()"
+      />
+    }
+    @for (formattedDoc of formattedDocumentChildren(); track formattedDoc.item.itemId) {
+      <osf-citation-item
+        [citation]="formattedDoc.formattedCitation"
+        [itemUrl]="formattedDoc.itemUrl"
+        [level]="level() + 1"
+      />
+    }
+  }
+</div>

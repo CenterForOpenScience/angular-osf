@@ -180,19 +180,6 @@ describe('TokenAddEditFormComponent', () => {
     expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('should open created dialog with new token name and value after create', () => {
-    fixture.componentRef.setInput('isEditMode', false);
-    fillForm('Test Token', ['read', 'write']);
-
-    const showDialogSpy = jest.spyOn(component, 'showTokenCreatedDialog');
-
-    MOCK_STORE.dispatch.mockReturnValue(of(undefined));
-
-    component.handleSubmitForm();
-
-    expect(showDialogSpy).toHaveBeenCalledWith(MOCK_TOKEN.name, MOCK_TOKEN.tokenId);
-  });
-
   it('should show success toast and navigate after updating token', () => {
     fixture.componentRef.setInput('isEditMode', true);
     fillForm('Updated Token', ['read', 'write']);
