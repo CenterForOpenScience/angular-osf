@@ -29,6 +29,17 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
 
   beforeEach(async () => {
     mockRouter = RouterMockBuilder.create().build();
+    mockRouter.serializeUrl = jest.fn(
+      (urlTree: any) => `/preprints/${mockProviderId}/${urlTree.segments?.[2] || 'test-id'}?mode=moderator`
+    );
+    mockRouter.createUrlTree = jest.fn(
+      (commands: any[], extras?: any) =>
+        ({
+          segments: commands,
+          queryParams: extras?.queryParams || {},
+        }) as any
+    );
+
     mockActivatedRoute = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })
       .withQueryParams({ status: 'pending' })
@@ -131,10 +142,13 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
 
   it('should navigate to preprint', () => {
     const mockItem = mockSubmissions[0];
+    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+
     component.navigateToPreprint(mockItem);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/preprints/', mockProviderId, mockItem.preprintId], {
-      queryParams: { mode: 'moderator' },
-    });
+
+    expect(windowOpenSpy).toHaveBeenCalledWith(expect.stringContaining('/preprints/'), '_blank');
+
+    windowOpenSpy.mockRestore();
   });
 
   it('should get status from query params on init', () => {

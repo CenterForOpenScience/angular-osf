@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -39,6 +39,7 @@ export class ProfileComponent implements OnInit {
 
   isMyProfile = computed(() => !this.route.snapshot.params['id']);
   user = computed(() => (this.isMyProfile() ? this.loggedInUser() : this.userProfile()));
+  defaultSearchFiltersInitialized = signal<boolean>(false);
 
   ngOnInit(): void {
     const userId = this.route.snapshot.params['id'];
@@ -66,13 +67,15 @@ export class ProfileComponent implements OnInit {
     this.actions.setUserProfile(user);
     if (user?.iri) {
       this.actions.setDefaultFilterValue('creator,isContainedBy.creator', user.iri);
+      this.defaultSearchFiltersInitialized.set(true);
     }
   }
 
   private setSearchFilter(): void {
     const currentUser = this.user();
     if (currentUser?.iri) {
-      this.actions.setDefaultFilterValue('creator', currentUser.iri);
+      this.actions.setDefaultFilterValue('creator,isContainedBy.creator', currentUser.iri);
+      this.defaultSearchFiltersInitialized.set(true);
     }
   }
 }

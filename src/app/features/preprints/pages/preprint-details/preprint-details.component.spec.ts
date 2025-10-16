@@ -6,24 +6,25 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
+import { UserPermissions } from '@osf/shared/enums';
+import { CustomDialogService, MetaTagsService } from '@osf/shared/services';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { ContributorsSelectors } from '@osf/shared/stores';
+
 import {
-  MakeDecisionComponent,
+  AdditionalInfoComponent,
+  GeneralInformationComponent,
   ModerationStatusBannerComponent,
+  PreprintFileSectionComponent,
+  PreprintMakeDecisionComponent,
   PreprintTombstoneComponent,
+  PreprintWarningBannerComponent,
+  ShareAndDownloadComponent,
   StatusBannerComponent,
-} from '@osf/features/preprints/components';
-import { AdditionalInfoComponent } from '@osf/features/preprints/components/preprint-details/additional-info/additional-info.component';
-import { GeneralInformationComponent } from '@osf/features/preprints/components/preprint-details/general-information/general-information.component';
-import { PreprintFileSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-file-section/preprint-file-section.component';
-import { PreprintWarningBannerComponent } from '@osf/features/preprints/components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
-import { ShareAndDownloadComponent } from '@osf/features/preprints/components/preprint-details/share-and-download/share-and-download.component';
-import { ReviewsState } from '@osf/features/preprints/enums';
-import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import { UserPermissions } from '@shared/enums';
-import { CustomDialogService, MetaTagsService } from '@shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
-import { ContributorsSelectors } from '@shared/stores';
+} from '../../components';
+import { ReviewsState } from '../../enums';
+import { PreprintSelectors } from '../../store/preprint';
+import { PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
 
@@ -91,7 +92,7 @@ describe('PreprintDetailsComponent', () => {
           PreprintTombstoneComponent,
           PreprintWarningBannerComponent,
           ModerationStatusBannerComponent,
-          MakeDecisionComponent
+          PreprintMakeDecisionComponent
         ),
       ],
       providers: [

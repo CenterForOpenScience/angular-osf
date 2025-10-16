@@ -4,6 +4,6 @@
   [isProviderLoading]="isProviderLoading()"
 />
 
-@if (provider()) {
+@if (defaultSearchFiltersInitialized()) {
   <osf-global-search [searchControlInput]="searchControl" />
 }

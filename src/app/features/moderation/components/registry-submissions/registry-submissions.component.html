@@ -38,6 +38,7 @@
           <osf-registry-submission-item
             [submission]="item"
             [status]="selectedReviewOption()"
+            (selected)="navigateToRegistration(item)"
           ></osf-registry-submission-item>
         </div>
       }

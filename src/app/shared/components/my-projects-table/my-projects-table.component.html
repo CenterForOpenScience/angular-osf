@@ -1,70 +1,66 @@
-<div class="flex flex-column flex-1 row-gap-4">
-  <osf-search-input [placeholder]="searchPlaceholder() | translate" [control]="searchControl()" />
-
-  <p-table
-    class="my-projects-table"
-    [value]="isLoading() ? skeletonData : items()"
-    [rows]="tableParams().rows"
-    [first]="tableParams().firstRowIndex"
-    [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
-    [paginator]="tableParams().paginator"
-    [totalRecords]="tableParams().totalRecords"
-    paginatorDropdownAppendTo="body"
-    [resizableColumns]="true"
-    [autoLayout]="true"
-    [scrollable]="true"
-    [sortMode]="'single'"
-    [lazy]="true"
-    [lazyLoadOnInit]="true"
-    (onPage)="onPageChange($event)"
-    (onSort)="onSort($event)"
-    [sortField]="sortColumn()"
-    [sortOrder]="sortOrder()"
-    [customSort]="true"
-    [resetPageOnSort]="false"
-  >
-    <ng-template #header>
-      <tr>
-        <th pSortableColumn="title">
-          {{ 'myProjects.table.columns.title' | translate }}
-          <p-sortIcon field="title" />
-        </th>
-        <th>{{ 'myProjects.table.columns.contributors' | translate }}</th>
-        <th pSortableColumn="dateModified">
-          {{ 'myProjects.table.columns.modified' | translate }}
-          <p-sortIcon field="dateModified" />
-        </th>
+<p-table
+  class="my-projects-table"
+  [value]="isLoading() ? skeletonData : items()"
+  [rows]="tableParams().rows"
+  [first]="tableParams().firstRowIndex"
+  [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
+  [paginator]="tableParams().paginator"
+  [totalRecords]="tableParams().totalRecords"
+  paginatorDropdownAppendTo="body"
+  [resizableColumns]="true"
+  [autoLayout]="true"
+  [scrollable]="true"
+  [sortMode]="'single'"
+  [lazy]="true"
+  [lazyLoadOnInit]="true"
+  (onPage)="onPageChange($event)"
+  (onSort)="onSort($event)"
+  [sortField]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  [customSort]="true"
+  [resetPageOnSort]="false"
+>
+  <ng-template #header>
+    <tr>
+      <th pSortableColumn="title">
+        {{ 'myProjects.table.columns.title' | translate }}
+        <p-sortIcon field="title" />
+      </th>
+      <th>{{ 'myProjects.table.columns.contributors' | translate }}</th>
+      <th pSortableColumn="dateModified">
+        {{ 'myProjects.table.columns.modified' | translate }}
+        <p-sortIcon field="dateModified" />
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    @if (item?.id) {
+      <tr (click)="onItemClick(item)">
+        <td>
+          <p class="flex align-items-center gap-2">
+            <osf-icon [iconClass]="item.isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
+            <span class="overflow-ellipsis">{{ item.title }}</span>
+          </p>
+        </td>
+        <td>
+          @for (contributor of item.contributors; track contributor) {
+            {{ contributor.fullName }}{{ $last ? '' : ', ' }}
+          }
+        </td>
+        <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
       </tr>
-    </ng-template>
-    <ng-template #body let-item>
-      @if (item?.id) {
-        <tr (click)="onItemClick(item)">
-          <td>
-            <p class="flex align-items-center gap-2">
-              <osf-icon [iconClass]="item.isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
-              <span class="overflow-ellipsis">{{ item.title }}</span>
-            </p>
-          </td>
-          <td>
-            @for (contributor of item.contributors; track contributor) {
-              {{ contributor.fullName }}{{ $last ? '' : ', ' }}
-            }
-          </td>
-          <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
-        </tr>
-      } @else {
-        <tr class="loading-row">
-          <td colspan="3">
-            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
-          </td>
-        </tr>
-      }
-    </ng-template>
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="3" class="text-center">{{ 'common.search.noResultsFound' | translate }}</td>
+    } @else {
+      <tr class="loading-row">
+        <td colspan="3">
+          <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+        </td>
       </tr>
-    </ng-template>
-  </p-table>
-</div>
+    }
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="3" class="text-center">{{ 'common.search.noResultsFound' | translate }}</td>
+    </tr>
+  </ng-template>
+</p-table>

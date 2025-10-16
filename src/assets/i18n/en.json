@@ -422,6 +422,11 @@
       "myPreprints": "My Preprints",
       "bookmarks": "Bookmarks"
     },
+    "tabOptions": {
+      "all": "All",
+      "root": "Projects",
+      "component": "Components"
+    },
     "bookmarks": {
       "emptyState": "You don't have any bookmarks. Click the bookmark icon on projects or registrations to add them here."
     },
@@ -688,6 +693,10 @@
         "title": "Recent Activity",
         "noActivity": "No recent activity"
       },
+      "citations": {
+        "copyCitation": "Copy citation",
+        "viewOriginal": "View original file"
+      },
       "collectionsModeration": {
         "pending": "Pending entry into\u00A0",
         "accepted": "Included in\u00A0",
@@ -719,6 +728,7 @@
         "customCitationPlaceholder": "Enter custom citation",
         "citeAs": "Cite as:",
         "noCitationStylesFound": "No results found",
+        "noCitations": "No citations",
         "affiliatedInstitutions": "Affiliated Institutions",
         "affiliatedInstitutionsDescription": "This is a service provided by the OSF and is automatically applied to your registration. If you are not sure if your institution has signed up for this service, you can look for their name in this list.",
         "noDescription": "No description",
@@ -868,7 +878,9 @@
           "email": "Email",
           "x": "X",
           "linkedIn": "LinkedIn",
-          "facebook": "Facebook"
+          "facebook": "Facebook",
+          "mastodon": "Mastodon",
+          "bluesky": "Bluesky"
         }
       },
       "tooltips": {
@@ -2408,8 +2420,8 @@
           "label": "Withdraw submission",
           "post": "Submission will no longer be publicly available."
         },
-        "commentPlaceholder": "Explain the reasoning behind your decision (optional)",
-        "commentLengthError": "Comment is {{difference}} character(s) too long (maximum is {{limit}}).",
+        "commentPlaceholder": "Explain the reasoning behind your decision",
+        "commentLengthError": "Comment is {{length}} character(s) too long (maximum is {{limit}}).",
         "withdrawalJustification": "Reason for withdrawal (optional, will be publicly displayed)",
         "denialJustification": "Reason for denial (required, not publicly visible)",
         "justificationRequiredError": "Request decision justification can't be blank",

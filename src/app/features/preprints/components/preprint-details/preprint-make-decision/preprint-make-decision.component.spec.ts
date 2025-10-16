@@ -5,7 +5,7 @@ import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/e
 import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 
-import { MakeDecisionComponent } from './make-decision.component';
+import { PreprintMakeDecisionComponent } from './preprint-make-decision.component';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
@@ -14,9 +14,9 @@ import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('MakeDecisionComponent', () => {
-  let component: MakeDecisionComponent;
-  let fixture: ComponentFixture<MakeDecisionComponent>;
+describe('PreprintMakeDecisionComponent', () => {
+  let component: PreprintMakeDecisionComponent;
+  let fixture: ComponentFixture<PreprintMakeDecisionComponent>;
 
   const mockPreprint = PREPRINT_MOCK;
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
@@ -25,7 +25,7 @@ describe('MakeDecisionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MakeDecisionComponent, OSFTestingModule],
+      imports: [PreprintMakeDecisionComponent, OSFTestingModule],
       providers: [
         provideMockStore({
           signals: [
@@ -38,7 +38,7 @@ describe('MakeDecisionComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MakeDecisionComponent);
+    fixture = TestBed.createComponent(PreprintMakeDecisionComponent);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('provider', mockProvider);

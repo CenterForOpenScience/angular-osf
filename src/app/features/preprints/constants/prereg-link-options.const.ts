@@ -1,5 +1,6 @@
-import { PreregLinkInfo } from '@osf/features/preprints/enums';
-import { SelectOption } from '@shared/models';
+import { SelectOption } from '@osf/shared/models';
+
+import { PreregLinkInfo } from '../enums';
 
 export const preregLinksOptions: SelectOption[] = [
   {

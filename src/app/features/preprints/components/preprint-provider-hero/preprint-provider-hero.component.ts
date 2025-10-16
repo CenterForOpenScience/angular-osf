@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { CustomDialogService } from '@osf/shared/services';
 import { SearchInputComponent } from '@shared/components';
+import { normalizeQuotes } from '@shared/helpers';
 import { DecodeHtmlPipe } from '@shared/pipes';
 
 import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints-help-dialog.component';
@@ -31,7 +32,7 @@ export class PreprintProviderHeroComponent {
   triggerSearch = output<string>();
 
   onTriggerSearch(value: string) {
-    this.triggerSearch.emit(value);
+    this.triggerSearch.emit(normalizeQuotes(value)!);
   }
 
   openHelpDialog() {

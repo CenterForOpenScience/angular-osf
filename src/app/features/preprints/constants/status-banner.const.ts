@@ -1,4 +1,4 @@
-import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
+import { ProviderReviewsWorkflow, ReviewsState } from '../enums';
 
 export type StatusSeverity = 'warn' | 'secondary' | 'success' | 'error';
 

@@ -122,16 +122,12 @@ export class RegistryOverviewComponent {
       (r) => r.reviewsState === RevisionReviewStates.RevisionInProgress
     );
 
-    const schemaResponses =
-      (this.isModeration
-        ? registry?.schemaResponses
-        : registry?.schemaResponses?.filter(
-            (r) => r.reviewsState === RevisionReviewStates.Approved || this.hasAdminAccess()
-          )) || [];
+    const schemaResponses = registry?.schemaResponses || [];
 
     if (index !== null) {
       return schemaResponses[index];
     }
+
     return null;
   });
 

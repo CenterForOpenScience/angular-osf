@@ -28,10 +28,25 @@
         }
 
         <p-tabpanel [value]="tabOption.Projects" class="flex flex-column gap-4 flex-1">
+          <div class="flex flex-column gap-4 md:flex-row md:align-items-center">
+            <osf-search-input
+              class="flex-1"
+              [placeholder]="'myProjects.table.searchPlaceholder' | translate"
+              [control]="searchControl"
+            />
+
+            <osf-select
+              class="flex-1"
+              [options]="projectFilterOption"
+              [(selectedValue)]="selectedProjectFilterOption"
+              [fullWidth]="true"
+              (changeValue)="onProjectFilterChange()"
+            ></osf-select>
+          </div>
+
           <osf-my-projects-table
             [items]="projects()"
             [tableParams]="tableParams()"
-            [searchControl]="searchControl"
             [sortColumn]="sortColumn()"
             [sortOrder]="sortOrder()"
             [isLoading]="isLoading()"
@@ -42,10 +57,14 @@
         </p-tabpanel>
 
         <p-tabpanel [value]="tabOption.Registrations" class="flex flex-column gap-4 flex-1">
+          <osf-search-input
+            [placeholder]="'myProjects.table.searchPlaceholder' | translate"
+            [control]="searchControl"
+          />
+
           <osf-my-projects-table
             [items]="registrations()"
             [tableParams]="tableParams()"
-            [searchControl]="searchControl"
             [sortColumn]="sortColumn()"
             [sortOrder]="sortOrder()"
             [isLoading]="isLoading()"
@@ -56,10 +75,14 @@
         </p-tabpanel>
 
         <p-tabpanel [value]="tabOption.Preprints" class="flex flex-column gap-4 flex-1">
+          <osf-search-input
+            [placeholder]="'myProjects.table.searchPlaceholder' | translate"
+            [control]="searchControl"
+          />
+
           <osf-my-projects-table
             [items]="preprints()"
             [tableParams]="tableParams()"
-            [searchControl]="searchControl"
             [sortColumn]="sortColumn()"
             [sortOrder]="sortOrder()"
             [isLoading]="isLoading()"
@@ -70,10 +93,14 @@
         </p-tabpanel>
 
         <p-tabpanel [value]="tabOption.Bookmarks" class="flex flex-column gap-4 flex-1">
+          <osf-search-input
+            [placeholder]="'myProjects.table.searchPlaceholder' | translate"
+            [control]="searchControl"
+          />
+
           <osf-my-projects-table
             [items]="bookmarks()"
             [tableParams]="tableParams()"
-            [searchControl]="searchControl"
             [sortColumn]="sortColumn()"
             [sortOrder]="sortOrder()"
             [isLoading]="isLoading()"

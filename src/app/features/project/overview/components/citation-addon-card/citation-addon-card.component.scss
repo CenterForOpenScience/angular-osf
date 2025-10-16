@@ -1,0 +1,11 @@
+@use "/styles/mixins" as mix;
+
+.citation-addon-card {
+  border: 1px solid var(--grey-2);
+  border-radius: mix.rem(12px);
+}
+
+.citations-container {
+  max-height: mix.rem(300px);
+  overflow-y: auto;
+}

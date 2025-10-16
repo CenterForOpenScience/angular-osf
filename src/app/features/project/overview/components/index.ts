@@ -1,4 +1,7 @@
 export { AddComponentDialogComponent } from './add-component-dialog/add-component-dialog.component';
+export { CitationAddonCardComponent } from './citation-addon-card/citation-addon-card.component';
+export { CitationCollectionItemComponent } from './citation-collection-item/citation-collection-item.component';
+export { CitationItemComponent } from './citation-item/citation-item.component';
 export { DeleteComponentDialogComponent } from './delete-component-dialog/delete-component-dialog.component';
 export { DuplicateDialogComponent } from './duplicate-dialog/duplicate-dialog.component';
 export { FilesWidgetComponent } from './files-widget/files-widget.component';

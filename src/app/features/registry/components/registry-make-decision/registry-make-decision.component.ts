@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
+import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
 import {
   ModerationDecisionFormControls,
   RegistrationReviewStates,
@@ -68,6 +68,7 @@ export class RegistryMakeDecisionComponent {
   RevisionReviewStates = RevisionReviewStates;
   RegistrationReviewStates = RegistrationReviewStates;
 
+  decisionCommentLimit = InputLimits.decisionComment.maxLength;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   get isPendingModeration(): boolean {
@@ -165,7 +166,7 @@ export class RegistryMakeDecisionComponent {
   private initForm(): void {
     this.requestForm = this.fb.group({
       [ModerationDecisionFormControls.Action]: new FormControl('', [Validators.required]),
-      [ModerationDecisionFormControls.Comment]: new FormControl(''),
+      [ModerationDecisionFormControls.Comment]: new FormControl('', [Validators.maxLength(this.decisionCommentLimit)]),
     });
   }
 }

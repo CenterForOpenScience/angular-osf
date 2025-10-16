@@ -38,7 +38,9 @@ describe('MaintenanceService', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => {});
+  afterEach(() => {
+    httpMock.verify();
+  });
 
   it('should return maintenance when within window and map severity correctly', (done) => {
     service.fetchMaintenanceStatus().subscribe((result) => {

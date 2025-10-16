@@ -1,5 +1,6 @@
-import { PreprintSteps } from '@osf/features/preprints/enums';
-import { StepOption } from '@shared/models';
+import { StepOption } from '@osf/shared/models';
+
+import { PreprintSteps } from '../enums';
 
 export const createNewVersionStepsConst: StepOption[] = [
   {

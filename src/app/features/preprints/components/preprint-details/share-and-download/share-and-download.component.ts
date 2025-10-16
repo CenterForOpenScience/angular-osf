@@ -80,4 +80,6 @@ export class ShareAndDownloadComponent {
   twitterShareLink = computed(() => this.shareLinks()?.twitter || '');
   facebookShareLink = computed(() => this.shareLinks()?.facebook || '');
   linkedInShareLink = computed(() => this.shareLinks()?.linkedIn || '');
+  mastodonShareLink = computed(() => this.shareLinks()?.mastodon || '');
+  blueskyShareLink = computed(() => this.shareLinks()?.bluesky || '');
 }

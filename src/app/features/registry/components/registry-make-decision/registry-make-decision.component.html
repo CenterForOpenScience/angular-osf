@@ -71,6 +71,7 @@
           [formControlName]="ModerationDecisionFormControls.Comment"
           [placeholder]="'moderation.makeDecision.remarksPlaceholder' | translate"
           [rows]="6"
+          [maxlength]="decisionCommentLimit"
           class="w-full mt-3"
         ></textarea>
       </div>
@@ -94,6 +95,7 @@
           [formControlName]="ModerationDecisionFormControls.Comment"
           [placeholder]="'moderation.makeDecision.justificationPlaceholder' | translate"
           [rows]="6"
+          [maxlength]="decisionCommentLimit"
           class="w-full mt-3"
         ></textarea>
         @if (isCommentInvalid) {
