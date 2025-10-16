@@ -23,6 +23,7 @@ import {
   SubmitRequestsDecision,
   SubmitReviewsDecision,
 } from '@osf/features/preprints/store/preprint';
+import { InputLimits } from '@osf/shared/constants';
 import { StringOrNull } from '@shared/helpers';
 
 @Component({
@@ -55,6 +56,7 @@ export class MakeDecisionComponent {
   reviewerComment = signal<StringOrNull>(null);
   requestDecisionJustification = signal<StringOrNull>(null);
   saving = signal<boolean>(false);
+  decisionCommentLimit = InputLimits.decisionComment.maxLength;
 
   labelDecisionButton = computed(() => {
     const preprint = this.preprint()!;
@@ -146,9 +148,9 @@ export class MakeDecisionComponent {
     }
   });
 
-  rejectRadioButtonValue = computed(() => {
-    return this.preprint()?.isPublished ? ReviewsState.Withdrawn : ReviewsState.Rejected;
-  });
+  rejectRadioButtonValue = computed(() =>
+    this.preprint()?.isPublished ? ReviewsState.Withdrawn : ReviewsState.Rejected
+  );
 
   settingsComments = computed(() => {
     const commentType = this.provider().reviewsCommentsPrivate ? 'private' : 'public';
@@ -160,13 +162,11 @@ export class MakeDecisionComponent {
     return decisionSettings.names[commentType];
   });
 
-  settingsModeration = computed(() => {
-    return decisionSettings.moderation[this.provider().reviewsWorkflow || ProviderReviewsWorkflow.PreModeration];
-  });
+  settingsModeration = computed(
+    () => decisionSettings.moderation[this.provider().reviewsWorkflow || ProviderReviewsWorkflow.PreModeration]
+  );
 
-  commentEdited = computed(() => {
-    return this.reviewerComment()?.trim() !== this.initialReviewerComment();
-  });
+  commentEdited = computed(() => this.reviewerComment()?.trim() !== this.initialReviewerComment());
 
   commentExceedsLimit = computed(() => {
     const comment = this.reviewerComment();
@@ -175,13 +175,12 @@ export class MakeDecisionComponent {
     return comment.length > formInputLimits.decisionComment.maxLength;
   });
 
-  commentLengthErrorMessage = computed(() => {
-    const limit = formInputLimits.decisionComment.maxLength;
-    return this.translateService.instant('preprints.details.decision.commentLengthError', {
-      limit,
+  commentLengthErrorMessage = computed(() =>
+    this.translateService.instant('preprints.details.decision.commentLengthError', {
+      limit: this.decisionCommentLimit,
       length: this.reviewerComment()!.length,
-    });
-  });
+    })
+  );
 
   requestDecisionJustificationErrorMessage = computed(() => {
     const justification = this.requestDecisionJustification();
@@ -196,9 +195,7 @@ export class MakeDecisionComponent {
     return null;
   });
 
-  decisionChanged = computed(() => {
-    return this.preprint()?.reviewsState !== this.decision();
-  });
+  decisionChanged = computed(() => this.preprint()?.reviewsState !== this.decision());
 
   constructor() {
     effect(() => {

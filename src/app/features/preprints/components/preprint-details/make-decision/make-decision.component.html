@@ -116,6 +116,7 @@
             [placeholder]="'preprints.details.decision.commentPlaceholder' | translate"
             [rows]="4"
             [(ngModel)]="reviewerComment"
+            [maxlength]="decisionCommentLimit"
           ></textarea>
           @if (commentExceedsLimit()) {
             <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
