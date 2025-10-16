@@ -9,6 +9,7 @@ export interface ComponentOverview {
   description: string;
   public: boolean;
   contributors: ContributorModel[];
+  currentUserIsContributor: boolean;
   currentUserPermissions: UserPermissions[];
   parentId?: string;
 }

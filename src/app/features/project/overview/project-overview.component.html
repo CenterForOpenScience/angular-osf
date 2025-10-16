@@ -21,7 +21,7 @@
     />
   </div>
 
-  <div class="flex flex-wrap gap-4 bg-white h-full p-3 flex-column-reverse sm:p-4 lg:flex-row">
+  <div class="flex flex-wrap gap-4 bg-white h-full p-3 flex-column sm:p-4 lg:flex-row">
     @if (isCollectionsRoute()) {
       <p-button
         link
@@ -46,7 +46,7 @@
       <osf-view-only-link-message />
     }
 
-    <div class="flex flex-column gap-4 left-section">
+    <div class="flex flex-column gap-4 left-section flex-order-2 lg:flex-order-1">
       @if (isWikiEnabled()) {
         <osf-overview-wiki [resourceId]="currentProject()!.id" />
       }
@@ -56,8 +56,13 @@
         [components]="components()"
         [areComponentsLoading]="areComponentsLoading()"
       />
+
       @if (parentProject()) {
-        <osf-overview-parent-project [project]="parentProject()!" [isLoading]="isParentProjectLoading()" />
+        <osf-overview-parent-project
+          [project]="parentProject()!"
+          [isLoading]="isParentProjectLoading()"
+          [anonymous]="isAnonymous()"
+        />
       }
 
       <osf-project-components [canEdit]="hasWriteAccess() && !isCollectionsRoute()" [anonymous]="isAnonymous()" />
@@ -75,7 +80,7 @@
       <osf-recent-activity-list [pageSize]="activityPageSize" />
     </div>
 
-    <div class="flex flex-column right-section p-4">
+    <div class="flex flex-column right-section p-4 flex-order-1 lg:flex-order-2">
       <osf-resource-metadata
         [currentResource]="resourceOverview()"
         (customCitationUpdated)="onCustomCitationUpdated($event)"

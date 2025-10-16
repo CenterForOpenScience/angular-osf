@@ -26,7 +26,7 @@
                 </a>
               </h2>
 
-              @if (isCurrentUserContributor(component)) {
+              @if (component.currentUserIsContributor) {
                 <div>
                   <p-button
                     severity="contrast"
@@ -59,7 +59,7 @@
 
               <osf-contributors-list
                 [contributors]="component.contributors"
-                [anonymous]="hasViewOnly() && anonymous()"
+                [anonymous]="anonymous()"
               ></osf-contributors-list>
             </div>
 

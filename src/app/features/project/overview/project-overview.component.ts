@@ -404,7 +404,8 @@ export class ProjectOverviewComponent implements OnInit {
   private setupAddonsEffects(): void {
     effect(() => {
       const currentProject = this.currentProject();
-      if (currentProject && !this.addonsResourceReference().length) {
+
+      if (currentProject) {
         this.actions.getAddonsResourceReference(currentProject.id);
       }
     });

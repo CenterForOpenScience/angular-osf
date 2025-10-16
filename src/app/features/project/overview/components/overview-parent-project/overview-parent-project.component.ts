@@ -22,10 +22,12 @@ import { ProjectOverview } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewParentProjectComponent {
-  isLoading = input<boolean>(false);
   project = input.required<ProjectOverview>();
+  anonymous = input<boolean>(false);
+  isLoading = input<boolean>(false);
 
-  private router = inject(Router);
+  router = inject(Router);
+
   currentUser = select(UserSelectors.getCurrentUser);
 
   menuItems = [
@@ -39,18 +41,21 @@ export class OverviewParentProjectComponent {
     },
   ];
 
-  get isCurrentUserContributor() {
-    return () => {
-      const userId = this.currentUser()?.id;
-      return userId ? this.project()?.contributors.some((contributor) => contributor.userId === userId) : false;
-    };
+  navigateToParent(): void {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/', this.project().id], { queryParamsHandling: 'preserve' })
+    );
+
+    window.open(url, '_self');
   }
 
   handleMenuAction(action: string): void {
     const projectId = this.project()?.id;
+
     if (!projectId) {
       return;
     }
+
     switch (action) {
       case 'manageContributors':
         this.router.navigate([projectId, 'contributors']);

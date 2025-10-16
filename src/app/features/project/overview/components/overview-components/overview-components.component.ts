@@ -6,13 +6,11 @@ import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
 import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { CustomDialogService, LoaderService } from '@osf/shared/services';
 import { GetResourceWithChildren } from '@osf/shared/stores';
 import { ComponentOverview } from '@shared/models';
@@ -36,16 +34,13 @@ export class OverviewComponentsComponent {
   canEdit = input.required<boolean>();
   anonymous = input<boolean>(false);
 
-  currentUser = select(UserSelectors.getCurrentUser);
-  currentUserId = computed(() => this.currentUser()?.id);
   components = select(ProjectOverviewSelectors.getComponents);
   isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
   project = select(ProjectOverviewSelectors.getProject);
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  actions = createDispatchMap({
-    getComponentsTree: GetResourceWithChildren,
-  });
+  actions = createDispatchMap({ getComponentsTree: GetResourceWithChildren });
+
+  readonly UserPermissions = UserPermissions;
 
   readonly componentActionItems = (component: ComponentOverview) => {
     const baseItems = [
@@ -71,14 +66,6 @@ export class OverviewComponentsComponent {
 
     return baseItems;
   };
-  readonly UserPermissions = UserPermissions;
-
-  get isCurrentUserContributor() {
-    return (component: ComponentOverview) => {
-      const userId = this.currentUserId();
-      return userId ? component.contributors.some((contributor) => contributor.userId === userId) : false;
-    };
-  }
 
   handleMenuAction(action: string, componentId: string): void {
     switch (action) {

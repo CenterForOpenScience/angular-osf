@@ -11,9 +11,10 @@
         <div class="flex justify-content-between align-items-center">
           <h2 class="flex align-items-center gap-2">
             <osf-icon [iconClass]="project().isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
-            <a class="node-title" [href]="project().id">{{ project().title }}</a>
+            <a class="node-title cursor-pointer" (click)="navigateToParent()">{{ project().title }}</a>
           </h2>
-          @if (isCurrentUserContributor()) {
+
+          @if (project().currentUserIsContributor) {
             <div>
               <p-button
                 severity="contrast"
@@ -42,10 +43,16 @@
         </div>
 
         <div class="node-name flex flex-wrap gap-2">
-          <osf-contributors-list [contributors]="project().contributors"></osf-contributors-list>
+          <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
+
+          <osf-contributors-list
+            [contributors]="project().contributors"
+            [anonymous]="anonymous()"
+          ></osf-contributors-list>
         </div>
+
         @if (project().description) {
-          <osf-truncated-text [text]="project().description" />
+          <osf-truncated-text [text]="('resourceCard.labels.descriptionBold' | translate) + project().description" />
         }
       </div>
     }
