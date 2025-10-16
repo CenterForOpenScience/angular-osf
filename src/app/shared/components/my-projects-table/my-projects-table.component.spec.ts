@@ -1,12 +1,12 @@
 import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl } from '@angular/forms';
 
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
-import { SearchInputComponent } from '@shared/components';
 import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
+
+import { IconComponent } from '../icon/icon.component';
 
 import { MyProjectsTableComponent } from './my-projects-table.component';
 
@@ -39,11 +39,9 @@ describe('MyProjectsTableComponent', () => {
     },
   ];
 
-  const mockSearchControl = new FormControl('');
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MyProjectsTableComponent, MockComponent(SearchInputComponent)],
+      imports: [MyProjectsTableComponent, MockComponent(IconComponent)],
       providers: [TranslateServiceMock],
     }).compileComponents();
 
@@ -52,11 +50,9 @@ describe('MyProjectsTableComponent', () => {
 
     fixture.componentRef.setInput('items', mockItems);
     fixture.componentRef.setInput('tableParams', mockTableParams);
-    fixture.componentRef.setInput('searchControl', mockSearchControl);
     fixture.componentRef.setInput('sortColumn', 'title');
     fixture.componentRef.setInput('sortOrder', SortOrder.Asc);
     fixture.componentRef.setInput('isLoading', false);
-    fixture.componentRef.setInput('searchPlaceholder', 'myProjects.table.searchPlaceholder');
 
     fixture.detectChanges();
   });
@@ -73,10 +69,6 @@ describe('MyProjectsTableComponent', () => {
     expect(component.tableParams()).toEqual(mockTableParams);
   });
 
-  it('should set searchControl input', () => {
-    expect(component.searchControl()).toBe(mockSearchControl);
-  });
-
   it('should set sortColumn input', () => {
     expect(component.sortColumn()).toBe('title');
   });
@@ -87,17 +79,6 @@ describe('MyProjectsTableComponent', () => {
 
   it('should set isLoading input', () => {
     expect(component.isLoading()).toBe(false);
-  });
-
-  it('should set searchPlaceholder input', () => {
-    expect(component.searchPlaceholder()).toBe('myProjects.table.searchPlaceholder');
-  });
-
-  it('should render search input when not loading', () => {
-    const compiled = fixture.nativeElement;
-    const searchInput = compiled.querySelector('osf-search-input');
-
-    expect(searchInput).toBeTruthy();
   });
 
   it('should render table when not loading', () => {

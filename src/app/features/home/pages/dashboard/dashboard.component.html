@@ -25,14 +25,18 @@
             {{ 'home.loggedIn.dashboard.quickSearch.osf' | translate }}
           </p>
 
+          <osf-search-input
+            [placeholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
+            [control]="searchControl"
+          />
+
           <osf-my-projects-table
+            class="block mt-4"
             [items]="filteredProjects()"
             [tableParams]="tableParams()"
-            [searchControl]="searchControl"
             [sortColumn]="sortColumn()"
             [sortOrder]="sortOrder()"
             [isLoading]="areProjectsLoading()"
-            [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
             (pageChange)="onPageChange($event)"
             (sort)="onSort($event)"
             (itemClick)="navigateToProject($event)"

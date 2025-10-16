@@ -1,4 +1,6 @@
 export enum ResourceSearchMode {
-  User = 'user',
-  All = 'all',
+  All = 1,
+  Root,
+  Component,
+  User,
 }

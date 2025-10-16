@@ -1,12 +1,18 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProviders } from 'ng-mocks';
 
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent } from '@shared/components';
+import { CustomConfirmationService, CustomDialogService, ProjectRedirectDialogService } from '@osf/shared/services';
+import {
+  LoadingSpinnerComponent,
+  MyProjectsTableComponent,
+  SearchInputComponent,
+  SubHeaderComponent,
+} from '@shared/components';
 import { MyResourcesSelectors } from '@shared/stores';
 
 import { DashboardComponent } from './dashboard.component';
@@ -14,7 +20,7 @@ import { DashboardComponent } from './dashboard.component';
 import { getProjectsMockForComponent } from '@testing/data/dashboard/dasboard.data';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
-describe.skip('DashboardComponent', () => {
+describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
 
@@ -31,7 +37,7 @@ describe.skip('DashboardComponent', () => {
       imports: [
         DashboardComponent,
         OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, LoadingSpinnerComponent),
+        ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, LoadingSpinnerComponent, SearchInputComponent),
       ],
       providers: [
         {
@@ -46,6 +52,7 @@ describe.skip('DashboardComponent', () => {
             dispatch: jest.fn(),
           },
         },
+        MockProviders(CustomDialogService, CustomConfirmationService, ProjectRedirectDialogService),
       ],
     }).compileComponents();
 
@@ -53,7 +60,7 @@ describe.skip('DashboardComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should show loading s pinner when projects are loading', () => {
+  it('should show loading spinner when projects are loading', () => {
     areProjectsLoadingSignal.set(true);
     fixture.detectChanges();
 

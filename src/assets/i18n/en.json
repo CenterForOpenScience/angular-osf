@@ -422,6 +422,11 @@
       "myPreprints": "My Preprints",
       "bookmarks": "Bookmarks"
     },
+    "tabOptions": {
+      "all": "All",
+      "root": "Projects",
+      "component": "Components"
+    },
     "bookmarks": {
       "emptyState": "You don't have any bookmarks. Click the bookmark icon on projects or registrations to add them here."
     },

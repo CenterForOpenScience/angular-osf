@@ -23,7 +23,12 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
+import {
+  MyProjectsTableComponent,
+  SearchInputComponent,
+  SelectComponent,
+  SubHeaderComponent,
+} from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
@@ -40,6 +45,7 @@ import {
 } from '@osf/shared/stores';
 import { CustomDialogService, ProjectRedirectDialogService } from '@shared/services';
 
+import { PROJECT_FILTER_OPTIONS } from './constants/project-filter-options.const';
 import { MyProjectsQueryService } from './services/my-projects-query.service';
 import { MyProjectsTableParamsService } from './services/my-projects-table-params.service';
 import { CreateProjectDialogComponent } from './components';
@@ -49,16 +55,17 @@ import { MyProjectsTab } from './enums';
 @Component({
   selector: 'osf-my-projects',
   imports: [
-    SubHeaderComponent,
     FormsModule,
     Tab,
     TabList,
     TabPanel,
     TabPanels,
     Tabs,
+    SubHeaderComponent,
     MyProjectsTableComponent,
-    TranslatePipe,
+    SearchInputComponent,
     SelectComponent,
+    TranslatePipe,
   ],
   templateUrl: './my-projects.component.html',
   styleUrl: './my-projects.component.scss',
@@ -78,6 +85,8 @@ export class MyProjectsComponent implements OnInit {
   readonly isMedium = toSignal(inject(IS_MEDIUM));
   readonly tabOptions = MY_PROJECTS_TABS;
   readonly tabOption = MyProjectsTab;
+  readonly projectFilterOption = PROJECT_FILTER_OPTIONS;
+  readonly selectedProjectFilterOption = signal(PROJECT_FILTER_OPTIONS[0].value);
 
   readonly searchControl = new FormControl<string>('');
 
@@ -137,8 +146,18 @@ export class MyProjectsComponent implements OnInit {
   onTabChange(tabIndex: number): void {
     this.actions.clearMyProjects();
     this.selectedTab.set(tabIndex);
+    this.selectedProjectFilterOption.set(PROJECT_FILTER_OPTIONS[0].value);
     const current = this.queryService.getRawParams();
     this.queryService.handleTabSwitch(current, this.selectedTab());
+  }
+
+  onProjectFilterChange(): void {
+    const params = this.queryParams();
+
+    if (params) {
+      const queryParams = this.queryService.toQueryModel(params);
+      this.fetchDataForCurrentTab(queryParams);
+    }
   }
 
   createProject(): void {
@@ -283,7 +302,7 @@ export class MyProjectsComponent implements OnInit {
     let action$;
     switch (this.selectedTab()) {
       case MyProjectsTab.Projects:
-        action$ = this.actions.getMyProjects(pageNumber, pageSize, filters);
+        action$ = this.actions.getMyProjects(pageNumber, pageSize, filters, this.selectedProjectFilterOption());
         break;
       case MyProjectsTab.Registrations:
         action$ = this.actions.getMyRegistrations(pageNumber, pageSize, filters);

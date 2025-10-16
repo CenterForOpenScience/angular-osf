@@ -19,6 +19,7 @@ import {
   IconComponent,
   LoadingSpinnerComponent,
   MyProjectsTableComponent,
+  SearchInputComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
@@ -34,6 +35,7 @@ import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shar
     Button,
     SubHeaderComponent,
     MyProjectsTableComponent,
+    SearchInputComponent,
     IconComponent,
     TranslatePipe,
     LoadingSpinnerComponent,
@@ -67,8 +69,6 @@ export class DashboardComponent implements OnInit {
   });
 
   readonly existsProjects = computed(() => this.projects().length || !!this.searchControl.value?.length);
-
-  emailAddress = '';
 
   constructor() {
     this.setupSearchSubscription();

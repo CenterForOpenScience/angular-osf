@@ -99,6 +99,14 @@ export class MyResourcesService {
       url = endpoint.startsWith('collections/') ? `${this.apiUrl}/${endpoint}` : `${this.apiUrl}/users/me/${endpoint}`;
     }
 
+    if (searchMode === ResourceSearchMode.Component) {
+      params['filter[parent][ne]'] = null;
+    }
+
+    if (searchMode === ResourceSearchMode.Root) {
+      params['filter[parent]'] = null;
+    }
+
     return this.jsonApiService.get<MyResourcesResponseJsonApi>(url, params).pipe(
       map((response: MyResourcesResponseJsonApi) => ({
         data: response.data.map((item: MyResourcesItemGetResponseJsonApi) => MyResourcesMapper.fromResponse(item)),
