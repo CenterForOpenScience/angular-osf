@@ -162,7 +162,7 @@
           </td>
         }
         <td>
-          @if (canRemoveContributor().get(contributor.userId)) {
+          @if (hasAdminAccess() || contributor.userId === currentUserId()) {
             <p-button
               class="danger-icon-btn"
               icon="fas fa-trash"

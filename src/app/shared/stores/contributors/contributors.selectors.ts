@@ -43,8 +43,18 @@ export class ContributorsSelectors {
   }
 
   @Selector([ContributorsState])
+  static getContributorsPageNumber(state: ContributorsStateModel) {
+    return state.contributorsList.page;
+  }
+
+  @Selector([ContributorsState])
+  static getContributorsPageSize(state: ContributorsStateModel) {
+    return state.contributorsList.pageSize;
+  }
+
+  @Selector([ContributorsState])
   static getContributorsTotalCount(state: ContributorsStateModel) {
-    return state?.contributorsList?.totalCount || 0;
+    return state.contributorsList.totalCount;
   }
 
   @Selector([ContributorsState])

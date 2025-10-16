@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { filter } from 'rxjs';
 
@@ -24,14 +24,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
@@ -64,24 +63,16 @@ export class PreprintsContributorsComponent implements OnInit {
   contributors = signal<ContributorModel[]>([]);
   contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  currentUser = select(UserSelectors.getCurrentUser);
+  page = select(ContributorsSelectors.getContributorsPageNumber);
+  pageSize = select(ContributorsSelectors.getContributorsPageSize);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,
     totalRecords: this.contributorsTotalCount(),
     paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+    firstRowIndex: (this.page() - 1) * this.pageSize(),
+    rows: this.pageSize(),
   }));
-
-  isCurrentUserAdminContributor = computed(() => {
-    const currentUserId = this.currentUser()?.id;
-    const initialContributors = this.initialContributors();
-    if (!currentUserId) return false;
-
-    return initialContributors.some(
-      (contributor: ContributorModel) =>
-        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
-    );
-  });
 
   actions = createDispatchMap({
     getContributors: GetAllContributors,
@@ -171,8 +162,6 @@ export class PreprintsContributorsComponent implements OnInit {
   }
 
   removeContributor(contributor: ContributorModel) {
-    const isDeletingSelf = contributor.userId === this.currentUser()?.id;
-
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
       messageKey: 'project.contributors.removeDialog.message',
@@ -180,20 +169,23 @@ export class PreprintsContributorsComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.preprintId(), ResourceType.Preprint, contributor.userId, isDeletingSelf)
+          .deleteContributor(this.preprintId(), ResourceType.Preprint, contributor.userId)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () => {
               this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
                 name: contributor.fullName,
               });
-
-              if (isDeletingSelf) {
-                this.router.navigate(['/']);
-              }
             },
           });
       },
     });
+  }
+
+  pageChanged(event: TablePageEvent) {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const pageSize = event.rows;
+
+    this.actions.getContributors(this.preprintId(), ResourceType.Preprint, page, pageSize);
   }
 }

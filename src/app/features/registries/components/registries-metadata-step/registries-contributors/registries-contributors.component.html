@@ -6,9 +6,8 @@
     [(contributors)]="contributors"
     [tableParams]="tableParams()"
     [isLoading]="isContributorsLoading()"
-    [currentUserId]="currentUser()?.id"
-    [hasAdminAccess]="isCurrentUserAdminContributor()"
     (remove)="removeContributor($event)"
+    (pageChanged)="pageChanged($event)"
   />
 
   <div class="flex justify-content-end mt-3">

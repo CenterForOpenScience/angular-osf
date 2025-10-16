@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { filter, map, of } from 'rxjs';
 
@@ -21,16 +21,15 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
@@ -59,32 +58,22 @@ export class RegistriesContributorsComponent implements OnInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
 
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
-
-  currentUser = select(UserSelectors.getCurrentUser);
-
-  isCurrentUserAdminContributor = computed(() => {
-    const currentUserId = this.currentUser()?.id;
-    const initialContributors = this.initialContributors();
-    if (!currentUserId) return false;
-
-    return initialContributors.some(
-      (contributor: ContributorModel) =>
-        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
-    );
-  });
 
   initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal<ContributorModel[]>([]);
 
-  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
+  page = select(ContributorsSelectors.getContributorsPageNumber);
+  pageSize = select(ContributorsSelectors.getContributorsPageSize);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,
     totalRecords: this.contributorsTotalCount(),
     paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+    firstRowIndex: (this.page() - 1) * this.pageSize(),
+    rows: this.pageSize(),
   }));
 
   actions = createDispatchMap({
@@ -183,8 +172,6 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   removeContributor(contributor: ContributorModel) {
-    const isDeletingSelf = contributor.userId === this.currentUser()?.id;
-
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.contributors.removeDialog.title',
       messageKey: 'project.contributors.removeDialog.message',
@@ -192,20 +179,23 @@ export class RegistriesContributorsComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.draftId(), ResourceType.DraftRegistration, contributor.userId, isDeletingSelf)
+          .deleteContributor(this.draftId(), ResourceType.DraftRegistration, contributor.userId)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () => {
               this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
                 name: contributor.fullName,
               });
-
-              if (isDeletingSelf) {
-                this.router.navigate(['/']);
-              }
             },
           });
       },
     });
+  }
+
+  pageChanged(event: TablePageEvent) {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const pageSize = event.rows;
+
+    this.actions.getContributors(this.draftId(), ResourceType.DraftRegistration, page, pageSize);
   }
 }

@@ -19,7 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MetadataResourceEnum, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
 import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
 import {
@@ -136,6 +136,9 @@ export class MetadataComponent implements OnInit {
   areInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
   areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
 
+  hasWriteAccess = select(MetadataSelectors.hasWriteAccess);
+  hasAdminAccess = select(MetadataSelectors.hasAdminAccess);
+
   provider = this.environment.defaultProvider;
 
   private readonly resourceNameMap = new Map<ResourceType, string>([
@@ -166,36 +169,22 @@ export class MetadataComponent implements OnInit {
     updateContributorsSearchValue: UpdateContributorsSearchValue,
   });
 
-  isLoading = computed(() => {
-    return (
+  isLoading = computed(
+    () =>
       this.isMetadataLoading() ||
       this.isContributorsLoading() ||
       this.areInstitutionsLoading() ||
       this.isSubmitting() ||
       this.areResourceInstitutionsSubmitting()
-    );
-  });
+  );
 
-  hideEditDoi = computed(() => {
-    return (
+  hideEditDoi = computed(
+    () =>
       this.resourceType() === ResourceType.Project &&
       (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
-    );
-  });
+  );
 
   isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
-
-  hasWriteAccess = computed(() => {
-    const metadata = this.metadata();
-    if (!metadata) return false;
-    return metadata.currentUserPermissions.includes(UserPermissions.Write);
-  });
-
-  hasAdminAccess = computed(() => {
-    const metadata = this.metadata();
-    if (!metadata) return false;
-    return metadata.currentUserPermissions.includes(UserPermissions.Admin);
-  });
 
   constructor() {
     effect(() => {

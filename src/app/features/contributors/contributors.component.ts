@@ -123,11 +123,15 @@ export class ContributorsComponent implements OnInit {
   readonly hasAdminAccess = select(CurrentResourceSelectors.hasResourceAdminAccess);
   readonly resourceAccessRequestEnabled = select(CurrentResourceSelectors.resourceAccessRequestEnabled);
   readonly currentUser = select(UserSelectors.getCurrentUser);
+  page = select(ContributorsSelectors.getContributorsPageNumber);
+  pageSize = select(ContributorsSelectors.getContributorsPageSize);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,
     totalRecords: this.contributorsTotalCount(),
     paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+    firstRowIndex: (this.page() - 1) * this.pageSize(),
+    rows: this.pageSize(),
   }));
 
   canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());

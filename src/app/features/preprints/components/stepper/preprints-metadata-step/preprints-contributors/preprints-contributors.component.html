@@ -11,26 +11,23 @@
     class="w-full"
     [(contributors)]="contributors"
     [tableParams]="tableParams()"
-    [currentUserId]="currentUser()?.id"
-    [hasAdminAccess]="isCurrentUserAdminContributor()"
     [isLoading]="isContributorsLoading()"
     (remove)="removeContributor($event)"
+    (pageChanged)="pageChanged($event)"
   />
   <div class="flex justify-content-end mt-3">
     @if (hasChanges) {
       <div class="flex gap-2 mr-4">
-        <p-button (click)="cancel()" severity="info" [label]="'common.buttons.cancel' | translate" />
-        <p-button (click)="save()" [label]="'common.buttons.save' | translate" />
+        <p-button (onClick)="cancel()" severity="info" [label]="'common.buttons.cancel' | translate" />
+        <p-button (onClick)="save()" [label]="'common.buttons.save' | translate" />
       </div>
     }
-    @if (isCurrentUserAdminContributor()) {
-      <p-button
-        class="w-full md:w-auto"
-        styleClass="w-full"
-        [label]="'preprints.addContributorBySearch' | translate"
-        type="submit"
-        (onClick)="openAddContributorDialog()"
-      />
-    }
+    <p-button
+      class="w-full md:w-auto"
+      styleClass="w-full"
+      [label]="'preprints.addContributorBySearch' | translate"
+      type="submit"
+      (onClick)="openAddContributorDialog()"
+    />
   </div>
 </p-card>

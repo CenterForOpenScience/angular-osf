@@ -1,6 +1,6 @@
 <div class="contributors-dialog flex flex-column gap-4">
   <div class="flex justify-content-end align-items-center">
-    @if (isCurrentUserAdminContributor()) {
+    @if (hasAdminAccess()) {
       <p-button
         [label]="'project.contributors.addContributor' | translate"
         [disabled]="isLoading()"
@@ -21,9 +21,10 @@
     [isLoading]="isLoading()"
     [showEmployment]="false"
     [showEducation]="false"
-    [hasAdminAccess]="isCurrentUserAdminContributor()"
+    [hasAdminAccess]="hasAdminAccess()"
     [currentUserId]="currentUser()?.id"
     (remove)="removeContributor($event)"
+    (pageChanged)="pageChanged($event)"
   ></osf-contributors-table>
 
   @if (hasChanges) {

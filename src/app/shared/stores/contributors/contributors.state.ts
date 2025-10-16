@@ -42,25 +42,34 @@ export class ContributorsState {
       return;
     }
 
+    const page = action.page ?? state.contributorsList.page;
+    const pageSize = action.pageSize ?? state.contributorsList.pageSize;
+
     ctx.patchState({
-      contributorsList: { ...state.contributorsList, data: [], isLoading: true, error: null },
+      contributorsList: {
+        ...state.contributorsList,
+        data: [],
+        isLoading: true,
+        error: null,
+      },
     });
 
-    return this.contributorsService
-      .getAllContributors(action.resourceType, action.resourceId, action.page, action.pageSize)
-      .pipe(
-        tap((res) => {
-          ctx.patchState({
-            contributorsList: {
-              ...state.contributorsList,
-              data: res.data,
-              isLoading: false,
-              totalCount: res.totalCount,
-            },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-      );
+    return this.contributorsService.getAllContributors(action.resourceType, action.resourceId, page, pageSize).pipe(
+      tap((res) => {
+        ctx.patchState({
+          contributorsList: {
+            ...state.contributorsList,
+            data: res.data,
+            isLoading: false,
+            totalCount: res.totalCount,
+            page,
+            pageSize,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
+    );
   }
 
   @Action(GetRequestAccessContributors)
@@ -141,7 +150,9 @@ export class ContributorsState {
 
     return this.contributorsService.addContributor(action.resourceType, action.resourceId, action.contributor).pipe(
       tap(() => {
-        ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+        ctx.dispatch(
+          new GetAllContributors(action.resourceId, action.resourceType, 1, state.contributorsList.pageSize)
+        );
       }),
       catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
@@ -163,7 +174,9 @@ export class ContributorsState {
       .bulkUpdateContributors(action.resourceType, action.resourceId, action.contributors)
       .pipe(
         tap(() => {
-          ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+          ctx.dispatch(
+            new GetAllContributors(action.resourceId, action.resourceType, 1, state.contributorsList.pageSize)
+          );
         }),
         catchError((error) => handleSectionError(ctx, 'contributorsList', error))
       );
@@ -185,7 +198,9 @@ export class ContributorsState {
       .bulkAddContributors(action.resourceType, action.resourceId, action.contributors, action.childNodeIds)
       .pipe(
         tap(() => {
-          ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+          ctx.dispatch(
+            new GetAllContributors(action.resourceId, action.resourceType, 1, state.contributorsList.pageSize)
+          );
         }),
         catchError((error) => handleSectionError(ctx, 'contributorsList', error))
       );
@@ -208,7 +223,9 @@ export class ContributorsState {
       .pipe(
         tap(() => {
           if (!action.skipRefresh) {
-            ctx.dispatch(new GetAllContributors(action.resourceId, action.resourceType));
+            ctx.dispatch(
+              new GetAllContributors(action.resourceId, action.resourceType, 1, state.contributorsList.pageSize)
+            );
           }
         }),
         catchError((error) => handleSectionError(ctx, 'contributorsList', error))

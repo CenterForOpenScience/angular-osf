@@ -65,26 +65,6 @@ export class ContributorsTableComponent {
 
   deactivatedContributors = computed(() => this.contributors().some((contributor) => contributor.deactivated));
 
-  canRemoveContributor = computed(() => {
-    const contributors = this.contributors();
-    const currentUserId = this.currentUserId();
-    const isAdmin = this.hasAdminAccess();
-    const adminCount = contributors.filter((c) => c.permission === ContributorPermission.Admin).length;
-
-    const result = new Map<string, boolean>();
-
-    for (const c of contributors) {
-      const isOwnAccount = currentUserId === c.userId;
-      const isLastAdmin = c.permission === ContributorPermission.Admin && adminCount <= 1;
-
-      const canRemove = (isAdmin || isOwnAccount) && !isLastAdmin;
-
-      result.set(c.userId, canRemove);
-    }
-
-    return result;
-  });
-
   removeContributor(contributor: ContributorModel) {
     this.remove.emit(contributor);
   }
@@ -106,7 +86,8 @@ export class ContributorsTableComponent {
   }
 
   onRowReorder() {
-    const reorderedContributors = this.contributors().map((item, i) => ({ ...item, index: i }));
+    const firstIndex = this.tableParams().firstRowIndex;
+    const reorderedContributors = this.contributors().map((item, i) => ({ ...item, index: i + firstIndex }));
     this.contributors.set(reorderedContributors);
   }
 

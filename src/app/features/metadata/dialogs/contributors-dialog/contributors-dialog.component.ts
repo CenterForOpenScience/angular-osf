@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TablePageEvent } from 'primeng/table';
 
 import { filter } from 'rxjs';
 
@@ -29,7 +30,7 @@ import {
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
 import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
@@ -39,10 +40,13 @@ import {
   BulkUpdateContributors,
   ContributorsSelectors,
   DeleteContributor,
+  GetAllContributors,
   UpdateBibliographyFilter,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
 } from '@osf/shared/stores';
+
+import { MetadataSelectors } from '../../store';
 
 @Component({
   selector: 'osf-contributors-dialog',
@@ -64,7 +68,10 @@ export class ContributorsDialogComponent implements OnInit {
   isLoading = select(ContributorsSelectors.isContributorsLoading);
   initialContributors = select(ContributorsSelectors.getContributors);
   contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
+  hasAdminAccess = select(MetadataSelectors.hasAdminAccess);
   contributors = signal<ContributorModel[]>([]);
+  page = select(ContributorsSelectors.getContributorsPageNumber);
+  pageSize = select(ContributorsSelectors.getContributorsPageSize);
 
   currentUser = select(UserSelectors.getCurrentUser);
 
@@ -72,9 +79,12 @@ export class ContributorsDialogComponent implements OnInit {
     ...DEFAULT_TABLE_PARAMS,
     totalRecords: this.contributorsTotalCount(),
     paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
+    firstRowIndex: (this.page() - 1) * this.pageSize(),
+    rows: this.pageSize(),
   }));
 
   actions = createDispatchMap({
+    getContributors: GetAllContributors,
     updateSearchValue: UpdateContributorsSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
@@ -86,17 +96,6 @@ export class ContributorsDialogComponent implements OnInit {
 
   private readonly resourceType: ResourceType;
   private readonly resourceId: string;
-
-  isCurrentUserAdminContributor = computed(() => {
-    const currentUserId = this.currentUser()?.id;
-    const initialContributors = this.initialContributors();
-    if (!currentUserId) return false;
-
-    return initialContributors.some(
-      (contributor: ContributorModel) =>
-        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
-    );
-  });
 
   get searchPlaceholder() {
     return this.resourceType === ResourceType.Project
@@ -205,6 +204,13 @@ export class ContributorsDialogComponent implements OnInit {
           });
       },
     });
+  }
+
+  pageChanged(event: TablePageEvent) {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const pageSize = event.rows;
+
+    this.actions.getContributors(this.resourceId, this.resourceType, page, pageSize);
   }
 
   cancel() {

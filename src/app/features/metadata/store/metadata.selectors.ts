@@ -1,5 +1,7 @@
 import { Selector } from '@ngxs/store';
 
+import { UserPermissions } from '@osf/shared/enums';
+
 import { MetadataStateModel } from './metadata.model';
 import { MetadataState } from './metadata.state';
 
@@ -62,5 +64,15 @@ export class MetadataSelectors {
   @Selector([MetadataState])
   static getCedarRecordsLoading(state: MetadataStateModel) {
     return state.cedarRecords.isLoading;
+  }
+
+  @Selector([MetadataState])
+  static hasWriteAccess(state: MetadataStateModel): boolean {
+    return state.metadata.data?.currentUserPermissions?.includes(UserPermissions.Write) || false;
+  }
+
+  @Selector([MetadataState])
+  static hasAdminAccess(state: MetadataStateModel): boolean {
+    return state.metadata.data?.currentUserPermissions?.includes(UserPermissions.Admin) || false;
   }
 }
