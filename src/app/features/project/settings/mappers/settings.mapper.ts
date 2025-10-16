@@ -1,9 +1,9 @@
 import { UserPermissions } from '@osf/shared/enums';
 import { InstitutionsMapper } from '@osf/shared/mappers';
 import { RegionsMapper } from '@osf/shared/mappers/regions';
+import { BaseNodeDataJsonApi } from '@shared/models';
 
 import {
-  NodeDataJsonApi,
   NodeDetailsModel,
   ProjectSettingsDataJsonApi,
   ProjectSettingsModel,
@@ -27,14 +27,14 @@ export class SettingsMapper {
     } as ProjectSettingsModel;
   }
 
-  static fromNodeResponse(data: NodeDataJsonApi): NodeDetailsModel {
+  static fromNodeResponse(data: BaseNodeDataJsonApi): NodeDetailsModel {
     return {
       id: data.id,
       title: data.attributes.title,
       description: data.attributes.description,
       isPublic: data.attributes.public,
-      region: data.embeds ? RegionsMapper.getRegion(data?.embeds?.region?.data) : null,
-      affiliatedInstitutions: data.embeds
+      region: data.embeds?.region ? RegionsMapper.getRegion(data?.embeds?.region?.data) : null,
+      affiliatedInstitutions: data.embeds?.affiliated_institutions
         ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
         : [],
       currentUserPermissions: data.attributes.current_user_permissions as UserPermissions[],

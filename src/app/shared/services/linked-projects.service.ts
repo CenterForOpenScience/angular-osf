@@ -13,7 +13,7 @@ import { JsonApiService } from './json-api.service';
 @Injectable({
   providedIn: 'root',
 })
-export class DuplicatesService {
+export class LinkedProjectsService {
   private jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
 
@@ -21,7 +21,7 @@ export class DuplicatesService {
     return `${this.environment.apiDomainUrl}/v2`;
   }
 
-  fetchAllDuplicates(
+  fetchAllLinkedProjects(
     resourceId: string,
     resourceType: string,
     pageNumber?: number,
@@ -41,7 +41,9 @@ export class DuplicatesService {
     }
 
     return this.jsonApiService
-      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
+      .get<
+        ResponseJsonApi<BaseNodeDataJsonApi[]>
+      >(`${this.apiUrl}/${resourceType}/${resourceId}/linked_by_nodes/`, params)
       .pipe(map((res) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(res)));
   }
 }

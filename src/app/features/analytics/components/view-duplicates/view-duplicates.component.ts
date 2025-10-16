@@ -39,8 +39,7 @@ import {
   TruncatedTextComponent,
 } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { ToolbarResource } from '@osf/shared/models';
-import { Duplicate } from '@osf/shared/models/duplicates';
+import { BaseNodeModel, ToolbarResource } from '@osf/shared/models';
 import { CustomDialogService, LoaderService } from '@osf/shared/services';
 import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates, GetResourceWithChildren } from '@osf/shared/stores';
 
@@ -58,6 +57,7 @@ import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates, GetResourceWith
     CustomPaginatorComponent,
     IconComponent,
     ContributorsListComponent,
+    DatePipe,
   ],
   templateUrl: './view-duplicates.component.html',
   styleUrl: './view-duplicates.component.scss',
@@ -171,7 +171,7 @@ export class ViewDuplicatesComponent {
     return null;
   });
 
-  showMoreOptions(duplicate: Duplicate) {
+  showMoreOptions(duplicate: BaseNodeModel) {
     return (
       duplicate.currentUserPermissions.includes(UserPermissions.Admin) ||
       duplicate.currentUserPermissions.includes(UserPermissions.Write)

@@ -4,7 +4,6 @@ export * from './citations.mapper';
 export * from './collections';
 export * from './components';
 export * from './contributors';
-export * from './duplicates.mapper';
 export * from './emails.mapper';
 export * from './files/files.mapper';
 export * from './filters/filter-option.mapper';

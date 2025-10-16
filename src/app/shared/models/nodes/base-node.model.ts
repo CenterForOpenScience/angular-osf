@@ -1,3 +1,5 @@
+import { ContributorModel } from '@shared/models';
+
 import { LicensesOption } from '../license.model';
 
 export interface BaseNodeModel {
@@ -21,4 +23,8 @@ export interface BaseNodeModel {
   wikiEnabled: boolean;
   rootParentId?: string;
   type: string;
+}
+
+export interface NodeModel extends BaseNodeModel {
+  bibliographicContributors?: ContributorModel[];
 }

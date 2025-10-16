@@ -1,8 +1,28 @@
-import { BaseNodeDataJsonApi, BaseNodeModel, NodeShortInfoModel } from '@osf/shared/models';
+import {
+  BaseNodeDataJsonApi,
+  BaseNodeModel,
+  NodeModel,
+  NodeShortInfoModel,
+  PaginatedData,
+  ResponseJsonApi,
+} from '@osf/shared/models';
+import { ContributorsMapper } from '@shared/mappers';
 
 export class BaseNodeMapper {
   static getNodesData(data: BaseNodeDataJsonApi[]): BaseNodeModel[] {
     return data.map((item) => this.getNodeData(item));
+  }
+
+  static getNodesWithEmbedsData(data: BaseNodeDataJsonApi[]): NodeModel[] {
+    return data.map((item) => this.getNodeWithEmbedsData(item));
+  }
+
+  static getNodesWithEmbedsAndTotalData(response: ResponseJsonApi<BaseNodeDataJsonApi[]>): PaginatedData<NodeModel[]> {
+    return {
+      data: BaseNodeMapper.getNodesWithEmbedsData(response.data),
+      totalCount: response.meta.total,
+      pageSize: response.meta.per_page,
+    };
   }
 
   static getNodesWithChildren(data: BaseNodeDataJsonApi[], parentId: string): NodeShortInfoModel[] {
@@ -40,6 +60,14 @@ export class BaseNodeMapper {
       wikiEnabled: data.attributes.wiki_enabled,
       customCitation: data.attributes.custom_citation || undefined,
       rootParentId: data.relationships.root?.data?.id,
+    };
+  }
+
+  static getNodeWithEmbedsData(data: BaseNodeDataJsonApi): NodeModel {
+    const baseNode = BaseNodeMapper.getNodeData(data);
+    return {
+      ...baseNode,
+      bibliographicContributors: ContributorsMapper.getContributors(data.embeds?.bibliographic_contributors?.data),
     };
   }
 
