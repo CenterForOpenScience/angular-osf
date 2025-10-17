@@ -245,17 +245,18 @@ export class ContributorsComponent implements OnInit {
   openAddContributorDialog() {
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
     const resourceDetails = this.resourceDetails();
-    const rootParentId = resourceDetails.rootParentId ?? this.resourceId();
+    const resourceId = this.resourceId();
+    const rootParentId = resourceDetails.rootParentId ?? resourceId;
 
     this.loaderService.show();
 
     this.actions
-      .getResourceWithChildren(rootParentId, this.resourceId(), this.resourceType())
+      .getResourceWithChildren(rootParentId, resourceId, this.resourceType())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loaderService.hide();
 
-        const components = this.mapNodesToComponentCheckboxItems(this.resourceChildren(), this.resourceId());
+        const components = this.mapNodesToComponentCheckboxItems(this.resourceChildren(), resourceId);
 
         this.customDialogService
           .open(AddContributorDialogComponent, {
@@ -264,9 +265,11 @@ export class ContributorsComponent implements OnInit {
             data: {
               addedContributorIds,
               components,
-              resourceName: this.resourceDetails().title,
+              resourceName: resourceDetails.title,
               allowAddingContributorsFromParentProject:
-                this.resourceType() === ResourceType.Project && !!resourceDetails.rootParentId,
+                this.resourceType() === ResourceType.Project &&
+                resourceDetails.rootParentId &&
+                resourceDetails.rootParentId !== resourceId,
             },
           })
           .onClose.pipe(
