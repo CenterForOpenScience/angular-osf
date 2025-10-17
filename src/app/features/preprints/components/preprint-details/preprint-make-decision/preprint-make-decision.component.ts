@@ -59,13 +59,13 @@ export class PreprintMakeDecisionComponent {
   decisionCommentLimit = InputLimits.decisionComment.maxLength;
 
   labelDecisionButton = computed(() => {
-    const preprint = this.preprint()!;
-    if (preprint.reviewsState === ReviewsState.Withdrawn) {
+    const preprint = this.preprint();
+    if (preprint?.reviewsState === ReviewsState.Withdrawn) {
       return 'preprints.details.decision.withdrawalReason';
     } else if (this.isPendingWithdrawal()) {
       return 'preprints.details.decision.makeDecision';
     } else {
-      return preprint.reviewsState === ReviewsState.Pending
+      return preprint?.reviewsState === ReviewsState.Pending
         ? 'preprints.details.decision.makeDecision'
         : 'preprints.details.decision.modifyDecision';
     }
@@ -78,14 +78,14 @@ export class PreprintMakeDecisionComponent {
   });
 
   labelDecisionDialogHeader = computed(() => {
-    const preprint = this.preprint()!;
+    const preprint = this.preprint();
 
-    if (preprint.reviewsState === ReviewsState.Withdrawn) {
+    if (preprint?.reviewsState === ReviewsState.Withdrawn) {
       return 'preprints.details.decision.header.withdrawalReason';
     } else if (this.isPendingWithdrawal()) {
       return 'preprints.details.decision.header.submitDecision';
     } else {
-      return preprint.reviewsState === ReviewsState.Pending
+      return preprint?.reviewsState === ReviewsState.Pending
         ? 'preprints.details.decision.header.submitDecision'
         : 'preprints.details.decision.header.modifyDecision';
     }

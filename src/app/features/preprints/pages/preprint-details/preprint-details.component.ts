@@ -261,13 +261,12 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     );
   });
 
-  isOsfPreprint = computed(() => {
-    return this.providerId() === 'osf';
-  });
+  isOsfPreprint = computed(() => this.providerId() === 'osf');
 
   moderationStatusBannerVisible = computed(() => {
     return (
       this.moderationMode() &&
+      this.preprint() &&
       !(
         this.isPreprintLoading() ||
         this.areReviewActionsLoading() ||
@@ -418,6 +417,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       this.router.navigate(['../', newPreprintId], {
         relativeTo: this.route,
         replaceUrl: true,
+        queryParamsHandling: 'preserve',
       });
     }
   }
