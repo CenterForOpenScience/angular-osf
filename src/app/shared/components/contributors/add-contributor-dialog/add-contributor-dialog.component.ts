@@ -104,25 +104,6 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
     this.setSearchSubscription();
   }
 
-  constructor() {
-    effect(() => {
-      alert(this.allowAddingContributorsFromParentProject());
-      if (this.allowAddingContributorsFromParentProject()) {
-        const currentProject = this.currentProject();
-        alert(JSON.stringify(currentProject));
-        if (currentProject) {
-          const rootParentId = currentProject.rootParentId ?? currentProject.id;
-          this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
-          this.actions.getSubjects(currentProject.id, ResourceType.Project);
-          const parentProjectId = currentProject.parentId;
-          if (parentProjectId) {
-            this.actions.getParentProject(parentProjectId);
-          }
-        }
-      }
-    });
-  }
-
   ngOnDestroy(): void {
     this.actions.clearUsers();
   }
