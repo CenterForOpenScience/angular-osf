@@ -26,20 +26,13 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { AddContributorType, AddDialogState, ResourceType } from '@osf/shared/enums';
 import { ComponentCheckboxItemModel, ContributorAddModel, ContributorDialogAddModel } from '@osf/shared/models';
-import {
-  ClearUsers,
-  ContributorsSelectors,
-  FetchSelectedSubjects,
-  GetResourceWithChildren,
-  SearchUsers,
-} from '@osf/shared/stores';
+import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores';
 
 import { ComponentsSelectionListComponent } from '../../components-selection-list/components-selection-list.component';
 import { CustomPaginatorComponent } from '../../custom-paginator/custom-paginator.component';
 import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '../../search-input/search-input.component';
 import { AddContributorItemComponent } from '../add-contributor-item/add-contributor-item.component';
-import { GetParentProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 
 @Component({
   selector: 'osf-add-contributor-dialog',
@@ -65,9 +58,6 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   private readonly actions = createDispatchMap({
     searchUsers: SearchUsers,
     clearUsers: ClearUsers,
-    getParentProject: GetParentProject,
-    getComponentsTree: GetResourceWithChildren,
-    getSubjects: FetchSelectedSubjects,
   });
 
   readonly users = select(ContributorsSelectors.getUsers);
@@ -96,8 +86,6 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   readonly isComponentsState = computed(() => this.currentState() === AddDialogState.Components);
   readonly hasComponents = computed(() => this.components().length > 0);
   readonly buttonLabel = computed(() => (this.isComponentsState() ? 'common.buttons.done' : 'common.buttons.next'));
-
-  currentProject = select(ProjectOverviewSelectors.getProject);
 
   ngOnInit(): void {
     this.initializeDialogData();
