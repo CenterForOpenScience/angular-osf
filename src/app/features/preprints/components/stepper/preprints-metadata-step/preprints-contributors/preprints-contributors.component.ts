@@ -130,7 +130,7 @@ export class PreprintsContributorsComponent implements OnInit {
       .open(AddContributorDialogComponent, {
         header: 'project.contributors.addDialog.addRegisteredContributor',
         width: '448px',
-        data: {addedContributorIds, allowAddingContributorsFromParentProject: true},
+        data: { addedContributorIds, allowAddingContributorsFromParentProject: true },
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),

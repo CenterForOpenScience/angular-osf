@@ -265,7 +265,7 @@ export class ContributorsComponent implements OnInit {
               addedContributorIds,
               components,
               resourceName: this.resourceDetails().title,
-              allowAddingContributorsFromParentProject: true
+              allowAddingContributorsFromParentProject: true,
             },
           })
           .onClose.pipe(
