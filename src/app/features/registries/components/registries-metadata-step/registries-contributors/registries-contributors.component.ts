@@ -133,7 +133,6 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   openAddContributorDialog() {
-    alert('registries');
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
 
     this.customDialogService

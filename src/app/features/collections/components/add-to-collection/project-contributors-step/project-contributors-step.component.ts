@@ -151,7 +151,6 @@ export class ProjectContributorsStepComponent {
   }
 
   private openAddContributorDialog() {
-    alert('project');
     const addedContributorIds = this.projectContributors().map((x) => x.userId);
 
     this.customDialogService

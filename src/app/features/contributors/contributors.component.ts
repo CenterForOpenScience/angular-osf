@@ -243,7 +243,6 @@ export class ContributorsComponent implements OnInit {
   }
 
   openAddContributorDialog() {
-    alert('contributors');
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
     const rootParentId = this.resourceDetails().rootParentId ?? this.resourceId();
 
@@ -265,7 +264,7 @@ export class ContributorsComponent implements OnInit {
               addedContributorIds,
               components,
               resourceName: this.resourceDetails().title,
-              allowAddingContributorsFromParentProject: true,
+              allowAddingContributorsFromParentProject: this.resourceType() === ResourceType.Project,
             },
           })
           .onClose.pipe(

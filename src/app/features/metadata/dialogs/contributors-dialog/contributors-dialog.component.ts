@@ -128,7 +128,6 @@ export class ContributorsDialogComponent implements OnInit {
   }
 
   openAddContributorDialog(): void {
-    alert('contributors dialog');
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
 
     this.customDialogService
