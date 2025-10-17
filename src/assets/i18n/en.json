@@ -606,7 +606,8 @@
         "bibliographicContributor": "Bibliographic Contributor",
         "addUnregisteredContributor": "Add Unregistered Contributor",
         "addRegisteredContributor": "Add Registered Contributor",
-        "unregisteredContributorNotification": "We will notify the user that they have been added to your project"
+        "unregisteredContributorNotification": "We will notify the user that they have been added to your project",
+        "addingContributorsFromParentProject": "Import contributors from {{projectName}}"
       },
       "removeDialog": {
         "title": "Remove contributor",

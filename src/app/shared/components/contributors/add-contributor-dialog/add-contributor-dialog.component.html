@@ -65,6 +65,20 @@
     </div>
   }
 
+  @if (allowAddingContributorsFromParentProject() && this.isSearchState()) {
+    <div class="flex justify-content-center mt-2">
+      <p-button
+        severity="secondary"
+        (click)="addSourceProjectContributors()"
+        [label]="
+          'project.contributors.addDialog.addingContributorsFromParentProject'
+            | translate: { projectName: resourceName() }
+        "
+      >
+      </p-button>
+    </div>
+  }
+
   <div class="flex gap-2 mt-6">
     <p-button
       class="w-full"
