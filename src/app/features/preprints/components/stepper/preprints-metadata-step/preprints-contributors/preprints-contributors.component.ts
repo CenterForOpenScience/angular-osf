@@ -123,13 +123,14 @@ export class PreprintsContributorsComponent implements OnInit {
   }
 
   openAddContributorDialog() {
+    alert('preprints');
     const addedContributorIds = this.initialContributors().map((x) => x.userId);
 
     this.customDialogService
       .open(AddContributorDialogComponent, {
         header: 'project.contributors.addDialog.addRegisteredContributor',
         width: '448px',
-        data: addedContributorIds,
+        data: {addedContributorIds, allowAddingContributorsFromParentProject: true},
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),

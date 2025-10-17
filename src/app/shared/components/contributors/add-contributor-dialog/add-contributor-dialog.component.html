@@ -65,7 +65,7 @@
     </div>
   }
 
-  @if (this.isSearchState()) {
+  @if (allowAddingContributorsFromParentProject() && this.isSearchState()) {
     <div class="flex mt-2">
       <p-button
         class="w-full"
