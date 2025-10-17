@@ -40,6 +40,7 @@
             [submission]="item"
             [status]="selectedReviewOption()"
             (selected)="navigateToPreprint(item)"
+            (loadContributors)="loadContributors(item)"
           ></osf-preprint-submission-item>
         </div>
       }

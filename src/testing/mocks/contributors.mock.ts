@@ -13,8 +13,10 @@ export const MOCK_CONTRIBUTOR: ContributorModel = {
   permission: ContributorPermission.Read,
   isBibliographic: true,
   isCurator: false,
+  index: 0,
   education: [],
   employment: [],
+  deactivated: false,
 };
 
 export const MOCK_CONTRIBUTOR_WITHOUT_HISTORY: ContributorModel = {
@@ -28,6 +30,8 @@ export const MOCK_CONTRIBUTOR_WITHOUT_HISTORY: ContributorModel = {
   permission: ContributorPermission.Write,
   isBibliographic: false,
   isCurator: true,
+  index: 0,
   education: [],
   employment: [],
+  deactivated: false,
 };

@@ -3,11 +3,11 @@ import { MockComponents, MockPipes } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IconComponent } from '@osf/shared/components';
+import { ContributorsListComponent, IconComponent } from '@osf/shared/components';
 import { DateAgoPipe } from '@osf/shared/pipes';
 
 import { SubmissionReviewStatus } from '../../enums';
-import { PreprintSubmission } from '../../models';
+import { PreprintSubmissionModel } from '../../models';
 
 import { PreprintSubmissionItemComponent } from './preprint-submission-item.component';
 
@@ -18,14 +18,14 @@ describe('PreprintSubmissionItemComponent', () => {
   let component: PreprintSubmissionItemComponent;
   let fixture: ComponentFixture<PreprintSubmissionItemComponent>;
 
-  const mockSubmission: PreprintSubmission = MOCK_PREPRINT_SUBMISSION;
+  const mockSubmission: PreprintSubmissionModel = MOCK_PREPRINT_SUBMISSION;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         PreprintSubmissionItemComponent,
         OSFTestingModule,
-        ...MockComponents(IconComponent),
+        ...MockComponents(IconComponent, ContributorsListComponent),
         MockPipes(DateAgoPipe, TranslatePipe),
       ],
     }).compileComponents();

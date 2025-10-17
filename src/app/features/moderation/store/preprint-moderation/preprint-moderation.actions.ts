@@ -39,3 +39,18 @@ export class GetPreprintWithdrawalSubmissions {
     public sort?: PreprintSubmissionsSort
   ) {}
 }
+
+export class GetPreprintSubmissionContributors {
+  static readonly type = `${ACTION_SCOPE} Get Preprint Submission Contributors`;
+
+  constructor(public preprintId: string) {}
+}
+
+export class GetPreprintWithdrawalSubmissionContributors {
+  static readonly type = `${ACTION_SCOPE} Get Preprint Withdrawal Submission Contributors`;
+
+  constructor(
+    public submissionId: string,
+    public preprintId: string
+  ) {}
+}

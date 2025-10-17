@@ -1,4 +1,4 @@
-import { PaginatedData } from '@osf/shared/models';
+import { ContributorModel, PaginatedData } from '@osf/shared/models';
 
 import { ReviewAction } from './review-action.model';
 
@@ -13,4 +13,7 @@ export interface PreprintWithdrawalSubmission {
   title: string;
   preprintId: string;
   actions: ReviewAction[];
+  contributors: ContributorModel[];
+  totalContributors: number;
+  contributorsLoading?: boolean;
 }

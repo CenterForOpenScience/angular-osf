@@ -1,7 +1,9 @@
-import { PreprintSubmission } from '@osf/features/moderation/models';
+import { PreprintSubmissionModel } from '@osf/features/moderation/models';
 import { CollectionSubmissionWithGuid } from '@shared/models';
 
-export const MOCK_PREPRINT_SUBMISSION: PreprintSubmission = {
+import { MOCK_CONTRIBUTOR } from './contributors.mock';
+
+export const MOCK_PREPRINT_SUBMISSION: PreprintSubmissionModel = {
   id: '1',
   title: 'Test Preprint Submission',
   reviewsState: 'pending',
@@ -20,6 +22,8 @@ export const MOCK_PREPRINT_SUBMISSION: PreprintSubmission = {
       comment: 'Test comment',
     },
   ],
+  contributors: [MOCK_CONTRIBUTOR],
+  totalContributors: 1,
 };
 
 export const MOCK_COLLECTION_SUBMISSION_WITH_GUID: CollectionSubmissionWithGuid = {

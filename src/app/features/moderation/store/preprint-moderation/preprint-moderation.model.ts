@@ -1,7 +1,7 @@
 import { AsyncStateModel, AsyncStateWithTotalCount } from '@osf/shared/models';
 
 import { PreprintProviderModerationInfo, PreprintReviewActionModel, PreprintWithdrawalSubmission } from '../../models';
-import { PreprintSubmission } from '../../models/preprint-submission.model';
+import { PreprintSubmissionModel } from '../../models/preprint-submission.model';
 
 export interface PreprintModerationStateModel {
   preprintProviders: AsyncStateModel<PreprintProviderModerationInfo[]>;
@@ -10,7 +10,7 @@ export interface PreprintModerationStateModel {
   withdrawalSubmissions: WithdrawalSubmissionsWithCount;
 }
 
-interface SubmissionsWithCount extends AsyncStateWithTotalCount<PreprintSubmission[]> {
+interface SubmissionsWithCount extends AsyncStateWithTotalCount<PreprintSubmissionModel[]> {
   pendingCount: number;
   acceptedCount: number;
   rejectedCount: number;

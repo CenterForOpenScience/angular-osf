@@ -1,35 +1,54 @@
-<div class="flex align-items-baseline gap-2 p-3">
-  <osf-icon [class]="reviewStatusIcon[status()].value" [iconClass]="reviewStatusIcon[status()].icon"></osf-icon>
+<div class="resource">
+  <p-accordion (onOpen)="handleOpen()">
+    <p-accordion-panel value="0">
+      <p-accordion-header class="flex flex-row align-items-start gap-3 p-3">
+        <div osfStopPropagation class="flex align-items-baseline gap-2 font-normal">
+          <osf-icon [class]="reviewStatusIcon[status()].value" [iconClass]="reviewStatusIcon[status()].icon"></osf-icon>
 
-  <div>
-    <p-button
-      class="link-btn-no-padding"
-      styleClass="text-left"
-      link
-      [label]="submission().title"
-      (onClick)="selected.emit()"
-    />
+          <div>
+            <p-button
+              class="link-btn-no-padding"
+              styleClass="text-left"
+              link
+              [label]="submission().title"
+              (onClick)="selected.emit()"
+            />
+            @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {
+              <div class="flex flex-wrap align-items-baseline gap-1 mt-2">
+                <span>{{ actionLabel[action.toState] | translate }}</span>
+                <span>{{ action.dateModified | dateAgo }}</span>
+                <span>{{ 'moderation.submissionReview.by' | translate }}</span>
+                <span>{{ action.creator?.name }}</span>
 
-    @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {
-      <div class="flex flex-wrap gap-1 mt-2">
-        <span>{{ actionLabel[action.toState] | translate }}</span>
-        <span>{{ action.dateModified | dateAgo }}</span>
-        <span>{{ 'moderation.submissionReview.by' | translate }}</span>
-        <span>{{ action.creator?.name }}</span>
+                @if (action.comment.length) {
+                  <osf-truncated-text class="font-italic" [text]="'- ' + action.comment" />
+                }
+              </div>
+            }
 
-        @if (action.comment.length) {
-          <osf-truncated-text class="font-italic" [text]="action.comment" />
-        }
-      </div>
-    }
+            @if (submission().actions.length > 1) {
+              <p-button
+                class="link-btn-no-padding block mt-2"
+                [link]="true"
+                [label]="(showAll ? 'common.buttons.hide' : 'moderation.showHistory') | translate"
+                (onClick)="toggleHistory()"
+              />
+            }
+          </div>
+        </div>
+      </p-accordion-header>
 
-    @if (submission().actions.length > 1) {
-      <p-button
-        class="link-btn-no-padding block mt-2"
-        [link]="true"
-        [label]="(showAll ? 'common.buttons.hide' : 'moderation.showHistory') | translate"
-        (onClick)="toggleHistory()"
-      />
-    }
-  </div>
+      <p-accordion-content>
+        <div class="flex align-items-center gap-1 p-3 pt-0 ml-3">
+          <p>{{ 'common.labels.contributors' | translate }}:</p>
+
+          @if (submission().contributorsLoading) {
+            <p-skeleton width="10rem" height="1.25rem" />
+          } @else {
+            <osf-contributors-list [contributors]="submission().contributors"></osf-contributors-list>
+          }
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
 </div>

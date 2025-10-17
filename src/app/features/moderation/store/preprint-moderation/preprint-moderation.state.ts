@@ -1,20 +1,25 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { insertItem, patch, updateItem } from '@ngxs/store/operators';
 
-import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, map, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
+import { ContributorsService } from '@osf/shared/services';
 
-import { PreprintSubmissionPaginatedData, PreprintWithdrawalPaginatedData } from '../../models';
+import { PreprintSubmissionModel, PreprintWithdrawalSubmission } from '../../models';
 import { PreprintModerationService } from '../../services';
 
 import {
   GetPreprintProvider,
   GetPreprintProviders,
   GetPreprintReviewActions,
+  GetPreprintSubmissionContributors,
   GetPreprintSubmissions,
+  GetPreprintWithdrawalSubmissionContributors,
   GetPreprintWithdrawalSubmissions,
 } from './preprint-moderation.actions';
 import { PREPRINT_MODERATION_STATE_DEFAULTS, PreprintModerationStateModel } from './preprint-moderation.model';
@@ -26,6 +31,7 @@ import { PREPRINT_MODERATION_STATE_DEFAULTS, PreprintModerationStateModel } from
 @Injectable()
 export class PreprintModerationState {
   private readonly preprintModerationService = inject(PreprintModerationService);
+  private readonly contributorsService = inject(ContributorsService);
 
   @Action(GetPreprintProviders)
   getPreprintProviders(ctx: StateContext<PreprintModerationStateModel>) {
@@ -107,28 +113,6 @@ export class PreprintModerationState {
     ctx.setState(patch({ submissions: patch({ isLoading: true }) }));
 
     return this.preprintModerationService.getPreprintSubmissions(provider, status, page, sort).pipe(
-      switchMap((res) => {
-        if (!res.data.length) {
-          return of({
-            ...res,
-            data: [],
-          });
-        }
-
-        const actionRequests = res.data.map((item) =>
-          this.preprintModerationService.getPreprintSubmissionReviewAction(item.id)
-        );
-
-        return forkJoin(actionRequests).pipe(
-          map(
-            (actions) =>
-              ({
-                ...res,
-                data: res.data.map((item, i) => ({ ...item, actions: actions[i] })),
-              }) as PreprintSubmissionPaginatedData
-          )
-        );
-      }),
       tap((res) => {
         ctx.setState(
           patch({
@@ -156,28 +140,6 @@ export class PreprintModerationState {
     ctx.setState(patch({ withdrawalSubmissions: patch({ isLoading: true }) }));
 
     return this.preprintModerationService.getPreprintWithdrawalSubmissions(provider, status, page, sort).pipe(
-      switchMap((res) => {
-        if (!res.data.length) {
-          return of({
-            ...res,
-            data: [],
-          });
-        }
-
-        const actionRequests = res.data.map((item) =>
-          this.preprintModerationService.getPreprintWithdrawalSubmissionReviewAction(item.id)
-        );
-
-        return forkJoin(actionRequests).pipe(
-          map(
-            (actions) =>
-              ({
-                ...res,
-                data: res.data.map((item, i) => ({ ...item, actions: actions[i] })),
-              }) as PreprintWithdrawalPaginatedData
-          )
-        );
-      }),
       tap((res) => {
         ctx.setState(
           patch({
@@ -194,5 +156,123 @@ export class PreprintModerationState {
       }),
       catchError((error) => handleSectionError(ctx, 'withdrawalSubmissions', error))
     );
+  }
+
+  @Action(GetPreprintSubmissionContributors)
+  getPreprintSubmissionContributors(
+    ctx: StateContext<PreprintModerationStateModel>,
+    { preprintId }: GetPreprintSubmissionContributors
+  ) {
+    const state = ctx.getState();
+    const submission = state.submissions.data.find((s) => s.id === preprintId);
+
+    if (submission?.contributors && submission.contributors.length > 0) {
+      return;
+    }
+
+    ctx.setState(
+      patch({
+        submissions: patch({
+          data: updateItem<PreprintSubmissionModel>(
+            (submission) => submission.id === preprintId,
+            patch({ contributorsLoading: true })
+          ),
+        }),
+      })
+    );
+
+    return this.contributorsService
+      .getAllContributors(ResourceType.Preprint, preprintId, 1, DEFAULT_TABLE_PARAMS.rows)
+      .pipe(
+        tap((res) => {
+          ctx.setState(
+            patch({
+              submissions: patch({
+                data: updateItem<PreprintSubmissionModel>(
+                  (submission) => submission.id === preprintId,
+                  patch({
+                    contributors: res.data,
+                    totalContributors: res.totalCount,
+                    contributorsLoading: false,
+                  })
+                ),
+              }),
+            })
+          );
+        }),
+        catchError((error) => {
+          ctx.setState(
+            patch({
+              submissions: patch({
+                data: updateItem<PreprintSubmissionModel>(
+                  (submission) => submission.id === preprintId,
+                  patch({ contributorsLoading: false })
+                ),
+              }),
+            })
+          );
+
+          return handleSectionError(ctx, 'submissions', error);
+        })
+      );
+  }
+
+  @Action(GetPreprintWithdrawalSubmissionContributors)
+  getPreprintWithdrawalSubmissionContributors(
+    ctx: StateContext<PreprintModerationStateModel>,
+    { submissionId, preprintId }: GetPreprintWithdrawalSubmissionContributors
+  ) {
+    const state = ctx.getState();
+    const submission = state.withdrawalSubmissions.data.find((s) => s.id === submissionId);
+
+    if (submission?.contributors && submission.contributors.length > 0) {
+      return;
+    }
+
+    ctx.setState(
+      patch({
+        withdrawalSubmissions: patch({
+          data: updateItem<PreprintWithdrawalSubmission>(
+            (submission) => submission.id === submissionId,
+            patch({ contributorsLoading: true })
+          ),
+        }),
+      })
+    );
+
+    return this.contributorsService
+      .getAllContributors(ResourceType.Preprint, preprintId, 1, DEFAULT_TABLE_PARAMS.rows)
+      .pipe(
+        tap((res) => {
+          ctx.setState(
+            patch({
+              withdrawalSubmissions: patch({
+                data: updateItem<PreprintWithdrawalSubmission>(
+                  (submission) => submission.id === submissionId,
+                  patch({
+                    contributors: res.data,
+                    totalContributors: res.totalCount,
+                    contributorsLoading: false,
+                  })
+                ),
+              }),
+            })
+          );
+        }),
+        catchError((error) => {
+          ctx.setState(
+            patch({
+              withdrawalSubmissions: patch({
+                data: updateItem<PreprintWithdrawalSubmission>(
+                  (submission) => submission.id === submissionId,
+                  patch({ contributorsLoading: false })
+                ),
+              }),
+            })
+          );
+
+          return handleSectionError(ctx, 'withdrawalSubmissions', error);
+        })
+      );
   }
 }

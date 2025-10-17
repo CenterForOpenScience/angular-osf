@@ -1,10 +1,10 @@
-import { map, Observable } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JsonApiResponse, PaginatedData, ResponseJsonApi } from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+import { ContributorsService, JsonApiService } from '@osf/shared/services';
 
 import { PreprintSubmissionsSort } from '../enums';
 import { PreprintModerationMapper, RegistryModerationMapper } from '../mappers';
@@ -27,6 +27,7 @@ import { PreprintSubmissionPaginatedData } from '../models/preprint-submission.m
 export class PreprintModerationService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly contributorsService = inject(ContributorsService);
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
@@ -62,13 +63,31 @@ export class PreprintModerationService {
     page = 1,
     sort = PreprintSubmissionsSort.Newest
   ): Observable<PreprintSubmissionPaginatedData> {
-    const filters = `filter[reviews_state]=${status}`;
+    const params = {
+      page: page.toString(),
+      'meta[reviews_state_counts]': 'true',
+      'filter[reviews_state]': status,
+      sort,
+    };
 
-    const baseUrl = `${this.apiUrl}/providers/preprints/${provider}/preprints/?page=${page}&meta[reviews_state_counts]=true&${filters}&sort=${sort}`;
+    const baseUrl = `${this.apiUrl}/providers/preprints/${provider}/preprints/`;
 
-    return this.jsonApiService
-      .get<PreprintSubmissionResponseJsonApi>(baseUrl)
-      .pipe(map((response) => PreprintModerationMapper.fromSubmissionResponse(response)));
+    return this.jsonApiService.get<PreprintSubmissionResponseJsonApi>(baseUrl, params).pipe(
+      map((response) => PreprintModerationMapper.fromSubmissionResponse(response)),
+      switchMap((res) => {
+        if (!res.data.length) {
+          return of(res);
+        }
+
+        const actionsRequests = res.data.map((item) =>
+          this.getPreprintSubmissionReviewAction(item.id).pipe(catchError(() => of([])))
+        );
+
+        return forkJoin(actionsRequests).pipe(
+          map((actions) => ({ ...res, data: res.data.map((item, i) => ({ ...item, actions: actions[i] })) }))
+        );
+      })
+    );
   }
 
   getPreprintWithdrawalSubmissions(
@@ -77,13 +96,32 @@ export class PreprintModerationService {
     page = 1,
     sort = PreprintSubmissionsSort.Newest
   ): Observable<PreprintWithdrawalPaginatedData> {
-    const params = `?embed=target&embed=creator&filter[machine_state]=${status}&meta[requests_state_counts]=true&page=${page}&sort=${sort}`;
+    const params = {
+      embed: 'target',
+      'meta[requests_state_counts]': 'true',
+      'filter[machine_state]': status,
+      page,
+      sort,
+    };
 
-    const baseUrl = `${this.apiUrl}/providers/preprints/${provider}/withdraw_requests/${params}`;
+    const baseUrl = `${this.apiUrl}/providers/preprints/${provider}/withdraw_requests/`;
 
-    return this.jsonApiService
-      .get<PreprintSubmissionWithdrawalResponseJsonApi>(baseUrl)
-      .pipe(map((response) => PreprintModerationMapper.fromWithdrawalSubmissionResponse(response)));
+    return this.jsonApiService.get<PreprintSubmissionWithdrawalResponseJsonApi>(baseUrl, params).pipe(
+      map((response) => PreprintModerationMapper.fromWithdrawalSubmissionResponse(response)),
+      switchMap((res) => {
+        if (!res.data.length) {
+          return of(res);
+        }
+
+        const actionsRequests = res.data.map((item) =>
+          this.getPreprintWithdrawalSubmissionReviewAction(item.id).pipe(catchError(() => of([])))
+        );
+
+        return forkJoin(actionsRequests).pipe(
+          map((actions) => ({ ...res, data: res.data.map((item, i) => ({ ...item, actions: actions[i] })) }))
+        );
+      })
+    );
   }
 
   getPreprintSubmissionReviewAction(id: string): Observable<ReviewAction[]> {
