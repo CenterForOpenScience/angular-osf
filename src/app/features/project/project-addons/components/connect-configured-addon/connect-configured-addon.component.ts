@@ -144,6 +144,17 @@ export class ConnectConfiguredAddonComponent {
 
   addonTypeString = computed(() => getAddonTypeString(this.addon()));
 
+  redirectUrl = computed(() => {
+    const addon = this.addon();
+    if (!addon || !addon.redirectUrl) {
+      return null;
+    }
+    const openURL = new URL(addon.redirectUrl);
+    openURL.searchParams.set('nodeIri', this.resourceUri());
+    openURL.searchParams.set('userIri', this.addonsUserReference()[0]?.attributes.user_uri);
+    return openURL.toString();
+  });
+
   readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
@@ -251,6 +262,22 @@ export class ConnectConfiguredAddonComponent {
         this.processAuthorizedAddons(addonConfig, currentAddon);
       },
     });
+  }
+
+  goToService() {
+    if (!this.redirectUrl()) return;
+
+    const newWindow = window.open(
+      this.redirectUrl()!.toString(),
+      '_blank',
+      'popup,width=600,height=600,scrollbars=yes,resizable=yes'
+    );
+    if (newWindow) {
+      this.router.navigate([`${this.baseUrl()}/addons`]);
+      newWindow.focus();
+    } else {
+      this.toastService.showError('addons.redirect.pop-up-error');
+    }
   }
 
   private getDataForAccountCheck() {

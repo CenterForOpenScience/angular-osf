@@ -5,7 +5,7 @@ import { TableModule } from 'primeng/table';
 import { NgClass } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 
-import { isCitationAddon } from '@osf/shared/helpers';
+import { isCitationAddon, isRedirectAddon } from '@osf/shared/helpers';
 import { ADDON_TERMS as addonTerms } from '@shared/constants';
 import { AddonModel, AddonTerm, AuthorizedAccountModel } from '@shared/models';
 
@@ -17,6 +17,11 @@ import { AddonModel, AddonTerm, AuthorizedAccountModel } from '@shared/models';
 })
 export class AddonTermsComponent {
   addon = input<AddonModel | AuthorizedAccountModel | null>(null);
+  redirectUrl = input<string | null>(null);
+
+  isRedirectService = computed(() => {
+    return isRedirectAddon(this.addon());
+  });
   terms = computed(() => {
     const addon = this.addon();
     if (!addon) {
@@ -29,6 +34,9 @@ export class AddonTermsComponent {
     const supportedFeatures = addon.supportedFeatures || [];
     const provider = addon.providerName;
     const isCitationService = isCitationAddon(addon);
+    if (isRedirectAddon(addon)) {
+      return [];
+    }
 
     const relevantTerms = isCitationService ? addonTerms.filter((term) => term.citation) : addonTerms;
 
