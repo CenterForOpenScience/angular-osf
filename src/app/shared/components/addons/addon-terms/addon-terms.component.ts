@@ -19,9 +19,7 @@ export class AddonTermsComponent {
   addon = input<AddonModel | AuthorizedAccountModel | null>(null);
   redirectUrl = input<string | null>(null);
 
-  isRedirectService = computed(() => {
-    return isRedirectAddon(this.addon());
-  });
+  isRedirectService = computed(() => isRedirectAddon(this.addon()));
   terms = computed(() => {
     const addon = this.addon();
     if (!addon) {

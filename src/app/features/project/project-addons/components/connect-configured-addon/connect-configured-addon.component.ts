@@ -276,7 +276,7 @@ export class ConnectConfiguredAddonComponent {
       this.router.navigate([`${this.baseUrl()}/addons`]);
       newWindow.focus();
     } else {
-      this.toastService.showError('addons.redirect.pop-up-error');
+      this.toastService.showError('addons.redirect.popUpError');
     }
   }
 
