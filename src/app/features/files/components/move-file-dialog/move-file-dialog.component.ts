@@ -182,6 +182,8 @@ export class MoveFileDialogComponent {
     }
 
     this.isFilesUpdating.set(true);
+    const headerKey = this.isMoveAction ? 'files.dialogs.moveFile.movingHeader' : 'files.dialogs.moveFile.copingHeader';
+    this.config.header = this.translateService.instant(headerKey);
     const action = this.config.data.action;
     const files: FileModel[] = this.config.data.files;
     const totalFiles = files.length;
@@ -209,6 +211,7 @@ export class MoveFileDialogComponent {
                 this.openReplaceMoveDialog(conflictFiles, path, action);
               } else {
                 this.showToast(action);
+                this.config.header = this.translateService.instant('files.dialogs.moveFile.title');
                 this.completeMove();
               }
             }

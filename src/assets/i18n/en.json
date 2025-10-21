@@ -1157,7 +1157,9 @@
         "storage": "OSF Storage",
         "pathError": "Path is not specified!",
         "success": "Successfully moved.",
-        "noMovePermission": "Cannot move or copy to this file provider"
+        "noMovePermission": "Cannot move or copy to this file provider",
+        "movingHeader": "Moving...",
+        "copingHeader": "Coping..."
       },
       "copyFile": {
         "success": "File successfully copied."
