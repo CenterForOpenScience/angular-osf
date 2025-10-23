@@ -8,7 +8,7 @@ on:
       - main
       - 'release/*'
       - 'hotfix/*'
-      - 'feature/*' ## TODO: For testing purpose only, remove later. Some new change for PR testing
+      - 'feature/*' ## TODO: For testing purpose only, remove later. Some new change for PR testing. Anoother change to make sure tests run now that we have turned the workflow back on...
   workflow_dispatch:
 
 jobs:
