@@ -2,9 +2,12 @@ name: Run Jest Tests
 
 on:
   pull_request:
-    branches: ['*'] # or change to match your default branch
   push:
-    branches: ['*']
+    branches:
+      - develop
+      - main
+      - 'release/*'
+      - 'hotfix/*'
   workflow_dispatch:
 
 jobs:
