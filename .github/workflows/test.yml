@@ -8,7 +8,7 @@ on:
       - main
       - 'release/*'
       - 'hotfix/*'
-      - 'feature/*' ## TODO: For testing purpose only, remove later
+      - 'feature/*' ## TODO: For testing purpose only, remove later. Some new change for PR testing
   workflow_dispatch:
 
 jobs:
