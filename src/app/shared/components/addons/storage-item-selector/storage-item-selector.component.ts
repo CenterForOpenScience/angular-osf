@@ -69,7 +69,7 @@ export class StorageItemSelectorComponent implements OnInit {
   operationInvocationResult = input.required<StorageItem[]>();
   accountNameControl = input(new FormControl());
   isCreateMode = input(false);
-  currentAddonType = input<string>(AddonType.STORAGE);
+  currentAddonType = input<AddonType>(AddonType.STORAGE);
   supportedResourceTypes = input<string[]>([]);
 
   selectedStorageItemId = model<string>('/');
@@ -257,6 +257,30 @@ export class StorageItemSelectorComponent implements OnInit {
 
       this.breadcrumbItems.set([...breadcrumbs, item]);
     }
+  }
+
+  isItemDisabled(item: StorageItem): boolean {
+    return !item.mayContainRootCandidates || !this.isDirectory(item);
+  }
+
+  isDirectory(item: StorageItem): boolean {
+    return item.itemType === StorageItemType.Folder || item.itemType === StorageItemType.Collection;
+  }
+
+  getOperationNameForItem(item: StorageItem): OperationNames | null {
+    const addonType = this.currentAddonType();
+    if (addonType == AddonType.STORAGE || addonType === AddonType.LINK) {
+      if (item.mayContainRootCandidates) {
+        return OperationNames.LIST_CHILD_ITEMS;
+      } else {
+        return OperationNames.GET_ITEM_INFO;
+      }
+    } else if (addonType == AddonType.CITATION) {
+      if (item.mayContainRootCandidates) {
+        return OperationNames.LIST_COLLECTION_ITEMS;
+      }
+    }
+    return null;
   }
 
   private trimBreadcrumbs(itemId: string): void {

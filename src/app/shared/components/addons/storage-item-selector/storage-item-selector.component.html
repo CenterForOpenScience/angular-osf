@@ -51,17 +51,16 @@
         <h3>{{ 'settings.addons.configureAddon.selectFolder' | translate }}</h3>
       </div>
       @if (operationInvocationResult().length) {
-        @for (folder of operationInvocationResult(); track folder.itemId) {
-          @let operationName =
-            folder.mayContainRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO;
-          @let itemId = folder.itemId || '/';
-          @let isLinkDisabled = !folder.mayContainRootCandidates || folder.itemType !== StorageItemType.Folder;
+        @for (resultItem of operationInvocationResult(); track resultItem.itemId) {
+          @let operationName = getOperationNameForItem(resultItem);
+          @let itemId = resultItem.itemId || '/';
+          @let isLinkDisabled = isItemDisabled(resultItem);
           <div class="folders-table-row relative">
             <div class="flex gap-2 flex-1 max-w-full">
               <div tabindex="0" class="flex align-items-center gap-2 w-11">
-                <i class="{{ folder.itemType === StorageItemType.Folder ? 'fas fa-folder' : 'fas fa-file' }}"></i>
-                @if (isLinkDisabled) {
-                  <span class="folder-link-disabled overflow-ellipsis">{{ folder.itemName }}</span>
+                <i class="{{ isDirectory(resultItem) ? 'fas fa-folder' : 'fas fa-file' }}"></i>
+                @if (isLinkDisabled || !operationName) {
+                  <span class="folder-link-disabled overflow-ellipsis">{{ resultItem.itemName }}</span>
                 } @else {
                   <a
                     tabindex="0"
@@ -70,30 +69,30 @@
                       handleCreateOperationInvocation(
                         operationName,
                         itemId,
-                        folder.itemName,
-                        folder.mayContainRootCandidates
+                        resultItem.itemName,
+                        resultItem.mayContainRootCandidates
                       )
                     "
                     (click)="
                       handleCreateOperationInvocation(
                         operationName,
                         itemId,
-                        folder.itemName,
-                        folder.mayContainRootCandidates
+                        resultItem.itemName,
+                        resultItem.mayContainRootCandidates
                       )
                     "
                   >
-                    {{ folder.itemName }}</a
+                    {{ resultItem.itemName }}</a
                   >
                 }
               </div>
-              @if (folder.canBeRoot) {
+              @if (resultItem.canBeRoot) {
                 <p-radiobutton
                   class="ml-auto pr-3"
                   [ngModel]="selectedStorageItem()?.itemId"
-                  [value]="folder.itemId"
-                  [inputId]="folder.itemId"
-                  (ngModelChange)="handleFolderSelection(folder)"
+                  [value]="resultItem.itemId"
+                  [inputId]="resultItem.itemId"
+                  (ngModelChange)="handleFolderSelection(resultItem)"
                 ></p-radiobutton>
               }
             </div>
