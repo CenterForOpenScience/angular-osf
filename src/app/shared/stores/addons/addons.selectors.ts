@@ -52,6 +52,16 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
+  static getRedirectAddons(state: AddonsStateModel): AddonModel[] {
+    return state.redirectAddons.data;
+  }
+
+  @Selector([AddonsState])
+  static getRedirectAddonsLoading(state: AddonsStateModel): boolean {
+    return state.redirectAddons.isLoading;
+  }
+
+  @Selector([AddonsState])
   static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedStorageAddons.data;
   }

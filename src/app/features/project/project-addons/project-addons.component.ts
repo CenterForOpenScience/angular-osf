@@ -42,6 +42,7 @@ import {
   GetConfiguredLinkAddons,
   GetConfiguredStorageAddons,
   GetLinkAddons,
+  GetRedirectAddons,
   GetStorageAddons,
 } from '@shared/stores/addons';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
@@ -86,6 +87,7 @@ export class ProjectAddonsComponent implements OnInit {
   storageAddons = select(AddonsSelectors.getStorageAddons);
   citationAddons = select(AddonsSelectors.getCitationAddons);
   linkAddons = select(AddonsSelectors.getLinkAddons);
+  redirectAddons = select(AddonsSelectors.getRedirectAddons);
   configuredStorageAddons = select(AddonsSelectors.getConfiguredStorageAddons);
   configuredCitationAddons = select(AddonsSelectors.getConfiguredCitationAddons);
   configuredLinkAddons = select(AddonsSelectors.getConfiguredLinkAddons);
@@ -95,6 +97,8 @@ export class ProjectAddonsComponent implements OnInit {
   isResourceReferenceLoading = select(AddonsSelectors.getAddonsResourceReferenceLoading);
   isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
   isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
+  isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
+  isRedirectAddonsLoading = select(AddonsSelectors.getRedirectAddonsLoading);
   isConfiguredStorageAddonsLoading = select(AddonsSelectors.getConfiguredStorageAddonsLoading);
   isConfiguredCitationAddonsLoading = select(AddonsSelectors.getConfiguredCitationAddonsLoading);
   isConfiguredLinkAddonsLoading = select(AddonsSelectors.getConfiguredLinkAddonsLoading);
@@ -103,6 +107,7 @@ export class ProjectAddonsComponent implements OnInit {
       this.isStorageAddonsLoading() ||
       this.isCitationAddonsLoading() ||
       this.isLinkAddonsLoading() ||
+      this.isRedirectAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
@@ -130,8 +135,6 @@ export class ProjectAddonsComponent implements OnInit {
     return categoryLoading || this.isResourceReferenceLoading() || this.isCurrentUserLoading();
   });
 
-  isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
-
   currentAddonsLoading = computed(() => {
     switch (this.selectedCategory()) {
       case AddonCategory.EXTERNAL_STORAGE_SERVICES:
@@ -140,6 +143,8 @@ export class ProjectAddonsComponent implements OnInit {
         return this.isCitationAddonsLoading();
       case AddonCategory.EXTERNAL_LINK_SERVICES:
         return this.isLinkAddonsLoading();
+      case AddonCategory.EXTERNAL_REDIRECT_SERVICES:
+        return this.isRedirectAddonsLoading();
       default:
         return this.isStorageAddonsLoading();
     }
@@ -153,6 +158,7 @@ export class ProjectAddonsComponent implements OnInit {
     getStorageAddons: GetStorageAddons,
     getCitationAddons: GetCitationAddons,
     getLinkAddons: GetLinkAddons,
+    getRedirectAddons: GetRedirectAddons,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     getConfiguredCitationAddons: GetConfiguredCitationAddons,
     getConfiguredLinkAddons: GetConfiguredLinkAddons,
@@ -216,6 +222,8 @@ export class ProjectAddonsComponent implements OnInit {
         return this.actions.getCitationAddons;
       case AddonCategory.EXTERNAL_LINK_SERVICES:
         return this.actions.getLinkAddons;
+      case AddonCategory.EXTERNAL_REDIRECT_SERVICES:
+        return this.actions.getRedirectAddons;
       default:
         return this.actions.getStorageAddons;
     }
@@ -229,6 +237,8 @@ export class ProjectAddonsComponent implements OnInit {
         return this.citationAddons();
       case AddonCategory.EXTERNAL_LINK_SERVICES:
         return this.linkAddons();
+      case AddonCategory.EXTERNAL_REDIRECT_SERVICES:
+        return this.redirectAddons();
       default:
         return this.storageAddons();
     }

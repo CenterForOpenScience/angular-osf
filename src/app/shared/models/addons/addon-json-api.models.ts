@@ -10,6 +10,7 @@ export interface AddonGetResponseJsonApi {
     credentials_format: string;
     wb_key: string;
     icon_url: string;
+    redirect_url?: string;
     [key: string]: unknown;
   };
   relationships: {
