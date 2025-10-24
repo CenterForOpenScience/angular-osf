@@ -25,6 +25,7 @@ import { PreprintSecondaryMetadataComponent } from './components/preprint-second
 import { ProjectSecondaryMetadataComponent } from './components/project-secondary-metadata/project-secondary-metadata.component';
 import { RegistrationSecondaryMetadataComponent } from './components/registration-secondary-metadata/registration-secondary-metadata.component';
 import { UserSecondaryMetadataComponent } from './components/user-secondary-metadata/user-secondary-metadata.component';
+import { FixSpecialCharPipe } from '@shared/pipes';
 
 @Component({
   selector: 'osf-resource-card',
@@ -44,6 +45,7 @@ import { UserSecondaryMetadataComponent } from './components/user-secondary-meta
     PreprintSecondaryMetadataComponent,
     FileSecondaryMetadataComponent,
     StopPropagationDirective,
+    FixSpecialCharPipe,
   ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',

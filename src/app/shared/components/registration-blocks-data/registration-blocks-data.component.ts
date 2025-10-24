@@ -8,10 +8,11 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType } from '@osf/shared/enums';
 import { Question } from '@osf/shared/models';
+import { FixSpecialCharPipe } from '@shared/pipes';
 
 @Component({
   selector: 'osf-registration-blocks-data',
-  imports: [Tag, TranslatePipe, Message],
+  imports: [FixSpecialCharPipe, Tag, TranslatePipe, Message],
   templateUrl: './registration-blocks-data.component.html',
   styleUrl: './registration-blocks-data.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

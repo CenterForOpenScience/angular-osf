@@ -7,6 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs';
+import { FixSpecialCharPipe } from '@shared/pipes';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import {
@@ -43,6 +44,7 @@ import { FetchMyPreprints, PreprintSelectors } from '../../store/preprint';
     DatePipe,
     ListInfoShortenerComponent,
     TitleCasePipe,
+    FixSpecialCharPipe,
   ],
   templateUrl: './my-preprints.component.html',
   styleUrl: './my-preprints.component.scss',

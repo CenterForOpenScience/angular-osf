@@ -20,6 +20,7 @@ import { DataResourcesComponent } from '../data-resources/data-resources.compone
 import { IconComponent } from '../icon/icon.component';
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
+import { FixSpecialCharPipe } from '@shared/pipes';
 
 @Component({
   selector: 'osf-registration-card',
@@ -34,6 +35,7 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
     IconComponent,
     TruncatedTextComponent,
     ContributorsListComponent,
+    FixSpecialCharPipe,
   ],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',

@@ -12,10 +12,10 @@
   [loading]="loading()"
 >
   <ng-template #selectedItem let-selectedOption>
-    {{ selectedOption.label | translate }}
+    {{ selectedOption.label | fixSpecialChar | translate }}
   </ng-template>
 
   <ng-template #item let-item>
-    {{ item.label | translate }}
+    {{ item.label | fixSpecialChar | translate }}
   </ng-template>
 </p-select>

@@ -11,7 +11,7 @@
     @if (reviewData()[question.responseKey!]) {
       @switch (question.fieldType) {
         @case (FieldType.Text) {
-          <p class="preserve-whitespace">{{ reviewData()[question.responseKey!] }}</p>
+          <p class="preserve-whitespace">{{ reviewData()[question.responseKey!] | fixSpecialChar }}</p>
         }
         @case (FieldType.Checkbox) {
           @for (option of reviewData()[question.responseKey!]; track option) {
@@ -36,7 +36,7 @@
           }
         }
         @default {
-          <p class="preserve-whitespace">{{ reviewData()[question.responseKey!] }}</p>
+          <p class="preserve-whitespace">{{ reviewData()[question.responseKey!] | fixSpecialChar }}</p>
         }
       }
     } @else {

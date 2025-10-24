@@ -4,7 +4,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.title' | translate }}</h4>
-      <p data-test-review-response="title">{{ draftRegistration()?.title }}</p>
+      <p data-test-review-response="title">{{ draftRegistration()?.title | fixSpecialChar }}</p>
       @if (!draftRegistration()?.title) {
         <p>{{ 'common.labels.title' | translate }}</p>
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
@@ -16,7 +16,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.description' | translate }}</h4>
-      <p data-test-review-response="description">{{ draftRegistration()?.description }}</p>
+      <p data-test-review-response="description">{{ draftRegistration()?.description | fixSpecialChar }}</p>
       @if (!draftRegistration()?.description) {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
         <p-message class="mt-1" severity="error" variant="simple" size="small">

@@ -58,6 +58,7 @@ import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
 import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
+import { FixSpecialCharPipe } from '@shared/pipes';
 
 @Component({
   selector: 'osf-preprint-details',
@@ -76,6 +77,7 @@ import { PreprintWarningBannerComponent } from '../../components/preprint-detail
     PreprintMakeDecisionComponent,
     PreprintMetricsInfoComponent,
     RouterLink,
+    FixSpecialCharPipe,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',

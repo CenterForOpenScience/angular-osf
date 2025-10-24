@@ -52,7 +52,7 @@
       <ng-template #body let-item>
         @if (item?.id) {
           <tr class="cursor-pointer" (click)="navigateToPreprintDetails(item)">
-            <td>{{ item.title }}</td>
+            <td>{{ item.title | fixSpecialChar }}</td>
             <td>
               <osf-list-info-shortener [data]="item.contributors" />
             </td>

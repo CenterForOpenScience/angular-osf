@@ -9,12 +9,13 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 
 import { SortOrder } from '@osf/shared/enums';
 import { MyResourcesItem, TableParameters } from '@osf/shared/models';
+import { FixSpecialCharPipe } from '@shared/pipes';
 
 import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'osf-my-projects-table',
-  imports: [CommonModule, TableModule, IconComponent, Skeleton, TranslatePipe],
+  imports: [CommonModule, TableModule, IconComponent, Skeleton, TranslatePipe, FixSpecialCharPipe],
   templateUrl: './my-projects-table.component.html',
   styleUrl: './my-projects-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

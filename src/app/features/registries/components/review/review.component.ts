@@ -28,6 +28,7 @@ import {
   ResetContributorsState,
   SubjectsSelectors,
 } from '@osf/shared/stores';
+import { FixSpecialCharPipe } from '@shared/pipes';
 
 import {
   ClearState,
@@ -55,6 +56,7 @@ import { SelectComponentsDialogComponent } from '../select-components-dialog/sel
     InterpolatePipe,
     RegistrationBlocksDataComponent,
     ContributorsListComponent,
+    FixSpecialCharPipe,
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.scss',
