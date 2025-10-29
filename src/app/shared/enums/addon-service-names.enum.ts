@@ -1,4 +1,5 @@
 export enum AddonServiceNames {
+  azureblobstorage = 'Azure Blob Storage',
   figshare = 'figshare',
   onedrive = 'Onedrive',
   dropbox = 'Dropbox',

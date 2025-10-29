@@ -84,7 +84,9 @@ export class ConfigureAddonComponent implements OnInit {
   selectedStorageItem = select(AddonsSelectors.getSelectedStorageItem);
 
   addonServiceName = computed(
-    () => AddonServiceNames[this.addon()?.externalServiceName as keyof typeof AddonServiceNames]
+    () =>
+      AddonServiceNames[this.addon()?.externalServiceName as keyof typeof AddonServiceNames] ||
+      this.addon()?.displayName
   );
 
   readonly baseUrl = computed(() => {
