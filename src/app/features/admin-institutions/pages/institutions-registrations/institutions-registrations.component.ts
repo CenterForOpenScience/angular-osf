@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 
 import { TableCellData } from '@osf/features/admin-institutions/models';
-import { ResourceType, SortOrder } from '@osf/shared/enums';
+import { CurrentResourceType, ResourceType, SortOrder } from '@osf/shared/enums';
 import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
 import {
   ClearFilterSearchResults,
@@ -25,7 +25,7 @@ import { AdminTableComponent } from '../../components';
 import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 import { registrationTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
-import { downloadResults } from '../../helpers';
+import { downloadResults, INSTITUTIONS_CSV_TSV_FIELDS, INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE } from '../../helpers';
 import { mapRegistrationResourceToTableData } from '../../mappers/institution-registration-to-table-data.mapper';
 import { InstitutionsAdminSelectors } from '../../store';
 
@@ -106,6 +106,11 @@ export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
   }
 
   download(type: DownloadType) {
-    downloadResults(this.selfLink(), type);
+    downloadResults(
+      this.selfLink(),
+      type,
+      INSTITUTIONS_CSV_TSV_FIELDS[CurrentResourceType.Registrations],
+      INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE[CurrentResourceType.Registrations]
+    );
   }
 }
