@@ -1,6 +1,7 @@
 {
   "name": "osf",
   "version": "25.2.0",
+  "sideEffects": ["*/index.ts"],
   "scripts": {
     "ng": "ng",
     "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks",
