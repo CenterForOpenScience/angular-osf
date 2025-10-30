@@ -37,7 +37,6 @@ import { DateRange } from './enums';
 import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from './store';
 import { GetResource, GetResourceDetails } from '@shared/stores/current-resource';
 import { ResourceType } from '@shared/enums';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'osf-analytics',
@@ -179,7 +178,7 @@ export class AnalyticsComponent implements OnInit {
     ];
 
     // use to not do additional requests if title already received
-    let guid_title_mapping: Record<string, string> = {};
+    // let guid_title_mapping: Record<string, string> = {};
 
     this.popularPagesLabels = analytics.popularPages.map((item) => {
       const parts = item.path.split('/').filter(Boolean);
