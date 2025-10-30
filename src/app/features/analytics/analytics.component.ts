@@ -35,6 +35,9 @@ import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
 import { DateRange } from './enums';
 import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from './store';
+import { GetResource, GetResourceDetails } from '@shared/stores/current-resource';
+import { ResourceType } from '@shared/enums';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'osf-analytics',
@@ -84,6 +87,8 @@ export class AnalyticsComponent implements OnInit {
     getMetrics: GetMetrics,
     getRelatedCounts: GetRelatedCounts,
     clearAnalytics: ClearAnalytics,
+    getResourceDetails: GetResourceDetails,
+    getGetResource: GetResource,
   });
 
   visitsLabels: string[] = [];
@@ -140,7 +145,9 @@ export class AnalyticsComponent implements OnInit {
   navigateToLinkedProjects() {
     this.router.navigate(['linked-projects'], { relativeTo: this.route });
   }
+
   private setData() {
+    alert('setData');
     const analytics = this.analytics();
 
     if (!analytics) {
@@ -171,7 +178,31 @@ export class AnalyticsComponent implements OnInit {
       },
     ];
 
-    this.popularPagesLabels = analytics.popularPages.map((item) => item.title);
+    // use to not do additional requests if title already received
+    let guid_title_mapping: Record<string, string> = {};
+
+    this.popularPagesLabels = analytics.popularPages.map((item) => {
+      const parts = item.path.split('/').filter(Boolean);
+      const guid = parts[0] || null;
+      const resource = parts[1] || 'overview';
+
+      if (guid && item.route.includes('project.detail')) {
+        this.actions.getResourceDetails(guid, ResourceType.Project);
+      }
+      if (guid && item.route.includes('registry.detail')) {
+        // get title
+        this.actions.getGetResource(guid).subscribe((details) => {
+          console.log(details);
+          // alert(details.title)
+        });
+      }
+      if (guid && item.route.includes('preprint.detail')) {
+        this.actions.getResourceDetails(guid, ResourceType.Preprint);
+      }
+      return `${guid}  ${resource}`;
+    });
+
+    alert(JSON.stringify(this.popularPagesLabels));
     this.popularPagesDataset = [
       {
         label: this.translateService.instant('project.analytics.charts.popularPages'),
