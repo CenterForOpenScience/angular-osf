@@ -8,4 +8,5 @@ export interface CurrentResource {
   rootResourceId?: string;
   wikiEnabled?: boolean;
   permissions: UserPermissions[];
+  title?: string;
 }

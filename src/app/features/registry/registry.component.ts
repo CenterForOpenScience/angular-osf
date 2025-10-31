@@ -58,13 +58,6 @@ export class RegistryComponent implements OnDestroy {
       }
     });
 
-    effect(() => {
-      const currentRegistry = this.registry();
-      if (currentRegistry && currentRegistry.isPublic) {
-        this.analyticsService.sendCountedUsage(currentRegistry.id, 'registry.detail').subscribe();
-      }
-    });
-
     this.dataciteService.logIdentifiableView(this.registry$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 

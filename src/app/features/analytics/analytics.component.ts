@@ -185,7 +185,6 @@ export class AnalyticsComponent implements OnInit {
       return cleanTitle.endsWith(resource) ? cleanTitle : `${cleanTitle} | ${resource}`;
     });
 
-    alert(JSON.stringify(this.popularPagesLabels));
     this.popularPagesDataset = [
       {
         label: this.translateService.instant('project.analytics.charts.popularPages'),

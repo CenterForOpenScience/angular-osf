@@ -374,12 +374,6 @@ export class ProjectOverviewComponent implements OnInit {
         this.actions.getHomeWiki(ResourceType.Project, project.id);
       }
     });
-    effect(() => {
-      const currentProject = this.currentProject();
-      if (currentProject && currentProject.isPublic) {
-        this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail').subscribe();
-      }
-    });
   }
 
   private setupRouteChangeListener(): void {

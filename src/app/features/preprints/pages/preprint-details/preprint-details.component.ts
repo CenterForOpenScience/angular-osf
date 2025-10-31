@@ -14,7 +14,6 @@ import {
   Component,
   computed,
   DestroyRef,
-  effect,
   HostBinding,
   inject,
   OnDestroy,
@@ -160,12 +159,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.helpScoutService.setResourceType('preprint');
-    effect(() => {
-      const currentPreprint = this.preprint();
-      if (currentPreprint && currentPreprint.isPublic) {
-        this.analyticsService.sendCountedUsage(currentPreprint.id, 'preprint.detail').subscribe();
-      }
-    });
   }
 
   private currentUserIsAdmin = computed(() => {
