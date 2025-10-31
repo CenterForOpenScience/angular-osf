@@ -170,14 +170,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.helpScoutService.setResourceType('preprint');
-
-    effect(() => {
-      const currentPreprint = this.preprint();
-
-      if (currentPreprint && currentPreprint.isPublic) {
-        this.analyticsService.sendCountedUsage(currentPreprint.id, 'preprint.detail').subscribe();
-      }
-    });
   }
 
   private preprintWithdrawableState = computed(() => {

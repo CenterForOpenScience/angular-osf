@@ -16,6 +16,9 @@ import { ToastComponent } from './shared/components/toast/toast.component';
 import { CustomDialogService } from './shared/services/custom-dialog.service';
 
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
+import { AnalyticsService } from '@osf/shared/services/analytics.service';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 
 @Component({
   selector: 'osf-root',
