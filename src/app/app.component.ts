@@ -9,6 +9,9 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { AnalyticsService } from '@osf/shared/services/analytics.service';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { ConfirmEmailComponent } from './shared/components/confirm-email/confirm-email.component';
 import { FullScreenLoaderComponent } from './shared/components/full-screen-loader/full-screen-loader.component';
@@ -16,9 +19,6 @@ import { ToastComponent } from './shared/components/toast/toast.component';
 import { CustomDialogService } from './shared/services/custom-dialog.service';
 
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
-import { AnalyticsService } from '@osf/shared/services/analytics.service';
-import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
-import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 
 @Component({
   selector: 'osf-root',

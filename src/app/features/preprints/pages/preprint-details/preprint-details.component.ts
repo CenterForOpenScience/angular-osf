@@ -14,7 +14,6 @@ import {
   Component,
   computed,
   DestroyRef,
-  effect,
   HostBinding,
   inject,
   OnDestroy,
