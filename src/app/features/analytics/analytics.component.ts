@@ -30,13 +30,12 @@ import {
 } from '@osf/shared/components';
 import { hasViewOnlyParam, IS_WEB, Primitive } from '@osf/shared/helpers';
 import { DatasetInput } from '@osf/shared/models';
+import { CurrentResourceSelectors, GetResource, GetResourceDetails } from '@shared/stores/current-resource';
 
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
 import { DateRange } from './enums';
 import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from './store';
-import { GetResource, GetResourceDetails } from '@shared/stores/current-resource';
-import { ResourceType } from '@shared/enums';
 
 @Component({
   selector: 'osf-analytics',
@@ -81,6 +80,7 @@ export class AnalyticsComponent implements OnInit {
   isRelatedCountsLoading = select(AnalyticsSelectors.isRelatedCountsLoading);
 
   isMetricsError = select(AnalyticsSelectors.isMetricsError);
+  resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
 
   actions = createDispatchMap({
     getMetrics: GetMetrics,
@@ -146,7 +146,6 @@ export class AnalyticsComponent implements OnInit {
   }
 
   private setData() {
-    alert('setData');
     const analytics = this.analytics();
 
     if (!analytics) {
@@ -177,28 +176,13 @@ export class AnalyticsComponent implements OnInit {
       },
     ];
 
-    // use to not do additional requests if title already received
-    // let guid_title_mapping: Record<string, string> = {};
-
     this.popularPagesLabels = analytics.popularPages.map((item) => {
       const parts = item.path.split('/').filter(Boolean);
-      const guid = parts[0] || null;
-      const resource = parts[1] || 'overview';
-
-      if (guid && item.route.includes('project.detail')) {
-        this.actions.getResourceDetails(guid, ResourceType.Project);
-      }
-      if (guid && item.route.includes('registry.detail')) {
-        // get title
-        this.actions.getGetResource(guid).subscribe((details) => {
-          console.log(details);
-          // alert(details.title)
-        });
-      }
-      if (guid && item.route.includes('preprint.detail')) {
-        this.actions.getResourceDetails(guid, ResourceType.Preprint);
-      }
-      return `${guid}  ${resource}`;
+      const resource = parts[1].replace('-', ' ') || 'overview';
+      // remove redundant 'OSF |' for title beginning
+      const cleanTitle = item.title === 'OSF' ? item.title : item.title.replace(/^OSF \| /, '');
+      // add resource suffix to title to keep it more explicit what detail page is a resource of metrics call
+      return cleanTitle.endsWith(resource) ? cleanTitle : `${cleanTitle} | ${resource}`;
     });
 
     alert(JSON.stringify(this.popularPagesLabels));
