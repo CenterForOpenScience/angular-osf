@@ -1,7 +1,7 @@
 import { Selector } from '@ngxs/store';
 
-import { ReviewPermissions } from '@osf/shared/enums';
-import { ProviderShortInfoModel } from '@osf/shared/models';
+import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
+import { ProviderShortInfoModel } from '@shared/models/provider/provider.model';
 
 import { ProviderStateModel } from './provider.model';
 import { ProviderState } from './provider.state';

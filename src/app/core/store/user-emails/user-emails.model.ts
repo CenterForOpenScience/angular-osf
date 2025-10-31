@@ -1,4 +1,5 @@
-import { AccountEmailModel, AsyncStateModel } from '@shared/models';
+import { AccountEmailModel } from '@osf/shared/models/emails/account-email.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface UserEmailsStateModel {
   emails: AsyncStateModel<AccountEmailModel[]>;

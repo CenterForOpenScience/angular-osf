@@ -2,7 +2,7 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectComponent } from '@shared/components';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 
 import { ProjectDetailSettingAccordionComponent } from './project-detail-setting-accordion.component';
 

@@ -13,13 +13,16 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { DeleteEmail, GetEmails, MakePrimary, ResendConfirmation, UserEmailsSelectors } from '@core/store/user-emails';
 import { UserSelectors } from '@osf/core/store/user';
-import { ReadonlyInputComponent } from '@osf/shared/components';
-import { IS_SMALL } from '@osf/shared/helpers';
-import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
+import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
+import { IS_SMALL } from '@osf/shared/helpers/breakpoints.tokens';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AccountEmail } from '../../models';
+import { AddEmailComponent } from '../add-email/add-email.component';
 import { ConfirmationSentDialogComponent } from '../confirmation-sent-dialog/confirmation-sent-dialog.component';
-import { AddEmailComponent } from '../';
 
 @Component({
   selector: 'osf-connected-emails',

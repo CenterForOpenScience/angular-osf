@@ -2,9 +2,8 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { viewOnlyGuard } from '@osf/core/guards';
-import { ResourceType } from '@osf/shared/enums';
-import { LicensesService } from '@osf/shared/services';
+import { viewOnlyGuard } from '@core/guards/view-only.guard';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CitationsState } from '@osf/shared/stores/citations';
 import { DuplicatesState } from '@osf/shared/stores/duplicates';
 import { SubjectsState } from '@osf/shared/stores/subjects';
@@ -12,6 +11,7 @@ import { ViewOnlyLinkState } from '@osf/shared/stores/view-only-links';
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
+import { LicensesService } from '../registries/services';
 import { RegistriesState } from '../registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
 import { FilesHandlers } from '../registries/store/handlers/files.handlers';

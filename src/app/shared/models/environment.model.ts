@@ -25,7 +25,7 @@ export interface EnvironmentModel {
   newRelicInfoSa: number;
   newRelicLoaderConfigAccountID: string;
   newRelicLoaderConfigTrustKey: string;
-  newRelicLoaderConfigAgengID: string;
+  newRelicLoaderConfigAgentID: string;
   newRelicLoaderConfigLicenseKey: string;
   newRelicLoaderConfigApplicationID: string;
   activityLogs?: {

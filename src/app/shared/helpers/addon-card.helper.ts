@@ -1,4 +1,6 @@
-import { AddonCardModel, AddonModel, ConfiguredAddonModel } from '../models';
+import { AddonModel } from '../models/addons/addon.model';
+import { AddonCardModel } from '../models/addons/addon-card.model';
+import { ConfiguredAddonModel } from '../models/addons/configured-addon.model';
 
 export function createAddonCardModel(
   addon: AddonModel,

@@ -1,5 +1,6 @@
-import { SubscriptionFrequency } from '@osf/shared/enums';
-import { NodeShortInfoModel, UpdateNodeRequestModel } from '@shared/models';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+import { NodeShortInfoModel } from '@shared/models/nodes/node-with-children.model';
+import { UpdateNodeRequestModel } from '@shared/models/nodes/nodes-json-api.model';
 
 import { ProjectSettingsDataJsonApi } from '../models';
 

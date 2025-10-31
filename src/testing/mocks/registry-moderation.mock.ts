@@ -1,5 +1,6 @@
 import { RegistryModeration } from '@osf/features/moderation/models';
-import { RegistrationReviewStates, RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
 export const MOCK_REGISTRY_MODERATIONS: RegistryModeration[] = [
   {

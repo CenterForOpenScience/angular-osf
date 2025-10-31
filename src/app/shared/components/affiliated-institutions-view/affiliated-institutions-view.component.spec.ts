@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Institution } from '@shared/models';
+import { Institution } from '@shared/models/institutions/institutions.models';
 
 import { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view.component';
 
-import { MOCK_INSTITUTION } from '@testing/mocks';
+import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AffiliatedInstitutionsViewComponent', () => {

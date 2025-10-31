@@ -1,6 +1,7 @@
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
-import { BaseNodeModel } from '../nodes';
+import { BaseNodeModel } from '../nodes/base-node.model';
 
 export interface RegistrationNodeModel extends BaseNodeModel {
   archiving: boolean;

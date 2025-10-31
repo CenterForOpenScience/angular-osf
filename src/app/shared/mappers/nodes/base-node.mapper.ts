@@ -1,12 +1,10 @@
-import {
-  BaseNodeDataJsonApi,
-  BaseNodeModel,
-  NodeModel,
-  NodeShortInfoModel,
-  PaginatedData,
-  ResponseJsonApi,
-} from '@osf/shared/models';
-import { ContributorsMapper } from '@shared/mappers';
+import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
+import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
+import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+
+import { ContributorsMapper } from '../contributors';
 
 export class BaseNodeMapper {
   static getNodesData(data: BaseNodeDataJsonApi[]): BaseNodeModel[] {

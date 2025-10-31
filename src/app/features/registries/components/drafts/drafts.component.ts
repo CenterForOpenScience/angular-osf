@@ -18,10 +18,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
-import { StepperComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { PageSchema, Question, StepOption } from '@osf/shared/models';
-import { LoaderService } from '@osf/shared/services';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { PageSchema, Question } from '@osf/shared/models/registration/page-schema.model';
+import { StepOption } from '@osf/shared/models/step-option.model';
+import { LoaderService } from '@osf/shared/services/loader.service';
 import { ContributorsSelectors, GetAllContributors } from '@osf/shared/stores/contributors';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 

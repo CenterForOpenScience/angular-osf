@@ -15,10 +15,10 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
-import { Preprint, PreprintProviderDetails, PreprintWordGrammar } from '@osf/features/preprints/models';
+import { PreprintModel, PreprintProviderDetails, PreprintWordGrammar } from '@osf/features/preprints/models';
 import { WithdrawPreprint } from '@osf/features/preprints/store/preprint';
-import { CustomValidators } from '@osf/shared/helpers';
-import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 @Component({
   selector: 'osf-withdraw-dialog',
@@ -37,7 +37,7 @@ export class WithdrawDialogComponent implements OnInit {
   readonly supportEmail = this.environment.supportEmail;
 
   private provider!: PreprintProviderDetails;
-  private preprint!: Preprint;
+  private preprint!: PreprintModel;
 
   private actions = createDispatchMap({
     withdrawPreprint: WithdrawPreprint,

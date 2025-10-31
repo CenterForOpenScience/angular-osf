@@ -1,4 +1,4 @@
-import { ToastService } from '@osf/shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 /**
  * A mock implementation of a toast (notification) service for testing purposes.

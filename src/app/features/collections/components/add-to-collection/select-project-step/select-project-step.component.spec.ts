@@ -1,11 +1,9 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { Step, StepItem, StepPanel, Stepper } from 'primeng/stepper';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectSelectorComponent } from '@shared/components';
-import { ToastService } from '@shared/services';
+import { ProjectSelectorComponent } from '@osf/shared/components/project-selector/project-selector.component';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { CollectionsSelectors } from '@shared/stores/collections';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -28,11 +26,7 @@ describe.skip('SelectProjectStepComponent', () => {
     toastServiceMock = ToastServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [
-        SelectProjectStepComponent,
-        OSFTestingModule,
-        ...MockComponents(Step, StepItem, StepPanel, Stepper, ProjectSelectorComponent),
-      ],
+      imports: [SelectProjectStepComponent, OSFTestingModule, ...MockComponents(ProjectSelectorComponent)],
       providers: [
         MockProvider(ToastService, toastServiceMock),
         provideMockStore({

@@ -7,11 +7,11 @@ import { Card } from 'primeng/card';
 import { ChangeDetectionStrategy, Component, effect, input, OnInit, signal } from '@angular/core';
 
 import { ReviewsState } from '@osf/features/preprints/enums';
-import { Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors, SetInstitutionsChanged } from '@osf/features/preprints/store/preprint-stepper';
-import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { Institution } from '@osf/shared/models';
+import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { Institution } from '@osf/shared/models/institutions/institutions.models';
 import {
   FetchResourceInstitutions,
   FetchUserInstitutions,
@@ -28,7 +28,7 @@ import {
 })
 export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
   provider = input.required<PreprintProviderDetails | undefined>();
-  preprint = input.required<Preprint | null>();
+  preprint = input.required<PreprintModel | null>();
 
   selectedInstitutions = signal<Institution[]>([]);
 

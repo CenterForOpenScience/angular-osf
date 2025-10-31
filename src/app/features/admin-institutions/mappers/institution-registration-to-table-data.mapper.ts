@@ -1,5 +1,5 @@
 import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
-import { ResourceModel } from '@shared/models';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
 
 import { TableCellData } from '../models';
 

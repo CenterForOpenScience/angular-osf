@@ -1,4 +1,4 @@
-import { MetaJsonApi } from '@osf/shared/models';
+import { MetaJsonApi } from '@osf/shared/models/common/json-api.model';
 
 import { LinkedNode, LinkedRegistration } from './linked-nodes.models';
 

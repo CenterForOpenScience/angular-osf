@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IS_WEB } from '@osf/shared/helpers';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FooterComponent } from '../footer/footer.component';

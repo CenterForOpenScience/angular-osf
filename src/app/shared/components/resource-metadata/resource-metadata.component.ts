@@ -9,8 +9,9 @@ import { Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { OverviewCollectionsComponent } from '@osf/features/project/overview/components/overview-collections/overview-collections.component';
-import { CurrentResourceType } from '@osf/shared/enums';
-import { ContributorModel, ResourceOverview } from '@shared/models';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ResourceOverview } from '@shared/models/resource-overview.model';
 
 import { AffiliatedInstitutionsViewComponent } from '../affiliated-institutions-view/affiliated-institutions-view.component';
 import { ContributorsListComponent } from '../contributors-list/contributors-list.component';

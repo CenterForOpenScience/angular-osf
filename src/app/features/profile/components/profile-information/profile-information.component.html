@@ -8,18 +8,9 @@
   </div>
 
   <div class="flex flex-column gap-4 mt-4 md:gap-5 xl:flex-row xl:justify-content-between">
-    <div class="flex flex-column gap-3 xl:gap-4">
-      @if (currentUser()?.employment?.length) {
-        <p class="font-bold">
-          {{ currentUser()?.employment?.[0]?.title }},
-          {{ currentUser()?.employment?.[0]?.institution }}
-        </p>
-      }
-
-      <p class="font-normal">
-        {{ 'myProfile.memberSince' | translate }}: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}
-      </p>
-    </div>
+    <p class="font-normal">
+      {{ 'myProfile.memberSince' | translate }}: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}
+    </p>
 
     <div class="flex flex-column gap-4 min-w-0 xl:align-items-end xl:flex-1">
       <div class="flex flex-column gap-3 w-full md:flex-row xl:gap-4 xl:justify-content-end">
@@ -37,27 +28,6 @@
           <a class="font-bold" [href]="currentUser()?.link">{{ currentUser()?.link }}</a>
         </div>
       </div>
-
-      @if (isEmploymentAndEducationVisible()) {
-        <div class="flex flex-column gap-3 w-full md:flex-row xl:gap-4 xl:justify-content-end">
-          @if (currentUser()?.education?.length) {
-            <div class="flex flex-row align-items-center gap-2 flex-1 min-w-0">
-              <i class="fas fa-landmark"></i>
-              <h3 class="font-bold text-overflow-ellipsis overflow-hidden white-space-nowrap">
-                {{ currentUser()?.education?.[0]?.institution }}
-              </h3>
-            </div>
-          }
-
-          @if (currentUser()?.employment?.length) {
-            <div class="flex flex-row align-items-center gap-2">
-              <h3 class="font-bold">
-                {{ currentUser()?.employment?.[0]?.institution }}
-              </h3>
-            </div>
-          }
-        </div>
-      }
 
       <div class="flex flex-wrap align-items-center gap-3">
         @for (social of userSocials(); track social.alt) {

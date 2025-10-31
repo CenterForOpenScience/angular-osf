@@ -1,4 +1,4 @@
-import { ReviewActionPayload } from '@osf/shared/models/review-action';
+import { ReviewActionPayload } from '@osf/shared/models/review-action/review-action-payload.model';
 
 export class GetRegistryById {
   static readonly type = '[Registry Overview] Get Registry By Id';

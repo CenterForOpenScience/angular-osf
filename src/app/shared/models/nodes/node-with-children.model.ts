@@ -1,4 +1,4 @@
-import { UserPermissions } from '@osf/shared/enums';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 export interface NodeShortInfoModel {
   id: string;

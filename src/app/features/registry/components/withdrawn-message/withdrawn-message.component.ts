@@ -6,7 +6,7 @@ import { Divider } from 'primeng/divider';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { IconComponent } from '@osf/shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { RegistryOverview } from '../../models';
 import { ShortRegistrationInfoComponent } from '../short-registration-info/short-registration-info.component';

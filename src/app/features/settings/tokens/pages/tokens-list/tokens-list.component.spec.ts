@@ -17,9 +17,6 @@ import { TokenModel } from '../../models';
 
 import { TokensListComponent } from './tokens-list.component';
 
-jest.mock('@core/store/user', () => ({}));
-jest.mock('@osf/shared/stores/collections', () => ({}));
-jest.mock('@osf/shared/stores/addons', () => ({}));
 jest.mock('../../store', () => ({
   TokensSelectors: {
     isTokensLoading: function isTokensLoading() {},

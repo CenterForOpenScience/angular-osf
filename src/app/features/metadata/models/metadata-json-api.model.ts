@@ -1,11 +1,8 @@
-import {
-  ApiData,
-  IdentifiersResponseJsonApi,
-  InstitutionsJsonApiResponse,
-  LicenseDataJsonApi,
-  LicenseRecordJsonApi,
-} from '@osf/shared/models';
-import { UserPermissions } from '@shared/enums';
+import { UserPermissions } from '@shared/enums/user-permissions.enum';
+import { ApiData } from '@shared/models/common/json-api.model';
+import { IdentifiersResponseJsonApi } from '@shared/models/identifiers/identifier-json-api.model';
+import { InstitutionsJsonApiResponse } from '@shared/models/institutions/institution-json-api.model';
+import { LicenseDataJsonApi, LicenseRecordJsonApi } from '@shared/models/license/licenses-json-api.model';
 
 export interface MetadataJsonApiResponse {
   data: MetadataJsonApi;

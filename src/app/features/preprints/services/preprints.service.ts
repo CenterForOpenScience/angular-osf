@@ -7,18 +7,25 @@ import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { PreprintRequestActionsMapper } from '@osf/features/preprints/mappers/preprint-request-actions.mapper';
 import { PreprintRequestAction } from '@osf/features/preprints/models/preprint-request-action.models';
-import { searchPreferencesToJsonApiQueryParams, StringOrNull } from '@osf/shared/helpers';
-import { ApiData, JsonApiResponse, JsonApiResponseWithMeta, ResponseJsonApi, SearchFilters } from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+import { searchPreferencesToJsonApiQueryParams } from '@osf/shared/helpers/search-pref-to-json-api-query-params.helper';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import {
+  ApiData,
+  JsonApiResponse,
+  JsonApiResponseWithMeta,
+  ResponseJsonApi,
+} from '@osf/shared/models/common/json-api.model';
+import { SearchFilters } from '@osf/shared/models/search-filters.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { preprintSortFieldMap } from '../constants';
 import { PreprintRequestMapper, PreprintsMapper } from '../mappers';
 import {
-  Preprint,
   PreprintAttributesJsonApi,
   PreprintEmbedsJsonApi,
   PreprintLinksJsonApi,
   PreprintMetaJsonApi,
+  PreprintModel,
   PreprintRelationshipsJsonApi,
   PreprintRequest,
   PreprintRequestActionsJsonApiResponse,
@@ -79,11 +86,7 @@ export class PreprintsService {
   }
 
   getByIdWithEmbeds(id: string) {
-    const params = {
-      'metrics[views]': 'total',
-      'metrics[downloads]': 'total',
-      'embed[]': ['license', 'identifiers'],
-    };
+    const params = { 'embed[]': ['license', 'identifiers'] };
     return this.jsonApiService
       .get<
         JsonApiResponseWithMeta<
@@ -95,11 +98,26 @@ export class PreprintsService {
       .pipe(map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)));
   }
 
+  getPreprintMetrics(id: string) {
+    const params = { 'metrics[views]': 'total', 'metrics[downloads]': 'total' };
+
+    return this.jsonApiService
+      .get<
+        JsonApiResponseWithMeta<ApiData<PreprintAttributesJsonApi, null, null, null>, PreprintMetaJsonApi, null>
+      >(`${this.apiUrl}/preprints/${id}/`, params)
+      .pipe(
+        map((response) => ({
+          downloads: response.meta.metrics.downloads,
+          views: response.meta.metrics.views,
+        }))
+      );
+  }
+
   deletePreprint(id: string) {
     return this.jsonApiService.delete(`${this.apiUrl}/preprints/${id}/`);
   }
 
-  updatePreprint(id: string, payload: Partial<Preprint>): Observable<Preprint> {
+  updatePreprint(id: string, payload: Partial<PreprintModel>): Observable<PreprintModel> {
     const apiPayload = this.mapPreprintDomainToApiPayload(payload);
 
     return this.jsonApiService
@@ -132,7 +150,7 @@ export class PreprintsService {
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 
-  private mapPreprintDomainToApiPayload(domainPayload: Partial<Preprint>): Partial<PreprintAttributesJsonApi> {
+  private mapPreprintDomainToApiPayload(domainPayload: Partial<PreprintModel>): Partial<PreprintAttributesJsonApi> {
     const apiPayload: Record<string, unknown> = {};
     Object.entries(domainPayload).forEach(([key, value]) => {
       if (value !== undefined && this.domainToApiFieldMap[key]) {

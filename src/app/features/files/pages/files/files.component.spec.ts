@@ -1,36 +1,32 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { TableModule } from 'primeng/table';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import {
-  FilesTreeComponent,
-  FormSelectComponent,
-  LoadingSpinnerComponent,
-  SearchInputComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@osf/shared/components';
-import { CustomConfirmationService, FilesService } from '@osf/shared/services';
+import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
+import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
+import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { FilesService } from '@osf/shared/services/files.service';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 import { GoogleFilePickerComponent } from '@shared/components/google-file-picker/google-file-picker.component';
 
+import { FilesSelectionActionsComponent } from '../../components';
 import { FilesSelectors } from '../../store';
 
 import { FilesComponent } from './files.component';
 
 import { getConfiguredAddonsMappedData } from '@testing/data/addons/addons.configured.data';
 import { getNodeFilesMappedData } from '@testing/data/files/node.data';
-import { testNode } from '@testing/mocks';
+import { testNode } from '@testing/mocks/base-node.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -44,20 +40,19 @@ describe('Component: Files', () => {
     jest.clearAllMocks();
     await TestBed.configureTestingModule({
       imports: [
-        OSFTestingModule,
         FilesComponent,
-        Button,
-        Dialog,
-        FormSelectComponent,
-        FormsModule,
-        GoogleFilePickerComponent,
-        LoadingSpinnerComponent,
-        ReactiveFormsModule,
-        SearchInputComponent,
-        SubHeaderComponent,
-        TableModule,
-        TranslatePipe,
-        ViewOnlyLinkMessageComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          FileUploadDialogComponent,
+          FormSelectComponent,
+          GoogleFilePickerComponent,
+          LoadingSpinnerComponent,
+          SearchInputComponent,
+          SubHeaderComponent,
+          ViewOnlyLinkMessageComponent,
+          GoogleFilePickerComponent,
+          FilesSelectionActionsComponent
+        ),
       ],
       providers: [
         FilesService,

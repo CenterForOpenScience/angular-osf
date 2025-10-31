@@ -2,8 +2,8 @@ import { of } from 'rxjs';
 
 import { TestBed } from '@angular/core/testing';
 
-import { JsonApiResponse } from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { ScopeMapper, TokenMapper } from '../mappers';
 import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '../models';

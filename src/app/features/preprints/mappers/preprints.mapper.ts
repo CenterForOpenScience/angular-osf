@@ -1,13 +1,14 @@
-import { LicensesMapper } from '@osf/shared/mappers';
-import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models';
-import { StringOrNull } from '@shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
+import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
+import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 
 import {
-  Preprint,
   PreprintAttributesJsonApi,
   PreprintEmbedsJsonApi,
   PreprintLinksJsonApi,
   PreprintMetaJsonApi,
+  PreprintModel,
   PreprintRelationshipsJsonApi,
   PreprintShortInfoWithTotalCount,
 } from '../models';
@@ -35,7 +36,7 @@ export class PreprintsMapper {
 
   static fromPreprintJsonApi(
     response: ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>
-  ): Preprint {
+  ): PreprintModel {
     return {
       id: response.id,
       dateCreated: response.attributes.date_created,
@@ -78,6 +79,7 @@ export class PreprintsMapper {
       preregLinkInfo: response.attributes.prereg_link_info,
       preprintDoiLink: response.links.preprint_doi,
       articleDoiLink: response.links.doi,
+      embeddedLicense: null,
     };
   }
 
@@ -87,10 +89,10 @@ export class PreprintsMapper {
       PreprintMetaJsonApi,
       null
     >
-  ): Preprint {
+  ): PreprintModel {
     const data = response.data;
-    const meta = response.meta;
     const links = response.data.links;
+
     return {
       id: data.id,
       dateCreated: data.attributes.date_created,
@@ -131,17 +133,8 @@ export class PreprintsMapper {
       whyNoPrereg: data.attributes.why_no_prereg,
       preregLinks: data.attributes.prereg_links,
       preregLinkInfo: data.attributes.prereg_link_info,
-      metrics: {
-        downloads: meta.metrics.downloads,
-        views: meta.metrics.views,
-      },
-      embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
-      identifiers: data.embeds.identifiers?.data.map((identifier) => ({
-        id: identifier.id,
-        type: identifier.type,
-        value: identifier.attributes.value,
-        category: identifier.attributes.category,
-      })),
+      embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds?.license?.data),
+      identifiers: IdentifiersMapper.fromJsonApi(data.embeds?.identifiers),
       preprintDoiLink: links.preprint_doi,
       articleDoiLink: links.doi,
     };

@@ -6,9 +6,9 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 
-import { ResourceType } from '@osf/shared/enums';
-import { SocialShareContentModel } from '@osf/shared/models';
-import { SocialShareService } from '@osf/shared/services';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { SocialShareContentModel } from '@osf/shared/models/socials/social-share-content.model';
+import { SocialShareService } from '@osf/shared/services/social-share.service';
 
 import { IconComponent } from '../icon/icon.component';
 

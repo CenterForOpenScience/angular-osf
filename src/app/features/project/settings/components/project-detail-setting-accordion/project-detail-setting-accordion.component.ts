@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { SelectComponent } from '@osf/shared/components';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 
 import { RightControl } from '../../models';
 

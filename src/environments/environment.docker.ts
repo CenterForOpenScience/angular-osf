@@ -25,7 +25,7 @@ export const environment = {
   newRelicInfoSa: 1,
   newRelicLoaderConfigAccountID: '',
   newRelicLoaderConfigTrustKey: '',
-  newRelicLoaderConfigAgengID: '',
+  newRelicLoaderConfigAgentID: '',
   newRelicLoaderConfigLicenseKey: '',
   newRelicLoaderConfigApplicationID: '',
 };

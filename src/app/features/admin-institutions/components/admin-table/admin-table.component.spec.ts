@@ -5,8 +5,8 @@ import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TableCellLink } from '@osf/features/admin-institutions/models';
-import { CustomPaginatorComponent } from '@shared/components';
-import { StopPropagationDirective } from '@shared/directives';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
 
 import { AdminTableComponent } from './admin-table.component';
 
@@ -21,10 +21,9 @@ describe('AdminTableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         AdminTableComponent,
-        MockComponent(CustomPaginatorComponent),
         OSFTestingModule,
-        MockPipe(DatePipe),
         MockComponent(CustomPaginatorComponent),
+        MockPipe(DatePipe),
         MockDirective(StopPropagationDirective),
       ],
     }).compileComponents();

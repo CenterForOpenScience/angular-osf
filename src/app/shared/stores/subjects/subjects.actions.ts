@@ -1,5 +1,5 @@
-import { ResourceType } from '@osf/shared/enums';
-import { SubjectModel } from '@osf/shared/models';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 
 export class FetchSubjects {
   static readonly type = '[Subjects] Fetch Subjects';

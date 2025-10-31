@@ -1,4 +1,4 @@
-import { StepOption } from '@osf/shared/models';
+import { StepOption } from '@osf/shared/models/step-option.model';
 
 export const DEFAULT_STEPS: StepOption[] = [
   {

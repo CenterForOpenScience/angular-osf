@@ -4,7 +4,7 @@ import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angul
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { getViewOnlyParam } from '@osf/shared/helpers';
+import { getViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 
 export const viewOnlyInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,

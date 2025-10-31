@@ -1,18 +1,19 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { AuthService } from '@core/services/auth.service';
 import { CustomMenuItem } from '@osf/core/models';
-import { AuthService } from '@osf/core/services';
 import { ProviderSelectors } from '@osf/core/store/provider/provider.selectors';
 import { UserSelectors } from '@osf/core/store/user/user.selectors';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { NavMenuComponent } from './nav-menu.component';
 
-import { MOCK_USER } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -34,7 +35,7 @@ describe('NavMenuComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [NavMenuComponent, OSFTestingModule],
+      imports: [NavMenuComponent, OSFTestingModule, MockComponent(IconComponent)],
       providers: [
         provideMockStore({
           signals: [

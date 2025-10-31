@@ -1,10 +1,8 @@
-import {
-  BaseNodeDataJsonApi,
-  BrandDataJsonApi,
-  CollectionsProviderAttributesJsonApi,
-  JsonApiResponse,
-  UserDataErrorResponseJsonApi,
-} from '@shared/models';
+import { BrandDataJsonApi } from '../brand/brand.json-api.model';
+import { JsonApiResponse } from '../common/json-api.model';
+import { BaseNodeDataJsonApi } from '../nodes/base-node-data-json-api.model';
+import { CollectionsProviderAttributesJsonApi } from '../provider/collections-provider-json-api.model';
+import { UserDataErrorResponseJsonApi } from '../user/user-json-api.model';
 
 export interface CollectionProviderResponseJsonApi {
   id: string;

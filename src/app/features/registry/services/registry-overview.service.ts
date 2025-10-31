@@ -5,18 +5,23 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
-import { MapRegistryOverview } from '@osf/features/registry/mappers';
+import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
+import { PageSchemaMapper } from '@osf/shared/mappers/registration';
+import { ReviewActionsMapper } from '@osf/shared/mappers/review-actions.mapper';
+import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
+import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
+import { SchemaBlocksResponseJsonApi } from '@osf/shared/models/registration/schema-blocks-json-api.model';
+import { ReviewActionPayload } from '@osf/shared/models/review-action/review-action-payload.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
+
+import { MapRegistryOverview } from '../mappers';
 import {
   GetRegistryOverviewJsonApi,
   RegistryOverview,
   RegistryOverviewJsonApiData,
   RegistryOverviewWithMeta,
-} from '@osf/features/registry/models';
-import { InstitutionsMapper, ReviewActionsMapper } from '@osf/shared/mappers';
-import { PageSchemaMapper } from '@osf/shared/mappers/registration';
-import { Institution, InstitutionsJsonApiResponse, PageSchema, SchemaBlocksResponseJsonApi } from '@osf/shared/models';
-import { ReviewActionPayload } from '@osf/shared/models/review-action';
-import { JsonApiService } from '@shared/services';
+} from '../models';
 
 @Injectable({
   providedIn: 'root',

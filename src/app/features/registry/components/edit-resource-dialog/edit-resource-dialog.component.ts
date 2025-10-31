@@ -7,8 +7,8 @@ import { finalize, take } from 'rxjs';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { LoadingSpinnerComponent } from '@osf/shared/components';
-import { CustomValidators } from '@osf/shared/helpers';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 import { AddResource, RegistryResource } from '../../models';
 import { RegistryResourcesSelectors, UpdateResource } from '../../store/registry-resources';

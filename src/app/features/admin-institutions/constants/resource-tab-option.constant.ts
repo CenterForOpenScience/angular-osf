@@ -1,4 +1,4 @@
-import { CustomOption } from '@shared/models';
+import { CustomOption } from '@osf/shared/models/select-option.model';
 
 import { AdminInstitutionResourceTab } from '../enums';
 

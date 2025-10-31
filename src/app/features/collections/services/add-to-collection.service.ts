@@ -3,9 +3,12 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { CollectionsMapper, LicensesMapper } from '@shared/mappers';
-import { CollectionSubmissionPayload, LicenseModel, LicensesResponseJsonApi } from '@shared/models';
-import { JsonApiService } from '@shared/services';
+import { CollectionsMapper } from '@osf/shared/mappers/collections';
+import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
+import { CollectionSubmissionPayload } from '@shared/models/collections/collection-submission-payload.model';
+import { LicenseModel } from '@shared/models/license/license.model';
+import { LicensesResponseJsonApi } from '@shared/models/license/licenses-json-api.model';
 
 @Injectable({
   providedIn: 'root',

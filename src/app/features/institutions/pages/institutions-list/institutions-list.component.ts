@@ -8,22 +8,24 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
-import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 @Component({
   selector: 'osf-institutions-list',
   imports: [
-    SubHeaderComponent,
+    RouterLink,
     TranslatePipe,
-    SearchInputComponent,
     NgOptimizedImage,
+    SubHeaderComponent,
+    SearchInputComponent,
     LoadingSpinnerComponent,
     ScheduledBannerComponent,
-    RouterLink,
   ],
   templateUrl: './institutions-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,8 +33,6 @@ import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/ins
 export class InstitutionsListComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly actions = createDispatchMap({ getInstitutions: FetchInstitutions });

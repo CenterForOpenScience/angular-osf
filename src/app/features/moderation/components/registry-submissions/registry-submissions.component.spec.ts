@@ -5,7 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistrySubmissionItemComponent } from '@osf/features/moderation/components';
 import { RegistryModeration } from '@osf/features/moderation/models';
-import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent, SelectComponent } from '@shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 
 import { RegistrySort, SubmissionReviewStatus } from '../../enums';
 import { RegistryModerationSelectors } from '../../store/registry-moderation';

@@ -7,7 +7,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
-import { Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 
 import { WithdrawDialogComponent } from './withdraw-dialog.component';
 
@@ -23,7 +23,7 @@ describe('WithdrawDialogComponent', () => {
   let dialogConfigMock: any;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
-  const mockPreprint: Preprint = PREPRINT_MOCK;
+  const mockPreprint: PreprintModel = PREPRINT_MOCK;
 
   beforeEach(async () => {
     dialogRefMock = {

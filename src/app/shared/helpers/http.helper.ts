@@ -1,7 +1,8 @@
 import { Params } from '@angular/router';
 
-import { SortOrder } from '@osf/shared/enums';
-import { QueryParams } from '@osf/shared/models';
+import { QueryParams } from '@shared/models/query-params.model';
+
+import { SortOrder } from '../enums/sort-order.enum';
 
 export const parseQueryFilterParams = (params: Params): QueryParams => {
   const page = parseInt(params['page'], 10) || 1;

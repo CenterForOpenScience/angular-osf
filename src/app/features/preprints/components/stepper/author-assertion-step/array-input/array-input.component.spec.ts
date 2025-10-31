@@ -3,7 +3,7 @@ import { MockComponent } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, Validators } from '@angular/forms';
 
-import { TextInputComponent } from '@shared/components';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
 import { ArrayInputComponent } from './array-input.component';
 

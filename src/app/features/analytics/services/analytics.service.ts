@@ -3,8 +3,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { ResourceType } from '@osf/shared/enums';
-import { JsonApiService } from '@osf/shared/services';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { AnalyticsMetricsMapper, RelatedCountsMapper } from '../mappers';
 import { NodeAnalyticsModel, NodeAnalyticsResponseJsonApi, RelatedCountsGetResponse } from '../models';

@@ -1,5 +1,7 @@
 import { ReviewAction } from '@osf/features/moderation/models';
-import { AsyncStateModel, Institution, PageSchema } from '@osf/shared/models';
+import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 import { RegistryOverview } from '../../models';
 

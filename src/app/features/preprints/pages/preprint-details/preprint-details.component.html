@@ -17,7 +17,7 @@
             height="36"
             [src]="preprintProvider()?.brand?.heroLogoImageUrl"
           />
-          <h1>{{ preprint()?.title }}</h1>
+          <h1>{{ preprint()?.title | fixSpecialChar }}</h1>
         </a>
       }
 
@@ -41,7 +41,7 @@
     </div>
 
     <div class="flex flex-column justify-content-end gap-2 md:flex-row">
-      @if (isPreprintLoading() || isPreprintProviderLoading() || areContributorsLoading()) {
+      @if (isPreprintLoading() || isPreprintProviderLoading()) {
         <p-skeleton width="11rem" height="2.75rem" />
         <p-skeleton width="11rem" height="2.75rem" />
         <p-skeleton width="11rem" height="2.75rem" />
@@ -83,6 +83,7 @@
     @if (isOsfPreprint()) {
       <osf-preprint-warning-banner />
     }
+
     @if (moderationStatusBannerVisible()) {
       <osf-moderation-status-banner
         [provider]="preprintProvider()!"
@@ -91,6 +92,7 @@
         [latestWithdrawalRequest]="latestWithdrawalRequest()"
       />
     }
+
     @if (statusBannerVisible()) {
       <osf-preprint-status-banner
         [provider]="preprintProvider()!"
@@ -113,7 +115,10 @@
             (preprintVersionSelected)="fetchPreprint($event)"
           />
 
-          <osf-preprint-metrics-info [metrics]="preprint()?.metrics"></osf-preprint-metrics-info>
+          <osf-preprint-metrics-info
+            [metrics]="metrics()"
+            [isLoading]="areMetricsLoading()"
+          ></osf-preprint-metrics-info>
 
           <osf-preprint-additional-info [preprintProviderId]="providerId()" />
         </section>

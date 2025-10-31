@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@osf/shared/models';
+import { ApiData, JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 
 export type GetResourceCustomMetadataResponse = JsonApiResponse<
   ApiData<null, ResourceMetadataEmbedResponse, null, null>,

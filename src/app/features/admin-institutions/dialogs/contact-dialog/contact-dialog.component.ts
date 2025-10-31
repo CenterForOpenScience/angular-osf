@@ -10,7 +10,7 @@ import { Textarea } from 'primeng/textarea';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { CustomValidators } from '@osf/shared/helpers';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 import { CONTACT_OPTIONS } from '../../constants';
 import { ContactOption, ProjectPermission } from '../../enums';

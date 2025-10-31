@@ -1,6 +1,6 @@
-import { UserPermissions } from '@osf/shared/enums';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
-import { ContributorModel } from '../contributors';
+import { ContributorModel } from '../contributors/contributor.model';
 
 export interface ComponentOverview {
   id: string;

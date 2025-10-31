@@ -3,11 +3,12 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IconComponent } from '@shared/components';
-import { TranslateServiceMock } from '@shared/mocks';
-import { ToastService } from '@shared/services';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { ToastService } from '@shared/services/toast.service';
 
 import { CitationItemComponent } from './citation-item.component';
+
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('CitationItemComponent', () => {
   let component: CitationItemComponent;

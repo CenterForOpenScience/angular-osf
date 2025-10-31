@@ -5,7 +5,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { MetadataRecordFormat } from '../enums';
+import { MetadataRecordFormat } from '../enums/metadata-record-format.enum';
 
 @Injectable({
   providedIn: 'root',

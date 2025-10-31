@@ -1,6 +1,7 @@
 import { provideStore, Store } from '@ngxs/store';
 
 import { TranslateService } from '@ngx-translate/core';
+import { MockComponents } from 'ng-mocks';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
@@ -11,10 +12,25 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { MetaTagsService, ToastService } from '@osf/shared/services';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { ResourceMetadataComponent } from '@osf/shared/components/resource-metadata/resource-metadata.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 
+import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
+import {
+  CitationAddonCardComponent,
+  FilesWidgetComponent,
+  LinkedResourcesComponent,
+  OverviewComponentsComponent,
+  OverviewToolbarComponent,
+  OverviewWikiComponent,
+  RecentActivityComponent,
+} from './components';
 import { ProjectOverviewComponent } from './project-overview.component';
 
 import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
@@ -29,16 +45,29 @@ describe('ProjectOverviewComponent', () => {
     TestBed.overrideComponent(ProjectOverviewComponent, { set: { template: '' } });
     dataciteService = DataciteMockFactory();
     await TestBed.configureTestingModule({
-      imports: [ProjectOverviewComponent],
+      imports: [
+        ProjectOverviewComponent,
+        ...MockComponents(
+          SubHeaderComponent,
+          LoadingSpinnerComponent,
+          OverviewWikiComponent,
+          OverviewComponentsComponent,
+          LinkedResourcesComponent,
+          RecentActivityComponent,
+          OverviewToolbarComponent,
+          ResourceMetadataComponent,
+          FilesWidgetComponent,
+          ViewOnlyLinkMessageComponent,
+          OverviewParentProjectComponent,
+          CitationAddonCardComponent
+        ),
+      ],
       providers: [
         provideStore([]),
-
         { provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'proj123' } }, parent: null } },
-
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         { provide: DataciteService, useValue: dataciteService },
-
         { provide: DialogService, useValue: { open: () => ({ onClose: of(null) }) } },
         { provide: TranslateService, useValue: { instant: (k: string) => k } },
         { provide: ToastService, useValue: { showSuccess: jest.fn() } },

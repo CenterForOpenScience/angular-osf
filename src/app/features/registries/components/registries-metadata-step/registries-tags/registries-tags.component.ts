@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
-import { TagsInputComponent } from '@osf/shared/components';
+import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
 
 @Component({
   selector: 'osf-registries-tags',

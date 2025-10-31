@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SortOrder } from '@osf/shared/enums';
-import { parseQueryFilterParams } from '@osf/shared/helpers';
-import { QueryParams } from '@osf/shared/models';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+import { parseQueryFilterParams } from '@osf/shared/helpers/http.helper';
+import { QueryParams } from '@shared/models/query-params.model';
 
 import { MyProjectsTab } from '../enums';
 

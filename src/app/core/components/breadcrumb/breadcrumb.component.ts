@@ -6,10 +6,10 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 
+import { RouteData } from '@core/models/route-data.model';
 import { ProviderSelectors } from '@core/store/provider';
-import { RouteData } from '@osf/core/models';
 import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
-import { IconComponent } from '@osf/shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { InstitutionsSearchSelectors } from '@shared/stores/institutions-search';
 
 @Component({

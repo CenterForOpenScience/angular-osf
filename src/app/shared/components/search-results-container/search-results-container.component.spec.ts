@@ -1,7 +1,13 @@
+import { MockComponents } from 'ng-mocks';
+
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceType } from '@shared/enums';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+import { ResourceCardComponent } from '../resource-card/resource-card.component';
+import { SelectComponent } from '../select/select.component';
 
 import { SearchResultsContainerComponent } from './search-results-container.component';
 
@@ -14,7 +20,11 @@ describe('SearchResultsContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchResultsContainerComponent, OSFTestingModule],
+      imports: [
+        SearchResultsContainerComponent,
+        OSFTestingModule,
+        ...MockComponents(ResourceCardComponent, SelectComponent, LoadingSpinnerComponent),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchResultsContainerComponent);

@@ -8,7 +8,7 @@ import { timer } from 'rxjs';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Employment } from '@osf/shared/models';
+import { Employment } from '@osf/shared/models/user/employment.model';
 
 import { EmploymentHistoryComponent } from '../employment-history/employment-history.component';
 

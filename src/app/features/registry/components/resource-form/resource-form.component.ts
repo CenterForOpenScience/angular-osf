@@ -6,9 +6,10 @@ import { Textarea } from 'primeng/textarea';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { FormSelectComponent, TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
-import { SelectOption } from '@osf/shared/models';
+import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { SelectOption } from '@shared/models/select-option.model';
 
 import { resourceTypeOptions } from '../../constants';
 import { RegistryResourceFormModel } from '../../models';

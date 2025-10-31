@@ -6,7 +6,7 @@ import {
   MyReviewingNavigationComponent,
   PreprintRecentActivityListComponent,
 } from '@osf/features/moderation/components';
-import { SubHeaderComponent } from '@osf/shared/components';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
 import { PreprintModerationSelectors } from '../../store/preprint-moderation';
 

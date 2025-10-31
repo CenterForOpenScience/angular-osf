@@ -1,4 +1,5 @@
-import { JsonApiResponseWithMeta, MetaJsonApi, UserDataErrorResponseJsonApi } from '@osf/shared/models';
+import { JsonApiResponseWithMeta, MetaJsonApi } from '@osf/shared/models/common/json-api.model';
+import { UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
 export type PreprintSubmissionWithdrawalResponseJsonApi = JsonApiResponseWithMeta<
   PreprintWithdrawalSubmissionDataJsonApi[],

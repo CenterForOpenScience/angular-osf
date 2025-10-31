@@ -12,8 +12,11 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { Router, RouterLink } from '@angular/router';
 
 import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
-import { RegistrationReviewStates, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
-import { RegistrationCard } from '@osf/shared/models';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { RegistrationCard } from '@osf/shared/models/registration/registration-card.model';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 
 import { ContributorsListComponent } from '../contributors-list/contributors-list.component';
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
@@ -34,6 +37,7 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
     IconComponent,
     TruncatedTextComponent,
     ContributorsListComponent,
+    FixSpecialCharPipe,
   ],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',
@@ -42,6 +46,7 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
 export class RegistrationCardComponent {
   RevisionReviewStates = RevisionReviewStates;
   RegistrationReviewStates = RegistrationReviewStates;
+
   readonly isDraft = input<boolean>(false);
   readonly registrationData = input.required<RegistrationCard>();
   readonly deleteDraft = output<string>();

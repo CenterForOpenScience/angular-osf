@@ -6,8 +6,8 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ResourceType } from '@shared/enums';
-import { SubjectModel } from '@shared/models';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import { SubjectModel } from '@shared/models/subject/subject.model';
 
 @Component({
   selector: 'osf-browse-by-subjects',

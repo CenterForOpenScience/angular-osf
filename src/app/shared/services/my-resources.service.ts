@@ -6,17 +6,19 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MyResourcesMapper } from '@osf/features/my-projects/mappers';
 
-import { ResourceSearchMode, ResourceType, SortOrder } from '../enums';
+import { ResourceSearchMode } from '../enums/resource-search-mode.enum';
+import { ResourceType } from '../enums/resource-type.enum';
+import { SortOrder } from '../enums/sort-order.enum';
+import { JsonApiResponse } from '../models/common/json-api.model';
 import {
-  CreateProjectPayloadJsoApi,
-  EndpointType,
-  JsonApiResponse,
   MyResourcesItem,
   MyResourcesItemGetResponseJsonApi,
   MyResourcesItemResponseJsonApi,
   MyResourcesResponseJsonApi,
-  MyResourcesSearchFilters,
-} from '../models';
+} from '../models/my-resources/my-resources.models';
+import { EndpointType } from '../models/my-resources/my-resources-endpoint.type';
+import { MyResourcesSearchFilters } from '../models/my-resources/my-resources-search-filters.models';
+import { CreateProjectPayloadJsoApi } from '../models/nodes/nodes-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 

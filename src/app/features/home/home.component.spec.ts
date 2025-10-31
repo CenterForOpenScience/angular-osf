@@ -3,7 +3,8 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { IconComponent, SearchInputComponent } from '@shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
 import { HomeComponent } from './home.component';
 

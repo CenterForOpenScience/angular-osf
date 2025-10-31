@@ -4,7 +4,7 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TextInputComponent } from '@shared/components';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
 import { WithdrawDialogComponent } from './withdraw-dialog.component';
 

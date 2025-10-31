@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceType } from '@shared/enums';
-import { SubjectModel } from '@shared/models';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import { SubjectModel } from '@shared/models/subject/subject.model';
 
 import { BrowseBySubjectsComponent } from './browse-by-subjects.component';
 

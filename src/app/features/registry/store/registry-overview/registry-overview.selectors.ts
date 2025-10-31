@@ -2,8 +2,9 @@ import { Selector } from '@ngxs/store';
 
 import { ReviewAction } from '@osf/features/moderation/models';
 import { RegistryOverview } from '@osf/features/registry/models';
-import { UserPermissions } from '@osf/shared/enums';
-import { Institution, PageSchema } from '@osf/shared/models';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { Institution } from '@shared/models/institutions/institutions.models';
+import { PageSchema } from '@shared/models/registration/page-schema.model';
 
 import { RegistryOverviewStateModel } from './registry-overview.model';
 import { RegistryOverviewState } from './registry-overview.state';

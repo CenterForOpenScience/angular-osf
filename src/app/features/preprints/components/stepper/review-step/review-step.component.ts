@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
@@ -23,14 +22,12 @@ import {
   UpdatePreprint,
   UpdatePrimaryFileRelationship,
 } from '@osf/features/preprints/store/preprint-stepper';
-import {
-  AffiliatedInstitutionsViewComponent,
-  ContributorsListComponent,
-  TruncatedTextComponent,
-} from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { InterpolatePipe } from '@shared/pipes';
-import { ToastService } from '@shared/services';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
   GetBibliographicContributors,
@@ -49,13 +46,9 @@ import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subject
     Button,
     TitleCasePipe,
     TranslatePipe,
-    Accordion,
-    AccordionContent,
-    AccordionHeader,
-    AccordionPanel,
-    InterpolatePipe,
     AffiliatedInstitutionsViewComponent,
     ContributorsListComponent,
+    LicenseDisplayComponent,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',

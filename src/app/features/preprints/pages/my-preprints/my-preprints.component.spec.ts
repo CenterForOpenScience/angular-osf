@@ -6,11 +6,14 @@ import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PreprintShortInfo } from '@osf/features/preprints/models';
-import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { DEFAULT_TABLE_PARAMS } from '@shared/constants';
-import { SortOrder } from '@shared/enums';
+import { ListInfoShortenerComponent } from '@osf/shared/components/list-info-shortener/list-info-shortener.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+
+import { PreprintShortInfo } from '../../models';
+import { MyPreprintsSelectors } from '../../store/my-preprints';
 
 import { MyPreprintsComponent } from './my-preprints.component';
 
@@ -61,15 +64,15 @@ describe('MyPreprintsComponent', () => {
         provideMockStore({
           signals: [
             {
-              selector: PreprintSelectors.getMyPreprints,
+              selector: MyPreprintsSelectors.getMyPreprints,
               value: mockPreprints,
             },
             {
-              selector: PreprintSelectors.getMyPreprintsTotalCount,
+              selector: MyPreprintsSelectors.getMyPreprintsTotalCount,
               value: 5,
             },
             {
-              selector: PreprintSelectors.areMyPreprintsLoading,
+              selector: MyPreprintsSelectors.areMyPreprintsLoading,
               value: false,
             },
           ],
@@ -80,10 +83,6 @@ describe('MyPreprintsComponent', () => {
     fixture = TestBed.createComponent(MyPreprintsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should initialize with correct default values', () => {

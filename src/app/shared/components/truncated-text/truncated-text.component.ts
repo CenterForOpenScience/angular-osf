@@ -4,15 +4,14 @@ import { Button } from 'primeng/button';
 
 import { timer } from 'rxjs';
 
-import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'osf-truncated-text',
+  imports: [TranslatePipe, Button],
   templateUrl: './truncated-text.component.html',
   styleUrls: ['./truncated-text.component.scss'],
-  imports: [CommonModule, TranslatePipe, Button],
 })
 export class TruncatedTextComponent implements AfterViewInit {
   readonly text = input('');

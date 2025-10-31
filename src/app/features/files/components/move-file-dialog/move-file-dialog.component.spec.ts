@@ -1,12 +1,17 @@
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe } from 'ng-mocks';
+import { MockComponents, MockPipe } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomConfirmationService, FilesService, ToastService } from '@osf/shared/services';
+import { FileSelectDestinationComponent } from '@osf/shared/components/file-select-destination/file-select-destination.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { FilesService } from '@osf/shared/services/files.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { FilesSelectors } from '../../store';
@@ -37,7 +42,12 @@ describe('MoveFileDialogComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [MoveFileDialogComponent, OSFTestingModule, MockPipe(TranslatePipe)],
+      imports: [
+        MoveFileDialogComponent,
+        OSFTestingModule,
+        ...MockComponents(IconComponent, LoadingSpinnerComponent, FileSelectDestinationComponent),
+        MockPipe(TranslatePipe),
+      ],
       providers: [
         { provide: DynamicDialogRef, useValue: dialogRefMock },
         { provide: DynamicDialogConfig, useValue: dialogConfigMock },

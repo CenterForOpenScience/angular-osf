@@ -5,10 +5,10 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
-import { UserPermissions } from '@osf/shared/enums';
-import { CustomDialogService, MetaTagsService } from '@osf/shared/services';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 
 import {
@@ -17,6 +17,7 @@ import {
   ModerationStatusBannerComponent,
   PreprintFileSectionComponent,
   PreprintMakeDecisionComponent,
+  PreprintMetricsInfoComponent,
   PreprintTombstoneComponent,
   PreprintWarningBannerComponent,
   ShareAndDownloadComponent,
@@ -28,7 +29,7 @@ import { PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
 
-import { MOCK_CONTRIBUTOR, MOCK_USER } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
@@ -55,7 +56,6 @@ describe('PreprintDetailsComponent', () => {
   const mockWithdrawalRequests = [PREPRINT_REQUEST_MOCK];
   const mockRequestActions = [REVIEW_ACTION_MOCK];
   const mockContributors = [MOCK_CONTRIBUTOR];
-  const mockCurrentUser = MOCK_USER;
 
   beforeEach(async () => {
     routerMock = RouterMockBuilder.create()
@@ -92,7 +92,8 @@ describe('PreprintDetailsComponent', () => {
           PreprintTombstoneComponent,
           PreprintWarningBannerComponent,
           ModerationStatusBannerComponent,
-          PreprintMakeDecisionComponent
+          PreprintMakeDecisionComponent,
+          PreprintMetricsInfoComponent
         ),
       ],
       providers: [
@@ -104,10 +105,6 @@ describe('PreprintDetailsComponent', () => {
         MockProvider(CustomDialogService, mockCustomDialogService),
         provideMockStore({
           signals: [
-            {
-              selector: UserSelectors.getCurrentUser,
-              value: mockCurrentUser,
-            },
             {
               selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'),
               value: mockProvider,
@@ -154,6 +151,14 @@ describe('PreprintDetailsComponent', () => {
             },
             {
               selector: PreprintSelectors.arePreprintRequestActionsLoading,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.hasAdminAccess,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.hasWriteAccess,
               value: false,
             },
           ],
@@ -210,11 +215,6 @@ describe('PreprintDetailsComponent', () => {
   it('should return contributors from store', () => {
     const contributors = component.contributors();
     expect(contributors).toBe(mockContributors);
-  });
-
-  it('should return current user from store', () => {
-    const currentUser = component.currentUser();
-    expect(currentUser).toBe(mockCurrentUser);
   });
 
   it('should return contributors loading state from store', () => {
@@ -338,19 +338,8 @@ describe('PreprintDetailsComponent', () => {
   });
 
   it('should handle hasReadWriteAccess correctly', () => {
-    const hasAccess = component['hasReadWriteAccess']();
+    const hasAccess = component['hasWriteAccess']();
     expect(typeof hasAccess).toBe('boolean');
-  });
-
-  it('should handle preprint with write permissions', () => {
-    const preprintWithWrite = {
-      ...mockPreprint,
-      currentUserPermissions: [UserPermissions.Write],
-    };
-    jest.spyOn(component, 'preprint').mockReturnValue(preprintWithWrite);
-
-    const hasAccess = component['hasReadWriteAccess']();
-    expect(hasAccess).toBe(true);
   });
 
   it('should handle preprint without write permissions', () => {
@@ -360,7 +349,7 @@ describe('PreprintDetailsComponent', () => {
     };
     jest.spyOn(component, 'preprint').mockReturnValue(preprintWithoutWrite);
 
-    const hasAccess = component['hasReadWriteAccess']();
+    const hasAccess = component['hasWriteAccess']();
     expect(hasAccess).toBe(false);
   });
 });

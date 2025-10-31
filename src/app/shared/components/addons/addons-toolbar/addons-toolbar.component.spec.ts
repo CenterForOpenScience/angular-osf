@@ -1,8 +1,11 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
+import { SearchInputComponent } from '../../search-input/search-input.component';
+import { SelectComponent } from '../../select/select.component';
 
 import { AddonsToolbarComponent } from './addons-toolbar.component';
 
@@ -18,7 +21,7 @@ describe('AddonsToolbarComponent', () => {
     activatedRouteMock = ActivatedRouteMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [AddonsToolbarComponent, OSFTestingModule],
+      imports: [AddonsToolbarComponent, OSFTestingModule, ...MockComponents(SearchInputComponent, SelectComponent)],
       providers: [MockProvider(ActivatedRoute, activatedRouteMock)],
     }).compileComponents();
 

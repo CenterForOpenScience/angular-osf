@@ -1,4 +1,4 @@
-import { ResourceType } from '@shared/enums';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 
 export class GetBookmarksCollectionId {
   static readonly type = '[Bookmarks] Get Bookmarks Collection Id';

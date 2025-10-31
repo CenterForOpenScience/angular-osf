@@ -1,6 +1,5 @@
-import { AsyncStateModel } from '@shared/models';
-
-import { MyResourcesItem } from 'src/app/shared/models/my-resources';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface MyResourcesStateModel {
   projects: AsyncStateModel<MyResourcesItem[]>;

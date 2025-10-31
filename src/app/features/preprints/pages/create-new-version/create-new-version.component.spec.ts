@@ -5,16 +5,19 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { FileStepComponent, ReviewStepComponent } from '@osf/features/preprints/components';
-import { createNewVersionStepsConst } from '@osf/features/preprints/constants';
-import { PreprintSteps } from '@osf/features/preprints/enums';
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { StepperComponent } from '@shared/components';
-import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/helpers';
-import { StepOption } from '@shared/models';
-import { BrandService } from '@shared/services';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { StepOption } from '@osf/shared/models/step-option.model';
+import { BrandService } from '@osf/shared/services/brand.service';
+
+import { FileStepComponent, ReviewStepComponent } from '../../components';
+import { createNewVersionStepsConst } from '../../constants';
+import { PreprintSteps } from '../../enums';
+import { PreprintProviderDetails } from '../../models';
+import { PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { PreprintStepperSelectors } from '../../store/preprint-stepper';
 
 import { CreateNewVersionComponent } from './create-new-version.component';
 

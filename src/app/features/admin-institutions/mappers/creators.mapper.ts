@@ -1,5 +1,5 @@
-import { getSortedContributorsByPermissions } from '@shared/helpers';
-import { ResourceModel } from '@shared/models';
+import { getSortedContributorsByPermissions } from '@osf/shared/helpers/sort-contributors-by-permissions';
+import { ResourceModel } from '@shared/models/search/resource.model';
 
 export function mapCreators(project: ResourceModel, currentInstitutionId: string) {
   const creatorsRoles = project.qualifiedAttribution.map((qa) => {

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { DateSortable } from '../models';
+import { DateSortable } from '../models/user/date-sortable.model';
 
 @Pipe({
   name: 'sortByDate',

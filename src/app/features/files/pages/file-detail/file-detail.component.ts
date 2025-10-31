@@ -38,12 +38,19 @@ import {
   MetadataSelectors,
   UpdateCedarMetadataRecord,
 } from '@osf/features/metadata/store';
-import { LoadingSpinnerComponent, MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
-import { getViewOnlyParam, hasViewOnlyParam, pathJoin } from '@osf/shared/helpers';
-import { FileDetailsModel, MetadataTabsModel } from '@osf/shared/models';
-import { CustomConfirmationService, MetaTagsService, ToastService } from '@osf/shared/services';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { pathJoin } from '@osf/shared/helpers/path-join.helper';
+import { getViewOnlyParam, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { FileDetailsModel } from '@shared/models/files/file.model';
+import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 
 import {
   FileKeywordsComponent,

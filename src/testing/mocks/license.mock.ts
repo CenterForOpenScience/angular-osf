@@ -1,4 +1,4 @@
-import { LicenseModel } from '@shared/models';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
 
 export const MOCK_LICENSE: LicenseModel = {
   id: '5c20a0307f39c2c3df0814ae',

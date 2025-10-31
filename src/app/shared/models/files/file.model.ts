@@ -1,4 +1,4 @@
-import { BaseNodeModel } from '../nodes';
+import { BaseNodeModel } from '../nodes/base-node.model';
 
 import { FileKind } from './../../enums/file-kind.enum';
 

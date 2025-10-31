@@ -10,7 +10,7 @@ import {
   CedarMetadataRecordData,
   CedarRecordDataBinding,
 } from '@osf/features/metadata/models';
-import { MetadataTabsModel } from '@osf/shared/models';
+import { MetadataTabsModel } from '@osf/shared/models/metadata-tabs.model';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 

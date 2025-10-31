@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '@shared/models';
+import { JsonApiResponse } from '@shared/models/common/json-api.model';
 
 export interface InstitutionSearchResultCountJsonApi {
   attributes: {

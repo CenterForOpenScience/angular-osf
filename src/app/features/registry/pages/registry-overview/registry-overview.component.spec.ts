@@ -4,19 +4,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { WithdrawnMessageComponent } from '@osf/features/registry/components/withdrawn-message/withdrawn-message.component';
-import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
-import {
-  DataResourcesComponent,
-  LoadingSpinnerComponent,
-  RegistrationBlocksDataComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@osf/shared/components';
-import { CustomDialogService } from '@osf/shared/services';
+import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
+import { ResourceMetadataComponent } from '@osf/shared/components/resource-metadata/resource-metadata.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
+import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
+import { RegistryOverviewSelectors } from '../../store/registry-overview';
 
 import { RegistryOverviewComponent } from './registry-overview.component';
 

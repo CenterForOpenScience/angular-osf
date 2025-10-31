@@ -1,4 +1,4 @@
-import { SubscriptionFrequency } from '@shared/enums';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
 
 export class GetAllGlobalNotificationSubscriptions {
   static readonly type = '[Notification Subscriptions] Get All Global';

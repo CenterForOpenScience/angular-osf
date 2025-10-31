@@ -4,12 +4,12 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ProfileSettingsKey } from '@osf/shared/enums';
-import { removeNullable } from '@osf/shared/helpers';
-import { UserMapper } from '@osf/shared/mappers';
-import { SocialModel, UserModel } from '@osf/shared/models';
-
-import { UserService } from '../../services';
+import { UserService } from '@core/services/user.service';
+import { ProfileSettingsKey } from '@osf/shared/enums/profile-settings-key.enum';
+import { removeNullable } from '@osf/shared/helpers/remove-nullable.helper';
+import { UserMapper } from '@osf/shared/mappers/user';
+import { SocialModel } from '@shared/models/user/social.model';
+import { UserModel } from '@shared/models/user/user.models';
 
 import {
   AcceptTermsOfServiceByUser,

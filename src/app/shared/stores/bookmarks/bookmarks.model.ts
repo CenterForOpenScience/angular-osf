@@ -1,4 +1,4 @@
-import { AsyncStateModel } from '@shared/models/store';
+import { AsyncStateModel } from '@shared/models/store/async-state.model';
 
 export interface BookmarksStateModel {
   bookmarksId: AsyncStateModel<string>;

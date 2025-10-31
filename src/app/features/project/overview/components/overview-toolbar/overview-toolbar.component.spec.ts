@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SocialsShareButtonComponent } from '@osf/shared/components/socials-share-button/socials-share-button.component';
 
 import { OverviewToolbarComponent } from './overview-toolbar.component';
 
@@ -8,7 +12,7 @@ describe('OverviewToolbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OverviewToolbarComponent],
+      imports: [OverviewToolbarComponent, MockComponent(SocialsShareButtonComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OverviewToolbarComponent);

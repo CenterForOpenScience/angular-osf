@@ -1,4 +1,4 @@
-import { AsyncStateWithTotalCount } from '@osf/shared/models';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 import { RegistryModeration } from '../../models';
 

@@ -8,7 +8,7 @@ import { timer } from 'rxjs';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Education } from '@osf/shared/models';
+import { Education } from '@osf/shared/models/user/education.model';
 
 import { EducationHistoryComponent } from '../education-history/education-history.component';
 

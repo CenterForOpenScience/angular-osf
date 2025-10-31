@@ -9,12 +9,11 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
-import { ConfirmEmailComponent } from '@shared/components';
-import { CurrentResourceType } from '@shared/enums';
-import { AnalyticsService, CustomDialogService } from '@shared/services';
-import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
-import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
+import { ConfirmEmailComponent } from './shared/components/confirm-email/confirm-email.component';
+import { FullScreenLoaderComponent } from './shared/components/full-screen-loader/full-screen-loader.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
+import { CustomDialogService } from './shared/services/custom-dialog.service';
 
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
 

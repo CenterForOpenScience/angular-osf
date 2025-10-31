@@ -1,4 +1,4 @@
-import { ApiData } from '@osf/shared/models';
+import { ApiData } from '@osf/shared/models/common/json-api.model';
 
 import { FileCustomMetadata, OsfFileCustomMetadata } from '../models';
 

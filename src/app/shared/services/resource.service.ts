@@ -3,18 +3,15 @@ import { finalize, map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { BaseNodeMapper } from '@osf/shared/mappers';
-import {
-  BaseNodeDataJsonApi,
-  BaseNodeModel,
-  CurrentResource,
-  GuidedResponseJsonApi,
-  NodeShortInfoModel,
-  ResponseDataJsonApi,
-  ResponseJsonApi,
-} from '@osf/shared/models';
 
-import { CurrentResourceType, ResourceType } from '../enums';
+import { CurrentResourceType, ResourceType } from '../enums/resource-type.enum';
+import { BaseNodeMapper } from '../mappers/nodes';
+import { ResponseDataJsonApi, ResponseJsonApi } from '../models/common/json-api.model';
+import { CurrentResource } from '../models/current-resource.model';
+import { GuidedResponseJsonApi } from '../models/guid-response-json-api.model';
+import { BaseNodeModel } from '../models/nodes/base-node.model';
+import { BaseNodeDataJsonApi } from '../models/nodes/base-node-data-json-api.model';
+import { NodeShortInfoModel } from '../models/nodes/node-with-children.model';
 
 import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';

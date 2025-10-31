@@ -1,6 +1,10 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
+
+import { SearchInputComponent } from '../search-input/search-input.component';
 
 import { SubjectsComponent } from './subjects.component';
 
@@ -13,7 +17,7 @@ describe('SubjectsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubjectsComponent, OSFTestingStoreModule],
+      imports: [SubjectsComponent, OSFTestingStoreModule, MockComponent(SearchInputComponent)],
       providers: [
         provideMockStore({
           signals: [

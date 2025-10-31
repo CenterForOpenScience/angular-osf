@@ -5,8 +5,8 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { UserService } from '@core/services';
-import { handleSectionError } from '@osf/shared/helpers';
+import { UserService } from '@core/services/user.service';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
 import { FetchUserProfile, SetUserProfile } from './profile.actions';
 import { PROFILE_STATE_DEFAULTS, ProfileStateModel } from './profile.model';

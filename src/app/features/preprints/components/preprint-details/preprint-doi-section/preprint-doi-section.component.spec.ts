@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 
 import { PreprintDoiSectionComponent } from './preprint-doi-section.component';
@@ -15,7 +15,7 @@ describe('PreprintDoiSectionComponent', () => {
   let component: PreprintDoiSectionComponent;
   let fixture: ComponentFixture<PreprintDoiSectionComponent>;
 
-  const mockPreprint: Preprint = PREPRINT_MOCK;
+  const mockPreprint: PreprintModel = PREPRINT_MOCK;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockVersionIds = ['version-1', 'version-2', 'version-3'];
@@ -48,10 +48,6 @@ describe('PreprintDoiSectionComponent', () => {
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('preprintProvider', mockProvider);
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should compute versions dropdown options from version IDs', () => {

@@ -3,9 +3,9 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { CredentialsFormat } from '@shared/enums';
-import { AddonModel } from '@shared/models';
-import { CustomConfirmationService } from '@shared/services';
+import { CredentialsFormat } from '@osf/shared/enums/addons-credentials-format.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { AddonModel } from '@shared/models/addons/addon.model';
 
 import { AddonCardComponent } from './addon-card.component';
 

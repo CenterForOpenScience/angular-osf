@@ -1,16 +1,19 @@
-import { AddonCategory, AuthorizedAccountType, ConfiguredAddonType } from '../enums';
+import { AuthorizedAccountType, ConfiguredAddonType } from '../enums/addon-type.enum';
+import { AddonCategory } from '../enums/addons-category.enum';
+import { AddonModel } from '../models/addons/addon.model';
 import {
   AddonGetResponseJsonApi,
-  AddonModel,
-  AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
   ConfiguredAddonGetResponseJsonApi,
-  ConfiguredAddonModel,
   IncludedAddonData,
-  OperationInvocation,
+} from '../models/addons/addon-json-api.models';
+import {
   OperationInvocationResponseJsonApi,
   StorageItemResponseJsonApi,
-} from '../models';
+} from '../models/addons/addon-operations-json-api.models';
+import { AuthorizedAccountModel } from '../models/addons/authorized-account.model';
+import { ConfiguredAddonModel } from '../models/addons/configured-addon.model';
+import { OperationInvocation } from '../models/addons/operation-invocation.model';
 
 export class AddonMapper {
   static fromResponse(response: AddonGetResponseJsonApi): AddonModel {

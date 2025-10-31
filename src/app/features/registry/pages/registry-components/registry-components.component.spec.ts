@@ -3,9 +3,12 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RegistrationLinksCardComponent } from '@osf/features/registry/components';
-import { RegistryComponentsSelectors } from '@osf/features/registry/store/registry-components';
-import { LoadingSpinnerComponent, SubHeaderComponent, ViewOnlyLinkMessageComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+
+import { RegistrationLinksCardComponent } from '../../components/registration-links-card/registration-links-card.component';
+import { RegistryComponentsSelectors } from '../../store/registry-components';
 
 import { RegistryComponentsComponent } from './registry-components.component';
 

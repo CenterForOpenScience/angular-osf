@@ -1,5 +1,9 @@
-import { AddonCategory, AddonType, AuthorizedAccountType, ConfiguredAddonType } from '@shared/enums';
-import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
+import { AddonModel } from '@shared/models/addons/addon.model';
+import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
+import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
+
+import { AddonType, AuthorizedAccountType, ConfiguredAddonType } from '../enums/addon-type.enum';
+import { AddonCategory } from '../enums/addons-category.enum';
 
 export function isStorageAddon(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): boolean {
   if (!addon) return false;

@@ -3,15 +3,17 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { MapAddResourceRequest, MapRegistryResource, toAddResourceRequestBody } from '@osf/features/registry/mappers';
-import { GetRegistryResourcesJsonApi, RegistryResource } from '@osf/features/registry/models';
-import { AddResource } from '@osf/features/registry/models/resources/add-resource.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
+
+import { MapAddResourceRequest, MapRegistryResource, toAddResourceRequestBody } from '../mappers';
 import {
+  AddResource,
   AddResourceJsonApi,
+  ConfirmAddResource,
+  GetRegistryResourcesJsonApi,
+  RegistryResource,
   RegistryResourceDataJsonApi,
-} from '@osf/features/registry/models/resources/add-resource-response-json-api.model';
-import { ConfirmAddResource } from '@osf/features/registry/models/resources/confirm-add-resource.model';
-import { JsonApiService } from '@shared/services';
+} from '../models';
 
 @Injectable({
   providedIn: 'root',

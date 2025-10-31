@@ -1,4 +1,4 @@
-import { BrandDataJsonApi } from '../brand.json-api.model';
+import { BrandDataJsonApi } from '../brand/brand.json-api.model';
 
 import { BaseProviderAttributesJsonApi } from './base-provider-json-api.model';
 

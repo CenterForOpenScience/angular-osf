@@ -12,29 +12,6 @@
   "googleTagManagerId": "",
   "googleFilePickerApiKey": "",
   "googleFilePickerAppId": 0,
-  "newRelic": {
-    "enabled": false,
-    "init": {
-      "distributed_tracing": { "enabled": false },
-      "performance": { "capture_measures": false },
-      "privacy": { "cookies_enabled": true },
-      "ajax": { "deny_list": [""] }
-    },
-    "info": {
-      "beacon": "",
-      "errorBeacon": "",
-      "licenseKey": "",
-      "applicationID": "",
-      "sa": 1
-    },
-    "loader_config": {
-      "accountID": "",
-      "trustKey": "",
-      "agentID": "",
-      "licenseKey": "",
-      "applicationID": ""
-    }
-  },
   "newRelicEnabled": true,
   "newRelicInitDistributedTracingEnabled": false,
   "newRelicInitPerformanceCaptureMeasures": false,
@@ -47,7 +24,7 @@
   "newRelicInfoSa": 1,
   "newRelicLoaderConfigAccountID": "",
   "newRelicLoaderConfigTrustKey": "",
-  "newRelicLoaderConfigAgengID": "",
+  "newRelicLoaderConfigAgentID": "",
   "newRelicLoaderConfigLicenseKey": "",
   "newRelicLoaderConfigApplicationID": ""
 }

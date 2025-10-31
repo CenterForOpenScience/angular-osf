@@ -1,7 +1,10 @@
 import { ProjectOverview } from '@osf/features/project/overview/models';
 import { RegistryOverview } from '@osf/features/registry/models';
 
-import { ContributorModel, Institution, ResourceOverview, SubjectModel } from '../models';
+import { ContributorModel } from '../models/contributors/contributor.model';
+import { Institution } from '../models/institutions/institutions.models';
+import { ResourceOverview } from '../models/resource-overview.model';
+import { SubjectModel } from '../models/subject/subject.model';
 
 export function MapProjectOverview(
   project: ProjectOverview,

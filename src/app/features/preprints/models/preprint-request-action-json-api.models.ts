@@ -1,4 +1,5 @@
-import { JsonApiResponse, UserDataErrorResponseJsonApi } from '@osf/shared/models';
+import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
+import { UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
 export type PreprintRequestActionsJsonApiResponse = JsonApiResponse<PreprintRequestActionDataJsonApi[], null>;
 

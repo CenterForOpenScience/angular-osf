@@ -1,13 +1,11 @@
-import { CITATION_TITLES } from '../constants';
-import { CitationTypes } from '../enums';
-import {
-  CitationStyle,
-  CitationStyleJsonApi,
-  CustomCitationPayload,
-  CustomCitationPayloadJsonApi,
-  StyledCitation,
-  StyledCitationJsonApi,
-} from '../models';
+import { CITATION_TITLES } from '../constants/default-citation-titles.const';
+import { CitationTypes } from '../enums/citation-types.enum';
+import { CitationStyle } from '../models/citations/citation-style.model';
+import { CitationStyleJsonApi } from '../models/citations/citation-style-json-api.model';
+import { CustomCitationPayload } from '../models/citations/custom-citation-payload.model';
+import { CustomCitationPayloadJsonApi } from '../models/citations/custom-citation-payload-json-api.model';
+import { StyledCitation } from '../models/citations/styled-citation.model';
+import { StyledCitationJsonApi } from '../models/citations/styled-citation-json-api.model';
 
 export class CitationsMapper {
   static fromGetCitationStylesResponse(response: CitationStyleJsonApi[]): CitationStyle[] {

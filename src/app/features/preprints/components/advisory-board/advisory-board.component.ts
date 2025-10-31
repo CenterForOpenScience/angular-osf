@@ -1,8 +1,8 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { StringOrNullOrUndefined } from '@osf/shared/helpers';
-import { Brand } from '@shared/models';
+import { StringOrNullOrUndefined } from '@osf/shared/helpers/types.helper';
+import { BrandModel } from '@osf/shared/models/brand/brand.model';
 
 @Component({
   selector: 'osf-advisory-board',
@@ -13,6 +13,6 @@ import { Brand } from '@shared/models';
 })
 export class AdvisoryBoardComponent {
   htmlContent = input<StringOrNullOrUndefined>(null);
-  brand = input<Brand>();
+  brand = input<BrandModel>();
   isLandingPage = input<boolean>(false);
 }

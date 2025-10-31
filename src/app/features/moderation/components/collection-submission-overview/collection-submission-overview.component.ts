@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@a
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProjectOverviewComponent } from '@osf/features/project/overview/project-overview.component';
-import { Mode } from '@shared/enums';
+import { Mode } from '@osf/shared/enums/mode.enum';
 
 @Component({
   selector: 'osf-collection-submission-overview',

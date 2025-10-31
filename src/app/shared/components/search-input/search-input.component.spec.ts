@@ -1,5 +1,9 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
+
+import { IconComponent } from '../icon/icon.component';
 
 import { SearchInputComponent } from './search-input.component';
 
@@ -9,7 +13,7 @@ describe('SearchInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchInputComponent],
+      imports: [SearchInputComponent, MockComponent(IconComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchInputComponent);

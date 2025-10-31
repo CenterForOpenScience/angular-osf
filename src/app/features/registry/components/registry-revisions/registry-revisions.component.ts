@@ -7,8 +7,8 @@ import { ChangeDetectionStrategy, Component, computed, HostBinding, input, outpu
 import { RouterLink } from '@angular/router';
 
 import { RegistryOverview } from '@osf/features/registry/models';
-import { RegistrationReviewStates } from '@osf/shared/enums';
-import { RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
 @Component({
   selector: 'osf-registry-revisions',

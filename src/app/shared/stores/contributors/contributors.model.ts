@@ -1,6 +1,9 @@
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { ContributorAddModel, ContributorModel, RequestAccessModel } from '@osf/shared/models';
-import { AsyncStateModel, AsyncStateWithTotalCount } from '@osf/shared/models/store';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
+import { RequestAccessModel } from '@shared/models/request-access/request-access.model';
+import { AsyncStateModel } from '@shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@shared/models/store/async-state-with-total-count.model';
 
 export interface ContributorsList extends AsyncStateWithTotalCount<ContributorModel[]> {
   page: number;

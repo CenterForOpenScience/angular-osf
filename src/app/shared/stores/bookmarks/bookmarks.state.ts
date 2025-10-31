@@ -4,8 +4,8 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@shared/helpers';
-import { BookmarksService } from '@shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { BookmarksService } from '@osf/shared/services/bookmarks.service';
 
 import { AddResourceToBookmarks, GetBookmarksCollectionId, RemoveResourceFromBookmarks } from './bookmarks.actions';
 import { BOOKMARKS_DEFAULTS, BookmarksStateModel } from './bookmarks.model';

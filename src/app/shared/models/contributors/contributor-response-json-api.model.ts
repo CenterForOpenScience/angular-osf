@@ -1,5 +1,7 @@
-import { ContributorPermission } from '@osf/shared/enums';
-import { ResponseJsonApi, UserDataJsonApi, UserErrorResponseJsonApi } from '@osf/shared/models';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+
+import { ResponseJsonApi } from '../common/json-api.model';
+import { UserDataJsonApi, UserErrorResponseJsonApi } from '../user/user-json-api.model';
 
 export type ContributorResponseJsonApi = ResponseJsonApi<ContributorDataJsonApi>;
 export type ContributorsResponseJsonApi = ResponseJsonApi<ContributorDataJsonApi[]>;

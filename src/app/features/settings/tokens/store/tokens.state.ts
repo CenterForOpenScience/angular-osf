@@ -4,7 +4,7 @@ import { catchError, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
 import { TokenModel } from '../models';
 import { TokensService } from '../services';

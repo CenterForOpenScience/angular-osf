@@ -9,8 +9,12 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { AddonFormControls, CredentialsFormat } from '@shared/enums';
-import { AddonForm, AddonModel, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { AddonFormControls } from '@osf/shared/enums/addon-form-controls.enum';
+import { CredentialsFormat } from '@osf/shared/enums/addons-credentials-format.enum';
+import { AddonModel } from '@shared/models/addons/addon.model';
+import { AuthorizedAddonRequestJsonApi } from '@shared/models/addons/addon-json-api.models';
+import { AddonForm } from '@shared/models/addons/addon-utils.models';
+import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
 import { AddonFormService } from '@shared/services/addons/addon-form.service';
 
 @Component({

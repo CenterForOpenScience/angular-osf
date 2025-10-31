@@ -136,7 +136,8 @@
       "contributors": "Contributors",
       "updated": "Updated",
       "dateUpdated": "Date Updated",
-      "dateCreated": "Date Created"
+      "dateCreated": "Date Created",
+      "license": "License"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -720,7 +721,6 @@
         "supplementsText2": "on OSF Preprints",
         "dateCreated": "Date Created",
         "dateUpdated": "Date Updated",
-        "license": "License",
         "projectDOI": "Project DOI",
         "publicationDOI": "Publication DOI",
         "registrationDOI": "Registration DOI",
@@ -1386,7 +1386,6 @@
         "title": "Title",
         "description": "Description",
         "chooseLicense": "Choose License",
-        "license": "License",
         "licensePlaceholder": "Select license",
         "tags": "Tags",
         "tagsPlaceholder": "Add tags here",
@@ -2220,7 +2219,6 @@
             "contributors": "Contributors",
             "authors": "Authors",
             "affiliatedInstitutions": "Affiliated Institutions",
-            "license": "License",
             "publicationDoi": "Publication DOI",
             "subjects": "Subjects",
             "tags": "Tags",
@@ -2741,7 +2739,6 @@
       "description": "Description:",
       "descriptionBold": "<span class=\"font-bold\">Description: </span>",
       "provider": "Provider:",
-      "license": "License:",
       "context": "Context",
       "registrationTemplate": "Registration Template:",
       "conflictOfInterestResponse": "Conflict of Interest response:",

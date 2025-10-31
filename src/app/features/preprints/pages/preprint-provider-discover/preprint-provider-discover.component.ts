@@ -4,13 +4,14 @@ import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy, OnI
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { PreprintProviderHeroComponent } from '@osf/features/preprints/components';
-import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
-import { BrandService } from '@osf/shared/services';
-import { GlobalSearchComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/global-search';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { BrandService } from '@osf/shared/services/brand.service';
+import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
 
+import { PreprintProviderHeroComponent } from '../../components';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 @Component({

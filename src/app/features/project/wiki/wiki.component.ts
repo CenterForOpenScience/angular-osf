@@ -11,17 +11,15 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubHeaderComponent } from '@osf/shared/components';
-import {
-  CompareSectionComponent,
-  EditSectionComponent,
-  ViewSectionComponent,
-  WikiListComponent,
-} from '@osf/shared/components/wiki';
-import { ResourceType } from '@osf/shared/enums';
-import { hasViewOnlyParam } from '@osf/shared/helpers';
-import { WikiModes } from '@osf/shared/models';
-import { ToastService } from '@osf/shared/services';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-section/compare-section.component';
+import { EditSectionComponent } from '@osf/shared/components/wiki/edit-section/edit-section.component';
+import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
+import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { WikiModes } from '@osf/shared/models/wiki/wiki.model';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 import {
   ClearWiki,

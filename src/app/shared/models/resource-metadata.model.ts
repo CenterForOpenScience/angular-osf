@@ -1,4 +1,4 @@
-import { Identifier } from './identifiers';
+import { IdentifierModel } from './identifiers/identifier.model';
 
 export interface ResourceMetadata {
   title: string;
@@ -7,7 +7,7 @@ export interface ResourceMetadata {
   dateModified: Date;
   language: string;
   resourceTypeGeneral: string;
-  identifiers: Identifier[];
+  identifiers: IdentifierModel[];
   funders: {
     funderName: string;
     funderIdentifier: string;

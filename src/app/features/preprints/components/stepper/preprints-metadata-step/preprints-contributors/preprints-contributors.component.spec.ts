@@ -4,13 +4,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@core/store/user';
 import { ContributorsTableComponent } from '@osf/shared/components/contributors';
-import { ContributorModel } from '@shared/models';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@shared/services';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
 import { ContributorsSelectors } from '@shared/stores/contributors';
 
 import { PreprintsContributorsComponent } from './preprints-contributors.component';
 
-import { MOCK_CONTRIBUTOR, MOCK_USER } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';

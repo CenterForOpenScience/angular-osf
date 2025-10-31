@@ -12,28 +12,32 @@ import {
   CollectionSubmissionReviewActionJsonApi,
 } from '@osf/features/moderation/models';
 
-import { CollectionsMapper, ContributorsMapper, ReviewActionsMapper } from '../mappers';
+import { CollectionsMapper } from '../mappers/collections';
+import { ContributorsMapper } from '../mappers/contributors';
+import { ReviewActionsMapper } from '../mappers/review-actions.mapper';
 import {
   CollectionDetails,
-  CollectionDetailsGetResponseJsonApi,
-  CollectionDetailsResponseJsonApi,
   CollectionProvider,
-  CollectionProviderResponseJsonApi,
   CollectionSubmission,
   CollectionSubmissionActionType,
-  CollectionSubmissionJsonApi,
-  CollectionSubmissionsSearchPayloadJsonApi,
   CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
+} from '../models/collections/collections.models';
+import {
+  CollectionDetailsGetResponseJsonApi,
+  CollectionDetailsResponseJsonApi,
+  CollectionProviderResponseJsonApi,
+  CollectionSubmissionJsonApi,
+  CollectionSubmissionsSearchPayloadJsonApi,
   CollectionSubmissionWithGuidJsonApi,
-  ContributorModel,
-  ContributorsResponseJsonApi,
-  JsonApiResponse,
-  PaginatedData,
-  ResponseJsonApi,
-} from '../models';
-import { ReviewActionPayload, ReviewActionPayloadJsonApi } from '../models/review-action';
-import { SetTotalSubmissions } from '../stores/collections';
+} from '../models/collections/collections-json-api.models';
+import { JsonApiResponse, ResponseJsonApi } from '../models/common/json-api.model';
+import { ContributorModel } from '../models/contributors/contributor.model';
+import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';
+import { PaginatedData } from '../models/paginated-data.model';
+import { ReviewActionPayload } from '../models/review-action/review-action-payload.model';
+import { ReviewActionPayloadJsonApi } from '../models/review-action/review-action-payload-json-api.model';
+import { SetTotalSubmissions } from '../stores/collections/collections.actions';
 
 import { JsonApiService } from './json-api.service';
 

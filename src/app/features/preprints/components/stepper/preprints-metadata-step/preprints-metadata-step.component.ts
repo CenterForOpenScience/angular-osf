@@ -13,7 +13,7 @@ import { ChangeDetectionStrategy, Component, inject, input, OnInit, output } fro
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { formInputLimits } from '@osf/features/preprints/constants';
-import { MetadataForm, Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { MetadataForm, PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   CreatePreprint,
   FetchLicenses,
@@ -21,11 +21,16 @@ import {
   SaveLicense,
   UpdatePreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
-import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
-import { LicenseModel, LicenseOptions } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LicenseComponent } from '@osf/shared/components/license/license.component';
+import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
 
 import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';
 import { PreprintsContributorsComponent } from './preprints-contributors/preprints-contributors.component';
@@ -115,7 +120,7 @@ export class PreprintsMetadataStepComponent implements OnInit {
 
     const model = this.metadataForm.value;
 
-    const changedFields = findChangedFields<Preprint>(model, this.createdPreprint()!);
+    const changedFields = findChangedFields<PreprintModel>(model, this.createdPreprint()!);
 
     this.actions.updatePreprint(this.createdPreprint()!.id, changedFields).subscribe({
       complete: () => {
@@ -145,7 +150,7 @@ export class PreprintsMetadataStepComponent implements OnInit {
   backButtonClicked() {
     const formValue = this.metadataForm.value;
     delete formValue.subjects;
-    const changedFields = findChangedFields<Preprint>(formValue, this.createdPreprint()!);
+    const changedFields = findChangedFields<PreprintModel>(formValue, this.createdPreprint()!);
 
     if (!Object.keys(changedFields).length) {
       this.backClicked.emit();

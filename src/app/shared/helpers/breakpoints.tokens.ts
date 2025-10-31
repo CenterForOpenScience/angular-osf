@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { inject, InjectionToken } from '@angular/core';
 
-import { BreakpointQueries } from '@osf/shared/enums';
+import { BreakpointQueries } from '../enums/breakpoint-queries.enum';
 
 function createBreakpointToken(query: string): InjectionToken<Observable<boolean>> {
   return new InjectionToken<Observable<boolean>>(`Breakpoint ${query}`, {

@@ -1,12 +1,11 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { Step, StepItem, StepPanel } from 'primeng/stepper';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InfoIconComponent } from '@shared/components';
+import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { ContributorsTableComponent } from '@shared/components/contributors';
-import { CustomDialogService, ToastService } from '@shared/services';
 import { CustomConfirmationService } from '@shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@shared/stores/contributors';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
@@ -35,7 +34,6 @@ describe.skip('ProjectContributorsStepComponent', () => {
       imports: [
         ProjectContributorsStepComponent,
         OSFTestingModule,
-        MockComponents(StepPanel, Step, StepItem),
         ...MockComponents(ContributorsTableComponent, InfoIconComponent),
       ],
       providers: [

@@ -4,7 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
-import { AnalyticsService, MetaTagsService } from '@osf/shared/services';
+import { AnalyticsService } from '@osf/shared/services/analytics.service';
+import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { RegistryComponent } from './registry.component';

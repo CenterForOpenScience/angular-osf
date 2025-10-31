@@ -8,7 +8,7 @@ import { Menu } from 'primeng/menu';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthService } from '@osf/core/services';
+import { AuthService } from '@core/services/auth.service';
 import { UserSelectors } from '@osf/core/store/user';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';

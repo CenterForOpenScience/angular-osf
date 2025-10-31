@@ -8,8 +8,10 @@ import { Card } from 'primeng/card';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { TokenAddEditFormComponent } from '../../components';
 import { DeleteToken, GetTokenById, TokensSelectors } from '../../store';

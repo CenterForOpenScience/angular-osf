@@ -6,15 +6,16 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { PreprintsService } from '@osf/features/preprints/services';
-import { handleSectionError } from '@shared/helpers';
-import { FilesService } from '@shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { FilesService } from '@osf/shared/services/files.service';
+
+import { PreprintsService } from '../../services';
 
 import {
-  FetchMyPreprints,
   FetchPreprintById,
   FetchPreprintFile,
   FetchPreprintFileVersions,
+  FetchPreprintMetrics,
   FetchPreprintRequestActions,
   FetchPreprintRequests,
   FetchPreprintReviewActions,
@@ -35,26 +36,6 @@ export class PreprintState {
   private preprintsService = inject(PreprintsService);
   private fileService = inject(FilesService);
 
-  @Action(FetchMyPreprints)
-  fetchMyPreprints(ctx: StateContext<PreprintStateModel>, action: FetchMyPreprints) {
-    ctx.setState(patch({ myPreprints: patch({ isLoading: true }) }));
-
-    return this.preprintsService.getMyPreprints(action.pageNumber, action.pageSize, action.filters).pipe(
-      tap((preprints) => {
-        ctx.setState(
-          patch({
-            myPreprints: patch({
-              isLoading: false,
-              data: preprints.data,
-              totalCount: preprints.totalCount,
-            }),
-          })
-        );
-      }),
-      catchError((error) => handleSectionError(ctx, 'myPreprints', error))
-    );
-  }
-
   @Action(FetchPreprintById)
   fetchPreprintById(ctx: StateContext<PreprintStateModel>, action: FetchPreprintById) {
     ctx.setState(
@@ -65,16 +46,20 @@ export class PreprintState {
         preprintReviewActions: patch({ isLoading: false, data: [] }),
         preprintRequests: patch({ isLoading: false, data: [] }),
         preprintRequestsActions: patch({ isLoading: false, data: [] }),
+        metrics: patch({ isLoading: false, data: null }),
       })
     );
 
     return this.preprintsService.getByIdWithEmbeds(action.id).pipe(
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isLoading: false, data: preprint }) }));
+
         if (!preprint.dateWithdrawn) {
           ctx.dispatch(new FetchPreprintFile());
         }
+
         ctx.dispatch(new FetchPreprintVersionIds());
+        ctx.dispatch(new FetchPreprintMetrics());
       }),
       catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
@@ -122,6 +107,22 @@ export class PreprintState {
         ctx.setState(patch({ preprintVersionIds: patch({ isLoading: false, data: versionIds }) }));
       }),
       catchError((error) => handleSectionError(ctx, 'preprintVersionIds', error))
+    );
+  }
+
+  @Action(FetchPreprintMetrics)
+  fetchPreprintMetrics(ctx: StateContext<PreprintStateModel>) {
+    const preprintId = ctx.getState().preprint.data?.id;
+
+    if (!preprintId) return;
+
+    ctx.setState(patch({ metrics: patch({ isLoading: true }) }));
+
+    return this.preprintsService.getPreprintMetrics(preprintId).pipe(
+      tap((metrics) => {
+        ctx.setState(patch({ metrics: patch({ isLoading: false, data: metrics }) }));
+      }),
+      catchError((error) => handleSectionError(ctx, 'metrics', error))
     );
   }
 

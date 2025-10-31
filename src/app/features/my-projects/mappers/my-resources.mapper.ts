@@ -1,5 +1,8 @@
-import { ContributorsMapper } from '@osf/shared/mappers';
-import { MyResourcesItem, MyResourcesItemGetResponseJsonApi } from '@osf/shared/models';
+import { ContributorsMapper } from '@osf/shared/mappers/contributors';
+import {
+  MyResourcesItem,
+  MyResourcesItemGetResponseJsonApi,
+} from '@osf/shared/models/my-resources/my-resources.models';
 
 export class MyResourcesMapper {
   static fromResponse(response: MyResourcesItemGetResponseJsonApi): MyResourcesItem {

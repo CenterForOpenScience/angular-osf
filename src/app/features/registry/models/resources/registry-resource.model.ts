@@ -1,4 +1,4 @@
-import { RegistryResourceType } from '@shared/enums';
+import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
 
 export interface RegistryResource {
   id: string;

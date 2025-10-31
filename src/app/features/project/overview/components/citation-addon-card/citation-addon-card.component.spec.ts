@@ -1,4 +1,9 @@
+import { MockComponents } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { CitationCollectionItemComponent } from '../citation-collection-item/citation-collection-item.component';
+import { CitationItemComponent } from '../citation-item/citation-item.component';
 
 import { CitationAddonCardComponent } from './citation-addon-card.component';
 
@@ -8,7 +13,7 @@ describe.skip('CitationAddonCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CitationAddonCardComponent],
+      imports: [CitationAddonCardComponent, ...MockComponents(CitationItemComponent, CitationCollectionItemComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CitationAddonCardComponent);

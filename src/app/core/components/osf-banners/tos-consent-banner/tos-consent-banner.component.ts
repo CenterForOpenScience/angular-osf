@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { AcceptTermsOfServiceByUser, UserSelectors } from '@core/store/user';
-import { IconComponent } from '@osf/shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 /**
  * TosConsentBannerComponent displays a Terms of Service (ToS) consent banner for users who haven't accepted yet.

@@ -4,7 +4,7 @@ import {
   CedarMetadataTemplateJsonApi,
   CustomItemMetadataRecord,
 } from '@osf/features/metadata/models';
-import { AsyncStateModel } from '@shared/models';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 import { CrossRefFunder, MetadataModel } from '../models';
 

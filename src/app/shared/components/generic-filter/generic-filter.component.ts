@@ -17,7 +17,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { FilterOperator, FilterOption } from '@shared/models';
+import { FilterOperatorOption, FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
@@ -37,7 +37,7 @@ export class GenericFilterComponent {
   isSearchLoading = input<boolean>(false);
   selectedOptions = input<FilterOption[]>([]);
   placeholder = input<string>('');
-  filterOperator = input<FilterOperator>(FilterOperator.AnyOf);
+  filterOperator = input<FilterOperatorOption>(FilterOperatorOption.AnyOf);
 
   selectedOptionsChanged = output<FilterOption[]>();
   searchTextChanged = output<string>();

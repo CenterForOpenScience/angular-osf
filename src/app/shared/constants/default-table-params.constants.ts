@@ -1,4 +1,4 @@
-import { TableParameters } from '@shared/models';
+import { TableParameters } from '../models/table-parameters.model';
 
 export const DEFAULT_TABLE_PARAMS: TableParameters = {
   rows: 10,

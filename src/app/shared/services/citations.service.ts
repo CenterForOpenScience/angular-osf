@@ -5,16 +5,14 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { ResourceType } from '../enums';
-import { CitationsMapper } from '../mappers';
-import {
-  CitationStyle,
-  CitationStyleJsonApi,
-  CustomCitationPayload,
-  JsonApiResponse,
-  StyledCitation,
-  StyledCitationJsonApi,
-} from '../models';
+import { ResourceType } from '../enums/resource-type.enum';
+import { CitationsMapper } from '../mappers/citations.mapper';
+import { CitationStyle } from '../models/citations/citation-style.model';
+import { CitationStyleJsonApi } from '../models/citations/citation-style-json-api.model';
+import { CustomCitationPayload } from '../models/citations/custom-citation-payload.model';
+import { StyledCitation } from '../models/citations/styled-citation.model';
+import { StyledCitationJsonApi } from '../models/citations/styled-citation-json-api.model';
+import { JsonApiResponse } from '../models/common/json-api.model';
 
 import { JsonApiService } from './json-api.service';
 

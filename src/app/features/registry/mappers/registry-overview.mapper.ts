@@ -1,4 +1,6 @@
-import { ContributorsMapper, IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
+import { ContributorsMapper } from '@osf/shared/mappers/contributors';
+import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
+import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { MapRegistryStatus, RegistrationMapper, RegistrationNodeMapper } from '@osf/shared/mappers/registration';
 
 import { RegistryOverview, RegistryOverviewJsonApiData } from '../models';

@@ -1,5 +1,5 @@
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -8,11 +8,12 @@ import { Subject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/components';
-import { ToastService } from '@shared/services';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { DeveloperAppsContainerComponent } from './developer-apps-container.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('DeveloperAppsContainerComponent', () => {
   let component: DeveloperAppsContainerComponent;
@@ -27,7 +28,7 @@ describe('DeveloperAppsContainerComponent', () => {
     dialogRefMock = { onClose: new Subject<void>() };
 
     await TestBed.configureTestingModule({
-      imports: [DeveloperAppsContainerComponent, MockPipe(TranslatePipe)],
+      imports: [DeveloperAppsContainerComponent, MockComponent(SubHeaderComponent), MockPipe(TranslatePipe)],
       providers: [MockProvider(DialogService), MockProvider(ToastService), TranslateServiceMock],
     }).compileComponents();
 

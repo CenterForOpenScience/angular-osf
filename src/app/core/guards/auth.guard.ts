@@ -5,9 +5,9 @@ import { map, switchMap, take } from 'rxjs';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
-import { AuthService } from '@core/services';
+import { AuthService } from '@core/services/auth.service';
 import { GetCurrentUser, UserSelectors } from '@osf/core/store/user';
-import { hasViewOnlyParam } from '@osf/shared/helpers';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 
 export const authGuard: CanActivateFn = () => {
   const store = inject(Store);

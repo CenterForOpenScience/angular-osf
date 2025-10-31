@@ -10,10 +10,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, model, out
 import { FormsModule } from '@angular/forms';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
-import { PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { ContributorPermission, ResourceType } from '@osf/shared/enums';
-import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
-import { CustomDialogService } from '@osf/shared/services';
+import { PERMISSION_OPTIONS } from '@osf/shared/constants/contributors.constants';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { SelectOption } from '@shared/models/select-option.model';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
 import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';

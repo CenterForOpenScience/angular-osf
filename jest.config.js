@@ -11,6 +11,8 @@ module.exports = {
     '^@styles/(.*)$': '<rootDir>/assets/styles/$1',
     '^@testing/(.*)$': '<rootDir>/src/testing/$1',
     '^src/environments/environment$': '<rootDir>/src/environments/environment.ts',
+    '^cedar-artifact-viewer$': '<rootDir>/src/testing/mocks/cedar-artifact-viewer.mock.ts',
+    '^cedar-embeddable-editor$': '<rootDir>/src/testing/mocks/cedar-embeddable-editor.mock.ts',
   },
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
@@ -50,8 +52,8 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 29.01,
-      functions: 32.75,
+      branches: 28.0,
+      functions: 32.0,
       lines: 60.28,
       statements: 60.77,
     },

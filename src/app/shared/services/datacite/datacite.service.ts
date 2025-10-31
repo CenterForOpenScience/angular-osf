@@ -5,8 +5,9 @@ import { inject, Injectable } from '@angular/core';
 
 import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { Identifier, IdentifiersResponseJsonApi } from '@osf/shared/models';
-import { DataciteEvent } from '@osf/shared/models/datacite/datacite-event.enum';
+import { DataciteEvent } from '@osf/shared/enums/datacite/datacite-event.enum';
+import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
+import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 
 @Injectable({
   providedIn: 'root',
@@ -27,11 +28,11 @@ export class DataciteService {
     return this.environment.dataciteTrackerRepoId;
   }
 
-  logIdentifiableView(trackable: Observable<{ identifiers?: Identifier[] } | null>) {
+  logIdentifiableView(trackable: Observable<{ identifiers?: IdentifierModel[] } | null>) {
     return this.watchIdentifiable(trackable, DataciteEvent.VIEW);
   }
 
-  logIdentifiableDownload(trackable: Observable<{ identifiers?: Identifier[] } | null>) {
+  logIdentifiableDownload(trackable: Observable<{ identifiers?: IdentifierModel[] } | null>) {
     return this.watchIdentifiable(trackable, DataciteEvent.DOWNLOAD);
   }
 
@@ -44,7 +45,7 @@ export class DataciteService {
   }
 
   private watchIdentifiable(
-    trackable: Observable<{ identifiers?: Identifier[] } | null>,
+    trackable: Observable<{ identifiers?: IdentifierModel[] } | null>,
     event: DataciteEvent
   ): Observable<void> {
     return trackable.pipe(
@@ -60,7 +61,7 @@ export class DataciteService {
     const url = `${this.apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`;
     return this.http.get<IdentifiersResponseJsonApi>(url).pipe(
       map((item) => ({
-        identifiers: item.data.map<Identifier>((identifierData) => ({
+        identifiers: item.data.map<IdentifierModel>((identifierData) => ({
           id: identifierData.id,
           type: identifierData.type,
           category: identifierData.attributes.category,

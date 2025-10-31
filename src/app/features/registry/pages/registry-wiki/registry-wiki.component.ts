@@ -11,11 +11,14 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubHeaderComponent, ViewOnlyLinkMessageComponent } from '@osf/shared/components';
-import { CompareSectionComponent, ViewSectionComponent, WikiListComponent } from '@osf/shared/components/wiki';
-import { ResourceType } from '@osf/shared/enums';
-import { hasViewOnlyParam } from '@osf/shared/helpers';
-import { WikiModes } from '@osf/shared/models';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-section/compare-section.component';
+import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
+import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { WikiModes } from '@osf/shared/models/wiki/wiki.model';
 import {
   ClearWiki,
   GetCompareVersionContent,

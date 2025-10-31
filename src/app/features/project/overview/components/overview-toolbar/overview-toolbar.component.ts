@@ -17,14 +17,15 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { ClearDuplicatedProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { SocialsShareButtonComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { ToolbarResource } from '@osf/shared/models';
-import { FileSizePipe } from '@osf/shared/pipes';
-import { CustomDialogService, ToastService } from '@osf/shared/services';
+import { SocialsShareButtonComponent } from '@osf/shared/components/socials-share-button/socials-share-button.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { ToolbarResource } from '@osf/shared/models/toolbar-resource.model';
+import { FileSizePipe } from '@osf/shared/pipes/file-size.pipe';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { AddResourceToBookmarks, BookmarksSelectors, RemoveResourceFromBookmarks } from '@osf/shared/stores/bookmarks';
 import { GetMyBookmarks, MyResourcesSelectors } from '@osf/shared/stores/my-resources';
-import { hasViewOnlyParam } from '@shared/helpers';
 
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
 import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';

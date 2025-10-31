@@ -31,8 +31,16 @@ class ResizeObserver {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   disconnect() {}
 }
+
 Object.defineProperty(window, 'ResizeObserver', {
   writable: true,
   configurable: true,
   value: ResizeObserver,
 });
+
+jest.mock('@newrelic/browser-agent/loaders/browser-agent', () => ({
+  BrowserAgent: jest.fn().mockImplementation(() => ({
+    start: jest.fn(),
+    stop: jest.fn(),
+  })),
+}));

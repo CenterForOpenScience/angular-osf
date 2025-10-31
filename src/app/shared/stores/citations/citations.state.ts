@@ -4,8 +4,8 @@ import { catchError, forkJoin, Observable, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CitationTypes } from '@osf/shared/enums';
-import { handleSectionError } from '@osf/shared/helpers';
+import { CitationTypes } from '@osf/shared/enums/citation-types.enum';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { CitationsService } from '@osf/shared/services/citations.service';
 
 import {

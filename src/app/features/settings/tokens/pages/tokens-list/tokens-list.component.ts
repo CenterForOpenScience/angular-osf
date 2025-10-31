@@ -9,7 +9,8 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { TokenModel } from '../../models';
 import { DeleteToken, GetTokens, TokensSelectors } from '../../store';

@@ -1,6 +1,6 @@
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { ReviewPermissions } from '@shared/enums';
+import { ReviewPermissions } from '@shared/enums/review-permissions.enum';
 
 export const PREPRINT_PROVIDER_DETAILS_MOCK: PreprintProviderDetails = {
   id: 'osf-preprints',

@@ -1,4 +1,4 @@
-import { CurrentResourceType } from '@shared/enums';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { DOWNLOAD_FORMATS } from '../constants';
 import { DownloadType } from '../enums';

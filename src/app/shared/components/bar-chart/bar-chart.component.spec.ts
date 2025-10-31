@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { BarChartComponent } from './bar-chart.component';
 
@@ -10,7 +14,7 @@ describe('BarChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BarChartComponent, OSFTestingModule],
+      imports: [BarChartComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BarChartComponent);

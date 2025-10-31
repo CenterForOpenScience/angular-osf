@@ -1,10 +1,18 @@
+import { MockComponents } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceOverview } from '@shared/models';
+import { OverviewCollectionsComponent } from '@osf/features/project/overview/components/overview-collections/overview-collections.component';
+import { ResourceOverview } from '@shared/models/resource-overview.model';
+
+import { AffiliatedInstitutionsViewComponent } from '../affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '../contributors-list/contributors-list.component';
+import { ResourceCitationsComponent } from '../resource-citations/resource-citations.component';
+import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
 
 import { ResourceMetadataComponent } from './resource-metadata.component';
 
-import { MOCK_RESOURCE_OVERVIEW } from '@testing/mocks';
+import { MOCK_RESOURCE_OVERVIEW } from '@testing/mocks/resource.mock';
 
 describe('ResourceMetadataComponent', () => {
   let component: ResourceMetadataComponent;
@@ -14,7 +22,16 @@ describe('ResourceMetadataComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResourceMetadataComponent],
+      imports: [
+        ResourceMetadataComponent,
+        MockComponents(
+          TruncatedTextComponent,
+          ResourceCitationsComponent,
+          OverviewCollectionsComponent,
+          AffiliatedInstitutionsViewComponent,
+          ContributorsListComponent
+        ),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResourceMetadataComponent);

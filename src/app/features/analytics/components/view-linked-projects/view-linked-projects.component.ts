@@ -27,15 +27,13 @@ import {
   GetRegistryById,
   RegistryOverviewSelectors,
 } from '@osf/features/registry/store/registry-overview';
-import {
-  ContributorsListComponent,
-  CustomPaginatorComponent,
-  IconComponent,
-  LoadingSpinnerComponent,
-  SubHeaderComponent,
-  TruncatedTextComponent,
-} from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ClearLinkedProjects, GetAllLinkedProjects, LinkedProjectsSelectors } from '@shared/stores/linked-projects';
 
 @Component({

@@ -4,10 +4,11 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { SubjectMapper } from '@shared/mappers';
-import { SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
+import { SubjectModel } from '@shared/models/subject/subject.model';
+import { SubjectsResponseJsonApi } from '@shared/models/subject/subjects-json-api.model';
 
-import { ResourceType } from '../enums';
+import { ResourceType } from '../enums/resource-type.enum';
+import { SubjectMapper } from '../mappers/subjects';
 
 import { JsonApiService } from './json-api.service';
 

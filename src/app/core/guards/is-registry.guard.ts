@@ -6,7 +6,7 @@ import { inject } from '@angular/core';
 import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { CurrentResourceType } from '@shared/enums';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CurrentResourceSelectors, GetResource } from '@shared/stores/current-resource';
 
 export const isRegistryGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) => {

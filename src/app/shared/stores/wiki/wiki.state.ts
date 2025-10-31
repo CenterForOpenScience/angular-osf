@@ -2,9 +2,9 @@ import { Action, State, StateContext } from '@ngxs/store';
 
 import { catchError, map, tap, throwError } from 'rxjs';
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
-import { WikiService } from '@osf/shared/services';
+import { WikiService } from '@osf/shared/services/wiki.service';
 
 import {
   ClearWiki,
@@ -29,7 +29,7 @@ import { WIKI_STATE_DEFAULTS, WikiStateModel } from './wiki.model';
 })
 @Injectable()
 export class WikiState {
-  constructor(private wikiService: WikiService) {}
+  private readonly wikiService = inject(WikiService);
 
   @Action(CreateWiki)
   createWiki(ctx: StateContext<WikiStateModel>, action: CreateWiki) {

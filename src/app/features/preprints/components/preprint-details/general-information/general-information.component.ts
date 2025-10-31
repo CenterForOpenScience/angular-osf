@@ -12,13 +12,11 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import {
-  AffiliatedInstitutionsViewComponent,
-  ContributorsListComponent,
-  IconComponent,
-  TruncatedTextComponent,
-} from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
   GetBibliographicContributors,
@@ -34,9 +32,9 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
   imports: [
     Card,
     TranslatePipe,
-    TruncatedTextComponent,
     Skeleton,
     FormsModule,
+    TruncatedTextComponent,
     PreprintDoiSectionComponent,
     IconComponent,
     AffiliatedInstitutionsViewComponent,

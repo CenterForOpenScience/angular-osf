@@ -1,4 +1,4 @@
-import { TabOption } from '@osf/shared/models';
+import { TabOption } from '@osf/shared/models/tab-option.model';
 
 import { ProfileSettingsTabOption } from '../enums';
 

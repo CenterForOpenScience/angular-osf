@@ -9,10 +9,10 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit } fro
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
-import { CustomValidators } from '@osf/shared/helpers';
-import { ToastService } from '@osf/shared/services';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppForm, DeveloperAppFormFormControls } from '../../models';
 import { CreateDeveloperApp, DeveloperAppsSelectors, UpdateDeveloperApp } from '../../store';

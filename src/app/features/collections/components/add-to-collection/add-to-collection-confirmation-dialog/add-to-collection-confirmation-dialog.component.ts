@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { CreateCollectionSubmission } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
 import { UpdateProjectPublicStatus } from '@osf/features/project/overview/store';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 @Component({
   selector: 'osf-add-to-collection-confirmation-dialog',

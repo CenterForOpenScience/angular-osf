@@ -1,9 +1,10 @@
 import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
-import { FormSelectComponent, TextInputComponent } from '@shared/components';
+import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
 import { RegistryResourceFormModel } from '../../models';
 
@@ -23,12 +24,7 @@ describe('ResourceFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        ResourceFormComponent,
-        OSFTestingModule,
-        ReactiveFormsModule,
-        ...MockComponents(TextInputComponent, FormSelectComponent),
-      ],
+      imports: [ResourceFormComponent, OSFTestingModule, ...MockComponents(TextInputComponent, FormSelectComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResourceFormComponent);

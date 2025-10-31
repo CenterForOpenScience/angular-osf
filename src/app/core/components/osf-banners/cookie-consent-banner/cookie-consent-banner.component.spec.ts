@@ -1,8 +1,9 @@
 import { CookieService } from 'ngx-cookie-service';
-
-import { Button } from 'primeng/button';
+import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { CookieConsentBannerComponent } from './cookie-consent-banner.component';
 
@@ -19,8 +20,7 @@ describe('Component: Cookie Consent Banner', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OSFTestingModule, CookieConsentBannerComponent, Button],
-
+      imports: [OSFTestingModule, CookieConsentBannerComponent, MockComponent(IconComponent)],
       providers: [{ provide: CookieService, useValue: cookieServiceMock }],
     });
 

@@ -63,7 +63,7 @@ export function initializeApplication() {
         loader_config: {
           accountID: environment.newRelicLoaderConfigAccountID,
           trustKey: environment.newRelicLoaderConfigTrustKey,
-          agentID: environment.newRelicLoaderConfigAgengID,
+          agentID: environment.newRelicLoaderConfigAgentID,
           licenseKey: environment.newRelicLoaderConfigLicenseKey,
           applicationID: environment.newRelicLoaderConfigApplicationID,
         },

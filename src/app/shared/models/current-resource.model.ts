@@ -1,4 +1,4 @@
-import { UserPermissions } from '../enums';
+import { UserPermissions } from '../enums/user-permissions.enum';
 
 export interface CurrentResource {
   id: string;

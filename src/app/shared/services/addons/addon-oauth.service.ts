@@ -3,8 +3,9 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { AuthorizedAccountModel, OAuthCallbacks } from '@shared/models';
-import { AddonsSelectors, DeleteAuthorizedAddon, GetAuthorizedStorageOauthToken } from '@shared/stores/addons';
+import { OAuthCallbacks } from '@osf/shared/models/addons/addon-utils.models';
+import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
+import { AddonsSelectors, DeleteAuthorizedAddon, GetAuthorizedStorageOauthToken } from '@osf/shared/stores/addons';
 
 @Injectable({
   providedIn: 'root',

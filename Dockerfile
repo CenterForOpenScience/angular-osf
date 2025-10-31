@@ -9,7 +9,7 @@ RUN npm install
 COPY . .
 
 RUN npm link @angular/cli
-RUN ng build --verbose
+RUN NG_BUILD_OPTIMIZE_CHUNKS=1 ng build --verbose
 
 # Dist
 FROM node:22-alpine AS dist

@@ -1,4 +1,4 @@
-import { ResponseDataJsonApi } from '../common';
+import { ResponseDataJsonApi } from '../common/json-api.model';
 
 import { Education } from './education.model';
 import { Employment } from './employment.model';

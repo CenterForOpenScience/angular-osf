@@ -1,6 +1,10 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ComponentCheckboxItemModel } from '@shared/models';
+import { ComponentCheckboxItemModel } from '@osf/shared/models/component-checkbox-item.model';
+
+import { ComponentCheckboxItemComponent } from '../component-checkbox-item/component-checkbox-item.component';
 
 import { ComponentsSelectionListComponent } from './components-selection-list.component';
 
@@ -18,7 +22,7 @@ describe('ComponentsSelectionListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ComponentsSelectionListComponent, OSFTestingModule],
+      imports: [ComponentsSelectionListComponent, OSFTestingModule, MockComponent(ComponentCheckboxItemComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ComponentsSelectionListComponent);

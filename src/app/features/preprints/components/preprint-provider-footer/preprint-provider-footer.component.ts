@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { StringOrNullOrUndefined } from '@osf/shared/helpers';
+import { StringOrNullOrUndefined } from '@osf/shared/helpers/types.helper';
 
 @Component({
   selector: 'osf-preprint-provider-footer',

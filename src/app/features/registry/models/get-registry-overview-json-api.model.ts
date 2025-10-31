@@ -1,16 +1,17 @@
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import {
   ApiData,
-  ContributorDataJsonApi,
-  IdentifiersJsonApiData,
   JsonApiResponseWithMeta,
-  LicenseDataJsonApi,
   MetaAnonymousJsonApi,
-  RegistrationNodeAttributesJsonApi,
-  RegistryProviderDetailsJsonApi,
   ResponseJsonApi,
-  SchemaResponseDataJsonApi,
-} from '@osf/shared/models';
+} from '@shared/models/common/json-api.model';
+import { ContributorDataJsonApi } from '@shared/models/contributors/contributor-response-json-api.model';
+import { IdentifiersJsonApiData } from '@shared/models/identifiers/identifier-json-api.model';
+import { LicenseDataJsonApi } from '@shared/models/license/licenses-json-api.model';
+import { RegistryProviderDetailsJsonApi } from '@shared/models/provider/registration-provider-json-api.model';
+import { SchemaResponseDataJsonApi } from '@shared/models/registration/registration-json-api.model';
+import { RegistrationNodeAttributesJsonApi } from '@shared/models/registration/registration-node-json-api.model';
 
 export type GetRegistryOverviewJsonApi = JsonApiResponseWithMeta<
   RegistryOverviewJsonApiData,

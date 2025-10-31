@@ -1,4 +1,4 @@
-import { AsyncStateModel } from '@shared/models';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 import { LinkedNode, LinkedRegistration } from '../../models';
 

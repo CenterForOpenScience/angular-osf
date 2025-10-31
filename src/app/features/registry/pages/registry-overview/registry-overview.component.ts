@@ -22,19 +22,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
 import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
-import {
-  DataResourcesComponent,
-  LoadingSpinnerComponent,
-  RegistrationBlocksDataComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@osf/shared/components';
-import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
-import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
-import { MapRegistryOverview } from '@osf/shared/mappers';
-import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
-import { CustomDialogService, ToastService } from '@osf/shared/services';
+import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
+import { ResourceMetadataComponent } from '@osf/shared/components/resource-metadata/resource-metadata.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { toCamelCase } from '@osf/shared/helpers/camel-case';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { MapRegistryOverview } from '@osf/shared/mappers/resource-overview.mappers';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import {
   ContributorsSelectors,
@@ -42,6 +44,8 @@ import {
   LoadMoreBibliographicContributors,
 } from '@osf/shared/stores/contributors';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
+import { SchemaResponse } from '@shared/models/registration/schema-response.model';
+import { ToolbarResource } from '@shared/models/toolbar-resource.model';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';

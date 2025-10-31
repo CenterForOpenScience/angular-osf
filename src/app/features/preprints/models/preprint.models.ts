@@ -1,10 +1,12 @@
-import { UserPermissions } from '@osf/shared/enums';
-import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
-import { Identifier, IdName, LicenseModel, LicenseOptions } from '@osf/shared/models';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers/types.helper';
+import { IdNameModel } from '@shared/models/common/id-name.model';
+import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
+import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
-export interface Preprint {
+export interface PreprintModel {
   id: string;
   dateCreated: string;
   dateModified: string;
@@ -40,10 +42,10 @@ export interface Preprint {
   preregLinks: string[];
   preregLinkInfo: PreregLinkInfo | null;
   metrics?: PreprintMetrics;
-  embeddedLicense?: LicenseModel;
+  embeddedLicense: LicenseModel | null;
   preprintDoiLink?: string;
   articleDoiLink?: string;
-  identifiers?: Identifier[];
+  identifiers?: IdentifierModel[];
 }
 
 export interface PreprintFilesLinks {
@@ -54,7 +56,7 @@ export interface PreprintShortInfo {
   id: string;
   title: string;
   dateModified: string;
-  contributors: IdName[];
+  contributors: IdNameModel[];
   providerId: string;
 }
 
