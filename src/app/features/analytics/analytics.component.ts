@@ -174,7 +174,7 @@ export class AnalyticsComponent implements OnInit {
 
     this.popularPagesLabels = analytics.popularPages.map((item) => {
       const parts = item.path.split('/').filter(Boolean);
-      const resource = parts[1].replace('-', ' ') || 'overview';
+      const resource = parts[1]?.replace('-', ' ') || 'overview';
       let cleanTitle = item.title === 'OSF' ? item.title : item.title.replace(/^OSF \| /, '');
       cleanTitle = cleanTitle.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
       return cleanTitle.endsWith(resource) ? cleanTitle : `${cleanTitle} | ${resource}`;
