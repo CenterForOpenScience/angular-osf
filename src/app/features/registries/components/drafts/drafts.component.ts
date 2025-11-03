@@ -8,6 +8,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   OnDestroy,
@@ -43,6 +44,7 @@ export class DraftsComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
@@ -127,7 +129,7 @@ export class DraftsComponent implements OnDestroy {
   constructor() {
     this.router.events
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         filter((event): event is NavigationEnd => event instanceof NavigationEnd)
       )
       .subscribe(() => {

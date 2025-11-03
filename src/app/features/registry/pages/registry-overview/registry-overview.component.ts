@@ -235,7 +235,7 @@ export class RegistryOverviewComponent {
     this.actions.getBookmarksId();
     this.route.queryParams
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         map((params) => ({ revisionId: params['revisionId'], mode: params['mode'] })),
         tap(({ revisionId, mode }) => {
           this.revisionId = revisionId;

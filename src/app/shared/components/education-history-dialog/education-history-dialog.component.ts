@@ -5,7 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { timer } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Education } from '@osf/shared/models/user/education.model';
@@ -20,8 +20,10 @@ import { EducationHistoryComponent } from '../education-history/education-histor
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EducationHistoryDialogComponent {
-  private readonly config = inject(DynamicDialogConfig);
   dialogRef = inject(DynamicDialogRef);
+  private readonly config = inject(DynamicDialogConfig);
+  private readonly destroyRef = inject(DestroyRef);
+
   readonly educationHistory = signal<Education[]>([]);
   readonly isContentVisible = signal(false);
 
@@ -29,7 +31,7 @@ export class EducationHistoryDialogComponent {
     this.educationHistory.set(this.config.data);
 
     timer(0)
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.isContentVisible.set(true));
   }
 

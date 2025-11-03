@@ -8,6 +8,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { AnalyticsService } from '@osf/shared/services/analytics.service';
@@ -34,6 +35,7 @@ export class RegistryComponent implements OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly prerenderReady = inject(PrerenderReadyService);
 
   private readonly actions = createDispatchMap({
     getRegistryById: GetRegistryById,
@@ -49,6 +51,8 @@ export class RegistryComponent implements OnDestroy {
   readonly router = inject(Router);
 
   constructor() {
+    this.prerenderReady.setNotReady();
+
     effect(() => {
       if (this.registryId()) {
         this.actions.getRegistryById(this.registryId());

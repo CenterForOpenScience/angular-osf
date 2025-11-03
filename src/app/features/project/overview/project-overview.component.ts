@@ -23,6 +23,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   ClearCollectionModeration,
@@ -123,6 +124,7 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly dataciteService = inject(DataciteService);
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
+  private readonly prerenderReady = inject(PrerenderReadyService);
 
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
@@ -271,6 +273,8 @@ export class ProjectOverviewComponent implements OnInit {
   readonly analyticsService = inject(AnalyticsService);
 
   constructor() {
+    this.prerenderReady.setNotReady();
+
     this.setupCollectionsEffects();
     this.setupCleanup();
     this.setupProjectEffects();

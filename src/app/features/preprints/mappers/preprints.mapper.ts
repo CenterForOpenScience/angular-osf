@@ -80,6 +80,7 @@ export class PreprintsMapper {
       preprintDoiLink: response.links.preprint_doi,
       articleDoiLink: response.links.doi,
       embeddedLicense: null,
+      providerId: response.relationships?.provider?.data?.id,
     };
   }
 
@@ -92,6 +93,7 @@ export class PreprintsMapper {
   ): PreprintModel {
     const data = response.data;
     const links = response.data.links;
+    const relationships = response?.data?.relationships;
 
     return {
       id: data.id,
@@ -137,6 +139,7 @@ export class PreprintsMapper {
       identifiers: IdentifiersMapper.fromJsonApi(data.embeds?.identifiers),
       preprintDoiLink: links.preprint_doi,
       articleDoiLink: links.doi,
+      providerId: relationships?.provider?.data?.id,
     };
   }
 

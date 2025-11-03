@@ -47,5 +47,11 @@ declare global {
        */
       loggedIn: boolean;
     };
+
+    /**
+     * Flag used by prerender services to determine when a page is fully loaded.
+     * Set to false initially, then set to true once all AJAX requests and content are loaded.
+     */
+    prerenderReady?: boolean;
   }
 }

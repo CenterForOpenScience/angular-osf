@@ -11,7 +11,7 @@ import { Textarea } from 'primeng/textarea';
 import { tap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -46,6 +46,8 @@ import { RegistryOverviewSelectors, SubmitDecision } from '../../store/registry-
 })
 export class RegistryMakeDecisionComponent {
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
+
   readonly config = inject(DynamicDialogConfig);
   readonly dialogRef = inject(DynamicDialogRef);
 
@@ -118,7 +120,7 @@ export class RegistryMakeDecisionComponent {
 
     this.requestForm
       .get(ModerationDecisionFormControls.Action)
-      ?.valueChanges.pipe(takeUntilDestroyed())
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.updateCommentValidators(action);
       });

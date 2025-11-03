@@ -122,11 +122,11 @@ describe('PreprintDetailsComponent', () => {
               value: false,
             },
             {
-              selector: ContributorsSelectors.getContributors,
+              selector: ContributorsSelectors.getBibliographicContributors,
               value: mockContributors,
             },
             {
-              selector: ContributorsSelectors.isContributorsLoading,
+              selector: ContributorsSelectors.isBibliographicContributorsLoading,
               value: false,
             },
             {

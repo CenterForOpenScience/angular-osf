@@ -17,6 +17,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   input,
@@ -82,6 +83,7 @@ export class CustomStepComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
@@ -105,7 +107,7 @@ export class CustomStepComponent implements OnDestroy {
   attachedFiles: Record<string, Partial<FileModel & { file_id: string }>[]> = {};
 
   constructor() {
-    this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.updateStepState();
       this.step.set(+params['step']);
     });

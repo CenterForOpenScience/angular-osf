@@ -1,6 +1,6 @@
 import { filter } from 'rxjs';
 
-import { Directive, ElementRef, inject } from '@angular/core';
+import { DestroyRef, Directive, ElementRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 
@@ -10,12 +10,13 @@ import { NavigationEnd, Router } from '@angular/router';
 export class ScrollTopOnRouteChangeDirective {
   private el = inject(ElementRef);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   constructor() {
     this.router.events
       .pipe(
         filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed()
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         let route = this.router.routerState.root;

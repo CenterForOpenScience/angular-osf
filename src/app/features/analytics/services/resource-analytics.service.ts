@@ -3,16 +3,19 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { AnalyticsMetricsMapper, RelatedCountsMapper } from '@osf/features/analytics/mappers';
+import {
+  NodeAnalyticsModel,
+  NodeAnalyticsResponseJsonApi,
+  RelatedCountsGetResponse,
+} from '@osf/features/analytics/models';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
-
-import { AnalyticsMetricsMapper, RelatedCountsMapper } from '../mappers';
-import { NodeAnalyticsModel, NodeAnalyticsResponseJsonApi, RelatedCountsGetResponse } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AnalyticsService {
+export class ResourceAnalyticsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
 
