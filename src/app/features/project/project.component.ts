@@ -1,12 +1,14 @@
+import { select } from '@ngxs/store';
+
+import { filter } from 'rxjs';
+
 import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, OnDestroy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
-import { filter, take } from 'rxjs';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { select } from '@ngxs/store';
-import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 import { AnalyticsService } from '@shared/services/analytics.service';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 @Component({
   selector: 'osf-project',

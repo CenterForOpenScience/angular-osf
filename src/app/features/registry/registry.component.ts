@@ -13,9 +13,9 @@ import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { GetRegistryById, RegistryOverviewSelectors } from './store/registry-overview';
-import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 @Component({
   selector: 'osf-registry',

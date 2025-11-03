@@ -176,7 +176,8 @@ export class AnalyticsComponent implements OnInit {
       const parts = item.path.split('/').filter(Boolean);
       const resource = parts[1].replace('-', ' ') || 'overview';
       // remove redundant 'OSF |' for title beginning
-      const cleanTitle = item.title === 'OSF' ? item.title : item.title.replace(/^OSF \| /, '');
+      let cleanTitle = item.title === 'OSF' ? item.title : item.title.replace(/^OSF \| /, '');
+      cleanTitle = cleanTitle.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
       // add resource suffix to title to keep it more explicit what detail page is a resource of metrics call
       return cleanTitle.endsWith(resource) ? cleanTitle : `${cleanTitle} | ${resource}`;
     });
