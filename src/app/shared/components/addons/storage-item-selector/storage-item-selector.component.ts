@@ -22,6 +22,7 @@ import {
   OnInit,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -60,6 +61,8 @@ import { ResourceTypeInfoDialogComponent } from '../resource-type-info-dialog/re
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StorageItemSelectorComponent implements OnInit {
+  addFilesPicker = viewChild<GoogleFilePickerComponent>('filePicker');
+
   private destroyRef = inject(DestroyRef);
   private customDialogService = inject(CustomDialogService);
   private translateService = inject(TranslateService);
@@ -236,6 +239,11 @@ export class StorageItemSelectorComponent implements OnInit {
   handleFolderSelection = (folder: StorageItem): void => {
     this.selectedStorageItem.set(folder);
     this.hasFolderChanged.set(folder?.itemId !== this.initiallySelectedStorageItem()?.itemId);
+    if (this.isGoogleFilePicker()) {
+      setTimeout(() => {
+        this.addFilesPicker()?.createPicker();
+      }, 1000);
+    }
   };
 
   private updateBreadcrumbs(
