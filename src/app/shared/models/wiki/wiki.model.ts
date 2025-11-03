@@ -58,6 +58,15 @@ export interface WikiGetResponse {
   };
 }
 
+export interface WikiRenameResponse {
+  id: string;
+  type: string;
+  attributes: {
+    name: string;
+    kind: string;
+  };
+}
+
 export interface ComponentsWikiGetResponse {
   id: string;
   type: string;

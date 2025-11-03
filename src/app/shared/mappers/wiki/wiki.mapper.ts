@@ -4,6 +4,7 @@ import {
   HomeWikiGetResponse,
   WikiGetResponse,
   WikiModel,
+  WikiRenameResponse,
   WikiVersion,
   WikiVersionJsonApi,
 } from '@osf/shared/models/wiki/wiki.model';
@@ -15,6 +16,14 @@ export class WikiMapper {
       id: response.id,
       name: response.attributes.name,
       kind: response.attributes.kind,
+    };
+  }
+
+  static fromRenameWikiResponse(data: WikiRenameResponse): WikiModel {
+    return {
+      id: data.id,
+      name: data.attributes.name,
+      kind: data.attributes.kind,
     };
   }
 

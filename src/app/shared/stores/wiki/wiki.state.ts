@@ -17,6 +17,7 @@ import {
   GetWikiList,
   GetWikiVersionContent,
   GetWikiVersions,
+  RenameWiki,
   SetCurrentWiki,
   ToggleMode,
   UpdateWikiPreviewContent,
@@ -51,6 +52,33 @@ export class WikiState {
           currentWikiId: wiki.id,
         });
       }),
+      catchError((error) => this.handleError(ctx, error))
+    );
+  }
+
+  @Action(RenameWiki)
+  renameWiki(ctx: StateContext<WikiStateModel>, action: RenameWiki) {
+    const state = ctx.getState();
+    ctx.patchState({
+      wikiList: {
+        ...state.wikiList,
+        isSubmitting: true,
+      },
+    });
+    return this.wikiService.RenameWiki(action.wikiId, action.name).pipe(
+      tap((wiki) => {
+        const updatedWiki = wiki.id === action.wikiId ? { ...wiki, name: action.name } : wiki;
+        const updatedList = state.wikiList.data.map((w) => (w.id === updatedWiki.id ? updatedWiki : w));
+        ctx.patchState({
+          wikiList: {
+            ...state.wikiList,
+            data: [...updatedList],
+            isSubmitting: false,
+          },
+          currentWikiId: updatedWiki.id,
+        });
+      }),
+      map((wiki) => wiki || { id: action.wikiId, name: action.name }),
       catchError((error) => this.handleError(ctx, error))
     );
   }
