@@ -1,11 +1,11 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { map, of } from 'rxjs';
+import { filter, map, of } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, inject, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentProvider } from '@core/store/provider';
@@ -15,6 +15,7 @@ import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { GetRegistryById, RegistryOverviewSelectors } from './store/registry-overview';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 @Component({
   selector: 'osf-registry',
@@ -40,11 +41,12 @@ export class RegistryComponent implements OnDestroy {
   });
 
   private registryId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
-
+  readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
   readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
   readonly registry$ = toObservable(select(RegistryOverviewSelectors.getRegistry));
   readonly analyticsService = inject(AnalyticsService);
+  readonly router = inject(Router);
 
   constructor() {
     effect(() => {
@@ -60,6 +62,18 @@ export class RegistryComponent implements OnDestroy {
     });
 
     this.dataciteService.logIdentifiableView(this.registry$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((event: NavigationEnd) => {
+        this.analyticsService.sendCountedUsageForRegistrationAndProjects(
+          event.urlAfterRedirects,
+          this.currentResource()
+        );
+      });
   }
 
   ngOnDestroy(): void {

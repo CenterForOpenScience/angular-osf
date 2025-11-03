@@ -2,16 +2,13 @@ import { Actions, createDispatchMap, ofActionSuccessful, select } from '@ngxs/st
 
 import { filter, take } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
-import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
-import { AnalyticsService } from '@osf/shared/services/analytics.service';
-import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { ConfirmEmailComponent } from './shared/components/confirm-email/confirm-email.component';
 import { FullScreenLoaderComponent } from './shared/components/full-screen-loader/full-screen-loader.component';
@@ -34,16 +31,9 @@ export class AppComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly environment = inject(ENVIRONMENT);
   private readonly actions$ = inject(Actions);
-  private readonly analyticsService = inject(AnalyticsService);
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
 
   unverifiedEmails = select(UserEmailsSelectors.getUnverifiedEmails);
-  currentResource = select(CurrentResourceSelectors.getCurrentResource);
-  isProjectOrRegistration = computed(
-    () =>
-      this.currentResource()?.type === CurrentResourceType.Projects ||
-      this.currentResource()?.type === CurrentResourceType.Registrations
-  );
 
   constructor() {
     effect(() => {
@@ -72,43 +62,6 @@ export class AppComponent implements OnInit {
             pageName: event.urlAfterRedirects,
           });
         });
-    }
-
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((event: NavigationEnd) => {
-        this.sendCountedUsageForRegistrationAndProjects(event.urlAfterRedirects);
-      });
-  }
-
-  sendCountedUsageForRegistrationAndProjects(urlPath: string) {
-    const detailsPaths = [
-      '/overview',
-      '/metadata/osf',
-      '/files',
-      '/resources',
-      '/wiki',
-      '/components',
-      '/contributors',
-      '/links',
-      '/analytics',
-      '/recent-activity',
-    ];
-    // check if it is detail page tab is opened for Project or Registration to log into metrics
-    if (this.isProjectOrRegistration() && detailsPaths.some((path) => urlPath.endsWith(path))) {
-      const resource = this.currentResource();
-      let route = urlPath.split('/').filter(Boolean).join('.');
-
-      if (resource?.type) {
-        route = `${resource?.type}.${route}`;
-      }
-
-      if (resource) {
-        this.analyticsService.sendCountedUsage(resource, route).subscribe();
-      }
     }
   }
 

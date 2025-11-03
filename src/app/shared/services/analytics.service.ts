@@ -45,4 +45,14 @@ export class AnalyticsService {
     const payload = this.getPageviewPayload(resource, route);
     return this.jsonApiService.post<void>(this.apiDomainUrl, payload);
   }
+
+  sendCountedUsageForRegistrationAndProjects(urlPath: string, resource: CurrentResource | null) {
+    if (resource) {
+      let route = urlPath.split('/').filter(Boolean).join('.');
+      if (resource?.type) {
+        route = `${resource?.type}.${route}`;
+      }
+      this.sendCountedUsage(resource, route).subscribe();
+    }
+  }
 }
