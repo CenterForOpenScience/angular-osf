@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { ProjectComponent } from './project.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 describe('Component: Project', () => {
   let component: ProjectComponent;
