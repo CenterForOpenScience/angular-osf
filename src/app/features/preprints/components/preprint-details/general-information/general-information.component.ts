@@ -17,6 +17,7 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import {
   ContributorsSelectors,
   GetBibliographicContributors,
@@ -39,6 +40,7 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
     IconComponent,
     AffiliatedInstitutionsViewComponent,
     ContributorsListComponent,
+    FixSpecialCharPipe,
   ],
   templateUrl: './general-information.component.html',
   styleUrl: './general-information.component.scss',

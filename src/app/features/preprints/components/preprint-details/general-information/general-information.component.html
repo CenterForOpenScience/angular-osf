@@ -34,7 +34,7 @@
               <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noData' | translate }}</p>
             }
             @case (ApplicabilityStatus.Unavailable) {
-              {{ preprintValue.whyNoData }}
+              {{ preprintValue.whyNoData | fixSpecialChar }}
             }
             @case (ApplicabilityStatus.Applicable) {
               @for (link of preprintValue.dataLinks; track $index) {
@@ -46,7 +46,7 @@
 
         <section class="flex flex-column gap-2">
           <h3>
-            {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }}
+            {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }} eeee
           </h3>
 
           @switch (preprintValue.hasPreregLinks) {
@@ -56,7 +56,7 @@
               </p>
             }
             @case (ApplicabilityStatus.Unavailable) {
-              {{ preprintValue.whyNoPrereg }}
+              {{ preprintValue.whyNoPrereg | fixSpecialChar }}
             }
             @case (ApplicabilityStatus.Applicable) {
               @switch (preprintValue.preregLinkInfo) {
@@ -101,7 +101,7 @@
           <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
 
           @if (preprintValue.hasCoi) {
-            {{ preprintValue.coiStatement }}
+            {{ preprintValue.coiStatement | fixSpecialChar }}
           } @else {
             <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
           }
