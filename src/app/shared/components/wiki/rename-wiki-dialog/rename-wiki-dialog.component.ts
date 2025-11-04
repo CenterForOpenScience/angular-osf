@@ -32,7 +32,7 @@ export class RenameWikiDialogComponent {
   inputLimits = InputLimits;
 
   renameWikiForm = new FormGroup({
-    name: new FormControl('', {
+    name: new FormControl(this.config.data.wikiName, {
       nonNullable: true,
       validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(InputLimits.fullName.maxLength)],
     }),
@@ -41,9 +41,9 @@ export class RenameWikiDialogComponent {
   submitForm(): void {
     if (this.renameWikiForm.valid) {
       this.actions.renameWiki(this.config.data.wikiId, this.renameWikiForm.value.name ?? '').subscribe({
-        next: (res) => {
+        next: () => {
           this.toastService.showSuccess('project.wiki.renameWikiSuccess');
-          this.dialogRef.close(res);
+          this.dialogRef.close(true);
         },
         error: (err) => {
           if (err?.status === 409) {

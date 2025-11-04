@@ -65,7 +65,7 @@ export class WikiState {
         isSubmitting: true,
       },
     });
-    return this.wikiService.RenameWiki(action.wikiId, action.name).pipe(
+    return this.wikiService.renameWiki(action.wikiId, action.name).pipe(
       tap((wiki) => {
         const updatedWiki = wiki.id === action.wikiId ? { ...wiki, name: action.name } : wiki;
         const updatedList = state.wikiList.data.map((w) => (w.id === updatedWiki.id ? updatedWiki : w));
@@ -78,7 +78,6 @@ export class WikiState {
           currentWikiId: updatedWiki.id,
         });
       }),
-      map((wiki) => wiki || { id: action.wikiId, name: action.name }),
       catchError((error) => this.handleError(ctx, error))
     );
   }

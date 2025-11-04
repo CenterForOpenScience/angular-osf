@@ -1909,9 +1909,7 @@
           "emailPlaceholder": "email@example.com"
         },
         "buttons": {
-          "cancel": "Cancel",
-          "add": "Add",
-          "rename": "Rename"
+          "cancel": "Cancel"
         },
         "messages": {
           "success": "Alternative email added successfully",

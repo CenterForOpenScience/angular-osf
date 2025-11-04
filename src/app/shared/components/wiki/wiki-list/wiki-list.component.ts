@@ -99,13 +99,14 @@ export class WikiListComponent {
       .onClose.subscribe(() => this.createWiki.emit());
   }
 
-  openRenameWikiDialog(wikiId: string) {
+  openRenameWikiDialog(wikiId: string, wikiName: string) {
     this.customDialogService
       .open(RenameWikiDialogComponent, {
         header: 'project.wiki.renameWiki',
         width: '448px',
         data: {
           wikiId: wikiId,
+          wikiName: wikiName,
         },
       })
       .onClose.subscribe(() => this.renameWiki.emit());

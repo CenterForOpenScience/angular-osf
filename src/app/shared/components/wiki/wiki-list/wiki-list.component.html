@@ -70,8 +70,10 @@
 
                       <p-button
                         icon="fas fa-pencil"
-                        styleClass="p-button-rounded p-button-text"
-                        (onClick)="openRenameWikiDialog(item.id); $event.stopPropagation()"
+                        [rounded]="true"
+                        variant="text"
+                        osfStopPropagation
+                        (onClick)="openRenameWikiDialog(item.id, item.label)"
                       >
                       </p-button>
                     </div>
