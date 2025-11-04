@@ -304,7 +304,6 @@ export class ContributorsState {
         )
       ),
       tap((users) => {
-        alert(JSON.stringify(users));
         const addedContributorsIds = state.contributorsList.data.map((contributor) => contributor.userId);
 
         ctx.patchState({
