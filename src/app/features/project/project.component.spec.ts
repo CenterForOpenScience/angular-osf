@@ -1,3 +1,5 @@
+import { NgxsModule } from '@ngxs/store';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -13,7 +15,7 @@ describe('Component: Project', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectComponent, OSFTestingModule],
+      imports: [ProjectComponent, OSFTestingModule, NgxsModule.forRoot([])],
       providers: [
         {
           provide: HelpScoutService,

@@ -3,10 +3,11 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { ResourceType } from '../enums/resource-type.enum';
 import { SparseCollectionsResponseJsonApi } from '../models/collections/collections-json-api.models';
+
+import { JsonApiService } from './json-api.service';
 
 @Injectable({
   providedIn: 'root',
