@@ -1,5 +1,3 @@
-import { Store } from '@ngxs/store';
-
 import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -13,21 +11,14 @@ import { TextInputComponent } from '../../text-input/text-input.component';
 
 import { RenameWikiDialogComponent } from './rename-wiki-dialog.component';
 
-import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
 import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RenameWikiDialogComponent', () => {
   let component: RenameWikiDialogComponent;
   let fixture: ComponentFixture<RenameWikiDialogComponent>;
 
   beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === WikiSelectors.getWikiSubmitting) {
-        return () => false;
-      }
-      return () => null;
-    });
-
     await TestBed.configureTestingModule({
       imports: [RenameWikiDialogComponent, MockComponent(TextInputComponent)],
       providers: [
@@ -40,7 +31,9 @@ describe('RenameWikiDialogComponent', () => {
           },
         }),
         MockProvider(ToastService),
-        MockProvider(Store, MOCK_STORE),
+        provideMockStore({
+          selectors: [{ selector: WikiSelectors.getWikiSubmitting, value: false }],
+        }),
       ],
     }).compileComponents();
 
