@@ -1,5 +1,3 @@
-import { NgxsModule } from '@ngxs/store';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -7,6 +5,8 @@ import { HelpScoutService } from '@core/services/help-scout.service';
 import { ProjectComponent } from './project.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 describe('Component: Project', () => {
   let component: ProjectComponent;
@@ -15,7 +15,7 @@ describe('Component: Project', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectComponent, OSFTestingModule, NgxsModule.forRoot([])],
+      imports: [ProjectComponent, OSFTestingModule],
       providers: [
         {
           provide: HelpScoutService,
@@ -24,6 +24,9 @@ describe('Component: Project', () => {
             unsetResourceType: jest.fn(),
           },
         },
+        provideMockStore({
+          signals: [{ selector: CurrentResourceSelectors.getCurrentResource, value: null }],
+        }),
       ],
     }).compileComponents();
 
