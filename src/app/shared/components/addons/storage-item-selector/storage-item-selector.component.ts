@@ -10,6 +10,8 @@ import { InputText } from 'primeng/inputtext';
 import { RadioButton } from 'primeng/radiobutton';
 import { Skeleton } from 'primeng/skeleton';
 
+import { timer } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -240,9 +242,9 @@ export class StorageItemSelectorComponent implements OnInit {
     this.selectedStorageItem.set(folder);
     this.hasFolderChanged.set(folder?.itemId !== this.initiallySelectedStorageItem()?.itemId);
     if (this.isGoogleFilePicker()) {
-      setTimeout(() => {
-        this.addFilesPicker()?.createPicker();
-      }, 1000);
+      timer(1000)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.addFilesPicker()?.createPicker());
     }
   };
 
