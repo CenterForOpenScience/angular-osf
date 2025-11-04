@@ -94,8 +94,9 @@ export class ContributorsService {
     );
   }
 
-  searchUsers(value: string, page = 1): Observable<PaginatedData<ContributorAddModel[]>> {
-    const baseUrl = `${this.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
+  searchUsers(value: string, page = 1, findById = false): Observable<PaginatedData<ContributorAddModel[]>> {
+    const filterParamName = findById ? 'id' : 'full_name';
+    const baseUrl = `${this.apiUrl}/users/?filter[${filterParamName}]=${value}&page=${page}`;
 
     return this.jsonApiService
       .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)

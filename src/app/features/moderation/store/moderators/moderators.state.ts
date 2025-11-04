@@ -1,6 +1,6 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, of, tap } from 'rxjs';
+import { catchError, iif, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -142,6 +142,13 @@ export class ModeratorsState {
     }
 
     return this.moderatorsService.searchUsers(action.searchValue, action.page).pipe(
+      switchMap((users) =>
+        iif(
+          () => users.data.length === 0 && action.searchValue?.length === 5,
+          this.moderatorsService.searchUsers(action.searchValue || '', 1, true),
+          of(users)
+        )
+      ),
       tap((users) => {
         ctx.patchState({
           users: {

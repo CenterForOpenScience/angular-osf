@@ -84,8 +84,9 @@ export class ModeratorsService {
     return this.jsonApiService.delete(baseUrl);
   }
 
-  searchUsers(value: string, page = 1): Observable<PaginatedData<ModeratorAddModel[]>> {
-    const baseUrl = `${this.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
+  searchUsers(value: string, page = 1, findById = false): Observable<PaginatedData<ModeratorAddModel[]>> {
+    const filterParamName = findById ? 'id' : 'full_name';
+    const baseUrl = `${this.apiUrl}/users/?filter[${filterParamName}]=${value}&page=${page}`;
 
     return this.jsonApiService
       .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)

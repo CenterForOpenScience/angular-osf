@@ -1,6 +1,6 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, of, tap } from 'rxjs';
+import { catchError, iif, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -296,7 +296,15 @@ export class ContributorsState {
     }
 
     return this.contributorsService.searchUsers(action.searchValue, action.page).pipe(
+      switchMap((users) =>
+        iif(
+          () => users.data.length === 0 && action.searchValue?.length === 5,
+          this.contributorsService.searchUsers(action.searchValue || '', 1, true),
+          of(users)
+        )
+      ),
       tap((users) => {
+        alert(JSON.stringify(users));
         const addedContributorsIds = state.contributorsList.data.map((contributor) => contributor.userId);
 
         ctx.patchState({
