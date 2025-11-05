@@ -118,7 +118,9 @@ export class PreprintWithdrawalSubmissionsComponent implements OnInit {
 
   navigateToPreprint(item: PreprintWithdrawalSubmission) {
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/preprints/', this.providerId(), item.id], { queryParams: { mode: 'moderator' } })
+      this.router.createUrlTree(['/preprints/', this.providerId(), item.preprintId], {
+        queryParams: { mode: 'moderator' },
+      })
     );
 
     window.open(url, '_blank');
