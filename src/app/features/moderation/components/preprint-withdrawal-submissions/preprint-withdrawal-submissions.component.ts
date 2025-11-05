@@ -94,6 +94,8 @@ export class PreprintWithdrawalSubmissionsComponent implements OnInit {
   }
 
   changeReviewStatus(value: SubmissionReviewStatus): void {
+    if (!value) return;
+
     this.selectedReviewOption.set(value);
     this.router.navigate([], {
       relativeTo: this.route,
