@@ -3,7 +3,7 @@ import { Card } from 'primeng/card';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
-import { SubjectModel } from '@osf/shared/models';
+import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 
 @Component({
   selector: 'osf-metadata-subjects',

@@ -37,7 +37,7 @@
         </td>
         <td>
           <div>
-            @if (isCurrentUserAdminModerator()) {
+            @if (hasAdminAccess()) {
               <osf-select
                 [options]="permissionsOptions"
                 [placeholder]="'project.contributors.permissionFilter'"
@@ -89,7 +89,7 @@
           </div>
         </td>
         <td>
-          @if (isCurrentUserAdminModerator() || currentUserId() === item.id) {
+          @if (hasAdminAccess() || currentUserId() === item.id) {
             <p-button
               class="danger-icon-btn"
               icon="fas fa-trash"
@@ -97,7 +97,7 @@
               text
               (onClick)="removeModerator(item)"
               [ariaLabel]="'common.buttons.delete' | translate"
-              [disabled]="!isCurrentUserAdminModerator() && currentUserId() !== item.id"
+              [disabled]="!hasAdminAccess() && currentUserId() !== item.id"
             />
           }
         </td>

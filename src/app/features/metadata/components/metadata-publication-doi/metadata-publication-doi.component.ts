@@ -5,8 +5,8 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-import { ResourceType } from '@osf/shared/enums';
-import { Identifier } from '@osf/shared/models';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 
 @Component({
   selector: 'osf-metadata-publication-doi',
@@ -17,7 +17,7 @@ import { Identifier } from '@osf/shared/models';
 export class MetadataPublicationDoiComponent {
   openEditPublicationDoiDialog = output<void>();
 
-  identifiers = input<Identifier[]>([]);
+  identifiers = input<IdentifierModel[]>([]);
   hideEditDoi = input<boolean>(false);
   publicationDoi = input<string | null>(null);
   resourceType = input<ResourceType>(ResourceType.Project);

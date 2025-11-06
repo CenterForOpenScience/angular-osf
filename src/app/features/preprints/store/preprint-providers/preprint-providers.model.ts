@@ -1,4 +1,5 @@
-import { AsyncStateModel, SubjectModel } from '@shared/models';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 
 import { PreprintProviderDetails, PreprintProviderShortInfo } from '../../models';
 

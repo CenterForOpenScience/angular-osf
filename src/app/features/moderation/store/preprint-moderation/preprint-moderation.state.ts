@@ -5,10 +5,11 @@ import { catchError, forkJoin, map, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { handleSectionError } from '@osf/shared/helpers';
-import { ContributorsService } from '@osf/shared/services';
+import { SetCurrentProvider } from '@core/store/provider';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { ContributorsService } from '@osf/shared/services/contributors.service';
 
 import { PreprintSubmissionModel, PreprintWithdrawalSubmission } from '../../models';
 import { PreprintModerationService } from '../../services';
@@ -21,6 +22,8 @@ import {
   GetPreprintSubmissions,
   GetPreprintWithdrawalSubmissionContributors,
   GetPreprintWithdrawalSubmissions,
+  LoadMorePreprintSubmissionContributors,
+  LoadMorePreprintWithdrawalSubmissionContributors,
 } from './preprint-moderation.actions';
 import { PREPRINT_MODERATION_STATE_DEFAULTS, PreprintModerationStateModel } from './preprint-moderation.model';
 
@@ -92,6 +95,16 @@ export class PreprintModerationState {
       tap((data) => {
         const exists = ctx.getState().preprintProviders.data.some((p) => p.id === data.id);
 
+        ctx.dispatch(
+          new SetCurrentProvider({
+            id: data.id,
+            name: data.name,
+            type: CurrentResourceType.Preprints,
+            permissions: data.permissions,
+            reviewsWorkflow: data.reviewsWorkflow,
+          })
+        );
+
         ctx.setState(
           patch({
             preprintProviders: patch({
@@ -161,12 +174,12 @@ export class PreprintModerationState {
   @Action(GetPreprintSubmissionContributors)
   getPreprintSubmissionContributors(
     ctx: StateContext<PreprintModerationStateModel>,
-    { preprintId }: GetPreprintSubmissionContributors
+    { preprintId, page }: GetPreprintSubmissionContributors
   ) {
     const state = ctx.getState();
     const submission = state.submissions.data.find((s) => s.id === preprintId);
 
-    if (submission?.contributors && submission.contributors.length > 0) {
+    if (submission?.contributors && submission.contributors.length > 0 && page === 1) {
       return;
     }
 
@@ -182,18 +195,23 @@ export class PreprintModerationState {
     );
 
     return this.contributorsService
-      .getBibliographicContributors(ResourceType.Preprint, preprintId, 1, DEFAULT_TABLE_PARAMS.rows)
+      .getBibliographicContributors(ResourceType.Preprint, preprintId, page, DEFAULT_TABLE_PARAMS.rows)
       .pipe(
         tap((res) => {
+          const currentSubmission = state.submissions.data.find((s) => s.id === preprintId);
+          const existingContributors = currentSubmission?.contributors || [];
+          const newContributors = page === 1 ? res.data : [...existingContributors, ...res.data];
+
           ctx.setState(
             patch({
               submissions: patch({
                 data: updateItem<PreprintSubmissionModel>(
                   (submission) => submission.id === preprintId,
                   patch({
-                    contributors: res.data,
+                    contributors: newContributors,
                     totalContributors: res.totalCount,
                     contributorsLoading: false,
+                    contributorsPage: page,
                   })
                 ),
               }),
@@ -220,12 +238,12 @@ export class PreprintModerationState {
   @Action(GetPreprintWithdrawalSubmissionContributors)
   getPreprintWithdrawalSubmissionContributors(
     ctx: StateContext<PreprintModerationStateModel>,
-    { submissionId, preprintId }: GetPreprintWithdrawalSubmissionContributors
+    { submissionId, preprintId, page }: GetPreprintWithdrawalSubmissionContributors
   ) {
     const state = ctx.getState();
     const submission = state.withdrawalSubmissions.data.find((s) => s.id === submissionId);
 
-    if (submission?.contributors && submission.contributors.length > 0) {
+    if (submission?.contributors && submission.contributors.length > 0 && page === 1) {
       return;
     }
 
@@ -241,18 +259,23 @@ export class PreprintModerationState {
     );
 
     return this.contributorsService
-      .getBibliographicContributors(ResourceType.Preprint, preprintId, 1, DEFAULT_TABLE_PARAMS.rows)
+      .getBibliographicContributors(ResourceType.Preprint, preprintId, page, DEFAULT_TABLE_PARAMS.rows)
       .pipe(
         tap((res) => {
+          const currentSubmission = state.withdrawalSubmissions.data.find((s) => s.id === submissionId);
+          const existingContributors = currentSubmission?.contributors || [];
+          const newContributors = page === 1 ? res.data : [...existingContributors, ...res.data];
+
           ctx.setState(
             patch({
               withdrawalSubmissions: patch({
                 data: updateItem<PreprintWithdrawalSubmission>(
                   (submission) => submission.id === submissionId,
                   patch({
-                    contributors: res.data,
+                    contributors: newContributors,
                     totalContributors: res.totalCount,
                     contributorsLoading: false,
+                    contributorsPage: page,
                   })
                 ),
               }),
@@ -274,5 +297,31 @@ export class PreprintModerationState {
           return handleSectionError(ctx, 'withdrawalSubmissions', error);
         })
       );
+  }
+
+  @Action(LoadMorePreprintSubmissionContributors)
+  loadMorePreprintSubmissionContributors(
+    ctx: StateContext<PreprintModerationStateModel>,
+    { preprintId }: LoadMorePreprintSubmissionContributors
+  ) {
+    const state = ctx.getState();
+    const submission = state.submissions.data.find((s) => s.id === preprintId);
+    const currentPage = submission?.contributorsPage || 1;
+    const nextPage = currentPage + 1;
+
+    return ctx.dispatch(new GetPreprintSubmissionContributors(preprintId, nextPage));
+  }
+
+  @Action(LoadMorePreprintWithdrawalSubmissionContributors)
+  loadMorePreprintWithdrawalSubmissionContributors(
+    ctx: StateContext<PreprintModerationStateModel>,
+    { submissionId, preprintId }: LoadMorePreprintWithdrawalSubmissionContributors
+  ) {
+    const state = ctx.getState();
+    const submission = state.withdrawalSubmissions.data.find((s) => s.id === submissionId);
+    const currentPage = submission?.contributorsPage || 1;
+    const nextPage = currentPage + 1;
+
+    return ctx.dispatch(new GetPreprintWithdrawalSubmissionContributors(submissionId, preprintId, nextPage));
   }
 }

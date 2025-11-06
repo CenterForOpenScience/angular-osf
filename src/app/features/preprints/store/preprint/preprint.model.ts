@@ -1,17 +1,19 @@
 import { ReviewAction } from '@osf/features/moderation/models';
-import { Preprint, PreprintRequestAction, PreprintShortInfo } from '@osf/features/preprints/models';
-import { PreprintRequest } from '@osf/features/preprints/models/preprint-request.models';
-import { AsyncStateModel, AsyncStateWithTotalCount, FileModel, FileVersionModel } from '@shared/models';
+import { FileModel } from '@osf/shared/models/files/file.model';
+import { FileVersionModel } from '@osf/shared/models/files/file-version.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+
+import { PreprintMetrics, PreprintModel, PreprintRequest, PreprintRequestAction } from '../../models';
 
 export interface PreprintStateModel {
-  myPreprints: AsyncStateWithTotalCount<PreprintShortInfo[]>;
-  preprint: AsyncStateModel<Preprint | null>;
+  preprint: AsyncStateModel<PreprintModel | null>;
   preprintFile: AsyncStateModel<FileModel | null>;
   fileVersions: AsyncStateModel<FileVersionModel[]>;
   preprintVersionIds: AsyncStateModel<string[]>;
   preprintReviewActions: AsyncStateModel<ReviewAction[]>;
   preprintRequests: AsyncStateModel<PreprintRequest[]>;
   preprintRequestsActions: AsyncStateModel<PreprintRequestAction[]>;
+  metrics: AsyncStateModel<PreprintMetrics | null>;
 }
 
 export const DefaultState: PreprintStateModel = {
@@ -21,11 +23,11 @@ export const DefaultState: PreprintStateModel = {
     error: null,
     isSubmitting: false,
   },
-  myPreprints: {
-    data: [],
+  metrics: {
+    data: null,
     isLoading: false,
     error: null,
-    totalCount: 0,
+    isSubmitting: false,
   },
   preprintFile: {
     data: null,

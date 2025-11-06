@@ -1,4 +1,5 @@
-import { AsyncStateModel, LicenseModel } from '@osf/shared/models';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface LicensesStateModel {
   licenses: AsyncStateModel<LicenseModel[]>;

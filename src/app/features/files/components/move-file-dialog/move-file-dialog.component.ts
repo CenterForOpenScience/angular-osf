@@ -20,12 +20,23 @@ import {
   SetCurrentFolder,
   SetMoveDialogCurrentFolder,
 } from '@osf/features/files/store';
-import { FileKind, ResourceType, SupportedFeature } from '@osf/shared/enums';
+import { FileSelectDestinationComponent } from '@osf/shared/components/file-select-destination/file-select-destination.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
+import { FileKind } from '@osf/shared/enums/file-kind.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
-import { FileFolderModel, FileModel } from '@osf/shared/models';
-import { CurrentResourceSelectors, GetResourceDetails, GetResourceWithChildren } from '@osf/shared/stores';
-import { FileSelectDestinationComponent, IconComponent, LoadingSpinnerComponent } from '@shared/components';
-import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { FilesService } from '@osf/shared/services/files.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import {
+  CurrentResourceSelectors,
+  GetResourceDetails,
+  GetResourceWithChildren,
+} from '@osf/shared/stores/current-resource';
+import { FileModel } from '@shared/models/files/file.model';
+import { FileFolderModel } from '@shared/models/files/file-folder.model';
 
 import { FileProvider } from '../../constants';
 
@@ -33,11 +44,11 @@ import { FileProvider } from '../../constants';
   selector: 'osf-move-file-dialog',
   imports: [
     Button,
-    LoadingSpinnerComponent,
     Tooltip,
     TranslatePipe,
-    IconComponent,
     ScrollerModule,
+    IconComponent,
+    LoadingSpinnerComponent,
     FileSelectDestinationComponent,
   ],
   templateUrl: './move-file-dialog.component.html',
@@ -182,6 +193,8 @@ export class MoveFileDialogComponent {
     }
 
     this.isFilesUpdating.set(true);
+    const headerKey = this.isMoveAction ? 'files.dialogs.moveFile.movingHeader' : 'files.dialogs.moveFile.copingHeader';
+    this.config.header = this.translateService.instant(headerKey);
     const action = this.config.data.action;
     const files: FileModel[] = this.config.data.files;
     const totalFiles = files.length;
@@ -209,6 +222,7 @@ export class MoveFileDialogComponent {
                 this.openReplaceMoveDialog(conflictFiles, path, action);
               } else {
                 this.showToast(action);
+                this.config.header = this.translateService.instant('files.dialogs.moveFile.title');
                 this.completeMove();
               }
             }

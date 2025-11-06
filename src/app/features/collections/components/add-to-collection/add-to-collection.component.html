@@ -32,6 +32,7 @@
         />
 
         <osf-project-contributors-step
+          [projectId]="selectedProject()?.id"
           [stepperActiveValue]="stepperActiveValue()"
           [targetStepValue]="AddToCollectionSteps.ProjectContributors"
           [isDisabled]="isProjectContributorsDisabled()"

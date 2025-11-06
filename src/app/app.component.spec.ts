@@ -12,11 +12,12 @@ import { CookieConsentBannerComponent } from '@core/components/osf-banners/cooki
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser, UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
-import { CustomDialogService } from '@shared/services';
 
-import { TranslateServiceMock } from '../testing/mocks';
+import { TranslateServiceMock } from '../testing/mocks/translate.service.mock';
 
-import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
+import { FullScreenLoaderComponent } from './shared/components/full-screen-loader/full-screen-loader.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
+import { CustomDialogService } from './shared/services/custom-dialog.service';
 import { AppComponent } from './app.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';

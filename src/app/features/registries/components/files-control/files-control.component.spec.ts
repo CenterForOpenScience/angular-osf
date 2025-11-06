@@ -1,4 +1,4 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of, Subject } from 'rxjs';
 
@@ -6,7 +6,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
+import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { FilesService } from '@osf/shared/services/files.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { FilesControlComponent } from './files-control.component';
 
@@ -36,7 +41,11 @@ describe('Component: File Control', () => {
     mockCustomConfirmationService = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [FilesControlComponent, OSFTestingModule],
+      imports: [
+        FilesControlComponent,
+        OSFTestingModule,
+        ...MockComponents(LoadingSpinnerComponent, FileUploadDialogComponent),
+      ],
       providers: [
         MockProvider(FilesService, mockFilesService),
         MockProvider(CustomDialogService, mockDialogService),

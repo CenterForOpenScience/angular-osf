@@ -1,4 +1,4 @@
-import { Education } from '@shared/models';
+import { Education } from '@osf/shared/models/user/education.model';
 
 export const MOCK_EDUCATION: Education[] = [
   {

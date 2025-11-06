@@ -57,7 +57,8 @@
       "removeAll": "Remove All",
       "accept": "Accept",
       "reject": "Reject",
-      "loadMore": "Load more"
+      "loadMore": "Load more",
+      "seeMore": "See more"
     },
     "accessibility": {
       "help": "Help",
@@ -135,7 +136,13 @@
       "contributors": "Contributors",
       "updated": "Updated",
       "dateUpdated": "Date Updated",
-      "dateCreated": "Date Created"
+      "dateCreated": "Date Created",
+      "license": "License",
+      "noDoi": "No DOI",
+      "subjects": "Subjects",
+      "noLicense": "No License",
+      "affiliatedInstitutions": "Affiliated Institutions",
+      "noAffiliatedInstitutions": "No affiliated institutions"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -606,7 +613,8 @@
         "bibliographicContributor": "Bibliographic Contributor",
         "addUnregisteredContributor": "Add Unregistered Contributor",
         "addRegisteredContributor": "Add Registered Contributor",
-        "unregisteredContributorNotification": "We will notify the user that they have been added to your project"
+        "unregisteredContributorNotification": "We will notify the user that they have been added to your project",
+        "addingContributorsFromParentProject": "Import contributors from {{projectName}}"
       },
       "removeDialog": {
         "title": "Remove contributor",
@@ -718,7 +726,6 @@
         "supplementsText2": "on OSF Preprints",
         "dateCreated": "Date Created",
         "dateUpdated": "Date Updated",
-        "license": "License",
         "projectDOI": "Project DOI",
         "publicationDOI": "Publication DOI",
         "registrationDOI": "Registration DOI",
@@ -897,10 +904,13 @@
     },
     "wiki": {
       "addNewWiki": "Add new wiki page",
+      "renameWiki": "Rename wiki page",
       "deleteWiki": "Delete wiki page",
       "deleteWikiMessage": "Are you sure you want to delete this wiki page?",
       "addNewWikiPlaceholder": "New wiki name",
       "addWikiSuccess": "Wiki page has been added successfully",
+      "renameWikiSuccess": "Wiki page has been renamed successfully",
+      "renameWikiConflict": "That wiki name already exists.",
       "view": "View",
       "edit": "Edit",
       "compare": "Compare",
@@ -1157,7 +1167,9 @@
         "storage": "OSF Storage",
         "pathError": "Path is not specified!",
         "success": "Successfully moved.",
-        "noMovePermission": "Cannot move or copy to this file provider"
+        "noMovePermission": "Cannot move or copy to this file provider",
+        "movingHeader": "Moving...",
+        "copingHeader": "Coping..."
       },
       "copyFile": {
         "success": "File successfully copied."
@@ -1382,7 +1394,6 @@
         "title": "Title",
         "description": "Description",
         "chooseLicense": "Choose License",
-        "license": "License",
         "licensePlaceholder": "Select license",
         "tags": "Tags",
         "tagsPlaceholder": "Add tags here",
@@ -1469,7 +1480,8 @@
       "rejectSubmissionSuccess": "Submission has been rejected successfully",
       "forceWithdrawSuccess": "Submission has been force withdrawn successfully",
       "removeSuccess": "Submission has been withdrawn successfully",
-      "justificationPlaceholder": "Provide justification for withdrawal"
+      "justificationPlaceholder": "Provide justification for withdrawal",
+      "acceptWithdrawalSuccess": "Submission has been withdrawn successfully"
     },
     "submissionReview": {
       "submitted": "Submitted",
@@ -1910,8 +1922,7 @@
           "emailPlaceholder": "email@example.com"
         },
         "buttons": {
-          "cancel": "Cancel",
-          "add": "Add"
+          "cancel": "Cancel"
         },
         "messages": {
           "success": "Alternative email added successfully",
@@ -2223,7 +2234,6 @@
             "contributors": "Contributors",
             "authors": "Authors",
             "affiliatedInstitutions": "Affiliated Institutions",
-            "license": "License",
             "publicationDoi": "Publication DOI",
             "subjects": "Subjects",
             "tags": "Tags",
@@ -2744,7 +2754,6 @@
       "description": "Description:",
       "descriptionBold": "<span class=\"font-bold\">Description: </span>",
       "provider": "Provider:",
-      "license": "License:",
       "context": "Context",
       "registrationTemplate": "Registration Template:",
       "conflictOfInterestResponse": "Conflict of Interest response:",
@@ -2966,11 +2975,11 @@
       "fallbackWithoutNode": "{{user}} performed action \"{{action}}\""
     },
     "activities": {
-      "addon_added": "{{user}} added addon {{addon}} to {{node}}",
+      "addon_added": "{{user}} enabled {{addon}} to {{node}}",
       "addon_file_copied": "{{user}} copied {{source}} to {{destination}} in {{node}}",
       "addon_file_moved": "{{user}} moved {{source}} to {{destination}} in {{node}}",
       "addon_file_renamed": "{{user}} renamed {{source}} to {{destination}} in {{node}}",
-      "addon_removed": "{{user}} removed addon {{addon}} from {{node}}",
+      "addon_removed": "{{user}} disabled {{addon}} from {{node}}",
       "affiliated_institution_added": "{{user}} added {{institution}} affiliation to {{node}}",
       "affiliated_institution_removed": "{{user}} removed {{institution}} affiliation from {{node}}",
       "article_doi_updated": "{{user}} changed the article_doi of {{node}}",

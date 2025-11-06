@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { UserPermissions } from '@osf/shared/enums';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 import { ProjectOverviewStateModel } from './project-overview.model';
 import { ProjectOverviewState } from './project-overview.state';

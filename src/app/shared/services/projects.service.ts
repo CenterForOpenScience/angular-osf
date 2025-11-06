@@ -5,7 +5,9 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { ProjectsMapper } from '../mappers/projects';
-import { ProjectJsonApi, ProjectMetadataUpdatePayload, ProjectModel, ProjectsResponseJsonApi } from '../models';
+import { ProjectMetadataUpdatePayload } from '../models/project-metadata-update-payload.model';
+import { ProjectModel } from '../models/projects/projects.models';
+import { ProjectJsonApi, ProjectsResponseJsonApi } from '../models/projects/projects-json-api.models';
 
 import { JsonApiService } from './json-api.service';
 

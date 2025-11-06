@@ -30,7 +30,9 @@
               "cedar-artifact-viewer",
               "markdown-it-video",
               "ace-builds/src-noconflict/ext-language_tools",
-              "@traptitech/markdown-it-katex"
+              "@traptitech/markdown-it-katex",
+              "@citation-js/core",
+              "@citation-js/plugin-csl"
             ],
             "assets": [
               "src/favicon.ico",
@@ -48,7 +50,6 @@
             "styles": [
               "src/styles/styles.scss",
               "node_modules/primeflex/primeflex.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/ngx-markdown-editor/assets/highlight.js/agate.min.css"
             ],
             "stylePreprocessorOptions": {
@@ -74,7 +75,8 @@
                   "maximumError": "25kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true
             },
             "analyze-bundle": {
               "sourceMap": true,
@@ -147,15 +149,15 @@
             },
             "development": {
               "buildTarget": "osf:build:development",
-              "hmr": false
+              "hmr": true
             },
             "docker": {
               "buildTarget": "osf:build:docker",
-              "hmr": false
+              "hmr": true
             },
             "staging": {
               "buildTarget": "osf:build:staging",
-              "hmr": false
+              "hmr": true
             },
             "test": {
               "buildTarget": "osf:build:test",

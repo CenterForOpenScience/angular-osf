@@ -1,5 +1,4 @@
-import { RegistryResourceDataJsonApi } from '@osf/features/registry/models/resources/add-resource-response-json-api.model';
-import { RegistryResource } from '@osf/features/registry/models/resources/registry-resource.model';
+import { RegistryResource, RegistryResourceDataJsonApi } from '../models';
 
 export function MapRegistryResource(resource: RegistryResourceDataJsonApi): RegistryResource {
   return {

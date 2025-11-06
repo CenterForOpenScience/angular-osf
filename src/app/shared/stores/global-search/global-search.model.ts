@@ -1,6 +1,8 @@
-import { ResourceType } from '@osf/shared/enums';
-import { StringOrNull } from '@osf/shared/helpers';
-import { AsyncStateModel, DiscoverableFilter, FilterOption, ResourceModel } from '@osf/shared/models';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface GlobalSearchStateModel {
   resources: AsyncStateModel<ResourceModel[]>;

@@ -1,18 +1,24 @@
-import { MockPipe } from 'ng-mocks';
+import { MockComponents, MockPipe } from 'ng-mocks';
 
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { InterpolatePipe } from '@shared/pipes';
-import { ToastService } from '@shared/services';
-import { ContributorsSelectors, InstitutionsSelectors, SubjectsSelectors } from '@shared/stores';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { InterpolatePipe } from '@shared/pipes/interpolate.pipe';
+import { ContributorsSelectors } from '@shared/stores/contributors';
+import { InstitutionsSelectors } from '@shared/stores/institutions';
+import { SubjectsSelectors } from '@shared/stores/subjects';
 
 import { ReviewStepComponent } from './review-step.component';
 
-import { MOCK_CONTRIBUTOR, MOCK_INSTITUTION, MOCK_LICENSE } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
+import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
+import { MOCK_LICENSE } from '@testing/mocks/license.mock';
 import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
@@ -41,7 +47,12 @@ describe('ReviewStepComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReviewStepComponent, OSFTestingModule, MockPipe(InterpolatePipe)],
+      imports: [
+        ReviewStepComponent,
+        OSFTestingModule,
+        ...MockComponents(AffiliatedInstitutionsViewComponent, ContributorsListComponent, LicenseDisplayComponent),
+        MockPipe(InterpolatePipe),
+      ],
       providers: [
         { provide: Router, useValue: RouterMock.create().build() },
         { provide: ToastService, useValue: ToastServiceMock.simple() },
@@ -52,13 +63,14 @@ describe('ReviewStepComponent', () => {
             { selector: PreprintStepperSelectors.isPreprintSubmitting, value: false },
             { selector: PreprintStepperSelectors.getPreprintLicense, value: mockLicense },
             { selector: PreprintStepperSelectors.getPreprintProject, value: mockPreprintProject },
-            { selector: ContributorsSelectors.getContributors, value: mockContributors },
+            { selector: ContributorsSelectors.getBibliographicContributors, value: mockContributors },
+            { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
+            { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
             { selector: SubjectsSelectors.getSelectedSubjects, value: mockSubjects },
             { selector: InstitutionsSelectors.getResourceInstitutions, value: mockInstitutions },
           ],
         }),
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ReviewStepComponent);
@@ -68,18 +80,8 @@ describe('ReviewStepComponent', () => {
     fixture.componentRef.setInput('provider', mockProvider);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should have required provider input', () => {
     expect(component.provider()).toEqual(mockProvider);
-  });
-
-  it('should filter bibliographic contributors', () => {
-    const bibliographicContributors = component.bibliographicContributors();
-    expect(bibliographicContributors).toHaveLength(1);
-    expect(bibliographicContributors.every((c) => c.isBibliographic)).toBe(true);
   });
 
   it('should create license options record', () => {

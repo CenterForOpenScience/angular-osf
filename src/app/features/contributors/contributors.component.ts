@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { TableModule, TablePageEvent } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 
@@ -15,6 +15,7 @@ import {
   DestroyRef,
   effect,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -23,49 +24,62 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
   RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
-import { BIBLIOGRAPHY_OPTIONS, DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { findChangedItems } from '@osf/shared/helpers';
-import {
-  ComponentCheckboxItemModel,
-  ContributorDialogAddModel,
-  ContributorModel,
-  NodeShortInfoModel,
-  RequestAccessModel,
-  SelectOption,
-  TableParameters,
-  ViewOnlyLinkJsonApi,
-  ViewOnlyLinkModel,
-} from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ViewOnlyTableComponent } from '@osf/shared/components/view-only-table/view-only-table.component';
+import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants/contributors.constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { findChangedItems } from '@osf/shared/helpers/find-changed-items.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import {
   AcceptRequestAccess,
   AddContributor,
   BulkAddContributors,
+  BulkAddContributorsFromParentProject,
   BulkUpdateContributors,
   ContributorsSelectors,
-  CreateViewOnlyLink,
-  CurrentResourceSelectors,
   DeleteContributor,
-  DeleteViewOnlyLink,
-  FetchViewOnlyLinks,
   GetAllContributors,
   GetRequestAccessContributors,
-  GetResourceDetails,
-  GetResourceWithChildren,
+  LoadMoreContributors,
   RejectRequestAccess,
+  ResetContributorsState,
   UpdateBibliographyFilter,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
+} from '@osf/shared/stores/contributors';
+import {
+  CurrentResourceSelectors,
+  GetResourceDetails,
+  GetResourceWithChildren,
+} from '@osf/shared/stores/current-resource';
+import {
+  CreateViewOnlyLink,
+  DeleteViewOnlyLink,
+  FetchViewOnlyLinks,
   ViewOnlyLinkSelectors,
-} from '@osf/shared/stores';
+} from '@osf/shared/stores/view-only-links';
+import { ComponentCheckboxItemModel } from '@shared/models/component-checkbox-item.model';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
+import { NodeShortInfoModel } from '@shared/models/nodes/node-with-children.model';
+import { RequestAccessModel } from '@shared/models/request-access/request-access.model';
+import { SelectOption } from '@shared/models/select-option.model';
+import { TableParameters } from '@shared/models/table-parameters.model';
+import { ViewOnlyLinkModel } from '@shared/models/view-only-links/view-only-link.model';
+import { ViewOnlyLinkJsonApi } from '@shared/models/view-only-links/view-only-link-response.model';
 
 import { CreateViewLinkDialogComponent } from './components';
 import { ResourceInfoModel } from './models';
@@ -87,7 +101,7 @@ import { ResourceInfoModel } from './models';
   styleUrl: './contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContributorsComponent implements OnInit {
+export class ContributorsComponent implements OnInit, OnDestroy {
   searchControl = new FormControl<string>('');
 
   readonly destroyRef = inject(DestroyRef);
@@ -123,14 +137,15 @@ export class ContributorsComponent implements OnInit {
   readonly hasAdminAccess = select(CurrentResourceSelectors.hasResourceAdminAccess);
   readonly resourceAccessRequestEnabled = select(CurrentResourceSelectors.resourceAccessRequestEnabled);
   readonly currentUser = select(UserSelectors.getCurrentUser);
-  page = select(ContributorsSelectors.getContributorsPageNumber);
   pageSize = select(ContributorsSelectors.getContributorsPageSize);
+  isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,
     totalRecords: this.contributorsTotalCount(),
-    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
-    firstRowIndex: (this.page() - 1) * this.pageSize(),
+    paginator: false,
+    scrollable: true,
+    firstRowIndex: 0,
     rows: this.pageSize(),
   }));
 
@@ -153,12 +168,14 @@ export class ContributorsComponent implements OnInit {
     getViewOnlyLinks: FetchViewOnlyLinks,
     getResourceDetails: GetResourceDetails,
     getContributors: GetAllContributors,
+    loadMoreContributors: LoadMoreContributors,
     updateSearchValue: UpdateContributorsSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
+    bulkAddContributorsFromParentProject: BulkAddContributorsFromParentProject,
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
@@ -166,6 +183,7 @@ export class ContributorsComponent implements OnInit {
     acceptRequestAccess: AcceptRequestAccess,
     rejectRequestAccess: RejectRequestAccess,
     getResourceWithChildren: GetResourceWithChildren,
+    resetContributorsState: ResetContributorsState,
   });
 
   get hasChanges(): boolean {
@@ -185,6 +203,10 @@ export class ContributorsComponent implements OnInit {
     }
 
     this.setSearchSubscription();
+  }
+
+  ngOnDestroy(): void {
+    this.actions.resetContributorsState();
   }
 
   private setSearchSubscription() {
@@ -245,27 +267,32 @@ export class ContributorsComponent implements OnInit {
   }
 
   openAddContributorDialog() {
-    const addedContributorIds = this.initialContributors().map((x) => x.userId);
-    const rootParentId = this.resourceDetails().rootParentId ?? this.resourceId();
+    const resourceDetails = this.resourceDetails();
+    const resourceId = this.resourceId();
+    const rootParentId = resourceDetails.rootParentId ?? resourceId;
 
     this.loaderService.show();
 
     this.actions
-      .getResourceWithChildren(rootParentId, this.resourceId(), this.resourceType())
+      .getResourceWithChildren(rootParentId, resourceId, this.resourceType())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loaderService.hide();
 
-        const components = this.mapNodesToComponentCheckboxItems(this.resourceChildren(), this.resourceId());
+        const components = this.mapNodesToComponentCheckboxItems(this.resourceChildren(), resourceId);
 
         this.customDialogService
           .open(AddContributorDialogComponent, {
             header: 'project.contributors.addDialog.addRegisteredContributor',
             width: '448px',
             data: {
-              addedContributorIds,
               components,
-              resourceName: this.resourceDetails().title,
+              resourceName: resourceDetails.title,
+              parentResourceName: resourceDetails.parent?.title,
+              allowAddingContributorsFromParentProject:
+                this.resourceType() === ResourceType.Project &&
+                resourceDetails.rootParentId &&
+                resourceDetails.rootParentId !== resourceId,
             },
           })
           .onClose.pipe(
@@ -273,7 +300,9 @@ export class ContributorsComponent implements OnInit {
             takeUntilDestroyed(this.destroyRef)
           )
           .subscribe((res: ContributorDialogAddModel) => {
-            if (res.type === AddContributorType.Unregistered) {
+            if (res.type === AddContributorType.ParentProject) {
+              this.addContributorsFromParentProjectToComponents();
+            } else if (res.type === AddContributorType.Unregistered) {
               this.openAddUnregisteredContributorDialog();
             } else {
               this.addContributorsToComponents(res);
@@ -299,6 +328,13 @@ export class ContributorsComponent implements OnInit {
   private addContributorsToComponents(result: ContributorDialogAddModel): void {
     this.actions
       .bulkAddContributors(this.resourceId(), this.resourceType(), result.data, result.childNodeIds)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
+  }
+
+  private addContributorsFromParentProjectToComponents(): void {
+    this.actions
+      .bulkAddContributorsFromParentProject(this.resourceId(), this.resourceType())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
   }
@@ -383,11 +419,8 @@ export class ContributorsComponent implements OnInit {
     });
   }
 
-  pageChanged(event: TablePageEvent) {
-    const page = Math.floor(event.first / event.rows) + 1;
-    const pageSize = event.rows;
-
-    this.actions.getContributors(this.resourceId(), this.resourceType(), page, pageSize);
+  loadMoreContributors(): void {
+    this.actions.loadMoreContributors(this.resourceId(), this.resourceType());
   }
 
   createViewLink() {

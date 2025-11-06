@@ -11,23 +11,21 @@ import { Textarea } from 'primeng/textarea';
 import { tap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
-import {
-  ModerationDecisionFormControls,
-  RegistrationReviewStates,
-  ReviewActionTrigger,
-  RevisionReviewStates,
-  SchemaResponseActionTrigger,
-} from '@osf/shared/enums';
-import { DateAgoPipe } from '@osf/shared/pipes';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { ModerationDecisionFormControls } from '@osf/shared/enums/moderation-decision-form-controls.enum';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { ReviewActionTrigger, SchemaResponseActionTrigger } from '@osf/shared/enums/trigger-action.enum';
+import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 
 import { RegistryOverview } from '../../models';
-import { RegistryOverviewSelectors, SubmitDecision } from '../../store/registry-overview';
+import { RegistrySelectors, SubmitDecision } from '../../store/registry';
 
 @Component({
   selector: 'osf-registry-make-decision',
@@ -48,6 +46,8 @@ import { RegistryOverviewSelectors, SubmitDecision } from '../../store/registry-
 })
 export class RegistryMakeDecisionComponent {
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
+
   readonly config = inject(DynamicDialogConfig);
   readonly dialogRef = inject(DynamicDialogRef);
 
@@ -55,9 +55,9 @@ export class RegistryMakeDecisionComponent {
   readonly SchemaResponseActionTrigger = SchemaResponseActionTrigger;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
   readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
-  reviewActions = select(RegistryOverviewSelectors.getReviewActions);
+  reviewActions = select(RegistrySelectors.getReviewActions);
 
-  isSubmitting = select(RegistryOverviewSelectors.isReviewActionSubmitting);
+  isSubmitting = select(RegistrySelectors.isReviewActionSubmitting);
   requestForm!: FormGroup;
 
   actions = createDispatchMap({ submitDecision: SubmitDecision });
@@ -120,7 +120,7 @@ export class RegistryMakeDecisionComponent {
 
     this.requestForm
       .get(ModerationDecisionFormControls.Action)
-      ?.valueChanges.pipe(takeUntilDestroyed())
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((action) => {
         this.updateCommentValidators(action);
       });

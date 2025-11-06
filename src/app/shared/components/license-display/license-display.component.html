@@ -1,0 +1,15 @@
+@if (license()) {
+  <p-accordion>
+    <p-accordion-panel value="0">
+      <p-accordion-header class="p-0 justify-content-start gap-2">
+        <p class="font-normal" data-test-target-license-name>{{ license()!.name }}</p>
+      </p-accordion-header>
+
+      <p-accordion-content>
+        <p class="white-space-pre-line" data-test-target-license-text>
+          {{ license()!.text | interpolate: licenseOptions() }}
+        </p>
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
+}

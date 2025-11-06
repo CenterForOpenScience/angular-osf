@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountSettingsState } from '@osf/features/settings/account-settings/store';
+import { AccountSettingsState } from '../../store';
 
 import { CancelDeactivationComponent } from './cancel-deactivation.component';
 

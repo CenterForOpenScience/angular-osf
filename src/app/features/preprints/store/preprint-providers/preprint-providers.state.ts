@@ -8,8 +8,8 @@ import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentProvider } from '@core/store/provider';
 import { PreprintProvidersService } from '@osf/features/preprints/services';
-import { CurrentResourceType } from '@osf/shared/enums';
-import { handleSectionError } from '@osf/shared/helpers';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
 import {
   GetHighlightedSubjectsByProviderId,

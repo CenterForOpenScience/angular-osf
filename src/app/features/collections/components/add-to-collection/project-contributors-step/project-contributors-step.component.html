@@ -42,7 +42,9 @@
           [(contributors)]="projectContributors"
           [tableParams]="tableParams()"
           [isLoading]="isContributorsLoading()"
+          [isLoadingMore]="isLoadingMore()"
           (remove)="handleRemoveContributor($event)"
+          (loadMore)="loadMoreContributors()"
         ></osf-contributors-table>
 
         <div class="flex justify-content-end gap-3 mt-4 w-full">

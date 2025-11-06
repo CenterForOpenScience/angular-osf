@@ -1,0 +1,17 @@
+export const NEW_RELIC_CONFIG_MOCK = {
+  newRelicEnabled: true,
+  newRelicInitDistributedTracingEnabled: true,
+  newRelicInitPerformanceCaptureMeasures: true,
+  newRelicInitPrivacyCookiesEnabled: true,
+  newRelicInitAjaxDenyList: ['test-url'],
+  newRelicInfoBeacon: 'test-beacon',
+  newRelicInfoErrorBeacon: 'test-error-beacon',
+  newRelicInfoLicenseKey: 'test-license-key',
+  newRelicInfoApplicationID: 'test-app-id',
+  newRelicInfoSa: 1,
+  newRelicLoaderConfigAccountID: 'test-account-id',
+  newRelicLoaderConfigTrustKey: 'test-trust-key',
+  newRelicLoaderConfigAgentID: 'test-agent-id',
+  newRelicLoaderConfigLicenseKey: 'test-loader-license-key',
+  newRelicLoaderConfigApplicationID: 'test-loader-app-id',
+};

@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
-import { CollectionsSelectors } from '@shared/stores';
+import { CollectionsSelectors } from '@shared/stores/collections';
 
 import { CollectionMetadataStepComponent } from './collection-metadata-step.component';
 

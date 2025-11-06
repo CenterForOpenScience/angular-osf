@@ -1,10 +1,9 @@
 import {
-  Institution,
   InstitutionDataJsonApi,
   InstitutionsJsonApiResponse,
   InstitutionsWithMetaJsonApiResponse,
-  InstitutionsWithTotalCount,
-} from '@shared/models';
+} from '@osf/shared/models/institutions/institution-json-api.model';
+import { Institution, InstitutionsWithTotalCount } from '@osf/shared/models/institutions/institutions.models';
 
 export class InstitutionsMapper {
   static fromInstitutionsResponse(response: InstitutionsJsonApiResponse): Institution[] {

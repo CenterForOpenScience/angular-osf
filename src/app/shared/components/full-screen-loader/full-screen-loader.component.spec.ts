@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { LoaderService } from '@shared/services';
+import { LoaderService } from '@osf/shared/services/loader.service';
 
 import { FullScreenLoaderComponent } from './full-screen-loader.component';
 
-import { LoaderServiceMock } from '@testing/mocks';
+import { LoaderServiceMock } from '@testing/mocks/loader-service.mock';
 
 describe('FullScreenLoaderComponent', () => {
   let component: FullScreenLoaderComponent;

@@ -4,7 +4,7 @@ import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 
-import { ComponentCheckboxItemModel } from '@osf/shared/models';
+import { ComponentCheckboxItemModel } from '@osf/shared/models/component-checkbox-item.model';
 
 import { ComponentCheckboxItemComponent } from '../component-checkbox-item/component-checkbox-item.component';
 

@@ -1,7 +1,7 @@
 import { Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -9,12 +9,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Navigation, Router, UrlTree } from '@angular/router';
 
-import { SubHeaderComponent } from '@osf/shared/components';
+import { AddonSetupAccountFormComponent } from '@osf/shared/components/addons/addon-setup-account-form/addon-setup-account-form.component';
+import { AddonTermsComponent } from '@osf/shared/components/addons/addon-terms/addon-terms.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { AddonsSelectors } from '@shared/stores/addons';
 
 import { ConnectAddonComponent } from './connect-addon.component';
 
-import { MOCK_ADDON } from '@testing/mocks';
+import { MOCK_ADDON } from '@testing/mocks/addon.mock';
 
 describe.skip('ConnectAddonComponent', () => {
   let component: ConnectAddonComponent;
@@ -33,7 +35,11 @@ describe.skip('ConnectAddonComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ConnectAddonComponent, MockComponent(SubHeaderComponent), MockPipe(TranslatePipe)],
+      imports: [
+        ConnectAddonComponent,
+        ...MockComponents(SubHeaderComponent, AddonTermsComponent, AddonSetupAccountFormComponent),
+        MockPipe(TranslatePipe),
+      ],
       providers: [
         provideNoopAnimations(),
         MockProvider(Store, {

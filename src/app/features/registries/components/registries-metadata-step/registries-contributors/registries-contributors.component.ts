@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { TableModule, TablePageEvent } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 
 import { filter, map, of } from 'rxjs';
 
@@ -16,6 +16,7 @@ import {
   effect,
   inject,
   input,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -28,11 +29,13 @@ import {
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { AddContributorType, ResourceType } from '@osf/shared/enums';
-import { findChangedItems } from '@osf/shared/helpers';
-import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { findChangedItems } from '@osf/shared/helpers/find-changed-items.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import {
   AddContributor,
   BulkAddContributors,
@@ -40,7 +43,12 @@ import {
   ContributorsSelectors,
   DeleteContributor,
   GetAllContributors,
-} from '@osf/shared/stores';
+  LoadMoreContributors,
+  ResetContributorsState,
+} from '@osf/shared/stores/contributors';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 @Component({
   selector: 'osf-registries-contributors',
@@ -49,7 +57,7 @@ import {
   styleUrl: './registries-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistriesContributorsComponent implements OnInit {
+export class RegistriesContributorsComponent implements OnInit, OnDestroy {
   control = input.required<FormControl>();
 
   readonly destroyRef = inject(DestroyRef);
@@ -65,14 +73,15 @@ export class RegistriesContributorsComponent implements OnInit {
 
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
-  page = select(ContributorsSelectors.getContributorsPageNumber);
+  isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
   pageSize = select(ContributorsSelectors.getContributorsPageSize);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,
     totalRecords: this.contributorsTotalCount(),
-    paginator: this.contributorsTotalCount() > DEFAULT_TABLE_PARAMS.rows,
-    firstRowIndex: (this.page() - 1) * this.pageSize(),
+    paginator: false,
+    scrollable: true,
+    firstRowIndex: 0,
     rows: this.pageSize(),
   }));
 
@@ -82,6 +91,8 @@ export class RegistriesContributorsComponent implements OnInit {
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
     addContributor: AddContributor,
+    loadMoreContributors: LoadMoreContributors,
+    resetContributorsState: ResetContributorsState,
   });
 
   get hasChanges(): boolean {
@@ -96,6 +107,10 @@ export class RegistriesContributorsComponent implements OnInit {
 
   ngOnInit(): void {
     this.actions.getContributors(this.draftId(), ResourceType.DraftRegistration);
+  }
+
+  ngOnDestroy(): void {
+    this.actions.resetContributorsState();
   }
 
   onFocusOut() {
@@ -122,13 +137,10 @@ export class RegistriesContributorsComponent implements OnInit {
   }
 
   openAddContributorDialog() {
-    const addedContributorIds = this.initialContributors().map((x) => x.userId);
-
     this.customDialogService
       .open(AddContributorDialogComponent, {
         header: 'project.contributors.addDialog.addRegisteredContributor',
         width: '448px',
-        data: addedContributorIds,
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),
@@ -192,10 +204,7 @@ export class RegistriesContributorsComponent implements OnInit {
     });
   }
 
-  pageChanged(event: TablePageEvent) {
-    const page = Math.floor(event.first / event.rows) + 1;
-    const pageSize = event.rows;
-
-    this.actions.getContributors(this.draftId(), ResourceType.DraftRegistration, page, pageSize);
+  loadMoreContributors(): void {
+    this.actions.loadMoreContributors(this.draftId(), ResourceType.DraftRegistration);
   }
 }

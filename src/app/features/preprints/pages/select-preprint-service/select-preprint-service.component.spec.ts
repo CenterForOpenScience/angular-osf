@@ -4,11 +4,12 @@ import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
-import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { SubHeaderComponent } from '@shared/components';
-import { DecodeHtmlPipe } from '@shared/pipes';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DecodeHtmlPipe } from '@osf/shared/pipes/decode-html.pipe';
+
+import { PreprintProviderShortInfo } from '../../models';
+import { PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { PreprintStepperSelectors } from '../../store/preprint-stepper';
 
 import { SelectPreprintServiceComponent } from './select-preprint-service.component';
 

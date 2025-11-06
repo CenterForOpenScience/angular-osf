@@ -1,4 +1,5 @@
-import { ReviewActionPayload, ReviewActionPayloadJsonApi } from '../models/review-action';
+import { ReviewActionPayload } from '../models/review-action/review-action-payload.model';
+import { ReviewActionPayloadJsonApi } from '../models/review-action/review-action-payload-json-api.model';
 
 export class ReviewActionsMapper {
   static toReviewActionPayloadJsonApi(

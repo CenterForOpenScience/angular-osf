@@ -5,9 +5,10 @@ import { catchError, EMPTY, forkJoin, Observable, of, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { getResourceTypeStringFromEnum } from '@shared/helpers';
-import { FilterOperator, ResourcesData } from '@shared/models';
-import { GlobalSearchService } from '@shared/services';
+import { getResourceTypeStringFromEnum } from '@osf/shared/helpers/get-resource-types.helper';
+import { GlobalSearchService } from '@osf/shared/services/global-search.service';
+import { FilterOperatorOption } from '@shared/models/search/discaverable-filter.model';
+import { ResourcesData } from '@shared/models/search/resource.model';
 
 import {
   ClearFilterSearchResults,
@@ -303,7 +304,7 @@ export class GlobalSearchState {
 
       const firstOptionValue = options[0]?.value;
       const isOptionValueBoolean = firstOptionValue === 'true' || firstOptionValue === 'false';
-      if (filter?.operator === FilterOperator.IsPresent || isOptionValueBoolean) {
+      if (filter?.operator === FilterOperatorOption.IsPresent || isOptionValueBoolean) {
         if (firstOptionValue) {
           filtersParams[`cardSearchFilter[${key}][is-present]`] = firstOptionValue;
         }

@@ -4,16 +4,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CedarTemplateFormComponent } from '@osf/features/metadata/components';
-import { ResourceType } from '@osf/shared/enums';
-import { ToastService } from '@osf/shared/services';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ToastService } from '@osf/shared/services/toast.service';
 
-import { CedarMetadataDataTemplateJsonApi } from '../../models';
 import { MetadataSelectors } from '../../store';
 
 import { AddMetadataComponent } from './add-metadata.component';
 
-import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks';
+import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks/cedar-metadata-data-template-json-api.mock';
 import { MOCK_CEDAR_METADATA_RECORD_DATA } from '@testing/mocks/cedar-metadata-record.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
@@ -27,7 +27,7 @@ describe('AddMetadataComponent', () => {
   let activatedRoute: Partial<ActivatedRoute>;
   let toastService: ReturnType<ToastServiceMockBuilder['build']>;
 
-  const mockTemplate: CedarMetadataDataTemplateJsonApi = CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK;
+  const mockTemplate = CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK;
   const mockRecord = MOCK_CEDAR_METADATA_RECORD_DATA;
 
   const mockCedarTemplates = {

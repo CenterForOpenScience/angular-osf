@@ -4,12 +4,16 @@
     <meta charset="utf-8" />
     <title>OSF</title>
     <base href="/" />
+    <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <meta name="theme-color" content="#1976d2" />
-    <script src="assets/ace-builds/ace.js"></script>
+    <script src="assets/ace-builds/ace.js" defer></script>
+    <script src="assets/js/newrelic/newrelic.snippet.js"></script>
   </head>
   <body>
+    <script>
+      window.prerenderReady = false;
+    </script>
     <osf-root></osf-root>
   </body>
 </html>

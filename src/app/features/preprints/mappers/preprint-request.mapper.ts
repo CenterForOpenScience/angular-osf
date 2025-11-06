@@ -1,6 +1,7 @@
-import { PreprintRequestType } from '@osf/features/preprints/enums';
-import { PreprintRequest, PreprintRequestDataJsonApi } from '@osf/features/preprints/models';
-import { UserMapper } from '@osf/shared/mappers';
+import { UserMapper } from '@osf/shared/mappers/user';
+
+import { PreprintRequestType } from '../enums';
+import { PreprintRequest, PreprintRequestDataJsonApi } from '../models';
 
 export class PreprintRequestMapper {
   static toWithdrawPreprintPayload(preprintId: string, justification: string) {

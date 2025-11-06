@@ -11,18 +11,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MeetingsState } from '@osf/features/meetings/store';
-import { parseQueryFilterParams } from '@osf/shared/helpers';
-import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { DEFAULT_TABLE_PARAMS } from '@shared/constants';
-import { SortOrder } from '@shared/enums';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { parseQueryFilterParams } from '@osf/shared/helpers/http.helper';
+import { SortOrder } from '@shared/enums/sort-order.enum';
 
 import { MeetingsFeatureCardComponent } from '../../components';
 import { MEETINGS_FEATURE_CARDS, PARTNER_ORGANIZATIONS } from '../../constants';
+import { MeetingsState } from '../../store';
 
 import { MeetingsLandingComponent } from './meetings-landing.component';
 
-import { MOCK_MEETING } from '@testing/mocks';
+import { MOCK_MEETING } from '@testing/mocks/meeting.mock';
 
 const mockQueryParams = {
   page: 1,

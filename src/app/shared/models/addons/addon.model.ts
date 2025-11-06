@@ -7,6 +7,7 @@ export interface AddonModel {
   supportedFeatures?: string[];
   providerName?: string;
   credentialsFormat?: string;
+  configurableApiRoot?: boolean;
   authUrl?: string | null;
   authorizedCapabilities?: string[];
   authorizedOperationNames?: string[];

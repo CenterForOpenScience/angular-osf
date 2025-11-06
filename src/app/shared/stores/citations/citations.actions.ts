@@ -1,5 +1,5 @@
-import { ResourceType } from '@shared/enums';
-import { CustomCitationPayload } from '@shared/models';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import { CustomCitationPayload } from '@shared/models/citations/custom-citation-payload.model';
 
 export class GetDefaultCitations {
   static readonly type = '[Citations] Get Default Citations';

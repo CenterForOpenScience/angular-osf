@@ -7,14 +7,14 @@ import { ReviewAction } from '@osf/features/moderation/models';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintRequest } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { IconComponent } from '@shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { ModerationStatusBannerComponent } from './moderation-status-banner.component';
 
-import { MOCK_PROVIDER } from '@testing/mocks';
 import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
+import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
 import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';

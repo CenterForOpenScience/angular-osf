@@ -1,7 +1,7 @@
 import { provideStore, Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProviders } from 'ng-mocks';
+import { MockComponent, MockPipe, MockProviders } from 'ng-mocks';
 
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -13,13 +13,14 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 
 import { UserState } from '@osf/core/store/user';
-import { CustomConfirmationService } from '@shared/services';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 
 import { AccountSettingsState } from '../../store';
 
 import { TwoFactorAuthComponent } from './two-factor-auth.component';
 
-import { MockCustomConfirmationServiceProvider } from '@testing/mocks';
+import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 describe('TwoFactorAuthComponent', () => {
   let component: TwoFactorAuthComponent;
@@ -29,7 +30,7 @@ describe('TwoFactorAuthComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TwoFactorAuthComponent, MockPipe(TranslatePipe)],
+      imports: [TwoFactorAuthComponent, MockComponent(QRCodeComponent), MockPipe(TranslatePipe)],
       providers: [
         provideStore([UserState, AccountSettingsState]),
         provideHttpClient(),

@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceType } from '@shared/enums';
-import { ResourceModel } from '@shared/models';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import { ResourceModel } from '@shared/models/search/resource.model';
 
 import { UserSecondaryMetadataComponent } from './user-secondary-metadata.component';
 
-import { MOCK_AGENT_RESOURCE } from '@testing/mocks';
+import { MOCK_AGENT_RESOURCE } from '@testing/mocks/resource.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('UserSecondaryMetadataComponent', () => {

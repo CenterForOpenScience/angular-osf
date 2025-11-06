@@ -19,12 +19,13 @@
     [(contributors)]="contributors"
     [tableParams]="tableParams()"
     [isLoading]="isLoading()"
+    [isLoadingMore]="isLoadingMore()"
     [showEmployment]="false"
     [showEducation]="false"
     [hasAdminAccess]="hasAdminAccess()"
     [currentUserId]="currentUser()?.id"
     (remove)="removeContributor($event)"
-    (pageChanged)="pageChanged($event)"
+    (loadMore)="loadMoreContributors()"
   ></osf-contributors-table>
 
   @if (hasChanges) {

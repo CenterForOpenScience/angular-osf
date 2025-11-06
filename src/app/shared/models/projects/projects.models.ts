@@ -1,6 +1,6 @@
-import { StringOrNull } from '@osf/shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
-import { LicenseOptions } from '../license.model';
+import { LicenseOptions } from '../license/license.model';
 
 export interface ProjectModel {
   id: string;

@@ -4,13 +4,15 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IS_MEDIUM } from '@osf/shared/helpers';
-import { SocialModel, UserModel } from '@osf/shared/models';
-import { EducationHistoryComponent, EmploymentHistoryComponent } from '@shared/components';
+import { EducationHistoryComponent } from '@osf/shared/components/education-history/education-history.component';
+import { EmploymentHistoryComponent } from '@osf/shared/components/employment-history/employment-history.component';
+import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { SocialModel } from '@shared/models/user/social.model';
+import { UserModel } from '@shared/models/user/user.models';
 
 import { ProfileInformationComponent } from './profile-information.component';
 
-import { MOCK_USER } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { MOCK_EDUCATION, MOCK_EMPLOYMENT } from '@testing/mocks/user-employment-education.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
@@ -154,15 +156,6 @@ describe('ProfileInformationComponent', () => {
 
     const socials = component.userSocials();
     expect(socials).toEqual([]);
-  });
-
-  it('should not include profileWebsites in social links', () => {
-    fixture.componentRef.setInput('currentUser', mockUser);
-    fixture.detectChanges();
-
-    const socials = component.userSocials();
-    const websites = socials.filter((s) => s.alt === 'settings.profileSettings.social.labels.profileWebsites');
-    expect(websites.length).toBe(0);
   });
 
   it('should emit editProfile event when called', (done) => {

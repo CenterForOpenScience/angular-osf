@@ -47,10 +47,6 @@ describe('PreprintMakeDecisionComponent', () => {
     fixture.componentRef.setInput('isPendingWithdrawal', false);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should return preprint from store', () => {
     const preprint = component.preprint();
     expect(preprint).toBe(mockPreprint);

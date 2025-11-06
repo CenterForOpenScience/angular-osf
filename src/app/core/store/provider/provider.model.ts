@@ -1,4 +1,4 @@
-import { ProviderShortInfoModel } from '@osf/shared/models';
+import { ProviderShortInfoModel } from '@osf/shared/models/provider/provider.model';
 
 export interface ProviderStateModel {
   currentProvider: ProviderShortInfoModel | null;

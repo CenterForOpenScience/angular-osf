@@ -1,4 +1,3 @@
-import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { provideStore } from '@ngxs/store';
 
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,12 +11,14 @@ import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideZoneChange
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
-import { STATES } from '@core/constants';
-import { provideTranslation } from '@core/helpers';
+import { STATES } from '@core/constants/ngxs-states.constant';
+import { provideTranslation } from '@core/helpers/i18n.helper';
+import { authInterceptor } from '@core/interceptors/auth.interceptor';
+import { errorInterceptor } from '@core/interceptors/error.interceptor';
+import { viewOnlyInterceptor } from '@core/interceptors/view-only.interceptor';
 import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/provider/application.initialization.provider';
 import { SENTRY_PROVIDER } from '@core/provider/sentry.provider';
 
-import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
 import CustomPreset from './core/theme/custom-preset';
 import { routes } from './app.routes';
 
@@ -49,7 +50,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor])),
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
-    provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: true })),
+    provideStore(STATES),
     provideZoneChangeDetection({ eventCoalescing: true }),
     SENTRY_PROVIDER,
   ],

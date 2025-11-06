@@ -5,9 +5,9 @@ import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentProvider } from '@core/store/provider';
-import { CurrentResourceType } from '@osf/shared/enums';
-import { handleSectionError } from '@osf/shared/helpers';
-import { CollectionsService } from '@osf/shared/services';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { CollectionsService } from '@osf/shared/services/collections.service';
 
 import {
   ClearCollections,

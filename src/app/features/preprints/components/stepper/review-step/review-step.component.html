@@ -62,27 +62,30 @@
     <section class="flex flex-column gap-2">
       <h3>{{ 'common.labels.contributors' | translate }}</h3>
 
-      <osf-contributors-list [contributors]="bibliographicContributors()"></osf-contributors-list>
+      <osf-contributors-list
+        [contributors]="bibliographicContributors()"
+        [isLoading]="areContributorsLoading()"
+        [hasLoadMore]="hasMoreBibliographicContributors()"
+        (loadMoreContributors)="loadMoreContributors()"
+      ></osf-contributors-list>
     </section>
 
     @if (affiliatedInstitutions().length) {
-      <osf-affiliated-institutions-view data-test-preprint-institution-list [institutions]="affiliatedInstitutions()" />
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'common.labels.affiliatedInstitutions' | translate }}</h3>
+
+        <osf-affiliated-institutions-view
+          data-test-preprint-institution-list
+          [institutions]="affiliatedInstitutions()"
+        />
+      </section>
     }
 
     @if (license()) {
       <section class="license flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.license' | translate }}</h3>
+        <h3>{{ 'common.labels.license' | translate }}</h3>
 
-        <p-accordion>
-          <p-accordion-panel value="0">
-            <p-accordion-header class="p-0 justify-content-start gap-2">
-              <p class="font-normal">{{ license()?.name }}</p>
-            </p-accordion-header>
-            <p-accordion-content>
-              <p>{{ license()!.text | interpolate: licenseOptionsRecord() }}</p>
-            </p-accordion-content>
-          </p-accordion-panel>
-        </p-accordion>
+        <osf-license-display [license]="license()" [licenseOptions]="licenseOptionsRecord()" />
       </section>
     }
 

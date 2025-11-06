@@ -11,6 +11,7 @@ export interface AddonGetResponseJsonApi {
     wb_key: string;
     icon_url: string;
     redirect_url?: string;
+    configurable_api_root: boolean;
     [key: string]: unknown;
   };
   relationships: {

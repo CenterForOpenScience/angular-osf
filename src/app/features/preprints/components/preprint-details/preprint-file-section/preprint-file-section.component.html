@@ -1,13 +1,14 @@
 <section class="p-card p-card-body card gap-4 flex flex-1 file-section-height">
   @if (safeLink()) {
     <iframe
+      class="flex-1 border-none"
       [src]="safeLink()"
       (load)="isIframeLoading = false"
       [hidden]="isIframeLoading"
       [title]="'preprints.details.file.renderingDocument' | translate"
-      allowfullscreen=""
+      height="100%"
+      allowfullscreen="true"
       width="100%"
-      class="flex-1 border-none"
     ></iframe>
   }
   @if (isIframeLoading || isFileLoading()) {

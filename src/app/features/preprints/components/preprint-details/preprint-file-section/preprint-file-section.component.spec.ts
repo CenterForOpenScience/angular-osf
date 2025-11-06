@@ -6,8 +6,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers';
-import { LoadingSpinnerComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { PreprintFileSectionComponent } from './preprint-file-section.component';

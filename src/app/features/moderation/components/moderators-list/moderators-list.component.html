@@ -1,7 +1,7 @@
 <div class="flex flex-column gap-4 md:flex-row md:gap-6">
   <osf-search-input class="w-full" [control]="searchControl" [placeholder]="'common.search.title' | translate" />
 
-  @if (isCurrentUserAdminModerator()) {
+  @if (hasAdminAccess()) {
     <div class="ml-auto w-full md:w-4">
       <p-button
         class="w-full"
@@ -20,7 +20,7 @@
     [isLoading]="isModeratorsLoading()"
     [currentUserId]="currentUser()?.id"
     [tableParams]="tableParams()"
-    [isCurrentUserAdminModerator]="isCurrentUserAdminModerator()"
+    [hasAdminAccess]="hasAdminAccess()"
     (pageChanged)="pageChanged($event)"
     (update)="updateModerator($event)"
     (remove)="removeModerator($event)"

@@ -1,4 +1,4 @@
-import { CollectionSubmissionWithGuid } from '@shared/models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
 
 export const MOCK_COLLECTION_SUBMISSION_1: CollectionSubmissionWithGuid = {
   id: '1',

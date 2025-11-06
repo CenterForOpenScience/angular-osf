@@ -2,10 +2,10 @@ import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ShortRegistrationInfoComponent } from '@osf/features/registry/components/short-registration-info/short-registration-info.component';
-import { IconComponent } from '@shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { RegistryOverview } from '../../models';
+import { ShortRegistrationInfoComponent } from '../short-registration-info/short-registration-info.component';
 
 import { ArchivingMessageComponent } from './archiving-message.component';
 

@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
@@ -14,16 +13,17 @@ import { Router } from '@angular/router';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { ContributorsListComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { InterpolatePipe } from '@osf/shared/pipes';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
-  FetchSelectedSubjects,
-  GetAllContributors,
+  GetBibliographicContributors,
+  LoadMoreBibliographicContributors,
   ResetContributorsState,
-  SubjectsSelectors,
-} from '@osf/shared/stores';
+} from '@osf/shared/stores/contributors';
+import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
 
@@ -35,14 +35,10 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
     Skeleton,
     TranslatePipe,
     TruncatedTextComponent,
-    Accordion,
-    AccordionContent,
     Tag,
-    AccordionPanel,
-    AccordionHeader,
-    InterpolatePipe,
     DatePipe,
     ContributorsListComponent,
+    LicenseDisplayComponent,
   ],
   templateUrl: './preprint-tombstone.component.html',
   styleUrl: './preprint-tombstone.component.scss',
@@ -53,10 +49,11 @@ export class PreprintTombstoneComponent implements OnDestroy {
   readonly PreregLinkInfo = PreregLinkInfo;
 
   private actions = createDispatchMap({
-    getContributors: GetAllContributors,
+    getBibliographicContributors: GetBibliographicContributors,
     resetContributorsState: ResetContributorsState,
     fetchPreprintById: FetchPreprintById,
     fetchSubjects: FetchSelectedSubjects,
+    loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
   });
   private router = inject(Router);
 
@@ -67,9 +64,9 @@ export class PreprintTombstoneComponent implements OnDestroy {
   preprint = select(PreprintSelectors.getPreprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
 
-  contributors = select(ContributorsSelectors.getContributors);
-  areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
+  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  areContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
   subjects = select(SubjectsSelectors.getSelectedSubjects);
   areSelectedSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
@@ -88,7 +85,7 @@ export class PreprintTombstoneComponent implements OnDestroy {
       const preprint = this.preprint();
       if (!preprint) return;
 
-      this.actions.getContributors(this.preprint()!.id, ResourceType.Preprint);
+      this.actions.getBibliographicContributors(this.preprint()?.id, ResourceType.Preprint);
       this.actions.fetchSubjects(this.preprint()!.id, ResourceType.Preprint);
     });
   }
@@ -99,5 +96,9 @@ export class PreprintTombstoneComponent implements OnDestroy {
 
   tagClicked(tag: string) {
     this.router.navigate(['/search'], { queryParams: { search: tag } });
+  }
+
+  loadMoreContributors(): void {
+    this.actions.loadMoreBibliographicContributors(this.preprint()?.id, ResourceType.Preprint);
   }
 }

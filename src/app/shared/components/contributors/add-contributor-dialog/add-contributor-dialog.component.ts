@@ -14,6 +14,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   OnDestroy,
   OnInit,
@@ -22,10 +23,13 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { AddContributorType, AddDialogState } from '@osf/shared/enums';
-import { ComponentCheckboxItemModel, ContributorAddModel, ContributorDialogAddModel } from '@osf/shared/models';
-import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
+import { AddDialogState } from '@osf/shared/enums/contributors/add-dialog-state.enum';
+import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores/contributors';
+import { ComponentCheckboxItemModel } from '@shared/models/component-checkbox-item.model';
+import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
+import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
 
 import { ComponentsSelectionListComponent } from '../../components-selection-list/components-selection-list.component';
 import { CustomPaginatorComponent } from '../../custom-paginator/custom-paginator.component';
@@ -69,6 +73,8 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   readonly selectedUsers = signal<ContributorAddModel[]>([]);
   readonly components = signal<ComponentCheckboxItemModel[]>([]);
   readonly resourceName = signal<string>('');
+  readonly parentResourceName = signal<string>('');
+  readonly allowAddingContributorsFromParentProject = signal<boolean>(false);
 
   readonly contributorNames = computed(() =>
     this.selectedUsers()
@@ -81,6 +87,10 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   readonly isComponentsState = computed(() => this.currentState() === AddDialogState.Components);
   readonly hasComponents = computed(() => this.components().length > 0);
   readonly buttonLabel = computed(() => (this.isComponentsState() ? 'common.buttons.done' : 'common.buttons.next'));
+
+  constructor() {
+    this.setupEffects();
+  }
 
   ngOnInit(): void {
     this.initializeDialogData();
@@ -113,6 +123,10 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  addSourceProjectContributors(): void {
+    this.closeDialogWithData(AddContributorType.ParentProject);
+  }
+
   addUnregistered(): void {
     this.dialogRef.close({
       data: [],
@@ -129,7 +143,8 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   private initializeDialogData(): void {
     this.selectedUsers.set([]);
 
-    const { components, resourceName } = this.config.data || {};
+    const { components, resourceName, parentResourceName, allowAddingContributorsFromParentProject } =
+      this.config.data || {};
 
     if (components) {
       this.components.set(components);
@@ -138,16 +153,26 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
     if (resourceName) {
       this.resourceName.set(resourceName);
     }
+
+    if (allowAddingContributorsFromParentProject) {
+      this.allowAddingContributorsFromParentProject.set(allowAddingContributorsFromParentProject);
+    }
+
+    if (parentResourceName) {
+      this.parentResourceName.set(parentResourceName);
+    }
   }
 
-  private closeDialogWithData(): void {
+  private closeDialogWithData(AddContributorTypeValue = AddContributorType.Registered): void {
     const childNodeIds = this.components()
       .filter((c) => c.checked && !c.isCurrent)
       .map((c) => c.id);
 
+    const filteredUsers = this.selectedUsers().filter((user) => !user.disabled);
+
     this.dialogRef.close({
-      data: this.selectedUsers(),
-      type: AddContributorType.Registered,
+      data: filteredUsers,
+      type: AddContributorTypeValue,
       childNodeIds: childNodeIds.length > 0 ? childNodeIds : undefined,
     } as ContributorDialogAddModel);
   }
@@ -173,5 +198,19 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   private resetPagination(): void {
     this.currentPage.set(1);
     this.first.set(0);
+  }
+
+  private setupEffects(): void {
+    effect(() => {
+      const usersList = this.users();
+
+      if (usersList.length > 0) {
+        const checkedUsers = usersList.filter((user) => user.checked);
+
+        if (checkedUsers.length > 0) {
+          this.selectedUsers.set(checkedUsers);
+        }
+      }
+    });
   }
 }

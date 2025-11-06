@@ -2,9 +2,9 @@ import { Action, State, StateContext } from '@ngxs/store';
 
 import { catchError, map, tap, throwError } from 'rxjs';
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
-import { WikiService } from '@osf/shared/services';
+import { WikiService } from '@osf/shared/services/wiki.service';
 
 import {
   ClearWiki,
@@ -17,6 +17,7 @@ import {
   GetWikiList,
   GetWikiVersionContent,
   GetWikiVersions,
+  RenameWiki,
   SetCurrentWiki,
   ToggleMode,
   UpdateWikiPreviewContent,
@@ -29,7 +30,7 @@ import { WIKI_STATE_DEFAULTS, WikiStateModel } from './wiki.model';
 })
 @Injectable()
 export class WikiState {
-  constructor(private wikiService: WikiService) {}
+  private readonly wikiService = inject(WikiService);
 
   @Action(CreateWiki)
   createWiki(ctx: StateContext<WikiStateModel>, action: CreateWiki) {
@@ -49,6 +50,32 @@ export class WikiState {
             isSubmitting: false,
           },
           currentWikiId: wiki.id,
+        });
+      }),
+      catchError((error) => this.handleError(ctx, error))
+    );
+  }
+
+  @Action(RenameWiki)
+  renameWiki(ctx: StateContext<WikiStateModel>, action: RenameWiki) {
+    const state = ctx.getState();
+    ctx.patchState({
+      wikiList: {
+        ...state.wikiList,
+        isSubmitting: true,
+      },
+    });
+    return this.wikiService.renameWiki(action.wikiId, action.name).pipe(
+      tap((wiki) => {
+        const updatedWiki = wiki.id === action.wikiId ? { ...wiki, name: action.name } : wiki;
+        const updatedList = state.wikiList.data.map((w) => (w.id === updatedWiki.id ? updatedWiki : w));
+        ctx.patchState({
+          wikiList: {
+            ...state.wikiList,
+            data: [...updatedList],
+            isSubmitting: false,
+          },
+          currentWikiId: updatedWiki.id,
         });
       }),
       catchError((error) => this.handleError(ctx, error))

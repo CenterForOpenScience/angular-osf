@@ -22,10 +22,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
-import { CustomOption } from '@shared/models';
-import { ProjectModel } from '@shared/models/projects';
-import { GetProjects } from '@shared/stores';
-import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
+import { ProjectModel } from '@shared/models/projects/projects.models';
+import { CustomOption } from '@shared/models/select-option.model';
+import { GetProjects, ProjectsSelectors } from '@shared/stores/projects';
 
 @Component({
   selector: 'osf-project-selector',

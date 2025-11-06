@@ -1,17 +1,9 @@
 <p-table
   [value]="isLoading() ? skeletonData : contributors()"
-  [rows]="tableParams().rows"
-  [first]="tableParams().firstRowIndex"
-  [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
-  [paginator]="tableParams().paginator"
-  [totalRecords]="tableParams().totalRecords"
-  paginatorDropdownAppendTo="body"
-  [scrollable]="tableParams().scrollable"
   [lazy]="true"
-  [lazyLoadOnInit]="true"
   [reorderableColumns]="!deactivatedContributors() && hasAdminAccess()"
+  [scrollable]="tableParams().scrollable"
   (onRowReorder)="onRowReorder()"
-  (onPage)="onPageChange($event)"
   class="view-only-table"
 >
   <ng-template #header>
@@ -179,6 +171,22 @@
       <tr class="loading-row">
         <td colspan="8">
           <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+        </td>
+      </tr>
+    }
+
+    @if (showLoadMore() && index === contributors().length - 1) {
+      <tr>
+        <td colspan="8" class="text-center">
+          <div class="flex justify-content-center">
+            <p-button
+              class="w-full"
+              styleClass="w-full"
+              (onClick)="loadMoreItems()"
+              [label]="'common.buttons.seeMore' | translate"
+              [loading]="isLoadingMore()"
+            />
+          </div>
         </td>
       </tr>
     }

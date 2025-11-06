@@ -18,23 +18,33 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
-import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import {
   ContributorsSelectors,
-  FetchChildrenSubjects,
+  GetBibliographicContributors,
+  LoadMoreBibliographicContributors,
+  UpdateContributorsSearchValue,
+} from '@osf/shared/stores/contributors';
+import {
   FetchResourceInstitutions,
+  InstitutionsSelectors,
+  UpdateResourceInstitutions,
+} from '@osf/shared/stores/institutions';
+import {
+  FetchChildrenSubjects,
   FetchSelectedSubjects,
   FetchSubjects,
-  GetAllContributors,
-  InstitutionsSelectors,
   SubjectsSelectors,
-  UpdateContributorsSearchValue,
-  UpdateResourceInstitutions,
   UpdateResourceSubjects,
-} from '@osf/shared/stores';
+} from '@osf/shared/stores/subjects';
+import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
+import { SubjectModel } from '@shared/models/subject/subject.model';
 
 import { EditTitleDialogComponent } from './dialogs/edit-title-dialog/edit-title-dialog.component';
 import {
@@ -125,7 +135,8 @@ export class MetadataComponent implements OnInit {
   isMetadataLoading = select(MetadataSelectors.getLoading);
   customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
   bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
-  isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  isContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  hasMoreContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
   selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
@@ -152,7 +163,8 @@ export class MetadataComponent implements OnInit {
     updateResourceLicense: UpdateResourceLicense,
     getCustomItemMetadata: GetCustomItemMetadata,
     updateCustomItemMetadata: UpdateCustomItemMetadata,
-    getContributors: GetAllContributors,
+    getContributors: GetBibliographicContributors,
+    loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
     updateResourceInstitutions: UpdateResourceInstitutions,
     fetchResourceInstitutions: FetchResourceInstitutions,
     createDoi: CreateDoi,
@@ -172,7 +184,6 @@ export class MetadataComponent implements OnInit {
   isLoading = computed(
     () =>
       this.isMetadataLoading() ||
-      this.isContributorsLoading() ||
       this.areInstitutionsLoading() ||
       this.isSubmitting() ||
       this.areResourceInstitutionsSubmitting()
@@ -320,23 +331,24 @@ export class MetadataComponent implements OnInit {
     this.actions.updateMetadata(this.resourceId, this.resourceType(), { tags });
   }
 
+  handleLoadMoreContributors(): void {
+    this.actions.loadMoreBibliographicContributors(this.resourceId, this.resourceType());
+  }
+
   openEditContributorDialog(): void {
     this.customDialogService
       .open(ContributorsDialogComponent, {
         header: 'project.metadata.contributors.editContributors',
-        width: '600px',
+        width: '800px',
         data: {
           resourceId: this.resourceId,
           resourceType: this.resourceType(),
         },
       })
-      .onClose.subscribe((result) => {
-        if (result) {
-          this.actions.getResourceMetadata(this.resourceId, this.resourceType());
-          this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
+      .onClose.subscribe((changesMade) => {
+        if (changesMade) {
+          this.actions.getContributors(this.resourceId, this.resourceType());
         }
-
-        this.actions.updateContributorsSearchValue(null);
       });
   }
 

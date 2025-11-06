@@ -3,15 +3,17 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { MapAddResourceRequest, MapRegistryResource, toAddResourceRequestBody } from '@osf/features/registry/mappers';
-import { GetRegistryResourcesJsonApi, RegistryResource } from '@osf/features/registry/models';
-import { AddResource } from '@osf/features/registry/models/resources/add-resource.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
+
+import { MapAddResourceRequest, MapRegistryResource, toAddResourceRequestBody } from '../mappers';
 import {
+  AddResource,
   AddResourceJsonApi,
+  ConfirmAddResource,
+  GetRegistryResourcesJsonApi,
+  RegistryResource,
   RegistryResourceDataJsonApi,
-} from '@osf/features/registry/models/resources/add-resource-response-json-api.model';
-import { ConfirmAddResource } from '@osf/features/registry/models/resources/confirm-add-resource.model';
-import { JsonApiService } from '@shared/services';
+} from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -37,11 +39,9 @@ export class RegistryResourcesService {
   addRegistryResource(registryId: string): Observable<RegistryResource> {
     const body = toAddResourceRequestBody(registryId);
 
-    return this.jsonApiService.post<AddResourceJsonApi>(`${this.apiUrl}/resources/`, body).pipe(
-      map((response) => {
-        return MapRegistryResource(response.data);
-      })
-    );
+    return this.jsonApiService
+      .post<AddResourceJsonApi>(`${this.apiUrl}/resources/`, body)
+      .pipe(map((response) => MapRegistryResource(response.data)));
   }
 
   previewRegistryResource(resourceId: string, resource: AddResource): Observable<RegistryResource> {
@@ -49,11 +49,7 @@ export class RegistryResourcesService {
 
     return this.jsonApiService
       .patch<RegistryResourceDataJsonApi>(`${this.apiUrl}/resources/${resourceId}/`, payload)
-      .pipe(
-        map((response) => {
-          return MapRegistryResource(response);
-        })
-      );
+      .pipe(map((response) => MapRegistryResource(response)));
   }
 
   confirmAddingResource(resourceId: string, resource: ConfirmAddResource): Observable<RegistryResource> {
@@ -61,11 +57,7 @@ export class RegistryResourcesService {
 
     return this.jsonApiService
       .patch<RegistryResourceDataJsonApi>(`${this.apiUrl}/resources/${resourceId}/`, payload)
-      .pipe(
-        map((response) => {
-          return MapRegistryResource(response);
-        })
-      );
+      .pipe(map((response) => MapRegistryResource(response)));
   }
 
   deleteResource(resourceId: string): Observable<void> {

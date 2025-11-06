@@ -8,8 +8,13 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ComponentWiki, Wiki, WikiItemType, WikiMenuItem } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService } from '@osf/shared/services';
+import { WikiModel } from '@osf/shared/models/wiki/wiki.model';
+import { WikiMenuItem } from '@osf/shared/models/wiki/wiki-menu.model';
+import { WikiItemType } from '@osf/shared/models/wiki/wiki-type.model';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ComponentWiki } from '@osf/shared/stores/wiki';
+import { RenameWikiDialogComponent } from '@shared/components/wiki/rename-wiki-dialog/rename-wiki-dialog.component';
 
 import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.component';
 
@@ -21,7 +26,7 @@ import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WikiListComponent {
-  readonly list = input.required<Wiki[]>();
+  readonly list = input.required<WikiModel[]>();
   readonly resourceId = input.required<string>();
   readonly currentWikiId = input.required<string>();
   readonly componentsList = input.required<ComponentWiki[]>();
@@ -31,6 +36,7 @@ export class WikiListComponent {
 
   readonly deleteWiki = output<void>();
   readonly createWiki = output<void>();
+  readonly renameWiki = output<void>();
 
   private readonly customDialogService = inject(CustomDialogService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
@@ -91,6 +97,19 @@ export class WikiListComponent {
         },
       })
       .onClose.subscribe(() => this.createWiki.emit());
+  }
+
+  openRenameWikiDialog(wikiId: string, wikiName: string) {
+    this.customDialogService
+      .open(RenameWikiDialogComponent, {
+        header: 'project.wiki.renameWiki',
+        width: '448px',
+        data: {
+          wikiId: wikiId,
+          wikiName: wikiName,
+        },
+      })
+      .onClose.subscribe(() => this.renameWiki.emit());
   }
 
   openDeleteWikiDialog(): void {

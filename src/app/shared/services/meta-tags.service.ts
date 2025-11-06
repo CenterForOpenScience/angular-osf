@@ -1,13 +1,17 @@
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 
 import { DOCUMENT } from '@angular/common';
-import { DestroyRef, Inject, inject, Injectable } from '@angular/core';
+import { DestroyRef, effect, Inject, inject, Injectable, signal } from '@angular/core';
 import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
+import { replaceBadEncodedChars } from '@osf/shared/helpers/format-bad-encoding.helper';
 
-import { MetadataRecordFormat } from '../enums';
-import { Content, DataContent, HeadTagDef, MetaTagAuthor, MetaTagsData } from '../models/meta-tags';
+import { MetadataRecordFormat } from '../enums/metadata-record-format.enum';
+import { HeadTagDef } from '../models/meta-tags/head-tag-def.model';
+import { MetaTagAuthor } from '../models/meta-tags/meta-tag-author.model';
+import { Content, DataContent, MetaTagsData } from '../models/meta-tags/meta-tags-data.model';
 
 import { MetadataRecordsService } from './metadata-records.service';
 
@@ -17,6 +21,7 @@ import { MetadataRecordsService } from './metadata-records.service';
 export class MetaTagsService {
   private readonly metadataRecords: MetadataRecordsService = inject(MetadataRecordsService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly prerenderReady = inject(PrerenderReadyService);
 
   get webUrl() {
     return this.environment.webUrl;
@@ -50,11 +55,19 @@ export class MetaTagsService {
 
   private metaTagStack: { metaTagsData: MetaTagsData; componentDestroyRef: DestroyRef }[] = [];
 
+  areMetaTagsApplied = signal(false);
+
   constructor(
     private meta: Meta,
     private title: Title,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+    effect(() => {
+      if (this.areMetaTagsApplied()) {
+        this.prerenderReady.setReady();
+      }
+    });
+  }
 
   updateMetaTags(metaTagsData: MetaTagsData, componentDestroyRef: DestroyRef): void {
     this.metaTagStack = [...this.metaTagStackWithout(componentDestroyRef), { metaTagsData, componentDestroyRef }];
@@ -69,6 +82,8 @@ export class MetaTagsService {
     const elementsToRemove = this.document.querySelectorAll(`.${this.metaTagClass}`);
 
     if (elementsToRemove.length === 0) {
+      this.areMetaTagsApplied.set(false);
+      this.prerenderReady.setNotReady();
       return;
     }
 
@@ -79,6 +94,8 @@ export class MetaTagsService {
     });
 
     this.title.setTitle(String(this.defaultMetaTags.siteName));
+    this.areMetaTagsApplied.set(false);
+    this.prerenderReady.setNotReady();
   }
 
   private metaTagStackWithout(destroyRefToRemove: DestroyRef) {
@@ -95,6 +112,8 @@ export class MetaTagsService {
   }
 
   private applyMetaTagsData(metaTagsData: MetaTagsData) {
+    this.areMetaTagsApplied.set(false);
+    this.prerenderReady.setNotReady();
     const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
     const headTags = this.getHeadTags(combinedData);
     of(metaTagsData.osfGuid)
@@ -111,8 +130,11 @@ export class MetaTagsService {
               )
             : of(null)
         ),
-        tap(() => this.applyHeadTags(headTags)),
-        tap(() => this.dispatchZoteroEvent())
+        tap(() => {
+          this.applyHeadTags(headTags);
+          this.areMetaTagsApplied.set(true);
+          this.dispatchZoteroEvent();
+        })
       )
       .subscribe();
   }
@@ -253,7 +275,8 @@ export class MetaTagsService {
       const titleTag = headTags.find((tag) => tag.attrs.name === 'citation_title');
 
       if (titleTag?.attrs.content) {
-        this.title.setTitle(`${String(this.defaultMetaTags.siteName)} | ${String(titleTag.attrs.content)}`);
+        const title = `${String(this.defaultMetaTags.siteName)} | ${String(titleTag.attrs.content)}`;
+        this.title.setTitle(replaceBadEncodedChars(title));
       }
     }
   }

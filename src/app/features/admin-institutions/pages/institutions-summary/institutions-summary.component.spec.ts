@@ -11,7 +11,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
-import { BarChartComponent, LoadingSpinnerComponent, StatisticCardComponent } from '@shared/components';
+import { BarChartComponent } from '@osf/shared/components/bar-chart/bar-chart.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { StatisticCardComponent } from '@osf/shared/components/statistic-card/statistic-card.component';
 import { DoughnutChartComponent } from '@shared/components/doughnut-chart/doughnut-chart.component';
 
 import { InstitutionsSummaryComponent } from './institutions-summary.component';

@@ -1,4 +1,4 @@
-import { ResponseJsonApi } from '../common';
+import { ResponseJsonApi } from '../common/json-api.model';
 
 export type RegionsResponseJsonApi = ResponseJsonApi<RegionDataJsonApi[]>;
 

@@ -1,8 +1,12 @@
+import { MockPipe } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { MonthYearPipe } from '@osf/shared/pipes/month-year.pipe';
 
 import { EducationHistoryComponent } from './education-history.component';
 
-import { MOCK_EDUCATION } from '@testing/mocks';
+import { MOCK_EDUCATION } from '@testing/mocks/user-employment-education.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('EducationHistoryComponent', () => {
@@ -11,7 +15,7 @@ describe('EducationHistoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EducationHistoryComponent, OSFTestingModule],
+      imports: [EducationHistoryComponent, OSFTestingModule, MockPipe(MonthYearPipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EducationHistoryComponent);

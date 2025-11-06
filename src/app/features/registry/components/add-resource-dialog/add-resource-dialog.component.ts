@@ -10,11 +10,12 @@ import { finalize, take } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
-import { RegistryResourceType } from '@osf/shared/enums';
-import { CustomValidators } from '@osf/shared/helpers';
-import { SelectOption } from '@osf/shared/models';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { SelectOption } from '@shared/models/select-option.model';
 
 import { resourceTypeOptions } from '../../constants';
 import { AddResource, ConfirmAddResource, RegistryResourceFormModel } from '../../models';

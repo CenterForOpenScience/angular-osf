@@ -11,19 +11,17 @@ import { Router } from '@angular/router';
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentProvider } from '@core/store/provider';
-import {
-  LoadingSpinnerComponent,
-  ResourceCardComponent,
-  SearchInputComponent,
-  SubHeaderComponent,
-} from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { ResourceCardComponent } from '@osf/shared/components/resource-card/resource-card.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { normalizeQuotes } from '@osf/shared/helpers/normalize-quotes';
 import {
   ClearRegistryProvider,
   GetRegistryProvider,
   RegistrationProviderSelectors,
 } from '@osf/shared/stores/registration-provider';
-import { normalizeQuotes } from '@shared/helpers';
 
 import { RegistryServicesComponent } from '../../components';
 import { GetRegistries, RegistriesSelectors } from '../../store';

@@ -2,9 +2,12 @@ name: Run Jest Tests
 
 on:
   pull_request:
-    branches: ['*'] # or change to match your default branch
   push:
-    branches: ['*']
+    branches:
+      - develop
+      - main
+      - 'release/*'
+      - 'hotfix/*'
   workflow_dispatch:
 
 jobs:
@@ -45,6 +48,10 @@ jobs:
 
       - name: Check coverage thresholds
         run: npm run test:check-coverage-thresholds
+      - name: Coveralls Report
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
   lint:
     runs-on: ubuntu-latest
 

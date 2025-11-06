@@ -1,6 +1,3 @@
-import { UserPermissions } from '@osf/shared/enums';
-import { getViewOnlyParamFromUrl } from '@osf/shared/helpers';
-
 import {
   AUTHENTICATED_MENU_ITEMS,
   PREPRINT_MENU_ITEMS,
@@ -8,8 +5,11 @@ import {
   REGISTRATION_MENU_ITEMS,
   VIEW_ONLY_PROJECT_MENU_ITEMS,
   VIEW_ONLY_REGISTRY_MENU_ITEMS,
-} from '../constants';
-import { RouteContext } from '../models';
+} from '@core/constants/nav-items.constant';
+import { RouteContext } from '@core/models/route-context.model';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { getViewOnlyParamFromUrl } from '@osf/shared/helpers/view-only.helper';
+
 import { CustomMenuItem } from '../models/custom-menu-item.model';
 
 function shouldShowMenuItem(menuItem: CustomMenuItem, permissions: UserPermissions[] | undefined): boolean {

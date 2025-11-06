@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { UserPermissions } from '@osf/shared/enums';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 import { MetadataStateModel } from './metadata.model';
 import { MetadataState } from './metadata.state';

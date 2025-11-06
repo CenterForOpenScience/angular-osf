@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
@@ -11,27 +10,16 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { CitationSectionComponent } from '@osf/features/preprints/components/preprint-details/citation-section/citation-section.component';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { ResourceType } from '@shared/enums';
-import { InterpolatePipe } from '@shared/pipes';
-import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subjects';
+
+import { CitationSectionComponent } from '../citation-section/citation-section.component';
 
 @Component({
   selector: 'osf-preprint-additional-info',
-  imports: [
-    Card,
-    TranslatePipe,
-    Tag,
-    Skeleton,
-    DatePipe,
-    Accordion,
-    AccordionPanel,
-    AccordionHeader,
-    AccordionContent,
-    InterpolatePipe,
-    CitationSectionComponent,
-  ],
+  imports: [Card, TranslatePipe, Tag, Skeleton, DatePipe, CitationSectionComponent, LicenseDisplayComponent],
   templateUrl: './additional-info.component.html',
   styleUrl: './additional-info.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,9 +43,8 @@ export class AdditionalInfoComponent {
     if (!preprint) return null;
     return preprint.embeddedLicense;
   });
-  licenseOptionsRecord = computed(() => {
-    return (this.preprint()?.licenseOptions ?? {}) as Record<string, string>;
-  });
+
+  licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
   skeletonData = Array.from({ length: 5 }, () => null);
 

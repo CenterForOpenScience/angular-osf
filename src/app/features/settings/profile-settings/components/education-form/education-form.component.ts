@@ -10,8 +10,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnInit, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
 
 import { MAX_DATE, MIN_DATE } from '../../constants';
 

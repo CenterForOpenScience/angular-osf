@@ -1,4 +1,4 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
@@ -7,6 +7,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
 import { PreprintProviderHeroComponent } from './preprint-provider-hero.component';
 
@@ -27,7 +28,7 @@ describe('PreprintProviderHeroComponent', () => {
     mockDialogService = DialogServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [PreprintProviderHeroComponent, OSFTestingModule],
+      imports: [PreprintProviderHeroComponent, OSFTestingModule, MockComponent(SearchInputComponent)],
       providers: [
         MockProvider(DialogService, mockDialogService),
         MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),

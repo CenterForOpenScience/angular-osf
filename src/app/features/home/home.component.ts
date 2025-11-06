@@ -8,7 +8,8 @@ import { Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { IconComponent, SearchInputComponent } from '@osf/shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
 import { INTEGRATION_ICONS, SLIDES } from './constants';
 

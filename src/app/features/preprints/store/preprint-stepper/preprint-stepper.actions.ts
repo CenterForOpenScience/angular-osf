@@ -1,7 +1,10 @@
-import { PreprintFileSource } from '@osf/features/preprints/enums';
-import { Preprint } from '@osf/features/preprints/models';
-import { StringOrNull } from '@shared/helpers';
-import { FileFolderModel, FileModel, LicenseOptions } from '@shared/models';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { FileModel } from '@osf/shared/models/files/file.model';
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
+import { LicenseOptions } from '@osf/shared/models/license/license.model';
+
+import { PreprintFileSource } from '../../enums';
+import { PreprintModel } from '../../models';
 
 export class SetSelectedPreprintProviderId {
   static readonly type = '[Preprint Stepper] Set Selected Preprint Provider Id';
@@ -24,7 +27,7 @@ export class UpdatePreprint {
 
   constructor(
     public id: string,
-    public payload: Partial<Preprint>
+    public payload: Partial<PreprintModel>
   ) {}
 }
 

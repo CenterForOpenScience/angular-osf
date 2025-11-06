@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 
 import { CollectionsFilterChipsComponent } from '@osf/features/collections/components';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
-import { IS_WEB } from '@osf/shared/helpers';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { CollectionsSelectors, SetSortBy } from '@shared/stores/collections';
 
 import { CollectionsFiltersComponent } from '../collections-filters/collections-filters.component';

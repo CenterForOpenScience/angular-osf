@@ -1,0 +1,5 @@
+@if (isLoading()) {
+  <p-skeleton width="100%" height="1.5rem" />
+} @else {
+  <div>{{ license()?.name ?? ('common.labels.noLicense' | translate) }}</div>
+}

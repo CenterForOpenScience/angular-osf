@@ -1,14 +1,23 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PreprintSubmissionItemComponent } from '@osf/features/moderation/components';
-import { PreprintWithdrawalSubmission } from '@osf/features/moderation/models';
-import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent, SelectComponent } from '@shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 
 import { PreprintSubmissionsSort, SubmissionReviewStatus } from '../../enums';
-import { PreprintModerationSelectors } from '../../store/preprint-moderation';
+import { PreprintWithdrawalSubmission } from '../../models';
+import {
+  GetPreprintWithdrawalSubmissionContributors,
+  LoadMorePreprintWithdrawalSubmissionContributors,
+  PreprintModerationSelectors,
+} from '../../store/preprint-moderation';
+import { PreprintSubmissionItemComponent } from '../preprint-submission-item/preprint-submission-item.component';
 
 import { PreprintWithdrawalSubmissionsComponent } from './preprint-withdrawal-submissions.component';
 
@@ -23,6 +32,7 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
   let fixture: ComponentFixture<PreprintWithdrawalSubmissionsComponent>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let store: Store;
 
   const mockProviderId = 'test-provider-id';
   const mockSubmissions: PreprintWithdrawalSubmission[] = MOCK_PREPRINT_WITHDRAWAL_SUBMISSIONS;
@@ -74,6 +84,7 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
 
     fixture = TestBed.createComponent(PreprintWithdrawalSubmissionsComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   });
 
@@ -163,5 +174,27 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
 
     expect(component.currentPage()).toBe(1);
     expect(component.first()).toBe(0);
+  });
+
+  it('should load contributors for a withdrawal submission', () => {
+    const mockItem = mockSubmissions[0];
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+    component.loadContributors(mockItem);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      new GetPreprintWithdrawalSubmissionContributors(mockItem.id, mockItem.preprintId)
+    );
+  });
+
+  it('should load more contributors for a withdrawal submission', () => {
+    const mockItem = mockSubmissions[0];
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+    component.loadMoreContributors(mockItem);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      new LoadMorePreprintWithdrawalSubmissionContributors(mockItem.id, mockItem.preprintId)
+    );
   });
 });

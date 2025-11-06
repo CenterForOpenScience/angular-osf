@@ -1,11 +1,20 @@
-import { LicenseDataJsonApi, LicenseModel, LicensesResponseJsonApi } from '../models';
+import { LicenseModel } from '../models/license/license.model';
+import { LicenseDataJsonApi, LicensesResponseJsonApi } from '../models/license/licenses-json-api.model';
 
 export class LicensesMapper {
   static fromLicensesResponse(response: LicensesResponseJsonApi): LicenseModel[] {
-    return response.data.map((item) => LicensesMapper.fromLicenseDataJsonApi(item));
+    if (!response.data) {
+      return [];
+    }
+
+    return response.data.map((item) => LicensesMapper.fromLicenseDataJsonApi(item)).filter((item) => !!item);
   }
 
-  static fromLicenseDataJsonApi(data: LicenseDataJsonApi): LicenseModel {
+  static fromLicenseDataJsonApi(data: LicenseDataJsonApi): LicenseModel | null {
+    if (!data) {
+      return null;
+    }
+
     return {
       id: data?.id,
       name: data?.attributes?.name,

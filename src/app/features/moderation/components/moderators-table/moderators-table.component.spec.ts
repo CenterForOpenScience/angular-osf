@@ -2,9 +2,9 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectComponent } from '@shared/components';
-import { TableParameters } from '@shared/models';
-import { CustomDialogService } from '@shared/services';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 import { ModeratorModel } from '../../models';
 
@@ -44,7 +44,7 @@ describe('ModeratorsTableComponent', () => {
 
     fixture.componentRef.setInput('tableParams', mockTableParams);
     fixture.componentRef.setInput('currentUserId', 'test-user-id');
-    fixture.componentRef.setInput('isCurrentUserAdminModerator', false);
+    fixture.componentRef.setInput('hasAdminAccess', false);
   });
 
   it('should create', () => {
@@ -56,7 +56,7 @@ describe('ModeratorsTableComponent', () => {
     fixture.componentRef.setInput('items', mockModerators);
     fixture.componentRef.setInput('isLoading', true);
     fixture.componentRef.setInput('currentUserId', 'current-user-123');
-    fixture.componentRef.setInput('isCurrentUserAdminModerator', true);
+    fixture.componentRef.setInput('hasAdminAccess', true);
     fixture.componentRef.setInput('tableParams', mockTableParams);
 
     fixture.detectChanges();
@@ -64,7 +64,7 @@ describe('ModeratorsTableComponent', () => {
     expect(component.items()).toEqual(mockModerators);
     expect(component.isLoading()).toBe(true);
     expect(component.currentUserId()).toBe('current-user-123');
-    expect(component.isCurrentUserAdminModerator()).toBe(true);
+    expect(component.hasAdminAccess()).toBe(true);
     expect(component.tableParams()).toEqual(mockTableParams);
   });
 
@@ -118,7 +118,7 @@ describe('ModeratorsTableComponent', () => {
     fixture.componentRef.setInput('items', []);
     fixture.componentRef.setInput('tableParams', mockTableParams);
     fixture.componentRef.setInput('currentUserId', 'test-user-id');
-    fixture.componentRef.setInput('isCurrentUserAdminModerator', false);
+    fixture.componentRef.setInput('hasAdminAccess', false);
 
     fixture.detectChanges();
 
@@ -128,7 +128,7 @@ describe('ModeratorsTableComponent', () => {
   it('should handle undefined currentUserId', () => {
     fixture.componentRef.setInput('currentUserId', undefined);
     fixture.componentRef.setInput('tableParams', mockTableParams);
-    fixture.componentRef.setInput('isCurrentUserAdminModerator', false);
+    fixture.componentRef.setInput('hasAdminAccess', false);
 
     fixture.detectChanges();
 

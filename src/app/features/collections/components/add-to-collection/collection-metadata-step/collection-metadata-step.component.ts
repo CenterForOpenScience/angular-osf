@@ -13,7 +13,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import { CollectionFilterEntry } from '@osf/features/collections/models';
-import { CollectionsSelectors, GetCollectionDetails } from '@shared/stores';
+import { CollectionsSelectors, GetCollectionDetails } from '@shared/stores/collections';
 
 @Component({
   selector: 'osf-collection-metadata-step',

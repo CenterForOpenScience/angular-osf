@@ -1,6 +1,8 @@
-import { UserPermissions } from '@osf/shared/enums';
-import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
-import { ContributorDataJsonApi, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@osf/shared/models';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers/types.helper';
+import { ContributorDataJsonApi } from '@shared/models/contributors/contributor-response-json-api.model';
+import { IdentifiersResponseJsonApi } from '@shared/models/identifiers/identifier-json-api.model';
+import { LicenseRecordJsonApi, LicenseResponseJsonApi } from '@shared/models/license/licenses-json-api.model';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
@@ -69,16 +71,7 @@ export interface PreprintEmbedsJsonApi {
     data: ContributorDataJsonApi[];
   };
   license: LicenseResponseJsonApi;
-  identifiers: {
-    data: {
-      id: string;
-      type: string;
-      attributes: {
-        category: string;
-        value: string;
-      };
-    }[];
-  };
+  identifiers: IdentifiersResponseJsonApi;
 }
 
 export interface PreprintMetaJsonApi {

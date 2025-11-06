@@ -12,9 +12,14 @@
     }
   </div>
 
-  @if (contributors()) {
-    <div class="inline-flex flex-wrap gap-1 line-height-2 mt-4">
-      <osf-contributors-list [contributors]="contributors()"></osf-contributors-list>
+  @if (contributors().length) {
+    <div class="flex mt-4">
+      <osf-contributors-list
+        [contributors]="contributors()"
+        [isLoading]="isLoading()"
+        [hasLoadMore]="hasMoreContributors()"
+        (loadMoreContributors)="loadMoreContributors.emit()"
+      ></osf-contributors-list>
     </div>
   }
 </p-card>

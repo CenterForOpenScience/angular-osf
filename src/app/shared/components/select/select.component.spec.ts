@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Primitive } from '@shared/helpers';
-import { SelectOption } from '@shared/models';
+import { SelectOption } from '@shared/models/select-option.model';
 
 import { SelectComponent } from './select.component';
 

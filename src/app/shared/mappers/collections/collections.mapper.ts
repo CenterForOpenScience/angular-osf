@@ -2,22 +2,24 @@ import {
   CollectionSubmissionReviewAction,
   CollectionSubmissionReviewActionJsonApi,
 } from '@osf/features/moderation/models';
-import { convertToSnakeCase } from '@osf/shared/helpers';
+import { convertToSnakeCase } from '@osf/shared/helpers/convert-to-snake-case.helper';
+import { CollectionSubmissionPayload } from '@osf/shared/models/collections/collection-submission-payload.model';
+import { CollectionSubmissionPayloadJsonApi } from '@osf/shared/models/collections/collection-submission-payload-json-api.model';
 import {
   CollectionDetails,
-  CollectionDetailsResponseJsonApi,
   CollectionProvider,
-  CollectionProviderResponseJsonApi,
   CollectionSubmission,
-  CollectionSubmissionJsonApi,
-  CollectionSubmissionPayload,
-  CollectionSubmissionPayloadJsonApi,
   CollectionSubmissionWithGuid,
+} from '@osf/shared/models/collections/collections.models';
+import {
+  CollectionDetailsResponseJsonApi,
+  CollectionProviderResponseJsonApi,
+  CollectionSubmissionJsonApi,
   CollectionSubmissionWithGuidJsonApi,
-  ContributorModel,
-  PaginatedData,
-  ResponseJsonApi,
-} from '@osf/shared/models';
+} from '@osf/shared/models/collections/collections-json-api.models';
+import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 
 import { UserMapper } from '../user';
 
@@ -37,12 +39,14 @@ export class CollectionsMapper {
       facebookAppId: response.attributes.facebook_app_id,
       allowSubmissions: response.attributes.allow_submissions,
       allowCommenting: response.attributes.allow_commenting,
-      assets: {
-        style: response.attributes.assets.style,
-        squareColorTransparent: response.attributes.assets.square_color_transparent,
-        squareColorNoTransparent: response.attributes.assets.square_color_no_transparent,
-        favicon: response.attributes.assets.favicon,
-      },
+      assets: response.attributes.assets
+        ? {
+            style: response.attributes.assets.style,
+            squareColorTransparent: response.attributes.assets.square_color_transparent,
+            squareColorNoTransparent: response.attributes.assets.square_color_no_transparent,
+            favicon: response.attributes.assets.favicon,
+          }
+        : {},
       shareSource: response.attributes.share_source,
       sharePublishType: response.attributes.share_publish_type,
       permissions: response.attributes.permissions,

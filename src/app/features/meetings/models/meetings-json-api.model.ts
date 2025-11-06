@@ -1,4 +1,4 @@
-import { NumberOrNull, StringOrNull } from '@osf/shared/helpers';
+import { NumberOrNull, StringOrNull } from '@osf/shared/helpers/types.helper';
 
 export interface MeetingGetResponseJsonApi {
   id: string;

@@ -3,18 +3,23 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { Primitive, StringOrNull } from '@osf/shared/helpers';
+import { Primitive, StringOrNull } from '@osf/shared/helpers/types.helper';
+import { IdNameModel } from '@osf/shared/models/common/id-name.model';
+import { ApiData } from '@osf/shared/models/common/json-api.model';
 import {
-  ApiData,
   CreateProjectPayloadJsoApi,
-  IdName,
   NodeResponseJsonApi,
   NodesResponseJsonApi,
-} from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+} from '@osf/shared/models/nodes/nodes-json-api.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { PreprintsMapper } from '../mappers';
-import { Preprint, PreprintAttributesJsonApi, PreprintLinksJsonApi, PreprintRelationshipsJsonApi } from '../models';
+import {
+  PreprintAttributesJsonApi,
+  PreprintLinksJsonApi,
+  PreprintModel,
+  PreprintRelationshipsJsonApi,
+} from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +32,7 @@ export class PreprintsProjectsService {
     return `${this.environment.apiDomainUrl}/v2`;
   }
 
-  getAvailableProjects(searchTerm: StringOrNull): Observable<IdName[]> {
+  getAvailableProjects(searchTerm: StringOrNull): Observable<IdNameModel[]> {
     const params: Record<string, Primitive> = {};
     params['page'] = 1;
 
@@ -45,7 +50,7 @@ export class PreprintsProjectsService {
     );
   }
 
-  getProjectById(projectId: string): Observable<IdName> {
+  getProjectById(projectId: string): Observable<IdNameModel> {
     return this.jsonApiService.get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`).pipe(
       map((response) => {
         return {
@@ -62,7 +67,7 @@ export class PreprintsProjectsService {
     });
   }
 
-  updatePreprintProjectRelationship(preprintId: string, projectId: string): Observable<Preprint> {
+  updatePreprintProjectRelationship(preprintId: string, projectId: string): Observable<PreprintModel> {
     return this.jsonApiService
       .patch<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>>(
         `${this.apiUrl}/preprints/${preprintId}/`,
@@ -91,7 +96,7 @@ export class PreprintsProjectsService {
     templateFrom: string,
     regionId: string,
     affiliationsId: string[]
-  ): Observable<IdName> {
+  ): Observable<IdNameModel> {
     const payload: CreateProjectPayloadJsoApi = {
       data: {
         type: 'nodes',

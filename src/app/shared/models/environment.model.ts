@@ -13,7 +13,21 @@ export interface EnvironmentModel {
   defaultProvider: string;
   dataciteTrackerRepoId: string | null;
   dataciteTrackerAddress: string;
-
+  newRelicEnabled: boolean;
+  newRelicInitDistributedTracingEnabled: boolean;
+  newRelicInitPerformanceCaptureMeasures: boolean;
+  newRelicInitPrivacyCookiesEnabled: boolean;
+  newRelicInitAjaxDenyList: string[];
+  newRelicInfoBeacon: string;
+  newRelicInfoErrorBeacon: string;
+  newRelicInfoLicenseKey: string;
+  newRelicInfoApplicationID: string;
+  newRelicInfoSa: number;
+  newRelicLoaderConfigAccountID: string;
+  newRelicLoaderConfigTrustKey: string;
+  newRelicLoaderConfigAgentID: string;
+  newRelicLoaderConfigLicenseKey: string;
+  newRelicLoaderConfigApplicationID: string;
   activityLogs?: {
     pageSize?: number;
   };

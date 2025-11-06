@@ -7,9 +7,11 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
-import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { CustomDialogService } from '@osf/shared/services';
-import { NodeLinksSelectors } from '@osf/shared/stores';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { NodeLinksSelectors } from '@osf/shared/stores/node-links';
 
 import { DeleteNodeLinkDialogComponent } from '../delete-node-link-dialog/delete-node-link-dialog.component';
 import { LinkResourceDialogComponent } from '../link-resource-dialog/link-resource-dialog.component';

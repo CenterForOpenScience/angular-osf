@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { authGuard } from '@core/guards';
+import { authGuard } from '@core/guards/auth.guard';
 
 import { InstitutionsComponent } from './institutions.component';
 import { InstitutionsListComponent, InstitutionsSearchComponent } from './pages';

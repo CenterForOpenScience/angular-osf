@@ -4,6 +4,7 @@ import { OSFConfigService } from '@core/services/osf-config.service';
 
 import { ENVIRONMENT } from './environment.provider';
 
+import { BrowserAgent } from '@newrelic/browser-agent/loaders/browser-agent';
 import * as Sentry from '@sentry/angular';
 import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
 
@@ -25,6 +26,7 @@ export function initializeApplication() {
     await configService.load();
 
     const googleTagManagerId = environment.googleTagManagerId;
+
     if (googleTagManagerId) {
       googleTagManagerConfiguration.set({ id: googleTagManagerId });
     }
@@ -40,6 +42,33 @@ export function initializeApplication() {
         sampleRate: 1.0,
         integrations: [],
       });
+    }
+
+    if (environment.newRelicEnabled) {
+      const newRelicConfig = {
+        enabled: environment.newRelicEnabled,
+        init: {
+          distributed_tracing: { enabled: environment.newRelicInitDistributedTracingEnabled },
+          performance: { capture_measures: environment.newRelicInitPerformanceCaptureMeasures },
+          privacy: { cookies_enabled: environment.newRelicInitPrivacyCookiesEnabled },
+          ajax: { deny_list: environment.newRelicInitAjaxDenyList },
+        },
+        info: {
+          beacon: environment.newRelicInfoBeacon,
+          errorBeacon: environment.newRelicInfoErrorBeacon,
+          licenseKey: environment.newRelicInfoLicenseKey,
+          applicationID: environment.newRelicInfoApplicationID,
+          sa: environment.newRelicInfoSa,
+        },
+        loader_config: {
+          accountID: environment.newRelicLoaderConfigAccountID,
+          trustKey: environment.newRelicLoaderConfigTrustKey,
+          agentID: environment.newRelicLoaderConfigAgentID,
+          licenseKey: environment.newRelicLoaderConfigLicenseKey,
+          applicationID: environment.newRelicLoaderConfigApplicationID,
+        },
+      };
+      new BrowserAgent(newRelicConfig);
     }
   };
 }

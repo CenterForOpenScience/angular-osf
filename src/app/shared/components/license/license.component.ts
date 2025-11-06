@@ -9,10 +9,12 @@ import { ChangeDetectionStrategy, Component, effect, input, model, output, signa
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { CustomValidators, StringOrNullOrUndefined } from '@osf/shared/helpers';
-import { InputLimits } from '@shared/constants';
-import { LicenseForm, LicenseModel, LicenseOptions } from '@shared/models';
-import { InterpolatePipe } from '@shared/pipes';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { StringOrNullOrUndefined } from '@osf/shared/helpers/types.helper';
+import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
+import { LicenseForm } from '@shared/models/license/license-form.models';
+import { InterpolatePipe } from '@shared/pipes/interpolate.pipe';
 
 import { TextInputComponent } from '../text-input/text-input.component';
 import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';

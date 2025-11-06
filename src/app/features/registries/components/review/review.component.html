@@ -4,7 +4,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.title' | translate }}</h4>
-      <p data-test-review-response="title">{{ draftRegistration()?.title }}</p>
+      <p data-test-review-response="title">{{ draftRegistration()?.title | fixSpecialChar }}</p>
       @if (!draftRegistration()?.title) {
         <p>{{ 'common.labels.title' | translate }}</p>
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
@@ -16,7 +16,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.description' | translate }}</h4>
-      <p data-test-review-response="description">{{ draftRegistration()?.description }}</p>
+      <p data-test-review-response="description">{{ draftRegistration()?.description | fixSpecialChar }}</p>
       @if (!draftRegistration()?.description) {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
         <p-message class="mt-1" severity="error" variant="simple" size="small">
@@ -28,22 +28,19 @@
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.contributors' | translate }}</h4>
 
-      <osf-contributors-list [contributors]="contributors()"></osf-contributors-list>
+      <osf-contributors-list
+        [contributors]="contributors()"
+        [isLoading]="areContributorsLoading()"
+        [hasLoadMore]="hasMoreContributors()"
+        (loadMoreContributors)="loadMoreContributors()"
+      ></osf-contributors-list>
     </div>
 
     <div class="license mb-4">
-      <h4 class="mb-2">{{ 'shared.license.title' | translate }}</h4>
+      <h4 class="mb-2">{{ 'common.labels.license' | translate }}</h4>
+
       @if (draftRegistration()?.license && license()) {
-        <p-accordion>
-          <p-accordion-panel value="0">
-            <p-accordion-header class="p-0 justify-content-start gap-2">
-              <div data-test-review-response="license">{{ license()?.name }}</div>
-            </p-accordion-header>
-            <p-accordion-content>
-              <div>{{ license()!.text | interpolate: licenseOptionsRecord() }}</div>
-            </p-accordion-content>
-          </p-accordion-panel>
-        </p-accordion>
+        <osf-license-display [license]="license()" [licenseOptions]="licenseOptionsRecord()" />
       } @else {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
         <p-message class="mt-1" severity="error" variant="simple" size="small">
@@ -86,7 +83,7 @@
       <h2 class="mb-4">{{ page.title }}</h2>
 
       @if (page.description) {
-        <p class="mb-4 preserve-whitespace">{{ page.description }}</p>
+        <p class="preserve-whitespace mb-4">{{ page.description }}</p>
       }
 
       @if (page.questions?.length) {

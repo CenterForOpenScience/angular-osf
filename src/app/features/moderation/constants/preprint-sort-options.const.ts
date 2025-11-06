@@ -1,4 +1,4 @@
-import { CustomOption } from '@osf/shared/models';
+import { CustomOption } from '@osf/shared/models/select-option.model';
 
 import { PreprintSubmissionsSort } from '../enums';
 

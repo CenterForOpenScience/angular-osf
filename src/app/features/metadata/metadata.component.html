@@ -38,7 +38,10 @@
         <osf-metadata-contributors
           (openEditContributorDialog)="openEditContributorDialog()"
           [contributors]="bibliographicContributors()"
+          [isLoading]="isContributorsLoading()"
+          [hasMoreContributors]="hasMoreContributors()"
           [readonly]="!hasWriteAccess()"
+          (loadMoreContributors)="handleLoadMoreContributors()"
         />
 
         <osf-metadata-resource-information

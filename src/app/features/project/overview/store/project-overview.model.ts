@@ -1,4 +1,7 @@
-import { AsyncStateModel, AsyncStateWithTotalCount, BaseNodeModel, ComponentOverview } from '@osf/shared/models';
+import { ComponentOverview } from '@osf/shared/models/components/components.models';
+import { BaseNodeModel } from '@osf/shared/models/nodes/base-node.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 import { ProjectOverview } from '../models';
 

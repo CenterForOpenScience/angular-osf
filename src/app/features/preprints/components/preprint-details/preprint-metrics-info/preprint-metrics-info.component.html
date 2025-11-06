@@ -1,5 +1,11 @@
 <p-card>
-  @if (metrics()) {
+  @if (isLoading()) {
+    <div class="flex flex-row gap-1">
+      <p-skeleton width="8rem" height="1.5rem" />
+      <p-skeleton width="1rem" height="1.5rem" />
+      <p-skeleton width="10rem" height="1.5rem" />
+    </div>
+  } @else if (metrics()) {
     <div class="flex flex-row gap-1 font-bold">
       <span>{{ 'preprints.details.share.views' | translate }}: {{ metrics()!.views }}</span>
       <span>|</span>

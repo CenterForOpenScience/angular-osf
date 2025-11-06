@@ -1,15 +1,15 @@
 import { createSelector, Selector } from '@ngxs/store';
 
+import { AddonModel } from '@osf/shared/models/addons/addon.model';
 import {
-  AddonModel,
-  AuthorizedAccountModel,
-  ConfiguredAddonModel,
   ConfiguredAddonResponseJsonApi,
-  OperationInvocation,
   ResourceReferenceJsonApi,
-  StorageItem,
   UserReferenceJsonApi,
-} from '@shared/models';
+} from '@osf/shared/models/addons/addon-json-api.models';
+import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { OperationInvocation } from '@osf/shared/models/addons/operation-invocation.model';
+import { StorageItem } from '@osf/shared/models/addons/storage-item.model';
 
 import { AddonsStateModel } from './addons.models';
 import { AddonsState } from './addons.state';

@@ -12,8 +12,9 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@ang
 import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { IdName } from '@osf/shared/models';
-import { LoaderService, ToastService } from '@osf/shared/services';
+import { IdNameModel } from '@osf/shared/models/common/id-name.model';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { RegionsSelectors } from '@osf/shared/stores/regions';
 
 import { UpdateRegion } from '../../store';
@@ -32,7 +33,7 @@ export class DefaultStorageLocationComponent {
 
   readonly currentUser = select(UserSelectors.getCurrentUser);
   readonly regions = select(RegionsSelectors.getRegions);
-  selectedRegion = signal<IdName | undefined>(undefined);
+  selectedRegion = signal<IdNameModel | undefined>(undefined);
 
   constructor() {
     effect(() => {

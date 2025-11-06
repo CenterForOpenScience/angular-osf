@@ -1,4 +1,4 @@
-import { ResponseJsonApi } from '@shared/models';
+import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 
 import {
   MeetingGetResponseJsonApi,

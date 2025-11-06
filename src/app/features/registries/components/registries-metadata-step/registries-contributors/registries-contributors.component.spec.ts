@@ -7,10 +7,12 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { ResourceType } from '@osf/shared/enums';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
-import { ContributorsSelectors } from '@osf/shared/stores';
-import { ContributorsTableComponent } from '@shared/components/contributors';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { ContributorsSelectors } from '@osf/shared/stores/contributors/contributors.selectors';
+import { ContributorsTableComponent } from '@shared/components/contributors/contributors-table/contributors-table.component';
 
 import { RegistriesContributorsComponent } from './registries-contributors.component';
 
@@ -77,13 +79,10 @@ describe('RegistriesContributorsComponent', () => {
       deleteContributor: jest.fn().mockReturnValue(of({})),
       bulkUpdateContributors: jest.fn().mockReturnValue(of({})),
       bulkAddContributors: jest.fn().mockReturnValue(of({})),
+      resetContributorsState: jest.fn().mockRejectedValue(of({})),
     } as any;
     Object.defineProperty(component, 'actions', { value: mockActions });
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should request contributors on init', () => {

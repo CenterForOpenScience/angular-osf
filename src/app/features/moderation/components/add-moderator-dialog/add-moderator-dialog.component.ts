@@ -13,7 +13,9 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, OnIn
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent } from '@osf/shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
 import { AddModeratorType } from '../../enums';
 import { ModeratorAddModel, ModeratorDialogAddModel } from '../../models';

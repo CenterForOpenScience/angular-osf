@@ -10,7 +10,7 @@
               class="link-btn-no-padding"
               styleClass="text-left"
               link
-              [label]="submission().title"
+              [label]="submission().title | fixSpecialChar"
               (onClick)="selected.emit()"
             />
             @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {
@@ -39,14 +39,16 @@
       </p-accordion-header>
 
       <p-accordion-content>
-        <div class="flex align-items-center gap-1 p-3 pt-0 ml-3">
+        <div class="flex align-content-start gap-1 p-3 pt-0 ml-3">
           <p>{{ 'common.labels.contributors' | translate }}:</p>
 
-          @if (submission().contributorsLoading) {
-            <p-skeleton width="10rem" height="1.25rem" />
-          } @else {
-            <osf-contributors-list [contributors]="submission().contributors"></osf-contributors-list>
-          }
+          <osf-contributors-list
+            [contributors]="submission().contributors"
+            [isLoading]="!!submission().contributorsLoading"
+            [hasLoadMore]="hasMoreContributors()"
+            (loadMoreContributors)="loadMoreContributors.emit()"
+          >
+          </osf-contributors-list>
         </div>
       </p-accordion-content>
     </p-accordion-panel>

@@ -7,6 +7,11 @@
 @use "base";
 @use "icons";
 
+@use "@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@use "@fortawesome/fontawesome-free/scss/solid.scss";
+@use "@fortawesome/fontawesome-free/scss/brands.scss";
+@use "@fortawesome/fontawesome-free/scss/regular.scss";
+
 @use "./components/md-editor";
 @use "./components/preprints";
 @use "./components/collections";

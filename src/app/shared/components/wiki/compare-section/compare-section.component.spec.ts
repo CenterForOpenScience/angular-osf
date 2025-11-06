@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { WikiVersion } from '@shared/models';
+import { WikiVersion } from '@shared/models/wiki/wiki.model';
 
 import { CompareSectionComponent } from './compare-section.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('CompareSectionComponent', () => {
   let component: CompareSectionComponent;
@@ -30,7 +29,7 @@ describe('CompareSectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CompareSectionComponent, FormsModule],
+      imports: [CompareSectionComponent],
       providers: [TranslateServiceMock, provideNoopAnimations()],
     }).compileComponents();
 

@@ -1,37 +1,19 @@
-@use "styles/mixins" as mix;
-
 .left-section {
-  flex: 3;
   display: flex;
   flex-direction: column;
+  flex: 3;
   gap: 1.5rem;
 }
 
-.accordion-border {
+.right-section {
   border: 1px solid var(--grey-2);
-  border-radius: mix.rem(12px);
-  height: max-content !important;
+  border-radius: 0.75rem;
+  flex: 1;
+  height: max-content;
 }
 
 .blocks-section {
   border: 1px solid var(--grey-2);
-  border-radius: mix.rem(12px);
+  border-radius: 0.75rem;
   height: max-content;
-}
-
-.right-section {
-  flex: 1;
-  border: 1px solid var(--grey-2);
-  border-radius: mix.rem(12px);
-  height: max-content;
-}
-
-.no-padding {
-  --p-accordion-header-padding: 0;
-}
-
-.current-revision {
-  --p-button-info-background: var(--bg-blue-3);
-  --p-button-info-hover-background: var(--bg-blue-2);
-  --p-button-info-hover-border-color: transparent;
 }

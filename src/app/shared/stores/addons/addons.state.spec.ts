@@ -59,6 +59,7 @@ describe('State: Addons', () => {
             supportedFeatures: ['DOWNLOAD_AS_ZIP', 'FORKING', 'LOGS', 'PERMISSIONS', 'REGISTERING'],
             type: 'external-storage-services',
             wbKey: 'figshare',
+            configurableApiRoot: false,
           })
         );
 
@@ -76,6 +77,7 @@ describe('State: Addons', () => {
             supportedFeatures: ['DOWNLOAD_AS_ZIP', 'FORKING', 'LOGS', 'PERMISSIONS', 'REGISTERING'],
             type: 'external-storage-services',
             wbKey: 'figshare',
+            configurableApiRoot: false,
           })
         );
         expect(loading()).toBeFalsy();

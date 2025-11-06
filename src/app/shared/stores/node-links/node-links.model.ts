@@ -1,4 +1,5 @@
-import { AsyncStateModel, ComponentOverview } from '@osf/shared/models';
+import { ComponentOverview } from '@osf/shared/models/components/components.models';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface NodeLinksStateModel {
   linkedResources: AsyncStateModel<ComponentOverview[]>;

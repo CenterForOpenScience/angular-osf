@@ -36,6 +36,7 @@
     [canEdit]="hasWriteAccess()"
     (createWiki)="onCreateWiki()"
     (deleteWiki)="onDeleteWiki()"
+    (renameWiki)="onRenameWiki()"
   ></osf-wiki-list>
   @if (wikiModes().view) {
     <osf-view-section

@@ -1,9 +1,10 @@
-import { RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
-import { IdTypeModel } from '../common';
-import { ContributorModel } from '../contributors';
-import { LicensesOption } from '../license.model';
-import { SubjectModel } from '../subject';
+import { IdTypeModel } from '../common/id-type.model';
+import { ContributorModel } from '../contributors/contributor.model';
+import { LicensesOption } from '../license/license.model';
+import { SubjectModel } from '../subject/subject.model';
 
 export type RegistrationQuestions = Record<string, string | string[] | { file_id: string; file_name: string }[]>;
 

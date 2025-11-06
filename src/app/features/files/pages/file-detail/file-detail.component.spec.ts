@@ -1,39 +1,31 @@
 import { Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockProvider } from 'ng-mocks';
-
-import { ButtonGroupModule } from 'primeng/buttongroup';
-import { DialogService } from 'primeng/dynamicdialog';
-import { Message } from 'primeng/message';
-import { TagModule } from 'primeng/tag';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
 import { DestroyRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { FileDetailComponent } from '@osf/features/files/pages/file-detail/file-detail.component';
-import {
-  LinkedResourcesComponent,
-  OverviewComponentsComponent,
-  OverviewToolbarComponent,
-  OverviewWikiComponent,
-  RecentActivityComponent,
-} from '@osf/features/project/overview/components';
-import {
-  LoadingSpinnerComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { CustomConfirmationService } from '@shared/services/custom-confirmation.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ToastService } from '@shared/services/toast.service';
 
-import { MOCK_STORE } from '@testing/mocks';
+import {
+  FileKeywordsComponent,
+  FileMetadataComponent,
+  FileResourceMetadataComponent,
+  FileRevisionsComponent,
+} from '../../components';
+
+import { FileDetailComponent } from './file-detail.component';
+
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('FileDetailComponent', () => {
@@ -63,21 +55,15 @@ describe('FileDetailComponent', () => {
       imports: [
         FileDetailComponent,
         OSFTestingModule,
-        ButtonGroupModule,
-        TagModule,
-        SubHeaderComponent,
-        FormsModule,
-        LoadingSpinnerComponent,
-        OverviewWikiComponent,
-        OverviewComponentsComponent,
-        LinkedResourcesComponent,
-        RecentActivityComponent,
-        OverviewToolbarComponent,
-        ResourceMetadataComponent,
-        TranslatePipe,
-        Message,
-        RouterLink,
-        ViewOnlyLinkMessageComponent,
+        ...MockComponents(
+          SubHeaderComponent,
+          LoadingSpinnerComponent,
+          FileKeywordsComponent,
+          FileRevisionsComponent,
+          FileMetadataComponent,
+          FileResourceMetadataComponent,
+          MetadataTabsComponent
+        ),
       ],
       providers: [
         TranslatePipe,
@@ -88,7 +74,6 @@ describe('FileDetailComponent', () => {
         DestroyRef,
         MockProvider(ToastService),
         MockProvider(CustomConfirmationService),
-        DialogService,
         TranslateService,
       ],
     }).compileComponents();

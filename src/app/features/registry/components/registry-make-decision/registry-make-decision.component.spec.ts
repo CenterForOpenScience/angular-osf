@@ -6,14 +6,13 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {
-  ModerationDecisionFormControls,
-  RegistrationReviewStates,
-  ReviewActionTrigger,
-  RevisionReviewStates,
-  SchemaResponseActionTrigger,
-} from '@osf/shared/enums';
-import { DateAgoPipe } from '@shared/pipes';
+import { ModerationDecisionFormControls } from '@osf/shared/enums/moderation-decision-form-controls.enum';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { ReviewActionTrigger, SchemaResponseActionTrigger } from '@osf/shared/enums/trigger-action.enum';
+import { DateAgoPipe } from '@shared/pipes/date-ago.pipe';
+
+import { RegistrySelectors } from '../../store/registry';
 
 import { RegistryMakeDecisionComponent } from './registry-make-decision.component';
 
@@ -51,8 +50,8 @@ describe('RegistryMakeDecisionComponent', () => {
         MockProvider(DynamicDialogConfig, mockDialogConfig),
         provideMockStore({
           signals: [
-            { selector: 'RegistryOverviewSelectors.getReviewActions', value: [] },
-            { selector: 'RegistryOverviewSelectors.isReviewActionSubmitting', value: false },
+            { selector: RegistrySelectors.getReviewActions, value: [] },
+            { selector: RegistrySelectors.isReviewActionSubmitting, value: false },
           ],
         }),
       ],

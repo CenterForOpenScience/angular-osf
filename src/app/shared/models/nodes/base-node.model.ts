@@ -1,6 +1,6 @@
-import { ContributorModel } from '@shared/models';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
 
-import { LicensesOption } from '../license.model';
+import { LicensesOption } from '../license/license.model';
 
 export interface BaseNodeModel {
   id: string;
@@ -23,6 +23,7 @@ export interface BaseNodeModel {
   wikiEnabled: boolean;
   rootParentId?: string;
   type: string;
+  parent?: BaseNodeModel;
 }
 
 export interface NodeModel extends BaseNodeModel {

@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Institution } from '@shared/models';
+import { Institution } from '@shared/models/institutions/institutions.models';
 
 import { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view.component';
 
-import { MOCK_INSTITUTION } from '@testing/mocks';
+import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AffiliatedInstitutionsViewComponent', () => {
@@ -57,27 +57,27 @@ describe('AffiliatedInstitutionsViewComponent', () => {
     expect(component.institutions().length).toBe(3);
   });
 
-  it('should have default true for showTitle', () => {
+  it('should have default false for isLoading', () => {
     fixture.componentRef.setInput('institutions', mockInstitutions);
     fixture.detectChanges();
 
-    expect(component.showTitle()).toBe(true);
+    expect(component.isLoading()).toBe(false);
   });
 
-  it('should accept showTitle input as true', () => {
+  it('should accept isLoading input as true', () => {
     fixture.componentRef.setInput('institutions', mockInstitutions);
-    fixture.componentRef.setInput('showTitle', true);
+    fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
 
-    expect(component.showTitle()).toBe(true);
+    expect(component.isLoading()).toBe(true);
   });
 
-  it('should accept showTitle input as false', () => {
+  it('should accept isLoading input as false', () => {
     fixture.componentRef.setInput('institutions', mockInstitutions);
-    fixture.componentRef.setInput('showTitle', false);
+    fixture.componentRef.setInput('isLoading', false);
     fixture.detectChanges();
 
-    expect(component.showTitle()).toBe(false);
+    expect(component.isLoading()).toBe(false);
   });
 
   it('should update when institutions input changes', () => {
@@ -97,16 +97,16 @@ describe('AffiliatedInstitutionsViewComponent', () => {
     expect(component.institutions()[0].name).toBe('Updated Institution');
   });
 
-  it('should update when showTitle input changes', () => {
+  it('should update when isLoading input changes', () => {
     fixture.componentRef.setInput('institutions', mockInstitutions);
-    fixture.componentRef.setInput('showTitle', true);
+    fixture.componentRef.setInput('isLoading', false);
     fixture.detectChanges();
 
-    expect(component.showTitle()).toBe(true);
+    expect(component.isLoading()).toBe(false);
 
-    fixture.componentRef.setInput('showTitle', false);
+    fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
 
-    expect(component.showTitle()).toBe(false);
+    expect(component.isLoading()).toBe(true);
   });
 });

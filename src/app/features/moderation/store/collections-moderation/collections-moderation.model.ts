@@ -1,5 +1,7 @@
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
-import { AsyncStateModel, AsyncStateWithTotalCount, CollectionSubmissionWithGuid } from '@shared/models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 export interface CollectionsModerationStateModel {
   collectionSubmissions: AsyncStateWithTotalCount<CollectionSubmissionWithGuid[]>;

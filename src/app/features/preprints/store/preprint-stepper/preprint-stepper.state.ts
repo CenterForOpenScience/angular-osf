@@ -8,16 +8,17 @@ import { HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { PreprintFileSource } from '@osf/features/preprints/enums';
-import { Preprint } from '@osf/features/preprints/models';
+import { PreprintModel } from '@osf/features/preprints/models';
 import {
   PreprintFilesService,
   PreprintLicensesService,
   PreprintsProjectsService,
   PreprintsService,
 } from '@osf/features/preprints/services';
-import { FileFolderModel, FileModel } from '@osf/shared/models';
-import { handleSectionError } from '@shared/helpers';
-import { FilesService } from '@shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { FileModel } from '@osf/shared/models/files/file.model';
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
+import { FilesService } from '@osf/shared/services/files.service';
 
 import {
   ConnectProject,
@@ -198,7 +199,7 @@ export class PreprintStepperState {
     ctx.setState(patch({ preprint: patch({ isSubmitting: true }) }));
 
     return this.preprintFilesService.updateFileRelationship(state.preprint.data!.id, action.fileId).pipe(
-      tap((preprint: Preprint) => {
+      tap((preprint: PreprintModel) => {
         ctx.patchState({
           preprint: {
             ...ctx.getState().preprint,
@@ -344,7 +345,7 @@ export class PreprintStepperState {
           const fileIdAfterCopy = file.id.split('/')[1];
 
           return this.preprintFilesService.updateFileRelationship(createdPreprintId, fileIdAfterCopy).pipe(
-            tap((preprint: Preprint) => {
+            tap((preprint: PreprintModel) => {
               ctx.patchState({
                 preprint: {
                   ...ctx.getState().preprint,

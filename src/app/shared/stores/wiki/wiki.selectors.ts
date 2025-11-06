@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { Wiki, WikiVersion } from '@osf/shared/models';
+import { WikiModel, WikiVersion } from '@osf/shared/models/wiki/wiki.model';
 
 import { ComponentWiki, WikiModesStateModel, WikiStateModel } from './wiki.model';
 import { WikiState } from './wiki.state';
@@ -22,7 +22,7 @@ export class WikiSelectors {
   }
 
   @Selector([WikiState])
-  static getWikiList(state: WikiStateModel): Wiki[] {
+  static getWikiList(state: WikiStateModel): WikiModel[] {
     return state.wikiList.data;
   }
 

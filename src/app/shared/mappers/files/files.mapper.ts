@@ -1,19 +1,15 @@
-import { FileKind } from '@osf/shared/enums';
+import { FileKind } from '@osf/shared/enums/file-kind.enum';
+import { FileDetailsModel, FileExtraModel, FileLinksModel, FileModel } from '@shared/models/files/file.model';
+import { FileFolderLinks, FileFolderModel } from '@shared/models/files/file-folder.model';
+import { FileFolderDataJsonApi } from '@shared/models/files/file-folder-json-api.model';
 import {
   FileDataJsonApi,
   FileDetailsDataJsonApi,
-  FileDetailsModel,
   FileExtraJsonApi,
-  FileExtraModel,
-  FileFolderDataJsonApi,
-  FileFolderLinks,
-  FileFolderModel,
   FileLinksJsonApi,
-  FileLinksModel,
-  FileModel,
-  FileVersionModel,
-  FileVersionsResponseJsonApi,
-} from '@osf/shared/models';
+} from '@shared/models/files/file-json-api.model';
+import { FileVersionModel } from '@shared/models/files/file-version.model';
+import { FileVersionsResponseJsonApi } from '@shared/models/files/file-version-json-api.model';
 
 import { BaseNodeMapper } from '../nodes';
 

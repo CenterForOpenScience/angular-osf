@@ -12,20 +12,19 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import {
-  AffiliatedInstitutionsViewComponent,
-  ContributorsListComponent,
-  IconComponent,
-  TruncatedTextComponent,
-} from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import {
   ContributorsSelectors,
-  FetchResourceInstitutions,
-  GetAllContributors,
-  InstitutionsSelectors,
+  GetBibliographicContributors,
+  LoadMoreBibliographicContributors,
   ResetContributorsState,
-} from '@osf/shared/stores';
+} from '@osf/shared/stores/contributors';
+import { FetchResourceInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
 
@@ -34,13 +33,14 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
   imports: [
     Card,
     TranslatePipe,
-    TruncatedTextComponent,
     Skeleton,
     FormsModule,
+    TruncatedTextComponent,
     PreprintDoiSectionComponent,
     IconComponent,
     AffiliatedInstitutionsViewComponent,
     ContributorsListComponent,
+    FixSpecialCharPipe,
   ],
   templateUrl: './general-information.component.html',
   styleUrl: './general-information.component.scss',
@@ -53,10 +53,11 @@ export class GeneralInformationComponent implements OnDestroy {
   readonly PreregLinkInfo = PreregLinkInfo;
 
   private actions = createDispatchMap({
-    getContributors: GetAllContributors,
+    getBibliographicContributors: GetBibliographicContributors,
     resetContributorsState: ResetContributorsState,
     fetchPreprintById: FetchPreprintById,
     fetchResourceInstitutions: FetchResourceInstitutions,
+    loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
   });
 
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
@@ -67,9 +68,9 @@ export class GeneralInformationComponent implements OnDestroy {
 
   affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
 
-  contributors = select(ContributorsSelectors.getContributors);
-  areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
+  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  areContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
 
   skeletonData = Array.from({ length: 5 }, () => null);
 
@@ -80,12 +81,16 @@ export class GeneralInformationComponent implements OnDestroy {
       const preprint = this.preprint();
       if (!preprint) return;
 
-      this.actions.getContributors(this.preprint()!.id, ResourceType.Preprint);
+      this.actions.getBibliographicContributors(this.preprint()!.id, ResourceType.Preprint);
       this.actions.fetchResourceInstitutions(this.preprint()!.id, ResourceType.Preprint);
     });
   }
 
   ngOnDestroy(): void {
     this.actions.resetContributorsState();
+  }
+
+  handleLoadMoreContributors(): void {
+    this.actions.loadMoreBibliographicContributors(this.preprint()?.id, ResourceType.Preprint);
   }
 }

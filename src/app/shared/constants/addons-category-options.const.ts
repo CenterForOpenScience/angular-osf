@@ -1,5 +1,5 @@
 import { AddonCategory } from '@shared/enums/addons-category.enum';
-import { SelectOption } from '@shared/models';
+import { SelectOption } from '@shared/models/select-option.model';
 
 export const ADDON_CATEGORY_OPTIONS: SelectOption[] = [
   {

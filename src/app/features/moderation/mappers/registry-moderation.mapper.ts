@@ -1,5 +1,5 @@
-import { UserMapper } from '@osf/shared/mappers';
-import { PaginatedData } from '@osf/shared/models';
+import { UserMapper } from '@osf/shared/mappers/user';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 
 import {
   RegistryDataJsonApi,

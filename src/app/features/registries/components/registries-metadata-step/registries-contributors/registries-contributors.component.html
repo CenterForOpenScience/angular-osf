@@ -6,8 +6,9 @@
     [(contributors)]="contributors"
     [tableParams]="tableParams()"
     [isLoading]="isContributorsLoading()"
+    [isLoadingMore]="isLoadingMore()"
     (remove)="removeContributor($event)"
-    (pageChanged)="pageChanged($event)"
+    (loadMore)="loadMoreContributors()"
   />
 
   <div class="flex justify-content-end mt-3">

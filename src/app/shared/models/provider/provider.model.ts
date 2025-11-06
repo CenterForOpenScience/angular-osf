@@ -1,4 +1,5 @@
-import { CurrentResourceType, ReviewPermissions } from '@osf/shared/enums';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
 
 export interface ProviderShortInfoModel {
   id: string;

@@ -2,10 +2,14 @@ import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LicenseComponent, TextInputComponent } from '@shared/components';
-import { LicenseModel, LicenseOptions } from '@shared/models';
+import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
 
-import { MOCK_LICENSE } from '@testing/mocks';
+import { TextInputComponent } from '../text-input/text-input.component';
+import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
+
+import { LicenseComponent } from './license.component';
+
+import { MOCK_LICENSE } from '@testing/mocks/license.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('LicenseComponent', () => {
@@ -30,7 +34,7 @@ describe('LicenseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LicenseComponent, ...MockComponents(TextInputComponent), OSFTestingModule],
+      imports: [LicenseComponent, ...MockComponents(TextInputComponent, TruncatedTextComponent), OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LicenseComponent);

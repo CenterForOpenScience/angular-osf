@@ -1,15 +1,4 @@
-import { StringOrNull } from '@shared/helpers';
-import { SearchFilters } from '@shared/models';
-
-export class FetchMyPreprints {
-  static readonly type = '[Preprint] Fetch My Preprints';
-
-  constructor(
-    public pageNumber: number,
-    public pageSize: number,
-    public filters: SearchFilters
-  ) {}
-}
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
 export class FetchPreprintById {
   static readonly type = '[Preprint] Fetch Preprint By Id';
@@ -41,6 +30,10 @@ export class FetchPreprintRequestActions {
   static readonly type = '[Preprint] Fetch Preprint Requests Actions';
 
   constructor(public requestId: string) {}
+}
+
+export class FetchPreprintMetrics {
+  static readonly type = '[Preprint] Fetch Preprint Metrics';
 }
 
 export class WithdrawPreprint {

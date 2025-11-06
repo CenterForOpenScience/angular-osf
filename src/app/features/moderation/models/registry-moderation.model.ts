@@ -1,4 +1,5 @@
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
 import { ReviewAction } from './review-action.model';
 

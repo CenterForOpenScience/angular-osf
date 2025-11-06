@@ -4,7 +4,7 @@ import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { FileModel } from '@osf/shared/models';
+import { FileModel } from '@osf/shared/models/files/file.model';
 
 @Component({
   selector: 'osf-files-selection-actions',

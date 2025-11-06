@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TitleAndAbstractStepComponent } from '@osf/features/preprints/components';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { TextInputComponent } from '@shared/components';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';

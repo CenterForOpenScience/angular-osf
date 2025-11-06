@@ -4,18 +4,19 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { AddContributorType, ResourceType } from '../enums';
-import { ContributorsMapper } from '../mappers';
+import { AddContributorType } from '../enums/contributors/add-contributor-type.enum';
+import { ResourceType } from '../enums/resource-type.enum';
+import { ContributorsMapper } from '../mappers/contributors';
+import { ResponseJsonApi } from '../models/common/json-api.model';
+import { ContributorModel } from '../models/contributors/contributor.model';
+import { ContributorAddModel } from '../models/contributors/contributor-add.model';
 import {
-  ContributorAddModel,
   ContributorDataJsonApi,
-  ContributorModel,
   ContributorResponseJsonApi,
   ContributorsResponseJsonApi,
-  PaginatedData,
-  ResponseJsonApi,
-  UserDataJsonApi,
-} from '../models';
+} from '../models/contributors/contributor-response-json-api.model';
+import { PaginatedData } from '../models/paginated-data.model';
+import { UserDataJsonApi } from '../models/user/user-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -94,8 +95,7 @@ export class ContributorsService {
   }
 
   searchUsers(value: string, page = 1): Observable<PaginatedData<ContributorAddModel[]>> {
-    const baseUrl = `${this.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
-
+    const baseUrl = `${this.apiUrl}/search/users/?q=${value}*&page=${page}`;
     return this.jsonApiService
       .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
       .pipe(map((response) => ContributorsMapper.getPaginatedUsers(response)));
@@ -162,6 +162,12 @@ export class ContributorsService {
     return this.jsonApiService
       .post<ContributorResponseJsonApi>(baseUrl, contributorData)
       .pipe(map((contributor) => ContributorsMapper.getContributor(contributor.data)));
+  }
+
+  addContributorsFromProject(resourceType: ResourceType, resourceId: string): Observable<void> {
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/?copy_contributors_from_parent_project=true`;
+    const contributorData = { data: { type: AddContributorType.ParentProject } };
+    return this.jsonApiService.patch(baseUrl, contributorData);
   }
 
   deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {

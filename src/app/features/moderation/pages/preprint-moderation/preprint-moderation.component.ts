@@ -1,3 +1,5 @@
+import { createDispatchMap } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Tab, TabList, TabPanels, Tabs } from 'primeng/tabs';
@@ -7,12 +9,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { IS_MEDIUM, Primitive } from '@osf/shared/helpers';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 
 import { PREPRINT_MODERATION_TABS } from '../../constants';
 import { PreprintModerationTab } from '../../enums';
+import { GetPreprintProvider } from '../../store/preprint-moderation';
 
 @Component({
   selector: 'osf-preprint-moderation',
@@ -41,8 +46,19 @@ export class PreprintModerationComponent implements OnInit {
 
   selectedTab = PreprintModerationTab.Submissions;
 
+  private readonly actions = createDispatchMap({ getPreprintProvider: GetPreprintProvider });
+
   ngOnInit(): void {
     this.selectedTab = this.route.snapshot.firstChild?.data['tab'] as PreprintModerationTab;
+
+    const id = this.route.snapshot.params['providerId'];
+
+    if (!id) {
+      this.router.navigate(['/not-found']);
+      return;
+    }
+
+    this.actions.getPreprintProvider(id);
   }
 
   onTabChange(value: Primitive): void {

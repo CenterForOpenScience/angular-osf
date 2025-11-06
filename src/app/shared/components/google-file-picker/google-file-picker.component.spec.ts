@@ -5,7 +5,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import { GoogleFilePickerDownloadService } from '@shared/services';
+import { GoogleFilePickerDownloadService } from '@osf/shared/services/google-file-picker.download.service';
 
 import { GoogleFilePickerComponent } from './google-file-picker.component';
 

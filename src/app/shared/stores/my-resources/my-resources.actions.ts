@@ -1,6 +1,5 @@
-import { ResourceSearchMode, ResourceType } from '@shared/enums';
-
-import { MyResourcesSearchFilters } from 'src/app/shared/models/my-resources';
+import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
+import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.models';
 
 export class GetMyProjects {
   static readonly type = '[My Resources] Get Projects';
@@ -33,18 +32,6 @@ export class GetMyPreprints {
     public pageNumber: number,
     public pageSize: number,
     public filters: MyResourcesSearchFilters
-  ) {}
-}
-
-export class GetMyBookmarks {
-  static readonly type = '[My Resources] Get Bookmarks';
-
-  constructor(
-    public bookmarksId: string,
-    public pageNumber: number,
-    public pageSize: number,
-    public filters: MyResourcesSearchFilters,
-    public resourceType: ResourceType
   ) {}
 }
 

@@ -12,13 +12,15 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+import { SignUpModel } from '@core/models/sign-up.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { SignUpModel } from '@osf/core/models';
-import { AuthService } from '@osf/core/services';
-import { PasswordInputHintComponent, TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
-import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/helpers';
-import { ToastService } from '@osf/shared/services';
+import { AuthService } from '@core/services/auth.service';
+import { PasswordInputHintComponent } from '@osf/shared/components/password-input-hint/password-input-hint.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { PASSWORD_REGEX } from '@osf/shared/helpers/password.helper';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { SignUpForm } from '../../models';
 

@@ -4,16 +4,13 @@ import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import {
-  AdvisoryBoardComponent,
-  BrowseBySubjectsComponent,
-  PreprintServicesComponent,
-} from '@osf/features/preprints/components';
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import { SearchInputComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { BrandService } from '@shared/services';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { BrandService } from '@osf/shared/services/brand.service';
+
+import { AdvisoryBoardComponent, BrowseBySubjectsComponent, PreprintServicesComponent } from '../../components';
+import { PreprintProviderDetails } from '../../models';
+import { PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 import { PreprintsLandingComponent } from './preprints-landing.component';
 

@@ -1,4 +1,4 @@
-import { SocialPlatformConfig } from '../models';
+import { SocialPlatformConfig } from '../models/socials/social-platform-config.model';
 
 export const SOCIAL_PLATFORMS: SocialPlatformConfig[] = [
   {

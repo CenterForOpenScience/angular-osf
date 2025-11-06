@@ -6,21 +6,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
-import { ResourceType } from '@osf/shared/enums';
+import { RegistrySelectors } from '@osf/features/registry/store/registry';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LinkedProjectsSelectors } from '@osf/shared/stores/linked-projects';
-import {
-  ContributorsListComponent,
-  CustomPaginatorComponent,
-  IconComponent,
-  LoadingSpinnerComponent,
-  SubHeaderComponent,
-  TruncatedTextComponent,
-} from '@shared/components';
 
 import { ViewLinkedProjectsComponent } from './view-linked-projects.component';
 
-import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks';
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -56,7 +54,7 @@ describe('Component: View Duplicates', () => {
             { selector: LinkedProjectsSelectors.getLinkedProjectsLoading, value: false },
             { selector: LinkedProjectsSelectors.getLinkedProjectsTotalCount, value: 0 },
             { selector: ProjectOverviewSelectors.getProject, value: MOCK_PROJECT_OVERVIEW },
-            { selector: RegistryOverviewSelectors.getRegistry, value: undefined },
+            { selector: RegistrySelectors.getRegistry, value: undefined },
           ],
         }),
         MockProvider(ActivatedRoute, activatedRouteMock),

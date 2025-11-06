@@ -4,8 +4,8 @@ import { catchError, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
-import { PaginatedData } from '@osf/shared/models';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 
 import { ModeratorModel } from '../../models';
 import { ModeratorsService } from '../../services';
@@ -88,7 +88,7 @@ export class ModeratorsState {
   }
 
   @Action(UpdateModerator)
-  updateCollectionModerator(ctx: StateContext<ModeratorsStateModel>, action: UpdateModerator) {
+  updateModerator(ctx: StateContext<ModeratorsStateModel>, action: UpdateModerator) {
     const state = ctx.getState();
 
     if (!action.resourceType) {
@@ -108,7 +108,7 @@ export class ModeratorsState {
   }
 
   @Action(DeleteModerator)
-  deleteCollectionModerator(ctx: StateContext<ModeratorsStateModel>, action: DeleteModerator) {
+  deleteModerator(ctx: StateContext<ModeratorsStateModel>, action: DeleteModerator) {
     const state = ctx.getState();
 
     if (!action.resourceType) {

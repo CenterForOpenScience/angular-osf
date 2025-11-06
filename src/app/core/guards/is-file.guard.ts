@@ -5,8 +5,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { inject } from '@angular/core';
 import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
 
-import { CurrentResourceType } from '../../shared/enums';
-import { CurrentResourceSelectors, GetResource } from '../../shared/stores';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceSelectors, GetResource } from '@osf/shared/stores/current-resource';
 
 export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) => {
   const store = inject(Store);

@@ -2,12 +2,14 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CopyButtonComponent } from '@shared/components';
-import { PaginatedViewOnlyLinksModel } from '@shared/models';
+import { PaginatedViewOnlyLinksModel } from '@shared/models/view-only-links/view-only-link.model';
+
+import { CopyButtonComponent } from '../copy-button/copy-button.component';
 
 import { ViewOnlyTableComponent } from './view-only-table.component';
 
-import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK, TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK } from '@testing/mocks/view-only-link.mock';
 
 describe('ViewOnlyTableComponent', () => {
   let component: ViewOnlyTableComponent;

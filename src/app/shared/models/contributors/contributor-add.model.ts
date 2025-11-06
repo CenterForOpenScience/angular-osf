@@ -5,4 +5,6 @@ export interface ContributorAddModel {
   fullName?: string;
   email?: string;
   index?: number;
+  checked?: boolean;
+  disabled?: boolean;
 }

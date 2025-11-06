@@ -1,4 +1,5 @@
-import { AsyncStateModel, AsyncStateWithTotalCount } from '@osf/shared/models';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 import { PreprintProviderModerationInfo, PreprintReviewActionModel, PreprintWithdrawalSubmission } from '../../models';
 import { PreprintSubmissionModel } from '../../models/preprint-submission.model';

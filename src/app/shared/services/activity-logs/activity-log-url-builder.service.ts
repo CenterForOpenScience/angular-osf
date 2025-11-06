@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ActivityLog } from '@shared/models';
+import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
 
 @Injectable({
   providedIn: 'root',

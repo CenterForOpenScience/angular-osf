@@ -1,4 +1,4 @@
-import { ContributorModel } from '@osf/shared/models';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 
 export interface RegistryComponentModel {
   id: string;

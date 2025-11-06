@@ -1,4 +1,4 @@
-import { StorageItem } from '@shared/models';
+import { StorageItem } from './storage-item.model';
 
 export interface OperationInvocation {
   id: string;

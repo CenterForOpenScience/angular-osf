@@ -1,6 +1,6 @@
-import { MetaJsonApi } from '../common';
-import { BaseNodeDataJsonApi } from '../nodes';
-import { UserDataErrorResponseJsonApi } from '../user';
+import { MetaJsonApi } from '../common/json-api.model';
+import { BaseNodeDataJsonApi } from '../nodes/base-node-data-json-api.model';
+import { UserDataErrorResponseJsonApi } from '../user/user-json-api.model';
 
 export interface ViewOnlyLinksResponseJsonApi {
   data: ViewOnlyLinkJsonApi[];

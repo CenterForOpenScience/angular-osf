@@ -1,4 +1,4 @@
-import { SortOrder } from '@shared/enums';
+import { SortOrder } from '@shared/enums/sort-order.enum';
 
 export interface QueryParams {
   page: number;

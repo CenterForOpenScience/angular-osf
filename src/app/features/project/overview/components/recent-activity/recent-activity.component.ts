@@ -9,8 +9,8 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { CustomPaginatorComponent } from '@osf/shared/components';
-import { ActivityLogDisplayService } from '@osf/shared/services';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
 import { ActivityLogsSelectors, GetActivityLogs } from '@osf/shared/stores/activity-logs';
 
 @Component({

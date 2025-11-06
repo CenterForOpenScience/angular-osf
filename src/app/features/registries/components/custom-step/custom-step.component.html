@@ -44,8 +44,8 @@
             <div class="flex align-items-baseline gap-1">
               <h3 class="mb-2">
                 {{ q.displayText }}
-                @if (q.required) {
-                  <span class="text-red-500">*</span>
+                @if (!q.required) {
+                  ({{ 'common.labels.optional' | translate }})
                 }
               </h3>
             </div>

@@ -21,6 +21,15 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { ResetState } from '@osf/features/files/store';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { CanDeactivateComponent } from '@osf/shared/models/can-deactivate.interface';
+import { StepOption } from '@osf/shared/models/step-option.model';
+import { BrandService } from '@osf/shared/services/brand.service';
+
 import {
   AuthorAssertionsStepComponent,
   FileStepComponent,
@@ -28,20 +37,11 @@ import {
   ReviewStepComponent,
   SupplementsStepComponent,
   TitleAndAbstractStepComponent,
-} from '@osf/features/preprints/components';
-import { submitPreprintSteps } from '@osf/features/preprints/constants';
-import { PreprintSteps } from '@osf/features/preprints/enums';
-import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import {
-  DeletePreprint,
-  PreprintStepperSelectors,
-  ResetState,
-  SetSelectedPreprintProviderId,
-} from '@osf/features/preprints/store/preprint-stepper';
-import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
-import { CanDeactivateComponent, StepOption } from '@osf/shared/models';
-import { StepperComponent } from '@shared/components';
-import { BrandService } from '@shared/services';
+} from '../../components';
+import { submitPreprintSteps } from '../../constants';
+import { PreprintSteps } from '../../enums';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { DeletePreprint, PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',

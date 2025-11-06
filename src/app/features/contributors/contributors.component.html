@@ -63,6 +63,7 @@
     class="w-full"
     [(contributors)]="contributors"
     [isLoading]="isContributorsLoading()"
+    [isLoadingMore]="isLoadingMore()"
     [tableParams]="tableParams()"
     [hasAdminAccess]="hasAdminAccess()"
     [currentUserId]="currentUser()?.id"
@@ -70,7 +71,7 @@
     [showInfo]="true"
     [resourceType]="resourceType()"
     (remove)="removeContributor($event)"
-    (pageChanged)="pageChanged($event)"
+    (loadMore)="loadMoreContributors()"
   ></osf-contributors-table>
 
   @if (hasChanges) {

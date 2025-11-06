@@ -1,24 +1,11 @@
 import { Selector } from '@ngxs/store';
 
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+
 import { PreprintStateModel } from './preprint.model';
 import { PreprintState } from './preprint.state';
 
 export class PreprintSelectors {
-  @Selector([PreprintState])
-  static getMyPreprints(state: PreprintStateModel) {
-    return state.myPreprints.data;
-  }
-
-  @Selector([PreprintState])
-  static getMyPreprintsTotalCount(state: PreprintStateModel) {
-    return state.myPreprints.totalCount;
-  }
-
-  @Selector([PreprintState])
-  static areMyPreprintsLoading(state: PreprintStateModel) {
-    return state.myPreprints.isLoading;
-  }
-
   @Selector([PreprintState])
   static getPreprint(state: PreprintStateModel) {
     return state.preprint.data;
@@ -92,5 +79,25 @@ export class PreprintSelectors {
   @Selector([PreprintState])
   static arePreprintRequestActionsLoading(state: PreprintStateModel) {
     return state.preprintRequestsActions.isLoading;
+  }
+
+  @Selector([PreprintState])
+  static hasAdminAccess(state: PreprintStateModel) {
+    return state.preprint.data?.currentUserPermissions.includes(UserPermissions.Admin) || false;
+  }
+
+  @Selector([PreprintState])
+  static hasWriteAccess(state: PreprintStateModel) {
+    return state.preprint.data?.currentUserPermissions.includes(UserPermissions.Write) || false;
+  }
+
+  @Selector([PreprintState])
+  static getPreprintMetrics(state: PreprintStateModel) {
+    return state.metrics.data;
+  }
+
+  @Selector([PreprintState])
+  static arePreprintMetricsLoading(state: PreprintStateModel) {
+    return state.metrics.isLoading;
   }
 }

@@ -9,6 +9,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { UserSelectors } from '@osf/core/store/user';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { RegionsSelectors } from '@osf/shared/stores/regions';
+
+import { AccountSettingsComponent } from './account-settings.component';
 import {
   AffiliatedInstitutionsComponent,
   ChangePasswordComponent,
@@ -18,15 +23,13 @@ import {
   DefaultStorageLocationComponent,
   ShareIndexingComponent,
   TwoFactorAuthComponent,
-} from '@osf/features/settings/account-settings/components';
-import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store';
-import { SubHeaderComponent } from '@osf/shared/components';
-import { RegionsSelectors } from '@osf/shared/stores';
-import { ToastService } from '@shared/services';
+} from './components';
+import { AccountSettingsSelectors } from './store';
 
-import { AccountSettingsComponent } from './account-settings.component';
-
-import { MOCK_STORE, MOCK_USER, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@testing/mocks';
+import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('AccountSettingsComponent', () => {
   let component: AccountSettingsComponent;

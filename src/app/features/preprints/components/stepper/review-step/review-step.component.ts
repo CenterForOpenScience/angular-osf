@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
@@ -23,16 +22,19 @@ import {
   UpdatePreprint,
   UpdatePrimaryFileRelationship,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
-  AffiliatedInstitutionsViewComponent,
-  ContributorsListComponent,
-  TruncatedTextComponent,
-} from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { InterpolatePipe } from '@shared/pipes';
-import { ToastService } from '@shared/services';
-import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@shared/stores';
+  ContributorsSelectors,
+  GetBibliographicContributors,
+  LoadMoreBibliographicContributors,
+} from '@shared/stores/contributors';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
+import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subjects';
 
 @Component({
   selector: 'osf-review-step',
@@ -44,13 +46,9 @@ import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores
     Button,
     TitleCasePipe,
     TranslatePipe,
-    Accordion,
-    AccordionContent,
-    AccordionHeader,
-    AccordionPanel,
-    InterpolatePipe,
     AffiliatedInstitutionsViewComponent,
     ContributorsListComponent,
+    LicenseDisplayComponent,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
@@ -60,7 +58,7 @@ export class ReviewStepComponent implements OnInit {
   private router = inject(Router);
   private toastService = inject(ToastService);
   private actions = createDispatchMap({
-    getContributors: GetAllContributors,
+    getBibliographicContributors: GetBibliographicContributors,
     fetchSubjects: FetchSelectedSubjects,
     fetchLicenses: FetchLicenses,
     fetchPreprintProject: FetchPreprintProject,
@@ -68,6 +66,7 @@ export class ReviewStepComponent implements OnInit {
     fetchResourceInstitutions: FetchResourceInstitutions,
     updatePrimaryFileRelationship: UpdatePrimaryFileRelationship,
     updatePreprint: UpdatePreprint,
+    loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
   });
 
   provider = input.required<PreprintProviderDetails | undefined>();
@@ -76,8 +75,9 @@ export class ReviewStepComponent implements OnInit {
   preprintFile = select(PreprintStepperSelectors.getPreprintFile);
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
-  contributors = select(ContributorsSelectors.getContributors);
-  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
+  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  areContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
   subjects = select(SubjectsSelectors.getSelectedSubjects);
   affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
   license = select(PreprintStepperSelectors.getPreprintLicense);
@@ -88,7 +88,7 @@ export class ReviewStepComponent implements OnInit {
   readonly PreregLinkInfo = PreregLinkInfo;
 
   ngOnInit(): void {
-    this.actions.getContributors(this.preprint()!.id, ResourceType.Preprint);
+    this.actions.getBibliographicContributors(this.preprint()?.id, ResourceType.Preprint);
     this.actions.fetchSubjects(this.preprint()!.id, ResourceType.Preprint);
     this.actions.fetchLicenses();
     this.actions.fetchPreprintProject();
@@ -122,5 +122,9 @@ export class ReviewStepComponent implements OnInit {
 
   cancelSubmission() {
     this.router.navigateByUrl('/preprints');
+  }
+
+  loadMoreContributors(): void {
+    this.actions.loadMoreBibliographicContributors(this.preprint()?.id, ResourceType.Preprint);
   }
 }

@@ -11,7 +11,12 @@
       } @else {
         @for (item of users(); track $index) {
           <div class="border-divider flex pb-3">
-            <p-checkbox variant="filled" [value]="item" [(ngModel)]="selectedUsers"></p-checkbox>
+            <p-checkbox
+              variant="filled"
+              [value]="item"
+              [(ngModel)]="selectedUsers"
+              [disabled]="!!item.disabled"
+            ></p-checkbox>
             <a class="ml-2 font-bold" [href]="item.id" target="_blank">{{ item.fullName }}</a>
           </div>
         }
@@ -62,6 +67,22 @@
       <p>{{ 'project.contributors.addDialog.addContributorsToComponents' | translate }}</p>
 
       <osf-components-selection-list [(components)]="components" />
+    </div>
+  }
+
+  @if (allowAddingContributorsFromParentProject() && this.isSearchState()) {
+    <div class="flex justify-content-center mt-2">
+      <p-button
+        class="w-full"
+        styleClass="w-full"
+        severity="secondary"
+        (onClick)="addSourceProjectContributors()"
+        [label]="
+          'project.contributors.addDialog.addingContributorsFromParentProject'
+            | translate: { projectName: parentResourceName() }
+        "
+      >
+      </p-button>
     </div>
   }
 

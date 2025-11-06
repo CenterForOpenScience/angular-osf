@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { SocialsShareButtonComponent } from '@osf/shared/components';
+import { SocialsShareButtonComponent } from '@osf/shared/components/socials-share-button/socials-share-button.component';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 import { ShareAndDownloadComponent } from './share-and-download.component';

@@ -12,8 +12,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { CustomValidators, hasViewOnlyParam } from '@osf/shared/helpers';
-import { InputLimits } from '@shared/constants';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 
 import { FilesSelectors, UpdateTags } from '../../store';
 

@@ -5,9 +5,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { ComponentsMapper } from '../mappers';
-import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse, MyResourcesItem } from '../models';
-import { NodeLinkJsonApi } from '../models/node-links';
+import { ComponentsMapper } from '../mappers/components';
+import { JsonApiResponse } from '../models/common/json-api.model';
+import { ComponentGetResponseJsonApi } from '../models/components/component-json-api.model';
+import { ComponentOverview } from '../models/components/components.models';
+import { MyResourcesItem } from '../models/my-resources/my-resources.models';
+import { NodeLinkJsonApi } from '../models/node-links/node-link-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 

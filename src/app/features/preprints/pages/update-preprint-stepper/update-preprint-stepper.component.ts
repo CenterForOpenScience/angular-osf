@@ -21,6 +21,16 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { ResetState } from '@osf/features/files/store';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { BrandService } from '@osf/shared/services/brand.service';
+import { CanDeactivateComponent } from '@shared/models/can-deactivate.interface';
+import { StepOption } from '@shared/models/step-option.model';
+
 import {
   AuthorAssertionsStepComponent,
   FileStepComponent,
@@ -28,21 +38,12 @@ import {
   ReviewStepComponent,
   SupplementsStepComponent,
   TitleAndAbstractStepComponent,
-} from '@osf/features/preprints/components';
-import { submitPreprintSteps } from '@osf/features/preprints/constants';
-import { PreprintSteps, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
-import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import {
-  FetchPreprintById,
-  PreprintStepperSelectors,
-  ResetState,
-  SetSelectedPreprintProviderId,
-} from '@osf/features/preprints/store/preprint-stepper';
-import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
-import { StepperComponent } from '@shared/components';
-import { UserPermissions } from '@shared/enums';
-import { CanDeactivateComponent, StepOption } from '@shared/models';
-import { BrandService } from '@shared/services';
+} from '../../components';
+import { submitPreprintSteps } from '../../constants';
+import { PreprintSteps, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
+import { FetchPreprintById } from '../../store/preprint';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-update-preprint-stepper',
@@ -54,8 +55,8 @@ import { BrandService } from '@shared/services';
     PreprintsMetadataStepComponent,
     SupplementsStepComponent,
     ReviewStepComponent,
-    TranslatePipe,
     FileStepComponent,
+    TranslatePipe,
   ],
   templateUrl: './update-preprint-stepper.component.html',
   styleUrl: './update-preprint-stepper.component.scss',

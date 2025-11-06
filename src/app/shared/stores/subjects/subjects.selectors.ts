@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { SubjectModel } from '@osf/shared/models';
+import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 
 import { SubjectsModel } from './subjects.model';
 import { SubjectsState } from './subjects.state';

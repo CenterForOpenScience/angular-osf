@@ -2,12 +2,14 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@core/guards/auth.guard';
 import { registrationModerationGuard } from '@core/guards/registration-moderation.guard';
-import { authGuard } from '@osf/core/guards';
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
 import { RegistriesState } from '@osf/features/registries/store';
-import { CitationsState, ContributorsState, SubjectsState } from '@osf/shared/stores';
+import { CitationsState } from '@osf/shared/stores/citations';
+import { ContributorsState } from '@osf/shared/stores/contributors';
 import { RegistrationProviderState } from '@osf/shared/stores/registration-provider';
+import { SubjectsState } from '@osf/shared/stores/subjects';
 
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './store/handlers';
 import { FilesHandlers } from './store/handlers/files.handlers';

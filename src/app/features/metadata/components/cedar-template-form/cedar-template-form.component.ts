@@ -24,16 +24,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
-import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
+
+import 'cedar-artifact-viewer';
+import 'cedar-embeddable-editor';
+
+import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '../../constants';
+import { CedarMetadataHelper } from '../../helpers';
 import {
   CedarEditorElement,
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
   CedarRecordDataBinding,
-} from '@osf/features/metadata/models';
-
-import 'cedar-artifact-viewer';
+} from '../../models';
 
 @Component({
   selector: 'osf-cedar-template-form',

@@ -4,9 +4,9 @@ import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReviewAction } from '@osf/features/moderation/models';
-import { Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { IconComponent } from '@shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { StatusBannerComponent } from './status-banner.component';
 
@@ -20,7 +20,7 @@ describe('StatusBannerComponent', () => {
   let component: StatusBannerComponent;
   let fixture: ComponentFixture<StatusBannerComponent>;
 
-  const mockPreprint: Preprint = PREPRINT_MOCK;
+  const mockPreprint: PreprintModel = PREPRINT_MOCK;
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockReviewAction: ReviewAction = REVIEW_ACTION_MOCK;
   const mockRequestAction = REVIEW_ACTION_MOCK;

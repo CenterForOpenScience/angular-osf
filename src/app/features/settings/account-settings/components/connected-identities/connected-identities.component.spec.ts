@@ -1,7 +1,7 @@
 import { provideStore, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProviders } from 'ng-mocks';
+import { MockComponent, MockPipe, MockProviders } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -9,9 +9,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExternalIdentity } from '@osf/features/settings/account-settings/models';
-import { CustomConfirmationService, LoaderService, ToastService } from '@shared/services';
+import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
+import { ExternalIdentity } from '../../models';
 import { AccountSettingsState } from '../../store/account-settings.state';
 
 import { ConnectedIdentitiesComponent } from './connected-identities.component';
@@ -30,7 +33,7 @@ describe('ConnectedIdentitiesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConnectedIdentitiesComponent, MockPipe(TranslatePipe)],
+      imports: [ConnectedIdentitiesComponent, MockComponent(ReadonlyInputComponent), MockPipe(TranslatePipe)],
       providers: [
         provideStore([AccountSettingsState]),
         provideHttpClient(),

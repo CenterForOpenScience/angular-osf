@@ -1,4 +1,4 @@
-import { SelectOption } from '@osf/shared/models';
+import { SelectOption } from '@osf/shared/models/select-option.model';
 
 import { PreregLinkInfo } from '../enums';
 

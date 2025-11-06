@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { CustomPaginatorComponent } from '@shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@shared/constants/activity-logs';
 import {
   ActivityLogsSelectors,

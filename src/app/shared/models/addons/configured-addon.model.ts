@@ -1,4 +1,4 @@
-import { AddonModel } from '@shared/models';
+import { AddonModel } from './addon.model';
 
 export interface ConfiguredAddonModel extends AddonModel {
   connectedCapabilities: string[];

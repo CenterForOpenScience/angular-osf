@@ -7,9 +7,13 @@ import { Button } from 'primeng/button';
 import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { getAddonTypeString, isConfiguredAddon } from '@osf/shared/helpers';
-import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
-import { AddonCardModel, AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
+import { getAddonTypeString, isConfiguredAddon } from '@osf/shared/helpers/addon-type.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { AddonModel } from '@shared/models/addons/addon.model';
+import { AddonCardModel } from '@shared/models/addons/addon-card.model';
+import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
+import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({

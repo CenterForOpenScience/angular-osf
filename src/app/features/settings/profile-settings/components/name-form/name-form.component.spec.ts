@@ -5,7 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { NameForm } from '@osf/features/settings/profile-settings/models';
-import { TextInputComponent } from '@shared/components';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
 import { NameFormComponent } from './name-form.component';
 

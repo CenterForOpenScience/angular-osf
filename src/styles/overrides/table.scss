@@ -85,8 +85,11 @@ p-table {
 
     td,
     th {
-      background-color: transparent;
       border-bottom: 1px solid var(--grey-2);
+    }
+
+    td {
+      background-color: transparent;
     }
 
     tr {

@@ -1,4 +1,6 @@
-import { BaseNodeAttributesJsonApi, ContributorDataJsonApi, MetaJsonApi } from '@osf/shared/models';
+import { MetaJsonApi } from '@osf/shared/models/common/json-api.model';
+import { ContributorDataJsonApi } from '@osf/shared/models/contributors/contributor-response-json-api.model';
+import { BaseNodeAttributesJsonApi } from '@osf/shared/models/nodes/base-node-attributes-json-api.model';
 
 export interface LinkedNodeJsonApi {
   id: string;

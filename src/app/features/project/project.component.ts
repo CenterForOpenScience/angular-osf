@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
@@ -6,7 +5,7 @@ import { HelpScoutService } from '@core/services/help-scout.service';
 
 @Component({
   selector: 'osf-project',
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

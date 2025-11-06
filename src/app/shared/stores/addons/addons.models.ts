@@ -1,13 +1,13 @@
+import { AddonModel } from '@osf/shared/models/addons/addon.model';
 import {
-  AddonModel,
-  AsyncStateModel,
-  AuthorizedAccountModel,
-  ConfiguredAddonModel,
   ConfiguredAddonResponseJsonApi,
-  OperationInvocation,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
-} from '@osf/shared/models';
+} from '@osf/shared/models/addons/addon-json-api.models';
+import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { OperationInvocation } from '@osf/shared/models/addons/operation-invocation.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface AddonsStateModel {
   storageAddons: AsyncStateModel<AddonModel[]>;

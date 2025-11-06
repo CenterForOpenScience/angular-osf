@@ -1,16 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { isAuthorizedAddon } from '@osf/shared/helpers';
-import { AddonFormControls, AddonType, CredentialsFormat } from '@shared/enums';
+import { AddonFormControls } from '@osf/shared/enums/addon-form-controls.enum';
+import { AddonType } from '@osf/shared/enums/addon-type.enum';
+import { CredentialsFormat } from '@osf/shared/enums/addons-credentials-format.enum';
+import { isAuthorizedAddon } from '@osf/shared/helpers/addon-type.helper';
+import { AddonModel } from '@shared/models/addons/addon.model';
 import {
-  AddonForm,
-  AddonModel,
-  AuthorizedAccountModel,
   AuthorizedAddonRequestJsonApi,
-  ConfiguredAddonModel,
   ConfiguredAddonRequestJsonApi,
-} from '@shared/models';
+} from '@shared/models/addons/addon-json-api.models';
+import { AddonForm } from '@shared/models/addons/addon-utils.models';
+import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
+import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,9 @@ export class AddonFormService {
     const formControls: Partial<AddonForm> = {
       [AddonFormControls.AccountName]: this.formBuilder.control<string>(addon.displayName || '', Validators.required),
     };
+    if (addon.configurableApiRoot) {
+      formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
+    }
 
     switch (addon.credentialsFormat) {
       case CredentialsFormat.ACCESS_SECRET_KEYS:
@@ -33,16 +38,13 @@ export class AddonFormService {
         formControls[AddonFormControls.SecretKey] = this.formBuilder.control<string>('', Validators.required);
         break;
       case CredentialsFormat.DATAVERSE_API_TOKEN:
-        formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.ApiToken] = this.formBuilder.control<string>('', Validators.required);
         break;
       case CredentialsFormat.USERNAME_PASSWORD:
-        formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.Username] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.Password] = this.formBuilder.control<string>('', Validators.required);
         break;
       case CredentialsFormat.REPO_TOKEN:
-        formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.PersonalAccessToken] = this.formBuilder.control<string>('', Validators.required);
         break;
     }

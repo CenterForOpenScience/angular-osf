@@ -10,9 +10,11 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 import { ClearCurrentProvider } from '@core/store/provider';
-import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { IS_MEDIUM, Primitive } from '@osf/shared/helpers';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 import { GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
 import { REGISTRY_MODERATION_TABS } from '../../constants';

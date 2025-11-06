@@ -27,7 +27,7 @@
   @let nodeLicense = resourceValue.isContainedBy?.license;
   @if (nodeLicense) {
     <p>
-      {{ 'resourceCard.labels.license' | translate }}
+      {{ 'common.labels.license' | translate }}:
       <a class="font-bold" [attr.href]="nodeLicense!.absoluteUrl || null" target="_blank" rel="noopener noreferrer">
         {{ nodeLicense!.name }}
       </a>

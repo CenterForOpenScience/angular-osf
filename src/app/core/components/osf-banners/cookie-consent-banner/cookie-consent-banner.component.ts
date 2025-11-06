@@ -7,7 +7,7 @@ import { Message } from 'primeng/message';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { fadeInOutAnimation } from '@core/animations/fade.in-out.animation';
-import { IconComponent } from '@shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 /**
  * Displays a cookie consent banner until the user accepts.

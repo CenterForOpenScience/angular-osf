@@ -1,20 +1,23 @@
 import { PreprintFileSource } from '@osf/features/preprints/enums';
-import { Preprint, PreprintFilesLinks } from '@osf/features/preprints/models';
-import { StringOrNull } from '@shared/helpers';
-import { AsyncStateModel, FileFolderModel, FileModel, IdName } from '@shared/models';
-import { LicenseModel } from '@shared/models/license.model';
+import { PreprintFilesLinks, PreprintModel } from '@osf/features/preprints/models';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
+import { StringOrNull } from '@shared/helpers/types.helper';
+import { IdNameModel } from '@shared/models/common/id-name.model';
+import { FileModel } from '@shared/models/files/file.model';
+import { FileFolderModel } from '@shared/models/files/file-folder.model';
+import { AsyncStateModel } from '@shared/models/store/async-state.model';
 
 export interface PreprintStepperStateModel {
   selectedProviderId: StringOrNull;
-  preprint: AsyncStateModel<Preprint | null>;
+  preprint: AsyncStateModel<PreprintModel | null>;
   fileSource: PreprintFileSource;
   preprintFilesLinks: AsyncStateModel<PreprintFilesLinks | null>;
   preprintFile: AsyncStateModel<FileModel | null>;
-  availableProjects: AsyncStateModel<IdName[]>;
+  availableProjects: AsyncStateModel<IdNameModel[]>;
   projectFiles: AsyncStateModel<FileModel[]>;
   licenses: AsyncStateModel<LicenseModel[]>;
   currentFolder: AsyncStateModel<FileFolderModel | null>;
-  preprintProject: AsyncStateModel<IdName | null>;
+  preprintProject: AsyncStateModel<IdNameModel | null>;
   hasBeenSubmitted: boolean;
   institutionsChanged: boolean;
 }

@@ -4,7 +4,8 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { ResourceModel, UserRelatedCounts } from '@shared/models';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
+import { UserRelatedCounts } from '@osf/shared/models/user-related-counts/user-related-counts.model';
 
 @Component({
   selector: 'osf-user-secondary-metadata',

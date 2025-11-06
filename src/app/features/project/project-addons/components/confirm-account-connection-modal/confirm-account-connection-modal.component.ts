@@ -8,9 +8,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { AddonOperationInvocationService } from '@osf/shared/services';
-import { AddonsSelectors, CreateAddonOperationInvocation } from '@osf/shared/stores';
-import { OperationNames } from '@shared/enums';
+import { OperationNames } from '@osf/shared/enums/operation-names.enum';
+import { AddonOperationInvocationService } from '@osf/shared/services/addons/addon-operation-invocation.service';
+import { AddonsSelectors, CreateAddonOperationInvocation } from '@osf/shared/stores/addons';
 
 @Component({
   selector: 'osf-confirm-account-connection-modal',

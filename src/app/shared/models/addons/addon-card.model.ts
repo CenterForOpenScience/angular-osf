@@ -1,4 +1,5 @@
-import { AddonModel, ConfiguredAddonModel } from '@shared/models';
+import { AddonModel } from './addon.model';
+import { ConfiguredAddonModel } from './configured-addon.model';
 
 export interface AddonCardModel {
   id: string;

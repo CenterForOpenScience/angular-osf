@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MetadataLicenseComponent } from './metadata-license.component';
 
-import { MOCK_LICENSE } from '@testing/mocks';
+import { MOCK_LICENSE } from '@testing/mocks/license.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataLicenseComponent', () => {

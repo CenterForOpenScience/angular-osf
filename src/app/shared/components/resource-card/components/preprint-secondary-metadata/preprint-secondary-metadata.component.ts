@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { ResourceModel } from '@shared/models';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
 
 @Component({
   selector: 'osf-preprint-secondary-metadata',

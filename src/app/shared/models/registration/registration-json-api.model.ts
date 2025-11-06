@@ -1,8 +1,10 @@
-import { RegistrationReviewStates, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
-import { ContributorDataJsonApi } from '../contributors';
-import { LicenseRecordJsonApi } from '../licenses-json-api.model';
+import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common/json-api.model';
+import { ContributorDataJsonApi } from '../contributors/contributor-response-json-api.model';
+import { LicenseRecordJsonApi } from '../license/licenses-json-api.model';
 
 export interface DraftRegistrationResponseJsonApi {
   data: DraftRegistrationDataJsonApi;

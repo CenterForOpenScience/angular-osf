@@ -3,8 +3,9 @@ import { Subject } from 'rxjs';
 import { inject } from '@angular/core';
 import { CanDeactivateFn } from '@angular/router';
 
-import { CanDeactivateComponent } from '@shared/models';
-import { CustomConfirmationService } from '@shared/services';
+import { CanDeactivateComponent } from '@shared/models/can-deactivate.interface';
+
+import { CustomConfirmationService } from '../services/custom-confirmation.service';
 
 export const ConfirmLeavingGuard: CanDeactivateFn<CanDeactivateComponent> = (component) => {
   const confirmationService = inject(CustomConfirmationService);

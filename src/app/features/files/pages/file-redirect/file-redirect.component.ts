@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { FilesService } from '@osf/shared/services';
+import { FilesService } from '@osf/shared/services/files.service';
 
 @Component({
   selector: 'osf-file-redirect',

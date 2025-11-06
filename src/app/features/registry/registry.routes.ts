@@ -2,26 +2,20 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { viewOnlyGuard } from '@osf/core/guards';
-import { ResourceType } from '@osf/shared/enums';
-import { LicensesService } from '@osf/shared/services';
-import {
-  CitationsState,
-  ContributorsState,
-  DuplicatesState,
-  SubjectsState,
-  ViewOnlyLinkState,
-} from '@osf/shared/stores';
+import { viewOnlyGuard } from '@core/guards/view-only.guard';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CitationsState } from '@osf/shared/stores/citations';
+import { DuplicatesState } from '@osf/shared/stores/duplicates';
+import { RegistrationProviderState } from '@osf/shared/stores/registration-provider';
+import { SubjectsState } from '@osf/shared/stores/subjects';
+import { ViewOnlyLinkState } from '@osf/shared/stores/view-only-links';
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
-import { RegistriesState } from '../registries/store';
-import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
-import { FilesHandlers } from '../registries/store/handlers/files.handlers';
 
+import { RegistryState } from './store/registry';
 import { RegistryComponentsState } from './store/registry-components';
 import { RegistryLinksState } from './store/registry-links';
-import { RegistryOverviewState } from './store/registry-overview';
 import { RegistryResourcesState } from './store/registry-resources';
 import { RegistryComponent } from './registry.component';
 
@@ -29,7 +23,7 @@ export const registryRoutes: Routes = [
   {
     path: '',
     component: RegistryComponent,
-    providers: [provideStates([RegistryOverviewState, ActivityLogsState])],
+    providers: [provideStates([RegistryState, RegistrationProviderState])],
     children: [
       {
         path: '',
@@ -40,19 +34,12 @@ export const registryRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('./pages/registry-overview/registry-overview.component').then((c) => c.RegistryOverviewComponent),
-        providers: [
-          provideStates([RegistriesState, SubjectsState, CitationsState]),
-          ProvidersHandlers,
-          ProjectsHandlers,
-          LicensesHandlers,
-          FilesHandlers,
-          LicensesService,
-        ],
+        providers: [provideStates([SubjectsState, CitationsState])],
       },
       {
         path: 'metadata',
         loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
-        providers: [provideStates([SubjectsState, ContributorsState])],
+        providers: [provideStates([SubjectsState])],
         data: { resourceType: ResourceType.Registration },
         canActivate: [viewOnlyGuard],
       },
@@ -68,7 +55,7 @@ export const registryRoutes: Routes = [
         canActivate: [viewOnlyGuard],
         loadComponent: () => import('../contributors/contributors.component').then((mod) => mod.ContributorsComponent),
         data: { resourceType: ResourceType.Registration },
-        providers: [provideStates([ContributorsState, ViewOnlyLinkState])],
+        providers: [provideStates([ViewOnlyLinkState])],
       },
       {
         path: 'analytics',
@@ -119,6 +106,7 @@ export const registryRoutes: Routes = [
           import('./pages/registration-recent-activity/registration-recent-activity.component').then(
             (c) => c.RegistrationRecentActivityComponent
           ),
+        providers: [provideStates([ActivityLogsState])],
       },
     ],
   },

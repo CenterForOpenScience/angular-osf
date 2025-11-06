@@ -6,8 +6,9 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_MEDIUM } from '@osf/shared/helpers';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 
 import { EducationComponent, EmploymentComponent, NameComponent, SocialComponent } from './components';
 import { ProfileSettingsComponent } from './profile-settings.component';
@@ -24,7 +25,14 @@ describe('ProfileSettingsComponent', () => {
       imports: [
         ProfileSettingsComponent,
         MockPipe(TranslatePipe),
-        ...MockComponents(SubHeaderComponent, NameComponent, SocialComponent, EmploymentComponent, EducationComponent),
+        ...MockComponents(
+          SubHeaderComponent,
+          EducationComponent,
+          EmploymentComponent,
+          NameComponent,
+          SocialComponent,
+          SelectComponent
+        ),
       ],
       providers: [MockProvider(IS_MEDIUM, isMedium), MockProvider(TranslateService)],
     }).compileComponents();
