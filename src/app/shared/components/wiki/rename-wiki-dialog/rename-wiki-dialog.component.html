@@ -1,0 +1,18 @@
+<form [formGroup]="renameWikiForm" (ngSubmit)="submitForm()">
+  <osf-text-input
+    [control]="renameWikiForm.controls['name']"
+    [placeholder]="'project.wiki.addNewWikiPlaceholder'"
+    [maxLength]="inputLimits.fullName.maxLength"
+  >
+  </osf-text-input>
+
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button [label]="'common.buttons.cancel' | translate" severity="info" (onClick)="dialogRef.close()" />
+    <p-button
+      [label]="'common.buttons.rename' | translate"
+      type="submit"
+      [loading]="isSubmitting()"
+      [disabled]="renameWikiForm.invalid"
+    />
+  </div>
+</form>

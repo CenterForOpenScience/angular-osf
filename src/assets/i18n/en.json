@@ -904,10 +904,13 @@
     },
     "wiki": {
       "addNewWiki": "Add new wiki page",
+      "renameWiki": "Rename wiki page",
       "deleteWiki": "Delete wiki page",
       "deleteWikiMessage": "Are you sure you want to delete this wiki page?",
       "addNewWikiPlaceholder": "New wiki name",
       "addWikiSuccess": "Wiki page has been added successfully",
+      "renameWikiSuccess": "Wiki page has been renamed successfully",
+      "renameWikiConflict": "That wiki name already exists.",
       "view": "View",
       "edit": "Edit",
       "compare": "Compare",
@@ -1912,8 +1915,7 @@
           "emailPlaceholder": "email@example.com"
         },
         "buttons": {
-          "cancel": "Cancel",
-          "add": "Add"
+          "cancel": "Cancel"
         },
         "messages": {
           "success": "Alternative email added successfully",
