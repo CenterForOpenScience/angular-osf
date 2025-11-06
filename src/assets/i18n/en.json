@@ -2968,11 +2968,11 @@
       "fallbackWithoutNode": "{{user}} performed action \"{{action}}\""
     },
     "activities": {
-      "addon_added": "{{user}} added addon {{addon}} to {{node}}",
+      "addon_added": "{{user}} enabled {{addon}} to {{node}}",
       "addon_file_copied": "{{user}} copied {{source}} to {{destination}} in {{node}}",
       "addon_file_moved": "{{user}} moved {{source}} to {{destination}} in {{node}}",
       "addon_file_renamed": "{{user}} renamed {{source}} to {{destination}} in {{node}}",
-      "addon_removed": "{{user}} removed addon {{addon}} from {{node}}",
+      "addon_removed": "{{user}} disabled {{addon}} from {{node}}",
       "affiliated_institution_added": "{{user}} added {{institution}} affiliation to {{node}}",
       "affiliated_institution_removed": "{{user}} removed {{institution}} affiliation from {{node}}",
       "article_doi_updated": "{{user}} changed the article_doi of {{node}}",
