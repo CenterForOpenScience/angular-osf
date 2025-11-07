@@ -25,6 +25,8 @@
       <div class="files-table flex">
         <p-tree
           [value]="nodes()"
+          [draggableNodes]="true"
+          [droppableNodes]="true"
           (onScrollIndexChange)="onScrollIndexChange($event)"
           [scrollHeight]="scrollHeight()"
           [virtualScroll]="true"
@@ -36,6 +38,7 @@
           [selection]="selectedFiles()"
           (onNodeSelect)="onNodeSelect($event)"
           (onNodeUnselect)="onNodeUnselect($event)"
+          (onNodeDrop)="onNodeDrop($event)"
         >
           <ng-template let-file pTemplate="default">
             @if (file.previousFolder) {
