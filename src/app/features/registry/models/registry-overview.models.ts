@@ -3,7 +3,7 @@ import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { IdTypeModel } from '@shared/models/common/id-type.model';
-import { MetaAnonymousJsonApi } from '@shared/models/common/json-api.model';
+import { MetaJsonApi } from '@shared/models/common/json-api.model';
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
 import { LicenseModel, LicensesOption } from '@shared/models/license/license.model';
@@ -66,19 +66,16 @@ export interface RegistryOverview {
 }
 
 export interface RegistrationOverviewModel extends RegistrationNodeModel {
-  type: string;
   registrationSchemaLink: string;
+  licenseId: string;
   associatedProjectId: string;
-  citation: string;
-  provider?: ProviderShortInfoModel;
-  contributors: ContributorModel[];
-  license?: LicenseModel;
-  identifiers?: IdentifierModel[];
-  schemaResponses: SchemaResponse[];
+  providerId: string;
   status: RegistryStatus;
+  forksCount: number;
+  rootParentId?: string;
 }
 
 export interface RegistryOverviewWithMeta {
-  registry: RegistryOverview | null;
-  meta?: MetaAnonymousJsonApi;
+  registry: RegistrationOverviewModel;
+  meta?: MetaJsonApi;
 }

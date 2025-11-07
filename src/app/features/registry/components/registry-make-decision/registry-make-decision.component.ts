@@ -25,7 +25,7 @@ import { ReviewActionTrigger, SchemaResponseActionTrigger } from '@osf/shared/en
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 
 import { RegistryOverview } from '../../models';
-import { RegistryOverviewSelectors, SubmitDecision } from '../../store/registry-overview';
+import { RegistrySelectors, SubmitDecision } from '../../store/registry';
 
 @Component({
   selector: 'osf-registry-make-decision',
@@ -55,9 +55,9 @@ export class RegistryMakeDecisionComponent {
   readonly SchemaResponseActionTrigger = SchemaResponseActionTrigger;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
   readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
-  reviewActions = select(RegistryOverviewSelectors.getReviewActions);
+  reviewActions = select(RegistrySelectors.getReviewActions);
 
-  isSubmitting = select(RegistryOverviewSelectors.isReviewActionSubmitting);
+  isSubmitting = select(RegistrySelectors.isReviewActionSubmitting);
   requestForm!: FormGroup;
 
   actions = createDispatchMap({ submitDecision: SubmitDecision });

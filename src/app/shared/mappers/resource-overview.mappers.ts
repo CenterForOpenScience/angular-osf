@@ -1,8 +1,6 @@
 import { ProjectOverview } from '@osf/features/project/overview/models';
-import { RegistryOverview } from '@osf/features/registry/models';
 
 import { ContributorModel } from '../models/contributors/contributor.model';
-import { Institution } from '../models/institutions/institutions.models';
 import { ResourceOverview } from '../models/resource-overview.model';
 import { SubjectModel } from '../models/subject/subject.model';
 
@@ -46,49 +44,5 @@ export function MapProjectOverview(
     forksCount: project.forksCount || 0,
     viewOnlyLinksCount: project.viewOnlyLinksCount || 0,
     isAnonymous,
-  };
-}
-
-export function MapRegistryOverview(
-  registry: RegistryOverview,
-  subjects: SubjectModel[],
-  institutions: Institution[],
-  isAnonymous = false
-): ResourceOverview {
-  return {
-    id: registry.id,
-    title: registry.title,
-    type: registry.type,
-    description: registry.description,
-    dateModified: registry.dateModified,
-    dateCreated: registry.dateCreated,
-    dateRegistered: registry.dateRegistered,
-    isPublic: registry.isPublic,
-    category: registry.category,
-    isRegistration: true,
-    isPreprint: false,
-    isCollection: false,
-    isFork: registry.isFork,
-    tags: registry.tags || [],
-    accessRequestsEnabled: registry.accessRequestsEnabled,
-    nodeLicense: registry.nodeLicense,
-    license: registry.license || undefined,
-    identifiers: registry.identifiers?.filter(Boolean) || undefined,
-    analyticsKey: registry.analyticsKey,
-    registrationType: registry.registrationType,
-    currentUserCanComment: registry.currentUserCanComment,
-    currentUserPermissions: registry.currentUserPermissions || [],
-    currentUserIsContributor: registry.currentUserIsContributor,
-    currentUserIsContributorOrGroupMember: registry.currentUserIsContributorOrGroupMember,
-    wikiEnabled: registry.wikiEnabled,
-    contributors: registry.contributors?.filter(Boolean) || [],
-    region: registry.region || undefined,
-    forksCount: registry.forksCount,
-    subjects: subjects,
-    customCitation: registry.customCitation,
-    affiliatedInstitutions: institutions,
-    associatedProjectId: registry.associatedProjectId,
-    isAnonymous,
-    iaUrl: registry.iaUrl,
   };
 }

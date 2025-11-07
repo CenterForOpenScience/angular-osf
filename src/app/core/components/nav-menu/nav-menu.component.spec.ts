@@ -4,8 +4,8 @@ import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { CustomMenuItem } from '@core/models/custom-menu-item.model';
 import { AuthService } from '@core/services/auth.service';
-import { CustomMenuItem } from '@osf/core/models';
 import { ProviderSelectors } from '@osf/core/store/provider/provider.selectors';
 import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';

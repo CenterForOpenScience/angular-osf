@@ -1,7 +1,12 @@
 <div class="mb-3">
   <h4>{{ 'common.labels.contributors' | translate }}</h4>
 
-  <osf-contributors-list [contributors]="registration().contributors" [readonly]="true"></osf-contributors-list>
+  <osf-contributors-list
+    [contributors]="bibliographicContributors()"
+    [isLoading]="isBibliographicContributorsLoading()"
+    [hasLoadMore]="hasMoreBibliographicContributors()"
+    (loadMoreContributors)="handleLoadMoreContributors()"
+  ></osf-contributors-list>
 </div>
 
 <div class="mb-3">
@@ -12,7 +17,7 @@
 <div class="mb-3 flex flex-wrap">
   <div class="mb-3 w-6">
     <h4>{{ 'registry.overview.metadata.type' | translate }}</h4>
-    <p>{{ registration().registrationType }}</p>
+    <p>{{ registration().registrationSupplement }}</p>
   </div>
 
   <div class="mb-3 w-6">
@@ -29,6 +34,6 @@
 
   <div class="mb-3 w-6">
     <h4>{{ 'registry.overview.metadata.associatedProject' | translate }}</h4>
-    <a [routerLink]="['/', registration().associatedProjectId]">{{ associatedProjectUrl }}</a>
+    <a class="font-bold" [routerLink]="['/', registration().associatedProjectId]">{{ associatedProjectUrl() }}</a>
   </div>
 </div>

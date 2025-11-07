@@ -68,8 +68,8 @@ export const routes: Routes = [
         path: 'my-projects',
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
-        providers: [provideStates([BookmarksState, ProjectsState])],
         canActivate: [authGuard],
+        providers: [provideStates([BookmarksState, ProjectsState])],
       },
       {
         path: 'my-registrations',

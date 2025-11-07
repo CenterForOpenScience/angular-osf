@@ -14,6 +14,7 @@ import { WikiItemType } from '@osf/shared/models/wiki/wiki-type.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ComponentWiki } from '@osf/shared/stores/wiki';
+import { RenameWikiDialogComponent } from '@shared/components/wiki/rename-wiki-dialog/rename-wiki-dialog.component';
 
 import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.component';
 
@@ -35,6 +36,7 @@ export class WikiListComponent {
 
   readonly deleteWiki = output<void>();
   readonly createWiki = output<void>();
+  readonly renameWiki = output<void>();
 
   private readonly customDialogService = inject(CustomDialogService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
@@ -95,6 +97,19 @@ export class WikiListComponent {
         },
       })
       .onClose.subscribe(() => this.createWiki.emit());
+  }
+
+  openRenameWikiDialog(wikiId: string, wikiName: string) {
+    this.customDialogService
+      .open(RenameWikiDialogComponent, {
+        header: 'project.wiki.renameWiki',
+        width: '448px',
+        data: {
+          wikiId: wikiId,
+          wikiName: wikiName,
+        },
+      })
+      .onClose.subscribe(() => this.renameWiki.emit());
   }
 
   openDeleteWikiDialog(): void {

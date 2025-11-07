@@ -37,32 +37,17 @@ export class MyResourcesSelectors {
   }
 
   @Selector([MyResourcesState])
-  static getBookmarks(state: MyResourcesStateModel): MyResourcesItem[] {
-    return state.bookmarks.data;
-  }
-
-  @Selector([MyResourcesState])
   static getTotalProjects(state: MyResourcesStateModel): number {
-    return state.totalProjects;
+    return state.projects.totalCount;
   }
 
   @Selector([MyResourcesState])
   static getTotalRegistrations(state: MyResourcesStateModel): number {
-    return state.totalRegistrations;
+    return state.registrations.totalCount;
   }
 
   @Selector([MyResourcesState])
   static getTotalPreprints(state: MyResourcesStateModel): number {
-    return state.totalPreprints;
-  }
-
-  @Selector([MyResourcesState])
-  static getTotalBookmarks(state: MyResourcesStateModel): number {
-    return state.totalBookmarks;
-  }
-
-  @Selector([MyResourcesState])
-  static getBookmarksLoading(state: MyResourcesStateModel): boolean {
-    return state.bookmarks.isLoading;
+    return state.preprints.totalCount;
   }
 }

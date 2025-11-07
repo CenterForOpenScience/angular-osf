@@ -28,15 +28,13 @@ import { SearchInputComponent } from '@osf/shared/components/search-input/search
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ProjectRedirectDialogService } from '@osf/shared/services/project-redirect-dialog.service';
-import { BookmarksSelectors, GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
+import { BookmarksSelectors, GetAllMyBookmarks, GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import {
   ClearMyResources,
-  GetMyBookmarks,
   GetMyPreprints,
   GetMyProjects,
   GetMyRegistrations,
@@ -82,7 +80,6 @@ export class MyProjectsComponent implements OnInit {
   readonly queryService = inject(MyProjectsQueryService);
   readonly tableParamsService = inject(MyProjectsTableParamsService);
 
-  readonly bookmarksPageSize = 100;
   readonly isLoading = signal(false);
   readonly isMedium = toSignal(inject(IS_MEDIUM));
   readonly tabOptions = MY_PROJECTS_TABS;
@@ -104,12 +101,13 @@ export class MyProjectsComponent implements OnInit {
   readonly projects = select(MyResourcesSelectors.getProjects);
   readonly registrations = select(MyResourcesSelectors.getRegistrations);
   readonly preprints = select(MyResourcesSelectors.getPreprints);
-  readonly bookmarks = select(MyResourcesSelectors.getBookmarks);
   readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
   readonly totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
   readonly totalPreprintsCount = select(MyResourcesSelectors.getTotalPreprints);
-  readonly totalBookmarksCount = select(MyResourcesSelectors.getTotalBookmarks);
+
+  readonly bookmarks = select(BookmarksSelectors.getBookmarks);
   readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
+  readonly totalBookmarksCount = select(BookmarksSelectors.getBookmarksTotalCount);
   readonly isBookmarks = computed(() => this.selectedTab() === MyProjectsTab.Bookmarks);
 
   readonly actions = createDispatchMap({
@@ -118,7 +116,7 @@ export class MyProjectsComponent implements OnInit {
     getMyProjects: GetMyProjects,
     getMyRegistrations: GetMyRegistrations,
     getMyPreprints: GetMyPreprints,
-    getMyBookmarks: GetMyBookmarks,
+    getMyBookmarks: GetAllMyBookmarks,
   });
 
   constructor() {
@@ -314,13 +312,7 @@ export class MyProjectsComponent implements OnInit {
         break;
       case MyProjectsTab.Bookmarks:
         if (this.bookmarksCollectionId()) {
-          action$ = this.actions.getMyBookmarks(
-            this.bookmarksCollectionId(),
-            pageNumber,
-            this.bookmarksPageSize,
-            filters,
-            ResourceType.Null
-          );
+          action$ = this.actions.getMyBookmarks(this.bookmarksCollectionId(), filters);
         }
         break;
     }

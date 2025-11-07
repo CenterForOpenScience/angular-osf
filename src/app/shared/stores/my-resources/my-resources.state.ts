@@ -1,17 +1,15 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, forkJoin, tap } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { MyResourcesService } from '@osf/shared/services/my-resources.service';
 
 import {
   ClearMyResources,
   CreateProject,
-  GetMyBookmarks,
   GetMyPreprints,
   GetMyProjects,
   GetMyRegistrations,
@@ -45,8 +43,8 @@ export class MyResourcesState {
               data: res.data,
               isLoading: false,
               error: null,
+              totalCount: res.meta.total,
             },
-            totalProjects: res.meta.total,
           });
         }),
         catchError((error) => handleSectionError(ctx, 'projects', error))
@@ -78,8 +76,8 @@ export class MyResourcesState {
               data: res.data,
               isLoading: false,
               error: null,
+              totalCount: res.meta.total,
             },
-            totalRegistrations: res.meta.total,
           });
         }),
         catchError((error) => handleSectionError(ctx, 'registrations', error))
@@ -103,74 +101,12 @@ export class MyResourcesState {
             data: res.data,
             isLoading: false,
             error: null,
+            totalCount: res.meta.total,
           },
-          totalPreprints: res.meta.total,
         });
       }),
       catchError((error) => handleSectionError(ctx, 'preprints', error))
     );
-  }
-
-  @Action(GetMyBookmarks)
-  getBookmarks(ctx: StateContext<MyResourcesStateModel>, action: GetMyBookmarks) {
-    const state = ctx.getState();
-    ctx.patchState({
-      bookmarks: {
-        ...state.bookmarks,
-        isLoading: true,
-        error: null,
-      },
-    });
-
-    if (action.resourceType !== ResourceType.Null) {
-      return this.myResourcesService
-        .getMyBookmarks(action.bookmarksId, action.resourceType, action.filters, action.pageNumber, action.pageSize)
-        .pipe(
-          tap((res) => {
-            ctx.patchState({
-              bookmarks: {
-                data: res.data,
-                isLoading: false,
-                error: null,
-              },
-              totalBookmarks: res.meta.total,
-            });
-          }),
-          catchError((error) => handleSectionError(ctx, 'bookmarks', error))
-        );
-    } else {
-      return forkJoin({
-        projects: this.myResourcesService.getMyBookmarks(
-          action.bookmarksId,
-          ResourceType.Project,
-          action.filters,
-          action.pageNumber,
-          action.pageSize
-        ),
-        registrations: this.myResourcesService.getMyBookmarks(
-          action.bookmarksId,
-          ResourceType.Registration,
-          action.filters,
-          action.pageNumber,
-          action.pageSize
-        ),
-      }).pipe(
-        tap((results) => {
-          const allData = [...results.projects.data, ...results.registrations.data];
-          const totalCount = results.projects.meta.total + results.registrations.meta.total;
-
-          ctx.patchState({
-            bookmarks: {
-              data: allData,
-              isLoading: false,
-              error: null,
-            },
-            totalBookmarks: totalCount,
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'bookmarks', error))
-      );
-    }
   }
 
   @Action(ClearMyResources)
@@ -198,8 +134,8 @@ export class MyResourcesState {
               isLoading: false,
               isSubmitting: false,
               error: null,
+              totalCount: state.projects.totalCount + 1,
             },
-            totalProjects: state.totalProjects + 1,
           });
         }),
         catchError((error) => handleSectionError(ctx, 'projects', error))

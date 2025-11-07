@@ -151,6 +151,10 @@ export class WikiComponent {
     this.navigateToWiki(this.currentWikiId());
   }
 
+  onRenameWiki() {
+    this.navigateToWiki(this.currentWikiId());
+  }
+
   onDeleteWiki() {
     this.actions.deleteWiki(this.currentWikiId()).pipe(tap(() => this.navigateToWiki(this.currentWikiId())));
   }

@@ -1,0 +1,47 @@
+@if (isLoading()) {
+  <div class="flex-1">
+    <p-skeleton width="100%" height="10rem" />
+  </div>
+} @else if (schemaBlocks()) {
+  @for (page of schemaBlocks()!; track page.id) {
+    <h2 class="mb-4">{{ page.title }}</h2>
+
+    @if (page.description) {
+      <p class="preserve-whitespace mb-4">{{ page.description }}</p>
+    }
+
+    @if (page.questions?.length) {
+      <osf-registration-blocks-data
+        [class.mb-4]="!$last"
+        [questions]="page.questions"
+        [reviewData]="schemaResponse()?.revisionResponses || {}"
+        [isOverviewPage]="true"
+        [updatedFields]="updatedFields()"
+        [isOriginalRevision]="schemaResponse()?.isOriginalResponse!"
+      ></osf-registration-blocks-data>
+    }
+
+    @if (page.sections?.length) {
+      @for (section of page.sections; track section.id) {
+        <div class="mb-4">
+          <h3 class="mb-2">{{ section.title }}</h3>
+
+          @if (section.description) {
+            <p class="preserve-whitespace mb-4">{{ section.description }}</p>
+          }
+
+          @if (section.questions?.length) {
+            <osf-registration-blocks-data
+              [class.mb-4]="!$last"
+              [questions]="section.questions"
+              [reviewData]="schemaResponse()?.revisionResponses || {}"
+              [isOverviewPage]="true"
+              [updatedFields]="updatedFields()"
+              [isOriginalRevision]="schemaResponse()?.isOriginalResponse!"
+            ></osf-registration-blocks-data>
+          }
+        </div>
+      }
+    }
+  }
+}

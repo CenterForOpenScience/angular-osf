@@ -12,4 +12,5 @@ export const MOCK_ADDON: AddonModel = {
   providerName: 'Test Provider',
   wbKey: 'github',
   iconUrl: 'https://test.com/icon.png',
+  configurableApiRoot: false,
 };

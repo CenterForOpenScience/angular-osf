@@ -6,6 +6,7 @@ import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
+import { replaceBadEncodedChars } from '@osf/shared/helpers/format-bad-encoding.helper';
 
 import { MetadataRecordFormat } from '../enums/metadata-record-format.enum';
 import { HeadTagDef } from '../models/meta-tags/head-tag-def.model';
@@ -274,7 +275,8 @@ export class MetaTagsService {
       const titleTag = headTags.find((tag) => tag.attrs.name === 'citation_title');
 
       if (titleTag?.attrs.content) {
-        this.title.setTitle(`${String(this.defaultMetaTags.siteName)} | ${String(titleTag.attrs.content)}`);
+        const title = `${String(this.defaultMetaTags.siteName)} | ${String(titleTag.attrs.content)}`;
+        this.title.setTitle(replaceBadEncodedChars(title));
       }
     }
   }

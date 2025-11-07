@@ -64,6 +64,21 @@ export class WikiService {
       .pipe(map((response) => WikiMapper.fromCreateWikiResponse(response.data)));
   }
 
+  renameWiki(id: string, name: string): Observable<WikiModel> {
+    const body = {
+      data: {
+        type: 'wikis',
+        attributes: {
+          id,
+          name,
+        },
+      },
+    };
+    return this.jsonApiService
+      .patch<WikiGetResponse>(`${this.apiUrl}/wikis/${id}/`, body)
+      .pipe(map((response) => WikiMapper.fromCreateWikiResponse(response)));
+  }
+
   deleteWiki(wikiId: string): Observable<void> {
     return this.jsonApiService.delete(`${this.apiUrl}/wikis/${wikiId}/`);
   }

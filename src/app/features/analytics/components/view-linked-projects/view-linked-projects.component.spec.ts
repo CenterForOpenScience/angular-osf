@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
+import { RegistrySelectors } from '@osf/features/registry/store/registry';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
@@ -54,7 +54,7 @@ describe('Component: View Duplicates', () => {
             { selector: LinkedProjectsSelectors.getLinkedProjectsLoading, value: false },
             { selector: LinkedProjectsSelectors.getLinkedProjectsTotalCount, value: 0 },
             { selector: ProjectOverviewSelectors.getProject, value: MOCK_PROJECT_OVERVIEW },
-            { selector: RegistryOverviewSelectors.getRegistry, value: undefined },
+            { selector: RegistrySelectors.getRegistry, value: undefined },
           ],
         }),
         MockProvider(ActivatedRoute, activatedRouteMock),

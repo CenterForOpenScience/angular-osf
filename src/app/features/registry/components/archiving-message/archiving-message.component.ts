@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
-import { RegistryOverview } from '../../models';
+import { RegistrationOverviewModel } from '../../models';
 import { ShortRegistrationInfoComponent } from '../short-registration-info/short-registration-info.component';
 
 @Component({
@@ -21,7 +21,7 @@ import { ShortRegistrationInfoComponent } from '../short-registration-info/short
 export class ArchivingMessageComponent {
   private readonly environment = inject(ENVIRONMENT);
 
-  registration = input.required<RegistryOverview>();
+  registration = input.required<RegistrationOverviewModel>();
 
   readonly supportEmail = this.environment.supportEmail;
 }

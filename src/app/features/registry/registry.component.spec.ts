@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
+import { RegistrySelectors } from '@osf/features/registry/store/registry';
 import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
@@ -56,8 +56,8 @@ describe('RegistryComponent', () => {
         { provide: AnalyticsService, useValue: analyticsService },
         provideMockStore({
           signals: [
-            { selector: RegistryOverviewSelectors.getRegistry, value: mockRegistry },
-            { selector: RegistryOverviewSelectors.isRegistryLoading, value: false },
+            { selector: RegistrySelectors.getRegistry, value: mockRegistry },
+            { selector: RegistrySelectors.isRegistryLoading, value: false },
           ],
         }),
       ],
@@ -78,7 +78,6 @@ describe('RegistryComponent', () => {
   it('should have NGXS selectors defined', () => {
     expect(component.registry).toBeDefined();
     expect(component.isRegistryLoading).toBeDefined();
-    expect(component.registry$).toBeDefined();
   });
 
   it('should have services injected', () => {
@@ -90,7 +89,7 @@ describe('RegistryComponent', () => {
   });
 
   it('should call datacite service on initialization', () => {
-    expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.registry$);
+    expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.identifiersForDatacite$);
   });
 
   it('should handle registry loading effects', () => {

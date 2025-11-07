@@ -5,21 +5,32 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
+import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
-import { PageSchemaMapper } from '@osf/shared/mappers/registration';
+import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
+import { PageSchemaMapper, RegistrationMapper } from '@osf/shared/mappers/registration';
 import { ReviewActionsMapper } from '@osf/shared/mappers/review-actions.mapper';
+import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
+import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
 import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
+import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
+import {
+  SchemaResponseJsonApi,
+  SchemaResponsesJsonApi,
+} from '@osf/shared/models/registration/registration-json-api.model';
 import { SchemaBlocksResponseJsonApi } from '@osf/shared/models/registration/schema-blocks-json-api.model';
+import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { ReviewActionPayload } from '@osf/shared/models/review-action/review-action-payload.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
-import { MapRegistryOverview } from '../mappers';
+import { MapRegistrationOverview } from '../mappers';
 import {
-  GetRegistryOverviewJsonApi,
-  RegistryOverview,
-  RegistryOverviewJsonApiData,
+  RegistrationOverviewDataJsonApi,
+  RegistrationOverviewModel,
+  RegistrationOverviewResponse,
   RegistryOverviewWithMeta,
 } from '../models';
 
@@ -35,23 +46,9 @@ export class RegistryOverviewService {
   }
 
   getRegistrationById(id: string): Observable<RegistryOverviewWithMeta> {
-    const params = {
-      related_counts: 'forks,linked_nodes,linked_registrations,children,wikis',
-      'embed[]': [
-        'bibliographic_contributors',
-        'provider',
-        'registration_schema',
-        'identifiers',
-        'root',
-        'schema_responses',
-        'files',
-        'license',
-      ],
-    };
-
     return this.jsonApiService
-      .get<GetRegistryOverviewJsonApi>(`${this.apiUrl}/registrations/${id}/`, params)
-      .pipe(map((response) => ({ registry: MapRegistryOverview(response.data), meta: response.meta })));
+      .get<RegistrationOverviewResponse>(`${this.apiUrl}/registrations/${id}/`)
+      .pipe(map((response) => ({ registry: MapRegistrationOverview(response.data), meta: response.meta })));
   }
 
   getInstitutions(registryId: string): Observable<Institution[]> {
@@ -62,6 +59,18 @@ export class RegistryOverviewService {
     return this.jsonApiService
       .get<InstitutionsJsonApiResponse>(`${this.apiUrl}/registrations/${registryId}/institutions/`, params)
       .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
+  }
+
+  getRegistryIdentifiers(registryId: string): Observable<IdentifierModel[]> {
+    return this.jsonApiService
+      .get<IdentifiersResponseJsonApi>(`${this.apiUrl}/registrations/${registryId}/identifiers/`)
+      .pipe(map((response) => IdentifiersMapper.fromJsonApi(response)));
+  }
+
+  getRegistryLicense(licenseId: string): Observable<LicenseModel | null> {
+    return this.jsonApiService
+      .get<LicenseResponseJsonApi>(`${this.apiUrl}/licenses/${licenseId}/`)
+      .pipe(map((response) => LicensesMapper.fromLicenseDataJsonApi(response.data)));
   }
 
   getSchemaBlocks(schemaLink: string): Observable<PageSchema[]> {
@@ -83,7 +92,41 @@ export class RegistryOverviewService {
       .pipe(map((response) => PageSchemaMapper.fromSchemaBlocksResponse(response)));
   }
 
-  withdrawRegistration(registryId: string, justification: string): Observable<RegistryOverview | null> {
+  getSchemaResponses(registryId: string): Observable<SchemaResponse[]> {
+    return this.jsonApiService
+      .get<SchemaResponsesJsonApi>(`${this.apiUrl}/registrations/${registryId}/schema_responses/`)
+      .pipe(map((response) => response.data.map((item) => RegistrationMapper.fromSchemaResponse(item))));
+  }
+
+  getRegistryReviewActions(id: string): Observable<ReviewAction[]> {
+    const baseUrl = `${this.apiUrl}/registrations/${id}/actions/`;
+
+    return this.jsonApiService
+      .get<ReviewActionsResponseJsonApi>(baseUrl)
+      .pipe(map((response) => response.data.map((x) => RegistryModerationMapper.fromActionResponse(x))));
+  }
+
+  createSchemaResponse(registrationId: string): Observable<SchemaResponse> {
+    const payload = {
+      data: {
+        type: 'schema_responses',
+        relationships: {
+          registration: {
+            data: {
+              type: 'registrations',
+              id: registrationId,
+            },
+          },
+        },
+      },
+    };
+
+    return this.jsonApiService
+      .post<SchemaResponseJsonApi>(`${this.apiUrl}/schema_responses/`, payload)
+      .pipe(map((response) => RegistrationMapper.fromSchemaResponse(response.data)));
+  }
+
+  withdrawRegistration(registryId: string, justification: string): Observable<RegistrationOverviewModel> {
     const payload = {
       data: {
         id: registryId,
@@ -97,11 +140,11 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}/`, payload)
-      .pipe(map((response) => MapRegistryOverview(response)));
+      .patch<RegistrationOverviewDataJsonApi>(`${this.apiUrl}/registrations/${registryId}/`, payload)
+      .pipe(map((response) => MapRegistrationOverview(response)));
   }
 
-  makePublic(registryId: string): Observable<RegistryOverview | null> {
+  makePublic(registryId: string): Observable<RegistrationOverviewModel> {
     const payload = {
       data: {
         id: registryId,
@@ -114,16 +157,8 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}/`, payload)
-      .pipe(map((response) => MapRegistryOverview(response)));
-  }
-
-  getRegistryReviewActions(id: string): Observable<ReviewAction[]> {
-    const baseUrl = `${this.apiUrl}/registrations/${id}/actions/`;
-
-    return this.jsonApiService
-      .get<ReviewActionsResponseJsonApi>(baseUrl)
-      .pipe(map((response) => response.data.map((x) => RegistryModerationMapper.fromActionResponse(x))));
+      .patch<RegistrationOverviewDataJsonApi>(`${this.apiUrl}/registrations/${registryId}/`, payload)
+      .pipe(map((response) => MapRegistrationOverview(response)));
   }
 
   submitDecision(payload: ReviewActionPayload, isRevision: boolean): Observable<void> {

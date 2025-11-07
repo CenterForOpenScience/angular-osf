@@ -43,9 +43,8 @@ export class AdditionalInfoComponent {
     if (!preprint) return null;
     return preprint.embeddedLicense;
   });
-  licenseOptionsRecord = computed(() => {
-    return (this.preprint()?.licenseOptions ?? {}) as Record<string, string>;
-  });
+
+  licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
   skeletonData = Array.from({ length: 5 }, () => null);
 

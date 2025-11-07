@@ -28,6 +28,9 @@ export class AddonFormService {
     const formControls: Partial<AddonForm> = {
       [AddonFormControls.AccountName]: this.formBuilder.control<string>(addon.displayName || '', Validators.required),
     };
+    if (addon.configurableApiRoot) {
+      formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
+    }
 
     switch (addon.credentialsFormat) {
       case CredentialsFormat.ACCESS_SECRET_KEYS:
@@ -35,16 +38,13 @@ export class AddonFormService {
         formControls[AddonFormControls.SecretKey] = this.formBuilder.control<string>('', Validators.required);
         break;
       case CredentialsFormat.DATAVERSE_API_TOKEN:
-        formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.ApiToken] = this.formBuilder.control<string>('', Validators.required);
         break;
       case CredentialsFormat.USERNAME_PASSWORD:
-        formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.Username] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.Password] = this.formBuilder.control<string>('', Validators.required);
         break;
       case CredentialsFormat.REPO_TOKEN:
-        formControls[AddonFormControls.HostUrl] = this.formBuilder.control<string>('', Validators.required);
         formControls[AddonFormControls.PersonalAccessToken] = this.formBuilder.control<string>('', Validators.required);
         break;
     }

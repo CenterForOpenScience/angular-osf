@@ -62,9 +62,20 @@
                     <span class="ml-2">{{ item.label | translate }}</span>
                   }
                   @default {
-                    <div>
-                      <i class="far fa-file"></i>
-                      <span class="ml-2">{{ item.label }}</span>
+                    <div class="flex align-items-center justify-content-between w-full">
+                      <div class="flex align-items-center">
+                        <i class="far fa-file"></i>
+                        <span class="ml-2">{{ item.label }}</span>
+                      </div>
+
+                      <p-button
+                        icon="fas fa-pencil"
+                        [rounded]="true"
+                        variant="text"
+                        osfStopPropagation
+                        (onClick)="openRenameWikiDialog(item.id, item.label)"
+                      >
+                      </p-button>
                     </div>
                   }
                 }

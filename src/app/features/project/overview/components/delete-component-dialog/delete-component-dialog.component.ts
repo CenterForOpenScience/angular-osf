@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { DeleteProject, SettingsSelectors } from '@osf/features/project/settings/store';
-import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
+import { RegistrySelectors } from '@osf/features/registry/store/registry';
 import { ScientistsNames } from '@osf/shared/constants/scientists.const';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
@@ -38,7 +38,7 @@ export class DeleteComponentDialogComponent {
   scientistNames = ScientistsNames;
 
   project = select(ProjectOverviewSelectors.getProject);
-  registration = select(RegistryOverviewSelectors.getRegistry);
+  registration = select(RegistrySelectors.getRegistry);
   isSubmitting = select(SettingsSelectors.isSettingsSubmitting);
   isLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
   components = select(CurrentResourceSelectors.getResourceWithChildren);
@@ -68,7 +68,7 @@ export class DeleteComponentDialogComponent {
     return components.every((component) => component.permissions?.includes(UserPermissions.Admin));
   });
 
-  hasSubcomponents = computed(() => {
+  hasSubComponents = computed(() => {
     const components = this.components();
     return components && components.length > 1;
   });

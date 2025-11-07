@@ -39,11 +39,9 @@ export class RegistryResourcesService {
   addRegistryResource(registryId: string): Observable<RegistryResource> {
     const body = toAddResourceRequestBody(registryId);
 
-    return this.jsonApiService.post<AddResourceJsonApi>(`${this.apiUrl}/resources/`, body).pipe(
-      map((response) => {
-        return MapRegistryResource(response.data);
-      })
-    );
+    return this.jsonApiService
+      .post<AddResourceJsonApi>(`${this.apiUrl}/resources/`, body)
+      .pipe(map((response) => MapRegistryResource(response.data)));
   }
 
   previewRegistryResource(resourceId: string, resource: AddResource): Observable<RegistryResource> {
@@ -51,11 +49,7 @@ export class RegistryResourcesService {
 
     return this.jsonApiService
       .patch<RegistryResourceDataJsonApi>(`${this.apiUrl}/resources/${resourceId}/`, payload)
-      .pipe(
-        map((response) => {
-          return MapRegistryResource(response);
-        })
-      );
+      .pipe(map((response) => MapRegistryResource(response)));
   }
 
   confirmAddingResource(resourceId: string, resource: ConfirmAddResource): Observable<RegistryResource> {
@@ -63,11 +57,7 @@ export class RegistryResourcesService {
 
     return this.jsonApiService
       .patch<RegistryResourceDataJsonApi>(`${this.apiUrl}/resources/${resourceId}/`, payload)
-      .pipe(
-        map((response) => {
-          return MapRegistryResource(response);
-        })
-      );
+      .pipe(map((response) => MapRegistryResource(response)));
   }
 
   deleteResource(resourceId: string): Observable<void> {
