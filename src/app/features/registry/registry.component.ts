@@ -68,7 +68,6 @@ export class RegistryComponent implements OnDestroy {
   readonly isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
   readonly license = select(RegistrySelectors.getLicense);
   readonly isLicenseLoading = select(RegistrySelectors.isLicenseLoading);
-  readonly isIdentifiersLoading = select(RegistrySelectors.isIdentifiersLoading);
 
   private readonly allDataLoaded = computed(
     () =>
