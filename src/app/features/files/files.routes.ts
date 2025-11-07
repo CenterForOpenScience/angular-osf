@@ -11,6 +11,11 @@ export const filesRoutes: Routes = [
     component: FilesContainerComponent,
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'osfstorage',
+      },
+      {
         path: ':fileProvider',
         canMatch: [isFileProvider],
         loadComponent: () => import('@osf/features/files/pages/files/files.component').then((c) => c.FilesComponent),
