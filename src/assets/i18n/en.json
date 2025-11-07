@@ -1164,7 +1164,7 @@
         "success": "Successfully moved.",
         "noMovePermission": "Cannot move or copy to this file provider",
         "movingHeader": "Moving...",
-        "copingHeader": "Coping..."
+        "copingHeader": "Copying..."
       },
       "copyFile": {
         "success": "File successfully copied."
