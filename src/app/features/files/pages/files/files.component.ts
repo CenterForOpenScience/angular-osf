@@ -257,7 +257,9 @@ export class FilesComponent {
   );
 
   private route = inject(ActivatedRoute);
-  readonly providerName = toSignal(this.route?.params?.pipe(map((params) => params['fileProvider'])) ?? of('osfstorage'));
+  readonly providerName = toSignal(
+    this.route?.params?.pipe(map((params) => params['fileProvider'])) ?? of('osfstorage')
+  );
 
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
