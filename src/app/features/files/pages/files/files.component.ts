@@ -7,7 +7,18 @@ import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { catchError, debounceTime, distinctUntilChanged, filter, finalize, forkJoin, of, switchMap, take } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  finalize,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+  take,
+} from 'rxjs';
 
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
@@ -22,7 +33,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -52,6 +63,7 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants/files-limits.const';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants/sort-options.const';
+import { AddonServiceNames } from '@osf/shared/enums/addon-service-names.enum';
 import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -244,6 +256,9 @@ export class FilesComponent {
     () => this.isButtonDisabled() || (this.googleFilePickerComponent()?.isGFPDisabled() ?? false)
   );
 
+  private route = inject(ActivatedRoute);
+  readonly providerName = toSignal(this.route.params.pipe(map((params) => params['fileProvider'])) ?? of(undefined));
+
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
       if (params['id']) {
@@ -265,14 +280,23 @@ export class FilesComponent {
 
     effect(() => {
       const rootFolders = this.rootFolders();
-      if (rootFolders) {
-        const osfRootFolder = rootFolders.find(
-          (folder: FileFolderModel) => folder.provider === FileProvider.OsfStorage
-        );
-        if (osfRootFolder) {
+      const providerName = this.providerName();
+
+      if (rootFolders && rootFolders.length && providerName) {
+        const RootFolder = rootFolders.find((folder: FileFolderModel) => folder.provider === providerName);
+
+        if (!RootFolder) {
+          this.router.navigate([`/${this.resourceId()}/files`, FileProvider.OsfStorage]);
+        }
+
+        let label = this.translateService.instant('files.storageLocation');
+        if (providerName !== FileProvider.OsfStorage) {
+          label = AddonServiceNames[RootFolder?.provider as keyof typeof AddonServiceNames];
+        }
+        if (RootFolder) {
           this.currentRootFolder.set({
-            label: this.translateService.instant('files.storageLocation'),
-            folder: osfRootFolder,
+            label: label,
+            folder: RootFolder,
           });
         }
       }
@@ -651,5 +675,11 @@ export class FilesComponent {
 
   onUpdateFoldersStack(newStack: FileFolderModel[]): void {
     this.foldersStack = [...newStack];
+  }
+
+  handleRootFolderChange(selectedFolder: FileLabelModel) {
+    const provider = selectedFolder.folder?.provider;
+    const resourceId = this.resourceId();
+    this.router.navigate([`/${resourceId}/files`, provider]);
   }
 }
