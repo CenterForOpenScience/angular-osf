@@ -41,9 +41,12 @@ import {
 } from '../../components';
 import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
-import { FetchPreprintById } from '../../store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
+import {
+  FetchPreprintById,
+  PreprintStepperSelectors,
+  SetSelectedPreprintProviderId,
+} from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-update-preprint-stepper',
