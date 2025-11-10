@@ -285,11 +285,7 @@ export class FilesComponent {
 
       if (rootFoldersOptions && rootFoldersOptions.length && providerName) {
         const rootFoldersOption = rootFoldersOptions.find((option) => option.folder.provider === providerName);
-        // const owncloud = rootFoldersOptions.find((option) => option.folder.provider === 'owncloud');
-        // console.log(rootFoldersOptions)
-        // console.log(providerName)
-        // console.log(rootFoldersOption)
-        // console.log(owncloud);
+
         if (!rootFoldersOption) {
           this.router.navigate([`/${this.resourceId()}/files`, FileProvider.OsfStorage]);
         } else {
