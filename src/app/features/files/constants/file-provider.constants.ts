@@ -11,4 +11,6 @@ export const FileProvider = {
   GitLab: 'gitlab',
   Figshare: 'figshare',
   Dataverse: 'dataverse',
+  OwnCloud: 'owncloud',
+  AzureBlobStorage: 'azureblobstorage',
 };
