@@ -16,7 +16,6 @@ import { FilesSelectors } from '@osf/features/files/store';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 import { FileMenuType } from '@shared/enums/file-menu-type.enum';
 import { FileModel } from '@shared/models/files/file.model';
 
@@ -37,7 +36,6 @@ export class ConfirmMoveFileDialogComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   readonly files = select(FilesSelectors.getMoveDialogFiles);
-  readonly currentProject = select(CurrentResourceSelectors.getCurrentResource);
   readonly provider = select(FilesSelectors.getProvider);
 
   private fileProjectId = this.config.data.resourceId;
