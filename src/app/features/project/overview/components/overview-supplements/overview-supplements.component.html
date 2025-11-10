@@ -1,0 +1,15 @@
+@if (isLoading()) {
+  <p-skeleton height="1.5rem" />
+} @else {
+  @for (supplement of supplements(); track supplement.id) {
+    <p>
+      {{ 'project.overview.metadata.supplementsText1' | translate }}
+      <a class="font-bold" target="_blank" [href]="supplement.url">
+        {{ supplement.title + ', ' + (supplement.dateCreated | date: dateFormat) }}
+      </a>
+      {{ 'project.overview.metadata.supplementsText2' | translate }}
+    </p>
+  } @empty {
+    <p>{{ 'project.overview.metadata.noSupplements' | translate }}</p>
+  }
+}

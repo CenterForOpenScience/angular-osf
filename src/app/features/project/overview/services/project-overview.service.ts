@@ -7,17 +7,34 @@ import { inject, Injectable } from '@angular/core';
 import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ComponentsMapper } from '@osf/shared/mappers/components';
+import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
+import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
+import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { BaseNodeMapper } from '@osf/shared/mappers/nodes';
+import { NodePreprintMapper } from '@osf/shared/mappers/nodes/node-preprint.mapper';
+import { NodeStorageMapper } from '@osf/shared/mappers/nodes/node-storage.mapper';
 import { JsonApiResponse, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { ComponentGetResponseJsonApi } from '@osf/shared/models/components/component-json-api.model';
 import { ComponentOverview } from '@osf/shared/models/components/components.models';
+import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
+import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
+import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { BaseNodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
+import { NodePreprintModel } from '@osf/shared/models/nodes/node-preprint.model';
+import { NodePreprintsResponseJsonApi } from '@osf/shared/models/nodes/node-preprint-json-api.model';
+import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
+import { NodeStorageResponseJsonApi } from '@osf/shared/models/nodes/node-storage-json-api.model';
+import { NodeResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
+import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
+import { Institution } from '@shared/models/institutions/institutions.models';
+import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewMapper } from '../mappers';
-import { PrivacyStatusModel, ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';
+import { PrivacyStatusModel, ProjectOverviewWithMeta } from '../models';
+import { ParentProjectModel } from '../models/parent-overview.model';
 
 @Injectable({
   providedIn: 'root',
@@ -31,20 +48,46 @@ export class ProjectOverviewService {
   }
 
   getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
-    const params: Record<string, unknown> = {
-      'embed[]': ['affiliated_institutions', 'identifiers', 'license', 'storage', 'preprints'],
-      'fields[institutions]': 'assets,description,name',
-      'fields[preprints]': 'title,date_created',
-      'fields[users]': 'family_name,full_name,given_name,middle_name',
-      related_counts: 'forks,view_only_links',
-    };
+    const params: Record<string, unknown> = { related_counts: 'forks,view_only_links' };
 
-    return this.jsonApiService.get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params).pipe(
+    return this.jsonApiService.get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params).pipe(
       map((response) => ({
-        project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+        project: ProjectOverviewMapper.getProjectOverview(response.data),
         meta: response.meta,
       }))
     );
+  }
+
+  getProjectInstitutions(projectId: string): Observable<Institution[]> {
+    const params = { 'page[size]': 100 };
+
+    return this.jsonApiService
+      .get<InstitutionsJsonApiResponse>(`${this.apiUrl}/nodes/${projectId}/institutions/`, params)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
+  }
+
+  getProjectIdentifiers(projectId: string): Observable<IdentifierModel[]> {
+    return this.jsonApiService
+      .get<IdentifiersResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/identifiers/`)
+      .pipe(map((response) => IdentifiersMapper.fromJsonApi(response)));
+  }
+
+  getProjectLicense(licenseId: string): Observable<LicenseModel | null> {
+    return this.jsonApiService
+      .get<LicenseResponseJsonApi>(`${this.apiUrl}/licenses/${licenseId}/`)
+      .pipe(map((response) => LicensesMapper.fromLicenseDataJsonApi(response.data)));
+  }
+
+  getProjectStorage(projectId: string): Observable<NodeStorageModel> {
+    return this.jsonApiService
+      .get<NodeStorageResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/storage/`)
+      .pipe(map((response) => NodeStorageMapper.getNodeStorage(response.data)));
+  }
+
+  getProjectPreprints(projectId: string): Observable<NodePreprintModel[]> {
+    return this.jsonApiService
+      .get<NodePreprintsResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/preprints/`)
+      .pipe(map((response) => NodePreprintMapper.getNodePreprints(response.data)));
   }
 
   updateProjectPublicStatus(data: PrivacyStatusModel[]): Observable<BaseNodeModel[]> {
@@ -165,22 +208,14 @@ export class ProjectOverviewService {
       );
   }
 
-  getParentProject(projectId: string): Observable<ProjectOverviewWithMeta> {
-    const params: Record<string, unknown> = {
-      'embed[]': ['bibliographic_contributors'],
-      'fields[users]': 'family_name,full_name,given_name,middle_name',
-    };
+  getParentProject(projectId: string): Observable<ParentProjectModel> {
+    const params: Record<string, unknown> = { 'embed[]': ['bibliographic_contributors'] };
 
     const context = new HttpContext();
     context.set(BYPASS_ERROR_INTERCEPTOR, true);
 
     return this.jsonApiService
-      .get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params, context)
-      .pipe(
-        map((response) => ({
-          project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
-          meta: response.meta,
-        }))
-      );
+      .get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params, context)
+      .pipe(map((response) => ProjectOverviewMapper.getParentOverview(response.data)));
   }
 }

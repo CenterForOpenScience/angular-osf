@@ -90,4 +90,54 @@ export class ProjectOverviewSelectors {
   static hasMoreComponents(state: ProjectOverviewStateModel) {
     return state.components.data.length < state.components.totalCount && !state.components.isLoading;
   }
+
+  @Selector([ProjectOverviewState])
+  static getInstitutions(state: ProjectOverviewStateModel) {
+    return state.institutions.data;
+  }
+
+  @Selector([ProjectOverviewState])
+  static isInstitutionsLoading(state: ProjectOverviewStateModel) {
+    return state.institutions.isLoading;
+  }
+
+  @Selector([ProjectOverviewState])
+  static getIdentifiers(state: ProjectOverviewStateModel) {
+    return state.identifiers.data;
+  }
+
+  @Selector([ProjectOverviewState])
+  static isIdentifiersLoading(state: ProjectOverviewStateModel) {
+    return state.identifiers.isLoading;
+  }
+
+  @Selector([ProjectOverviewState])
+  static getLicense(state: ProjectOverviewStateModel) {
+    return state.license.data;
+  }
+
+  @Selector([ProjectOverviewState])
+  static isLicenseLoading(state: ProjectOverviewStateModel) {
+    return state.license.isLoading;
+  }
+
+  @Selector([ProjectOverviewState])
+  static getStorage(state: ProjectOverviewStateModel) {
+    return state.storage.data;
+  }
+
+  @Selector([ProjectOverviewState])
+  static isStorageLoading(state: ProjectOverviewStateModel) {
+    return state.storage.isLoading;
+  }
+
+  @Selector([ProjectOverviewState])
+  static getPreprints(state: ProjectOverviewStateModel) {
+    return state.preprints.data;
+  }
+
+  @Selector([ProjectOverviewState])
+  static isPreprintsLoading(state: ProjectOverviewStateModel) {
+    return state.preprints.isLoading;
+  }
 }

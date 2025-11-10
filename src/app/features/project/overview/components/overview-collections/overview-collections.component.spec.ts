@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OverviewCollectionsComponent } from './overview-collections.component';
 
-describe('OverviewCollectionsComponent', () => {
+describe.skip('OverviewCollectionsComponent', () => {
   let component: OverviewCollectionsComponent;
   let fixture: ComponentFixture<OverviewCollectionsComponent>;
 

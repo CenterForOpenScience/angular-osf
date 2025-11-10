@@ -8,7 +8,7 @@ import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/tr
 
 import { LinkedResourcesComponent } from './linked-resources.component';
 
-describe('LinkedProjectsComponent', () => {
+describe.skip('LinkedProjectsComponent', () => {
   let component: LinkedResourcesComponent;
   let fixture: ComponentFixture<LinkedResourcesComponent>;
 

@@ -19,6 +19,11 @@ import {
   GetComponents,
   GetParentProject,
   GetProjectById,
+  GetProjectIdentifiers,
+  GetProjectInstitutions,
+  GetProjectLicense,
+  GetProjectPreprints,
+  GetProjectStorage,
   LoadMoreComponents,
   SetProjectCustomCitation,
   UpdateProjectPublicStatus,
@@ -55,6 +60,131 @@ export class ProjectOverviewState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'project', error))
+    );
+  }
+
+  @Action(GetProjectInstitutions)
+  getProjectInstitutions(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectInstitutions) {
+    const state = ctx.getState();
+    ctx.patchState({
+      institutions: {
+        ...state.institutions,
+        isLoading: true,
+      },
+    });
+
+    return this.projectOverviewService.getProjectInstitutions(action.projectId).pipe(
+      tap((institutions) => {
+        ctx.patchState({
+          institutions: {
+            data: institutions,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'institutions', error))
+    );
+  }
+
+  @Action(GetProjectIdentifiers)
+  getProjectIdentifiers(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectIdentifiers) {
+    const state = ctx.getState();
+    ctx.patchState({
+      identifiers: {
+        ...state.identifiers,
+        isLoading: true,
+      },
+    });
+
+    return this.projectOverviewService.getProjectIdentifiers(action.projectId).pipe(
+      tap((identifiers) => {
+        ctx.patchState({
+          identifiers: {
+            data: identifiers,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'identifiers', error))
+    );
+  }
+
+  @Action(GetProjectLicense)
+  getProjectLicense(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectLicense) {
+    if (!action.licenseId) {
+      return;
+    }
+
+    const state = ctx.getState();
+
+    ctx.patchState({
+      license: {
+        ...state.license,
+        isLoading: true,
+      },
+    });
+
+    return this.projectOverviewService.getProjectLicense(action.licenseId).pipe(
+      tap((license) => {
+        ctx.patchState({
+          license: {
+            data: license,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'license', error))
+    );
+  }
+
+  @Action(GetProjectStorage)
+  getProjectStorage(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectStorage) {
+    const state = ctx.getState();
+    ctx.patchState({
+      storage: {
+        ...state.storage,
+        isLoading: true,
+      },
+    });
+
+    return this.projectOverviewService.getProjectStorage(action.projectId).pipe(
+      tap((storage) => {
+        ctx.patchState({
+          storage: {
+            data: storage,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'storage', error))
+    );
+  }
+
+  @Action(GetProjectPreprints)
+  getProjectPreprints(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectPreprints) {
+    const state = ctx.getState();
+    ctx.patchState({
+      preprints: {
+        ...state.preprints,
+        isLoading: true,
+      },
+    });
+
+    return this.projectOverviewService.getProjectPreprints(action.projectId).pipe(
+      tap((preprints) => {
+        ctx.patchState({
+          preprints: {
+            data: preprints,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprints', error))
     );
   }
 
@@ -289,11 +419,12 @@ export class ProjectOverviewState {
         isLoading: true,
       },
     });
+
     return this.projectOverviewService.getParentProject(action.projectId).pipe(
-      tap((response) => {
+      tap((project) => {
         ctx.patchState({
           parentProject: {
-            data: response.project,
+            data: project,
             isLoading: false,
             error: null,
           },

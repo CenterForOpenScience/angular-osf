@@ -59,7 +59,7 @@
               <p>{{ duplicate.dateModified | date: 'MMM d, y, h:mm a' }}</p>
             </div>
 
-            <div class="flex flex-wrap align-items-center gap-1">
+            <div class="flex align-items-start gap-1">
               <span class="font-bold">{{ 'common.labels.contributors' | translate }}:</span>
 
               <osf-contributors-list [contributors]="duplicate.bibliographicContributors ?? []"></osf-contributors-list>

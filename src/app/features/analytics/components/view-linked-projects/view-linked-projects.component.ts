@@ -63,8 +63,8 @@ export class ViewLinkedProjectsComponent {
 
   readonly pageSize = 10;
 
-  currentPage = signal<string>('1');
-  firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * this.pageSize);
+  currentPage = signal<number>(1);
+  firstIndex = computed(() => this.currentPage() - 1 * this.pageSize);
 
   readonly resourceId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   readonly resourceType: Signal<ResourceType | undefined> = toSignal(
@@ -107,7 +107,7 @@ export class ViewLinkedProjectsComponent {
       const resource = this.currentResource();
 
       if (resource) {
-        this.actions.getLinkedProjects(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+        this.actions.getLinkedProjects(resource.id, resource.type, this.currentPage(), this.pageSize);
       }
     });
 
@@ -116,7 +116,7 @@ export class ViewLinkedProjectsComponent {
 
   onPageChange(event: PaginatorState): void {
     if (event.page !== undefined) {
-      const pageNumber = (event.page + 1).toString();
+      const pageNumber = event.page + 1;
       this.currentPage.set(pageNumber);
     }
   }
