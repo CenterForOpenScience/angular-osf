@@ -12,4 +12,7 @@ export const FileProvider = {
   Figshare: 'figshare',
   Dataverse: 'dataverse',
   OwnCloud: 'owncloud',
+  AzureBlobStorage: 'azureblobstorage',
+  Mendeley: 'mendeley',
+  Zotero: 'zotero',
 };
