@@ -13,6 +13,4 @@ export const FileProvider = {
   Dataverse: 'dataverse',
   OwnCloud: 'owncloud',
   AzureBlobStorage: 'azureblobstorage',
-  Mendeley: 'mendeley',
-  Zotero: 'zotero',
 };
