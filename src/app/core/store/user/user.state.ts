@@ -34,6 +34,12 @@ export class UserState {
   @Action(GetCurrentUser)
   getCurrentUser(ctx: StateContext<UserStateModel>) {
     const currentUser = localStorage.getItem('currentUser');
+    const activeFlags = localStorage.getItem('activeFlags');
+    if (activeFlags) {
+      ctx.patchState({
+        activeFlags: JSON.parse(activeFlags),
+      });
+    }
 
     if (currentUser) {
       const parsedUser = JSON.parse(currentUser);
@@ -69,6 +75,9 @@ export class UserState {
 
         if (data.currentUser) {
           localStorage.setItem('currentUser', JSON.stringify(data.currentUser));
+        }
+        if (data.activeFlags) {
+          localStorage.setItem('activeFlags', JSON.stringify(data.activeFlags));
         }
       })
     );
