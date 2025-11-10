@@ -63,7 +63,6 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants/files-limits.const';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants/sort-options.const';
-import { AddonServiceNames } from '@osf/shared/enums/addon-service-names.enum';
 import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -257,7 +256,9 @@ export class FilesComponent {
   );
 
   private route = inject(ActivatedRoute);
-  readonly providerName = toSignal(this.route?.params?.pipe(map((params) => params['fileProvider'])) ?? of(undefined));
+  readonly providerName = toSignal(
+    this.route?.params?.pipe(map((params) => params['fileProvider'])) ?? of('osfstorage')
+  );
 
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
@@ -279,24 +280,22 @@ export class FilesComponent {
     });
 
     effect(() => {
-      const rootFolders = this.rootFolders();
+      const rootFoldersOptions = this.rootFoldersOptions();
       const providerName = this.providerName();
 
-      if (rootFolders && rootFolders.length && providerName) {
-        const RootFolder = rootFolders.find((folder: FileFolderModel) => folder.provider === providerName);
-
-        if (!RootFolder) {
+      if (rootFoldersOptions && rootFoldersOptions.length && providerName) {
+        const rootFoldersOption = rootFoldersOptions.find((option) => option.folder.provider === providerName);
+        // const owncloud = rootFoldersOptions.find((option) => option.folder.provider === 'owncloud');
+        // console.log(rootFoldersOptions)
+        // console.log(providerName)
+        // console.log(rootFoldersOption)
+        // console.log(owncloud);
+        if (!rootFoldersOption) {
           this.router.navigate([`/${this.resourceId()}/files`, FileProvider.OsfStorage]);
-        }
-
-        let label = this.translateService.instant('files.storageLocation');
-        if (providerName !== FileProvider.OsfStorage) {
-          label = AddonServiceNames[RootFolder?.provider as keyof typeof AddonServiceNames];
-        }
-        if (RootFolder) {
+        } else {
           this.currentRootFolder.set({
-            label: label,
-            folder: RootFolder,
+            label: rootFoldersOption.label,
+            folder: rootFoldersOption.folder,
           });
         }
       }
