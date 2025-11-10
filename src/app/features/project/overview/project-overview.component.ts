@@ -256,7 +256,6 @@ export class ProjectOverviewComponent implements OnInit {
         this.actions.getHomeWiki(ResourceType.Project, project.id);
       }
     });
-
   }
 
   private setupAddonsEffects(): void {
