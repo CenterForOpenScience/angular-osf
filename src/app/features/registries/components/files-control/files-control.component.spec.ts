@@ -18,6 +18,7 @@ import { FilesControlComponent } from './files-control.component';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { HelpScoutServiceMockFactory } from '@testing/providers/help-scout.service.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
@@ -39,6 +40,7 @@ describe('Component: File Control', () => {
     mockDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     mockToastService = ToastServiceMockBuilder.create().build();
     mockCustomConfirmationService = CustomConfirmationServiceMockBuilder.create().build();
+    helpScoutService = HelpScoutServiceMockFactory();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -51,13 +53,7 @@ describe('Component: File Control', () => {
         MockProvider(CustomDialogService, mockDialogService),
         MockProvider(ToastService, mockToastService),
         MockProvider(CustomConfirmationService, mockCustomConfirmationService),
-        {
-          provide: HelpScoutService,
-          useValue: {
-            setResourceType: jest.fn(),
-            unsetResourceType: jest.fn(),
-          },
-        },
+        { provide: HelpScoutService, useValue: helpScoutService },
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getFiles, value: [] },

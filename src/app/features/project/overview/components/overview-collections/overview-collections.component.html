@@ -1,67 +1,66 @@
-@let project = currentProject();
 @let submissions = projectSubmissions();
 
-@if (project) {
-  <h3 class="mb-2">{{ 'project.overview.metadata.collection' | translate }}</h3>
-  @if (isProjectSubmissionsLoading()) {
-    <p-skeleton height="3rem" width="100%"></p-skeleton>
-  } @else {
-    <div class="flex flex-column gap-3">
-      @if (submissions.length) {
-        @for (submission of submissions; track submission.id) {
-          <div class="metadata-accordion">
-            <p-accordion>
-              <p-accordion-panel value="0">
-                <p-accordion-header class="py-0 gap-2 justify-content-between">
-                  <div class="flex align-items-center gap-3">
-                    <p-button
-                      link
-                      class="link-btn-no-padding"
-                      osfStopPropagation
-                      styleClass="text-left"
-                      (onClick)="navigateToCollection(submission)"
-                      [label]="submission.collectionTitle"
-                    ></p-button>
+<h3 class="mb-2">{{ 'project.overview.metadata.collection' | translate }}</h3>
 
-                    @let status = submission.reviewsState;
-                    @switch (status) {
-                      @case (SubmissionReviewStatus.Accepted) {
-                        <p-tag class="capitalize" [value]="status" severity="success"></p-tag>
-                      }
-                      @case (SubmissionReviewStatus.Rejected) {
-                        <p-tag class="capitalize" [value]="status" severity="danger"></p-tag>
-                      }
-                      @case (SubmissionReviewStatus.Pending) {
-                        <p-tag class="capitalize" [value]="status" severity="warn"></p-tag>
-                      }
-                      @case (SubmissionReviewStatus.InProgress) {
-                        <p-tag class="capitalize" [value]="SubmissionReviewStatus.Pending" severity="warn"></p-tag>
-                      }
-                      @case (SubmissionReviewStatus.Removed) {
-                        <p-tag class="capitalize" [value]="status" severity="secondary"></p-tag>
-                      }
+@if (isProjectSubmissionsLoading()) {
+  <p-skeleton height="2.5rem" width="100%"></p-skeleton>
+} @else {
+  <div class="flex flex-column gap-3">
+    @if (submissions?.length) {
+      @for (submission of submissions; track submission.id) {
+        <div class="metadata-accordion">
+          <p-accordion>
+            <p-accordion-panel value="0">
+              <p-accordion-header class="py-0 gap-2 justify-content-between">
+                <div class="flex align-items-center gap-3">
+                  <p-button
+                    link
+                    class="link-btn-no-padding"
+                    osfStopPropagation
+                    (onClick)="navigateToCollection(submission)"
+                    [label]="submission.collectionTitle"
+                  ></p-button>
+
+                  @let status = submission.reviewsState;
+                  @switch (status) {
+                    @case (SubmissionReviewStatus.Accepted) {
+                      <p-tag class="capitalize" [value]="status" severity="success"></p-tag>
+                    }
+                    @case (SubmissionReviewStatus.Rejected) {
+                      <p-tag class="capitalize" [value]="status" severity="danger"></p-tag>
+                    }
+                    @case (SubmissionReviewStatus.Pending) {
+                      <p-tag class="capitalize" [value]="status" severity="warn"></p-tag>
+                    }
+                    @case (SubmissionReviewStatus.InProgress) {
+                      <p-tag class="capitalize" [value]="SubmissionReviewStatus.Pending" severity="warn"></p-tag>
+                    }
+                    @case (SubmissionReviewStatus.Removed) {
+                      <p-tag class="capitalize" [value]="status" severity="secondary"></p-tag>
+                    }
+                  }
+                </div>
+              </p-accordion-header>
+
+              <p-accordion-content>
+                @let attributes = submissionAttributes(submission);
+
+                @if (attributes.length) {
+                  <div class="flex flex-column gap-2 mt-2">
+                    @for (attribute of attributes; track attribute.key) {
+                      <p class="font-normal">
+                        <span class="font-bold">{{ attribute.label }}:</span> {{ attribute.value }}
+                      </p>
                     }
                   </div>
-                </p-accordion-header>
-                <p-accordion-content>
-                  @let attributes = submissionAttributes(submission);
-                  @if (attributes.length) {
-                    <div class="flex flex-column gap-2 mt-2">
-                      @for (attribute of attributes; track attribute.key) {
-                        <p class="font-normal">
-                          <span class="font-bold">{{ attribute.label }}:</span> {{ attribute.value }}
-                        </p>
-                      }
-                    </div>
-                  }
-                </p-accordion-content>
-              </p-accordion-panel>
-            </p-accordion>
-          </div>
-        }
-      } @else {
-        <p>{{ 'project.overview.metadata.noCollections' | translate }}</p>
+                }
+              </p-accordion-content>
+            </p-accordion-panel>
+          </p-accordion>
+        </div>
       }
-    </div>
-  }
+    } @else {
+      <p>{{ 'project.overview.metadata.noCollections' | translate }}</p>
+    }
+  </div>
 }

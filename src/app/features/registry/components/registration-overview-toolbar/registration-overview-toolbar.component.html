@@ -2,16 +2,14 @@
   <div class="flex gap-2 justify-content-end">
     @if (isAuthenticated()) {
       <p-button
+        class="flex"
         [pTooltip]="'project.overview.tooltips.bookmarks' | translate"
         tooltipPosition="bottom"
-        (onClick)="toggleBookmark()"
+        [icon]="isBookmarked() ? 'fas fa-bookmark fa-xl' : 'far fa-bookmark fa-xl'"
         [loading]="isBookmarksLoading() || isBookmarksSubmitting()"
         [ariaLabel]="'project.overview.tooltips.bookmarks' | translate"
-      >
-        @if (!isBookmarksLoading() && !isBookmarksSubmitting()) {
-          <i class="text-2xl" [class]="isBookmarked() ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
-        }
-      </p-button>
+        (onClick)="toggleBookmark()"
+      />
     }
 
     @if (isPublic()) {

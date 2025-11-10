@@ -14,7 +14,7 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 
-import { ProjectOverview } from '../../models';
+import { ParentProjectModel } from '../../models/parent-overview.model';
 
 @Component({
   selector: 'osf-overview-parent-project',
@@ -24,7 +24,7 @@ import { ProjectOverview } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewParentProjectComponent {
-  project = input.required<ProjectOverview>();
+  project = input.required<ParentProjectModel>();
   anonymous = input<boolean>(false);
   isLoading = input<boolean>(false);
 

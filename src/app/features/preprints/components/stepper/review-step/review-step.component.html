@@ -222,7 +222,7 @@
   <div class="flex flex-column gap-4">
     <h2>{{ 'preprints.preprintStepper.review.sections.supplements.title' | translate }}</h2>
     @if (preprintProject()) {
-      <p>{{ preprintProject()?.name }}</p>
+      <p>{{ preprintProject()?.name | fixSpecialChar }}</p>
     } @else {
       <p>{{ 'preprints.preprintStepper.review.sections.supplements.noSupplements' | translate }}</p>
     }

@@ -1,6 +1,5 @@
 import { ResourceInfoModel } from '@osf/features/contributors/models';
 import { ResourceType } from '@shared/enums/resource-type.enum';
-import { ResourceOverview } from '@shared/models/resource-overview.model';
 import { ResourceModel } from '@shared/models/search/resource.model';
 
 export const MOCK_RESOURCE: ResourceModel = {
@@ -77,33 +76,6 @@ export const MOCK_AGENT_RESOURCE: ResourceModel = {
     },
   ],
   context: '',
-};
-
-export const MOCK_RESOURCE_OVERVIEW: ResourceOverview = {
-  id: 'resource-123',
-  type: 'project',
-  title: 'Test Resource',
-  description: 'This is a test resource',
-  dateModified: '2024-01-20T10:00:00Z',
-  dateCreated: '2024-01-15T10:00:00Z',
-  isPublic: true,
-  category: 'project',
-  isRegistration: false,
-  isPreprint: false,
-  isFork: false,
-  isCollection: false,
-  tags: ['test', 'example'],
-  accessRequestsEnabled: false,
-  analyticsKey: 'test-key',
-  currentUserCanComment: true,
-  currentUserPermissions: ['read', 'write'],
-  currentUserIsContributor: true,
-  currentUserIsContributorOrGroupMember: true,
-  wikiEnabled: true,
-  subjects: [],
-  contributors: [],
-  customCitation: 'Custom citation text',
-  forksCount: 0,
 };
 
 export const MOCK_RESOURCE_INFO: ResourceInfoModel = {

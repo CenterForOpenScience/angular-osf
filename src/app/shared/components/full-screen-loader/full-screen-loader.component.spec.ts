@@ -5,7 +5,7 @@ import { LoaderService } from '@osf/shared/services/loader.service';
 
 import { FullScreenLoaderComponent } from './full-screen-loader.component';
 
-import { LoaderServiceMock } from '@testing/mocks/loader-service.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 
 describe('FullScreenLoaderComponent', () => {
   let component: FullScreenLoaderComponent;

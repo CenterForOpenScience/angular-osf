@@ -1,5 +1,3 @@
-import { createDispatchMap, select } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
@@ -7,15 +5,13 @@ import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
 import { CollectionSubmission } from '@osf/shared/models/collections/collections.models';
-import { ResourceOverview } from '@osf/shared/models/resource-overview.model';
-import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 
 @Component({
   selector: 'osf-overview-collections',
@@ -38,38 +34,16 @@ export class OverviewCollectionsComponent {
   private readonly router = inject(Router);
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
 
-  currentProject = input.required<ResourceOverview | null>();
-  projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
-  isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
+  projectSubmissions = input<CollectionSubmission[] | null>(null);
+  isProjectSubmissionsLoading = input<boolean>(false);
 
-  projectId = computed(() => {
-    const resource = this.currentProject();
-    return resource ? resource.id : null;
-  });
-
-  actions = createDispatchMap({ getProjectSubmissions: GetProjectSubmissions });
-
-  constructor() {
-    effect(() => {
-      const projectId = this.projectId();
-
-      if (projectId) {
-        this.actions.getProjectSubmissions(projectId);
-      }
-    });
-  }
-
-  get submissionAttributes() {
-    return (submission: CollectionSubmission) => {
-      if (!submission) return [];
-
-      return collectionFilterNames
-        .map((attribute) => ({
-          ...attribute,
-          value: submission[attribute.key as keyof CollectionSubmission] as string,
-        }))
-        .filter((attribute) => attribute.value);
-    };
+  submissionAttributes(submission: CollectionSubmission) {
+    return collectionFilterNames
+      .map((attribute) => ({
+        ...attribute,
+        value: submission[attribute.key as keyof CollectionSubmission] as string,
+      }))
+      .filter((attribute) => attribute.value);
   }
 
   navigateToCollection(submission: CollectionSubmission) {

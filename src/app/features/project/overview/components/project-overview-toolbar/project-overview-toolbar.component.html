@@ -2,7 +2,7 @@
 
 @if (resource) {
   <div class="flex flex-column gap-5 lg:flex-row lg:align-items-center lg:justify-content-between">
-    @if (!isCollectionsRoute() && canEdit()) {
+    @if (canEdit()) {
       <div class="flex gap-3 align-items-center">
         <div class="flex gap-1" [class.inactive]="isPublic()">
           <i class="fas fa-lock"></i>
@@ -23,31 +23,29 @@
       </div>
     }
 
-    @if (isCollectionsRoute() || hasViewOnly() || !canEdit()) {
-      @if (isPublic()) {
-        <div class="flex gap-2">
-          <i class="fas fa-lock-open"></i>
-          <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
-        </div>
-      } @else {
-        <div class="flex gap-1">
-          <i class="fas fa-lock"></i>
-          <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
-        </div>
-      }
+    @if (viewOnly() || !canEdit()) {
+      <div class="flex gap-2">
+        <i [class]="isPublic() ? 'fas fa-lock-open' : 'fas fa-lock'"></i>
+        <p class="font-bold">
+          {{
+            (isPublic() ? 'project.overview.header.publicProject' : 'project.overview.header.privateProject')
+              | translate
+          }}
+        </p>
+      </div>
     }
 
     <div class="flex ml-auto">
-      <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
-        @if (resource.storage && !isCollectionsRoute()) {
+      <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row lg:flex-row">
+        @if (storage()) {
           <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">
-            {{ +resource.storage.storageUsage | fileSize }}
+            {{ +storage()!.storageUsage | fileSize }}
           </p>
         }
 
         <div class="flex gap-2 justify-content-start">
           @if (isAuthenticated()) {
-            @if (showViewOnlyLinks() && canEdit()) {
+            @if (canEdit()) {
               <p-button
                 class="flex"
                 [pTooltip]="'project.overview.tooltips.viewOnlyLinks' | translate"
@@ -60,7 +58,7 @@
               </p-button>
             }
 
-            @if (!hasViewOnly()) {
+            @if (!viewOnly()) {
               <p-button
                 class="flex"
                 (click)="forkActionMenu.toggle($event)"
@@ -80,27 +78,25 @@
               </p-button>
             }
 
-            @if (!hasViewOnly()) {
+            @if (!viewOnly()) {
               <p-button
+                class="flex"
+                styleClass="px-4"
                 [pTooltip]="'project.overview.tooltips.bookmarks' | translate"
                 tooltipPosition="bottom"
-                class="flex"
-                (onClick)="toggleBookmark()"
+                [icon]="isBookmarked() ? 'fas fa-bookmark fa-xl' : 'far fa-bookmark fa-xl'"
                 [loading]="isBookmarksLoading() || isBookmarksSubmitting()"
                 [ariaLabel]="'project.overview.tooltips.bookmarks' | translate"
-              >
-                @if (!isBookmarksLoading() && !isBookmarksSubmitting()) {
-                  <i class="text-2xl" [ngClass]="isBookmarked() ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
-                }
-              </p-button>
+                (onClick)="toggleBookmark()"
+              />
             }
           }
 
-          @if (resource.isPublic && !hasViewOnly()) {
+          @if (resource.isPublic && !viewOnly()) {
             <osf-socials-share-button
               [resourceId]="currentResource().id"
               [resourceTitle]="currentResource().title"
-              [resourceType]="currentResource().resourceType"
+              [resourceType]="resourceType"
             ></osf-socials-share-button>
           }
         </div>

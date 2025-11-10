@@ -26,6 +26,7 @@ export class OverviewWikiComponent {
   wikiContent = select(WikiSelectors.getHomeWikiContent);
 
   resourceId = input('');
+  canEdit = input<boolean>(false);
 
   wikiLink = computed(() => ['/', this.resourceId(), 'wiki']);
 

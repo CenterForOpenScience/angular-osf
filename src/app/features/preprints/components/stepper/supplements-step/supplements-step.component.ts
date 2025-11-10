@@ -38,13 +38,24 @@ import { AddProjectFormComponent } from '@osf/shared/components/add-project-form
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ProjectForm } from '@shared/models/projects/create-project-form.model';
 
 @Component({
   selector: 'osf-supplements-step',
-  imports: [Button, NgClass, Card, Select, AddProjectFormComponent, ReactiveFormsModule, Skeleton, TranslatePipe],
+  imports: [
+    Button,
+    NgClass,
+    Card,
+    Select,
+    AddProjectFormComponent,
+    ReactiveFormsModule,
+    Skeleton,
+    TranslatePipe,
+    FixSpecialCharPipe,
+  ],
   templateUrl: './supplements-step.component.html',
   styleUrl: './supplements-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

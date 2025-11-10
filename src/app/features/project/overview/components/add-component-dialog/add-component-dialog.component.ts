@@ -52,6 +52,7 @@ export class AddComponentDialogComponent implements OnInit {
   storageLocations = select(RegionsSelectors.getRegions);
   currentUser = select(UserSelectors.getCurrentUser);
   currentProject = select(ProjectOverviewSelectors.getProject);
+  institutions = select(ProjectOverviewSelectors.getInstitutions);
   areRegionsLoading = select(RegionsSelectors.areRegionsLoading);
   isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
   userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
@@ -149,7 +150,7 @@ export class AddComponentDialogComponent implements OnInit {
     });
 
     effect(() => {
-      const projectInstitutions = this.currentProject()?.affiliatedInstitutions;
+      const projectInstitutions = this.institutions();
       const userInstitutions = this.userInstitutions();
 
       if (projectInstitutions && projectInstitutions.length && userInstitutions.length) {
