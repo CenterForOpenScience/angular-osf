@@ -1163,6 +1163,7 @@
         "pathError": "Path is not specified!",
         "success": "Successfully moved.",
         "noMovePermission": "Cannot move or copy to this file provider",
+        "error": "Failed to move or copy files, please try again later",
         "movingHeader": "Moving...",
         "copingHeader": "Copying..."
       },

@@ -4,7 +4,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ScrollerModule } from 'primeng/scroller';
 
 import { finalize, forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -21,7 +20,7 @@ import { FileModel } from '@shared/models/files/file.model';
 
 @Component({
   selector: 'osf-move-file-dialog',
-  imports: [Button, TranslatePipe, ScrollerModule],
+  imports: [Button, TranslatePipe],
   templateUrl: './confirm-move-file-dialog.component.html',
   styleUrl: './confirm-move-file-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -82,7 +81,7 @@ export class ConfirmMoveFileDialogComponent {
             if (error.status === 409) {
               conflictFiles.push({ file, link });
             } else {
-              this.toastService.showError(error.error?.message ?? 'Error');
+              this.showErrorToast(action, error.error?.message);
             }
             return of(null);
           }),
@@ -92,7 +91,7 @@ export class ConfirmMoveFileDialogComponent {
               if (conflictFiles.length > 0) {
                 this.openReplaceMoveDialog(conflictFiles, path, action);
               } else {
-                this.showToast(action);
+                this.showSuccessToast(action);
                 this.config.header = this.translateService.instant('files.dialogs.moveFile.title');
                 this.completeMove();
               }
@@ -124,7 +123,7 @@ export class ConfirmMoveFileDialogComponent {
         );
         forkJoin(replaceRequests$).subscribe({
           next: () => {
-            this.showToast(action);
+            this.showSuccessToast(action);
             this.completeMove();
           },
         });
@@ -132,16 +131,21 @@ export class ConfirmMoveFileDialogComponent {
       onReject: () => {
         const totalFiles = this.config.data.files.length;
         if (totalFiles > conflictFiles.length) {
-          this.showToast(action);
+          this.showErrorToast(action);
         }
         this.completeMove();
       },
     });
   }
 
-  private showToast(action: string): void {
+  private showSuccessToast(action: string) {
     const messageType = action === 'move' ? 'moveFile' : 'copyFile';
     this.toastService.showSuccess(`files.dialogs.${messageType}.success`);
+  }
+
+  private showErrorToast(action: string, errorMessage?: string) {
+    const messageType = action === 'move' ? 'moveFile' : 'copyFile';
+    this.toastService.showError(errorMessage ?? `files.dialogs.${messageType}.error`);
   }
 
   private completeMove(): void {
