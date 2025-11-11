@@ -6,26 +6,23 @@ import { inject, Injectable } from '@angular/core';
 
 import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { ComponentsMapper } from '@osf/shared/mappers/components';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
 import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { BaseNodeMapper } from '@osf/shared/mappers/nodes';
 import { NodePreprintMapper } from '@osf/shared/mappers/nodes/node-preprint.mapper';
 import { NodeStorageMapper } from '@osf/shared/mappers/nodes/node-storage.mapper';
-import { JsonApiResponse, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
-import { ComponentGetResponseJsonApi } from '@osf/shared/models/components/component-json-api.model';
-import { ComponentOverview } from '@osf/shared/models/components/components.models';
+import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
 import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
-import { BaseNodeModel } from '@osf/shared/models/nodes/base-node.model';
+import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { NodePreprintModel } from '@osf/shared/models/nodes/node-preprint.model';
 import { NodePreprintsResponseJsonApi } from '@osf/shared/models/nodes/node-preprint-json-api.model';
 import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { NodeStorageResponseJsonApi } from '@osf/shared/models/nodes/node-storage-json-api.model';
-import { NodeResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
+import { NodeResponseJsonApi, NodesResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
@@ -34,7 +31,6 @@ import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewMapper } from '../mappers';
 import { PrivacyStatusModel, ProjectOverviewWithMeta } from '../models';
-import { ParentProjectModel } from '../models/parent-overview.model';
 
 @Injectable({
   providedIn: 'root',
@@ -189,26 +185,21 @@ export class ProjectOverviewService {
     return this.jsonApiService.delete(`${this.apiUrl}/nodes/${componentId}/`);
   }
 
-  getComponents(projectId: string, page = 1, pageSize = 10): Observable<PaginatedData<ComponentOverview[]>> {
+  getComponents(projectId: string, page = 1, pageSize = 10): Observable<PaginatedData<NodeModel[]>> {
     const params: Record<string, unknown> = {
       embed: 'bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
       page: page,
       'page[size]': pageSize,
+      sort: '_order',
     };
 
     return this.jsonApiService
-      .get<ResponseJsonApi<ComponentGetResponseJsonApi[]>>(`${this.apiUrl}/nodes/${projectId}/children/`, params)
-      .pipe(
-        map((response) => ({
-          data: response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item)),
-          totalCount: response.meta?.total || 0,
-          pageSize: response.meta?.per_page || pageSize,
-        }))
-      );
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/children/`, params)
+      .pipe(map((response) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(response)));
   }
 
-  getParentProject(projectId: string): Observable<ParentProjectModel> {
+  getParentProject(projectId: string): Observable<NodeModel> {
     const params: Record<string, unknown> = { 'embed[]': ['bibliographic_contributors'] };
 
     const context = new HttpContext();
@@ -216,6 +207,29 @@ export class ProjectOverviewService {
 
     return this.jsonApiService
       .get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params, context)
-      .pipe(map((response) => ProjectOverviewMapper.getParentOverview(response.data)));
+      .pipe(map((response) => BaseNodeMapper.getNodeWithEmbedContributors(response.data)));
+  }
+
+  reorderComponents(projectId: string, componentIds: string[]): Observable<void> {
+    const payload = {
+      data: componentIds.map((id, index) => ({
+        type: 'nodes',
+        id,
+        attributes: {
+          _order: index,
+        },
+      })),
+    };
+
+    const headers = {
+      'Content-Type': 'application/vnd.api+json; ext=bulk',
+    };
+
+    return this.jsonApiService.patch<void>(
+      `${this.apiUrl}/nodes/${projectId}/reorder_components/`,
+      payload,
+      undefined,
+      headers
+    );
   }
 }

@@ -1,9 +1,7 @@
-import { ContributorsMapper } from '@osf/shared/mappers/contributors';
 import { BaseNodeMapper } from '@osf/shared/mappers/nodes';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 
 import { ProjectOverviewModel } from '../models';
-import { ParentProjectModel } from '../models/parent-overview.model';
 
 export class ProjectOverviewMapper {
   static getProjectOverview(data: BaseNodeDataJsonApi): ProjectOverviewModel {
@@ -24,15 +22,6 @@ export class ProjectOverviewMapper {
         iri: data.links?.iri,
       },
       licenseId: relationships.license?.data?.id,
-    };
-  }
-
-  static getParentOverview(data: BaseNodeDataJsonApi): ParentProjectModel {
-    const nodeAttributes = BaseNodeMapper.getNodeData(data);
-
-    return {
-      ...nodeAttributes,
-      contributors: ContributorsMapper.getContributors(data.embeds?.bibliographic_contributors?.data),
     };
   }
 }

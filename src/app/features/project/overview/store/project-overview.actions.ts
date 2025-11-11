@@ -118,3 +118,12 @@ export class GetParentProject {
 
   constructor(public projectId: string) {}
 }
+
+export class ReorderComponents {
+  static readonly type = '[Project Overview] Reorder Components';
+
+  constructor(
+    public projectId: string,
+    public componentIds: string[]
+  ) {}
+}

@@ -6,12 +6,13 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { CurrentResourceType, ResourceType } from '../enums/resource-type.enum';
 import { BaseNodeMapper } from '../mappers/nodes';
-import { ResponseDataJsonApi, ResponseJsonApi } from '../models/common/json-api.model';
+import { ResponseDataJsonApi } from '../models/common/json-api.model';
 import { CurrentResource } from '../models/current-resource.model';
 import { GuidedResponseJsonApi } from '../models/guid-response-json-api.model';
 import { BaseNodeModel } from '../models/nodes/base-node.model';
 import { BaseNodeDataJsonApi } from '../models/nodes/base-node-data-json-api.model';
 import { NodeShortInfoModel } from '../models/nodes/node-with-children.model';
+import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';
@@ -80,9 +81,7 @@ export class ResourceGuidService {
     const resourcePath = this.urlMap.get(resourceType);
 
     return this.jsonApiService
-      .get<
-        ResponseJsonApi<BaseNodeDataJsonApi[]>
-      >(`${this.apiUrl}/${resourcePath}/?filter[root]=${rootParentId}&page[size]=100`)
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/${resourcePath}/?filter[root]=${rootParentId}&page[size]=100`)
       .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data, resourceId)));
   }
 }

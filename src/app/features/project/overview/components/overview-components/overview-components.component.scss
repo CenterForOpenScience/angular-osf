@@ -1,0 +1,26 @@
+.components-drop-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.component-drag-item {
+  cursor: move;
+
+  &.cdk-drag-preview {
+    background-color: var(--white);
+    border-radius: 0.6rem;
+    box-shadow: 0 2px 4px var(--grey-outline);
+  }
+
+  &.cdk-drag-placeholder {
+    opacity: 0.3;
+  }
+
+  &.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.components-drop-list.cdk-drop-list-dragging .component-drag-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

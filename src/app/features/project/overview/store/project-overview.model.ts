@@ -1,5 +1,4 @@
-import { ComponentOverview } from '@osf/shared/models/components/components.models';
-import { BaseNodeModel } from '@osf/shared/models/nodes/base-node.model';
+import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { NodePreprintModel } from '@osf/shared/models/nodes/node-preprint.model';
 import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
@@ -9,15 +8,14 @@ import { Institution } from '@shared/models/institutions/institutions.models';
 import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewModel } from '../models';
-import { ParentProjectModel } from '../models/parent-overview.model';
 
 export interface ProjectOverviewStateModel {
   project: AsyncStateModel<ProjectOverviewModel | null>;
-  components: AsyncStateWithTotalCount<ComponentOverview[]> & {
+  components: AsyncStateWithTotalCount<NodeModel[]> & {
     currentPage: number;
   };
   duplicatedProject: BaseNodeModel | null;
-  parentProject: AsyncStateModel<ParentProjectModel | null>;
+  parentProject: AsyncStateModel<NodeModel | null>;
   institutions: AsyncStateModel<Institution[]>;
   identifiers: AsyncStateModel<IdentifierModel[]>;
   license: AsyncStateModel<LicenseModel | null>;

@@ -807,6 +807,9 @@
           "bookmark": {
             "add": "Successfully added to bookmarks",
             "remove": "Successfully removed from bookmarks"
+          },
+          "reorderComponents": {
+            "success": "Components have been reordered successfully."
           }
         },
         "linkProject": {

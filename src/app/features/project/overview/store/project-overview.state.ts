@@ -25,6 +25,7 @@ import {
   GetProjectPreprints,
   GetProjectStorage,
   LoadMoreComponents,
+  ReorderComponents,
   SetProjectCustomCitation,
   UpdateProjectPublicStatus,
 } from './project-overview.actions';
@@ -431,6 +432,34 @@ export class ProjectOverviewState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'parentProject', error))
+    );
+  }
+
+  @Action(ReorderComponents)
+  reorderComponents(ctx: StateContext<ProjectOverviewStateModel>, action: ReorderComponents) {
+    const state = ctx.getState();
+    ctx.patchState({
+      components: {
+        ...state.components,
+        isSubmitting: true,
+      },
+    });
+
+    return this.projectOverviewService.reorderComponents(action.projectId, action.componentIds).pipe(
+      tap(() => {
+        const reorderedComponents = action.componentIds
+          .map((id) => state.components.data.find((c) => c.id === id))
+          .filter((c) => c !== undefined);
+
+        ctx.patchState({
+          components: {
+            ...state.components,
+            data: reorderedComponents,
+            isSubmitting: false,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'components', error))
     );
   }
 }
