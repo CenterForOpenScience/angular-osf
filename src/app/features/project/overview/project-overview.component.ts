@@ -104,8 +104,6 @@ export class ProjectOverviewComponent implements OnInit {
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
-  isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
   components = select(CurrentResourceSelectors.getResourceWithChildren);
   areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
   currentProject = select(ProjectOverviewSelectors.getProject);
@@ -120,7 +118,6 @@ export class ProjectOverviewComponent implements OnInit {
   configuredCitationAddons = select(AddonsSelectors.getConfiguredCitationAddons);
   operationInvocation = select(AddonsSelectors.getOperationInvocation);
   storage = select(ProjectOverviewSelectors.getStorage);
-  isStorageLoading = select(ProjectOverviewSelectors.isStorageLoading);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
@@ -257,14 +254,6 @@ export class ProjectOverviewComponent implements OnInit {
 
       if (project && this.isWikiEnabled()) {
         this.actions.getHomeWiki(ResourceType.Project, project.id);
-      }
-    });
-
-    effect(() => {
-      const currentProject = this.currentProject();
-
-      if (currentProject && currentProject.isPublic) {
-        this.analyticsService.sendCountedUsage(currentProject.id, 'project.detail').subscribe();
       }
     });
   }

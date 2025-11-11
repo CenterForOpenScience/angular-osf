@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { map } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -15,7 +15,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
@@ -23,6 +23,8 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
+import { AnalyticsService } from '@shared/services/analytics.service';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import {
   GetProjectById,
@@ -50,6 +52,9 @@ export class ProjectComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly datePipe = inject(DatePipe);
   private readonly prerenderReady = inject(PrerenderReadyService);
+  private readonly router = inject(Router);
+  private readonly analyticsService = inject(AnalyticsService);
+  currentResource = select(CurrentResourceSelectors.getCurrentResource);
 
   readonly identifiersForDatacite$ = toObservable(select(ProjectOverviewSelectors.getIdentifiers)).pipe(
     map((identifiers) => (identifiers?.length ? { identifiers } : null))
@@ -123,6 +128,18 @@ export class ProjectComponent implements OnDestroy {
       .logIdentifiableView(this.identifiersForDatacite$)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((event: NavigationEnd) => {
+        this.analyticsService.sendCountedUsageForRegistrationAndProjects(
+          event.urlAfterRedirects,
+          this.currentResource()
+        );
+      });
   }
 
   ngOnDestroy(): void {

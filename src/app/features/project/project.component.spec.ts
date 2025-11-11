@@ -6,6 +6,7 @@ import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { ProjectOverviewSelectors } from './overview/store';
 import { ProjectComponent } from './project.component';
@@ -52,6 +53,7 @@ describe('Component: Project', () => {
             { selector: ProjectOverviewSelectors.isLicenseLoading, value: false },
             { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
             { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
+            { selector: CurrentResourceSelectors.getCurrentResource, value: null },
           ],
         }),
       ],

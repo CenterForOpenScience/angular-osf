@@ -11,6 +11,7 @@ interface GuidDataJsonApi {
     guid: string;
     wiki_enabled: boolean;
     current_user_permissions: UserPermissions[];
+    title?: string;
   };
   relationships: {
     target?: {

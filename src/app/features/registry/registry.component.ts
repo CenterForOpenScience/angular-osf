@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { map } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -15,7 +15,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -27,6 +27,7 @@ import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { GetRegistryIdentifiers, GetRegistryWithRelatedData, RegistrySelectors } from './store/registry';
 
@@ -59,7 +60,7 @@ export class RegistryComponent implements OnDestroy {
   });
 
   private registryId = toSignal(this.route.params.pipe(map((params) => params['id'])));
-
+  readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   readonly registry = select(RegistrySelectors.getRegistry);
   readonly isRegistryLoading = select(RegistrySelectors.isRegistryLoading);
   readonly identifiersForDatacite$ = toObservable(select(RegistrySelectors.getIdentifiers)).pipe(
@@ -79,6 +80,7 @@ export class RegistryComponent implements OnDestroy {
   );
 
   private readonly lastMetaTagsRegistryId = signal<string | null>(null);
+  readonly router = inject(Router);
 
   constructor() {
     this.prerenderReady.setNotReady();
@@ -106,17 +108,22 @@ export class RegistryComponent implements OnDestroy {
       }
     });
 
-    effect(() => {
-      const currentRegistry = this.registry();
-      if (currentRegistry && currentRegistry.isPublic) {
-        this.analyticsService.sendCountedUsage(currentRegistry.id, 'registry.detail').subscribe();
-      }
-    });
-
     this.dataciteService
       .logIdentifiableView(this.identifiersForDatacite$)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((event: NavigationEnd) => {
+        this.analyticsService.sendCountedUsageForRegistrationAndProjects(
+          event.urlAfterRedirects,
+          this.currentResource()
+        );
+      });
   }
 
   ngOnDestroy(): void {
