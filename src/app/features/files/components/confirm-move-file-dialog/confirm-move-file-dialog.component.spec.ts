@@ -3,7 +3,6 @@ import { MockComponents, MockPipe } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileSelectDestinationComponent } from '@osf/shared/components/file-select-destination/file-select-destination.component';
@@ -55,8 +54,8 @@ describe('ConfirmConfirmMoveFileDialogComponent', () => {
         { provide: CustomConfirmationService, useValue: CustomConfirmationServiceMock.simple() },
         provideMockStore({
           signals: [
-            { selector: FilesSelectors.getMoveDialogFiles, value: signal([]) },
-            { selector: FilesSelectors.getProvider, value: signal(null) },
+            { selector: FilesSelectors.getMoveDialogFiles, value: [] },
+            { selector: FilesSelectors.getProvider, value: null },
           ],
         }),
       ],

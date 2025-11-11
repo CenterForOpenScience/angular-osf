@@ -35,7 +35,7 @@ export class ConfirmMoveFileDialogComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   readonly files = select(FilesSelectors.getMoveDialogFiles);
-  readonly provider = select(FilesSelectors.getProvider);
+  readonly provider = this.config.data.storageProvider;
 
   private fileProjectId = this.config.data.resourceId;
   protected currentFolder = this.config.data.destination;
