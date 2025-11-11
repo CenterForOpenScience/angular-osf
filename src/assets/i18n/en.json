@@ -1163,13 +1163,17 @@
       "moveFile": {
         "cannotMove": "Cannot move or copy to this folder",
         "title": "Select Destination",
+        "dialogTitle": "Move file",
+        "dialogTitleMultiple": "Move files",
         "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
+        "multipleFiles": "{{count}} files",
         "storage": "OSF Storage",
         "pathError": "Path is not specified!",
         "success": "Successfully moved.",
         "noMovePermission": "Cannot move or copy to this file provider",
+        "error": "Failed to move or copy files, please try again later",
         "movingHeader": "Moving...",
-        "copingHeader": "Coping..."
+        "copingHeader": "Copying..."
       },
       "copyFile": {
         "success": "File successfully copied."

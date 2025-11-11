@@ -11,20 +11,19 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { FilesSelectors } from '../../store';
 
-import { MoveFileDialogComponent } from './move-file-dialog.component';
+import { ConfirmMoveFileDialogComponent } from './confirm-move-file-dialog.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMock } from '@testing/providers/custom-confirmation-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
-describe('MoveFileDialogComponent', () => {
-  let component: MoveFileDialogComponent;
-  let fixture: ComponentFixture<MoveFileDialogComponent>;
+describe('ConfirmConfirmMoveFileDialogComponent', () => {
+  let component: ConfirmMoveFileDialogComponent;
+  let fixture: ComponentFixture<ConfirmMoveFileDialogComponent>;
 
   const mockFilesService = {
     moveFiles: jest.fn(),
@@ -37,12 +36,12 @@ describe('MoveFileDialogComponent', () => {
     };
 
     const dialogConfigMock = {
-      data: { files: [], currentFolder: null },
+      data: { files: [], destination: { name: 'files' } },
     };
 
     await TestBed.configureTestingModule({
       imports: [
-        MoveFileDialogComponent,
+        ConfirmMoveFileDialogComponent,
         OSFTestingModule,
         ...MockComponents(IconComponent, LoadingSpinnerComponent, FileSelectDestinationComponent),
         MockPipe(TranslatePipe),
@@ -56,19 +55,13 @@ describe('MoveFileDialogComponent', () => {
         provideMockStore({
           signals: [
             { selector: FilesSelectors.getMoveDialogFiles, value: [] },
-            { selector: FilesSelectors.getMoveDialogFilesTotalCount, value: 0 },
-            { selector: FilesSelectors.isMoveDialogFilesLoading, value: false },
-            { selector: FilesSelectors.getMoveDialogCurrentFolder, value: null },
-            { selector: CurrentResourceSelectors.getCurrentResource, value: null },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: [] },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
-            { selector: FilesSelectors.isMoveDialogConfiguredStorageAddonsLoading, value: false },
+            { selector: FilesSelectors.getProvider, value: null },
           ],
         }),
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MoveFileDialogComponent);
+    fixture = TestBed.createComponent(ConfirmMoveFileDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -81,31 +74,9 @@ describe('MoveFileDialogComponent', () => {
     expect(component.config).toBeDefined();
     expect(component.dialogRef).toBeDefined();
     expect(component.files).toBeDefined();
-    expect(component.isLoading).toBeDefined();
-    expect(component.currentFolder).toBeDefined();
   });
 
   it('should get files from store', () => {
     expect(component.files()).toEqual([]);
-  });
-
-  it('should get loading state from store', () => {
-    expect(component.isLoading()).toBe(false);
-  });
-
-  it('should get current folder from store', () => {
-    expect(component.currentFolder()).toBeNull();
-  });
-
-  it('should have isFilesUpdating signal', () => {
-    expect(component.isFilesUpdating()).toBe(false);
-  });
-
-  it('should have all required selectors defined', () => {
-    expect(component.filesTotalCount).toBeDefined();
-    expect(component.currentProject).toBeDefined();
-    expect(component.components).toBeDefined();
-    expect(component.areComponentsLoading).toBeDefined();
-    expect(component.isConfiguredStorageAddonsLoading).toBeDefined();
   });
 });
