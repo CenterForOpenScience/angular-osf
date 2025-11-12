@@ -25,8 +25,8 @@
       <div class="files-table flex">
         <p-tree
           [value]="nodes()"
-          [draggableNodes]="true"
-          [droppableNodes]="true"
+          [draggableNodes]="!hasViewOnly() && supportUpload()"
+          [droppableNodes]="!hasViewOnly() && supportUpload()"
           (onScrollIndexChange)="onScrollIndexChange($event)"
           [scrollHeight]="scrollHeight()"
           [virtualScroll]="true"
