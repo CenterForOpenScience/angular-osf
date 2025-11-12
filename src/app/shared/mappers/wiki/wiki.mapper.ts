@@ -44,10 +44,13 @@ export class WikiMapper {
   }
 
   static fromGetWikiVersionResponse(response: WikiVersionJsonApi): WikiVersion {
+    const createdBy =
+      response.embeds?.user?.data?.attributes?.full_name || response.embeds?.user?.data?.id || 'Unknown author';
+
     return {
       id: response.id,
-      createdAt: response.attributes.date_created,
-      createdBy: response.embeds.user.data.attributes.full_name,
+      createdAt: response.attributes?.date_created ?? '',
+      createdBy,
     };
   }
 
