@@ -1,3 +1,4 @@
+import { UserMapper } from '@osf/shared/mappers/user/user.mapper';
 import {
   ComponentsWikiGetResponse,
   HomeWiki,
@@ -44,13 +45,10 @@ export class WikiMapper {
   }
 
   static fromGetWikiVersionResponse(response: WikiVersionJsonApi): WikiVersion {
-    const createdBy =
-      response.embeds?.user?.data?.attributes?.full_name || response.embeds?.user?.data?.id || 'Unknown author';
-
     return {
       id: response.id,
-      createdAt: response.attributes?.date_created ?? '',
-      createdBy,
+      createdAt: response.attributes.date_created,
+      createdBy: UserMapper.getUserInfo(response.embeds.user)?.fullName || 'Unknown author',
     };
   }
 

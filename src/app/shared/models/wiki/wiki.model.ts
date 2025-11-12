@@ -1,3 +1,5 @@
+import { UserDataErrorResponseJsonApi } from '@shared/models/user/user-json-api.model';
+
 import { JsonApiResponse, JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '../common/json-api.model';
 
 export enum WikiModes {
@@ -78,14 +80,7 @@ export interface WikiVersionJsonApi {
     date_created: string;
   };
   embeds: {
-    user: {
-      data: {
-        id: string;
-        attributes: {
-          full_name: string;
-        };
-      };
-    };
+    user: UserDataErrorResponseJsonApi;
   };
 }
 
