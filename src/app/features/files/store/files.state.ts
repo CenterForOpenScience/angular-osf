@@ -64,7 +64,15 @@ export class FilesState {
           isAnonymous: response.meta?.anonymous ?? false,
         });
       }),
-      catchError((error) => handleSectionError(ctx, 'files', error))
+      catchError((error) =>
+        of([]).pipe(
+          tap(() =>
+            ctx.patchState({
+              files: { data: [], isLoading: false, error, totalCount: 0 },
+            })
+          )
+        )
+      )
     );
   }
 
