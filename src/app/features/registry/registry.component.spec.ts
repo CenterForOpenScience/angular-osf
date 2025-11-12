@@ -1,98 +1,93 @@
-import { of } from 'rxjs';
+import { Store } from '@ngxs/store';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { RegistrySelectors } from '@osf/features/registry/store/registry';
+import { HelpScoutService } from '@core/services/help-scout.service';
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
+import { ClearCurrentProvider } from '@core/store/provider';
 import { AnalyticsService } from '@osf/shared/services/analytics.service';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 
+import { RegistrySelectors } from './store/registry';
 import { RegistryComponent } from './registry.component';
 
 import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { AnalyticsServiceMockFactory } from '@testing/providers/analytics.service.mock';
+import { HelpScoutServiceMockFactory } from '@testing/providers/help-scout.service.mock';
+import { MetaTagsServiceMockFactory } from '@testing/providers/meta-tags.service.mock';
+import { PrerenderReadyServiceMockFactory } from '@testing/providers/prerender-ready.service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RegistryComponent', () => {
-  let fixture: ComponentFixture<RegistryComponent>;
   let component: RegistryComponent;
-  let dataciteService: jest.Mocked<DataciteService>;
-  let metaTagsService: jest.Mocked<MetaTagsService>;
-  let analyticsService: jest.Mocked<AnalyticsService>;
-
-  const mockRegistry = {
-    id: 'test-registry-id',
-    title: 'Test Registry',
-    description: 'Test Description',
-    dateRegistered: '2023-01-01',
-    dateModified: '2023-01-02',
-    doi: '10.1234/test',
-    tags: ['tag1', 'tag2'],
-    license: { name: 'Test License' },
-    contributors: [{ fullName: 'John Doe', givenName: 'John', familyName: 'Doe' }],
-    isPublic: true,
-  };
+  let fixture: ComponentFixture<RegistryComponent>;
+  let helpScoutService: ReturnType<typeof HelpScoutServiceMockFactory>;
+  let metaTagsService: ReturnType<typeof MetaTagsServiceMockFactory>;
+  let dataciteService: ReturnType<typeof DataciteMockFactory>;
+  let prerenderReadyService: ReturnType<typeof PrerenderReadyServiceMockFactory>;
+  let analyticsService: ReturnType<typeof AnalyticsServiceMockFactory>;
+  let store: Store;
+  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   beforeEach(async () => {
+    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'registry-1' }).build();
+
+    helpScoutService = HelpScoutServiceMockFactory();
+    metaTagsService = MetaTagsServiceMockFactory();
     dataciteService = DataciteMockFactory();
-    metaTagsService = {
-      updateMetaTags: jest.fn(),
-    } as any;
-    analyticsService = {
-      sendCountedUsage: jest.fn().mockReturnValue(of({})),
-    } as any;
+    prerenderReadyService = PrerenderReadyServiceMockFactory();
+    analyticsService = AnalyticsServiceMockFactory();
 
     await TestBed.configureTestingModule({
       imports: [RegistryComponent, OSFTestingModule],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: ActivatedRouteMockBuilder.create().withParams({ id: 'test-registry-id' }).build(),
-        },
-        { provide: DataciteService, useValue: dataciteService },
+        { provide: HelpScoutService, useValue: helpScoutService },
         { provide: MetaTagsService, useValue: metaTagsService },
+        { provide: DataciteService, useValue: dataciteService },
+        { provide: PrerenderReadyService, useValue: prerenderReadyService },
         { provide: AnalyticsService, useValue: analyticsService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideMockStore({
           signals: [
-            { selector: RegistrySelectors.getRegistry, value: mockRegistry },
+            { selector: RegistrySelectors.getRegistry, value: null },
             { selector: RegistrySelectors.isRegistryLoading, value: false },
+            { selector: RegistrySelectors.getIdentifiers, value: [] },
+            { selector: RegistrySelectors.getLicense, value: null },
+            { selector: RegistrySelectors.isLicenseLoading, value: false },
+            { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
+            { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
           ],
         }),
       ],
     }).compileComponents();
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(RegistryComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should call the helpScoutService', () => {
+    expect(helpScoutService.setResourceType).toHaveBeenCalledWith('registration');
   });
 
-  it('should be an instance of RegistryComponent', () => {
-    expect(component).toBeInstanceOf(RegistryComponent);
+  it('should call unsetResourceType and clearCurrentProvider on destroy', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    component.ngOnDestroy();
+    expect(helpScoutService.unsetResourceType).toHaveBeenCalled();
+    expect(dispatchSpy).toHaveBeenCalledWith(new ClearCurrentProvider());
   });
 
-  it('should have NGXS selectors defined', () => {
-    expect(component.registry).toBeDefined();
-    expect(component.isRegistryLoading).toBeDefined();
+  it('should call prerenderReady.setNotReady in constructor', () => {
+    expect(prerenderReadyService.setNotReady).toHaveBeenCalled();
   });
 
-  it('should have services injected', () => {
-    expect(component.analyticsService).toBeDefined();
-  });
-
-  it('should handle ngOnDestroy', () => {
-    expect(() => component.ngOnDestroy()).not.toThrow();
-  });
-
-  it('should call datacite service on initialization', () => {
-    expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.identifiersForDatacite$);
-  });
-
-  it('should handle registry loading effects', () => {
-    expect(component).toBeTruthy();
+  it('should call dataciteService.logIdentifiableView', () => {
+    expect(dataciteService.logIdentifiableView).toHaveBeenCalled();
   });
 });

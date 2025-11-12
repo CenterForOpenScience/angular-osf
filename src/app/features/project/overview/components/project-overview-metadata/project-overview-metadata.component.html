@@ -1,4 +1,4 @@
-@let resource = currentResource();
+@let resource = currentProject();
 
 @if (resource) {
   <div class="metadata flex flex-column gap-5">
@@ -22,8 +22,8 @@
           [contributors]="bibliographicContributors()"
           [isLoading]="isBibliographicContributorsLoading()"
           [hasLoadMore]="hasMoreBibliographicContributors()"
-          [anonymous]="!!resource.isAnonymous"
-          (loadMoreContributors)="loadMoreContributors.emit()"
+          [anonymous]="!!isAnonymous()"
+          (loadMoreContributors)="handleLoadMoreContributors()"
         ></osf-contributors-list>
       </div>
     </div>
@@ -40,19 +40,10 @@
     <div class="flex flex-column gap-2">
       <h3>{{ 'project.overview.metadata.supplements' | translate }}</h3>
 
-      @if (resource.supplements?.length) {
-        @for (supplement of resource.supplements; track supplement.id) {
-          <p>
-            {{ 'project.overview.metadata.supplementsText1' | translate }}
-            <a class="font-bold" target="_blank" href="{{ supplement.url }}">
-              {{ supplement.title + ', ' + (supplement.dateCreated | date: 'MMMM d, y') }}
-            </a>
-            {{ 'project.overview.metadata.supplementsText2' | translate }}
-          </p>
-        }
-      } @else {
-        <p>{{ 'project.overview.metadata.noSupplements' | translate }}</p>
-      }
+      <osf-overview-supplements
+        [supplements]="preprints()"
+        [isLoading]="isPreprintsLoading()"
+      ></osf-overview-supplements>
     </div>
 
     <div class="flex gap-5 lg:gap-2 lg:justify-content-between">
@@ -70,31 +61,34 @@
     <div class="flex flex-column gap-2">
       <h3>{{ 'common.labels.license' | translate }}</h3>
 
-      <osf-resource-license [license]="resource.license"></osf-resource-license>
+      <osf-resource-license [license]="license()" [isLoading]="isLicenseLoading()"></osf-resource-license>
     </div>
 
-    @if (!resource.isAnonymous) {
+    @if (!isAnonymous()) {
       <div class="flex flex-column gap-2">
         <h3>{{ 'project.overview.metadata.projectDOI' | translate }}</h3>
 
-        <osf-resource-doi [identifiers]="resource.identifiers || []"></osf-resource-doi>
+        <osf-resource-doi [identifiers]="identifiers()" [isLoading]="isIdentifiersLoading()"></osf-resource-doi>
       </div>
     }
 
-    @if (!resource.isAnonymous) {
+    @if (!isAnonymous()) {
       <div class="flex flex-column gap-2">
         <h3>{{ 'common.labels.affiliatedInstitutions' | translate }}</h3>
 
-        <osf-affiliated-institutions-view [institutions]="resource.affiliatedInstitutions || []" />
+        <osf-affiliated-institutions-view [institutions]="institutions()" [isLoading]="isInstitutionsLoading()" />
       </div>
     }
 
-    <osf-overview-collections [currentProject]="currentResource()"></osf-overview-collections>
+    <osf-overview-collections
+      [projectSubmissions]="projectSubmissions()"
+      [isProjectSubmissionsLoading]="isProjectSubmissionsLoading()"
+    ></osf-overview-collections>
 
     <div class="flex flex-column gap-2">
       <h3>{{ 'common.labels.subjects' | translate }}</h3>
 
-      <osf-subjects-list [subjects]="resource.subjects"></osf-subjects-list>
+      <osf-subjects-list [subjects]="subjects()" [isLoading]="areSelectedSubjectsLoading()"></osf-subjects-list>
     </div>
 
     <div class="flex flex-column gap-2">
@@ -103,11 +97,11 @@
       <osf-tags-list [tags]="resource.tags" (tagClick)="tagClicked($event)"></osf-tags-list>
     </div>
 
-    @if (!resource.isAnonymous) {
+    @if (!isAnonymous()) {
       <osf-resource-citations
-        [resourceId]="currentResource()!.id"
+        [resourceId]="resource.id"
         [resourceType]="resourceType"
-        [customCitations]="currentResource()?.customCitation"
+        [customCitations]="resource.customCitation"
         [canEdit]="canEdit()"
         (customCitationChange)="onCustomCitationUpdated($event)"
       ></osf-resource-citations>

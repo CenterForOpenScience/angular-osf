@@ -74,13 +74,13 @@ describe('Component: View Duplicates', () => {
   it('should update currentPage when page is defined', () => {
     const event: PaginatorState = { page: 1 } as PaginatorState;
     component.onPageChange(event);
-    expect(component.currentPage()).toBe('2');
+    expect(component.currentPage()).toBe(2);
   });
 
   it('should not update currentPage when page is undefined', () => {
-    component.currentPage.set('5');
+    component.currentPage.set(5);
     const event: PaginatorState = { page: undefined } as PaginatorState;
     component.onPageChange(event);
-    expect(component.currentPage()).toBe('5');
+    expect(component.currentPage()).toBe(5);
   });
 });

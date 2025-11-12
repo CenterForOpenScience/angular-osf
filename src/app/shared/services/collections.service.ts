@@ -149,14 +149,15 @@ export class CollectionsService {
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsResponse(response)));
   }
 
-  fetchProjectCollections(projectId: string, is_public: boolean, bookmarks: boolean): Observable<CollectionDetails[]> {
+  fetchProjectCollections(projectId: string, isPublic: boolean, bookmarks: boolean): Observable<CollectionDetails[]> {
     const params: Record<string, boolean> = {
-      'filter[is_public]': is_public,
+      'filter[is_public]': isPublic,
       'filter[bookmarks]': bookmarks,
     };
+
     return this.jsonApiService
       .get<
-        JsonApiResponse<CollectionDetailsResponseJsonApi[], null>
+        ResponseJsonApi<CollectionDetailsResponseJsonApi[]>
       >(`${this.apiUrl}/nodes/${projectId}/collections/`, params)
       .pipe(
         map((response) =>

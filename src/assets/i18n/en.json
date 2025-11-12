@@ -807,6 +807,9 @@
           "bookmark": {
             "add": "Successfully added to bookmarks",
             "remove": "Successfully removed from bookmarks"
+          },
+          "reorderComponents": {
+            "success": "Components have been reordered successfully."
           }
         },
         "linkProject": {
@@ -904,10 +907,13 @@
     },
     "wiki": {
       "addNewWiki": "Add new wiki page",
+      "renameWiki": "Rename wiki page",
       "deleteWiki": "Delete wiki page",
       "deleteWikiMessage": "Are you sure you want to delete this wiki page?",
       "addNewWikiPlaceholder": "New wiki name",
       "addWikiSuccess": "Wiki page has been added successfully",
+      "renameWikiSuccess": "Wiki page has been renamed successfully",
+      "renameWikiConflict": "That wiki name already exists.",
       "view": "View",
       "edit": "Edit",
       "compare": "Compare",
@@ -1160,13 +1166,17 @@
       "moveFile": {
         "cannotMove": "Cannot move or copy to this folder",
         "title": "Select Destination",
+        "dialogTitle": "Move file",
+        "dialogTitleMultiple": "Move files",
         "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
+        "multipleFiles": "{{count}} files",
         "storage": "OSF Storage",
         "pathError": "Path is not specified!",
         "success": "Successfully moved.",
         "noMovePermission": "Cannot move or copy to this file provider",
+        "error": "Failed to move or copy files, please try again later",
         "movingHeader": "Moving...",
-        "copingHeader": "Coping..."
+        "copingHeader": "Copying..."
       },
       "copyFile": {
         "success": "File successfully copied."
@@ -1912,8 +1922,7 @@
           "emailPlaceholder": "email@example.com"
         },
         "buttons": {
-          "cancel": "Cancel",
-          "add": "Add"
+          "cancel": "Cancel"
         },
         "messages": {
           "success": "Alternative email added successfully",
@@ -2966,11 +2975,11 @@
       "fallbackWithoutNode": "{{user}} performed action \"{{action}}\""
     },
     "activities": {
-      "addon_added": "{{user}} added addon {{addon}} to {{node}}",
+      "addon_added": "{{user}} enabled {{addon}} to {{node}}",
       "addon_file_copied": "{{user}} copied {{source}} to {{destination}} in {{node}}",
       "addon_file_moved": "{{user}} moved {{source}} to {{destination}} in {{node}}",
       "addon_file_renamed": "{{user}} renamed {{source}} to {{destination}} in {{node}}",
-      "addon_removed": "{{user}} removed addon {{addon}} from {{node}}",
+      "addon_removed": "{{user}} disabled {{addon}} from {{node}}",
       "affiliated_institution_added": "{{user}} added {{institution}} affiliation to {{node}}",
       "affiliated_institution_removed": "{{user}} removed {{institution}} affiliation from {{node}}",
       "article_doi_updated": "{{user}} changed the article_doi of {{node}}",

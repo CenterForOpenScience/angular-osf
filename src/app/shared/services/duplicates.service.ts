@@ -6,9 +6,8 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { BaseNodeMapper } from '../mappers/nodes';
-import { ResponseJsonApi } from '../models/common/json-api.model';
 import { NodeModel } from '../models/nodes/base-node.model';
-import { BaseNodeDataJsonApi } from '../models/nodes/base-node-data-json-api.model';
+import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
 
 import { JsonApiService } from './json-api.service';
@@ -44,7 +43,7 @@ export class DuplicatesService {
     }
 
     return this.jsonApiService
-      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
       .pipe(map((res) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(res)));
   }
 }

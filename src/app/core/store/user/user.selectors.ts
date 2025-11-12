@@ -55,4 +55,9 @@ export class UserSelectors {
   static isAuthenticated(state: UserStateModel): boolean {
     return !!state.currentUser.data || !!localStorage.getItem('currentUser');
   }
+
+  @Selector([UserState])
+  static getActiveFlags(state: UserStateModel): string[] {
+    return state.activeFlags || [];
+  }
 }

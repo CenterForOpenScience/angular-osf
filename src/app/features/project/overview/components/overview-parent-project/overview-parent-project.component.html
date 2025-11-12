@@ -7,54 +7,14 @@
     @if (isLoading()) {
       <p-skeleton width="100%" height="7rem" />
     } @else {
-      <div class="node-wrapper flex flex-column p-3 gap-3">
-        <div class="flex justify-content-between align-items-center">
-          <h2 class="flex align-items-center gap-2">
-            <osf-icon [iconClass]="project().isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
-            <a class="node-title cursor-pointer" (click)="navigateToParent()">{{ project().title }}</a>
-          </h2>
-
-          @if (project().currentUserIsContributor) {
-            <div>
-              <p-button
-                severity="contrast"
-                icon="fas fa-ellipsis-vertical"
-                raised
-                variant="outlined"
-                [ariaLabel]="'common.buttons.more' | translate"
-                (onClick)="menu.toggle($event)"
-              >
-              </p-button>
-
-              <p-menu appendTo="body" [model]="menuItems" popup #menu>
-                <ng-template #item let-item>
-                  <a
-                    class="p-menu-item-link"
-                    (mousedown)="handleMenuAction(item.action)"
-                    (keydown.enter)="handleMenuAction(item.action)"
-                    tabindex="0"
-                  >
-                    {{ item.label | translate }}
-                  </a>
-                </ng-template>
-              </p-menu>
-            </div>
-          }
-        </div>
-
-        <div class="node-name flex flex-wrap gap-2">
-          <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
-
-          <osf-contributors-list
-            [contributors]="project().contributors"
-            [anonymous]="anonymous()"
-          ></osf-contributors-list>
-        </div>
-
-        @if (project().description) {
-          <osf-truncated-text [text]="('resourceCard.labels.descriptionBold' | translate) + project().description" />
-        }
-      </div>
+      <osf-component-card
+        class="w-full"
+        [component]="project()"
+        [anonymous]="anonymous()"
+        [hideDeleteAction]="true"
+        (navigate)="navigateToParent()"
+        (menuAction)="handleMenuAction($event)"
+      />
     }
   </div>
 </div>

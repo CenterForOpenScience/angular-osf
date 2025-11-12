@@ -211,7 +211,7 @@ export class MoveFileDialogComponent {
             if (error.status === 409) {
               conflictFiles.push({ file, link });
             } else {
-              this.toastService.showError(error.error?.message ?? 'Error');
+              this.showErrorToast(action, error.error?.message ?? 'Error');
             }
             return of(null);
           }),
@@ -221,7 +221,7 @@ export class MoveFileDialogComponent {
               if (conflictFiles.length > 0) {
                 this.openReplaceMoveDialog(conflictFiles, path, action);
               } else {
-                this.showToast(action);
+                this.showSuccessToast(action);
                 this.config.header = this.translateService.instant('files.dialogs.moveFile.title');
                 this.completeMove();
               }
@@ -254,7 +254,7 @@ export class MoveFileDialogComponent {
 
         forkJoin(replaceRequests$).subscribe({
           next: () => {
-            this.showToast(action);
+            this.showSuccessToast(action);
             this.completeMove();
           },
         });
@@ -262,16 +262,21 @@ export class MoveFileDialogComponent {
       onReject: () => {
         const totalFiles = this.config.data.files.length;
         if (totalFiles > conflictFiles.length) {
-          this.showToast(action);
+          this.showErrorToast(action);
         }
         this.completeMove();
       },
     });
   }
 
-  private showToast(action: string): void {
+  private showSuccessToast(action: string) {
     const messageType = action === 'move' ? 'moveFile' : 'copyFile';
     this.toastService.showSuccess(`files.dialogs.${messageType}.success`);
+  }
+
+  private showErrorToast(action: string, errorMessage?: string) {
+    const messageType = action === 'move' ? 'moveFile' : 'copyFile';
+    this.toastService.showError(errorMessage ?? `files.dialogs.${messageType}.error`);
   }
 
   private completeMove(): void {

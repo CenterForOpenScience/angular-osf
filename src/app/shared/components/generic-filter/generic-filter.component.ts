@@ -70,9 +70,8 @@ export class GenericFilterComponent {
     this.updateStableArray(newOptions);
     return this.stableOptionsArray;
   });
-  selectedOptionValues = computed(() => {
-    return this.selectedOptions().map((option) => option.value);
-  });
+
+  selectedOptionValues = computed(() => this.selectedOptions().map((option) => option.value));
 
   constructor() {
     effect(() => {

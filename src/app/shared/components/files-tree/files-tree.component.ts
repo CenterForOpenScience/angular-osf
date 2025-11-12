@@ -3,7 +3,7 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
-import { Tree, TreeNodeSelectEvent, TreeScrollIndexChangeEvent } from 'primeng/tree';
+import { Tree, TreeNodeDropEvent, TreeNodeSelectEvent, TreeScrollIndexChangeEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
@@ -27,6 +27,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ConfirmMoveFileDialogComponent } from '@osf/features/files/components/confirm-move-file-dialog/confirm-move-file-dialog.component';
 import { MoveFileDialogComponent } from '@osf/features/files/components/move-file-dialog/move-file-dialog.component';
 import { RenameFileDialogComponent } from '@osf/features/files/components/rename-file-dialog/rename-file-dialog.component';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
@@ -458,7 +459,39 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     this.lastSelectedFile = selectedNode;
   }
 
+  onNodeDrop(event: TreeNodeDropEvent) {
+    const dropFile = event.dropNode as FileModel;
+    if (dropFile.kind !== FileKind.Folder) {
+      return;
+    }
+    const files = this.selectedFiles();
+    const dragFile = event.dragNode as FileModel;
+    if (!files.includes(dragFile)) {
+      this.selectFile.emit(dragFile);
+      files.push(dragFile);
+    }
+    this.moveFilesTo(files, dropFile);
+  }
+
   onNodeUnselect(event: TreeNodeSelectEvent) {
     this.unselectFile.emit(event.node as FileModel);
+  }
+
+  private moveFilesTo(files: FileModel[], destination: FileModel) {
+    const isMultiple = files.length > 1;
+    this.customDialogService
+      .open(ConfirmMoveFileDialogComponent, {
+        header: isMultiple ? 'files.dialogs.moveFile.dialogTitleMultiple' : 'files.dialogs.moveFile.dialogTitle',
+        width: '552px',
+        data: {
+          files,
+          destination,
+          resourceId: this.resourceId(),
+          storageProvider: this.storage()?.folder.provider,
+        },
+      })
+      .onClose.subscribe(() => {
+        this.resetFilesProvider.emit();
+      });
   }
 }

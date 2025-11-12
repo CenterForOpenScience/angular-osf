@@ -26,6 +26,7 @@ import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affi
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
@@ -49,6 +50,7 @@ import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subject
     AffiliatedInstitutionsViewComponent,
     ContributorsListComponent,
     LicenseDisplayComponent,
+    FixSpecialCharPipe,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
