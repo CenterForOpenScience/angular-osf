@@ -926,7 +926,8 @@
         "preview": "Preview",
         "current": "Current",
         "successSaved": "Wiki version has been saved successfully",
-        "noContent": "Add important information, links, or images here to describe your project."
+        "noContent": "Add important information, links, or images here to describe your project.",
+        "unknownAuthor": "Unknown author"
       },
       "list": {
         "header": "Project Wiki Pages",

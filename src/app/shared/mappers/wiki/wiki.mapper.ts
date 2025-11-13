@@ -1,3 +1,5 @@
+import { TranslateService } from '@ngx-translate/core';
+
 import { UserMapper } from '@osf/shared/mappers/user/user.mapper';
 import {
   ComponentsWikiGetResponse,
@@ -11,6 +13,12 @@ import {
 import { ComponentWiki } from '@osf/shared/stores/wiki';
 
 export class WikiMapper {
+  private static translate: TranslateService;
+
+  static init(translate: TranslateService): void {
+    WikiMapper.translate = translate;
+  }
+
   static fromCreateWikiResponse(response: WikiGetResponse): WikiModel {
     return {
       id: response.id,
@@ -48,7 +56,9 @@ export class WikiMapper {
     return {
       id: response.id,
       createdAt: response.attributes.date_created,
-      createdBy: UserMapper.getUserInfo(response.embeds.user)?.fullName || 'Unknown author',
+      createdBy:
+        UserMapper.getUserInfo(response.embeds.user)?.fullName ||
+        WikiMapper.translate.instant('project.wiki.version.unknownAuthor'),
     };
   }
 
