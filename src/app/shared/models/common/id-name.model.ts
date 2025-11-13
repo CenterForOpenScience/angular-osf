@@ -1,4 +1,4 @@
-export interface IdName {
+export interface IdNameModel {
   id: string;
   name: string;
 }

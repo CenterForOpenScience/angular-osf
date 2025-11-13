@@ -4,10 +4,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { RegistrationLinksCardComponent } from '@osf/features/registry/components';
-import { RegistryLinksSelectors } from '@osf/features/registry/store/registry-links';
-import { LoaderService } from '@osf/shared/services';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { LoaderService } from '@osf/shared/services/loader.service';
+
+import { RegistrationLinksCardComponent } from '../../components';
+import { RegistryLinksSelectors } from '../../store/registry-links';
 
 import { RegistryLinksComponent } from './registry-links.component';
 

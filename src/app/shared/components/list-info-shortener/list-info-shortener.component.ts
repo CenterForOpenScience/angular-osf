@@ -4,7 +4,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { IdName } from '@shared/models';
+import { IdNameModel } from '@osf/shared/models/common/id-name.model';
 
 @Component({
   selector: 'osf-list-info-shortener',
@@ -14,6 +14,6 @@ import { IdName } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListInfoShortenerComponent {
-  data = input<IdName[]>([]);
+  data = input<IdNameModel[]>([]);
   limit = input<number>(2);
 }

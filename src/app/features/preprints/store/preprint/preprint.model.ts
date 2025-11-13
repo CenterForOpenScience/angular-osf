@@ -1,5 +1,7 @@
 import { ReviewAction } from '@osf/features/moderation/models';
-import { AsyncStateModel, FileModel, FileVersionModel } from '@shared/models';
+import { FileModel } from '@osf/shared/models/files/file.model';
+import { FileVersionModel } from '@osf/shared/models/files/file-version.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 import { PreprintMetrics, PreprintModel, PreprintRequest, PreprintRequestAction } from '../../models';
 

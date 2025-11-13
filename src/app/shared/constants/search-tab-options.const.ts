@@ -1,5 +1,5 @@
-import { ResourceType } from '../enums';
-import { TabOption } from '../models';
+import { ResourceType } from '../enums/resource-type.enum';
+import { TabOption } from '../models/tab-option.model';
 
 export const SEARCH_TAB_OPTIONS: TabOption[] = [
   { label: 'common.search.tabs.all', value: ResourceType.Null },

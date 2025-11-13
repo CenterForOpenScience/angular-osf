@@ -10,10 +10,10 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { SocialsShareButtonComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { SocialShareService } from '@osf/shared/services';
+import { SocialsShareButtonComponent } from '@osf/shared/components/socials-share-button/socials-share-button.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { SocialShareService } from '@osf/shared/services/social-share.service';
 
 @Component({
   selector: 'osf-preprint-share-and-download',

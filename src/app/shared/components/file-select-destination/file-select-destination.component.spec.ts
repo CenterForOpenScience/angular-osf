@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SelectComponent } from '../select/select.component';
 
 import { FileSelectDestinationComponent } from './file-select-destination.component';
 
@@ -8,7 +12,7 @@ describe.skip('FileSelectDestinationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileSelectDestinationComponent],
+      imports: [FileSelectDestinationComponent, MockComponent(SelectComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FileSelectDestinationComponent);

@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { NotificationSubscription } from '@osf/shared/models';
+import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
 
 import { NotificationSubscriptionStateModel } from './notification-subscription.model';
 import { NotificationSubscriptionState } from './notification-subscription.state';

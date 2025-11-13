@@ -18,9 +18,12 @@ import {
   MetadataTitleComponent,
 } from '@osf/features/metadata/components';
 import { MetadataSelectors } from '@osf/features/metadata/store';
-import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { MetadataComponent } from './metadata.component';
 

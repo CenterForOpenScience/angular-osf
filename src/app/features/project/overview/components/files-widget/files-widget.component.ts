@@ -29,17 +29,17 @@ import {
   ResetState,
   SetCurrentFolder,
 } from '@osf/features/files/store';
-import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
-import { getViewOnlyParamFromUrl, hasViewOnlyParam, Primitive } from '@osf/shared/helpers';
-import {
-  ConfiguredAddonModel,
-  FileFolderModel,
-  FileLabelModel,
-  FileModel,
-  NodeShortInfoModel,
-  SelectOption,
-} from '@osf/shared/models';
-import { ProjectModel } from '@osf/shared/models/projects';
+import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { Primitive } from '@osf/shared/helpers/types.helper';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { FileModel } from '@osf/shared/models/files/file.model';
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
+import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
+import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
+import { ProjectModel } from '@osf/shared/models/projects/projects.models';
+import { SelectOption } from '@osf/shared/models/select-option.model';
 
 @Component({
   selector: 'osf-files-widget',

@@ -3,8 +3,8 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CustomStepComponent } from '@osf/features/registries/components/custom-step/custom-step.component';
-import { RegistriesSelectors } from '@osf/features/registries/store';
+import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
+import { RegistriesSelectors } from '../../store';
 
 import { RevisionsCustomStepComponent } from './revisions-custom-step.component';
 

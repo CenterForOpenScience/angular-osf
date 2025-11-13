@@ -1,4 +1,4 @@
-import { AsyncStateModel } from '@osf/shared/models/store';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 import { NodeAnalyticsModel, RelatedCountsModel } from '../models';
 

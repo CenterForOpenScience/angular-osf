@@ -2,8 +2,8 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { LicenseModel } from '@osf/shared/models';
-import { InterpolatePipe } from '@osf/shared/pipes';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
+import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 
 @Component({
   selector: 'osf-license-display',

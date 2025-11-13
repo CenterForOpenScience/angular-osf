@@ -24,28 +24,25 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
   RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
-import { BIBLIOGRAPHY_OPTIONS, DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { findChangedItems } from '@osf/shared/helpers';
-import {
-  ComponentCheckboxItemModel,
-  ContributorDialogAddModel,
-  ContributorModel,
-  NodeShortInfoModel,
-  RequestAccessModel,
-  SelectOption,
-  TableParameters,
-  ViewOnlyLinkJsonApi,
-  ViewOnlyLinkModel,
-} from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ViewOnlyTableComponent } from '@osf/shared/components/view-only-table/view-only-table.component';
+import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants/contributors.constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { findChangedItems } from '@osf/shared/helpers/find-changed-items.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import {
   AcceptRequestAccess,
   AddContributor,
@@ -74,6 +71,15 @@ import {
   FetchViewOnlyLinks,
   ViewOnlyLinkSelectors,
 } from '@osf/shared/stores/view-only-links';
+import { ComponentCheckboxItemModel } from '@shared/models/component-checkbox-item.model';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
+import { NodeShortInfoModel } from '@shared/models/nodes/node-with-children.model';
+import { RequestAccessModel } from '@shared/models/request-access/request-access.model';
+import { SelectOption } from '@shared/models/select-option.model';
+import { TableParameters } from '@shared/models/table-parameters.model';
+import { ViewOnlyLinkModel } from '@shared/models/view-only-links/view-only-link.model';
+import { ViewOnlyLinkJsonApi } from '@shared/models/view-only-links/view-only-link-response.model';
 
 import { CreateViewLinkDialogComponent } from './components';
 import { ResourceInfoModel } from './models';

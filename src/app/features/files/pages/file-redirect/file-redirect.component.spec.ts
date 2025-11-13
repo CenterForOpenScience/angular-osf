@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { FilesService } from '@osf/shared/services';
+import { FilesService } from '@osf/shared/services/files.service';
 
 import { FileRedirectComponent } from './file-redirect.component';
 

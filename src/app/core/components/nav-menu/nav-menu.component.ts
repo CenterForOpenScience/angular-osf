@@ -10,16 +10,18 @@ import { Component, computed, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import { MENU_ITEMS } from '@core/constants';
+import { MENU_ITEMS } from '@core/constants/nav-items.constant';
+import { filterMenuItems, updateMenuItems } from '@core/helpers/nav-menu.helper';
+import { CustomMenuItem } from '@core/models/custom-menu-item.model';
+import { RouteContext } from '@core/models/route-context.model';
+import { AuthService } from '@core/services/auth.service';
 import { ProviderSelectors } from '@core/store/provider';
-import { filterMenuItems, updateMenuItems } from '@osf/core/helpers';
-import { CustomMenuItem, RouteContext } from '@osf/core/models';
-import { AuthService } from '@osf/core/services';
-import { UserSelectors } from '@osf/core/store/user';
-import { IconComponent } from '@osf/shared/components';
-import { CurrentResourceType, ReviewPermissions } from '@osf/shared/enums';
-import { getViewOnlyParam } from '@osf/shared/helpers';
-import { WrapFnPipe } from '@osf/shared/pipes';
+import { UserSelectors } from '@core/store/user';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
+import { getViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { WrapFnPipe } from '@osf/shared/pipes/wrap-fn.pipe';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
 
 @Component({

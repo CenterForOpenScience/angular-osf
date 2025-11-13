@@ -1,12 +1,10 @@
-import {
-  BaseNodeDataJsonApi,
-  ContributorDataJsonApi,
-  IdentifierAttributes,
-  IdentifiersJsonApiData,
-  InstitutionDataJsonApi,
-  LicenseDataJsonApi,
-  RegionDataJsonApi,
-} from '@shared/models';
+import { ContributorDataJsonApi } from '../contributors/contributor-response-json-api.model';
+import { IdentifierAttributes, IdentifiersJsonApiData } from '../identifiers/identifier-json-api.model';
+import { InstitutionDataJsonApi } from '../institutions/institution-json-api.model';
+import { LicenseDataJsonApi } from '../license/licenses-json-api.model';
+import { RegionDataJsonApi } from '../regions/regions.json-api.model';
+
+import { BaseNodeDataJsonApi } from './base-node-data-json-api.model';
 
 export interface BaseNodeEmbedsJsonApi {
   affiliated_institutions?: {

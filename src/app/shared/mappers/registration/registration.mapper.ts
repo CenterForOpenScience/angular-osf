@@ -1,13 +1,13 @@
-import { RegistryStatus } from '@osf/shared/enums';
+import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
+import { DraftRegistrationModel } from '@shared/models/registration/draft-registration.model';
+import { RegistrationModel } from '@shared/models/registration/registration.model';
+import { RegistrationCard } from '@shared/models/registration/registration-card.model';
 import {
   DraftRegistrationDataJsonApi,
-  DraftRegistrationModel,
-  RegistrationCard,
   RegistrationDataJsonApi,
-  RegistrationModel,
-  SchemaResponse,
   SchemaResponseDataJsonApi,
-} from '@osf/shared/models';
+} from '@shared/models/registration/registration-json-api.model';
+import { SchemaResponse } from '@shared/models/registration/schema-response.model';
 
 import { ContributorsMapper } from '../contributors';
 

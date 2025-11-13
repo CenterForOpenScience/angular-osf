@@ -1,7 +1,11 @@
-import { SupportedFeature } from '@osf/shared/enums';
-import { ContributorModel, FileDetailsModel, FileFolderModel, FileModel, ResourceMetadata } from '@shared/models';
-import { ConfiguredAddonModel } from '@shared/models/addons';
-import { AsyncStateModel, AsyncStateWithTotalCount } from '@shared/models/store';
+import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
+import { FileDetailsModel, FileModel } from '@osf/shared/models/files/file.model';
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
+import { ResourceMetadata } from '@osf/shared/models/resource-metadata.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 import { FileProvider } from '../constants';
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';

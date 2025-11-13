@@ -12,7 +12,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
 import { InstitutionsSearchState } from '@osf/shared/stores/institutions-search';
-import { LoadingSpinnerComponent } from '@shared/components';
+
+import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 
 import { InstitutionsRegistrationsComponent } from './institutions-registrations.component';
 
@@ -22,7 +23,7 @@ describe.skip('InstitutionsRegistrationsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InstitutionsRegistrationsComponent, ...MockComponents(AdminTableComponent, LoadingSpinnerComponent)],
+      imports: [InstitutionsRegistrationsComponent, ...MockComponents(AdminTableComponent, FiltersSectionComponent)],
       providers: [
         MockProvider(ActivatedRoute, { queryParams: of({}) }),
         MockProvider(Router),

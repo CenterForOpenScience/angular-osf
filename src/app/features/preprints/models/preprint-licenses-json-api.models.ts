@@ -1,4 +1,4 @@
-import { LicenseRecordJsonApi } from '@shared/models';
+import { LicenseRecordJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 
 export interface PreprintLicenseRelationshipJsonApi {
   id: string;

@@ -1,7 +1,7 @@
-import { ContributorPermission } from '@osf/shared/enums';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
 
-import { ResponseJsonApi } from '../common';
-import { UserDataErrorResponseJsonApi } from '../user';
+import { ResponseJsonApi } from '../common/json-api.model';
+import { UserDataErrorResponseJsonApi } from '../user/user-json-api.model';
 
 export type RequestAccessResponseJsonApi = ResponseJsonApi<RequestAccessDataJsonApi[]>;
 

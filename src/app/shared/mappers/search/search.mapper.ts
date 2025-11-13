@@ -1,10 +1,10 @@
-import { ResourceType } from '@shared/enums';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
   IndexCardDataJsonApi,
   IndexCardSearchResponseJsonApi,
-  ResourceModel,
   SearchResultDataJsonApi,
-} from '@shared/models';
+} from '@shared/models/search/index-card-search-json-api.models';
+import { ResourceModel } from '@shared/models/search/resource.model';
 
 export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResponseJsonApi): ResourceModel[] {
   const searchResultIds = indexCardSearchResponseJsonApi.data.relationships.searchResultPage.data.map((obj) => obj.id);

@@ -30,14 +30,21 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { MoveFileDialogComponent } from '@osf/features/files/components/move-file-dialog/move-file-dialog.component';
 import { RenameFileDialogComponent } from '@osf/features/files/components/rename-file-dialog/rename-file-dialog.component';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
-import { StopPropagationDirective } from '@osf/shared/directives';
-import { FileKind, FileMenuType } from '@osf/shared/enums';
-import { hasViewOnlyParam } from '@osf/shared/helpers';
-import { FilesMapper } from '@osf/shared/mappers';
-import { FileFolderModel, FileLabelModel, FileMenuAction, FileMenuFlags, FileModel } from '@osf/shared/models';
-import { FileSizePipe } from '@osf/shared/pipes';
-import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
+import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
+import { FileKind } from '@osf/shared/enums/file-kind.enum';
+import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
+import { FileSizePipe } from '@osf/shared/pipes/file-size.pipe';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { FilesService } from '@osf/shared/services/files.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { FileModel } from '@shared/models/files/file.model';
+import { FileFolderModel } from '@shared/models/files/file-folder.model';
+import { FileLabelModel } from '@shared/models/files/file-label.model';
+import { FileMenuAction, FileMenuFlags } from '@shared/models/files/file-menu-action.model';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { FileMenuComponent } from '../file-menu/file-menu.component';
@@ -104,6 +111,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly resourceMetadata = select(CurrentResourceSelectors.getCurrentResource);
 
   foldersStack: FileFolderModel[] = [];
+  lastSelectedFile: FileModel | null = null;
   itemsPerPage = 10;
   virtualScrollItemSize = 46;
 
@@ -430,7 +438,24 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   onNodeSelect(event: TreeNodeSelectEvent) {
-    this.selectFile.emit(event.node as FileModel);
+    const files = this.files();
+    const selectedNode = event.node as FileModel;
+    if ((event.originalEvent as PointerEvent).shiftKey && this.lastSelectedFile) {
+      const lastIndex = files.indexOf(this.lastSelectedFile);
+      const currentIndex = files.indexOf(selectedNode);
+      if (lastIndex == currentIndex) {
+        return;
+      }
+
+      const start = Math.min(lastIndex, currentIndex);
+      const end = Math.max(lastIndex, currentIndex);
+
+      for (const file of files.slice(start, end)) {
+        this.selectFile.emit(file);
+      }
+    }
+    this.selectFile.emit(selectedNode);
+    this.lastSelectedFile = selectedNode;
   }
 
   onNodeUnselect(event: TreeNodeSelectEvent) {

@@ -26,10 +26,11 @@ import {
   ClearAddToCollectionState,
   CreateCollectionSubmission,
 } from '@osf/features/collections/store/add-to-collection';
-import { LoadingSpinnerComponent } from '@shared/components';
-import { HeaderStyleHelper } from '@shared/helpers';
-import { CanDeactivateComponent } from '@shared/models';
-import { BrandService, CustomDialogService } from '@shared/services';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { BrandService } from '@osf/shared/services/brand.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { HeaderStyleHelper } from '@shared/helpers/header-style.helper';
+import { CanDeactivateComponent } from '@shared/models/can-deactivate.interface';
 import { CollectionsSelectors, GetCollectionProvider } from '@shared/stores/collections';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -45,10 +46,10 @@ import {
   selector: 'osf-add-to-collection-form',
   imports: [
     Button,
-    LoadingSpinnerComponent,
     TranslatePipe,
     RouterLink,
     Stepper,
+    LoadingSpinnerComponent,
     SelectProjectStepComponent,
     ProjectMetadataStepComponent,
     ProjectContributorsStepComponent,

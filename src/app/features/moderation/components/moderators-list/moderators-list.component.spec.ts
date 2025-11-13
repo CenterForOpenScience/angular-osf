@@ -7,9 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ProviderSelectors } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
-import { SearchInputComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { CustomConfirmationService, CustomDialogService } from '@shared/services';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 import { ModeratorPermission } from '../../enums';
 import { ModeratorModel } from '../../models';
@@ -18,8 +19,9 @@ import { ModeratorsTableComponent } from '../moderators-table/moderators-table.c
 
 import { ModeratorsListComponent } from './moderators-list.component';
 
-import { MOCK_USER, TranslateServiceMock } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';

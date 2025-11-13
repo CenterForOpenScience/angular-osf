@@ -1,6 +1,6 @@
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { StringOrNull } from '@osf/shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
 export enum DeveloperAppFormFormControls {
   AppName = 'name',

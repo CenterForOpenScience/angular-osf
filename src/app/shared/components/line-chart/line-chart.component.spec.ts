@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { LineChartComponent } from './line-chart.component';
 
@@ -8,7 +12,7 @@ describe('LineChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LineChartComponent],
+      imports: [LineChartComponent, MockComponent(LoadingSpinnerComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LineChartComponent);

@@ -5,9 +5,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { FilesTreeComponent, IconComponent } from '@shared/components';
-import { FileFolderModel } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { FileFolderModel } from '@shared/models/files/file-folder.model';
 
 import { FileStepComponent } from './file-step.component';
 
@@ -40,7 +42,7 @@ describe('FileStepComponent', () => {
     confirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [FileStepComponent, MockComponents(IconComponent, FilesTreeComponent), OSFTestingModule],
+      imports: [FileStepComponent, ...MockComponents(IconComponent, FilesTreeComponent), OSFTestingModule],
       providers: [
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, confirmationServiceMock),

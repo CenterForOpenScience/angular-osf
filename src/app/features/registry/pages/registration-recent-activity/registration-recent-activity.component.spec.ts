@@ -9,7 +9,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { ActivityLogDisplayService } from '@shared/services';
+import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
 import { ClearActivityLogsStore, GetRegistrationActivityLogs } from '@shared/stores/activity-logs';
 import { ActivityLogsState } from '@shared/stores/activity-logs/activity-logs.state';
 
@@ -24,10 +24,8 @@ describe('RegistrationRecentActivityComponent', () => {
       imports: [RegistrationRecentActivityComponent],
       providers: [
         provideStore([ActivityLogsState]),
-
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-
         {
           provide: TranslateService,
           useValue: {
@@ -39,12 +37,10 @@ describe('RegistrationRecentActivityComponent', () => {
             onTranslationChange: of({}),
           },
         },
-
         {
           provide: ActivityLogDisplayService,
           useValue: { getActivityDisplay: jest.fn(() => '<b>formatted</b>') },
         },
-
         { provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'reg123' } }, parent: null } },
       ],
     }).compileComponents();

@@ -1,4 +1,4 @@
-import { ResponseDataJsonApi, ResponseJsonApi } from '@osf/shared/models';
+import { ResponseDataJsonApi, ResponseJsonApi } from '../common/json-api.model';
 
 export type EmailsResponseJsonApi = ResponseJsonApi<EmailsDataJsonApi[]>;
 

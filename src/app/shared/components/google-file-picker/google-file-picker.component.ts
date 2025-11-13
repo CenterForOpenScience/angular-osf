@@ -1,6 +1,6 @@
 import { Store } from '@ngxs/store';
 
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
@@ -8,19 +8,18 @@ import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } fro
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import { AddonType } from '@shared/enums';
-import { StorageItem } from '@shared/models';
+import { AddonType } from '@osf/shared/enums/addon-type.enum';
+import { GoogleFilePickerDownloadService } from '@osf/shared/services/google-file-picker.download.service';
+import { StorageItem } from '@shared/models/addons/storage-item.model';
 import { GoogleFileDataModel } from '@shared/models/files/google-file.data.model';
 import { GoogleFilePickerModel } from '@shared/models/files/google-file.picker.model';
-import { GoogleFilePickerDownloadService } from '@shared/services';
 import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@shared/stores/addons';
 
 @Component({
   selector: 'osf-google-file-picker',
-  imports: [TranslateModule, Button],
+  imports: [TranslatePipe, Button],
   templateUrl: './google-file-picker.component.html',
   styleUrl: './google-file-picker.component.scss',
-  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GoogleFilePickerComponent implements OnInit {

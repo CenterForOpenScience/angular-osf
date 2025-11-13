@@ -1,4 +1,4 @@
-import { SearchFilters } from '@shared/models';
+import { SearchFilters } from '@osf/shared/models/search-filters.model';
 
 export class FetchMyPreprints {
   static readonly type = '[My Preprints] Fetch My Preprints';

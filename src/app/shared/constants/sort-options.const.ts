@@ -1,5 +1,5 @@
-import { SortType } from '../enums';
-import { CustomOption } from '../models';
+import { SortType } from '../enums/sort-type.enum';
+import { CustomOption } from '../models/select-option.model';
 
 export const ALL_SORT_OPTIONS: CustomOption<string>[] = [
   {

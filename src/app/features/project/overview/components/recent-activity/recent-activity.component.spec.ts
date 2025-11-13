@@ -1,6 +1,7 @@
 import { provideStore, Store } from '@ngxs/store';
 
 import { TranslateService } from '@ngx-translate/core';
+import { MockComponent } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -9,7 +10,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { ActivityLogDisplayService } from '@shared/services';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 import { ActivityLogsState } from '@shared/stores/activity-logs/activity-logs.state';
 
@@ -21,13 +23,11 @@ describe('RecentActivityComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RecentActivityComponent],
+      imports: [RecentActivityComponent, MockComponent(CustomPaginatorComponent)],
       providers: [
         provideStore([ActivityLogsState]),
-
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-
         {
           provide: TranslateService,
           useValue: {
@@ -39,7 +39,6 @@ describe('RecentActivityComponent', () => {
             onTranslationChange: of({}),
           },
         },
-
         { provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'proj123' } }, parent: null } },
         { provide: ActivityLogDisplayService, useValue: { getActivityDisplay: jest.fn().mockReturnValue('FMT') } },
       ],

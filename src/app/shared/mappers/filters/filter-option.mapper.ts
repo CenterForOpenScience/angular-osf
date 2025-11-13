@@ -1,4 +1,6 @@
-import { FilterOption, FilterOptionItem, SearchResultDataJsonApi } from '@shared/models';
+import { FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
+import { FilterOptionItem } from '@osf/shared/models/search/filter-options-json-api.models';
+import { SearchResultDataJsonApi } from '@osf/shared/models/search/index-card-search-json-api.models';
 
 export function mapFilterOptions(
   searchResultItems: SearchResultDataJsonApi[],

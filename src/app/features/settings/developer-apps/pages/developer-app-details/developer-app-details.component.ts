@@ -15,8 +15,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { CopyButtonComponent, IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CopyButtonComponent } from '@osf/shared/components/copy-button/copy-button.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { DeveloperAppAddEditFormComponent } from '../../components';
 import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, ResetClientSecret } from '../../store';

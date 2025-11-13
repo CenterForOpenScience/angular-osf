@@ -10,10 +10,10 @@
 
         <div class="flex column-gap-3 ml-auto">
           @if ($index + 1 !== steps().length) {
-            <p-button [label]="'common.buttons.skip' | translate" severity="secondary" (click)="skip()" />
-            <p-button [label]="'common.buttons.next' | translate" (click)="nextStep()"></p-button>
+            <p-button [label]="'common.buttons.skip' | translate" severity="secondary" (onClick)="skip()" />
+            <p-button [label]="'common.buttons.next' | translate" (onClick)="nextStep()"></p-button>
           } @else {
-            <p-button [label]="'common.buttons.done' | translate" (click)="nextStep()"></p-button>
+            <p-button [label]="'common.buttons.done' | translate" (onClick)="nextStep()"></p-button>
           }
         </div>
       </div>

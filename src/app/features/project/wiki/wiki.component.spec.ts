@@ -1,7 +1,6 @@
 import { provideStore } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -10,16 +9,16 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { WikiComponent } from '@osf/features/project/wiki/wiki.component';
-import { SubHeaderComponent } from '@osf/shared/components';
-import { ToastService } from '@osf/shared/services';
-import {
-  CompareSectionComponent,
-  EditSectionComponent,
-  ViewSectionComponent,
-  WikiListComponent,
-} from '@shared/components/wiki';
-import { WikiState } from '@shared/stores/wiki';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-section/compare-section.component';
+import { EditSectionComponent } from '@osf/shared/components/wiki/edit-section/edit-section.component';
+import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
+import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { WikiState } from '@osf/shared/stores/wiki';
+
+import { WikiComponent } from './wiki.component';
 
 describe('WikiComponent', () => {
   let component: WikiComponent;
@@ -29,12 +28,14 @@ describe('WikiComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         WikiComponent,
-        MockComponent(SubHeaderComponent),
-        MockComponent(WikiListComponent),
-        MockComponent(ViewSectionComponent),
-        MockComponent(EditSectionComponent),
-        MockComponent(CompareSectionComponent),
-        TranslatePipe,
+        ...MockComponents(
+          SubHeaderComponent,
+          WikiListComponent,
+          ViewSectionComponent,
+          EditSectionComponent,
+          CompareSectionComponent,
+          ViewOnlyLinkMessageComponent
+        ),
         provideStore([WikiState]),
         provideHttpClient(),
         provideHttpClientTesting(),

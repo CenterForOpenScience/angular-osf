@@ -8,11 +8,12 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit } 
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { AddonServiceNames } from '@shared/enums';
-import { convertCamelCaseToNormal } from '@shared/helpers';
-import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredLinkAddons } from '@shared/stores/addons';
-import { CurrentResourceSelectors } from '@shared/stores/current-resource';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { AddonServiceNames } from '@osf/shared/enums/addon-service-names.enum';
+import { convertCamelCaseToNormal } from '@osf/shared/helpers/camel-case-to-normal.helper';
+import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredLinkAddons } from '@osf/shared/stores/addons';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 @Component({
   selector: 'osf-linked-services',

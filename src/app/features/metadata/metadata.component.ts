@@ -18,10 +18,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
-import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import {
   ContributorsSelectors,
   GetBibliographicContributors,
@@ -40,6 +43,8 @@ import {
   SubjectsSelectors,
   UpdateResourceSubjects,
 } from '@osf/shared/stores/subjects';
+import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
+import { SubjectModel } from '@shared/models/subject/subject.model';
 
 import { EditTitleDialogComponent } from './dialogs/edit-title-dialog/edit-title-dialog.component';
 import {

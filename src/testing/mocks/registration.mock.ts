@@ -1,5 +1,10 @@
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates, UserPermissions } from '@shared/enums';
-import { RegistrationCard } from '@shared/models';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { RegistrationCard } from '@shared/models/registration/registration-card.model';
+
+import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from './contributors.mock';
 
 export const MOCK_REGISTRATION: RegistrationCard = {
   id: 'reg-123',
@@ -8,10 +13,7 @@ export const MOCK_REGISTRATION: RegistrationCard = {
   status: RegistryStatus.Pending,
   dateCreated: '2024-01-15T10:00:00Z',
   dateModified: '2024-01-20T14:30:00Z',
-  contributors: [
-    { fullName: 'John Doe', id: 'user1' },
-    { fullName: 'Jane Smith', id: 'user2' },
-  ],
+  contributors: [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY],
   registrationTemplate: 'Test Template',
   registry: 'Test Registry',
   public: true,

@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '../common';
+import { ApiData, JsonApiResponse } from '../common/json-api.model';
 
 export type UserRelatedCountsResponseJsonApi = JsonApiResponse<
   ApiData<

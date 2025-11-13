@@ -1,16 +1,16 @@
 import {
   ComponentsWikiGetResponse,
-  ComponentWiki,
   HomeWiki,
   HomeWikiGetResponse,
-  Wiki,
   WikiGetResponse,
+  WikiModel,
   WikiVersion,
   WikiVersionJsonApi,
-} from '@osf/shared/models';
+} from '@osf/shared/models/wiki/wiki.model';
+import { ComponentWiki } from '@osf/shared/stores/wiki';
 
 export class WikiMapper {
-  static fromCreateWikiResponse(response: WikiGetResponse): Wiki {
+  static fromCreateWikiResponse(response: WikiGetResponse): WikiModel {
     return {
       id: response.id,
       name: response.attributes.name,
@@ -27,7 +27,7 @@ export class WikiMapper {
     };
   }
 
-  static fromGetWikiResponse(response: WikiGetResponse): Wiki {
+  static fromGetWikiResponse(response: WikiGetResponse): WikiModel {
     return {
       id: response.id,
       name: response.attributes.name,
@@ -51,7 +51,7 @@ export class WikiMapper {
     };
   }
 
-  static fromCreateWikiVersionResponse(response: WikiGetResponse): Wiki {
+  static fromCreateWikiVersionResponse(response: WikiGetResponse): WikiModel {
     return {
       id: response.id,
       name: response.attributes.name,

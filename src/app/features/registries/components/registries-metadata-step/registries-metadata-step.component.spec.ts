@@ -3,14 +3,15 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CustomConfirmationService } from '@osf/shared/services';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
-import { TextInputComponent } from '@shared/components';
 
 import { RegistriesSelectors } from '../../store';
 
+import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
 import { RegistriesContributorsComponent } from './registries-contributors/registries-contributors.component';
 import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
 import { RegistriesSubjectsComponent } from './registries-subjects/registries-subjects.component';
@@ -37,11 +38,12 @@ describe.skip('RegistriesMetadataStepComponent', () => {
         RegistriesMetadataStepComponent,
         OSFTestingModule,
         ...MockComponents(
+          TextInputComponent,
           RegistriesContributorsComponent,
-          RegistriesLicenseComponent,
           RegistriesSubjectsComponent,
           RegistriesTagsComponent,
-          TextInputComponent
+          RegistriesLicenseComponent,
+          RegistriesAffiliatedInstitutionComponent
         ),
       ],
       providers: [

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { Primitive } from '@shared/helpers';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 
 @Component({
   selector: 'osf-statistic-card',

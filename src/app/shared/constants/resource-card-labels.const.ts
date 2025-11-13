@@ -1,4 +1,4 @@
-import { ResourceType } from '../enums';
+import { ResourceType } from '../enums/resource-type.enum';
 
 export const CardLabelTranslationKeys: Partial<Record<ResourceType, string>> = {
   [ResourceType.Project]: 'resourceCard.type.project',

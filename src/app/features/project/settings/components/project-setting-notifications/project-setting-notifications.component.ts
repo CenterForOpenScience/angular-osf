@@ -4,8 +4,9 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
 
-import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
-import { NotificationSubscription } from '@osf/shared/models';
+import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
 
 import { RightControl } from '../../models';
 import { NotificationDescriptionPipe } from '../../pipes';
@@ -26,6 +27,7 @@ export class ProjectSettingNotificationsComponent {
   allAccordionData: RightControl[] | undefined = [];
 
   readonly subscriptionEvent = SubscriptionEvent;
+
   subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
     label: key,
     value,

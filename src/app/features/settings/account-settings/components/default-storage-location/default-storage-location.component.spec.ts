@@ -9,14 +9,15 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors, UserState } from '@osf/core/store/user';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { RegionsSelectors, RegionsState } from '@osf/shared/stores/regions';
-import { LoaderService, ToastService } from '@shared/services';
 
 import { AccountSettingsState } from '../../store';
 
 import { DefaultStorageLocationComponent } from './default-storage-location.component';
 
-import { MOCK_STORE } from '@testing/mocks';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
 
 describe('DefaultStorageLocationComponent', () => {
   let component: DefaultStorageLocationComponent;

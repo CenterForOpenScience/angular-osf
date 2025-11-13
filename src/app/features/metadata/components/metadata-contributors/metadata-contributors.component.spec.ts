@@ -3,12 +3,12 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { ContributorsListComponent } from '@osf/shared/components';
-import { ContributorModel } from '@osf/shared/models';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
 
 import { MetadataContributorsComponent } from './metadata-contributors.component';
 
-import { MOCK_CONTRIBUTOR } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 

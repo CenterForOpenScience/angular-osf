@@ -1,4 +1,4 @@
-import { SelectOption } from '@shared/models';
+import { SelectOption } from '@shared/models/select-option.model';
 
 export const departmentOptions: SelectOption[] = [
   { label: 'adminInstitutions.institutionUsers.allDepartments', value: null },

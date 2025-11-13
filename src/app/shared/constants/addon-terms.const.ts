@@ -1,4 +1,4 @@
-import { Term } from '@shared/models';
+import { Term } from '../models/addons/addon-utils.models';
 
 export const ADDON_TERMS: Term[] = [
   {

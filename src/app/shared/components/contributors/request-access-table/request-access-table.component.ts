@@ -9,10 +9,11 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { RequestAccessModel, SelectOption } from '@osf/shared/models';
-import { CustomDialogService } from '@osf/shared/services';
+import { PERMISSION_OPTIONS } from '@osf/shared/constants/contributors.constants';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { RequestAccessModel } from '@shared/models/request-access/request-access.model';
+import { SelectOption } from '@shared/models/select-option.model';
 
 import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
 import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';

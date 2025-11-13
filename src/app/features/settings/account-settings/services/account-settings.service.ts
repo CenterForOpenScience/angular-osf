@@ -3,9 +3,10 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { UserMapper } from '@osf/shared/mappers';
-import { UserDataJsonApi, UserModel } from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+import { UserMapper } from '@osf/shared/mappers/user';
+import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserDataJsonApi } from '@osf/shared/models/user/user-json-api.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { AccountSettingsMapper, MapExternalIdentities } from '../mappers';
 import {

@@ -2,7 +2,7 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddonCardComponent } from '@shared/components/addons';
+import { AddonCardComponent } from '../addon-card/addon-card.component';
 
 import { AddonCardListComponent } from './addon-card-list.component';
 

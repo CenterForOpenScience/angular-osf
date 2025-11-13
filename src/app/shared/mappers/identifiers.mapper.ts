@@ -1,7 +1,8 @@
-import { Identifier, IdentifiersResponseJsonApi } from '@shared/models';
+import { IdentifierModel } from '../models/identifiers/identifier.model';
+import { IdentifiersResponseJsonApi } from '../models/identifiers/identifier-json-api.model';
 
 export class IdentifiersMapper {
-  static fromJsonApi(response: IdentifiersResponseJsonApi | undefined): Identifier[] {
+  static fromJsonApi(response: IdentifiersResponseJsonApi | undefined): IdentifierModel[] {
     if (!response || !response.data) {
       return [];
     }

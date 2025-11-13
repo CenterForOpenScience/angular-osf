@@ -4,14 +4,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { RegistrationProviderMapper } from '../mappers';
-import {
-  JsonApiResponse,
-  ProviderSchema,
-  ProvidersResponseJsonApi,
-  RegistryProviderDetails,
-  RegistryProviderDetailsJsonApi,
-} from '../models';
+import { RegistrationProviderMapper } from '../mappers/registration-provider.mapper';
+import { JsonApiResponse } from '../models/common/json-api.model';
+import { ProvidersResponseJsonApi } from '../models/provider/providers-json-api.model';
+import { RegistryProviderDetailsJsonApi } from '../models/provider/registration-provider-json-api.model';
+import { RegistryProviderDetails } from '../models/provider/registry-provider.model';
+import { ProviderSchema } from '../models/registration/provider-schema.model';
 
 import { JsonApiService } from './json-api.service';
 

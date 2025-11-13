@@ -8,8 +8,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components';
-import { Institution } from '@osf/shared/models';
+import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
+import { Institution } from '@osf/shared/models/institutions/institutions.models';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 @Component({

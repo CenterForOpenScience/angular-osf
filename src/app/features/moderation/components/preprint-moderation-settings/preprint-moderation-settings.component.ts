@@ -14,7 +14,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { LoadingSpinnerComponent } from '@osf/shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 
 import { PREPRINT_SETTINGS_SECTIONS } from '../../constants';
 import { SettingsSectionControl } from '../../enums';

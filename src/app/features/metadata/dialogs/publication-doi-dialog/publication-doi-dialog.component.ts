@@ -9,7 +9,7 @@ import { InputText } from 'primeng/inputtext';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { CustomValidators } from '@osf/shared/helpers';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 import { DialogValueModel } from '../../models';
 

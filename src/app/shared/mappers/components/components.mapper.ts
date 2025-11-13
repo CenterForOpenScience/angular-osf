@@ -1,4 +1,5 @@
-import { ComponentGetResponseJsonApi, ComponentOverview } from '@shared/models';
+import { ComponentGetResponseJsonApi } from '@osf/shared/models/components/component-json-api.model';
+import { ComponentOverview } from '@osf/shared/models/components/components.models';
 
 import { ContributorsMapper } from '../contributors';
 

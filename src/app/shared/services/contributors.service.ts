@@ -4,18 +4,19 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { AddContributorType, ResourceType } from '../enums';
-import { ContributorsMapper } from '../mappers';
+import { AddContributorType } from '../enums/contributors/add-contributor-type.enum';
+import { ResourceType } from '../enums/resource-type.enum';
+import { ContributorsMapper } from '../mappers/contributors';
+import { ResponseJsonApi } from '../models/common/json-api.model';
+import { ContributorModel } from '../models/contributors/contributor.model';
+import { ContributorAddModel } from '../models/contributors/contributor-add.model';
 import {
-  ContributorAddModel,
   ContributorDataJsonApi,
-  ContributorModel,
   ContributorResponseJsonApi,
   ContributorsResponseJsonApi,
-  PaginatedData,
-  ResponseJsonApi,
-  UserDataJsonApi,
-} from '../models';
+} from '../models/contributors/contributor-response-json-api.model';
+import { PaginatedData } from '../models/paginated-data.model';
+import { UserDataJsonApi } from '../models/user/user-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 

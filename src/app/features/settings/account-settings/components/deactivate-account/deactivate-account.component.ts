@@ -10,7 +10,9 @@ import { filter } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AccountSettingsSelectors, CancelDeactivationRequest, DeactivateAccount } from '../../store';
 import { CancelDeactivationComponent } from '../cancel-deactivation/cancel-deactivation.component';

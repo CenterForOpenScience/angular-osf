@@ -1,14 +1,14 @@
-import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { ContributorModel, ContributorShortInfoModel } from '@osf/shared/models/contributors/contributor.model';
+import { ContributorAddModel } from '@osf/shared/models/contributors/contributor-add.model';
 import {
-  ContributorAddModel,
   ContributorAddRequestModel,
   ContributorDataJsonApi,
-  ContributorModel,
-  ContributorShortInfoModel,
-  PaginatedData,
-  ResponseJsonApi,
-  UserDataJsonApi,
-} from '@osf/shared/models';
+} from '@osf/shared/models/contributors/contributor-response-json-api.model';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { UserDataJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
 export class ContributorsMapper {
   static getContributors(response: ContributorDataJsonApi[] | undefined): ContributorModel[] {

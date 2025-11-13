@@ -1,7 +1,11 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
+
+import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
 
 import { DraftRegistrationCustomStepComponent } from './draft-registration-custom-step.component';
 
@@ -22,7 +26,7 @@ describe.skip('DraftRegistrationCustomStepComponent', () => {
     mockRouter = RouterMockBuilder.create().withUrl('/registries/prov-1/draft/draft-1/custom').build();
 
     await TestBed.configureTestingModule({
-      imports: [DraftRegistrationCustomStepComponent, OSFTestingModule],
+      imports: [DraftRegistrationCustomStepComponent, OSFTestingModule, MockComponent(CustomStepComponent)],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },

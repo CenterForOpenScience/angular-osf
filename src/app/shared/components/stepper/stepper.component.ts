@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 
-import { StepOption } from '@shared/models';
+import { StepOption } from '@shared/models/step-option.model';
 
 import { IconComponent } from '../icon/icon.component';
 

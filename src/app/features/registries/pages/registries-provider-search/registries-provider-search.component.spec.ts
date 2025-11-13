@@ -4,9 +4,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { RegistryProviderHeroComponent } from '@osf/features/registries/components/registry-provider-hero/registry-provider-hero.component';
-import { CustomDialogService } from '@osf/shared/services';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
-import { GlobalSearchComponent } from '@shared/components';
 
 import { RegistriesProviderSearchComponent } from './registries-provider-search.component';
 

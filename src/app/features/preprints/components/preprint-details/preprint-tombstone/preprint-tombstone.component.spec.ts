@@ -2,10 +2,11 @@ import { MockComponents, MockPipes } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { ContributorsListComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { InterpolatePipe } from '@osf/shared/pipes';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
@@ -13,7 +14,7 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
 
 import { PreprintTombstoneComponent } from './preprint-tombstone.component';
 
-import { MOCK_CONTRIBUTOR } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
@@ -26,7 +27,7 @@ describe('PreprintTombstoneComponent', () => {
   let fixture: ComponentFixture<PreprintTombstoneComponent>;
 
   const mockPreprint = PREPRINT_MOCK;
-  const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockContributors = [MOCK_CONTRIBUTOR];
   const mockSubjects = SUBJECTS_MOCK;
 
@@ -35,7 +36,12 @@ describe('PreprintTombstoneComponent', () => {
       imports: [
         PreprintTombstoneComponent,
         OSFTestingModule,
-        ...MockComponents(PreprintDoiSectionComponent, TruncatedTextComponent, ContributorsListComponent),
+        ...MockComponents(
+          PreprintDoiSectionComponent,
+          TruncatedTextComponent,
+          ContributorsListComponent,
+          LicenseDisplayComponent
+        ),
         MockPipes(InterpolatePipe),
       ],
       providers: [

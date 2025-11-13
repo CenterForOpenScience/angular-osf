@@ -5,8 +5,8 @@ import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
-import { PaginatedData } from '@osf/shared/models';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 
 import { RegistryModeration } from '../../models';
 import { RegistryModerationService } from '../../services';

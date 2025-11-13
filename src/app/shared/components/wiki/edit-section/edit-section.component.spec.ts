@@ -2,7 +2,7 @@ import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomDialogService } from '@shared/services';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 import { EditSectionComponent } from './edit-section.component';
 

@@ -9,8 +9,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { SubHeaderComponent } from '@osf/shared/components';
-import { ToastService } from '@osf/shared/services';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { RegionsSelectors } from '@osf/shared/stores/regions';
 
 import { AccountSettingsComponent } from './account-settings.component';
@@ -26,7 +26,10 @@ import {
 } from './components';
 import { AccountSettingsSelectors } from './store';
 
-import { MOCK_STORE, MOCK_USER, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@testing/mocks';
+import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('AccountSettingsComponent', () => {
   let component: AccountSettingsComponent;

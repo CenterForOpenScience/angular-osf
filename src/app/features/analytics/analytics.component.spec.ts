@@ -8,17 +8,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AnalyticsComponent } from '@osf/features/analytics/analytics.component';
 import { AnalyticsKpiComponent } from '@osf/features/analytics/components';
 import { AnalyticsSelectors } from '@osf/features/analytics/store';
-import {
-  BarChartComponent,
-  LineChartComponent,
-  PieChartComponent,
-  SelectComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@shared/components';
-import { IS_WEB } from '@shared/helpers';
+import { BarChartComponent } from '@osf/shared/components/bar-chart/bar-chart.component';
+import { LineChartComponent } from '@osf/shared/components/line-chart/line-chart.component';
+import { PieChartComponent } from '@osf/shared/components/pie-chart/pie-chart.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 
-import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS, MOCK_RESOURCE_OVERVIEW } from '@testing/mocks';
+import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS } from '@testing/mocks/analytics.mock';
+import { MOCK_RESOURCE_OVERVIEW } from '@testing/mocks/resource.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';

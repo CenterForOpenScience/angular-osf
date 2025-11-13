@@ -6,17 +6,15 @@ import { inject, Injectable } from '@angular/core';
 
 import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { BaseNodeMapper, ComponentsMapper } from '@osf/shared/mappers';
-import {
-  BaseNodeDataJsonApi,
-  BaseNodeModel,
-  ComponentGetResponseJsonApi,
-  ComponentOverview,
-  JsonApiResponse,
-  PaginatedData,
-  ResponseJsonApi,
-} from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+import { ComponentsMapper } from '@osf/shared/mappers/components';
+import { BaseNodeMapper } from '@osf/shared/mappers/nodes';
+import { JsonApiResponse, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { ComponentGetResponseJsonApi } from '@osf/shared/models/components/component-json-api.model';
+import { ComponentOverview } from '@osf/shared/models/components/components.models';
+import { BaseNodeModel } from '@osf/shared/models/nodes/base-node.model';
+import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { ProjectOverviewMapper } from '../mappers';
 import { PrivacyStatusModel, ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';

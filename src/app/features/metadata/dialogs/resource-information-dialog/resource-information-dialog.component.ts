@@ -7,8 +7,8 @@ import { Select } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { languageCodes } from '@osf/shared/constants';
-import { LanguageCodeModel } from '@osf/shared/models';
+import { languageCodes } from '@osf/shared/constants/language.const';
+import { LanguageCodeModel } from '@shared/models/language-code.model';
 
 import { RESOURCE_TYPE_OPTIONS } from '../../constants';
 import { CustomItemMetadataRecord, ResourceInformationForm } from '../../models';

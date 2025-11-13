@@ -6,8 +6,8 @@ import { ChartModule } from 'primeng/chart';
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, PLATFORM_ID, signal } from '@angular/core';
 
-import { PIE_CHART_PALETTE } from '@osf/shared/constants';
-import { DatasetInput } from '@osf/shared/models';
+import { PIE_CHART_PALETTE } from '@osf/shared/constants/pie-chart-palette';
+import { DatasetInput } from '@shared/models/charts/dataset-input';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 

@@ -6,13 +6,15 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { CustomConfirmationService, CustomDialogService, ProjectRedirectDialogService } from '@osf/shared/services';
-import {
-  LoadingSpinnerComponent,
-  MyProjectsTableComponent,
-  SearchInputComponent,
-  SubHeaderComponent,
-} from '@shared/components';
+import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { MyProjectsTableComponent } from '@osf/shared/components/my-projects-table/my-projects-table.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ProjectRedirectDialogService } from '@osf/shared/services/project-redirect-dialog.service';
 import { MyResourcesSelectors } from '@shared/stores/my-resources';
 
 import { DashboardComponent } from './dashboard.component';
@@ -37,7 +39,14 @@ describe('DashboardComponent', () => {
       imports: [
         DashboardComponent,
         OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, LoadingSpinnerComponent, SearchInputComponent),
+        ...MockComponents(
+          SubHeaderComponent,
+          MyProjectsTableComponent,
+          SearchInputComponent,
+          IconComponent,
+          LoadingSpinnerComponent,
+          ScheduledBannerComponent
+        ),
       ],
       providers: [
         {

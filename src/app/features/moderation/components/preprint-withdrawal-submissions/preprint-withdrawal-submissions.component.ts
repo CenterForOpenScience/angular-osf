@@ -15,18 +15,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { PREPRINT_SORT_OPTIONS, WITHDRAWAL_SUBMISSION_REVIEW_OPTIONS } from '@osf/features/moderation/constants';
 import { PreprintSubmissionsSort, SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import {
-  CustomPaginatorComponent,
-  IconComponent,
-  LoadingSpinnerComponent,
-  SelectComponent,
-} from '@osf/shared/components';
-import { Primitive } from '@osf/shared/helpers';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 
 import { PreprintWithdrawalSubmission } from '../../models';
 import {
   GetPreprintWithdrawalSubmissionContributors,
   GetPreprintWithdrawalSubmissions,
+  LoadMorePreprintWithdrawalSubmissionContributors,
   PreprintModerationSelectors,
 } from '../../store/preprint-moderation';
 import { PreprintSubmissionItemComponent } from '../preprint-submission-item/preprint-submission-item.component';
@@ -60,6 +59,7 @@ export class PreprintWithdrawalSubmissionsComponent implements OnInit {
   readonly actions = createDispatchMap({
     getPreprintWithdrawalSubmissions: GetPreprintWithdrawalSubmissions,
     getPreprintWithdrawalSubmissionContributors: GetPreprintWithdrawalSubmissionContributors,
+    loadMorePreprintWithdrawalSubmissionContributors: LoadMorePreprintWithdrawalSubmissionContributors,
   });
 
   readonly submissions = select(PreprintModerationSelectors.getPreprintWithdrawalSubmissions);
@@ -126,6 +126,10 @@ export class PreprintWithdrawalSubmissionsComponent implements OnInit {
 
   loadContributors(item: PreprintWithdrawalSubmission) {
     this.actions.getPreprintWithdrawalSubmissionContributors(item.id, item.preprintId);
+  }
+
+  loadMoreContributors(item: PreprintWithdrawalSubmission) {
+    this.actions.loadMorePreprintWithdrawalSubmissionContributors(item.id, item.preprintId);
   }
 
   private getStatusFromQueryParams() {

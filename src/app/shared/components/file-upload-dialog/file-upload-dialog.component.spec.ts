@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { FileUploadDialogComponent } from './file-upload-dialog.component';
 
@@ -10,7 +14,7 @@ describe('FileUploadDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileUploadDialogComponent, OSFTestingModule],
+      imports: [FileUploadDialogComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FileUploadDialogComponent);

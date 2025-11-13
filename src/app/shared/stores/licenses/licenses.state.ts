@@ -5,7 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { LicensesService } from '@osf/shared/services';
+import { LicensesService } from '@osf/shared/services/licenses.service';
 
 import { LoadAllLicenses } from './licenses.actions';
 import { LICENSES_STATE_DEFAULTS, LicensesStateModel } from './licenses.model';

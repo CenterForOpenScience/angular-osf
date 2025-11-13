@@ -1,4 +1,4 @@
-import { CitationTypes } from '@shared/enums';
+import { CitationTypes } from '../enums/citation-types.enum';
 
 export const CITATION_TITLES: Record<CitationTypes, string> = {
   [CitationTypes.APA]: 'APA',

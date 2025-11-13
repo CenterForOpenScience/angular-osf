@@ -11,8 +11,8 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input } f
 import { Router } from '@angular/router';
 
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { LicenseDisplayComponent } from '@osf/shared/components';
-import { ResourceType } from '@shared/enums';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subjects';
 
 import { CitationSectionComponent } from '../citation-section/citation-section.component';
@@ -43,9 +43,8 @@ export class AdditionalInfoComponent {
     if (!preprint) return null;
     return preprint.embeddedLicense;
   });
-  licenseOptionsRecord = computed(() => {
-    return (this.preprint()?.licenseOptions ?? {}) as Record<string, string>;
-  });
+
+  licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
   skeletonData = Array.from({ length: 5 }, () => null);
 

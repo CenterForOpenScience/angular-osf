@@ -1,5 +1,5 @@
 import { ReviewsState } from '@osf/features/preprints/enums';
-import { LicenseModel, LicenseOptions } from '@shared/models';
+import { LicenseModel, LicenseOptions } from '@osf/shared/models/license/license.model';
 
 export const PREPRINT_MOCK = {
   id: 'preprint-1',
@@ -53,4 +53,5 @@ export const PREPRINT_MOCK = {
   preprintDoiLink: 'https://doi.org/10.1234/sample.doi',
   articleDoiLink: undefined,
   identifiers: [],
+  providerId: 'osf',
 };

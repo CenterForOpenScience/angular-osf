@@ -5,7 +5,7 @@ import { catchError, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { BannerModel } from '@core/components/osf-banners/models/banner.model';
-import { handleSectionError } from '@osf/shared/helpers';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { BannersService } from '@osf/shared/services/banners.service';
 
 import { GetCurrentScheduledBanner } from './banners.actions';

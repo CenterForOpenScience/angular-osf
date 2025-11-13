@@ -5,8 +5,8 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { ContributorsListComponent } from '@osf/shared/components';
-import { ContributorModel } from '@osf/shared/models';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 
 @Component({
   selector: 'osf-metadata-contributors',

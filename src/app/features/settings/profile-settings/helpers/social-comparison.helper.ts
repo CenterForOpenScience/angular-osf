@@ -1,4 +1,10 @@
-import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, SocialLinksModel, SocialModel } from '@osf/shared/models';
+import { SocialModel } from '@osf/shared/models/user/social.model';
+import {
+  SOCIAL_KEYS,
+  SocialLinksForm,
+  SocialLinksKeys,
+  SocialLinksModel,
+} from '@osf/shared/models/user/social-links.model';
 
 export function normalizeValue(value: unknown, key: SocialLinksKeys): unknown {
   if (SOCIAL_KEYS.includes(key)) {

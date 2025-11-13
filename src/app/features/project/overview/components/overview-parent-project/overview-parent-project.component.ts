@@ -10,7 +10,9 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 
 import { ProjectOverview } from '../../models';
 

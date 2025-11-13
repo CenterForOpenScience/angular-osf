@@ -1,5 +1,5 @@
-import { ResourceType } from '@osf/shared/enums';
-import { LicenseOptions } from '@osf/shared/models';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { LicenseOptions } from '@shared/models/license/license.model';
 
 import {
   CedarMetadataRecordData,

@@ -1,4 +1,4 @@
-import { CitationStyle } from '@shared/models';
+import { CitationStyle } from '@osf/shared/models/citations/citation-style.model';
 
 export const CITATION_STYLES_MOCK: CitationStyle[] = [
   {

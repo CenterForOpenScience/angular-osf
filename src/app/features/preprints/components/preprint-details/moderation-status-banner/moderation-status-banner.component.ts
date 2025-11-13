@@ -20,7 +20,7 @@ import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/e
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
 import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { IconComponent } from '@shared/components';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 @Component({
   selector: 'osf-moderation-status-banner',

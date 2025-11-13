@@ -3,12 +3,13 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { AddonFormControls } from '@shared/enums';
+import { AddonFormControls } from '@osf/shared/enums/addon-form-controls.enum';
 import { AddonFormService } from '@shared/services/addons/addon-form.service';
 
 import { AddonSetupAccountFormComponent } from './addon-setup-account-form.component';
 
-import { MOCK_ADDON, MOCK_USER } from '@testing/mocks';
+import { MOCK_ADDON } from '@testing/mocks/addon.mock';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddonSetupAccountFormComponent', () => {

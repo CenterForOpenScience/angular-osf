@@ -9,10 +9,13 @@ import { Message } from 'primeng/message';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RegistrationBlocksDataComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
-import { FieldType, RevisionReviewStates } from '@osf/shared/enums';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { FieldType } from '@osf/shared/enums/field-type.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { SchemaActionTrigger } from '../../enums';
 import { ClearState, DeleteSchemaResponse, HandleSchemaResponse, RegistriesSelectors } from '../../store';

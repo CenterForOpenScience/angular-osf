@@ -71,7 +71,14 @@
     </section>
 
     @if (affiliatedInstitutions().length) {
-      <osf-affiliated-institutions-view data-test-preprint-institution-list [institutions]="affiliatedInstitutions()" />
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'common.labels.affiliatedInstitutions' | translate }}</h3>
+
+        <osf-affiliated-institutions-view
+          data-test-preprint-institution-list
+          [institutions]="affiliatedInstitutions()"
+        />
+      </section>
     }
 
     @if (license()) {

@@ -1,4 +1,4 @@
-import { CustomOption, SelectOption } from '@osf/shared/models';
+import { CustomOption, SelectOption } from '@osf/shared/models/select-option.model';
 
 import { CollectionModerationTab, ModeratorPermission } from '../enums';
 

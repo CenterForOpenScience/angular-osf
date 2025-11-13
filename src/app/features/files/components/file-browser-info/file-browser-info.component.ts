@@ -5,7 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { FILE_BROWSER_INFO_ITEMS } from '../../constants';
 

@@ -1,4 +1,4 @@
-import { ResponseJsonApi } from '../common';
+import { ResponseJsonApi } from '../common/json-api.model';
 
 import { BaseNodeDataJsonApi } from './base-node-data-json-api.model';
 

@@ -10,13 +10,16 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { GetResourceMetadata, MetadataSelectors } from '@osf/features/metadata/store';
-import { IconComponent, LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
-import { ResourceType, UserPermissions } from '@shared/enums';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AddResourceDialogComponent, EditResourceDialogComponent } from '../../components';
 import { RegistryResource } from '../../models';
+import { RegistrySelectors } from '../../store/registry';
 import {
   AddRegistryResource,
   DeleteResource,
@@ -42,30 +45,24 @@ export class RegistryResourcesComponent {
   readonly resources = select(RegistryResourcesSelectors.getResources);
   readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
   readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
-  readonly registry = select(MetadataSelectors.getResourceMetadata);
+  readonly registry = select(RegistrySelectors.getRegistry);
+  readonly identifiers = select(RegistrySelectors.getIdentifiers);
 
   registryId = this.route.snapshot.parent?.params['id'];
   isAddingResource = signal(false);
   doiDomain = 'https://doi.org/';
 
   private readonly actions = createDispatchMap({
-    fetchRegistryData: GetResourceMetadata,
     getResources: GetRegistryResources,
     addResource: AddRegistryResource,
     deleteResource: DeleteResource,
   });
 
-  canEdit = computed(() => {
-    const registry = this.registry();
-    if (!registry) return false;
+  canEdit = select(RegistrySelectors.hasWriteAccess);
 
-    return registry.currentUserPermissions.includes(UserPermissions.Write);
-  });
-
-  addButtonVisible = computed(() => !!this.registry()?.identifiers?.length && this.canEdit());
+  addButtonVisible = computed(() => !!this.identifiers().length && this.canEdit());
 
   constructor() {
-    this.actions.fetchRegistryData(this.registryId, ResourceType.Registration);
     this.actions.getResources(this.registryId);
   }
 

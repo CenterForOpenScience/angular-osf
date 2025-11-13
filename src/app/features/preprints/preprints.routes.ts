@@ -2,7 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { authGuard } from '@osf/core/guards';
+import { authGuard } from '@core/guards/auth.guard';
 import { preprintsModeratorGuard } from '@osf/features/preprints/guards';
 import { PreprintsComponent } from '@osf/features/preprints/preprints.component';
 import { PreprintState } from '@osf/features/preprints/store/preprint';

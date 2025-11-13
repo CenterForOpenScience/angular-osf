@@ -1,5 +1,7 @@
 import { provideStore } from '@ngxs/store';
 
+import { MockComponents } from 'ng-mocks';
+
 import { MessageService } from 'primeng/api';
 
 import { of } from 'rxjs';
@@ -8,6 +10,8 @@ import { HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { StorageItemSelectorComponent } from '@osf/shared/components/addons/storage-item-selector/storage-item-selector.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { AddonsState } from '@osf/shared/stores/addons';
 
 import { ConfigureAddonComponent } from './configure-addon.component';
@@ -57,7 +61,11 @@ describe.skip('Component: Configure Addon', () => {
       } as unknown as Router;
 
       await TestBed.configureTestingModule({
-        imports: [OSFTestingModule, ConfigureAddonComponent],
+        imports: [
+          OSFTestingModule,
+          ConfigureAddonComponent,
+          ...MockComponents(SubHeaderComponent, StorageItemSelectorComponent),
+        ],
         providers: [
           provideStore([AddonsState]),
           ToastServiceMock,

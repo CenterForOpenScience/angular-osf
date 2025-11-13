@@ -1,9 +1,11 @@
 <p-card>
   <div>
-    <h2>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h2>
+    <h2>{{ 'common.labels.affiliatedInstitutions' | translate }}</h2>
+
     <p class="mt-3">
       {{ 'project.overview.metadata.affiliatedInstitutionsDescription' | translate }}
     </p>
+
     @if (userInstitutions().length) {
       <div class="mt-4">
         <osf-affiliated-institution-select
@@ -16,7 +18,7 @@
         />
       </div>
     } @else {
-      <p class="mt-4">{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+      <p class="mt-4">{{ 'common.labels.noAffiliatedInstitutions' | translate }}</p>
     }
   </div>
 </p-card>

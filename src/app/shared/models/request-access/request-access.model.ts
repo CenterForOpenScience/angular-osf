@@ -1,6 +1,6 @@
-import { ContributorPermission } from '@osf/shared/enums';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
 
-import { UserModel } from '../user';
+import { UserModel } from '../user/user.models';
 
 export interface RequestAccessModel {
   id: string;

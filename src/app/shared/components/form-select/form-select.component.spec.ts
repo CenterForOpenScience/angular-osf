@@ -2,7 +2,7 @@ import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 
-import { SelectOption } from '@osf/shared/models';
+import { SelectOption } from '@osf/shared/models/select-option.model';
 
 import { FormSelectComponent } from './form-select.component';
 

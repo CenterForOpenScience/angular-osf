@@ -1,4 +1,9 @@
+import { MockComponents } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ComponentsSelectionListComponent } from '@osf/shared/components/components-selection-list/components-selection-list.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 
 import { TogglePublicityDialogComponent } from './toggle-publicity-dialog.component';
 
@@ -8,7 +13,10 @@ describe('TogglePublicityDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TogglePublicityDialogComponent],
+      imports: [
+        TogglePublicityDialogComponent,
+        ...MockComponents(ComponentsSelectionListComponent, LoadingSpinnerComponent),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TogglePublicityDialogComponent);

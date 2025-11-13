@@ -17,8 +17,8 @@ import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/e
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
 import { PreprintModel, PreprintProviderDetails, PreprintWordGrammar } from '@osf/features/preprints/models';
 import { WithdrawPreprint } from '@osf/features/preprints/store/preprint';
-import { CustomValidators } from '@osf/shared/helpers';
-import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 @Component({
   selector: 'osf-withdraw-dialog',

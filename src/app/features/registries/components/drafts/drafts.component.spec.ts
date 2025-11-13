@@ -5,10 +5,12 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { RegistriesSelectors } from '@osf/features/registries/store';
-import { StepperComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ContributorsSelectors } from '@shared/stores/contributors';
-import { SubjectsSelectors } from '@shared/stores/subjects';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ContributorsSelectors } from '@osf/shared/stores/contributors';
+import { SubjectsSelectors } from '@osf/shared/stores/subjects';
+
+import { RegistriesSelectors } from '../../store';
 
 import { DraftsComponent } from './drafts.component';
 

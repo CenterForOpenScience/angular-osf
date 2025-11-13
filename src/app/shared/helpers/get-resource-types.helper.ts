@@ -1,4 +1,4 @@
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 export function getResourceTypeStringFromEnum(resourceTab: ResourceType): string {
   switch (resourceTab) {

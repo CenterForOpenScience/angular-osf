@@ -1,4 +1,5 @@
-import { UserRelatedCounts, UserRelatedCountsResponseJsonApi } from '@osf/shared/models';
+import { UserRelatedCounts } from '@osf/shared/models/user-related-counts/user-related-counts.model';
+import { UserRelatedCountsResponseJsonApi } from '@osf/shared/models/user-related-counts/user-related-counts-json-api.model';
 
 export function MapUserCounts(response: UserRelatedCountsResponseJsonApi): UserRelatedCounts {
   return {

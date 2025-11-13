@@ -30,7 +30,9 @@
               "cedar-artifact-viewer",
               "markdown-it-video",
               "ace-builds/src-noconflict/ext-language_tools",
-              "@traptitech/markdown-it-katex"
+              "@traptitech/markdown-it-katex",
+              "@citation-js/core",
+              "@citation-js/plugin-csl"
             ],
             "assets": [
               "src/favicon.ico",

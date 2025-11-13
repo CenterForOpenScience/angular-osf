@@ -4,15 +4,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { AddonsSelectors } from '@shared/stores/addons';
-import { CurrentResourceSelectors } from '@shared/stores/current-resource';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { AddonsSelectors } from '@osf/shared/stores/addons';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { LinkedServicesComponent } from './linked-services.component';
 
 import { getConfiguredAddonsMappedData } from '@testing/data/addons/addons.configured.data';
 import { getResourceReferencesData } from '@testing/data/files/resource-references.data';
-import { MOCK_USER } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

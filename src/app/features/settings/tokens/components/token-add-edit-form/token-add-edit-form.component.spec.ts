@@ -1,26 +1,29 @@
 import { Store } from '@ngxs/store';
 
 import { TranslateService } from '@ngx-translate/core';
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/components';
-import { InputLimits } from '@osf/shared/constants';
-import { ToastService } from '@shared/services';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { TokenFormControls, TokenModel } from '../../models';
 import { CreateToken, TokensSelectors } from '../../store';
 
 import { TokenAddEditFormComponent } from './token-add-edit-form.component';
 
-import { MOCK_SCOPES, MOCK_STORE, MOCK_TOKEN, TranslateServiceMock } from '@testing/mocks';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
+import { MOCK_SCOPES } from '@testing/mocks/scope.mock';
+import { MOCK_TOKEN } from '@testing/mocks/token.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
@@ -74,7 +77,7 @@ describe('TokenAddEditFormComponent', () => {
     toastServiceMock = ToastServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [TokenAddEditFormComponent, ReactiveFormsModule, OSFTestingStoreModule],
+      imports: [TokenAddEditFormComponent, OSFTestingStoreModule, MockComponent(TextInputComponent)],
       providers: [
         TranslateServiceMock,
         MockProvider(Store, MOCK_STORE),

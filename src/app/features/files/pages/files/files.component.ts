@@ -42,22 +42,31 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { ALL_SORT_OPTIONS, FILE_SIZE_LIMIT } from '@osf/shared/constants';
-import { FileMenuType, ResourceType, SupportedFeature, UserPermissions } from '@osf/shared/enums';
-import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers';
+import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
+import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
+import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
+import { GoogleFilePickerComponent } from '@osf/shared/components/google-file-picker/google-file-picker.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { FILE_SIZE_LIMIT } from '@osf/shared/constants/files-limits.const';
+import { ALL_SORT_OPTIONS } from '@osf/shared/constants/sort-options.const';
+import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
+import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { FilesService } from '@osf/shared/services/files.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
-import {
-  FilesTreeComponent,
-  FileUploadDialogComponent,
-  FormSelectComponent,
-  GoogleFilePickerComponent,
-  LoadingSpinnerComponent,
-  SearchInputComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@shared/components';
-import { ConfiguredAddonModel, FileFolderModel, FileLabelModel, FileModel, StorageItem } from '@shared/models';
-import { CustomConfirmationService, CustomDialogService, FilesService, ToastService } from '@shared/services';
+import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
+import { StorageItem } from '@shared/models/addons/storage-item.model';
+import { FileModel } from '@shared/models/files/file.model';
+import { FileFolderModel } from '@shared/models/files/file-folder.model';
+import { FileLabelModel } from '@shared/models/files/file-label.model';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {

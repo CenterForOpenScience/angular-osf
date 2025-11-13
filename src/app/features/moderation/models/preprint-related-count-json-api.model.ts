@@ -1,4 +1,4 @@
-import { PreprintProviderAttributesJsonApi } from '@osf/shared/models';
+import { PreprintProviderAttributesJsonApi } from '@osf/shared/models/provider/preprints-provider-json-api.model';
 
 export interface PreprintRelatedCountJsonApi {
   id: string;

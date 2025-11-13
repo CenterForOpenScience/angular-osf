@@ -25,24 +25,21 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import {
-  ClearRegistryOverview,
-  GetRegistryById,
-  RegistryOverviewSelectors,
-} from '@osf/features/registry/store/registry-overview';
-import {
-  ContributorsListComponent,
-  CustomPaginatorComponent,
-  IconComponent,
-  LoadingSpinnerComponent,
-  SubHeaderComponent,
-  TruncatedTextComponent,
-} from '@osf/shared/components';
-import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { BaseNodeModel, ToolbarResource } from '@osf/shared/models';
-import { CustomDialogService, LoaderService } from '@osf/shared/services';
+import { ClearRegistry, GetRegistryById, RegistrySelectors } from '@osf/features/registry/store/registry';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
 import { GetResourceWithChildren } from '@osf/shared/stores/current-resource';
 import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores/duplicates';
+import { BaseNodeModel } from '@shared/models/nodes/base-node.model';
+import { ToolbarResource } from '@shared/models/toolbar-resource.model';
 
 @Component({
   selector: 'osf-view-duplicates',
@@ -71,9 +68,9 @@ export class ViewDuplicatesComponent {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private project = select(ProjectOverviewSelectors.getProject);
-  private registration = select(RegistryOverviewSelectors.getRegistry);
+  private registration = select(RegistrySelectors.getRegistry);
   private isProjectAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-  private isRegistryAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
+  private isRegistryAnonymous = select(RegistrySelectors.isRegistryAnonymous);
 
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
@@ -126,7 +123,7 @@ export class ViewDuplicatesComponent {
     getDuplicates: GetAllDuplicates,
     clearDuplicates: ClearDuplicates,
     clearProject: ClearProjectOverview,
-    clearRegistration: ClearRegistryOverview,
+    clearRegistration: ClearRegistry,
     getComponentsTree: GetResourceWithChildren,
   });
 

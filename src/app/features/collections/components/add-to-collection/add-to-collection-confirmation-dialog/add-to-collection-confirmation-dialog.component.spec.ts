@@ -4,7 +4,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-confirmation-dialog.component';
 

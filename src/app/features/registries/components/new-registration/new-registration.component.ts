@@ -14,8 +14,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { SubHeaderComponent } from '@osf/shared/components';
-import { ToastService } from '@osf/shared/services';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { GetRegistryProvider } from '@shared/stores/registration-provider';
 
 import { CreateDraft, GetProjects, GetProviderSchemas, RegistriesSelectors } from '../../store';

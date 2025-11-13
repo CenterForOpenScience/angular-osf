@@ -11,9 +11,12 @@ import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
-import { InfoIconComponent, SubHeaderComponent } from '@osf/shared/components';
-import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
-import { LoaderService, ToastService } from '@osf/shared/services';
+import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AccountSettings } from '../account-settings/models';
 import { AccountSettingsSelectors, GetAccountSettings, UpdateAccountSettings } from '../account-settings/store';

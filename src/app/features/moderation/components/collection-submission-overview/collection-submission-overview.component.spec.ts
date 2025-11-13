@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProjectOverviewComponent } from '@osf/features/project/overview/project-overview.component';
-import { Mode } from '@shared/enums';
+import { Mode } from '@osf/shared/enums/mode.enum';
 
 import { CollectionSubmissionOverviewComponent } from './collection-submission-overview.component';
 

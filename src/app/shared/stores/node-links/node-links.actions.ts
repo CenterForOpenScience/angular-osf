@@ -1,4 +1,5 @@
-import { ComponentOverview, MyResourcesItem } from '@osf/shared/models';
+import { ComponentOverview } from '@osf/shared/models/components/components.models';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
 
 export class CreateNodeLink {
   static readonly type = '[Node Links] Create Node Link';

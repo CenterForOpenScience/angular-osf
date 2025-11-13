@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
 import { RegistryResourcesService } from '../../services';
 

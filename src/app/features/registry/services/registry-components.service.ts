@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiService } from '@osf/shared/services';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { RegistryComponentsMapper } from '../mappers';
 import { RegistryComponentsJsonApiResponse, RegistryComponentsResponseJsonApi } from '../models';

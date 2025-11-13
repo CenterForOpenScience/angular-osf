@@ -13,8 +13,10 @@ import { Router } from '@angular/router';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { ContributorsListComponent, LicenseDisplayComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
   GetBibliographicContributors,

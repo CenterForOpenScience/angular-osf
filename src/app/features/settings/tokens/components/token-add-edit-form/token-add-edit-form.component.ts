@@ -13,9 +13,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
-import { CustomDialogService, ToastService } from '@osf/shared/services';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { TokenForm, TokenFormControls, TokenModel } from '../../models';
 import { CreateToken, GetTokens, TokensSelectors, UpdateToken } from '../../store';

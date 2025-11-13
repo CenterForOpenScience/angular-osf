@@ -1,4 +1,5 @@
-import { AccountEmailModel, EmailsDataJsonApi } from '../models/emails';
+import { AccountEmailModel } from '../models/emails/account-email.model';
+import { EmailsDataJsonApi } from '../models/emails/account-emails-json-api.model';
 
 export function MapEmails(emails: EmailsDataJsonApi[]): AccountEmailModel[] {
   return emails.map((item) => MapEmail(item));

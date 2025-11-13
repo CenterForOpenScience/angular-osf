@@ -2,21 +2,22 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
-import { RegistriesSelectors } from '@osf/features/registries/store';
-import { WithdrawnMessageComponent } from '@osf/features/registry/components/withdrawn-message/withdrawn-message.component';
-import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
-import {
-  DataResourcesComponent,
-  LoadingSpinnerComponent,
-  RegistrationBlocksDataComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@osf/shared/components';
-import { CustomDialogService } from '@osf/shared/services';
+import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
-import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
+import {
+  ArchivingMessageComponent,
+  RegistryBlocksSectionComponent,
+  RegistryRevisionsComponent,
+  RegistryStatusesComponent,
+} from '../../components';
+import { RegistrationOverviewToolbarComponent } from '../../components/registration-overview-toolbar/registration-overview-toolbar.component';
+import { RegistryOverviewMetadataComponent } from '../../components/registry-overview-metadata/registry-overview-metadata.component';
+import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
+import { RegistrySelectors } from '../../store/registry';
 
 import { RegistryOverviewComponent } from './registry-overview.component';
 
@@ -37,15 +38,15 @@ describe('RegistryOverviewComponent', () => {
         OSFTestingModule,
         ...MockComponents(
           SubHeaderComponent,
-          OverviewToolbarComponent,
+          RegistrationOverviewToolbarComponent,
           LoadingSpinnerComponent,
-          ResourceMetadataComponent,
+          RegistryOverviewMetadataComponent,
           RegistryRevisionsComponent,
           RegistryStatusesComponent,
           DataResourcesComponent,
           ArchivingMessageComponent,
           WithdrawnMessageComponent,
-          RegistrationBlocksDataComponent,
+          RegistryBlocksSectionComponent,
           ViewOnlyLinkMessageComponent
         ),
       ],
@@ -53,21 +54,20 @@ describe('RegistryOverviewComponent', () => {
         MockProvider(CustomDialogService, mockCustomDialogService),
         provideMockStore({
           signals: [
-            { selector: RegistryOverviewSelectors.getRegistry, value: null },
-            { selector: RegistryOverviewSelectors.isRegistryLoading, value: false },
-            { selector: RegistryOverviewSelectors.isRegistryAnonymous, value: false },
-            { selector: RegistryOverviewSelectors.getInstitutions, value: [] },
-            { selector: RegistryOverviewSelectors.isInstitutionsLoading, value: false },
-            { selector: RegistryOverviewSelectors.getSchemaBlocks, value: [] },
-            { selector: RegistryOverviewSelectors.isSchemaBlocksLoading, value: false },
-            { selector: RegistryOverviewSelectors.areReviewActionsLoading, value: false },
-            { selector: RegistriesSelectors.getSchemaResponse, value: null },
-            { selector: RegistriesSelectors.getSchemaResponseLoading, value: false },
-            { selector: RegistryOverviewSelectors.hasWriteAccess, value: false },
-            { selector: RegistryOverviewSelectors.hasAdminAccess, value: false },
-            { selector: RegistryOverviewSelectors.hasNoPermissions, value: true },
-            { selector: RegistryOverviewSelectors.getReviewActions, value: [] },
-            { selector: RegistryOverviewSelectors.isReviewActionSubmitting, value: false },
+            { selector: RegistrySelectors.getRegistry, value: null },
+            { selector: RegistrySelectors.isRegistryLoading, value: false },
+            { selector: RegistrySelectors.isRegistryAnonymous, value: false },
+            { selector: RegistrySelectors.getInstitutions, value: [] },
+            { selector: RegistrySelectors.isInstitutionsLoading, value: false },
+            { selector: RegistrySelectors.getSchemaBlocks, value: [] },
+            { selector: RegistrySelectors.isSchemaBlocksLoading, value: false },
+            { selector: RegistrySelectors.areReviewActionsLoading, value: false },
+            { selector: RegistrySelectors.getSchemaResponse, value: null },
+            { selector: RegistrySelectors.getSchemaResponseLoading, value: false },
+            { selector: RegistrySelectors.hasWriteAccess, value: false },
+            { selector: RegistrySelectors.hasAdminAccess, value: false },
+            { selector: RegistrySelectors.getReviewActions, value: [] },
+            { selector: RegistrySelectors.isReviewActionSubmitting, value: false },
           ],
         }),
       ],
@@ -83,16 +83,13 @@ describe('RegistryOverviewComponent', () => {
 
   it('should handle loading states', () => {
     expect(component.isRegistryLoading()).toBe(false);
-    expect(component.isInstitutionsLoading()).toBe(false);
     expect(component.isSchemaBlocksLoading()).toBe(false);
     expect(component.areReviewActionsLoading()).toBe(false);
-    expect(component.isSchemaResponseLoading()).toBe(false);
   });
 
   it('should handle registry data', () => {
     expect(component.registry()).toBeNull();
     expect(component.isAnonymous()).toBe(false);
-    expect(component.institutions()).toEqual([]);
     expect(component.schemaBlocks()).toEqual([]);
     expect(component.currentRevision()).toBeNull();
   });
@@ -100,7 +97,6 @@ describe('RegistryOverviewComponent', () => {
   it('should handle permissions', () => {
     expect(component.hasWriteAccess()).toBe(false);
     expect(component.hasAdminAccess()).toBe(false);
-    expect(component.hasNoPermissions()).toBe(true);
   });
 
   it('should open revision', () => {

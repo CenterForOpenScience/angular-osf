@@ -1,5 +1,9 @@
-import { CustomConfirmationService } from '@osf/shared/services';
-import { AcceptConfirmationOptions, ContinueConfirmationOptions, DeleteConfirmationOptions } from '@shared/models';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import {
+  AcceptConfirmationOptions,
+  ContinueConfirmationOptions,
+  DeleteConfirmationOptions,
+} from '@shared/models/confirmation-options.model';
 
 export type CustomConfirmationServiceMockType = Partial<CustomConfirmationService> & {
   confirmDelete: jest.Mock<void, [DeleteConfirmationOptions]>;

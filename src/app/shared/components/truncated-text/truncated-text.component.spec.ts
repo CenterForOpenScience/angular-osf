@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TruncatedTextComponent } from './truncated-text.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('TruncatedTextComponent', () => {
   let component: TruncatedTextComponent;

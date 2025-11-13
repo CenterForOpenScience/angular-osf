@@ -1,4 +1,4 @@
-import { SelectOption } from '@shared/models';
+import { SelectOption } from '@shared/models/select-option.model';
 
 import { ContactOption } from '../enums';
 

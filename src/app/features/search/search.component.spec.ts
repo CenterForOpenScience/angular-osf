@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GlobalSearchComponent } from '@osf/shared/components';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 
 import { SearchComponent } from './search.component';
 

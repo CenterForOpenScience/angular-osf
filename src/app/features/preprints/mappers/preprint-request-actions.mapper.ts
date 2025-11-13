@@ -1,6 +1,7 @@
-import { PreprintRequestAction, PreprintRequestActionDataJsonApi } from '@osf/features/preprints/models';
-import { UserMapper } from '@osf/shared/mappers';
-import { StringOrNull } from '@shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { UserMapper } from '@osf/shared/mappers/user';
+
+import { PreprintRequestAction, PreprintRequestActionDataJsonApi } from '../models';
 
 export class PreprintRequestActionsMapper {
   static fromPreprintRequestActions(data: PreprintRequestActionDataJsonApi): PreprintRequestAction {

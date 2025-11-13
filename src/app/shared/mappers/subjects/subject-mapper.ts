@@ -1,4 +1,5 @@
-import { SubjectDataJsonApi, SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
+import { SubjectModel } from '@osf/shared/models/subject/subject.model';
+import { SubjectDataJsonApi, SubjectsResponseJsonApi } from '@osf/shared/models/subject/subjects-json-api.model';
 
 export class SubjectMapper {
   static fromSubjectsResponseJsonApi(response: SubjectsResponseJsonApi): SubjectModel[] {

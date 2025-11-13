@@ -1,4 +1,4 @@
-import { SubscriptionEvent } from '@shared/enums';
+import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
 
 import { SubscriptionEventModel } from '../models';
 

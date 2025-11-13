@@ -12,10 +12,12 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ClearCurrentProvider } from '@core/store/provider';
-import { LoadingSpinnerComponent, SearchInputComponent } from '@osf/shared/components';
-import { HeaderStyleHelper } from '@osf/shared/helpers';
-import { CollectionsFilters } from '@osf/shared/models';
-import { BrandService, CustomDialogService } from '@osf/shared/services';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { CollectionsFilters } from '@osf/shared/models/collections/collections-filters.model';
+import { BrandService } from '@osf/shared/services/brand.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import {
   ClearCollections,
   ClearCollectionSubmissions,

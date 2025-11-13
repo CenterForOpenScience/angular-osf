@@ -1,3 +1,6 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistrySettingsComponent } from './registry-settings.component';
@@ -10,7 +13,7 @@ describe('RegistrySettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrySettingsComponent, OSFTestingModule],
+      imports: [RegistrySettingsComponent, OSFTestingModule, MockPipe(TranslatePipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrySettingsComponent);

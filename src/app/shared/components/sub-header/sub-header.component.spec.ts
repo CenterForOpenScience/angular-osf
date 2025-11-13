@@ -1,4 +1,10 @@
+import { MockPipes } from 'ng-mocks';
+
+import { SafeHtmlPipe } from 'primeng/menu';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 
 import { SubHeaderComponent } from './sub-header.component';
 
@@ -8,7 +14,7 @@ describe('SubHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubHeaderComponent],
+      imports: [SubHeaderComponent, ...MockPipes(SafeHtmlPipe, FixSpecialCharPipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SubHeaderComponent);
