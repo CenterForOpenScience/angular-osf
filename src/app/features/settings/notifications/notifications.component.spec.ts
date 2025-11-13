@@ -150,9 +150,7 @@ describe('NotificationsComponent', () => {
 
   it('should default to API value', () => {
     const subs = component.notificationSubscriptionsForm.value;
-
-    expect(subs.global_reviews).toBe(SubscriptionFrequency.Instant);
-
+    expect(subs.new_pending_submissions).toBe(SubscriptionFrequency.Instant);
     expect(subs.global_file_updated).toBe(SubscriptionFrequency.Daily);
   });
 });
