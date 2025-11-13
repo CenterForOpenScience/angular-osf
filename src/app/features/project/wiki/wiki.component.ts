@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
@@ -62,6 +62,7 @@ export class WikiComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
+  private readonly translateService = inject(TranslateService);
 
   WikiModes = WikiModes;
   homeWikiName = 'Home';
