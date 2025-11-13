@@ -18,7 +18,7 @@ import { LoaderService, ToastService } from '@osf/shared/services';
 import { AccountSettings } from '../account-settings/models';
 import { AccountSettingsSelectors, GetAccountSettings, UpdateAccountSettings } from '../account-settings/store';
 
-import { SUBSCRIPTION_EVENTS } from './constants';
+import { API_EVENT_TO_FORM_EVENT, FORM_EVENT_TO_API_EVENT, SUBSCRIPTION_EVENTS } from './constants';
 import { EmailPreferencesForm, EmailPreferencesFormControls } from './models';
 import {
   GetAllGlobalNotificationSubscriptions,
@@ -86,16 +86,6 @@ export class NotificationsComponent implements OnInit {
     )
   );
 
-  private readonly API_EVENT_TO_FORM_EVENT: Record<string, string> = {
-    new_pending_submissions: 'global_reviews',
-    files_updated: 'global_file_updated',
-  };
-
-  private readonly FORM_EVENT_TO_API_EVENT: Record<string, string> = {
-    global_reviews: 'new_pending_submissions',
-    global_file_updated: 'files_updated',
-  };
-
   constructor() {
     effect(() => {
       if (this.emailPreferences()) {
@@ -140,7 +130,7 @@ export class NotificationsComponent implements OnInit {
 
     const eventKey = event as unknown as string;
 
-    const apiEventName = this.FORM_EVENT_TO_API_EVENT[eventKey] ?? eventKey;
+    const apiEventName = FORM_EVENT_TO_API_EVENT[eventKey] ?? eventKey;
 
     let id: string | undefined;
 
@@ -184,7 +174,7 @@ export class NotificationsComponent implements OnInit {
         continue;
       }
 
-      const formEventKey = this.API_EVENT_TO_FORM_EVENT[apiEvent];
+      const formEventKey = API_EVENT_TO_FORM_EVENT[apiEvent];
 
       if (formEventKey) {
         patch[formEventKey] = sub.frequency;

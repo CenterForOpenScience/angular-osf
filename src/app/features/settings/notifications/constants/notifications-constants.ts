@@ -12,3 +12,14 @@ export const SUBSCRIPTION_EVENTS: SubscriptionEventModel[] = [
     labelKey: 'settings.notifications.notificationPreferences.items.preprints',
   },
 ];
+
+export const FORM_EVENT_TO_API_EVENT: Record<string, string> = {
+  new_pending_submissions: 'new_pending_submissions',
+  files_updated: 'files_updated',
+  global_file_updated: 'global_file_updated',
+};
+
+export const API_EVENT_TO_FORM_EVENT: Record<string, string> = {
+  new_pending_submissions: 'new_pending_submissions',
+  files_updated: 'global_file_updated',
+};
