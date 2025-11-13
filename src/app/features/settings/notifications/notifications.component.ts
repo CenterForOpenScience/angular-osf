@@ -80,12 +80,24 @@ export class NotificationsComponent implements OnInit {
   notificationSubscriptionsForm = this.fb.group(
     SUBSCRIPTION_EVENTS.reduce(
       (control, { event }) => {
-        control[event] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, { nonNullable: true });
+        control[event as string] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, {
+          nonNullable: true,
+        });
         return control;
       },
       {} as Record<string, FormControl<SubscriptionFrequency>>
     )
   );
+
+  private readonly API_EVENT_TO_FORM_EVENT: Record<string, string> = {
+    new_pending_submissions: 'global_reviews',
+    files_updated: 'global_file_updated',
+  };
+
+  private readonly FORM_EVENT_TO_API_EVENT: Record<string, string> = {
+    global_reviews: 'new_pending_submissions',
+    global_file_updated: 'files_updated',
+  };
 
   constructor() {
     effect(() => {
@@ -128,7 +140,24 @@ export class NotificationsComponent implements OnInit {
   onSubscriptionChange(event: SubscriptionEvent, frequency: SubscriptionFrequency) {
     const user = this.currentUser();
     if (!user) return;
-    const id = `${user.id}_${event}`;
+
+    const eventKey = event as unknown as string;
+
+    const apiEventName = this.FORM_EVENT_TO_API_EVENT[eventKey] ?? eventKey;
+
+    let id: string | undefined;
+
+    if (event === SubscriptionEvent.GlobalReviews) {
+      const subs = this.notificationSubscriptions();
+      const match = subs.find((s) => (s.event as string) === 'new_pending_submissions');
+      if (match) {
+        id = match.id;
+      } else {
+        return;
+      }
+    } else {
+      id = `${user.id}_${apiEventName}`;
+    }
 
     this.loaderService.show();
     this.actions.updateNotificationSubscription({ id, frequency }).subscribe(() => {
@@ -145,10 +174,24 @@ export class NotificationsComponent implements OnInit {
   }
 
   private updateNotificationSubscriptionsForm() {
+    const subs = this.notificationSubscriptions();
+    if (!subs?.length) {
+      return;
+    }
+
     const patch: Record<string, SubscriptionFrequency> = {};
 
-    for (const sub of this.notificationSubscriptions()) {
-      patch[sub.event] = sub.frequency;
+    for (const sub of subs) {
+      const apiEvent = sub.event as string | null;
+      if (!apiEvent) {
+        continue;
+      }
+
+      const formEventKey = this.API_EVENT_TO_FORM_EVENT[apiEvent];
+
+      if (formEventKey) {
+        patch[formEventKey] = sub.frequency;
+      }
     }
 
     this.notificationSubscriptionsForm.patchValue(patch);
