@@ -33,16 +33,6 @@ export class UpdateBibliographyFilter {
   constructor(public bibliographyFilter: boolean | null) {}
 }
 
-export class AddContributor {
-  static readonly type = '[Contributors] Add Contributor';
-
-  constructor(
-    public resourceId: string | undefined | null,
-    public resourceType: ResourceType | undefined,
-    public contributor: ContributorAddModel
-  ) {}
-}
-
 export class BulkUpdateContributors {
   static readonly type = '[Contributors] Bulk Update Contributors';
 

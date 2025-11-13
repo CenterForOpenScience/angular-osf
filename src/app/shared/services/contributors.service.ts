@@ -1,4 +1,4 @@
-import { forkJoin, map, Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -10,11 +10,7 @@ import { ContributorsMapper } from '../mappers/contributors';
 import { ResponseJsonApi } from '../models/common/json-api.model';
 import { ContributorModel } from '../models/contributors/contributor.model';
 import { ContributorAddModel } from '../models/contributors/contributor-add.model';
-import {
-  ContributorDataJsonApi,
-  ContributorResponseJsonApi,
-  ContributorsResponseJsonApi,
-} from '../models/contributors/contributor-response-json-api.model';
+import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
 import { UserDataJsonApi } from '../models/user/user-json-api.model';
 
@@ -110,25 +106,19 @@ export class ContributorsService {
       return of([]);
     }
 
-    const updateRequests = contributors.map((contributor) =>
-      this.updateContributor(resourceType, resourceId, contributor)
-    );
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/`;
 
-    return forkJoin(updateRequests);
-  }
+    const contributorData = {
+      data: contributors.map((contributor) => ContributorsMapper.toContributorUpdateRequest(contributor)),
+    };
 
-  updateContributor(
-    resourceType: ResourceType,
-    resourceId: string,
-    data: ContributorModel
-  ): Observable<ContributorModel> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${data.userId}/`;
-
-    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data) };
+    const headers = {
+      'Content-Type': 'application/vnd.api+json; ext=bulk',
+    };
 
     return this.jsonApiService
-      .patch<ContributorDataJsonApi>(baseUrl, contributorData)
-      .pipe(map((contributor) => ContributorsMapper.getContributor(contributor)));
+      .patch<ContributorsResponseJsonApi>(baseUrl, contributorData, undefined, headers)
+      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
   bulkAddContributors(
@@ -141,27 +131,22 @@ export class ContributorsService {
       return of([]);
     }
 
-    const addRequests = contributors.map((contributor) =>
-      this.addContributor(resourceType, resourceId, contributor, childNodeIds)
-    );
-
-    return forkJoin(addRequests);
-  }
-
-  addContributor(
-    resourceType: ResourceType,
-    resourceId: string,
-    data: ContributorAddModel,
-    childNodeIds?: string[]
-  ): Observable<ContributorModel> {
     const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/`;
-    const type = data.id ? AddContributorType.Registered : AddContributorType.Unregistered;
 
-    const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type, childNodeIds) };
+    const contributorData = {
+      data: contributors.map((contributor) => {
+        const type = contributor.id ? AddContributorType.Registered : AddContributorType.Unregistered;
+        return ContributorsMapper.toContributorAddRequest(contributor, type, childNodeIds);
+      }),
+    };
+
+    const headers = {
+      'Content-Type': 'application/vnd.api+json; ext=bulk',
+    };
 
     return this.jsonApiService
-      .post<ContributorResponseJsonApi>(baseUrl, contributorData)
-      .pipe(map((contributor) => ContributorsMapper.getContributor(contributor.data)));
+      .post<ContributorsResponseJsonApi>(baseUrl, contributorData, undefined, headers)
+      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
   addContributorsFromProject(resourceType: ResourceType, resourceId: string): Observable<void> {

@@ -35,8 +35,13 @@ export class JsonApiService {
     return httpParams;
   }
 
-  post<T>(url: string, body?: unknown, params?: Record<string, unknown>): Observable<T> {
-    return this.http.post<T>(url, body, { params: this.buildHttpParams(params) });
+  post<T>(
+    url: string,
+    body?: unknown,
+    params?: Record<string, unknown>,
+    headers?: Record<string, string>
+  ): Observable<T> {
+    return this.http.post<T>(url, body, { params: this.buildHttpParams(params), headers });
   }
 
   patch<T>(
