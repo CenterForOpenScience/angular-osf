@@ -7,7 +7,8 @@ import { TableModule } from 'primeng/table';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 
-import { CustomPaginatorComponent, IconComponent } from '@osf/shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { PreprintReviewStatus, ReviewStatusIcon } from '../../constants';
 import { PreprintReviewActionModel } from '../../models';

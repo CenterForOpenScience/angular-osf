@@ -2,13 +2,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
-import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-import { ContributorsListComponent, IconComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { StopPropagationDirective } from '@osf/shared/directives';
-import { DateAgoPipe } from '@osf/shared/pipes';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
+import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 
 import { PREPRINT_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
 import { ActionStatus, SubmissionReviewStatus } from '../../enums';
@@ -27,7 +28,6 @@ import { PreprintSubmissionModel, PreprintWithdrawalSubmission } from '../../mod
     AccordionHeader,
     AccordionContent,
     ContributorsListComponent,
-    Skeleton,
     StopPropagationDirective,
   ],
   templateUrl: './preprint-submission-item.component.html',
@@ -39,6 +39,7 @@ export class PreprintSubmissionItemComponent {
   submission = input.required<PreprintSubmissionModel | PreprintWithdrawalSubmission>();
   selected = output<void>();
   loadContributors = output<void>();
+  loadMoreContributors = output<void>();
 
   readonly reviewStatusIcon = ReviewStatusIcon;
   readonly actionLabel = PREPRINT_ACTION_LABEL;
@@ -46,6 +47,11 @@ export class PreprintSubmissionItemComponent {
 
   limitValue = 1;
   showAll = false;
+
+  hasMoreContributors = computed(() => {
+    const submission = this.submission();
+    return submission.contributors.length < submission.totalContributors;
+  });
 
   toggleHistory() {
     this.showAll = !this.showAll;

@@ -8,7 +8,7 @@ import { Panel } from 'primeng/panel';
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { CustomDialogService } from '@osf/shared/services';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 import 'ace-builds/src-noconflict/ext-language_tools';
 

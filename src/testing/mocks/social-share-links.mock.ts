@@ -1,4 +1,4 @@
-import { SocialShareLinksModel } from '@shared/models';
+import { SocialShareLinksModel } from '@osf/shared/models/socials/social-share-links.model';
 
 export const SOCIAL_SHARE_LINKS_MOCK: SocialShareLinksModel = {
   email:

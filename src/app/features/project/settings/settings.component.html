@@ -10,6 +10,7 @@
           (submitForm)="submitForm($event)"
           (deleteProject)="deleteProject()"
           [projectDetails]="projectDetails()"
+          [canDelete]="hasAdminAccess()"
         />
 
         <osf-settings-storage-location-card

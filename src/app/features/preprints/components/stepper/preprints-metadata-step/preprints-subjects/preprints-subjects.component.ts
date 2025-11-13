@@ -9,10 +9,9 @@ import { ChangeDetectionStrategy, Component, effect, input, OnInit } from '@angu
 import { FormControl } from '@angular/forms';
 
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { SubjectsComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { SubjectModel } from '@osf/shared/models';
+import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import {
   FetchChildrenSubjects,
   FetchSelectedSubjects,
@@ -20,6 +19,7 @@ import {
   SubjectsSelectors,
   UpdateResourceSubjects,
 } from '@osf/shared/stores/subjects';
+import { SubjectModel } from '@shared/models/subject/subject.model';
 
 @Component({
   selector: 'osf-preprints-subjects',

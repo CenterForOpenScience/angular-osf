@@ -1,16 +1,10 @@
-import { AsyncStateModel } from '@shared/models';
-
-import { MyResourcesItem } from 'src/app/shared/models/my-resources';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 export interface MyResourcesStateModel {
-  projects: AsyncStateModel<MyResourcesItem[]>;
-  registrations: AsyncStateModel<MyResourcesItem[]>;
-  preprints: AsyncStateModel<MyResourcesItem[]>;
-  bookmarks: AsyncStateModel<MyResourcesItem[]>;
-  totalProjects: number;
-  totalRegistrations: number;
-  totalPreprints: number;
-  totalBookmarks: number;
+  projects: AsyncStateWithTotalCount<MyResourcesItem[]>;
+  registrations: AsyncStateWithTotalCount<MyResourcesItem[]>;
+  preprints: AsyncStateWithTotalCount<MyResourcesItem[]>;
 }
 
 export const MY_RESOURCES_STATE_DEFAULTS: MyResourcesStateModel = {
@@ -18,24 +12,18 @@ export const MY_RESOURCES_STATE_DEFAULTS: MyResourcesStateModel = {
     data: [],
     isLoading: false,
     error: null,
+    totalCount: 0,
   },
   registrations: {
     data: [],
     isLoading: false,
     error: null,
+    totalCount: 0,
   },
   preprints: {
     data: [],
     isLoading: false,
     error: null,
+    totalCount: 0,
   },
-  bookmarks: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  totalProjects: 0,
-  totalRegistrations: 0,
-  totalPreprints: 0,
-  totalBookmarks: 0,
 };

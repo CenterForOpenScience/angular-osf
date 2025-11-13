@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 
-import { AuthService } from '../services';
+import { AuthService } from '@core/services/auth.service';
 
 import { authGuard } from './auth.guard';
 

@@ -6,7 +6,7 @@ import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BannerModel } from '@core/components/osf-banners/models/banner.model';
-import { IS_XSMALL } from '@osf/shared/helpers';
+import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
 import { BannersSelector, GetCurrentScheduledBanner } from '@osf/shared/stores/banners';
 
 import { ScheduledBannerComponent } from './scheduled-banner.component';

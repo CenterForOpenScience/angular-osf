@@ -1,8 +1,11 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
+import { LicenseComponent } from '@osf/shared/components/license/license.component';
 
 import { RegistriesLicenseComponent } from './registries-license.component';
 
@@ -19,7 +22,7 @@ describe('RegistriesLicenseComponent', () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
 
     await TestBed.configureTestingModule({
-      imports: [RegistriesLicenseComponent, OSFTestingModule],
+      imports: [RegistriesLicenseComponent, OSFTestingModule, MockComponent(LicenseComponent)],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideMockStore({

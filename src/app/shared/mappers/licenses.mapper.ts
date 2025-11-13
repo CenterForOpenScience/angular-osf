@@ -1,4 +1,5 @@
-import { LicenseDataJsonApi, LicenseModel, LicensesResponseJsonApi } from '../models';
+import { LicenseModel } from '../models/license/license.model';
+import { LicenseDataJsonApi, LicensesResponseJsonApi } from '../models/license/licenses-json-api.model';
 
 export class LicensesMapper {
   static fromLicensesResponse(response: LicensesResponseJsonApi): LicenseModel[] {

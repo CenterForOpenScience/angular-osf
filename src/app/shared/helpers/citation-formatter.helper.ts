@@ -1,4 +1,4 @@
-import { StorageItem } from '@shared/models';
+import { StorageItem } from '../models/addons/storage-item.model';
 
 import { Cite } from '@citation-js/core';
 

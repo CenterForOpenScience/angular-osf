@@ -23,10 +23,13 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { AddContributorType, AddDialogState } from '@osf/shared/enums';
-import { ComponentCheckboxItemModel, ContributorAddModel, ContributorDialogAddModel } from '@osf/shared/models';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
+import { AddDialogState } from '@osf/shared/enums/contributors/add-dialog-state.enum';
 import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores/contributors';
+import { ComponentCheckboxItemModel } from '@shared/models/component-checkbox-item.model';
+import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
+import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
 
 import { ComponentsSelectionListComponent } from '../../components-selection-list/components-selection-list.component';
 import { CustomPaginatorComponent } from '../../custom-paginator/custom-paginator.component';

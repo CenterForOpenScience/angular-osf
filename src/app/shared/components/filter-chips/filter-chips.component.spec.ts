@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DiscoverableFilter, FilterOperator, FilterOption } from '@shared/models';
+import {
+  DiscoverableFilter,
+  FilterOperatorOption,
+  FilterOption,
+} from '@osf/shared/models/search/discaverable-filter.model';
 
 import { FilterChipsComponent } from './filter-chips.component';
 
@@ -14,7 +18,7 @@ describe('FilterChipsComponent', () => {
     {
       key: 'subject',
       label: 'Subject',
-      operator: FilterOperator.IsPresent,
+      operator: FilterOperatorOption.IsPresent,
       resultCount: 100,
       options: [
         { label: 'Psychology', value: 'psychology', cardSearchResultCount: 50 },
@@ -24,7 +28,7 @@ describe('FilterChipsComponent', () => {
     {
       key: 'resourceType',
       label: 'Resource Type',
-      operator: FilterOperator.IsPresent,
+      operator: FilterOperatorOption.IsPresent,
       resultCount: 75,
       options: [
         { label: 'Project', value: 'project', cardSearchResultCount: 40 },
@@ -94,8 +98,8 @@ describe('FilterChipsComponent', () => {
     it('should filter out filters without key or label', () => {
       const filtersWithMissing: DiscoverableFilter[] = [
         ...mockFilters,
-        { key: '', label: 'No Key', operator: FilterOperator.IsPresent, resultCount: 10, options: [] },
-        { key: 'noLabel', label: '', operator: FilterOperator.IsPresent, resultCount: 10, options: [] },
+        { key: '', label: 'No Key', operator: FilterOperatorOption.IsPresent, resultCount: 10, options: [] },
+        { key: 'noLabel', label: '', operator: FilterOperatorOption.IsPresent, resultCount: 10, options: [] },
       ];
 
       fixture.componentRef.setInput('filters', filtersWithMissing);

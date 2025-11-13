@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ActivityLogsService } from '@shared/services';
+import { ActivityLogsService } from '@osf/shared/services/activity-logs/activity-logs.service';
 
 import { ClearActivityLogsStore, GetActivityLogs, GetRegistrationActivityLogs } from './activity-logs.actions';
 import { ACTIVITY_LOGS_STATE_DEFAULT, ActivityLogsStateModel } from './activity-logs.model';

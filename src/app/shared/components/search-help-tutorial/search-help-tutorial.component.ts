@@ -2,17 +2,17 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { CommonModule } from '@angular/common';
+import { NgStyle } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, model, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { SEARCH_TUTORIAL_STEPS } from '@osf/shared/constants';
-import { TutorialStep } from '@osf/shared/models';
-import { IS_MEDIUM } from '@shared/helpers';
+import { SEARCH_TUTORIAL_STEPS } from '@osf/shared/constants/search-tutorial-steps.const';
+import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { TutorialStep } from '@shared/models/tutorial-step.model';
 
 @Component({
   selector: 'osf-search-help-tutorial',
-  imports: [Button, TranslatePipe, CommonModule],
+  imports: [Button, TranslatePipe, NgStyle],
   templateUrl: './search-help-tutorial.component.html',
   styleUrl: './search-help-tutorial.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

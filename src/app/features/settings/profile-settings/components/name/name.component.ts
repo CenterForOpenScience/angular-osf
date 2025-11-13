@@ -9,10 +9,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder } from '@angular/forms';
 
 import { UpdateProfileSettingsUser, UserSelectors } from '@osf/core/store/user';
-import { forbiddenFileNameCharacters } from '@osf/shared/constants';
-import { CustomValidators } from '@osf/shared/helpers';
-import { UserModel } from '@osf/shared/models';
-import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { forbiddenFileNameCharacters } from '@osf/shared/constants/input-limits.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { UserModel } from '@shared/models/user/user.models';
 
 import { hasNameChanges } from '../../helpers';
 import { NameForm } from '../../models';

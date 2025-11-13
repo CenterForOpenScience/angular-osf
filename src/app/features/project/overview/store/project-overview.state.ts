@@ -4,8 +4,8 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
-import { ResourceType } from '@shared/enums';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 
 import { ProjectOverviewService } from '../services';
 

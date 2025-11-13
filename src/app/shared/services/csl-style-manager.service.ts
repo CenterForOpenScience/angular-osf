@@ -2,7 +2,7 @@ import { catchError, from, Observable, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { BUILT_IN_STYLES } from '@shared/constants';
+import { BUILT_IN_STYLES } from '../constants/built-in-citation-styles.const';
 
 import { CitationsService } from './citations.service';
 

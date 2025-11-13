@@ -20,10 +20,13 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@core/store/user';
-import { RequestAccessErrorDialogComponent } from '@osf/features/admin-institutions/components/request-access-error-dialog/request-access-error-dialog.component';
-import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
-import { CustomDialogService, ToastService } from '@osf/shared/services';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+import { PaginationLinksModel } from '@osf/shared/models/pagination-links.model';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
+import { SearchFilters } from '@osf/shared/models/search-filters.model';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import {
   FetchResources,
   FetchResourcesByLink,
@@ -32,14 +35,15 @@ import {
   SetDefaultFilterValue,
   SetResourceType,
   SetSortBy,
-} from '@shared/stores/global-search';
+} from '@osf/shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
 import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
+import { RequestAccessErrorDialogComponent } from '../../components/request-access-error-dialog/request-access-error-dialog.component';
 import { projectTableColumns } from '../../constants';
 import { ContactDialogComponent } from '../../dialogs';
 import { ContactOption, DownloadType } from '../../enums';
-import { downloadResults } from '../../helpers';
+import { downloadResults, INSTITUTIONS_CSV_TSV_FIELDS, INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE } from '../../helpers';
 import { mapProjectResourceToTableCellData } from '../../mappers/institution-project-to-table-data.mapper';
 import { ContactDialogData, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
 import { InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
@@ -128,7 +132,12 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
   }
 
   download(type: DownloadType) {
-    downloadResults(this.selfLink(), type);
+    downloadResults(
+      this.selfLink(),
+      type,
+      INSTITUTIONS_CSV_TSV_FIELDS[CurrentResourceType.Projects],
+      INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE[CurrentResourceType.Projects]
+    );
   }
 
   onIconClick(event: TableIconClickEvent): void {

@@ -1,4 +1,4 @@
-import { RevisionReviewStates } from '@osf/shared/enums';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
 export interface SchemaResponse {
   id: string;

@@ -1,4 +1,4 @@
-import { SortOrder } from '@shared/enums';
+import { SortOrder } from '../enums/sort-order.enum';
 
 export interface SearchFilters {
   searchValue: string;

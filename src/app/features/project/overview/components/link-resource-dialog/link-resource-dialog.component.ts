@@ -25,11 +25,13 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { SearchInputComponent } from '@osf/shared/components';
-import { ResourceSearchMode, ResourceType } from '@osf/shared/enums';
-import { MyResourcesItem, MyResourcesSearchFilters } from '@osf/shared/models';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { GetMyProjects, GetMyRegistrations, MyResourcesSelectors } from '@osf/shared/stores/my-resources';
 import { CreateNodeLink, DeleteNodeLink, GetLinkedResources, NodeLinksSelectors } from '@osf/shared/stores/node-links';
+import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
+import { MyResourcesSearchFilters } from '@shared/models/my-resources/my-resources-search-filters.models';
 
 import { ProjectOverviewSelectors } from '../../store';
 

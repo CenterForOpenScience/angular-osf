@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 
-import { ProjectFormControls } from '@shared/enums';
+import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 
 export interface ProjectForm {
   [ProjectFormControls.Title]: FormControl<string>;

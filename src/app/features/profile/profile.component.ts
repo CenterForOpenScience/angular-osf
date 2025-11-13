@@ -5,11 +5,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { GlobalSearchComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { UserModel } from '@osf/shared/models';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.const';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
+import { UserModel } from '@shared/models/user/user.models';
 
 import { ProfileInformationComponent } from './components';
 import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';

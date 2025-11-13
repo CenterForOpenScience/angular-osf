@@ -6,14 +6,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import {
-  ContributorsListComponent,
-  LoadingSpinnerComponent,
-  RegistrationBlocksDataComponent,
-  SubHeaderComponent,
-} from '@osf/shared/components';
-import { FieldType } from '@osf/shared/enums';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
+import { FieldType } from '@osf/shared/enums/field-type.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
@@ -50,12 +49,7 @@ describe('ReviewComponent', () => {
       imports: [
         ReviewComponent,
         OSFTestingModule,
-        ...MockComponents(
-          RegistrationBlocksDataComponent,
-          ContributorsListComponent,
-          SubHeaderComponent,
-          LoadingSpinnerComponent
-        ),
+        ...MockComponents(RegistrationBlocksDataComponent, ContributorsListComponent, LicenseDisplayComponent),
       ],
       providers: [
         MockProvider(Router, mockRouter),

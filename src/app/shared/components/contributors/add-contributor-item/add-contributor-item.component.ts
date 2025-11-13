@@ -6,8 +6,8 @@ import { Select } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { ContributorAddModel } from '@osf/shared/models';
+import { PERMISSION_OPTIONS } from '@osf/shared/constants/contributors.constants';
+import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
 
 @Component({
   selector: 'osf-add-contributor-item',

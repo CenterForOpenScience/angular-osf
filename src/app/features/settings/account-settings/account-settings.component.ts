@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { GetEmails } from '@core/store/user-emails';
 import { UserSelectors } from '@osf/core/store/user';
-import { SubHeaderComponent } from '@osf/shared/components';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { FetchRegions } from '@osf/shared/stores/regions';
 
 import {

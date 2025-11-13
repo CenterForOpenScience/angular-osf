@@ -2,9 +2,10 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@core/guards/auth.guard';
 import { isFileGuard } from '@core/guards/is-file.guard';
+import { redirectIfLoggedInGuard } from '@core/guards/redirect-if-logged-in.guard';
 
-import { authGuard, redirectIfLoggedInGuard } from './core/guards';
 import { isProjectGuard } from './core/guards/is-project.guard';
 import { isRegistryGuard } from './core/guards/is-registry.guard';
 import { MyPreprintsState } from './features/preprints/store/my-preprints';
@@ -12,7 +13,7 @@ import { ProfileState } from './features/profile/store';
 import { RegistriesState } from './features/registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './features/registries/store/handlers';
 import { FilesHandlers } from './features/registries/store/handlers/files.handlers';
-import { LicensesService } from './shared/services';
+import { LicensesService } from './shared/services/licenses.service';
 import { BookmarksState } from './shared/stores/bookmarks';
 import { ProjectsState } from './shared/stores/projects';
 
@@ -67,8 +68,8 @@ export const routes: Routes = [
         path: 'my-projects',
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
-        providers: [provideStates([BookmarksState, ProjectsState])],
         canActivate: [authGuard],
+        providers: [provideStates([BookmarksState, ProjectsState])],
       },
       {
         path: 'my-registrations',

@@ -19,9 +19,10 @@ import {
   TableColumn,
   TableIconClickEvent,
 } from '@osf/features/admin-institutions/models';
-import { CustomPaginatorComponent } from '@osf/shared/components';
-import { StopPropagationDirective } from '@shared/directives';
-import { PaginationLinksModel, SearchFilters } from '@shared/models';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
+import { PaginationLinksModel } from '@osf/shared/models/pagination-links.model';
+import { SearchFilters } from '@osf/shared/models/search-filters.model';
 
 import { DOWNLOAD_OPTIONS } from '../../constants';
 import { DownloadType } from '../../enums';

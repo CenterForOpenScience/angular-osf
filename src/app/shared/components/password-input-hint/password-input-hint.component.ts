@@ -1,12 +1,11 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'osf-password-input-hint',
-  imports: [TranslatePipe, CommonModule],
+  imports: [TranslatePipe],
   templateUrl: './password-input-hint.component.html',
   styleUrl: './password-input-hint.component.scss',
 })

@@ -1,4 +1,4 @@
-import { BaseNodeModel } from '../../app/shared/models';
+import { BaseNodeModel } from '@shared/models/nodes/base-node.model';
 
 export const testNode: BaseNodeModel = {
   id: 'abc123',
@@ -24,4 +24,6 @@ export const testNode: BaseNodeModel = {
   currentUserIsContributor: true,
   wikiEnabled: true,
   rootParentId: 'nt29k',
+  type: 'project',
+  parent: undefined,
 };

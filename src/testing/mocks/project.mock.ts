@@ -1,4 +1,4 @@
-import { ProjectModel } from '@shared/models/projects';
+import { ProjectModel } from '@shared/models/projects/projects.models';
 
 export const MOCK_PROJECT: ProjectModel = {
   id: 'project-1',

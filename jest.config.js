@@ -11,6 +11,8 @@ module.exports = {
     '^@styles/(.*)$': '<rootDir>/assets/styles/$1',
     '^@testing/(.*)$': '<rootDir>/src/testing/$1',
     '^src/environments/environment$': '<rootDir>/src/environments/environment.ts',
+    '^cedar-artifact-viewer$': '<rootDir>/src/testing/mocks/cedar-artifact-viewer.mock.ts',
+    '^cedar-embeddable-editor$': '<rootDir>/src/testing/mocks/cedar-embeddable-editor.mock.ts',
   },
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

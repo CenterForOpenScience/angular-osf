@@ -1,5 +1,5 @@
-import { ResourceType } from '@osf/shared/enums';
-import { ViewOnlyLinkJsonApi } from '@osf/shared/models';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ViewOnlyLinkJsonApi } from '@osf/shared/models/view-only-links/view-only-link-response.model';
 
 export class FetchViewOnlyLinks {
   static readonly type = '[Link] Fetch View Only Links';

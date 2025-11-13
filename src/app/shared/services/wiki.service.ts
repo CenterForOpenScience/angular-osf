@@ -5,20 +5,21 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiResponse, WikisWithMeta } from '@shared/models';
-
-import { ResourceType } from '../enums';
-import { WikiMapper } from '../mappers/wiki';
+import { JsonApiResponse } from '@shared/models/common/json-api.model';
 import {
   ComponentsWikiJsonApiResponse,
   ComponentWiki,
   HomeWikiJsonApiResponse,
-  Wiki,
   WikiGetResponse,
   WikiJsonApiResponseWithMeta,
+  WikiModel,
+  WikisWithMeta,
   WikiVersion,
   WikiVersionJsonApiResponse,
-} from '../models';
+} from '@shared/models/wiki/wiki.model';
+
+import { ResourceType } from '../enums/resource-type.enum';
+import { WikiMapper } from '../mappers/wiki';
 
 import { JsonApiService } from './json-api.service';
 
@@ -49,7 +50,7 @@ export class WikiService {
     return `${this.apiUrl}/${resourcePath}/${resourceId}/wikis/`;
   }
 
-  createWiki(projectId: string, name: string): Observable<Wiki> {
+  createWiki(projectId: string, name: string): Observable<WikiModel> {
     const body = {
       data: {
         type: 'wikis',

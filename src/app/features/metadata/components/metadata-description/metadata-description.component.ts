@@ -5,9 +5,11 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
+
 @Component({
   selector: 'osf-metadata-description',
-  imports: [Card, Button, TranslatePipe],
+  imports: [Card, Button, FixSpecialCharPipe, TranslatePipe],
   templateUrl: './metadata-description.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

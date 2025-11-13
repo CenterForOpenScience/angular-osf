@@ -1,4 +1,4 @@
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 export class GetResource {
   static readonly type = '[ResourceType] Get Resource';

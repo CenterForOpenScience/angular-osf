@@ -23,11 +23,16 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { SortOrder } from '@osf/shared/enums';
-import { parseQueryFilterParams } from '@osf/shared/helpers';
-import { QueryParams, SearchFilters, TableParameters } from '@osf/shared/models';
+import { ListInfoShortenerComponent } from '@osf/shared/components/list-info-shortener/list-info-shortener.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+import { parseQueryFilterParams } from '@osf/shared/helpers/http.helper';
+import { QueryParams } from '@osf/shared/models/query-params.model';
+import { SearchFilters } from '@osf/shared/models/search-filters.model';
+import { TableParameters } from '@osf/shared/models/table-parameters.model';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 
 import { PreprintShortInfo } from '../../models';
 import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints';
@@ -43,6 +48,7 @@ import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints
     DatePipe,
     ListInfoShortenerComponent,
     TitleCasePipe,
+    FixSpecialCharPipe,
   ],
   templateUrl: './my-preprints.component.html',
   styleUrl: './my-preprints.component.scss',

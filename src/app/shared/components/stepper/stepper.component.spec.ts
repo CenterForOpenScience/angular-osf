@@ -1,7 +1,12 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StepperComponent } from '@shared/components';
-import { StepOption } from '@shared/models';
+import { StepOption } from '@shared/models/step-option.model';
+
+import { IconComponent } from '../icon/icon.component';
+
+import { StepperComponent } from './stepper.component';
 
 describe('StepperComponent', () => {
   let component: StepperComponent;
@@ -17,7 +22,7 @@ describe('StepperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StepperComponent],
+      imports: [StepperComponent, MockComponent(IconComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StepperComponent);

@@ -5,7 +5,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { FixSpecialCharPipe } from '@osf/shared/pipes';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 
 @Component({
   selector: 'osf-sub-header',

@@ -1,4 +1,5 @@
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi, UserDataJsonApi } from '@osf/shared/models';
+import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '@osf/shared/models/common/json-api.model';
+import { UserDataJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
 export interface ModeratorResponseJsonApi {
   data: ModeratorDataJsonApi[];

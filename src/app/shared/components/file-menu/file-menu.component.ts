@@ -7,10 +7,10 @@ import { TieredMenu } from 'primeng/tieredmenu';
 import { Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { FileMenuType } from '@osf/shared/enums';
-import { FileMenuAction, FileMenuData, FileMenuFlags } from '@osf/shared/models';
-import { MenuManagerService } from '@osf/shared/services';
-import { hasViewOnlyParam } from '@shared/helpers';
+import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { MenuManagerService } from '@osf/shared/services/menu-manager.service';
+import { FileMenuAction, FileMenuData, FileMenuFlags } from '@shared/models/files/file-menu-action.model';
 
 @Component({
   selector: 'osf-file-menu',

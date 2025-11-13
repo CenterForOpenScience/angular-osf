@@ -10,12 +10,17 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateProfileSettingsEmployment, UserSelectors } from '@core/store/user';
-import { EmploymentFormComponent } from '@osf/features/settings/profile-settings/components';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
+
+import { EmploymentFormComponent } from '../employment-form/employment-form.component';
 
 import { EmploymentComponent } from './employment.component';
 
-import { CustomConfirmationServiceMock, MOCK_EMPLOYMENT, MockCustomConfirmationServiceProvider } from '@testing/mocks';
+import {
+  CustomConfirmationServiceMock,
+  MockCustomConfirmationServiceProvider,
+} from '@testing/mocks/custom-confirmation.service.mock';
+import { MOCK_EMPLOYMENT } from '@testing/mocks/employment.mock';
 
 describe('EmploymentComponent', () => {
   let component: EmploymentComponent;
@@ -39,7 +44,6 @@ describe('EmploymentComponent', () => {
         MockProvider(ToastService),
         provideHttpClient(),
         provideHttpClientTesting(),
-        MockProvider(TranslatePipe),
         MockProvider(Store, mockStore),
       ],
     }).compileComponents();
@@ -80,14 +84,14 @@ describe('EmploymentComponent', () => {
 
     expect(component.positions.length).toBe(initialLength + 1);
 
-    const newEducation = component.positions.at(initialLength);
-    expect(newEducation).toBeDefined();
-    expect(newEducation.get('title')?.value).toBe('');
-    expect(newEducation.get('institution')?.value).toBe('');
-    expect(newEducation.get('department')?.value).toBe('');
-    expect(newEducation.get('startDate')?.value).toBe(null);
-    expect(newEducation.get('endDate')?.value).toBe(null);
-    expect(newEducation.get('ongoing')?.value).toBe(false);
+    const newEmployment = component.positions.at(initialLength);
+    expect(newEmployment).toBeDefined();
+    expect(newEmployment.get('title')?.value).toBe('');
+    expect(newEmployment.get('institution')?.value).toBe('');
+    expect(newEmployment.get('department')?.value).toBe('');
+    expect(newEmployment.get('startDate')?.value).toBe(null);
+    expect(newEmployment.get('endDate')?.value).toBe(null);
+    expect(newEmployment.get('ongoing')?.value).toBe(false);
   });
 
   it('should detect changes when form field is modified', () => {
@@ -109,14 +113,14 @@ describe('EmploymentComponent', () => {
     expect(component.positions.at(1).get('title')?.touched).toBe(true);
   });
 
-  it('should map form data to correct education format', () => {
-    const education = component.positions.at(0);
-    education.get('title')?.setValue('Software Engineer Intern');
-    education.get('institution')?.setValue('Test University');
-    education.get('department')?.setValue('Engineering');
-    education.get('startDate')?.setValue(new Date(2020, 0));
-    education.get('endDate')?.setValue(new Date(2024, 5));
-    education.get('ongoing')?.setValue(false);
+  it('should map form data to correct employment format', () => {
+    const employment = component.positions.at(0);
+    employment.get('title')?.setValue('Software Engineer Intern');
+    employment.get('institution')?.setValue('Test University');
+    employment.get('department')?.setValue('Engineering');
+    employment.get('startDate')?.setValue(new Date(2020, 0));
+    employment.get('endDate')?.setValue(new Date(2024, 5));
+    employment.get('ongoing')?.setValue(false);
 
     component.saveEmployment();
 

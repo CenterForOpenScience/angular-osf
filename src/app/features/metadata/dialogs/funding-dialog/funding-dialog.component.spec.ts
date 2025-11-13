@@ -9,7 +9,7 @@ import { MetadataSelectors } from '../../store';
 
 import { FundingDialogComponent } from './funding-dialog.component';
 
-import { MOCK_FUNDERS } from '@testing/mocks';
+import { MOCK_FUNDERS } from '@testing/mocks/funder.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

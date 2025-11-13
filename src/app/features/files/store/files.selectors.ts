@@ -1,14 +1,12 @@
 import { Selector } from '@ngxs/store';
 
-import { SupportedFeature, UserPermissions } from '@osf/shared/enums';
-import {
-  ConfiguredAddonModel,
-  ContributorModel,
-  FileDetailsModel,
-  FileFolderModel,
-  FileModel,
-  ResourceMetadata,
-} from '@shared/models';
+import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
+import { FileDetailsModel, FileModel } from '@osf/shared/models/files/file.model';
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
+import { ResourceMetadata } from '@osf/shared/models/resource-metadata.model';
 
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 

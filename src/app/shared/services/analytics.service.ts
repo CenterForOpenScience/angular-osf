@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiService } from '@osf/shared/services';
+
+import { JsonApiService } from './json-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {

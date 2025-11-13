@@ -21,7 +21,9 @@ describe('Component: Maintenance Banner', () => {
       check: jest.fn(),
       set: jest.fn(),
     } as any;
+
     httpClient = { get: jest.fn() } as any;
+
     await TestBed.configureTestingModule({
       imports: [MaintenanceBannerComponent, NoopAnimationsModule, MessageModule],
       providers: [

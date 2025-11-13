@@ -15,14 +15,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@core/store/user';
-import {
-  CustomPaginatorComponent,
-  RegistrationCardComponent,
-  SelectComponent,
-  SubHeaderComponent,
-} from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/helpers';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { REGISTRATIONS_TABS } from '../../constants';
 import { RegistrationTab } from '../../enums';

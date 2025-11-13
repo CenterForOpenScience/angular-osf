@@ -10,12 +10,19 @@ import { Component, computed, DestroyRef, effect, inject, signal, viewChild } fr
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { SubHeaderComponent } from '@osf/shared/components';
-import { AddonServiceNames, AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
-import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers';
-import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@shared/components/addons';
-import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
-import { AddonOAuthService, ToastService } from '@shared/services';
+import { AddonSetupAccountFormComponent } from '@osf/shared/components/addons/addon-setup-account-form/addon-setup-account-form.component';
+import { AddonTermsComponent } from '@osf/shared/components/addons/addon-terms/addon-terms.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { AddonServiceNames } from '@osf/shared/enums/addon-service-names.enum';
+import { AddonType } from '@osf/shared/enums/addon-type.enum';
+import { ProjectAddonsStepperValue } from '@osf/shared/enums/profile-addons-stepper.enum';
+import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers/addon-type.helper';
+import { AddonOAuthService } from '@osf/shared/services/addons/addon-oauth.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { AddonModel } from '@shared/models/addons/addon.model';
+import { AuthorizedAddonRequestJsonApi } from '@shared/models/addons/addon-json-api.models';
+import { AddonTerm } from '@shared/models/addons/addon-utils.models';
+import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({

@@ -8,12 +8,13 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import { FetchInstitutionById, InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
-import { Primitive } from '@osf/shared/helpers';
-import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 
 import { resourceTabOptions } from './constants';
 import { AdminInstitutionResourceTab } from './enums';
+import { FetchInstitutionById, InstitutionsAdminSelectors } from './store';
 
 @Component({
   selector: 'osf-admin-institutions',

@@ -1,11 +1,14 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { ResourceType } from '@osf/shared/enums';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
+import { ProfileInformationComponent } from './components';
 import { ProfileComponent } from './profile.component';
 import { ProfileSelectors } from './store';
 
@@ -25,7 +28,11 @@ describe('ProfileComponent', () => {
     activatedRouteMock = ActivatedRouteMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [ProfileComponent, OSFTestingModule],
+      imports: [
+        ProfileComponent,
+        OSFTestingModule,
+        ...MockComponents(ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent),
+      ],
       providers: [
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),

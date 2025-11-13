@@ -1,5 +1,6 @@
-import { UserMapper } from '@osf/shared/mappers';
-import { PaginatedData, ResponseJsonApi } from '@osf/shared/models';
+import { UserMapper } from '@osf/shared/mappers/user';
+import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 
 import {
   PreprintProviderModerationInfo,
@@ -72,10 +73,10 @@ export class PreprintModerationMapper {
       })),
       totalCount: response.meta.total,
       pageSize: response.meta.per_page,
-      pendingCount: response.meta.reviews_state_counts.pending,
-      acceptedCount: response.meta.reviews_state_counts.accepted,
-      rejectedCount: response.meta.reviews_state_counts.rejected,
-      withdrawnCount: response.meta.reviews_state_counts.withdrawn,
+      pendingCount: response.meta?.reviews_state_counts?.pending || 0,
+      acceptedCount: response.meta?.reviews_state_counts?.accepted || 0,
+      rejectedCount: response.meta?.reviews_state_counts?.rejected || 0,
+      withdrawnCount: response.meta?.reviews_state_counts?.withdrawn || 0,
     };
   }
 

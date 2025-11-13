@@ -13,6 +13,6 @@
   </div>
 
   <p data-test-display-node-description class="mt-4">
-    {{ description() || ('project.overview.metadata.noDescription' | translate) }}
+    {{ (description() | fixSpecialChar) || ('project.overview.metadata.noDescription' | translate) }}
   </p>
 </p-card>

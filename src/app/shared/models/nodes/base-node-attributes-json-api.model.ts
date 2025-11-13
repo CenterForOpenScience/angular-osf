@@ -1,4 +1,4 @@
-import { UserPermissions } from '@osf/shared/enums';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 export interface BaseNodeAttributesJsonApi {
   access_requests_enabled: boolean;

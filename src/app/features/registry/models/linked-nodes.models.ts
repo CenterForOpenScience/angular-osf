@@ -1,5 +1,5 @@
-import { ContributorModel } from '@osf/shared/models';
-import { RegistrationReviewStates } from '@shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
 
 export interface LinkedNode {
   id: string;

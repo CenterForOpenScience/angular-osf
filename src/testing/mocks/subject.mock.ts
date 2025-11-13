@@ -1,4 +1,4 @@
-import { SubjectModel } from '@shared/models';
+import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 
 export const SUBJECTS_MOCK: SubjectModel[] = [
   {

@@ -6,9 +6,10 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { RegistryOverview } from '@osf/features/registry/models';
-import { RegistrationReviewStates } from '@osf/shared/enums';
-import { RevisionReviewStates } from '@shared/enums';
+import { RegistrationOverviewModel } from '@osf/features/registry/models';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 
 @Component({
   selector: 'osf-registry-revisions',
@@ -20,7 +21,8 @@ import { RevisionReviewStates } from '@shared/enums';
 export class RegistryRevisionsComponent {
   @HostBinding('class') classes = 'flex-1 flex';
 
-  registry = input.required<RegistryOverview | null>();
+  registry = input.required<RegistrationOverviewModel | null>();
+  schemaResponses = input.required<SchemaResponse[]>();
   selectedRevisionIndex = input.required<number>();
   isSubmitting = input<boolean>(false);
   isModeration = input<boolean>(false);
@@ -34,7 +36,7 @@ export class RegistryRevisionsComponent {
   unApprovedRevisionId: string | null = null;
 
   revisions = computed(() => {
-    let schemaResponses = this.registry()?.schemaResponses || [];
+    let schemaResponses = this.schemaResponses() || [];
 
     if (this.registryAcceptedUnapproved) {
       this.unApprovedRevisionId =
@@ -64,16 +66,16 @@ export class RegistryRevisionsComponent {
   });
 
   get registryInProgress(): boolean {
-    return this.registry()?.revisionStatus === RevisionReviewStates.RevisionInProgress;
+    return this.registry()?.revisionState === RevisionReviewStates.RevisionInProgress;
   }
 
   get registryApproved(): boolean {
-    return this.registry()?.revisionStatus === RevisionReviewStates.Approved;
+    return this.registry()?.revisionState === RevisionReviewStates.Approved;
   }
 
   get registryAcceptedUnapproved(): boolean {
     return (
-      this.registry()?.revisionStatus === RevisionReviewStates.Unapproved &&
+      this.registry()?.revisionState === RevisionReviewStates.Unapproved &&
       this.registry()?.reviewsState === RegistrationReviewStates.Accepted
     );
   }

@@ -1,4 +1,4 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -7,21 +7,21 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributorPermission } from '@shared/enums';
-import { ContributorModel } from '@shared/models';
-import { CustomConfirmationService } from '@shared/services';
-import { ContributorsSelectors } from '@shared/stores/contributors';
-import { CurrentResourceSelectors } from '@shared/stores/current-resource';
-import { ViewOnlyLinkSelectors } from '@shared/stores/view-only-links';
+import { ContributorsTableComponent, RequestAccessTableComponent } from '@osf/shared/components/contributors';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ViewOnlyTableComponent } from '@osf/shared/components/view-only-table/view-only-table.component';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ContributorsSelectors } from '@osf/shared/stores/contributors';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
+import { ViewOnlyLinkSelectors } from '@osf/shared/stores/view-only-links';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
 
 import { ContributorsComponent } from './contributors.component';
 
-import {
-  MOCK_CONTRIBUTOR,
-  MOCK_CONTRIBUTOR_WITHOUT_HISTORY,
-  MOCK_PAGINATED_VIEW_ONLY_LINKS,
-  MOCK_RESOURCE_INFO,
-} from '@testing/mocks';
+import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from '@testing/mocks/contributors.mock';
+import { MOCK_RESOURCE_INFO } from '@testing/mocks/resource.mock';
+import { MOCK_PAGINATED_VIEW_ONLY_LINKS } from '@testing/mocks/view-only-link.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -49,7 +49,16 @@ describe('Component: Contributors', () => {
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [ContributorsComponent, OSFTestingModule],
+      imports: [
+        ContributorsComponent,
+        OSFTestingModule,
+        MockComponents(
+          SearchInputComponent,
+          ContributorsTableComponent,
+          RequestAccessTableComponent,
+          ViewOnlyTableComponent
+        ),
+      ],
       providers: [
         MockProvider(DialogService, {
           open: jest.fn().mockReturnValue({ onClose: of({}) }),

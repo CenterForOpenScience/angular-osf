@@ -4,8 +4,8 @@ import { AccordionModule } from 'primeng/accordion';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { Employment } from '@osf/shared/models';
-import { MonthYearPipe } from '@osf/shared/pipes';
+import { Employment } from '@osf/shared/models/user/employment.model';
+import { MonthYearPipe } from '@osf/shared/pipes/month-year.pipe';
 
 @Component({
   selector: 'osf-employment-history',

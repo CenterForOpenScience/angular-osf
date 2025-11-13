@@ -4,7 +4,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { TooltipPosition } from '@osf/shared/models';
+import { TooltipPosition } from '@osf/shared/models/tooltip-position.model';
 
 @Component({
   selector: 'osf-info-icon',

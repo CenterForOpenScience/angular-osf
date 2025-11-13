@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@shared/helpers';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
 import { PreprintsService } from '../../services';
 

@@ -4,7 +4,7 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@shared/helpers';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { LinkedProjectsService } from '@shared/services/linked-projects.service';
 
 import { ClearLinkedProjects, GetAllLinkedProjects } from './linked-projects.actions';

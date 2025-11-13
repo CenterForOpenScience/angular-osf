@@ -3,15 +3,15 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiResponse } from '@shared/models';
+import { JsonApiResponse } from '@shared/models/common/json-api.model';
 
-import { ResourceType } from '../enums';
-import { ViewOnlyLinksMapper } from '../mappers';
+import { ResourceType } from '../enums/resource-type.enum';
+import { ViewOnlyLinksMapper } from '../mappers/view-only-links.mapper';
+import { PaginatedViewOnlyLinksModel } from '../models/view-only-links/view-only-link.model';
 import {
-  PaginatedViewOnlyLinksModel,
   ViewOnlyLinkJsonApi,
   ViewOnlyLinksResponseJsonApi,
-} from '../models/view-only-links';
+} from '../models/view-only-links/view-only-link-response.model';
 
 import { JsonApiService } from './json-api.service';
 

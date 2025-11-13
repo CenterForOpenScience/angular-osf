@@ -8,26 +8,28 @@ import { inject, Injectable } from '@angular/core';
 import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@core/store/user';
-import { AddonMapper } from '@osf/shared/mappers';
+import { AddonMapper } from '@osf/shared/mappers/addon.mapper';
+import { AddonModel } from '@osf/shared/models/addons/addon.model';
 import {
   AddonGetResponseJsonApi,
-  AddonModel,
-  AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
   AuthorizedAddonRequestJsonApi,
   AuthorizedAddonResponseJsonApi,
   ConfiguredAddonGetResponseJsonApi,
-  ConfiguredAddonModel,
   ConfiguredAddonRequestJsonApi,
   ConfiguredAddonResponseJsonApi,
   IncludedAddonData,
-  JsonApiResponse,
-  OperationInvocation,
-  OperationInvocationRequestJsonApi,
-  OperationInvocationResponseJsonApi,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
-} from '@osf/shared/models';
+} from '@osf/shared/models/addons/addon-json-api.models';
+import {
+  OperationInvocationRequestJsonApi,
+  OperationInvocationResponseJsonApi,
+} from '@osf/shared/models/addons/addon-operations-json-api.models';
+import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { OperationInvocation } from '@osf/shared/models/addons/operation-invocation.model';
+import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 
 import { JsonApiService } from '../json-api.service';
 

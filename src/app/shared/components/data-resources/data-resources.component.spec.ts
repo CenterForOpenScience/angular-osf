@@ -1,7 +1,9 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+
+import { IconComponent } from '../icon/icon.component';
 
 import { DataResourcesComponent } from './data-resources.component';
 
@@ -17,7 +19,7 @@ describe('DataResourcesComponent', () => {
     activatedRouteMock = ActivatedRouteMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [DataResourcesComponent, OSFTestingModule],
+      imports: [DataResourcesComponent, OSFTestingModule, MockComponent(IconComponent)],
       providers: [MockProvider(ActivatedRoute, activatedRouteMock)],
     }).compileComponents();
 

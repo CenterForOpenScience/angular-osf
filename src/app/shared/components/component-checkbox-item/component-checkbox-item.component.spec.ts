@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { InfoIconComponent } from '../info-icon/info-icon.component';
 
 import { ComponentCheckboxItemComponent } from './component-checkbox-item.component';
 
@@ -8,7 +12,7 @@ describe('ComponentCheckboxItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ComponentCheckboxItemComponent],
+      imports: [ComponentCheckboxItemComponent, MockComponent(InfoIconComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ComponentCheckboxItemComponent);

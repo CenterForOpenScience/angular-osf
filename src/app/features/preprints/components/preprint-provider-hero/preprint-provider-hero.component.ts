@@ -9,10 +9,10 @@ import { FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { CustomDialogService } from '@osf/shared/services';
-import { SearchInputComponent } from '@shared/components';
-import { normalizeQuotes } from '@shared/helpers';
-import { DecodeHtmlPipe } from '@shared/pipes';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { normalizeQuotes } from '@shared/helpers/normalize-quotes';
+import { DecodeHtmlPipe } from '@shared/pipes/decode-html.pipe';
 
 import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints-help-dialog.component';
 

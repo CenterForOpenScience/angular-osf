@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributorAddModel } from '@shared/models';
+import { ContributorAddModel } from '@osf/shared/models/contributors/contributor-add.model';
 
 import { AddContributorItemComponent } from './add-contributor-item.component';
 

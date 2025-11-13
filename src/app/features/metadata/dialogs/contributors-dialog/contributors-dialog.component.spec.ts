@@ -4,15 +4,17 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributorModel } from '@osf/shared/models';
-import { CustomDialogService } from '@osf/shared/services';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
-import { SearchInputComponent } from '@shared/components';
 import { ContributorsTableComponent } from '@shared/components/contributors';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
 
 import { ContributorsDialogComponent } from './contributors-dialog.component';
 
-import { MOCK_CONTRIBUTOR, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
+import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

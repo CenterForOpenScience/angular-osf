@@ -1,0 +1,25 @@
+@if (resourceId()) {
+  <div class="flex gap-2 justify-content-end">
+    @if (isAuthenticated()) {
+      <p-button
+        [pTooltip]="'project.overview.tooltips.bookmarks' | translate"
+        tooltipPosition="bottom"
+        (onClick)="toggleBookmark()"
+        [loading]="isBookmarksLoading() || isBookmarksSubmitting()"
+        [ariaLabel]="'project.overview.tooltips.bookmarks' | translate"
+      >
+        @if (!isBookmarksLoading() && !isBookmarksSubmitting()) {
+          <i class="text-2xl" [class]="isBookmarked() ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
+        }
+      </p-button>
+    }
+
+    @if (isPublic()) {
+      <osf-socials-share-button
+        [resourceId]="resourceId()"
+        [resourceTitle]="resourceTitle()"
+        [resourceType]="resourceType"
+      ></osf-socials-share-button>
+    }
+  </div>
+}

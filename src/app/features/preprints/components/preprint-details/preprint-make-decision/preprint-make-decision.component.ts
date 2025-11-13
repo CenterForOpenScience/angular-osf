@@ -23,8 +23,8 @@ import {
   SubmitRequestsDecision,
   SubmitReviewsDecision,
 } from '@osf/features/preprints/store/preprint';
-import { InputLimits } from '@osf/shared/constants';
-import { StringOrNull } from '@osf/shared/helpers';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
 @Component({
   selector: 'osf-preprint-make-decision',

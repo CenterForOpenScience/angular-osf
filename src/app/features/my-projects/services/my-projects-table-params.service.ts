@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { TableParameters } from '@osf/shared/models';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 @Injectable({ providedIn: 'root' })
 export class MyProjectsTableParamsService {

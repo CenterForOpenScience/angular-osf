@@ -16,18 +16,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PreprintSubmissionItemComponent } from '@osf/features/moderation/components';
 import { PREPRINT_SORT_OPTIONS, SUBMISSION_REVIEW_OPTIONS } from '@osf/features/moderation/constants';
 import { PreprintSubmissionsSort, SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import {
-  CustomPaginatorComponent,
-  IconComponent,
-  LoadingSpinnerComponent,
-  SelectComponent,
-} from '@osf/shared/components';
-import { Primitive } from '@osf/shared/helpers';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 
 import { PreprintSubmissionModel } from '../../models';
 import {
   GetPreprintSubmissionContributors,
   GetPreprintSubmissions,
+  LoadMorePreprintSubmissionContributors,
   PreprintModerationSelectors,
 } from '../../store/preprint-moderation';
 
@@ -60,6 +59,7 @@ export class PreprintSubmissionsComponent implements OnInit {
   readonly actions = createDispatchMap({
     getPreprintSubmissions: GetPreprintSubmissions,
     getPreprintSubmissionContributors: GetPreprintSubmissionContributors,
+    loadMorePreprintSubmissionContributors: LoadMorePreprintSubmissionContributors,
   });
 
   readonly submissions = select(PreprintModerationSelectors.getPreprintSubmissions);
@@ -129,6 +129,10 @@ export class PreprintSubmissionsComponent implements OnInit {
 
   loadContributors(item: PreprintSubmissionModel) {
     this.actions.getPreprintSubmissionContributors(item.id);
+  }
+
+  loadMoreContributors(item: PreprintSubmissionModel) {
+    this.actions.loadMorePreprintSubmissionContributors(item.id);
   }
 
   private getStatusFromQueryParams() {

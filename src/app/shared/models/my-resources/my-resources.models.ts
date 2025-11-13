@@ -1,4 +1,6 @@
-import { ContributorDataJsonApi, ContributorModel, ResponseJsonApi } from '@shared/models';
+import { ResponseJsonApi } from '../common/json-api.model';
+import { ContributorModel } from '../contributors/contributor.model';
+import { ContributorDataJsonApi } from '../contributors/contributor-response-json-api.model';
 
 export type MyResourcesItemResponseJsonApi = ResponseJsonApi<MyResourcesItem[]>;
 

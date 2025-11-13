@@ -1,4 +1,4 @@
-import { ToastService } from '@osf/shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 export type ToastServiceMockType = Partial<ToastService> & {
   showSuccess: jest.Mock;

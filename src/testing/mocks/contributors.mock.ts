@@ -1,6 +1,5 @@
-import { ContributorPermission } from '@shared/enums';
-
-import { ContributorModel } from '../../app/shared/models';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 
 export const MOCK_CONTRIBUTOR: ContributorModel = {
   id: 'contributor-1',

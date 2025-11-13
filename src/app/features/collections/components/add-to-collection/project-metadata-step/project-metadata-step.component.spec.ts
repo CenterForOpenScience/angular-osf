@@ -1,13 +1,13 @@
 import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
-import { Step, StepItem, StepPanel } from 'primeng/stepper';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection';
-import { TagsInputComponent, TextInputComponent, TruncatedTextComponent } from '@shared/components';
-import { InterpolatePipe } from '@shared/pipes';
-import { ToastService } from '@shared/services';
+import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { InterpolatePipe } from '@shared/pipes/interpolate.pipe';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 import { ProjectMetadataStepComponent } from './project-metadata-step.component';
@@ -29,7 +29,7 @@ describe.skip('ProjectMetadataStepComponent', () => {
       imports: [
         ProjectMetadataStepComponent,
         OSFTestingModule,
-        ...MockComponents(StepPanel, Step, StepItem, TagsInputComponent, TextInputComponent, TruncatedTextComponent),
+        ...MockComponents(TagsInputComponent, TextInputComponent, TruncatedTextComponent),
         MockPipe(InterpolatePipe),
       ],
       providers: [

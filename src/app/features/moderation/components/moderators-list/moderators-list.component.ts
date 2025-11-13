@@ -24,11 +24,13 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ProviderSelectors } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
-import { SearchInputComponent } from '@osf/shared/components';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { TableParameters } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 import { AddModeratorType } from '../../enums';
 import { ModeratorDialogAddModel, ModeratorModel } from '../../models';

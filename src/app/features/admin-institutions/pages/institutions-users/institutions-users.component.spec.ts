@@ -10,13 +10,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserState } from '@core/store/user';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
-import { CustomDialogService, ToastService } from '@osf/shared/services';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { InstitutionsSearchState } from '@osf/shared/stores/institutions-search';
-import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 
 import { InstitutionsUsersComponent } from './institutions-users.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 
@@ -29,11 +30,7 @@ describe('InstitutionsUsersComponent', () => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [
-        InstitutionsUsersComponent,
-        ...MockComponents(AdminTableComponent, SelectComponent, LoadingSpinnerComponent),
-        OSFTestingModule,
-      ],
+      imports: [InstitutionsUsersComponent, ...MockComponents(AdminTableComponent, SelectComponent), OSFTestingModule],
       providers: [
         MockProvider(ActivatedRoute, { queryParams: of({}) }),
         MockProvider(Router),

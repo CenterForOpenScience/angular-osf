@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { FilesContainerComponent } from './pages/files-container/files-container.component';
 

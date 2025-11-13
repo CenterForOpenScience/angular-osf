@@ -1,4 +1,4 @@
-import { MetaJsonApi } from '@shared/models';
+import { MetaJsonApi } from '@osf/shared/models/common/json-api.model';
 
 export interface InstitutionUserAttributesJsonApi {
   user_name: string;

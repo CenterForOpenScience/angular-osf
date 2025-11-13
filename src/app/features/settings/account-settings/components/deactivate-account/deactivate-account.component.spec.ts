@@ -12,16 +12,15 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { ToastService } from '@osf/shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 
-import { AccountSettingsService } from '../../services';
 import { AccountSettingsSelectors } from '../../store';
 import { CancelDeactivationComponent } from '../cancel-deactivation/cancel-deactivation.component';
 import { DeactivationWarningComponent } from '../deactivation-warning/deactivation-warning.component';
 
 import { DeactivateAccountComponent } from './deactivate-account.component';
 
-import { MOCK_STORE } from '@testing/mocks';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
 
 describe('DeactivateAccountComponent', () => {
   let component: DeactivateAccountComponent;
@@ -47,14 +46,6 @@ describe('DeactivateAccountComponent', () => {
         return () => MOCK_ACCOUNT_SETTINGS;
       }
 
-      if (selector === AccountSettingsSelectors.getEmails) {
-        return () => [];
-      }
-
-      if (selector === AccountSettingsSelectors.getRegions) {
-        return () => [];
-      }
-
       return () => null;
     });
 
@@ -69,7 +60,7 @@ describe('DeactivateAccountComponent', () => {
         MockProvider(Store, store),
         provideHttpClient(),
         provideHttpClientTesting(),
-        MockProviders(DynamicDialogRef, DialogService, TranslateService, ToastService, AccountSettingsService),
+        MockProviders(DynamicDialogRef, DialogService, TranslateService, ToastService),
       ],
     }).compileComponents();
 

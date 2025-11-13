@@ -3,8 +3,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiResponse } from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { DeveloperAppMapper } from '../mappers';
 import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppGetResponseJsonApi } from '../models';

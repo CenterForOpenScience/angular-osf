@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { LicenseModel } from '@osf/shared/models';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
 
 import { LicensesStateModel } from './licenses.model';
 import { LicensesState } from './licenses.state';

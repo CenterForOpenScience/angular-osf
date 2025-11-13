@@ -3,18 +3,15 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { SubscriptionFrequency } from '@osf/shared/enums';
-import { NotificationSubscriptionMapper } from '@osf/shared/mappers';
-import {
-  BaseNodeDataJsonApi,
-  NodeResponseJsonApi,
-  NodeShortInfoModel,
-  NotificationSubscription,
-  NotificationSubscriptionGetResponseJsonApi,
-  ResponseJsonApi,
-  UpdateNodeRequestModel,
-} from '@osf/shared/models';
-import { JsonApiService } from '@shared/services';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+import { NotificationSubscriptionMapper } from '@osf/shared/mappers/notification-subscription.mapper';
+import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
+import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
+import { NodeResponseJsonApi, UpdateNodeRequestModel } from '@osf/shared/models/nodes/nodes-json-api.model';
+import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
+import { NotificationSubscriptionGetResponseJsonApi } from '@osf/shared/models/notifications/notification-subscription-json-api.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { SettingsMapper } from '../mappers';
 import {

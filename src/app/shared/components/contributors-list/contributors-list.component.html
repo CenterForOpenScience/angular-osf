@@ -22,13 +22,12 @@
   }
 </div>
 
-@if (hasLoadMore()) {
+@if (hasLoadMore() && !isLoading()) {
   <div class="flex mt-2">
     <p-button
       (onClick)="loadMoreContributors.emit()"
       severity="secondary"
       [label]="'common.buttons.seeMore' | translate"
-      [loading]="isLoading()"
     />
   </div>
 }

@@ -7,18 +7,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
-import { ProjectFormControls } from '@osf/shared/enums';
-import { CustomValidators } from '@osf/shared/helpers';
-import { ProjectForm } from '@osf/shared/models';
+import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 import { ProjectModel } from '@osf/shared/models/projects';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { ProjectsSelectors } from '@osf/shared/stores/projects';
 import { RegionsSelectors } from '@osf/shared/stores/regions';
-import { AffiliatedInstitutionSelectComponent, ProjectSelectorComponent } from '@shared/components';
+import { ProjectForm } from '@shared/models/projects/create-project-form.model';
+
+import { AffiliatedInstitutionSelectComponent } from '../affiliated-institution-select/affiliated-institution-select.component';
+import { ProjectSelectorComponent } from '../project-selector/project-selector.component';
 
 import { AddProjectFormComponent } from './add-project-form.component';
 
-import { MOCK_USER } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 

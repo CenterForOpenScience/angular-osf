@@ -18,9 +18,11 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { searchSortingOptions } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { DiscoverableFilter, FilterOption, ResourceModel, TabOption } from '@osf/shared/models';
+import { searchSortingOptions } from '@osf/shared/constants/search-sort-options.const';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { DiscoverableFilter, FilterOption } from '@shared/models/search/discaverable-filter.model';
+import { ResourceModel } from '@shared/models/search/resource.model';
+import { TabOption } from '@shared/models/tab-option.model';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '../resource-card/resource-card.component';

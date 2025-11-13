@@ -1,8 +1,10 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { EducationHistoryComponent } from '../education-history/education-history.component';
 
 import { EducationHistoryDialogComponent } from './education-history-dialog.component';
 
@@ -14,7 +16,7 @@ describe('EducationHistoryDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EducationHistoryDialogComponent, OSFTestingModule],
+      imports: [EducationHistoryDialogComponent, OSFTestingModule, MockComponent(EducationHistoryComponent)],
       providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
     }).compileComponents();
 

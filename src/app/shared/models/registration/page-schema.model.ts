@@ -1,4 +1,4 @@
-import { FieldType } from '@osf/shared/enums';
+import { FieldType } from '@osf/shared/enums/field-type.enum';
 
 export interface PageSchema {
   id: string;

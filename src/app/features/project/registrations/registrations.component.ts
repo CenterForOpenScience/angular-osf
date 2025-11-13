@@ -12,12 +12,10 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import {
-  CustomPaginatorComponent,
-  LoadingSpinnerComponent,
-  RegistrationCardComponent,
-  SubHeaderComponent,
-} from '@osf/shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { GetRegistrations, RegistrationsSelectors } from './store';

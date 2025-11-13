@@ -6,14 +6,16 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
 import { ModeratorAddModel } from '../../models';
 import { ModeratorsSelectors } from '../../store/moderators';
 
 import { AddModeratorDialogComponent } from './add-moderator-dialog.component';
 
-import { MOCK_USER } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';

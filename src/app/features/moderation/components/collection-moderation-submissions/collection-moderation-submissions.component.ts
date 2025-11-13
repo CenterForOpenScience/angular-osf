@@ -9,14 +9,12 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  CustomPaginatorComponent,
-  IconComponent,
-  LoadingSpinnerComponent,
-  SelectComponent,
-} from '@osf/shared/components';
-import { COLLECTION_SUBMISSIONS_SORT_OPTIONS } from '@osf/shared/constants';
-import { Primitive } from '@osf/shared/helpers';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { COLLECTION_SUBMISSIONS_SORT_OPTIONS } from '@osf/shared/constants/sort-options.const';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 import {
   ClearCollections,
   ClearCollectionSubmissions,

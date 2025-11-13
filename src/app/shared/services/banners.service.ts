@@ -6,8 +6,8 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { BannerModel } from '../../core/components/osf-banners/models/banner.model';
 import { BannerMapper } from '../mappers/banner.mapper';
-import { JsonApiResponse } from '../models';
 import { BannerJsonApi } from '../models/banner.json-api.model';
+import { JsonApiResponse } from '../models/common/json-api.model';
 
 import { JsonApiService } from './json-api.service';
 

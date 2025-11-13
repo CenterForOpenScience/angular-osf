@@ -1,5 +1,5 @@
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { ResourceType } from '@shared/enums';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 
 import { PrivacyStatusModel } from '../models';
 

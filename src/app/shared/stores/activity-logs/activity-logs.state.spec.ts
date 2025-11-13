@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
-import { ActivityLogDisplayService } from '@shared/services';
+import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
 
 import { ClearActivityLogsStore, GetActivityLogs, GetRegistrationActivityLogs } from './activity-logs.actions';
 import { ActivityLogsState } from './activity-logs.state';

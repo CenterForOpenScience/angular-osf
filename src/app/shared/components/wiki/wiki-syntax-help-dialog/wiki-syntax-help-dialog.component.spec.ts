@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WikiSyntaxHelpDialogComponent } from './wiki-syntax-help-dialog.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('WikiSyntaxHelpDialogComponent', () => {
   let component: WikiSyntaxHelpDialogComponent;

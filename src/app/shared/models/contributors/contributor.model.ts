@@ -1,5 +1,6 @@
-import { ContributorPermission } from '@osf/shared/enums';
-import { Education, Employment } from '@osf/shared/models';
+import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { Education } from '@osf/shared/models/user/education.model';
+import { Employment } from '@osf/shared/models/user/employment.model';
 
 export interface ContributorModel {
   id: string;

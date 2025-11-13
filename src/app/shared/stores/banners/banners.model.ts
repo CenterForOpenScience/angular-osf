@@ -1,5 +1,5 @@
 import { BannerModel } from '@core/components/osf-banners/models/banner.model';
-import { AsyncStateModel } from '@shared/models/store';
+import { AsyncStateModel } from '@shared/models/store/async-state.model';
 
 /**
  * NGXS State model for managing banner-related data.

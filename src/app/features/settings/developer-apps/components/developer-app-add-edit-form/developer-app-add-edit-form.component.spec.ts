@@ -1,7 +1,7 @@
 import { provideStore } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProviders } from 'ng-mocks';
+import { MockComponent, MockPipe, MockProviders } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -9,13 +9,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ToastService } from '@shared/services';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { DeveloperAppsState } from '../../store';
 
 import { DeveloperAppAddEditFormComponent } from './developer-app-add-edit-form.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('CreateDeveloperAppComponent', () => {
   let component: DeveloperAppAddEditFormComponent;
@@ -23,7 +24,7 @@ describe('CreateDeveloperAppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeveloperAppAddEditFormComponent, MockPipe(TranslatePipe)],
+      imports: [DeveloperAppAddEditFormComponent, MockComponent(TextInputComponent), MockPipe(TranslatePipe)],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),

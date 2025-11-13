@@ -3,7 +3,7 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 import { CollectionsState } from '@shared/stores/collections';
 

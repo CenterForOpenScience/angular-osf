@@ -14,7 +14,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { SubjectModel } from '@osf/shared/models';
+import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { SearchInputComponent } from '../search-input/search-input.component';

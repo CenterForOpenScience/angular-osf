@@ -12,7 +12,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { LoaderService, ToastService } from '@osf/shared/services';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { UpdateIndexing } from '../../store';
 

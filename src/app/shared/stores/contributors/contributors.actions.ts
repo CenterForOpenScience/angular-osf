@@ -1,6 +1,8 @@
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { ContributorAddModel, ContributorModel, RequestAccessPayload } from '@osf/shared/models';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
+import { RequestAccessPayload } from '@shared/models/request-access/request-access-payload.model';
 
 export class GetAllContributors {
   static readonly type = '[Contributors] Get All Contributors';

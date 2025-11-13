@@ -33,8 +33,10 @@
       ></p-button>
     </div>
 
-    <div class="flex justify-content-end w-full flex-0 border-top-1 pt-4 border-gray-300">
-      <p-button (onClick)="deleteProject.emit()" severity="danger" [label]="deleteLabel() | translate"></p-button>
-    </div>
+    @if (canDelete()) {
+      <div class="flex justify-content-end w-full flex-0 border-top-1 pt-4 border-gray-300">
+        <p-button (onClick)="deleteProject.emit()" severity="danger" [label]="deleteLabel() | translate"></p-button>
+      </div>
+    }
   </form>
 </p-card>

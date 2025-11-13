@@ -11,21 +11,18 @@ import { FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import {
-  AdvisoryBoardComponent,
-  BrowseBySubjectsComponent,
-  PreprintServicesComponent,
-} from '@osf/features/preprints/components';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { normalizeQuotes } from '@osf/shared/helpers/normalize-quotes';
+import { BrandService } from '@osf/shared/services/brand.service';
+
+import { AdvisoryBoardComponent, BrowseBySubjectsComponent, PreprintServicesComponent } from '../../components';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
   PreprintProvidersSelectors,
-} from '@osf/features/preprints/store/preprint-providers';
-import { SearchInputComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { normalizeQuotes } from '@shared/helpers';
-import { BrandService } from '@shared/services';
+} from '../../store/preprint-providers';
 
 @Component({
   selector: 'osf-overview',

@@ -1,5 +1,5 @@
 import { AddonTabValue } from '@shared/enums/addon-tab.enum';
-import { SelectOption } from '@shared/models';
+import { SelectOption } from '@shared/models/select-option.model';
 
 export const ADDON_TAB_OPTIONS: SelectOption[] = [
   {

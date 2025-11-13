@@ -8,7 +8,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 
-import { CustomPaginatorComponent } from '@osf/shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { CollectionsSelectors, SetPageNumber } from '@shared/stores/collections';
 
 import { CollectionsSearchResultCardComponent } from '../collections-search-result-card/collections-search-result-card.component';

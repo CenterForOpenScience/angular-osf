@@ -7,7 +7,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ModerationType, SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { CollectionsModerationSelectors } from '@osf/features/moderation/store/collections-moderation';
-import { ModerationDecisionFormControls, ModerationSubmitType } from '@osf/shared/enums';
+import { ModerationDecisionFormControls } from '@osf/shared/enums/moderation-decision-form-controls.enum';
+import { ModerationSubmitType } from '@osf/shared/enums/moderation-submit-type.enum';
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
 
 import { MakeDecisionDialogComponent } from './make-decision-dialog.component';

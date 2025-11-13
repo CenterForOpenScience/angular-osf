@@ -1,4 +1,4 @@
-import { SocialIcon } from '@osf/shared/models';
+import { SocialIcon } from '@osf/shared/models/socials/social-icon.model';
 
 export const SOCIAL_ICONS: SocialIcon[] = [
   {

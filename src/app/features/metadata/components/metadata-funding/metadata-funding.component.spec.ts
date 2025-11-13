@@ -4,7 +4,7 @@ import { Funder } from '@osf/features/metadata/models';
 
 import { MetadataFundingComponent } from './metadata-funding.component';
 
-import { MOCK_FUNDERS } from '@testing/mocks';
+import { MOCK_FUNDERS } from '@testing/mocks/funder.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataFundingComponent', () => {

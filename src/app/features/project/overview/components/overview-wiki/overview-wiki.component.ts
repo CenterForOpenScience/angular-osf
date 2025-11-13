@@ -8,7 +8,8 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MarkdownComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { MarkdownComponent } from '@osf/shared/components/markdown/markdown.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { WikiSelectors } from '@osf/shared/stores/wiki';
 
 @Component({

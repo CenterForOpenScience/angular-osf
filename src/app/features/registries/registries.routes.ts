@@ -2,8 +2,8 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@core/guards/auth.guard';
 import { registrationModerationGuard } from '@core/guards/registration-moderation.guard';
-import { authGuard } from '@osf/core/guards';
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
 import { RegistriesState } from '@osf/features/registries/store';
 import { CitationsState } from '@osf/shared/stores/citations';

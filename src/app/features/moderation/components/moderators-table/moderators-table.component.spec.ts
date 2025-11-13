@@ -2,9 +2,9 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectComponent } from '@shared/components';
-import { TableParameters } from '@shared/models';
-import { CustomDialogService } from '@shared/services';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 import { ModeratorModel } from '../../models';
 

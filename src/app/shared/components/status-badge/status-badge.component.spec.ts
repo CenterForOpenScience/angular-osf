@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegistryStatus } from '@osf/shared/enums';
+import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
 
 import { StatusBadgeComponent } from './status-badge.component';
 

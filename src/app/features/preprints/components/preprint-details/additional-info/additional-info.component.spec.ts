@@ -1,10 +1,11 @@
-import { MockComponent, MockPipe } from 'ng-mocks';
+import { MockComponents, MockPipe } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { InterpolatePipe } from '@osf/shared/pipes';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { CitationSectionComponent } from '../citation-section/citation-section.component';
@@ -26,7 +27,7 @@ describe('AdditionalInfoComponent', () => {
       imports: [
         AdditionalInfoComponent,
         OSFTestingModule,
-        MockComponent(CitationSectionComponent),
+        ...MockComponents(CitationSectionComponent, LicenseDisplayComponent),
         MockPipe(InterpolatePipe),
       ],
       providers: [

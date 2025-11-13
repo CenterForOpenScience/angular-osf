@@ -5,7 +5,7 @@ import { Select } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { SelectOption } from '@osf/shared/models';
+import { SelectOption } from '@osf/shared/models/select-option.model';
 
 @Component({
   selector: 'osf-form-select',

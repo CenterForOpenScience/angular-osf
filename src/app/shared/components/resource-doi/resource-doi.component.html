@@ -1,0 +1,13 @@
+@if (isLoading()) {
+  <p-skeleton width="100%" height="1.5rem" />
+} @else {
+  @for (identifier of identifiers(); track identifier.id) {
+    @if (identifier.category === 'doi') {
+      <a class="font-bold" [href]="'https://doi.org/' + identifier.value">
+        {{ identifier.value }}
+      </a>
+    }
+  } @empty {
+    <p>{{ 'common.labels.noDoi' | translate }}</p>
+  }
+}

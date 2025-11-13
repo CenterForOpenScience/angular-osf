@@ -13,14 +13,18 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { TextInputComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
-import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
-import { ContributorModel, DraftRegistrationModel, SubjectModel } from '@osf/shared/models';
-import { CustomConfirmationService } from '@osf/shared/services';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
-import { UserPermissions } from '@shared/enums';
+import { UserPermissions } from '@shared/enums/user-permissions.enum';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { DraftRegistrationModel } from '@shared/models/registration/draft-registration.model';
+import { SubjectModel } from '@shared/models/subject/subject.model';
 
 import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepState } from '../../store';
 

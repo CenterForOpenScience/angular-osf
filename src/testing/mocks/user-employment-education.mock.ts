@@ -1,4 +1,5 @@
-import { Education, Employment } from '@osf/shared/models';
+import { Education } from '@osf/shared/models/user/education.model';
+import { Employment } from '@osf/shared/models/user/employment.model';
 
 export const MOCK_EMPLOYMENT: Employment[] = [
   {

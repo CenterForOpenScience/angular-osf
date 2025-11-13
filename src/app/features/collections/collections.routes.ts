@@ -2,7 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { authGuard } from '@osf/core/guards';
+import { authGuard } from '@core/guards/auth.guard';
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ConfirmLeavingGuard } from '@shared/guards';

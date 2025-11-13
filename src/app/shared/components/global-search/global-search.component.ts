@@ -19,10 +19,11 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { normalizeQuotes } from '@osf/shared/helpers/normalize-quotes';
 import { SearchFiltersComponent } from '@shared/components/search-filters/search-filters.component';
-import { ResourceType } from '@shared/enums';
-import { normalizeQuotes } from '@shared/helpers';
-import { DiscoverableFilter, FilterOption, TabOption } from '@shared/models';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import { DiscoverableFilter, FilterOption } from '@shared/models/search/discaverable-filter.model';
+import { TabOption } from '@shared/models/tab-option.model';
 import {
   ClearFilterSearchResults,
   FetchResources,

@@ -8,8 +8,9 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { LoaderService } from '@osf/shared/services';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { LoaderService } from '@osf/shared/services/loader.service';
 
 import { RegistrationLinksCardComponent } from '../../components';
 import { GetLinkedNodes, GetLinkedRegistrations, RegistryLinksSelectors } from '../../store/registry-links';

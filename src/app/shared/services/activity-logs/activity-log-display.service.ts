@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { inject, Injectable } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { ActivityLog } from '@shared/models';
+import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
 
 import { ActivityLogFormatterService } from './activity-log-formatter.service';
 

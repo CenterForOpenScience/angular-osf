@@ -6,13 +6,13 @@ import { TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import { Identifier } from '@shared/models';
-import { DataciteEvent } from '@shared/models/datacite/datacite-event.enum';
+import { DataciteEvent } from '@osf/shared/enums/datacite/datacite-event.enum';
+import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
 
 import { DataciteService } from './datacite.service';
 
 function buildObservable(doi: string) {
-  return new Observable<{ identifiers?: Identifier[] } | null>((subscriber) => {
+  return new Observable<{ identifiers?: IdentifierModel[] } | null>((subscriber) => {
     subscriber.next({});
     subscriber.next({ identifiers: [] });
     subscriber.next({

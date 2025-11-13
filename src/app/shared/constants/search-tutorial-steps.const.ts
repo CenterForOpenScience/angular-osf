@@ -1,4 +1,4 @@
-import { TutorialStep } from '../models';
+import { TutorialStep } from '../models/tutorial-step.model';
 
 export const SEARCH_TUTORIAL_STEPS: TutorialStep[] = [
   {

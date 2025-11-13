@@ -1,4 +1,4 @@
-import { FileFolderModel } from '@osf/shared/models';
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 
 import { PatchFileMetadata } from '../models';
 

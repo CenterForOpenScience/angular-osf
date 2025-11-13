@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 
-import { AuthService } from '../services';
+import { AuthService } from '@core/services/auth.service';
 
 import { redirectIfLoggedInGuard } from './redirect-if-logged-in.guard';
 

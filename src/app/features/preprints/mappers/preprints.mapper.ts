@@ -1,6 +1,7 @@
-import { IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
-import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models';
-import { StringOrNull } from '@shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
+import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
+import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 
 import {
   PreprintAttributesJsonApi,
@@ -79,6 +80,7 @@ export class PreprintsMapper {
       preprintDoiLink: response.links.preprint_doi,
       articleDoiLink: response.links.doi,
       embeddedLicense: null,
+      providerId: response.relationships?.provider?.data?.id,
     };
   }
 
@@ -91,6 +93,7 @@ export class PreprintsMapper {
   ): PreprintModel {
     const data = response.data;
     const links = response.data.links;
+    const relationships = response?.data?.relationships;
 
     return {
       id: data.id,
@@ -136,6 +139,7 @@ export class PreprintsMapper {
       identifiers: IdentifiersMapper.fromJsonApi(data.embeds?.identifiers),
       preprintDoiLink: links.preprint_doi,
       articleDoiLink: links.doi,
+      providerId: relationships?.provider?.data?.id,
     };
   }
 

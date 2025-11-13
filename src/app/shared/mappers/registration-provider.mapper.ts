@@ -1,9 +1,7 @@
-import {
-  ProviderSchema,
-  ProvidersResponseJsonApi,
-  RegistryProviderDetails,
-  RegistryProviderDetailsJsonApi,
-} from '@osf/shared/models';
+import { ProvidersResponseJsonApi } from '../models/provider/providers-json-api.model';
+import { RegistryProviderDetailsJsonApi } from '../models/provider/registration-provider-json-api.model';
+import { RegistryProviderDetails } from '../models/provider/registry-provider.model';
+import { ProviderSchema } from '../models/registration/provider-schema.model';
 
 export class RegistrationProviderMapper {
   static fromProvidersResponse(response: ProvidersResponseJsonApi): ProviderSchema[] {
@@ -14,7 +12,7 @@ export class RegistrationProviderMapper {
   }
 
   static fromRegistryProvider(response: RegistryProviderDetailsJsonApi): RegistryProviderDetails {
-    const brandRaw = response.embeds!.brand.data;
+    const brandRaw = response.embeds?.brand.data;
 
     return {
       id: response.id,

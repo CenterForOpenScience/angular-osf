@@ -12,9 +12,11 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { AuthService } from '@core/services';
-import { InputLimits } from '@osf/shared/constants';
-import { LoaderService, RequestAccessService, ToastService } from '@osf/shared/services';
+import { AuthService } from '@core/services/auth.service';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { RequestAccessService } from '@osf/shared/services/request-access.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 @Component({
   selector: 'osf-request-access',

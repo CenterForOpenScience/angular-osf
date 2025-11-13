@@ -137,7 +137,12 @@
       "updated": "Updated",
       "dateUpdated": "Date Updated",
       "dateCreated": "Date Created",
-      "license": "License"
+      "license": "License",
+      "noDoi": "No DOI",
+      "subjects": "Subjects",
+      "noLicense": "No License",
+      "affiliatedInstitutions": "Affiliated Institutions",
+      "noAffiliatedInstitutions": "No affiliated institutions"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -1472,7 +1477,8 @@
       "rejectSubmissionSuccess": "Submission has been rejected successfully",
       "forceWithdrawSuccess": "Submission has been force withdrawn successfully",
       "removeSuccess": "Submission has been withdrawn successfully",
-      "justificationPlaceholder": "Provide justification for withdrawal"
+      "justificationPlaceholder": "Provide justification for withdrawal",
+      "acceptWithdrawalSuccess": "Submission has been withdrawn successfully"
     },
     "submissionReview": {
       "submitted": "Submitted",

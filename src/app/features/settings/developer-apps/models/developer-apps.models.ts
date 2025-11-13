@@ -1,4 +1,4 @@
-import { StringOrNull } from '@osf/shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
 export interface DeveloperApp {
   id: string;

@@ -6,11 +6,13 @@ import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PreprintShortInfo } from '@osf/features/preprints/models';
-import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { DEFAULT_TABLE_PARAMS } from '@shared/constants';
-import { SortOrder } from '@shared/enums';
+import { ListInfoShortenerComponent } from '@osf/shared/components/list-info-shortener/list-info-shortener.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 
+import { PreprintShortInfo } from '../../models';
 import { MyPreprintsSelectors } from '../../store/my-preprints';
 
 import { MyPreprintsComponent } from './my-preprints.component';
