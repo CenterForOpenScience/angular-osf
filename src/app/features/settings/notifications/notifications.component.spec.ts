@@ -1,7 +1,7 @@
 import { Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -9,11 +9,15 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { LoaderService, ToastService } from '@osf/shared/services';
-import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
+import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AccountSettings } from '../account-settings/models';
 import { AccountSettingsSelectors } from '../account-settings/store';
@@ -21,7 +25,9 @@ import { AccountSettingsSelectors } from '../account-settings/store';
 import { NotificationsComponent } from './notifications.component';
 import { NotificationSubscriptionSelectors } from './store';
 
-import { MOCK_STORE, MOCK_USER, TranslateServiceMock } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe('NotificationsComponent', () => {
@@ -35,12 +41,18 @@ describe('NotificationsComponent', () => {
     subscribeOsfHelpEmail: false,
   };
 
+  // new_pending_submissions → global_reviews
+  // files_updated → global_file_updated
   const mockNotificationSubscriptions = [
-    { id: 'id1', event: SubscriptionEvent.GlobalMentions, frequency: SubscriptionFrequency.Daily },
     {
-      id: 'id2',
-      event: SubscriptionEvent.GlobalMentions,
+      id: 'osf_new_pending_submissions',
+      event: 'new_pending_submissions',
       frequency: SubscriptionFrequency.Instant,
+    },
+    {
+      id: 'cuzg4_global_file_updated',
+      event: 'files_updated',
+      frequency: SubscriptionFrequency.Daily,
     },
   ];
 
@@ -71,10 +83,14 @@ describe('NotificationsComponent', () => {
       return signal(null);
     });
 
-    MOCK_STORE.dispatch.mockImplementation(() => of());
+    MOCK_STORE.dispatch.mockReturnValue(of({}));
 
     await TestBed.configureTestingModule({
-      imports: [NotificationsComponent, MockPipe(TranslatePipe), ReactiveFormsModule],
+      imports: [
+        NotificationsComponent,
+        ...MockComponents(InfoIconComponent, SubHeaderComponent),
+        MockPipe(TranslatePipe),
+      ],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
@@ -106,9 +122,9 @@ describe('NotificationsComponent', () => {
 
       return signal(null);
     });
-    component.emailPreferencesFormSubmit();
 
-    expect(loaderService.hide).not.toHaveBeenCalled();
+    component.emailPreferencesFormSubmit();
+    expect(loaderService.hide).toHaveBeenCalledTimes(1);
   });
 
   it('should handle subscription completion correctly', () => {
@@ -126,11 +142,17 @@ describe('NotificationsComponent', () => {
   it('should call dispatch only once per subscription change', () => {
     const mockDispatch = jest.fn().mockReturnValue(of({}));
     MOCK_STORE.dispatch.mockImplementation(mockDispatch);
-    const event = SubscriptionEvent.GlobalMentions;
-    const frequency = SubscriptionFrequency.Daily;
 
-    component.onSubscriptionChange(event, frequency);
+    component.onSubscriptionChange(SubscriptionEvent.GlobalFileUpdated, SubscriptionFrequency.Daily);
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('should default to API value', () => {
+    const subs = component.notificationSubscriptionsForm.value;
+
+    expect(subs.global_reviews).toBe(SubscriptionFrequency.Instant);
+
+    expect(subs.global_file_updated).toBe(SubscriptionFrequency.Daily);
   });
 });
