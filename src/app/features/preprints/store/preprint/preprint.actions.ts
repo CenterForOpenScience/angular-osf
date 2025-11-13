@@ -1,4 +1,4 @@
-import { StringOrNull } from '@shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
 export class FetchPreprintById {
   static readonly type = '[Preprint] Fetch Preprint By Id';

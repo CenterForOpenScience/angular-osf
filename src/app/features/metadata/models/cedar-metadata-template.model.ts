@@ -1,4 +1,4 @@
-import { MetaJsonApi, PaginationLinksJsonApi } from '@osf/shared/models';
+import { MetaJsonApi, PaginationLinksJsonApi } from '@osf/shared/models/common/json-api.model';
 
 export interface CedarMetadataDataTemplateJsonApi {
   id: string;

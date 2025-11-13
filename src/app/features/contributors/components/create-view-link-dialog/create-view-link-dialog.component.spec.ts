@@ -1,14 +1,17 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ComponentCheckboxItemComponent } from '@osf/shared/components/component-checkbox-item/component-checkbox-item.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { CreateViewLinkDialogComponent } from './create-view-link-dialog.component';
 
-import { MOCK_RESOURCE_INFO, MOCK_RESOURCE_WITH_CHILDREN } from '@testing/mocks';
+import { MOCK_RESOURCE_INFO, MOCK_RESOURCE_WITH_CHILDREN } from '@testing/mocks/resource.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -28,7 +31,11 @@ describe('Component: Create View Link Dialog', () => {
     } as DynamicDialogConfig;
 
     await TestBed.configureTestingModule({
-      imports: [CreateViewLinkDialogComponent, OSFTestingModule],
+      imports: [
+        CreateViewLinkDialogComponent,
+        OSFTestingModule,
+        ...MockComponents(TextInputComponent, LoadingSpinnerComponent, ComponentCheckboxItemComponent),
+      ],
       providers: [
         provideMockStore({
           signals: [

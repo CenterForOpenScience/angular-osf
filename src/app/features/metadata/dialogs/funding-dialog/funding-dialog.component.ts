@@ -13,7 +13,7 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnIni
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { CustomValidators } from '@osf/shared/helpers';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 import { Funder, FundingDialogResult, FundingEntryForm, FundingForm, SupplementData } from '../../models';
 import { GetFundersList, MetadataSelectors } from '../../store';

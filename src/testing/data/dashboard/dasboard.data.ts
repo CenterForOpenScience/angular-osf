@@ -1,4 +1,4 @@
-import { MyResourcesItem } from '@shared/models';
+import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
 
 import structuredClone from 'structured-clone';
 

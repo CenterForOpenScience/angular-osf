@@ -4,15 +4,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CollectionSubmissionsListComponent } from '@osf/features/moderation/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
-import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 
 import { SubmissionReviewStatus } from '../../enums';
 import { CollectionsModerationSelectors } from '../../store/collections-moderation';
 
 import { CollectionModerationSubmissionsComponent } from './collection-moderation-submissions.component';
 
-import { MOCK_PROVIDER } from '@testing/mocks';
+import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';

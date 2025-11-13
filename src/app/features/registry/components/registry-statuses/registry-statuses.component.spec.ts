@@ -2,8 +2,9 @@ import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegistrationReviewStates, RegistryStatus } from '@osf/shared/enums';
-import { CustomConfirmationService, CustomDialogService } from '@osf/shared/services';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 import { RegistryStatusesComponent } from './registry-statuses.component';
 

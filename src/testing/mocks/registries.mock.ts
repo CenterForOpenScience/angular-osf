@@ -1,4 +1,4 @@
-import { FieldType } from '@osf/shared/enums';
+import { FieldType } from '@osf/shared/enums/field-type.enum';
 
 export const MOCK_REGISTRIES_PAGE = {
   id: 'page-1',

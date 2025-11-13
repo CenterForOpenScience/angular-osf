@@ -2,9 +2,10 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IconComponent } from '@shared/components';
-import { StorageItemType } from '@shared/enums';
-import { AddonOperationInvocationService, AddonsService } from '@shared/services';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { StorageItemType } from '@osf/shared/enums/storage-item-type.enum';
+import { AddonOperationInvocationService } from '@osf/shared/services/addons/addon-operation-invocation.service';
+import { AddonsService } from '@osf/shared/services/addons/addons.service';
 
 import { CitationItemComponent } from '../citation-item/citation-item.component';
 

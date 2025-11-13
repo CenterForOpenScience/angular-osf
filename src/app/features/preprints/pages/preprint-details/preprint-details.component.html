@@ -17,7 +17,7 @@
             height="36"
             [src]="preprintProvider()?.brand?.heroLogoImageUrl"
           />
-          <h1>{{ preprint()?.title }}</h1>
+          <h1>{{ preprint()?.title | fixSpecialChar }}</h1>
         </a>
       }
 

@@ -1,9 +1,9 @@
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
+import { LicenseOptions } from '@osf/shared/models/license/license.model';
 import {
   DraftRegistrationAttributesJsonApi,
   DraftRegistrationRelationshipsJsonApi,
-  FileFolderModel,
-  LicenseOptions,
-} from '@osf/shared/models';
+} from '@osf/shared/models/registration/registration-json-api.model';
 
 import { SchemaActionTrigger } from '../enums';
 

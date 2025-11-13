@@ -9,9 +9,11 @@ import { finalize } from 'rxjs';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { ReadonlyInputComponent } from '@osf/shared/components';
-import { Institution } from '@osf/shared/models';
-import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
+import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AccountSettingsSelectors, DeleteUserInstitution } from '../../store';
 

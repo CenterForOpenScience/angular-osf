@@ -1,4 +1,4 @@
-import { FilesMapper } from '@osf/shared/mappers';
+import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
 
 import structuredClone from 'structured-clone';
 

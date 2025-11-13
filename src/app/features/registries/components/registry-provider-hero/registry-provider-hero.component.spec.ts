@@ -3,9 +3,9 @@ import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { CustomDialogService } from '@osf/shared/services';
-import { SearchInputComponent } from '@shared/components';
-import { DecodeHtmlPipe } from '@shared/pipes';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { DecodeHtmlPipe } from '@shared/pipes/decode-html.pipe';
 
 import { RegistryProviderHeroComponent } from './registry-provider-hero.component';
 

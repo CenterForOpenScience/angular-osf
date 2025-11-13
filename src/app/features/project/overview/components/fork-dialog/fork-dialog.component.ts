@@ -10,8 +10,8 @@ import { finalize } from 'rxjs';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ToolbarResource } from '@osf/shared/models';
-import { ToastService } from '@osf/shared/services';
+import { ToolbarResource } from '@osf/shared/models/toolbar-resource.model';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { ForkResource, ProjectOverviewSelectors } from '../../store';
 

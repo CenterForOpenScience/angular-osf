@@ -1,22 +1,23 @@
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { MyResourcesMapper } from '@osf/features/my-projects/mappers';
 
-import { ResourceSearchMode, ResourceType, SortOrder } from '../enums';
+import { ResourceSearchMode } from '../enums/resource-search-mode.enum';
+import { SortOrder } from '../enums/sort-order.enum';
+import { MyResourcesMapper } from '../mappers/my-resources.mapper';
+import { JsonApiResponse } from '../models/common/json-api.model';
 import {
-  CreateProjectPayloadJsoApi,
-  EndpointType,
-  JsonApiResponse,
   MyResourcesItem,
   MyResourcesItemGetResponseJsonApi,
   MyResourcesItemResponseJsonApi,
   MyResourcesResponseJsonApi,
-  MyResourcesSearchFilters,
-} from '../models';
+} from '../models/my-resources/my-resources.models';
+import { EndpointType } from '../models/my-resources/my-resources-endpoint.type';
+import { MyResourcesSearchFilters } from '../models/my-resources/my-resources-search-filters.models';
+import { CreateProjectPayloadJsoApi } from '../models/nodes/nodes-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -27,7 +28,6 @@ export class MyResourcesService {
   private sortFieldMap: Record<string, string> = {
     title: 'title',
     dateModified: 'date_modified',
-    dateCreated: 'date_created',
   };
 
   private readonly jsonApiService = inject(JsonApiService);
@@ -92,12 +92,8 @@ export class MyResourcesService {
       params['filter[root][ne]'] = rootProjectId;
     }
 
-    let url;
-    if (searchMode === ResourceSearchMode.All) {
-      url = `${this.apiUrl}/${endpoint}`;
-    } else {
-      url = endpoint.startsWith('collections/') ? `${this.apiUrl}/${endpoint}` : `${this.apiUrl}/users/me/${endpoint}`;
-    }
+    const url =
+      searchMode === ResourceSearchMode.All ? `${this.apiUrl}/${endpoint}` : `${this.apiUrl}/users/me/${endpoint}`;
 
     if (searchMode === ResourceSearchMode.Component) {
       params['filter[parent][ne]'] = null;
@@ -150,37 +146,6 @@ export class MyResourcesService {
     pageSize?: number
   ): Observable<MyResourcesItemResponseJsonApi> {
     return this.getResources('preprints/', filters, pageNumber, pageSize, 'preprints');
-  }
-
-  getMyBookmarks(
-    collectionId: string,
-    resourceType: ResourceType,
-    filters?: MyResourcesSearchFilters,
-    pageNumber?: number,
-    pageSize?: number
-  ): Observable<MyResourcesItemResponseJsonApi> {
-    switch (resourceType) {
-      case ResourceType.Project:
-        return this.getResources(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize, 'nodes');
-      case ResourceType.Registration:
-        return this.getResources(
-          `collections/${collectionId}/linked_registrations/`,
-          filters,
-          pageNumber,
-          pageSize,
-          'registrations'
-        );
-      case ResourceType.Preprint:
-        return this.getResources(
-          `collections/${collectionId}/linked_preprints/`,
-          filters,
-          pageNumber,
-          pageSize,
-          'preprints'
-        );
-      default:
-        return EMPTY;
-    }
   }
 
   createProject(

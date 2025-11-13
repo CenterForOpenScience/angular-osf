@@ -5,7 +5,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { ComponentCheckboxItemModel } from '@osf/shared/models';
+import { ComponentCheckboxItemModel } from '@osf/shared/models/component-checkbox-item.model';
 
 import { InfoIconComponent } from '../info-icon/info-icon.component';
 

@@ -1,4 +1,4 @@
-import { AddonMapper } from '@osf/shared/mappers';
+import { AddonMapper } from '@osf/shared/mappers/addon.mapper';
 
 import structuredClone from 'structured-clone';
 

@@ -4,9 +4,10 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceFormComponent } from '@osf/features/registry/components';
-import { RegistryResourcesSelectors } from '@osf/features/registry/store/registry-resources';
-import { LoadingSpinnerComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+
+import { RegistryResourcesSelectors } from '../../store/registry-resources';
+import { ResourceFormComponent } from '../resource-form/resource-form.component';
 
 import { EditResourceDialogComponent } from './edit-resource-dialog.component';
 

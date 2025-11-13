@@ -11,12 +11,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { CardLabelTranslationKeys } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { getSortedContributorsByPermissions, IS_XSMALL } from '@osf/shared/helpers';
-import { ResourceModel, UserRelatedCounts } from '@osf/shared/models';
-import { ResourceCardService } from '@osf/shared/services';
-import { StopPropagationDirective } from '@shared/directives';
+import { CardLabelTranslationKeys } from '@osf/shared/constants/resource-card-labels.const';
+import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
+import { getSortedContributorsByPermissions } from '@osf/shared/helpers/sort-contributors-by-permissions';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
+import { UserRelatedCounts } from '@osf/shared/models/user-related-counts/user-related-counts.model';
+import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
+import { ResourceCardService } from '@osf/shared/services/resource-card.service';
 
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
 
@@ -44,6 +47,7 @@ import { UserSecondaryMetadataComponent } from './components/user-secondary-meta
     PreprintSecondaryMetadataComponent,
     FileSecondaryMetadataComponent,
     StopPropagationDirective,
+    FixSpecialCharPipe,
   ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',

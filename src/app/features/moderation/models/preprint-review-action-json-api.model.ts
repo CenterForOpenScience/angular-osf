@@ -1,4 +1,4 @@
-import { UserDataErrorResponseJsonApi } from '@osf/shared/models';
+import { UserAttributesJsonApi, UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
 export interface ReviewActionJsonApi {
   id: string;
@@ -29,10 +29,6 @@ export interface UserModelJsonApi {
   id: string;
   type: 'users';
   attributes: UserAttributesJsonApi;
-}
-
-export interface UserAttributesJsonApi {
-  full_name: string;
 }
 
 export interface PreprintModelJsonApi {

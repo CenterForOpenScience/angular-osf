@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContributorsListComponent } from './contributors-list.component';
 
-import { MOCK_CONTRIBUTOR } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ContributorsListComponent', () => {

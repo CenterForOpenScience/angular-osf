@@ -14,7 +14,8 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 import { HeaderComponent } from './header.component';
 
-import { MOCK_STORE, MOCK_USER } from '@testing/mocks';
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

@@ -1,5 +1,5 @@
 @if (hasAdminAccessForAllComponents()) {
-  @if (hasSubcomponents()) {
+  @if (hasSubComponents()) {
     <p>{{ 'project.overview.dialog.deleteComponent.listMessage' | translate }}</p>
     @if (isLoading()) {
       <p-skeleton styleClass="mt-2" width="100%" height="4rem" />
@@ -25,6 +25,7 @@
 } @else {
   <p [innerHTML]="'project.overview.dialog.deleteComponent.noPermissionsMessage' | translate"></p>
 }
+
 <div class="flex pt-5 justify-content-end gap-3">
   <p-button
     class="w-12rem btn-full-width"

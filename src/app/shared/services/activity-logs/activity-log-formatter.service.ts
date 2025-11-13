@@ -2,7 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ActivityLog } from '@shared/models';
+import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
 
 import { ActivityLogUrlBuilderService } from './activity-log-url-builder.service';
 

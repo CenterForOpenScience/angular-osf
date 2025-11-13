@@ -1,11 +1,16 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { MyRegistrationsComponent } from './my-registrations.component';
 
@@ -24,7 +29,11 @@ describe('MyRegistrationsComponent', () => {
     mockActivatedRoute = { snapshot: { queryParams: {} } } as any;
 
     await TestBed.configureTestingModule({
-      imports: [MyRegistrationsComponent, OSFTestingModule],
+      imports: [
+        MyRegistrationsComponent,
+        OSFTestingModule,
+        ...MockComponents(SubHeaderComponent, SelectComponent, RegistrationCardComponent, CustomPaginatorComponent),
+      ],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },

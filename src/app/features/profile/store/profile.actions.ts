@@ -1,4 +1,4 @@
-import { UserModel } from '@osf/shared/models';
+import { UserModel } from '@osf/shared/models/user/user.models';
 
 export class FetchUserProfile {
   static readonly type = '[Profile] Fetch User Profile';

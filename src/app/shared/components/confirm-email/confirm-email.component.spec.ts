@@ -1,4 +1,4 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -6,8 +6,10 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserEmailsSelectors } from '@core/store/user-emails';
-import { AccountEmailModel } from '@shared/models';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { AccountEmailModel } from '@shared/models/emails/account-email.model';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { ConfirmEmailComponent } from './confirm-email.component';
 
@@ -36,7 +38,7 @@ describe('ConfirmEmailComponent', () => {
     mockToastService = ToastServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [ConfirmEmailComponent, OSFTestingModule],
+      imports: [ConfirmEmailComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
       providers: [
         provideMockStore({
           signals: [{ selector: UserEmailsSelectors.isEmailsSubmitting, value: signal(false) }],

@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { AccountEmailModel } from '@osf/shared/models';
+import { AccountEmailModel } from '@osf/shared/models/emails/account-email.model';
 
 import { UserEmailsStateModel } from './user-emails.model';
 import { UserEmailsState } from './user-emails.state';

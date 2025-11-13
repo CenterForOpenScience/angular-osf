@@ -16,41 +16,39 @@ import {
   OsfFileRevision,
   PatchFileMetadata,
 } from '@osf/features/files/models';
+
+import { FileKind } from '../enums/file-kind.enum';
+import { AddonMapper } from '../mappers/addon.mapper';
+import { ContributorsMapper } from '../mappers/contributors';
+import { FilesMapper } from '../mappers/files/files.mapper';
+import { AddonModel } from '../models/addons/addon.model';
+import { AddonGetResponseJsonApi, ConfiguredAddonGetResponseJsonApi } from '../models/addons/addon-json-api.models';
+import { ConfiguredAddonModel } from '../models/addons/configured-addon.model';
+import { ApiData, JsonApiResponse, MetaJsonApi } from '../models/common/json-api.model';
+import { ContributorModel } from '../models/contributors/contributor.model';
+import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';
+import { FileDetailsModel, FileModel } from '../models/files/file.model';
+import { FileFolderModel } from '../models/files/file-folder.model';
 import {
-  AddonGetResponseJsonApi,
-  AddonModel,
-  ApiData,
-  ConfiguredAddonGetResponseJsonApi,
-  ConfiguredAddonModel,
-  ContributorModel,
-  ContributorsResponseJsonApi,
-  FileDetailsModel,
-  FileDetailsResponseJsonApi,
   FileFolderDataJsonApi,
-  FileFolderModel,
   FileFolderResponseJsonApi,
   FileFoldersResponseJsonApi,
-  FileModel,
+} from '../models/files/file-folder-json-api.model';
+import {
+  FileDetailsResponseJsonApi,
   FileResponseJsonApi,
   FilesResponseJsonApi,
-  FileVersionModel,
-  FileVersionsResponseJsonApi,
-  JsonApiResponse,
-  MetaJsonApi,
-} from '@shared/models';
-
-import { FileKind } from '../enums';
-import { AddonMapper, ContributorsMapper, FilesMapper } from '../mappers';
+} from '../models/files/file-json-api.model';
+import { FileVersionModel } from '../models/files/file-version.model';
+import { FileVersionsResponseJsonApi } from '../models/files/file-version-json-api.model';
 
 import { JsonApiService } from './json-api.service';
-import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilesService {
   readonly jsonApiService = inject(JsonApiService);
-  readonly toastService = inject(ToastService);
   private readonly environment = inject(ENVIRONMENT);
 
   get apiUrl() {

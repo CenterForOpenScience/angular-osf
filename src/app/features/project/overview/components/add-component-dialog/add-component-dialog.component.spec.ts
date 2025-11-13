@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
 
 import { AddComponentDialogComponent } from './add-component-dialog.component';
 
@@ -8,7 +12,7 @@ describe('AddComponentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddComponentDialogComponent],
+      imports: [AddComponentDialogComponent, MockComponent(AffiliatedInstitutionSelectComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddComponentDialogComponent);

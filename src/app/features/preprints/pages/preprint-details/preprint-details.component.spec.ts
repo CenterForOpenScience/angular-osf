@@ -5,9 +5,10 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { UserPermissions } from '@osf/shared/enums';
-import { CustomDialogService, MetaTagsService } from '@osf/shared/services';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 
 import {
@@ -16,6 +17,7 @@ import {
   ModerationStatusBannerComponent,
   PreprintFileSectionComponent,
   PreprintMakeDecisionComponent,
+  PreprintMetricsInfoComponent,
   PreprintTombstoneComponent,
   PreprintWarningBannerComponent,
   ShareAndDownloadComponent,
@@ -27,7 +29,7 @@ import { PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
 
-import { MOCK_CONTRIBUTOR } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
@@ -90,7 +92,8 @@ describe('PreprintDetailsComponent', () => {
           PreprintTombstoneComponent,
           PreprintWarningBannerComponent,
           ModerationStatusBannerComponent,
-          PreprintMakeDecisionComponent
+          PreprintMakeDecisionComponent,
+          PreprintMetricsInfoComponent
         ),
       ],
       providers: [
@@ -119,11 +122,11 @@ describe('PreprintDetailsComponent', () => {
               value: false,
             },
             {
-              selector: ContributorsSelectors.getContributors,
+              selector: ContributorsSelectors.getBibliographicContributors,
               value: mockContributors,
             },
             {
-              selector: ContributorsSelectors.isContributorsLoading,
+              selector: ContributorsSelectors.isBibliographicContributorsLoading,
               value: false,
             },
             {

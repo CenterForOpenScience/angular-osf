@@ -1,7 +1,9 @@
 import { Selector } from '@ngxs/store';
 
-import { BaseNodeModel, CurrentResource, NodeShortInfoModel } from '@osf/shared/models';
-import { UserPermissions } from '@shared/enums';
+import { UserPermissions } from '@shared/enums/user-permissions.enum';
+import { CurrentResource } from '@shared/models/current-resource.model';
+import { BaseNodeModel } from '@shared/models/nodes/base-node.model';
+import { NodeShortInfoModel } from '@shared/models/nodes/node-with-children.model';
 
 import { CurrentResourceStateModel } from './current-resource.model';
 import { CurrentResourceState } from './current-resource.state';

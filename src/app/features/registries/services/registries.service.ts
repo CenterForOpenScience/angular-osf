@@ -4,26 +4,26 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PageSchemaMapper, RegistrationMapper } from '@osf/shared/mappers/registration';
+import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { DraftRegistrationModel } from '@osf/shared/models/registration/draft-registration.model';
+import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
+import { RegistrationModel } from '@osf/shared/models/registration/registration.model';
+import { RegistrationCard } from '@osf/shared/models/registration/registration-card.model';
 import {
   DraftRegistrationDataJsonApi,
-  DraftRegistrationModel,
   DraftRegistrationRelationshipsJsonApi,
   DraftRegistrationResponseJsonApi,
-  PageSchema,
-  PaginatedData,
   RegistrationAttributesJsonApi,
-  RegistrationCard,
   RegistrationDataJsonApi,
-  RegistrationModel,
   RegistrationResponseJsonApi,
-  ResponseJsonApi,
-  SchemaBlocksResponseJsonApi,
-  SchemaResponse,
   SchemaResponseDataJsonApi,
   SchemaResponseJsonApi,
   SchemaResponsesJsonApi,
-} from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+} from '@osf/shared/models/registration/registration-json-api.model';
+import { SchemaBlocksResponseJsonApi } from '@osf/shared/models/registration/schema-blocks-json-api.model';
+import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { SchemaActionTrigger } from '../enums';
 

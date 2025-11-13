@@ -5,10 +5,9 @@ import { catchError, of, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentProvider } from '@core/store/provider';
-import { CurrentResourceType } from '@osf/shared/enums';
-import { handleSectionError } from '@shared/helpers';
-
-import { RegistrationProviderService } from '../../services';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { RegistrationProviderService } from '@osf/shared/services/registration-provider.service';
 
 import { ClearRegistryProvider, GetRegistryProvider } from './registration-provider.actions';
 import {
@@ -29,6 +28,7 @@ export class RegistrationProviderState {
     const state = ctx.getState();
 
     const currentProvider = state.currentBrandedProvider.data;
+
     if (currentProvider && currentProvider?.id === action.providerId) {
       ctx.dispatch(
         new SetCurrentProvider({

@@ -1,17 +1,15 @@
-import {
-  AsyncStateModel,
-  AsyncStateWithTotalCount,
-  DraftRegistrationModel,
-  FileFolderModel,
-  FileModel,
-  LicenseModel,
-  PageSchema,
-  ProviderSchema,
-  RegistrationCard,
-  RegistrationModel,
-  ResourceModel,
-  SchemaResponse,
-} from '@shared/models';
+import { FileModel } from '@osf/shared/models/files/file.model';
+import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
+import { DraftRegistrationModel } from '@osf/shared/models/registration/draft-registration.model';
+import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
+import { ProviderSchema } from '@osf/shared/models/registration/provider-schema.model';
+import { RegistrationModel } from '@osf/shared/models/registration/registration.model';
+import { RegistrationCard } from '@osf/shared/models/registration/registration-card.model';
+import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 import { ProjectShortInfoModel } from '../models';
 

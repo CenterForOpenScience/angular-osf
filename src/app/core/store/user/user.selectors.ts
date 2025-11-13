@@ -1,6 +1,9 @@
 import { Selector } from '@ngxs/store';
 
-import { Education, Employment, SocialModel, UserModel } from '@osf/shared/models';
+import { Education } from '@osf/shared/models/user/education.model';
+import { Employment } from '@osf/shared/models/user/employment.model';
+import { SocialModel } from '@osf/shared/models/user/social.model';
+import { UserModel } from '@osf/shared/models/user/user.models';
 
 import { UserStateModel } from './user.model';
 import { UserState } from './user.state';

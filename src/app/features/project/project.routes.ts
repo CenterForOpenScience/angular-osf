@@ -2,23 +2,21 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { viewOnlyGuard } from '@osf/core/guards';
-import { ResourceType } from '@osf/shared/enums';
-import { LicensesService } from '@osf/shared/services';
+import { viewOnlyGuard } from '@core/guards/view-only.guard';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
 import { CitationsState } from '@osf/shared/stores/citations';
 import { CollectionsState } from '@osf/shared/stores/collections';
 import { DuplicatesState } from '@osf/shared/stores/duplicates';
+import { LinkedProjectsState } from '@osf/shared/stores/linked-projects';
 import { NodeLinksState } from '@osf/shared/stores/node-links';
 import { SubjectsState } from '@osf/shared/stores/subjects';
 import { ViewOnlyLinkState } from '@osf/shared/stores/view-only-links';
 
 import { AnalyticsState } from '../analytics/store';
 import { CollectionsModerationState } from '../moderation/store/collections-moderation';
-import { RegistriesState } from '../registries/store';
-import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
-import { FilesHandlers } from '../registries/store/handlers/files.handlers';
 
+import { RegistrationsState } from './registrations/store';
 import { SettingsState } from './settings/store';
 
 export const projectRoutes: Routes = [
@@ -62,14 +60,7 @@ export const projectRoutes: Routes = [
       {
         path: 'registrations',
         canActivate: [viewOnlyGuard],
-        providers: [
-          provideStates([RegistriesState]),
-          ProvidersHandlers,
-          ProjectsHandlers,
-          LicensesService,
-          LicensesHandlers,
-          FilesHandlers,
-        ],
+        providers: [provideStates([RegistrationsState])],
         loadComponent: () =>
           import('../project/registrations/registrations.component').then((mod) => mod.RegistrationsComponent),
       },
@@ -99,7 +90,7 @@ export const projectRoutes: Routes = [
           import('../analytics/components/view-linked-projects/view-linked-projects.component').then(
             (mod) => mod.ViewLinkedProjectsComponent
           ),
-        providers: [provideStates([DuplicatesState])],
+        providers: [provideStates([LinkedProjectsState])],
       },
       {
         path: 'analytics/duplicates',

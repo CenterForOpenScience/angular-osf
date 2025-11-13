@@ -11,17 +11,12 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
-import {
-  GetPreprintProvidersAllowingSubmissions,
-  PreprintProvidersSelectors,
-} from '@osf/features/preprints/store/preprint-providers';
-import {
-  PreprintStepperSelectors,
-  SetSelectedPreprintProviderId,
-} from '@osf/features/preprints/store/preprint-stepper';
-import { SubHeaderComponent } from '@shared/components';
-import { DecodeHtmlPipe } from '@shared/pipes';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DecodeHtmlPipe } from '@osf/shared/pipes/decode-html.pipe';
+
+import { PreprintProviderShortInfo } from '../../models';
+import { GetPreprintProvidersAllowingSubmissions, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-select-preprint-service',

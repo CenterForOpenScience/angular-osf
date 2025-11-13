@@ -1,10 +1,12 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { LoaderService } from '@osf/shared/services';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { LoaderService } from '@osf/shared/services/loader.service';
 
 import { JustificationComponent } from './justification.component';
 
@@ -28,7 +30,7 @@ describe('JustificationComponent', () => {
     mockRouter = RouterMockBuilder.create().withUrl('/registries/revisions/rev-1/justification').build();
 
     await TestBed.configureTestingModule({
-      imports: [JustificationComponent, OSFTestingModule],
+      imports: [JustificationComponent, OSFTestingModule, ...MockComponents(StepperComponent, SubHeaderComponent)],
       providers: [
         MockProvider(ActivatedRoute, mockActivatedRoute),
         MockProvider(Router, mockRouter),

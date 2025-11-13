@@ -8,6 +8,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   OnDestroy,
@@ -18,10 +19,11 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
-import { StepperComponent, SubHeaderComponent } from '@osf/shared/components';
-import { RevisionReviewStates } from '@osf/shared/enums';
-import { StepOption } from '@osf/shared/models';
-import { LoaderService } from '@osf/shared/services';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { StepOption } from '@shared/models/step-option.model';
 
 import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors, UpdateStepState } from '../../store';
 
@@ -36,9 +38,11 @@ import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors
 export class JustificationComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
+
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly stepsState = select(RegistriesSelectors.getStepsState);
   readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
@@ -108,7 +112,7 @@ export class JustificationComponent implements OnDestroy {
   constructor() {
     this.router.events
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         filter((event): event is NavigationEnd => event instanceof NavigationEnd)
       )
       .subscribe(() => {

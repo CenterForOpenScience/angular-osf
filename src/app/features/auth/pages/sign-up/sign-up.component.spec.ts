@@ -4,13 +4,13 @@ import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { AuthService } from '@osf/core/services';
-import { PasswordInputHintComponent } from '@osf/shared/components';
-import { ToastService } from '@osf/shared/services';
+import { AuthService } from '@core/services/auth.service';
+import { PasswordInputHintComponent } from '@osf/shared/components/password-input-hint/password-input-hint.component';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { SignUpComponent } from './sign-up.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;

@@ -12,9 +12,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { ScientistsNames } from '@osf/shared/constants';
-import { UserPermissions } from '@osf/shared/enums';
-import { ToastService } from '@osf/shared/services';
+import { ScientistsNames } from '@osf/shared/constants/scientists.const';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 import { DeleteProject, SettingsSelectors } from '../../store';

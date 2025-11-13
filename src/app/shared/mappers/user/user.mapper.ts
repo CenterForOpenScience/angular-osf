@@ -1,12 +1,11 @@
+import { UserData, UserModel } from '@osf/shared/models/user/user.models';
 import {
   UserAcceptedTermsOfServiceJsonApi,
   UserAttributesJsonApi,
-  UserData,
   UserDataErrorResponseJsonApi,
   UserDataJsonApi,
   UserDataResponseJsonApi,
-  UserModel,
-} from '@osf/shared/models';
+} from '@osf/shared/models/user/user-json-api.model';
 
 export class UserMapper {
   static fromUserDataGetResponse(response: UserDataResponseJsonApi): UserData {

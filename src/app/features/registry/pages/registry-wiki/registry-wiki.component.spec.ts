@@ -4,10 +4,13 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { WikiModes } from '@osf/shared/models';
-import { SubHeaderComponent, ViewOnlyLinkMessageComponent } from '@shared/components';
-import { CompareSectionComponent, ViewSectionComponent, WikiListComponent } from '@shared/components/wiki';
-import { WikiSelectors } from '@shared/stores/wiki';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-section/compare-section.component';
+import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
+import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
+import { WikiModes } from '@osf/shared/models/wiki/wiki.model';
+import { WikiSelectors } from '@osf/shared/stores/wiki';
 
 import { RegistryWikiComponent } from './registry-wiki.component';
 

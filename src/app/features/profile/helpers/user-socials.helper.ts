@@ -1,4 +1,6 @@
-import { SocialLinksModel, SocialLinkViewModel, SocialModel } from '@osf/shared/models';
+import { SocialModel } from '@osf/shared/models/user/social.model';
+import { SocialLinkViewModel } from '@osf/shared/models/user/social-link-view.model';
+import { SocialLinksModel } from '@osf/shared/models/user/social-links.model';
 
 export function mapUserSocials(
   socialData: SocialModel | undefined,

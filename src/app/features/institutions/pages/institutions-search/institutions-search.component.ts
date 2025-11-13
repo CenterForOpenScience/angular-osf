@@ -7,14 +7,15 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { GlobalSearchComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.const';
 import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
 import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
 
 @Component({
   selector: 'osf-institutions-search',
-  imports: [FormsModule, NgOptimizedImage, LoadingSpinnerComponent, SafeHtmlPipe, GlobalSearchComponent],
+  imports: [FormsModule, NgOptimizedImage, SafeHtmlPipe, LoadingSpinnerComponent, GlobalSearchComponent],
   templateUrl: './institutions-search.component.html',
   styleUrl: './institutions-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

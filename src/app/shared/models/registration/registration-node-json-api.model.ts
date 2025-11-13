@@ -1,6 +1,7 @@
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
-import { BaseNodeAttributesJsonApi } from '../nodes';
+import { BaseNodeAttributesJsonApi } from '../nodes/base-node-attributes-json-api.model';
 
 export interface RegistrationNodeAttributesJsonApi extends BaseNodeAttributesJsonApi {
   archiving: boolean;

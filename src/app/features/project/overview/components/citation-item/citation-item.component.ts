@@ -5,8 +5,8 @@ import { Tooltip } from 'primeng/tooltip';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
-import { IconComponent } from '@shared/components';
-import { ToastService } from '@shared/services';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 @Component({
   selector: 'osf-citation-item',

@@ -2,7 +2,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { LoaderService } from '@osf/shared/services';
+import { LoaderService } from '@osf/shared/services/loader.service';
 
 @Component({
   selector: 'osf-full-screen-loader',

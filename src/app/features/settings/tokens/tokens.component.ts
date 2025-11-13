@@ -8,8 +8,8 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
-import { SubHeaderComponent } from '@osf/shared/components';
-import { CustomDialogService } from '@osf/shared/services';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 import { TokenAddEditFormComponent } from './components';
 import { GetScopes } from './store';

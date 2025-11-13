@@ -11,8 +11,10 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { InputLimits } from '@osf/shared/constants';
-import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AccountSettingsSelectors, DisableTwoFactorAuth, EnableTwoFactorAuth, VerifyTwoFactorAuth } from '../../store';
 

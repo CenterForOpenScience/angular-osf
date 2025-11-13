@@ -4,7 +4,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TextInputComponent } from '@shared/components';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
 import { EditTitleDialogComponent } from './edit-title-dialog.component';
 

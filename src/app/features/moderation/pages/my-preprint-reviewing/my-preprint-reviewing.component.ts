@@ -7,7 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
-import { SubHeaderComponent } from '@osf/shared/components';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
 import { MyReviewingNavigationComponent, PreprintRecentActivityListComponent } from '../../components';
 import {

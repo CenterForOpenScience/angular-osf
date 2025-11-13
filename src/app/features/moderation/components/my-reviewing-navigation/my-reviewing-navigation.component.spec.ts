@@ -4,7 +4,7 @@ import { PreprintModerationTab } from '../../enums';
 
 import { MyReviewingNavigationComponent } from './my-reviewing-navigation.component';
 
-import { MOCK_PROVIDER } from '@testing/mocks';
+import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MyReviewingNavigationComponent', () => {

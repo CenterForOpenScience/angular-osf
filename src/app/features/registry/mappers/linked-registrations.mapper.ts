@@ -1,4 +1,4 @@
-import { ContributorsMapper } from '@osf/shared/mappers';
+import { ContributorsMapper } from '@osf/shared/mappers/contributors';
 
 import { LinkedRegistration, LinkedRegistrationJsonApi } from '../models';
 

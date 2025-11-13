@@ -4,15 +4,14 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistrationMapper } from '@osf/shared/mappers/registration';
+import { LicenseModel, LicenseOptions } from '@osf/shared/models/license/license.model';
+import { LicensesResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
+import { DraftRegistrationModel } from '@osf/shared/models/registration/draft-registration.model';
 import {
   CreateRegistrationPayloadJsonApi,
   DraftRegistrationDataJsonApi,
-  DraftRegistrationModel,
-  LicenseModel,
-  LicenseOptions,
-  LicensesResponseJsonApi,
-} from '@osf/shared/models';
-import { JsonApiService } from '@osf/shared/services';
+} from '@osf/shared/models/registration/registration-json-api.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { LicensesMapper } from '../mappers';
 

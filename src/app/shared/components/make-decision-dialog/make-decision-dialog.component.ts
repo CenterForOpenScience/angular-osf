@@ -15,9 +15,10 @@ import {
   CollectionsModerationSelectors,
   CreateCollectionSubmissionAction,
 } from '@osf/features/moderation/store/collections-moderation';
-import { InputLimits } from '@osf/shared/constants';
-import { ModerationDecisionFormControls, ModerationSubmitType } from '@osf/shared/enums';
-import { DateAgoPipe } from '@osf/shared/pipes';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { ModerationDecisionFormControls } from '@osf/shared/enums/moderation-decision-form-controls.enum';
+import { ModerationSubmitType } from '@osf/shared/enums/moderation-submit-type.enum';
+import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
 
 @Component({
@@ -31,9 +32,11 @@ export class MakeDecisionDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   readonly config = inject(DynamicDialogConfig);
   readonly dialogRef = inject(DynamicDialogRef);
+
   readonly ModerationSubmitType = ModerationSubmitType;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
   readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
+
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
 

@@ -1,4 +1,8 @@
-import { ComponentCheckboxItemModel, PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/shared/models';
+import { ComponentCheckboxItemModel } from '@osf/shared/models/component-checkbox-item.model';
+import {
+  PaginatedViewOnlyLinksModel,
+  ViewOnlyLinkModel,
+} from '@osf/shared/models/view-only-links/view-only-link.model';
 
 export const MOCK_VIEW_ONLY_LINK: ViewOnlyLinkModel = {
   id: 'test-link-1',

@@ -13,12 +13,13 @@ import { FormsModule } from '@angular/forms';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@osf/core/store/user';
-import { SelectComponent } from '@osf/shared/components';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { Primitive } from '@osf/shared/helpers';
-import { SearchFilters } from '@osf/shared/models';
-import { CustomDialogService, ToastService } from '@osf/shared/services';
-import { SortOrder } from '@shared/enums';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { Primitive } from '@osf/shared/helpers/types.helper';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { SortOrder } from '@shared/enums/sort-order.enum';
+import { SearchFilters } from '@shared/models/search-filters.model';
 
 import { AdminTableComponent } from '../../components';
 import { departmentOptions, userTableColumns } from '../../constants';

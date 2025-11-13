@@ -1,10 +1,12 @@
 import {
   PaginatedViewOnlyLinksModel,
-  ViewOnlyLinkJsonApi,
   ViewOnlyLinkModel,
   ViewOnlyLinkNodeModel,
+} from '../models/view-only-links/view-only-link.model';
+import {
+  ViewOnlyLinkJsonApi,
   ViewOnlyLinksResponseJsonApi,
-} from '../models';
+} from '../models/view-only-links/view-only-link-response.model';
 
 import { UserMapper } from './user';
 

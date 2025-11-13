@@ -4,8 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { LicensesMapper } from '@shared/mappers';
-import { LicenseModel, LicensesResponseJsonApi } from '@shared/models';
+
+import { LicensesMapper } from '../mappers/licenses.mapper';
+import { LicenseModel } from '../models/license/license.model';
+import { LicensesResponseJsonApi } from '../models/license/licenses-json-api.model';
 
 @Injectable({
   providedIn: 'root',

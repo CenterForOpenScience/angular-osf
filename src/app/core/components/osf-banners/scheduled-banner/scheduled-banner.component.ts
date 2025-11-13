@@ -3,7 +3,7 @@ import { Store } from '@ngxs/store';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { IS_XSMALL } from '@osf/shared/helpers';
+import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
 import { BannersSelector, GetCurrentScheduledBanner } from '@osf/shared/stores/banners';
 
 /**

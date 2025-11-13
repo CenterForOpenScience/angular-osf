@@ -1,4 +1,4 @@
-import { JsonApiResponse, JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '../common';
+import { JsonApiResponse, JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '../common/json-api.model';
 
 export enum WikiModes {
   View = 'view',
@@ -6,14 +6,14 @@ export enum WikiModes {
   Compare = 'compare',
 }
 
-export interface Wiki {
+export interface WikiModel {
   id: string;
   name: string;
   kind: string;
 }
 
 export interface WikisWithMeta {
-  wikis: Wiki[];
+  wikis: WikiModel[];
   meta: MetaAnonymousJsonApi;
 }
 
@@ -26,7 +26,7 @@ export interface WikiVersion {
 export interface ComponentWiki {
   id: string;
   title: string;
-  list: Wiki[];
+  list: WikiModel[];
 }
 
 export interface HomeWiki {

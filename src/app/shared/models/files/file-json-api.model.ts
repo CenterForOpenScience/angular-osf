@@ -1,7 +1,7 @@
-import { FileKind } from '@osf/shared/enums';
+import { FileKind } from '@osf/shared/enums/file-kind.enum';
 
-import { ResponseJsonApi } from '../common';
-import { BaseNodeDataJsonApi } from '../nodes';
+import { ResponseJsonApi } from '../common/json-api.model';
+import { BaseNodeDataJsonApi } from '../nodes/base-node-data-json-api.model';
 
 export type FileResponseJsonApi = ResponseJsonApi<FileDataJsonApi>;
 export type FilesResponseJsonApi = ResponseJsonApi<FileDataJsonApi[]>;

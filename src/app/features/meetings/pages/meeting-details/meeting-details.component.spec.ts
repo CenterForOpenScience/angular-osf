@@ -13,11 +13,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MeetingsSelectors } from '@osf/features/meetings/store';
-import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
 import { MeetingDetailsComponent } from './meeting-details.component';
 
-import { MOCK_MEETING, MOCK_MEETING_SUBMISSIONS, MOCK_STORE } from '@testing/mocks';
+import { MOCK_MEETING, MOCK_MEETING_SUBMISSIONS } from '@testing/mocks/meeting.mock';
+import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
 
 const mockActivatedRoute = {
   params: of({ id: 'test-meeting-id' }),

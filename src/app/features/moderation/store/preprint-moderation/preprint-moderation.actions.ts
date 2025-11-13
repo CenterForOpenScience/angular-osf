@@ -43,11 +43,30 @@ export class GetPreprintWithdrawalSubmissions {
 export class GetPreprintSubmissionContributors {
   static readonly type = `${ACTION_SCOPE} Get Preprint Submission Contributors`;
 
+  constructor(
+    public preprintId: string,
+    public page = 1
+  ) {}
+}
+
+export class LoadMorePreprintSubmissionContributors {
+  static readonly type = `${ACTION_SCOPE} Load More Preprint Submission Contributors`;
+
   constructor(public preprintId: string) {}
 }
 
 export class GetPreprintWithdrawalSubmissionContributors {
   static readonly type = `${ACTION_SCOPE} Get Preprint Withdrawal Submission Contributors`;
+
+  constructor(
+    public submissionId: string,
+    public preprintId: string,
+    public page = 1
+  ) {}
+}
+
+export class LoadMorePreprintWithdrawalSubmissionContributors {
+  static readonly type = `${ACTION_SCOPE} Load More Preprint Withdrawal Submission Contributors`;
 
   constructor(
     public submissionId: string,

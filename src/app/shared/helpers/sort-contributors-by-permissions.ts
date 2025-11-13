@@ -1,4 +1,4 @@
-import { Creator, IsContainedBy, QualifiedAttribution, ResourceModel } from '@shared/models';
+import { Creator, IsContainedBy, QualifiedAttribution, ResourceModel } from '../models/search/resource.model';
 
 export function getSortedContributorsByPermissions(base: ResourceModel | IsContainedBy) {
   const objectOrder = Object.fromEntries(

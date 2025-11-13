@@ -5,8 +5,8 @@ import { catchError, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentUser, UserSelectors } from '@core/store/user';
-import { handleSectionError } from '@osf/shared/helpers';
-import { InstitutionsService } from '@shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { InstitutionsService } from '@osf/shared/services/institutions.service';
 
 import { AccountSettingsMapper } from '../mappers';
 import { AccountSettingsService } from '../services';

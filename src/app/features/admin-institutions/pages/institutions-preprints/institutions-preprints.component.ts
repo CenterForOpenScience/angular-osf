@@ -7,8 +7,11 @@ import { Button } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 
-import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+import { PaginationLinksModel } from '@osf/shared/models/pagination-links.model';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
+import { SearchFilters } from '@osf/shared/models/search-filters.model';
 import {
   FetchResources,
   FetchResourcesByLink,
@@ -17,13 +20,13 @@ import {
   SetDefaultFilterValue,
   SetResourceType,
   SetSortBy,
-} from '@shared/stores/global-search';
+} from '@osf/shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
 import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 import { preprintsTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
-import { downloadResults } from '../../helpers';
+import { downloadResults, INSTITUTIONS_CSV_TSV_FIELDS, INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE } from '../../helpers';
 import { mapPreprintResourceToTableData } from '../../mappers/institution-preprint-to-table-data.mapper';
 import { TableCellData } from '../../models';
 import { InstitutionsAdminSelectors } from '../../store';
@@ -105,6 +108,11 @@ export class InstitutionsPreprintsComponent implements OnInit, OnDestroy {
   }
 
   download(type: DownloadType) {
-    downloadResults(this.selfLink(), type);
+    downloadResults(
+      this.selfLink(),
+      type,
+      INSTITUTIONS_CSV_TSV_FIELDS[CurrentResourceType.Preprints],
+      INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE[CurrentResourceType.Preprints]
+    );
   }
 }

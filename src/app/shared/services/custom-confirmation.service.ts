@@ -4,7 +4,11 @@ import { ConfirmationService } from 'primeng/api';
 
 import { inject, Injectable } from '@angular/core';
 
-import { AcceptConfirmationOptions, ContinueConfirmationOptions, DeleteConfirmationOptions } from '../models';
+import {
+  AcceptConfirmationOptions,
+  ContinueConfirmationOptions,
+  DeleteConfirmationOptions,
+} from '../models/confirmation-options.model';
 
 @Injectable({
   providedIn: 'root',

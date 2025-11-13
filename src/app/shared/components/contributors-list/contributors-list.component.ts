@@ -6,7 +6,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ContributorModel } from '@shared/models';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 
 @Component({
   selector: 'osf-contributors-list',

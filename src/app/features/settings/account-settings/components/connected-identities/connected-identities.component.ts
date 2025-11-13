@@ -8,8 +8,10 @@ import { finalize } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { ReadonlyInputComponent } from '@osf/shared/components';
-import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { ExternalIdentity } from '../../models';
 import { AccountSettingsSelectors, DeleteExternalIdentity } from '../../store';

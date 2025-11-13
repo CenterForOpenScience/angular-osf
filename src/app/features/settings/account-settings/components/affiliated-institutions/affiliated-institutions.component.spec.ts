@@ -1,7 +1,7 @@
 import { provideStore, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProviders } from 'ng-mocks';
+import { MockComponent, MockPipe, MockProviders } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -10,7 +10,9 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserState } from '@osf/core/store/user';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AccountSettingsState } from '../../store';
 
@@ -26,7 +28,7 @@ describe('AffiliatedInstitutionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AffiliatedInstitutionsComponent, MockPipe(TranslatePipe)],
+      imports: [AffiliatedInstitutionsComponent, MockComponent(ReadonlyInputComponent), MockPipe(TranslatePipe)],
       providers: [
         provideStore([AccountSettingsState, UserState]),
         MockProviders(CustomConfirmationService, ToastService, DynamicDialogRef),

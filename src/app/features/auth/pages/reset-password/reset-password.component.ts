@@ -8,9 +8,10 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { AuthService } from '@osf/core/services';
-import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/helpers';
-import { PasswordInputHintComponent } from '@shared/components';
+import { AuthService } from '@core/services/auth.service';
+import { PasswordInputHintComponent } from '@osf/shared/components/password-input-hint/password-input-hint.component';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { PASSWORD_REGEX } from '@osf/shared/helpers/password.helper';
 
 import { ResetPasswordFormGroupType } from '../../models';
 

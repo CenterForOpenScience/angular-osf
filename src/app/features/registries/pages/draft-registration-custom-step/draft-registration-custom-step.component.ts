@@ -3,7 +3,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DraftRegistrationAttributesJsonApi } from '@osf/shared/models';
+import { DraftRegistrationAttributesJsonApi } from '@osf/shared/models/registration/registration-json-api.model';
 
 import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
 import { RegistriesSelectors, UpdateDraft } from '../../store';

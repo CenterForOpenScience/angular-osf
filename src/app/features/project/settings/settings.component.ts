@@ -10,10 +10,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
-import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, LoaderService, ToastService } from '@osf/shared/services';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { UpdateNodeRequestModel } from '@osf/shared/models/nodes/nodes-json-api.model';
+import { ViewOnlyLinkModel } from '@osf/shared/models/view-only-links/view-only-link.model';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { GetResource, GetResourceWithChildren } from '@osf/shared/stores/current-resource';
 import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores/view-only-links';
 

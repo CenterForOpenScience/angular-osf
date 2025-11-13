@@ -30,19 +30,19 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models';
-import { ProjectMetadataFormService } from '@osf/features/collections/services/project-metadata-form.service';
-import { GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
-import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection/add-to-collection.selectors';
-import { TagsInputComponent, TextInputComponent, TruncatedTextComponent } from '@shared/components';
-import { InputLimits } from '@shared/constants';
-import { ResourceType } from '@shared/enums';
-import { LicenseModel } from '@shared/models';
-import { ProjectModel } from '@shared/models/projects';
-import { InterpolatePipe } from '@shared/pipes';
-import { ToastService } from '@shared/services';
-import { GetAllContributors } from '@shared/stores/contributors';
-import { ClearProjects, UpdateProjectMetadata } from '@shared/stores/projects';
-import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
+import { ProjectMetadataFormService } from '@osf/features/collections/services';
+import { AddToCollectionSelectors, GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection';
+import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
+import { ProjectModel } from '@osf/shared/models/projects/projects.models';
+import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { GetAllContributors } from '@osf/shared/stores/contributors';
+import { ClearProjects, ProjectsSelectors, UpdateProjectMetadata } from '@osf/shared/stores/projects';
 
 @Component({
   selector: 'osf-project-metadata-step',

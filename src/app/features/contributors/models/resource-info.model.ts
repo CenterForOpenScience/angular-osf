@@ -1,4 +1,4 @@
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 export interface ResourceInfoModel {
   id: string;

@@ -13,8 +13,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { LoadingSpinnerComponent } from '@osf/shared/components';
-import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 @Component({

@@ -8,22 +8,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
-import { ResourceType } from '@osf/shared/enums';
+import { RegistrySelectors } from '@osf/features/registry/store/registry';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DuplicatesSelectors } from '@osf/shared/stores/duplicates';
-import {
-  ContributorsListComponent,
-  CustomPaginatorComponent,
-  IconComponent,
-  LoadingSpinnerComponent,
-  SubHeaderComponent,
-  TruncatedTextComponent,
-} from '@shared/components';
-import { CustomDialogService } from '@shared/services';
 
 import { ViewDuplicatesComponent } from './view-duplicates.component';
 
-import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks';
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
@@ -66,8 +64,8 @@ describe('Component: View Duplicates', () => {
             { selector: DuplicatesSelectors.getDuplicatesTotalCount, value: 0 },
             { selector: ProjectOverviewSelectors.getProject, value: MOCK_PROJECT_OVERVIEW },
             { selector: ProjectOverviewSelectors.isProjectAnonymous, value: false },
-            { selector: RegistryOverviewSelectors.getRegistry, value: undefined },
-            { selector: RegistryOverviewSelectors.isRegistryAnonymous, value: false },
+            { selector: RegistrySelectors.getRegistry, value: undefined },
+            { selector: RegistrySelectors.isRegistryAnonymous, value: false },
           ],
         }),
         MockProvider(CustomDialogService, mockCustomDialogService),

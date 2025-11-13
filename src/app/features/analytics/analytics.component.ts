@@ -19,17 +19,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  BarChartComponent,
-  LineChartComponent,
-  LoadingSpinnerComponent,
-  PieChartComponent,
-  SelectComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@osf/shared/components';
-import { hasViewOnlyParam, IS_WEB, Primitive } from '@osf/shared/helpers';
-import { DatasetInput } from '@osf/shared/models';
+import { BarChartComponent } from '@osf/shared/components/bar-chart/bar-chart.component';
+import { LineChartComponent } from '@osf/shared/components/line-chart/line-chart.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { PieChartComponent } from '@osf/shared/components/pie-chart/pie-chart.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+import { Primitive } from '@osf/shared/helpers/types.helper';
+import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { DatasetInput } from '@osf/shared/models/charts/dataset-input';
 
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';

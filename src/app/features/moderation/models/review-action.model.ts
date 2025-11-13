@@ -1,4 +1,4 @@
-import { IdName } from '@osf/shared/models';
+import { IdNameModel } from '@osf/shared/models/common/id-name.model';
 
 export interface ReviewAction {
   id: string;
@@ -6,6 +6,6 @@ export interface ReviewAction {
   fromState: string;
   toState: string;
   dateModified: string;
-  creator: IdName | null;
+  creator: IdNameModel | null;
   comment: string;
 }

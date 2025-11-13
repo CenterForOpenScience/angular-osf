@@ -1,4 +1,4 @@
-import { UserDataErrorResponseJsonApi } from '@osf/shared/models';
+import { UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
 export interface CollectionSubmissionReviewActionJsonApi {
   id: string;

@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@shared/models';
+import { ApiData, JsonApiResponse } from '../common/json-api.model';
 
 export type IndexCardSearchResponseJsonApi = JsonApiResponse<
   {

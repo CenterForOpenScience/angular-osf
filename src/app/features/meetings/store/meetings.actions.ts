@@ -1,4 +1,4 @@
-import { SearchFilters } from '@osf/shared/models';
+import { SearchFilters } from '@osf/shared/models/search-filters.model';
 
 export class GetAllMeetings {
   static readonly type = '[Meetings] Get All';

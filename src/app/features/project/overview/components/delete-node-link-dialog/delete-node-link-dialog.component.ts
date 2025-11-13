@@ -7,7 +7,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 
-import { ToastService } from '@osf/shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { DeleteNodeLink, GetLinkedResources, NodeLinksSelectors } from '@osf/shared/stores/node-links';
 
 import { ProjectOverviewSelectors } from '../../store';
@@ -24,6 +24,7 @@ export class DeleteNodeLinkDialogComponent {
   private dialogConfig = inject(DynamicDialogConfig);
   dialogRef = inject(DynamicDialogRef);
   destroyRef = inject(DestroyRef);
+
   currentProject = select(ProjectOverviewSelectors.getProject);
   isSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
 

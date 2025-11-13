@@ -1,5 +1,5 @@
-import { RegistryResourceType } from '@shared/enums';
-import { ApiData, JsonApiResponse } from '@shared/models';
+import { RegistryResourceType } from '@shared/enums/registry-resource.enum';
+import { ApiData, JsonApiResponse } from '@shared/models/common/json-api.model';
 
 export type AddResourceJsonApi = JsonApiResponse<RegistryResourceDataJsonApi, null>;
 

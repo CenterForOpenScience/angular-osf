@@ -1,4 +1,4 @@
-import { ResourceModel } from '@shared/models';
+import { ResourceModel } from '@osf/shared/models/search/resource.model';
 
 import { extractPathAfterDomain } from '../helpers';
 import { TableCellData } from '../models';

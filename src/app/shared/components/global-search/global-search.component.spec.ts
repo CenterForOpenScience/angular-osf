@@ -1,13 +1,22 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ResourceType } from '@shared/enums';
-import { DiscoverableFilter, FilterOperator, FilterOption } from '@shared/models';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import {
+  DiscoverableFilter,
+  FilterOperatorOption,
+  FilterOption,
+} from '@shared/models/search/discaverable-filter.model';
 import { GlobalSearchSelectors } from '@shared/stores/global-search';
+
+import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
+import { SearchFiltersComponent } from '../search-filters/search-filters.component';
+import { SearchHelpTutorialComponent } from '../search-help-tutorial/search-help-tutorial.component';
+import { SearchInputComponent } from '../search-input/search-input.component';
 
 import { GlobalSearchComponent } from './global-search.component';
 
@@ -25,7 +34,7 @@ describe('GlobalSearchComponent', () => {
   const mockFilter: DiscoverableFilter = {
     key: 'subject',
     label: 'Subject',
-    operator: FilterOperator.AnyOf,
+    operator: FilterOperatorOption.AnyOf,
     options: [],
   };
 
@@ -40,8 +49,16 @@ describe('GlobalSearchComponent', () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
-      imports: [GlobalSearchComponent, OSFTestingModule],
-      schemas: [NO_ERRORS_SCHEMA],
+      imports: [
+        GlobalSearchComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          FilterChipsComponent,
+          SearchInputComponent,
+          SearchFiltersComponent,
+          SearchHelpTutorialComponent
+        ),
+      ],
       providers: [
         provideMockStore({
           signals: [

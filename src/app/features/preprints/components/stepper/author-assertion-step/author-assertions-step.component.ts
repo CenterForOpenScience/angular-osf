@@ -23,16 +23,19 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/array-input/array-input.component';
 import { formInputLimits, preregLinksOptions } from '@osf/features/preprints/constants';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintModel } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors, UpdatePreprint } from '@osf/features/preprints/store/preprint-stepper';
-import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
-import { FormSelectComponent } from '@shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-import { StringOrNull } from '@shared/helpers';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+
+import { ArrayInputComponent } from './array-input/array-input.component';
 
 @Component({
   selector: 'osf-author-assertions-step',

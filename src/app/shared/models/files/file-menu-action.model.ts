@@ -1,4 +1,4 @@
-import { FileMenuType } from '@osf/shared/enums';
+import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 
 export interface FileMenuAction {
   value: FileMenuType;

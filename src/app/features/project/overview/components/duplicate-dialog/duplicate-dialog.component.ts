@@ -8,7 +8,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ToastService } from '@osf/shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { DuplicateProject, ProjectOverviewSelectors } from '../../store';
 
@@ -24,6 +24,7 @@ export class DuplicateDialogComponent {
   private toastService = inject(ToastService);
   dialogRef = inject(DynamicDialogRef);
   destroyRef = inject(DestroyRef);
+
   isSubmitting = select(ProjectOverviewSelectors.getDuplicateProjectSubmitting);
 
   handleDuplicateConfirm(): void {

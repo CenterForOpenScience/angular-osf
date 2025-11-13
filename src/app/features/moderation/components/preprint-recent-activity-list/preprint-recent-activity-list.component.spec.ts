@@ -2,7 +2,8 @@ import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomPaginatorComponent, IconComponent } from '@osf/shared/components';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { PreprintReviewActionModel } from '../../models';
 

@@ -1,12 +1,11 @@
-import { CurrentResourceType } from '@osf/shared/enums';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ProviderShortInfoModel } from '@shared/models/provider/provider.model';
+import { RegistryProviderDetailsJsonApi } from '@shared/models/provider/registration-provider-json-api.model';
+import { RegistrationNodeModel, RegistrationResponses } from '@shared/models/registration/registration-node.model';
 import {
-  ProviderShortInfoModel,
   RegistrationNodeAttributesJsonApi,
-  RegistrationNodeModel,
-  RegistrationResponses,
   RegistrationResponsesJsonApi,
-  RegistryProviderDetailsJsonApi,
-} from '@osf/shared/models';
+} from '@shared/models/registration/registration-node-json-api.model';
 
 export class RegistrationNodeMapper {
   static getRegistrationNodeAttributes(
@@ -66,8 +65,8 @@ export class RegistrationNodeMapper {
 
   static getRegistrationResponses(response: RegistrationResponsesJsonApi): RegistrationResponses {
     return {
-      summary: response.summary,
-      uploader: response.uploader.map((uploadItem) => ({
+      summary: response?.summary,
+      uploader: response?.uploader?.map((uploadItem) => ({
         fileId: uploadItem.file_id,
         fileName: uploadItem.file_name,
         fileUrls: uploadItem.file_urls,

@@ -1,4 +1,4 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -6,14 +6,26 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { submitPreprintSteps } from '@osf/features/preprints/constants';
-import { PreprintSteps } from '@osf/features/preprints/enums';
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/helpers';
-import { StepOption } from '@shared/models';
-import { BrandService } from '@shared/services';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { StepOption } from '@osf/shared/models/step-option.model';
+import { BrandService } from '@osf/shared/services/brand.service';
+
+import {
+  AuthorAssertionsStepComponent,
+  FileStepComponent,
+  PreprintsMetadataStepComponent,
+  ReviewStepComponent,
+  SupplementsStepComponent,
+  TitleAndAbstractStepComponent,
+} from '../../components';
+import { submitPreprintSteps } from '../../constants';
+import { PreprintSteps } from '../../enums';
+import { PreprintProviderDetails } from '../../models';
+import { PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { PreprintStepperSelectors } from '../../store/preprint-stepper';
 
 import { UpdatePreprintStepperComponent } from './update-preprint-stepper.component';
 
@@ -50,7 +62,19 @@ describe('UpdatePreprintStepperComponent', () => {
       .build();
 
     await TestBed.configureTestingModule({
-      imports: [UpdatePreprintStepperComponent, OSFTestingModule],
+      imports: [
+        UpdatePreprintStepperComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          AuthorAssertionsStepComponent,
+          StepperComponent,
+          TitleAndAbstractStepComponent,
+          PreprintsMetadataStepComponent,
+          SupplementsStepComponent,
+          ReviewStepComponent,
+          FileStepComponent
+        ),
+      ],
       providers: [
         MockProvider(BrandService),
         MockProvider(Router, routerMock),

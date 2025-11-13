@@ -1,6 +1,6 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { CustomDialogService } from '@osf/shared/services';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 export type CustomDialogServiceMockType = Partial<CustomDialogService> & {
   open: jest.Mock<DynamicDialogRef, [any, Partial<DynamicDialogConfig>?]>;

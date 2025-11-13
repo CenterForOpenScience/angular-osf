@@ -4,7 +4,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { Identifier } from '@osf/shared/models';
+import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 
 @Component({
   selector: 'osf-metadata-registration-doi',
@@ -13,7 +13,7 @@ import { Identifier } from '@osf/shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataRegistrationDoiComponent {
-  identifiers = input<Identifier[]>([]);
+  identifiers = input<IdentifierModel[]>([]);
   doiHost = 'https://doi.org/';
 
   registrationDoi = computed(() => (this.identifiers() ? this.doiHost + this.identifiers()[0]?.value : ''));

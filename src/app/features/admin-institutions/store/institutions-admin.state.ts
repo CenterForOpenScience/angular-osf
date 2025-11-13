@@ -5,9 +5,9 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
-import { Institution } from '@osf/shared/models';
-import { InstitutionsService } from '@osf/shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { InstitutionsService } from '@osf/shared/services/institutions.service';
 
 import { InstitutionsAdminService } from '../services/institutions-admin.service';
 

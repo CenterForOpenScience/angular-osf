@@ -6,8 +6,8 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
-import { FilesService } from '@osf/shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { FilesService } from '@osf/shared/services/files.service';
 
 import { PreprintsService } from '../../services';
 

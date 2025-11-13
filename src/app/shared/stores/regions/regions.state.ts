@@ -5,8 +5,8 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
-import { RegionsService } from '@osf/shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { RegionsService } from '@osf/shared/services/regions.service';
 
 import { FetchRegions } from './regions.actions';
 import { REGIONS_STATE_DEFAULTS, RegionsStateModel } from './regions.model';

@@ -22,14 +22,12 @@ import {
   UpdatePreprint,
   UpdatePrimaryFileRelationship,
 } from '@osf/features/preprints/store/preprint-stepper';
-import {
-  AffiliatedInstitutionsViewComponent,
-  ContributorsListComponent,
-  LicenseDisplayComponent,
-  TruncatedTextComponent,
-} from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { ToastService } from '@shared/services';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
   GetBibliographicContributors,

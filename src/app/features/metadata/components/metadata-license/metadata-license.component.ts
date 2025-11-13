@@ -5,7 +5,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { LicenseModel } from '@shared/models';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
 
 @Component({
   selector: 'osf-metadata-license',

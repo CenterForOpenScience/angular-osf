@@ -1,4 +1,4 @@
-import { IdName } from '@shared/models';
+import { IdNameModel } from '@osf/shared/models/common/id-name.model';
 
 export interface PreprintRequestAction {
   id: string;
@@ -7,5 +7,5 @@ export interface PreprintRequestAction {
   fromState: string;
   toState: string;
   dateModified: Date;
-  creator: IdName;
+  creator: IdNameModel;
 }

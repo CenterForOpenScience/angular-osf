@@ -1,6 +1,6 @@
-import { ReviewPermissions } from '@osf/shared/enums';
-import { StringOrNull } from '@osf/shared/helpers';
-import { BrandDataJsonApi } from '@osf/shared/models';
+import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
+import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { BrandDataJsonApi } from '@osf/shared/models/brand/brand.json-api.model';
 
 import { ProviderReviewsWorkflow } from '../enums';
 

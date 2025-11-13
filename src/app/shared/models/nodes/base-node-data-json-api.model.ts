@@ -1,6 +1,5 @@
-import { BaseNodeEmbedsJsonApi } from '@shared/models';
-
 import { BaseNodeAttributesJsonApi } from './base-node-attributes-json-api.model';
+import { BaseNodeEmbedsJsonApi } from './base-node-embeds-json-api.model';
 import { BaseNodeLinksJsonApi } from './base-node-links-json-api.model';
 import { BaseNodeRelationships } from './base-node-relationships-json-api.model';
 

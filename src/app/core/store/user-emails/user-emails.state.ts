@@ -4,8 +4,8 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { UserEmailsService } from '@core/services';
-import { handleSectionError } from '@osf/shared/helpers';
+import { UserEmailsService } from '@core/services/user-emails.service';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
 import { UserSelectors } from '../user/user.selectors';
 

@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { RegistriesSelectors } from '@osf/features/registries/store';
-import { SubHeaderComponent } from '@shared/components';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
 import { NewRegistrationComponent } from './new-registration.component';
 

@@ -1,13 +1,18 @@
 import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistryModeration } from '@osf/features/moderation/models';
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SelectComponent } from '@osf/shared/components/select/select.component';
 
 import { RegistrySort, SubmissionReviewStatus } from '../../enums';
 import { RegistryModerationSelectors } from '../../store/registry-moderation';
+import { RegistrySubmissionItemComponent } from '../registry-submission-item/registry-submission-item.component';
 
 import { RegistryPendingSubmissionsComponent } from './registry-pending-submissions.component';
 
@@ -34,7 +39,18 @@ describe('RegistryPendingSubmissionsComponent', () => {
       .build();
 
     await TestBed.configureTestingModule({
-      imports: [RegistryPendingSubmissionsComponent, OSFTestingModule, ...MockComponents(), TranslatePipe],
+      imports: [
+        RegistryPendingSubmissionsComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          SelectComponent,
+          IconComponent,
+          LoadingSpinnerComponent,
+          RegistrySubmissionItemComponent,
+          CustomPaginatorComponent
+        ),
+        MockPipe(TranslatePipe),
+      ],
       providers: [
         MockProvider(Router, mockRouter),
         MockProvider(ActivatedRoute, mockActivatedRoute),

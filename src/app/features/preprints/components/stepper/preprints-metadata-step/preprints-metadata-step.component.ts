@@ -21,11 +21,16 @@ import {
   SaveLicense,
   UpdatePreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
-import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
-import { LicenseModel, LicenseOptions } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LicenseComponent } from '@osf/shared/components/license/license.component';
+import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
 
 import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';
 import { PreprintsContributorsComponent } from './preprints-contributors/preprints-contributors.component';

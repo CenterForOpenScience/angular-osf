@@ -1,6 +1,9 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution.component';
@@ -18,7 +21,11 @@ describe('RegistriesAffiliatedInstitutionComponent', () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
 
     await TestBed.configureTestingModule({
-      imports: [RegistriesAffiliatedInstitutionComponent, OSFTestingModule],
+      imports: [
+        RegistriesAffiliatedInstitutionComponent,
+        OSFTestingModule,
+        MockComponent(AffiliatedInstitutionSelectComponent),
+      ],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideMockStore({

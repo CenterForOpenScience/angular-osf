@@ -4,8 +4,9 @@ import { catchError, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/shared/helpers';
-import { ContributorsService, RequestAccessService } from '@osf/shared/services';
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { ContributorsService } from '@osf/shared/services/contributors.service';
+import { RequestAccessService } from '@osf/shared/services/request-access.service';
 
 import {
   AcceptRequestAccess,

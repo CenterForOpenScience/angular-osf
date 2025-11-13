@@ -3,12 +3,13 @@ import { MockComponent } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { MarkdownComponent } from '@shared/components';
-import { WikiVersion } from '@shared/models';
+import { WikiVersion } from '@shared/models/wiki/wiki.model';
+
+import { MarkdownComponent } from '../../markdown/markdown.component';
 
 import { ViewSectionComponent } from './view-section.component';
 
-import { TranslateServiceMock } from '@testing/mocks';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('ViewSectionComponent', () => {
   let component: ViewSectionComponent;

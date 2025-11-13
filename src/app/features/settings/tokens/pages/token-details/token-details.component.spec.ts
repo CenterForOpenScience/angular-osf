@@ -1,14 +1,18 @@
 import { Store } from '@ngxs/store';
 
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { CustomConfirmationService, CustomDialogService } from '@shared/services';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
+import { TokenAddEditFormComponent } from '../../components';
 import { TokenModel } from '../../models';
 import { TokensSelectors } from '../../store';
 
@@ -25,6 +29,7 @@ describe('TokenDetailsComponent', () => {
 
   const mockToken: TokenModel = {
     id: '1',
+    tokenId: '2',
     name: 'Test Token',
     scopes: ['read', 'write'],
   };
@@ -53,7 +58,11 @@ describe('TokenDetailsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [TokenDetailsComponent, OSFTestingModule],
+      imports: [
+        TokenDetailsComponent,
+        OSFTestingModule,
+        ...MockComponents(TokenAddEditFormComponent, IconComponent, LoadingSpinnerComponent),
+      ],
       providers: [
         MockProvider(Store, storeMock),
         MockProvider(CustomConfirmationService, confirmationService),

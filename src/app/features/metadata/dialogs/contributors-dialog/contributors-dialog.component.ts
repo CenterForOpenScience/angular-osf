@@ -22,17 +22,19 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { SearchInputComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
 } from '@osf/shared/components/contributors';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
-import { AddContributorType, ResourceType } from '@osf/shared/enums';
-import { findChangedItems } from '@osf/shared/helpers';
-import { ContributorDialogAddModel, ContributorModel, TableParameters } from '@osf/shared/models';
-import { CustomConfirmationService, CustomDialogService, ToastService } from '@osf/shared/services';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { findChangedItems } from '@osf/shared/helpers/find-changed-items.helper';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import {
   AddContributor,
   BulkAddContributors,
@@ -45,6 +47,9 @@ import {
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
 } from '@osf/shared/stores/contributors';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 import { MetadataSelectors } from '../../store';
 

@@ -1,6 +1,6 @@
-import { SearchResultDataJsonApi } from '@shared/models';
+import { ApiData } from '../common/json-api.model';
 
-import { ApiData } from '../common';
+import { SearchResultDataJsonApi } from './index-card-search-json-api.models';
 
 export interface FilterOptionsResponseJsonApi {
   data: FilterOptionsResponseData;

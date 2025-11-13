@@ -6,10 +6,10 @@ import { Message } from 'primeng/message';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { AuthService } from '@osf/core/services';
-import { TextInputComponent } from '@osf/shared/components';
-import { InputLimits } from '@osf/shared/constants';
-import { CustomValidators } from '@osf/shared/helpers';
+import { AuthService } from '@core/services/auth.service';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 import { ForgotPasswordFormGroupType, MessageInfo } from '../../models';
 

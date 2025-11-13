@@ -4,12 +4,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { PreprintProviderHeroComponent } from '@osf/features/preprints/components';
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import { GlobalSearchComponent } from '@shared/components';
-import { BrowserTabHelper, HeaderStyleHelper } from '@shared/helpers';
-import { BrandService } from '@shared/services';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
+import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { BrandService } from '@osf/shared/services/brand.service';
+
+import { PreprintProviderHeroComponent } from '../../components';
+import { PreprintProviderDetails } from '../../models';
+import { PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 import { PreprintProviderDiscoverComponent } from './preprint-provider-discover.component';
 

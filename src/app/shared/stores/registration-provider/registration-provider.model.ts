@@ -1,4 +1,5 @@
-import { AsyncStateModel, RegistryProviderDetails } from '@shared/models';
+import { RegistryProviderDetails } from '@osf/shared/models/provider/registry-provider.model';
+import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface RegistrationProviderStateModel {
   currentBrandedProvider: AsyncStateModel<RegistryProviderDetails | null>;

@@ -1,5 +1,7 @@
 import { RegistryOverview } from '@osf/features/registry/models';
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
 export const MOCK_REGISTRY_OVERVIEW: RegistryOverview = {
   id: 'test-registry-id',

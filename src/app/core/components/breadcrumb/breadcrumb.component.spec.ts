@@ -1,4 +1,4 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -7,6 +7,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { ProviderSelectors } from '@core/store/provider';
 import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { InstitutionsSearchSelectors } from '@shared/stores/institutions-search';
 
 import { BreadcrumbComponent } from './breadcrumb.component';
@@ -41,7 +42,7 @@ describe('Component: Breadcrumb', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BreadcrumbComponent],
+      imports: [BreadcrumbComponent, MockComponent(IconComponent)],
       providers: [
         MockProvider(Router, mockRouter),
         { provide: ActivatedRoute, useValue: mockActivatedRoute },

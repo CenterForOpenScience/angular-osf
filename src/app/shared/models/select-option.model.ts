@@ -1,4 +1,4 @@
-import { Primitive } from '../helpers';
+import { Primitive } from '../helpers/types.helper';
 
 export interface SelectOption {
   label: string;

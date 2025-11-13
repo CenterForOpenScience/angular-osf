@@ -1,5 +1,5 @@
-import { RegistryStatus } from '../enums';
-import { StatusInfo } from '../models';
+import { RegistryStatus } from '../enums/registry-status.enum';
+import { StatusInfo } from '../models/status-info.model';
 
 export const RegistryStatusMap: Record<RegistryStatus, StatusInfo> = {
   [RegistryStatus.None]: { label: '', severity: null },

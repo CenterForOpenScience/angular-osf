@@ -24,11 +24,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
-import { FilesTreeComponent, FileUploadDialogComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
-import { ClearFileDirective } from '@osf/shared/directives';
-import { FileFolderModel, FileModel } from '@osf/shared/models';
-import { CustomDialogService, FilesService, ToastService } from '@osf/shared/services';
+import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
+import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { FILE_SIZE_LIMIT } from '@osf/shared/constants/files-limits.const';
+import { ClearFileDirective } from '@osf/shared/directives/clear-file.directive';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { FilesService } from '@osf/shared/services/files.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import { FileModel } from '@shared/models/files/file.model';
+import { FileFolderModel } from '@shared/models/files/file-folder.model';
 
 import {
   CreateFolder,

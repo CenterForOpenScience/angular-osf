@@ -2,13 +2,15 @@ import { MockComponent, MockPipe } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectDetailSettingAccordionComponent } from '@osf/features/project/settings/components';
-import { NotificationDescriptionPipe } from '@osf/features/project/settings/pipes';
-import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
+import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
+import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+
+import { NotificationDescriptionPipe } from '../../pipes';
+import { ProjectDetailSettingAccordionComponent } from '../project-detail-setting-accordion/project-detail-setting-accordion.component';
 
 import { ProjectSettingNotificationsComponent } from './project-setting-notifications.component';
 
-import { MOCK_NOTIFICATION_SUBSCRIPTIONS } from '@testing/mocks';
+import { MOCK_NOTIFICATION_SUBSCRIPTIONS } from '@testing/mocks/notification-subscription.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ProjectSettingNotificationsComponent', () => {
@@ -54,7 +56,7 @@ describe('ProjectSettingNotificationsComponent', () => {
     fixture.detectChanges();
 
     expect(component.allAccordionData).toBeDefined();
-    expect(component.allAccordionData?.length).toBe(4);
+    expect(component.allAccordionData?.length).toBe(3);
 
     if (component.allAccordionData) {
       expect(component.allAccordionData[0]).toEqual({
@@ -111,7 +113,6 @@ describe('ProjectSettingNotificationsComponent', () => {
     if (component.allAccordionData) {
       expect(component.allAccordionData[0].event).toBe(SubscriptionEvent.FileUpdated);
       expect(component.allAccordionData[1].event).toBe(SubscriptionEvent.GlobalFileUpdated);
-      expect(component.allAccordionData[2].event).toBe(SubscriptionEvent.GlobalMentions);
     }
   });
 });

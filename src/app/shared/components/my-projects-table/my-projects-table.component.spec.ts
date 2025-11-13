@@ -10,7 +10,8 @@ import { IconComponent } from '../icon/icon.component';
 
 import { MyProjectsTableComponent } from './my-projects-table.component';
 
-import { MOCK_CONTRIBUTOR, TranslateServiceMock } from '@testing/mocks';
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('MyProjectsTableComponent', () => {
   let component: MyProjectsTableComponent;

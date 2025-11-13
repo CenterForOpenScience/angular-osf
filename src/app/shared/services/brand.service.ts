@@ -1,7 +1,7 @@
-import { Brand } from '@shared/models';
+import { BrandModel } from '../models/brand/brand.model';
 
 export class BrandService {
-  static applyBranding(brand: Brand): void {
+  static applyBranding(brand: BrandModel): void {
     const root = document.documentElement;
 
     root.style.setProperty('--branding-primary-color', brand.primaryColor);

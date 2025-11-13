@@ -1,4 +1,4 @@
-import { SocialModel } from '@osf/shared/models';
+import { SocialModel } from './social.model';
 
 export type SocialLinksKeys = keyof SocialModel;
 

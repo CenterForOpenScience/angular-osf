@@ -11,9 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
-import { LicenseComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
-import { LicenseModel, LicenseOptions } from '@osf/shared/models';
+import { LicenseComponent } from '@osf/shared/components/license/license.component';
+import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
+import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
 
 @Component({
   selector: 'osf-registries-license',

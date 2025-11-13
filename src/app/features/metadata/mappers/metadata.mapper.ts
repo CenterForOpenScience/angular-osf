@@ -1,4 +1,5 @@
-import { IdentifiersMapper, LicensesMapper } from '@osf/shared/mappers';
+import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
+import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 
 import { CustomItemMetadataRecord, CustomMetadataJsonApi, MetadataJsonApi, MetadataModel } from '../models';
 

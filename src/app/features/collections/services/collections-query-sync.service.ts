@@ -8,7 +8,7 @@ import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
 import { queryParamsKeys } from '@osf/features/collections/constants/query-params-keys.const';
 import { CollectionQueryParams } from '@osf/features/collections/models';
-import { CollectionsFilters } from '@shared/models';
+import { CollectionsFilters } from '@osf/shared/models/collections/collections-filters.model';
 import { CollectionsSelectors, SetAllFilters, SetSearchValue, SetSortBy } from '@shared/stores/collections';
 import { SetPageNumber } from '@shared/stores/collections/collections.actions';
 

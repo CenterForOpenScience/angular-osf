@@ -3,9 +3,10 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { FilesControlComponent } from '@osf/features/registries/components/files-control/files-control.component';
-import { RegistriesSelectors } from '@osf/features/registries/store';
-import { InfoIconComponent } from '@osf/shared/components';
+import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
+
+import { RegistriesSelectors } from '../../store';
+import { FilesControlComponent } from '../files-control/files-control.component';
 
 import { CustomStepComponent } from './custom-step.component';
 

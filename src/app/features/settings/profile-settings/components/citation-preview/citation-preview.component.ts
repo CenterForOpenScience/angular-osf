@@ -2,8 +2,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { UserModel } from '@osf/shared/models';
-import { CitationFormatPipe } from '@osf/shared/pipes';
+import { UserModel } from '@osf/shared/models/user/user.models';
+import { CitationFormatPipe } from '@osf/shared/pipes/citation-format.pipe';
 
 @Component({
   selector: 'osf-citation-preview',

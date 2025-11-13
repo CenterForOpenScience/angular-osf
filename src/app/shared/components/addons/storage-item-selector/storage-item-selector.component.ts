@@ -26,11 +26,15 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AddonType, OperationNames, StorageItemType } from '@osf/shared/enums';
-import { convertCamelCaseToNormal, IS_XSMALL } from '@osf/shared/helpers';
-import { OperationInvokeData, StorageItem } from '@osf/shared/models';
-import { CustomDialogService } from '@osf/shared/services';
+import { AddonType } from '@osf/shared/enums/addon-type.enum';
+import { OperationNames } from '@osf/shared/enums/operation-names.enum';
+import { StorageItemType } from '@osf/shared/enums/storage-item-type.enum';
+import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
+import { convertCamelCaseToNormal } from '@osf/shared/helpers/camel-case-to-normal.helper';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores/addons';
+import { OperationInvokeData } from '@shared/models/addons/addon-utils.models';
+import { StorageItem } from '@shared/models/addons/storage-item.model';
 
 import { GoogleFilePickerComponent } from '../../google-file-picker/google-file-picker.component';
 import { SelectComponent } from '../../select/select.component';
@@ -69,7 +73,7 @@ export class StorageItemSelectorComponent implements OnInit {
   operationInvocationResult = input.required<StorageItem[]>();
   accountNameControl = input(new FormControl());
   isCreateMode = input(false);
-  currentAddonType = input<string>(AddonType.STORAGE);
+  currentAddonType = input<AddonType>(AddonType.STORAGE);
   supportedResourceTypes = input<string[]>([]);
 
   selectedStorageItemId = model<string>('/');
@@ -257,6 +261,30 @@ export class StorageItemSelectorComponent implements OnInit {
 
       this.breadcrumbItems.set([...breadcrumbs, item]);
     }
+  }
+
+  isItemDisabled(item: StorageItem): boolean {
+    return !item.mayContainRootCandidates || !this.isDirectory(item);
+  }
+
+  isDirectory(item: StorageItem): boolean {
+    return item.itemType === StorageItemType.Folder || item.itemType === StorageItemType.Collection;
+  }
+
+  getOperationNameForItem(item: StorageItem): OperationNames | null {
+    const addonType = this.currentAddonType();
+    if (addonType == AddonType.STORAGE || addonType === AddonType.LINK) {
+      if (item.mayContainRootCandidates) {
+        return OperationNames.LIST_CHILD_ITEMS;
+      } else {
+        return OperationNames.GET_ITEM_INFO;
+      }
+    } else if (addonType == AddonType.CITATION) {
+      if (item.mayContainRootCandidates) {
+        return OperationNames.LIST_COLLECTION_ITEMS;
+      }
+    }
+    return null;
   }
 
   private trimBreadcrumbs(itemId: string): void {

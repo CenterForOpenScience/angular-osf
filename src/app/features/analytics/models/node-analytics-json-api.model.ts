@@ -1,4 +1,4 @@
-import { ResponseDataJsonApi } from '@osf/shared/models';
+import { ResponseDataJsonApi } from '@osf/shared/models/common/json-api.model';
 
 export type NodeAnalyticsResponseJsonApi = ResponseDataJsonApi<NodeAnalyticsDataJsonApi>;
 

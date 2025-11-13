@@ -1,5 +1,5 @@
-import { UserModel } from '@osf/shared/models';
-import { UserRelatedCounts } from '@shared/models';
+import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserRelatedCounts } from '@osf/shared/models/user-related-counts/user-related-counts.model';
 
 export const MOCK_USER: UserModel = {
   iri: '',

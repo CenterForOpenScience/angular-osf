@@ -3,7 +3,7 @@ import { Chip } from 'primeng/chip';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-import { DiscoverableFilter, FilterOption } from '@shared/models';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
 
 @Component({
   selector: 'osf-filter-chips',

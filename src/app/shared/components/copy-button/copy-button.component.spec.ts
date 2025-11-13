@@ -3,7 +3,7 @@ import { MockProviders } from 'ng-mocks';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { CopyButtonComponent } from './copy-button.component';
 

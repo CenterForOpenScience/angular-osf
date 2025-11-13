@@ -39,14 +39,16 @@
       </p-accordion-header>
 
       <p-accordion-content>
-        <div class="flex align-items-baseline gap-1 p-3 pt-0 ml-3">
+        <div class="flex align-content-start gap-1 p-3 pt-0 ml-3">
           <p>{{ 'common.labels.contributors' | translate }}:</p>
 
-          @if (submission().contributorsLoading) {
-            <p-skeleton width="10rem" height="1.25rem" />
-          } @else {
-            <osf-contributors-list [contributors]="submission().contributors"></osf-contributors-list>
-          }
+          <osf-contributors-list
+            [contributors]="submission().contributors"
+            [isLoading]="!!submission().contributorsLoading"
+            [hasLoadMore]="hasMoreContributors()"
+            (loadMoreContributors)="loadMoreContributors.emit()"
+          >
+          </osf-contributors-list>
         </div>
       </p-accordion-content>
     </p-accordion-panel>

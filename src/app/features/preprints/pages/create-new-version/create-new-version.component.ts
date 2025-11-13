@@ -20,20 +20,21 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { FileStepComponent, ReviewStepComponent } from '@osf/features/preprints/components';
-import { createNewVersionStepsConst } from '@osf/features/preprints/constants';
-import { PreprintSteps } from '@osf/features/preprints/enums';
-import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import {
-  FetchPreprintById,
-  PreprintStepperSelectors,
-  ResetState,
-  SetSelectedPreprintProviderId,
-} from '@osf/features/preprints/store/preprint-stepper';
-import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
-import { StepperComponent } from '@shared/components';
-import { CanDeactivateComponent, StepOption } from '@shared/models';
-import { BrandService } from '@shared/services';
+import { ResetState } from '@osf/features/files/store';
+import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
+import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
+import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
+import { CanDeactivateComponent } from '@osf/shared/models/can-deactivate.interface';
+import { StepOption } from '@osf/shared/models/step-option.model';
+import { BrandService } from '@osf/shared/services/brand.service';
+
+import { FileStepComponent, ReviewStepComponent } from '../../components';
+import { createNewVersionStepsConst } from '../../constants';
+import { PreprintSteps } from '../../enums';
+import { FetchPreprintById } from '../../store/preprint';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-create-new-version',

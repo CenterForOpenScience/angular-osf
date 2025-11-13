@@ -1,6 +1,6 @@
 import { MenuItem } from 'primeng/api';
 
-import { UserPermissions } from '@osf/shared/enums';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 import { CustomMenuItem } from '../models/custom-menu-item.model';
 

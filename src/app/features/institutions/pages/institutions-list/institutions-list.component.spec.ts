@@ -1,9 +1,13 @@
-import { MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 import { InstitutionsListComponent } from './institutions-list.component';
@@ -30,7 +34,11 @@ describe.skip('Component: Institutions List', () => {
       .build();
 
     await TestBed.configureTestingModule({
-      imports: [InstitutionsListComponent, OSFTestingModule],
+      imports: [
+        InstitutionsListComponent,
+        OSFTestingModule,
+        ...MockComponents(SubHeaderComponent, SearchInputComponent, LoadingSpinnerComponent, ScheduledBannerComponent),
+      ],
       providers: [
         provideMockStore({
           signals: [
