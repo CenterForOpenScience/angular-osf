@@ -41,12 +41,18 @@ describe('NotificationsComponent', () => {
     subscribeOsfHelpEmail: false,
   };
 
+  // new_pending_submissions → global_reviews
+  // files_updated → global_file_updated
   const mockNotificationSubscriptions = [
-    { id: 'id1', event: SubscriptionEvent.GlobalFileUpdated, frequency: SubscriptionFrequency.Daily },
     {
-      id: 'id2',
-      event: SubscriptionEvent.GlobalFileUpdated,
+      id: 'osf_new_pending_submissions',
+      event: 'new_pending_submissions',
       frequency: SubscriptionFrequency.Instant,
+    },
+    {
+      id: 'cuzg4_global_file_updated',
+      event: 'files_updated',
+      frequency: SubscriptionFrequency.Daily,
     },
   ];
 
@@ -77,7 +83,7 @@ describe('NotificationsComponent', () => {
       return signal(null);
     });
 
-    MOCK_STORE.dispatch.mockImplementation(() => of());
+    MOCK_STORE.dispatch.mockReturnValue(of({}));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -116,9 +122,9 @@ describe('NotificationsComponent', () => {
 
       return signal(null);
     });
-    component.emailPreferencesFormSubmit();
 
-    expect(loaderService.hide).not.toHaveBeenCalled();
+    component.emailPreferencesFormSubmit();
+    expect(loaderService.hide).toHaveBeenCalledTimes(1);
   });
 
   it('should handle subscription completion correctly', () => {
@@ -136,11 +142,15 @@ describe('NotificationsComponent', () => {
   it('should call dispatch only once per subscription change', () => {
     const mockDispatch = jest.fn().mockReturnValue(of({}));
     MOCK_STORE.dispatch.mockImplementation(mockDispatch);
-    const event = SubscriptionEvent.GlobalFileUpdated;
-    const frequency = SubscriptionFrequency.Daily;
 
-    component.onSubscriptionChange(event, frequency);
+    component.onSubscriptionChange(SubscriptionEvent.GlobalFileUpdated, SubscriptionFrequency.Daily);
 
     expect(mockDispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('should default to API value', () => {
+    const subs = component.notificationSubscriptionsForm.value;
+    expect(subs.new_pending_submissions).toBe(SubscriptionFrequency.Instant);
+    expect(subs.global_file_updated).toBe(SubscriptionFrequency.Daily);
   });
 });
