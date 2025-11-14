@@ -308,12 +308,12 @@ export class PreprintStepperState {
   getProjectFilesByLink(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFilesByLink) {
     ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
 
-    return this.fileService.getFilesWithoutFiltering(action.filesLink).pipe(
-      tap((files: FileModel[]) => {
+    return this.fileService.getFilesWithoutFiltering(action.filesLink, 1).pipe(
+      tap((response) => {
         ctx.setState(
           patch({
             projectFiles: patch({
-              data: files,
+              data: response.files,
               isLoading: false,
             }),
           })
