@@ -34,7 +34,7 @@ export class FilesHandlers {
     );
   }
 
-  getProjectFiles(ctx: StateContext<RegistriesStateModel>, { filesLink }: GetFiles) {
+  getProjectFiles(ctx: StateContext<RegistriesStateModel>, { filesLink, page }: GetFiles) {
     const state = ctx.getState();
     ctx.patchState({
       files: {
@@ -43,7 +43,7 @@ export class FilesHandlers {
       },
     });
 
-    return this.filesService.getFilesWithoutFiltering(filesLink).pipe(
+    return this.filesService.getFilesWithoutFiltering(filesLink, page).pipe(
       tap((response) => {
         ctx.patchState({
           files: {
