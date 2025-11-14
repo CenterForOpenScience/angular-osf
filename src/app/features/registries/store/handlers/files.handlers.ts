@@ -40,14 +40,18 @@ export class FilesHandlers {
       files: {
         ...state.files,
         isLoading: true,
+        error: null,
+        totalCount: 0,
       },
     });
 
     return this.filesService.getFilesWithoutFiltering(filesLink, page).pipe(
       tap((response) => {
+        const newData = page === 1 ? response.files : [...(state.files.data ?? []), ...response.files];
+
         ctx.patchState({
           files: {
-            data: response.files,
+            data: newData,
             isLoading: false,
             error: null,
             totalCount: response.meta?.total ?? 0,
