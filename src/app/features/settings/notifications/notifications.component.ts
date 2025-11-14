@@ -131,7 +131,7 @@ export class NotificationsComponent implements OnInit {
     const user = this.currentUser();
     if (!user) return;
 
-    const eventKey = event as unknown as string;
+    const eventKey = event as string;
 
     const apiEventName = FORM_EVENT_TO_API_EVENT[eventKey] ?? eventKey;
 
