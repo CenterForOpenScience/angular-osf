@@ -170,8 +170,16 @@ export class ContributorsService {
     return this.jsonApiService.patch(baseUrl, contributorData);
   }
 
-  deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
+  deleteContributor(
+    resourceType: ResourceType,
+    resourceId: string,
+    userId: string,
+    removeFromChildren = false
+  ): Observable<void> {
+    let baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
+    if (removeFromChildren) {
+      baseUrl = baseUrl.concat('?propagate_to_children=true');
+    }
 
     return this.jsonApiService.delete(baseUrl);
   }

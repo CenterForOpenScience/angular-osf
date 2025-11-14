@@ -251,7 +251,7 @@ export class ContributorsState {
     });
 
     return this.contributorsService
-      .deleteContributor(action.resourceType, action.resourceId, action.contributorId)
+      .deleteContributor(action.resourceType, action.resourceId, action.contributorId, action.removeFromChildren)
       .pipe(
         tap(() => {
           if (!action.skipRefresh) {

@@ -80,7 +80,8 @@ export class DeleteContributor {
     public resourceId: string | undefined | null,
     public resourceType: ResourceType | undefined,
     public contributorId: string,
-    public skipRefresh = false
+    public skipRefresh = false,
+    public removeFromChildren = false
   ) {}
 }
 

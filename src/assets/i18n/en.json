@@ -618,6 +618,8 @@
       },
       "removeDialog": {
         "title": "Remove contributor",
+        "thisProjectOnly": "This project only",
+        "thisProjectAndComponents": "This project and all it's components",
         "message": "Are you sure you want to remove <b>{{name}}</b> contributor?",
         "successMessage": "Contributor {{name}} successfully removed."
       },
