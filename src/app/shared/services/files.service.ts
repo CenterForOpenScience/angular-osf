@@ -85,13 +85,13 @@ export class FilesService {
       .pipe(map((response) => ({ files: FilesMapper.getFileFolders(response.data), meta: response.meta })));
   }
 
-  getFilesWithoutFiltering(filesLink: string, page = 1): Observable<FileModel[]> {
+  getFilesWithoutFiltering(filesLink: string, page = 1): Observable<{ files: FileModel[]; meta?: MetaJsonApi }> {
     const params: Record<string, string> = {
       page: page.toString(),
     }
     return this.jsonApiService
       .get<FilesResponseJsonApi>(filesLink, params)
-      .pipe(map((response) => FilesMapper.getFiles(response.data)));
+      .pipe(map((response) => ({ files: FilesMapper.getFiles(response.data), meta: response.meta })));
   }
 
   uploadFile(

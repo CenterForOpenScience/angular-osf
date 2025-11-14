@@ -47,10 +47,10 @@ export class FilesHandlers {
       tap((response) => {
         ctx.patchState({
           files: {
-            data: response,
+            data: response.files,
             isLoading: false,
             error: null,
-            totalCount: response.length,
+            totalCount: response.meta?.total ?? 0,
           },
         });
       }),
