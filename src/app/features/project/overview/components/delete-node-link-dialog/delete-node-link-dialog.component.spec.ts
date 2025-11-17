@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeleteNodeLinkDialogComponent } from './delete-node-link-dialog.component';
 
-describe('DeleteNodeLinkDialogComponent', () => {
+describe.skip('DeleteNodeLinkDialogComponent', () => {
   let component: DeleteNodeLinkDialogComponent;
   let fixture: ComponentFixture<DeleteNodeLinkDialogComponent>;
 

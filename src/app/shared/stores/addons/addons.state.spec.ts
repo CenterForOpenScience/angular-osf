@@ -35,7 +35,7 @@ describe('State: Addons', () => {
     it('should fetch storage addons and update state and selector output', inject(
       [HttpTestingController],
       (httpMock: HttpTestingController) => {
-        let result: any[] = [];
+        let result: any[] | null = [];
         store.dispatch(new GetStorageAddons()).subscribe(() => {
           result = store.selectSnapshot(AddonsSelectors.getStorageAddons);
         });
@@ -106,7 +106,7 @@ describe('State: Addons', () => {
       req.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
 
       expect(result).toEqual({
-        data: [],
+        data: null,
         error: 'Http failure response for http://addons.localhost:8000/external-storage-services: 500 Server Error',
         isLoading: false,
         isSubmitting: false,

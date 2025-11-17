@@ -13,6 +13,7 @@
         inputId="in_label"
         [options]="rootFoldersOptions()"
         [(ngModel)]="currentRootFolder"
+        (onChange)="handleRootFolderChange($event.value)"
         styleClass="w-full"
         variant="filled"
       >

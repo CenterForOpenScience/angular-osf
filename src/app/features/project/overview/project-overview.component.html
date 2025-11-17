@@ -1,7 +1,7 @@
 @let project = currentProject();
 @let status = submissionReviewStatus();
 
-@if (!isLoading() && project) {
+@if (!isProjectLoading() && project) {
   <div class="flex justify-content-between">
     <osf-sub-header
       [title]="project.title"
@@ -15,15 +15,15 @@
   @if (currentProject()) {
     <div class="px-3 pb-5 flex flex-column sm:px-5">
       <osf-project-overview-toolbar
-        [isCollectionsRoute]="isCollectionsRoute()"
-        [currentResource]="currentResource()!"
-        [projectDescription]="project.description"
+        [currentResource]="currentProject()!"
+        [storage]="storage()"
         [canEdit]="hasAdminAccess()"
+        [viewOnly]="hasViewOnly()"
       />
     </div>
   }
 
-  <div class="flex flex-wrap gap-4 bg-white h-full p-3 flex-column sm:p-4 lg:flex-row">
+  <div class="flex flex-column gap-4 bg-white h-full p-3 sm:p-4 lg:flex-row">
     @if (isCollectionsRoute()) {
       <p-button
         link
@@ -32,7 +32,7 @@
         (onClick)="goBack()"
       />
 
-      @if (status && isCollectionsRoute() && collectionProvider()) {
+      @if (status && collectionProvider()) {
         @let submissionOption = SubmissionReviewStatusOptions[status];
 
         <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="warn">
@@ -48,9 +48,9 @@
       <osf-view-only-link-message />
     }
 
-    <div class="flex flex-column gap-4 left-section flex-order-2 lg:flex-order-1">
+    <div class="flex flex-column gap-4 flex-order-2 lg:flex-order-1 lg:w-8">
       @if (isWikiEnabled()) {
-        <osf-overview-wiki [resourceId]="currentProject()!.id" />
+        <osf-overview-wiki [resourceId]="currentProject()!.id" [canEdit]="hasWriteAccess()" />
       }
 
       <osf-files-widget
@@ -67,10 +67,10 @@
         />
       }
 
-      <osf-project-components [canEdit]="hasWriteAccess() && !isCollectionsRoute()" [anonymous]="isAnonymous()" />
+      <osf-project-components [canEdit]="hasWriteAccess()" [anonymous]="isAnonymous()" />
 
       @if (!hasViewOnly()) {
-        <osf-linked-resources [canEdit]="hasWriteAccess() && !isCollectionsRoute()" />
+        <osf-linked-resources [canEdit]="hasWriteAccess()" />
       }
 
       @if (configuredCitationAddons().length) {
@@ -82,16 +82,8 @@
       <osf-recent-activity-list [pageSize]="activityPageSize" />
     </div>
 
-    <div class="flex flex-column right-section p-4 flex-order-1 lg:flex-order-2">
-      <osf-project-overview-metadata
-        [currentResource]="resourceOverview()"
-        (customCitationUpdated)="onCustomCitationUpdated($event)"
-        [canEdit]="hasWriteAccess()"
-        [bibliographicContributors]="bibliographicContributors()"
-        [isBibliographicContributorsLoading]="isBibliographicContributorsLoading()"
-        [hasMoreBibliographicContributors]="hasMoreBibliographicContributors()"
-        (loadMoreContributors)="handleLoadMoreContributors()"
-      />
+    <div class="flex flex-column right-section p-4 flex-order-1 lg:flex-order-2 lg:w-4">
+      <osf-project-overview-metadata />
     </div>
   </div>
 } @else {

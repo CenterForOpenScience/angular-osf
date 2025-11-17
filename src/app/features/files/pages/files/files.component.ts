@@ -7,7 +7,18 @@ import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { catchError, debounceTime, distinctUntilChanged, filter, finalize, forkJoin, of, switchMap, take } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  finalize,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+  take,
+} from 'rxjs';
 
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
@@ -22,7 +33,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -244,6 +255,11 @@ export class FilesComponent {
     () => this.isButtonDisabled() || (this.googleFilePickerComponent()?.isGFPDisabled() ?? false)
   );
 
+  private route = inject(ActivatedRoute);
+  readonly providerName = toSignal(
+    this.route?.params?.pipe(map((params) => params['fileProvider'])) ?? of('osfstorage')
+  );
+
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
       if (params['id']) {
@@ -264,15 +280,18 @@ export class FilesComponent {
     });
 
     effect(() => {
-      const rootFolders = this.rootFolders();
-      if (rootFolders) {
-        const osfRootFolder = rootFolders.find(
-          (folder: FileFolderModel) => folder.provider === FileProvider.OsfStorage
-        );
-        if (osfRootFolder) {
+      const rootFoldersOptions = this.rootFoldersOptions();
+      const providerName = this.providerName();
+
+      if (rootFoldersOptions && rootFoldersOptions.length && providerName) {
+        const rootFoldersOption = rootFoldersOptions.find((option) => option.folder.provider === providerName);
+
+        if (!rootFoldersOption) {
+          this.router.navigate([`/${this.resourceId()}/files`, FileProvider.OsfStorage]);
+        } else {
           this.currentRootFolder.set({
-            label: this.translateService.instant('files.storageLocation'),
-            folder: osfRootFolder,
+            label: rootFoldersOption.label,
+            folder: rootFoldersOption.folder,
           });
         }
       }
@@ -651,5 +670,11 @@ export class FilesComponent {
 
   onUpdateFoldersStack(newStack: FileFolderModel[]): void {
     this.foldersStack = [...newStack];
+  }
+
+  handleRootFolderChange(selectedFolder: FileLabelModel) {
+    const provider = selectedFolder.folder?.provider;
+    const resourceId = this.resourceId();
+    this.router.navigate([`/${resourceId}/files`, provider]);
   }
 }

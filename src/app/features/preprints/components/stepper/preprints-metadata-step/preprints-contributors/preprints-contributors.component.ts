@@ -36,7 +36,6 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import {
-  AddContributor,
   BulkAddContributors,
   BulkUpdateContributors,
   ContributorsSelectors,
@@ -84,7 +83,6 @@ export class PreprintsContributorsComponent implements OnInit {
     deleteContributor: DeleteContributor,
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
-    addContributor: AddContributor,
     loadMoreContributors: LoadMoreContributors,
   });
 
@@ -157,7 +155,7 @@ export class PreprintsContributorsComponent implements OnInit {
         } else {
           const params = { name: res.data[0].fullName };
 
-          this.actions.addContributor(this.preprintId(), ResourceType.Preprint, res.data[0]).subscribe({
+          this.actions.bulkAddContributors(this.preprintId(), ResourceType.Preprint, res.data).subscribe({
             next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }

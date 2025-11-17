@@ -10,7 +10,6 @@ import { RequestAccessService } from '@osf/shared/services/request-access.servic
 
 import {
   AcceptRequestAccess,
-  AddContributor,
   BulkAddContributors,
   BulkAddContributorsFromParentProject,
   BulkUpdateContributors,
@@ -145,28 +144,6 @@ export class ContributorsState {
     );
   }
 
-  @Action(AddContributor)
-  addContributor(ctx: StateContext<ContributorsStateModel>, action: AddContributor) {
-    const state = ctx.getState();
-
-    if (!action.resourceId || !action.resourceType) {
-      return;
-    }
-
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
-    });
-
-    return this.contributorsService.addContributor(action.resourceType, action.resourceId, action.contributor).pipe(
-      tap(() => {
-        ctx.dispatch(
-          new GetAllContributors(action.resourceId, action.resourceType, 1, state.contributorsList.pageSize)
-        );
-      }),
-      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-    );
-  }
-
   @Action(BulkUpdateContributors)
   bulkUpdateContributors(ctx: StateContext<ContributorsStateModel>, action: BulkUpdateContributors) {
     const state = ctx.getState();
@@ -204,7 +181,7 @@ export class ContributorsState {
     });
 
     return this.contributorsService
-      .bulkAddContributors(action.resourceType, action.resourceId, action.contributors, action.childNodeIds)
+      .bulkAddContributors(action.resourceType, action.resourceId, action.contributors)
       .pipe(
         tap(() => {
           ctx.dispatch(

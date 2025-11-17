@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { isFileProvider } from '@core/guards/is-file-provider.guard';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { FilesContainerComponent } from './pages/files-container/files-container.component';
@@ -11,6 +12,12 @@ export const filesRoutes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
+        redirectTo: 'osfstorage',
+      },
+      {
+        path: ':fileProvider',
+        canMatch: [isFileProvider],
         loadComponent: () => import('@osf/features/files/pages/files/files.component').then((c) => c.FilesComponent),
       },
       {

@@ -252,8 +252,9 @@ export class ProjectAddonsComponent implements OnInit {
   filteredAddonCards = computed((): AddonCardModel[] => {
     const searchValue = this.searchValue().toLowerCase();
     const configuredAddons = this.allConfiguredAddonsForCheck();
+    const addons = this.currentAddonsState() ?? [];
 
-    const addonCards = this.currentAddonsState()
+    const addonCards = addons
       .filter(
         (card) =>
           card.externalServiceName.toLowerCase().includes(searchValue) ||
@@ -310,7 +311,7 @@ export class ProjectAddonsComponent implements OnInit {
         const addons = this.currentAddonsState();
         const isLoading = this.currentAddonsLoading();
 
-        if (!addons?.length && !isLoading) {
+        if (!addons && !isLoading) {
           action();
         }
       }

@@ -1,11 +1,9 @@
-@use "/styles/mixins" as mix;
-
 .wiki {
   border: 1px solid var(--grey-2);
-  border-radius: mix.rem(12px);
+  border-radius: 0.75rem;
   color: var(--dark-blue-1);
 
   &-description {
-    line-height: mix.rem(24px);
+    line-height: 1.5rem;
   }
 }

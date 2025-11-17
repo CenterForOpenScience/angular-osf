@@ -1,5 +1,6 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { TreeDragDropService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { signal } from '@angular/core';
@@ -53,6 +54,7 @@ describe('FilesTreeComponent', () => {
         MockProvider(ToastService),
         MockProvider(CustomConfirmationService),
         MockProvider(DialogService),
+        TreeDragDropService,
       ],
     }).compileComponents();
 

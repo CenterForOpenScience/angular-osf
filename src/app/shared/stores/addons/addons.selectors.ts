@@ -16,13 +16,13 @@ import { AddonsState } from './addons.state';
 
 export class AddonsSelectors {
   @Selector([AddonsState])
-  static getStorageAddons(state: AddonsStateModel): AddonModel[] {
+  static getStorageAddons(state: AddonsStateModel): AddonModel[] | null {
     return state.storageAddons.data;
   }
 
   static getStorageAddon(id: string): (state: AddonsStateModel) => AddonModel | null {
     return createSelector([AddonsState], (state: AddonsStateModel): AddonModel | null => {
-      return state.storageAddons.data.find((addon: AddonModel) => addon.id === id) || null;
+      return state.storageAddons.data?.find((addon: AddonModel) => addon.id === id) || null;
     });
   }
 
@@ -32,7 +32,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCitationAddons(state: AddonsStateModel): AddonModel[] {
+  static getCitationAddons(state: AddonsStateModel): AddonModel[] | null {
     return state.citationAddons.data;
   }
 
@@ -42,7 +42,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getLinkAddons(state: AddonsStateModel): AddonModel[] {
+  static getLinkAddons(state: AddonsStateModel): AddonModel[] | null {
     return state.linkAddons.data;
   }
 

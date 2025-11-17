@@ -37,7 +37,6 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import {
-  AddContributor,
   BulkAddContributors,
   BulkUpdateContributors,
   ContributorsSelectors,
@@ -92,7 +91,6 @@ export class ProjectContributorsStepComponent {
   contributorsSaved = output<void>();
 
   actions = createDispatchMap({
-    addContributor: AddContributor,
     bulkAddContributors: BulkAddContributors,
     bulkUpdateContributors: BulkUpdateContributors,
     deleteContributor: DeleteContributor,
@@ -207,7 +205,7 @@ export class ProjectContributorsStepComponent {
         } else {
           const params = { name: res.data[0].fullName };
 
-          this.actions.addContributor(this.selectedProject()?.id, ResourceType.Project, res.data[0]).subscribe({
+          this.actions.bulkAddContributors(this.selectedProject()?.id, ResourceType.Project, res.data).subscribe({
             next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }

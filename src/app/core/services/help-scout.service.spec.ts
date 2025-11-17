@@ -14,7 +14,7 @@ describe('HelpScoutService', () => {
       if (selector === UserSelectors.isAuthenticated) {
         return authSignal;
       }
-      return signal(null); // fallback
+      return signal(null);
     }),
   };
   let service: HelpScoutService;

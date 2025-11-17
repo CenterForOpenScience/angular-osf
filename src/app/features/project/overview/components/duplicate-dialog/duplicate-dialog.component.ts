@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -20,19 +20,23 @@ import { DuplicateProject, ProjectOverviewSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DuplicateDialogComponent {
-  private store = inject(Store);
   private toastService = inject(ToastService);
+
   dialogRef = inject(DynamicDialogRef);
   destroyRef = inject(DestroyRef);
 
+  project = select(ProjectOverviewSelectors.getProject);
   isSubmitting = select(ProjectOverviewSelectors.getDuplicateProjectSubmitting);
 
+  actions = createDispatchMap({ duplicateProject: DuplicateProject });
+
   handleDuplicateConfirm(): void {
-    const project = this.store.selectSnapshot(ProjectOverviewSelectors.getProject);
+    const project = this.project();
+
     if (!project) return;
 
-    this.store
-      .dispatch(new DuplicateProject(project.id, project.title))
+    this.actions
+      .duplicateProject(project.id, project.title)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
