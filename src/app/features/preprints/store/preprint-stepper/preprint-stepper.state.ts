@@ -318,7 +318,7 @@ export class PreprintStepperState {
         ctx.setState(
           patch({
             projectFiles: patch({
-              data: response.files,
+              data: response.data,
               isLoading: false,
             }),
           })
