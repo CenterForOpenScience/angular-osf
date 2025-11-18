@@ -16,13 +16,13 @@ import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 @Component({
-  selector: 'osf-withdraw-dialog',
+  selector: 'osf-registry-withdraw-dialog',
   imports: [TranslatePipe, TextInputComponent, Button],
-  templateUrl: './withdraw-dialog.component.html',
-  styleUrl: './withdraw-dialog.component.scss',
+  templateUrl: './registry-withdraw-dialog.component.html',
+  styleUrl: './registry-withdraw-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WithdrawDialogComponent {
+export class RegistryWithdrawDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
   private readonly actions = createDispatchMap({ withdrawRegistration: WithdrawRegistration });

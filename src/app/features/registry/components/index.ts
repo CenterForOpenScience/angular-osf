@@ -5,5 +5,5 @@ export * from './registration-links-card/registration-links-card.component';
 export * from './registry-blocks-section/registry-blocks-section.component';
 export * from './registry-revisions/registry-revisions.component';
 export * from './registry-statuses/registry-statuses.component';
+export * from './registry-withdraw-dialog/registry-withdraw-dialog.component';
 export * from './resource-form/resource-form.component';
-export * from './withdraw-dialog/withdraw-dialog.component';

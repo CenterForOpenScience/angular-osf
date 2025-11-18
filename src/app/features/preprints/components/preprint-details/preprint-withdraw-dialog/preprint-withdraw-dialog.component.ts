@@ -21,13 +21,13 @@ import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validatio
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
 @Component({
-  selector: 'osf-withdraw-dialog',
+  selector: 'osf-preprint-withdraw-dialog',
   imports: [Textarea, ReactiveFormsModule, Message, TranslatePipe, Button, TitleCasePipe],
-  templateUrl: './withdraw-dialog.component.html',
-  styleUrl: './withdraw-dialog.component.scss',
+  templateUrl: './preprint-withdraw-dialog.component.html',
+  styleUrl: './preprint-withdraw-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WithdrawDialogComponent implements OnInit {
+export class PreprintWithdrawDialogComponent implements OnInit {
   private readonly config = inject(DynamicDialogConfig);
   private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
