@@ -46,7 +46,7 @@ export const ADDONS_DEFAULTS: AddonsStateModel = {
     error: null,
   },
   redirectAddons: {
-    data: [],
+    data: null,
     isLoading: false,
     error: null,
   },
