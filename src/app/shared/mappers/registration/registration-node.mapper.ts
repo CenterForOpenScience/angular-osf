@@ -1,11 +1,8 @@
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ProviderShortInfoModel } from '@shared/models/provider/provider.model';
 import { RegistryProviderDetailsJsonApi } from '@shared/models/provider/registration-provider-json-api.model';
-import { RegistrationNodeModel, RegistrationResponses } from '@shared/models/registration/registration-node.model';
-import {
-  RegistrationNodeAttributesJsonApi,
-  RegistrationResponsesJsonApi,
-} from '@shared/models/registration/registration-node-json-api.model';
+import { RegistrationNodeModel } from '@shared/models/registration/registration-node.model';
+import { RegistrationNodeAttributesJsonApi } from '@shared/models/registration/registration-node-json-api.model';
 
 export class RegistrationNodeMapper {
   static getRegistrationNodeAttributes(
@@ -51,7 +48,6 @@ export class RegistrationNodeMapper {
       pendingWithdrawal: attributes.pending_withdrawal,
       providerSpecificMetadata: attributes.provider_specific_metadata,
       registeredMeta: attributes.registered_meta,
-      registrationResponses: this.getRegistrationResponses(attributes.registration_responses),
       registrationSupplement: attributes.registration_supplement,
       reviewsState: attributes.reviews_state,
       revisionState: attributes.revision_state,
@@ -60,18 +56,6 @@ export class RegistrationNodeMapper {
       wikiEnabled: attributes.wiki_enabled,
       withdrawalJustification: attributes.withdrawal_justification,
       withdrawn: attributes.withdrawn,
-    };
-  }
-
-  static getRegistrationResponses(response: RegistrationResponsesJsonApi): RegistrationResponses {
-    return {
-      summary: response?.summary,
-      uploader: response?.uploader?.map((uploadItem) => ({
-        fileId: uploadItem.file_id,
-        fileName: uploadItem.file_name,
-        fileUrls: uploadItem.file_urls,
-        fileHashes: uploadItem.file_hashes,
-      })),
     };
   }
 
