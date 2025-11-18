@@ -74,7 +74,6 @@ export class SettingsAddonsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly queryParamsService = inject(AddonsQueryParamsService);
   readonly tabOptions = ADDON_TAB_OPTIONS;
-  readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
   readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
   searchControl = new FormControl<string>('');
@@ -99,6 +98,20 @@ export class SettingsAddonsComponent implements OnInit {
   isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
   isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
   isAuthorizedLinkAddonsLoading = select(AddonsSelectors.getAuthorizedLinkAddonsLoading);
+  activeFlags = select(UserSelectors.getActiveFlags);
+
+  readonly categoryOptions = computed(() => {
+    if (this.activeFlags().includes('gravy_redirect')) {
+      return [
+        ...ADDON_CATEGORY_OPTIONS,
+        {
+          label: 'settings.addons.categories.otherServices',
+          value: AddonCategory.EXTERNAL_REDIRECT_SERVICES,
+        },
+      ];
+    }
+    return ADDON_CATEGORY_OPTIONS;
+  });
 
   currentAddonsLoading = computed(() => {
     switch (this.selectedCategory()) {

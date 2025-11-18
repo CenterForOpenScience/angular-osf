@@ -77,7 +77,6 @@ export class ProjectAddonsComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private queryParamsService = inject(AddonsQueryParamsService);
   readonly tabOptions = ADDON_TAB_OPTIONS;
-  readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
   readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
   searchControl = new FormControl<string>('');
@@ -107,6 +106,21 @@ export class ProjectAddonsComponent implements OnInit {
   isConfiguredStorageAddonsLoading = select(AddonsSelectors.getConfiguredStorageAddonsLoading);
   isConfiguredCitationAddonsLoading = select(AddonsSelectors.getConfiguredCitationAddonsLoading);
   isConfiguredLinkAddonsLoading = select(AddonsSelectors.getConfiguredLinkAddonsLoading);
+  activeFlags = select(UserSelectors.getActiveFlags);
+
+  readonly categoryOptions = computed(() => {
+    if (this.activeFlags().includes('gravy_redirect')) {
+      return [
+        ...ADDON_CATEGORY_OPTIONS,
+        {
+          label: 'settings.addons.categories.otherServices',
+          value: AddonCategory.EXTERNAL_REDIRECT_SERVICES,
+        },
+      ];
+    }
+    return ADDON_CATEGORY_OPTIONS;
+  });
+
   isAddonsLoading = computed(() => {
     return (
       this.isStorageAddonsLoading() ||

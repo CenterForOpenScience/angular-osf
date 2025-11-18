@@ -52,7 +52,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getRedirectAddons(state: AddonsStateModel): AddonModel[] {
+  static getRedirectAddons(state: AddonsStateModel): AddonModel[] | null {
     return state.redirectAddons.data;
   }
 

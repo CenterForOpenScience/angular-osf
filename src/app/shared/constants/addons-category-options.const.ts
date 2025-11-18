@@ -14,8 +14,9 @@ export const ADDON_CATEGORY_OPTIONS: SelectOption[] = [
     label: 'settings.addons.categories.linkedServices',
     value: AddonCategory.EXTERNAL_LINK_SERVICES,
   },
-  {
-    label: 'settings.addons.categories.otherServices',
-    value: AddonCategory.EXTERNAL_REDIRECT_SERVICES,
-  },
+  // TODO: add this after feature flag gravy_redirect is either turned on for everyone or removed
+  // {
+  //   label: 'settings.addons.categories.otherServices',
+  //   value: AddonCategory.EXTERNAL_REDIRECT_SERVICES,
+  // },
 ];
