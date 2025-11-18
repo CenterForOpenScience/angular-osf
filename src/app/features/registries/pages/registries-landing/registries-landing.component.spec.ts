@@ -4,13 +4,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
-import { RegistryServicesComponent } from '@osf/features/registries/components';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '@osf/shared/components/resource-card/resource-card.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
+import { RegistryServicesComponent } from '../../components/registry-services/registry-services.component';
 import { RegistriesSelectors } from '../../store';
 
 import { RegistriesLandingComponent } from './registries-landing.component';
