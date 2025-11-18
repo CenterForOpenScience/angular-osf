@@ -1,4 +1,5 @@
 import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import {
   MeetingGetResponseJsonApi,
@@ -28,7 +29,7 @@ export class MeetingsMapper {
     return {
       data: response.data.map((item) => ({
         id: item.id,
-        title: item.attributes.title,
+        title: replaceBadEncodedChars(item.attributes.title),
         dateCreated: item.attributes.date_created,
         authorName: item.attributes.author_name,
         downloadCount: item.attributes.download_count || 0,
