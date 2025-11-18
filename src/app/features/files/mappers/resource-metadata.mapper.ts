@@ -1,5 +1,6 @@
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { ResourceMetadata } from '@osf/shared/models/resource-metadata.model';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { GetResourceCustomMetadataResponse } from '../models/get-resource-custom-metadata-response.model';
 import { GetResourceShortInfoResponse } from '../models/get-resource-short-info-response.model';
@@ -9,8 +10,8 @@ export function MapResourceMetadata(
   customMetadata: GetResourceCustomMetadataResponse
 ): ResourceMetadata {
   return {
-    title: shortInfo.data.attributes.title,
-    description: shortInfo.data.attributes.description,
+    title: replaceBadEncodedChars(shortInfo.data.attributes.title),
+    description: replaceBadEncodedChars(shortInfo.data.attributes.description),
     dateCreated: new Date(shortInfo.data.attributes.date_created),
     dateModified: new Date(shortInfo.data.attributes.date_modified),
     funders:
