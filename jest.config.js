@@ -70,7 +70,6 @@ module.exports = {
     '<rootDir>/src/environments',
     '<rootDir>/src/app/features/files/pages/file-detail',
     '<rootDir>/src/app/features/project/addons/',
-    '<rootDir>/src/app/features/registry/components',
     '<rootDir>/src/app/features/settings/addons/',
     '<rootDir>/src/app/features/settings/tokens/store/',
   ],
