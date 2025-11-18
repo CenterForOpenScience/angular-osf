@@ -9,7 +9,7 @@ import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { Textarea } from 'primeng/textarea';
 
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import {
@@ -23,13 +23,14 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CitationStyle } from '@shared/models/citations/citation-style.model';
-import { ResourceOverview } from '@shared/models/resource-overview.model';
 import { CustomOption } from '@shared/models/select-option.model';
 import {
   CitationsSelectors,
@@ -63,15 +64,16 @@ export class ResourceCitationsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
 
-  currentResource = input.required<ResourceOverview | null>();
+  resourceId = input.required<string>();
+  resourceType = input.required<CurrentResourceType>();
+  customCitations = input<string | null>();
   canEdit = input<boolean>(false);
 
   private readonly clipboard = inject(Clipboard);
   private readonly toastService = inject(ToastService);
-  private readonly destroy$ = new Subject<void>();
   private readonly filterSubject = new Subject<string>();
 
-  customCitation = output<string>();
+  customCitationChange = output<string>();
   defaultCitations = select(CitationsSelectors.getDefaultCitations);
   isCitationsLoading = select(CitationsSelectors.getDefaultCitationsLoading);
   citationStyles = select(CitationsSelectors.getCitationStyles);
@@ -102,16 +104,17 @@ export class ResourceCitationsComponent {
     this.setupFilterDebounce();
     this.setupDefaultCitationsEffect();
     this.setupCitationStylesEffect();
-    this.setupCleanup();
   }
 
   setupDefaultCitationsEffect(): void {
     effect(() => {
-      const resource = this.currentResource();
+      const customCitations = this.customCitations();
+      const resourceId = this.resourceId();
+      const resourceType = this.resourceType();
 
-      if (resource) {
-        this.actions.getDefaultCitations(resource.type, resource.id);
-        this.customCitationInput.setValue(resource.customCitation);
+      if (resourceId && resourceType) {
+        this.actions.getDefaultCitations(resourceType, resourceId);
+        this.customCitationInput.setValue(customCitations ?? '');
       }
     });
   }
@@ -122,27 +125,29 @@ export class ResourceCitationsComponent {
   }
 
   handleGetStyledCitation(event: SelectChangeEvent) {
-    const resource = this.currentResource();
+    const resourceId = this.resourceId();
+    const resourceType = this.resourceType();
 
-    if (resource) {
-      this.actions.getStyledCitation(resource.type, resource.id, event.value.id);
+    if (resourceId && resourceType) {
+      this.actions.getStyledCitation(resourceType, resourceId, event.value.id);
     }
   }
 
   handleUpdateCustomCitation(): void {
-    const resource = this.currentResource();
+    const resourceId = this.resourceId();
+    const resourceType = this.resourceType();
     const customCitationText = this.customCitationInput.value?.trim();
 
-    if (resource && customCitationText) {
+    if (resourceId && resourceType && customCitationText) {
       const payload = {
-        id: resource.id,
-        type: resource.type,
+        id: resourceId,
+        type: resourceType,
         citationText: customCitationText,
       };
 
       this.actions.updateCustomCitation(payload).subscribe({
         next: () => {
-          this.customCitation.emit(customCitationText);
+          this.customCitationChange.emit(customCitationText);
         },
         complete: () => {
           this.toggleEditMode();
@@ -152,18 +157,19 @@ export class ResourceCitationsComponent {
   }
 
   handleDeleteCustomCitation(): void {
-    const resource = this.currentResource();
+    const resourceId = this.resourceId();
+    const resourceType = this.resourceType();
 
-    if (resource) {
+    if (resourceId && resourceType) {
       const payload = {
-        id: resource.id,
-        type: resource.type,
+        id: resourceId,
+        type: resourceType,
         citationText: '',
       };
 
       this.actions.updateCustomCitation(payload).subscribe({
         next: () => {
-          this.customCitation.emit('');
+          this.customCitationChange.emit('');
         },
         complete: () => {
           this.toggleEditMode();
@@ -180,20 +186,18 @@ export class ResourceCitationsComponent {
   }
 
   copyCitation(): void {
-    const resource = this.currentResource();
+    const customCitations = this.customCitations();
 
-    if (resource?.customCitation) {
-      this.clipboard.copy(resource.customCitation);
+    if (customCitations) {
+      this.clipboard.copy(customCitations);
       this.toastService.showSuccess('settings.developerApps.messages.copied');
     }
   }
 
   private setupFilterDebounce(): void {
     this.filterSubject
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((filterValue) => {
-        this.actions.getCitationStyles(filterValue);
-      });
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((filterValue) => this.actions.getCitationStyles(filterValue));
   }
 
   private setupCitationStylesEffect(): void {
@@ -204,14 +208,8 @@ export class ResourceCitationsComponent {
         label: style.title,
         value: style,
       }));
-      this.citationStylesOptions.set(options);
-    });
-  }
 
-  private setupCleanup(): void {
-    this.destroyRef.onDestroy(() => {
-      this.destroy$.next();
-      this.destroy$.complete();
+      this.citationStylesOptions.set(options);
     });
   }
 }

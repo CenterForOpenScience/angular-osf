@@ -12,7 +12,7 @@ export class RegistrationProviderMapper {
   }
 
   static fromRegistryProvider(response: RegistryProviderDetailsJsonApi): RegistryProviderDetails {
-    const brandRaw = response.embeds!.brand.data;
+    const brandRaw = response.embeds?.brand.data;
 
     return {
       id: response.id,

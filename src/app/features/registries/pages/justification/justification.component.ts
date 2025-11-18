@@ -8,6 +8,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   OnDestroy,
@@ -37,9 +38,11 @@ import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors
 export class JustificationComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
+
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly stepsState = select(RegistriesSelectors.getStepsState);
   readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
@@ -109,7 +112,7 @@ export class JustificationComponent implements OnDestroy {
   constructor() {
     this.router.events
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         filter((event): event is NavigationEnd => event instanceof NavigationEnd)
       )
       .subscribe(() => {

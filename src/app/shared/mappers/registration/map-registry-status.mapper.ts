@@ -1,11 +1,11 @@
-import { RegistryOverviewJsonApiAttributes } from '@osf/features/registry/models';
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { RegistrationNodeAttributesJsonApi } from '@osf/shared/models/registration/registration-node-json-api.model';
 import { RegistrationAttributesJsonApi } from '@shared/models/registration/registration-json-api.model';
 
 export function MapRegistryStatus(
-  registry: RegistryOverviewJsonApiAttributes | RegistrationAttributesJsonApi
+  registry: RegistrationNodeAttributesJsonApi | RegistrationAttributesJsonApi
 ): RegistryStatus {
   if (registry.pending_embargo_approval) {
     return RegistryStatus.PendingEmbargoApproval;

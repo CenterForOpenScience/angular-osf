@@ -25,6 +25,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { HelpScoutService } from '@core/services/help-scout.service';
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
 import { ResetState } from '@osf/features/files/store';
@@ -101,6 +102,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly prerenderReady = inject(PrerenderReadyService);
 
   private readonly environment = inject(ENVIRONMENT);
 
@@ -124,8 +126,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   preprint = select(PreprintSelectors.getPreprint);
   preprint$ = toObservable(select(PreprintSelectors.getPreprint));
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
-  contributors = select(ContributorsSelectors.getContributors);
-  areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  contributors = select(ContributorsSelectors.getBibliographicContributors);
+  areContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
   reviewActions = select(PreprintSelectors.getPreprintReviewActions);
   areReviewActionsLoading = select(PreprintSelectors.arePreprintReviewActionsLoading);
   withdrawalRequests = select(PreprintSelectors.getPreprintRequests);
@@ -138,6 +140,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   areMetricsLoading = select(PreprintSelectors.arePreprintMetricsLoading);
 
   isPresentModeratorQueryParam = toSignal(this.route.queryParams.pipe(map((params) => params['mode'] === 'moderator')));
+  defaultProvider = this.environment.defaultProvider;
 
   moderationMode = computed(() => {
     const provider = this.preprintProvider();
@@ -170,12 +173,23 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.helpScoutService.setResourceType('preprint');
+    this.prerenderReady.setNotReady();
 
     effect(() => {
       const currentPreprint = this.preprint();
 
       if (currentPreprint && currentPreprint.isPublic) {
         this.analyticsService.sendCountedUsage(currentPreprint.id, 'preprint.detail').subscribe();
+      }
+    });
+
+    effect(() => {
+      const preprint = this.preprint();
+      const contributors = this.contributors();
+      const isLoading = this.isPreprintLoading() || this.areContributorsLoading();
+
+      if (!isLoading && preprint && contributors.length) {
+        this.setMetaTags();
       }
     });
   }
@@ -257,7 +271,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     );
   });
 
-  isOsfPreprint = computed(() => this.providerId() === 'osf');
+  isOsfPreprint = computed(() => this.providerId() === this.defaultProvider);
 
   moderationStatusBannerVisible = computed(() => {
     return (
@@ -351,6 +365,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   fetchPreprint(preprintId: string) {
+    this.prerenderReady.setNotReady();
+
     this.actions.fetchPreprintById(preprintId).subscribe({
       next: () => {
         this.checkAndSetVersionToTheUrl();
@@ -370,8 +386,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
             });
           }
         }
-
-        this.setMetaTags();
       },
     });
   }

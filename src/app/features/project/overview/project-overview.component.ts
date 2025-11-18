@@ -23,6 +23,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   ClearCollectionModeration,
@@ -31,7 +32,6 @@ import {
 } from '@osf/features/moderation/store/collections-moderation';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { MakeDecisionDialogComponent } from '@osf/shared/components/make-decision-dialog/make-decision-dialog.component';
-import { ResourceMetadataComponent } from '@osf/shared/components/resource-metadata/resource-metadata.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { Mode } from '@osf/shared/enums/mode.enum';
@@ -65,12 +65,13 @@ import { AnalyticsService } from '@shared/services/analytics.service';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
+import { ProjectOverviewMetadataComponent } from './components/project-overview-metadata/project-overview-metadata.component';
+import { ProjectOverviewToolbarComponent } from './components/project-overview-toolbar/project-overview-toolbar.component';
 import {
   CitationAddonCardComponent,
   FilesWidgetComponent,
   LinkedResourcesComponent,
   OverviewComponentsComponent,
-  OverviewToolbarComponent,
   OverviewWikiComponent,
   RecentActivityComponent,
 } from './components';
@@ -99,8 +100,8 @@ import {
     OverviewComponentsComponent,
     LinkedResourcesComponent,
     RecentActivityComponent,
-    OverviewToolbarComponent,
-    ResourceMetadataComponent,
+    ProjectOverviewToolbarComponent,
+    ProjectOverviewMetadataComponent,
     TranslatePipe,
     Message,
     RouterLink,
@@ -123,6 +124,7 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly dataciteService = inject(DataciteService);
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
+  private readonly prerenderReady = inject(PrerenderReadyService);
 
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
@@ -271,6 +273,8 @@ export class ProjectOverviewComponent implements OnInit {
   readonly analyticsService = inject(AnalyticsService);
 
   constructor() {
+    this.prerenderReady.setNotReady();
+
     this.setupCollectionsEffects();
     this.setupCleanup();
     this.setupProjectEffects();

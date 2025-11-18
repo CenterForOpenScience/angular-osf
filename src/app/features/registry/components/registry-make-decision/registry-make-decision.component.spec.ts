@@ -12,6 +12,8 @@ import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.e
 import { ReviewActionTrigger, SchemaResponseActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { DateAgoPipe } from '@shared/pipes/date-ago.pipe';
 
+import { RegistrySelectors } from '../../store/registry';
+
 import { RegistryMakeDecisionComponent } from './registry-make-decision.component';
 
 import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
@@ -48,8 +50,8 @@ describe('RegistryMakeDecisionComponent', () => {
         MockProvider(DynamicDialogConfig, mockDialogConfig),
         provideMockStore({
           signals: [
-            { selector: 'RegistryOverviewSelectors.getReviewActions', value: [] },
-            { selector: 'RegistryOverviewSelectors.isReviewActionSubmitting', value: false },
+            { selector: RegistrySelectors.getReviewActions, value: [] },
+            { selector: RegistrySelectors.isReviewActionSubmitting, value: false },
           ],
         }),
       ],

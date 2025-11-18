@@ -14,7 +14,7 @@
 
   @if (currentProject()) {
     <div class="px-3 pb-5 flex flex-column sm:px-5">
-      <osf-overview-toolbar
+      <osf-project-overview-toolbar
         [isCollectionsRoute]="isCollectionsRoute()"
         [currentResource]="currentResource()!"
         [projectDescription]="project.description"
@@ -83,12 +83,10 @@
     </div>
 
     <div class="flex flex-column right-section p-4 flex-order-1 lg:flex-order-2">
-      <osf-resource-metadata
+      <osf-project-overview-metadata
         [currentResource]="resourceOverview()"
         (customCitationUpdated)="onCustomCitationUpdated($event)"
-        [isCollectionsRoute]="isCollectionsRoute()"
-        [canEdit]="hasAdminAccess()"
-        [showEditButton]="hasWriteAccess()"
+        [canEdit]="hasWriteAccess()"
         [bibliographicContributors]="bibliographicContributors()"
         [isBibliographicContributorsLoading]="isBibliographicContributorsLoading()"
         [hasMoreBibliographicContributors]="hasMoreBibliographicContributors()"

@@ -53,4 +53,5 @@ export const PREPRINT_MOCK = {
   preprintDoiLink: 'https://doi.org/10.1234/sample.doi',
   articleDoiLink: undefined,
   identifiers: [],
+  providerId: 'osf',
 };

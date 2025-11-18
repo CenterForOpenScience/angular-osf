@@ -8,7 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
 import { NodeAnalyticsModel, RelatedCountsModel } from '../models';
-import { AnalyticsService } from '../services';
+import { ResourceAnalyticsService } from '../services';
 
 import { ClearAnalytics, GetMetrics, GetRelatedCounts } from './analytics.actions';
 import { ANALYTICS_DEFAULT_STATE, AnalyticsStateModel } from './analytics.model';
@@ -19,7 +19,7 @@ import { ANALYTICS_DEFAULT_STATE, AnalyticsStateModel } from './analytics.model'
 })
 @Injectable()
 export class AnalyticsState {
-  private readonly analyticsService = inject(AnalyticsService);
+  private readonly analyticsService = inject(ResourceAnalyticsService);
   private readonly REFRESH_INTERVAL = 5 * 60 * 1000;
 
   @Action(GetMetrics)

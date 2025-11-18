@@ -1,0 +1,11 @@
+<div class="flex flex-wrap gap-2">
+  @if (isLoading()) {
+    <p-skeleton height="1.5rem" />
+  } @else {
+    @for (subject of subjects(); track subject.id) {
+      <p-tag [value]="subject.name" severity="info" />
+    } @empty {
+      <p>{{ 'common.labels.none' | translate }}</p>
+    }
+  }
+</div>

@@ -1,5 +1,15 @@
 <form [formGroup]="addonForm()" (ngSubmit)="handleSubmit()" class="flex flex-column gap-5">
   <p-card>
+    @if (hasConfigurableApiRoot()) {
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrl' | translate }}
+      </h2>
+      <p class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
+      </p>
+      <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
+    }
+
     @if (isAccessSecretKeysFormat()) {
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.accessKey' | translate }}
@@ -24,13 +34,6 @@
 
     @if (isDataverseApiTokenFormat()) {
       <h2 class="mb-2">
-        {{ 'settings.addons.form.fields.hostUrl' | translate }}
-      </h2>
-      <p class="mb-2">
-        {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
-      </p>
-      <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
-      <h2 class="mb-2">
         {{ 'settings.addons.form.fields.apiToken' | translate }}
       </h2>
       <p-password
@@ -43,13 +46,6 @@
     }
 
     @if (isUsernamePasswordFormat()) {
-      <h2 class="mb-2">
-        {{ 'settings.addons.form.fields.hostUrl' | translate }}
-      </h2>
-      <p class="mb-2">
-        {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
-      </p>
-      <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.username' | translate }}
       </h2>
@@ -71,13 +67,6 @@
     }
 
     @if (isRepoTokenFormat()) {
-      <h2 class="mb-2">
-        {{ 'settings.addons.form.fields.hostUrl' | translate }}
-      </h2>
-      <p class="mb-2">
-        {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
-      </p>
-      <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.personalAccessToken' | translate }}
       </h2>

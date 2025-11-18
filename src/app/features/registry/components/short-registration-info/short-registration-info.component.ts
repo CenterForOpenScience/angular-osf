@@ -1,13 +1,17 @@
+import { createDispatchMap, select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/shared/stores/contributors';
 
-import { RegistryOverview } from '../../models';
+import { RegistrationOverviewModel } from '../../models';
 
 @Component({
   selector: 'osf-short-registration-info',
@@ -19,9 +23,19 @@ import { RegistryOverview } from '../../models';
 export class ShortRegistrationInfoComponent {
   private readonly environment = inject(ENVIRONMENT);
 
-  registration = input.required<RegistryOverview>();
+  registration = input.required<RegistrationOverviewModel>();
 
-  get associatedProjectUrl(): string {
-    return `${this.environment.webUrl}/${this.registration().associatedProjectId}`;
+  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
+
+  private readonly actions = createDispatchMap({
+    loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
+  });
+
+  associatedProjectUrl = computed(() => `${this.environment.webUrl}/${this.registration().associatedProjectId}`);
+
+  handleLoadMoreContributors(): void {
+    this.actions.loadMoreBibliographicContributors(this.registration()?.id, ResourceType.Registration);
   }
 }

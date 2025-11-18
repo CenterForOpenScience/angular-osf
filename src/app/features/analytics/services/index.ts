@@ -1,1 +1,1 @@
-export { AnalyticsService } from './analytics.service';
+export { ResourceAnalyticsService } from './resource-analytics.service';

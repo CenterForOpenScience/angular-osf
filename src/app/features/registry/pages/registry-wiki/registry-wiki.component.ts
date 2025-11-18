@@ -87,7 +87,7 @@ export class RegistryWikiComponent {
     this.actions
       .getWikiList(ResourceType.Registration, this.resourceId)
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         tap(() => {
           if (!this.wikiIdFromQueryParams) {
             this.navigateToWiki(this.wikiList()?.[0]?.id || '');
@@ -100,7 +100,7 @@ export class RegistryWikiComponent {
 
     this.route.queryParams
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         map((params) => params['wiki']),
         filter((wikiId) => wikiId),
         tap((wikiId) => {

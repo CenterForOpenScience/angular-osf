@@ -98,19 +98,23 @@ export class ConfigureAddonComponent implements OnInit {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
   });
+
   readonly resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
     return `${this.environment.webUrl}/${id}`;
   });
+
   readonly addonTypeString = computed(() => {
     return getAddonTypeString(this.addon()) as AddonType;
   });
+
   readonly selectedItemLabel = computed(() => {
     const addonType = this.addonTypeString();
     return addonType === AddonType.LINK
       ? 'settings.addons.configureAddon.linkedItem'
       : 'settings.addons.configureAddon.selectedFolder';
   });
+
   readonly supportedResourceTypes = computed(() => {
     if (this.linkAddons().length && this.addonTypeString() === AddonType.LINK) {
       const addon = this.linkAddons().find((a) => this.addon()?.externalServiceName === a.externalServiceName);
@@ -118,6 +122,7 @@ export class ConfigureAddonComponent implements OnInit {
     }
     return [];
   });
+
   readonly actions = createDispatchMap({
     createAddonOperationInvocation: CreateAddonOperationInvocation,
     updateConfiguredAddon: UpdateConfiguredAddon,

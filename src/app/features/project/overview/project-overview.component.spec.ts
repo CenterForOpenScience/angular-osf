@@ -22,12 +22,12 @@ import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 
 import { OverviewParentProjectComponent } from './components/overview-parent-project/overview-parent-project.component';
+import { ProjectOverviewToolbarComponent } from './components/project-overview-toolbar/project-overview-toolbar.component';
 import {
   CitationAddonCardComponent,
   FilesWidgetComponent,
   LinkedResourcesComponent,
   OverviewComponentsComponent,
-  OverviewToolbarComponent,
   OverviewWikiComponent,
   RecentActivityComponent,
 } from './components';
@@ -54,7 +54,7 @@ describe('ProjectOverviewComponent', () => {
           OverviewComponentsComponent,
           LinkedResourcesComponent,
           RecentActivityComponent,
-          OverviewToolbarComponent,
+          ProjectOverviewToolbarComponent,
           ResourceMetadataComponent,
           FilesWidgetComponent,
           ViewOnlyLinkMessageComponent,

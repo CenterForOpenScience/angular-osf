@@ -22,11 +22,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import {
-  ClearRegistryOverview,
-  GetRegistryById,
-  RegistryOverviewSelectors,
-} from '@osf/features/registry/store/registry-overview';
+import { ClearRegistry, GetRegistryById, RegistrySelectors } from '@osf/features/registry/store/registry';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
@@ -59,7 +55,7 @@ export class ViewLinkedProjectsComponent {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   private project = select(ProjectOverviewSelectors.getProject);
-  private registration = select(RegistryOverviewSelectors.getRegistry);
+  private registration = select(RegistrySelectors.getRegistry);
 
   linkedProjects = select(LinkedProjectsSelectors.getLinkedProjects);
   isLoading = select(LinkedProjectsSelectors.getLinkedProjectsLoading);
@@ -93,7 +89,7 @@ export class ViewLinkedProjectsComponent {
     getLinkedProjects: GetAllLinkedProjects,
     clearLinkedProjects: ClearLinkedProjects,
     clearProject: ClearProjectOverview,
-    clearRegistration: ClearRegistryOverview,
+    clearRegistration: ClearRegistry,
   });
 
   constructor() {

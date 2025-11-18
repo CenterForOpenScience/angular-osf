@@ -15,8 +15,8 @@ import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.e
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
-import { RegistryOverview } from '../../models';
-import { MakePublic } from '../../store/registry-overview';
+import { RegistrationOverviewModel } from '../../models';
+import { MakePublic } from '../../store/registry';
 import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 
 @Component({
@@ -33,7 +33,7 @@ export class RegistryStatusesComponent {
 
   readonly supportEmail = this.environment.supportEmail;
 
-  registry = input.required<RegistryOverview | null>();
+  registry = input.required<RegistrationOverviewModel | null>();
   canEdit = input<boolean>(false);
   isModeration = input<boolean>(false);
 

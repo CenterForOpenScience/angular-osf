@@ -25,11 +25,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import {
-  ClearRegistryOverview,
-  GetRegistryById,
-  RegistryOverviewSelectors,
-} from '@osf/features/registry/store/registry-overview';
+import { ClearRegistry, GetRegistryById, RegistrySelectors } from '@osf/features/registry/store/registry';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
@@ -72,9 +68,9 @@ export class ViewDuplicatesComponent {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private project = select(ProjectOverviewSelectors.getProject);
-  private registration = select(RegistryOverviewSelectors.getRegistry);
+  private registration = select(RegistrySelectors.getRegistry);
   private isProjectAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-  private isRegistryAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
+  private isRegistryAnonymous = select(RegistrySelectors.isRegistryAnonymous);
 
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
@@ -127,7 +123,7 @@ export class ViewDuplicatesComponent {
     getDuplicates: GetAllDuplicates,
     clearDuplicates: ClearDuplicates,
     clearProject: ClearProjectOverview,
-    clearRegistration: ClearRegistryOverview,
+    clearRegistration: ClearRegistry,
     getComponentsTree: GetResourceWithChildren,
   });
 

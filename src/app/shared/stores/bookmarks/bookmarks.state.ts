@@ -7,7 +7,13 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { BookmarksService } from '@osf/shared/services/bookmarks.service';
 
-import { AddResourceToBookmarks, GetBookmarksCollectionId, RemoveResourceFromBookmarks } from './bookmarks.actions';
+import {
+  AddResourceToBookmarks,
+  GetAllMyBookmarks,
+  GetBookmarksCollectionId,
+  GetResourceBookmark,
+  RemoveResourceFromBookmarks,
+} from './bookmarks.actions';
 import { BOOKMARKS_DEFAULTS, BookmarksStateModel } from './bookmarks.model';
 
 @State<BookmarksStateModel>({
@@ -16,14 +22,14 @@ import { BOOKMARKS_DEFAULTS, BookmarksStateModel } from './bookmarks.model';
 })
 @Injectable()
 export class BookmarksState {
-  bookmarksService = inject(BookmarksService);
+  private readonly bookmarksService = inject(BookmarksService);
 
   @Action(GetBookmarksCollectionId)
   getBookmarksCollectionId(ctx: StateContext<BookmarksStateModel>) {
     const state = ctx.getState();
     ctx.patchState({
-      bookmarksId: {
-        ...state.bookmarksId,
+      bookmarkCollectionId: {
+        ...state.bookmarkCollectionId,
         isLoading: true,
       },
     });
@@ -31,15 +37,67 @@ export class BookmarksState {
     return this.bookmarksService.getBookmarksCollectionId().pipe(
       tap((res) => {
         ctx.patchState({
-          bookmarksId: {
+          bookmarkCollectionId: {
             data: res,
             isLoading: false,
-            isSubmitting: false,
             error: null,
           },
         });
       }),
-      catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
+      catchError((error) => handleSectionError(ctx, 'bookmarkCollectionId', error))
+    );
+  }
+
+  @Action(GetAllMyBookmarks)
+  getAllMyBookmarks(ctx: StateContext<BookmarksStateModel>, action: GetAllMyBookmarks) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      items: {
+        ...state.items,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.bookmarksService.getAllBookmarks(action.bookmarkCollectionId, action.filters).pipe(
+      tap((results) => {
+        ctx.patchState({
+          items: {
+            data: results.data,
+            isLoading: false,
+            error: null,
+            totalCount: results.totalCount,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'items', error))
+    );
+  }
+
+  @Action(GetResourceBookmark)
+  getBookmarkResource(ctx: StateContext<BookmarksStateModel>, action: GetResourceBookmark) {
+    ctx.patchState({
+      items: {
+        data: [],
+        isLoading: true,
+        error: null,
+        totalCount: 0,
+      },
+    });
+
+    return this.bookmarksService.getResourceBookmarks(action.bookmarkCollectionId, action.resourceType).pipe(
+      tap((res) => {
+        ctx.patchState({
+          items: {
+            data: res.data,
+            isLoading: false,
+            error: null,
+            totalCount: res.meta.total,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'items', error))
     );
   }
 
@@ -47,24 +105,24 @@ export class BookmarksState {
   addResourceToBookmarks(ctx: StateContext<BookmarksStateModel>, action: AddResourceToBookmarks) {
     const state = ctx.getState();
     ctx.patchState({
-      bookmarksId: {
-        ...state.bookmarksId,
+      bookmarkCollectionId: {
+        ...state.bookmarkCollectionId,
         isSubmitting: true,
       },
     });
 
     return this.bookmarksService
-      .addResourceToBookmarks(action.bookmarksId, action.resourceId, action.resourceType)
+      .addResourceToBookmarks(action.bookmarkCollectionId, action.resourceId, action.resourceType)
       .pipe(
         tap(() => {
           ctx.patchState({
-            bookmarksId: {
-              ...state.bookmarksId,
+            bookmarkCollectionId: {
+              ...state.bookmarkCollectionId,
               isSubmitting: false,
             },
           });
         }),
-        catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
+        catchError((error) => handleSectionError(ctx, 'bookmarkCollectionId', error))
       );
   }
 
@@ -72,24 +130,24 @@ export class BookmarksState {
   removeResourceFromBookmarks(ctx: StateContext<BookmarksStateModel>, action: RemoveResourceFromBookmarks) {
     const state = ctx.getState();
     ctx.patchState({
-      bookmarksId: {
-        ...state.bookmarksId,
+      bookmarkCollectionId: {
+        ...state.bookmarkCollectionId,
         isSubmitting: true,
       },
     });
 
     return this.bookmarksService
-      .removeResourceFromBookmarks(action.bookmarksId, action.resourceId, action.resourceType)
+      .removeResourceFromBookmarks(action.bookmarkCollectionId, action.resourceId, action.resourceType)
       .pipe(
         tap(() => {
           ctx.patchState({
-            bookmarksId: {
-              ...state.bookmarksId,
+            bookmarkCollectionId: {
+              ...state.bookmarkCollectionId,
               isSubmitting: false,
             },
           });
         }),
-        catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
+        catchError((error) => handleSectionError(ctx, 'bookmarkCollectionId', error))
       );
   }
 }

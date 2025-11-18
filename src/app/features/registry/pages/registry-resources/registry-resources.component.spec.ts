@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { MetadataSelectors } from '@osf/features/metadata/store';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -14,10 +13,12 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
+import { RegistrySelectors } from '../../store/registry';
 import { RegistryResourcesSelectors } from '../../store/registry-resources';
 
 import { RegistryResourcesComponent } from './registry-resources.component';
 
+import { MOCK_PROJECT_IDENTIFIERS } from '@testing/mocks/project-overview.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
@@ -61,7 +62,9 @@ describe('RegistryResourcesComponent', () => {
             { selector: RegistryResourcesSelectors.getResources, value: [] },
             { selector: RegistryResourcesSelectors.isResourcesLoading, value: false },
             { selector: RegistryResourcesSelectors.getCurrentResource, value: null },
-            { selector: MetadataSelectors.getResourceMetadata, value: mockRegistry },
+            { selector: RegistrySelectors.getRegistry, value: mockRegistry },
+            { selector: RegistrySelectors.getIdentifiers, value: [MOCK_PROJECT_IDENTIFIERS] },
+            { selector: RegistrySelectors.hasWriteAccess, value: true },
           ],
         }),
       ],

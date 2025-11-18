@@ -1,23 +1,19 @@
-<section class="flex flex-column gap-2">
-  @if (showTitle()) {
-    <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
-  }
-
-  <div class="flex flex-wrap gap-2">
-    @if (institutions().length) {
-      @for (institution of institutions(); track institution.id) {
-        <a
-          [routerLink]="`/institutions/${ institution.id}`"
-          target="_blank"
-          rel="noopener noreferrer"
-          [pTooltip]="institution.name"
-          tooltipPosition="top"
-        >
-          <img alt="institution logo" [src]="institution.assets.logo" height="45" />
-        </a>
-      }
-    } @else {
-      <p>{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+<div class="flex flex-wrap gap-2">
+  @if (isLoading()) {
+    <p-skeleton height="45px" width="45px" />
+  } @else {
+    @for (institution of institutions(); track institution.id) {
+      <a
+        [routerLink]="['/institutions', institution.id]"
+        target="_blank"
+        rel="noopener noreferrer"
+        [pTooltip]="institution.name"
+        tooltipPosition="top"
+      >
+        <img [src]="institution.assets.logo" height="45" alt="Institution logo" />
+      </a>
+    } @empty {
+      <p>{{ 'common.labels.noAffiliatedInstitutions' | translate }}</p>
     }
-  </div>
-</section>
+  }
+</div>

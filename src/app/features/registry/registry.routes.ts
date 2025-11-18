@@ -6,19 +6,16 @@ import { viewOnlyGuard } from '@core/guards/view-only.guard';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CitationsState } from '@osf/shared/stores/citations';
 import { DuplicatesState } from '@osf/shared/stores/duplicates';
+import { RegistrationProviderState } from '@osf/shared/stores/registration-provider';
 import { SubjectsState } from '@osf/shared/stores/subjects';
 import { ViewOnlyLinkState } from '@osf/shared/stores/view-only-links';
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
-import { LicensesService } from '../registries/services';
-import { RegistriesState } from '../registries/store';
-import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
-import { FilesHandlers } from '../registries/store/handlers/files.handlers';
 
+import { RegistryState } from './store/registry';
 import { RegistryComponentsState } from './store/registry-components';
 import { RegistryLinksState } from './store/registry-links';
-import { RegistryOverviewState } from './store/registry-overview';
 import { RegistryResourcesState } from './store/registry-resources';
 import { RegistryComponent } from './registry.component';
 
@@ -26,7 +23,7 @@ export const registryRoutes: Routes = [
   {
     path: '',
     component: RegistryComponent,
-    providers: [provideStates([RegistryOverviewState, ActivityLogsState])],
+    providers: [provideStates([RegistryState, RegistrationProviderState])],
     children: [
       {
         path: '',
@@ -37,14 +34,7 @@ export const registryRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('./pages/registry-overview/registry-overview.component').then((c) => c.RegistryOverviewComponent),
-        providers: [
-          provideStates([RegistriesState, SubjectsState, CitationsState]),
-          ProvidersHandlers,
-          ProjectsHandlers,
-          LicensesHandlers,
-          FilesHandlers,
-          LicensesService,
-        ],
+        providers: [provideStates([SubjectsState, CitationsState])],
       },
       {
         path: 'metadata',
@@ -116,6 +106,7 @@ export const registryRoutes: Routes = [
           import('./pages/registration-recent-activity/registration-recent-activity.component').then(
             (c) => c.RegistrationRecentActivityComponent
           ),
+        providers: [provideStates([ActivityLogsState])],
       },
     ],
   },

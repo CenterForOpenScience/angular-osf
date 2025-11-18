@@ -28,6 +28,7 @@ export class RegistrationProviderState {
     const state = ctx.getState();
 
     const currentProvider = state.currentBrandedProvider.data;
+
     if (currentProvider && currentProvider?.id === action.providerId) {
       ctx.dispatch(
         new SetCurrentProvider({

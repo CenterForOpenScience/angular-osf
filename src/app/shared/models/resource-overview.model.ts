@@ -2,7 +2,7 @@ import { IdTypeModel } from './common/id-type.model';
 import { ContributorModel } from './contributors/contributor.model';
 import { IdentifierModel } from './identifiers/identifier.model';
 import { Institution } from './institutions/institutions.models';
-import { LicensesOption } from './license/license.model';
+import { LicenseModel, LicensesOption } from './license/license.model';
 import { SubjectModel } from './subject/subject.model';
 
 export interface ResourceOverview {
@@ -22,11 +22,7 @@ export interface ResourceOverview {
   tags: string[];
   accessRequestsEnabled: boolean;
   nodeLicense?: LicensesOption;
-  license?: {
-    name: string;
-    text: string;
-    url: string;
-  };
+  license?: LicenseModel;
   storage?: {
     id: string;
     type: string;
