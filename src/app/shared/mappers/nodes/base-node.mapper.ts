@@ -3,6 +3,7 @@ import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.mod
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { ContributorsMapper } from '../contributors';
 
@@ -22,7 +23,7 @@ export class BaseNodeMapper {
   static getNodesWithChildren(data: BaseNodeDataJsonApi[], parentId: string): NodeShortInfoModel[] {
     return this.getAllDescendants(data, parentId).map((item) => ({
       id: item.id,
-      title: item.attributes.title,
+      title: replaceBadEncodedChars(item.attributes.title),
       isPublic: item.attributes.public,
       permissions: item.attributes.current_user_permissions,
       parentId: item.relationships.parent?.data?.id,
@@ -33,8 +34,8 @@ export class BaseNodeMapper {
     return {
       id: data.id,
       type: data.type,
-      title: data.attributes.title,
-      description: data.attributes.description,
+      title: replaceBadEncodedChars(data.attributes.title),
+      description: replaceBadEncodedChars(data.attributes.description),
       category: data.attributes.category,
       dateCreated: data.attributes.date_created,
       dateModified: data.attributes.date_modified,
