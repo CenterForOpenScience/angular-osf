@@ -72,6 +72,16 @@ export class ConnectAddonComponent {
     updateAuthorizedAddon: UpdateAuthorizedAddon,
   });
 
+  redirectUrl = computed(() => {
+    const addon = this.addon();
+    if (!addon || !addon.redirectUrl) {
+      return null;
+    }
+    const openURL = new URL(addon.redirectUrl);
+    openURL.searchParams.set('userIri', this.addonsUserReference()[0]?.attributes.user_uri);
+    return openURL.toString();
+  });
+
   constructor() {
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAccountModel;
     if (!addon) {
