@@ -1,8 +1,8 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 import { of } from 'rxjs';
 
@@ -17,6 +17,7 @@ import { ResourceFormComponent } from '../resource-form/resource-form.component'
 
 import { EditResourceDialogComponent } from './edit-resource-dialog.component';
 
+import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -47,11 +48,10 @@ describe('EditResourceDialogComponent', () => {
       imports: [
         EditResourceDialogComponent,
         OSFTestingModule,
-        MockComponent(LoadingSpinnerComponent),
-        MockComponent(ResourceFormComponent),
+        ...MockComponents(LoadingSpinnerComponent, ResourceFormComponent),
       ],
       providers: [
-        MockProvider(DynamicDialogRef, { close: jest.fn() }),
+        DynamicDialogRefMock,
         MockProvider(DynamicDialogConfig, mockDialogConfig),
         provideMockStore({
           signals: [{ selector: RegistryResourcesSelectors.isCurrentResourceLoading, value: false }],

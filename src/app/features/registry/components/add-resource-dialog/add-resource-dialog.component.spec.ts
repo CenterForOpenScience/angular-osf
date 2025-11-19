@@ -1,6 +1,5 @@
 import { Store } from '@ngxs/store';
 
-import { TranslateService } from '@ngx-translate/core';
 import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -17,6 +16,7 @@ import { ResourceFormComponent } from '../resource-form/resource-form.component'
 import { AddResourceDialogComponent } from './add-resource-dialog.component';
 
 import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
+import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -46,10 +46,8 @@ describe('AddResourceDialogComponent', () => {
       ],
       providers: [
         DynamicDialogRefMock,
+        TranslateServiceMock,
         MockProvider(DynamicDialogConfig, mockDialogConfig),
-        MockProvider(TranslateService, {
-          instant: jest.fn((key: string) => key),
-        }),
         provideMockStore({
           signals: [
             { selector: RegistryResourcesSelectors.getCurrentResource, value: signal(null) },

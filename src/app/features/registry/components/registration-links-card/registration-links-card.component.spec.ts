@@ -5,66 +5,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
-import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
-
-import { LinkedNode, LinkedRegistration, RegistryComponentModel } from '../../models';
 
 import { RegistrationLinksCardComponent } from './registration-links-card.component';
 
+import { createMockLinkedNode } from '@testing/mocks/linked-node.mock';
+import { createMockLinkedRegistration } from '@testing/mocks/linked-registration.mock';
+import { createMockRegistryComponent } from '@testing/mocks/registry-component.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('RegistrationLinksCardComponent', () => {
   let component: RegistrationLinksCardComponent;
   let fixture: ComponentFixture<RegistrationLinksCardComponent>;
-
-  const mockLinkedRegistration: LinkedRegistration = {
-    id: 'registration-123',
-    title: 'Test Registration',
-    description: 'Test description',
-    category: 'project',
-    dateCreated: '2024-01-01T00:00:00Z',
-    dateModified: '2024-01-02T00:00:00Z',
-    tags: ['tag1', 'tag2'],
-    isPublic: true,
-    reviewsState: RegistrationReviewStates.Accepted,
-    contributors: [],
-    currentUserPermissions: ['read', 'write'],
-    hasData: true,
-    hasAnalyticCode: false,
-    hasMaterials: true,
-    hasPapers: false,
-    hasSupplements: true,
-    registrationSupplement: 'supplement-123',
-  };
-
-  const mockLinkedNode: LinkedNode = {
-    id: 'node-123',
-    title: 'Test Node',
-    description: 'Test node description',
-    category: 'project',
-    dateCreated: '2024-01-01T00:00:00Z',
-    dateModified: '2024-01-02T00:00:00Z',
-    tags: ['tag1'],
-    isPublic: false,
-    contributors: [],
-    htmlUrl: 'https://example.com/node',
-    apiUrl: 'https://api.example.com/node',
-  };
-
-  const mockRegistryComponent: RegistryComponentModel = {
-    id: 'component-123',
-    title: 'Test Component',
-    description: 'Test component description',
-    category: 'project',
-    dateCreated: '2024-01-01T00:00:00Z',
-    dateModified: '2024-01-02T00:00:00Z',
-    dateRegistered: '2024-01-03T00:00:00Z',
-    registrationSupplement: 'supplement-456',
-    tags: ['tag1', 'tag2'],
-    isPublic: true,
-    contributors: [],
-    registry: 'test-registry',
-  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -80,12 +31,13 @@ describe('RegistrationLinksCardComponent', () => {
   });
 
   it('should create', () => {
-    fixture.componentRef.setInput('registrationData', mockLinkedRegistration);
+    fixture.componentRef.setInput('registrationData', createMockLinkedRegistration());
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should set registrationData input correctly with LinkedRegistration', () => {
+    const mockLinkedRegistration = createMockLinkedRegistration();
     fixture.componentRef.setInput('registrationData', mockLinkedRegistration);
     fixture.detectChanges();
 
@@ -93,6 +45,7 @@ describe('RegistrationLinksCardComponent', () => {
   });
 
   it('should set registrationData input correctly with LinkedNode', () => {
+    const mockLinkedNode = createMockLinkedNode();
     fixture.componentRef.setInput('registrationData', mockLinkedNode);
     fixture.detectChanges();
 
@@ -100,6 +53,7 @@ describe('RegistrationLinksCardComponent', () => {
   });
 
   it('should set registrationData input correctly with RegistryComponentModel', () => {
+    const mockRegistryComponent = createMockRegistryComponent();
     fixture.componentRef.setInput('registrationData', mockRegistryComponent);
     fixture.detectChanges();
 
@@ -107,41 +61,42 @@ describe('RegistrationLinksCardComponent', () => {
   });
 
   it('should return true when data has reviewsState property', () => {
-    fixture.componentRef.setInput('registrationData', mockLinkedRegistration);
+    fixture.componentRef.setInput('registrationData', createMockLinkedRegistration());
     fixture.detectChanges();
 
     expect(component.isRegistrationData()).toBe(true);
   });
 
   it('should return false when data does not have reviewsState property', () => {
-    fixture.componentRef.setInput('registrationData', mockLinkedNode);
+    fixture.componentRef.setInput('registrationData', createMockLinkedNode());
     fixture.detectChanges();
 
     expect(component.isRegistrationData()).toBe(false);
   });
 
   it('should return true when data has registrationSupplement property', () => {
-    fixture.componentRef.setInput('registrationData', mockRegistryComponent);
+    fixture.componentRef.setInput('registrationData', createMockRegistryComponent());
     fixture.detectChanges();
 
     expect(component.isComponentData()).toBe(true);
   });
 
   it('should return true for LinkedRegistration with registrationSupplement', () => {
-    fixture.componentRef.setInput('registrationData', mockLinkedRegistration);
+    fixture.componentRef.setInput('registrationData', createMockLinkedRegistration());
     fixture.detectChanges();
 
     expect(component.isComponentData()).toBe(true);
   });
 
   it('should return false when data does not have registrationSupplement property', () => {
-    fixture.componentRef.setInput('registrationData', mockLinkedNode);
+    fixture.componentRef.setInput('registrationData', createMockLinkedNode());
     fixture.detectChanges();
 
     expect(component.isComponentData()).toBe(false);
   });
 
   it('should return LinkedRegistration when data has reviewsState', () => {
+    const mockLinkedRegistration = createMockLinkedRegistration();
     fixture.componentRef.setInput('registrationData', mockLinkedRegistration);
     fixture.detectChanges();
 
@@ -149,13 +104,14 @@ describe('RegistrationLinksCardComponent', () => {
   });
 
   it('should return null when data does not have reviewsState', () => {
-    fixture.componentRef.setInput('registrationData', mockLinkedNode);
+    fixture.componentRef.setInput('registrationData', createMockLinkedNode());
     fixture.detectChanges();
 
     expect(component.registrationDataTyped()).toBeNull();
   });
 
   it('should return RegistryComponentModel when data has registrationSupplement', () => {
+    const mockRegistryComponent = createMockRegistryComponent();
     fixture.componentRef.setInput('registrationData', mockRegistryComponent);
     fixture.detectChanges();
 

@@ -8,39 +8,13 @@ import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 
 import { RegistryBlocksSectionComponent } from './registry-blocks-section.component';
 
+import { createMockPageSchema } from '@testing/mocks/page-schema.mock';
 import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('RegistryBlocksSectionComponent', () => {
   let component: RegistryBlocksSectionComponent;
   let fixture: ComponentFixture<RegistryBlocksSectionComponent>;
-
-  const mockPageSchema: PageSchema = {
-    id: 'page-1',
-    title: 'Test Page',
-    description: 'Test description',
-    questions: [
-      {
-        id: 'question-1',
-        displayText: 'Test Question',
-        required: false,
-      },
-    ],
-    sections: [
-      {
-        id: 'section-1',
-        title: 'Test Section',
-        description: 'Section description',
-        questions: [
-          {
-            id: 'section-question-1',
-            displayText: 'Section Question',
-            required: true,
-          },
-        ],
-      },
-    ],
-  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -60,7 +34,7 @@ describe('RegistryBlocksSectionComponent', () => {
   });
 
   it('should set schemaBlocks input correctly', () => {
-    const mockBlocks: PageSchema[] = [mockPageSchema];
+    const mockBlocks: PageSchema[] = [createMockPageSchema()];
     fixture.componentRef.setInput('schemaBlocks', mockBlocks);
     fixture.componentRef.setInput('schemaResponse', null);
     fixture.detectChanges();
@@ -114,7 +88,7 @@ describe('RegistryBlocksSectionComponent', () => {
   });
 
   it('should initialize with all required inputs', () => {
-    const mockBlocks: PageSchema[] = [mockPageSchema];
+    const mockBlocks: PageSchema[] = [createMockPageSchema()];
     const mockResponse = createMockSchemaResponse('response-1', RevisionReviewStates.Approved);
 
     fixture.componentRef.setInput('schemaBlocks', mockBlocks);
@@ -127,7 +101,7 @@ describe('RegistryBlocksSectionComponent', () => {
   });
 
   it('should handle all inputs being set together', () => {
-    const mockBlocks: PageSchema[] = [mockPageSchema];
+    const mockBlocks: PageSchema[] = [createMockPageSchema()];
     const mockResponse = createMockSchemaResponse('response-1', RevisionReviewStates.Approved);
     mockResponse.updatedResponseKeys = ['test-key'];
 
