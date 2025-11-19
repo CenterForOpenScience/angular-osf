@@ -18,7 +18,6 @@ export function mapCreators(project: ResourceModel, currentInstitutionId: string
   });
 
   return getSortedContributorsByPermissions(project)
-    ?.filter((creator) => creator.affiliationsAbsoluteUrl.includes(currentInstitutionId))
     ?.map((creator) => {
       const name = creator.name.trim();
       const role = creatorsRoles.find((cr) => cr.id === creator.absoluteUrl)!.role;
