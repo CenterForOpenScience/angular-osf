@@ -1,5 +1,5 @@
 export enum SubscriptionEvent {
   GlobalFileUpdated = 'global_file_updated',
-  GlobalReviews = 'new_pending_submissions',
+  GlobalReviews = 'global_reviews',
   FileUpdated = 'file_updated',
 }
