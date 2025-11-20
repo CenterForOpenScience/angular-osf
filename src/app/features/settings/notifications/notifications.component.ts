@@ -21,7 +21,7 @@ import { ToastService } from '@osf/shared/services/toast.service';
 import { AccountSettings } from '../account-settings/models';
 import { AccountSettingsSelectors, GetAccountSettings, UpdateAccountSettings } from '../account-settings/store';
 
-import { API_EVENT_TO_FORM_EVENT, FORM_EVENT_TO_API_EVENT, SUBSCRIPTION_EVENTS } from './constants';
+import { SUBSCRIPTION_EVENTS } from './constants';
 import { EmailPreferencesForm, EmailPreferencesFormControls } from './models';
 import {
   GetAllGlobalNotificationSubscriptions,
@@ -80,9 +80,7 @@ export class NotificationsComponent implements OnInit {
   notificationSubscriptionsForm = this.fb.group(
     SUBSCRIPTION_EVENTS.reduce(
       (control, { event }) => {
-        control[event as string] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, {
-          nonNullable: true,
-        });
+        control[event] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, { nonNullable: true });
         return control;
       },
       {} as Record<string, FormControl<SubscriptionFrequency>>
@@ -130,24 +128,7 @@ export class NotificationsComponent implements OnInit {
   onSubscriptionChange(event: SubscriptionEvent, frequency: SubscriptionFrequency) {
     const user = this.currentUser();
     if (!user) return;
-
-    const eventKey = event as string;
-
-    const apiEventName = FORM_EVENT_TO_API_EVENT[eventKey] ?? eventKey;
-
-    let id: string | undefined;
-
-    if (event === SubscriptionEvent.GlobalReviews) {
-      const subs = this.notificationSubscriptions();
-      const match = subs.find((s) => (s.event as string) === 'new_pending_submissions');
-      if (match) {
-        id = match.id;
-      } else {
-        return;
-      }
-    } else {
-      id = `${user.id}_${apiEventName}`;
-    }
+    const id = `${user.id}_${event}`;
 
     this.loaderService.show();
     this.actions.updateNotificationSubscription({ id, frequency }).subscribe(() => {
@@ -164,24 +145,10 @@ export class NotificationsComponent implements OnInit {
   }
 
   private updateNotificationSubscriptionsForm() {
-    const subs = this.notificationSubscriptions();
-    if (!subs?.length) {
-      return;
-    }
-
     const patch: Record<string, SubscriptionFrequency> = {};
 
-    for (const sub of subs) {
-      const apiEvent = sub.event as string | null;
-      if (!apiEvent) {
-        continue;
-      }
-
-      const formEventKey = API_EVENT_TO_FORM_EVENT[apiEvent];
-
-      if (formEventKey) {
-        patch[formEventKey] = sub.frequency;
-      }
+    for (const sub of this.notificationSubscriptions()) {
+      patch[sub.event] = sub.frequency;
     }
 
     this.notificationSubscriptionsForm.patchValue(patch);
