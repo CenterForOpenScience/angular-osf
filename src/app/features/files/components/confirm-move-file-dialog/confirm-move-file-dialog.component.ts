@@ -74,7 +74,7 @@ export class ConfirmMoveFileDialogComponent {
     files.forEach((file) => {
       const link = file.links.move;
       this.filesService
-        .moveFile(link, path, this.fileProjectId, this.provider(), action)
+        .moveFile(link, path, this.fileProjectId, this.provider, action)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           catchError((error) => {
@@ -116,7 +116,7 @@ export class ConfirmMoveFileDialogComponent {
       acceptLabelKey: 'common.buttons.replace',
       onConfirm: () => {
         const replaceRequests$ = conflictFiles.map(({ link }) =>
-          this.filesService.moveFile(link, path, this.fileProjectId, this.provider(), action, true).pipe(
+          this.filesService.moveFile(link, path, this.fileProjectId, this.provider, action, true).pipe(
             takeUntilDestroyed(this.destroyRef),
             catchError(() => of(null))
           )

@@ -542,6 +542,12 @@ export class FilesComponent {
     }
   }
 
+  resetOnDialogClose(): void {
+    this.filesSelection = [];
+    this.resetProvider();
+    this.updateFilesList();
+  }
+
   createFolder(): void {
     const currentFolder = this.currentFolder();
     const newFolderLink = currentFolder?.links.newFolder;
