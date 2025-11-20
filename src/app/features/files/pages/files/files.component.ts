@@ -445,7 +445,8 @@ export class FilesComponent {
   }
 
   onFileTreeSelected(file: FileModel): void {
-    this.filesSelection = [...this.filesSelection, file];
+    this.filesSelection.push(file);
+    this.filesSelection = [...new Set(this.filesSelection)]; // Remove potential duplicates
   }
 
   onFileTreeUnselected(file: FileModel): void {
@@ -543,7 +544,7 @@ export class FilesComponent {
   }
 
   resetOnDialogClose(): void {
-    this.filesSelection = [];
+    this.onClearSelection();
     this.resetProvider();
     this.updateFilesList();
   }
