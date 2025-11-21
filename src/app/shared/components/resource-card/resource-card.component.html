@@ -8,7 +8,7 @@
           <div class="flex align-items-center gap-2">
             <h2>
               <a
-                class="dark-blue-link word-break-word"
+                class="block line-height-4 dark-blue-link word-break-word"
                 [href]="resource().absoluteUrl"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -33,7 +33,7 @@
             <div class="line-height-3">
               @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
                 <a
-                  class="word-break-word"
+                  class="word-break-word block line-height-3"
                   [href]="affiliatedEntity.absoluteUrl"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -53,7 +53,7 @@
             <div class="flex flex-row gap-1 line-height-3">
               <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
               <a
-                class="white-space-normal word-break-word"
+                class="block line-height-4 white-space-normal word-break-word"
                 [href]="resource().isPartOf!.absoluteUrl"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -67,7 +67,7 @@
             <div class="flex flex-row gap-1 line-height-3">
               <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
               <a
-                class="white-space-normal"
+                class="block line-height-4 white-space-normal"
                 [href]="resource().isContainedBy!.absoluteUrl"
                 target="_blank"
                 rel="noopener noreferrer"
