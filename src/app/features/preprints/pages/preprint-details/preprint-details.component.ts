@@ -32,7 +32,6 @@ import { ResetState } from '@osf/features/files/store';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
-import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
@@ -101,7 +100,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
-  private readonly analyticsService = inject(AnalyticsService);
   private readonly prerenderReady = inject(PrerenderReadyService);
 
   private readonly environment = inject(ENVIRONMENT);
