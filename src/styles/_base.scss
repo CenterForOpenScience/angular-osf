@@ -92,4 +92,9 @@
     margin-bottom: mix.rem(4px);
     font-weight: 400;
   }
+
+  *:focus-visible {
+    outline: 1px solid var(--pr-blue-1);
+    outline-offset: 2px;
+  }
 }
