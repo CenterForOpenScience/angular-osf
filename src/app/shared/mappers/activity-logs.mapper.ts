@@ -1,7 +1,7 @@
 import { DEFAULT_TABLE_PARAMS } from '../constants/default-table-params.constants';
 import { ActivityLog, LogContributor } from '../models/activity-logs/activity-logs.model';
 import { ActivityLogJsonApi, LogContributorJsonApi } from '../models/activity-logs/activity-logs-json-api.model';
-import { JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '../models/common/json-api.model';
+import { ResponseJsonApi } from '../models/common/json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
 
 export class ActivityLogsMapper {
@@ -152,9 +152,7 @@ export class ActivityLogsMapper {
     };
   }
 
-  static fromGetActivityLogsResponse(
-    logs: JsonApiResponseWithMeta<ActivityLogJsonApi[], MetaAnonymousJsonApi, null>
-  ): PaginatedData<ActivityLog[]> {
+  static fromGetActivityLogsResponse(logs: ResponseJsonApi<ActivityLogJsonApi[]>): PaginatedData<ActivityLog[]> {
     const isAnonymous = logs.meta.anonymous ?? false;
     return {
       data: logs.data.map((log) => this.fromActivityLogJsonApi(log, isAnonymous)),

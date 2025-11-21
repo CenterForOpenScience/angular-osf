@@ -4,9 +4,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
 
-import { ClearActivityLogsStore, GetActivityLogs, GetRegistrationActivityLogs } from './activity-logs.actions';
+import { ClearActivityLogs, GetActivityLogs } from './activity-logs.actions';
 import { ActivityLogsState } from './activity-logs.state';
 
 import {
@@ -16,9 +17,10 @@ import {
 } from '@testing/data/activity-logs/activity-logs.data';
 import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 
-describe.skip('State: ActivityLogs', () => {
+describe('State: ActivityLogs', () => {
   let store: Store;
   const environment = EnvironmentTokenMock;
+  const apiBase = environment.useValue.apiDomainUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -41,13 +43,17 @@ describe.skip('State: ActivityLogs', () => {
     (httpMock: HttpTestingController) => {
       let snapshot: any;
 
-      store.dispatch(new GetRegistrationActivityLogs('reg123', 1, 10)).subscribe(() => {
+      store.dispatch(new GetActivityLogs('reg123', CurrentResourceType.Registrations, 1, 10)).subscribe(() => {
         snapshot = store.snapshot().activityLogs.activityLogs;
       });
 
       expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
 
-      const req = httpMock.expectOne(buildRegistrationLogsUrl('reg123', 1, 10, environment.useValue.apiDomainUrl));
+      const fullUrl = buildRegistrationLogsUrl('reg123', 1, 10, apiBase);
+      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
+      const req = httpMock.expectOne((request) => {
+        return request.url.includes(urlPath) && request.method === 'GET';
+      });
       expect(req.request.method).toBe('GET');
 
       req.flush(getActivityLogsResponse());
@@ -63,11 +69,15 @@ describe.skip('State: ActivityLogs', () => {
   it('handles error when loading registration logs', inject(
     [HttpTestingController],
     (httpMock: HttpTestingController) => {
-      store.dispatch(new GetRegistrationActivityLogs('reg500', 1, 10)).subscribe();
+      store.dispatch(new GetActivityLogs('reg500', CurrentResourceType.Registrations, 1, 10)).subscribe();
 
       expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
 
-      const req = httpMock.expectOne(buildRegistrationLogsUrl('reg500', 1, 10, environment.useValue.apiDomainUrl));
+      const fullUrl = buildRegistrationLogsUrl('reg500', 1, 10, apiBase);
+      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
+      const req = httpMock.expectOne((request) => {
+        return request.url.includes(urlPath) && request.method === 'GET';
+      });
       req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
 
       const snap = store.snapshot().activityLogs.activityLogs;
@@ -83,13 +93,17 @@ describe.skip('State: ActivityLogs', () => {
     [HttpTestingController],
     (httpMock: HttpTestingController) => {
       let snapshot: any;
-      store.dispatch(new GetActivityLogs('proj123', 1, 10)).subscribe(() => {
+      store.dispatch(new GetActivityLogs('proj123', CurrentResourceType.Projects, 1, 10)).subscribe(() => {
         snapshot = store.snapshot().activityLogs.activityLogs;
       });
 
       expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
 
-      const req = httpMock.expectOne(buildNodeLogsUrl('proj123', 1, 10, environment.useValue.apiDomainUrl));
+      const fullUrl = buildNodeLogsUrl('proj123', 1, 10, apiBase);
+      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
+      const req = httpMock.expectOne((request) => {
+        return request.url.includes(urlPath) && request.method === 'GET';
+      });
       expect(req.request.method).toBe('GET');
 
       req.flush(getActivityLogsResponse());
@@ -105,11 +119,15 @@ describe.skip('State: ActivityLogs', () => {
   it('handles error when loading project logs (nodes)', inject(
     [HttpTestingController],
     (httpMock: HttpTestingController) => {
-      store.dispatch(new GetActivityLogs('proj500', 1, 10)).subscribe();
+      store.dispatch(new GetActivityLogs('proj500', CurrentResourceType.Projects, 1, 10)).subscribe();
 
       expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
 
-      const req = httpMock.expectOne(buildNodeLogsUrl('proj500', 1, 10, environment.useValue.apiDomainUrl));
+      const fullUrl = buildNodeLogsUrl('proj500', 1, 10, apiBase);
+      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
+      const req = httpMock.expectOne((request) => {
+        return request.url.includes(urlPath) && request.method === 'GET';
+      });
       req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
 
       const snap = store.snapshot().activityLogs.activityLogs;
@@ -128,7 +146,7 @@ describe.skip('State: ActivityLogs', () => {
       },
     } as any);
 
-    store.dispatch(new ClearActivityLogsStore());
+    store.dispatch(new ClearActivityLogs());
     const snap = store.snapshot().activityLogs.activityLogs;
     expect(snap.data).toEqual([]);
     expect(snap.totalCount).toBe(0);
