@@ -9,22 +9,13 @@ import { ChangeDetectionStrategy, Component, input, output, signal } from '@angu
 
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
-import { HorizontalScrollKeyboardDirective } from '@osf/shared/directives/horizontal-scroll-keyboard.directive';
 
 import { PreprintReviewStatus, ReviewStatusIcon } from '../../constants';
 import { PreprintReviewActionModel } from '../../models';
 
 @Component({
   selector: 'osf-preprint-recent-activity-list',
-  imports: [
-    TableModule,
-    DatePipe,
-    TranslatePipe,
-    IconComponent,
-    Skeleton,
-    CustomPaginatorComponent,
-    HorizontalScrollKeyboardDirective,
-  ],
+  imports: [TableModule, DatePipe, TranslatePipe, IconComponent, Skeleton, CustomPaginatorComponent],
   templateUrl: './preprint-recent-activity-list.component.html',
   styleUrl: './preprint-recent-activity-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
