@@ -74,8 +74,7 @@ export class DraftsComponent implements OnDestroy {
       !this.draftRegistration()?.title ||
       !this.draftRegistration()?.description ||
       !this.registrationLicense() ||
-      !this.selectedSubjects()?.length ||
-      !this.initialContributors()?.length
+      !this.selectedSubjects()?.length
     );
   });
 
