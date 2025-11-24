@@ -446,7 +446,7 @@ export class FilesComponent {
 
   onFileTreeSelected(file: FileModel): void {
     this.filesSelection.push(file);
-    this.filesSelection = [...new Set(this.filesSelection)]; // Remove potential duplicates
+    this.filesSelection = [...new Set(this.filesSelection)];
   }
 
   onFileTreeUnselected(file: FileModel): void {
