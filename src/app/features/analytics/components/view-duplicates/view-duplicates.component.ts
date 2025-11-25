@@ -23,7 +23,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { DeleteComponentDialogComponent, ForkDialogComponent } from '@osf/features/project/overview/components';
+import { DeleteComponentDialogComponent } from '@osf/features/project/overview/components/delete-component-dialog/delete-component-dialog.component';
+import { ForkDialogComponent } from '@osf/features/project/overview/components/fork-dialog/fork-dialog.component';
 import { ClearProjectOverview, GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { ClearRegistry, GetRegistryById, RegistrySelectors } from '@osf/features/registry/store/registry';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
@@ -39,23 +40,21 @@ import { LoaderService } from '@osf/shared/services/loader.service';
 import { GetResourceWithChildren } from '@osf/shared/stores/current-resource';
 import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores/duplicates';
 import { BaseNodeModel } from '@shared/models/nodes/base-node.model';
-import { ToolbarResource } from '@shared/models/toolbar-resource.model';
 
 @Component({
   selector: 'osf-view-duplicates',
   imports: [
-    SubHeaderComponent,
-    TranslatePipe,
     Button,
     Menu,
-    TruncatedTextComponent,
-    DatePipe,
-    LoadingSpinnerComponent,
     RouterLink,
-    CustomPaginatorComponent,
     IconComponent,
+    SubHeaderComponent,
+    TruncatedTextComponent,
+    LoadingSpinnerComponent,
+    CustomPaginatorComponent,
     ContributorsListComponent,
     DatePipe,
+    TranslatePipe,
   ],
   templateUrl: './view-duplicates.component.html',
   styleUrl: './view-duplicates.component.scss',
@@ -69,8 +68,6 @@ export class ViewDuplicatesComponent {
   private destroyRef = inject(DestroyRef);
   private project = select(ProjectOverviewSelectors.getProject);
   private registration = select(RegistrySelectors.getRegistry);
-  private isProjectAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-  private isRegistryAnonymous = select(RegistrySelectors.isRegistryAnonymous);
 
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
@@ -80,8 +77,8 @@ export class ViewDuplicatesComponent {
   readonly pageSize = 10;
   readonly UserPermissions = UserPermissions;
 
-  currentPage = signal<string>('1');
-  firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * this.pageSize);
+  currentPage = signal<number>(1);
+  firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize);
 
   readonly forkActionItems = (resourceId: string) => [
     {
@@ -142,32 +139,12 @@ export class ViewDuplicatesComponent {
       const resource = this.currentResource();
 
       if (resource) {
-        this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+        this.actions.getDuplicates(resource.id, resource.type, this.currentPage(), this.pageSize);
       }
     });
 
     this.setupCleanup();
   }
-
-  toolbarResource = computed(() => {
-    const resource = this.currentResource();
-    const resourceType = this.resourceType();
-    if (resource && resourceType) {
-      const isAnonymous =
-        resourceType === ResourceType.Project ? this.isProjectAnonymous() : this.isRegistryAnonymous();
-
-      return {
-        id: resource.id,
-        isPublic: resource.isPublic,
-        storage: undefined,
-        viewOnlyLinksCount: 0,
-        forksCount: resource.forksCount,
-        resourceType: resourceType,
-        isAnonymous,
-      } as ToolbarResource;
-    }
-    return null;
-  });
 
   showMoreOptions(duplicate: BaseNodeModel) {
     return (
@@ -191,24 +168,21 @@ export class ViewDuplicatesComponent {
   }
 
   handleForkResource(): void {
-    const toolbarResource = this.toolbarResource();
+    const currentResource = this.currentResource();
 
-    if (toolbarResource) {
+    if (currentResource) {
       this.customDialogService
         .open(ForkDialogComponent, {
           header: 'project.overview.dialog.fork.headerProject',
           width: '450px',
           data: {
-            resource: toolbarResource,
+            resourceId: currentResource.id,
             resourceType: this.resourceType(),
           },
         })
         .onClose.subscribe((result) => {
           if (result?.success) {
-            const resource = this.currentResource();
-            if (resource) {
-              this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
-            }
+            this.actions.getDuplicates(currentResource.id, currentResource.type, this.currentPage(), this.pageSize);
           }
         });
     }
@@ -216,7 +190,7 @@ export class ViewDuplicatesComponent {
 
   onPageChange(event: PaginatorState): void {
     if (event.page !== undefined) {
-      const pageNumber = (event.page + 1).toString();
+      const pageNumber = event.page + 1;
       this.currentPage.set(pageNumber);
     }
   }
@@ -246,7 +220,7 @@ export class ViewDuplicatesComponent {
               componentId: id,
               resourceType: resourceType,
               isForksContext: true,
-              currentPage: parseInt(this.currentPage()),
+              currentPage: this.currentPage(),
               pageSize: this.pageSize,
             },
           })
@@ -254,7 +228,7 @@ export class ViewDuplicatesComponent {
             if (result?.success) {
               const resource = this.currentResource();
               if (resource) {
-                this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+                this.actions.getDuplicates(resource.id, resource.type, this.currentPage(), this.pageSize);
               }
             }
           });

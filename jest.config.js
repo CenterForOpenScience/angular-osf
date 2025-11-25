@@ -69,10 +69,8 @@ module.exports = {
   testPathIgnorePatterns: [
     '<rootDir>/src/environments',
     '<rootDir>/src/app/app.config.ts',
-    '<rootDir>/src/app/app.routes.ts',
     '<rootDir>/src/app/features/files/pages/file-detail',
     '<rootDir>/src/app/features/project/addons/',
-    '<rootDir>/src/app/features/project/overview/',
     '<rootDir>/src/app/features/project/registrations',
     '<rootDir>/src/app/features/project/wiki',
     '<rootDir>/src/app/features/registry/components',

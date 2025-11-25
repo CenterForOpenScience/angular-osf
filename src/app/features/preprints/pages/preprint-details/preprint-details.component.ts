@@ -176,14 +176,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     this.prerenderReady.setNotReady();
 
     effect(() => {
-      const currentPreprint = this.preprint();
-
-      if (currentPreprint && currentPreprint.isPublic) {
-        this.analyticsService.sendCountedUsage(currentPreprint.id, 'preprint.detail').subscribe();
-      }
-    });
-
-    effect(() => {
       const preprint = this.preprint();
       const contributors = this.contributors();
       const isLoading = this.isPreprintLoading() || this.areContributorsLoading();

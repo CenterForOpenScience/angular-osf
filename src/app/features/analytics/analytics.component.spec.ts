@@ -17,7 +17,6 @@ import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-l
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 
 import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS } from '@testing/mocks/analytics.mock';
-import { MOCK_RESOURCE_OVERVIEW } from '@testing/mocks/resource.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -29,7 +28,7 @@ describe('Component: Analytics', () => {
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
-  const resourceId = MOCK_RESOURCE_OVERVIEW.id;
+  const resourceId = 'ex212';
   const metrics = { ...MOCK_ANALYTICS_METRICS, id: resourceId };
   const relatedCounts = { ...MOCK_RELATED_COUNTS, id: resourceId };
   const metricsSelector = AnalyticsSelectors.getMetrics(resourceId);
@@ -60,13 +59,6 @@ describe('Component: Analytics', () => {
       ],
       providers: [
         provideMockStore({
-          selectors: [
-            { selector: metricsSelector, value: metrics },
-            { selector: relatedCountsSelector, value: relatedCounts },
-            { selector: AnalyticsSelectors.isMetricsLoading, value: false },
-            { selector: AnalyticsSelectors.isRelatedCountsLoading, value: false },
-            { selector: AnalyticsSelectors.isMetricsError, value: false },
-          ],
           signals: [
             { selector: metricsSelector, value: metrics },
             { selector: relatedCountsSelector, value: relatedCounts },

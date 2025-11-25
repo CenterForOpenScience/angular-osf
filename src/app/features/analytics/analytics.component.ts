@@ -140,6 +140,7 @@ export class AnalyticsComponent implements OnInit {
   navigateToLinkedProjects() {
     this.router.navigate(['linked-projects'], { relativeTo: this.route });
   }
+
   private setData() {
     const analytics = this.analytics();
 
@@ -171,7 +172,14 @@ export class AnalyticsComponent implements OnInit {
       },
     ];
 
-    this.popularPagesLabels = analytics.popularPages.map((item) => item.title);
+    this.popularPagesLabels = analytics.popularPages.map((item) => {
+      const parts = item.path.split('/').filter(Boolean);
+      const resource = parts[1]?.replace('-', ' ') || 'overview';
+      let cleanTitle = item.title === 'OSF' ? item.title : item.title.replace(/^OSF \| /, '');
+      cleanTitle = cleanTitle.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
+      return cleanTitle.endsWith(resource) ? cleanTitle : `${cleanTitle} | ${resource}`;
+    });
+
     this.popularPagesDataset = [
       {
         label: this.translateService.instant('project.analytics.charts.popularPages'),

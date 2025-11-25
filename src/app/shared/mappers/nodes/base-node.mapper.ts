@@ -11,13 +11,9 @@ export class BaseNodeMapper {
     return data.map((item) => this.getNodeData(item));
   }
 
-  static getNodesWithEmbedsData(data: BaseNodeDataJsonApi[]): NodeModel[] {
-    return data.map((item) => this.getNodeWithEmbedsData(item));
-  }
-
   static getNodesWithEmbedsAndTotalData(response: ResponseJsonApi<BaseNodeDataJsonApi[]>): PaginatedData<NodeModel[]> {
     return {
-      data: BaseNodeMapper.getNodesWithEmbedsData(response.data),
+      data: BaseNodeMapper.getNodesWithEmbedContributors(response.data),
       totalCount: response.meta.total,
       pageSize: response.meta.per_page,
     };
@@ -62,8 +58,13 @@ export class BaseNodeMapper {
     };
   }
 
-  static getNodeWithEmbedsData(data: BaseNodeDataJsonApi): NodeModel {
+  static getNodesWithEmbedContributors(data: BaseNodeDataJsonApi[]): NodeModel[] {
+    return data.map((item) => this.getNodeWithEmbedContributors(item));
+  }
+
+  static getNodeWithEmbedContributors(data: BaseNodeDataJsonApi): NodeModel {
     const baseNode = BaseNodeMapper.getNodeData(data);
+
     return {
       ...baseNode,
       bibliographicContributors: ContributorsMapper.getContributors(data.embeds?.bibliographic_contributors?.data),
