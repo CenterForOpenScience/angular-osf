@@ -1,18 +1,27 @@
-import { ComponentOverview } from '@osf/shared/models/components/components.models';
-import { BaseNodeModel } from '@osf/shared/models/nodes/base-node.model';
+import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
+import { NodePreprintModel } from '@osf/shared/models/nodes/node-preprint.model';
+import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
+import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
+import { Institution } from '@shared/models/institutions/institutions.models';
+import { LicenseModel } from '@shared/models/license/license.model';
 
-import { ProjectOverview } from '../models';
+import { ProjectOverviewModel } from '../models';
 
 export interface ProjectOverviewStateModel {
-  project: AsyncStateModel<ProjectOverview | null>;
-  components: AsyncStateWithTotalCount<ComponentOverview[]> & {
+  project: AsyncStateModel<ProjectOverviewModel | null>;
+  components: AsyncStateWithTotalCount<NodeModel[]> & {
     currentPage: number;
   };
-  isAnonymous: boolean;
   duplicatedProject: BaseNodeModel | null;
-  parentProject: AsyncStateModel<ProjectOverview | null>;
+  parentProject: AsyncStateModel<NodeModel | null>;
+  institutions: AsyncStateModel<Institution[]>;
+  identifiers: AsyncStateModel<IdentifierModel[]>;
+  license: AsyncStateModel<LicenseModel | null>;
+  storage: AsyncStateModel<NodeStorageModel | null>;
+  preprints: AsyncStateModel<NodePreprintModel[]>;
+  isAnonymous: boolean;
 }
 
 export const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
@@ -34,6 +43,31 @@ export const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
   duplicatedProject: null,
   parentProject: {
     data: null,
+    isLoading: false,
+    error: null,
+  },
+  institutions: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  identifiers: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  license: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  storage: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  preprints: {
+    data: [],
     isLoading: false,
     error: null,
   },

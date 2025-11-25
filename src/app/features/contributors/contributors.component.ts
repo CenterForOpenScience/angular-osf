@@ -45,7 +45,6 @@ import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import {
   AcceptRequestAccess,
-  AddContributor,
   BulkAddContributors,
   BulkAddContributorsFromParentProject,
   BulkUpdateContributors,
@@ -176,7 +175,6 @@ export class ContributorsComponent implements OnInit, OnDestroy {
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
     bulkAddContributorsFromParentProject: BulkAddContributorsFromParentProject,
-    addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
     getRequestAccessContributors: GetRequestAccessContributors,
@@ -327,7 +325,7 @@ export class ContributorsComponent implements OnInit, OnDestroy {
 
   private addContributorsToComponents(result: ContributorDialogAddModel): void {
     this.actions
-      .bulkAddContributors(this.resourceId(), this.resourceType(), result.data, result.childNodeIds)
+      .bulkAddContributors(this.resourceId(), this.resourceType(), result.data)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
   }
@@ -355,7 +353,7 @@ export class ContributorsComponent implements OnInit, OnDestroy {
         } else {
           const params = { name: res.data[0].fullName };
 
-          this.actions.addContributor(this.resourceId(), this.resourceType(), res.data[0]).subscribe({
+          this.actions.bulkAddContributors(this.resourceId(), this.resourceType(), res.data).subscribe({
             next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }

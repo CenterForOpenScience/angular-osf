@@ -11,6 +11,15 @@ export class CreateWiki {
   ) {}
 }
 
+export class RenameWiki {
+  static readonly type = '[Wiki] Rename Wiki';
+
+  constructor(
+    public wikiId: string,
+    public name: string
+  ) {}
+}
+
 export class DeleteWiki {
   static readonly type = '[Wiki] Delete Wiki';
   constructor(public wikiId: string) {}

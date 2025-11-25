@@ -13,6 +13,7 @@
         inputId="in_label"
         [options]="rootFoldersOptions()"
         [(ngModel)]="currentRootFolder"
+        (onChange)="handleRootFolderChange($event.value)"
         styleClass="w-full"
         variant="filled"
       >
@@ -149,7 +150,7 @@
       (setCurrentFolder)="setCurrentFolder($event)"
       (setMoveDialogCurrentFolder)="setMoveDialogCurrentFolder($event)"
       (updateFoldersStack)="onUpdateFoldersStack($event)"
-      (resetFilesProvider)="resetProvider()"
+      (resetFilesProvider)="resetOnDialogClose()"
     >
     </osf-files-tree>
   </div>

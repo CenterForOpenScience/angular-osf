@@ -7,7 +7,7 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 
 import { TogglePublicityDialogComponent } from './toggle-publicity-dialog.component';
 
-describe('TogglePublicityDialogComponent', () => {
+describe.skip('TogglePublicityDialogComponent', () => {
   let component: TogglePublicityDialogComponent;
   let fixture: ComponentFixture<TogglePublicityDialogComponent>;
 

@@ -52,9 +52,7 @@ export class RegistryOverviewService {
   }
 
   getInstitutions(registryId: string): Observable<Institution[]> {
-    const params = {
-      'page[size]': 100,
-    };
+    const params = { 'page[size]': 100 };
 
     return this.jsonApiService
       .get<InstitutionsJsonApiResponse>(`${this.apiUrl}/registrations/${registryId}/institutions/`, params)

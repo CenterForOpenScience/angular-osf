@@ -18,7 +18,7 @@
           <div class="linked-project-wrapper flex flex-column p-3 gap-3">
             <div class="flex justify-content-between align-items-center">
               <h2 class="flex align-items-center gap-2">
-                <osf-icon [iconClass]="linkedResource.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
+                <osf-icon [iconClass]="linkedResource.isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
                 <a class="linked-project-title" [href]="linkedResource.id">{{ linkedResource.title }}</a>
               </h2>
               @if (canEdit()) {
@@ -39,7 +39,7 @@
             <div class="flex flex-wrap gap-1">
               <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
 
-              <osf-contributors-list [contributors]="linkedResource.contributors"></osf-contributors-list>
+              <osf-contributors-list [contributors]="linkedResource.bibliographicContributors"></osf-contributors-list>
             </div>
             @if (linkedResource.description) {
               <osf-truncated-text

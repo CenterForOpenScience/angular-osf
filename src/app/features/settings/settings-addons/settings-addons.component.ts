@@ -213,7 +213,8 @@ export class SettingsAddonsComponent implements OnInit {
 
   readonly filteredAddonCards = computed(() => {
     const searchValue = this.searchValue().toLowerCase();
-    const filteredAddons = this.currentAddonsState().filter(
+    const addons = this.currentAddonsState() ?? [];
+    const filteredAddons = addons.filter(
       (card) =>
         card.externalServiceName.toLowerCase().includes(searchValue) ||
         card.displayName.toLowerCase().includes(searchValue)
@@ -259,7 +260,7 @@ export class SettingsAddonsComponent implements OnInit {
         const action = this.currentAction();
         const addons = this.currentAddonsState();
 
-        if (!addons?.length) {
+        if (!addons) {
           action();
         }
       }

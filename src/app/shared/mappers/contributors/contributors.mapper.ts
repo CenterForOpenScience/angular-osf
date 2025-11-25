@@ -110,4 +110,25 @@ export class ContributorsMapper {
       };
     }
   }
+
+  static toContributorUpdateRequest(model: ContributorModel): ContributorAddRequestModel {
+    return {
+      id: model.id,
+      type: 'contributors',
+      attributes: {
+        bibliographic: model.isBibliographic,
+        permission: model.permission,
+        index: model.index,
+        id: model.userId,
+      },
+      relationships: {
+        users: {
+          data: {
+            id: model.id,
+            type: 'users',
+          },
+        },
+      },
+    };
+  }
 }

@@ -33,6 +33,7 @@ export interface ContributorEmbedsJsonApi {
 
 export interface ContributorAddRequestModel {
   type: 'contributors';
+  id?: string;
   attributes: {
     bibliographic: boolean;
     permission: string;

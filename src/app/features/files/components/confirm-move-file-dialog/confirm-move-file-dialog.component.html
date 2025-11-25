@@ -1,0 +1,11 @@
+<div class="flex flex-column gap-2">
+  <div
+    [innerHTML]="'files.dialogs.moveFile.message' | translate: { dropNodeName: currentFolder.name, dragNodeName }"
+  ></div>
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (onClick)="dialogRef.close()"></p-button>
+
+    <p-button [label]="'common.buttons.move' | translate" (onClick)="moveFiles()"></p-button>
+    <p-button [label]="'common.buttons.copy' | translate" (onClick)="copyFiles()"></p-button>
+  </div>
+</div>

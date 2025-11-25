@@ -5,12 +5,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { ComponentsMapper } from '../mappers/components';
+import { BaseNodeMapper } from '../mappers/nodes';
 import { JsonApiResponse } from '../models/common/json-api.model';
-import { ComponentGetResponseJsonApi } from '../models/components/component-json-api.model';
-import { ComponentOverview } from '../models/components/components.models';
 import { MyResourcesItem } from '../models/my-resources/my-resources.models';
 import { NodeLinkJsonApi } from '../models/node-links/node-link-json-api.model';
+import { NodeModel } from '../models/nodes/base-node.model';
+import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -44,7 +44,7 @@ export class NodeLinksService {
     );
   }
 
-  deleteNodeLink(projectId: string, resource: ComponentOverview): Observable<void> {
+  deleteNodeLink(projectId: string, resource: NodeModel): Observable<void> {
     const payload = {
       data: [
         {
@@ -60,29 +60,25 @@ export class NodeLinksService {
     );
   }
 
-  fetchLinkedProjects(projectId: string): Observable<ComponentOverview[]> {
+  fetchLinkedProjects(projectId: string): Observable<NodeModel[]> {
     const params: Record<string, unknown> = {
       embed: 'bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
     return this.jsonApiService
-      .get<
-        JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${this.apiUrl}/nodes/${projectId}/linked_nodes/`, params)
-      .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/linked_nodes/`, params)
+      .pipe(map((response) => BaseNodeMapper.getNodesWithEmbedContributors(response.data)));
   }
 
-  fetchLinkedRegistrations(projectId: string): Observable<ComponentOverview[]> {
+  fetchLinkedRegistrations(projectId: string): Observable<NodeModel[]> {
     const params: Record<string, unknown> = {
       embed: 'bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
     return this.jsonApiService
-      .get<
-        JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${this.apiUrl}/nodes/${projectId}/linked_registrations/`, params)
-      .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/linked_registrations/`, params)
+      .pipe(map((response) => BaseNodeMapper.getNodesWithEmbedContributors(response.data)));
   }
 }

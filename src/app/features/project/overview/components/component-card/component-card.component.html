@@ -1,0 +1,50 @@
+<div class="node-wrapper flex flex-column p-3 gap-3">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="flex align-items-center gap-2">
+      <osf-icon [iconClass]="component().isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
+
+      <a class="node-title cursor-pointer" (click)="handleNavigate(component().id)">
+        {{ component().title }}
+      </a>
+    </h2>
+
+    @if (component().currentUserIsContributor) {
+      <div>
+        <p-button
+          severity="contrast"
+          icon="fas fa-ellipsis-vertical"
+          raised
+          variant="outlined"
+          [ariaLabel]="'common.buttons.more' | translate"
+          (onClick)="menu.toggle($event)"
+        >
+        </p-button>
+
+        <p-menu appendTo="body" [model]="componentActionItems()" popup #menu>
+          <ng-template #item let-item>
+            <a
+              class="p-menu-item-link"
+              (mousedown)="handleMenuAction(item.action)"
+              (keydown.enter)="handleMenuAction(item.action)"
+            >
+              {{ item.label | translate }}
+            </a>
+          </ng-template>
+        </p-menu>
+      </div>
+    }
+  </div>
+
+  <div class="flex flex-wrap gap-1">
+    <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
+
+    <osf-contributors-list
+      [contributors]="component().bibliographicContributors"
+      [anonymous]="anonymous()"
+    ></osf-contributors-list>
+  </div>
+
+  @if (component().description) {
+    <osf-truncated-text [text]="('resourceCard.labels.descriptionBold' | translate) + component().description" />
+  }
+</div>

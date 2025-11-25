@@ -94,6 +94,8 @@ export class PreprintWithdrawalSubmissionsComponent implements OnInit {
   }
 
   changeReviewStatus(value: SubmissionReviewStatus): void {
+    if (!value) return;
+
     this.selectedReviewOption.set(value);
     this.router.navigate([], {
       relativeTo: this.route,
@@ -118,7 +120,9 @@ export class PreprintWithdrawalSubmissionsComponent implements OnInit {
 
   navigateToPreprint(item: PreprintWithdrawalSubmission) {
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/preprints/', this.providerId(), item.id], { queryParams: { mode: 'moderator' } })
+      this.router.createUrlTree(['/preprints/', this.providerId(), item.preprintId], {
+        queryParams: { mode: 'moderator' },
+      })
     );
 
     window.open(url, '_blank');

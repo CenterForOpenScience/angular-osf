@@ -9,8 +9,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { timer } from 'rxjs';
 
-import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -19,8 +18,7 @@ import { UserSelectors } from '@core/store/user';
 import { ClearDuplicatedProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { SocialsShareButtonComponent } from '@osf/shared/components/socials-share-button/socials-share-button.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
-import { ToolbarResource } from '@osf/shared/models/toolbar-resource.model';
+import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { FileSizePipe } from '@osf/shared/pipes/file-size.pipe';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -31,6 +29,7 @@ import {
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores/bookmarks';
 
+import { ProjectOverviewModel } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
 import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
 import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggle-publicity-dialog.component';
@@ -44,7 +43,6 @@ import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggl
     Button,
     Tooltip,
     FormsModule,
-    NgClass,
     RouterLink,
     FileSizePipe,
     SocialsShareButtonComponent,
@@ -61,14 +59,14 @@ export class ProjectOverviewToolbarComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
+  canEdit = input.required<boolean>();
+  storage = input<NodeStorageModel | null>();
+  viewOnly = input<boolean>(false);
+  currentResource = input.required<ProjectOverviewModel>();
+
   isPublic = signal(false);
   isBookmarked = signal(false);
-
-  isCollectionsRoute = input<boolean>(false);
-  canEdit = input.required<boolean>();
-  currentResource = input.required<ToolbarResource>();
-  projectDescription = input<string>('');
-  showViewOnlyLinks = input<boolean>(true);
+  resourceType = ResourceType.Registration;
 
   bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   bookmarks = select(BookmarksSelectors.getBookmarks);
@@ -77,8 +75,6 @@ export class ProjectOverviewToolbarComponent {
 
   duplicatedProject = select(ProjectOverviewSelectors.getDuplicatedProject);
   isAuthenticated = select(UserSelectors.isAuthenticated);
-
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   actions = createDispatchMap({
     getResourceBookmark: GetResourceBookmark,
@@ -113,7 +109,7 @@ export class ProjectOverviewToolbarComponent {
 
       if (!bookmarksId || !resource) return;
 
-      this.actions.getResourceBookmark(bookmarksId, resource.id, resource.resourceType);
+      this.actions.getResourceBookmark(bookmarksId, resource.id, this.resourceType);
     });
 
     effect(() => {
@@ -168,7 +164,7 @@ export class ProjectOverviewToolbarComponent {
 
     if (newBookmarkState) {
       this.actions
-        .addResourceToBookmarks(bookmarksId, resource.id, resource.resourceType)
+        .addResourceToBookmarks(bookmarksId, resource.id, this.resourceType)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           this.isBookmarked.set(newBookmarkState);
@@ -176,7 +172,7 @@ export class ProjectOverviewToolbarComponent {
         });
     } else {
       this.actions
-        .removeResourceFromBookmarks(bookmarksId, resource.id, resource.resourceType)
+        .removeResourceFromBookmarks(bookmarksId, resource.id, this.resourceType)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           this.isBookmarked.set(newBookmarkState);
@@ -187,12 +183,11 @@ export class ProjectOverviewToolbarComponent {
 
   private handleForkResource(): void {
     const resource = this.currentResource();
-    const headerTranslation = 'project.overview.dialog.fork.headerProject';
 
     if (resource) {
       this.customDialogService.open(ForkDialogComponent, {
-        header: headerTranslation,
-        data: { resource },
+        header: 'project.overview.dialog.fork.headerProject',
+        data: { resourceId: resource.id, resourceType: this.resourceType },
       });
     }
   }
