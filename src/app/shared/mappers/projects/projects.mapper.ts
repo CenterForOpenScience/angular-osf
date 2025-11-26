@@ -2,6 +2,7 @@ import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collec
 import { ProjectMetadataUpdatePayload } from '@osf/shared/models/project-metadata-update-payload.model';
 import { ProjectModel } from '@osf/shared/models/projects/projects.models';
 import { ProjectJsonApi, ProjectsResponseJsonApi } from '@osf/shared/models/projects/projects-json-api.models';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class ProjectsMapper {
   static fromGetAllProjectsResponse(response: ProjectsResponseJsonApi): ProjectModel[] {
@@ -12,7 +13,7 @@ export class ProjectsMapper {
     return {
       id: project.id,
       type: project.type,
-      title: project.attributes.title,
+      title: replaceBadEncodedChars(project.attributes.title),
       dateModified: project.attributes.date_modified,
       isPublic: project.attributes.public,
       licenseId: project.relationships.license?.data?.id || null,
@@ -22,7 +23,7 @@ export class ProjectsMapper {
             copyrightHolders: project.attributes.node_license.copyright_holders.join(','),
           }
         : null,
-      description: project.attributes.description,
+      description: replaceBadEncodedChars(project.attributes.description),
       tags: project.attributes.tags || [],
     };
   }
@@ -41,8 +42,8 @@ export class ProjectsMapper {
           },
         },
         attributes: {
-          title: metadata.title,
-          description: metadata.description,
+          title: replaceBadEncodedChars(metadata.title),
+          description: replaceBadEncodedChars(metadata.description),
           tags: metadata.tags,
           ...(metadata.licenseOptions && {
             node_license: {
