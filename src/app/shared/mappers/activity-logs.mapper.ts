@@ -1,3 +1,5 @@
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
+
 import { DEFAULT_TABLE_PARAMS } from '../constants/default-table-params.constants';
 import { ActivityLog, LogContributor } from '../models/activity-logs/activity-logs.model';
 import { ActivityLogJsonApi, LogContributorJsonApi } from '../models/activity-logs/activity-logs-json-api.model';
@@ -24,7 +26,7 @@ export class ActivityLogsMapper {
         paramsNode: params.params_node
           ? {
               id: params.params_node.id,
-              title: params.params_node.title,
+              title: replaceBadEncodedChars(params.params_node.title),
             }
           : { id: '', title: '' },
         paramsProject: params.params_project,
@@ -32,14 +34,14 @@ export class ActivityLogsMapper {
           ? {
               id: params.template_node.id,
               url: params.template_node.url,
-              title: params.template_node.title,
+              title: replaceBadEncodedChars(params.template_node.title),
             }
           : null,
         pointer: params.pointer
           ? {
               category: params.pointer.category,
               id: params.pointer.id,
-              title: params.pointer.title,
+              title: replaceBadEncodedChars(params.pointer.title),
               url: params.pointer.url,
             }
           : null,
@@ -72,8 +74,8 @@ export class ActivityLogsMapper {
               ? {
                   id: log.embeds.original_node.data.id,
                   type: log.embeds.original_node.data.type,
-                  title: log.embeds.original_node.data.attributes.title,
-                  description: log.embeds.original_node.data.attributes.description,
+                  title: replaceBadEncodedChars(log.embeds.original_node.data.attributes.title),
+                  description: replaceBadEncodedChars(log.embeds.original_node.data.attributes.description),
                   category: log.embeds.original_node.data.attributes.category,
                   customCitation: log.embeds.original_node.data.attributes.custom_citation,
                   dateCreated: log.embeds.original_node.data.attributes.date_created,
@@ -119,8 +121,8 @@ export class ActivityLogsMapper {
               ? {
                   id: log.embeds.linked_node.data.id,
                   type: log.embeds.linked_node.data.type,
-                  title: log.embeds.linked_node.data.attributes.title,
-                  description: log.embeds.linked_node.data.attributes.description,
+                  title: replaceBadEncodedChars(log.embeds.linked_node.data.attributes.title),
+                  description: replaceBadEncodedChars(log.embeds.linked_node.data.attributes.description),
                   category: log.embeds.linked_node.data.attributes.category,
                   customCitation: log.embeds.linked_node.data.attributes.custom_citation,
                   dateCreated: log.embeds.linked_node.data.attributes.date_created,

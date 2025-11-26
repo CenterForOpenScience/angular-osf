@@ -468,7 +468,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     const dragFile = event.dragNode as FileModel;
     if (!files.includes(dragFile)) {
       this.selectFile.emit(dragFile);
-      files.push(dragFile);
     }
     this.moveFilesTo(files, dropFile);
   }

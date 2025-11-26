@@ -9,21 +9,23 @@
     }
 
     <div class="flex flex-grow-0 w-full sm:w-30rem">
-      <p-select
-        inputId="in_label"
-        [options]="rootFoldersOptions()"
-        [(ngModel)]="currentRootFolder"
-        (onChange)="handleRootFolderChange($event.value)"
-        styleClass="w-full"
-        variant="filled"
-      >
-        <ng-template #selectedItem let-selectedOption>
-          <p class="provider-name">{{ selectedOption.label }}</p>
-        </ng-template>
-        <ng-template #item let-option>
-          <p class="provider-name">{{ option.label }}</p>
-        </ng-template>
-      </p-select>
+      @if (!isRegistration()) {
+        <p-select
+          inputId="in_label"
+          [options]="rootFoldersOptions()"
+          [(ngModel)]="currentRootFolder"
+          (onChange)="handleRootFolderChange($event.value)"
+          styleClass="w-full"
+          variant="filled"
+        >
+          <ng-template #selectedItem let-selectedOption>
+            <p class="provider-name">{{ selectedOption.label }}</p>
+          </ng-template>
+          <ng-template #item let-option>
+            <p class="provider-name">{{ option.label }}</p>
+          </ng-template>
+        </p-select>
+      }
     </div>
     @if (filesSelection.length) {
       @if (!isMoveDialogOpened()) {
@@ -150,7 +152,7 @@
       (setCurrentFolder)="setCurrentFolder($event)"
       (setMoveDialogCurrentFolder)="setMoveDialogCurrentFolder($event)"
       (updateFoldersStack)="onUpdateFoldersStack($event)"
-      (resetFilesProvider)="resetProvider()"
+      (resetFilesProvider)="resetOnDialogClose()"
     >
     </osf-files-tree>
   </div>

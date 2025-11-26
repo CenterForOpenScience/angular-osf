@@ -1,5 +1,6 @@
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { CustomItemMetadataRecord, CustomMetadataJsonApi, MetadataJsonApi, MetadataModel } from '../models';
 
@@ -7,8 +8,8 @@ export class MetadataMapper {
   static fromMetadataApiResponse(response: MetadataJsonApi): MetadataModel {
     return {
       id: response.id,
-      title: response.attributes.title,
-      description: response.attributes.description,
+      title: replaceBadEncodedChars(response.attributes.title),
+      description: replaceBadEncodedChars(response.attributes.description),
       tags: response.attributes.tags,
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,

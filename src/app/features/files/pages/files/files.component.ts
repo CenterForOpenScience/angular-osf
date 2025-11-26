@@ -445,7 +445,8 @@ export class FilesComponent {
   }
 
   onFileTreeSelected(file: FileModel): void {
-    this.filesSelection = [...this.filesSelection, file];
+    this.filesSelection.push(file);
+    this.filesSelection = [...new Set(this.filesSelection)];
   }
 
   onFileTreeUnselected(file: FileModel): void {
@@ -540,6 +541,12 @@ export class FilesComponent {
     if (provider) {
       this.actions.setCurrentProvider(provider);
     }
+  }
+
+  resetOnDialogClose(): void {
+    this.onClearSelection();
+    this.resetProvider();
+    this.updateFilesList();
   }
 
   createFolder(): void {
