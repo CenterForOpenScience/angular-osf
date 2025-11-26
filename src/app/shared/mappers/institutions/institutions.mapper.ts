@@ -4,6 +4,7 @@ import {
   InstitutionsWithMetaJsonApiResponse,
 } from '@osf/shared/models/institutions/institution-json-api.model';
 import { Institution, InstitutionsWithTotalCount } from '@osf/shared/models/institutions/institutions.models';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class InstitutionsMapper {
   static fromInstitutionsResponse(response: InstitutionsJsonApiResponse): Institution[] {
@@ -14,8 +15,8 @@ export class InstitutionsMapper {
     return {
       id: data.id,
       type: data.type,
-      name: data.attributes.name,
-      description: data.attributes.description,
+      name: replaceBadEncodedChars(data.attributes.name),
+      description: replaceBadEncodedChars(data.attributes.description),
       iri: data.links.iri,
       rorIri: data.attributes.ror_iri,
       iris: data.attributes.iris,

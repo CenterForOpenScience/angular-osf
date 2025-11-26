@@ -3,6 +3,12 @@
     <div class="flex align-items-center gap-2">
       @if (isPreprintProviderLoading()) {
         <p-skeleton width="3rem" height="1.5rem" />
+      } @else {
+        <h1 class="preprint-provider-name">{{ preprintProvider()!.name }}</h1>
+      }
+    </div>
+    <div class="flex align-items-center gap-2 m-auto">
+      @if (isPreprintProviderLoading()) {
         <p-skeleton width="12rem" height="1.5rem" />
       } @else {
         <img
@@ -10,7 +16,6 @@
           [src]="preprintProvider()!.brand.heroLogoImageUrl"
           [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
         />
-        <h1 class="preprint-provider-name">{{ preprintProvider()!.name }}</h1>
       }
     </div>
 

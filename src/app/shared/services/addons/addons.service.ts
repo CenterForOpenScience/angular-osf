@@ -79,7 +79,7 @@ export class AddonsService {
 
   getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAccountModel[]> {
     const params = {
-      [`fields[external-${addonType}-services]`]: 'external_service_name,credentials_format',
+      [`fields[external-${addonType}-services]`]: 'external_service_name,credentials_format,icon_url',
     };
     return this.jsonApiService
       .get<

@@ -64,7 +64,10 @@ export class FilesState {
           isAnonymous: response.meta?.anonymous ?? false,
         });
       }),
-      catchError((error) => handleSectionError(ctx, 'files', error))
+      catchError((error) => {
+        ctx.patchState({ files: FILES_STATE_DEFAULTS.files });
+        return handleSectionError(ctx, 'files', error);
+      })
     );
   }
 
