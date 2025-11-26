@@ -47,9 +47,9 @@ import {
   PreprintMetricsInfoComponent,
   PreprintTombstoneComponent,
   PreprintWarningBannerComponent,
+  PreprintWithdrawDialogComponent,
   ShareAndDownloadComponent,
   StatusBannerComponent,
-  WithdrawDialogComponent,
 } from '../../components';
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import {
@@ -314,7 +314,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   handleWithdrawClicked() {
     this.customDialogService
-      .open(WithdrawDialogComponent, {
+      .open(PreprintWithdrawDialogComponent, {
         header: this.translateService.instant('preprints.details.withdrawDialog.title', {
           preprintWord: this.preprintProvider()!.preprintWord,
         }),
