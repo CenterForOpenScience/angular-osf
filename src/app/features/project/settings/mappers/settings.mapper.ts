@@ -1,6 +1,7 @@
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
 import { RegionsMapper } from '@osf/shared/mappers/regions';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 import { BaseNodeDataJsonApi } from '@shared/models/nodes/base-node-data-json-api.model';
 
 import {
@@ -30,8 +31,8 @@ export class SettingsMapper {
   static fromNodeResponse(data: BaseNodeDataJsonApi): NodeDetailsModel {
     return {
       id: data.id,
-      title: data.attributes.title,
-      description: data.attributes.description,
+      title: replaceBadEncodedChars(data.attributes.title),
+      description: replaceBadEncodedChars(data.attributes.description),
       isPublic: data.attributes.public,
       region: data.embeds?.region ? RegionsMapper.getRegion(data?.embeds?.region?.data) : null,
       affiliatedInstitutions: data.embeds?.affiliated_institutions

@@ -1,4 +1,5 @@
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 import { ProviderShortInfoModel } from '@shared/models/provider/provider.model';
 import { RegistryProviderDetailsJsonApi } from '@shared/models/provider/registration-provider-json-api.model';
 import { RegistrationNodeModel } from '@shared/models/registration/registration-node.model';
@@ -23,7 +24,7 @@ export class RegistrationNodeMapper {
       dateModified: attributes.date_modified,
       dateRegistered: attributes.date_registered,
       dateWithdrawn: attributes.date_withdrawn,
-      description: attributes.description,
+      description: replaceBadEncodedChars(attributes.description),
       embargoed: attributes.embargoed,
       embargoEndDate: attributes.embargo_end_date,
       hasAnalyticCode: attributes.has_analytic_code,
@@ -52,7 +53,7 @@ export class RegistrationNodeMapper {
       reviewsState: attributes.reviews_state,
       revisionState: attributes.revision_state,
       tags: attributes.tags || [],
-      title: attributes.title,
+      title: replaceBadEncodedChars(attributes.title),
       wikiEnabled: attributes.wiki_enabled,
       withdrawalJustification: attributes.withdrawal_justification,
       withdrawn: attributes.withdrawn,

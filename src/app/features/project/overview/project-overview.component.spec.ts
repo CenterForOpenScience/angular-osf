@@ -37,13 +37,7 @@ import { ProjectOverviewToolbarComponent } from './components/project-overview-t
 import { RecentActivityComponent } from './components/recent-activity/recent-activity.component';
 import { ProjectOverviewModel } from './models';
 import { ProjectOverviewComponent } from './project-overview.component';
-import {
-  ClearProjectOverview,
-  GetComponents,
-  GetProjectById,
-  GetProjectStorage,
-  ProjectOverviewSelectors,
-} from './store';
+import { ClearProjectOverview, GetComponents, GetProjectById, ProjectOverviewSelectors } from './store';
 
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
@@ -139,7 +133,6 @@ describe('ProjectOverviewComponent', () => {
     component.ngOnInit();
 
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectById));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectStorage));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetBookmarksCollectionId));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetComponents));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetLinkedResources));
