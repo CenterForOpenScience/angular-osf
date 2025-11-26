@@ -35,14 +35,15 @@ export class AuthService {
 
   navigateToSignIn(): void {
     this.loaderService.show();
-    const loginUrl = `${this.casUrl}/login?${urlParam({ service: `${this.webUrl}/login` })}`;
+    const loginUrl = `${this.casUrl}/login?${urlParam({ service: `${this.webUrl}/login`, next: window.location.href })}`;
     window.location.href = loginUrl;
   }
 
   navigateToOrcidSignIn(): void {
     const loginUrl = `${this.casUrl}/login?${urlParam({
       redirectOrcid: 'true',
-      service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
+      service: `${this.webUrl}/login`,
+      next: window.location.href,
     })}`;
     window.location.href = loginUrl;
   }
@@ -50,7 +51,8 @@ export class AuthService {
   navigateToInstitutionSignIn(): void {
     const loginUrl = `${this.casUrl}/login?${urlParam({
       campaign: 'institution',
-      service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
+      service: `${this.webUrl}/login`,
+      next: window.location.href,
     })}`;
     window.location.href = loginUrl;
   }
