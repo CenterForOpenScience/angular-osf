@@ -1,5 +1,5 @@
 <div class="flex flex-column">
-  <p [innerHTML]="messageKey ? (messageKey | translate: messageParams) : ''"></p>
+  <p>{{ 'project.contributors.removeDialog.message' | translate: { name: name } }}</p>
 
   <div class="p-field-radiobutton flex align-items-center mt-3 mb-2">
     <p-radioButton name="removeMode" [value]="false" [(ngModel)]="selectedOption" inputId="projectOnly">
@@ -7,7 +7,13 @@
     <label for="projectOnly" class="ml-2">{{ 'project.contributors.removeDialog.thisProjectOnly' | translate }}</label>
   </div>
   <div class="p-field-radiobutton flex align-items-center mb-3">
-    <p-radioButton name="removeMode" [value]="true" [(ngModel)]="selectedOption" inputId="projectAll"> </p-radioButton>
+    <p-radioButton
+      name="removeMode"
+      [value]="true"
+      [(ngModel)]="selectedOption"
+      [disabled]="!hasChildren"
+      inputId="projectAll">
+    </p-radioButton>
     <label for="projectAll" class="ml-2">{{
       'project.contributors.removeDialog.thisProjectAndComponents' | translate
     }}</label>
@@ -17,14 +23,14 @@
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="cancel()"
+      (onClick)="cancel()"
       severity="info"
       [label]="'common.buttons.cancel' | translate"
     ></p-button>
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="confirm()"
+      (onClick)="confirm()"
       severity="danger"
       [label]="'common.buttons.remove' | translate"
     ></p-button>
