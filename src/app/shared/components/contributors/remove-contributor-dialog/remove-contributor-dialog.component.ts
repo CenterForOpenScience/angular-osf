@@ -19,13 +19,12 @@ export class RemoveContributorDialogComponent {
   readonly config = inject(DynamicDialogConfig);
   selectedOption = false;
 
-  get messageKey(): string | undefined {
-    return this.config?.data?.messageKey as string | undefined;
+  get name(): string | undefined {
+    return this.config?.data?.name;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get messageParams(): any {
-    return this.config?.data?.messageParams;
+  get hasChildren(): boolean {
+    return this.config?.data?.hasChildren ?? false;
   }
 
   confirm(): void {
