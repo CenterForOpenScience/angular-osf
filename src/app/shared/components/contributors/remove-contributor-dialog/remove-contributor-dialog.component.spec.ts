@@ -10,7 +10,7 @@ describe('RemoveContributorDialogComponent', () => {
   let dialogRef: DynamicDialogRef;
 
   beforeEach(async () => {
-    dialogRef = { close: jasmine.createSpy('close') } as any;
+    dialogRef = { close: jest.fn() } as any;
 
     await TestBed.configureTestingModule({
       imports: [RemoveContributorDialogComponent],
