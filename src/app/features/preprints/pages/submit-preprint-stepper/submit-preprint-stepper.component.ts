@@ -21,7 +21,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { ResetState } from '@osf/features/files/store';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
@@ -41,7 +40,12 @@ import {
 import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps } from '../../enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { DeletePreprint, PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
+import {
+  DeletePreprint,
+  PreprintStepperSelectors,
+  ResetPreprintStepperState,
+  SetSelectedPreprintProviderId,
+} from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
@@ -71,7 +75,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
-    resetState: ResetState,
+    resetState: ResetPreprintStepperState,
     deletePreprint: DeletePreprint,
   });
 

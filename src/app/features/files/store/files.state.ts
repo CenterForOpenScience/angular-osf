@@ -27,10 +27,10 @@ import {
   GetRootFolders,
   GetStorageSupportedFeatures,
   RenameEntry,
-  ResetState,
-  SetCurrentFolder,
+  ResetFilesState,
   SetCurrentProvider,
   SetFileMetadata,
+  SetFilesCurrentFolder,
   SetMoveDialogCurrentFolder,
   SetSearch,
   SetSort,
@@ -91,8 +91,8 @@ export class FilesState {
     );
   }
 
-  @Action(SetCurrentFolder)
-  setSelectedFolder(ctx: StateContext<FilesStateModel>, action: SetCurrentFolder) {
+  @Action(SetFilesCurrentFolder)
+  setSelectedFolder(ctx: StateContext<FilesStateModel>, action: SetFilesCurrentFolder) {
     ctx.patchState({ currentFolder: action.folder });
   }
 
@@ -357,7 +357,7 @@ export class FilesState {
     );
   }
 
-  @Action(ResetState)
+  @Action(ResetFilesState)
   resetState(ctx: StateContext<FilesStateModel>) {
     ctx.patchState(FILES_STATE_DEFAULTS);
   }

@@ -28,7 +28,6 @@ import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
-import { ResetState } from '@osf/features/files/store';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
@@ -54,11 +53,12 @@ import {
 } from '../../components';
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import {
-  FetchPreprintById,
+  FetchPreprintDetails,
   FetchPreprintRequestActions,
   FetchPreprintRequests,
   FetchPreprintReviewActions,
   PreprintSelectors,
+  ResetPreprintState,
 } from '../../store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '../../store/preprint-stepper';
@@ -110,8 +110,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
-    resetState: ResetState,
-    fetchPreprintById: FetchPreprintById,
+    resetState: ResetPreprintState,
+    fetchPreprintById: FetchPreprintDetails,
     createNewVersion: CreateNewVersion,
     fetchPreprintRequests: FetchPreprintRequests,
     fetchPreprintReviewActions: FetchPreprintReviewActions,

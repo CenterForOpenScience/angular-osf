@@ -1,7 +1,7 @@
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
-export class FetchPreprintById {
-  static readonly type = '[Preprint] Fetch Preprint By Id';
+export class FetchPreprintDetails {
+  static readonly type = '[Preprint] Fetch Preprint Details';
 
   constructor(public id: string) {}
 }
@@ -64,6 +64,6 @@ export class SubmitRequestsDecision {
   ) {}
 }
 
-export class ResetState {
+export class ResetPreprintState {
   static readonly type = '[Preprint] Reset State';
 }

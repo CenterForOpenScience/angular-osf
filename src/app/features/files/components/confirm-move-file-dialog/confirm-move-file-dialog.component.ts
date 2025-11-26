@@ -19,7 +19,7 @@ import { FileMenuType } from '@shared/enums/file-menu-type.enum';
 import { FileModel } from '@shared/models/files/file.model';
 
 @Component({
-  selector: 'osf-move-file-dialog',
+  selector: 'osf-confirm-move-file-dialog',
   imports: [Button, TranslatePipe],
   templateUrl: './confirm-move-file-dialog.component.html',
   styleUrl: './confirm-move-file-dialog.component.scss',
