@@ -403,8 +403,8 @@ export class ContributorsComponent implements OnInit, OnDestroy {
         header: 'project.contributors.removeDialog.title',
         width: '448px',
         data: {
-          messageKey: 'project.contributors.removeDialog.message',
-          messageParams: { name: contributor.fullName },
+          name: contributor.fullName,
+          hasChildren: !!this.resourceChildren()?.length,
         },
       })
       .onClose.pipe(
