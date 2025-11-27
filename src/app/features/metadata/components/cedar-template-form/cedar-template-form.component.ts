@@ -6,7 +6,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { map, of } from 'rxjs';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,6 +16,7 @@ import {
   inject,
   input,
   output,
+  PLATFORM_ID,
   signal,
   viewChild,
   ViewEncapsulation,
@@ -24,9 +25,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-
-import 'cedar-artifact-viewer';
-import 'cedar-embeddable-editor';
 
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '../../constants';
 import { CedarMetadataHelper } from '../../helpers';
@@ -66,10 +64,12 @@ export class CedarTemplateFormComponent {
 
   private route = inject(ActivatedRoute);
   readonly environment = inject(ENVIRONMENT);
+  private platformId = inject(PLATFORM_ID);
 
   readonly recordId = signal<string>('');
   readonly downloadUrl = signal<string>('');
   readonly schemaName = signal<string>('');
+  private cedarLibrariesLoaded = signal<boolean>(false);
 
   shareItems = [
     {
@@ -87,9 +87,13 @@ export class CedarTemplateFormComponent {
   ];
 
   constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadCedarLibraries();
+    }
+
     effect(() => {
       const tpl = this.template();
-      if (tpl?.attributes?.template) {
+      if (tpl?.attributes?.template && this.cedarLibrariesLoaded()) {
         this.initializeCedar();
       }
     });
@@ -97,10 +101,38 @@ export class CedarTemplateFormComponent {
     effect(() => {
       const record = this.existingRecord();
       this.schemaName.set(record?.embeds?.template.data.attributes.schema_name || '');
-      if (record) {
+      if (record && this.cedarLibrariesLoaded()) {
         this.initializeCedar();
       }
     });
+
+    effect(() => {
+      if (this.cedarLibrariesLoaded()) {
+        const tpl = this.template();
+        const record = this.existingRecord();
+        if (tpl?.attributes?.template || record) {
+          this.initializeCedar();
+        }
+      }
+    });
+  }
+
+  private async loadCedarLibraries(): Promise<void> {
+    if (this.cedarLibrariesLoaded() || !isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    try {
+      await Promise.all([
+        // @ts-expect-error - Cedar libraries don't have type definitions
+        import('cedar-artifact-viewer'),
+        // @ts-expect-error - Cedar libraries don't have type definitions
+        import('cedar-embeddable-editor'),
+      ]);
+      this.cedarLibrariesLoaded.set(true);
+    } catch {
+      // Failed to load Cedar libraries - component will not function properly
+    }
   }
 
   private initializeCedar(): void {
@@ -126,6 +158,10 @@ export class CedarTemplateFormComponent {
   readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
 
   downloadMetadadaRecord() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     if (this.fileGuid()) {
       window.open(`${this.environment.webUrl}/metadata/${this.fileGuid()}`)?.focus();
     } else {
@@ -134,6 +170,10 @@ export class CedarTemplateFormComponent {
   }
 
   copyUrl() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const url = window.location.href;
     navigator.clipboard.writeText(url).then();
   }
@@ -187,17 +227,29 @@ export class CedarTemplateFormComponent {
   }
 
   handleEmailShare(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const url = window.location.href;
     window.location.href = `mailto:?subject=${this.schemaName()}&body=${url}`;
   }
 
   handleXShare(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const url = window.location.href;
     const link = `https://x.com/intent/tweet?url=${url}&text=${this.schemaName()}&via=OSFramework`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
   handleFacebookShare(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const url = window.location.href;
     const link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     window.open(link, '_blank', 'noopener,noreferrer');

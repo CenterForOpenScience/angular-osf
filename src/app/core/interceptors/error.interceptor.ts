@@ -1,8 +1,9 @@
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+import { isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ERROR_MESSAGES } from '@core/constants/error-messages';
@@ -20,6 +21,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
   const sentry = inject(SENTRY_TOKEN);
+  const platformId = inject(PLATFORM_ID);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -29,7 +31,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      if (error.error instanceof ErrorEvent) {
+      if (isPlatformBrowser(platformId) && error.error instanceof ErrorEvent) {
         errorMessage = error.error.message;
       } else {
         if (error.error?.errors?.[0]?.detail) {

@@ -2,16 +2,18 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Observable } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
   const cookieService = inject(CookieService);
+  const platformId = inject(PLATFORM_ID);
 
-  const csrfToken = cookieService.get('api-csrf');
+  const csrfToken = isPlatformBrowser(platformId) ? cookieService.get('api-csrf') : null;
 
   if (!req.url.includes('/api.crossref.org/funders')) {
     const headers: Record<string, string> = {};

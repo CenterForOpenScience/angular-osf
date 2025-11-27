@@ -6,7 +6,8 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 
 import { filter, map } from 'rxjs';
 
-import { Component, computed, inject, output } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, inject, output, PLATFORM_ID } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -36,6 +37,7 @@ export class NavMenuComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
@@ -109,7 +111,7 @@ export class NavMenuComponent {
   }
 
   goToLink(item: CustomMenuItem) {
-    if (item.id === 'support' || item.id === 'donate') {
+    if (isPlatformBrowser(this.platformId) && (item.id === 'support' || item.id === 'donate')) {
       window.open(item.url, '_blank');
     }
 

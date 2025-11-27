@@ -2,7 +2,8 @@ import { createDispatchMap } from '@ngxs/store';
 
 import { CookieService } from 'ngx-cookie-service';
 
-import { inject, Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { SignUpModel } from '@core/models/sign-up.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -19,6 +20,7 @@ export class AuthService {
   private readonly cookieService = inject(CookieService);
   private readonly loaderService = inject(LoaderService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly actions = createDispatchMap({ clearCurrentUser: ClearCurrentUser });
 
   get apiUrl() {
@@ -34,32 +36,49 @@ export class AuthService {
   }
 
   navigateToSignIn(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.loaderService.show();
     const loginUrl = `${this.casUrl}/login?${urlParam({ service: `${this.webUrl}/login` })}`;
     window.location.href = loginUrl;
   }
 
   navigateToOrcidSignIn(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const loginUrl = `${this.casUrl}/login?${urlParam({
       redirectOrcid: 'true',
       service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
     })}`;
+
     window.location.href = loginUrl;
   }
 
   navigateToInstitutionSignIn(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const loginUrl = `${this.casUrl}/login?${urlParam({
       campaign: 'institution',
       service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
     })}`;
+
     window.location.href = loginUrl;
   }
 
   logout(): void {
     this.loaderService.show();
-    this.cookieService.deleteAll();
     this.actions.clearCurrentUser();
-    window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent('/')}`;
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.cookieService.deleteAll();
+      window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent('/')}`;
+    }
   }
 
   register(payload: SignUpModel) {

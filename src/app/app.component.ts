@@ -2,7 +2,8 @@ import { Actions, createDispatchMap, ofActionSuccessful, select } from '@ngxs/st
 
 import { filter, take } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
@@ -32,6 +33,8 @@ export class AppComponent implements OnInit {
   private readonly environment = inject(ENVIRONMENT);
   private readonly actions$ = inject(Actions);
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   unverifiedEmails = select(UserEmailsSelectors.getUnverifiedEmails);
 
@@ -50,7 +53,7 @@ export class AppComponent implements OnInit {
       this.actions.getEmails();
     });
 
-    if (this.environment.googleTagManagerId) {
+    if (this.isBrowser && this.environment.googleTagManagerId) {
       this.router.events
         .pipe(
           filter((event) => event instanceof NavigationEnd),

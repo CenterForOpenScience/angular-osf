@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { VIEW_ONLY_EXCLUDED_ROUTES } from '@core/constants/view-only-excluded-routes.const';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { getViewOnlyParam, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 
 export const viewOnlyGuard: CanActivateFn = (route) => {
   const router = inject(Router);
@@ -23,7 +23,7 @@ export const viewOnlyGuard: CanActivateFn = (route) => {
 
   const urlSegments = router.url.split('/');
   const resourceId = urlSegments[1];
-  const viewOnlyParam = new URLSearchParams(window.location.search).get('view_only');
+  const viewOnlyParam = getViewOnlyParam(router);
 
   if (resourceId && viewOnlyParam) {
     router.navigate([resourceId, 'overview'], {

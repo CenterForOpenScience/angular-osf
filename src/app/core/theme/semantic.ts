@@ -24,5 +24,9 @@ export const semantic = {
 };
 
 function getCssVariableValue(variableName: string): string {
+  if (typeof document === 'undefined' || typeof getComputedStyle === 'undefined') {
+    return '';
+  }
+
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
 }
