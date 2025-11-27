@@ -1,5 +1,6 @@
 .recent-activity-item {
   border-bottom: 1px solid var(--grey-2);
+  min-width: max-content;
 
   &:hover {
     background-color: var(--grey-3);
