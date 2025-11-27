@@ -70,36 +70,23 @@ export class RegistriesLicenseComponent {
         return;
       }
 
-      console.log('this.draftRegistration()');
-      console.log(this.draftRegistration());
-      if (!licenses.find((license) => license.id === selectedLicense.id)) {
-        const defaultLicense = licenses.find((license) => license.name === 'GNU General Public License (GPL) 2.0');
-
+      const defaultLicenseId = this.draftRegistration()?.defaultLicenseId;
+      if (!licenses.find((license) => license.id === selectedLicense.id) && defaultLicenseId) {
+        const defaultLicense = licenses.find((license) => license.id === defaultLicenseId);
+        console.log('defaultLicense', defaultLicense);
+        console.log('registry.defaultLicenseId', defaultLicenseId);
         if (defaultLicense) {
-          const defaultLicenseId = defaultLicense.id;
-          alert(defaultLicenseId);
           this.control().patchValue({
-            id: defaultLicenseId,
+            id: defaultLicense.id,
           });
-          alert(JSON.stringify(this.control().value));
           this.control().markAsTouched();
           this.control().updateValueAndValidity();
+
           if (!defaultLicense.requiredFields.length) {
-            this.actions.saveLicense(this.draftId, defaultLicenseId);
+            this.actions.saveLicense(this.draftId, defaultLicense.id);
           }
         }
       }
-
-      // const registry =  this.draftRegistration();
-      // if (!licenses.find((license) => license.id === selectedLicense.id) && registry) {
-      //   const defaultLicenseId = registry?.defaultLicenseId;
-      //   alert(defaultLicenseId);
-      //   this.control().patchValue({
-      //     id: '6787c3d713a6530063d0ce93',
-      //   });
-      //   this.control().markAsTouched();
-      //   this.control().updateValueAndValidity();
-      // }
     });
   }
 
