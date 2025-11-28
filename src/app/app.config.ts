@@ -17,6 +17,7 @@ import { authInterceptor } from '@core/interceptors/auth.interceptor';
 import { errorInterceptor } from '@core/interceptors/error.interceptor';
 import { viewOnlyInterceptor } from '@core/interceptors/view-only.interceptor';
 import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/provider/application.initialization.provider';
+import { EXTENSION_INITIALIZATION_PROVIDER } from '@core/provider/extension.initialization.provider';
 import { SENTRY_PROVIDER } from '@core/provider/sentry.provider';
 
 import CustomPreset from './core/theme/custom-preset';
@@ -53,5 +54,8 @@ export const appConfig: ApplicationConfig = {
     provideStore(STATES),
     provideZoneChangeDetection({ eventCoalescing: true }),
     SENTRY_PROVIDER,
+
+    // Dynamic Extension Loading (configured in extensions.config.ts)
+    EXTENSION_INITIALIZATION_PROVIDER,
   ],
 };

@@ -7,9 +7,13 @@ import { TieredMenu } from 'primeng/tieredmenu';
 import { Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { ExtensionRegistry } from '@core/services/extension-registry.service';
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
+import { insertByPosition } from '@osf/shared/helpers/extension-order.helper';
 import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { FileModel } from '@osf/shared/models/files/file.model';
 import { MenuManagerService } from '@osf/shared/services/menu-manager.service';
+import { FileActionContext, FileActionExtension } from '@osf/shared/tokens/file-action-extensions.token';
 import { FileMenuAction, FileMenuData, FileMenuFlags } from '@shared/models/files/file-menu-action.model';
 
 @Component({
@@ -21,12 +25,27 @@ import { FileMenuAction, FileMenuData, FileMenuFlags } from '@shared/models/file
 export class FileMenuComponent {
   private router = inject(Router);
   private menuManager = inject(MenuManagerService);
+  private extensionRegistry = inject(ExtensionRegistry);
+
+  file = input<FileModel>();
   isFolder = input<boolean>(false);
   allowedActions = input<FileMenuFlags>({} as FileMenuFlags);
+  hasWriteAccess = input<boolean>(false);
   menu = viewChild.required<TieredMenu>('menu');
   action = output<FileMenuAction>();
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+
+  private actionContext = computed((): FileActionContext => {
+    const file = this.file();
+    if (!file) throw new Error('file is required for actionContext');
+    return {
+      target: file,
+      location: 'file-list',
+      isViewOnly: this.hasViewOnly(),
+      canWrite: this.hasWriteAccess(),
+    };
+  });
 
   private readonly allMenuItems: MenuItem[] = [
     {
@@ -106,6 +125,8 @@ export class FileMenuComponent {
   ];
 
   menuItems = computed(() => {
+    let items: MenuItem[];
+
     if (this.hasViewOnly()) {
       const allowedActionsForFiles = [
         FileMenuType.Download,
@@ -120,7 +141,7 @@ export class FileMenuComponent {
 
       const allowedActions = this.isFolder() ? allowedActionsForFolders : allowedActionsForFiles;
 
-      return this.allMenuItems.filter((item) => {
+      items = this.allMenuItems.filter((item) => {
         if (item.command) {
           return allowedActions.includes(item.id as FileMenuType);
         }
@@ -131,16 +152,62 @@ export class FileMenuComponent {
 
         return false;
       });
-    }
-
-    if (this.isFolder()) {
+    } else if (this.isFolder()) {
       const disallowedActions = [FileMenuType.Share, FileMenuType.Embed];
-      return this.allMenuItems.filter(
+      items = this.allMenuItems.filter(
         (item) => !disallowedActions.includes(item.id as FileMenuType) && this.allowedActions()[item.id as FileMenuType]
       );
+    } else {
+      items = this.allMenuItems.filter((item) => this.allowedActions()[item.id as FileMenuType]);
     }
-    return this.allMenuItems.filter((item) => this.allowedActions()[item.id as FileMenuType]);
+
+    return this.mergeExtensions(items);
   });
+
+  private mergeExtensions(baseItems: MenuItem[]): MenuItem[] {
+    const ctx = this.actionContext();
+    const applicableExtensions = this.extensionRegistry.extensions().filter((ext) => !ext.visible || ext.visible(ctx));
+
+    const topLevelExtensions = applicableExtensions.filter((ext) => !ext.parentId);
+    const subMenuExtensions = applicableExtensions.filter((ext) => ext.parentId);
+
+    // 1. Apply submenu extensions
+    let items = baseItems.map((item) => {
+      const extensions = subMenuExtensions.filter((ext) => ext.parentId === item.id);
+      if (extensions.length === 0 || !item.items) {
+        return item;
+      }
+
+      const positioned = extensions.map((ext) => ({
+        item: this.createMenuItem(ext, ctx),
+        position: ext.position,
+      }));
+
+      return {
+        ...item,
+        items: insertByPosition(item.items, positioned),
+      };
+    });
+
+    // 2. Apply top-level extensions
+    const positionedTopLevel = topLevelExtensions.map((ext) => ({
+      item: this.createMenuItem(ext, ctx),
+      position: ext.position,
+    }));
+    items = insertByPosition(items, positionedTopLevel);
+
+    return items;
+  }
+
+  private createMenuItem(ext: FileActionExtension, ctx: FileActionContext): MenuItem {
+    return {
+      id: ext.id,
+      label: ext.label,
+      icon: ext.icon,
+      disabled: ext.disabled ? ext.disabled(ctx) : false,
+      command: () => ext.command(ctx),
+    };
+  }
 
   onMenuToggle(event: Event): void {
     this.menuManager.openMenu(this.menu(), event);

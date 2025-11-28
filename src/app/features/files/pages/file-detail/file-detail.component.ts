@@ -26,6 +26,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ExtensionRegistry } from '@core/services/extension-registry.service';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
@@ -43,12 +44,14 @@ import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/meta
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { insertByPosition } from '@osf/shared/helpers/extension-order.helper';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { getViewOnlyParam, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { FileActionContext } from '@osf/shared/tokens/file-action-extensions.token';
 import { FileDetailsModel } from '@shared/models/files/file.model';
 import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 
@@ -110,6 +113,7 @@ export class FileDetailComponent {
   private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly clipboard = inject(Clipboard);
+  private readonly extensionRegistry = inject(ExtensionRegistry);
 
   readonly dataciteService = inject(DataciteService);
 
@@ -146,6 +150,17 @@ export class FileDetailComponent {
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
+  protected actionContext = computed((): FileActionContext => {
+    const file = this.file();
+    if (!file) throw new Error('file is required for actionContext');
+    return {
+      target: file,
+      location: 'file-detail',
+      isViewOnly: this.hasViewOnly(),
+      canWrite: this.hasWriteAccess(),
+    };
+  });
+
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
   resourceType = '';
@@ -170,20 +185,57 @@ export class FileDetailComponent {
     },
   ];
 
-  shareItems = [
-    {
-      label: 'files.detail.actions.share.email',
-      command: () => this.handleEmailShare(),
-    },
-    {
-      label: 'files.detail.actions.share.x',
-      command: () => this.handleXShare(),
-    },
-    {
-      label: 'files.detail.actions.share.facebook',
-      command: () => this.handleFacebookShare(),
-    },
-  ];
+  shareItems = computed(() => {
+    const baseItems = [
+      {
+        label: 'files.detail.actions.share.email',
+        command: () => this.handleEmailShare(),
+      },
+      {
+        label: 'files.detail.actions.share.x',
+        command: () => this.handleXShare(),
+      },
+      {
+        label: 'files.detail.actions.share.facebook',
+        command: () => this.handleFacebookShare(),
+      },
+    ];
+
+    const ctx = this.actionContext();
+    const shareExtensions = this.extensionRegistry
+      .extensions()
+      .filter((ext) => ext.parentId === 'share')
+      .filter((ext) => !ext.visible || ext.visible(ctx));
+
+    const positionedExtensions = shareExtensions.map((ext) => ({
+      item: {
+        id: ext.id,
+        label: ext.label,
+        icon: ext.icon,
+        disabled: ext.disabled ? ext.disabled(ctx) : false,
+        command: () => ext.command(ctx),
+      },
+      position: ext.position,
+    }));
+
+    return insertByPosition(baseItems, positionedExtensions);
+  });
+
+  fileDetailExtensions = computed(() => {
+    if (!this.file()) return [];
+    const ctx = this.actionContext();
+    const extensions = this.extensionRegistry
+      .extensions()
+      .filter((ext) => !ext.parentId)
+      .filter((ext) => !ext.visible || ext.visible(ctx));
+
+    const positionedExtensions = extensions.map((ext) => ({
+      item: ext,
+      position: ext.position,
+    }));
+
+    return insertByPosition([], positionedExtensions);
+  });
 
   tabs = signal<MetadataTabsModel[]>([]);
 

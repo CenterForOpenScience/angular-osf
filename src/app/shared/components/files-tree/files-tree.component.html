@@ -87,9 +87,11 @@
                 @if (isSomeFileActionAllowed && !selectedFiles().length) {
                   <div class="relative ml-auto">
                     <osf-file-menu
+                      [file]="file"
                       (action)="onFileMenuAction($event, file)"
                       [isFolder]="file.kind === 'folder'"
                       [allowedActions]="allowedMenuActions()"
+                      [hasWriteAccess]="supportUpload()"
                       osfStopPropagation
                     >
                     </osf-file-menu>

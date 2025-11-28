@@ -11,7 +11,12 @@
 
   <p-tieredMenu #menu [model]="menuItems()" appendTo="body" popup (onHide)="onMenuHide()">
     <ng-template #item let-item let-hasSubmenu="hasSubmenu">
-      <a pRipple class="p-tieredmenu-item-link">
+      <a
+        pRipple
+        class="p-tieredmenu-item-link"
+        [class.p-disabled]="item.disabled"
+        [attr.aria-disabled]="item.disabled ?? false"
+      >
         <span [class]="item.icon" class="p-tieredmenu-item-icon"></span>
         <span class="ml-2">{{ item.label | translate }}</span>
         @if (hasSubmenu) {

@@ -38,6 +38,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ExtensionRegistry } from '@core/services/extension-registry.service';
 import {
   CreateFolder,
   DeleteEntry,
@@ -67,12 +68,14 @@ import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enu
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { insertByPosition } from '@osf/shared/helpers/extension-order.helper';
 import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
+import { FileActionContext } from '@osf/shared/tokens/file-action-extensions.token';
 import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 import { StorageItem } from '@shared/models/addons/storage-item.model';
 import { FileModel } from '@shared/models/files/file.model';
@@ -129,6 +132,7 @@ export class FilesComponent {
   private readonly environment = inject(ENVIRONMENT);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
+  private readonly extensionRegistry = inject(ExtensionRegistry);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;
@@ -254,6 +258,32 @@ export class FilesComponent {
   isGoogleDriveButtonDisabled = computed(
     () => this.isButtonDisabled() || (this.googleFilePickerComponent()?.isGFPDisabled() ?? false)
   );
+
+  protected actionContext = computed((): FileActionContext => {
+    const folder = this.currentFolder();
+    if (!folder) throw new Error('folder is required for actionContext');
+    return {
+      target: folder,
+      location: 'file-list',
+      isViewOnly: this.hasViewOnly(),
+      canWrite: this.canUploadFiles(),
+    };
+  });
+
+  toolbarButtons = computed(() => {
+    const ctx = this.actionContext();
+    const extensions = this.extensionRegistry
+      .extensions()
+      .filter((ext) => !ext.parentId)
+      .filter((ext) => !ext.visible || ext.visible(ctx));
+
+    const positionedExtensions = extensions.map((ext) => ({
+      item: ext,
+      position: ext.position,
+    }));
+
+    return insertByPosition([], positionedExtensions);
+  });
 
   private route = inject(ActivatedRoute);
   readonly providerName = toSignal(

@@ -67,12 +67,28 @@
             (click)="shareMenu.toggle($event)"
           />
 
-          <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
+          <p-menu appendTo="body" [model]="shareItems()" popup #shareMenu>
             <ng-template #item let-item>
-              <a class="p-menu-item-link">{{ item.label | translate }}</a>
+              <a
+                class="p-menu-item-link"
+                [class.p-disabled]="item.disabled"
+                [attr.aria-disabled]="item.disabled ?? false"
+              >
+                {{ item.label | translate }}
+              </a>
             </ng-template>
           </p-menu>
         </div>
+      }
+      @for (ext of fileDetailExtensions(); track ext.id) {
+        <p-button
+          severity="secondary"
+          [icon]="ext.icon"
+          [ariaLabel]="ext.label"
+          [disabled]="ext.disabled ? ext.disabled(actionContext()) : false"
+          class="btn-icon-only"
+          (click)="ext.command(actionContext())"
+        />
       }
       @if (showDeleteButton()) {
         <p-button
