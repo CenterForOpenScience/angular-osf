@@ -38,6 +38,7 @@ export class PreprintsMapper {
   static fromPreprintJsonApi(
     response: ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>
   ): PreprintModel {
+    console.log(' response ', response);
     return {
       id: response.id,
       dateCreated: response.attributes.date_created,
@@ -82,6 +83,9 @@ export class PreprintsMapper {
       articleDoiLink: response.links.doi,
       embeddedLicense: null,
       providerId: response.relationships?.provider?.data?.id,
+      defaultLicenseId: response.attributes.default_license_id,
+      // license: response.attributes.license_record,
+      isLicenseSet: !!response.attributes.license_record,
     };
   }
 

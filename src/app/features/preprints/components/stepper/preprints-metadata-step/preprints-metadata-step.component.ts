@@ -14,6 +14,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { MetadataForm, PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import {
   CreatePreprint,
   FetchLicenses,
@@ -77,6 +78,7 @@ export class PreprintsMetadataStepComponent implements OnInit {
   licenses = select(PreprintStepperSelectors.getLicenses);
   createdPreprint = select(PreprintStepperSelectors.getPreprint);
   isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
+  isLicenseSet = select(PreprintSelectors.isLicenseSet);
 
   provider = input.required<PreprintProviderDetails | undefined>();
   nextClicked = output<void>();
@@ -85,6 +87,9 @@ export class PreprintsMetadataStepComponent implements OnInit {
   ngOnInit() {
     this.actions.fetchLicenses();
     this.initForm();
+    console.log('this.createdPreprint ' + this.createdPreprint());
+    // console.log('selectedLicense ' + this.selectedLicense());
+    alert('this.createdPreprint ' + this.isLicenseSet());
   }
 
   initForm() {
@@ -135,6 +140,7 @@ export class PreprintsMetadataStepComponent implements OnInit {
   }
 
   selectLicense(license: LicenseModel) {
+    alert('selectLicense');
     if (license.requiredFields.length) {
       return;
     }
