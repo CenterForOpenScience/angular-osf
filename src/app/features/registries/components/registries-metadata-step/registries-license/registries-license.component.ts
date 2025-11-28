@@ -71,10 +71,8 @@ export class RegistriesLicenseComponent {
       }
 
       const defaultLicenseId = this.draftRegistration()?.defaultLicenseId;
-      if (!licenses.find((license) => license.id === selectedLicense.id) && defaultLicenseId) {
+      if (defaultLicenseId && !licenses.find((license) => license.id === selectedLicense.id)) {
         const defaultLicense = licenses.find((license) => license.id === defaultLicenseId);
-        console.log('defaultLicense', defaultLicense);
-        console.log('registry.defaultLicenseId', defaultLicenseId);
         if (defaultLicense) {
           this.control().patchValue({
             id: defaultLicense.id,
@@ -101,6 +99,7 @@ export class RegistriesLicenseComponent {
     this.control().patchValue({
       id: license.id,
     });
+    console.log('license.id', license.id);
     this.control().markAsTouched();
     this.control().updateValueAndValidity();
     this.actions.saveLicense(this.draftId, license.id);
