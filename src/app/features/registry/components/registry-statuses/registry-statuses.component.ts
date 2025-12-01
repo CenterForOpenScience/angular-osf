@@ -9,6 +9,7 @@ import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, inpu
 import { RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { RegistrationWithdrawDialogComponent } from '@osf/features/registry/components/registration-withdraw-dialog/registration-withdraw-dialog.component';
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
@@ -17,7 +18,6 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 
 import { RegistrationOverviewModel } from '../../models';
 import { MakePublic } from '../../store/registry';
-import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 
 @Component({
   selector: 'osf-registry-statuses',
@@ -61,7 +61,7 @@ export class RegistryStatusesComponent {
     const registry = this.registry();
 
     if (registry) {
-      this.customDialogService.open(WithdrawDialogComponent, {
+      this.customDialogService.open(RegistrationWithdrawDialogComponent, {
         header: 'registry.overview.withdrawRegistration',
         width: '552px',
         data: {

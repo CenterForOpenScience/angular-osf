@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { FetchPreprintDetails, PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
@@ -51,7 +51,7 @@ export class PreprintTombstoneComponent implements OnDestroy {
   private actions = createDispatchMap({
     getBibliographicContributors: GetBibliographicContributors,
     resetContributorsState: ResetContributorsState,
-    fetchPreprintById: FetchPreprintById,
+    fetchPreprintById: FetchPreprintDetails,
     fetchSubjects: FetchSelectedSubjects,
     loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
   });

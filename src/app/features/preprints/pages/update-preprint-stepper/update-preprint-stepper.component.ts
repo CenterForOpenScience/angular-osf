@@ -21,7 +21,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { ResetState } from '@osf/features/files/store';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
@@ -45,6 +44,7 @@ import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store
 import {
   FetchPreprintById,
   PreprintStepperSelectors,
+  ResetPreprintStepperState,
   SetSelectedPreprintProviderId,
 } from '../../store/preprint-stepper';
 
@@ -76,7 +76,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
-    resetState: ResetState,
+    resetState: ResetPreprintStepperState,
     fetchPreprint: FetchPreprintById,
   });
 
@@ -153,7 +153,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
+  onBeforeUnload($event: BeforeUnloadEvent): boolean {
     $event.preventDefault();
     return false;
   }

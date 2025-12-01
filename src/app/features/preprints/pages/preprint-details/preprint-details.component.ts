@@ -28,11 +28,9 @@ import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
-import { ResetState } from '@osf/features/files/store';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
-import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
@@ -48,17 +46,18 @@ import {
   PreprintMetricsInfoComponent,
   PreprintTombstoneComponent,
   PreprintWarningBannerComponent,
+  PreprintWithdrawDialogComponent,
   ShareAndDownloadComponent,
   StatusBannerComponent,
-  WithdrawDialogComponent,
 } from '../../components';
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import {
-  FetchPreprintById,
+  FetchPreprintDetails,
   FetchPreprintRequestActions,
   FetchPreprintRequests,
   FetchPreprintReviewActions,
   PreprintSelectors,
+  ResetPreprintState,
 } from '../../store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '../../store/preprint-stepper';
@@ -101,7 +100,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
-  private readonly analyticsService = inject(AnalyticsService);
   private readonly prerenderReady = inject(PrerenderReadyService);
 
   private readonly environment = inject(ENVIRONMENT);
@@ -110,8 +108,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
-    resetState: ResetState,
-    fetchPreprintById: FetchPreprintById,
+    resetState: ResetPreprintState,
+    fetchPreprintById: FetchPreprintDetails,
     createNewVersion: CreateNewVersion,
     fetchPreprintRequests: FetchPreprintRequests,
     fetchPreprintReviewActions: FetchPreprintReviewActions,
@@ -314,7 +312,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   handleWithdrawClicked() {
     this.customDialogService
-      .open(WithdrawDialogComponent, {
+      .open(PreprintWithdrawDialogComponent, {
         header: this.translateService.instant('preprints.details.withdrawDialog.title', {
           preprintWord: this.preprintProvider()!.preprintWord,
         }),
