@@ -40,8 +40,8 @@ import {
   GetFiles,
   GetRootFolders,
   RegistriesSelectors,
-  SetCurrentFolder,
   SetFilesIsLoading,
+  SetRegistriesCurrentFolder,
 } from '../../store';
 
 @Component({
@@ -90,7 +90,7 @@ export class FilesControlComponent implements OnDestroy {
     createFolder: CreateFolder,
     getFiles: GetFiles,
     setFilesIsLoading: SetFilesIsLoading,
-    setCurrentFolder: SetCurrentFolder,
+    setCurrentFolder: SetRegistriesCurrentFolder,
     getRootFolders: GetRootFolders,
   });
 
