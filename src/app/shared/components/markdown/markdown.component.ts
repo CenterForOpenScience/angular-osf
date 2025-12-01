@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+import { legacyImgSize } from '@mdit/plugin-img-size';
 import markdownItKatex from '@traptitech/markdown-it-katex';
 import MarkdownIt from 'markdown-it';
 import markdownItAnchor from 'markdown-it-anchor';
@@ -59,7 +60,8 @@ export class MarkdownComponent implements AfterViewInit {
       .use(markdownItTocDoneRight, {
         placeholder: '@\\[toc\\]',
         listType: 'ul',
-      });
+      })
+      .use(legacyImgSize);
   }
 
   ngAfterViewInit(): void {

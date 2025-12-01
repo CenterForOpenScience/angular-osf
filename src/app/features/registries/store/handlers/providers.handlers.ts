@@ -2,7 +2,8 @@ import { StateContext } from '@ngxs/store';
 
 import { inject, Injectable } from '@angular/core';
 
-import { RegistrationProviderService } from '../../services';
+import { RegistrationProviderService } from '@osf/shared/services/registration-provider.service';
+
 import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from '../registries.model';
 
 @Injectable()
