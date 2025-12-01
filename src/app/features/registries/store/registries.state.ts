@@ -10,7 +10,7 @@ import { getResourceTypeStringFromEnum } from '@osf/shared/helpers/get-resource-
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { GlobalSearchService } from '@osf/shared/services/global-search.service';
 
-import { RegistriesService } from '../services';
+import { RegistriesService } from '../services/registries.service';
 
 import { FilesHandlers } from './handlers/files.handlers';
 import { LicensesHandlers } from './handlers/licenses.handlers';
@@ -39,7 +39,7 @@ import {
   HandleSchemaResponse,
   RegisterDraft,
   SaveLicense,
-  SetCurrentFolder,
+  SetRegistriesCurrentFolder,
   SetUpdatedFields,
   UpdateDraft,
   UpdateSchemaResponse,
@@ -357,8 +357,8 @@ export class RegistriesState {
     return this.filesHandlers.createFolder(ctx, action);
   }
 
-  @Action(SetCurrentFolder)
-  setSelectedFolder(ctx: StateContext<RegistriesStateModel>, action: SetCurrentFolder) {
+  @Action(SetRegistriesCurrentFolder)
+  setSelectedFolder(ctx: StateContext<RegistriesStateModel>, action: SetRegistriesCurrentFolder) {
     ctx.patchState({ currentFolder: action.folder });
   }
 

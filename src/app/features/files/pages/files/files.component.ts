@@ -46,9 +46,9 @@ import {
   GetRootFolders,
   GetStorageSupportedFeatures,
   RenameEntry,
-  ResetState,
-  SetCurrentFolder,
+  ResetFilesState,
   SetCurrentProvider,
+  SetFilesCurrentFolder,
   SetMoveDialogCurrentFolder,
   SetSearch,
   SetSort,
@@ -138,14 +138,14 @@ export class FilesComponent {
     getFiles: GetFiles,
     deleteEntry: DeleteEntry,
     renameEntry: RenameEntry,
-    setCurrentFolder: SetCurrentFolder,
+    setCurrentFolder: SetFilesCurrentFolder,
     setMoveDialogCurrentFolder: SetMoveDialogCurrentFolder,
     setSearch: SetSearch,
     setSort: SetSort,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     setCurrentProvider: SetCurrentProvider,
-    resetState: ResetState,
+    resetState: ResetFilesState,
     getResourceDetails: GetResourceDetails,
     getStorageSupportedFeatures: GetStorageSupportedFeatures,
   });
@@ -445,7 +445,8 @@ export class FilesComponent {
   }
 
   onFileTreeSelected(file: FileModel): void {
-    this.filesSelection = [...this.filesSelection, file];
+    this.filesSelection.push(file);
+    this.filesSelection = [...new Set(this.filesSelection)];
   }
 
   onFileTreeUnselected(file: FileModel): void {
@@ -540,6 +541,12 @@ export class FilesComponent {
     if (provider) {
       this.actions.setCurrentProvider(provider);
     }
+  }
+
+  resetOnDialogClose(): void {
+    this.onClearSelection();
+    this.resetProvider();
+    this.updateFilesList();
   }
 
   createFolder(): void {

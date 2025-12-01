@@ -4,6 +4,10 @@
       class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row"
     >
       <div class="flex gap-3">
+        <h1 class="collections-heading flex align-items-center">{{ collectionProvider()?.name }}</h1>
+      </div>
+
+      <div class="flex m-auto">
         @let provider = collectionProvider();
 
         @if (provider && provider.assets) {
@@ -14,8 +18,6 @@
             [src]="provider.assets.squareColorNoTransparent"
           />
         }
-
-        <h1 class="collections-heading flex align-items-center">{{ collectionProvider()?.name }}</h1>
       </div>
 
       <p-button [routerLink]="['../add']" [label]="'common.buttons.addToCollection' | translate" />

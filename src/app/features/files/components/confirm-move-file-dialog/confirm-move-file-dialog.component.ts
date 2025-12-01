@@ -19,7 +19,7 @@ import { FileMenuType } from '@shared/enums/file-menu-type.enum';
 import { FileModel } from '@shared/models/files/file.model';
 
 @Component({
-  selector: 'osf-move-file-dialog',
+  selector: 'osf-confirm-move-file-dialog',
   imports: [Button, TranslatePipe],
   templateUrl: './confirm-move-file-dialog.component.html',
   styleUrl: './confirm-move-file-dialog.component.scss',
@@ -74,7 +74,7 @@ export class ConfirmMoveFileDialogComponent {
     files.forEach((file) => {
       const link = file.links.move;
       this.filesService
-        .moveFile(link, path, this.fileProjectId, this.provider(), action)
+        .moveFile(link, path, this.fileProjectId, this.provider, action)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           catchError((error) => {
@@ -116,7 +116,7 @@ export class ConfirmMoveFileDialogComponent {
       acceptLabelKey: 'common.buttons.replace',
       onConfirm: () => {
         const replaceRequests$ = conflictFiles.map(({ link }) =>
-          this.filesService.moveFile(link, path, this.fileProjectId, this.provider(), action, true).pipe(
+          this.filesService.moveFile(link, path, this.fileProjectId, this.provider, action, true).pipe(
             takeUntilDestroyed(this.destroyRef),
             catchError(() => of(null))
           )

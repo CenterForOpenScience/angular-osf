@@ -1,5 +1,5 @@
 .p-chip {
-  --p-chip-background: var(--bg-blue-3);
+  --p-chip-background: var(--bg-blue-2);
   --p-chip-border-radius: 0.25rem;
   --p-chip-color: var(--dark-blue-1);
   --p-chip-padding-y: 0.25rem;
@@ -13,7 +13,7 @@
   }
 
   &:hover {
-    --p-chip-background: var(--bg-blue-2);
+    --p-chip-background: var(--bg-blue-3);
     --p-chip-color: var(--pr-blue-3);
 
     .p-chip-remove-icon {

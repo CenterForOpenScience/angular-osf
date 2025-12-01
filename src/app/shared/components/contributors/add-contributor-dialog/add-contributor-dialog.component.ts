@@ -85,8 +85,12 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   readonly isSearchState = computed(() => this.currentState() === AddDialogState.Search);
   readonly isDetailsState = computed(() => this.currentState() === AddDialogState.Details);
   readonly isComponentsState = computed(() => this.currentState() === AddDialogState.Components);
-  readonly hasComponents = computed(() => this.components().length > 0);
-  readonly buttonLabel = computed(() => (this.isComponentsState() ? 'common.buttons.done' : 'common.buttons.next'));
+  readonly hasComponents = computed(() => this.components().length > 1);
+  readonly buttonLabel = computed(() =>
+    (this.isDetailsState() && !this.hasComponents()) || this.isComponentsState()
+      ? 'common.buttons.done'
+      : 'common.buttons.next'
+  );
 
   constructor() {
     this.setupEffects();

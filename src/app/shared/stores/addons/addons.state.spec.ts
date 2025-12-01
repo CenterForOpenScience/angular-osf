@@ -210,7 +210,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne(
-          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
+          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format,icon_url'
         );
         expect(request.request.method).toBe('GET');
         request.flush(getAddonsAuthorizedStorageData());
@@ -223,7 +223,7 @@ describe('State: Addons', () => {
             authorizedCapabilities: ['ACCESS', 'UPDATE'],
             authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
             credentialsAvailable: true,
-            credentialsFormat: '',
+            credentialsFormat: 'OAUTH2',
             defaultRootFolder: '',
             displayName: 'Google Drive',
             externalServiceName: 'googledrive',
@@ -233,6 +233,7 @@ describe('State: Addons', () => {
             providerName: '',
             supportedFeatures: [],
             type: 'authorized-storage-accounts',
+            iconUrl: 'https://osf.io/assets/images/logo.svg',
           })
         );
 
@@ -259,7 +260,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne(
-          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
+          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format,icon_url'
         );
         expect(request.request.method).toBe('GET');
 
@@ -268,7 +269,7 @@ describe('State: Addons', () => {
         expect(result).toEqual({
           data: [],
           error:
-            'Http failure response for http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format: 500 Server Error',
+            'Http failure response for http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format,icon_url: 500 Server Error',
           isLoading: false,
           isSubmitting: false,
         });
@@ -303,7 +304,6 @@ describe('State: Addons', () => {
             authorizedCapabilities: ['ACCESS', 'UPDATE'],
             authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
             credentialsAvailable: true,
-            credentialsFormat: '',
             defaultRootFolder: '',
             displayName: 'Google Drive',
             externalServiceName: '',
@@ -313,6 +313,8 @@ describe('State: Addons', () => {
             providerName: '',
             supportedFeatures: [],
             type: 'authorized-storage-accounts',
+            credentialsFormat: '', // No credentialsFormat in a PATCH response
+            iconUrl: '', // No iconUrl in a PATCH response
           })
         );
 
@@ -339,7 +341,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         let request = httpMock.expectOne(
-          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
+          'http://addons.localhost:8000/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format,icon_url'
         );
         expect(request.request.method).toBe('GET');
         request.flush(getAddonsAuthorizedStorageData());
@@ -358,7 +360,6 @@ describe('State: Addons', () => {
             authorizedCapabilities: ['ACCESS', 'UPDATE'],
             authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
             credentialsAvailable: true,
-            credentialsFormat: '',
             defaultRootFolder: '',
             displayName: 'Google Drive',
             externalServiceName: '',
@@ -368,6 +369,8 @@ describe('State: Addons', () => {
             providerName: '',
             supportedFeatures: [],
             type: 'authorized-storage-accounts',
+            credentialsFormat: '', // No credentialsFormat in a PATCH response
+            iconUrl: '', // No iconUrl in a PATCH response
           })
         );
 

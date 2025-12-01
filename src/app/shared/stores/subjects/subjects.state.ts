@@ -30,40 +30,27 @@ export class SubjectsState {
       return;
     }
 
+    const targetSection = search ? 'searchedSubjects' : 'subjects';
+
     ctx.patchState({
-      subjects: {
-        ...ctx.getState().subjects,
+      [targetSection]: {
+        ...ctx.getState()[targetSection],
         isLoading: true,
-        error: null,
-      },
-      searchedSubjects: {
-        ...ctx.getState().searchedSubjects,
-        isLoading: search ? true : false,
         error: null,
       },
     });
 
     return this.subjectsService.getSubjects(resourceType, providerId, search).pipe(
       tap((subjects) => {
-        if (search) {
-          ctx.patchState({
-            searchedSubjects: {
-              data: subjects,
-              isLoading: false,
-              error: null,
-            },
-          });
-        } else {
-          ctx.patchState({
-            subjects: {
-              data: subjects,
-              isLoading: false,
-              error: null,
-            },
-          });
-        }
+        ctx.patchState({
+          [targetSection]: {
+            data: subjects,
+            isLoading: false,
+            error: null,
+          },
+        });
       }),
-      catchError((error) => handleSectionError(ctx, search ? 'searchedSubjects' : 'subjects', error))
+      catchError((error) => handleSectionError(ctx, targetSection, error))
     );
   }
 

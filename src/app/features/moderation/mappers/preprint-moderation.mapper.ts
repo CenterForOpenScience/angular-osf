@@ -1,6 +1,7 @@
 import { UserMapper } from '@osf/shared/mappers/user';
 import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import {
   PreprintProviderModerationInfo,
@@ -64,7 +65,7 @@ export class PreprintModerationMapper {
     return {
       data: response.data.map((x) => ({
         id: x.id,
-        title: x.attributes.title,
+        title: replaceBadEncodedChars(x.attributes.title),
         public: x.attributes.public,
         reviewsState: x.attributes.reviews_state,
         actions: [],
@@ -86,7 +87,7 @@ export class PreprintModerationMapper {
     return {
       data: response.data.map((x) => ({
         id: x.id,
-        title: x.embeds.target.data.attributes.title,
+        title: replaceBadEncodedChars(x.embeds.target.data.attributes.title),
         preprintId: x.embeds.target.data.id,
         actions: [],
         contributors: [],

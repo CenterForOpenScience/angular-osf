@@ -28,6 +28,7 @@ import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsTableComponent,
+  RemoveContributorDialogComponent,
   RequestAccessTableComponent,
 } from '@osf/shared/components/contributors';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
@@ -45,7 +46,6 @@ import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import {
   AcceptRequestAccess,
-  AddContributor,
   BulkAddContributors,
   BulkAddContributorsFromParentProject,
   BulkUpdateContributors,
@@ -176,7 +176,6 @@ export class ContributorsComponent implements OnInit, OnDestroy {
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
     bulkAddContributorsFromParentProject: BulkAddContributorsFromParentProject,
-    addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
     getRequestAccessContributors: GetRequestAccessContributors,
@@ -327,7 +326,7 @@ export class ContributorsComponent implements OnInit, OnDestroy {
 
   private addContributorsToComponents(result: ContributorDialogAddModel): void {
     this.actions
-      .bulkAddContributors(this.resourceId(), this.resourceType(), result.data, result.childNodeIds)
+      .bulkAddContributors(this.resourceId(), this.resourceType(), result.data)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'));
   }
@@ -355,7 +354,7 @@ export class ContributorsComponent implements OnInit, OnDestroy {
         } else {
           const params = { name: res.data[0].fullName };
 
-          this.actions.addContributor(this.resourceId(), this.resourceType(), res.data[0]).subscribe({
+          this.actions.bulkAddContributors(this.resourceId(), this.resourceType(), res.data).subscribe({
             next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }
@@ -397,26 +396,37 @@ export class ContributorsComponent implements OnInit, OnDestroy {
   removeContributor(contributor: ContributorModel) {
     const isDeletingSelf = contributor.userId === this.currentUser()?.id;
 
-    this.customConfirmationService.confirmDelete({
-      headerKey: 'project.contributors.removeDialog.title',
-      messageKey: 'project.contributors.removeDialog.message',
-      messageParams: { name: contributor.fullName },
-      acceptLabelKey: 'common.buttons.remove',
-      onConfirm: () => {
-        this.actions
-          .deleteContributor(this.resourceId(), this.resourceType(), contributor.userId, isDeletingSelf)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(() => {
-            this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
-              name: contributor.fullName,
-            });
+    this.customDialogService
+      .open(RemoveContributorDialogComponent, {
+        header: 'project.contributors.removeDialog.title',
+        width: '448px',
+        data: {
+          name: contributor.fullName,
+          hasChildren: !!this.resourceChildren()?.length,
+        },
+      })
+      .onClose.pipe(
+        filter((res) => res !== undefined),
+        switchMap((removeFromChildren: boolean) =>
+          this.actions.deleteContributor(
+            this.resourceId(),
+            this.resourceType(),
+            contributor.userId,
+            isDeletingSelf,
+            removeFromChildren
+          )
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
+          name: contributor.fullName,
+        });
 
-            if (isDeletingSelf) {
-              this.router.navigate(['/']);
-            }
-          });
-      },
-    });
+        if (isDeletingSelf) {
+          this.router.navigate(['/']);
+        }
+      });
   }
 
   loadMoreContributors(): void {

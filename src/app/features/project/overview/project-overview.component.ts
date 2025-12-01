@@ -183,7 +183,6 @@ export class ProjectOverviewComponent implements OnInit {
 
     if (projectId) {
       this.actions.getProject(projectId);
-      this.actions.getProjectStorage(projectId);
       this.actions.getBookmarksId();
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
@@ -254,6 +253,14 @@ export class ProjectOverviewComponent implements OnInit {
 
       if (project && this.isWikiEnabled()) {
         this.actions.getHomeWiki(ResourceType.Project, project.id);
+      }
+    });
+
+    effect(() => {
+      const project = this.currentProject();
+
+      if (project && this.hasWriteAccess()) {
+        this.actions.getProjectStorage(project.id);
       }
     });
   }

@@ -8,9 +8,9 @@ export { PreprintMakeDecisionComponent } from './preprint-details/preprint-make-
 export { PreprintMetricsInfoComponent } from './preprint-details/preprint-metrics-info/preprint-metrics-info.component';
 export { PreprintTombstoneComponent } from './preprint-details/preprint-tombstone/preprint-tombstone.component';
 export { PreprintWarningBannerComponent } from './preprint-details/preprint-warning-banner/preprint-warning-banner.component';
+export { PreprintWithdrawDialogComponent } from './preprint-details/preprint-withdraw-dialog/preprint-withdraw-dialog.component';
 export { ShareAndDownloadComponent } from './preprint-details/share-and-download/share-and-download.component';
 export { StatusBannerComponent } from './preprint-details/status-banner/status-banner.component';
-export { WithdrawDialogComponent } from './preprint-details/withdraw-dialog/withdraw-dialog.component';
 export { PreprintProviderFooterComponent } from './preprint-provider-footer/preprint-provider-footer.component';
 export { PreprintProviderHeroComponent } from './preprint-provider-hero/preprint-provider-hero.component';
 export { PreprintServicesComponent } from './preprint-services/preprint-services.component';
