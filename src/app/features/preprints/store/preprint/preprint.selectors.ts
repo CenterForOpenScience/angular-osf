@@ -12,11 +12,6 @@ export class PreprintSelectors {
   }
 
   @Selector([PreprintState])
-  static isLicenseSet(state: PreprintStateModel) {
-    return state.preprint.data?.isLicenseSet || null;
-  }
-
-  @Selector([PreprintState])
   static isPreprintSubmitting(state: PreprintStateModel) {
     return state.preprint.isSubmitting;
   }

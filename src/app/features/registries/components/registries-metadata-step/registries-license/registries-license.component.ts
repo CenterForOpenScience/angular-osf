@@ -99,7 +99,6 @@ export class RegistriesLicenseComponent {
     this.control().patchValue({
       id: license.id,
     });
-    console.log('license.id', license.id);
     this.control().markAsTouched();
     this.control().updateValueAndValidity();
     this.actions.saveLicense(this.draftId, license.id);

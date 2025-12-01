@@ -138,7 +138,6 @@ export class PreprintStepperState {
         if (action.payload.isPublished) {
           ctx.setState(patch({ hasBeenSubmitted: true }));
         }
-
         ctx.setState(patch({ preprint: patch({ isSubmitting: false, data: preprint }) }));
       }),
       catchError((error) => handleSectionError(ctx, 'preprint', error))

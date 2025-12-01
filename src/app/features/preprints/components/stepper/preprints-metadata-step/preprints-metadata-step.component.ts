@@ -9,12 +9,11 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, output, untracked } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { MetadataForm, PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
-import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import {
   CreatePreprint,
   FetchLicenses,
@@ -78,18 +77,29 @@ export class PreprintsMetadataStepComponent implements OnInit {
   licenses = select(PreprintStepperSelectors.getLicenses);
   createdPreprint = select(PreprintStepperSelectors.getPreprint);
   isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
-  isLicenseSet = select(PreprintSelectors.isLicenseSet);
 
   provider = input.required<PreprintProviderDetails | undefined>();
   nextClicked = output<void>();
   backClicked = output<void>();
 
+  constructor() {
+    effect(() => {
+      const licenses = this.licenses();
+      const preprint = this.createdPreprint();
+
+      if (licenses.length && preprint && !preprint.licenseId && preprint.defaultLicenseId) {
+        const defaultLicense = licenses.find((license) => license.id === preprint?.defaultLicenseId);
+
+        if (defaultLicense && !defaultLicense.requiredFields.length) {
+          this.actions.saveLicense(defaultLicense.id);
+        }
+      }
+    });
+  }
+
   ngOnInit() {
     this.actions.fetchLicenses();
     this.initForm();
-    console.log('this.createdPreprint ' + this.createdPreprint());
-    // console.log('selectedLicense ' + this.selectedLicense());
-    alert('this.createdPreprint ' + this.isLicenseSet());
   }
 
   initForm() {
@@ -140,7 +150,6 @@ export class PreprintsMetadataStepComponent implements OnInit {
   }
 
   selectLicense(license: LicenseModel) {
-    alert('selectLicense');
     if (license.requiredFields.length) {
       return;
     }

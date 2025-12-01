@@ -48,7 +48,6 @@ export interface PreprintModel {
   identifiers?: IdentifierModel[];
   providerId: string;
   defaultLicenseId?: string;
-  isLicenseSet?: boolean;
 }
 
 export interface PreprintFilesLinks {
