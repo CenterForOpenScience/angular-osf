@@ -8,7 +8,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 
 import { ToastService } from '@osf/shared/services/toast.service';
-import { DeleteNodeLink, GetLinkedResources, NodeLinksSelectors } from '@osf/shared/stores/node-links';
+import { DeleteNodeLink, NodeLinksSelectors } from '@osf/shared/stores/node-links';
 
 import { ProjectOverviewSelectors } from '../../store';
 
@@ -28,7 +28,7 @@ export class DeleteNodeLinkDialogComponent {
   currentProject = select(ProjectOverviewSelectors.getProject);
   isSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
 
-  actions = createDispatchMap({ deleteNodeLink: DeleteNodeLink, getLinkedResources: GetLinkedResources });
+  actions = createDispatchMap({ deleteNodeLink: DeleteNodeLink });
 
   handleDeleteNodeLink(): void {
     const project = this.currentProject();
@@ -38,9 +38,8 @@ export class DeleteNodeLinkDialogComponent {
 
     this.actions.deleteNodeLink(project.id, currentLink).subscribe({
       next: () => {
-        this.dialogRef.close();
-        this.actions.getLinkedResources(project.id);
         this.toastService.showSuccess('project.overview.dialog.toast.deleteNodeLink.success');
+        this.dialogRef.close({ hasChanges: true });
       },
     });
   }
