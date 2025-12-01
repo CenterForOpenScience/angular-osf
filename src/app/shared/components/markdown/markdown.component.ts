@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+import { legacyImgSize } from '@mdit/plugin-img-size';
 import markdownItKatex from '@traptitech/markdown-it-katex';
 import MarkdownIt from 'markdown-it';
 import markdownItVideo from 'markdown-it-video';
@@ -37,6 +38,7 @@ export class MarkdownComponent {
       .use(markdownItKatex, {
         output: 'mathml',
         throwOnError: false,
-      });
+      })
+      .use(legacyImgSize);
   }
 }
