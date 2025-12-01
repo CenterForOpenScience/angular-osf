@@ -41,6 +41,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@centerforopenscience/markdown-it-atrules": "^0.1.1",
     "@citation-js/core": "^0.7.18",
     "@citation-js/plugin-csl": "^0.7.18",
     "@fortawesome/fontawesome-free": "^6.7.2",
