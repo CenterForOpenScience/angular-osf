@@ -54,23 +54,27 @@
       </div>
     }
     <div class="cedar-editor-container">
-      @if (readonly()) {
-        <cedar-artifact-viewer
-          #cedarViewer
-          [config]="cedarViewerConfig"
-          [templateObject]="template().attributes.template"
-          [instanceObject]="formData()"
-        ></cedar-artifact-viewer>
+      @if (!cedarLoaded()) {
+        <osf-loading-spinner />
       } @else {
-        <cedar-embeddable-editor
-          #cedarEditor
-          [config]="cedarConfig"
-          [templateObject]="template().attributes.template"
-          [metadata]="formData()"
-          (change)="onCedarChange($event)"
-          (pointerover)="validateCedarMetadata()"
-          (keyup)="onCedarChange($event)"
-        ></cedar-embeddable-editor>
+        @if (readonly()) {
+          <cedar-artifact-viewer
+            #cedarViewer
+            [config]="cedarViewerConfig"
+            [templateObject]="template().attributes.template"
+            [instanceObject]="formData()"
+          ></cedar-artifact-viewer>
+        } @else {
+          <cedar-embeddable-editor
+            #cedarEditor
+            [config]="cedarConfig"
+            [templateObject]="template().attributes.template"
+            [metadata]="formData()"
+            (change)="onCedarChange($event)"
+            (pointerover)="validateCedarMetadata()"
+            (keyup)="onCedarChange($event)"
+          ></cedar-embeddable-editor>
+        }
       }
     </div>
 
