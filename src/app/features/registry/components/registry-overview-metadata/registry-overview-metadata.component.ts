@@ -63,8 +63,8 @@ export class RegistryOverviewMetadataComponent {
   isIdentifiersLoading = select(RegistrySelectors.isIdentifiersLoading);
   institutions = select(RegistrySelectors.getInstitutions);
   isInstitutionsLoading = select(RegistrySelectors.isInstitutionsLoading);
-  subjects = select(SubjectsSelectors.getSubjects);
-  isSubjectsLoading = select(SubjectsSelectors.getSubjectsLoading);
+  subjects = select(SubjectsSelectors.getSelectedSubjects);
+  isSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
   bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
   isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
