@@ -1,3 +1,4 @@
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
 import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 
@@ -12,6 +13,16 @@ export class CreateNodeLink {
 
 export class GetLinkedResources {
   static readonly type = '[Node Links] Get Linked Resources';
+
+  constructor(
+    public projectId: string,
+    public page = 1,
+    public pageSize = DEFAULT_TABLE_PARAMS.rows
+  ) {}
+}
+
+export class LoadMoreLinkedResources {
+  static readonly type = '[Node Links] Load More Linked Resources';
 
   constructor(public projectId: string) {}
 }

@@ -11,6 +11,7 @@ import { MyResourcesItem } from '../models/my-resources/my-resources.models';
 import { NodeLinkJsonApi } from '../models/node-links/node-link-json-api.model';
 import { NodeModel } from '../models/nodes/base-node.model';
 import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
+import { PaginatedData } from '../models/paginated-data.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -60,25 +61,29 @@ export class NodeLinksService {
     );
   }
 
-  fetchLinkedProjects(projectId: string): Observable<NodeModel[]> {
+  fetchLinkedProjects(projectId: string, page: number, pageSize: number): Observable<PaginatedData<NodeModel[]>> {
     const params: Record<string, unknown> = {
       embed: 'bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
+      page,
+      'page[size]': pageSize,
     };
 
     return this.jsonApiService
       .get<NodesResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/linked_nodes/`, params)
-      .pipe(map((response) => BaseNodeMapper.getNodesWithEmbedContributors(response.data)));
+      .pipe(map((response) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(response)));
   }
 
-  fetchLinkedRegistrations(projectId: string): Observable<NodeModel[]> {
+  fetchLinkedRegistrations(projectId: string, page: number, pageSize: number): Observable<PaginatedData<NodeModel[]>> {
     const params: Record<string, unknown> = {
       embed: 'bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
+      page,
+      'page[size]': pageSize,
     };
 
     return this.jsonApiService
       .get<NodesResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/linked_registrations/`, params)
-      .pipe(map((response) => BaseNodeMapper.getNodesWithEmbedContributors(response.data)));
+      .pipe(map((response) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(response)));
   }
 }
