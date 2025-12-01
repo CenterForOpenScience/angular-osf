@@ -157,8 +157,8 @@ export class CreateFolder {
   ) {}
 }
 
-export class SetCurrentFolder {
-  static readonly type = '[Registries] Set Current Folder';
+export class SetRegistriesCurrentFolder {
+  static readonly type = '[Registries] Set Registries Current Folder';
 
   constructor(public folder: FileFolderModel | null) {}
 }

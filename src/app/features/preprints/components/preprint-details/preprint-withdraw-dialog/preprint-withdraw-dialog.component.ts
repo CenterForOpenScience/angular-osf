@@ -39,9 +39,7 @@ export class PreprintWithdrawDialogComponent implements OnInit {
   private provider!: PreprintProviderDetails;
   private preprint!: PreprintModel;
 
-  private actions = createDispatchMap({
-    withdrawPreprint: WithdrawPreprint,
-  });
+  private actions = createDispatchMap({ withdrawPreprint: WithdrawPreprint });
 
   inputLimits = formInputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;

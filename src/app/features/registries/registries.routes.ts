@@ -11,9 +11,9 @@ import { ContributorsState } from '@osf/shared/stores/contributors';
 import { RegistrationProviderState } from '@osf/shared/stores/registration-provider';
 import { SubjectsState } from '@osf/shared/stores/subjects';
 
+import { RegistrationsLicenseService } from './services/registrations-licenses.service';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './store/handlers';
 import { FilesHandlers } from './store/handlers/files.handlers';
-import { LicensesService } from './services';
 
 export const registriesRoutes: Routes = [
   {
@@ -25,7 +25,7 @@ export const registriesRoutes: Routes = [
       ProjectsHandlers,
       LicensesHandlers,
       FilesHandlers,
-      LicensesService,
+      RegistrationsLicenseService,
     ],
     children: [
       {
@@ -35,7 +35,10 @@ export const registriesRoutes: Routes = [
       },
       {
         path: 'discover',
-        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.RegistriesLandingComponent),
+        loadComponent: () =>
+          import('@osf/features/registries/pages/registries-landing/registries-landing.component').then(
+            (c) => c.RegistriesLandingComponent
+          ),
       },
       {
         path: ':providerId',

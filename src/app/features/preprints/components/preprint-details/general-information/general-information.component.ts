@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { FetchPreprintDetails, PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
@@ -55,7 +55,7 @@ export class GeneralInformationComponent implements OnDestroy {
   private actions = createDispatchMap({
     getBibliographicContributors: GetBibliographicContributors,
     resetContributorsState: ResetContributorsState,
-    fetchPreprintById: FetchPreprintById,
+    fetchPreprintById: FetchPreprintDetails,
     fetchResourceInstitutions: FetchResourceInstitutions,
     loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
   });
