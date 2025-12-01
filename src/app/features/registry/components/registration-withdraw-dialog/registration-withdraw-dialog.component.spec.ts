@@ -6,15 +6,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
-import { WithdrawDialogComponent } from './withdraw-dialog.component';
+import { RegistrationWithdrawDialogComponent } from './registration-withdraw-dialog.component';
 
 import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('WithdrawDialogComponent', () => {
-  let component: WithdrawDialogComponent;
-  let fixture: ComponentFixture<WithdrawDialogComponent>;
+describe('RegistrationWithdrawDialogComponent', () => {
+  let component: RegistrationWithdrawDialogComponent;
+  let fixture: ComponentFixture<RegistrationWithdrawDialogComponent>;
   let mockDialogConfig: jest.Mocked<DynamicDialogConfig>;
 
   beforeEach(async () => {
@@ -23,7 +23,7 @@ describe('WithdrawDialogComponent', () => {
     } as jest.Mocked<DynamicDialogConfig>;
 
     await TestBed.configureTestingModule({
-      imports: [WithdrawDialogComponent, OSFTestingModule, MockComponent(TextInputComponent)],
+      imports: [RegistrationWithdrawDialogComponent, OSFTestingModule, MockComponent(TextInputComponent)],
       providers: [
         DynamicDialogRefMock,
         MockProvider(DynamicDialogConfig, mockDialogConfig),
@@ -33,7 +33,7 @@ describe('WithdrawDialogComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WithdrawDialogComponent);
+    fixture = TestBed.createComponent(RegistrationWithdrawDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

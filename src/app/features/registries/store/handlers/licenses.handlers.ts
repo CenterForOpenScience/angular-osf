@@ -6,13 +6,13 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
-import { LicensesService } from '../../services';
+import { RegistrationsLicenseService } from '../../services/registrations-licenses.service';
 import { SaveLicense } from '../registries.actions';
 import { RegistriesStateModel } from '../registries.model';
 
 @Injectable()
 export class LicensesHandlers {
-  licensesService = inject(LicensesService);
+  registrationsLicenseService = inject(RegistrationsLicenseService);
 
   fetchLicenses(ctx: StateContext<RegistriesStateModel>, providerId: string) {
     ctx.patchState({
@@ -22,7 +22,7 @@ export class LicensesHandlers {
       },
     });
 
-    return this.licensesService.getLicenses(providerId).pipe(
+    return this.registrationsLicenseService.getLicenses(providerId).pipe(
       tap((licenses) => {
         ctx.patchState({
           licenses: {
@@ -45,7 +45,7 @@ export class LicensesHandlers {
       },
     });
 
-    return this.licensesService.updateLicense(registrationId, licenseId, licenseOptions).pipe(
+    return this.registrationsLicenseService.updateLicense(registrationId, licenseId, licenseOptions).pipe(
       tap((response) => {
         ctx.patchState({
           draftRegistration: {
