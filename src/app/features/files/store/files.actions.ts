@@ -32,8 +32,8 @@ export class SetSort {
   constructor(public sort: string) {}
 }
 
-export class SetCurrentFolder {
-  static readonly type = '[Files] Set Current Folder';
+export class SetFilesCurrentFolder {
+  static readonly type = '[Files] Set Files Current Folder';
 
   constructor(public folder: FileFolderModel | null) {}
 }
@@ -161,6 +161,6 @@ export class GetStorageSupportedFeatures {
   ) {}
 }
 
-export class ResetState {
+export class ResetFilesState {
   static readonly type = '[Files] Reset State';
 }
