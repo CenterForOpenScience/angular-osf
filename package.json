@@ -59,6 +59,8 @@
     "chart.js": "^4.4.9",
     "diff": "^8.0.2",
     "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "markdown-it-toc-done-right": "^4.2.0",
     "markdown-it-video": "^0.6.3",
     "ngx-captcha": "^13.0.0",
     "ngx-cookie-service": "^19.1.2",
