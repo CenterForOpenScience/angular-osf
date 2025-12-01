@@ -74,7 +74,10 @@ export const routes: Routes = [
       {
         path: 'my-registrations',
         canActivate: [authGuard],
-        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
+        loadComponent: () =>
+          import('@osf/features/registries/pages/my-registrations/my-registrations.component').then(
+            (c) => c.MyRegistrationsComponent
+          ),
         providers: [
           provideStates([RegistriesState]),
           ProvidersHandlers,

@@ -20,6 +20,7 @@ import {
 import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { UserMapper } from '../user';
 
@@ -28,8 +29,8 @@ export class CollectionsMapper {
     return {
       id: response.id,
       type: response.type,
-      name: response.attributes.name,
-      description: response.attributes.description,
+      name: replaceBadEncodedChars(response.attributes.name),
+      description: replaceBadEncodedChars(response.attributes.description),
       advisoryBoard: response.attributes.advisory_board,
       example: response.attributes.example,
       domain: response.attributes.domain,
@@ -58,7 +59,7 @@ export class CollectionsMapper {
       brand: response.embeds.brand.data
         ? {
             id: response.embeds.brand.data.id,
-            name: response.embeds.brand.data.attributes.name,
+            name: replaceBadEncodedChars(response.embeds.brand.data.attributes.name),
             heroLogoImageUrl: response.embeds.brand.data.attributes.hero_logo_image,
             topNavLogoImageUrl: response.embeds.brand.data.attributes.topnav_logo_image,
             heroBackgroundImageUrl: response.embeds.brand.data.attributes.hero_background_image,
@@ -74,7 +75,7 @@ export class CollectionsMapper {
     return {
       id: response.id,
       type: response.type,
-      title: response.attributes.title,
+      title: replaceBadEncodedChars(response.attributes.title),
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
       bookmarks: response.attributes.bookmarks,
@@ -110,7 +111,7 @@ export class CollectionsMapper {
       dataType: submission.attributes.data_type,
       disease: submission.attributes.disease,
       gradeLevels: submission.attributes.grade_levels,
-      collectionTitle: submission.embeds.collection.data.attributes.title,
+      collectionTitle: replaceBadEncodedChars(submission.embeds.collection.data.attributes.title),
       collectionId: submission.embeds.collection.data.relationships.provider.data.id,
     };
   }
@@ -127,8 +128,8 @@ export class CollectionsMapper {
           type: submission.type,
           nodeId: submission.embeds.guid.data.id,
           nodeUrl: submission.embeds.guid.data.links.html,
-          title: submission.embeds.guid.data.attributes.title,
-          description: submission.embeds.guid.data.attributes.description,
+          title: replaceBadEncodedChars(submission.embeds.guid.data.attributes.title),
+          description: replaceBadEncodedChars(submission.embeds.guid.data.attributes.description),
           category: submission.embeds.guid.data.attributes.category,
           dateCreated: submission.embeds.guid.data.attributes.date_created,
           dateModified: submission.embeds.guid.data.attributes.date_modified,
@@ -183,8 +184,8 @@ export class CollectionsMapper {
       type: submission.type,
       nodeId: submission.embeds.guid.data.id,
       nodeUrl: submission.embeds.guid.data.links.html,
-      title: submission.embeds.guid.data.attributes.title,
-      description: submission.embeds.guid.data.attributes.description,
+      title: replaceBadEncodedChars(submission.embeds.guid.data.attributes.title),
+      description: replaceBadEncodedChars(submission.embeds.guid.data.attributes.description),
       category: submission.embeds.guid.data.attributes.category,
       dateCreated: submission.embeds.guid.data.attributes.date_created,
       dateModified: submission.embeds.guid.data.attributes.date_modified,

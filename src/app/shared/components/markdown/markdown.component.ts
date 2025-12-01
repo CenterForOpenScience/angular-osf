@@ -4,6 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import markdownItAtrules from '@centerforopenscience/markdown-it-atrules';
+import { legacyImgSize } from '@mdit/plugin-img-size';
 import markdownItKatex from '@traptitech/markdown-it-katex';
 import MarkdownIt from 'markdown-it';
 import markdownItVideo from 'markdown-it-video';
@@ -53,6 +54,7 @@ export class MarkdownComponent {
       .use(markdownItVideo, {
         youtube: { width: 560, height: 315 },
         vimeo: { width: 560, height: 315 },
-      });
+      })
+      .use(legacyImgSize);
   }
 }
