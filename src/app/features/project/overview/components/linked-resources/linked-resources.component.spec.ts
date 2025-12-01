@@ -7,6 +7,7 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { NodeLinksSelectors } from '@osf/shared/stores/node-links';
 
+import { ProjectOverviewSelectors } from '../../store';
 import { DeleteNodeLinkDialogComponent } from '../delete-node-link-dialog/delete-node-link-dialog.component';
 import { LinkResourceDialogComponent } from '../link-resource-dialog/link-resource-dialog.component';
 
@@ -42,6 +43,9 @@ describe('LinkedProjectsComponent', () => {
           signals: [
             { selector: NodeLinksSelectors.getLinkedResources, value: mockLinkedResources },
             { selector: NodeLinksSelectors.getLinkedResourcesLoading, value: false },
+            { selector: NodeLinksSelectors.hasMoreLinkedResources, value: false },
+            { selector: NodeLinksSelectors.isLoadingMoreLinkedResources, value: false },
+            { selector: ProjectOverviewSelectors.getProject, value: MOCK_NODE_WITH_ADMIN },
           ],
         }),
         MockProvider(CustomDialogService, customDialogServiceMock),
@@ -60,6 +64,7 @@ describe('LinkedProjectsComponent', () => {
     expect(customDialogServiceMock.open).toHaveBeenCalledWith(LinkResourceDialogComponent, {
       header: 'project.overview.dialog.linkProject.header',
       width: '850px',
+      closable: false,
     });
   });
 
