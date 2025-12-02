@@ -7,7 +7,6 @@ import { catchError } from 'rxjs/operators';
 import { HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { PreprintModel } from '@osf/features/preprints/models';
 import {
   PreprintFilesService,
@@ -35,12 +34,11 @@ import {
   FetchPreprintPrimaryFile,
   FetchPreprintProject,
   FetchProjectFilesByLink,
-  PreprintStepperStateModel,
-  ResetState,
+  ResetPreprintStepperState,
   ReuploadFile,
   SaveLicense,
-  SetCurrentFolder,
   SetInstitutionsChanged,
+  SetPreprintStepperCurrentFolder,
   SetProjectRootFolder,
   SetSelectedPreprintFileSource,
   SetSelectedPreprintProviderId,
@@ -48,59 +46,12 @@ import {
   UpdatePreprint,
   UpdatePrimaryFileRelationship,
   UploadFile,
-} from './';
-
-const DefaultState: PreprintStepperStateModel = {
-  selectedProviderId: null,
-  preprint: {
-    data: null,
-    isLoading: false,
-    error: null,
-    isSubmitting: false,
-  },
-  fileSource: PreprintFileSource.None,
-  preprintFilesLinks: {
-    data: null,
-    isLoading: false,
-    error: null,
-  },
-  preprintFile: {
-    data: null,
-    isLoading: false,
-    error: null,
-  },
-  availableProjects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  projectFiles: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  licenses: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  preprintProject: {
-    data: null,
-    isLoading: false,
-    error: null,
-  },
-  hasBeenSubmitted: false,
-  currentFolder: {
-    data: null,
-    isLoading: false,
-    error: null,
-  },
-  institutionsChanged: false,
-};
+} from './preprint-stepper.actions';
+import { DEFAULT_PREPRINT_STEPPER_STATE, PreprintStepperStateModel } from './preprint-stepper.model';
 
 @State<PreprintStepperStateModel>({
   name: 'preprintStepper',
-  defaults: { ...DefaultState },
+  defaults: DEFAULT_PREPRINT_STEPPER_STATE,
 })
 @Injectable()
 export class PreprintStepperState {
@@ -112,9 +63,7 @@ export class PreprintStepperState {
 
   @Action(SetSelectedPreprintProviderId)
   setSelectedPreprintProviderId(ctx: StateContext<PreprintStepperStateModel>, action: SetSelectedPreprintProviderId) {
-    ctx.patchState({
-      selectedProviderId: action.id,
-    });
+    ctx.patchState({ selectedProviderId: action.id });
   }
 
   @Action(CreatePreprint)
@@ -308,12 +257,12 @@ export class PreprintStepperState {
   getProjectFilesByLink(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFilesByLink) {
     ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
 
-    return this.fileService.getFilesWithoutFiltering(action.filesLink).pipe(
-      tap((files: FileModel[]) => {
+    return this.fileService.getFilesWithoutFiltering(action.filesLink, 1).pipe(
+      tap((response) => {
         ctx.setState(
           patch({
             projectFiles: patch({
-              data: files,
+              data: response.data,
               isLoading: false,
             }),
           })
@@ -523,9 +472,9 @@ export class PreprintStepperState {
     );
   }
 
-  @Action(ResetState)
+  @Action(ResetPreprintStepperState)
   resetState(ctx: StateContext<PreprintStepperStateModel>) {
-    ctx.setState({ ...DefaultState });
+    ctx.setState({ ...DEFAULT_PREPRINT_STEPPER_STATE });
     return EMPTY;
   }
 
@@ -539,8 +488,8 @@ export class PreprintStepperState {
     return EMPTY;
   }
 
-  @Action(SetCurrentFolder)
-  setCurrentFolder(ctx: StateContext<PreprintStepperStateModel>, action: SetCurrentFolder) {
+  @Action(SetPreprintStepperCurrentFolder)
+  setCurrentFolder(ctx: StateContext<PreprintStepperStateModel>, action: SetPreprintStepperCurrentFolder) {
     ctx.setState(
       patch({
         currentFolder: patch({

@@ -1,4 +1,5 @@
 import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 import { DraftRegistrationModel } from '@shared/models/registration/draft-registration.model';
 import { RegistrationModel } from '@shared/models/registration/registration.model';
 import { RegistrationCard } from '@shared/models/registration/registration-card.model';
@@ -17,8 +18,8 @@ export class RegistrationMapper {
   static fromDraftRegistrationResponse(response: DraftRegistrationDataJsonApi): DraftRegistrationModel {
     return {
       id: response.id,
-      title: response.attributes.title,
-      description: response.attributes.description,
+      title: replaceBadEncodedChars(response.attributes.title),
+      description: replaceBadEncodedChars(response.attributes.description),
       registrationSchemaId: response.relationships.registration_schema?.data?.id || '',
       license: {
         id: response.relationships.license?.data?.id || '',
@@ -34,13 +35,13 @@ export class RegistrationMapper {
       branchedFrom: response.embeds?.branched_from?.data
         ? {
             id: response.embeds.branched_from.data.id,
-            title: response.embeds.branched_from.data.attributes.title,
+            title: replaceBadEncodedChars(response.embeds.branched_from.data.attributes.title),
             filesLink: response.embeds?.branched_from?.data.relationships?.files?.links?.related?.href,
             type: response.embeds.branched_from.data.type,
           }
         : {
             id: response.relationships.branched_from?.data?.id || '',
-            title: response.attributes.title,
+            title: replaceBadEncodedChars(response.attributes.title),
             filesLink: response.relationships.branched_from?.links?.related.href + 'files/',
             type: response.relationships.branched_from?.data?.type,
           },
@@ -61,8 +62,8 @@ export class RegistrationMapper {
   static fromDraftToRegistrationCard(registration: DraftRegistrationDataJsonApi): RegistrationCard {
     return {
       id: registration.id,
-      title: registration.attributes.title,
-      description: registration.attributes.description || '',
+      title: replaceBadEncodedChars(registration.attributes.title),
+      description: replaceBadEncodedChars(registration.attributes.description) || '',
       status: RegistryStatus.None,
       dateCreated: registration.attributes.datetime_initiated,
       dateModified: registration.attributes.datetime_updated,
@@ -77,8 +78,8 @@ export class RegistrationMapper {
   static fromRegistrationToRegistrationCard(registration: RegistrationDataJsonApi): RegistrationCard {
     return {
       id: registration.id,
-      title: registration.attributes.title,
-      description: registration.attributes.description || '',
+      title: replaceBadEncodedChars(registration.attributes.title),
+      description: replaceBadEncodedChars(registration.attributes.description) || '',
       status: MapRegistryStatus(registration.attributes),
       dateCreated: registration.attributes.date_created,
       dateModified: registration.attributes.date_modified,

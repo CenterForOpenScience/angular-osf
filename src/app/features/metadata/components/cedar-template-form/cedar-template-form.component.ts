@@ -25,6 +25,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '../../constants';
 import { CedarMetadataHelper } from '../../helpers';
@@ -37,7 +38,7 @@ import {
 
 @Component({
   selector: 'osf-cedar-template-form',
-  imports: [CommonModule, Button, TranslatePipe, Tooltip, Menu],
+  imports: [CommonModule, Button, TranslatePipe, Tooltip, Menu, LoadingSpinnerComponent],
   templateUrl: './cedar-template-form.component.html',
   styleUrl: './cedar-template-form.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -65,11 +66,13 @@ export class CedarTemplateFormComponent {
   private route = inject(ActivatedRoute);
   readonly environment = inject(ENVIRONMENT);
   private platformId = inject(PLATFORM_ID);
+  readonly cedarLoaded = signal<boolean>(false);
 
   readonly recordId = signal<string>('');
   readonly downloadUrl = signal<string>('');
   readonly schemaName = signal<string>('');
-  private cedarLibrariesLoaded = signal<boolean>(false);
+
+  readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
 
   shareItems = [
     {
@@ -87,52 +90,20 @@ export class CedarTemplateFormComponent {
   ];
 
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadCedarLibraries();
-    }
-
     effect(() => {
       const tpl = this.template();
-      if (tpl?.attributes?.template && this.cedarLibrariesLoaded()) {
-        this.initializeCedar();
+      if (tpl?.attributes?.template) {
+        this.loadCedarLibraries().then(() => this.initializeCedar());
       }
     });
 
     effect(() => {
       const record = this.existingRecord();
       this.schemaName.set(record?.embeds?.template.data.attributes.schema_name || '');
-      if (record && this.cedarLibrariesLoaded()) {
-        this.initializeCedar();
+      if (record) {
+        this.loadCedarLibraries().then(() => this.initializeCedar());
       }
     });
-
-    effect(() => {
-      if (this.cedarLibrariesLoaded()) {
-        const tpl = this.template();
-        const record = this.existingRecord();
-        if (tpl?.attributes?.template || record) {
-          this.initializeCedar();
-        }
-      }
-    });
-  }
-
-  private async loadCedarLibraries(): Promise<void> {
-    if (this.cedarLibrariesLoaded() || !isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    try {
-      await Promise.all([
-        // @ts-expect-error - Cedar libraries don't have type definitions
-        import('cedar-artifact-viewer'),
-        // @ts-expect-error - Cedar libraries don't have type definitions
-        import('cedar-embeddable-editor'),
-      ]);
-      this.cedarLibrariesLoaded.set(true);
-    } catch {
-      // Failed to load Cedar libraries - component will not function properly
-    }
   }
 
   private initializeCedar(): void {
@@ -155,13 +126,32 @@ export class CedarTemplateFormComponent {
     this.validateCedarMetadata();
   }
 
-  readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
+  private initializeFormData(): void {
+    const template = this.template()?.attributes?.template;
+    if (!template) return;
+    const metadata = this.existingRecord()?.attributes?.metadata;
+    if (this.existingRecord()) {
+      const structuredMetadata = CedarMetadataHelper.buildStructuredMetadata(metadata);
+      this.formData.set(structuredMetadata);
+    } else {
+      this.formData.set(CedarMetadataHelper.buildEmptyMetadata());
+    }
+  }
 
-  downloadMetadadaRecord() {
-    if (!isPlatformBrowser(this.platformId)) {
+  private async loadCedarLibraries(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || this.cedarLoaded()) {
       return;
     }
 
+    try {
+      await Promise.all([import('cedar-artifact-viewer'), import('cedar-embeddable-editor')]);
+      this.cedarLoaded.set(true);
+    } catch {
+      this.cedarLoaded.set(false);
+    }
+  }
+
+  downloadMetadadaRecord() {
     if (this.fileGuid()) {
       window.open(`${this.environment.webUrl}/metadata/${this.fileGuid()}`)?.focus();
     } else {
@@ -170,10 +160,6 @@ export class CedarTemplateFormComponent {
   }
 
   copyUrl() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     const url = window.location.href;
     navigator.clipboard.writeText(url).then();
   }
@@ -214,42 +200,18 @@ export class CedarTemplateFormComponent {
     }
   }
 
-  private initializeFormData(): void {
-    const template = this.template()?.attributes?.template;
-    if (!template) return;
-    const metadata = this.existingRecord()?.attributes?.metadata;
-    if (this.existingRecord()) {
-      const structuredMetadata = CedarMetadataHelper.buildStructuredMetadata(metadata);
-      this.formData.set(structuredMetadata);
-    } else {
-      this.formData.set(CedarMetadataHelper.buildEmptyMetadata());
-    }
-  }
-
   handleEmailShare(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     const url = window.location.href;
     window.location.href = `mailto:?subject=${this.schemaName()}&body=${url}`;
   }
 
   handleXShare(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     const url = window.location.href;
     const link = `https://x.com/intent/tweet?url=${url}&text=${this.schemaName()}&via=OSFramework`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
   handleFacebookShare(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     const url = window.location.href;
     const link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     window.open(link, '_blank', 'noopener,noreferrer');

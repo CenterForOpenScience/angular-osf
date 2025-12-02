@@ -35,7 +35,7 @@ import {
   FetchProjectFilesByLink,
   PreprintStepperSelectors,
   ReuploadFile,
-  SetCurrentFolder,
+  SetPreprintStepperCurrentFolder,
   SetProjectRootFolder,
   SetSelectedPreprintFileSource,
   UploadFile,
@@ -80,7 +80,7 @@ export class FileStepComponent implements OnInit {
     setProjectRootFolder: SetProjectRootFolder,
     getProjectFilesByLink: FetchProjectFilesByLink,
     copyFileFromProject: CopyFileFromProject,
-    setCurrentFolder: SetCurrentFolder,
+    setCurrentFolder: SetPreprintStepperCurrentFolder,
   });
   private destroyRef = inject(DestroyRef);
 

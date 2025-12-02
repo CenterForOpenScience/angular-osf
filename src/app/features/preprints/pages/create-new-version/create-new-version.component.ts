@@ -20,7 +20,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ResetState } from '@osf/features/files/store';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { CanDeactivateComponent } from '@osf/shared/models/can-deactivate.interface';
@@ -32,9 +31,13 @@ import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { FileStepComponent, ReviewStepComponent } from '../../components';
 import { createNewVersionStepsConst } from '../../constants';
 import { PreprintSteps } from '../../enums';
-import { FetchPreprintById } from '../../store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
+import {
+  FetchPreprintById,
+  PreprintStepperSelectors,
+  ResetPreprintStepperState,
+  SetSelectedPreprintProviderId,
+} from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-create-new-version',
@@ -58,7 +61,7 @@ export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactiva
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
-    resetState: ResetState,
+    resetState: ResetPreprintStepperState,
     fetchPreprint: FetchPreprintById,
   });
 

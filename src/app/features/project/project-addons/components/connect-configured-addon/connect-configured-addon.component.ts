@@ -192,7 +192,13 @@ export class ConnectConfiguredAddonComponent {
       complete: () => {
         const createdAddon = this.createdConfiguredAddon();
         if (createdAddon) {
-          this.router.navigate([`${this.baseUrl()}/addons`]);
+          const addonType = this.addonTypeString()?.toLowerCase();
+          this.router.navigate([`${this.baseUrl()}/addons`], {
+            queryParams: {
+              activeTab: 1,
+              addonType: addonType,
+            },
+          });
           this.toastService.showSuccess('settings.addons.toast.createSuccess', {
             addonName: AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames],
           });

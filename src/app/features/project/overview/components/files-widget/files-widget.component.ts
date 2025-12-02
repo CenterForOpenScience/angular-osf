@@ -26,8 +26,8 @@ import {
   GetConfiguredStorageAddons,
   GetFiles,
   GetRootFolders,
-  ResetState,
-  SetCurrentFolder,
+  ResetFilesState,
+  SetFilesCurrentFolder,
 } from '@osf/features/files/store';
 import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
@@ -95,10 +95,10 @@ export class FilesWidgetComponent {
 
   private readonly actions = createDispatchMap({
     getFiles: GetFiles,
-    setCurrentFolder: SetCurrentFolder,
+    setCurrentFolder: SetFilesCurrentFolder,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
-    resetState: ResetState,
+    resetState: ResetFilesState,
   });
 
   get isStorageLoading() {
