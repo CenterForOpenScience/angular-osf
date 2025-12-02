@@ -1,6 +1,8 @@
 import { HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+
 import { ActivityLogDisplayService } from './activity-log-display.service';
 import { ActivityLogsService } from './activity-logs.service';
 
@@ -15,6 +17,7 @@ import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 describe('Service: ActivityLogs', () => {
   let service: ActivityLogsService;
   const environment = EnvironmentTokenMock;
+  const apiBase = environment.useValue.apiDomainUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,31 +30,54 @@ describe('Service: ActivityLogs', () => {
     service = TestBed.inject(ActivityLogsService);
   });
 
-  it('fetchRegistrationLogs maps + formats', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+  it('fetchLogs for registrations maps + formats', inject(
+    [HttpTestingController],
+    (httpMock: HttpTestingController) => {
+      let result: any;
+      service.fetchLogs(CurrentResourceType.Registrations, 'reg1', 1, 10).subscribe((res) => (result = res));
+
+      const baseUrl = buildRegistrationLogsUrl('reg1', 1, 10, apiBase).split('?')[0];
+      const req = httpMock.expectOne((request) => {
+        return request.url.startsWith(baseUrl) && request.method === 'GET';
+      });
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.get('page')).toBe('1');
+      expect(req.request.params.get('page[size]')).toBe('10');
+      expect(req.request.params.getAll('embed[]')).toEqual([
+        'original_node',
+        'user',
+        'linked_node',
+        'linked_registration',
+        'template_node',
+      ]);
+
+      req.flush(getActivityLogsResponse());
+
+      expect(result.totalCount).toBe(2);
+      expect(result.data[0].formattedActivity).toBe('FMT');
+
+      httpMock.verify();
+    }
+  ));
+
+  it('fetchLogs for projects maps + formats', inject([HttpTestingController], (httpMock: HttpTestingController) => {
     let result: any;
-    service.fetchRegistrationLogs('reg1', 1, 10).subscribe((res) => (result = res));
+    service.fetchLogs(CurrentResourceType.Projects, 'proj1', 2, 5).subscribe((res) => (result = res));
 
-    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg1', 1, 10, environment.useValue.apiDomainUrl));
-    expect(req.request.method).toBe('GET');
-    expect(req.request.params.get('page')).toBe('1');
-    expect(req.request.params.get('page[size]')).toBe('10');
-
-    req.flush(getActivityLogsResponse());
-
-    expect(result.totalCount).toBe(2);
-    expect(result.data[0].formattedActivity).toBe('FMT');
-
-    httpMock.verify();
-  }));
-
-  it('fetchLogs maps + formats', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-    let result: any;
-    service.fetchLogs('proj1', 2, 5).subscribe((res) => (result = res));
-
-    const req = httpMock.expectOne(buildNodeLogsUrl('proj1', 2, 5, environment.useValue.apiDomainUrl));
+    const baseUrl = buildNodeLogsUrl('proj1', 2, 5, apiBase).split('?')[0];
+    const req = httpMock.expectOne((request) => {
+      return request.url.startsWith(baseUrl) && request.method === 'GET';
+    });
     expect(req.request.method).toBe('GET');
     expect(req.request.params.get('page')).toBe('2');
     expect(req.request.params.get('page[size]')).toBe('5');
+    expect(req.request.params.getAll('embed[]')).toEqual([
+      'original_node',
+      'user',
+      'linked_node',
+      'linked_registration',
+      'template_node',
+    ]);
 
     req.flush(getActivityLogsResponse());
 
@@ -61,28 +87,37 @@ describe('Service: ActivityLogs', () => {
     httpMock.verify();
   }));
 
-  it('fetchRegistrationLogs propagates error', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+  it('fetchLogs for registrations propagates error', inject(
+    [HttpTestingController],
+    (httpMock: HttpTestingController) => {
+      let errorObj: any;
+      service.fetchLogs(CurrentResourceType.Registrations, 'reg2', 1, 10).subscribe({
+        next: () => {},
+        error: (e) => (errorObj = e),
+      });
+
+      const baseUrl = buildRegistrationLogsUrl('reg2', 1, 10, apiBase).split('?')[0];
+      const req = httpMock.expectOne((request) => {
+        return request.url.startsWith(baseUrl) && request.method === 'GET';
+      });
+      req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
+
+      expect(errorObj).toBeTruthy();
+      httpMock.verify();
+    }
+  ));
+
+  it('fetchLogs for projects propagates error', inject([HttpTestingController], (httpMock: HttpTestingController) => {
     let errorObj: any;
-    service.fetchRegistrationLogs('reg2', 1, 10).subscribe({
+    service.fetchLogs(CurrentResourceType.Projects, 'proj500', 1, 10).subscribe({
       next: () => {},
       error: (e) => (errorObj = e),
     });
 
-    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg2', 1, 10, environment.useValue.apiDomainUrl));
-    req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
-
-    expect(errorObj).toBeTruthy();
-    httpMock.verify();
-  }));
-
-  it('fetchLogs propagates error', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-    let errorObj: any;
-    service.fetchLogs('proj500', 1, 10).subscribe({
-      next: () => {},
-      error: (e) => (errorObj = e),
+    const baseUrl = buildNodeLogsUrl('proj500', 1, 10, apiBase).split('?')[0];
+    const req = httpMock.expectOne((request) => {
+      return request.url.startsWith(baseUrl) && request.method === 'GET';
     });
-
-    const req = httpMock.expectOne(buildNodeLogsUrl('proj500', 1, 10, environment.useValue.apiDomainUrl));
     req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
 
     expect(errorObj).toBeTruthy();
