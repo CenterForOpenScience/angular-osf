@@ -9,7 +9,7 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { formInputLimits } from '@osf/features/preprints/constants';
@@ -81,6 +81,7 @@ export class PreprintsMetadataStepComponent implements OnInit {
   provider = input.required<PreprintProviderDetails | undefined>();
   nextClicked = output<void>();
   backClicked = output<void>();
+  defaultLicense = signal<string | undefined>(undefined);
 
   constructor() {
     effect(() => {
@@ -89,9 +90,11 @@ export class PreprintsMetadataStepComponent implements OnInit {
 
       if (licenses.length && preprint && !preprint.licenseId && preprint.defaultLicenseId) {
         const defaultLicense = licenses.find((license) => license.id === preprint?.defaultLicenseId);
-
-        if (defaultLicense && !defaultLicense.requiredFields.length) {
-          this.actions.saveLicense(defaultLicense.id);
+        if (defaultLicense) {
+          this.defaultLicense.set(defaultLicense.id);
+          if (!defaultLicense.requiredFields.length) {
+            this.actions.saveLicense(defaultLicense.id);
+          }
         }
       }
     });
