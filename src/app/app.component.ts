@@ -1,6 +1,6 @@
-import { Actions, createDispatchMap, ofActionSuccessful, select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
-import { take, timer } from 'rxjs';
+import { switchMap, timer } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, PLATFORM_ID } from '@angular/core';
@@ -39,7 +39,6 @@ export class AppComponent implements OnInit {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly router = inject(Router);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly actions$ = inject(Actions);
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
@@ -56,11 +55,13 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.actions.getCurrentUser();
-
-    this.actions$.pipe(ofActionSuccessful(GetCurrentUser), take(1)).subscribe(() => {
-      this.actions.getEmails();
-    });
+    this.actions
+      .getCurrentUser()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        switchMap(() => this.actions.getEmails())
+      )
+      .subscribe();
 
     if (this.isBrowser) {
       this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event) => {

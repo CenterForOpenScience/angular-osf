@@ -2,11 +2,11 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { VIEW_ONLY_EXCLUDED_ROUTES } from '@core/constants/view-only-excluded-routes.const';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 export const viewOnlyGuard: CanActivateFn = (route) => {
   const router = inject(Router);
-  const viewOnlyHelper = inject(ViewOnlyService);
+  const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
 
   if (!viewOnlyHelper.hasViewOnlyParam(router)) {
     return true;

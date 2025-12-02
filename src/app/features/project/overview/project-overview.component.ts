@@ -34,7 +34,7 @@ import { Mode } from '@osf/shared/enums/mode.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
@@ -47,7 +47,6 @@ import { ClearCollections, CollectionsSelectors, GetCollectionProvider } from '@
 import { CurrentResourceSelectors, GetResourceWithChildren } from '@osf/shared/stores/current-resource';
 import { GetLinkedResources } from '@osf/shared/stores/node-links';
 import { ClearWiki, GetHomeWiki } from '@osf/shared/stores/wiki';
-import { AnalyticsService } from '@shared/services/analytics.service';
 
 import { CitationAddonCardComponent } from './components/citation-addon-card/citation-addon-card.component';
 import { FilesWidgetComponent } from './components/files-widget/files-widget.component';
@@ -99,9 +98,8 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly customDialogService = inject(CustomDialogService);
-  readonly analyticsService = inject(AnalyticsService);
 
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
@@ -155,6 +153,7 @@ export class ProjectOverviewComponent implements OnInit {
   });
 
   submissionReviewStatus = computed(() => this.currentReviewAction()?.toState);
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   showDecisionButton = computed(
     () =>
@@ -162,8 +161,6 @@ export class ProjectOverviewComponent implements OnInit {
       this.submissionReviewStatus() !== SubmissionReviewStatus.Removed &&
       this.submissionReviewStatus() !== SubmissionReviewStatus.Rejected
   );
-
-  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   filesRootOption = computed(() => ({
     value: this.currentProject()?.id ?? '',

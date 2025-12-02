@@ -145,11 +145,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.actions.setResourceType(resourceTab);
     this.updateUrlWithTab(resourceTab);
 
-    this.actions.fetchResources().subscribe({
-      next: () => {
-        this.updateUrlWithFilterOptions(this.filterOptions());
-      },
-    });
+    this.actions.fetchResources().subscribe(() => this.updateUrlWithFilterOptions(this.filterOptions()));
   }
 
   onSortChanged(sortBy: string): void {
@@ -158,11 +154,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   onPageChanged(link: string): void {
-    this.actions.getResourcesByLink(link).subscribe({
-      next: () => {
-        this.scrollToTop();
-      },
-    });
+    this.actions.getResourcesByLink(link).subscribe(() => this.scrollToTop());
   }
 
   scrollToTop() {

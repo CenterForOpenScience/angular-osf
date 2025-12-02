@@ -29,7 +29,7 @@ import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-l
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { Primitive } from '@osf/shared/helpers/types.helper';
 import { DatasetInput } from '@osf/shared/models/charts/dataset-input';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
@@ -66,7 +66,7 @@ export class AnalyticsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   readonly resourceId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   readonly resourceType = toSignal(this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined));

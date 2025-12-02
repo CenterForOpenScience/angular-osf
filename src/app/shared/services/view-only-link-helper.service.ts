@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { WINDOW } from '@core/provider/window.provider';
 
 @Injectable({ providedIn: 'root' })
-export class ViewOnlyService {
+export class ViewOnlyLinkHelperService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly window = inject(WINDOW);
 

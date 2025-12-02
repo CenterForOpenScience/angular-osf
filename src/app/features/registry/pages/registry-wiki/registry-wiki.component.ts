@@ -18,7 +18,7 @@ import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/v
 import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { WikiModes } from '@osf/shared/models/wiki/wiki.model';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import {
   ClearWiki,
   GetCompareVersionContent,
@@ -52,7 +52,7 @@ export class RegistryWikiComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   WikiModes = WikiModes;
   wikiModes = select(WikiSelectors.getWikiModes);

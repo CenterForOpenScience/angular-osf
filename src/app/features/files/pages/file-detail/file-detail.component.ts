@@ -48,7 +48,7 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { FileDetailsModel } from '@shared/models/files/file.model';
 import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 
@@ -107,7 +107,7 @@ export class FileDetailComponent {
 
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly clipboard = inject(Clipboard);

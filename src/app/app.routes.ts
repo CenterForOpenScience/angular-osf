@@ -15,7 +15,6 @@ import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './feature
 import { FilesHandlers } from './features/registries/store/handlers/files.handlers';
 import { LicensesService } from './shared/services/licenses.service';
 import { BookmarksState } from './shared/stores/bookmarks';
-import { ProjectsState } from './shared/stores/projects';
 
 export const routes: Routes = [
   {
@@ -35,7 +34,6 @@ export const routes: Routes = [
           import('./features/home/pages/dashboard/dashboard.component').then((mod) => mod.DashboardComponent),
         data: { skipBreadcrumbs: true },
         canActivate: [authGuard],
-        providers: [provideStates([ProjectsState])],
       },
       {
         path: 'register',
@@ -69,7 +67,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
         canActivate: [authGuard],
-        providers: [provideStates([BookmarksState, ProjectsState])],
+        providers: [provideStates([BookmarksState])],
       },
       {
         path: 'my-registrations',
@@ -192,13 +190,11 @@ export const routes: Routes = [
         path: ':id',
         canMatch: [isProjectGuard],
         loadChildren: () => import('./features/project/project.routes').then((m) => m.projectRoutes),
-        providers: [provideStates([ProjectsState, BookmarksState])],
       },
       {
         path: ':id',
         canMatch: [isRegistryGuard],
         loadChildren: () => import('./features/registry/registry.routes').then((m) => m.registryRoutes),
-        providers: [provideStates([BookmarksState])],
       },
       {
         path: '**',

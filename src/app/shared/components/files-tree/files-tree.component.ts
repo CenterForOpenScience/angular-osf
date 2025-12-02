@@ -42,7 +42,7 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { FileModel } from '@shared/models/files/file.model';
 import { FileFolderModel } from '@shared/models/files/file-folder.model';
 import { FileLabelModel } from '@shared/models/files/file-label.model';
@@ -78,7 +78,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly customDialogService = inject(CustomDialogService);
   readonly dataciteService = inject(DataciteService);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly environment = inject(ENVIRONMENT);

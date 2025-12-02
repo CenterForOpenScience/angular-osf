@@ -4,14 +4,14 @@ import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angul
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 export const viewOnlyInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
-  const viewOnlyHelper = inject(ViewOnlyService);
+  const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
 
   const viewOnlyParam = viewOnlyHelper.getViewOnlyParam(router);
 

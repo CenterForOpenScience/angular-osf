@@ -39,7 +39,7 @@ import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
 import { ProjectModel } from '@osf/shared/models/projects/projects.models';
 import { SelectOption } from '@osf/shared/models/select-option.model';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 @Component({
   selector: 'osf-files-widget',
@@ -57,7 +57,7 @@ export class FilesWidgetComponent {
 
   private readonly environment = inject(ENVIRONMENT);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   readonly files = select(FilesSelectors.getFiles);
   readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);

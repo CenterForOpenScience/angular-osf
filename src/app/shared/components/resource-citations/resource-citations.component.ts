@@ -29,7 +29,7 @@ import { Router } from '@angular/router';
 
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { CitationStyle } from '@shared/models/citations/citation-style.model';
 import { CustomOption } from '@shared/models/select-option.model';
 import {
@@ -71,7 +71,7 @@ export class ResourceCitationsComponent {
 
   private readonly clipboard = inject(Clipboard);
   private readonly toastService = inject(ToastService);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly filterSubject = new Subject<string>();
 
   customCitationChange = output<string>();

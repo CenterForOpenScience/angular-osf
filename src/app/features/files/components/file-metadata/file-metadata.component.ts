@@ -14,7 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { languageCodes } from '@osf/shared/constants/language.const';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { LanguageCodeModel } from '@shared/models/language-code.model';
 
 import { FileMetadataFields } from '../../constants';
@@ -35,7 +35,7 @@ export class FileMetadataComponent {
   private readonly router = inject(Router);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   fileMetadata = select(FilesSelectors.getFileCustomMetadata);
   isLoading = select(FilesSelectors.isFileMetadataLoading);

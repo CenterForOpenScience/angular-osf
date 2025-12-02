@@ -71,7 +71,7 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
 import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 import { StorageItem } from '@shared/models/addons/storage-item.model';
@@ -129,7 +129,7 @@ export class FilesComponent {
   private readonly environment = inject(ENVIRONMENT);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;

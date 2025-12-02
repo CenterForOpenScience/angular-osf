@@ -15,7 +15,6 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { Mode } from '@osf/shared/enums/mode.enum';
-import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { AddonsSelectors, ClearConfiguredAddons } from '@osf/shared/stores/addons';
@@ -40,7 +39,6 @@ import { ClearProjectOverview, GetComponents, GetProjectById, ProjectOverviewSel
 
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
-import { AnalyticsServiceMockFactory } from '@testing/providers/analytics.service.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -118,7 +116,6 @@ describe('ProjectOverviewComponent', () => {
         MockProvider(ActivatedRoute, activatedRouteMock),
         MockProvider(CustomDialogService, customDialogServiceMock),
         MockProvider(ToastService, toastService),
-        MockProvider(AnalyticsService, AnalyticsServiceMockFactory()),
       ],
     }).compileComponents();
 

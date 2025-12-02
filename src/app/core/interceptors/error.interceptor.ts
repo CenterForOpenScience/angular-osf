@@ -11,7 +11,7 @@ import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AuthService } from '@core/services/auth.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { BYPASS_ERROR_INTERCEPTOR } from './error-interceptor.tokens';
 
@@ -22,7 +22,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const sentry = inject(SENTRY_TOKEN);
   const platformId = inject(PLATFORM_ID);
-  const viewOnlyHelper = inject(ViewOnlyService);
+  const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {

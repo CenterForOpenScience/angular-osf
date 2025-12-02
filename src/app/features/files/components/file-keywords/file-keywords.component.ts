@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { FilesSelectors, UpdateTags } from '../../store';
 
@@ -29,7 +29,7 @@ export class FileKeywordsComponent {
   private readonly actions = createDispatchMap({ updateTags: UpdateTags });
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private readonly viewOnlyService = inject(ViewOnlyService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   readonly tags = select(FilesSelectors.getFileTags);
   readonly isTagsLoading = select(FilesSelectors.isFileTagsLoading);
