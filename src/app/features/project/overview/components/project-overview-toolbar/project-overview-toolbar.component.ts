@@ -66,7 +66,7 @@ export class ProjectOverviewToolbarComponent {
 
   isPublic = signal(false);
   isBookmarked = signal(false);
-  resourceType = ResourceType.Registration;
+  resourceType = ResourceType.Project;
 
   bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   bookmarks = select(BookmarksSelectors.getBookmarks);
