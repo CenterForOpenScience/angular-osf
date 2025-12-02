@@ -4,49 +4,39 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { PaginatorState } from 'primeng/paginator';
 
-import { map, of } from 'rxjs';
-
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, signal } from '@angular/core';
 
 import { RecentActivityListComponent } from '@osf/shared/components/recent-activity/recent-activity-list.component';
-import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@osf/shared/constants/activity-logs';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogsSelectors, ClearActivityLogs, GetActivityLogs } from '@osf/shared/stores/activity-logs';
 
 @Component({
-  selector: 'osf-registration-recent-activity',
+  selector: 'osf-project-recent-activity',
   imports: [RecentActivityListComponent, TranslatePipe],
-  templateUrl: './registration-recent-activity.component.html',
+  templateUrl: './project-recent-activity.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationRecentActivityComponent implements OnDestroy {
-  private readonly route = inject(ActivatedRoute);
+export class ProjectRecentActivityComponent implements OnDestroy {
+  projectId = input<string>();
 
-  readonly pageSize = ACTIVITY_LOGS_DEFAULT_PAGE_SIZE;
-
-  readonly registrationId = toSignal<string | undefined>(
-    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
-  );
-
+  pageSize = signal(5);
   currentPage = signal<number>(1);
 
   activityLogs = select(ActivityLogsSelectors.getActivityLogs);
   totalCount = select(ActivityLogsSelectors.getActivityLogsTotalCount);
   isLoading = select(ActivityLogsSelectors.getActivityLogsLoading);
 
-  firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize);
-
   actions = createDispatchMap({ getActivityLogs: GetActivityLogs, clearActivityLogsStore: ClearActivityLogs });
+
+  firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize());
 
   constructor() {
     effect(() => {
-      const registrationId = this.registrationId();
+      const projectId = this.projectId();
       const page = this.currentPage();
 
-      if (registrationId) {
-        this.actions.getActivityLogs(registrationId, CurrentResourceType.Registrations, page, this.pageSize);
+      if (projectId) {
+        this.actions.getActivityLogs(projectId, CurrentResourceType.Projects, page, this.pageSize());
       }
     });
   }
