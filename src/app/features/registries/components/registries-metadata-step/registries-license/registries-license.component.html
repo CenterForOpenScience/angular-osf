@@ -11,7 +11,7 @@
   <osf-license
     [licenses]="licenses()"
     [fullWidthSelect]="true"
-    [selectedLicenseId]="selectedLicense()?.id"
+    [selectedLicenseId]="control().get('id')?.value || selectedLicense()?.id"
     [selectedLicenseOptions]="selectedLicense()?.options"
     (createLicense)="createLicense($event)"
     (selectLicense)="selectLicense($event)"
