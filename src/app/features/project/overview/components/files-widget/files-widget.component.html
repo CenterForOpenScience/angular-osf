@@ -18,7 +18,7 @@
     <p-tabs [value]="currentRootFolder()?.folder?.id || ''" (valueChange)="onStorageChange($event)" scrollable>
       <p-tablist>
         @for (option of storageAddons(); track option.folder.id) {
-          <p-tab class="p-1" [value]="option.folder.id">
+          <p-tab class="p-2" [value]="option.folder.id">
             <p-button
               severity="contrast"
               variant="text"
