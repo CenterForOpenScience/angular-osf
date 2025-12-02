@@ -28,10 +28,10 @@ import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { toCamelCase } from '@osf/shared/helpers/camel-case';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyService } from '@osf/shared/services/view-only.service';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
 import { SchemaResponse } from '@shared/models/registration/schema-response.model';
@@ -83,6 +83,7 @@ export class RegistryOverviewComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+  private readonly viewOnlyService = inject(ViewOnlyService);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly loaderService = inject(LoaderService);
 
@@ -140,7 +141,7 @@ export class RegistryOverviewComponent {
   revisionId: string | null = null;
   isModeration = false;
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   get isInitialState(): boolean {
     return this.registry()?.reviewsState === RegistrationReviewStates.Initial;

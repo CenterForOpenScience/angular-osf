@@ -8,7 +8,6 @@ import {
 } from '@core/constants/nav-items.constant';
 import { RouteContext } from '@core/models/route-context.model';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
-import { getViewOnlyParamFromUrl } from '@osf/shared/helpers/view-only.helper';
 
 import { CustomMenuItem } from '../models/custom-menu-item.model';
 
@@ -96,7 +95,7 @@ function updateProjectMenuItem(item: CustomMenuItem, ctx: RouteContext): CustomM
       if (hasProject) {
         let menuItems = PROJECT_MENU_ITEMS;
 
-        if (ctx.isViewOnly) {
+        if (ctx.viewOnly) {
           const allowedViewOnlyItems = VIEW_ONLY_PROJECT_MENU_ITEMS;
           menuItems = PROJECT_MENU_ITEMS.filter((menuItem) => allowedViewOnlyItems.includes(menuItem.id || ''));
         }
@@ -124,7 +123,7 @@ function updateProjectMenuItem(item: CustomMenuItem, ctx: RouteContext): CustomM
           items: menuItems.map((menuItem) => ({
             ...menuItem,
             routerLink: [ctx.resourceId as string, menuItem.routerLink],
-            queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
+            queryParams: ctx.viewOnly ? { view_only: ctx.viewOnly } : undefined,
           })),
         };
       }
@@ -143,7 +142,7 @@ function updateRegistryMenuItem(item: CustomMenuItem, ctx: RouteContext): Custom
       if (hasRegistry) {
         let menuItems = REGISTRATION_MENU_ITEMS;
 
-        if (ctx.isViewOnly) {
+        if (ctx.viewOnly) {
           const allowedViewOnlyItems = VIEW_ONLY_REGISTRY_MENU_ITEMS;
           menuItems = REGISTRATION_MENU_ITEMS.filter((menuItem) => allowedViewOnlyItems.includes(menuItem.id || ''));
         }
@@ -165,7 +164,7 @@ function updateRegistryMenuItem(item: CustomMenuItem, ctx: RouteContext): Custom
             return {
               ...menuItem,
               routerLink: [ctx.resourceId as string, menuItem.routerLink],
-              queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
+              queryParams: ctx.viewOnly ? { view_only: ctx.viewOnly } : undefined,
             };
           }),
         };
@@ -199,7 +198,7 @@ function updatePreprintMenuItem(item: CustomMenuItem, ctx: RouteContext): Custom
           items: PREPRINT_MENU_ITEMS.map((menuItem) => ({
             ...menuItem,
             routerLink: ['preprints', ctx.providerId, ctx.resourceId as string],
-            queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
+            queryParams: ctx.viewOnly ? { view_only: ctx.viewOnly } : undefined,
           })),
         };
       }

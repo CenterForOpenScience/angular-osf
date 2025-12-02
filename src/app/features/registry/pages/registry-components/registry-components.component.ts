@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { ViewOnlyService } from '@osf/shared/services/view-only.service';
 
 import { RegistrationLinksCardComponent } from '../../components';
 import { GetRegistryComponents, RegistryComponentsSelectors } from '../../store/registry-components';
@@ -29,12 +29,13 @@ import { GetRegistryComponents, RegistryComponentsSelectors } from '../../store/
 export class RegistryComponentsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly viewOnlyService = inject(ViewOnlyService);
 
   private registryId = signal('');
 
   actions = createDispatchMap({ getRegistryComponents: GetRegistryComponents });
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   registryComponents = select(RegistryComponentsSelectors.getRegistryComponents);
   registryComponentsLoading = select(RegistryComponentsSelectors.getRegistryComponentsLoading);

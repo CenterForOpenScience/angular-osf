@@ -30,9 +30,9 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { Mode } from '@osf/shared/enums/mode.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyService } from '@osf/shared/services/view-only.service';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
   AddonsSelectors,
@@ -98,6 +98,7 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+  private readonly viewOnlyService = inject(ViewOnlyService);
   private readonly customDialogService = inject(CustomDialogService);
   readonly analyticsService = inject(AnalyticsService);
 
@@ -164,7 +165,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.submissionReviewStatus() !== SubmissionReviewStatus.Rejected
   );
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   filesRootOption = computed(() => ({
     value: this.currentProject()?.id ?? '',

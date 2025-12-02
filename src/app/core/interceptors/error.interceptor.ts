@@ -9,9 +9,9 @@ import { Router } from '@angular/router';
 import { ERROR_MESSAGES } from '@core/constants/error-messages';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AuthService } from '@core/services/auth.service';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyService } from '@osf/shared/services/view-only.service';
 
 import { BYPASS_ERROR_INTERCEPTOR } from './error-interceptor.tokens';
 
@@ -22,6 +22,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const sentry = inject(SENTRY_TOKEN);
   const platformId = inject(PLATFORM_ID);
+  const viewOnlyHelper = inject(ViewOnlyService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -52,7 +53,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 401) {
-        if (!hasViewOnlyParam(router)) {
+        if (!viewOnlyHelper.hasViewOnlyParam(router)) {
           authService.logout();
         }
         return throwError(() => error);

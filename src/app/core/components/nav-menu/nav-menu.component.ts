@@ -21,8 +21,8 @@ import { UserSelectors } from '@core/store/user';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
-import { getViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { WrapFnPipe } from '@osf/shared/pipes/wrap-fn.pipe';
+import { ViewOnlyService } from '@osf/shared/services/view-only.service';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
 
 @Component({
@@ -38,6 +38,7 @@ export class NavMenuComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly viewOnlyService = inject(ViewOnlyService);
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
@@ -70,7 +71,7 @@ export class NavMenuComponent {
         this.provider()?.permissions?.includes(ReviewPermissions.ViewSubmissions),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
-      isViewOnly: !!getViewOnlyParam(this.router),
+      viewOnly: this.viewOnlyService.getViewOnlyParam(this.router),
       permissions: this.currentResource()?.permissions,
     };
 

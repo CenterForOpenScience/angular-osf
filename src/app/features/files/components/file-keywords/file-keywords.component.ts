@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { ViewOnlyService } from '@osf/shared/services/view-only.service';
 
 import { FilesSelectors, UpdateTags } from '../../store';
 
@@ -29,12 +29,13 @@ export class FileKeywordsComponent {
   private readonly actions = createDispatchMap({ updateTags: UpdateTags });
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly viewOnlyService = inject(ViewOnlyService);
 
   readonly tags = select(FilesSelectors.getFileTags);
   readonly isTagsLoading = select(FilesSelectors.isFileTagsLoading);
   readonly file = select(FilesSelectors.getOpenedFile);
   readonly hasWriteAccess = select(FilesSelectors.hasWriteAccess);
-  readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   keywordControl = new FormControl('', {
     nonNullable: true,

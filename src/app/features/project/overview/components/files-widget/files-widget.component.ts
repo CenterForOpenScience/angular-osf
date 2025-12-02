@@ -32,7 +32,6 @@ import {
 import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { Primitive } from '@osf/shared/helpers/types.helper';
-import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
@@ -40,6 +39,7 @@ import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
 import { ProjectModel } from '@osf/shared/models/projects/projects.models';
 import { SelectOption } from '@osf/shared/models/select-option.model';
+import { ViewOnlyService } from '@osf/shared/services/view-only.service';
 
 @Component({
   selector: 'osf-files-widget',
@@ -57,6 +57,7 @@ export class FilesWidgetComponent {
 
   private readonly environment = inject(ENVIRONMENT);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly viewOnlyService = inject(ViewOnlyService);
 
   readonly files = select(FilesSelectors.getFiles);
   readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);
@@ -90,7 +91,7 @@ export class FilesWidgetComponent {
     return [];
   });
 
-  readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   private readonly actions = createDispatchMap({
     getFiles: GetFiles,
@@ -220,7 +221,7 @@ export class FilesWidgetComponent {
 
   navigateToFile(file: FileModel) {
     const extras = this.hasViewOnly()
-      ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
+      ? { queryParams: { view_only: this.viewOnlyService.getViewOnlyParamFromUrl(this.router.url) } }
       : undefined;
 
     const url = this.router.serializeUrl(this.router.createUrlTree(['/', file.guid], extras));

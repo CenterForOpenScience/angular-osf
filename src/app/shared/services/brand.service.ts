@@ -1,8 +1,21 @@
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+
 import { BrandModel } from '../models/brand/brand.model';
 
+@Injectable({
+  providedIn: 'root',
+})
 export class BrandService {
-  static applyBranding(brand: BrandModel): void {
-    const root = document.documentElement;
+  private readonly document = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
+
+  applyBranding(brand: BrandModel): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const root = this.document.documentElement;
 
     root.style.setProperty('--branding-primary-color', brand.primaryColor);
     root.style.setProperty('--branding-secondary-color', brand.secondaryColor);
@@ -11,8 +24,12 @@ export class BrandService {
     root.style.setProperty('--branding-hero-background-image-url', `url(${brand.heroBackgroundImageUrl})`);
   }
 
-  static resetBranding(): void {
-    const root = document.documentElement;
+  resetBranding(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const root = this.document.documentElement;
 
     root.style.setProperty('--branding-primary-color', '');
     root.style.setProperty('--branding-secondary-color', '');
