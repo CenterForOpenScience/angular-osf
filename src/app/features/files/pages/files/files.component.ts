@@ -262,7 +262,7 @@ export class FilesComponent {
   );
 
   constructor() {
-    this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
+    this.activeRoute.parent?.parent?.parent?.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       if (params['id']) {
         this.resourceId.set(params['id']);
       }

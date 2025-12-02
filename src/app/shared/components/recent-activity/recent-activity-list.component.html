@@ -1,0 +1,40 @@
+@if (!isLoading()) {
+  <div class="flex flex-column gap-2" data-test="recent-activity-list">
+    @for (activityLog of activityLogs(); track activityLog.id) {
+      <div
+        class="activity-item flex justify-content-between align-items-center gap-2 pb-2 px-3"
+        data-test="recent-activity-item"
+      >
+        <div [innerHTML]="activityLog.formattedActivity" data-test="recent-activity-item-content"></div>
+
+        <p class="activity-date hidden text-right sm:block" data-test="recent-activity-item-date">
+          {{ activityLog.date | date: 'MMM d, y hh:mm a' }}
+        </p>
+      </div>
+    } @empty {
+      <div class="text-center text-muted-color" data-test="recent-activity-empty">
+        {{ 'project.overview.recentActivity.noActivity' | translate }}
+      </div>
+    }
+  </div>
+
+  @if (totalCount() > pageSize()) {
+    <osf-custom-paginator
+      class="block mt-3"
+      data-test="recent-activity-paginator"
+      [showFirstLastIcon]="true"
+      [totalCount]="totalCount()"
+      [rows]="pageSize()"
+      [first]="firstIndex()"
+      (pageChanged)="onPageChange($event)"
+    />
+  }
+} @else {
+  <div class="flex flex-column gap-2" data-test="recent-activity-skeleton">
+    <p-skeleton width="100%" height="2rem" />
+    <p-skeleton width="100%" height="2rem" />
+    <p-skeleton width="100%" height="2rem" />
+    <p-skeleton width="100%" height="2rem" />
+    <p-skeleton width="100%" height="2rem" />
+  </div>
+}

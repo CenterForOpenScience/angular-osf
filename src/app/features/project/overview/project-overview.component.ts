@@ -5,6 +5,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 
+import { map, of } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,7 +17,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
@@ -33,7 +35,6 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyService } from '@osf/shared/services/view-only.service';
-import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
@@ -56,7 +57,7 @@ import { OverviewParentProjectComponent } from './components/overview-parent-pro
 import { OverviewWikiComponent } from './components/overview-wiki/overview-wiki.component';
 import { ProjectOverviewMetadataComponent } from './components/project-overview-metadata/project-overview-metadata.component';
 import { ProjectOverviewToolbarComponent } from './components/project-overview-toolbar/project-overview-toolbar.component';
-import { RecentActivityComponent } from './components/recent-activity/recent-activity.component';
+import { ProjectRecentActivityComponent } from './components/project-recent-activity/project-recent-activity.component';
 import { SUBMISSION_REVIEW_STATUS_OPTIONS } from './constants';
 import {
   ClearProjectOverview,
@@ -81,7 +82,7 @@ import {
     OverviewWikiComponent,
     OverviewComponentsComponent,
     LinkedResourcesComponent,
-    RecentActivityComponent,
+    ProjectRecentActivityComponent,
     ProjectOverviewToolbarComponent,
     ProjectOverviewMetadataComponent,
     FilesWidgetComponent,
@@ -127,7 +128,6 @@ export class ProjectOverviewComponent implements OnInit {
     getHomeWiki: GetHomeWiki,
     getComponents: GetComponents,
     getLinkedProjects: GetLinkedResources,
-    getActivityLogs: GetActivityLogs,
     getCollectionProvider: GetCollectionProvider,
     getCurrentReviewAction: GetSubmissionsReviewActions,
 
@@ -144,8 +144,6 @@ export class ProjectOverviewComponent implements OnInit {
     getConfiguredCitationAddons: GetConfiguredCitationAddons,
   });
 
-  readonly activityPageSize = 5;
-  readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatusOptions = SUBMISSION_REVIEW_STATUS_OPTIONS;
 
   readonly isCollectionsRoute = computed(() => this.router.url.includes('/collections'));
@@ -172,6 +170,10 @@ export class ProjectOverviewComponent implements OnInit {
     label: this.currentProject()?.title ?? '',
   }));
 
+  readonly projectId = toSignal<string | undefined>(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
+
   constructor() {
     this.setupCollectionsEffects();
     this.setupProjectEffects();
@@ -180,14 +182,13 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const projectId = this.route.snapshot.params['id'] || this.route.parent?.snapshot.params['id'];
+    const projectId = this.projectId();
 
     if (projectId) {
       this.actions.getProject(projectId);
       this.actions.getBookmarksId();
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
-      this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
   }
 
