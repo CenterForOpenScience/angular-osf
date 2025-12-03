@@ -78,7 +78,7 @@
     </p>
   </div>
 
-  <p-button severity="success" class="link-button">
-    <a [href]="'mailto:' + supportEmail">{{ 'preprints.createServer.contactUs' | translate | titlecase }}</a>
-  </p-button>
+  <a class="p-button p-button-success font-bold align-self-start lg:align-self-auto" [href]="'mailto:' + supportEmail">
+    {{ 'preprints.createServer.contactUs' | translate | titlecase }}
+  </a>
 </section>

@@ -28,7 +28,6 @@ import {
   DeleteWiki,
   GetCompareVersionContent,
   GetComponentsWikiList,
-  GetWikiContent,
   GetWikiList,
   GetWikiModes,
   GetWikiVersionContent,
@@ -84,12 +83,10 @@ export class WikiComponent {
   hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   hasWriteAccess = select(CurrentResourceSelectors.hasWriteAccess);
-  hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
 
   actions = createDispatchMap({
     getWikiModes: GetWikiModes,
     toggleMode: ToggleMode,
-    getWikiContent: GetWikiContent,
     getWikiList: GetWikiList,
     getComponentsWikiList: GetComponentsWikiList,
     updateWikiPreviewContent: UpdateWikiPreviewContent,

@@ -45,7 +45,7 @@
               (onChange)="selectSearched($event, subjects)"
               [binary]="true"
             />
-            <label for="subjects-{{ $index }}" class="flex flex-wrap ml-2">
+            <label [for]="'subjects-' + $index" class="flex flex-wrap ml-2">
               @for (item of subjects; track item.id) {
                 <span [class]="$last ? 'font-bold' : ''">{{ item.name }}</span>
                 @if (!$last) {

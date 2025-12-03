@@ -8,7 +8,7 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { LoaderService } from '@osf/shared/services/loader.service';
 
-import { RegistrationLinksCardComponent } from '../../components';
+import { RegistrationLinksCardComponent } from '../../components/registration-links-card/registration-links-card.component';
 import { RegistryLinksSelectors } from '../../store/registry-links';
 
 import { RegistryLinksComponent } from './registry-links.component';

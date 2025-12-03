@@ -37,15 +37,13 @@ import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-h
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
 
-import {
-  ArchivingMessageComponent,
-  RegistryBlocksSectionComponent,
-  RegistryRevisionsComponent,
-  RegistryStatusesComponent,
-} from '../../components';
+import { ArchivingMessageComponent } from '../../components/archiving-message/archiving-message.component';
 import { RegistrationOverviewToolbarComponent } from '../../components/registration-overview-toolbar/registration-overview-toolbar.component';
+import { RegistryBlocksSectionComponent } from '../../components/registry-blocks-section/registry-blocks-section.component';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
 import { RegistryOverviewMetadataComponent } from '../../components/registry-overview-metadata/registry-overview-metadata.component';
+import { RegistryRevisionsComponent } from '../../components/registry-revisions/registry-revisions.component';
+import { RegistryStatusesComponent } from '../../components/registry-statuses/registry-statuses.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
 import {
   GetRegistryById,

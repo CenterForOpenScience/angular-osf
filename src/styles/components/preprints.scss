@@ -11,7 +11,11 @@
   }
 
   .provider-description {
-    line-height: mix.rem(24px);
+    line-height: 1.5rem;
+
+    a {
+      font-weight: bold;
+    }
   }
 
   .search-container {

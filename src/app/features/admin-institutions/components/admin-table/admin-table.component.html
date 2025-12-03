@@ -122,30 +122,39 @@
                   </a>
                 } @else if (col.isLink && col.isArray && isLinkArray(currentColumnField)) {
                   <div class="flex gap-1 align-items-center flex-wrap">
-                    @for (link of currentColumnField; track $index) {
+                    @if (currentColumnField.length === 0 && col.field === 'creator') {
                       <div class="flex-1 flex align-items-center gap-1">
-                        <a
-                          [href]="link.url"
-                          [target]="col.linkTarget ?? '_self'"
-                          class="font-bold"
-                          [ngClass]="{ 'max-w-link-with-icon': col.showIcon, 'max-w-full-link': !col.showIcon }"
-                        >
-                          <span class="overflow-hidden text-overflow-ellipsis whitespace-nowrap block">
-                            {{ link.text + ($last ? '' : ',') }}</span
-                          >
-                        </a>
-                        @if (col.showIcon) {
-                          <p-button
-                            [pTooltip]="col.iconTooltip | translate"
-                            class="icon-button"
-                            [icon]="col.iconClass"
-                            variant="text"
-                            severity="info"
-                            [ariaLabel]="'common.accessibility.tooltipBtn' | translate"
-                            (onClick)="onIconClick(rowData, col, $index)"
-                          />
-                        }
+                        <osf-info-icon
+                          [tooltipText]="'adminInstitutions.institutionUsers.notBibliographicOrAffiliatedUserText'"
+                          tooltipPosition="bottom"
+                        ></osf-info-icon>
                       </div>
+                    } @else {
+                      @for (link of currentColumnField; track $index) {
+                        <div class="flex-1 flex align-items-center gap-1">
+                          <a
+                            [href]="link.url"
+                            [target]="col.linkTarget ?? '_self'"
+                            class="font-bold"
+                            [ngClass]="{ 'max-w-link-with-icon': col.showIcon, 'max-w-full-link': !col.showIcon }"
+                          >
+                            <span class="overflow-hidden text-overflow-ellipsis whitespace-nowrap block">
+                              {{ link.text + ($last ? '' : ',') }}</span
+                            >
+                          </a>
+                          @if (col.showIcon) {
+                            <p-button
+                              [pTooltip]="col.iconTooltip | translate"
+                              class="icon-button"
+                              [icon]="col.iconClass"
+                              variant="text"
+                              severity="info"
+                              [ariaLabel]="'common.accessibility.tooltipBtn' | translate"
+                              (onClick)="onIconClick(rowData, col, $index)"
+                            />
+                          }
+                        </div>
+                      }
                     }
                   </div>
                 } @else {

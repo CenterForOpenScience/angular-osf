@@ -17,7 +17,8 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { AddResourceDialogComponent, EditResourceDialogComponent } from '../../components';
+import { AddResourceDialogComponent } from '../../components/add-resource-dialog/add-resource-dialog.component';
+import { EditResourceDialogComponent } from '../../components/edit-resource-dialog/edit-resource-dialog.component';
 import { RegistryResource } from '../../models';
 import { RegistrySelectors } from '../../store/registry';
 import {
