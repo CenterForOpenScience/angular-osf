@@ -23,29 +23,29 @@
 
     <div class="flex w-full column-gap-3 row-gap-4 flex-wrap lg:flex-nowrap">
       <div class="w-full lg:w-6">
-        <label for="department-{{ index() }}" class="mb-1">
+        <label [for]="'department-' + index()" class="mb-1">
           {{ 'settings.profileSettings.education.department' | translate }}
         </label>
-        <input pInputText [id]="'department-' + index" class="w-full" formControlName="department" />
+        <input pInputText [id]="'department-' + index()" class="w-full" formControlName="department" />
       </div>
 
       <div class="w-full lg:w-6">
-        <label for="degree-{{ index() }}" class="mb-1">
+        <label [for]="'degree-' + index()" class="mb-1">
           {{ 'settings.profileSettings.education.degree' | translate }}
         </label>
-        <input pInputText [id]="'degree-' + index" class="w-full" formControlName="degree" />
+        <input pInputText [id]="'degree-' + index()" class="w-full" formControlName="degree" />
       </div>
     </div>
 
     <div class="flex gap-5 flex-column align-items-start md:flex-row md:align-items-end lg:align-items-center lg:gap-3">
       <div class="flex column-gap-3 row-gap-4 flex-wrap w-full md:w-6 lg:flex-nowrap">
         <div class="w-full lg:w-6">
-          <label for="start-date-{{ index() }}" class="mb-1">
+          <label [for]="'start-date-' + index()" class="mb-1">
             {{ 'settings.profileSettings.education.startDate' | translate }}
           </label>
 
           <p-datepicker
-            [id]="'start-date-' + index"
+            [inputId]="'start-date-' + index()"
             formControlName="startDate"
             [dateFormat]="dateFormat"
             [iconDisplay]="'input'"
@@ -64,12 +64,12 @@
 
         @if (!group().controls['ongoing'].value) {
           <div class="w-full lg:w-6">
-            <label for="end-date-{{ index() }}" class="mb-1">
+            <label [for]="'end-date-' + index()" class="mb-1">
               {{ 'settings.profileSettings.education.endDate' | translate }}
             </label>
 
             <p-datepicker
-              [id]="'end-date-' + index"
+              [inputId]="'end-date-' + index()"
               formControlName="endDate"
               [dateFormat]="dateFormat"
               [iconDisplay]="'input'"
@@ -92,11 +92,11 @@
         <p-checkbox
           [binary]="true"
           formControlName="ongoing"
-          [inputId]="'ongoing-' + index"
+          [inputId]="'ongoing-' + index()"
           name="ongoing"
         ></p-checkbox>
 
-        <label [for]="'ongoing-' + index" class="ml-2 mb-0 cursor-pointer">
+        <label [for]="'ongoing-' + index()" class="ml-2 mb-0 cursor-pointer">
           {{ 'settings.profileSettings.education.ongoing' | translate }}
         </label>
       </div>
