@@ -24,7 +24,7 @@ import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.e
 import { ReviewActionTrigger, SchemaResponseActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 
-import { RegistryOverview } from '../../models';
+import { RegistrationOverviewModel } from '../../models';
 import { RegistrySelectors, SubmitDecision } from '../../store/registry';
 
 @Component({
@@ -62,7 +62,7 @@ export class RegistryMakeDecisionComponent {
 
   actions = createDispatchMap({ submitDecision: SubmitDecision });
 
-  registry = this.config.data.registry as RegistryOverview;
+  registry = this.config.data.registry as RegistrationOverviewModel;
   embargoEndDate = this.registry.embargoEndDate;
 
   RevisionReviewStates = RevisionReviewStates;
@@ -72,7 +72,7 @@ export class RegistryMakeDecisionComponent {
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   get isPendingModeration(): boolean {
-    return this.registry.revisionStatus === RevisionReviewStates.RevisionPendingModeration;
+    return this.registry.revisionState === RevisionReviewStates.RevisionPendingModeration;
   }
 
   get isPendingReview(): boolean {
@@ -86,7 +86,7 @@ export class RegistryMakeDecisionComponent {
   get canWithdraw(): boolean {
     return (
       this.registry.reviewsState === RegistrationReviewStates.Accepted &&
-      this.registry.revisionStatus === RevisionReviewStates.Approved
+      this.registry.revisionState === RevisionReviewStates.Approved
     );
   }
   get isCommentInvalid(): boolean {

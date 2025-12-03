@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
@@ -28,7 +28,6 @@ import {
   DeleteWiki,
   GetCompareVersionContent,
   GetComponentsWikiList,
-  GetWikiContent,
   GetWikiList,
   GetWikiModes,
   GetWikiVersionContent,
@@ -62,7 +61,6 @@ export class WikiComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
-  private readonly translateService = inject(TranslateService);
 
   WikiModes = WikiModes;
   homeWikiName = 'Home';
@@ -80,16 +78,13 @@ export class WikiComponent {
   isWikiVersionSubmitting = select(WikiSelectors.getWikiVersionSubmitting);
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
   isCompareVersionLoading = select(WikiSelectors.getCompareVersionsLoading);
-  isAnonymous = select(WikiSelectors.isWikiAnonymous);
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   hasWriteAccess = select(CurrentResourceSelectors.hasWriteAccess);
-  hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
 
   actions = createDispatchMap({
     getWikiModes: GetWikiModes,
     toggleMode: ToggleMode,
-    getWikiContent: GetWikiContent,
     getWikiList: GetWikiList,
     getComponentsWikiList: GetComponentsWikiList,
     updateWikiPreviewContent: UpdateWikiPreviewContent,

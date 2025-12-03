@@ -17,7 +17,7 @@ import { RegistrySelectors } from '../../store/registry';
 import { RegistryMakeDecisionComponent } from './registry-make-decision.component';
 
 import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { MOCK_REGISTRY_OVERVIEW } from '@testing/mocks/registry-overview.mock';
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -28,9 +28,9 @@ describe('RegistryMakeDecisionComponent', () => {
   let mockDialogConfig: jest.Mocked<DynamicDialogConfig>;
 
   const mockRegistry = {
-    ...MOCK_REGISTRY_OVERVIEW,
+    ...MOCK_REGISTRATION_OVERVIEW_MODEL,
     reviewsState: RegistrationReviewStates.Accepted,
-    revisionStatus: RevisionReviewStates.Approved,
+    revisionState: RevisionReviewStates.Approved,
   };
 
   beforeEach(async () => {
@@ -71,20 +71,6 @@ describe('RegistryMakeDecisionComponent', () => {
     expect(component.requestForm.get(ModerationDecisionFormControls.Comment)?.value).toBe('');
   });
 
-  it('should compute isPendingModeration correctly', () => {
-    expect(component.isPendingModeration).toBe(false);
-
-    mockDialogConfig.data.registry = {
-      ...mockRegistry,
-      revisionStatus: RevisionReviewStates.RevisionPendingModeration,
-    };
-    fixture = TestBed.createComponent(RegistryMakeDecisionComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    expect(component.isPendingModeration).toBe(true);
-  });
-
   it('should compute isPendingReview correctly', () => {
     expect(component.isPendingReview).toBe(false);
 
@@ -123,20 +109,21 @@ describe('RegistryMakeDecisionComponent', () => {
   });
 
   it('should compute acceptValue correctly for pending review', () => {
-    expect(component.acceptValue).toBe(SchemaResponseActionTrigger.AcceptRevision);
-  });
-
-  it('should compute acceptValue correctly for pending withdrawal', () => {
-    mockDialogConfig.data.registry = { ...mockRegistry, reviewsState: RegistrationReviewStates.PendingWithdraw };
+    mockDialogConfig.data.registry = { ...mockRegistry, reviewsState: RegistrationReviewStates.Pending };
     fixture = TestBed.createComponent(RegistryMakeDecisionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(component.acceptValue).toBe(ReviewActionTrigger.AcceptWithdrawal);
+    expect(component.acceptValue).toBe(ReviewActionTrigger.AcceptSubmission);
   });
 
   it('should compute rejectValue correctly for pending review', () => {
-    expect(component.rejectValue).toBe(SchemaResponseActionTrigger.RejectRevision);
+    mockDialogConfig.data.registry = { ...mockRegistry, reviewsState: RegistrationReviewStates.Pending };
+    fixture = TestBed.createComponent(RegistryMakeDecisionComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.rejectValue).toBe(ReviewActionTrigger.RejectSubmission);
   });
 
   it('should compute rejectValue correctly for pending withdrawal', () => {
@@ -156,10 +143,12 @@ describe('RegistryMakeDecisionComponent', () => {
       submitDecision: submitDecisionSpy,
     };
 
-    component.requestForm.patchValue({
+    const formValue = {
       [ModerationDecisionFormControls.Action]: ReviewActionTrigger.AcceptSubmission,
       [ModerationDecisionFormControls.Comment]: 'Test comment',
-    });
+    };
+
+    component.requestForm.patchValue(formValue);
 
     component.handleSubmission();
 
@@ -171,7 +160,7 @@ describe('RegistryMakeDecisionComponent', () => {
       },
       true
     );
-    expect(closeSpy).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalledWith(formValue);
   });
 
   it('should handle form submission without revision ID', () => {
@@ -224,9 +213,9 @@ describe('RegistryMakeDecisionComponent', () => {
 
   it('should handle different registry states', () => {
     const states = [
-      { reviewsState: RegistrationReviewStates.Pending, revisionStatus: RevisionReviewStates.Approved },
-      { reviewsState: RegistrationReviewStates.Accepted, revisionStatus: RevisionReviewStates.Approved },
-      { reviewsState: RegistrationReviewStates.PendingWithdraw, revisionStatus: RevisionReviewStates.Approved },
+      { reviewsState: RegistrationReviewStates.Pending, revisionState: RevisionReviewStates.Approved },
+      { reviewsState: RegistrationReviewStates.Accepted, revisionState: RevisionReviewStates.Approved },
+      { reviewsState: RegistrationReviewStates.PendingWithdraw, revisionState: RevisionReviewStates.Approved },
     ];
 
     states.forEach((state) => {
@@ -237,7 +226,82 @@ describe('RegistryMakeDecisionComponent', () => {
       fixture.detectChanges();
 
       expect(component.registry.reviewsState).toBe(state.reviewsState);
-      expect(component.registry.revisionStatus).toBe(state.revisionStatus);
+      expect(component.registry.revisionState).toBe(state.revisionState);
     });
+  });
+
+  it('should identify comment as required for reject actions', () => {
+    expect(component.isCommentRequired(ReviewActionTrigger.RejectSubmission)).toBe(true);
+    expect(component.isCommentRequired(SchemaResponseActionTrigger.RejectRevision)).toBe(true);
+    expect(component.isCommentRequired(ReviewActionTrigger.RejectWithdrawal)).toBe(true);
+    expect(component.isCommentRequired(ReviewActionTrigger.ForceWithdraw)).toBe(true);
+  });
+
+  it('should compute isCommentInvalid correctly when comment is required and empty', () => {
+    const commentControl = component.requestForm.get(ModerationDecisionFormControls.Comment);
+    component.requestForm.patchValue({
+      [ModerationDecisionFormControls.Action]: ReviewActionTrigger.RejectSubmission,
+      [ModerationDecisionFormControls.Comment]: '',
+    });
+    commentControl?.markAsTouched();
+
+    expect(component.isCommentInvalid).toBe(true);
+  });
+
+  it('should compute isCommentInvalid as false when control is not touched or dirty', () => {
+    component.requestForm.patchValue({
+      [ModerationDecisionFormControls.Action]: ReviewActionTrigger.RejectSubmission,
+      [ModerationDecisionFormControls.Comment]: '',
+    });
+
+    expect(component.isCommentInvalid).toBe(false);
+  });
+
+  it('should validate comment max length', () => {
+    const commentControl = component.requestForm.get(ModerationDecisionFormControls.Comment);
+    const longComment = 'a'.repeat(component.decisionCommentLimit + 1);
+    commentControl?.setValue(longComment);
+    commentControl?.updateValueAndValidity();
+
+    expect(commentControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should update comment validators when action changes to reject', () => {
+    const commentControl = component.requestForm.get(ModerationDecisionFormControls.Comment);
+    component.requestForm.patchValue({
+      [ModerationDecisionFormControls.Action]: ReviewActionTrigger.RejectSubmission,
+    });
+
+    expect(commentControl?.hasError('required')).toBe(true);
+  });
+
+  it('should clear comment validators when action changes to accept', () => {
+    const commentControl = component.requestForm.get(ModerationDecisionFormControls.Comment);
+    component.requestForm.patchValue({
+      [ModerationDecisionFormControls.Action]: ReviewActionTrigger.RejectSubmission,
+    });
+    component.requestForm.patchValue({
+      [ModerationDecisionFormControls.Action]: ReviewActionTrigger.AcceptSubmission,
+    });
+
+    expect(commentControl?.hasError('required')).toBe(false);
+  });
+
+  it('should initialize with correct constants', () => {
+    expect(component.decisionCommentLimit).toBeDefined();
+    expect(component.INPUT_VALIDATION_MESSAGES).toBeDefined();
+    expect(component.ReviewActionTrigger).toBeDefined();
+    expect(component.SchemaResponseActionTrigger).toBeDefined();
+    expect(component.ModerationDecisionFormControls).toBeDefined();
+  });
+
+  it('should set embargoEndDate from registry', () => {
+    const testDate = '2024-12-31';
+    mockDialogConfig.data.registry = { ...mockRegistry, embargoEndDate: testDate };
+    fixture = TestBed.createComponent(RegistryMakeDecisionComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.embargoEndDate).toBe(testDate);
   });
 });

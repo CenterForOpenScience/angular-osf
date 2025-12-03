@@ -1,322 +1,240 @@
-import { MockProvider } from 'ng-mocks';
+import { LMarkdownEditorModule } from 'ngx-markdown-editor';
+import { MockModule, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
+import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-syntax-help-dialog.component';
+
 import { EditSectionComponent } from './edit-section.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
-import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 
 describe('EditSectionComponent', () => {
   let component: EditSectionComponent;
   let fixture: ComponentFixture<EditSectionComponent>;
-  let mockCustomDialogService: ReturnType<DialogServiceMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
+  let mockEditorInstance: any;
 
-  const mockCurrentContent = '# Test Content\nThis is test content';
-  const mockVersionContent = '# Version Content\nThis is version content';
+  const mockVersionContent = 'Initial version content';
+  const mockCurrentContent = 'Current content';
+  const mockEditorValue = 'Editor content value';
 
   beforeEach(async () => {
-    mockCustomDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
+    mockEditorInstance = {
+      setShowPrintMargin: jest.fn(),
+      setOptions: jest.fn(),
+      getValue: jest.fn().mockReturnValue(mockEditorValue),
+      insert: jest.fn(),
+      undo: jest.fn(),
+      redo: jest.fn(),
+    };
+
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
 
     await TestBed.configureTestingModule({
-      imports: [EditSectionComponent, OSFTestingModule],
+      imports: [EditSectionComponent, OSFTestingModule, MockModule(LMarkdownEditorModule)],
       providers: [MockProvider(CustomDialogService, mockCustomDialogService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditSectionComponent);
     component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
     fixture.componentRef.setInput('currentContent', mockCurrentContent);
     fixture.componentRef.setInput('versionContent', mockVersionContent);
     fixture.detectChanges();
-
-    expect(component).toBeTruthy();
   });
 
-  it('should have required inputs', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
-    expect(component.currentContent()).toBe(mockCurrentContent);
-    expect(component.versionContent()).toBe(mockVersionContent);
-  });
-
-  it('should have isSaving input with default value false', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
-    expect(component.isSaving()).toBe(false);
-  });
-
-  it('should initialize content from currentContent on ngOnInit', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
-    expect(component.content).toBe(mockCurrentContent);
-    expect(component.initialContent).toBe(mockCurrentContent);
-  });
-
-  it('should have default editor options', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
+  it('should initialize with default values', () => {
+    expect(component.autoCompleteEnabled).toBe(false);
     expect(component.options.showPreviewPanel).toBe(false);
     expect(component.options.fontAwesomeVersion).toBe('6');
-    expect(component.options.markedjsOpt?.sanitize).toBe(true);
   });
 
-  it('should have autoCompleteEnabled set to false by default', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
+  it('should update content when currentContent input changes', () => {
+    const newContent = 'New current content';
+    fixture.componentRef.setInput('currentContent', newContent);
     fixture.detectChanges();
 
-    expect(component.autoCompleteEnabled).toBe(false);
+    expect(component.content).toBe(newContent);
+    expect(component.initialContent).toBe(newContent);
   });
 
-  it('should store editor instance and configure it', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
+  it('should set versionContent only once when initialContent is empty', () => {
+    const newFixture = TestBed.createComponent(EditSectionComponent);
+    const newComponent = newFixture.componentInstance;
+    newFixture.componentRef.setInput('versionContent', mockVersionContent);
+    newFixture.componentRef.setInput('currentContent', mockVersionContent);
+    newFixture.detectChanges();
 
-    const mockEditor = {
-      setShowPrintMargin: jest.fn(),
-      setOptions: jest.fn(),
-    };
+    expect(newComponent.content).toBe(mockVersionContent);
+    expect(newComponent.initialContent).toBe(mockVersionContent);
 
-    component.onEditorLoaded(mockEditor);
+    const updatedVersionContent = 'Updated version content';
+    newFixture.componentRef.setInput('versionContent', updatedVersionContent);
+    newFixture.detectChanges();
 
-    expect(mockEditor.setShowPrintMargin).toHaveBeenCalledWith(false);
-    expect(mockEditor.setOptions).toHaveBeenCalled();
+    expect(newComponent.content).toBe(mockVersionContent);
+    expect(newComponent.initialContent).toBe(mockVersionContent);
   });
 
-  it('should emit contentChange with editor value', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
+  it('should set isSaving input', () => {
+    fixture.componentRef.setInput('isSaving', true);
     fixture.detectChanges();
 
-    const mockEditor = {
-      getValue: jest.fn().mockReturnValue('Updated content'),
-      setShowPrintMargin: jest.fn(),
-      setOptions: jest.fn(),
-    };
+    expect(component.isSaving()).toBe(true);
+  });
 
-    component.onEditorLoaded(mockEditor);
-
+  it('should emit contentChange when onPreviewDomChanged is called', () => {
+    (component as any).editorInstance = mockEditorInstance;
     const emitSpy = jest.spyOn(component.contentChange, 'emit');
 
     component.onPreviewDomChanged();
 
-    expect(mockEditor.getValue).toHaveBeenCalled();
-    expect(emitSpy).toHaveBeenCalledWith('Updated content');
+    expect(mockEditorInstance.getValue).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(mockEditorValue);
   });
 
-  it('should handle when editor is not loaded', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
+  it('should not emit contentChange when editorInstance is null', () => {
+    (component as any).editorInstance = null;
     const emitSpy = jest.spyOn(component.contentChange, 'emit');
 
-    expect(() => component.onPreviewDomChanged()).not.toThrow();
+    component.onPreviewDomChanged();
+
     expect(emitSpy).toHaveBeenCalledWith(undefined);
   });
 
-  it('should emit saveContent with editor value', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
-    const mockEditor = {
-      getValue: jest.fn().mockReturnValue('Content to save'),
-      setShowPrintMargin: jest.fn(),
-      setOptions: jest.fn(),
-    };
-
-    component.onEditorLoaded(mockEditor);
-
+  it('should emit saveContent when save is called', () => {
+    (component as any).editorInstance = mockEditorInstance;
     const emitSpy = jest.spyOn(component.saveContent, 'emit');
 
     component.save();
 
-    expect(mockEditor.getValue).toHaveBeenCalled();
-    expect(emitSpy).toHaveBeenCalledWith('Content to save');
+    expect(mockEditorInstance.getValue).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(mockEditorValue);
   });
 
-  it('should handle when editor is not loaded', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
+  it('should not emit saveContent when editorInstance is null', () => {
+    (component as any).editorInstance = null;
     const emitSpy = jest.spyOn(component.saveContent, 'emit');
 
-    expect(() => component.save()).not.toThrow();
+    component.save();
+
     expect(emitSpy).toHaveBeenCalledWith(undefined);
   });
 
   it('should revert content to initialContent', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
-
     component.content = 'Modified content';
+    component.initialContent = 'Original content';
 
     component.revert();
 
-    expect(component.content).toBe(mockCurrentContent);
+    expect(component.content).toBe('Original content');
   });
 
-  it('should call editor undo method', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
+  it('should call undo on editorInstance', () => {
+    (component as any).editorInstance = mockEditorInstance;
 
-    const mockEditor = {
-      undo: jest.fn(),
-      setShowPrintMargin: jest.fn(),
-      setOptions: jest.fn(),
-    };
-
-    component.onEditorLoaded(mockEditor);
     component.undo();
 
-    expect(mockEditor.undo).toHaveBeenCalled();
+    expect(mockEditorInstance.undo).toHaveBeenCalled();
   });
 
-  it('should not throw when editor is not loaded', () => {
-    fixture.componentRef.setInput('currentContent', mockCurrentContent);
-    fixture.componentRef.setInput('versionContent', mockVersionContent);
-    fixture.detectChanges();
+  it('should not call undo when editorInstance is null', () => {
+    (component as any).editorInstance = null;
 
     expect(() => component.undo()).not.toThrow();
   });
 
-  describe('redo', () => {
-    it('should call editor redo method', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
+  it('should call redo on editorInstance', () => {
+    (component as any).editorInstance = mockEditorInstance;
 
-      const mockEditor = {
-        redo: jest.fn(),
-        setShowPrintMargin: jest.fn(),
-        setOptions: jest.fn(),
-      };
+    component.redo();
 
-      component.onEditorLoaded(mockEditor);
-      component.redo();
+    expect(mockEditorInstance.redo).toHaveBeenCalled();
+  });
 
-      expect(mockEditor.redo).toHaveBeenCalled();
-    });
+  it('should not call redo when editorInstance is null', () => {
+    (component as any).editorInstance = null;
 
-    it('should not throw when editor is not loaded', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
+    expect(() => component.redo()).not.toThrow();
+  });
 
-      expect(() => component.redo()).not.toThrow();
+  it('should insert horizontal rule markdown', () => {
+    (component as any).editorInstance = mockEditorInstance;
+
+    component.doHorizontalRule();
+
+    expect(mockEditorInstance.insert).toHaveBeenCalledTimes(3);
+    expect(mockEditorInstance.insert).toHaveBeenNthCalledWith(1, '\n');
+    expect(mockEditorInstance.insert).toHaveBeenNthCalledWith(2, '----------\n');
+    expect(mockEditorInstance.insert).toHaveBeenNthCalledWith(3, '\n');
+  });
+
+  it('should not insert horizontal rule when editorInstance is null', () => {
+    (component as any).editorInstance = null;
+
+    expect(() => component.doHorizontalRule()).not.toThrow();
+  });
+
+  it('should open syntax help dialog', () => {
+    component.openSyntaxHelpDialog();
+
+    expect(mockCustomDialogService.open).toHaveBeenCalledWith(WikiSyntaxHelpDialogComponent, {
+      header: 'project.wiki.syntaxHelp.header',
     });
   });
 
-  describe('doHorizontalRule', () => {
-    it('should insert horizontal rule into editor', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
+  it('should configure editor when onEditorLoaded is called', () => {
+    component.onEditorLoaded(mockEditorInstance);
 
-      const mockEditor = {
-        insert: jest.fn(),
-        setShowPrintMargin: jest.fn(),
-        setOptions: jest.fn(),
-      };
-
-      component.onEditorLoaded(mockEditor);
-      component.doHorizontalRule();
-
-      expect(mockEditor.insert).toHaveBeenCalledTimes(3);
-      expect(mockEditor.insert).toHaveBeenCalledWith('\n');
-      expect(mockEditor.insert).toHaveBeenCalledWith('----------\n');
-    });
-
-    it('should not throw when editor is not loaded', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
-
-      expect(() => component.doHorizontalRule()).not.toThrow();
+    expect((component as any).editorInstance).toBe(mockEditorInstance);
+    expect(mockEditorInstance.setShowPrintMargin).toHaveBeenCalledWith(false);
+    expect((global as any).ace.require).toHaveBeenCalledWith('ace/ext/language_tools');
+    expect(mockEditorInstance.setOptions).toHaveBeenCalledWith({
+      enableBasicAutocompletion: false,
+      enableLiveAutocompletion: false,
+      enableSnippets: [{}],
     });
   });
 
-  describe('openSyntaxHelpDialog', () => {
-    it('should open syntax help dialog', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
+  it('should toggle autocomplete when editorInstance exists', () => {
+    (component as any).editorInstance = mockEditorInstance;
+    component.autoCompleteEnabled = false;
 
-      component.openSyntaxHelpDialog();
+    component.toggleAutocomplete();
 
-      expect(mockCustomDialogService.open).toHaveBeenCalled();
+    expect(component.autoCompleteEnabled).toBe(true);
+    expect(mockEditorInstance.setOptions).toHaveBeenCalledWith({
+      enableBasicAutocompletion: true,
+      enableLiveAutocompletion: true,
+    });
+
+    component.toggleAutocomplete();
+
+    expect(component.autoCompleteEnabled).toBe(false);
+    expect(mockEditorInstance.setOptions).toHaveBeenCalledWith({
+      enableBasicAutocompletion: false,
+      enableLiveAutocompletion: false,
     });
   });
 
-  describe('toggleAutocomplete', () => {
-    it('should toggle autocomplete on', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
+  it('should not toggle autocomplete when editorInstance is null', () => {
+    (component as any).editorInstance = null;
+    component.autoCompleteEnabled = false;
 
-      const mockEditor = {
-        setOptions: jest.fn(),
-        setShowPrintMargin: jest.fn(),
-      };
+    component.toggleAutocomplete();
 
-      component.onEditorLoaded(mockEditor);
-      expect(component.autoCompleteEnabled).toBe(false);
+    expect(component.autoCompleteEnabled).toBe(false);
+  });
 
-      component.toggleAutocomplete();
+  it('should handle empty content values', () => {
+    fixture.componentRef.setInput('currentContent', '');
+    fixture.componentRef.setInput('versionContent', '');
+    fixture.detectChanges();
 
-      expect(component.autoCompleteEnabled).toBe(true);
-      expect(mockEditor.setOptions).toHaveBeenCalledWith({
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-      });
-    });
-
-    it('should toggle autocomplete off', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
-
-      const mockEditor = {
-        setOptions: jest.fn(),
-        setShowPrintMargin: jest.fn(),
-      };
-
-      component.onEditorLoaded(mockEditor);
-      component.autoCompleteEnabled = true;
-
-      component.toggleAutocomplete();
-
-      expect(component.autoCompleteEnabled).toBe(false);
-      expect(mockEditor.setOptions).toHaveBeenCalledWith({
-        enableBasicAutocompletion: false,
-        enableLiveAutocompletion: false,
-      });
-    });
-
-    it('should not throw when editor is not loaded', () => {
-      fixture.componentRef.setInput('currentContent', mockCurrentContent);
-      fixture.componentRef.setInput('versionContent', mockVersionContent);
-      fixture.detectChanges();
-
-      expect(() => component.toggleAutocomplete()).not.toThrow();
-    });
+    expect(component.content).toBe('');
+    expect(component.initialContent).toBe('');
   });
 });

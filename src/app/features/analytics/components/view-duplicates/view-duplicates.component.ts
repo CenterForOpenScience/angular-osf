@@ -19,7 +19,7 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
@@ -75,7 +75,6 @@ export class ViewDuplicatesComponent {
   isAuthenticated = select(UserSelectors.isAuthenticated);
 
   readonly pageSize = 10;
-  readonly UserPermissions = UserPermissions;
 
   currentPage = signal<number>(1);
   firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize);
@@ -180,7 +179,8 @@ export class ViewDuplicatesComponent {
             resourceType: this.resourceType(),
           },
         })
-        .onClose.subscribe((result) => {
+        .onClose.pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((result) => {
           if (result?.success) {
             this.actions.getDuplicates(currentResource.id, currentResource.type, this.currentPage(), this.pageSize);
           }
@@ -224,7 +224,8 @@ export class ViewDuplicatesComponent {
               pageSize: this.pageSize,
             },
           })
-          .onClose.subscribe((result) => {
+          .onClose.pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((result) => {
             if (result?.success) {
               const resource = this.currentResource();
               if (resource) {
