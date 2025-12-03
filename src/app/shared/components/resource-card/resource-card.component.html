@@ -4,6 +4,8 @@
       <p-accordion-header class="flex flex-row align-items-start gap-3 p-0">
         <div osfStopPropagation class="flex flex-column align-items-start gap-2">
           <p class="type py-1 px-3 font-bold">{{ cardTypeLabel() | translate }}</p>
+        </div>
+      </p-accordion-header>
 
           <div class="flex align-items-center gap-2">
             <h2>
@@ -111,8 +113,6 @@
               [hasSupplements]="resource().hasSupplementalResource"
             />
           }
-        </div>
-      </p-accordion-header>
       <p-accordion-content>
         <div class="flex flex-column pt-1">
           <hr class="w-full break-line my-2" />
