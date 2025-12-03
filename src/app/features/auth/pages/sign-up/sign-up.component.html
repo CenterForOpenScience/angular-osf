@@ -82,7 +82,7 @@
             {{ 'auth.common.password.title' | translate }}
           </label>
           <p-password
-            id="password"
+            inputId="password"
             formControlName="password"
             [toggleMask]="true"
             [feedback]="false"
@@ -93,7 +93,7 @@
         </div>
 
         <div class="flex mt-1">
-          <p-checkbox formControlName="acceptedTermsOfService" [binary]="true" id="agreeTerms"></p-checkbox>
+          <p-checkbox formControlName="acceptedTermsOfService" [binary]="true" inputId="agreeTerms"></p-checkbox>
           <label class="ml-2" for="agreeTerms">
             {{ 'auth.signUp.form.terms.agree' | translate }}
             <a class="font-bold" routerLink="/terms-of-use">{{ 'auth.signUp.form.terms.termsOfUse' | translate }}</a>
