@@ -41,7 +41,7 @@
       </div>
     } @else {
       <div [innerHTML]="preprintProvider()!.descriptionHtml | decodeHtml"></div>
-      <a class="link font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
+      <a class="font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
     }
   </div>
 
