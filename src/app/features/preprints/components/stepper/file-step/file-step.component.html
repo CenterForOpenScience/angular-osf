@@ -97,8 +97,10 @@
         [selectionMode]="null"
         [isLoading]="areProjectFilesLoading() || isCurrentFolderLoading()"
         [resourceId]="selectedProjectId()!"
+        [scrollHeight]="'400px'"
         (entryFileClicked)="selectProjectFile($event)"
         (setCurrentFolder)="setCurrentFolder($event)"
+        (loadFiles)="onLoadFiles($event)"
       />
     }
   </section>

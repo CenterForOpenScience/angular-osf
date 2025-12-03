@@ -255,14 +255,23 @@ export class PreprintStepperState {
 
   @Action(FetchProjectFilesByLink)
   getProjectFilesByLink(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFilesByLink) {
-    ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
-
-    return this.fileService.getFilesWithoutFiltering(action.filesLink, 1).pipe(
+    // getProjectFilesByLink(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFilesByLink { filesLink, page }: GetFiles) {
+    //   ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
+    const state = ctx.getState();
+    ctx.patchState({
+      projectFiles: {
+        ...state.projectFiles,
+        isLoading: true,
+      },
+    });
+    alert('getProjectFilesByLink');
+    return this.fileService.getFilesWithoutFiltering(action.filesLink, action.page).pipe(
       tap((response) => {
+        const newData = action.page === 1 ? response.data : [...(state.projectFiles.data ?? []), ...response.data];
         ctx.setState(
           patch({
             projectFiles: patch({
-              data: response.data,
+              data: newData,
               isLoading: false,
             }),
           })
