@@ -6,6 +6,7 @@ import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { TabsModule } from 'primeng/tabs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,6 +16,7 @@ import {
   inject,
   input,
   model,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -58,6 +60,8 @@ export class FilesWidgetComponent {
   private readonly environment = inject(ENVIRONMENT);
   private readonly destroyRef = inject(DestroyRef);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly files = select(FilesSelectors.getFiles);
   readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);
@@ -150,7 +154,9 @@ export class FilesWidgetComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.actions.resetState();
+      if (this.isBrowser) {
+        this.actions.resetState();
+      }
     });
   }
 

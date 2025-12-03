@@ -7,6 +7,7 @@ import { Message } from 'primeng/message';
 
 import { map, of } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,6 +17,7 @@ import {
   HostBinding,
   inject,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -100,6 +102,8 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly customDialogService = inject(CustomDialogService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
@@ -283,12 +287,14 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   private setupCleanup(): void {
-    this.destroyRef.onDestroy(() => {
-      this.actions.clearProjectOverview();
-      this.actions.clearWiki();
-      this.actions.clearCollections();
-      this.actions.clearCollectionModeration();
-      this.actions.clearConfiguredAddons();
-    });
+    if (this.isBrowser) {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearProjectOverview();
+        this.actions.clearWiki();
+        this.actions.clearCollections();
+        this.actions.clearCollectionModeration();
+        this.actions.clearConfiguredAddons();
+      });
+    }
   }
 }

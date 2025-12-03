@@ -7,27 +7,21 @@ import { CanActivateFn, Router } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
 import { GetCurrentUser, UserSelectors } from '@osf/core/store/user';
-import { ViewOnlyService } from '@osf/shared/services/view-only.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 export const authGuard: CanActivateFn = () => {
   const store = inject(Store);
   const router = inject(Router);
   const authService = inject(AuthService);
-  const viewOnlyHelper = inject(ViewOnlyService);
-
-  const isAuthenticated = store.selectSnapshot(UserSelectors.isAuthenticated);
-
-  if (isAuthenticated) {
-    return true;
-  }
+  const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
 
   if (viewOnlyHelper.hasViewOnlyParam(router)) {
     return true;
   }
 
   return store.dispatch(GetCurrentUser).pipe(
-    switchMap(() => {
-      return store.select(UserSelectors.isAuthenticated).pipe(
+    switchMap(() =>
+      store.select(UserSelectors.isAuthenticated).pipe(
         take(1),
         map((isAuthenticated) => {
           if (!isAuthenticated) {
@@ -37,7 +31,7 @@ export const authGuard: CanActivateFn = () => {
 
           return true;
         })
-      );
-    })
+      )
+    )
   );
 };
