@@ -2,7 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'fixSpecialChar',
-  standalone: true,
 })
 export class FixSpecialCharPipe implements PipeTransform {
   transform(value: string | null | undefined): string {

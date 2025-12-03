@@ -2,7 +2,7 @@ import { MetaJsonApi } from '@osf/shared/models/common/json-api.model';
 import { ContributorDataJsonApi } from '@osf/shared/models/contributors/contributor-response-json-api.model';
 import { RegistrationNodeAttributesJsonApi } from '@osf/shared/models/registration/registration-node-json-api.model';
 
-import { RegistryComponentModel } from './registry-components.models';
+import { RegistryComponentModel } from './registry-components.model';
 
 export interface RegistryComponentJsonApi {
   id: string;

@@ -23,7 +23,6 @@ export interface RegistrationNodeModel extends BaseNodeModel {
   pendingWithdrawal: boolean;
   providerSpecificMetadata: string[];
   registeredMeta: RegisteredMeta;
-  registrationResponses: RegistrationResponses;
   registrationSupplement: string;
   reviewsState: RegistrationReviewStates;
   revisionState: RevisionReviewStates;
@@ -56,16 +55,4 @@ export interface FileUrls {
 
 export interface FileHashes {
   sha256: string;
-}
-
-export interface RegistrationUploader {
-  fileId: string;
-  fileName: string;
-  fileUrls: FileUrls;
-  fileHashes: FileHashes;
-}
-
-export interface RegistrationResponses {
-  summary: string;
-  uploader: RegistrationUploader[];
 }

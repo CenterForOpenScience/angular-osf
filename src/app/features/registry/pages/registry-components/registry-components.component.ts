@@ -10,7 +10,7 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 
-import { RegistrationLinksCardComponent } from '../../components';
+import { RegistrationLinksCardComponent } from '../../components/registration-links-card/registration-links-card.component';
 import { GetRegistryComponents, RegistryComponentsSelectors } from '../../store/registry-components';
 
 @Component({
