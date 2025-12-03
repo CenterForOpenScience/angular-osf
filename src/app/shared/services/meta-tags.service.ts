@@ -252,10 +252,6 @@ export class MetaTagsService {
   }
 
   private applyHeadTags(headTags: HeadTagDef[]): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     headTags.forEach((tag) => {
       if (tag.type === 'meta') {
         this.meta.addTag(tag.attrs);
