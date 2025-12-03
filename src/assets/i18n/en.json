@@ -2884,7 +2884,8 @@
       "orcid": "ORCID",
       "noData": "No users found",
       "messageSent": "Message has been sent.",
-      "requestSent": "Request has been sent."
+      "requestSent": "Request has been sent.",
+      "notBibliographicOrAffiliatedUserText": "The user is not bibliographic or no longer affiliated with the institution"
     },
     "projects": {
       "title": "Title",
