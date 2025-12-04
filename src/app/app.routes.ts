@@ -15,6 +15,7 @@ import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './feature
 import { FilesHandlers } from './features/registries/store/handlers/files.handlers';
 import { LicensesService } from './shared/services/licenses.service';
 import { BookmarksState } from './shared/stores/bookmarks';
+import { ProjectsState } from './shared/stores/projects';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,7 @@ export const routes: Routes = [
           import('./features/home/pages/dashboard/dashboard.component').then((mod) => mod.DashboardComponent),
         data: { skipBreadcrumbs: true },
         canActivate: [authGuard],
+        providers: [provideStates([ProjectsState])],
       },
       {
         path: 'register',
@@ -67,7 +69,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
         canActivate: [authGuard],
-        providers: [provideStates([BookmarksState])],
+        providers: [provideStates([BookmarksState, ProjectsState])],
       },
       {
         path: 'my-registrations',
