@@ -12,6 +12,7 @@ import {
   NodesResponseJsonApi,
 } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { PreprintsMapper } from '../mappers';
 import {
@@ -44,7 +45,7 @@ export class PreprintsProjectsService {
       map((response) => {
         return response.data.map((item) => ({
           id: item.id,
-          name: item.attributes.title,
+          name: replaceBadEncodedChars(item.attributes.title),
         }));
       })
     );
@@ -55,7 +56,7 @@ export class PreprintsProjectsService {
       map((response) => {
         return {
           id: response.data.id,
-          name: response.data.attributes.title,
+          name: replaceBadEncodedChars(response.data.attributes.title),
         };
       })
     );

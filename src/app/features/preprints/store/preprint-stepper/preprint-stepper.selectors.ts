@@ -54,6 +54,11 @@ export class PreprintStepperSelectors {
   }
 
   @Selector([PreprintStepperState])
+  static getFilesTotalCount(state: PreprintStepperStateModel) {
+    return state.projectFiles.totalCount;
+  }
+
+  @Selector([PreprintStepperState])
   static areProjectFilesLoading(state: PreprintStepperStateModel) {
     return state.projectFiles.isLoading;
   }
