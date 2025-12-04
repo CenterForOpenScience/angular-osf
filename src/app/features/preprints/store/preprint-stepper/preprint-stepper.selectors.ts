@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { PreprintStepperState, PreprintStepperStateModel } from '@osf/features/preprints/store/preprint-stepper';
+import { PreprintStepperState, PreprintStepperStateModel } from '@osf/features/preprints/store/preprint-stepper'
 
 export class PreprintStepperSelectors {
   @Selector([PreprintStepperState])
@@ -55,7 +55,6 @@ export class PreprintStepperSelectors {
 
   @Selector([PreprintStepperState])
   static getFilesTotalCount(state: PreprintStepperStateModel) {
-    alert(state.projectFiles.totalCount);
     return state.projectFiles.totalCount;
   }
 
