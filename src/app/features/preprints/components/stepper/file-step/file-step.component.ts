@@ -99,6 +99,7 @@ export class FileStepComponent implements OnInit {
   areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
 
   projectFiles = select(PreprintStepperSelectors.getProjectFiles);
+  filesTotalCount = select(PreprintStepperSelectors.getFilesTotalCount);
   areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
 
   currentFolder = select(PreprintStepperSelectors.getCurrentFolder);

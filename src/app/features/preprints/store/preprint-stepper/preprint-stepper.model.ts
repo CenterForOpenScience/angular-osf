@@ -4,6 +4,7 @@ import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 import { PreprintFileSource } from '../../enums';
 import { PreprintFilesLinks, PreprintModel } from '../../models';
@@ -15,7 +16,7 @@ export interface PreprintStepperStateModel {
   preprintFilesLinks: AsyncStateModel<PreprintFilesLinks | null>;
   preprintFile: AsyncStateModel<FileModel | null>;
   availableProjects: AsyncStateModel<IdNameModel[]>;
-  projectFiles: AsyncStateModel<FileModel[]>;
+  projectFiles: AsyncStateWithTotalCount<FileModel[]>;
   licenses: AsyncStateModel<LicenseModel[]>;
   currentFolder: AsyncStateModel<FileFolderModel | null>;
   preprintProject: AsyncStateModel<IdNameModel | null>;
@@ -51,6 +52,7 @@ export const DEFAULT_PREPRINT_STEPPER_STATE: PreprintStepperStateModel = {
     data: [],
     isLoading: false,
     error: null,
+    totalCount: 0,
   },
   licenses: {
     data: [],
