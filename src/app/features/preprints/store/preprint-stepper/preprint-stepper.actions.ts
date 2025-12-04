@@ -90,7 +90,10 @@ export class SetProjectRootFolder {
 export class FetchProjectFilesByLink {
   static readonly type = '[Preprint Stepper] Get Project Files By Link';
 
-  constructor(public filesLink: string) {}
+  constructor(
+    public filesLink: string,
+    public page: number
+  ) {}
 }
 
 export class FetchLicenses {
