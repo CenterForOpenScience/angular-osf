@@ -41,6 +41,13 @@ export const registriesRoutes: Routes = [
           ),
       },
       {
+        path: 'my-registrations',
+        loadComponent: () =>
+          import('./pages/my-registrations-redirect/my-registrations-redirect.component').then(
+            (c) => c.MyRegistrationsRedirectComponent
+          ),
+      },
+      {
         path: ':providerId',
         loadComponent: () =>
           import('@osf/features/registries/pages/registries-provider-search/registries-provider-search.component').then(
@@ -65,6 +72,11 @@ export const registriesRoutes: Routes = [
         path: 'drafts',
         loadComponent: () => import('./components/drafts/drafts.component').then((mod) => mod.DraftsComponent),
         children: [
+          {
+            path: ':id',
+            redirectTo: ':id/metadata',
+            pathMatch: 'full',
+          },
           {
             path: ':id/metadata',
             loadComponent: () =>
