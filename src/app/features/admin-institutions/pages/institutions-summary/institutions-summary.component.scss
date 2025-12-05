@@ -25,3 +25,21 @@
     width: 100%;
   }
 }
+
+.last-updated-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem; // 14px
+  color: var(--text-color-secondary);
+  padding: 0.75rem 0;
+
+  .last-updated-label {
+    font-weight: 600;
+  }
+
+  .last-updated-date {
+    color: var(--text-color);
+    font-weight: 500;
+  }
+}

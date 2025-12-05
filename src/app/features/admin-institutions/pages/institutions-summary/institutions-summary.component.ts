@@ -10,6 +10,7 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { StatisticCardComponent } from '@osf/shared/components/statistic-card/statistic-card.component';
 import { DatasetInput } from '@osf/shared/models/charts/dataset-input';
 import { SelectOption } from '@osf/shared/models/select-option.model';
+import { ReportDatePipe } from '@osf/shared/pipes/report-date.pipe';
 import { DoughnutChartComponent } from '@shared/components/doughnut-chart/doughnut-chart.component';
 
 import {
@@ -23,7 +24,14 @@ import {
 
 @Component({
   selector: 'osf-institutions-summary',
-  imports: [StatisticCardComponent, LoadingSpinnerComponent, DoughnutChartComponent, BarChartComponent, TranslatePipe],
+  imports: [
+    StatisticCardComponent,
+    LoadingSpinnerComponent,
+    DoughnutChartComponent,
+    BarChartComponent,
+    TranslatePipe,
+    ReportDatePipe,
+  ],
   templateUrl: './institutions-summary.component.html',
   styleUrl: './institutions-summary.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

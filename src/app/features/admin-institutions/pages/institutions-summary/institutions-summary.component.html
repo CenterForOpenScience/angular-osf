@@ -4,6 +4,13 @@
   </div>
 } @else {
   <div class="w-full">
+    @if (summaryMetrics()?.reportYearmonth) {
+      <div class="last-updated-section mb-3">
+        <span class="last-updated-label">{{ 'adminInstitutions.summary.lastUpdated' | translate }}:</span>
+        <span class="last-updated-date">{{ summaryMetrics()!.reportYearmonth | reportDate }}</span>
+      </div>
+    }
+
     <div class="flex flex-wrap mt-4 gap-3 md:gap-4">
       @for (item of statisticsData; track $index) {
         <osf-statistic-card class="width-25" [label]="item.label | translate" [value]="item.value" />
