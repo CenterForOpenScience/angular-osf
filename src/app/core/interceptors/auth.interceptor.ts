@@ -39,7 +39,10 @@ export const authInterceptor: HttpInterceptorFn = (
   if (serverRequest) {
     const cookieHeader = serverRequest.headers.get('cookie') || '';
     if (cookieHeader) {
-      headers['Cookie'] = cookieHeader;
+      if (isPlatformBrowser(platformId)) {
+        headers['Cookie'] = cookieHeader;
+      }
+
       const csrfMatch = cookieHeader.match(/api-csrf=([^;]+)/);
       if (csrfMatch) {
         headers['X-CSRFToken'] = csrfMatch[1];

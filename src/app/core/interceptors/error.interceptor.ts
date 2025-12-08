@@ -54,7 +54,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (error.status === 401) {
         if (!viewOnlyHelper.hasViewOnlyParam(router)) {
-          authService.logout();
+          if (isPlatformBrowser(platformId)) {
+            authService.logout();
+          }
         }
         return throwError(() => error);
       }
