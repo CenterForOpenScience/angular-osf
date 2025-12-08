@@ -16,7 +16,9 @@ export const registrationModerationGuard: CanActivateFn = (route) => {
   if (provider?.reviewsWorkflow) {
     return true;
   }
+
   const id = route.params['providerId'];
+
   return store.dispatch(new GetRegistryProvider(id)).pipe(
     switchMap(() => {
       return store.select(RegistrationProviderSelectors.getBrandedProvider).pipe(
