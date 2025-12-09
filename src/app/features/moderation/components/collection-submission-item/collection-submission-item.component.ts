@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
@@ -29,7 +29,8 @@ export class CollectionSubmissionItemComponent {
   private activatedRoute = inject(ActivatedRoute);
 
   submission = input.required<CollectionSubmissionWithGuid>();
-
+  loadContributors = output<void>();
+  loadMoreContributors = output<void>();
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
 
   readonly reviewStatusIcon = ReviewStatusIcon;
