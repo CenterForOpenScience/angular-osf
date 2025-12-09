@@ -12,7 +12,11 @@
           @if (readonly() || contributor.isUnregisteredContributor || !contributor.id || contributor.deactivated) {
             <span data-test-contributor-name>{{ contributor.fullName }}{{ $last ? '' : ',' }}</span>
           } @else {
-            <a class="font-bold" [routerLink]="['/user', contributor.userId]" data-test-contributor-name>
+            <a
+              class="font-bold block line-height-3"
+              [routerLink]="['/user', contributor.userId]"
+              data-test-contributor-name
+            >
               {{ contributor.fullName }}{{ $last ? '' : ',' }}
             </a>
           }

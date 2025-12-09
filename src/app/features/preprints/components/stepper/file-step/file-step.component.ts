@@ -35,7 +35,7 @@ import {
   FetchProjectFilesByLink,
   PreprintStepperSelectors,
   ReuploadFile,
-  SetCurrentFolder,
+  SetPreprintStepperCurrentFolder,
   SetProjectRootFolder,
   SetSelectedPreprintFileSource,
   UploadFile,
@@ -80,7 +80,7 @@ export class FileStepComponent implements OnInit {
     setProjectRootFolder: SetProjectRootFolder,
     getProjectFilesByLink: FetchProjectFilesByLink,
     copyFileFromProject: CopyFileFromProject,
-    setCurrentFolder: SetCurrentFolder,
+    setCurrentFolder: SetPreprintStepperCurrentFolder,
   });
   private destroyRef = inject(DestroyRef);
 
@@ -99,6 +99,7 @@ export class FileStepComponent implements OnInit {
   areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
 
   projectFiles = select(PreprintStepperSelectors.getProjectFiles);
+  filesTotalCount = select(PreprintStepperSelectors.getFilesTotalCount);
   areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
 
   currentFolder = select(PreprintStepperSelectors.getCurrentFolder);
@@ -190,7 +191,7 @@ export class FileStepComponent implements OnInit {
         switchMap(() => {
           const filesLink = this.currentFolder()?.links.filesLink;
           if (filesLink) {
-            return this.actions.getProjectFilesByLink(filesLink);
+            return this.actions.getProjectFilesByLink(filesLink, 1);
           } else {
             return EMPTY;
           }
@@ -232,6 +233,10 @@ export class FileStepComponent implements OnInit {
       return;
     }
     this.actions.setCurrentFolder(folder);
-    this.actions.getProjectFilesByLink(folder.links.filesLink);
+    this.actions.getProjectFilesByLink(folder.links.filesLink, 1);
+  }
+
+  onLoadFiles(event: { link: string; page: number }) {
+    this.actions.getProjectFilesByLink(event.link, event.page);
   }
 }

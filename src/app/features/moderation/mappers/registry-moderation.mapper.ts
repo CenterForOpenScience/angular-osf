@@ -1,5 +1,6 @@
 import { UserMapper } from '@osf/shared/mappers/user';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import {
   RegistryDataJsonApi,
@@ -13,7 +14,7 @@ export class RegistryModerationMapper {
   static fromResponse(response: RegistryDataJsonApi): RegistryModeration {
     return {
       id: response.id,
-      title: response.attributes.title,
+      title: replaceBadEncodedChars(response.attributes.title),
       reviewsState: response.attributes.reviews_state,
       revisionStatus: response.attributes.revision_state,
       public: response.attributes.public,

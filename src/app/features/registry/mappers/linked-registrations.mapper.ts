@@ -1,4 +1,5 @@
 import { ContributorsMapper } from '@osf/shared/mappers/contributors';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { LinkedRegistration, LinkedRegistrationJsonApi } from '../models';
 
@@ -6,8 +7,8 @@ export class LinkedRegistrationsMapper {
   static fromApiResponse(apiRegistration: LinkedRegistrationJsonApi): LinkedRegistration {
     return {
       id: apiRegistration.id,
-      title: apiRegistration.attributes.title,
-      description: apiRegistration.attributes.description,
+      title: replaceBadEncodedChars(apiRegistration.attributes.title),
+      description: replaceBadEncodedChars(apiRegistration.attributes.description),
       category: apiRegistration.attributes.category,
       dateCreated: apiRegistration.attributes.date_created,
       dateModified: apiRegistration.attributes.date_modified,

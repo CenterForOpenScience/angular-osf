@@ -26,12 +26,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { GetMyProjects, GetMyRegistrations, MyResourcesSelectors } from '@osf/shared/stores/my-resources';
-import { CreateNodeLink, DeleteNodeLink, GetLinkedResources, NodeLinksSelectors } from '@osf/shared/stores/node-links';
+import { CreateNodeLink, DeleteNodeLink, NodeLinksSelectors } from '@osf/shared/stores/node-links';
 import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
 import { MyResourcesSearchFilters } from '@shared/models/my-resources/my-resources-search-filters.models';
+import { TableParameters } from '@shared/models/table-parameters.model';
 
 import { ProjectOverviewSelectors } from '../../store';
 
@@ -67,7 +69,6 @@ export class LinkResourceDialogComponent {
 
   skeletonData: MyResourcesItem[] = Array.from({ length: this.tableRows }, () => ({}) as MyResourcesItem);
 
-  currentProject = select(ProjectOverviewSelectors.getProject);
   myProjects = select(MyResourcesSelectors.getProjects);
   isMyProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
   myRegistrations = select(MyResourcesSelectors.getRegistrations);
@@ -76,10 +77,16 @@ export class LinkResourceDialogComponent {
   totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
   isNodeLinksSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
   linkedResources = select(NodeLinksSelectors.getLinkedResources);
+  hasChanges = select(NodeLinksSelectors.getNodeLinksHasChanges);
+  currentProject = select(ProjectOverviewSelectors.getProject);
 
-  currentTableItems = computed(() =>
-    this.resourceType() === ResourceType.Project ? this.myProjects() : this.myRegistrations()
-  );
+  currentResourceId = computed(() => this.currentProject()?.id);
+
+  currentTableItems = computed(() => {
+    const items = this.resourceType() === ResourceType.Project ? this.myProjects() : this.myRegistrations();
+    const currentId = this.currentResourceId();
+    return currentId ? items.filter((item) => item.id !== currentId) : items;
+  });
 
   isCurrentTableLoading = computed(() =>
     this.resourceType() === ResourceType.Project ? this.isMyProjectsLoading() : this.isMyRegistrationsLoading()
@@ -89,11 +96,17 @@ export class LinkResourceDialogComponent {
     this.resourceType() === ResourceType.Project ? this.totalProjectsCount() : this.totalRegistrationsCount()
   );
 
-  isItemLinked = computed(() => {
-    const linkedResources = this.linkedResources();
-    const linkedTargetIds = new Set(linkedResources.map((resource) => resource.id));
+  tableParams = computed<TableParameters>(() => ({
+    ...DEFAULT_TABLE_PARAMS,
+    rows: this.tableRows,
+    firstRowIndex: (this.currentPage() - 1) * this.tableRows,
+    paginator: this.currentTotalCount() > this.tableRows,
+    totalRecords: this.currentTotalCount(),
+  }));
 
-    return (itemId: string) => linkedTargetIds.has(itemId);
+  linkedResourceIds = computed(() => {
+    const linkedResources = this.linkedResources();
+    return new Set(linkedResources.map((resource) => resource.id));
   });
 
   actions = createDispatchMap({
@@ -101,23 +114,21 @@ export class LinkResourceDialogComponent {
     getRegistrations: GetMyRegistrations,
     createNodeLink: CreateNodeLink,
     deleteNodeLink: DeleteNodeLink,
-    getLinkedProjects: GetLinkedResources,
   });
 
   constructor() {
     this.setupSearchEffect();
     this.setupSearchSubscription();
-    this.setupNodeLinksEffect();
   }
 
   onSearchModeChange(mode: ResourceSearchMode): void {
     this.searchMode.set(mode);
-    this.currentPage.set(1);
+    this.resetToFirstPage();
   }
 
   onObjectTypeChange(type: ResourceType): void {
     this.resourceType.set(type);
-    this.currentPage.set(1);
+    this.resetToFirstPage();
   }
 
   onPageChange(event: TablePageEvent): void {
@@ -126,19 +137,18 @@ export class LinkResourceDialogComponent {
     this.handleSearch(this.searchControl.value || '', this.searchMode(), this.resourceType());
   }
 
-  setupSearchEffect() {
-    effect(() => {
-      this.currentPage.set(1);
-      this.handleSearch(this.searchControl.value || '', this.searchMode(), this.resourceType());
-    });
+  isItemLinked(itemId: string): boolean {
+    return this.linkedResourceIds().has(itemId);
   }
 
-  setupNodeLinksEffect() {
+  private resetToFirstPage(): void {
+    this.currentPage.set(1);
+  }
+
+  setupSearchEffect() {
     effect(() => {
-      const currentProject = this.currentProject();
-      if (currentProject) {
-        this.actions.getLinkedProjects(currentProject.id);
-      }
+      this.resetToFirstPage();
+      this.handleSearch(this.searchControl.value || '', this.searchMode(), this.resourceType());
     });
   }
 
@@ -146,31 +156,23 @@ export class LinkResourceDialogComponent {
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchValue) => {
-        this.currentPage.set(1);
+        this.resetToFirstPage();
         this.handleSearch(searchValue ?? '', this.searchMode(), this.resourceType());
       });
   }
 
   handleCloseDialog() {
-    const currentProjectId = this.currentProject()?.id;
-
-    if (!currentProjectId) {
-      this.dialogRef.close();
-      return;
-    }
-
-    this.actions.getLinkedProjects(currentProjectId);
-    this.dialogRef.close();
+    this.dialogRef.close({ hasChanges: this.hasChanges() });
   }
 
   handleToggleNodeLink(resource: MyResourcesItem) {
-    const currentProjectId = this.currentProject()?.id;
+    const currentResourceId = this.currentResourceId();
 
-    if (!currentProjectId) {
+    if (!currentResourceId) {
       return;
     }
 
-    const isCurrentlyLinked = this.isItemLinked()(resource.id);
+    const isCurrentlyLinked = this.isItemLinked(resource.id);
 
     if (isCurrentlyLinked) {
       const resources = this.linkedResources();
@@ -178,9 +180,9 @@ export class LinkResourceDialogComponent {
 
       if (!linkToDelete) return;
 
-      this.actions.deleteNodeLink(currentProjectId, linkToDelete);
+      this.actions.deleteNodeLink(currentResourceId, linkToDelete);
     } else {
-      this.actions.createNodeLink(currentProjectId, resource);
+      this.actions.createNodeLink(currentResourceId, resource);
     }
   }
 
@@ -191,13 +193,13 @@ export class LinkResourceDialogComponent {
     };
 
     untracked(() => {
-      const currentProjectId = this.currentProject()?.id;
-      if (!currentProjectId) return;
+      const currentResourceId = this.currentResourceId();
+      if (!currentResourceId) return;
 
       if (resourceType === ResourceType.Project) {
-        this.actions.getProjects(this.currentPage(), this.tableRows, searchFilters, searchMode, currentProjectId);
+        this.actions.getProjects(this.currentPage(), this.tableRows, searchFilters, searchMode, undefined);
       } else if (resourceType === ResourceType.Registration) {
-        this.actions.getRegistrations(this.currentPage(), this.tableRows, searchFilters, searchMode, currentProjectId);
+        this.actions.getRegistrations(this.currentPage(), this.tableRows, searchFilters, searchMode, undefined);
       }
     });
   }

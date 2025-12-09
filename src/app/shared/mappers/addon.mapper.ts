@@ -56,6 +56,7 @@ export class AddonMapper {
     const displayName = (matchingService?.['display_name'] as string) || '';
     const credentialsFormat = (matchingService?.['credentials_format'] as string) || '';
     const supportedFeatures = (matchingService?.['supported_features'] as string[]) || [];
+    const iconUrl = (matchingService?.['icon_url'] as string) || '';
 
     return {
       type: response.type,
@@ -73,6 +74,7 @@ export class AddonMapper {
       externalServiceName,
       supportedFeatures,
       credentialsFormat,
+      iconUrl,
       providerName: displayName,
     };
   }

@@ -11,6 +11,7 @@ import {
   WikiVersionJsonApi,
 } from '@osf/shared/models/wiki/wiki.model';
 import { ComponentWiki } from '@osf/shared/stores/wiki';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class WikiMapper {
   private static translate: TranslateService;
@@ -47,7 +48,7 @@ export class WikiMapper {
   static fromGetComponentsWikiResponse(response: ComponentsWikiGetResponse): ComponentWiki {
     return {
       id: response.id,
-      title: response.attributes.title,
+      title: replaceBadEncodedChars(response.attributes.title),
       list: response.embeds?.wikis?.data.map((wiki) => WikiMapper.fromGetWikiResponse(wiki)) || [],
     };
   }

@@ -122,7 +122,13 @@ export class ConnectAddonComponent {
   }
 
   private showSuccessAndRedirect(createdAddon: AuthorizedAccountModel | null): void {
-    this.router.navigate([`${this.baseUrl()}/addons`]);
+    const addonType = this.addonTypeString()?.toLowerCase();
+    this.router.navigate([`${this.baseUrl()}/addons`], {
+      queryParams: {
+        activeTab: 1,
+        addonType: addonType,
+      },
+    });
     this.toastService.showSuccess('settings.addons.toast.createSuccess', {
       addonName: AddonServiceNames[createdAddon?.externalServiceName as keyof typeof AddonServiceNames],
     });

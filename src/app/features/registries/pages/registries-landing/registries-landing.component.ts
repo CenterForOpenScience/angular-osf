@@ -23,7 +23,7 @@ import {
   RegistrationProviderSelectors,
 } from '@osf/shared/stores/registration-provider';
 
-import { RegistryServicesComponent } from '../../components';
+import { RegistryServicesComponent } from '../../components/registry-services/registry-services.component';
 import { GetRegistries, RegistriesSelectors } from '../../store';
 
 @Component({

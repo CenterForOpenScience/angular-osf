@@ -18,7 +18,6 @@ import { Mode } from '@osf/shared/enums/mode.enum';
 import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import { AddonsSelectors, ClearConfiguredAddons } from '@osf/shared/stores/addons';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import { ClearCollections, CollectionsSelectors } from '@osf/shared/stores/collections';
@@ -34,7 +33,7 @@ import { OverviewParentProjectComponent } from './components/overview-parent-pro
 import { OverviewWikiComponent } from './components/overview-wiki/overview-wiki.component';
 import { ProjectOverviewMetadataComponent } from './components/project-overview-metadata/project-overview-metadata.component';
 import { ProjectOverviewToolbarComponent } from './components/project-overview-toolbar/project-overview-toolbar.component';
-import { RecentActivityComponent } from './components/recent-activity/recent-activity.component';
+import { ProjectRecentActivityComponent } from './components/project-recent-activity/project-recent-activity.component';
 import { ProjectOverviewModel } from './models';
 import { ProjectOverviewComponent } from './project-overview.component';
 import { ClearProjectOverview, GetComponents, GetProjectById, ProjectOverviewSelectors } from './store';
@@ -81,7 +80,7 @@ describe('ProjectOverviewComponent', () => {
           OverviewWikiComponent,
           OverviewComponentsComponent,
           LinkedResourcesComponent,
-          RecentActivityComponent,
+          ProjectRecentActivityComponent,
           ProjectOverviewToolbarComponent,
           ProjectOverviewMetadataComponent,
           FilesWidgetComponent,
@@ -136,7 +135,6 @@ describe('ProjectOverviewComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetBookmarksCollectionId));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetComponents));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetLinkedResources));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetActivityLogs));
   });
 
   it('should dispatch actions when projectId exists in parent route params', () => {
@@ -150,20 +148,6 @@ describe('ProjectOverviewComponent', () => {
     component.ngOnInit();
 
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectById));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetActivityLogs));
-  });
-
-  it('should dispatch GetActivityLogs with correct parameters', () => {
-    component.ngOnInit();
-
-    const activityLogsCall = (store.dispatch as jest.Mock).mock.calls.find(
-      (call) => call[0] instanceof GetActivityLogs
-    );
-    expect(activityLogsCall).toBeDefined();
-    const action = activityLogsCall[0] as GetActivityLogs;
-    expect(action.projectId).toBe('project-123');
-    expect(action.page).toBe(1);
-    expect(action.pageSize).toBe(5);
   });
 
   it('should return true for isModerationMode when query param mode is moderation', () => {

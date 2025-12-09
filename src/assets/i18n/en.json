@@ -618,6 +618,8 @@
       },
       "removeDialog": {
         "title": "Remove contributor",
+        "thisProjectOnly": "This project only",
+        "thisProjectAndComponents": "This project and all it's components",
         "message": "Are you sure you want to remove <b>{{name}}</b> contributor?",
         "successMessage": "Contributor {{name}} successfully removed."
       },
@@ -2882,7 +2884,8 @@
       "orcid": "ORCID",
       "noData": "No users found",
       "messageSent": "Message has been sent.",
-      "requestSent": "Request has been sent."
+      "requestSent": "Request has been sent.",
+      "notBibliographicOrAffiliatedUserText": "The user is not bibliographic or no longer affiliated with the institution"
     },
     "projects": {
       "title": "Title",

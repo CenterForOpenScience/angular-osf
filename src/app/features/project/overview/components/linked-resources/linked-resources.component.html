@@ -21,6 +21,7 @@
                 <osf-icon [iconClass]="linkedResource.isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
                 <a class="linked-project-title" [href]="linkedResource.id">{{ linkedResource.title }}</a>
               </h2>
+
               @if (canEdit()) {
                 <div>
                   <p-button
@@ -36,7 +37,7 @@
               }
             </div>
 
-            <div class="flex flex-wrap gap-1">
+            <div class="flex gap-1">
               <p class="font-bold">{{ 'common.labels.contributors' | translate }}:</p>
 
               <osf-contributors-list [contributors]="linkedResource.bibliographicContributors"></osf-contributors-list>
@@ -53,4 +54,14 @@
       }
     }
   </div>
+  @if (hasMoreLinkedResources() && !isLinkedResourcesLoading()) {
+    <div class="flex justify-content-center px-3">
+      <p-button
+        (onClick)="loadMore()"
+        severity="secondary"
+        [label]="'common.buttons.seeMore' | translate"
+        [loading]="isLoadingMoreLinkedResources()"
+      />
+    </div>
+  }
 </div>

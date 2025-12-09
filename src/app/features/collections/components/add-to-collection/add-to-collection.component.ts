@@ -34,13 +34,11 @@ import { CanDeactivateComponent } from '@shared/models/can-deactivate.interface'
 import { CollectionsSelectors, GetCollectionProvider } from '@shared/stores/collections';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
-import {
-  AddToCollectionConfirmationDialogComponent,
-  CollectionMetadataStepComponent,
-  ProjectContributorsStepComponent,
-  ProjectMetadataStepComponent,
-  SelectProjectStepComponent,
-} from './index';
+import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-confirmation-dialog/add-to-collection-confirmation-dialog.component';
+import { CollectionMetadataStepComponent } from './collection-metadata-step/collection-metadata-step.component';
+import { ProjectContributorsStepComponent } from './project-contributors-step/project-contributors-step.component';
+import { ProjectMetadataStepComponent } from './project-metadata-step/project-metadata-step.component';
+import { SelectProjectStepComponent } from './select-project-step/select-project-step.component';
 
 @Component({
   selector: 'osf-add-to-collection-form',

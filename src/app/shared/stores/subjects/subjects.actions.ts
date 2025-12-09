@@ -27,7 +27,7 @@ export class FetchChildrenSubjects {
 }
 
 export class UpdateResourceSubjects {
-  static readonly type = '[Subjects] Update Resource Project';
+  static readonly type = '[Subjects] Update Resource Subjects';
 
   constructor(
     public resourceId: string,

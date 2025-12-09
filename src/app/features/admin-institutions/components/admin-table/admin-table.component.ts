@@ -20,6 +20,7 @@ import {
   TableIconClickEvent,
 } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
 import { PaginationLinksModel } from '@osf/shared/models/pagination-links.model';
 import { SearchFilters } from '@osf/shared/models/search-filters.model';
@@ -43,6 +44,7 @@ import { DownloadType } from '../../enums';
     StopPropagationDirective,
     DatePipe,
     NgClass,
+    InfoIconComponent,
   ],
   templateUrl: './admin-table.component.html',
   styleUrl: './admin-table.component.scss',

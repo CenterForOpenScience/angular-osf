@@ -24,7 +24,9 @@ module.exports = {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$|@ngxs|@angular|@ngrx|parse5|entities|chart.js)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!.*\\.mjs$|@ngxs|@angular|@ngrx|parse5|entities|chart.js|@mdit|@citation-js|@traptitech|@sentry|@primeng|@newrelic)',
+  ],
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['ts', 'js', 'html', 'json', 'mjs'],
   coverageDirectory: 'coverage',
@@ -52,10 +54,10 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 28.0,
-      functions: 32.0,
-      lines: 60.28,
-      statements: 60.77,
+      branches: 31.0,
+      functions: 35.0,
+      lines: 64.0,
+      statements: 64.0,
     },
   },
   watchPathIgnorePatterns: [
@@ -68,19 +70,9 @@ module.exports = {
   ],
   testPathIgnorePatterns: [
     '<rootDir>/src/environments',
-    '<rootDir>/src/app/app.config.ts',
     '<rootDir>/src/app/features/files/pages/file-detail',
     '<rootDir>/src/app/features/project/addons/',
-    '<rootDir>/src/app/features/project/registrations',
-    '<rootDir>/src/app/features/project/wiki',
-    '<rootDir>/src/app/features/registry/components',
-    '<rootDir>/src/app/features/registry/pages/registry-wiki/registry-wiki',
     '<rootDir>/src/app/features/settings/addons/',
     '<rootDir>/src/app/features/settings/tokens/store/',
-    '<rootDir>/src/app/shared/components/file-menu/',
-    '<rootDir>/src/app/shared/components/line-chart/',
-    '<rootDir>/src/app/shared/components/pie-chart/',
-    '<rootDir>/src/app/shared/components/reusable-filter/',
-    '<rootDir>/src/app/shared/components/wiki/edit-section/',
   ],
 };

@@ -44,6 +44,15 @@
       [handleFolderSelection]="handleFolderSelection"
       [rootFolder]="selectedStorageItem()"
     ></osf-google-file-picker>
+    @if (selectedStorageItem() !== null) {
+      <osf-google-file-picker
+        #filePicker
+        [isFolderPicker]="false"
+        [accountId]="accountId()"
+        [currentAddonType]="currentAddonType()"
+        [rootFolder]="selectedStorageItem()"
+      ></osf-google-file-picker>
+    }
   } @else {
     <div class="folders-table flex flex-column">
       <div class="folders-table-heading flex justify-content-between">

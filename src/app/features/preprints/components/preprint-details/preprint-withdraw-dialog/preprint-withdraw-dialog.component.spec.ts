@@ -9,16 +9,16 @@ import { formInputLimits } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 
-import { WithdrawDialogComponent } from './withdraw-dialog.component';
+import { PreprintWithdrawDialogComponent } from './preprint-withdraw-dialog.component';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('WithdrawDialogComponent', () => {
-  let component: WithdrawDialogComponent;
-  let fixture: ComponentFixture<WithdrawDialogComponent>;
+describe('PreprintWithdrawDialogComponent', () => {
+  let component: PreprintWithdrawDialogComponent;
+  let fixture: ComponentFixture<PreprintWithdrawDialogComponent>;
   let dialogRefMock: any;
   let dialogConfigMock: any;
 
@@ -34,7 +34,7 @@ describe('WithdrawDialogComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [WithdrawDialogComponent, OSFTestingModule, MockPipe(TitleCasePipe)],
+      imports: [PreprintWithdrawDialogComponent, OSFTestingModule, MockPipe(TitleCasePipe)],
       providers: [
         MockProvider(DynamicDialogRef, dialogRefMock),
         MockProvider(DynamicDialogConfig, dialogConfigMock),
@@ -44,7 +44,7 @@ describe('WithdrawDialogComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WithdrawDialogComponent);
+    fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -103,7 +103,7 @@ describe('WithdrawDialogComponent', () => {
     dialogConfigMock.data = { provider: providerWithPreMod, preprint: preprintWithPending };
 
     expect(() => {
-      fixture = TestBed.createComponent(WithdrawDialogComponent);
+      fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
       component = fixture.componentInstance;
       component.ngOnInit();
     }).not.toThrow();
@@ -116,7 +116,7 @@ describe('WithdrawDialogComponent', () => {
     dialogConfigMock.data = { provider: providerWithPreMod, preprint: preprintWithAccepted };
 
     expect(() => {
-      fixture = TestBed.createComponent(WithdrawDialogComponent);
+      fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
       component = fixture.componentInstance;
       component.ngOnInit();
     }).not.toThrow();
@@ -128,7 +128,7 @@ describe('WithdrawDialogComponent', () => {
     dialogConfigMock.data = { provider: providerWithPostMod, preprint: mockPreprint };
 
     expect(() => {
-      fixture = TestBed.createComponent(WithdrawDialogComponent);
+      fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
       component = fixture.componentInstance;
       component.ngOnInit();
     }).not.toThrow();
