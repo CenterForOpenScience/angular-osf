@@ -15,6 +15,7 @@ import {
   ElementRef,
   inject,
   input,
+  NgZone,
   output,
   PLATFORM_ID,
   signal,
@@ -66,6 +67,7 @@ export class CedarTemplateFormComponent {
   private route = inject(ActivatedRoute);
   readonly environment = inject(ENVIRONMENT);
   private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
   readonly cedarLoaded = signal<boolean>(false);
 
   readonly recordId = signal<string>('');
@@ -144,8 +146,13 @@ export class CedarTemplateFormComponent {
     }
 
     try {
-      await Promise.all([import('cedar-artifact-viewer'), import('cedar-embeddable-editor')]);
-      this.cedarLoaded.set(true);
+      await this.ngZone.runOutsideAngular(async () => {
+        await Promise.all([import('cedar-artifact-viewer'), import('cedar-embeddable-editor')]);
+      });
+
+      this.ngZone.run(() => {
+        this.cedarLoaded.set(true);
+      });
     } catch {
       this.cedarLoaded.set(false);
     }
