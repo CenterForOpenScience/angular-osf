@@ -12,6 +12,8 @@ import {
 
 export class RegistryModerationMapper {
   static fromResponse(response: RegistryDataJsonApi): RegistryModeration {
+    console.log(response, 'response mapper');
+
     return {
       id: response.id,
       title: replaceBadEncodedChars(response.attributes.title),
@@ -22,6 +24,8 @@ export class RegistryModerationMapper {
       embargoEndDate: response.attributes.embargo_end_date,
       actions: [],
       revisionId: response.embeds?.schema_responses?.data?.[0]?.id || null,
+      totalContributors: 0,
+      contributors: [],
     };
   }
 

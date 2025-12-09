@@ -2,6 +2,7 @@ import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
 import { ReviewAction } from './review-action.model';
+import {ContributorModel} from '@shared/models/contributors/contributor.model';
 
 export interface RegistryModeration {
   id: string;
@@ -13,4 +14,8 @@ export interface RegistryModeration {
   embargoEndDate: string | null;
   actions: ReviewAction[];
   revisionId?: string | null;
+  contributorsLoading?: boolean;
+  contributors: ContributorModel[];
+  totalContributors: number;
+  contributorsPage?: number;
 }
