@@ -3067,6 +3067,7 @@
       "registration_approved_no_user": "Registration of {{node}} was approved",
       "registration_cancelled": "{{user}} cancelled a registration of {{node}}",
       "registration_initiated": "{{user}} initiated a registration of {{node}}",
+      "registration_date_updated": "An OSF Support Team member updated the registration date of {{node}}",
       "resource_identifier_added": "{{user}} has added a Resource to Registration {{node}}",
       "resource_identifier_removed": "{{user}} has removed a Resource to Registration {{node}}",
       "resource_identifier_updated": "{{user}} has updated a Resource to Registration {{node}}",

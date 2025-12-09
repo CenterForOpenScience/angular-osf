@@ -178,8 +178,8 @@ describe('ProjectOverviewToolbarComponent', () => {
       expect(component.ResourceType).toBe(ResourceType);
     });
 
-    it('should have resourceType set to Registration', () => {
-      expect(component.resourceType).toBe(ResourceType.Registration);
+    it('should have resourceType set to Project', () => {
+      expect(component.resourceType).toBe(ResourceType.Project);
     });
   });
 });

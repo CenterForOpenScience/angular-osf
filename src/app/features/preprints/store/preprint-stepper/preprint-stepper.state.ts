@@ -172,9 +172,14 @@ export class PreprintStepperState {
 
     ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
 
-    return this.fileService
-      .updateFileContent(action.file, uploadedFile.links.upload)
-      .pipe(switchMap(() => this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace')));
+    return this.fileService.updateFileContent(action.file, uploadedFile.links.upload).pipe(
+      switchMap(() => {
+        if (uploadedFile.name !== action.file.name) {
+          return this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace');
+        }
+        return EMPTY;
+      })
+    );
   }
 
   @Action(FetchPreprintPrimaryFile)
