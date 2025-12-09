@@ -13,13 +13,13 @@
 
     <div class="flex flex-wrap mt-4 gap-3 md:gap-4">
       @for (item of statisticsData; track $index) {
-        <osf-statistic-card class="w-full sm:w-6 lg:flex-1" [label]="item.label | translate" [value]="item.value" />
+        <osf-statistic-card class="width-25" [label]="item.label | translate" [value]="item.value" />
       }
     </div>
 
     <div class="flex flex-wrap mt-4 gap-3 md:gap-4">
       @if (departmentLabels().length > 0) {
-        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 w-full md:w-6 lg:flex-1">
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-doughnut-chart
             [isLoading]="departmentsLoading()"
             [datasets]="departmentDataset()"
@@ -31,7 +31,7 @@
       }
 
       @if (projectsLabels().length > 0) {
-        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 w-full md:w-6 lg:flex-1">
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-doughnut-chart
             [isLoading]="summaryMetricsLoading()"
             [datasets]="projectDataset()"
@@ -43,7 +43,7 @@
       }
 
       @if (registrationsLabels().length > 0) {
-        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 w-full md:w-6 lg:flex-1">
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-doughnut-chart
             [isLoading]="summaryMetricsLoading()"
             [datasets]="registrationsDataset()"
@@ -55,7 +55,7 @@
       }
 
       @if (osfProjectsLabels().length > 0) {
-        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 w-full md:w-6 lg:flex-1">
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-doughnut-chart
             [isLoading]="summaryMetricsLoading()"
             [datasets]="osfProjectsDataset()"
@@ -67,7 +67,7 @@
       }
 
       @if (licenceLabels().length > 0) {
-        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 w-full md:w-6 lg:flex-1">
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-bar-chart
             [isLoading]="rightsLoading()"
             [datasets]="licenceDataset()"
@@ -81,7 +81,7 @@
       }
 
       @if (addonLabels().length > 0) {
-        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 w-full md:w-6 lg:flex-1">
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-bar-chart
             [isLoading]="storageRegionSearchLoading()"
             [datasets]="addonDataset()"
@@ -95,7 +95,7 @@
       }
 
       @if (storageLabels().length > 0) {
-        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 w-full md:w-6 lg:flex-1">
+        <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-doughnut-chart
             [isLoading]="storageRegionSearchLoading()"
             [datasets]="storageDataset()"
