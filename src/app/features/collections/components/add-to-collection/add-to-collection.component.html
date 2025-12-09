@@ -14,13 +14,15 @@
 
     <div class="content-container flex-1">
       <p-stepper class="collection-stepper flex flex-column gap-5" [value]="stepperActiveValue()">
-        <osf-select-project-step
-          [stepperActiveValue]="stepperActiveValue()"
-          [collectionId]="primaryCollectionId() ?? ''"
-          [targetStepValue]="AddToCollectionSteps.SelectProject"
-          (projectSelected)="handleProjectSelected()"
-          (stepChange)="handleChangeStep($event)"
-        />
+        @if (!isEditMode()) {
+          <osf-select-project-step
+            [stepperActiveValue]="stepperActiveValue()"
+            [collectionId]="primaryCollectionId() ?? ''"
+            [targetStepValue]="AddToCollectionSteps.SelectProject"
+            (projectSelected)="handleProjectSelected()"
+            (stepChange)="handleChangeStep($event)"
+          />
+        }
 
         <osf-project-metadata-step
           [stepperActiveValue]="stepperActiveValue()"
@@ -51,13 +53,24 @@
         />
       </p-stepper>
 
-      <div class="flex justify-content-end gap-3 mt-4">
-        <p-button severity="info" [label]="'common.buttons.cancel' | translate" [routerLink]="['../']" />
-        <p-button
-          [label]="'common.buttons.addToCollection' | translate"
-          [disabled]="stepperActiveValue() !== AddToCollectionSteps.Complete"
-          (click)="handleAddToCollection()"
-        />
+      <div class="flex justify-content-between gap-3 mt-4" [class.justify-content-end]="isEditMode()">
+        @if (isEditMode()) {
+          <p-button
+            severity="danger"
+            [label]="'common.buttons.removeFromCollection' | translate"
+            (click)="handleRemoveFromCollection()"
+          />
+        }
+
+        <div class="flex align-items-center gap-3">
+          <p-button severity="info" [label]="'common.buttons.cancel' | translate" [routerLink]="['../']" />
+
+          <p-button
+            [label]="(isEditMode() ? 'common.buttons.update' : 'common.buttons.addToCollection') | translate"
+            [disabled]="stepperActiveValue() !== AddToCollectionSteps.Complete"
+            (click)="handleAddToCollection()"
+          />
+        </div>
       </div>
     </div>
   </section>

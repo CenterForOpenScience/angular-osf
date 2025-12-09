@@ -7,6 +7,7 @@ import { CollectionSubmissionPayload } from '@osf/shared/models/collections/coll
 import { CollectionSubmissionPayloadJsonApi } from '@osf/shared/models/collections/collection-submission-payload-json-api.model';
 import {
   CollectionDetails,
+  CollectionProjectSubmission,
   CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionWithGuid,
@@ -22,6 +23,7 @@ import { ContributorModel } from '@osf/shared/models/contributors/contributor.mo
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
+import { ProjectsMapper } from '../projects';
 import { UserMapper } from '../user';
 
 export class CollectionsMapper {
@@ -205,6 +207,36 @@ export class CollectionsMapper {
     }));
   }
 
+  static getProjectSubmission(data: CollectionSubmissionWithGuidJsonApi): CollectionProjectSubmission {
+    const project = ProjectsMapper.fromProjectResponse(data.embeds.guid.data);
+    const submission: CollectionSubmissionWithGuid = {
+      id: data.id,
+      type: data.type,
+      nodeId: data.embeds.guid.data.id,
+      nodeUrl: data.embeds.guid.data.links.html,
+      title: replaceBadEncodedChars(data.embeds.guid.data.attributes.title),
+      description: replaceBadEncodedChars(data.embeds.guid.data.attributes.description),
+      category: data.embeds.guid.data.attributes.category,
+      dateCreated: data.embeds.guid.data.attributes.date_created,
+      dateModified: data.embeds.guid.data.attributes.date_modified,
+      public: data.embeds.guid.data.attributes.public,
+      reviewsState: data.attributes.reviews_state,
+      collectedType: data.attributes.collected_type,
+      status: data.attributes.status,
+      volume: data.attributes.volume,
+      issue: data.attributes.issue,
+      programArea: data.attributes.program_area,
+      schoolType: data.attributes.school_type,
+      studyDesign: data.attributes.study_design,
+      dataType: data.attributes.data_type,
+      disease: data.attributes.disease,
+      gradeLevels: data.attributes.grade_levels,
+      contributors: [] as ContributorModel[],
+    };
+
+    return { submission, project };
+  }
+
   static toCollectionSubmissionRequest(payload: CollectionSubmissionPayload): CollectionSubmissionPayloadJsonApi {
     const collectionId = payload.collectionId;
     const collectionsMetadata = convertToSnakeCase(payload.collectionMetadata);
@@ -230,6 +262,17 @@ export class CollectionsMapper {
             },
           },
         },
+      },
+    };
+  }
+
+  static collectionSubmissionUpdateRequest(payload: CollectionSubmissionPayload) {
+    return {
+      data: {
+        id: `${payload.projectId}-${payload.collectionId}`,
+        type: 'collection-submissions',
+        attributes: {},
+        relationships: {},
       },
     };
   }

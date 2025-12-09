@@ -29,7 +29,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
-import { ProjectMetadataForm } from '@osf/features/collections/models';
+import { ProjectMetadataForm } from '@osf/features/collections/models/project-metadata-form.model';
 import { ProjectMetadataFormService } from '@osf/features/collections/services';
 import { AddToCollectionSelectors, GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection';
 import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';

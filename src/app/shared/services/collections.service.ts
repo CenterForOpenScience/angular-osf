@@ -17,6 +17,7 @@ import { ContributorsMapper } from '../mappers/contributors';
 import { ReviewActionsMapper } from '../mappers/review-actions.mapper';
 import {
   CollectionDetails,
+  CollectionProjectSubmission,
   CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionActionType,
@@ -174,9 +175,17 @@ export class CollectionsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponse<CollectionSubmissionJsonApi[], null>
+        ResponseJsonApi<CollectionSubmissionJsonApi[]>
       >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
       .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data[0])));
+  }
+
+  fetchProjectSubmission(collectionId: string, projectId: string): Observable<CollectionProjectSubmission> {
+    return this.jsonApiService
+      .get<
+        ResponseJsonApi<CollectionSubmissionWithGuidJsonApi>
+      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`)
+      .pipe(map((response) => CollectionsMapper.getProjectSubmission(response.data)));
   }
 
   fetchCollectionSubmissionsActions(
