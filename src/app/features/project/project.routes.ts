@@ -50,7 +50,7 @@ export const projectRoutes: Routes = [
       {
         path: 'metadata',
         loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
-        providers: [provideStates([SubjectsState])],
+        providers: [provideStates([SubjectsState, CollectionsState])],
         data: { resourceType: ResourceType.Project },
         canActivate: [viewOnlyGuard],
       },

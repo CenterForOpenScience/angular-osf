@@ -23,6 +23,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { CanDeactivateComponent } from '@osf/shared/models/can-deactivate.interface';
 import { BrandService } from '@osf/shared/services/brand.service';
@@ -111,6 +112,12 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
     setSelectedProject: SetSelectedProject,
     getCurrentCollectionSubmission: GetCurrentCollectionSubmission,
   });
+
+  showRemoveButton = computed(
+    () =>
+      this.isEditMode() &&
+      this.currentCollectionSubmission()?.submission.reviewsState === CollectionSubmissionReviewState.Accepted
+  );
 
   constructor() {
     this.initializeProvider();
@@ -267,6 +274,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
 
     effect(() => {
       const submission = this.currentCollectionSubmission();
+
       if (submission?.project && !this.selectedProject()) {
         this.actions.setSelectedProject(submission.project);
       }

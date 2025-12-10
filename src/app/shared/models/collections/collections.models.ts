@@ -1,4 +1,5 @@
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 
 import { BrandModel } from '../brand/brand.model';
 import { ContributorModel } from '../contributors/contributor.model';
@@ -49,7 +50,7 @@ export interface CollectionSubmission {
   type: string;
   collectionTitle: string;
   collectionId: string;
-  reviewsState: string;
+  reviewsState: CollectionSubmissionReviewState;
   collectedType: string;
   status: string;
   volume: string;
@@ -73,7 +74,7 @@ export interface CollectionSubmissionWithGuid {
   dateCreated: string;
   dateModified: string;
   public: boolean;
-  reviewsState: string;
+  reviewsState: CollectionSubmissionReviewState;
   collectedType: string;
   status: string;
   volume: string;

@@ -59,7 +59,8 @@
       "accept": "Accept",
       "reject": "Reject",
       "loadMore": "Load more",
-      "seeMore": "See more"
+      "seeMore": "See more",
+      "resubmit": "Resubmit"
     },
     "accessibility": {
       "help": "Help",

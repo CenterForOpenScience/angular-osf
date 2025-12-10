@@ -168,16 +168,13 @@ export class CollectionsService {
   }
 
   fetchCurrentSubmission(projectId: string, collectionId: string): Observable<CollectionSubmission> {
-    const params: Record<string, string> = {
-      'filter[id]': projectId,
-      embed: 'collection',
-    };
+    const params: Record<string, string> = { embed: 'collection' };
 
     return this.jsonApiService
       .get<
-        ResponseJsonApi<CollectionSubmissionJsonApi[]>
-      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
-      .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data[0])));
+        ResponseJsonApi<CollectionSubmissionJsonApi>
+      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`, params)
+      .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data)));
   }
 
   fetchProjectSubmission(collectionId: string, projectId: string): Observable<CollectionProjectSubmission> {

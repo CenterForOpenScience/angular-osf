@@ -9,8 +9,8 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
-import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 import { CollectionSubmission } from '@osf/shared/models/collections/collections.models';
 
 @Component({
@@ -32,7 +32,8 @@ import { CollectionSubmission } from '@osf/shared/models/collections/collections
 })
 export class OverviewCollectionsComponent {
   private readonly router = inject(Router);
-  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+
+  readonly CollectionSubmissionReviewState = CollectionSubmissionReviewState;
 
   projectSubmissions = input<CollectionSubmission[] | null>(null);
   isProjectSubmissionsLoading = input<boolean>(false);

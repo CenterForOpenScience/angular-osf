@@ -53,8 +53,8 @@
         />
       </p-stepper>
 
-      <div class="flex justify-content-between gap-3 mt-4" [class.justify-content-end]="isEditMode()">
-        @if (isEditMode()) {
+      <div class="flex justify-content-end gap-3 mt-4" [class.justify-content-between]="showRemoveButton()">
+        @if (showRemoveButton()) {
           <p-button
             severity="danger"
             [label]="'common.buttons.removeFromCollection' | translate"

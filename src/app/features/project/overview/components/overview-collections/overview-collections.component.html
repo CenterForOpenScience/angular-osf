@@ -16,6 +16,7 @@
                   <p-button
                     link
                     class="link-btn-no-padding"
+                    styleClass="text-left"
                     osfStopPropagation
                     (onClick)="navigateToCollection(submission)"
                     [label]="submission.collectionTitle"
@@ -23,19 +24,19 @@
 
                   @let status = submission.reviewsState;
                   @switch (status) {
-                    @case (SubmissionReviewStatus.Accepted) {
+                    @case (CollectionSubmissionReviewState.Accepted) {
                       <p-tag class="capitalize" [value]="status" severity="success"></p-tag>
                     }
-                    @case (SubmissionReviewStatus.Rejected) {
+                    @case (CollectionSubmissionReviewState.Rejected) {
                       <p-tag class="capitalize" [value]="status" severity="danger"></p-tag>
                     }
-                    @case (SubmissionReviewStatus.Pending) {
+                    @case (CollectionSubmissionReviewState.Pending) {
                       <p-tag class="capitalize" [value]="status" severity="warn"></p-tag>
                     }
-                    @case (SubmissionReviewStatus.InProgress) {
-                      <p-tag class="capitalize" [value]="SubmissionReviewStatus.Pending" severity="warn"></p-tag>
+                    @case (CollectionSubmissionReviewState.InProgress) {
+                      <p-tag class="capitalize" [value]="status" severity="warn"></p-tag>
                     }
-                    @case (SubmissionReviewStatus.Removed) {
+                    @case (CollectionSubmissionReviewState.Removed) {
                       <p-tag class="capitalize" [value]="status" severity="secondary"></p-tag>
                     }
                   }
