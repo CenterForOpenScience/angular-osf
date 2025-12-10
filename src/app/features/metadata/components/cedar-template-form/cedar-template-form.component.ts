@@ -26,7 +26,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import 'cedar-artifact-viewer';
-import 'cedar-embeddable-editor';
 
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '../../constants';
 import { CedarMetadataHelper } from '../../helpers';
@@ -70,6 +69,8 @@ export class CedarTemplateFormComponent {
   readonly recordId = signal<string>('');
   readonly downloadUrl = signal<string>('');
   readonly schemaName = signal<string>('');
+
+  readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
 
   shareItems = [
     {
@@ -123,7 +124,17 @@ export class CedarTemplateFormComponent {
     this.validateCedarMetadata();
   }
 
-  readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
+  private initializeFormData(): void {
+    const template = this.template()?.attributes?.template;
+    if (!template) return;
+    const metadata = this.existingRecord()?.attributes?.metadata;
+    if (this.existingRecord()) {
+      const structuredMetadata = CedarMetadataHelper.buildStructuredMetadata(metadata);
+      this.formData.set(structuredMetadata);
+    } else {
+      this.formData.set(CedarMetadataHelper.buildEmptyMetadata());
+    }
+  }
 
   downloadMetadadaRecord() {
     if (this.fileGuid()) {
@@ -171,18 +182,6 @@ export class CedarTemplateFormComponent {
       const finalData = { data: editor.currentMetadata, id: this.template().id, isPublished: this.isValid };
       this.formData.set(finalData);
       this.emitData.emit(finalData as CedarRecordDataBinding);
-    }
-  }
-
-  private initializeFormData(): void {
-    const template = this.template()?.attributes?.template;
-    if (!template) return;
-    const metadata = this.existingRecord()?.attributes?.metadata;
-    if (this.existingRecord()) {
-      const structuredMetadata = CedarMetadataHelper.buildStructuredMetadata(metadata);
-      this.formData.set(structuredMetadata);
-    } else {
-      this.formData.set(CedarMetadataHelper.buildEmptyMetadata());
     }
   }
 
