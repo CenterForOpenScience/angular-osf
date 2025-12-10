@@ -7,10 +7,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
-import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { StepOption } from '@osf/shared/models/step-option.model';
 import { BrandService } from '@osf/shared/services/brand.service';
+import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
 import { FileStepComponent, ReviewStepComponent } from '../../components';
 import { createNewVersionStepsConst } from '../../constants';
@@ -41,13 +41,6 @@ describe('CreateNewVersionComponent', () => {
   const mockPreprintId = 'test_preprint_123';
 
   beforeEach(async () => {
-    jest.spyOn(BrowserTabHelper, 'updateTabStyles').mockImplementation(() => {});
-    jest.spyOn(BrowserTabHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'applyHeaderStyles').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'applyBranding').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'resetBranding').mockImplementation(() => {});
-
     routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
     routeMock = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId, preprintId: mockPreprintId })
@@ -63,9 +56,11 @@ describe('CreateNewVersionComponent', () => {
       providers: [
         TranslationServiceMock,
         MockProvider(BrandService),
+        MockProvider(BrowserTabService),
+        MockProvider(HeaderStyleService),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, routeMock),
-        { provide: IS_WEB, useValue: of(true) },
+        MockProvider(IS_WEB, of(true)),
         provideMockStore({
           signals: [
             {
@@ -99,10 +94,6 @@ describe('CreateNewVersionComponent', () => {
       fixture.destroy();
     }
     jest.restoreAllMocks();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should initialize with correct default values', () => {

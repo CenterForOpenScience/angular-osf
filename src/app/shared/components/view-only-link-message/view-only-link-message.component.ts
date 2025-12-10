@@ -3,7 +3,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'osf-view-only-link-message',
@@ -13,7 +14,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewOnlyLinkMessageComponent {
+  private platformId = inject(PLATFORM_ID);
+
   handleLeaveViewOnlyView(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.delete('view_only');
 

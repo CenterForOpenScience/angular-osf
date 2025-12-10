@@ -1,7 +1,8 @@
 import { EMPTY, filter, map, Observable, of, switchMap, take } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -15,6 +16,7 @@ import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/ident
 export class DataciteService {
   private readonly http: HttpClient = inject(HttpClient);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
 
   get apiDomainUrl() {
     return this.environment.apiDomainUrl;
@@ -74,31 +76,38 @@ export class DataciteService {
 
   /**
    * Internal helper to log a specific Datacite event for a given DOI.
+   * Only tracks in browser environment using sendBeacon with HTTP POST fallback.
    *
    * @param event - The Datacite event type (VIEW or DOWNLOAD).
    * @param doi - The DOI (Digital Object Identifier) of the resource.
-   * @returns An Observable that completes when the HTTP POST is sent,
-   *          or EMPTY if DOI or repo ID is missing.
+   * @returns An Observable that completes when the tracking request is sent,
+   *          or EMPTY if DOI, repo ID is missing, or not in browser.
    */
   private logActivity(event: DataciteEvent, doi: string): Observable<void> {
     if (!doi || !this.dataciteTrackerRepoId) {
       return EMPTY;
     }
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return EMPTY;
+    }
+
     const payload = {
       n: event,
       u: window.location.href,
       i: this.dataciteTrackerRepoId,
       p: doi,
     };
+
     const success = navigator.sendBeacon(this.dataciteTrackerAddress, JSON.stringify(payload));
+
     if (success) {
       return of(void 0);
     } else {
-      const headers = {
-        'Content-Type': 'application/json',
-      };
+      const headers = { 'Content-Type': 'application/json' };
       const context = new HttpContext();
       context.set(BYPASS_ERROR_INTERCEPTOR, true);
+
       return this.http
         .post(this.dataciteTrackerAddress, payload, {
           headers,

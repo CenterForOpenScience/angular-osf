@@ -47,6 +47,7 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
   searchControl = new FormControl<string>('');
 
   private readonly environment = inject(ENVIRONMENT);
+  private readonly brandService = inject(BrandService);
 
   readonly supportEmail = this.environment.supportEmail;
   private readonly OSF_PROVIDER_ID = this.environment.defaultProvider;
@@ -69,7 +70,7 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
       const provider = this.osfPreprintProvider();
 
       if (provider) {
-        BrandService.applyBranding(provider.brand);
+        this.brandService.applyBranding(provider.brand);
       }
     });
   }
@@ -81,7 +82,7 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    BrandService.resetBranding();
+    this.brandService.resetBranding();
   }
 
   redirectToSearchPageWithValue() {

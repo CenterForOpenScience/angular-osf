@@ -21,18 +21,16 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { AddToCollectionSteps } from '@osf/features/collections/enums';
-import {
-  ClearAddToCollectionState,
-  CreateCollectionSubmission,
-} from '@osf/features/collections/store/add-to-collection';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { CanDeactivateComponent } from '@osf/shared/models/can-deactivate.interface';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
-import { HeaderStyleHelper } from '@shared/helpers/header-style.helper';
-import { CanDeactivateComponent } from '@shared/models/can-deactivate.interface';
-import { CollectionsSelectors, GetCollectionProvider } from '@shared/stores/collections';
-import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
+import { CollectionsSelectors, GetCollectionProvider } from '@osf/shared/stores/collections';
+import { ProjectsSelectors } from '@osf/shared/stores/projects';
+
+import { AddToCollectionSteps } from '../../enums';
+import { ClearAddToCollectionState, CreateCollectionSubmission } from '../../store/add-to-collection';
 
 import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-confirmation-dialog/add-to-collection-confirmation-dialog.component';
 import { CollectionMetadataStepComponent } from './collection-metadata-step/collection-metadata-step.component';
@@ -62,6 +60,8 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customDialogService = inject(CustomDialogService);
+  private readonly brandService = inject(BrandService);
+  private readonly headerStyleHelper = inject(HeaderStyleService);
 
   readonly AddToCollectionSteps = AddToCollectionSteps;
 
@@ -158,8 +158,8 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       const provider = this.collectionProvider();
 
       if (provider && provider.brand) {
-        BrandService.applyBranding(provider.brand);
-        HeaderStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
+        this.brandService.applyBranding(provider.brand);
+        this.headerStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
       }
     });
   }
@@ -169,8 +169,8 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       this.actions.clearAddToCollectionState();
       this.allowNavigation.set(false);
 
-      HeaderStyleHelper.resetToDefaults();
-      BrandService.resetBranding();
+      this.headerStyleHelper.resetToDefaults();
+      this.brandService.resetBranding();
     });
   }
 

@@ -4,7 +4,10 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { HttpTestingController } from '@angular/common/http/testing';
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideServerRendering } from '@angular/platform-server';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -15,9 +18,9 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { Mode } from '@osf/shared/enums/mode.enum';
-import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { AddonsSelectors, ClearConfiguredAddons } from '@osf/shared/stores/addons';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import { ClearCollections, CollectionsSelectors } from '@osf/shared/stores/collections';
@@ -40,7 +43,6 @@ import { ClearProjectOverview, GetComponents, GetProjectById, ProjectOverviewSel
 
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
-import { AnalyticsServiceMockFactory } from '@testing/providers/analytics.service.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -118,7 +120,6 @@ describe('ProjectOverviewComponent', () => {
         MockProvider(ActivatedRoute, activatedRouteMock),
         MockProvider(CustomDialogService, customDialogServiceMock),
         MockProvider(ToastService, toastService),
-        MockProvider(AnalyticsService, AnalyticsServiceMockFactory()),
       ],
     }).compileComponents();
 
@@ -172,5 +173,129 @@ describe('ProjectOverviewComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(ClearCollections));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(ClearCollectionModeration));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(ClearConfiguredAddons));
+  });
+});
+
+describe('ProjectOverviewComponent SSR Tests', () => {
+  let component: ProjectOverviewComponent;
+  let fixture: ComponentFixture<ProjectOverviewComponent>;
+  let httpMock: HttpTestingController;
+  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockRouter: ReturnType<RouterMockBuilder['build']>;
+  let store: Store;
+
+  const mockProject: ProjectOverviewModel = {
+    ...MOCK_PROJECT_OVERVIEW,
+    id: 'project-123',
+    title: 'Test Project',
+    parentId: 'parent-123',
+    rootParentId: 'root-123',
+    isPublic: true,
+  };
+
+  beforeEach(async () => {
+    mockRouter = RouterMockBuilder.create().withUrl('/projects/project-123').build();
+    const parentRoute = {
+      params: of({ id: 'project-123' }),
+      snapshot: { params: { id: 'project-123' }, queryParams: {} },
+    } as any;
+    mockActivatedRoute = Object.assign(
+      ActivatedRouteMockBuilder.create().withParams({ id: 'project-123' }).withQueryParams({}).build(),
+      { parent: parentRoute }
+    );
+
+    await TestBed.configureTestingModule({
+      imports: [
+        ProjectOverviewComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          SubHeaderComponent,
+          LoadingSpinnerComponent,
+          OverviewWikiComponent,
+          OverviewComponentsComponent,
+          LinkedResourcesComponent,
+          ProjectRecentActivityComponent,
+          ProjectOverviewToolbarComponent,
+          ProjectOverviewMetadataComponent,
+          FilesWidgetComponent,
+          ViewOnlyLinkMessageComponent,
+          OverviewParentProjectComponent,
+          CitationAddonCardComponent
+        ),
+      ],
+      providers: [
+        provideServerRendering(),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        MockProvider(ActivatedRoute, mockActivatedRoute),
+        MockProvider(Router, mockRouter),
+        MockProvider(CustomDialogService, CustomDialogServiceMockBuilder.create().build()),
+        MockProvider(ToastService, { showSuccess: jest.fn() }),
+        MockProvider(ViewOnlyLinkHelperService, { hasViewOnlyParam: jest.fn().mockReturnValue(false) }),
+        provideMockStore({
+          signals: [
+            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
+            { selector: ProjectOverviewSelectors.getProjectLoading, value: false },
+            { selector: ProjectOverviewSelectors.isProjectAnonymous, value: false },
+            { selector: ProjectOverviewSelectors.hasWriteAccess, value: true },
+            { selector: ProjectOverviewSelectors.hasAdminAccess, value: true },
+            { selector: ProjectOverviewSelectors.isWikiEnabled, value: true },
+            { selector: ProjectOverviewSelectors.getParentProject, value: null },
+            { selector: ProjectOverviewSelectors.getParentProjectLoading, value: false },
+            { selector: ProjectOverviewSelectors.getStorage, value: null },
+            { selector: ProjectOverviewSelectors.isStorageLoading, value: false },
+            { selector: CollectionsModerationSelectors.getCollectionSubmissions, value: [] },
+            { selector: CollectionsModerationSelectors.getCurrentReviewAction, value: null },
+            { selector: CollectionsModerationSelectors.getCurrentReviewActionLoading, value: false },
+            { selector: CollectionsSelectors.getCollectionProvider, value: null },
+            { selector: CollectionsSelectors.getCollectionProviderLoading, value: false },
+            { selector: CurrentResourceSelectors.getResourceWithChildren, value: [] },
+            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
+            { selector: AddonsSelectors.getAddonsResourceReference, value: [] },
+            { selector: AddonsSelectors.getConfiguredCitationAddons, value: [] },
+            { selector: AddonsSelectors.getOperationInvocation, value: null },
+          ],
+        }),
+      ],
+    }).compileComponents();
+
+    httpMock = TestBed.inject(HttpTestingController);
+    store = TestBed.inject(Store);
+    fixture = TestBed.createComponent(ProjectOverviewComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('should render ProjectOverviewComponent server-side without errors', () => {
+    expect(() => {
+      fixture.detectChanges();
+    }).not.toThrow();
+    expect(component).toBeTruthy();
+  });
+
+  it('should not access browser-only APIs during SSR', () => {
+    const platformId = TestBed.inject(PLATFORM_ID);
+    expect(platformId).toBe('server');
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+  });
+
+  it('should execute constructor effects without errors in SSR context', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    fixture.detectChanges();
+    expect(dispatchSpy).toHaveBeenCalled();
+    expect(component).toBeTruthy();
+  });
+
+  it('should not call browser-only actions in ngOnDestroy during SSR', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+    fixture.detectChanges();
+    dispatchSpy.mockClear();
+    fixture.destroy();
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 });

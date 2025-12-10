@@ -1,51 +1,120 @@
+import { of } from 'rxjs';
+
+import { runInInjectionContext } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { AuthService } from '@core/services/auth.service';
+import { GetCurrentUser, UserSelectors } from '@osf/core/store/user';
 
 import { redirectIfLoggedInGuard } from './redirect-if-logged-in.guard';
 
-jest.mock('@angular/core', () => ({
-  ...(jest.requireActual('@angular/core') as any),
-  inject: jest.fn(),
-}));
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-const inject = jest.requireMock('@angular/core').inject as jest.Mock;
-
-describe.skip('redirectIfLoggedInGuard', () => {
-  const mockAuthService = {
-    isAuthenticated: jest.fn(),
-  };
-
-  const mockRouter = {
-    navigate: jest.fn(),
-  };
+describe('redirectIfLoggedInGuard', () => {
+  let router: Router;
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore({
+          selectors: [],
+          actions: [],
+        }),
+        {
+          provide: Router,
+          useValue: RouterMockBuilder.create().build(),
+        },
+      ],
+    });
+
+    router = TestBed.inject(Router);
     jest.clearAllMocks();
-    inject.mockImplementation((token) => {
-      if (token === AuthService) return mockAuthService;
-      if (token === Router) return mockRouter;
-      return null;
+  });
+
+  it('should navigate to dashboard and return false when user is authenticated', (done) => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore({
+          selectors: [
+            {
+              selector: UserSelectors.isAuthenticated,
+              value: true,
+            },
+          ],
+          actions: [
+            {
+              action: GetCurrentUser,
+              value: of(true),
+            },
+          ],
+        }),
+        {
+          provide: Router,
+          useValue: RouterMockBuilder.create().build(),
+        },
+      ],
+    });
+
+    router = TestBed.inject(Router);
+
+    runInInjectionContext(TestBed, () => {
+      const result = redirectIfLoggedInGuard({} as any, {} as any);
+
+      if (typeof result === 'object' && 'subscribe' in result) {
+        result.subscribe((value) => {
+          expect(value).toBe(false);
+          expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
+          done();
+        });
+      } else {
+        expect(result).toBe(false);
+        done();
+      }
     });
   });
 
-  it('should return false and call router.navigate if user is authenticated', () => {
-    mockAuthService.isAuthenticated.mockReturnValue(true);
+  it('should return true and not navigate when user is not authenticated', (done) => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideMockStore({
+          selectors: [
+            {
+              selector: UserSelectors.isAuthenticated,
+              value: false,
+            },
+          ],
+          actions: [
+            {
+              action: GetCurrentUser,
+              value: of(true),
+            },
+          ],
+        }),
+        {
+          provide: Router,
+          useValue: RouterMockBuilder.create().build(),
+        },
+      ],
+    });
 
-    const result = redirectIfLoggedInGuard({} as any, {} as any);
+    router = TestBed.inject(Router);
 
-    expect(mockAuthService.isAuthenticated).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
-    expect(result).toBeUndefined();
-  });
+    runInInjectionContext(TestBed, () => {
+      const result = redirectIfLoggedInGuard({} as any, {} as any);
 
-  it('should return true and not call router.navigate if user is not authenticated', () => {
-    mockAuthService.isAuthenticated.mockReturnValue(false);
-
-    const result = redirectIfLoggedInGuard({} as any, {} as any);
-
-    expect(mockAuthService.isAuthenticated).toHaveBeenCalled();
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
-    expect(result).toBe(true);
+      if (typeof result === 'object' && 'subscribe' in result) {
+        result.subscribe((value) => {
+          expect(value).toBe(true);
+          expect(router.navigate).not.toHaveBeenCalled();
+          done();
+        });
+      } else {
+        expect(result).toBe(true);
+        done();
+      }
+    });
   });
 });

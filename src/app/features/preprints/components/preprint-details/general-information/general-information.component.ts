@@ -5,7 +5,18 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnDestroy, output } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  OnDestroy,
+  output,
+  PLATFORM_ID,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -48,6 +59,8 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
 })
 export class GeneralInformationComponent implements OnDestroy {
   private readonly environment = inject(ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly PreregLinkInfo = PreregLinkInfo;
@@ -87,7 +100,9 @@ export class GeneralInformationComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.resetContributorsState();
+    if (this.isBrowser) {
+      this.actions.resetContributorsState();
+    }
   }
 
   handleLoadMoreContributors(): void {

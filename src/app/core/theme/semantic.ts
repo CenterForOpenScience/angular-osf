@@ -24,5 +24,17 @@ export const semantic = {
 };
 
 function getCssVariableValue(variableName: string): string {
+  if (typeof document === 'undefined' || typeof getComputedStyle === 'undefined') {
+    const fallbackColors: Record<string, string> = {
+      '--pr-blue-1': '#337ab7',
+      '--bg-blue-3': '#f1f8fd',
+      '--green-1': '#357935',
+      '--red-1': '#b73333',
+      '--blue-1': '#3792b1',
+    };
+
+    return fallbackColors[variableName] || '';
+  }
+
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
 }
