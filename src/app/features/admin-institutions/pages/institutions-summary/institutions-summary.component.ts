@@ -2,6 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -23,7 +24,14 @@ import {
 
 @Component({
   selector: 'osf-institutions-summary',
-  imports: [StatisticCardComponent, LoadingSpinnerComponent, DoughnutChartComponent, BarChartComponent, TranslatePipe],
+  imports: [
+    StatisticCardComponent,
+    LoadingSpinnerComponent,
+    DoughnutChartComponent,
+    BarChartComponent,
+    TranslatePipe,
+    DatePipe,
+  ],
   templateUrl: './institutions-summary.component.html',
   styleUrl: './institutions-summary.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
