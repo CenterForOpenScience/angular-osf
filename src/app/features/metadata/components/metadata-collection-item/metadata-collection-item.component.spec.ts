@@ -42,10 +42,6 @@ describe('MetadataCollectionItemComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should initialize with submission input', () => {
     expect(component.submission()).toEqual(mockSubmission);
   });
@@ -74,79 +70,44 @@ describe('MetadataCollectionItemComponent', () => {
     expect(attributes.some((attr) => attr.key === 'gradeLevels')).toBe(false);
   });
 
-  it('should display collection title', () => {
-    const button = fixture.nativeElement.querySelector('p-button[osfStopPropagation]');
-    expect(button).toBeTruthy();
-    expect(button.getAttribute('ng-reflect-label')).toBe(mockSubmission.collectionTitle);
-  });
-
-  it('should display status tag for Pending state', () => {
-    fixture.componentRef.setInput('submission', {
-      ...mockSubmission,
-      reviewsState: CollectionSubmissionReviewState.Pending,
-    });
-    fixture.detectChanges();
-
-    const tag = fixture.nativeElement.querySelector('p-tag');
-    expect(tag).toBeTruthy();
-    expect(tag.getAttribute('ng-reflect-severity')).toBe('warn');
-  });
-
-  it('should display status tag for Accepted state', () => {
+  it('should toggle submission button visibility based on reviews state', () => {
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
       reviewsState: CollectionSubmissionReviewState.Accepted,
     });
     fixture.detectChanges();
 
-    const tag = fixture.nativeElement.querySelector('p-tag');
-    expect(tag).toBeTruthy();
-    expect(tag.getAttribute('ng-reflect-severity')).toBe('success');
-  });
+    const submissionButtonVisible = fixture.nativeElement.querySelector('p-button[severity="secondary"]');
+    expect(submissionButtonVisible).toBeTruthy();
 
-  it('should display status tag for Rejected state', () => {
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
-      reviewsState: CollectionSubmissionReviewState.Rejected,
+      reviewsState: CollectionSubmissionReviewState.Pending,
     });
     fixture.detectChanges();
 
-    const tag = fixture.nativeElement.querySelector('p-tag');
-    expect(tag).toBeTruthy();
-    expect(tag.getAttribute('ng-reflect-severity')).toBe('danger');
+    const submissionButtonHidden = fixture.nativeElement.querySelector('p-button[severity="secondary"]');
+    expect(submissionButtonHidden).toBeFalsy();
   });
 
-  it('should display status tag for InProgress state', () => {
+  it('should switch submission button label for removed status', () => {
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
-      reviewsState: CollectionSubmissionReviewState.InProgress,
+      reviewsState: CollectionSubmissionReviewState.Accepted,
+      status: CollectionSubmissionReviewState.Removed,
     });
     fixture.detectChanges();
 
-    const tag = fixture.nativeElement.querySelector('p-tag');
-    expect(tag).toBeTruthy();
-    expect(tag.getAttribute('ng-reflect-severity')).toBe('warn');
-  });
+    expect(component.submissionButtonLabel()).toBe('common.buttons.resubmit');
 
-  it('should display status tag for Removed state', () => {
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
-      reviewsState: CollectionSubmissionReviewState.Removed,
+      reviewsState: CollectionSubmissionReviewState.Accepted,
+      status: CollectionSubmissionReviewState.Accepted,
     });
     fixture.detectChanges();
 
-    const tag = fixture.nativeElement.querySelector('p-tag');
-    expect(tag).toBeTruthy();
-    expect(tag.getAttribute('ng-reflect-severity')).toBe('secondary');
-  });
-
-  it('should display attributes when submission has values', () => {
-    const attributes = component.attributes();
-    expect(attributes.length).toBeGreaterThan(0);
-
-    fixture.detectChanges();
-    const attributeElements = fixture.nativeElement.querySelectorAll('.font-normal');
-    expect(attributeElements.length).toBe(attributes.length);
+    expect(component.submissionButtonLabel()).toBe('common.buttons.edit');
   });
 
   it('should not display attributes section when all fields are empty', () => {
@@ -177,14 +138,15 @@ describe('MetadataCollectionItemComponent', () => {
     expect(attributesSection).toBeFalsy();
   });
 
-  it('should have CollectionSubmissionReviewState enum available', () => {
-    expect(component.CollectionSubmissionReviewState).toBe(CollectionSubmissionReviewState);
-  });
+  it('should hide attributes when reviews state is Removed even with data', () => {
+    fixture.componentRef.setInput('submission', {
+      ...mockSubmission,
+      reviewsState: CollectionSubmissionReviewState.Removed,
+    });
+    fixture.detectChanges();
 
-  it('should have correct routerLink for edit button', () => {
-    const editButton = fixture.nativeElement.querySelector('p-button[routerLink]');
-    expect(editButton).toBeTruthy();
-    expect(editButton.getAttribute('ng-reflect-router-link')).toContain(mockSubmission.collectionId);
-    expect(editButton.getAttribute('ng-reflect-router-link')).toContain(mockSubmission.id);
+    expect(component.attributes().length).toBeGreaterThan(0);
+    const attributesSection = fixture.nativeElement.querySelector('.flex.flex-column.gap-2.mt-2');
+    expect(attributesSection).toBeFalsy();
   });
 });
