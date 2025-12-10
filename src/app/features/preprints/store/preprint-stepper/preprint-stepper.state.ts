@@ -172,9 +172,14 @@ export class PreprintStepperState {
 
     ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
 
-    return this.fileService
-      .updateFileContent(action.file, uploadedFile.links.upload)
-      .pipe(switchMap(() => this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace')));
+    return this.fileService.updateFileContent(action.file, uploadedFile.links.upload).pipe(
+      switchMap(() => {
+        if (uploadedFile.name !== action.file.name) {
+          return this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace');
+        }
+        return EMPTY;
+      })
+    );
   }
 
   @Action(FetchPreprintPrimaryFile)
@@ -255,18 +260,24 @@ export class PreprintStepperState {
 
   @Action(FetchProjectFilesByLink)
   getProjectFilesByLink(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFilesByLink) {
-    ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
-
-    return this.fileService.getFilesWithoutFiltering(action.filesLink, 1).pipe(
+    const state = ctx.getState();
+    ctx.patchState({
+      projectFiles: {
+        ...state.projectFiles,
+        isLoading: true,
+      },
+    });
+    return this.fileService.getFilesWithoutFiltering(action.filesLink, action.page).pipe(
       tap((response) => {
-        ctx.setState(
-          patch({
-            projectFiles: patch({
-              data: response.data,
-              isLoading: false,
-            }),
-          })
-        );
+        const newData = action.page === 1 ? response.data : [...(state.projectFiles.data ?? []), ...response.data];
+        ctx.patchState({
+          projectFiles: {
+            data: newData,
+            isLoading: false,
+            totalCount: response.totalCount,
+            error: null,
+          },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'projectFiles', error))
     );
