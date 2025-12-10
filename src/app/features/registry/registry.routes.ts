@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 
 import { viewOnlyGuard } from '@core/guards/view-only.guard';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { BookmarksState } from '@osf/shared/stores/bookmarks';
 import { CitationsState } from '@osf/shared/stores/citations';
 import { DuplicatesState } from '@osf/shared/stores/duplicates';
 import { RegistrationProviderState } from '@osf/shared/stores/registration-provider';
@@ -23,7 +24,7 @@ export const registryRoutes: Routes = [
   {
     path: '',
     component: RegistryComponent,
-    providers: [provideStates([RegistryState, RegistrationProviderState])],
+    providers: [provideStates([BookmarksState, RegistryState, RegistrationProviderState])],
     children: [
       {
         path: '',

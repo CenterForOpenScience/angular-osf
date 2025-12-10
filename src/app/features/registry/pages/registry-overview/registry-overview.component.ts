@@ -20,6 +20,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { CreateSchemaResponse } from '@osf/features/registries/store';
 import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -28,13 +29,13 @@ import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { toCamelCase } from '@osf/shared/helpers/camel-case';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
-import { SchemaResponse } from '@shared/models/registration/schema-response.model';
 
 import { ArchivingMessageComponent } from '../../components/archiving-message/archiving-message.component';
 import { RegistrationOverviewToolbarComponent } from '../../components/registration-overview-toolbar/registration-overview-toolbar.component';
@@ -45,7 +46,6 @@ import { RegistryRevisionsComponent } from '../../components/registry-revisions/
 import { RegistryStatusesComponent } from '../../components/registry-statuses/registry-statuses.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
 import {
-  CreateSchemaResponse,
   GetRegistryById,
   GetRegistryReviewActions,
   GetRegistrySchemaResponses,
@@ -81,6 +81,7 @@ export class RegistryOverviewComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly loaderService = inject(LoaderService);
 
@@ -101,8 +102,14 @@ export class RegistryOverviewComponent {
   readonly hasWriteAccess = select(RegistrySelectors.hasWriteAccess);
   readonly hasAdminAccess = select(RegistrySelectors.hasAdminAccess);
 
+  isModeration = false;
+  revisionId: string | null = null;
   revisionInProgress: SchemaResponse | undefined;
+  selectedRevisionIndex = signal(0);
 
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
+  showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn);
+  isInitialState = computed(() => this.registry()?.reviewsState === RegistrationReviewStates.Initial);
   canMakeDecision = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration);
 
   isRootRegistration = computed(() => {
@@ -121,10 +128,6 @@ export class RegistryOverviewComponent {
     return index !== null ? schemaResponses[index] : null;
   });
 
-  readonly selectedRevisionIndex = signal(0);
-
-  showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn);
-
   private readonly actions = createDispatchMap({
     getRegistryById: GetRegistryById,
     getBookmarksId: GetBookmarksCollectionId,
@@ -134,15 +137,6 @@ export class RegistryOverviewComponent {
     createSchemaResponse: CreateSchemaResponse,
     getBibliographicContributors: GetBibliographicContributors,
   });
-
-  revisionId: string | null = null;
-  isModeration = false;
-
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
-
-  get isInitialState(): boolean {
-    return this.registry()?.reviewsState === RegistrationReviewStates.Initial;
-  }
 
   constructor() {
     effect(() => {

@@ -5,6 +5,7 @@ import { Routes } from '@angular/router';
 import { viewOnlyGuard } from '@core/guards/view-only.guard';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
+import { BookmarksState } from '@osf/shared/stores/bookmarks';
 import { CitationsState } from '@osf/shared/stores/citations';
 import { CollectionsState } from '@osf/shared/stores/collections';
 import { DuplicatesState } from '@osf/shared/stores/duplicates';
@@ -24,7 +25,7 @@ export const projectRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('../project/project.component').then((mod) => mod.ProjectComponent),
-    providers: [provideStates([ProjectOverviewState])],
+    providers: [provideStates([BookmarksState, ProjectOverviewState])],
     children: [
       {
         path: '',

@@ -17,8 +17,8 @@ import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-sec
 import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
 import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { WikiModes } from '@osf/shared/models/wiki/wiki.model';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import {
   ClearWiki,
   GetCompareVersionContent,
@@ -52,6 +52,7 @@ export class RegistryWikiComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   WikiModes = WikiModes;
   wikiModes = select(WikiSelectors.getWikiModes);
@@ -65,7 +66,7 @@ export class RegistryWikiComponent {
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
   componentsWikiList = select(WikiSelectors.getComponentsWikiList);
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   readonly resourceId = this.route.parent?.snapshot.params['id'];
 

@@ -4,7 +4,18 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { PaginatorState } from 'primeng/paginator';
 
-import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  OnDestroy,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 
 import { RecentActivityListComponent } from '@osf/shared/components/recent-activity/recent-activity-list.component';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -18,6 +29,9 @@ import { ActivityLogsSelectors, ClearActivityLogs, GetActivityLogs } from '@osf/
 })
 export class ProjectRecentActivityComponent implements OnDestroy {
   projectId = input<string>();
+
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   pageSize = signal(5);
   currentPage = signal<number>(1);
@@ -42,7 +56,9 @@ export class ProjectRecentActivityComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.clearActivityLogsStore();
+    if (this.isBrowser) {
+      this.actions.clearActivityLogsStore();
+    }
   }
 
   onPageChange(event: PaginatorState) {

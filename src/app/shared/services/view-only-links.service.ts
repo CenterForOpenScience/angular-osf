@@ -3,7 +3,6 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiResponse } from '@shared/models/common/json-api.model';
 
 import { ResourceType } from '../enums/resource-type.enum';
 import { ViewOnlyLinksMapper } from '../mappers/view-only-links.mapper';
@@ -11,6 +10,7 @@ import { PaginatedViewOnlyLinksModel } from '../models/view-only-links/view-only
 import {
   ViewOnlyLinkJsonApi,
   ViewOnlyLinksResponseJsonApi,
+  ViewOnlyLinksResponsesJsonApi,
 } from '../models/view-only-links/view-only-link-response.model';
 
 import { JsonApiService } from './json-api.service';
@@ -36,8 +36,8 @@ export class ViewOnlyLinksService {
     const params: Record<string, unknown> = { 'embed[]': ['creator', 'nodes'] };
 
     return this.jsonApiService
-      .get<ViewOnlyLinksResponseJsonApi>(`${this.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, params)
-      .pipe(map((response) => ViewOnlyLinksMapper.fromResponse(response, projectId)));
+      .get<ViewOnlyLinksResponsesJsonApi>(`${this.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, params)
+      .pipe(map((response) => ViewOnlyLinksMapper.fromResponse(response, projectId, this.environment.webUrl)));
   }
 
   createViewOnlyLink(
@@ -50,10 +50,10 @@ export class ViewOnlyLinksService {
     const params: Record<string, unknown> = { 'embed[]': ['creator', 'nodes'] };
 
     return this.jsonApiService
-      .post<
-        JsonApiResponse<ViewOnlyLinkJsonApi, null>
-      >(`${this.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, data, params)
-      .pipe(map((response) => ViewOnlyLinksMapper.fromSingleResponse(response.data, projectId)));
+      .post<ViewOnlyLinksResponseJsonApi>(`${this.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, data, params)
+      .pipe(
+        map((response) => ViewOnlyLinksMapper.fromSingleResponse(response.data, projectId, this.environment.webUrl))
+      );
   }
 
   deleteLink(projectId: string, resourceType: ResourceType, linkId: string): Observable<void> {

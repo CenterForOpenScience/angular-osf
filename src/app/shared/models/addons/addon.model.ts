@@ -14,4 +14,5 @@ export interface AddonModel {
   credentialsAvailable?: boolean;
   supportedResourceTypes?: string[];
   wbKey?: string;
+  redirectUrl?: string;
 }

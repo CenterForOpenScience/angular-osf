@@ -24,10 +24,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { CanDeactivateComponent } from '@osf/shared/models/can-deactivate.interface';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CollectionsSelectors, GetCollectionProvider } from '@osf/shared/stores/collections';
@@ -80,6 +80,8 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   readonly selectedProjectId = toSignal<string | null>(
     this.route.params.pipe(map((params) => params['id'])) ?? of(null)
   );
+  private readonly brandService = inject(BrandService);
+  private readonly headerStyleHelper = inject(HeaderStyleService);
 
   readonly AddToCollectionSteps = AddToCollectionSteps;
 
@@ -257,8 +259,8 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       const provider = this.collectionProvider();
 
       if (provider && provider.brand) {
-        BrandService.applyBranding(provider.brand);
-        HeaderStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
+        this.brandService.applyBranding(provider.brand);
+        this.headerStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
       }
     });
 
@@ -286,8 +288,8 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       this.actions.clearAddToCollectionState();
       this.allowNavigation.set(false);
 
-      HeaderStyleHelper.resetToDefaults();
-      BrandService.resetBranding();
+      this.headerStyleHelper.resetToDefaults();
+      this.brandService.resetBranding();
     });
   }
 

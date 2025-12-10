@@ -11,25 +11,19 @@ export const redirectIfLoggedInGuard: CanActivateFn = () => {
   const store = inject(Store);
   const router = inject(Router);
 
-  const isAuthenticated = store.selectSnapshot(UserSelectors.isAuthenticated);
-
-  if (isAuthenticated) {
-    router.navigate(['/dashboard']);
-    return false;
-  }
-
   return store.dispatch(GetCurrentUser).pipe(
-    switchMap(() => {
-      return store.select(UserSelectors.isAuthenticated).pipe(
+    switchMap(() =>
+      store.select(UserSelectors.isAuthenticated).pipe(
         take(1),
         map((isAuthenticated) => {
           if (isAuthenticated) {
             router.navigate(['/dashboard']);
             return false;
           }
+
           return true;
         })
-      );
-    })
+      )
+    )
   );
 };

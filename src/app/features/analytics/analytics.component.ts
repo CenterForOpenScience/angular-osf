@@ -28,8 +28,8 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { Primitive } from '@osf/shared/helpers/types.helper';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { DatasetInput } from '@osf/shared/models/charts/dataset-input';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
@@ -66,11 +66,12 @@ export class AnalyticsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   readonly resourceId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   readonly resourceType = toSignal(this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined));
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   analytics = select(AnalyticsSelectors.getMetrics(this.resourceId()));
   relatedCounts = select(AnalyticsSelectors.getRelatedCounts(this.resourceId()));

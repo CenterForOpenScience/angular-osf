@@ -1,6 +1,7 @@
 import { filter } from 'rxjs';
 
-import { DestroyRef, Directive, ElementRef, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { DestroyRef, Directive, ElementRef, inject, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 
@@ -11,6 +12,7 @@ export class ScrollTopOnRouteChangeDirective {
   private el = inject(ElementRef);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private platformId = inject(PLATFORM_ID);
 
   constructor() {
     this.router.events
@@ -25,7 +27,7 @@ export class ScrollTopOnRouteChangeDirective {
           route = route.firstChild;
         }
 
-        if (route.snapshot.data['scrollToTop'] !== false) {
+        if (isPlatformBrowser(this.platformId) && route.snapshot.data['scrollToTop'] !== false) {
           (this.el.nativeElement as HTMLElement).scrollTo({
             top: 0,
             behavior: 'instant',

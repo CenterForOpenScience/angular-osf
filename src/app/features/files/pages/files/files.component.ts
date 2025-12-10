@@ -67,11 +67,11 @@ import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enu
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
-import { getViewOnlyParamFromUrl, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
 import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 import { StorageItem } from '@shared/models/addons/storage-item.model';
@@ -129,6 +129,7 @@ export class FilesComponent {
   private readonly environment = inject(ENVIRONMENT);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;
@@ -229,7 +230,7 @@ export class FilesComponent {
     this.activeRoute.parent?.parent?.snapshot.data['resourceType'] || ResourceType.Project
   );
 
-  readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   readonly canEdit = computed(() => {
     const details = this.resourceDetails();
@@ -628,7 +629,7 @@ export class FilesComponent {
 
   navigateToFile(file: FileModel) {
     const extras = this.hasViewOnly()
-      ? { queryParams: { view_only: getViewOnlyParamFromUrl(this.router.url) } }
+      ? { queryParams: { view_only: this.viewOnlyService.getViewOnlyParamFromUrl(this.router.url) } }
       : undefined;
 
     const url = this.router.serializeUrl(this.router.createUrlTree(['/', file.guid], extras));

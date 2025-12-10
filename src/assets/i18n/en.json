@@ -1711,7 +1711,8 @@
       "categories": {
         "additionalService": "Additional Storage",
         "citationManager": "Citation Manager",
-        "linkedServices": "Linked Services"
+        "linkedServices": "Linked Services",
+        "otherServices": "Other Services"
       },
       "toast": {
         "updateSuccess": "Successfully updated {{addonName}} add-on configuration",
@@ -1750,6 +1751,12 @@
         "table": {
           "function": "Function",
           "status": "Status"
+        },
+        "redirectAddons": {
+          "terms": "Clicking the button below will redirect you outside of OSF. You will need to follow that service's permissions to continue.",
+          "tip": "Tip: if the page does not open, please disable your browser's pop-up blocker and try again. Or click on this link to <a target='_blank' href={{serviceUrl}}>go to {{serviceName}}</a>.",
+          "popupError": "If you are having trouble with the pop-up window, please try clicking the link above to connect your account:",
+          "goToService": "Go to {{serviceName}}"
         },
         "confirmAccount": "Confirm account",
         "connectAccount": "Connect following account: {{accountName}}",
@@ -2844,6 +2851,7 @@
     },
     "summary": {
       "title": "Summary",
+      "lastUpdated": "Last Updated",
       "totalUsersByDepartment": "Total Users by Department",
       "publicPrivateProjects": "Public vs Private Projects",
       "publicEmbargoedRegistrations": "Public vs Embargoed Registrations",

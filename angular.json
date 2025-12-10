@@ -62,7 +62,12 @@
               "node_modules/ngx-markdown-editor/assets/highlight.js/highlight.min.js",
               "node_modules/ngx-markdown-editor/assets/marked.min.js",
               "src/assets/js/ace/snippetsMarkdown.js"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
@@ -146,29 +151,27 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "hmr": false
+          },
           "configurations": {
             "production": {
               "buildTarget": "osf:build:production"
             },
             "development": {
-              "buildTarget": "osf:build:development",
-              "hmr": true
+              "buildTarget": "osf:build:development"
             },
             "docker": {
-              "buildTarget": "osf:build:docker",
-              "hmr": true
+              "buildTarget": "osf:build:docker"
             },
             "staging": {
-              "buildTarget": "osf:build:staging",
-              "hmr": true
+              "buildTarget": "osf:build:staging"
             },
             "test": {
-              "buildTarget": "osf:build:test",
-              "hmr": false
+              "buildTarget": "osf:build:test"
             },
             "test-osf": {
-              "buildTarget": "osf:build:test-osf",
-              "hmr": false
+              "buildTarget": "osf:build:test-osf"
             }
           },
           "defaultConfiguration": "development"

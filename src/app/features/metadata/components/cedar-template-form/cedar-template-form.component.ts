@@ -199,6 +199,7 @@ export class CedarTemplateFormComponent {
       this.emitData.emit(finalData as CedarRecordDataBinding);
     }
   }
+
   handleEmailShare(): void {
     const url = window.location.href;
     window.location.href = `mailto:?subject=${this.schemaName()}&body=${url}`;
