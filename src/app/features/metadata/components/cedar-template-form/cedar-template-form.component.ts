@@ -6,7 +6,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { map, of } from 'rxjs';
 
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,9 +15,7 @@ import {
   ElementRef,
   inject,
   input,
-  NgZone,
   output,
-  PLATFORM_ID,
   signal,
   viewChild,
   ViewEncapsulation,
@@ -26,7 +24,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+
+import 'cedar-artifact-viewer';
 
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '../../constants';
 import { CedarMetadataHelper } from '../../helpers';
@@ -39,7 +38,7 @@ import {
 
 @Component({
   selector: 'osf-cedar-template-form',
-  imports: [CommonModule, Button, TranslatePipe, Tooltip, Menu, LoadingSpinnerComponent],
+  imports: [CommonModule, Button, TranslatePipe, Tooltip, Menu],
   templateUrl: './cedar-template-form.component.html',
   styleUrl: './cedar-template-form.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -66,9 +65,6 @@ export class CedarTemplateFormComponent {
 
   private route = inject(ActivatedRoute);
   readonly environment = inject(ENVIRONMENT);
-  private platformId = inject(PLATFORM_ID);
-  private ngZone = inject(NgZone);
-  readonly cedarLoaded = signal<boolean>(false);
 
   readonly recordId = signal<string>('');
   readonly downloadUrl = signal<string>('');
@@ -95,7 +91,7 @@ export class CedarTemplateFormComponent {
     effect(() => {
       const tpl = this.template();
       if (tpl?.attributes?.template) {
-        this.loadCedarLibraries().then(() => this.initializeCedar());
+        this.initializeCedar();
       }
     });
 
@@ -103,7 +99,7 @@ export class CedarTemplateFormComponent {
       const record = this.existingRecord();
       this.schemaName.set(record?.embeds?.template.data.attributes.schema_name || '');
       if (record) {
-        this.loadCedarLibraries().then(() => this.initializeCedar());
+        this.initializeCedar();
       }
     });
   }
@@ -137,24 +133,6 @@ export class CedarTemplateFormComponent {
       this.formData.set(structuredMetadata);
     } else {
       this.formData.set(CedarMetadataHelper.buildEmptyMetadata());
-    }
-  }
-
-  private async loadCedarLibraries(): Promise<void> {
-    if (!isPlatformBrowser(this.platformId) || this.cedarLoaded()) {
-      return;
-    }
-
-    try {
-      await this.ngZone.runOutsideAngular(async () => {
-        await Promise.all([import('cedar-artifact-viewer'), import('cedar-embeddable-editor')]);
-      });
-
-      this.ngZone.run(() => {
-        this.cedarLoaded.set(true);
-      });
-    } catch {
-      this.cedarLoaded.set(false);
     }
   }
 
@@ -206,6 +184,7 @@ export class CedarTemplateFormComponent {
       this.emitData.emit(finalData as CedarRecordDataBinding);
     }
   }
+
   handleEmailShare(): void {
     const url = window.location.href;
     window.location.href = `mailto:?subject=${this.schemaName()}&body=${url}`;
