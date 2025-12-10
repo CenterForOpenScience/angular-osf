@@ -62,7 +62,7 @@ export class RegistrySubmissionItemComponent {
     const submission = this.submission();
     console.log('submission');
     console.log(submission);
-    console.log('after submission');
+    console.log('after submission', submission.contributors.length, submission.totalContributors);
     return submission.contributors.length < submission.totalContributors;
   });
 

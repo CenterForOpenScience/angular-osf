@@ -16,10 +16,23 @@ import { CollectionsSelectors } from '@osf/shared/stores/collections';
 
 import { ReviewStatusIcon } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 
 @Component({
   selector: 'osf-submission-item',
-  imports: [TranslatePipe, IconComponent, DateAgoPipe, Button, TruncatedTextComponent],
+  imports: [
+    TranslatePipe,
+    IconComponent,
+    DateAgoPipe,
+    Button,
+    TruncatedTextComponent,
+    Accordion,
+    AccordionPanel,
+    AccordionHeader,
+    AccordionContent,
+    ContributorsListComponent,
+  ],
   templateUrl: './collection-submission-item.component.html',
   styleUrl: './collection-submission-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +67,17 @@ export class CollectionSubmissionItemComponent {
         value: item[attribute.key as keyof CollectionSubmissionWithGuid] as string,
       }))
       .filter((attribute) => attribute.value);
+  });
+
+  hasMoreContributors = computed(() => {
+    // alert('hasMoreContributors', submission.contributors,  submission.totalContributors);
+    const submission = this.submission();
+    console.log('hasMoreContributors', submission.contributors, submission.totalContributors);
+    if (submission.contributors && submission.totalContributors) {
+      return submission.contributors.length < submission.totalContributors;
+    }
+
+    return false;
   });
 
   handleNavigation() {
