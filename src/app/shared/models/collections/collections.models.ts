@@ -1,7 +1,9 @@
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 
 import { BrandModel } from '../brand/brand.model';
 import { ContributorModel } from '../contributors/contributor.model';
+import { ProjectModel } from '../projects/projects.models';
 import { BaseProviderModel } from '../provider/provider.model';
 
 export interface CollectionProvider extends BaseProviderModel {
@@ -19,16 +21,16 @@ export interface CollectionProvider extends BaseProviderModel {
 }
 
 export interface CollectionFilters {
-  status: string[];
   collectedType: string[];
-  volume: string[];
+  disease: string[];
+  dataType: string[];
+  gradeLevels: string[];
   issue: string[];
   programArea: string[];
   schoolType: string[];
+  status: string[];
   studyDesign: string[];
-  dataType: string[];
-  disease: string[];
-  gradeLevels: string[];
+  volume: string[];
 }
 
 export interface CollectionDetails {
@@ -48,7 +50,7 @@ export interface CollectionSubmission {
   type: string;
   collectionTitle: string;
   collectionId: string;
-  reviewsState: string;
+  reviewsState: CollectionSubmissionReviewState;
   collectedType: string;
   status: string;
   volume: string;
@@ -72,7 +74,7 @@ export interface CollectionSubmissionWithGuid {
   dateCreated: string;
   dateModified: string;
   public: boolean;
-  reviewsState: string;
+  reviewsState: CollectionSubmissionReviewState;
   collectedType: string;
   status: string;
   volume: string;
@@ -89,6 +91,11 @@ export interface CollectionSubmissionWithGuid {
     fullName: string;
   };
   actions?: CollectionSubmissionReviewAction[];
+}
+
+export interface CollectionProjectSubmission {
+  submission: CollectionSubmissionWithGuid;
+  project: ProjectModel;
 }
 
 export type CollectionSubmissionActionType = 'collection_submission_actions';

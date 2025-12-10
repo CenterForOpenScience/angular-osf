@@ -28,6 +28,7 @@
       "done": "Done",
       "select": "Select",
       "addToCollection": "Add to Collection",
+      "removeFromCollection": "Remove from Collection",
       "discardChanges": "Discard Changes",
       "saveAndContinue": "Save and Continue",
       "clickToEdit": "Click to edit",
@@ -58,7 +59,8 @@
       "accept": "Accept",
       "reject": "Reject",
       "loadMore": "Load more",
-      "seeMore": "See more"
+      "seeMore": "See more",
+      "resubmit": "Resubmit"
     },
     "accessibility": {
       "help": "Help",
@@ -1411,6 +1413,12 @@
         "noProjectsFound": "No projects found",
         "fieldRequired": "This field can't be empty"
       }
+    },
+    "removeDialog": {
+      "header": "Remove project from collection",
+      "message": "Are you sure you want to remove {{projectTitle}} from this collection?",
+      "success": "Project successfully removed from this collection.",
+      "reasonPlaceholder": "Optional reason for removal"
     },
     "common": {
       "dateCreated": "Date Created:",

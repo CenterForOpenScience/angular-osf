@@ -16,34 +16,20 @@
                   <p-button
                     link
                     class="link-btn-no-padding"
+                    styleClass="text-left"
                     osfStopPropagation
-                    (onClick)="navigateToCollection(submission)"
+                    [routerLink]="['/collections', submission.collectionId]"
                     [label]="submission.collectionTitle"
                   ></p-button>
 
                   @let status = submission.reviewsState;
-                  @switch (status) {
-                    @case (SubmissionReviewStatus.Accepted) {
-                      <p-tag class="capitalize" [value]="status" severity="success"></p-tag>
-                    }
-                    @case (SubmissionReviewStatus.Rejected) {
-                      <p-tag class="capitalize" [value]="status" severity="danger"></p-tag>
-                    }
-                    @case (SubmissionReviewStatus.Pending) {
-                      <p-tag class="capitalize" [value]="status" severity="warn"></p-tag>
-                    }
-                    @case (SubmissionReviewStatus.InProgress) {
-                      <p-tag class="capitalize" [value]="SubmissionReviewStatus.Pending" severity="warn"></p-tag>
-                    }
-                    @case (SubmissionReviewStatus.Removed) {
-                      <p-tag class="capitalize" [value]="status" severity="secondary"></p-tag>
-                    }
-                  }
+
+                  <p-tag class="capitalize" [value]="status" [severity]="status | collectionStatusSeverity"></p-tag>
                 </div>
               </p-accordion-header>
 
               <p-accordion-content>
-                @let attributes = submissionAttributes(submission);
+                @let attributes = getSubmissionAttributes(submission);
 
                 @if (attributes.length) {
                   <div class="flex flex-column gap-2 mt-2">

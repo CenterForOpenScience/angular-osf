@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 
-import { map, of } from 'rxjs';
+import { combineLatest, map, of } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
 import {
@@ -172,7 +172,10 @@ export class ProjectOverviewComponent implements OnInit {
   }));
 
   readonly projectId = toSignal<string | undefined>(
-    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+    combineLatest([
+      this.route.params.pipe(map((params) => params['id'])),
+      this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined),
+    ]).pipe(map(([currentId, parentId]) => currentId ?? parentId))
   );
 
   constructor() {

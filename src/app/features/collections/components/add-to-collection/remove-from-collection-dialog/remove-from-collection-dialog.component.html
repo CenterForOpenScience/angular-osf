@@ -1,0 +1,15 @@
+<p>{{ 'collections.removeDialog.message' | translate: { projectTitle: projectTitle } }}</p>
+
+<textarea
+  pTextarea
+  class="w-full mt-4"
+  [placeholder]="'collections.removeDialog.reasonPlaceholder' | translate"
+  [rows]="3"
+  [maxlength]="commentLimit"
+  [(ngModel)]="comment"
+></textarea>
+
+<div class="flex justify-content-end gap-2 mt-4">
+  <p-button [label]="'common.buttons.cancel' | translate" severity="info" (onClick)="cancel()"></p-button>
+  <p-button [label]="'common.buttons.remove' | translate" severity="danger" (onClick)="confirm()"></p-button>
+</div>
