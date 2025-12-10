@@ -9,10 +9,12 @@ import { RouterLink } from '@angular/router';
 import { collectionFilterNames } from '@osf/features/collections/constants';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 import { CollectionSubmission } from '@osf/shared/models/collections/collections.models';
+import { KeyValueModel } from '@osf/shared/models/common/key-value.model';
+import { CollectionStatusSeverityPipe } from '@osf/shared/pipes/collection-status-severity.pipe';
 
 @Component({
   selector: 'osf-metadata-collection-item',
-  imports: [TranslatePipe, Tag, Button, RouterLink],
+  imports: [TranslatePipe, Tag, Button, RouterLink, CollectionStatusSeverityPipe],
   templateUrl: './metadata-collection-item.component.html',
   styleUrl: './metadata-collection-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,7 +37,7 @@ export class MetadataCollectionItemComponent {
 
   attributes = computed(() => {
     const submission = this.submission();
-    const attributes: { key: string; label: string; value: string }[] = [];
+    const attributes: KeyValueModel[] = [];
 
     for (const filter of collectionFilterNames) {
       const value = submission[filter.key as keyof CollectionSubmission];
