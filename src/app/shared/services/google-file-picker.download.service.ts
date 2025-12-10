@@ -1,7 +1,7 @@
 import { Observable, Subscriber } from 'rxjs';
 
-import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 /**
  * Injectable service to load the Google Picker API script dynamically.
@@ -21,7 +21,10 @@ export class GoogleFilePickerDownloadService {
    *
    * @param document - The Angular-injected reference to the global `document`.
    */
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: string
+  ) {}
 
   /**
    * Dynamically loads the Google Picker script if it hasn't already been loaded.
@@ -59,6 +62,11 @@ export class GoogleFilePickerDownloadService {
    */
   public loadGapiModules(): Observable<void> {
     return new Observable((observer: Subscriber<void>) => {
+      if (!isPlatformBrowser(this.platformId) || !window.gapi) {
+        observer.error('GAPI not available');
+        return;
+      }
+
       window.gapi.load('client:picker', {
         callback: () => {
           observer.next();

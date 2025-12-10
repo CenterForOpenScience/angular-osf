@@ -44,11 +44,11 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
-import { getViewOnlyParam, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { FileDetailsModel } from '@shared/models/files/file.model';
 import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 
@@ -107,6 +107,7 @@ export class FileDetailComponent {
 
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly clipboard = inject(Clipboard);
@@ -144,7 +145,7 @@ export class FileDetailComponent {
   isFileRevisionLoading = select(FilesSelectors.isFileRevisionsLoading);
   hasWriteAccess = select(FilesSelectors.hasWriteAccess);
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
@@ -472,7 +473,7 @@ export class FileDetailComponent {
     if (version) downloadUrlObj.searchParams.set('version', version);
 
     if (this.hasViewOnly()) {
-      const viewOnlyParam = getViewOnlyParam();
+      const viewOnlyParam = this.viewOnlyService.getViewOnlyParam();
       if (viewOnlyParam) downloadUrlObj.searchParams.set('view_only', viewOnlyParam);
     }
 

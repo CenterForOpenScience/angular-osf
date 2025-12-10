@@ -7,7 +7,7 @@
   <section class="grid justify-content-center align-items-center gap-3 mt-6">
     @for (preprintProvider of preprintProvidersToAdvertise(); track preprintProvider.id) {
       <a
-        class="preprint-provider-grid-item"
+        class="preprint-provider-grid-item custom-light-hover"
         [routerLink]="['/preprints', preprintProvider.id]"
         [style.background-image]="'url(' + preprintProvider.whiteWideImageUrl + ')'"
         [title]="preprintProvider.name"

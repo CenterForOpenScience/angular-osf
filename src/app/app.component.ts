@@ -1,8 +1,9 @@
-import { Actions, createDispatchMap, ofActionSuccessful, select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
-import { take, timer } from 'rxjs';
+import { switchMap, timer } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   NavigationCancel,
@@ -38,8 +39,9 @@ export class AppComponent implements OnInit {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly router = inject(Router);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly actions$ = inject(Actions);
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly loaderService = inject(LoaderService);
 
   unverifiedEmails = select(UserEmailsSelectors.getUnverifiedEmails);
@@ -53,32 +55,36 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.actions.getCurrentUser();
+    this.actions
+      .getCurrentUser()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        switchMap(() => this.actions.getEmails())
+      )
+      .subscribe();
 
-    this.actions$.pipe(ofActionSuccessful(GetCurrentUser), take(1)).subscribe(() => {
-      this.actions.getEmails();
-    });
+    if (this.isBrowser) {
+      this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event) => {
+        if (event instanceof NavigationStart) {
+          this.loaderService.show();
+        } else if (
+          event instanceof NavigationEnd ||
+          event instanceof NavigationCancel ||
+          event instanceof NavigationError
+        ) {
+          timer(500)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => this.loaderService.hide());
+        }
 
-    this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this.loaderService.show();
-      } else if (
-        event instanceof NavigationEnd ||
-        event instanceof NavigationCancel ||
-        event instanceof NavigationError
-      ) {
-        timer(500)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(() => this.loaderService.hide());
-      }
-
-      if (this.environment.googleTagManagerId && event instanceof NavigationEnd) {
-        this.googleTagManagerService.pushTag({
-          event: 'page',
-          pageName: event.urlAfterRedirects,
-        });
-      }
-    });
+        if (this.environment.googleTagManagerId && event instanceof NavigationEnd) {
+          this.googleTagManagerService.pushTag({
+            event: 'page',
+            pageName: event.urlAfterRedirects,
+          });
+        }
+      });
+    }
   }
 
   private showEmailDialog() {

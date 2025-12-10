@@ -7,6 +7,7 @@ import { Message } from 'primeng/message';
 
 import { map, of } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,6 +17,7 @@ import {
   HostBinding,
   inject,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -32,9 +34,9 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { Mode } from '@osf/shared/enums/mode.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
@@ -47,7 +49,6 @@ import { ClearCollections, CollectionsSelectors, GetCollectionProvider } from '@
 import { CurrentResourceSelectors, GetResourceWithChildren } from '@osf/shared/stores/current-resource';
 import { GetLinkedResources } from '@osf/shared/stores/node-links';
 import { ClearWiki, GetHomeWiki } from '@osf/shared/stores/wiki';
-import { AnalyticsService } from '@shared/services/analytics.service';
 
 import { CitationAddonCardComponent } from './components/citation-addon-card/citation-addon-card.component';
 import { FilesWidgetComponent } from './components/files-widget/files-widget.component';
@@ -99,8 +100,10 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly customDialogService = inject(CustomDialogService);
-  readonly analyticsService = inject(AnalyticsService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
@@ -154,6 +157,7 @@ export class ProjectOverviewComponent implements OnInit {
   });
 
   submissionReviewStatus = computed(() => this.currentReviewAction()?.toState);
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   showDecisionButton = computed(
     () =>
@@ -161,8 +165,6 @@ export class ProjectOverviewComponent implements OnInit {
       this.submissionReviewStatus() !== SubmissionReviewStatus.Removed &&
       this.submissionReviewStatus() !== SubmissionReviewStatus.Rejected
   );
-
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   filesRootOption = computed(() => ({
     value: this.currentProject()?.id ?? '',
@@ -285,12 +287,14 @@ export class ProjectOverviewComponent implements OnInit {
   }
 
   private setupCleanup(): void {
-    this.destroyRef.onDestroy(() => {
-      this.actions.clearProjectOverview();
-      this.actions.clearWiki();
-      this.actions.clearCollections();
-      this.actions.clearCollectionModeration();
-      this.actions.clearConfiguredAddons();
-    });
+    if (this.isBrowser) {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearProjectOverview();
+        this.actions.clearWiki();
+        this.actions.clearCollections();
+        this.actions.clearCollectionModeration();
+        this.actions.clearConfiguredAddons();
+      });
+    }
   }
 }

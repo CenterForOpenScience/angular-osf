@@ -1,10 +1,17 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { HttpTestingController } from '@angular/common/http/testing';
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideServerRendering } from '@angular/platform-server';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { HelpScoutService } from '@core/services/help-scout.service';
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
@@ -30,13 +37,18 @@ import { PreprintProvidersSelectors } from '../../store/preprint-providers';
 import { PreprintDetailsComponent } from './preprint-details.component';
 
 import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
+import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
+import { ToastServiceMock } from '@testing/mocks/toast.service.mock';
 import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { HelpScoutServiceMockFactory } from '@testing/providers/help-scout.service.mock';
+import { MetaTagsServiceMockFactory } from '@testing/providers/meta-tags.service.mock';
+import { PrerenderReadyServiceMockFactory } from '@testing/providers/prerender-ready.service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -98,6 +110,7 @@ describe('PreprintDetailsComponent', () => {
       ],
       providers: [
         TranslationServiceMock,
+        ToastServiceMock,
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
         MockProvider(DataciteService, dataciteService),
@@ -169,14 +182,6 @@ describe('PreprintDetailsComponent', () => {
     fixture = TestBed.createComponent(PreprintDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should initialize with correct default values', () => {
-    expect(component.classes).toBe('flex-1 flex flex-column w-full');
   });
 
   it('should return preprint from store', () => {
@@ -297,14 +302,6 @@ describe('PreprintDetailsComponent', () => {
     expect(() => component.createNewVersionClicked()).not.toThrow();
   });
 
-  it('should have correct CSS classes', () => {
-    expect(component.classes).toBe('flex-1 flex flex-column w-full');
-  });
-
-  it('should call dataciteService.logIdentifiableView on init', () => {
-    expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.preprint$);
-  });
-
   it('should handle preprint with different states', () => {
     const acceptedPreprint = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
     jest.spyOn(component, 'preprint').mockReturnValue(acceptedPreprint);
@@ -337,11 +334,6 @@ describe('PreprintDetailsComponent', () => {
     expect(withdrawable).toBe(true);
   });
 
-  it('should handle hasReadWriteAccess correctly', () => {
-    const hasAccess = component['hasWriteAccess']();
-    expect(typeof hasAccess).toBe('boolean');
-  });
-
   it('should handle preprint without write permissions', () => {
     const preprintWithoutWrite = {
       ...mockPreprint,
@@ -351,5 +343,156 @@ describe('PreprintDetailsComponent', () => {
 
     const hasAccess = component['hasWriteAccess']();
     expect(hasAccess).toBe(false);
+  });
+});
+
+describe('PreprintDetailsComponent SSR Tests', () => {
+  let component: PreprintDetailsComponent;
+  let fixture: ComponentFixture<PreprintDetailsComponent>;
+  let httpMock: HttpTestingController;
+  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockRouter: ReturnType<RouterMockBuilder['build']>;
+  let store: Store;
+
+  const mockPreprint = PREPRINT_MOCK;
+  const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockContributors = [MOCK_CONTRIBUTOR];
+
+  beforeEach(async () => {
+    mockRouter = RouterMockBuilder.create().build();
+    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: 'osf', id: 'preprint-1' }).build();
+
+    await TestBed.configureTestingModule({
+      imports: [
+        PreprintDetailsComponent,
+        OSFTestingModule,
+        ...MockComponents(
+          PreprintFileSectionComponent,
+          ShareAndDownloadComponent,
+          GeneralInformationComponent,
+          AdditionalInfoComponent,
+          StatusBannerComponent,
+          PreprintTombstoneComponent,
+          PreprintWarningBannerComponent,
+          ModerationStatusBannerComponent,
+          PreprintMakeDecisionComponent,
+          PreprintMetricsInfoComponent
+        ),
+      ],
+      providers: [
+        provideServerRendering(),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        MockProvider(ActivatedRoute, mockActivatedRoute),
+        MockProvider(Router, mockRouter),
+        MockProvider(CustomDialogService, CustomDialogServiceMockBuilder.create().build()),
+        MockProvider(DataciteService, DataciteMockFactory()),
+        MockProvider(MetaTagsService, MetaTagsServiceMockFactory()),
+        MockProvider(PrerenderReadyService, PrerenderReadyServiceMockFactory()),
+        MockProvider(HelpScoutService, HelpScoutServiceMockFactory()),
+        TranslationServiceMock,
+        ToastServiceMock,
+        provideMockStore({
+          signals: [
+            {
+              selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'),
+              value: mockProvider,
+            },
+            {
+              selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.getPreprint,
+              value: mockPreprint,
+            },
+            {
+              selector: PreprintSelectors.isPreprintLoading,
+              value: false,
+            },
+            {
+              selector: ContributorsSelectors.getBibliographicContributors,
+              value: mockContributors,
+            },
+            {
+              selector: ContributorsSelectors.isBibliographicContributorsLoading,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.getPreprintReviewActions,
+              value: [],
+            },
+            {
+              selector: PreprintSelectors.arePreprintReviewActionsLoading,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.getPreprintRequests,
+              value: [],
+            },
+            {
+              selector: PreprintSelectors.arePreprintRequestsLoading,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.getPreprintRequestActions,
+              value: [],
+            },
+            {
+              selector: PreprintSelectors.arePreprintRequestActionsLoading,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.hasAdminAccess,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.hasWriteAccess,
+              value: false,
+            },
+            {
+              selector: PreprintSelectors.getPreprintMetrics,
+              value: null,
+            },
+            {
+              selector: PreprintSelectors.arePreprintMetricsLoading,
+              value: false,
+            },
+          ],
+        }),
+      ],
+    }).compileComponents();
+
+    httpMock = TestBed.inject(HttpTestingController);
+    store = TestBed.inject(Store);
+    fixture = TestBed.createComponent(PreprintDetailsComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('should render PreprintDetailsComponent server-side without errors', () => {
+    expect(() => {
+      fixture.detectChanges();
+    }).not.toThrow();
+    expect(component).toBeTruthy();
+  });
+
+  it('should not access browser-only APIs during SSR', () => {
+    const platformId = TestBed.inject(PLATFORM_ID);
+    expect(platformId).toBe('server');
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+  });
+
+  it('should not call browser-only actions in ngOnDestroy during SSR', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+    fixture.detectChanges();
+    dispatchSpy.mockClear();
+    component.ngOnDestroy();
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 });

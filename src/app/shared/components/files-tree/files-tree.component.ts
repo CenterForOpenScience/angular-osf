@@ -6,7 +6,7 @@ import { PrimeTemplate } from 'primeng/api';
 import { Tree, TreeNodeDropEvent, TreeNodeSelectEvent, TreeScrollIndexChangeEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -20,6 +20,7 @@ import {
   input,
   OnDestroy,
   output,
+  PLATFORM_ID,
   signal,
   viewChild,
 } from '@angular/core';
@@ -34,7 +35,6 @@ import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
 import { FileKind } from '@osf/shared/enums/file-kind.enum';
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
 import { FileSizePipe } from '@osf/shared/pipes/file-size.pipe';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
@@ -42,6 +42,7 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { FileModel } from '@shared/models/files/file.model';
 import { FileFolderModel } from '@shared/models/files/file-folder.model';
 import { FileLabelModel } from '@shared/models/files/file-label.model';
@@ -77,9 +78,11 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly customDialogService = inject(CustomDialogService);
   readonly dataciteService = inject(DataciteService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
   readonly clipboard = inject(Clipboard);
 
   files = input.required<FileModel[]>();
@@ -119,7 +122,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   isDragOver = signal(false);
   isLoadingMore = signal(false);
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router) || this.viewOnly());
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router) || this.viewOnly());
   visibleFilesCount = computed((): number => {
     const height = parseInt(this.scrollHeight(), 10);
     return Math.ceil(height / this.virtualScrollItemSize);
@@ -374,19 +377,25 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   downloadFile(link: string): void {
-    window.open(link)?.focus();
+    if (isPlatformBrowser(this.platformId)) {
+      window.open(link)?.focus();
+    }
   }
 
   openLink(link: string): void {
-    window.location.href = link;
+    if (isPlatformBrowser(this.platformId)) {
+      window.location.href = link;
+    }
   }
 
   openLinkNewTab(link: string): void {
-    window.open(link, '_blank', 'noopener,noreferrer');
+    if (isPlatformBrowser(this.platformId)) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
   }
 
   downloadFolder(downloadLink: string): void {
-    if (downloadLink) {
+    if (isPlatformBrowser(this.platformId) && downloadLink) {
       const link = this.filesService.getFolderDownloadLink(downloadLink);
       window.open(link, '_blank')?.focus();
     }

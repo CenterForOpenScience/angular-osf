@@ -7,7 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { catchError, EMPTY, filter, map, of } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -19,6 +19,7 @@ import {
   inject,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -101,6 +102,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly datePipe = inject(DatePipe);
   private readonly dataciteService = inject(DataciteService);
   private readonly prerenderReady = inject(PrerenderReadyService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly environment = inject(ENVIRONMENT);
 
@@ -305,8 +308,11 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.actions.resetState();
-    this.actions.clearCurrentProvider();
+    if (this.isBrowser) {
+      this.actions.resetState();
+      this.actions.clearCurrentProvider();
+    }
+
     this.helpScoutService.unsetResourceType();
   }
 

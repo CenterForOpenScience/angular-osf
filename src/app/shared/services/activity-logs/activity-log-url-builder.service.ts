@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
 
@@ -6,6 +7,8 @@ import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.mode
   providedIn: 'root',
 })
 export class ActivityLogUrlBuilderService {
+  private readonly platformId = inject(PLATFORM_ID);
+
   buildAHrefElement(url: string | undefined, value: string): string {
     const safeUrl = url || '';
     const relativeUrl = this.toRelativeUrl(safeUrl);
@@ -146,6 +149,10 @@ export class ActivityLogUrlBuilderService {
 
   private toRelativeUrl(url: string): string {
     if (!url) return '';
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return url;
+    }
 
     try {
       const parser = document.createElement('a');
