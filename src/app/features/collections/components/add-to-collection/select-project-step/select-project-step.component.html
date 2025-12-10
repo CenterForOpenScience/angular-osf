@@ -3,13 +3,15 @@
     <ng-template #content>
       <div class="flex flex-column gap-4 w-full">
         <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>
+
         @if (selectedProject() && stepperActiveValue() !== targetStepValue()) {
           <p class="font-normal">
             {{ 'collections.addToCollection.project' | translate }}:
             <span class="font-bold">{{ selectedProject()?.title }}</span>
           </p>
+
           <p-button
-            (click)="handleEditStep()"
+            (onClick)="handleEditStep()"
             severity="secondary"
             class="align-self-end"
             [label]="'common.buttons.clickToEdit' | translate"

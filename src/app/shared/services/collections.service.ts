@@ -17,6 +17,7 @@ import { ContributorsMapper } from '../mappers/contributors';
 import { ReviewActionsMapper } from '../mappers/review-actions.mapper';
 import {
   CollectionDetails,
+  CollectionProjectSubmission,
   CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionActionType,
@@ -167,16 +168,21 @@ export class CollectionsService {
   }
 
   fetchCurrentSubmission(projectId: string, collectionId: string): Observable<CollectionSubmission> {
-    const params: Record<string, string> = {
-      'filter[id]': projectId,
-      embed: 'collection',
-    };
+    const params: Record<string, string> = { embed: 'collection' };
 
     return this.jsonApiService
       .get<
-        JsonApiResponse<CollectionSubmissionJsonApi[], null>
-      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
-      .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data[0])));
+        ResponseJsonApi<CollectionSubmissionJsonApi>
+      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`, params)
+      .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data)));
+  }
+
+  fetchProjectSubmission(collectionId: string, projectId: string): Observable<CollectionProjectSubmission> {
+    return this.jsonApiService
+      .get<
+        ResponseJsonApi<CollectionSubmissionWithGuidJsonApi>
+      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`)
+      .pipe(map((response) => CollectionsMapper.getProjectSubmission(response.data)));
   }
 
   fetchCollectionSubmissionsActions(

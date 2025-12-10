@@ -1,3 +1,5 @@
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
+
 import { BrandDataJsonApi } from '../brand/brand.json-api.model';
 import { JsonApiResponse } from '../common/json-api.model';
 import { BaseNodeDataJsonApi } from '../nodes/base-node-data-json-api.model';
@@ -50,7 +52,7 @@ export interface CollectionSubmissionJsonApi {
   id: string;
   type: string;
   attributes: {
-    reviews_state: string;
+    reviews_state: CollectionSubmissionReviewState;
     collected_type: string;
     status: string;
     volume: string;
@@ -84,7 +86,7 @@ export interface CollectionSubmissionWithGuidJsonApi {
   id: string;
   type: string;
   attributes: {
-    reviews_state: string;
+    reviews_state: CollectionSubmissionReviewState;
     collected_type: string;
     status: string;
     volume: string;

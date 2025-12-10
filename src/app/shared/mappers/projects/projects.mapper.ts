@@ -1,15 +1,16 @@
-import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models';
+import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models/collection-license-json-api.models';
+import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
+import { NodesResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { ProjectMetadataUpdatePayload } from '@osf/shared/models/project-metadata-update-payload.model';
 import { ProjectModel } from '@osf/shared/models/projects/projects.models';
-import { ProjectJsonApi, ProjectsResponseJsonApi } from '@osf/shared/models/projects/projects-json-api.models';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class ProjectsMapper {
-  static fromGetAllProjectsResponse(response: ProjectsResponseJsonApi): ProjectModel[] {
+  static fromGetAllProjectsResponse(response: NodesResponseJsonApi): ProjectModel[] {
     return response.data.map((project) => this.fromProjectResponse(project));
   }
 
-  static fromProjectResponse(project: ProjectJsonApi): ProjectModel {
+  static fromProjectResponse(project: BaseNodeDataJsonApi): ProjectModel {
     return {
       id: project.id,
       type: project.type,
