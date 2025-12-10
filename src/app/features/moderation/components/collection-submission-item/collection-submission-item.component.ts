@@ -60,10 +60,7 @@ export class CollectionSubmissionItemComponent {
     const queryParams = currentStatus ? { status: currentStatus, mode: 'moderation' } : {};
 
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['../', this.submission().nodeId], {
-        relativeTo: this.activatedRoute,
-        queryParams,
-      })
+      this.router.createUrlTree(['/', this.submission().nodeId, 'overview'], { queryParams })
     );
 
     window.open(url, '_blank');
