@@ -2836,6 +2836,7 @@
     },
     "summary": {
       "title": "Summary",
+      "lastUpdated": "Last Updated",
       "totalUsersByDepartment": "Total Users by Department",
       "publicPrivateProjects": "Public vs Private Projects",
       "publicEmbargoedRegistrations": "Public vs Embargoed Registrations",
