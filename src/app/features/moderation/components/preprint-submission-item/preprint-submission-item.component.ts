@@ -52,7 +52,6 @@ export class PreprintSubmissionItemComponent {
 
   hasMoreContributors = computed(() => {
     const submission = this.submission();
-    console.log('hasMoreContributors ', submission);
     return submission.contributors.length < submission.totalContributors;
   });
 

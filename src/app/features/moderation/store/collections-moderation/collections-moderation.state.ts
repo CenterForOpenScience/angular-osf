@@ -148,14 +148,8 @@ export class CollectionsModerationState {
         },
       })
     );
-
     return this.contributorsService
-      .getBibliographicContributors(
-        ResourceType.Collection,
-        action.collectionId,
-        action.page,
-        DEFAULT_TABLE_PARAMS.rows
-      )
+      .getBibliographicContributors(ResourceType.Project, action.collectionId, action.page, DEFAULT_TABLE_PARAMS.rows)
       .pipe(
         tap((res) => {
           const currentSubmission = state.collectionSubmissions.data.find((s) => s.id === action.collectionId);

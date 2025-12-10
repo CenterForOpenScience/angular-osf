@@ -58,16 +58,11 @@ export class RegistrySubmissionItemComponent {
   }
 
   hasMoreContributors = computed(() => {
-    console.log('hasMoreContributors');
     const submission = this.submission();
-    console.log('submission');
-    console.log(submission);
-    console.log('after submission', submission.contributors.length, submission.totalContributors);
     return submission.contributors.length < submission.totalContributors;
   });
 
   handleOpen() {
-    console.log('test test');
     this.loadContributors.emit();
   }
 }

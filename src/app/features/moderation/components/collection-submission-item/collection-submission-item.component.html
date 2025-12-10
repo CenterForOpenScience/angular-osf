@@ -67,7 +67,6 @@
         <p-accordion-content>
           <div class="flex align-content-start gap-1 p-3 pt-0 ml-3">
             <p>{{ 'common.labels.contributors' | translate }}:</p>
-            <p>{{ !!submission().contributorsLoading }}</p>
             <osf-contributors-list
               [contributors]="submission().contributors!"
               [isLoading]="!!submission().contributorsLoading"

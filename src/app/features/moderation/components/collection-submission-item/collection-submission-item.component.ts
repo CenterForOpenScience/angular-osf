@@ -2,12 +2,14 @@ import { select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
+import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
@@ -16,8 +18,6 @@ import { CollectionsSelectors } from '@osf/shared/stores/collections';
 
 import { ReviewStatusIcon } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
-import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 
 @Component({
   selector: 'osf-submission-item',
@@ -70,9 +70,7 @@ export class CollectionSubmissionItemComponent {
   });
 
   hasMoreContributors = computed(() => {
-    // alert('hasMoreContributors', submission.contributors,  submission.totalContributors);
     const submission = this.submission();
-    console.log('hasMoreContributors', submission.contributors, submission.totalContributors);
     if (submission.contributors && submission.totalContributors) {
       return submission.contributors.length < submission.totalContributors;
     }
@@ -92,5 +90,9 @@ export class CollectionSubmissionItemComponent {
     );
 
     window.open(url, '_blank');
+  }
+
+  handleOpen() {
+    this.loadContributors.emit();
   }
 }
