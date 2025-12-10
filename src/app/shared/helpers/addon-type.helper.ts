@@ -35,6 +35,12 @@ export function isLinkAddon(addon: AddonModel | AuthorizedAccountModel | Configu
   );
 }
 
+export function isRedirectAddon(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): boolean {
+  if (!addon) return false;
+
+  return addon.type === AddonCategory.EXTERNAL_REDIRECT_SERVICES;
+}
+
 export function getAddonTypeString(addon: AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null): string {
   if (!addon) return '';
 
