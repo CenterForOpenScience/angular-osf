@@ -4,7 +4,7 @@
   </div>
 } @else {
   <div class="w-full">
-    @if (summaryMetrics()?.reportYearmonth) {
+    @if (summaryMetrics().reportYearmonth) {
       <div class="flex align-items-center gap-2 text-sm text-color-secondary mb-3 pt-3">
         <span class="font-semibold">{{ 'adminInstitutions.summary.lastUpdated' | translate }}:</span>
         <span class="text-color font-medium">{{ summaryMetrics()!.reportYearmonth + '-01' | date: 'MMMM d, y' }}</span>
