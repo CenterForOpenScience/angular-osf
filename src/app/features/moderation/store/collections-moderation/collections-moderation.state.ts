@@ -21,10 +21,6 @@ import {
 } from './collections-moderation.actions';
 import { COLLECTIONS_MODERATION_STATE_DEFAULTS, CollectionsModerationStateModel } from './collections-moderation.model';
 
-// import { CollectionSubmissionWithGuid } from '@shared/services/collections.services/models';
-// 'models/collections/collections.models';
-// import { CollectionSubmissionWithGuid } from '@shared/services/collections.services/models';
-
 @State<CollectionsModerationStateModel>({
   name: 'collectionsModeration',
   defaults: COLLECTIONS_MODERATION_STATE_DEFAULTS,

@@ -22,8 +22,6 @@ export class RegistryModerationMapper {
       embargoEndDate: response.attributes.embargo_end_date,
       actions: [],
       revisionId: response.embeds?.schema_responses?.data?.[0]?.id || null,
-      totalContributors: 0,
-      contributors: [],
     };
   }
 

@@ -15,7 +15,7 @@ export interface RegistryModeration {
   actions: ReviewAction[];
   revisionId?: string | null;
   contributorsLoading?: boolean;
-  contributors: ContributorModel[];
-  totalContributors: number;
+  contributors?: ContributorModel[];
+  totalContributors?: number;
   contributorsPage?: number;
 }

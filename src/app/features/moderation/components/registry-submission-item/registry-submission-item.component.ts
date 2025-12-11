@@ -59,7 +59,11 @@ export class RegistrySubmissionItemComponent {
 
   hasMoreContributors = computed(() => {
     const submission = this.submission();
-    return submission.contributors.length < submission.totalContributors;
+    if (submission.contributors && submission.totalContributors) {
+      return submission.contributors.length < submission.totalContributors;
+    }
+
+    return false;
   });
 
   handleOpen() {
