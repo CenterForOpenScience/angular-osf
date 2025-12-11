@@ -4,7 +4,6 @@ import { AppComponent } from '@osf/app.component';
 import { appConfig } from '@osf/app.config';
 
 import 'cedar-embeddable-editor';
-import 'cedar-artifact-viewer';
 
 bootstrapApplication(AppComponent, {
   providers: [...appConfig.providers],
