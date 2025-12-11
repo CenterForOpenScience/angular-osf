@@ -16,9 +16,10 @@
   }
 </div>
 
-<div>
-  @let status = submission().reviewsState;
-  <p-tag class="capitalize" [value]="status" [severity]="status | collectionStatusSeverity"></p-tag>
+<div class="mt-2">
+  @let status = submission().reviewsState | collectionStatusSeverity;
+
+  <p-tag class="capitalize" [value]="status.label | translate" [severity]="status.value"></p-tag>
 </div>
 
 @if (showAttributes()) {
