@@ -22,9 +22,9 @@
                     [label]="submission.collectionTitle"
                   ></p-button>
 
-                  @let status = submission.reviewsState;
+                  @let status = submission.reviewsState | collectionStatusSeverity;
 
-                  <p-tag class="capitalize" [value]="status" [severity]="status | collectionStatusSeverity"></p-tag>
+                  <p-tag class="capitalize" [value]="status.label | translate" [severity]="status.value"></p-tag>
                 </div>
               </p-accordion-header>
 

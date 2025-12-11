@@ -1468,7 +1468,8 @@
       "pendingUpdates": "Pending Updates",
       "pendingWithdrawal": "Pending Withdrawal",
       "approved": "Approved",
-      "declined": "Declined"
+      "declined": "Declined",
+      "inProgress": "In Progress"
     },
     "makeDecision": {
       "header": "Make decision",
