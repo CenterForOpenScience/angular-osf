@@ -302,7 +302,7 @@ export class ContributorsState {
   getBibliographicContributors(ctx: StateContext<ContributorsStateModel>, action: GetBibliographicContributors) {
     const state = ctx.getState();
 
-    if (!action.resourceId || !action.resourceType) {
+    if (!action.resourceId || !action.resourceType || state.bibliographicContributorsList.isLoading) {
       return;
     }
 

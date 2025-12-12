@@ -42,6 +42,11 @@ export class ProjectOverviewState {
   @Action(GetProjectById)
   getProjectById(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectById) {
     const state = ctx.getState();
+
+    if (state.project.isLoading) {
+      return;
+    }
+
     ctx.patchState({
       project: {
         ...state.project,
@@ -67,6 +72,11 @@ export class ProjectOverviewState {
   @Action(GetProjectInstitutions)
   getProjectInstitutions(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectInstitutions) {
     const state = ctx.getState();
+
+    if (state.institutions.isLoading) {
+      return;
+    }
+
     ctx.patchState({
       institutions: {
         ...state.institutions,
@@ -91,6 +101,11 @@ export class ProjectOverviewState {
   @Action(GetProjectIdentifiers)
   getProjectIdentifiers(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectIdentifiers) {
     const state = ctx.getState();
+
+    if (state.identifiers.isLoading) {
+      return;
+    }
+
     ctx.patchState({
       identifiers: {
         ...state.identifiers,
@@ -119,6 +134,10 @@ export class ProjectOverviewState {
     }
 
     const state = ctx.getState();
+
+    if (state.license.isLoading) {
+      return;
+    }
 
     ctx.patchState({
       license: {

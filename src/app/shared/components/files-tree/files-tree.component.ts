@@ -3,7 +3,7 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
-import { Tree, TreeNodeDropEvent, TreeNodeSelectEvent, TreeScrollIndexChangeEvent } from 'primeng/tree';
+import { Tree, TreeLazyLoadEvent, TreeNodeDropEvent, TreeNodeSelectEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
@@ -161,13 +161,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     effect(() => {
       if (!this.isLoading()) {
         this.isLoadingMore.set(false);
-      }
-    });
-
-    effect(() => {
-      const loaded = this.files().length;
-      if (loaded < this.visibleFilesCount()) {
-        this.loadNextPage();
       }
     });
   }
@@ -440,7 +433,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  onScrollIndexChange(event: TreeScrollIndexChangeEvent) {
+  onLazyLoad(event: TreeLazyLoadEvent) {
     const loaded = this.files().length;
     if (event.last >= loaded - 1) {
       this.loadNextPage();
