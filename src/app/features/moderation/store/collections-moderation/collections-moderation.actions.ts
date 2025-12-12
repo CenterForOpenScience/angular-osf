@@ -29,3 +29,18 @@ export class CreateCollectionSubmissionAction {
 export class ClearCollectionModeration {
   static readonly type = '[Collections Moderation] ClearCollectionModeration';
 }
+
+export class GetCollectionSubmissionContributors {
+  static readonly type = `[Collections Moderation] Get Registry Submission Contributors`;
+
+  constructor(
+    public collectionId: string,
+    public page = 1
+  ) {}
+}
+
+export class LoadMoreCollectionSubmissionContributors {
+  static readonly type = `[Collections Moderation] Load More Collection Submission Contributors`;
+
+  constructor(public collectionId: string) {}
+}

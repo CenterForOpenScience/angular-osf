@@ -12,3 +12,18 @@ export class GetRegistrySubmissions {
     public sort?: RegistrySort
   ) {}
 }
+
+export class GetRegistrySubmissionContributors {
+  static readonly type = `${ACTION_SCOPE} Get Registry Submission Contributors`;
+
+  constructor(
+    public registryId: string,
+    public page = 1
+  ) {}
+}
+
+export class LoadMoreRegistrySubmissionContributors {
+  static readonly type = `${ACTION_SCOPE} Load More Registry Submission Contributors`;
+
+  constructor(public registryId: string) {}
+}
