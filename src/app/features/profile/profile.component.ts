@@ -1,6 +1,15 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -23,7 +32,7 @@ import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent],
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
@@ -54,6 +63,10 @@ export class ProfileComponent implements OnInit {
     } else if (currentUser) {
       this.setupMyProfile(currentUser);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.prerenderReady.setNotReady();
   }
 
   toProfileSettings(): void {
