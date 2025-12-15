@@ -4,7 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, signal } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
@@ -46,6 +46,19 @@ export class GoogleFilePickerComponent implements OnInit {
 
   private get isPickerConfigured() {
     return !!this.apiKey && !!this.appId;
+  }
+
+  constructor() {
+    // Automatically open file picker when ready (for non-folder pickers)
+    effect(() => {
+      const isReady = !this.isGFPDisabled();
+      const hasRootFolder = !!this.rootFolder();
+      const isFilePicker = !this.isFolderPicker();
+
+      if (isReady && hasRootFolder && isFilePicker) {
+        this.createPicker();
+      }
+    });
   }
 
   ngOnInit(): void {
