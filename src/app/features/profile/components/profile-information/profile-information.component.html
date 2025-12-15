@@ -17,7 +17,7 @@
         @if (currentUser()?.social?.orcid) {
           <div class="flex flex-row align-items-center gap-2">
             <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
-            <a class="font-bold" [href]="'https://orcid.org/' + currentUser()?.social?.orcid">
+            <a class="dark-blue-two-link font-bold" [href]="'https://orcid.org/' + currentUser()?.social?.orcid">
               https://orcid.org/{{ currentUser()?.social?.orcid }}
             </a>
           </div>
@@ -25,7 +25,7 @@
 
         <div class="flex flex-row align-items-center gap-2">
           <img ngSrc="assets/icons/colored/cos-shield.svg" width="16" height="16" alt="cos-shield" />
-          <a class="font-bold" [href]="currentUser()?.link">{{ currentUser()?.link }}</a>
+          <a class="dark-blue-two-link font-bold" [href]="currentUser()?.link">{{ currentUser()?.link }}</a>
         </div>
       </div>
 

@@ -25,7 +25,7 @@
     } @else {
       <div [innerHTML]="osfPreprintProvider()?.descriptionHtml"></div>
     }
-    <a class="font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
+    <a class="dark-blue-two-link font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
   </div>
 
   <osf-search-input
@@ -39,7 +39,7 @@
     <p-skeleton width="10%" height="1rem" />
   } @else if (osfPreprintProvider()!.examplePreprintId) {
     <a
-      class="font-bold"
+      class="dark-blue-two-link font-bold"
       [routerLink]="['/preprints', osfPreprintProvider()!.id, osfPreprintProvider()!.examplePreprintId]"
       >{{ 'preprints.showExample' | translate }}
     </a>
