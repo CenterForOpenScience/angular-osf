@@ -6,13 +6,18 @@ import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { CollectionsService } from '@osf/shared/services/collections.service';
+import { DEFAULT_TABLE_PARAMS } from '@shared/constants/default-table-params.constants';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 import { handleSectionError } from '@shared/helpers/state-error.handler';
+import { ContributorsService } from '@shared/services/contributors.service';
 
 import {
   ClearCollectionModeration,
   CreateCollectionSubmissionAction,
+  GetCollectionSubmissionContributors,
   GetCollectionSubmissions,
   GetSubmissionsReviewActions,
+  LoadMoreCollectionSubmissionContributors,
 } from './collections-moderation.actions';
 import { COLLECTIONS_MODERATION_STATE_DEFAULTS, CollectionsModerationStateModel } from './collections-moderation.model';
 
@@ -23,6 +28,7 @@ import { COLLECTIONS_MODERATION_STATE_DEFAULTS, CollectionsModerationStateModel 
 @Injectable()
 export class CollectionsModerationState {
   collectionsService = inject(CollectionsService);
+  contributorsService = inject(ContributorsService);
 
   @Action(GetCollectionSubmissions)
   getCollectionSubmissions(ctx: StateContext<CollectionsModerationStateModel>, action: GetCollectionSubmissions) {
@@ -116,5 +122,82 @@ export class CollectionsModerationState {
   @Action(ClearCollectionModeration)
   clearCollectionModeration(ctx: StateContext<CollectionsModerationStateModel>) {
     ctx.setState(COLLECTIONS_MODERATION_STATE_DEFAULTS);
+  }
+
+  @Action(GetCollectionSubmissionContributors)
+  getCollectionSubmissionContributors(
+    ctx: StateContext<CollectionsModerationStateModel>,
+    action: GetCollectionSubmissionContributors
+  ) {
+    const state = ctx.getState();
+    const submission = state.collectionSubmissions.data.find((s) => s.id === action.collectionId);
+
+    if (submission?.contributors && submission.contributors.length > 0 && action.page === 1) {
+      return;
+    }
+
+    ctx.setState(
+      patch({
+        collectionSubmissions: {
+          ...state.collectionSubmissions,
+          isSubmitting: true,
+        },
+      })
+    );
+    return this.contributorsService
+      .getBibliographicContributors(ResourceType.Project, action.collectionId, action.page, DEFAULT_TABLE_PARAMS.rows)
+      .pipe(
+        tap((res) => {
+          const currentSubmission = state.collectionSubmissions.data.find((s) => s.id === action.collectionId);
+          const existingContributors = currentSubmission?.contributors || [];
+          const newContributors = action.page === 1 ? res.data : [...existingContributors, ...res.data];
+
+          ctx.patchState({
+            collectionSubmissions: {
+              ...state.collectionSubmissions,
+              data: state.collectionSubmissions.data.map((submission) =>
+                submission.id === action.collectionId
+                  ? {
+                      ...submission,
+                      contributors: newContributors,
+                      totalContributors: res.totalCount,
+                      contributorsLoading: false,
+                      contributorsPage: action.page,
+                    }
+                  : submission
+              ),
+            },
+          });
+        }),
+        catchError((error) => {
+          ctx.patchState({
+            collectionSubmissions: {
+              ...state.collectionSubmissions,
+              data: state.collectionSubmissions.data.map((submission) =>
+                submission.id === action.collectionId
+                  ? {
+                      ...submission,
+                      contributorsLoading: false,
+                    }
+                  : submission
+              ),
+            },
+          });
+          return handleSectionError(ctx, 'collectionSubmissions', error);
+        })
+      );
+  }
+
+  @Action(LoadMoreCollectionSubmissionContributors)
+  loadMoreCollectionSubmissionContributors(
+    ctx: StateContext<CollectionsModerationStateModel>,
+    action: LoadMoreCollectionSubmissionContributors
+  ) {
+    const state = ctx.getState();
+    const submission = state.collectionSubmissions.data.find((s) => s.id === action.collectionId);
+    const currentPage = submission?.contributorsPage || 1;
+    const nextPage = currentPage + 1;
+
+    return ctx.dispatch(new GetCollectionSubmissionContributors(action.collectionId, nextPage));
   }
 }
