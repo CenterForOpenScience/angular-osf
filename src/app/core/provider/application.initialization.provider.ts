@@ -1,10 +1,10 @@
-import { inject, provideAppInitializer } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, PLATFORM_ID, provideAppInitializer } from '@angular/core';
 
 import { OSFConfigService } from '@core/services/osf-config.service';
 
 import { ENVIRONMENT } from './environment.provider';
 
-import { BrowserAgent } from '@newrelic/browser-agent/loaders/browser-agent';
 import * as Sentry from '@sentry/angular';
 import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
 
@@ -19,32 +19,38 @@ import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
  */
 export function initializeApplication() {
   return async () => {
+    const platformId = inject(PLATFORM_ID);
     const configService = inject(OSFConfigService);
     const googleTagManagerConfiguration = inject(GoogleTagManagerConfiguration);
     const environment = inject(ENVIRONMENT);
 
     await configService.load();
 
-    const googleTagManagerId = environment.googleTagManagerId;
+    if (isPlatformBrowser(platformId)) {
+      const googleTagManagerId = environment.googleTagManagerId;
 
-    if (googleTagManagerId) {
-      googleTagManagerConfiguration.set({ id: googleTagManagerId });
+      if (googleTagManagerId) {
+        googleTagManagerConfiguration.set({ id: googleTagManagerId });
+      }
+
+      const dsn = environment.sentryDsn;
+
+      if (dsn) {
+        // More Options
+        // https://docs.sentry.io/platforms/javascript/guides/angular/configuration/options/
+        Sentry.init({
+          dsn,
+          environment: environment.production ? 'production' : 'development',
+          maxBreadcrumbs: 50,
+          sampleRate: 1.0,
+          integrations: [],
+        });
+      }
     }
 
-    const dsn = environment.sentryDsn;
-    if (dsn) {
-      // More Options
-      // https://docs.sentry.io/platforms/javascript/guides/angular/configuration/options/
-      Sentry.init({
-        dsn,
-        environment: environment.production ? 'production' : 'development',
-        maxBreadcrumbs: 50,
-        sampleRate: 1.0,
-        integrations: [],
-      });
-    }
+    if (environment.newRelicEnabled && isPlatformBrowser(platformId)) {
+      const { BrowserAgent } = await import('@newrelic/browser-agent/loaders/browser-agent');
 
-    if (environment.newRelicEnabled) {
       const newRelicConfig = {
         enabled: environment.newRelicEnabled,
         init: {

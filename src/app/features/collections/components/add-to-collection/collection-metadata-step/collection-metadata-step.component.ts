@@ -10,10 +10,12 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
-import { AddToCollectionSteps } from '@osf/features/collections/enums';
-import { CollectionFilterEntry } from '@osf/features/collections/models';
-import { CollectionsSelectors, GetCollectionDetails } from '@shared/stores/collections';
+import { collectionFilterTypes } from '@osf/features/collections/constants';
+import { AddToCollectionSteps, CollectionFilterType } from '@osf/features/collections/enums';
+import { CollectionFilterEntry } from '@osf/features/collections/models/collection-filter-entry.model';
+import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
+import { CollectionsSelectors, GetCollectionDetails } from '@osf/shared/stores/collections';
 
 @Component({
   selector: 'osf-collection-metadata-step',
@@ -25,6 +27,7 @@ import { CollectionsSelectors, GetCollectionDetails } from '@shared/stores/colle
 export class CollectionMetadataStepComponent {
   private readonly filterTypes = collectionFilterTypes;
   readonly collectionFilterOptions = select(CollectionsSelectors.getAllFiltersOptions);
+  readonly currentCollectionSubmission = select(AddToCollectionSelectors.getCurrentCollectionSubmission);
   readonly availableFilterEntries = computed(() => {
     const options = this.collectionFilterOptions();
 
@@ -49,10 +52,9 @@ export class CollectionMetadataStepComponent {
   collectionMetadataForm = signal<FormGroup>(new FormGroup({}));
   collectionMetadataSaved = signal<boolean>(false);
   originalFormValues = signal<Record<string, unknown>>({});
+  formPopulatedFromSubmission = signal<boolean>(false);
 
-  actions = createDispatchMap({
-    getCollectionDetails: GetCollectionDetails,
-  });
+  actions = createDispatchMap({ getCollectionDetails: GetCollectionDetails });
 
   constructor() {
     this.setupEffects();
@@ -93,7 +95,16 @@ export class CollectionMetadataStepComponent {
 
     const newForm = new FormGroup(formControls);
     this.collectionMetadataForm.set(newForm);
-    this.updateOriginalValues(newForm);
+    this.formPopulatedFromSubmission.set(false);
+
+    const submission = this.currentCollectionSubmission();
+
+    if (submission) {
+      this.populateFormFromSubmission(submission.submission);
+      this.formPopulatedFromSubmission.set(true);
+    } else {
+      this.updateOriginalValues(newForm);
+    }
   }
 
   private setupEffects(): void {
@@ -112,8 +123,27 @@ export class CollectionMetadataStepComponent {
     });
 
     effect(() => {
+      const submission = this.currentCollectionSubmission();
+      const form = this.collectionMetadataForm();
+      const filterEntries = this.availableFilterEntries();
+      const alreadyPopulated = this.formPopulatedFromSubmission();
+
+      if (
+        submission &&
+        form.controls &&
+        Object.keys(form.controls).length > 0 &&
+        filterEntries.length > 0 &&
+        !alreadyPopulated
+      ) {
+        this.populateFormFromSubmission(submission.submission);
+        this.formPopulatedFromSubmission.set(true);
+      }
+    });
+
+    effect(() => {
       if (!this.collectionMetadataSaved() && this.stepperActiveValue() !== AddToCollectionSteps.CollectionMetadata) {
         this.collectionMetadataForm().reset();
+        this.formPopulatedFromSubmission.set(false);
       }
     });
   }
@@ -138,5 +168,22 @@ export class CollectionMetadataStepComponent {
       currentValues[key] = form.get(key)?.value;
     });
     this.originalFormValues.set(currentValues);
+  }
+
+  private populateFormFromSubmission(submission: CollectionSubmissionWithGuid): void {
+    const form = this.collectionMetadataForm();
+    if (!form || !form.controls) return;
+
+    Object.values(CollectionFilterType).forEach((filterType) => {
+      const control = form.get(filterType);
+      if (control) {
+        const value = submission[filterType as keyof CollectionSubmissionWithGuid] as string;
+        if (value) {
+          control.setValue(value, { emitEvent: false });
+        }
+      }
+    });
+
+    this.updateOriginalValues(form);
   }
 }

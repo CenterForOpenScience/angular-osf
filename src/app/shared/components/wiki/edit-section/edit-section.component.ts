@@ -16,7 +16,7 @@ import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-s
 
 @Component({
   selector: 'osf-edit-section',
-  imports: [Panel, Button, TranslatePipe, FormsModule, LMarkdownEditorModule, Checkbox],
+  imports: [Checkbox, Panel, Button, TranslatePipe, FormsModule, LMarkdownEditorModule],
   templateUrl: './edit-section.component.html',
   styleUrl: './edit-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

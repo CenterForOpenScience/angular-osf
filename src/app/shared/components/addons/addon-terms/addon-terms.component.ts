@@ -6,7 +6,7 @@ import { NgClass } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 
 import { ADDON_TERMS } from '@osf/shared/constants/addon-terms.const';
-import { isCitationAddon } from '@osf/shared/helpers/addon-type.helper';
+import { isCitationAddon, isRedirectAddon } from '@osf/shared/helpers/addon-type.helper';
 import { AddonModel } from '@shared/models/addons/addon.model';
 import { AddonTerm } from '@shared/models/addons/addon-utils.models';
 import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
@@ -19,6 +19,9 @@ import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account
 })
 export class AddonTermsComponent {
   addon = input<AddonModel | AuthorizedAccountModel | null>(null);
+  redirectUrl = input<string | null>(null);
+
+  isRedirectService = computed(() => isRedirectAddon(this.addon()));
   terms = computed(() => {
     const addon = this.addon();
     if (!addon) {
@@ -31,6 +34,9 @@ export class AddonTermsComponent {
     const supportedFeatures = addon.supportedFeatures || [];
     const provider = addon.providerName;
     const isCitationService = isCitationAddon(addon);
+    if (isRedirectAddon(addon)) {
+      return [];
+    }
 
     const relevantTerms = isCitationService ? ADDON_TERMS.filter((term) => term.citation) : ADDON_TERMS;
 

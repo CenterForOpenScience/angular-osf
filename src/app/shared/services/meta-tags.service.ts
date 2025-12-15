@@ -1,7 +1,7 @@
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 
-import { DOCUMENT } from '@angular/common';
-import { DestroyRef, effect, Inject, inject, Injectable, signal } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DestroyRef, effect, Inject, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -22,6 +22,7 @@ export class MetaTagsService {
   private readonly metadataRecords: MetadataRecordsService = inject(MetadataRecordsService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly prerenderReady = inject(PrerenderReadyService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   get webUrl() {
     return this.environment.webUrl;
@@ -79,6 +80,12 @@ export class MetaTagsService {
   }
 
   clearMetaTags(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.areMetaTagsApplied.set(false);
+      this.prerenderReady.setNotReady();
+      return;
+    }
+
     const elementsToRemove = this.document.querySelectorAll(`.${this.metaTagClass}`);
 
     if (elementsToRemove.length === 0) {
@@ -282,6 +289,10 @@ export class MetaTagsService {
   }
 
   private dispatchZoteroEvent(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const event = new Event('ZoteroItemUpdated', {
       bubbles: true,
       cancelable: true,

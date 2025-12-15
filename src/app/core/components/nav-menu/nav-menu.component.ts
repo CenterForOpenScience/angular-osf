@@ -6,7 +6,8 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 
 import { filter, map } from 'rxjs';
 
-import { Component, computed, inject, output } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, inject, output, PLATFORM_ID } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -20,8 +21,8 @@ import { UserSelectors } from '@core/store/user';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
-import { getViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { WrapFnPipe } from '@osf/shared/pipes/wrap-fn.pipe';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
 
 @Component({
@@ -36,6 +37,8 @@ export class NavMenuComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly authService = inject(AuthService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
@@ -68,7 +71,7 @@ export class NavMenuComponent {
         this.provider()?.permissions?.includes(ReviewPermissions.ViewSubmissions),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
-      isViewOnly: !!getViewOnlyParam(this.router),
+      viewOnly: this.viewOnlyService.getViewOnlyParam(this.router),
       permissions: this.currentResource()?.permissions,
     };
 
@@ -109,7 +112,7 @@ export class NavMenuComponent {
   }
 
   goToLink(item: CustomMenuItem) {
-    if (item.id === 'support' || item.id === 'donate') {
+    if (isPlatformBrowser(this.platformId) && (item.id === 'support' || item.id === 'donate')) {
       window.open(item.url, '_blank');
     }
 

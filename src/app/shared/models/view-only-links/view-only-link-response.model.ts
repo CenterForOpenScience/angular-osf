@@ -1,12 +1,9 @@
-import { MetaJsonApi } from '../common/json-api.model';
+import { ResponseJsonApi } from '../common/json-api.model';
 import { BaseNodeDataJsonApi } from '../nodes/base-node-data-json-api.model';
 import { UserDataErrorResponseJsonApi } from '../user/user-json-api.model';
 
-export interface ViewOnlyLinksResponseJsonApi {
-  data: ViewOnlyLinkJsonApi[];
-  links: PaginationLinksJsonApi;
-  meta: MetaJsonApi;
-}
+export type ViewOnlyLinksResponsesJsonApi = ResponseJsonApi<ViewOnlyLinkJsonApi[]>;
+export type ViewOnlyLinksResponseJsonApi = ResponseJsonApi<ViewOnlyLinkJsonApi>;
 
 export interface ViewOnlyLinkJsonApi {
   id: string;
@@ -23,16 +20,4 @@ export interface ViewOnlyLinkJsonApi {
       data: BaseNodeDataJsonApi[];
     };
   };
-}
-
-export interface LinkWithMetaJsonApi {
-  href: string;
-  meta: Record<string, unknown>;
-}
-
-interface PaginationLinksJsonApi {
-  first: string | null;
-  last: string | null;
-  prev: string | null;
-  next: string | null;
 }

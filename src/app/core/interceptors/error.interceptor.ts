@@ -1,16 +1,17 @@
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+import { isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ERROR_MESSAGES } from '@core/constants/error-messages';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AuthService } from '@core/services/auth.service';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { BYPASS_ERROR_INTERCEPTOR } from './error-interceptor.tokens';
 
@@ -20,6 +21,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
   const sentry = inject(SENTRY_TOKEN);
+  const platformId = inject(PLATFORM_ID);
+  const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -29,7 +32,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      if (error.error instanceof ErrorEvent) {
+      if (isPlatformBrowser(platformId) && error.error instanceof ErrorEvent) {
         errorMessage = error.error.message;
       } else {
         if (error.error?.errors?.[0]?.detail) {
@@ -50,8 +53,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 401) {
-        if (!hasViewOnlyParam(router)) {
-          authService.logout();
+        if (!viewOnlyHelper.hasViewOnlyParam(router)) {
+          if (isPlatformBrowser(platformId)) {
+            authService.logout();
+          }
         }
         return throwError(() => error);
       }

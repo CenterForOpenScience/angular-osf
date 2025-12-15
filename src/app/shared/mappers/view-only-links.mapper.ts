@@ -5,19 +5,23 @@ import {
 } from '../models/view-only-links/view-only-link.model';
 import {
   ViewOnlyLinkJsonApi,
-  ViewOnlyLinksResponseJsonApi,
+  ViewOnlyLinksResponsesJsonApi,
 } from '../models/view-only-links/view-only-link-response.model';
 
 import { UserMapper } from './user';
 
 export class ViewOnlyLinksMapper {
-  static fromResponse(response: ViewOnlyLinksResponseJsonApi, projectId: string): PaginatedViewOnlyLinksModel {
+  static fromResponse(
+    response: ViewOnlyLinksResponsesJsonApi,
+    projectId: string,
+    webUrl: string
+  ): PaginatedViewOnlyLinksModel {
     const items: ViewOnlyLinkModel[] = response.data.map((item) => {
       const creator = UserMapper.getUserInfo(item.embeds.creator);
 
       return {
         id: item.id,
-        link: `${document.baseURI}${projectId}/overview?view_only=${item.attributes.key}`,
+        link: `${webUrl}/${projectId}/overview?view_only=${item.attributes.key}`,
         dateCreated: item.attributes.date_created,
         key: item.attributes.key,
         name: item.attributes.name,
@@ -46,13 +50,17 @@ export class ViewOnlyLinksMapper {
     };
   }
 
-  static fromSingleResponse(response: ViewOnlyLinkJsonApi, projectId: string): PaginatedViewOnlyLinksModel {
+  static fromSingleResponse(
+    response: ViewOnlyLinkJsonApi,
+    projectId: string,
+    webUrl: string
+  ): PaginatedViewOnlyLinksModel {
     const item = response;
     const creator = UserMapper.getUserInfo(item.embeds.creator);
 
     const mappedItem: ViewOnlyLinkModel = {
       id: item.id,
-      link: `${document.baseURI}${projectId}/overview?view_only=${item.attributes.key}`,
+      link: `${webUrl}/${projectId}/overview?view_only=${item.attributes.key}`,
       dateCreated: item.attributes.date_created,
       key: item.attributes.key,
       name: item.attributes.name,

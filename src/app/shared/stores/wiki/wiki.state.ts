@@ -1,9 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, map, tap, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { WikiService } from '@osf/shared/services/wiki.service';
 
 import {
@@ -52,7 +53,7 @@ export class WikiState {
           currentWikiId: wiki.id,
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'wikiList', error))
     );
   }
 
@@ -78,7 +79,7 @@ export class WikiState {
           currentWikiId: updatedWiki.id,
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'wikiList', error))
     );
   }
 
@@ -106,7 +107,7 @@ export class WikiState {
           currentWikiId: updatedList.length > 0 ? updatedList[0].id : '',
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'wikiList', error))
     );
   }
 
@@ -131,7 +132,7 @@ export class WikiState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'homeWikiContent', error))
     );
   }
 
@@ -182,7 +183,7 @@ export class WikiState {
         });
       }),
       map((wiki) => wiki),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'wikiList', error))
     );
   }
 
@@ -208,7 +209,7 @@ export class WikiState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'componentsWikiList', error))
     );
   }
 
@@ -233,23 +234,6 @@ export class WikiState {
     });
   }
 
-  private handleError(ctx: StateContext<WikiStateModel>, error: Error) {
-    ctx.patchState({
-      homeWikiContent: {
-        ...ctx.getState().homeWikiContent,
-        isLoading: false,
-        error: error.message,
-      },
-      wikiList: {
-        ...ctx.getState().wikiList,
-        isLoading: false,
-        isSubmitting: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
-  }
-
   @Action(GetWikiVersions)
   getWikiVersions(ctx: StateContext<WikiStateModel>, action: GetWikiVersions) {
     const state = ctx.getState();
@@ -271,7 +255,7 @@ export class WikiState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'wikiVersions', error))
     );
   }
 
@@ -292,7 +276,7 @@ export class WikiState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'versionContent', error))
     );
   }
 
@@ -318,7 +302,7 @@ export class WikiState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'versionContent', error))
     );
   }
 
@@ -343,7 +327,7 @@ export class WikiState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, error))
+      catchError((error) => handleSectionError(ctx, 'compareVersionContent', error))
     );
   }
 }

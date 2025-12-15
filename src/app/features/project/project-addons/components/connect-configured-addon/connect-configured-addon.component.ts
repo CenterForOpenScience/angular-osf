@@ -146,6 +146,17 @@ export class ConnectConfiguredAddonComponent {
 
   addonTypeString = computed(() => getAddonTypeString(this.addon()) as AddonType);
 
+  redirectUrl = computed(() => {
+    const addon = this.addon();
+    if (!addon || !addon.redirectUrl) {
+      return null;
+    }
+    const openURL = new URL(addon.redirectUrl);
+    openURL.searchParams.set('nodeIri', this.resourceUri());
+    openURL.searchParams.set('userIri', this.addonsUserReference()[0]?.attributes.user_uri);
+    return openURL.toString();
+  });
+
   readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
@@ -192,7 +203,13 @@ export class ConnectConfiguredAddonComponent {
       complete: () => {
         const createdAddon = this.createdConfiguredAddon();
         if (createdAddon) {
-          this.router.navigate([`${this.baseUrl()}/addons`]);
+          const addonType = this.addonTypeString()?.toLowerCase();
+          this.router.navigate([`${this.baseUrl()}/addons`], {
+            queryParams: {
+              activeTab: 1,
+              addonType: addonType,
+            },
+          });
           this.toastService.showSuccess('settings.addons.toast.createSuccess', {
             addonName: AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames],
           });
@@ -253,6 +270,22 @@ export class ConnectConfiguredAddonComponent {
         this.processAuthorizedAddons(addonConfig, currentAddon);
       },
     });
+  }
+
+  goToService() {
+    if (!this.redirectUrl()) return;
+
+    const newWindow = window.open(
+      this.redirectUrl()!.toString(),
+      '_blank',
+      'popup,width=600,height=600,scrollbars=yes,resizable=yes'
+    );
+    if (newWindow) {
+      this.router.navigate([`${this.baseUrl()}/addons`]);
+      newWindow.focus();
+    } else {
+      this.toastService.showError('addons.redirect.popUpError');
+    }
   }
 
   private getDataForAccountCheck() {

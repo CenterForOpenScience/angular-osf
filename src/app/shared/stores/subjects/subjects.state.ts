@@ -1,9 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 import { SubjectsService } from '@osf/shared/services/subjects.service';
 
@@ -29,40 +30,27 @@ export class SubjectsState {
       return;
     }
 
+    const targetSection = search ? 'searchedSubjects' : 'subjects';
+
     ctx.patchState({
-      subjects: {
-        ...ctx.getState().subjects,
+      [targetSection]: {
+        ...ctx.getState()[targetSection],
         isLoading: true,
-        error: null,
-      },
-      searchedSubjects: {
-        ...ctx.getState().searchedSubjects,
-        isLoading: search ? true : false,
         error: null,
       },
     });
 
     return this.subjectsService.getSubjects(resourceType, providerId, search).pipe(
       tap((subjects) => {
-        if (search) {
-          ctx.patchState({
-            searchedSubjects: {
-              data: subjects,
-              isLoading: false,
-              error: null,
-            },
-          });
-        } else {
-          ctx.patchState({
-            subjects: {
-              data: subjects,
-              isLoading: false,
-              error: null,
-            },
-          });
-        }
+        ctx.patchState({
+          [targetSection]: {
+            data: subjects,
+            isLoading: false,
+            error: null,
+          },
+        });
       }),
-      catchError((error) => this.handleError(ctx, 'subjects', error))
+      catchError((error) => handleSectionError(ctx, targetSection, error))
     );
   }
 
@@ -88,7 +76,7 @@ export class SubjectsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'subjects', error))
+      catchError((error) => handleSectionError(ctx, 'subjects', error))
     );
   }
 
@@ -116,7 +104,7 @@ export class SubjectsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'selectedSubjects', error))
+      catchError((error) => handleSectionError(ctx, 'selectedSubjects', error))
     );
   }
 
@@ -147,7 +135,7 @@ export class SubjectsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'selectedSubjects', error))
+      catchError((error) => handleSectionError(ctx, 'selectedSubjects', error))
     );
   }
 
@@ -170,16 +158,5 @@ export class SubjectsState {
 
       return subject;
     });
-  }
-
-  private handleError(ctx: StateContext<SubjectsModel>, section: keyof SubjectsModel, error: Error) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }

@@ -31,6 +31,7 @@
             <div class="flex align-items-center flex-wrap gap-2">
               <osf-readonly-input
                 [value]="email.emailAddress"
+                [ariaLabelKey]="'settings.accountSettings.connectedEmails.alternateEmails'"
                 (deleteItem)="openConfirmDeleteEmail(email)"
               ></osf-readonly-input>
 
@@ -59,6 +60,7 @@
             <div class="flex align-items-center flex-wrap gap-2">
               <osf-readonly-input
                 [value]="email.emailAddress"
+                [ariaLabelKey]="'settings.accountSettings.connectedEmails.unconfirmedEmails'"
                 (deleteItem)="openConfirmDeleteEmail(email)"
               ></osf-readonly-input>
 

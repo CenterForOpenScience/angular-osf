@@ -2,7 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { filter, map } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,6 +12,7 @@ import {
   HostBinding,
   inject,
   OnDestroy,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -47,10 +48,13 @@ export class RegistryComponent implements OnDestroy {
   private readonly dataciteService = inject(DataciteService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly helpScoutService = inject(HelpScoutService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly prerenderReady = inject(PrerenderReadyService);
-  readonly analyticsService = inject(AnalyticsService);
+  private readonly analyticsService = inject(AnalyticsService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly actions = createDispatchMap({
     getRegistryWithRelatedData: GetRegistryWithRelatedData,
@@ -71,6 +75,8 @@ export class RegistryComponent implements OnDestroy {
   readonly license = select(RegistrySelectors.getLicense);
   readonly isLicenseLoading = select(RegistrySelectors.isLicenseLoading);
 
+  private readonly lastMetaTagsRegistryId = signal<string | null>(null);
+
   private readonly allDataLoaded = computed(
     () =>
       !this.isRegistryLoading() &&
@@ -78,9 +84,6 @@ export class RegistryComponent implements OnDestroy {
       !this.isLicenseLoading() &&
       !!this.registry()
   );
-
-  private readonly lastMetaTagsRegistryId = signal<string | null>(null);
-  readonly router = inject(Router);
 
   constructor() {
     this.prerenderReady.setNotReady();
@@ -127,7 +130,10 @@ export class RegistryComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.clearCurrentProvider();
+    if (this.isBrowser) {
+      this.actions.clearCurrentProvider();
+    }
+
     this.helpScoutService.unsetResourceType();
   }
 

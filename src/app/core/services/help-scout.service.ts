@@ -1,6 +1,7 @@
 import { Store } from '@ngxs/store';
 
-import { effect, inject, Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { effect, inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { WINDOW } from '@core/provider/window.provider';
 import { UserSelectors } from '@osf/core/store/user';
@@ -22,6 +23,7 @@ export class HelpScoutService {
    * Used to access and manipulate `dataLayer` for tracking.
    */
   private window = inject(WINDOW);
+  private platformId = inject(PLATFORM_ID);
 
   /**
    * Angular Store instance used to access application state via NgRx.
@@ -51,19 +53,23 @@ export class HelpScoutService {
    * - `resourceType`: undefined
    */
   constructor() {
-    if (this.window.dataLayer) {
-      this.window.dataLayer.loggedIn = false;
-      this.window.dataLayer.resourceType = undefined;
-    } else {
-      this.window.dataLayer = {
-        loggedIn: false,
-        resourceType: undefined,
-      };
-    }
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.window.dataLayer) {
+        this.window.dataLayer.loggedIn = false;
+        this.window.dataLayer.resourceType = undefined;
+      } else {
+        this.window.dataLayer = {
+          loggedIn: false,
+          resourceType: undefined,
+        };
+      }
 
-    effect(() => {
-      this.window.dataLayer.loggedIn = this.isAuthenticated();
-    });
+      effect(() => {
+        if (this.window.dataLayer) {
+          this.window.dataLayer.loggedIn = this.isAuthenticated();
+        }
+      });
+    }
   }
 
   /**
@@ -72,13 +78,17 @@ export class HelpScoutService {
    * @param resourceType - The name of the resource (e.g., 'project', 'node')
    */
   setResourceType(resourceType: string): void {
-    this.window.dataLayer.resourceType = resourceType;
+    if (isPlatformBrowser(this.platformId) && this.window.dataLayer) {
+      this.window.dataLayer.resourceType = resourceType;
+    }
   }
 
   /**
    * Clears the `resourceType` from the `dataLayer`, setting it to `undefined`.
    */
   unsetResourceType(): void {
-    this.window.dataLayer.resourceType = undefined;
+    if (isPlatformBrowser(this.platformId) && this.window.dataLayer) {
+      this.window.dataLayer.resourceType = undefined;
+    }
   }
 }

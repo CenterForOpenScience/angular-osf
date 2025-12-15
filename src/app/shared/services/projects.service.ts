@@ -5,9 +5,10 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { ProjectsMapper } from '../mappers/projects';
+import { BaseNodeDataJsonApi } from '../models/nodes/base-node-data-json-api.model';
+import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
 import { ProjectMetadataUpdatePayload } from '../models/project-metadata-update-payload.model';
 import { ProjectModel } from '../models/projects/projects.models';
-import { ProjectJsonApi, ProjectsResponseJsonApi } from '../models/projects/projects-json-api.models';
 
 import { JsonApiService } from './json-api.service';
 
@@ -24,7 +25,7 @@ export class ProjectsService {
 
   fetchProjects(userId: string, params?: Record<string, unknown>): Observable<ProjectModel[]> {
     return this.jsonApiService
-      .get<ProjectsResponseJsonApi>(`${this.apiUrl}/users/${userId}/nodes/`, params)
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/users/${userId}/nodes/`, params)
       .pipe(map((response) => ProjectsMapper.fromGetAllProjectsResponse(response)));
   }
 
@@ -32,13 +33,13 @@ export class ProjectsService {
     const payload = ProjectsMapper.toUpdateProjectRequest(metadata);
 
     return this.jsonApiService
-      .patch<ProjectJsonApi>(`${this.apiUrl}/nodes/${metadata.id}/`, payload)
+      .patch<BaseNodeDataJsonApi>(`${this.apiUrl}/nodes/${metadata.id}/`, payload)
       .pipe(map((response) => ProjectsMapper.fromProjectResponse(response)));
   }
 
   getProjectChildren(id: string): Observable<ProjectModel[]> {
     return this.jsonApiService
-      .get<ProjectsResponseJsonApi>(`${this.apiUrl}/nodes/${id}/children/`)
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/nodes/${id}/children/`)
       .pipe(map((response) => ProjectsMapper.fromGetAllProjectsResponse(response)));
   }
 

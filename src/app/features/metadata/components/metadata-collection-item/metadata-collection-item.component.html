@@ -1,0 +1,33 @@
+<div class="flex align-items-center justify-content-between gap-3">
+  <p-button
+    link
+    class="link-btn-no-padding"
+    styleClass="text-left"
+    [label]="submission().collectionTitle"
+    [routerLink]="['/collections', submission().collectionId]"
+  ></p-button>
+
+  @if (showSubmissionButton()) {
+    <p-button
+      severity="secondary"
+      [label]="submissionButtonLabel() | translate"
+      [routerLink]="['/collections', submission().collectionId, submission().id, 'edit']"
+    />
+  }
+</div>
+
+<div class="mt-2">
+  @let status = submission().reviewsState | collectionStatusSeverity;
+
+  <p-tag class="capitalize" [value]="status.label | translate" [severity]="status.value"></p-tag>
+</div>
+
+@if (showAttributes()) {
+  <div class="flex flex-column gap-2 mt-2">
+    @for (attribute of attributes(); track attribute.key) {
+      <p class="font-normal">
+        <span class="font-bold">{{ attribute.label }}:</span> {{ attribute.value }}
+      </p>
+    }
+  </div>
+}

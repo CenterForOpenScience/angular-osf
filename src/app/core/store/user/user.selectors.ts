@@ -11,9 +11,7 @@ import { UserState } from './user.state';
 export class UserSelectors {
   @Selector([UserState])
   static getCurrentUser(state: UserStateModel): UserModel | null {
-    return state.currentUser.data || localStorage.getItem('currentUser')
-      ? JSON.parse(localStorage.getItem('currentUser')!)
-      : null;
+    return state.currentUser.data;
   }
 
   @Selector([UserState])
@@ -53,7 +51,7 @@ export class UserSelectors {
 
   @Selector([UserState])
   static isAuthenticated(state: UserStateModel): boolean {
-    return !!state.currentUser.data || !!localStorage.getItem('currentUser');
+    return !!state.currentUser.data;
   }
 
   @Selector([UserState])

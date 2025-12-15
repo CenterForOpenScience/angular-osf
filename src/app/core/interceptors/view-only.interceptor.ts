@@ -4,15 +4,16 @@ import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angul
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { getViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 export const viewOnlyInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
+  const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
 
-  const viewOnlyParam = getViewOnlyParam(router);
+  const viewOnlyParam = viewOnlyHelper.getViewOnlyParam(router);
 
   if (!req.url.includes('/api.crossref.org/funders') && viewOnlyParam) {
     if (req.url.includes('view_only=')) {

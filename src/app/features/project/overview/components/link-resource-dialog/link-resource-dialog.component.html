@@ -39,15 +39,14 @@
   <p-table
     class="link-project-table"
     [value]="isCurrentTableLoading() ? skeletonData : currentTableItems()"
-    [rows]="tableRows"
-    [first]="(currentPage() - 1) * 10"
-    [paginator]="currentTotalCount() > tableRows"
-    [totalRecords]="currentTotalCount()"
+    [rows]="tableParams().rows"
+    [first]="tableParams().firstRowIndex"
+    [paginator]="tableParams().paginator"
+    [totalRecords]="tableParams().totalRecords"
     paginatorDropdownAppendTo="body"
     [resizableColumns]="true"
     [autoLayout]="true"
-    [scrollable]="true"
-    [sortMode]="'single'"
+    [scrollable]="tableParams().scrollable"
     [lazy]="true"
     [lazyLoadOnInit]="true"
     (onPage)="onPageChange($event)"
@@ -74,7 +73,7 @@
               <p-checkbox
                 [disabled]="isNodeLinksSubmitting()"
                 [inputId]="item.id"
-                [ngModel]="isItemLinked()(item.id)"
+                [ngModel]="isItemLinked(item.id)"
                 [binary]="true"
                 (onChange)="handleToggleNodeLink(item)"
               />
@@ -84,15 +83,19 @@
           <td>{{ item.dateCreated | date: 'MMM d, y' }}</td>
           <td>{{ item.dateModified | date: 'MMM d, y' }}</td>
           <td>
-            @for (contributor of item.contributors; track contributor.id) {
+            @for (contributor of item.contributors.slice(0, 3); track contributor.id) {
               {{ contributor.fullName }}{{ $last ? '' : ', ' }}
+            }
+            @if (item.contributors.length > 3) {
+              , {{ 'common.labels.and' | translate }} {{ item.contributors.length - 3 }}
+              {{ 'common.labels.more' | translate }}
             }
           </td>
         </tr>
       } @else {
         <tr class="loading-row">
           <td colspan="4">
-            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+            <p-skeleton width="100%" height="2.75rem" borderRadius="0" />
           </td>
         </tr>
       }

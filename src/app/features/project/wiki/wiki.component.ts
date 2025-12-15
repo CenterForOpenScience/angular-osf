@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
@@ -17,9 +17,9 @@ import { EditSectionComponent } from '@osf/shared/components/wiki/edit-section/e
 import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
 import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { WikiModes } from '@osf/shared/models/wiki/wiki.model';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 import {
   ClearWiki,
@@ -28,7 +28,6 @@ import {
   DeleteWiki,
   GetCompareVersionContent,
   GetComponentsWikiList,
-  GetWikiContent,
   GetWikiList,
   GetWikiModes,
   GetWikiVersionContent,
@@ -61,8 +60,8 @@ export class WikiComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private toastService = inject(ToastService);
-  private readonly translateService = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   WikiModes = WikiModes;
   homeWikiName = 'Home';
@@ -81,15 +80,13 @@ export class WikiComponent {
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
   isCompareVersionLoading = select(WikiSelectors.getCompareVersionsLoading);
   isAnonymous = select(WikiSelectors.isWikiAnonymous);
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   hasWriteAccess = select(CurrentResourceSelectors.hasWriteAccess);
-  hasAdminAccess = select(CurrentResourceSelectors.hasAdminAccess);
 
   actions = createDispatchMap({
     getWikiModes: GetWikiModes,
     toggleMode: ToggleMode,
-    getWikiContent: GetWikiContent,
     getWikiList: GetWikiList,
     getComponentsWikiList: GetComponentsWikiList,
     updateWikiPreviewContent: UpdateWikiPreviewContent,

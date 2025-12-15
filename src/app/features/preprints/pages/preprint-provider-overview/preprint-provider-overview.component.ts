@@ -6,9 +6,9 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit }
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { BrandService } from '@osf/shared/services/brand.service';
+import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
 import {
   AdvisoryBoardComponent,
@@ -37,6 +37,9 @@ import {
 export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly brandService = inject(BrandService);
+  private readonly headerStyleHelper = inject(HeaderStyleService);
+  private readonly browserTabHelper = inject(BrowserTabService);
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
 
   private actions = createDispatchMap({
@@ -54,13 +57,13 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
       const provider = this.preprintProvider();
 
       if (provider) {
-        BrandService.applyBranding(provider.brand);
-        HeaderStyleHelper.applyHeaderStyles(
+        this.brandService.applyBranding(provider.brand);
+        this.headerStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,
           provider.brand.secondaryColor,
           provider.brand.heroBackgroundImageUrl
         );
-        BrowserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
+        this.browserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
       }
     });
   }
@@ -71,9 +74,9 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    HeaderStyleHelper.resetToDefaults();
-    BrandService.resetBranding();
-    BrowserTabHelper.resetToDefaults();
+    this.headerStyleHelper.resetToDefaults();
+    this.brandService.resetBranding();
+    this.browserTabHelper.resetToDefaults();
   }
 
   redirectToDiscoverPageWithValue(searchValue: string) {

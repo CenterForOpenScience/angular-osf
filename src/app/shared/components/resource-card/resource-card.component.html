@@ -1,118 +1,118 @@
 <div class="resource p-4">
   <p-accordion (onOpen)="onOpen()">
-    <p-accordion-panel value="0">
+    <p-accordion-panel value="0" class="gap-2">
       <p-accordion-header class="flex flex-row align-items-start gap-3 p-0">
         <div osfStopPropagation class="flex flex-column align-items-start gap-2">
           <p class="type py-1 px-3 font-bold">{{ cardTypeLabel() | translate }}</p>
-
-          <div class="flex align-items-center gap-2">
-            <h2>
-              <a
-                class="dark-blue-link word-break-word"
-                [href]="resource().absoluteUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ displayTitle() | fixSpecialChar }}
-              </a>
-            </h2>
-
-            @if (isWithdrawn()) {
-              <p-tag severity="secondary">{{ 'resourceCard.labels.withdrawn' | translate }}</p-tag>
-            }
-
-            @let orcidValues = orcids();
-            @if (orcidValues.length && orcidValues[0]) {
-              <a [href]="orcidValues[0]" class="h-1rem" target="_blank" rel="noopener noreferrer">
-                <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
-              </a>
-            }
-          </div>
-
-          @if (affiliatedEntities().length > 0) {
-            <div class="line-height-3">
-              @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
-                <a
-                  class="word-break-word"
-                  [href]="affiliatedEntity.absoluteUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ affiliatedEntity.name }}{{ $last ? '' : ', ' }}
-                </a>
-              }
-              @if (resource().creators.length > limit) {
-                <p class="inline">
-                  &nbsp;{{ 'resourceCard.andCountMore' | translate: { count: resource().creators.length - limit } }}
-                </p>
-              }
-            </div>
-          }
-
-          @if (resource().isPartOf) {
-            <div class="flex flex-row gap-1 line-height-3">
-              <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
-              <a
-                class="white-space-normal word-break-word"
-                [href]="resource().isPartOf!.absoluteUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ resource().isPartOf!.name }}
-              </a>
-            </div>
-          }
-
-          @if (resource().isContainedBy) {
-            <div class="flex flex-row gap-1 line-height-3">
-              <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
-              <a
-                class="white-space-normal"
-                [href]="resource().isContainedBy!.absoluteUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ resource().isContainedBy!.name }}
-              </a>
-            </div>
-          }
-
-          @if (dateFields().length > 0) {
-            <div class="flex flex-column md:flex-row line-height-3">
-              @for (dateField of dateFields(); track $index) {
-                <p>{{ dateField.label | translate }}: {{ dateField.date | date: 'MMMM d, y' : 'UTC' }}</p>
-
-                @if (!$last && !isSmall()) {
-                  <p class="mx-1">
-                    {{ '|' }}
-                  </p>
-                }
-              }
-            </div>
-          }
-
-          @if (resource().context) {
-            <div class="flex flex-row gap-1 line-height-3 flex-wrap">
-              <p [innerHTML]="`${'resourceCard.labels.context' | translate}: ${resource().context}`"></p>
-            </div>
-          }
-
-          @if (
-            resource().resourceType === ResourceType.Registration ||
-            resource().resourceType === ResourceType.RegistrationComponent
-          ) {
-            <osf-data-resources
-              class="mt-1"
-              [absoluteUrl]="resource().absoluteUrl"
-              [hasData]="!!resource().hasDataResource"
-              [hasAnalyticCode]="resource().hasAnalyticCodeResource"
-              [hasMaterials]="resource().hasMaterialsResource"
-              [hasPapers]="resource().hasPapersResource"
-              [hasSupplements]="resource().hasSupplementalResource"
-            />
-          }
         </div>
       </p-accordion-header>
+
+      <div class="flex align-items-center gap-2">
+        <h2>
+          <a
+            class="block line-height-4 dark-blue-link word-break-word"
+            [href]="resource().absoluteUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ displayTitle() | fixSpecialChar }}
+          </a>
+        </h2>
+
+        @if (isWithdrawn()) {
+          <p-tag severity="secondary">{{ 'resourceCard.labels.withdrawn' | translate }}</p-tag>
+        }
+
+        @let orcidValues = orcids();
+        @if (orcidValues.length && orcidValues[0]) {
+          <a [href]="orcidValues[0]" class="h-1rem" target="_blank" rel="noopener noreferrer">
+            <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
+          </a>
+        }
+      </div>
+
+      @if (affiliatedEntities().length > 0) {
+        <div class="line-height-3">
+          @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
+            <a
+              class="word-break-word block line-height-3"
+              [href]="affiliatedEntity.absoluteUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ affiliatedEntity.name }}{{ $last ? '' : ', ' }}
+            </a>
+          }
+          @if (resource().creators.length > limit) {
+            <p class="inline">
+              &nbsp;{{ 'resourceCard.andCountMore' | translate: { count: resource().creators.length - limit } }}
+            </p>
+          }
+        </div>
+      }
+
+      @if (resource().isPartOf) {
+        <div class="flex flex-row gap-1 line-height-3">
+          <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
+          <a
+            class="block white-space-normal word-break-word"
+            [href]="resource().isPartOf!.absoluteUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ resource().isPartOf!.name }}
+          </a>
+        </div>
+      }
+
+      @if (resource().isContainedBy) {
+        <div class="flex flex-row gap-1 line-height-3">
+          <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
+          <a
+            class="block white-space-normal"
+            [href]="resource().isContainedBy!.absoluteUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ resource().isContainedBy!.name }}
+          </a>
+        </div>
+      }
+
+      @if (dateFields().length > 0) {
+        <div class="flex flex-column md:flex-row line-height-3">
+          @for (dateField of dateFields(); track $index) {
+            <p>{{ dateField.label | translate }}: {{ dateField.date | date: 'MMMM d, y' : 'UTC' }}</p>
+
+            @if (!$last && !isSmall()) {
+              <p class="mx-1">
+                {{ '|' }}
+              </p>
+            }
+          }
+        </div>
+      }
+
+      @if (resource().context) {
+        <div class="flex flex-row gap-1 line-height-3 flex-wrap">
+          <p [innerHTML]="`${'resourceCard.labels.context' | translate}: ${resource().context}`"></p>
+        </div>
+      }
+
+      @if (
+        resource().resourceType === ResourceType.Registration ||
+        resource().resourceType === ResourceType.RegistrationComponent
+      ) {
+        <osf-data-resources
+          class="mt-1"
+          [absoluteUrl]="resource().absoluteUrl"
+          [hasData]="!!resource().hasDataResource"
+          [hasAnalyticCode]="resource().hasAnalyticCodeResource"
+          [hasMaterials]="resource().hasMaterialsResource"
+          [hasPapers]="resource().hasPapersResource"
+          [hasSupplements]="resource().hasSupplementalResource"
+        />
+      }
       <p-accordion-content>
         <div class="flex flex-column pt-1">
           <hr class="w-full break-line my-2" />

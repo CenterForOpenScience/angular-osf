@@ -24,7 +24,7 @@
         </p>
 
         <osf-addons-toolbar
-          [categoryOptions]="categoryOptions"
+          [categoryOptions]="categoryOptions()"
           [searchControl]="searchControl"
           [(selectedCategory)]="selectedCategory"
         />
@@ -43,7 +43,7 @@
           {{ 'settings.addons.connectedDescription' | translate }}
         </p>
         <osf-addons-toolbar
-          [categoryOptions]="categoryOptions"
+          [categoryOptions]="categoryOptions()"
           [searchControl]="searchControl"
           [(selectedCategory)]="selectedCategory"
         />

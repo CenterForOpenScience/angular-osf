@@ -1,22 +1,16 @@
+import { CurrentResourceType } from '@shared/enums/resource-type.enum';
+
 export class GetActivityLogs {
   static readonly type = '[ActivityLogs] Get Activity Logs';
 
   constructor(
-    public projectId: string,
+    public resourceId: string,
+    public resourceType: CurrentResourceType.Projects | CurrentResourceType.Registrations,
     public page = 1,
     public pageSize: number
   ) {}
 }
 
-export class GetRegistrationActivityLogs {
-  static readonly type = '[ActivityLogs] Get Registration Activity Logs';
-  constructor(
-    public registrationId: string,
-    public page = 1,
-    public pageSize: number
-  ) {}
-}
-
-export class ClearActivityLogsStore {
-  static readonly type = '[ActivityLogs] Clear Store';
+export class ClearActivityLogs {
+  static readonly type = '[ActivityLogs] Clear Activity Logs';
 }

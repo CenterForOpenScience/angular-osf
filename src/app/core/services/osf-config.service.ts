@@ -1,7 +1,8 @@
 import { catchError, lastValueFrom, of, shareReplay } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 import { ConfigModel } from '@core/models/config.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -23,6 +24,7 @@ export class OSFConfigService {
    * Injected via Angular's dependency injection system.
    */
   private http: HttpClient = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
 
   /**
    * Injected instance of the application environment configuration.
@@ -38,9 +40,10 @@ export class OSFConfigService {
   /**
    * Loads the configuration from the JSON file if not already loaded.
    * Ensures that only one request is made.
+   * On the server, this is skipped as config is only needed in the browser.
    */
   async load(): Promise<void> {
-    if (!this.config) {
+    if (!this.config && isPlatformBrowser(this.platformId)) {
       this.config = await lastValueFrom<ConfigModel>(
         this.http.get<ConfigModel>('/assets/config/config.json').pipe(
           shareReplay(1),

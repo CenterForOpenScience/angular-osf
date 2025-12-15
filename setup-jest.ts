@@ -38,6 +38,14 @@ Object.defineProperty(window, 'ResizeObserver', {
   value: ResizeObserver,
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).ace = {
+  define: jest.fn(),
+  require: jest.fn().mockReturnValue({
+    snippetCompleter: {},
+  }),
+};
+
 jest.mock('@newrelic/browser-agent/loaders/browser-agent', () => ({
   BrowserAgent: jest.fn().mockImplementation(() => ({
     start: jest.fn(),

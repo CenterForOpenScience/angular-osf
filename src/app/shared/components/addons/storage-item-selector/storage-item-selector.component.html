@@ -46,6 +46,7 @@
     ></osf-google-file-picker>
     @if (selectedStorageItem() !== null) {
       <osf-google-file-picker
+        #filePicker
         [isFolderPicker]="false"
         [accountId]="accountId()"
         [currentAddonType]="currentAddonType()"

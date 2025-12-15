@@ -2,16 +2,15 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
-import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { StepOption } from '@osf/shared/models/step-option.model';
 import { BrandService } from '@osf/shared/services/brand.service';
+import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
 import {
   AuthorAssertionsStepComponent,
@@ -45,13 +44,6 @@ describe('SubmitPreprintStepperComponent', () => {
   const mockProviderId = 'osf';
 
   beforeEach(async () => {
-    jest.spyOn(BrowserTabHelper, 'updateTabStyles').mockImplementation(() => {});
-    jest.spyOn(BrowserTabHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'applyHeaderStyles').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'applyBranding').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'resetBranding').mockImplementation(() => {});
-
     routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
     routeMock = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })
@@ -75,9 +67,11 @@ describe('SubmitPreprintStepperComponent', () => {
       ],
       providers: [
         MockProvider(BrandService),
+        MockProvider(BrowserTabService),
+        MockProvider(HeaderStyleService),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, routeMock),
-        { provide: IS_WEB, useValue: of(true) },
+        MockProvider(IS_WEB, of(true)),
         provideMockStore({
           signals: [
             {
@@ -95,16 +89,11 @@ describe('SubmitPreprintStepperComponent', () => {
           ],
         }),
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SubmitPreprintStepperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should initialize with correct default values', () => {

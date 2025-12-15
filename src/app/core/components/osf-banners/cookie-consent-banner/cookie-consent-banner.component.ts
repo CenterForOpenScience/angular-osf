@@ -4,7 +4,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal } from '@angular/core';
 
 import { fadeInOutAnimation } from '@core/animations/fade.in-out.animation';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
@@ -41,13 +42,16 @@ export class CookieConsentBannerComponent {
    * Cookie service used to persist dismissal state in the browser.
    */
   private readonly cookies = inject(CookieService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   /**
    * Initializes the component and sets the banner display
    * based on the existence of the cookie.
    */
   constructor() {
-    this.displayBanner.set(!this.cookies.check(this.cookieName));
+    if (isPlatformBrowser(this.platformId)) {
+      this.displayBanner.set(!this.cookies.check(this.cookieName));
+    }
   }
 
   /**
@@ -56,8 +60,10 @@ export class CookieConsentBannerComponent {
    * - Hides the banner immediately.
    */
   acceptCookies() {
-    const expireDate = new Date('9999-12-31T23:59:59Z');
-    this.cookies.set(this.cookieName, 'true', expireDate, '/');
+    if (isPlatformBrowser(this.platformId)) {
+      const expireDate = new Date('9999-12-31T23:59:59Z');
+      this.cookies.set(this.cookieName, 'true', expireDate, '/');
+    }
     this.displayBanner.set(false);
   }
 }

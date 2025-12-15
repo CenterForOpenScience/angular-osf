@@ -54,7 +54,7 @@ export class ProjectComponent implements OnDestroy {
   private readonly prerenderReady = inject(PrerenderReadyService);
   private readonly router = inject(Router);
   private readonly analyticsService = inject(AnalyticsService);
-  currentResource = select(CurrentResourceSelectors.getCurrentResource);
+  private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
 
   readonly identifiersForDatacite$ = toObservable(select(ProjectOverviewSelectors.getIdentifiers)).pipe(
     map((identifiers) => (identifiers?.length ? { identifiers } : null))
@@ -69,7 +69,8 @@ export class ProjectComponent implements OnDestroy {
   readonly institutions = select(ProjectOverviewSelectors.getInstitutions);
   readonly isInstitutionsLoading = select(ProjectOverviewSelectors.isInstitutionsLoading);
 
-  private projectId = toSignal(this.route.params.pipe(map((params) => params['id'])));
+  private readonly lastMetaTagsProjectId = signal<string | null>(null);
+  private readonly projectId = toSignal(this.route.params.pipe(map((params) => params['id'])));
 
   private readonly allDataLoaded = computed(
     () =>
@@ -79,8 +80,6 @@ export class ProjectComponent implements OnDestroy {
       !this.isInstitutionsLoading() &&
       !!this.currentProject()
   );
-
-  private readonly lastMetaTagsProjectId = signal<string | null>(null);
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
