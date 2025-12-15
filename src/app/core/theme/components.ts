@@ -29,7 +29,7 @@ export const components = {
         activeBackground: primitives.colors.bgBlueThree,
         borderColor: primitives.colors.bgBlueThree,
         hoverBorderColor: primitives.colors.bgBlueTwo,
-        color: primitives.colors.prBlueOne,
+        color: primitives.colors.darkBlueTwo,
         hoverColor: primitives.colors.prBlueThree,
       },
       outlined: {
