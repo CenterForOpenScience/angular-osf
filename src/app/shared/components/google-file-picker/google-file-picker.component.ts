@@ -49,7 +49,6 @@ export class GoogleFilePickerComponent implements OnInit {
   }
 
   constructor() {
-    // Automatically open file picker when ready (for non-folder pickers)
     effect(() => {
       const isReady = !this.isGFPDisabled();
       const hasRootFolder = !!this.rootFolder();
