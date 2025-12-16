@@ -32,7 +32,12 @@
           @if (affiliatedEntities().length > 0) {
             <div class="line-height-3">
               @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
-                <a [href]="affiliatedEntity.absoluteUrl" target="_blank" rel="noopener noreferrer">
+                <a
+                  class="word-break-word"
+                  [href]="affiliatedEntity.absoluteUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {{ affiliatedEntity.name }}{{ $last ? '' : ', ' }}
                 </a>
               }

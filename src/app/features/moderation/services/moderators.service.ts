@@ -85,7 +85,7 @@ export class ModeratorsService {
   }
 
   searchUsers(value: string, page = 1): Observable<PaginatedData<ModeratorAddModel[]>> {
-    const baseUrl = `${this.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
+    const baseUrl = `${this.apiUrl}/search/users/?q=${value}*&page=${page}`;
 
     return this.jsonApiService
       .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)

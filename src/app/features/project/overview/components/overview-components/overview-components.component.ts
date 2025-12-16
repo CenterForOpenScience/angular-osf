@@ -3,29 +3,27 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
-import { IconComponent } from '@osf/shared/components/icon/icon.component';
-import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { GetResourceWithChildren } from '@osf/shared/stores/current-resource';
-import { ComponentOverview } from '@shared/models/components/components.models';
 
-import { LoadMoreComponents, ProjectOverviewSelectors } from '../../store';
+import { LoadMoreComponents, ProjectOverviewSelectors, ReorderComponents } from '../../store';
 import { AddComponentDialogComponent } from '../add-component-dialog/add-component-dialog.component';
+import { ComponentCardComponent } from '../component-card/component-card.component';
 import { DeleteComponentDialogComponent } from '../delete-component-dialog/delete-component-dialog.component';
 
 @Component({
   selector: 'osf-project-components',
-  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, ContributorsListComponent],
+  imports: [Button, CdkDrag, CdkDropList, Skeleton, TranslatePipe, ComponentCardComponent],
   templateUrl: './overview-components.component.html',
   styleUrl: './overview-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,46 +32,35 @@ export class OverviewComponentsComponent {
   private router = inject(Router);
   private customDialogService = inject(CustomDialogService);
   private loaderService = inject(LoaderService);
+  private toastService = inject(ToastService);
 
   canEdit = input.required<boolean>();
   anonymous = input<boolean>(false);
 
   components = select(ProjectOverviewSelectors.getComponents);
   isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
+  isComponentsSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
   hasMoreComponents = select(ProjectOverviewSelectors.hasMoreComponents);
   project = select(ProjectOverviewSelectors.getProject);
+
+  reorderedComponents = signal<NodeModel[]>([]);
 
   actions = createDispatchMap({
     getComponentsTree: GetResourceWithChildren,
     loadMoreComponents: LoadMoreComponents,
+    reorderComponents: ReorderComponents,
   });
 
-  readonly UserPermissions = UserPermissions;
+  isDragDisabled = computed(
+    () => this.isComponentsSubmitting() || (!this.canEdit() && this.reorderedComponents().length <= 1)
+  );
 
-  readonly componentActionItems = (component: ComponentOverview) => {
-    const baseItems = [
-      {
-        label: 'project.overview.actions.manageContributors',
-        action: 'manageContributors',
-        componentId: component.id,
-      },
-      {
-        label: 'project.overview.actions.settings',
-        action: 'settings',
-        componentId: component.id,
-      },
-    ];
-
-    if (component.currentUserPermissions.includes(UserPermissions.Admin)) {
-      baseItems.push({
-        label: 'project.overview.actions.delete',
-        action: 'delete',
-        componentId: component.id,
-      });
-    }
-
-    return baseItems;
-  };
+  constructor() {
+    effect(() => {
+      const componentsData = this.components();
+      this.reorderedComponents.set([...componentsData]);
+    });
+  }
 
   handleMenuAction(action: string, componentId: string): void {
     switch (action) {
@@ -96,7 +83,7 @@ export class OverviewComponentsComponent {
     });
   }
 
-  navigateToComponent(componentId: string): void {
+  handleComponentNavigate(componentId: string): void {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/', componentId], { queryParamsHandling: 'preserve' })
     );
@@ -109,6 +96,22 @@ export class OverviewComponentsComponent {
     if (!project) return;
 
     this.actions.loadMoreComponents(project.id);
+  }
+
+  onReorder(event: CdkDragDrop<NodeModel[]>): void {
+    const project = this.project();
+    if (!project || !this.canEdit()) return;
+
+    const components = [...this.reorderedComponents()];
+    moveItemInArray(components, event.previousIndex, event.currentIndex);
+    this.reorderedComponents.set(components);
+
+    const componentIds = components.map((component) => component.id);
+    this.actions.reorderComponents(project.id, componentIds).subscribe({
+      next: () => {
+        this.toastService.showSuccess('project.overview.dialog.toast.reorderComponents.success');
+      },
+    });
   }
 
   private handleDeleteComponent(componentId: string): void {
@@ -126,9 +129,7 @@ export class OverviewComponentsComponent {
           data: { componentId, resourceType: ResourceType.Project },
         });
       },
-      error: () => {
-        this.loaderService.hide();
-      },
+      error: () => this.loaderService.hide(),
     });
   }
 }

@@ -1,4 +1,4 @@
-import { ProjectOverview } from '@osf/features/project/overview/models';
+import { ProjectOverviewModel } from '@osf/features/project/overview/models';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 
 export const MOCK_PROJECT_AFFILIATED_INSTITUTIONS = [
@@ -32,7 +32,7 @@ export const MOCK_PROJECT_IDENTIFIERS: IdentifierModel = {
   value: '10.1234/test.12345',
 };
 
-export const MOCK_PROJECT_OVERVIEW: ProjectOverview = {
+export const MOCK_PROJECT_OVERVIEW: ProjectOverviewModel = {
   id: 'project-1',
   type: 'nodes',
   title: 'Test Project',
@@ -47,19 +47,17 @@ export const MOCK_PROJECT_OVERVIEW: ProjectOverview = {
   isCollection: false,
   tags: [],
   accessRequestsEnabled: false,
-  analyticsKey: 'test-key',
-  currentUserCanComment: true,
+  nodeLicense: {
+    copyrightHolders: null,
+    year: null,
+  },
   currentUserPermissions: [],
   currentUserIsContributor: true,
-  currentUserIsContributorOrGroupMember: true,
   wikiEnabled: false,
   contributors: [],
-  customCitation: null,
   forksCount: 0,
   viewOnlyLinksCount: 0,
   links: {
-    rootFolder: '/test',
     iri: 'https://test.com',
   },
-  doi: MOCK_PROJECT_IDENTIFIERS.value,
 };

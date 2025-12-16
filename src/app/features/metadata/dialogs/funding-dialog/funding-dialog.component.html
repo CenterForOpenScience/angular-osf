@@ -20,7 +20,7 @@
             [showClear]="true"
             [loading]="fundersLoading()"
             [emptyFilterMessage]="filterMessage() | translate"
-            [emptyMessage]="filterMessage()"
+            [emptyMessage]="filterMessage() | translate"
             [autoOptionFocus]="false"
             (onChange)="onFunderSelected($event.value, $index)"
             (onFilter)="onFunderSearch($event.filter)"

@@ -116,8 +116,9 @@ export class ConfigureAddonComponent implements OnInit {
   });
 
   readonly supportedResourceTypes = computed(() => {
-    if (this.linkAddons().length && this.addonTypeString() === AddonType.LINK) {
-      const addon = this.linkAddons().find((a) => this.addon()?.externalServiceName === a.externalServiceName);
+    const linkAddons = this.linkAddons();
+    if (linkAddons?.length && this.addonTypeString() === AddonType.LINK) {
+      const addon = linkAddons.find((a) => this.addon()?.externalServiceName === a.externalServiceName);
       return addon?.supportedResourceTypes || [];
     }
     return [];

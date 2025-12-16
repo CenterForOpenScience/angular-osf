@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { map } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -15,9 +15,10 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -26,6 +27,7 @@ import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { GetRegistryIdentifiers, GetRegistryWithRelatedData, RegistrySelectors } from './store/registry';
 
@@ -45,8 +47,10 @@ export class RegistryComponent implements OnDestroy {
   private readonly dataciteService = inject(DataciteService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
+  private readonly helpScoutService = inject(HelpScoutService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly prerenderReady = inject(PrerenderReadyService);
+  readonly analyticsService = inject(AnalyticsService);
 
   private readonly actions = createDispatchMap({
     getRegistryWithRelatedData: GetRegistryWithRelatedData,
@@ -56,18 +60,16 @@ export class RegistryComponent implements OnDestroy {
   });
 
   private registryId = toSignal(this.route.params.pipe(map((params) => params['id'])));
-
+  readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   readonly registry = select(RegistrySelectors.getRegistry);
   readonly isRegistryLoading = select(RegistrySelectors.isRegistryLoading);
   readonly identifiersForDatacite$ = toObservable(select(RegistrySelectors.getIdentifiers)).pipe(
     map((identifiers) => (identifiers?.length ? { identifiers } : null))
   );
-  readonly analyticsService = inject(AnalyticsService);
   readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
   readonly isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
   readonly license = select(RegistrySelectors.getLicense);
   readonly isLicenseLoading = select(RegistrySelectors.isLicenseLoading);
-  readonly isIdentifiersLoading = select(RegistrySelectors.isIdentifiersLoading);
 
   private readonly allDataLoaded = computed(
     () =>
@@ -78,9 +80,11 @@ export class RegistryComponent implements OnDestroy {
   );
 
   private readonly lastMetaTagsRegistryId = signal<string | null>(null);
+  readonly router = inject(Router);
 
   constructor() {
     this.prerenderReady.setNotReady();
+    this.helpScoutService.setResourceType('registration');
 
     effect(() => {
       const id = this.registryId();
@@ -104,49 +108,54 @@ export class RegistryComponent implements OnDestroy {
       }
     });
 
-    effect(() => {
-      const currentRegistry = this.registry();
-      if (currentRegistry && currentRegistry.isPublic) {
-        this.analyticsService.sendCountedUsage(currentRegistry.id, 'registry.detail').subscribe();
-      }
-    });
-
     this.dataciteService
       .logIdentifiableView(this.identifiersForDatacite$)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((event: NavigationEnd) => {
+        this.analyticsService.sendCountedUsageForRegistrationAndProjects(
+          event.urlAfterRedirects,
+          this.currentResource()
+        );
+      });
   }
 
   ngOnDestroy(): void {
     this.actions.clearCurrentProvider();
+    this.helpScoutService.unsetResourceType();
   }
 
   private setMetaTags(): void {
     const currentRegistry = this.registry();
     if (!currentRegistry) return;
 
-    this.metaTags.updateMetaTags(
-      {
-        osfGuid: currentRegistry.id,
-        title: currentRegistry.title,
-        description: currentRegistry.description,
-        publishedDate: this.datePipe.transform(currentRegistry.dateRegistered, 'yyyy-MM-dd'),
-        modifiedDate: this.datePipe.transform(currentRegistry.dateModified, 'yyyy-MM-dd'),
-        url: pathJoin(this.environment.webUrl, currentRegistry.id ?? ''),
-        identifier: currentRegistry.id,
-        doi: currentRegistry.articleDoi,
-        keywords: currentRegistry.tags,
-        siteName: 'OSF',
-        license: this.license()?.name,
-        contributors:
-          this.bibliographicContributors()?.map((contributor) => ({
-            fullName: contributor.fullName,
-            givenName: contributor.givenName,
-            familyName: contributor.familyName,
-          })) ?? [],
-      },
-      this.destroyRef
-    );
+    const metaTagsData = {
+      osfGuid: currentRegistry.id,
+      title: currentRegistry.title,
+      description: currentRegistry.description,
+      publishedDate: this.datePipe.transform(currentRegistry.dateRegistered, 'yyyy-MM-dd'),
+      modifiedDate: this.datePipe.transform(currentRegistry.dateModified, 'yyyy-MM-dd'),
+      url: pathJoin(this.environment.webUrl, currentRegistry.id ?? ''),
+      identifier: currentRegistry.id,
+      doi: currentRegistry.articleDoi,
+      keywords: currentRegistry.tags,
+      siteName: 'OSF',
+      license: this.license()?.name,
+      contributors:
+        this.bibliographicContributors()?.map((contributor) => ({
+          fullName: contributor.fullName,
+          givenName: contributor.givenName,
+          familyName: contributor.familyName,
+        })) ?? [],
+    };
+
+    this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
 
     this.lastMetaTagsRegistryId.set(currentRegistry.id);
   }

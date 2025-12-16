@@ -67,7 +67,7 @@
       <p-skeleton height="2rem" class="w-full" />
     } @else {
       <section class="selected-project">
-        <p>{{ preprintProject()?.name }}</p>
+        <p>{{ preprintProject()?.name | fixSpecialChar }}</p>
 
         <p-button
           class="danger-icon-btn"

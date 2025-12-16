@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -10,7 +10,7 @@ import { finalize } from 'rxjs';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ToolbarResource } from '@osf/shared/models/toolbar-resource.model';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 import { ForkResource, ProjectOverviewSelectors } from '../../store';
@@ -23,19 +23,23 @@ import { ForkResource, ProjectOverviewSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForkDialogComponent {
-  private store = inject(Store);
   private toastService = inject(ToastService);
   dialogRef = inject(DynamicDialogRef);
   destroyRef = inject(DestroyRef);
-  isSubmitting = select(ProjectOverviewSelectors.getForkProjectSubmitting);
   readonly config = inject(DynamicDialogConfig);
 
-  handleForkConfirm(): void {
-    const resource = this.config.data.resource as ToolbarResource;
-    if (!resource) return;
+  isSubmitting = select(ProjectOverviewSelectors.getForkProjectSubmitting);
 
-    this.store
-      .dispatch(new ForkResource(resource.id, resource.resourceType))
+  actions = createDispatchMap({ forkResource: ForkResource });
+
+  handleForkConfirm(): void {
+    const resourceId = this.config.data.resourceId as string;
+    const resourceType = this.config.data.resourceType as ResourceType;
+
+    if (!resourceId || !resourceType) return;
+
+    this.actions
+      .forkResource(resourceId, resourceType)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {

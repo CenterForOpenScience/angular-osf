@@ -1,5 +1,5 @@
-import { ComponentOverview } from '@osf/shared/models/components/components.models';
 import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
+import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 
 export class CreateNodeLink {
   static readonly type = '[Node Links] Create Node Link';
@@ -21,7 +21,7 @@ export class DeleteNodeLink {
 
   constructor(
     public projectId: string,
-    public linkedResource: ComponentOverview
+    public linkedResource: NodeModel
   ) {}
 }
 

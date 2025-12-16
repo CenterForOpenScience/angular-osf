@@ -10,9 +10,9 @@ import { OperationInvocation } from '@osf/shared/models/addons/operation-invocat
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface AddonsStateModel {
-  storageAddons: AsyncStateModel<AddonModel[]>;
-  citationAddons: AsyncStateModel<AddonModel[]>;
-  linkAddons: AsyncStateModel<AddonModel[]>;
+  storageAddons: AsyncStateModel<AddonModel[] | null>;
+  citationAddons: AsyncStateModel<AddonModel[] | null>;
+  linkAddons: AsyncStateModel<AddonModel[] | null>;
   authorizedStorageAddons: AsyncStateModel<AuthorizedAccountModel[]>;
   authorizedCitationAddons: AsyncStateModel<AuthorizedAccountModel[]>;
   authorizedLinkAddons: AsyncStateModel<AuthorizedAccountModel[]>;
@@ -30,17 +30,17 @@ export interface AddonsStateModel {
 
 export const ADDONS_DEFAULTS: AddonsStateModel = {
   storageAddons: {
-    data: [],
+    data: null,
     isLoading: false,
     error: null,
   },
   citationAddons: {
-    data: [],
+    data: null,
     isLoading: false,
     error: null,
   },
   linkAddons: {
-    data: [],
+    data: null,
     isLoading: false,
     error: null,
   },

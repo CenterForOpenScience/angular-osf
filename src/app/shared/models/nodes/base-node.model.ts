@@ -27,5 +27,5 @@ export interface BaseNodeModel {
 }
 
 export interface NodeModel extends BaseNodeModel {
-  bibliographicContributors?: ContributorModel[];
+  bibliographicContributors: ContributorModel[];
 }

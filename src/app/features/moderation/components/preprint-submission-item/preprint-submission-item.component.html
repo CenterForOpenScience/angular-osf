@@ -10,7 +10,7 @@
               class="link-btn-no-padding"
               styleClass="text-left"
               link
-              [label]="submission().title"
+              [label]="submission().title | fixSpecialChar"
               (onClick)="selected.emit()"
             />
             @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {

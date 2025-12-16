@@ -37,7 +37,6 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import {
-  AddContributor,
   BulkAddContributors,
   BulkUpdateContributors,
   ContributorsSelectors,
@@ -90,7 +89,6 @@ export class RegistriesContributorsComponent implements OnInit, OnDestroy {
     deleteContributor: DeleteContributor,
     bulkUpdateContributors: BulkUpdateContributors,
     bulkAddContributors: BulkAddContributors,
-    addContributor: AddContributor,
     loadMoreContributors: LoadMoreContributors,
     resetContributorsState: ResetContributorsState,
   });
@@ -176,7 +174,7 @@ export class RegistriesContributorsComponent implements OnInit, OnDestroy {
         } else {
           const params = { name: res.data[0].fullName };
 
-          this.actions.addContributor(this.draftId(), ResourceType.DraftRegistration, res.data[0]).subscribe({
+          this.actions.bulkAddContributors(this.draftId(), ResourceType.DraftRegistration, res.data).subscribe({
             next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }

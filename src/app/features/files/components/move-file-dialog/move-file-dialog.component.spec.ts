@@ -3,7 +3,6 @@ import { MockComponents, MockPipe } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileSelectDestinationComponent } from '@osf/shared/components/file-select-destination/file-select-destination.component';
@@ -56,14 +55,14 @@ describe('MoveFileDialogComponent', () => {
         { provide: CustomConfirmationService, useValue: CustomConfirmationServiceMock.simple() },
         provideMockStore({
           signals: [
-            { selector: FilesSelectors.getMoveDialogFiles, value: signal([]) },
-            { selector: FilesSelectors.getMoveDialogFilesTotalCount, value: signal(0) },
-            { selector: FilesSelectors.isMoveDialogFilesLoading, value: signal(false) },
-            { selector: FilesSelectors.getMoveDialogCurrentFolder, value: signal(null) },
-            { selector: CurrentResourceSelectors.getCurrentResource, value: signal(null) },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: signal([]) },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: signal(false) },
-            { selector: FilesSelectors.isMoveDialogConfiguredStorageAddonsLoading, value: signal(false) },
+            { selector: FilesSelectors.getMoveDialogFiles, value: [] },
+            { selector: FilesSelectors.getMoveDialogFilesTotalCount, value: 0 },
+            { selector: FilesSelectors.isMoveDialogFilesLoading, value: false },
+            { selector: FilesSelectors.getMoveDialogCurrentFolder, value: null },
+            { selector: CurrentResourceSelectors.getCurrentResource, value: null },
+            { selector: CurrentResourceSelectors.getResourceWithChildren, value: [] },
+            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
+            { selector: FilesSelectors.isMoveDialogConfiguredStorageAddonsLoading, value: false },
           ],
         }),
       ],

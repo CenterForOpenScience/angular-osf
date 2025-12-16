@@ -16,6 +16,7 @@ import { ViewOnlyLinkState } from '@osf/shared/stores/view-only-links';
 import { AnalyticsState } from '../analytics/store';
 import { CollectionsModerationState } from '../moderation/store/collections-moderation';
 
+import { ProjectOverviewState } from './overview/store';
 import { RegistrationsState } from './registrations/store';
 import { SettingsState } from './settings/store';
 
@@ -23,6 +24,7 @@ export const projectRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('../project/project.component').then((mod) => mod.ProjectComponent),
+    providers: [provideStates([ProjectOverviewState])],
     children: [
       {
         path: '',
