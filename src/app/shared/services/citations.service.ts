@@ -1,6 +1,6 @@
 import { map, Observable } from 'rxjs';
 
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -41,11 +41,14 @@ export class CitationsService {
       .pipe(map((response) => CitationsMapper.fromGetStyledCitationResponse(response.data)));
   }
 
-  fetchCitationStyles(searchQuery?: string): Observable<CitationStyle[]> {
-    const params = new HttpParams().set('filter[title,short_title]', searchQuery || '').set('page[size]', '100');
+  fetchCitationStyles(searchQuery = ''): Observable<CitationStyle[]> {
+    const params: Record<string, string> = {
+      'filter[title,short_title]': searchQuery,
+      'page[size]': '100',
+    };
 
     return this.jsonApiService
-      .get<JsonApiResponse<CitationStyleJsonApi[], null>>(`${this.apiUrl}/citations/styles/`, { params })
+      .get<JsonApiResponse<CitationStyleJsonApi[], null>>(`${this.apiUrl}/citations/styles/`, params)
       .pipe(map((response) => CitationsMapper.fromGetCitationStylesResponse(response.data)));
   }
 
@@ -56,7 +59,7 @@ export class CitationsService {
   }
 
   fetchCustomCitationFile(styleId: string): Observable<string> {
-    const url = `/static/vendor/bower_components/styles/${styleId}.csl`;
+    const url = `/styles/${styleId}.csl`;
     return this.http.get(url, { responseType: 'text' });
   }
 
