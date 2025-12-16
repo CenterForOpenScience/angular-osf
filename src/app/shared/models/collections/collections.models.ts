@@ -91,6 +91,9 @@ export interface CollectionSubmissionWithGuid {
     fullName: string;
   };
   actions?: CollectionSubmissionReviewAction[];
+  totalContributors?: number;
+  contributorsLoading?: boolean;
+  contributorsPage?: number;
 }
 
 export interface CollectionProjectSubmission {

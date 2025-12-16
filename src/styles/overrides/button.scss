@@ -73,3 +73,7 @@
 .copy-icon-btn .p-button {
   height: 1.5rem;
 }
+
+.btn-link-dark-blue {
+  --p-button-link-color: var(--dark-blue-2);
+}

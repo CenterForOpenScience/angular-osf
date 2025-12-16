@@ -24,7 +24,12 @@ import { Primitive } from '@osf/shared/helpers/types.helper';
 import { REGISTRY_SORT_OPTIONS, SUBMITTED_SUBMISSION_REVIEW_OPTIONS } from '../../constants';
 import { RegistrySort, SubmissionReviewStatus } from '../../enums';
 import { RegistryModeration } from '../../models';
-import { GetRegistrySubmissions, RegistryModerationSelectors } from '../../store/registry-moderation';
+import {
+  GetRegistrySubmissionContributors,
+  GetRegistrySubmissions,
+  LoadMoreRegistrySubmissionContributors,
+  RegistryModerationSelectors,
+} from '../../store/registry-moderation';
 import { RegistrySubmissionItemComponent } from '..';
 
 @Component({
@@ -54,7 +59,11 @@ export class RegistrySubmissionsComponent implements OnInit {
     this.route.parent?.params.pipe(map((params) => params['providerId'])) ?? of(undefined)
   );
 
-  readonly actions = createDispatchMap({ getRegistrySubmissions: GetRegistrySubmissions });
+  readonly actions = createDispatchMap({
+    getRegistrySubmissions: GetRegistrySubmissions,
+    getRegistrySubmissionContributors: GetRegistrySubmissionContributors,
+    loadMoreRegistrySubmissionContributors: LoadMoreRegistrySubmissionContributors,
+  });
 
   readonly submissions = select(RegistryModerationSelectors.getRegistrySubmissions);
   readonly isLoading = select(RegistryModerationSelectors.areRegistrySubmissionLoading);
@@ -110,6 +119,14 @@ export class RegistrySubmissionsComponent implements OnInit {
     );
 
     window.open(url, '_blank');
+  }
+
+  loadContributors(item: RegistryModeration) {
+    this.actions.getRegistrySubmissionContributors(item.id);
+  }
+
+  loadMoreContributors(item: RegistryModeration) {
+    this.actions.loadMoreRegistrySubmissionContributors(item.id);
   }
 
   private getStatusFromQueryParams() {

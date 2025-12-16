@@ -8,7 +8,12 @@
             {{ 'toast.cookie-consent.message' | translate }}
           </div>
           <div class="row-fixed flex justify-content-end">
-            <p-button link [label]="'toast.cookie-consent.accept' | translate" (onClick)="acceptCookies()"> </p-button>
+            <p-button
+              class="btn-link-dark-blue"
+              link
+              [label]="'toast.cookie-consent.accept' | translate"
+              (onClick)="acceptCookies()"
+            />
           </div>
         </div>
       </ng-template>
