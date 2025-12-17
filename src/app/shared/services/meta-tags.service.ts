@@ -170,7 +170,6 @@ export class MetaTagsService {
       citation_title: metaTagsData.title,
       citation_doi: metaTagsData.doi,
       citation_publisher: metaTagsData.siteName,
-      citation_author_institution: metaTagsData.institution,
       citation_author: metaTagsData.contributors,
       citation_description: metaTagsData.description,
       citation_public_url: metaTagsData.url,
