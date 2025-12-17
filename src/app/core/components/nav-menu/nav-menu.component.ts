@@ -78,9 +78,7 @@ export class NavMenuComponent {
 
     const items = updateMenuItems(filtered, routeContext);
 
-    items.forEach((item) => {
-      item.label = item.label ? this.translateService.instant(item.label) : item.label;
-    });
+    this.translateMenuItems(items);
 
     return items;
   });
@@ -138,4 +136,16 @@ export class NavMenuComponent {
 
   readonly hasVisibleChildren = (item: CustomMenuItem): boolean =>
     Array.isArray(item.items) && item.items.some((child) => !!child.visible);
+
+  private translateMenuItems(items: CustomMenuItem[]): void {
+    items.forEach((item) => {
+      if (item.label) {
+        item.label = this.translateService.instant(item.label);
+      }
+
+      if (item.items && item.items.length > 0) {
+        this.translateMenuItems(item.items);
+      }
+    });
+  }
 }

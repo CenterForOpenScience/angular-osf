@@ -2,6 +2,16 @@
   color: var(--pr-blue-1);
 }
 
+.tab-btn {
+  --p-button-link-color: var(--dark-blue-1);
+  --p-button-padding-x: 1.5rem;
+  --p-button-padding-y: 0.5rem;
+
+  &.active {
+    background-color: var(--white);
+  }
+}
+
 .sort-card {
   display: flex;
   align-items: center;
