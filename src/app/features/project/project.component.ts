@@ -26,13 +26,7 @@ import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared
 import { AnalyticsService } from '@shared/services/analytics.service';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
-import {
-  GetProjectById,
-  GetProjectIdentifiers,
-  GetProjectInstitutions,
-  GetProjectLicense,
-  ProjectOverviewSelectors,
-} from './overview/store';
+import { GetProjectById, GetProjectIdentifiers, GetProjectLicense, ProjectOverviewSelectors } from './overview/store';
 
 @Component({
   selector: 'osf-project',
@@ -66,8 +60,6 @@ export class ProjectComponent implements OnDestroy {
   readonly isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
   readonly license = select(ProjectOverviewSelectors.getLicense);
   readonly isLicenseLoading = select(ProjectOverviewSelectors.isLicenseLoading);
-  readonly institutions = select(ProjectOverviewSelectors.getInstitutions);
-  readonly isInstitutionsLoading = select(ProjectOverviewSelectors.isInstitutionsLoading);
 
   private readonly lastMetaTagsProjectId = signal<string | null>(null);
   private readonly projectId = toSignal(this.route.params.pipe(map((params) => params['id'])));
@@ -77,14 +69,12 @@ export class ProjectComponent implements OnDestroy {
       !this.isProjectLoading() &&
       !this.isBibliographicContributorsLoading() &&
       !this.isLicenseLoading() &&
-      !this.isInstitutionsLoading() &&
       !!this.currentProject()
   );
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
     getLicense: GetProjectLicense,
-    getInstitutions: GetProjectInstitutions,
     getIdentifiers: GetProjectIdentifiers,
     getBibliographicContributors: GetBibliographicContributors,
   });
@@ -100,7 +90,6 @@ export class ProjectComponent implements OnDestroy {
         this.actions.getProject(id);
         this.actions.getIdentifiers(id);
         this.actions.getBibliographicContributors(id, ResourceType.Project);
-        this.actions.getInstitutions(id);
       }
     });
 
@@ -160,7 +149,6 @@ export class ProjectComponent implements OnDestroy {
       publishedDate: this.datePipe.transform(project.dateCreated, 'yyyy-MM-dd'),
       modifiedDate: this.datePipe.transform(project.dateModified, 'yyyy-MM-dd'),
       keywords,
-      institution: this.institutions().map((institution) => institution.name),
       contributors: this.bibliographicContributors().map((contributor) => ({
         fullName: contributor.fullName,
         givenName: contributor.givenName,
