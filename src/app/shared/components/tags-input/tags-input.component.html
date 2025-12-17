@@ -3,7 +3,6 @@
     class="tags-input-container flex flex-wrap align-items-center gap-1 p-inputtext"
     [class.readonly]="readonly()"
     tabindex="0"
-    role="textbox"
     [attr.aria-label]="'common.placeholder.addTag' | translate"
     (click)="!readonly() && onContainerClick()"
     (keydown)="!readonly() && onContainerKeydown($event)"
