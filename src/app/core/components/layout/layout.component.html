@@ -1,4 +1,4 @@
-<div class="layout" [class.layout-desktop]="isWeb()" [class.layout-tablet]="!isWeb()">
+<main class="layout" [class.layout-desktop]="isWeb()" [class.layout-tablet]="!isWeb()">
   @if (isWeb()) {
     <osf-sidenav></osf-sidenav>
   }
@@ -19,7 +19,7 @@
 
     <osf-footer></osf-footer>
   </div>
-</div>
+</main>
 
 <p-confirm-dialog
   id="dialog"
