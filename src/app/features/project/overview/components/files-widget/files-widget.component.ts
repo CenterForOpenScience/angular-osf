@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { TabsModule } from 'primeng/tabs';
 
@@ -45,7 +44,7 @@ import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-h
 
 @Component({
   selector: 'osf-files-widget',
-  imports: [TranslatePipe, SelectComponent, TabsModule, FilesTreeComponent, Button, Skeleton],
+  imports: [TranslatePipe, SelectComponent, TabsModule, FilesTreeComponent, Skeleton],
   templateUrl: './files-widget.component.html',
   styleUrl: './files-widget.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

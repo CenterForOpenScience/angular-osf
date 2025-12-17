@@ -18,16 +18,14 @@
     <p-tabs [value]="currentRootFolder()?.folder?.id || ''" (valueChange)="onStorageChange($event)" scrollable>
       <p-tablist>
         @for (option of storageAddons(); track option.folder.id) {
-          <p-tab class="p-2" [value]="option.folder.id">
-            <p-button
-              severity="contrast"
-              variant="text"
-              [styleClass]="option.folder.id === currentRootFolder()?.folder?.id ? 'text-600' : 'text-500'"
-              [disabled]="isFilesLoading()"
-              [label]="option.label"
-              [raised]="option.folder.id === currentRootFolder()?.folder?.id"
+          <p-tab class="addon-tab p-2" [value]="option.folder.id" [disabled]="isFilesLoading()">
+            <div
+              class="addon-option border-round-lg font-bold"
+              [class.p-button-raised]="option.folder.id === currentRootFolder()?.folder?.id"
+              [class.selected]="option.folder.id === currentRootFolder()?.folder?.id"
             >
-            </p-button>
+              {{ option.label }}
+            </div>
           </p-tab>
         }
       </p-tablist>
