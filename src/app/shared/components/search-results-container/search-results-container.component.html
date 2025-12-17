@@ -3,7 +3,7 @@
     <nav class="align-items-center flex-1 px-3 hidden md:px-5 md:flex">
       @for (item of tabOptions(); track $index) {
         <p-button
-          class="tab-btn border-round-xl"
+          class="tab-btn border-round-top-xl"
           [class.active]="selectedTab() === item.value"
           link
           styleClass="font-semibold"
