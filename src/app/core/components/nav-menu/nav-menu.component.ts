@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 import { PanelMenuModule } from 'primeng/panelmenu';
 
@@ -27,7 +27,7 @@ import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores
 
 @Component({
   selector: 'osf-nav-menu',
-  imports: [RouterLinkActive, RouterLink, PanelMenuModule, TranslatePipe, IconComponent, WrapFnPipe],
+  imports: [RouterLinkActive, RouterLink, PanelMenuModule, IconComponent, WrapFnPipe],
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.scss',
 })
@@ -39,6 +39,7 @@ export class NavMenuComponent {
   private readonly authService = inject(AuthService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+  private readonly translateService = inject(TranslateService);
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
@@ -76,6 +77,10 @@ export class NavMenuComponent {
     };
 
     const items = updateMenuItems(filtered, routeContext);
+
+    items.forEach((item) => {
+      item.label = item.label ? this.translateService.instant(item.label) : item.label;
+    });
 
     return items;
   });
