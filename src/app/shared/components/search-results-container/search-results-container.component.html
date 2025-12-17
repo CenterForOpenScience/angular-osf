@@ -1,12 +1,19 @@
 <div class="flex flex-column flex-1 w-full" [class.pt-6]="showTabs()">
   @if (showTabs()) {
-    <p-tabs [value]="selectedTab()" (valueChange)="selectTab(+$event)" class="flex-1 px-3 hidden md:px-5 md:inline">
-      <p-tablist>
-        @for (item of tabOptions(); track $index) {
-          <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
-        }
-      </p-tablist>
-    </p-tabs>
+    <nav class="align-items-center flex-1 px-3 hidden md:px-5 md:flex">
+      @for (item of tabOptions(); track $index) {
+        <p-button
+          class="tab-btn border-round-xl"
+          [class.active]="selectedTab() === item.value"
+          link
+          styleClass="font-semibold"
+          [attr.aria-selected]="selectedTab() === item.value"
+          (onClick)="selectTab(item.value)"
+        >
+          {{ item.label | translate }}
+        </p-button>
+      }
+    </nav>
   }
   <div class="flex flex-column gap-3 py-4 px-3 md:px-5 xl:px-4 bg-white">
     <div class="flex justify-content-between align-items-start column-gap-3">
