@@ -56,7 +56,7 @@ describe('Service: Addons', () => {
     });
 
     const request = httpMock.expectOne(
-      'http://addons.localhost:8000/resource-references/reference-id/configured_storage_addons/'
+      'http://addons.localhost:8000/resource-references/reference-id/configured_storage_addons/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format,icon_url'
     );
     expect(request.request.method).toBe('GET');
     request.flush(getConfiguredAddonsData());
@@ -77,6 +77,7 @@ describe('Service: Addons', () => {
         selectedStorageItemId: '0AIl0aR4C9JAFUk9PVA',
         targetUrl: undefined,
         type: 'configured-storage-addons',
+        iconUrl: 'https://osf.io/assets/images/logo.svg',
       })
     );
 

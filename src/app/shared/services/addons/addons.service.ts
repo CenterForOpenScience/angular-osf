@@ -112,11 +112,16 @@ export class AddonsService {
   }
 
   getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddonModel[]> {
+    const params = {
+      [`fields[external-${addonType}-services]`]: 'external_service_name,credentials_format,icon_url',
+    };
     return this.jsonApiService
       .get<
-        JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>
-      >(`${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/`)
-      .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));
+        JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], IncludedAddonData[]>
+      >(`${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/?include=external-${addonType}-service`, params)
+      .pipe(
+        map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item, response.included)))
+      );
   }
 
   createAuthorizedAddon(
