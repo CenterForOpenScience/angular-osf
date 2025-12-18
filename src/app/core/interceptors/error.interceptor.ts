@@ -62,19 +62,24 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 403) {
-        const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
-        if (error.url && requestAccessRegex.test(error.url)) {
-          loaderService.hide();
-          return throwError(() => error);
-        }
-
-        if (error.url?.includes('v2/nodes/')) {
-          const match = error.url.match(/\/nodes\/([^/]+)/);
-          const id = match ? match[1] : null;
-
-          router.navigate([`/request-access/${id}`]);
+        const preprintIsUnderModeration = 'This preprint is pending moderation and is not yet publicly available.';
+        if (preprintIsUnderModeration === errorMessage) {
+          router.navigate([document.URL + '/pending-moderation']);
         } else {
-          router.navigate(['/forbidden']);
+          const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
+          if (error.url && requestAccessRegex.test(error.url)) {
+            loaderService.hide();
+            return throwError(() => error);
+          }
+
+          if (error.url?.includes('v2/nodes/')) {
+            const match = error.url.match(/\/nodes\/([^/]+)/);
+            const id = match ? match[1] : null;
+
+            router.navigate([`/request-access/${id}`]);
+          } else {
+            router.navigate(['/forbidden']);
+          }
         }
       }
 

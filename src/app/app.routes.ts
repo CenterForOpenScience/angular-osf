@@ -157,6 +157,12 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: 'preprints/:providerId/:id/pending-moderation',
+        loadComponent: () =>
+          import('./core/components/forbidden-page/forbidden-page.component').then((mod) => mod.ForbiddenPageComponent),
+        data: { skipBreadcrumbs: true },
+      },
+      {
         path: 'request-access/:id',
         loadComponent: () =>
           import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
