@@ -1,3 +1,4 @@
+import { replaceBadEncodedChars } from '../helpers/format-bad-encoding.helper';
 import {
   PaginatedViewOnlyLinksModel,
   ViewOnlyLinkModel,
@@ -34,7 +35,7 @@ export class ViewOnlyLinksMapper {
           (node) =>
             ({
               id: node.id,
-              title: node.attributes.title,
+              title: replaceBadEncodedChars(node.attributes.title),
               category: node.attributes.category,
             }) as ViewOnlyLinkNodeModel
         ),
