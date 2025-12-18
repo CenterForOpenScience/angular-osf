@@ -181,6 +181,10 @@ export class AddonsState {
           const existing = state.authorizedStorageAddons.data.find(
             (existingAddon: AuthorizedAccountModel) => existingAddon.id === addon.id
           );
+
+          if (existing && !addon.iconUrl) {
+            addon.iconUrl = existing.iconUrl;
+          }
           const updatedData = existing
             ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedAccountModel) =>
                 existingAddon.id === addon.id ? { ...existingAddon, ...addon } : existingAddon

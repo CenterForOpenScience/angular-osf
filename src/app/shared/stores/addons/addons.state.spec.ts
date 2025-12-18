@@ -370,7 +370,7 @@ describe('State: Addons', () => {
             supportedFeatures: [],
             type: 'authorized-storage-accounts',
             credentialsFormat: '', // No credentialsFormat in a PATCH response
-            iconUrl: '', // No iconUrl in a PATCH response
+            iconUrl: 'https://osf.io/assets/images/logo.svg', // iconUrl should be preserved after OAuth PATCH response if it existed before
           })
         );
 
