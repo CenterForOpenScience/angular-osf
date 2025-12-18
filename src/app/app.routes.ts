@@ -159,8 +159,9 @@ export const routes: Routes = [
       {
         path: 'preprints/:providerId/:id/pending-moderation',
         loadComponent: () =>
-          import('./core/components/forbidden-page/forbidden-page.component').then((mod) => mod.ForbiddenPageComponent),
-        data: { skipBreadcrumbs: true },
+          import(
+            '@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component'
+          ).then((mod) => mod.PreprintPendingModerationComponent),
       },
       {
         path: 'request-access/:id',
