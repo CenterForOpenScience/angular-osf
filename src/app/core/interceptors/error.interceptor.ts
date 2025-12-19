@@ -63,8 +63,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (error.status === 403) {
         const preprintIsUnderModeration = 'This preprint is pending moderation and is not yet publicly available.';
-        if (preprintIsUnderModeration === errorMessage) {
-          const afterDomain = '/preprints/' + document.URL.split('preprints')[1];
+        if (errorMessage === preprintIsUnderModeration) {
+          const afterDomain =`/preprints/${document.URL.split('preprints')[1]}`;
           router.navigate([afterDomain + '/pending-moderation']);
         } else {
           const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
