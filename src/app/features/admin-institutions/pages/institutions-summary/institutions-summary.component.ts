@@ -71,8 +71,8 @@ export class InstitutionsSummaryComponent implements OnInit {
   storageLabels = signal<string[]>([]);
   storageDataset = signal<DatasetInput[]>([]);
 
-  licenceLabels = signal<string[]>([]);
-  licenceDataset = signal<DatasetInput[]>([]);
+  licenseLabels = signal<string[]>([]);
+  licenseDataset = signal<DatasetInput[]>([]);
 
   addonLabels = signal<string[]>([]);
   addonDataset = signal<DatasetInput[]>([]);
@@ -246,8 +246,8 @@ export class InstitutionsSummaryComponent implements OnInit {
     effect(() => {
       const licenses = this.rightsSearch();
 
-      this.licenceLabels.set(licenses.map((result) => result.label));
-      this.licenceDataset.set([{ label: '', data: licenses.map((result) => +result.value).sort((a, b) => b - a) }]);
+      this.licenseLabels.set(licenses.map((result) => result.label));
+      this.licenseDataset.set([{ label: '', data: licenses.map((result) => +result.value).sort((a, b) => b - a) }]);
     });
   }
 }
