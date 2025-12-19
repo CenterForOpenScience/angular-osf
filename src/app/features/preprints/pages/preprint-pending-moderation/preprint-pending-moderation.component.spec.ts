@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintPendingModerationComponent } from './preprint-pending-moderation.component';
+
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('PreprintPendingModerationComponent', () => {
