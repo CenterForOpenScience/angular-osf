@@ -62,25 +62,19 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 403) {
-        const preprintIsUnderModeration = 'This preprint is pending moderation and is not yet publicly available.';
-        if (errorMessage === preprintIsUnderModeration) {
-          const afterDomain = `/preprints/${document.URL.split('preprints')[1]}`;
-          router.navigate([afterDomain + '/pending-moderation']);
+        const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
+        if (error.url && requestAccessRegex.test(error.url)) {
+          loaderService.hide();
+          return throwError(() => error);
+        }
+
+        if (error.url?.includes('v2/nodes/')) {
+          const match = error.url.match(/\/nodes\/([^/]+)/);
+          const id = match ? match[1] : null;
+
+          router.navigate([`/request-access/${id}`]);
         } else {
-          const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
-          if (error.url && requestAccessRegex.test(error.url)) {
-            loaderService.hide();
-            return throwError(() => error);
-          }
-
-          if (error.url?.includes('v2/nodes/')) {
-            const match = error.url.match(/\/nodes\/([^/]+)/);
-            const id = match ? match[1] : null;
-
-            router.navigate([`/request-access/${id}`]);
-          } else {
-            router.navigate(['/forbidden']);
-          }
+          router.navigate(['/forbidden']);
         }
       }
 
