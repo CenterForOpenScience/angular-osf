@@ -66,12 +66,12 @@
         </div>
       }
 
-      @if (licenceLabels().length > 0) {
+      @if (licenseLabels().length > 0) {
         <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-bar-chart
             [isLoading]="rightsLoading()"
-            [datasets]="licenceDataset()"
-            [labels]="licenceLabels()"
+            [datasets]="licenseDataset()"
+            [labels]="licenseLabels()"
             [showTicks]="false"
             [showExpandedSection]="true"
             [orientation]="'vertical'"
