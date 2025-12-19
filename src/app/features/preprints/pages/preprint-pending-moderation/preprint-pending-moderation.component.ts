@@ -1,3 +1,5 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
@@ -5,5 +7,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   templateUrl: './preprint-pending-moderation.component.html',
   styleUrl: './preprint-pending-moderation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslatePipe],
 })
 export class PreprintPendingModerationComponent {}
