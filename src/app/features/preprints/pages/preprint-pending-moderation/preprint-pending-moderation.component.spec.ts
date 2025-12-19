@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintPendingModerationComponent } from './preprint-pending-moderation.component';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe.skip('PreprintPendingModerationComponent', () => {
+describe('PreprintPendingModerationComponent', () => {
   let component: PreprintPendingModerationComponent;
   let fixture: ComponentFixture<PreprintPendingModerationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PreprintPendingModerationComponent],
+      imports: [PreprintPendingModerationComponent, OSFTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreprintPendingModerationComponent);
