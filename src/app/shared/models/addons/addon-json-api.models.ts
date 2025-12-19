@@ -86,7 +86,19 @@ export interface ConfiguredAddonGetResponseJsonApi {
         id: string;
       };
     };
-    external_storage_service: {
+    external_storage_service?: {
+      data: {
+        type: string;
+        id: string;
+      };
+    };
+    external_citation_service?: {
+      data: {
+        type: string;
+        id: string;
+      };
+    };
+    external_link_service?: {
       data: {
         type: string;
         id: string;

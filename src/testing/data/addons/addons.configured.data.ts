@@ -58,6 +58,20 @@ const ConfiguredAddons = {
       },
     },
   ],
+  included: [
+    {
+      type: 'external-storage-services',
+      id: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
+      attributes: {
+        external_service_name: 'googledrive',
+        credentials_format: 'OAUTH2',
+        icon_url: 'https://osf.io/assets/images/logo.svg',
+      },
+      links: {
+        self: 'https://addons.staging4.osf.io/v1/external-storage-services/8aeb85e9-3a73-426f-a89b-5624b4b9d418',
+      },
+    },
+  ],
 };
 
 export function getConfiguredAddonsData(index?: number, asArray?: boolean) {
