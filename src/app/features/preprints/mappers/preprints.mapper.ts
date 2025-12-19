@@ -82,6 +82,7 @@ export class PreprintsMapper {
       articleDoiLink: response.links.doi,
       embeddedLicense: null,
       providerId: response.relationships?.provider?.data?.id,
+      defaultLicenseId: response.attributes.default_license_id,
     };
   }
 

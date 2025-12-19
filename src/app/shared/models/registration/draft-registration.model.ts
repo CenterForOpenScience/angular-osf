@@ -18,6 +18,7 @@ export interface DraftRegistrationModel {
   branchedFrom?: Partial<ProjectModel>;
   providerId: string;
   hasProject: boolean;
+  defaultLicenseId?: string;
   components: Partial<ProjectModel>[];
   currentUserPermissions: UserPermissions[];
 }

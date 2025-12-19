@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -64,18 +64,29 @@ export class RegistriesLicenseComponent {
 
     effect(() => {
       const licenses = this.licenses();
-      const selectedLicense = untracked(() => this.selectedLicense());
+      const selectedLicense = this.selectedLicense();
+      const defaultLicenseId = this.draftRegistration()?.defaultLicenseId;
 
-      if (!licenses.length || !selectedLicense) {
+      if (!licenses.length) {
         return;
       }
 
-      if (!licenses.find((license) => license.id === selectedLicense.id)) {
-        this.control().patchValue({
-          id: null,
-        });
-        this.control().markAsTouched();
-        this.control().updateValueAndValidity();
+      if (
+        defaultLicenseId &&
+        (!selectedLicense?.id || !licenses.find((license) => license.id === selectedLicense?.id))
+      ) {
+        const defaultLicense = licenses.find((license) => license.id === defaultLicenseId);
+        if (defaultLicense) {
+          this.control().patchValue({
+            id: defaultLicense.id,
+          });
+          this.control().markAsTouched();
+          this.control().updateValueAndValidity();
+
+          if (!defaultLicense.requiredFields.length) {
+            this.actions.saveLicense(this.draftId, defaultLicense.id);
+          }
+        }
       }
     });
   }
