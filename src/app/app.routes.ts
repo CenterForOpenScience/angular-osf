@@ -157,6 +157,13 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: 'preprints/:providerId/:id/pending-moderation',
+        loadComponent: () =>
+          import(
+            '@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component'
+          ).then((mod) => mod.PreprintPendingModerationComponent),
+      },
+      {
         path: 'request-access/:id',
         loadComponent: () =>
           import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
