@@ -227,6 +227,11 @@
     "institutions": "Institutions",
     "recentActivity": "Recent Activity"
   },
+  "profile": {
+    "mergedAccount": {
+      "message": "This account has been merged with "
+    }
+  },
   "toast": {
     "tos-consent": {
       "message": "Notice: We've updated our",

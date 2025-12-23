@@ -27,4 +27,5 @@ export interface UserModel {
   defaultRegionId: string;
   link?: string;
   iri?: string;
+  mergedBy?: string;
 }
