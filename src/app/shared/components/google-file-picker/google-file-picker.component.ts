@@ -88,6 +88,31 @@ export class GoogleFilePickerComponent implements OnInit {
 
   createPicker(): void {
     if (!this.isPickerConfigured) return;
+
+    this.refreshOauthTokenAndOpenPicker();
+  }
+
+  private refreshOauthTokenAndOpenPicker(): void {
+    if (!this.accountId()) {
+      this.openPickerWithCurrentToken();
+      return;
+    }
+
+    this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId(), this.currentAddonType())).subscribe({
+      complete: () => {
+        this.accessToken.set(
+          this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
+        );
+        this.isGFPDisabled.set(!this.accessToken());
+        this.openPickerWithCurrentToken();
+      },
+      error: () => {
+        this.openPickerWithCurrentToken();
+      },
+    });
+  }
+
+  private openPickerWithCurrentToken(): void {
     const google = window.google;
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
