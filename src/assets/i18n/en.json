@@ -1942,6 +1942,7 @@
           "emailPlaceholder": "email@example.com"
         },
         "buttons": {
+          "add": "Add",
           "cancel": "Cancel"
         },
         "messages": {
