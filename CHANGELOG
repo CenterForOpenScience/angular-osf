@@ -1,0 +1,11 @@
+# Changelog
+
+We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
+
+26.1.0 (2026-01-01)
+===================
+
+* Angular FE support for Notification Refactor Project
+
+# vi: ft=markdown
+
