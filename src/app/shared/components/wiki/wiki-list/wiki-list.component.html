@@ -68,7 +68,7 @@
                         <span class="ml-2">{{ item.label }}</span>
                       </div>
 
-                      @if (canEdit()) {
+                      @if (canEditName(item)) {
                         <p-button
                           icon="fas fa-pencil"
                           [rounded]="true"

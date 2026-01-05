@@ -1,24 +1,25 @@
 import { MockProvider } from 'ng-mocks';
 
+import { MenuItem } from 'primeng/api';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { WikiModel } from '@osf/shared/models/wiki/wiki.model';
+import { WikiItemType } from '@osf/shared/models/wiki/wiki-type.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
-import { ComponentWiki, WikiModel } from '@shared/models/wiki/wiki.model';
-import { WikiItemType } from '@shared/models/wiki/wiki-type.model';
+import { ComponentWiki } from '@osf/shared/stores/wiki';
 
 import { WikiListComponent } from './wiki-list.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
-import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 
 describe('WikiListComponent', () => {
   let component: WikiListComponent;
   let fixture: ComponentFixture<WikiListComponent>;
-  let mockCustomDialogService: ReturnType<DialogServiceMockBuilder['build']>;
   let mockCustomConfirmationService: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
 
@@ -42,14 +43,13 @@ describe('WikiListComponent', () => {
   ];
 
   beforeEach(async () => {
-    mockCustomDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
     mockCustomConfirmationService = CustomConfirmationServiceMockBuilder.create().build();
     mockRouter = RouterMockBuilder.create().withUrl('/project/abc123/wiki').build();
 
     await TestBed.configureTestingModule({
       imports: [WikiListComponent, OSFTestingModule],
       providers: [
-        MockProvider(CustomDialogService, mockCustomDialogService),
+        MockProvider(CustomDialogService),
         MockProvider(CustomConfirmationService, mockCustomConfirmationService),
         MockProvider(Router, mockRouter),
       ],
@@ -151,6 +151,52 @@ describe('WikiListComponent', () => {
     fixture.detectChanges();
 
     expect(component.isHomeWikiSelected()).toBe(false);
+  });
+
+  it('should compute homeWikiId correctly', () => {
+    fixture.componentRef.setInput('list', mockWikiList);
+    fixture.componentRef.setInput('resourceId', 'resource-123');
+    fixture.componentRef.setInput('currentWikiId', 'wiki1');
+    fixture.componentRef.setInput('componentsList', []);
+    fixture.detectChanges();
+
+    expect(component.homeWikiId()).toBe('wiki1');
+  });
+
+  it('should return true for canEditName when user can edit and item is not home', () => {
+    fixture.componentRef.setInput('list', mockWikiList);
+    fixture.componentRef.setInput('resourceId', 'resource-123');
+    fixture.componentRef.setInput('currentWikiId', 'wiki1');
+    fixture.componentRef.setInput('componentsList', []);
+    fixture.componentRef.setInput('canEdit', true);
+    fixture.detectChanges();
+
+    const nonHomeItem = { id: 'wiki2' } as MenuItem;
+    expect(component.canEditName(nonHomeItem)).toBe(true);
+  });
+
+  it('should return false for canEditName when item is home wiki', () => {
+    fixture.componentRef.setInput('list', mockWikiList);
+    fixture.componentRef.setInput('resourceId', 'resource-123');
+    fixture.componentRef.setInput('currentWikiId', 'wiki1');
+    fixture.componentRef.setInput('componentsList', []);
+    fixture.componentRef.setInput('canEdit', true);
+    fixture.detectChanges();
+
+    const homeItem = { id: 'wiki1' } as MenuItem;
+    expect(component.canEditName(homeItem)).toBe(false);
+  });
+
+  it('should return false for canEditName when user cannot edit', () => {
+    fixture.componentRef.setInput('list', mockWikiList);
+    fixture.componentRef.setInput('resourceId', 'resource-123');
+    fixture.componentRef.setInput('currentWikiId', 'wiki1');
+    fixture.componentRef.setInput('componentsList', []);
+    fixture.componentRef.setInput('canEdit', false);
+    fixture.detectChanges();
+
+    const nonHomeItem = { id: 'wiki2' } as MenuItem;
+    expect(component.canEditName(nonHomeItem)).toBe(false);
   });
 
   it('should compute wikiMenu with main wikis', () => {
