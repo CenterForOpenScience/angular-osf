@@ -16,10 +16,6 @@ import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.help
 export class WikiMapper {
   private static translate: TranslateService;
 
-  static init(translate: TranslateService): void {
-    WikiMapper.translate = translate;
-  }
-
   static fromCreateWikiResponse(response: WikiGetResponse): WikiModel {
     return {
       id: response.id,
@@ -57,9 +53,7 @@ export class WikiMapper {
     return {
       id: response.id,
       createdAt: response.attributes.date_created,
-      createdBy:
-        UserMapper.getUserInfo(response.embeds.user)?.fullName ||
-        WikiMapper.translate.instant('project.wiki.version.unknownAuthor'),
+      createdBy: UserMapper.getUserInfo(response.embeds.user)?.fullName,
     };
   }
 
