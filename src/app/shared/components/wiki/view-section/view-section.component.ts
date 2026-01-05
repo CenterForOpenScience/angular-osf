@@ -1,10 +1,10 @@
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Panel } from 'primeng/panel';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { WikiVersion } from '@osf/shared/models/wiki/wiki.model';
@@ -26,25 +26,22 @@ export class ViewSectionComponent {
   versionContent = input.required<string>();
   selectVersion = output<string>();
 
-  previewOption = {
-    label: 'Preview',
-    value: null,
-  };
+  translateService = inject(TranslateService);
 
   selectedVersion = signal<string | null>(null);
 
   content = computed(() => (this.selectedVersion() === null ? this.previewContent() : this.versionContent()));
 
-  mappedVersions = computed(() => [
-    this.previewOption,
-    ...this.versions().map((version, index) => {
-      const labelPrefix = index === 0 ? '(Current)' : `(${this.versions().length - index})`;
+  private readonly previewLabel = this.translateService.instant('project.wiki.version.preview');
+  private readonly currentLabel = this.translateService.instant('project.wiki.version.current');
+  private readonly unknownAuthorLabel = this.translateService.instant('project.wiki.version.unknownAuthor');
 
-      return {
-        label: `${labelPrefix} ${version.createdBy}: (${new Date(version.createdAt).toLocaleString()})`,
-        value: version.id,
-      };
-    }),
+  mappedVersions = computed(() => [
+    { label: this.previewLabel, value: null },
+    ...this.versions().map((version, index) => ({
+      label: this.formatVersionLabel(version, index),
+      value: version.id,
+    })),
   ]);
 
   constructor() {
@@ -59,10 +56,17 @@ export class ViewSectionComponent {
     });
   }
 
-  onVersionChange(versionId: string): void {
+  onVersionChange(versionId: string | null): void {
     this.selectedVersion.set(versionId);
+
     if (versionId) {
       this.selectVersion.emit(versionId);
     }
+  }
+
+  private formatVersionLabel(version: WikiVersion, index: number): string {
+    const prefix = index === 0 ? `(${this.currentLabel})` : `(${this.versions().length - index})`;
+    const creator = version.createdBy || this.unknownAuthorLabel;
+    return `${prefix} ${creator}: (${new Date(version.createdAt).toLocaleString()})`;
   }
 }
