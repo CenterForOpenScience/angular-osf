@@ -68,14 +68,15 @@
                         <span class="ml-2">{{ item.label }}</span>
                       </div>
 
-                      <p-button
-                        icon="fas fa-pencil"
-                        [rounded]="true"
-                        variant="text"
-                        osfStopPropagation
-                        (onClick)="openRenameWikiDialog(item.id, item.label)"
-                      >
-                      </p-button>
+                      @if (canEdit()) {
+                        <p-button
+                          icon="fas fa-pencil"
+                          [rounded]="true"
+                          variant="text"
+                          osfStopPropagation
+                          (onClick)="openRenameWikiDialog(item.id, item.label)"
+                        />
+                      }
                     </div>
                   }
                 }

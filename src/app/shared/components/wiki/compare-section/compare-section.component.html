@@ -8,17 +8,20 @@
     <ng-template #header>
       <h2 class="mr-2">{{ 'project.wiki.compare' | translate }}</h2>
     </ng-template>
-    <div class="flex flex-wrap align-items-center mb-2 lg:flex-nowrap">
-      <span class="mr-2">Live preview to</span>
+
+    <div class="flex flex-wrap align-items-center mb-4 lg:flex-nowrap">
+      <span class="min-w-max mr-2">{{ 'project.wiki.livePreviewTo' | translate }}:</span>
+
       <p-select
+        class="w-full"
+        styleClass="select-version"
         [options]="mappedVersions()"
         [ngModel]="selectedVersion"
         (onChange)="onVersionChange($event.value)"
-        placeholder="Version"
-        class="w-full"
-        styleClass="select-version"
+        [placeholder]="'project.wiki.version.title' | translate"
       />
     </div>
+
     <p-panel styleClass="compare-view" showHeader="false">
       <div lass="mt-3" [innerHTML]="content()"></div>
     </p-panel>
