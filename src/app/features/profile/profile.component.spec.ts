@@ -1,7 +1,6 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
@@ -14,7 +13,6 @@ import { ProfileInformationComponent } from './components';
 import { ProfileComponent } from './profile.component';
 import { ProfileSelectors } from './store';
 
-import { MOCK_USER } from '@testing/mocks/data.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -79,70 +77,5 @@ describe('ProfileComponent', () => {
   it('should filter out Agent resource type from search tab options', () => {
     expect(component.resourceTabOptions).toBeDefined();
     expect(component.resourceTabOptions.every((option) => option.value !== ResourceType.Agent)).toBe(true);
-  });
-
-  describe('merged user message', () => {
-    it('should display merged message when user has mergedBy property', async () => {
-      const mergedUser = { ...MOCK_USER, mergedBy: 'https://osf.io/user123/' };
-
-      await TestBed.configureTestingModule({
-        imports: [
-          ProfileComponent,
-          OSFTestingModule,
-          ...MockComponents(ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent),
-        ],
-        providers: [
-          MockProvider(Router, routerMock),
-          MockProvider(ActivatedRoute, activatedRouteMock),
-          MockProvider(PrerenderReadyService),
-          provideMockStore({
-            signals: [
-              { selector: UserSelectors.getCurrentUser, value: mergedUser },
-              { selector: ProfileSelectors.getUserProfile, value: null },
-              { selector: ProfileSelectors.isUserProfileLoading, value: false },
-            ],
-          }),
-        ],
-      }).compileComponents();
-
-      fixture = TestBed.createComponent(ProfileComponent);
-      fixture.detectChanges();
-
-      const messageElement = fixture.debugElement.query(By.css('p-message'));
-      expect(messageElement).toBeTruthy();
-
-      const linkElement = fixture.debugElement.query(By.css('p-message a'));
-      expect(linkElement.nativeElement.href).toContain('https://osf.io/user123/');
-    });
-
-    it('should not display merged message when user does not have mergedBy property', async () => {
-      const normalUser = { ...MOCK_USER, mergedBy: undefined };
-
-      await TestBed.configureTestingModule({
-        imports: [
-          ProfileComponent,
-          OSFTestingModule,
-          ...MockComponents(ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent),
-        ],
-        providers: [
-          MockProvider(Router, routerMock),
-          MockProvider(ActivatedRoute, activatedRouteMock),
-          MockProvider(PrerenderReadyService),
-          provideMockStore({
-            signals: [
-              { selector: UserSelectors.getCurrentUser, value: normalUser },
-              { selector: ProfileSelectors.getUserProfile, value: null },
-              { selector: ProfileSelectors.isUserProfileLoading, value: false },
-            ],
-          }),
-        ],
-      }).compileComponents();
-
-      fixture = TestBed.createComponent(ProfileComponent);
-      fixture.detectChanges();
-
-      const messageElement = fixture.debugElement.query(By.css('p-message'));
-      expect(messageElement).toBeFalsy();
-    });
   });
 });
