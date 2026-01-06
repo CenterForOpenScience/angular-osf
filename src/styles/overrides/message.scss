@@ -18,10 +18,6 @@
   --p-message-success-color: var(--green-1);
   --p-message-success-background: var(--green-2);
   --p-message-success-border-color: var(--green-2);
-
-  --p-message-info-color: var(--dark-blue-1);
-  --p-message-info-background: var(--bg-blue-2);
-  --p-message-info-border-color: var(--bg-blue-2);
 }
 
 .p-message-simple {
@@ -31,5 +27,11 @@
 .overview-message {
   .p-message {
     width: 100%;
+  }
+
+  &.p-message {
+    --p-message-info-color: var(--dark-blue-1);
+    --p-message-info-background: var(--bg-blue-2);
+    --p-message-info-border-color: var(--bg-blue-2);
   }
 }
