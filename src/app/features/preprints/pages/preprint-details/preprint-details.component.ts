@@ -383,6 +383,15 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
           }
         }
       },
+      error: (error) => {
+        if (
+          error instanceof HttpErrorResponse &&
+          error.status === 403 &&
+          error?.error?.errors[0]?.detail === 'This preprint is pending moderation and is not yet publicly available.'
+        ) {
+          this.router.navigate(['/preprints', this.providerId(), preprintId, 'pending-moderation']);
+        }
+      },
     });
   }
 

@@ -12,7 +12,7 @@
       styleClass="w-full"
       (onClick)="dialogRef.close()"
       severity="info"
-      [label]="'settings.accountSettings.addEmail.buttons.cancel' | translate"
+      [label]="'common.buttons.cancel' | translate"
     >
     </p-button>
 
@@ -22,7 +22,7 @@
       [disabled]="emailControl.invalid"
       (click)="addEmail()"
       [loading]="isSubmitting()"
-      [label]="'settings.accountSettings.addEmail.buttons.add' | translate"
+      [label]="'common.buttons.add' | translate"
     >
     </p-button>
   </div>
