@@ -19,7 +19,7 @@ import { SearchInputComponent } from '@osf/shared/components/search-input/search
 
 import { AddModeratorType } from '../../enums';
 import { ModeratorAddModel, ModeratorDialogAddModel } from '../../models';
-import { ClearUsers, ModeratorsSelectors, SearchUsers } from '../../store/moderators';
+import { ClearUsers, ModeratorsSelectors, SearchUsers, SearchUsersPageChange } from '../../store/moderators';
 
 @Component({
   selector: 'osf-add-moderator-dialog',
@@ -44,6 +44,8 @@ export class AddModeratorDialogComponent implements OnInit, OnDestroy {
   users = select(ModeratorsSelectors.getUsers);
   isLoading = select(ModeratorsSelectors.isUsersLoading);
   totalUsersCount = select(ModeratorsSelectors.getUsersTotalCount);
+  usersNextLink = select(ModeratorsSelectors.getUsersNextLink);
+  usersPreviousLink = select(ModeratorsSelectors.getUsersPreviousLink);
   isInitialState = signal(true);
 
   currentPage = signal(1);
@@ -53,7 +55,11 @@ export class AddModeratorDialogComponent implements OnInit, OnDestroy {
   selectedUsers = signal<ModeratorAddModel[]>([]);
   searchControl = new FormControl<string>('');
 
-  actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
+  actions = createDispatchMap({
+    searchUsers: SearchUsers,
+    searchUsersPageChange: SearchUsersPageChange,
+    clearUsers: ClearUsers,
+  });
 
   ngOnInit(): void {
     this.setSearchSubscription();
@@ -74,10 +80,32 @@ export class AddModeratorDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close(dialogData);
   }
 
-  pageChanged(event: PaginatorState) {
-    this.currentPage.set(event.page ? this.currentPage() + 1 : 1);
-    this.first.set(event.first ?? 0);
-    this.actions.searchUsers(this.searchControl.value, this.currentPage());
+  pageChanged(event: PaginatorState): void {
+    if (event.page === undefined) {
+      return;
+    }
+
+    const eventPageOneBased = event.page + 1;
+
+    if (eventPageOneBased === 1) {
+      const searchTerm = this.searchControl.value?.trim();
+
+      if (searchTerm) {
+        this.actions.searchUsers(searchTerm);
+        this.currentPage.set(1);
+        this.first.set(0);
+      }
+
+      return;
+    }
+
+    const link = eventPageOneBased > this.currentPage() ? this.usersNextLink() : this.usersPreviousLink();
+
+    if (link) {
+      this.actions.searchUsersPageChange(link);
+      this.currentPage.set(eventPageOneBased);
+      this.first.set(event.first ?? 0);
+    }
   }
 
   private setSearchSubscription() {
@@ -86,7 +114,7 @@ export class AddModeratorDialogComponent implements OnInit, OnDestroy {
         filter((searchTerm) => !!searchTerm && searchTerm.trim().length > 0),
         debounceTime(500),
         distinctUntilChanged(),
-        switchMap((searchTerm) => this.actions.searchUsers(searchTerm, this.currentPage())),
+        switchMap((searchTerm) => this.actions.searchUsers(searchTerm)),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {

@@ -1,18 +1,21 @@
-import { map, Observable, of } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { AddContributorType } from '../enums/contributors/add-contributor-type.enum';
+import { ContributorPermission } from '../enums/contributors/contributor-permission.enum';
 import { ResourceType } from '../enums/resource-type.enum';
+import { parseSearchTotalCount } from '../helpers/search-total-count.helper';
 import { ContributorsMapper } from '../mappers/contributors';
-import { ResponseJsonApi } from '../models/common/json-api.model';
+import { MapResources } from '../mappers/search';
 import { ContributorModel } from '../models/contributors/contributor.model';
 import { ContributorAddModel } from '../models/contributors/contributor-add.model';
 import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
-import { UserDataJsonApi } from '../models/user/user-json-api.model';
+import { IndexCardSearchResponseJsonApi } from '../models/search/index-card-search-json-api.models';
+import { SearchUserDataModel } from '../models/user/search-user-data.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -25,6 +28,14 @@ export class ContributorsService {
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get shareTroveUrl() {
+    return this.environment.shareTroveUrl;
+  }
+
+  get webUrl() {
+    return this.environment.webUrl;
   }
 
   private readonly urlMap = new Map<ResourceType, string>([
@@ -90,11 +101,87 @@ export class ContributorsService {
     );
   }
 
-  searchUsers(value: string, page = 1): Observable<PaginatedData<ContributorAddModel[]>> {
-    const baseUrl = `${this.apiUrl}/search/users/?q=${value}*&page=${page}`;
+  searchUsers(value: string, pageSize = 10): Observable<SearchUserDataModel<ContributorAddModel[]>> {
+    if (value.length === 5) {
+      return forkJoin([this.searchUsersByName(value, pageSize), this.searchUsersById(value, pageSize)]).pipe(
+        map(([nameResults, idResults]) => {
+          const users = [...nameResults.users];
+          const existingIds = new Set(users.map((u) => u.id));
+
+          idResults.users.forEach((user) => {
+            if (!existingIds.has(user.id)) {
+              users.push(user);
+              existingIds.add(user.id);
+            }
+          });
+
+          return {
+            users,
+            totalCount: nameResults.totalCount + idResults.totalCount,
+            next: nameResults.next,
+            previous: nameResults.previous,
+          };
+        })
+      );
+    } else {
+      return this.searchUsersByName(value, pageSize);
+    }
+  }
+
+  searchUsersByName(value: string, pageSize = 10): Observable<SearchUserDataModel<ContributorAddModel[]>> {
+    const baseUrl = `${this.shareTroveUrl}/index-card-search`;
+    const params = {
+      'cardSearchFilter[resourceType]': 'Person',
+      'cardSearchFilter[accessService]': this.webUrl,
+      'cardSearchText[name]': `${value}*`,
+      acceptMediatype: 'application/vnd.api+json',
+      'page[size]': pageSize,
+    };
+
     return this.jsonApiService
-      .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
-      .pipe(map((response) => ContributorsMapper.getPaginatedUsers(response)));
+      .get<IndexCardSearchResponseJsonApi>(baseUrl, params)
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
+  }
+
+  searchUsersById(value: string, pageSize = 10): Observable<SearchUserDataModel<ContributorAddModel[]>> {
+    const baseUrl = `${this.shareTroveUrl}/index-card-search`;
+    const params = {
+      'cardSearchFilter[resourceType]': 'Person',
+      'cardSearchFilter[accessService]': this.webUrl,
+      'cardSearchFilter[sameAs]': `${this.webUrl}/${value}`,
+      acceptMediatype: 'application/vnd.api+json',
+      'page[size]': pageSize,
+    };
+
+    return this.jsonApiService
+      .get<IndexCardSearchResponseJsonApi>(baseUrl, params)
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
+  }
+
+  getUsersByLink(link: string): Observable<SearchUserDataModel<ContributorAddModel[]>> {
+    return this.jsonApiService
+      .get<IndexCardSearchResponseJsonApi>(link)
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
+  }
+
+  private handleResourcesRawResponse(
+    response: IndexCardSearchResponseJsonApi
+  ): SearchUserDataModel<ContributorAddModel[]> {
+    const users = MapResources(response).map(
+      (user) =>
+        ({
+          id: user.absoluteUrl.split('/').pop(),
+          fullName: user.name,
+          permission: ContributorPermission.Write,
+        }) as ContributorAddModel
+    );
+
+    return {
+      users,
+      totalCount: parseSearchTotalCount(response),
+      next: response.data?.relationships?.searchResultPage.links?.next?.href ?? null,
+      previous: response.data?.relationships?.searchResultPage.links?.prev?.href ?? null,
+    };
   }
 
   bulkUpdateContributors(

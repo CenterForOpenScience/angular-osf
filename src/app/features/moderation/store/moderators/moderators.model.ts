@@ -4,11 +4,16 @@ import { ModeratorAddModel, ModeratorModel } from '../../models';
 
 export interface ModeratorsStateModel {
   moderators: ModeratorsDataStateModel;
-  users: AsyncStateWithTotalCount<ModeratorAddModel[]>;
+  users: UserListModel;
 }
 
 interface ModeratorsDataStateModel extends AsyncStateWithTotalCount<ModeratorModel[]> {
   searchValue: string | null;
+}
+
+interface UserListModel extends AsyncStateWithTotalCount<ModeratorAddModel[]> {
+  next: string | null;
+  previous: string | null;
 }
 
 export const MODERATORS_STATE_DEFAULTS: ModeratorsStateModel = {
@@ -24,5 +29,7 @@ export const MODERATORS_STATE_DEFAULTS: ModeratorsStateModel = {
     isLoading: false,
     error: null,
     totalCount: 0,
+    next: null,
+    previous: null,
   },
 };
