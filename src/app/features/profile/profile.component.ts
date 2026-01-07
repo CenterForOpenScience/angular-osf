@@ -1,5 +1,9 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Message } from 'primeng/message';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -30,7 +34,7 @@ import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent],
+  imports: [ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent, Message, TranslatePipe],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   private router = inject(Router);
