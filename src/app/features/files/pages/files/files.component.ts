@@ -596,13 +596,13 @@ export class FilesComponent {
     });
   }
 
-  updateFilesList() {
+  updateFilesList = (): void => {
     const currentFolder = this.currentFolder();
     const filesLink = currentFolder?.links.filesLink;
     if (filesLink) {
       this.actions.getFiles(filesLink, this.pageNumber());
     }
-  }
+  };
 
   setCurrentFolder(folder: FileFolderModel) {
     this.actions.setCurrentFolder(folder);
