@@ -193,10 +193,10 @@ export class StorageItemSelectorComponent implements OnInit {
 
   readonly showLoadMoreButton = computed(() => {
     const invocation = this.operationInvocation();
-    if (!invocation?.nextSampleCursor || !invocation?.thisSampleCursor) {
+    if (!invocation?.nextSampleCursor) {
       return false;
     }
-    return invocation.nextSampleCursor > invocation.thisSampleCursor;
+    return invocation.nextSampleCursor !== invocation.thisSampleCursor;
   });
 
   handleCreateOperationInvocation(
