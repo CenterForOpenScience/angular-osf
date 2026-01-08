@@ -119,6 +119,22 @@ export class ConnectAddonComponent {
     });
   }
 
+  goToService() {
+    if (!this.redirectUrl()) return;
+
+    const newWindow = window.open(
+      this.redirectUrl()!.toString(),
+      '_blank',
+      'popup,width=600,height=600,scrollbars=yes,resizable=yes'
+    );
+    if (newWindow) {
+      this.router.navigate([`${this.baseUrl()}/addons`]);
+      newWindow.focus();
+    } else {
+      this.toastService.showError('addons.redirect.popUpError');
+    }
+  }
+
   private startOauthFlow(createdAddon: AuthorizedAccountModel): void {
     this.addonAuthUrl.set(createdAddon.authUrl!);
     window.open(createdAddon.authUrl!, '_blank');
