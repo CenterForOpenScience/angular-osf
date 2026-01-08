@@ -29,8 +29,11 @@
               "cedar-embeddable-editor",
               "cedar-artifact-viewer",
               "markdown-it-video",
+              "markdown-it-anchor",
+              "markdown-it-toc-done-right",
               "ace-builds/src-noconflict/ext-language_tools",
               "@traptitech/markdown-it-katex",
+              "@centerforopenscience/markdown-it-atrules",
               "@citation-js/core",
               "@citation-js/plugin-csl"
             ],
@@ -144,29 +147,27 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "hmr": false
+          },
           "configurations": {
             "production": {
               "buildTarget": "osf:build:production"
             },
             "development": {
-              "buildTarget": "osf:build:development",
-              "hmr": true
+              "buildTarget": "osf:build:development"
             },
             "docker": {
-              "buildTarget": "osf:build:docker",
-              "hmr": true
+              "buildTarget": "osf:build:docker"
             },
             "staging": {
-              "buildTarget": "osf:build:staging",
-              "hmr": true
+              "buildTarget": "osf:build:staging"
             },
             "test": {
-              "buildTarget": "osf:build:test",
-              "hmr": false
+              "buildTarget": "osf:build:test"
             },
             "test-osf": {
-              "buildTarget": "osf:build:test-osf",
-              "hmr": false
+              "buildTarget": "osf:build:test-osf"
             }
           },
           "defaultConfiguration": "development"

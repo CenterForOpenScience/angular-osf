@@ -20,7 +20,7 @@ import {
   LoadMoreFilterOptions,
   SetDefaultFilterValue,
   UpdateSelectedFilterOption,
-} from '@shared/stores/global-search';
+} from '@osf/shared/stores/global-search';
 
 @Component({
   selector: 'osf-institution-resource-table-filters',
@@ -70,7 +70,7 @@ export class FiltersSectionComponent {
 
   onFilterChipRemoved(event: { filterKey: string; optionRemoved: FilterOption }): void {
     const updatedOptions = this.selectedFilterOptions()[event.filterKey].filter(
-      (option) => option.value === event.optionRemoved.value
+      (option) => option.value !== event.optionRemoved.value
     );
     this.actions.updateSelectedFilterOption(event.filterKey, updatedOptions);
     this.actions.fetchResources();

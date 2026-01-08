@@ -45,6 +45,7 @@ import {
   GetAuthorizedStorageAddons,
   GetCitationAddons,
   GetLinkAddons,
+  GetRedirectAddons,
   GetStorageAddons,
   UpdateAuthorizedAddon,
 } from '@shared/stores/addons';
@@ -74,7 +75,6 @@ export class SettingsAddonsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly queryParamsService = inject(AddonsQueryParamsService);
   readonly tabOptions = ADDON_TAB_OPTIONS;
-  readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
   readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
   searchControl = new FormControl<string>('');
@@ -87,6 +87,7 @@ export class SettingsAddonsComponent implements OnInit {
   storageAddons = select(AddonsSelectors.getStorageAddons);
   citationAddons = select(AddonsSelectors.getCitationAddons);
   linkAddons = select(AddonsSelectors.getLinkAddons);
+  redirectAddons = select(AddonsSelectors.getRedirectAddons);
   authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
   authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
   authorizedLinkAddons = select(AddonsSelectors.getAuthorizedLinkAddons);
@@ -96,9 +97,24 @@ export class SettingsAddonsComponent implements OnInit {
   isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
   isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
   isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
+  isRedirectAddonsLoading = select(AddonsSelectors.getRedirectAddonsLoading);
   isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
   isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
   isAuthorizedLinkAddonsLoading = select(AddonsSelectors.getAuthorizedLinkAddonsLoading);
+  activeFlags = select(UserSelectors.getActiveFlags);
+
+  readonly categoryOptions = computed(() => {
+    if (this.activeFlags().includes('gravy_redirect')) {
+      return [
+        ...ADDON_CATEGORY_OPTIONS,
+        {
+          label: 'settings.addons.categories.otherServices',
+          value: AddonCategory.EXTERNAL_REDIRECT_SERVICES,
+        },
+      ];
+    }
+    return ADDON_CATEGORY_OPTIONS;
+  });
 
   currentAddonsLoading = computed(() => {
     switch (this.selectedCategory()) {
@@ -108,6 +124,8 @@ export class SettingsAddonsComponent implements OnInit {
         return this.isCitationAddonsLoading();
       case AddonCategory.EXTERNAL_LINK_SERVICES:
         return this.isLinkAddonsLoading();
+      case AddonCategory.EXTERNAL_REDIRECT_SERVICES:
+        return this.isRedirectAddonsLoading();
       default:
         return this.isStorageAddonsLoading();
     }
@@ -144,6 +162,7 @@ export class SettingsAddonsComponent implements OnInit {
     getStorageAddons: GetStorageAddons,
     getCitationAddons: GetCitationAddons,
     getLinkAddons: GetLinkAddons,
+    getRedirectAddons: GetRedirectAddons,
     getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
     getAuthorizedCitationAddons: GetAuthorizedCitationAddons,
     getAuthorizedLinkAddons: GetAuthorizedLinkAddons,
@@ -193,6 +212,8 @@ export class SettingsAddonsComponent implements OnInit {
         return this.actions.getCitationAddons;
       case AddonCategory.EXTERNAL_LINK_SERVICES:
         return this.actions.getLinkAddons;
+      case AddonCategory.EXTERNAL_REDIRECT_SERVICES:
+        return this.actions.getRedirectAddons;
       default:
         return this.actions.getStorageAddons;
     }
@@ -206,6 +227,8 @@ export class SettingsAddonsComponent implements OnInit {
         return this.citationAddons();
       case AddonCategory.EXTERNAL_LINK_SERVICES:
         return this.linkAddons();
+      case AddonCategory.EXTERNAL_REDIRECT_SERVICES:
+        return this.redirectAddons();
       default:
         return this.storageAddons();
     }

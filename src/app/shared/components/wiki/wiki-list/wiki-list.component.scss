@@ -2,9 +2,7 @@
   display: flex;
 }
 
-.wiki-list {
-  &-expanded {
-    min-width: 300px;
-    width: 300px;
-  }
+.wiki-list-expanded {
+  min-width: 300px;
+  width: 300px;
 }

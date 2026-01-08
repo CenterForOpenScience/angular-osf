@@ -13,7 +13,7 @@
           <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
         }
 
-        <span>{{ item.label | translate }}</span>
+        <span>{{ item.label }}</span>
 
         @if (hasVisibleChildren | wrapFn: item) {
           <osf-icon

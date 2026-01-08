@@ -17,7 +17,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FilesSelectors,
   GetMoveDialogFiles,
-  SetCurrentFolder,
+  SetFilesCurrentFolder,
   SetMoveDialogCurrentFolder,
 } from '@osf/features/files/store';
 import { FileSelectDestinationComponent } from '@osf/shared/components/file-select-destination/file-select-destination.component';
@@ -80,7 +80,7 @@ export class MoveFileDialogComponent {
   readonly actions = createDispatchMap({
     getMoveDialogFiles: GetMoveDialogFiles,
     setMoveDialogCurrentFolder: SetMoveDialogCurrentFolder,
-    setCurrentFolder: SetCurrentFolder,
+    setCurrentFolder: SetFilesCurrentFolder,
     getResourceDetails: GetResourceDetails,
     getComponentsTree: GetResourceWithChildren,
   });

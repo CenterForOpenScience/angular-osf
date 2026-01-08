@@ -28,6 +28,7 @@
       "done": "Done",
       "select": "Select",
       "addToCollection": "Add to Collection",
+      "removeFromCollection": "Remove from Collection",
       "discardChanges": "Discard Changes",
       "saveAndContinue": "Save and Continue",
       "clickToEdit": "Click to edit",
@@ -58,7 +59,8 @@
       "accept": "Accept",
       "reject": "Reject",
       "loadMore": "Load more",
-      "seeMore": "See more"
+      "seeMore": "See more",
+      "resubmit": "Resubmit"
     },
     "accessibility": {
       "help": "Help",
@@ -224,6 +226,11 @@
     "links": "Links",
     "institutions": "Institutions",
     "recentActivity": "Recent Activity"
+  },
+  "profile": {
+    "mergedAccount": {
+      "message": "This account has been merged with "
+    }
   },
   "toast": {
     "tos-consent": {
@@ -618,6 +625,8 @@
       },
       "removeDialog": {
         "title": "Remove contributor",
+        "thisProjectOnly": "This project only",
+        "thisProjectAndComponents": "This project and all it's components",
         "message": "Are you sure you want to remove <b>{{name}}</b> contributor?",
         "successMessage": "Contributor {{name}} successfully removed."
       },
@@ -921,6 +930,7 @@
       "horizontalRule": "Horizontal rule",
       "redo": "Redo",
       "undo": "Undo",
+      "livePreviewTo": "Live preview to",
       "version": {
         "title": "Version",
         "preview": "Preview",
@@ -1410,6 +1420,12 @@
         "fieldRequired": "This field can't be empty"
       }
     },
+    "removeDialog": {
+      "header": "Remove project from collection",
+      "message": "Are you sure you want to remove {{projectTitle}} from this collection?",
+      "success": "Project successfully removed from this collection.",
+      "reasonPlaceholder": "Optional reason for removal"
+    },
     "common": {
       "dateCreated": "Date Created:",
       "dateModified": "Date Modified:",
@@ -1458,7 +1474,9 @@
       "pendingUpdates": "Pending Updates",
       "pendingWithdrawal": "Pending Withdrawal",
       "approved": "Approved",
-      "declined": "Declined"
+      "declined": "Declined",
+      "inProgress": "In Progress",
+      "removed": "Removed"
     },
     "makeDecision": {
       "header": "Make decision",
@@ -1701,7 +1719,8 @@
       "categories": {
         "additionalService": "Additional Storage",
         "citationManager": "Citation Manager",
-        "linkedServices": "Linked Services"
+        "linkedServices": "Linked Services",
+        "otherServices": "Other Services"
       },
       "toast": {
         "updateSuccess": "Successfully updated {{addonName}} add-on configuration",
@@ -1740,6 +1759,12 @@
         "table": {
           "function": "Function",
           "status": "Status"
+        },
+        "redirectAddons": {
+          "terms": "Clicking the button below will redirect you outside of OSF. You will need to follow that service's permissions to continue.",
+          "tip": "Tip: if the page does not open, please disable your browser's pop-up blocker and try again. Or click on this link to <a target='_blank' href={{serviceUrl}}>go to {{serviceName}}</a>.",
+          "popupError": "If you are having trouble with the pop-up window, please try clicking the link above to connect your account:",
+          "goToService": "Go to {{serviceName}}"
         },
         "confirmAccount": "Confirm account",
         "connectAccount": "Connect following account: {{accountName}}",
@@ -2096,6 +2121,7 @@
     "poweredBy": "Powered by OSF Preprints",
     "searchPlaceholder": "Search {{preprintWord}}...",
     "showExample": "Show an example",
+
     "browseBySubjects": {
       "title": "Browse By Subjects"
     },
@@ -2381,6 +2407,10 @@
         "noModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This request will be submitted to <a href=\"mailto:{{supportEmail}}\" target=\"_blank\">{{supportEmail}}</a> for review and removal. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal."
       },
       "moderationStatusBanner": {
+        "pendingDetails": {
+          "title": "This Preprint Is Pending Moderation At OSF Preprints",
+          "body": "This preprint was submitted for review. It won't be available until it is accepted by the provider. Please check back later."
+        },
         "recentActivity": {
           "pending": "submitted this {{documentType}} on",
           "accepted": "accepted this {{documentType}} on",
@@ -2822,7 +2852,7 @@
   },
   "institutions": {
     "title": "Institutions",
-    "description": "OSF Institutions enhances transparency and increases the visibility of research outputs, accelerating discovery and reuse. Institutional members focus on generating and sharing research, and let OSF Institutions handle the infrastructure. <br /> <a class='font-bold' href='https://www.cos.io/products/osf-institutions' target='_blank'>Read more</a>",
+    "description": "OSF Institutions enhances transparency and increases the visibility of research outputs, accelerating discovery and reuse. Institutional members focus on generating and sharing research, and let OSF Institutions handle the infrastructure. <br /> <a class='dark-blue-two-link font-bold' href='https://www.cos.io/products/osf-institutions' target='_blank'>Read more</a>",
     "searchInstitutions": "Search institutions",
     "searchInstitutionsDesctiption": "Please select an institution to apply to your search. Only OSF Institutions member affiliations are discoverable. ",
     "learnMore": "Learn more about OSF Institutions."
@@ -2834,6 +2864,7 @@
     },
     "summary": {
       "title": "Summary",
+      "lastUpdated": "Last Updated",
       "totalUsersByDepartment": "Total Users by Department",
       "publicPrivateProjects": "Public vs Private Projects",
       "publicEmbargoedRegistrations": "Public vs Embargoed Registrations",
@@ -2882,7 +2913,8 @@
       "orcid": "ORCID",
       "noData": "No users found",
       "messageSent": "Message has been sent.",
-      "requestSent": "Request has been sent."
+      "requestSent": "Request has been sent.",
+      "notBibliographicOrAffiliatedUserText": "The user is not bibliographic or no longer affiliated with the institution"
     },
     "projects": {
       "title": "Title",

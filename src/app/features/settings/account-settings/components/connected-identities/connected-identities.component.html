@@ -10,6 +10,7 @@
       <div class="flex mt-3">
         <osf-readonly-input
           [value]="`${identity.id}: ${identity.externalId} (${identity.status})`"
+          [ariaLabelKey]="'settings.accountSettings.connectedIdentities.title'"
           (deleteItem)="deleteExternalIdentity(identity)"
         ></osf-readonly-input>
       </div>

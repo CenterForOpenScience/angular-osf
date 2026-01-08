@@ -1,18 +1,20 @@
-import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models';
+import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models/collection-license-json-api.models';
+import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
+import { NodesResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { ProjectMetadataUpdatePayload } from '@osf/shared/models/project-metadata-update-payload.model';
 import { ProjectModel } from '@osf/shared/models/projects/projects.models';
-import { ProjectJsonApi, ProjectsResponseJsonApi } from '@osf/shared/models/projects/projects-json-api.models';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class ProjectsMapper {
-  static fromGetAllProjectsResponse(response: ProjectsResponseJsonApi): ProjectModel[] {
+  static fromGetAllProjectsResponse(response: NodesResponseJsonApi): ProjectModel[] {
     return response.data.map((project) => this.fromProjectResponse(project));
   }
 
-  static fromProjectResponse(project: ProjectJsonApi): ProjectModel {
+  static fromProjectResponse(project: BaseNodeDataJsonApi): ProjectModel {
     return {
       id: project.id,
       type: project.type,
-      title: project.attributes.title,
+      title: replaceBadEncodedChars(project.attributes.title),
       dateModified: project.attributes.date_modified,
       isPublic: project.attributes.public,
       licenseId: project.relationships.license?.data?.id || null,
@@ -22,7 +24,7 @@ export class ProjectsMapper {
             copyrightHolders: project.attributes.node_license.copyright_holders.join(','),
           }
         : null,
-      description: project.attributes.description,
+      description: replaceBadEncodedChars(project.attributes.description),
       tags: project.attributes.tags || [],
     };
   }
@@ -41,8 +43,8 @@ export class ProjectsMapper {
           },
         },
         attributes: {
-          title: metadata.title,
-          description: metadata.description,
+          title: replaceBadEncodedChars(metadata.title),
+          description: replaceBadEncodedChars(metadata.description),
           tags: metadata.tags,
           ...(metadata.licenseOptions && {
             node_license: {

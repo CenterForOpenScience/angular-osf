@@ -1,11 +1,13 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Panel } from 'primeng/panel';
 import { PanelMenu } from 'primeng/panelmenu';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 import { WikiModel } from '@osf/shared/models/wiki/wiki.model';
@@ -14,9 +16,9 @@ import { WikiItemType } from '@osf/shared/models/wiki/wiki-type.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ComponentWiki } from '@osf/shared/stores/wiki';
-import { RenameWikiDialogComponent } from '@shared/components/wiki/rename-wiki-dialog/rename-wiki-dialog.component';
 
 import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.component';
+import { RenameWikiDialogComponent } from '../rename-wiki-dialog/rename-wiki-dialog.component';
 
 @Component({
   selector: 'osf-wiki-list',
@@ -41,16 +43,14 @@ export class WikiListComponent {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   wikiItemType = WikiItemType;
   expanded = signal(true);
 
   hasComponentsWikis = computed(() => this.componentsList().length > 0);
-
-  isHomeWikiSelected = computed(() => {
-    const homeWikiId = this.list()?.find((wiki) => wiki.name.toLowerCase() === 'home')?.id;
-    return this.currentWikiId() === homeWikiId;
-  });
+  homeWikiId = computed(() => this.list()?.find((wiki) => wiki.name.toLowerCase() === 'home')?.id);
+  isHomeWikiSelected = computed(() => this.currentWikiId() === this.homeWikiId());
 
   wikiMenu = computed(() => {
     const menu: WikiMenuItem[] = [
@@ -96,7 +96,8 @@ export class WikiListComponent {
           resourceId: this.resourceId(),
         },
       })
-      .onClose.subscribe(() => this.createWiki.emit());
+      .onClose.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.createWiki.emit());
   }
 
   openRenameWikiDialog(wikiId: string, wikiName: string) {
@@ -109,7 +110,8 @@ export class WikiListComponent {
           wikiName: wikiName,
         },
       })
-      .onClose.subscribe(() => this.renameWiki.emit());
+      .onClose.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.renameWiki.emit());
   }
 
   openDeleteWikiDialog(): void {
@@ -122,6 +124,10 @@ export class WikiListComponent {
 
   collapseNavigation() {
     this.expanded.update((value) => !value);
+  }
+
+  canEditName(item: MenuItem): boolean {
+    return this.canEdit() && item.id !== this.homeWikiId();
   }
 
   private navigateTo(wikiId: string, componentId?: string) {

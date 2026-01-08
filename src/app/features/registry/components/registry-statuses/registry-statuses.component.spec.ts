@@ -1,14 +1,21 @@
+import { Store } from '@ngxs/store';
+
 import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
+import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
+import { MakePublic } from '../../store/registry';
+
 import { RegistryStatusesComponent } from './registry-statuses.component';
 
-import { MOCK_REGISTRY_OVERVIEW } from '@testing/mocks/registry-overview.mock';
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
@@ -19,8 +26,10 @@ describe('RegistryStatusesComponent', () => {
   let fixture: ComponentFixture<RegistryStatusesComponent>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
   let mockCustomConfirmationService: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let store: Store;
 
-  const mockRegistry = MOCK_REGISTRY_OVERVIEW;
+  const mockRegistry = { ...MOCK_REGISTRATION_OVERVIEW_MODEL, embargoEndDate: '2024-01-01T00:00:00Z' };
+  const mockEnvironment = { supportEmail: 'support@osf.io' };
 
   beforeEach(async () => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
@@ -31,6 +40,7 @@ describe('RegistryStatusesComponent', () => {
       providers: [
         MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(CustomConfirmationService, mockCustomConfirmationService),
+        MockProvider(ENVIRONMENT, mockEnvironment),
         provideMockStore({
           signals: [],
         }),
@@ -39,103 +49,185 @@ describe('RegistryStatusesComponent', () => {
 
     fixture = TestBed.createComponent(RegistryStatusesComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
 
     fixture.componentRef.setInput('registry', mockRegistry);
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should initialize with default values', () => {
+  it('should initialize with default input values', () => {
     expect(component.canEdit()).toBe(false);
     expect(component.isModeration()).toBe(false);
+  });
+
+  it('should initialize supportEmail from environment', () => {
+    expect(component.supportEmail).toBe('support@osf.io');
+  });
+
+  it('should expose RegistryStatus enum', () => {
+    expect(component.RegistryStatus).toBe(RegistryStatus);
+  });
+
+  it('should expose RevisionReviewStates enum', () => {
+    expect(component.RevisionReviewStates).toBe(RevisionReviewStates);
   });
 
   it('should receive registry input', () => {
     expect(component.registry()).toEqual(mockRegistry);
   });
 
-  it('should compute canWithdraw correctly', () => {
-    expect(component.canWithdraw()).toBe(true);
-
-    const registryWithPendingReview = { ...mockRegistry, reviewsState: RegistrationReviewStates.Pending };
-    fixture.componentRef.setInput('registry', registryWithPendingReview);
-    fixture.detectChanges();
-    expect(component.canWithdraw()).toBe(false);
-
-    fixture.componentRef.setInput('isModeration', true);
-    fixture.detectChanges();
-    expect(component.canWithdraw()).toBe(false);
-  });
-
-  it('should compute isAccepted correctly', () => {
-    expect(component.isAccepted()).toBe(true);
-
-    const registryWithDifferentStatus = { ...mockRegistry, status: RegistryStatus.Pending };
-    fixture.componentRef.setInput('registry', registryWithDifferentStatus);
-    fixture.detectChanges();
-    expect(component.isAccepted()).toBe(false);
-  });
-
-  it('should compute isEmbargo correctly', () => {
-    expect(component.isEmbargo()).toBe(false);
-
-    const embargoRegistry = { ...mockRegistry, status: RegistryStatus.Embargo };
-    fixture.componentRef.setInput('registry', embargoRegistry);
-    fixture.detectChanges();
-    expect(component.isEmbargo()).toBe(true);
-  });
-
-  it('should format embargo end date correctly', () => {
-    expect(component.embargoEndDate).toBe('Mon Jan 01 2024');
-  });
-
-  it('should handle registry without embargo end date', () => {
-    const registryWithoutEmbargo = { ...mockRegistry, embargoEndDate: undefined };
-    fixture.componentRef.setInput('registry', registryWithoutEmbargo);
-    fixture.detectChanges();
-
-    expect(component.embargoEndDate).toBe(null);
-  });
-
-  it('should open withdraw dialog', () => {
-    component.openWithdrawDialog();
-
-    expect(mockCustomDialogService.open).toHaveBeenCalledWith(expect.any(Function), {
-      header: 'registry.overview.withdrawRegistration',
-      width: '552px',
-      data: {
-        registryId: 'test-registry-id',
-      },
-    });
-  });
-
-  it('should not open withdraw dialog when registry is null', () => {
-    fixture.componentRef.setInput('registry', null);
-    fixture.detectChanges();
-
-    component.openWithdrawDialog();
-
-    expect(mockCustomDialogService.open).not.toHaveBeenCalled();
-  });
-
-  it('should not open end embargo dialog when registry is null', () => {
-    fixture.componentRef.setInput('registry', null);
-    fixture.detectChanges();
-
-    component.openEndEmbargoDialog();
-
-    expect(mockCustomConfirmationService.confirmDelete).not.toHaveBeenCalled();
-  });
-
-  it('should handle different input configurations', () => {
+  it('should update canEdit input', () => {
     fixture.componentRef.setInput('canEdit', true);
-    fixture.componentRef.setInput('isModeration', true);
     fixture.detectChanges();
 
     expect(component.canEdit()).toBe(true);
+  });
+
+  it('should update isModeration input', () => {
+    fixture.componentRef.setInput('isModeration', true);
+    fixture.detectChanges();
+
     expect(component.isModeration()).toBe(true);
+  });
+
+  describe('canWithdraw', () => {
+    it('should return true when reviewsState is Accepted and isModeration is false', () => {
+      expect(component.canWithdraw()).toBe(true);
+    });
+
+    it('should return false when reviewsState is not Accepted', () => {
+      const registryWithPendingReview = { ...mockRegistry, reviewsState: RegistrationReviewStates.Pending };
+      fixture.componentRef.setInput('registry', registryWithPendingReview);
+      fixture.detectChanges();
+
+      expect(component.canWithdraw()).toBe(false);
+    });
+
+    it('should return false when isModeration is true', () => {
+      fixture.componentRef.setInput('isModeration', true);
+      fixture.detectChanges();
+
+      expect(component.canWithdraw()).toBe(false);
+    });
+
+    it('should return false when both conditions are not met', () => {
+      const registryWithPendingReview = { ...mockRegistry, reviewsState: RegistrationReviewStates.Pending };
+      fixture.componentRef.setInput('registry', registryWithPendingReview);
+      fixture.componentRef.setInput('isModeration', true);
+      fixture.detectChanges();
+
+      expect(component.canWithdraw()).toBe(false);
+    });
+  });
+
+  describe('isAccepted', () => {
+    it('should return true when status is Accepted', () => {
+      expect(component.isAccepted()).toBe(true);
+    });
+
+    it('should return false when status is not Accepted', () => {
+      const registryWithDifferentStatus = { ...mockRegistry, status: RegistryStatus.Pending };
+      fixture.componentRef.setInput('registry', registryWithDifferentStatus);
+      fixture.detectChanges();
+
+      expect(component.isAccepted()).toBe(false);
+    });
+
+    it('should return false when status is Embargo', () => {
+      const embargoRegistry = { ...mockRegistry, status: RegistryStatus.Embargo };
+      fixture.componentRef.setInput('registry', embargoRegistry);
+      fixture.detectChanges();
+
+      expect(component.isAccepted()).toBe(false);
+    });
+  });
+
+  describe('isEmbargo', () => {
+    it('should return false when status is not Embargo', () => {
+      expect(component.isEmbargo()).toBe(false);
+    });
+
+    it('should return true when status is Embargo', () => {
+      const embargoRegistry = { ...mockRegistry, status: RegistryStatus.Embargo };
+      fixture.componentRef.setInput('registry', embargoRegistry);
+      fixture.detectChanges();
+
+      expect(component.isEmbargo()).toBe(true);
+    });
+  });
+
+  describe('embargoEndDate getter', () => {
+    it('should format embargo end date correctly', () => {
+      const date = new Date('2024-01-01T00:00:00Z').toDateString();
+      expect(component.embargoEndDate).toBe(date);
+    });
+
+    it('should return null when registry has no embargo end date', () => {
+      const registryWithoutEmbargo = { ...mockRegistry, embargoEndDate: undefined };
+      fixture.componentRef.setInput('registry', registryWithoutEmbargo);
+      fixture.detectChanges();
+
+      expect(component.embargoEndDate).toBe(null);
+    });
+  });
+
+  describe('openWithdrawDialog', () => {
+    it('should open withdraw dialog with correct parameters', () => {
+      component.openWithdrawDialog();
+
+      expect(mockCustomDialogService.open).toHaveBeenCalledWith(expect.any(Function), {
+        header: 'registry.overview.withdrawRegistration',
+        width: '552px',
+        data: {
+          registryId: mockRegistry.id,
+        },
+      });
+    });
+
+    it('should use correct registryId from registry', () => {
+      const registryWithDifferentId = { ...mockRegistry, id: 'different-registry-id' };
+      fixture.componentRef.setInput('registry', registryWithDifferentId);
+      fixture.detectChanges();
+
+      component.openWithdrawDialog();
+
+      expect(mockCustomDialogService.open).toHaveBeenCalledWith(expect.any(Function), {
+        header: 'registry.overview.withdrawRegistration',
+        width: '552px',
+        data: {
+          registryId: 'different-registry-id',
+        },
+      });
+    });
+  });
+
+  describe('openEndEmbargoDialog', () => {
+    it('should call confirmDelete with correct parameters', () => {
+      component.openEndEmbargoDialog();
+
+      expect(mockCustomConfirmationService.confirmDelete).toHaveBeenCalledWith({
+        headerKey: 'registry.overview.endEmbargo',
+        messageKey: 'registry.overview.endEmbargoMessage',
+        acceptLabelKey: 'common.buttons.confirm',
+        onConfirm: expect.any(Function),
+      });
+    });
+
+    it('should dispatch MakePublic with correct registryId', () => {
+      const dispatchSpy = jest.spyOn(store, 'dispatch');
+      const registryWithDifferentId = { ...mockRegistry, id: 'different-registry-id' };
+      fixture.componentRef.setInput('registry', registryWithDifferentId);
+      fixture.detectChanges();
+
+      let onConfirmCallback: () => void;
+      (mockCustomConfirmationService.confirmDelete as jest.Mock).mockImplementation((options) => {
+        onConfirmCallback = options.onConfirm;
+      });
+
+      component.openEndEmbargoDialog();
+      onConfirmCallback!();
+
+      expect(dispatchSpy).toHaveBeenCalledWith(new MakePublic('different-registry-id'));
+    });
   });
 });

@@ -22,7 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OperationNames } from '@osf/shared/enums/operation-names.enum';
 import { StorageItemType } from '@osf/shared/enums/storage-item-type.enum';
-import { formatCitation, getItemUrl } from '@osf/shared/helpers/citation-formatter.helper';
+import { getItemUrl } from '@osf/shared/helpers/citation-formatter.helper';
 import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
 import { StorageItem } from '@osf/shared/models/addons/storage-item.model';
 import { CitationStyle } from '@osf/shared/models/citations/citation-style.model';
@@ -104,7 +104,7 @@ export class CitationAddonCardComponent implements OnInit {
 
     return items.map((item) => ({
       item,
-      formattedCitation: formatCitation(item, style),
+      formattedCitation: this.cslStyleManager.formatCitation(item, style),
       itemUrl: getItemUrl(item),
     }));
   });

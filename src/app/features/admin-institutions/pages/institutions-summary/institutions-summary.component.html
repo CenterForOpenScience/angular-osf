@@ -4,6 +4,13 @@
   </div>
 } @else {
   <div class="w-full">
+    @if (summaryMetrics().reportYearmonth) {
+      <div class="flex align-items-center gap-2 text-sm text-color-secondary mb-3 pt-3">
+        <span class="font-semibold">{{ 'adminInstitutions.summary.lastUpdated' | translate }}:</span>
+        <span class="text-color font-medium">{{ summaryMetrics()!.reportYearmonth + '-01' | date: 'MMMM d, y' }}</span>
+      </div>
+    }
+
     <div class="flex flex-wrap mt-4 gap-3 md:gap-4">
       @for (item of statisticsData; track $index) {
         <osf-statistic-card class="width-25" [label]="item.label | translate" [value]="item.value" />
@@ -59,12 +66,12 @@
         </div>
       }
 
-      @if (licenceLabels().length > 0) {
+      @if (licenseLabels().length > 0) {
         <div class="grey-border-color border-round-lg border-1 p-3 md:p-4 width-33">
           <osf-bar-chart
             [isLoading]="rightsLoading()"
-            [datasets]="licenceDataset()"
-            [labels]="licenceLabels()"
+            [datasets]="licenseDataset()"
+            [labels]="licenseLabels()"
             [showTicks]="false"
             [showExpandedSection]="true"
             [orientation]="'vertical'"

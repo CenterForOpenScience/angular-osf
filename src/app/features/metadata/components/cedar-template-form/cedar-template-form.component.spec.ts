@@ -1,7 +1,11 @@
+import { MockComponent } from 'ng-mocks';
+
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
 import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 
 import { CedarTemplateFormComponent } from './cedar-template-form.component';
 
@@ -16,7 +20,8 @@ describe('CedarTemplateFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CedarTemplateFormComponent, OSFTestingModule],
+      imports: [CedarTemplateFormComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
+      providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CedarTemplateFormComponent);
@@ -75,8 +80,12 @@ describe('CedarTemplateFormComponent', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should initialize form data with empty metadata when no existing record', () => {
+  it('should initialize form data with empty metadata when no existing record', async () => {
     fixture.componentRef.setInput('existingRecord', null);
+    fixture.detectChanges();
+
+    await (component as any).loadCedarLibraries();
+    (component as any).initializeCedar();
     fixture.detectChanges();
 
     const expectedEmptyMetadata = CedarMetadataHelper.buildEmptyMetadata();

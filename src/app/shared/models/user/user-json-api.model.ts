@@ -72,6 +72,7 @@ interface UserLinksJsonApi {
   iri: string;
   profile_image: string;
   self: string;
+  merged_by?: string;
 }
 
 interface UserRelationshipsJsonApi {

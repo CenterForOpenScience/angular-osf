@@ -72,6 +72,16 @@ export class ConnectAddonComponent {
     updateAuthorizedAddon: UpdateAuthorizedAddon,
   });
 
+  redirectUrl = computed(() => {
+    const addon = this.addon();
+    if (!addon || !addon.redirectUrl) {
+      return null;
+    }
+    const openURL = new URL(addon.redirectUrl);
+    openURL.searchParams.set('userIri', this.addonsUserReference()[0]?.attributes.user_uri);
+    return openURL.toString();
+  });
+
   constructor() {
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAccountModel;
     if (!addon) {
@@ -122,7 +132,13 @@ export class ConnectAddonComponent {
   }
 
   private showSuccessAndRedirect(createdAddon: AuthorizedAccountModel | null): void {
-    this.router.navigate([`${this.baseUrl()}/addons`]);
+    const addonType = this.addonTypeString()?.toLowerCase();
+    this.router.navigate([`${this.baseUrl()}/addons`], {
+      queryParams: {
+        activeTab: 1,
+        addonType: addonType,
+      },
+    });
     this.toastService.showSuccess('settings.addons.toast.createSuccess', {
       addonName: AddonServiceNames[createdAddon?.externalServiceName as keyof typeof AddonServiceNames],
     });

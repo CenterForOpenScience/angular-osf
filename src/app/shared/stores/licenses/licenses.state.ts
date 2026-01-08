@@ -1,10 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { LicensesService } from '@osf/shared/services/licenses.service';
 
 import { LoadAllLicenses } from './licenses.actions';
@@ -38,17 +38,7 @@ export class LicensesState {
           },
         });
       }),
-      catchError((error) => {
-        const errorMessage = error?.error?.message || error?.message;
-        ctx.patchState({
-          licenses: {
-            data: ctx.getState().licenses.data,
-            isLoading: false,
-            error: errorMessage,
-          },
-        });
-        return throwError(() => error);
-      })
+      catchError((error) => handleSectionError(ctx, 'licenses', error))
     );
   }
 }

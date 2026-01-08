@@ -1,0 +1,19 @@
+@let submissions = projectSubmissions();
+
+<p-card>
+  <h2 class="mb-2">{{ 'project.overview.metadata.collection' | translate }}</h2>
+
+  @if (isProjectSubmissionsLoading()) {
+    <p-skeleton height="2.5rem" width="100%"></p-skeleton>
+  } @else {
+    <div class="flex flex-column gap-6">
+      @if (submissions?.length) {
+        @for (submission of submissions; track submission.id) {
+          <osf-metadata-collection-item [submission]="submission" />
+        }
+      } @else {
+        <p>{{ 'project.overview.metadata.noCollections' | translate }}</p>
+      }
+    </div>
+  }
+</p-card>

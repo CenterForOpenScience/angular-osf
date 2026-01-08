@@ -13,7 +13,11 @@
 
   @for (institution of institutions(); track institution.id) {
     <div class="flex mt-3">
-      <osf-readonly-input [value]="institution.name" (deleteItem)="deleteInstitution(institution)"></osf-readonly-input>
+      <osf-readonly-input
+        [value]="institution.name"
+        [ariaLabelKey]="'settings.accountSettings.affiliatedInstitutions.title'"
+        (deleteItem)="deleteInstitution(institution)"
+      ></osf-readonly-input>
     </div>
   }
 </p-card>

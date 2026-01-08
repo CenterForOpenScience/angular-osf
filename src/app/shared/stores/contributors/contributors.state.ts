@@ -228,7 +228,7 @@ export class ContributorsState {
     });
 
     return this.contributorsService
-      .deleteContributor(action.resourceType, action.resourceId, action.contributorId)
+      .deleteContributor(action.resourceType, action.resourceId, action.contributorId, action.removeFromChildren)
       .pipe(
         tap(() => {
           if (!action.skipRefresh) {
@@ -302,7 +302,7 @@ export class ContributorsState {
   getBibliographicContributors(ctx: StateContext<ContributorsStateModel>, action: GetBibliographicContributors) {
     const state = ctx.getState();
 
-    if (!action.resourceId || !action.resourceType) {
+    if (!action.resourceId || !action.resourceType || state.bibliographicContributorsList.isLoading) {
       return;
     }
 

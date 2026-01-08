@@ -6,9 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { BrandService } from '@osf/shared/services/brand.service';
+import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
 
 import { PreprintProviderHeroComponent } from '../../components';
@@ -25,6 +25,9 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
 
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly brandService = inject(BrandService);
+  private readonly headerStyleHelper = inject(HeaderStyleService);
+  private readonly browserTabHelper = inject(BrowserTabService);
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
@@ -50,21 +53,21 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
           this.actions.setResourceType(ResourceType.Preprint);
           this.defaultSearchFiltersInitialized.set(true);
 
-          BrandService.applyBranding(provider.brand);
-          HeaderStyleHelper.applyHeaderStyles(
+          this.brandService.applyBranding(provider.brand);
+          this.headerStyleHelper.applyHeaderStyles(
             provider.brand.primaryColor,
             provider.brand.secondaryColor,
             provider.brand.heroBackgroundImageUrl
           );
-          BrowserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
+          this.browserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
         }
       },
     });
   }
 
   ngOnDestroy() {
-    HeaderStyleHelper.resetToDefaults();
-    BrandService.resetBranding();
-    BrowserTabHelper.resetToDefaults();
+    this.headerStyleHelper.resetToDefaults();
+    this.brandService.resetBranding();
+    this.browserTabHelper.resetToDefaults();
   }
 }
