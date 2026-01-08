@@ -45,16 +45,7 @@ export class ProfileInformationComponent {
 
   orcidId = computed(() => {
     const orcid = this.currentUser()?.external_identity?.ORCID;
-    if (!orcid || !orcid.id) {
-      return undefined;
-    }
-
-    const status = (orcid.status || '').toUpperCase();
-    if (status !== 'VERIFIED') {
-      return undefined;
-    }
-
-    return orcid.id;
+    return orcid?.status?.toUpperCase() === 'VERIFIED' ? orcid.id : undefined;
   });
 
   toProfileSettings() {
