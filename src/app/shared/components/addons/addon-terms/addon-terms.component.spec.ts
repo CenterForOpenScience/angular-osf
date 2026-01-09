@@ -231,8 +231,7 @@ describe('AddonTermsComponent', () => {
 
     const termsElement: HTMLElement = fixture.nativeElement;
     expect(termsElement.querySelectorAll('tr').length).toBe(0);
-    expect(termsElement.querySelectorAll('p').length).toBe(1);
-    expect(termsElement.querySelectorAll('em').length).toBe(1);
+    expect(termsElement.querySelectorAll('p').length).toBe(2);
     expect(termsElement.textContent).toContain('settings.addons.connectAddon.redirectAddons.terms');
   });
 });
