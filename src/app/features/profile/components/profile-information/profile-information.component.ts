@@ -43,6 +43,11 @@ export class ProfileInformationComponent {
 
   userSocials = computed(() => mapUserSocials(this.currentUser()?.social, SOCIAL_LINKS));
 
+  orcidId = computed(() => {
+    const orcid = this.currentUser()?.external_identity?.ORCID;
+    return orcid?.status?.toUpperCase() === 'VERIFIED' ? orcid.id : undefined;
+  });
+
   toProfileSettings() {
     this.editProfile.emit();
   }
