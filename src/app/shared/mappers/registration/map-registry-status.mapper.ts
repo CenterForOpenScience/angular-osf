@@ -17,7 +17,8 @@ export function MapRegistryStatus(
     return RegistryStatus.PendingRegistrationApproval;
   } else if (
     registry.revision_state === RevisionReviewStates.Unapproved &&
-    registry.reviews_state === RegistrationReviewStates.Accepted
+    (registry.reviews_state === RegistrationReviewStates.Accepted ||
+      registry.reviews_state === RegistrationReviewStates.Initial)
   ) {
     return RegistryStatus.UpdatePendingApproval;
   } else if (

@@ -1,3 +1,4 @@
+import { replaceBadEncodedChars } from '@osf/shared/helpers/format-bad-encoding.helper';
 import { BrandDataJsonApi } from '@osf/shared/models/brand/brand.json-api.model';
 import { BrandModel } from '@osf/shared/models/brand/brand.model';
 import { SubjectModel } from '@osf/shared/models/subject/subject.model';
@@ -10,8 +11,8 @@ export class PreprintProvidersMapper {
     const brandRaw = response.embeds!.brand?.data;
     return {
       id: response.id,
-      name: response.attributes.name,
-      descriptionHtml: response.attributes.description,
+      name: replaceBadEncodedChars(response.attributes.name),
+      descriptionHtml: replaceBadEncodedChars(response.attributes.description),
       advisoryBoardHtml: response.attributes.advisory_board,
       examplePreprintId: response.attributes.example,
       domain: response.attributes.domain,

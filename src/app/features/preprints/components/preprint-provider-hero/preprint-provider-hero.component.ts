@@ -1,6 +1,7 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { SafeHtmlPipe } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { TitleCasePipe } from '@angular/common';
@@ -12,13 +13,12 @@ import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { normalizeQuotes } from '@shared/helpers/normalize-quotes';
-import { DecodeHtmlPipe } from '@shared/pipes/decode-html.pipe';
 
 import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints-help-dialog.component';
 
 @Component({
   selector: 'osf-preprint-provider-hero',
-  imports: [Button, RouterLink, SearchInputComponent, Skeleton, TranslatePipe, DecodeHtmlPipe, TitleCasePipe],
+  imports: [Button, RouterLink, SearchInputComponent, Skeleton, TranslatePipe, TitleCasePipe, SafeHtmlPipe],
   templateUrl: './preprint-provider-hero.component.html',
   styleUrl: './preprint-provider-hero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
