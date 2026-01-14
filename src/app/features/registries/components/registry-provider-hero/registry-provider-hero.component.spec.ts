@@ -1,11 +1,10 @@
-import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
-import { DecodeHtmlPipe } from '@shared/pipes/decode-html.pipe';
 
 import { RegistryProviderHeroComponent } from './registry-provider-hero.component';
 
@@ -22,12 +21,7 @@ describe('RegistryProviderHeroComponent', () => {
     const mockRouter = RouterMockBuilder.create().withUrl('/x').build();
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     await TestBed.configureTestingModule({
-      imports: [
-        RegistryProviderHeroComponent,
-        OSFTestingModule,
-        MockComponent(SearchInputComponent),
-        MockPipe(DecodeHtmlPipe),
-      ],
+      imports: [RegistryProviderHeroComponent, OSFTestingModule, MockComponent(SearchInputComponent)],
       providers: [MockProvider(Router, mockRouter), MockProvider(CustomDialogService, mockCustomDialogService)],
     }).compileComponents();
 

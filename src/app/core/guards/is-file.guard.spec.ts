@@ -1,3 +1,5 @@
+import { MockProvider } from 'ng-mocks';
+
 import { of } from 'rxjs';
 
 import { PLATFORM_ID, runInInjectionContext } from '@angular/core';
@@ -45,10 +47,7 @@ describe('isFileGuard', () => {
           selectors: [],
           actions: [],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',
@@ -86,10 +85,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',
@@ -135,10 +131,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',
@@ -187,10 +180,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',
@@ -240,10 +230,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',
@@ -292,10 +279,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',
@@ -344,10 +328,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',
@@ -397,10 +378,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test?view_only=abc123').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test?view_only=abc123').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'server',
@@ -459,10 +437,7 @@ describe('isFileGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
         {
           provide: PLATFORM_ID,
           useValue: 'browser',

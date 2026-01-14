@@ -1,10 +1,6 @@
-import { MockComponent } from 'ng-mocks';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WikiVersion } from '@shared/models/wiki/wiki.model';
-
-import { MarkdownComponent } from '../../markdown/markdown.component';
 
 import { ViewSectionComponent } from './view-section.component';
 
@@ -33,7 +29,7 @@ describe('ViewSectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ViewSectionComponent, OSFTestingModule, MockComponent(MarkdownComponent)],
+      imports: [ViewSectionComponent, OSFTestingModule],
       providers: [TranslateServiceMock],
     }).compileComponents();
 
