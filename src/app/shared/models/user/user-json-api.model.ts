@@ -2,6 +2,7 @@ import { ResponseDataJsonApi } from '../common/json-api.model';
 
 import { Education } from './education.model';
 import { Employment } from './employment.model';
+import { ExternalIdentityModel } from './external-identity.model';
 import { SocialModel } from './social.model';
 
 export type UserResponseJsonApi = ResponseDataJsonApi<UserDataJsonApi>;
@@ -47,6 +48,7 @@ export interface UserAttributesJsonApi {
   suffix: string;
   locale: string;
   social: SocialModel;
+  external_identity: ExternalIdentityModel;
   timezone: string;
 }
 
@@ -70,6 +72,7 @@ interface UserLinksJsonApi {
   iri: string;
   profile_image: string;
   self: string;
+  merged_by?: string;
 }
 
 interface UserRelationshipsJsonApi {

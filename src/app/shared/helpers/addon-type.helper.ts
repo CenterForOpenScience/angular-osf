@@ -48,6 +48,8 @@ export function getAddonTypeString(addon: AddonModel | AuthorizedAccountModel | 
     return AddonType.STORAGE;
   } else if (isLinkAddon(addon)) {
     return AddonType.LINK;
+  } else if (isRedirectAddon(addon)) {
+    return AddonType.REDIRECT;
   } else {
     return AddonType.CITATION;
   }

@@ -1,5 +1,6 @@
 import { Education } from './education.model';
 import { Employment } from './employment.model';
+import { ExternalIdentityModel } from './external-identity.model';
 import { SocialModel } from './social.model';
 
 export interface UserData {
@@ -24,7 +25,9 @@ export interface UserModel {
   timezone: string;
   locale: string;
   social: SocialModel;
+  external_identity: ExternalIdentityModel;
   defaultRegionId: string;
   link?: string;
   iri?: string;
+  mergedBy?: string;
 }

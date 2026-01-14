@@ -32,10 +32,12 @@ export class UserMapper {
       employment: user.attributes.employment,
       iri: user.links.iri,
       social: user.attributes.social,
+      external_identity: user.attributes.external_identity,
       defaultRegionId: user.relationships?.default_region?.data?.id,
       canViewReviews: user.attributes.can_view_reviews === true, // [NS] Do not simplify it
       timezone: user.attributes.timezone,
       locale: user.attributes.locale,
+      mergedBy: user.links.merged_by,
     };
   }
 

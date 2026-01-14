@@ -2,13 +2,12 @@
   <p class="mb-4">
     {{ 'settings.addons.connectAddon.redirectAddons.terms' | translate }}
   </p>
-  <em
-    class="ml-2"
+  <p
     [innerHTML]="
       'settings.addons.connectAddon.redirectAddons.tip'
         | translate: { serviceName: addon()?.displayName, serviceUrl: redirectUrl() }
     "
-  ></em>
+  ></p>
 } @else {
   <p-table [value]="terms()" class="addon-table">
     <ng-template pTemplate="header">
