@@ -20,6 +20,7 @@ import {
   take,
 } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -30,6 +31,7 @@ import {
   HostBinding,
   inject,
   model,
+  PLATFORM_ID,
   signal,
   viewChild,
 } from '@angular/core';
@@ -130,6 +132,8 @@ export class FilesComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly webUrl = this.environment.webUrl;
   private readonly apiDomainUrl = this.environment.apiDomainUrl;
@@ -303,7 +307,6 @@ export class FilesComponent {
       if (currentRootFolder) {
         const provider = currentRootFolder.folder?.provider;
         const storageId = currentRootFolder.folder?.id;
-        // [NM TODO] Check if other providers allow revisions
         this.allowRevisions = provider === FileProvider.OsfStorage;
         this.isGoogleDrive.set(provider === FileProvider.GoogleDrive);
         if (this.isGoogleDrive()) {
@@ -347,7 +350,9 @@ export class FilesComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.actions.resetState();
+      if (this.isBrowser) {
+        this.actions.resetState();
+      }
     });
   }
 

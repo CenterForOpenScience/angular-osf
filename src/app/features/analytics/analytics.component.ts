@@ -4,7 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { map, of } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,6 +13,7 @@ import {
   effect,
   inject,
   OnInit,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -68,6 +69,8 @@ export class AnalyticsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly resourceId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   readonly resourceType = toSignal(this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined));
@@ -111,7 +114,9 @@ export class AnalyticsComponent implements OnInit {
 
   setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.actions.clearAnalytics();
+      if (this.isBrowser) {
+        this.actions.clearAnalytics();
+      }
     });
   }
 

@@ -1,3 +1,4 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -7,8 +8,9 @@ import {
   ElementRef,
   inject,
   input,
+  PLATFORM_ID,
   Signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -32,12 +34,14 @@ import markdownItVideo from 'markdown-it-video';
 export class MarkdownComponent implements AfterViewInit {
   markdownText = input<string>('');
 
-  @ViewChild('container', { static: false }) containerRef?: ElementRef<HTMLElement>;
+  container = viewChild<ElementRef<HTMLElement>>('container');
 
   private md: MarkdownIt;
   private sanitizer = inject(DomSanitizer);
-  private readonly environment = inject(ENVIRONMENT);
+  private environment = inject(ENVIRONMENT);
   private destroyRef = inject(DestroyRef);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
   private clickHandler?: (event: MouseEvent) => void;
 
   renderedHtml: Signal<SafeHtml> = computed(() => {
@@ -85,11 +89,11 @@ export class MarkdownComponent implements AfterViewInit {
   }
 
   private setupClickHandler(): void {
-    if (!this.containerRef?.nativeElement) {
+    const container = this.container()?.nativeElement;
+
+    if (!container) {
       return;
     }
-
-    const container = this.containerRef.nativeElement;
 
     this.clickHandler = (event: MouseEvent) => {
       const anchor = (event.target as HTMLElement).closest('a');
@@ -107,7 +111,9 @@ export class MarkdownComponent implements AfterViewInit {
     container.addEventListener('click', this.clickHandler);
 
     this.destroyRef.onDestroy(() => {
-      container.removeEventListener('click', this.clickHandler!);
+      if (this.isBrowser) {
+        container.removeEventListener('click', this.clickHandler!);
+      }
     });
   }
 }

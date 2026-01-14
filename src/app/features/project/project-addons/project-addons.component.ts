@@ -6,6 +6,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,6 +16,7 @@ import {
   inject,
   model,
   OnInit,
+  PLATFORM_ID,
   signal,
   untracked,
 } from '@angular/core';
@@ -76,6 +78,9 @@ export class ProjectAddonsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   private queryParamsService = inject(AddonsQueryParamsService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
+
   readonly tabOptions = ADDON_TAB_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
   readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
@@ -294,7 +299,9 @@ export class ProjectAddonsComponent implements OnInit {
       .subscribe((value) => this.searchValue.set(value ?? ''));
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearConfiguredAddons();
+      if (this.isBrowser) {
+        this.actions.clearConfiguredAddons();
+      }
     });
   }
 

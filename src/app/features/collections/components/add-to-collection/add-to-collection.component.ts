@@ -7,6 +7,7 @@ import { Stepper } from 'primeng/stepper';
 
 import { filter, map, Observable, of, switchMap } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,6 +16,7 @@ import {
   effect,
   HostListener,
   inject,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -76,6 +78,8 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly loaderService = inject(LoaderService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly selectedProjectId = toSignal<string | null>(
     this.route.params.pipe(map((params) => params['id'])) ?? of(null)
@@ -285,11 +289,13 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
 
   private setupCleanup() {
     this.destroyRef.onDestroy(() => {
-      this.actions.clearAddToCollectionState();
-      this.allowNavigation.set(false);
+      if (this.isBrowser) {
+        this.actions.clearAddToCollectionState();
+        this.allowNavigation.set(false);
 
-      this.headerStyleHelper.resetToDefaults();
-      this.brandService.resetBranding();
+        this.headerStyleHelper.resetToDefaults();
+        this.brandService.resetBranding();
+      }
     });
   }
 

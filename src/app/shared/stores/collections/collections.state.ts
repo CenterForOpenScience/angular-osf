@@ -3,6 +3,7 @@ import { Action, State, StateContext } from '@ngxs/store';
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { SetCurrentProvider } from '@core/store/provider';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -41,6 +42,7 @@ import { COLLECTIONS_DEFAULTS, CollectionsStateModel } from './collections.model
 })
 @Injectable()
 export class CollectionsState {
+  router = inject(Router);
   collectionsService = inject(CollectionsService);
 
   @Action(GetCollectionProvider)
@@ -86,6 +88,13 @@ export class CollectionsState {
             permissions: res.permissions,
           })
         );
+      }),
+      catchError((error) => {
+        if (error.status === 404) {
+          this.router.navigate(['/not-found']);
+          return of(null);
+        }
+        return handleSectionError(ctx, 'collectionProvider', error);
       })
     );
   }

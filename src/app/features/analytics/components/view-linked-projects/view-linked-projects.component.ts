@@ -7,7 +7,7 @@ import { PaginatorState } from 'primeng/paginator';
 
 import { map, of } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,6 +15,7 @@ import {
   DestroyRef,
   effect,
   inject,
+  PLATFORM_ID,
   Signal,
   signal,
 } from '@angular/core';
@@ -56,6 +57,8 @@ export class ViewLinkedProjectsComponent {
   private destroyRef = inject(DestroyRef);
   private project = select(ProjectOverviewSelectors.getProject);
   private registration = select(RegistrySelectors.getRegistry);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   linkedProjects = select(LinkedProjectsSelectors.getLinkedProjects);
   isLoading = select(LinkedProjectsSelectors.getLinkedProjectsLoading);
@@ -123,9 +126,11 @@ export class ViewLinkedProjectsComponent {
 
   setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.actions.clearLinkedProjects();
-      this.actions.clearProject();
-      this.actions.clearRegistration();
+      if (this.isBrowser) {
+        this.actions.clearLinkedProjects();
+        this.actions.clearProject();
+        this.actions.clearRegistration();
+      }
     });
   }
 }
