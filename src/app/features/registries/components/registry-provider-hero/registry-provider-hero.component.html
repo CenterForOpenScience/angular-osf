@@ -9,7 +9,11 @@
       }
     </div>
 
-    <p-button [label]="'registries.addRegistration' | translate" (onClick)="navigateToCreatePage()"></p-button>
+    <p-button
+      [label]="'registries.addRegistration' | translate"
+      (onClick)="navigateToCreatePage()"
+      styleClass="w-max"
+    ></p-button>
   </div>
 
   <div class="provider-description">
