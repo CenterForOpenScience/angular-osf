@@ -71,8 +71,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         if (error.url?.includes('v2/nodes/')) {
           const match = error.url.match(/\/nodes\/([^/]+)/);
           const id = match ? match[1] : null;
-
-          router.navigate([`/request-access/${id}`]);
+          const draftRegistryUrlRegex = /\/registries\/drafts\/.+/i;
+          if (!draftRegistryUrlRegex.test(router.url)) {
+            router.navigate([`/request-access/${id}`]);
+          }
         } else {
           router.navigate(['/forbidden']);
         }
