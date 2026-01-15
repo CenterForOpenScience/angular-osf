@@ -5,7 +5,8 @@
     </div>
   } @else {
     <div class="flex flex-column gap-5 p-5">
-      <div class="flex align-items-center gap-2">
+      <div class="flex align-items-center gap-2 justify-content-between">
+        <h1>{{ institution().name }}</h1>
         <img
           [ngSrc]="institution().assets.logo"
           [alt]="institution().name"
@@ -14,7 +15,7 @@
           class="fit-contain"
         />
 
-        <h1>{{ institution().name }}</h1>
+        <div class="gap-2"></div>
       </div>
 
       <p [innerHtml]="institution().description | safeHtml"></p>
