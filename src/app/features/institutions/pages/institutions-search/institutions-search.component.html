@@ -5,17 +5,17 @@
     </div>
   } @else {
     <div class="flex flex-column gap-5 p-5">
-      <div class="flex align-items-center gap-2 justify-content-between">
+      <div class="flex align-items-center gap-2">
         <h1>{{ institution().name }}</h1>
-        <img
-          [ngSrc]="institution().assets.logo"
-          [alt]="institution().name"
-          width="80"
-          height="80"
-          class="fit-contain"
-        />
-
-        <div class="gap-2"></div>
+        <div class="flex w-full justify-content-center">
+          <img
+            [ngSrc]="institution().assets.logo"
+            [alt]="institution().name"
+            width="80"
+            height="80"
+            class="fit-contain"
+          />
+        </div>
       </div>
 
       <p [innerHtml]="institution().description | safeHtml"></p>
