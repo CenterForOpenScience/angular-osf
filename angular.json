@@ -72,6 +72,30 @@
           },
           "configurations": {
             "production": {
+              "outputMode": "static",
+              "server": false,
+              "ssr": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "9MB",
+                  "maximumError": "10MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "20KB",
+                  "maximumError": "25kB"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
+            "production:ssr": {
+              "outputMode": "server",
+              "server": "src/main.server.ts",
+              "ssr": {
+                "entry": "src/server.ts"
+              },
               "budgets": [
                 {
                   "type": "initial",
@@ -122,28 +146,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.staging.ts"
-                }
-              ]
-            },
-            "test": {
-              "optimization": true,
-              "extractLicenses": false,
-              "sourceMap": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test.ts"
-                }
-              ]
-            },
-            "test-osf": {
-              "optimization": true,
-              "extractLicenses": false,
-              "sourceMap": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test-osf.ts"
                 }
               ]
             }
