@@ -70,13 +70,11 @@ export class RegistrySubmissionItemComponent {
   });
 
   handleOpen() {
-    console.log(this.submission().id)
     this.isOpen.set(true);
     this.loadContributors.emit();
   }
 
   handleClose() {
-    console.log('handleClose');
     this.isOpen.set(false);
   }
 }

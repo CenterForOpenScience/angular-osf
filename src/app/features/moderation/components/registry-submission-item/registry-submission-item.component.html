@@ -75,7 +75,7 @@
       <p-accordion-content>
         <div>
           @if (isOpen()) {
-            <p>{{submission().id}}</p>
+            <p>{{ submission().id }}</p>
             <osf-funder-awards-list [registryId]="submission().id"></osf-funder-awards-list>
           }
         </div>

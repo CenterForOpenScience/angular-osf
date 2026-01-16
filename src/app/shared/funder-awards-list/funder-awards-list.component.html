@@ -2,19 +2,18 @@
   @let funders = customItemMetadata()?.funders;
   @if (funders?.length) {
     <p>{{ 'resourceCard.labels.funderAwards' | translate }}</p>
-  <div class="flex flex-wrap gap-4">
-    @for (funder of funders; track $index) {
-      <a
-        [routerLink]="['/', registryId(), 'metadata', 'osf']"
-        class="font-bold block line-height-3 mb-3"
-        target="_blank"
-      >
-        <div>{{ funder.funderName }}</div>
+    <div class="flex flex-wrap gap-4">
+      @for (funder of funders; track $index) {
+        <a
+          [routerLink]="['/', registryId(), 'metadata', 'osf']"
+          class="font-bold block line-height-3 mb-3"
+          target="_blank"
+        >
+          <div>{{ funder.funderName }}</div>
 
-        <div>{{ funder.awardNumber }}</div>
-      </a>
-    }
-
-  </div>
+          <div>{{ funder.awardNumber }}</div>
+        </a>
+      }
+    </div>
   }
 </div>
