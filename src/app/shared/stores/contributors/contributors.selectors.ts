@@ -88,6 +88,16 @@ export class ContributorsSelectors {
   }
 
   @Selector([ContributorsState])
+  static getUsersNextLink(state: ContributorsStateModel) {
+    return state?.users?.next || null;
+  }
+
+  @Selector([ContributorsState])
+  static getUsersPreviousLink(state: ContributorsStateModel) {
+    return state?.users?.previous || null;
+  }
+
+  @Selector([ContributorsState])
   static getUsersTotalCount(state: ContributorsStateModel) {
     return state?.users?.totalCount || 0;
   }

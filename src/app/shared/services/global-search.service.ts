@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
+import { parseSearchTotalCount } from '../helpers/search-total-count.helper';
 import { mapFilterOptions } from '../mappers/filters/filter-option.mapper';
 import { MapFilters } from '../mappers/filters/filters.mapper';
 import { MapResources } from '../mappers/search';
@@ -80,29 +81,11 @@ export class GlobalSearchService {
     return {
       resources: MapResources(response),
       filters: MapFilters(response),
-      count: this.parseTotalCount(response),
+      count: parseSearchTotalCount(response),
       self: response.data.links.self,
       first: response.data?.relationships?.searchResultPage.links?.first?.href ?? null,
       next: response.data?.relationships?.searchResultPage.links?.next?.href ?? null,
       previous: response.data?.relationships?.searchResultPage.links?.prev?.href ?? null,
     };
-  }
-
-  private parseTotalCount(response: IndexCardSearchResponseJsonApi) {
-    let totalCount = 0;
-    const rawTotalCount = response.data.attributes.totalResultCount;
-
-    if (typeof rawTotalCount === 'number') {
-      totalCount = rawTotalCount;
-    } else if (
-      typeof rawTotalCount === 'object' &&
-      rawTotalCount !== null &&
-      '@id' in rawTotalCount &&
-      String(rawTotalCount['@id']).includes('ten-thousands-and-more')
-    ) {
-      totalCount = 10000;
-    }
-
-    return totalCount;
   }
 }

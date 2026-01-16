@@ -23,6 +23,7 @@ import {
   RejectRequestAccess,
   ResetContributorsState,
   SearchUsers,
+  SearchUsersPageChange,
   UpdateBibliographyFilter,
   UpdateContributorsSearchValue,
   UpdatePermissionFilter,
@@ -272,20 +273,53 @@ export class ContributorsState {
       return of([]);
     }
 
-    return this.contributorsService.searchUsers(action.searchValue, action.page).pipe(
-      tap((users) => {
+    return this.contributorsService.searchUsers(action.searchValue).pipe(
+      tap((response) => {
         const addedContributorsIds = state.contributorsList.data.map((contributor) => contributor.userId);
 
         ctx.patchState({
           users: {
-            data: users.data.map((user) => ({
+            data: response.users.map((user) => ({
               ...user,
               checked: addedContributorsIds.includes(user.id!),
               disabled: addedContributorsIds.includes(user.id!),
             })),
             isLoading: false,
             error: '',
-            totalCount: users.totalCount,
+            totalCount: response.totalCount,
+            next: response.next,
+            previous: response.previous,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'users', error))
+    );
+  }
+
+  @Action(SearchUsersPageChange)
+  searchUsersPageChange(ctx: StateContext<ContributorsStateModel>, action: SearchUsersPageChange) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      users: { ...state.users, isLoading: true, error: null },
+    });
+
+    return this.contributorsService.getUsersByLink(action.link).pipe(
+      tap((response) => {
+        const addedContributorsIds = state.contributorsList.data.map((contributor) => contributor.userId);
+
+        ctx.patchState({
+          users: {
+            data: response.users.map((user) => ({
+              ...user,
+              checked: addedContributorsIds.includes(user.id!),
+              disabled: addedContributorsIds.includes(user.id!),
+            })),
+            isLoading: false,
+            error: '',
+            totalCount: response.totalCount,
+            next: response.next,
+            previous: response.previous,
           },
         });
       }),
@@ -295,7 +329,9 @@ export class ContributorsState {
 
   @Action(ClearUsers)
   clearUsers(ctx: StateContext<ContributorsStateModel>) {
-    ctx.patchState({ users: { data: [], isLoading: false, error: null, totalCount: 0 } });
+    ctx.patchState({
+      users: { data: [], isLoading: false, error: null, totalCount: 0, next: null, previous: null },
+    });
   }
 
   @Action(GetBibliographicContributors)
