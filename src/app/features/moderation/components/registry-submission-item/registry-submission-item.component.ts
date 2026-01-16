@@ -4,12 +4,13 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { Button } from 'primeng/button';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
+import { FunderAwardsListComponent } from '@shared/funder-awards-list/funder-awards-list.component';
 
 import { REGISTRY_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
 import { ActionStatus, SubmissionReviewStatus } from '../../enums';
@@ -29,6 +30,7 @@ import { RegistryModeration } from '../../models';
     AccordionHeader,
     AccordionContent,
     ContributorsListComponent,
+    FunderAwardsListComponent,
   ],
   templateUrl: './registry-submission-item.component.html',
   styleUrl: './registry-submission-item.component.scss',
@@ -39,6 +41,7 @@ export class RegistrySubmissionItemComponent {
   submission = input.required<RegistryModeration>();
   loadContributors = output<void>();
   loadMoreContributors = output<void>();
+  isOpen = signal<boolean>(false);
 
   selected = output<void>();
 
@@ -67,6 +70,13 @@ export class RegistrySubmissionItemComponent {
   });
 
   handleOpen() {
+    console.log(this.submission().id)
+    this.isOpen.set(true);
     this.loadContributors.emit();
+  }
+
+  handleClose() {
+    console.log('handleClose');
+    this.isOpen.set(false);
   }
 }
