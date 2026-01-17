@@ -10,7 +10,8 @@ import { LicenseOptions } from '@osf/shared/models/license/license.model';
 import { BaseNodeAttributesJsonApi } from '@osf/shared/models/nodes/base-node-attributes-json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
-import { CedarRecordsMapper, MetadataMapper } from '../mappers';
+// import { CedarRecordsMapper, MetadataMapper } from '../mappers';
+import { CedarRecordsMapper, MetadataMapper } from '@osf/features/metadata/mappers';
 import {
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
@@ -20,8 +21,8 @@ import {
   CustomMetadataJsonApiResponse,
   MetadataJsonApi,
   MetadataJsonApiResponse,
-} from '../models';
-import { CrossRefFundersResponse, CustomItemMetadataRecord, MetadataModel } from '../models/metadata.model';
+} from '@osf/features/metadata/models';
+import { CrossRefFundersResponse, CustomItemMetadataRecord, MetadataModel } from '@osf/features/metadata/models';
 
 @Injectable({
   providedIn: 'root',
