@@ -4,25 +4,25 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
-import { LicenseOptions } from '@osf/shared/models/license/license.model';
-import { BaseNodeAttributesJsonApi } from '@osf/shared/models/nodes/base-node-attributes-json-api.model';
-import { JsonApiService } from '@osf/shared/services/json-api.service';
-
-// import { CedarRecordsMapper, MetadataMapper } from '../mappers';
 import { CedarRecordsMapper, MetadataMapper } from '@osf/features/metadata/mappers';
 import {
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
   CedarMetadataTemplateJsonApi,
   CedarRecordDataBinding,
+  CrossRefFundersResponse,
+  CustomItemMetadataRecord,
   CustomMetadataJsonApi,
   CustomMetadataJsonApiResponse,
   MetadataJsonApi,
   MetadataJsonApiResponse,
+  MetadataModel,
 } from '@osf/features/metadata/models';
-import { CrossRefFundersResponse, CustomItemMetadataRecord, MetadataModel } from '@osf/features/metadata/models';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
+import { LicenseOptions } from '@osf/shared/models/license/license.model';
+import { BaseNodeAttributesJsonApi } from '@osf/shared/models/nodes/base-node-attributes-json-api.model';
+import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 @Injectable({
   providedIn: 'root',
