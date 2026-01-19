@@ -1,11 +1,9 @@
-import { Store } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { GetCustomItemMetadata, MetadataSelectors } from '@osf/features/metadata/store';
+import { Funder } from '@osf/features/metadata/models';
 
 @Component({
   selector: 'osf-funder-awards-list',
@@ -15,16 +13,6 @@ import { GetCustomItemMetadata, MetadataSelectors } from '@osf/features/metadata
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FunderAwardsListComponent {
+  funders = input<Funder[]>([]);
   registryId = input<string | null>(null);
-  private store = inject(Store);
-  customItemMetadata = this.store.selectSignal(MetadataSelectors.getCustomItemMetadata);
-
-  constructor() {
-    effect(() => {
-      const registryId = this.registryId();
-      if (registryId) {
-        this.store.dispatch(new GetCustomItemMetadata(registryId));
-      }
-    });
-  }
 }

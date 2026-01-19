@@ -1,5 +1,5 @@
 <div class="resource">
-  <p-accordion (onOpen)="handleOpen()" (onClose)="handleClose()">
+  <p-accordion (onOpen)="handleOpen()">
     <p-accordion-panel value="0">
       <p-accordion-header class="flex flex-row align-items-start gap-3 p-3">
         <div osfStopPropagation class="flex align-items-baseline gap-2 font-normal">
@@ -70,14 +70,11 @@
           >
           </osf-contributors-list>
         </div>
-      </p-accordion-content>
-
-      <p-accordion-content>
         <div>
-          @if (isOpen()) {
-            <p>{{ submission().id }}</p>
-            <osf-funder-awards-list [registryId]="submission().id"></osf-funder-awards-list>
-          }
+          <osf-funder-awards-list
+            [funders]="submission().funders || []"
+            [registryId]="submission().id"
+          ></osf-funder-awards-list>
         </div>
       </p-accordion-content>
     </p-accordion-panel>

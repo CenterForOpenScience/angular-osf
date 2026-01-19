@@ -1,3 +1,4 @@
+import { Funder } from '@osf/features/metadata/models';
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
@@ -18,4 +19,5 @@ export interface RegistryModeration {
   contributors?: ContributorModel[];
   totalContributors?: number;
   contributorsPage?: number;
+  funders?: Funder[];
 }

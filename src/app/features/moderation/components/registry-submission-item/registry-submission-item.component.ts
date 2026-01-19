@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { Button } from 'primeng/button';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
@@ -41,7 +41,7 @@ export class RegistrySubmissionItemComponent {
   submission = input.required<RegistryModeration>();
   loadContributors = output<void>();
   loadMoreContributors = output<void>();
-  isOpen = signal<boolean>(false);
+  loadRegistrySubmissionFunders = output<void>();
 
   selected = output<void>();
 
@@ -70,11 +70,7 @@ export class RegistrySubmissionItemComponent {
   });
 
   handleOpen() {
-    this.isOpen.set(true);
     this.loadContributors.emit();
-  }
-
-  handleClose() {
-    this.isOpen.set(false);
+    this.loadRegistrySubmissionFunders.emit();
   }
 }

@@ -7,6 +7,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
+import { MetadataService } from '@osf/shared/services/metadata.service';
 import { DEFAULT_TABLE_PARAMS } from '@shared/constants/default-table-params.constants';
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import { ContributorsService } from '@shared/services/contributors.service';
@@ -16,6 +17,7 @@ import { RegistryModerationService } from '../../services';
 
 import {
   GetRegistrySubmissionContributors,
+  GetRegistrySubmissionFunders,
   GetRegistrySubmissions,
   LoadMoreRegistrySubmissionContributors,
 } from './registry-moderation.actions';
@@ -29,7 +31,7 @@ import { REGISTRY_MODERATION_STATE_DEFAULTS, RegistryModerationStateModel } from
 export class RegistryModerationState {
   private readonly registryModerationService = inject(RegistryModerationService);
   private readonly contributorsService = inject(ContributorsService);
-
+  private readonly metadataService = inject(MetadataService);
   @Action(GetRegistrySubmissionContributors)
   getRegistrySubmissionContributors(
     ctx: StateContext<RegistryModerationStateModel>,
@@ -149,6 +151,41 @@ export class RegistryModerationState {
         );
       }),
       catchError((error) => handleSectionError(ctx, 'submissions', error))
+    );
+  }
+
+  @Action(GetRegistrySubmissionFunders)
+  getRegistrySubmissionFunders(
+    ctx: StateContext<RegistryModerationStateModel>,
+    { registryId }: GetRegistrySubmissionFunders
+  ) {
+    const state = ctx.getState();
+    const submission = state.submissions.data.find((s) => s.id === registryId);
+
+    if (submission?.funders && submission.funders.length > 0) {
+      return;
+    }
+
+    return this.metadataService.getCustomItemMetadata(registryId).pipe(
+      tap((res) => {
+        const newFunders = res.funders;
+
+        ctx.setState(
+          patch({
+            submissions: patch({
+              data: updateItem<RegistryModeration>(
+                (submission) => submission.id === registryId,
+                patch({
+                  funders: newFunders,
+                })
+              ),
+            }),
+          })
+        );
+      }),
+      catchError((error) => {
+        return handleSectionError(ctx, 'submissions', error);
+      })
     );
   }
 }

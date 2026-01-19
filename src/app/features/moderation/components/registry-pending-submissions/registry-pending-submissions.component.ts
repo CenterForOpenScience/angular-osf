@@ -26,6 +26,7 @@ import { RegistrySort, SubmissionReviewStatus } from '../../enums';
 import { RegistryModeration } from '../../models';
 import {
   GetRegistrySubmissionContributors,
+  GetRegistrySubmissionFunders,
   GetRegistrySubmissions,
   LoadMoreRegistrySubmissionContributors,
   RegistryModerationSelectors,
@@ -63,6 +64,7 @@ export class RegistryPendingSubmissionsComponent implements OnInit {
     getRegistrySubmissions: GetRegistrySubmissions,
     getRegistrySubmissionContributors: GetRegistrySubmissionContributors,
     loadMoreRegistrySubmissionContributors: LoadMoreRegistrySubmissionContributors,
+    getRegistrySubmissionFunders: GetRegistrySubmissionFunders,
   });
 
   readonly submissions = select(RegistryModerationSelectors.getRegistrySubmissions);
@@ -127,6 +129,10 @@ export class RegistryPendingSubmissionsComponent implements OnInit {
 
   loadMoreContributors(item: RegistryModeration) {
     this.actions.loadMoreRegistrySubmissionContributors(item.id);
+  }
+
+  loadRegistrySubmissionFunders(item: RegistryModeration) {
+    this.actions.getRegistrySubmissionFunders(item.id);
   }
 
   private getStatusFromQueryParams() {
