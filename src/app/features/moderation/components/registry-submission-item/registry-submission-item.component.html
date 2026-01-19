@@ -64,7 +64,7 @@
 
           <osf-contributors-list
             [contributors]="submission().contributors || []"
-            [isLoading]="!!submission().contributorsLoading || false"
+            [isLoading]="submission().contributorsLoading || false"
             [hasLoadMore]="hasMoreContributors()"
             (loadMoreContributors)="loadMoreContributors.emit()"
           >
@@ -73,6 +73,7 @@
         <div>
           <osf-funder-awards-list
             [funders]="submission().funders || []"
+            [isLoading]="submission().fundersLoading || false"
             [registryId]="submission().id"
           ></osf-funder-awards-list>
         </div>

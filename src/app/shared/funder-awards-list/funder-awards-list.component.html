@@ -1,18 +1,24 @@
 <div class="flex align-content-start gap-1 p-3 pt-0 ml-3">
-  @if (funders().length) {
-    <p>{{ 'resourceCard.labels.funderAwards' | translate }}</p>
-    <div class="flex flex-wrap gap-4">
-      @for (funder of funders(); track $index) {
-        <a
-          [routerLink]="['/', registryId(), 'metadata', 'osf']"
-          class="font-bold block line-height-3 mb-3"
-          target="_blank"
-        >
-          <div>{{ funder.funderName }}</div>
-
-          <div>{{ funder.awardNumber }}</div>
-        </a>
-      }
+  @if (isLoading()) {
+    <div class="w-full">
+      <p-skeleton height="5rem" />
     </div>
+  } @else {
+    @if (funders().length) {
+      <p>{{ 'resourceCard.labels.funderAwards' | translate }}</p>
+      <div class="flex flex-wrap gap-4">
+        @for (funder of funders(); track $index) {
+          <a
+            [routerLink]="['/', registryId(), 'metadata', 'osf']"
+            class="font-bold block line-height-3 mb-3"
+            target="_blank"
+          >
+            <div>{{ funder.funderName }}</div>
+
+            <div>{{ funder.awardNumber }}</div>
+          </a>
+        }
+      </div>
+    }
   }
 </div>

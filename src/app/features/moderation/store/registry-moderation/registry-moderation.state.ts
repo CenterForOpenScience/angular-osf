@@ -166,6 +166,17 @@ export class RegistryModerationState {
       return;
     }
 
+    ctx.setState(
+      patch({
+        submissions: patch({
+          data: updateItem<RegistryModeration>(
+            (submission) => submission.id === registryId,
+            patch({ fundersLoading: true })
+          ),
+        }),
+      })
+    );
+
     return this.metadataService.getCustomItemMetadata(registryId).pipe(
       tap((res) => {
         ctx.setState(
@@ -175,13 +186,26 @@ export class RegistryModerationState {
                 (submission) => submission.id === registryId,
                 patch({
                   funders: res.funders,
+                  fundersLoading: false,
                 })
               ),
             }),
           })
         );
       }),
-      catchError((error) => handleSectionError(ctx, 'submissions', error))
+      catchError((error) => {
+        ctx.setState(
+          patch({
+            submissions: patch({
+              data: updateItem<RegistryModeration>(
+                (submission) => submission.id === registryId,
+                patch({ fundersLoading: false })
+              ),
+            }),
+          })
+        );
+        return handleSectionError(ctx, 'submissions', error);
+      })
     );
   }
 }

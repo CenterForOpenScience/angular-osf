@@ -20,4 +20,5 @@ export interface RegistryModeration {
   totalContributors?: number;
   contributorsPage?: number;
   funders?: Funder[];
+  fundersLoading?: boolean;
 }
