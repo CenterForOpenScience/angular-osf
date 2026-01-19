@@ -131,7 +131,8 @@ export class RegistryPendingSubmissionsComponent implements OnInit {
     this.actions.loadMoreRegistrySubmissionContributors(item.id);
   }
 
-  loadRegistrySubmissionFunders(item: RegistryModeration) {
+  loadAdditionalData(item: RegistryModeration) {
+    this.actions.getRegistrySubmissionContributors(item.id);
     this.actions.getRegistrySubmissionFunders(item.id);
   }
 

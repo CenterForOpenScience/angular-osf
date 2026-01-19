@@ -39,10 +39,8 @@ import { RegistryModeration } from '../../models';
 export class RegistrySubmissionItemComponent {
   status = input.required<SubmissionReviewStatus>();
   submission = input.required<RegistryModeration>();
-  loadContributors = output<void>();
   loadMoreContributors = output<void>();
-  loadRegistrySubmissionFunders = output<void>();
-
+  loadAdditionalData = output<void>();
   selected = output<void>();
 
   readonly reviewStatusIcon = ReviewStatusIcon;
@@ -70,7 +68,6 @@ export class RegistrySubmissionItemComponent {
   });
 
   handleOpen() {
-    this.loadContributors.emit();
-    this.loadRegistrySubmissionFunders.emit();
+    this.loadAdditionalData.emit();
   }
 }

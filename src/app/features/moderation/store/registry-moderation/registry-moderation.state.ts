@@ -168,24 +168,20 @@ export class RegistryModerationState {
 
     return this.metadataService.getCustomItemMetadata(registryId).pipe(
       tap((res) => {
-        const newFunders = res.funders;
-
         ctx.setState(
           patch({
             submissions: patch({
               data: updateItem<RegistryModeration>(
                 (submission) => submission.id === registryId,
                 patch({
-                  funders: newFunders,
+                  funders: res.funders,
                 })
               ),
             }),
           })
         );
       }),
-      catchError((error) => {
-        return handleSectionError(ctx, 'submissions', error);
-      })
+      catchError((error) => handleSectionError(ctx, 'submissions', error))
     );
   }
 }
