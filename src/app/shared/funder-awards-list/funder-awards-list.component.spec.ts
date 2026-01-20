@@ -1,40 +1,21 @@
-import { TranslateModule } from '@ngx-translate/core';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 
-import { Funder } from '@osf/features/metadata/models';
-
 import { FunderAwardsListComponent } from './funder-awards-list.component';
+
+import { MOCK_FUNDERS } from '@testing/mocks/funder.mock';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('FunderAwardsListComponent', () => {
   let component: FunderAwardsListComponent;
   let fixture: ComponentFixture<FunderAwardsListComponent>;
 
   const MOCK_REGISTRY_ID = 'test-registry-123';
-  const MOCK_FUNDERS: Funder[] = [
-    {
-      funderName: 'National Science Foundation',
-      awardNumber: 'NSF-2024-X',
-      funderIdentifier: '10.13039/100000001',
-      funderIdentifierType: 'Crossref Funder ID',
-      awardUri: 'https://nsf.gov/award/1',
-      awardTitle: 'Advanced Research Initiative',
-    },
-    {
-      funderName: 'European Research Council',
-      awardNumber: 'ERC-888',
-      funderIdentifier: '10.13039/501100000781',
-      funderIdentifierType: 'Crossref Funder ID',
-      awardUri: 'https://erc.europa.eu/award/2',
-      awardTitle: 'Future Fellowship',
-    },
-  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FunderAwardsListComponent, TranslateModule.forRoot()],
+      imports: [FunderAwardsListComponent, OSFTestingModule],
       providers: [provideRouter([])],
     }).compileComponents();
 
@@ -64,7 +45,7 @@ describe('FunderAwardsListComponent', () => {
     expect(links.length).toBe(2);
     const firstItemText = links[0].nativeElement.textContent;
     expect(firstItemText).toContain('National Science Foundation');
-    expect(firstItemText).toContain('NSF-2024-X');
+    expect(firstItemText).toContain('NSF-1234567');
   });
 
   it('should generate the correct router link', () => {
