@@ -26,6 +26,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
@@ -41,8 +42,10 @@ import {
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { shouldShowItem } from '@osf/shared/helpers/file-menu.helper';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { getViewOnlyParam, hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
@@ -145,6 +148,7 @@ export class FileDetailComponent {
   hasWriteAccess = select(FilesSelectors.hasWriteAccess);
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  private activeFlags = select(UserSelectors.getActiveFlags);
 
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
@@ -170,20 +174,28 @@ export class FileDetailComponent {
     },
   ];
 
-  shareItems = [
+  private readonly allShareItems = [
     {
+      id: `${FileMenuType.Share}-email`,
       label: 'files.detail.actions.share.email',
       command: () => this.handleEmailShare(),
     },
     {
+      id: `${FileMenuType.Share}-twitter`,
       label: 'files.detail.actions.share.x',
       command: () => this.handleXShare(),
     },
     {
+      id: `${FileMenuType.Share}-facebook`,
       label: 'files.detail.actions.share.facebook',
       command: () => this.handleFacebookShare(),
     },
   ];
+
+  shareItems = computed(() => {
+    const flags = this.activeFlags();
+    return this.allShareItems.filter((item) => shouldShowItem(item.id, flags));
+  });
 
   tabs = signal<MetadataTabsModel[]>([]);
 

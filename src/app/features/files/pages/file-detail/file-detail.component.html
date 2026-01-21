@@ -67,7 +67,7 @@
             (click)="shareMenu.toggle($event)"
           />
 
-          <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
+          <p-menu appendTo="body" [model]="shareItems()" popup #shareMenu>
             <ng-template #item let-item>
               <a class="p-menu-item-link">{{ item.label | translate }}</a>
             </ng-template>
