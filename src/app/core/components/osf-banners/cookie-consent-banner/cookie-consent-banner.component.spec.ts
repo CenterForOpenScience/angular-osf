@@ -20,7 +20,7 @@ describe('Component: Cookie Consent Banner', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OSFTestingModule, CookieConsentBannerComponent, MockComponent(IconComponent)],
+      imports: [CookieConsentBannerComponent, OSFTestingModule, MockComponent(IconComponent)],
       providers: [{ provide: CookieService, useValue: cookieServiceMock }],
     });
 

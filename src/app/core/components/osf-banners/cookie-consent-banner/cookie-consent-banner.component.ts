@@ -7,7 +7,6 @@ import { Message } from 'primeng/message';
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal } from '@angular/core';
 
-import { fadeInOutAnimation } from '@core/animations/fade.in-out.animation';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 /**
@@ -15,7 +14,6 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
  *
  * - Uses `ngx-cookie-service` to persist acceptance across sessions.
  * - Automatically hides the banner if consent is already recorded.
- * - Animates in/out using the `fadeInOutAnimation`.
  * - Supports translation via `TranslatePipe`.
  */
 @Component({
@@ -23,7 +21,6 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
   templateUrl: './cookie-consent-banner.component.html',
   styleUrls: ['./cookie-consent-banner.component.scss'],
   imports: [Button, TranslatePipe, IconComponent, Message],
-  animations: [fadeInOutAnimation],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CookieConsentBannerComponent {
