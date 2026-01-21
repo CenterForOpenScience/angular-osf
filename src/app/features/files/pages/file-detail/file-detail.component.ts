@@ -190,6 +190,11 @@ export class FileDetailComponent {
       label: 'files.detail.actions.share.facebook',
       command: () => this.handleFacebookShare(),
     },
+    {
+      id: `${FileMenuType.Share}-copy-link`,
+      label: 'files.detail.actions.share.copyLink',
+      command: () => this.handleCopyLink(),
+    },
   ];
 
   shareItems = computed(() => {
@@ -364,6 +369,10 @@ export class FileDetailComponent {
   handleEmailShare(): void {
     const link = `mailto:?subject=${this.file()?.name ?? ''}&body=${this.file()?.links?.html ?? ''}`;
     window.location.href = link;
+  }
+
+  handleCopyLink(): void {
+    this.copyToClipboard(this.file()?.links?.html ?? '');
   }
 
   handleXShare(): void {

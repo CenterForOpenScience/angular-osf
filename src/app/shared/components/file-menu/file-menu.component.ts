@@ -63,6 +63,12 @@ export class FileMenuComponent {
           icon: 'fab fa-facebook',
           command: () => this.emitAction(FileMenuType.Share, { type: 'facebook' }),
         },
+        {
+          id: `${FileMenuType.Share}-copy-link`,
+          label: 'files.detail.actions.share.copyLink',
+          icon: 'fas fa-link',
+          command: () => this.emitAction(FileMenuType.Share, { type: 'copy-link' }),
+        },
       ],
     },
     {

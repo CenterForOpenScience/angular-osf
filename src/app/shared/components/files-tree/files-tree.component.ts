@@ -319,6 +319,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       case 'facebook':
         this.openLinkNewTab(facebookLink);
         break;
+      case 'copy-link':
+        this.copyToClipboard(file.links.html);
+        break;
     }
   }
 
