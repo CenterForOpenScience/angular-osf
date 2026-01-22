@@ -19,6 +19,7 @@ import { TagsListComponent } from '@osf/shared/components/tags-list/tags-list.co
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/shared/stores/contributors';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import {
@@ -54,6 +55,7 @@ export class RegistryOverviewMetadataComponent {
   private readonly router = inject(Router);
 
   readonly registry = select(RegistrySelectors.getRegistry);
+  readonly registryProvider = select(RegistrationProviderSelectors.getBrandedProvider);
   readonly isAnonymous = select(RegistrySelectors.isRegistryAnonymous);
 
   canEdit = select(RegistrySelectors.hasWriteAccess);

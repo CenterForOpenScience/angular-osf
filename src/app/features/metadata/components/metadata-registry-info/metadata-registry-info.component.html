@@ -1,0 +1,13 @@
+<p-card>
+  <div class="flex justify-content-between flex-wrap gap-4">
+    <div class="flex flex-column gap-2 flex-1">
+      <h2>{{ 'registry.overview.metadata.type' | translate }}</h2>
+      <p data-test-display-registry-type class="mt-4">{{ type() }}</p>
+    </div>
+
+    <div class="flex flex-column gap-2 flex-1">
+      <h2>{{ 'registry.overview.metadata.registry' | translate }}</h2>
+      <p data-test-display-registry-provider class="mt-4">{{ provider()?.name }}</p>
+    </div>
+  </div>
+</p-card>

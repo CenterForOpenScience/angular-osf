@@ -24,6 +24,7 @@ export interface MetadataModel {
   };
   public?: boolean;
   currentUserPermissions: UserPermissions[];
+  registrationSupplement?: string;
 }
 
 export interface CustomItemMetadataRecord {
