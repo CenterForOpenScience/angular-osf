@@ -55,6 +55,14 @@ export class InstitutionsService {
       .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
+  getUserInstitutionsById(userId: string): Observable<Institution[]> {
+    const url = `${this.apiUrl}/users/${userId}/institutions/`;
+
+    return this.jsonApiService
+      .get<InstitutionsJsonApiResponse>(url)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
+  }
+
   getInstitutionById(institutionId: string): Observable<Institution> {
     return this.jsonApiService
       .get<InstitutionJsonApiResponse>(`${this.apiUrl}/institutions/${institutionId}/`)

@@ -13,7 +13,12 @@
           </ng-template>
         </p-message>
       }
-      <osf-profile-information [currentUser]="user()" [showEdit]="isMyProfile()" (editProfile)="toProfileSettings()" />
+      <osf-profile-information
+        [currentUserInstitutions]="currentUserInstitutions()?.data || []"
+        [currentUser]="user()"
+        [showEdit]="isMyProfile()"
+        (editProfile)="toProfileSettings()"
+      />
     </div>
 
     @if (defaultSearchFiltersInitialized()) {

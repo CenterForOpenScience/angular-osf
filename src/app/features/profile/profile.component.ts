@@ -25,6 +25,7 @@ import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.con
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { UserModel } from '@osf/shared/models/user/user.models';
 import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
+import { FetchUserInstitutionsById, InstitutionsSelectors } from '@shared/stores/institutions';
 
 import { ProfileInformationComponent } from './components';
 import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';
@@ -46,17 +47,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
     fetchUserProfile: FetchUserProfile,
     setDefaultFilterValue: SetDefaultFilterValue,
     setUserProfile: SetUserProfile,
+    fetchUserInstitutionsById: FetchUserInstitutionsById,
   });
 
   loggedInUser = select(UserSelectors.getCurrentUser);
   userProfile = select(ProfileSelectors.getUserProfile);
   isUserLoading = select(ProfileSelectors.isUserProfileLoading);
+  institutions = select(InstitutionsSelectors.getUserProfileInstitutions);
 
   resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceType.Agent);
 
   isMyProfile = computed(() => !this.route.snapshot.params['id']);
   user = computed(() => (this.isMyProfile() ? this.loggedInUser() : this.userProfile()));
   defaultSearchFiltersInitialized = signal<boolean>(false);
+
+  currentUserInstitutions = computed(() => {
+    const user = this.user();
+    const allInstitutions = this.institutions();
+    if (!user || !user.id) return null;
+    return allInstitutions[user.id];
+  });
 
   ngOnInit(): void {
     const userId = this.route.snapshot.params['id'];
@@ -67,6 +77,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } else if (currentUser) {
       this.setupMyProfile(currentUser);
     }
+    this.actions.fetchUserInstitutionsById(userId || currentUser?.id);
   }
 
   ngOnDestroy(): void {

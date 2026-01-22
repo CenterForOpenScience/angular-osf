@@ -5,6 +5,12 @@ export class FetchUserInstitutions {
   static readonly type = '[Institutions] Fetch User Institutions';
 }
 
+export class FetchUserInstitutionsById {
+  static readonly type = '[Institutions] Fetch User Institutions By Id';
+
+  constructor(public userId: string) {}
+}
+
 export class FetchInstitutions {
   static readonly type = '[Institutions] Fetch Institutions';
 

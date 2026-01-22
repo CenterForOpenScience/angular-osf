@@ -10,6 +10,11 @@ export class InstitutionsSelectors {
   }
 
   @Selector([InstitutionsState])
+  static getUserProfileInstitutions(state: InstitutionsStateModel) {
+    return state.userInstitutionsById;
+  }
+
+  @Selector([InstitutionsState])
   static areUserInstitutionsLoading(state: InstitutionsStateModel) {
     return state.userInstitutions.isLoading;
   }
