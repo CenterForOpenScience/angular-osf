@@ -1,10 +1,11 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext, Store } from '@ngxs/store';
 
 import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { UserSelectors } from '@core/store/user';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { getResourceTypeStringFromEnum } from '@osf/shared/helpers/get-resource-types.helper';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
@@ -56,6 +57,7 @@ export class RegistriesState {
   searchService = inject(GlobalSearchService);
   registriesService = inject(RegistriesService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly store = inject(Store);
 
   providersHandler = inject(ProvidersHandlers);
   projectsHandler = inject(ProjectsHandlers);
@@ -311,18 +313,20 @@ export class RegistriesState {
   @Action(FetchSubmittedRegistrations)
   fetchSubmittedRegistrations(
     ctx: StateContext<RegistriesStateModel>,
-    { userId, page, pageSize }: FetchSubmittedRegistrations
+    { page, pageSize }: FetchSubmittedRegistrations
   ) {
     const state = ctx.getState();
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
     ctx.patchState({
       submittedRegistrations: { ...state.submittedRegistrations, isLoading: true, error: null },
     });
 
-    if (!userId) {
+    if (!currentUser) {
       return;
     }
 
-    return this.registriesService.getSubmittedRegistrations(userId, page, pageSize).pipe(
+    return this.registriesService.getSubmittedRegistrations(currentUser.id, page, pageSize).pipe(
       tap((submittedRegistrations) => {
         ctx.patchState({
           submittedRegistrations: {
