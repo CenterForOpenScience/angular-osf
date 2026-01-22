@@ -14,7 +14,7 @@
         </p-message>
       }
       <osf-profile-information
-        [currentUserInstitutions]="currentUserInstitutions()?.data || []"
+        [currentUserInstitutions]="institutions() || []"
         [currentUser]="user()"
         [showEdit]="isMyProfile()"
         (editProfile)="toProfileSettings()"

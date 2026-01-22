@@ -12,7 +12,6 @@ import {
   FetchInstitutions,
   FetchResourceInstitutions,
   FetchUserInstitutions,
-  FetchUserInstitutionsById,
   UpdateResourceInstitutions,
 } from './institutions.actions';
 import { INSTITUTIONS_STATE_DEFAULTS, InstitutionsStateModel } from './institutions.model';
@@ -26,10 +25,10 @@ export class InstitutionsState {
   private readonly institutionsService = inject(InstitutionsService);
 
   @Action(FetchUserInstitutions)
-  getUserInstitutions(ctx: StateContext<InstitutionsStateModel>) {
+  getUserInstitutions(ctx: StateContext<InstitutionsStateModel>, action: FetchUserInstitutions) {
     ctx.setState(patch({ userInstitutions: patch({ isLoading: true }) }));
 
-    return this.institutionsService.getUserInstitutions().pipe(
+    return this.institutionsService.getUserInstitutions(action.userId).pipe(
       tap((institutions) => {
         ctx.setState(
           patch({
@@ -41,37 +40,6 @@ export class InstitutionsState {
         );
       }),
       catchError((error) => handleSectionError(ctx, 'userInstitutions', error))
-    );
-  }
-
-  @Action(FetchUserInstitutionsById)
-  getUserInstitutionsById(ctx: StateContext<InstitutionsStateModel>, action: FetchUserInstitutionsById) {
-    const userId = action.userId;
-    const current = ctx.getState().userInstitutionsById || {};
-    ctx.patchState({
-      userInstitutionsById: {
-        ...current,
-        [userId]: {
-          ...(current[userId] || { data: [], isLoading: true, error: null }),
-        },
-      },
-    });
-
-    return this.institutionsService.getUserInstitutionsById(action.userId).pipe(
-      tap((institutions) => {
-        const current = ctx.getState().userInstitutionsById || {};
-        ctx.patchState({
-          userInstitutionsById: {
-            ...current,
-            [userId]: {
-              data: institutions,
-              isLoading: false,
-              error: null,
-            },
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'userInstitutionsById', error))
     );
   }
 
