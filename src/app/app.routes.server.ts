@@ -10,6 +10,22 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
   {
+    path: 'forbidden',
+    renderMode: RenderMode.Prerender,
+  },
+  {
+    path: 'not-found',
+    renderMode: RenderMode.Prerender,
+  },
+  {
+    path: 'forgotpassword',
+    renderMode: RenderMode.Prerender,
+  },
+  {
+    path: '',
+    renderMode: RenderMode.Prerender,
+  },
+  {
     path: 'dashboard',
     renderMode: RenderMode.Client,
   },
@@ -26,6 +42,14 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'register',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'profile',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: 'registries/drafts/**',
     renderMode: RenderMode.Client,
   },
@@ -38,15 +62,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
-    path: 'forbidden',
-    renderMode: RenderMode.Server,
-  },
-  {
     path: 'request-access/:id',
     renderMode: RenderMode.Server,
   },
   {
-    path: 'not-found',
+    path: 'resetpassword/:userId/:token',
     renderMode: RenderMode.Server,
   },
   {
@@ -54,15 +74,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
-    path: 'preprints/:providerId/:id/pending-moderation',
-    renderMode: RenderMode.Server,
-  },
-  {
     path: 'preprints/discover',
     renderMode: RenderMode.Server,
   },
   {
-    path: 'preprints/:providerId',
+    path: 'preprints/:providerId/:id/pending-moderation',
     renderMode: RenderMode.Server,
   },
   {
@@ -71,6 +87,10 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'preprints/:providerId/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'preprints/:providerId',
     renderMode: RenderMode.Server,
   },
   {
@@ -102,7 +122,7 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
-    path: ':id/files/:provider/:fileId',
+    path: 'project/:id/node/:nodeId/files/:provider/:fileId',
     renderMode: RenderMode.Server,
   },
   {
@@ -110,11 +130,7 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
-    path: 'project/:id/node/:nodeId/files/:provider/:fileId',
-    renderMode: RenderMode.Server,
-  },
-  {
-    path: ':id',
+    path: ':id/files/:provider/:fileId',
     renderMode: RenderMode.Server,
   },
   {
@@ -147,6 +163,10 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: ':id/recent-activity',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id',
     renderMode: RenderMode.Server,
   },
   {
