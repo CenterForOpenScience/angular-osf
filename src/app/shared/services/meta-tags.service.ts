@@ -11,7 +11,7 @@ import { replaceBadEncodedChars } from '@osf/shared/helpers/format-bad-encoding.
 import { MetadataRecordFormat } from '../enums/metadata-record-format.enum';
 import { HeadTagDef } from '../models/meta-tags/head-tag-def.model';
 import { MetaTagAuthor } from '../models/meta-tags/meta-tag-author.model';
-import { Content, DataContent, MetaTagsData } from '../models/meta-tags/meta-tags-data.model';
+import { Content, DataContent, MetaTagsData, SignpostingLink } from '../models/meta-tags/meta-tags-data.model';
 
 import { MetadataRecordsService } from './metadata-records.service';
 
@@ -123,6 +123,11 @@ export class MetaTagsService {
     this.prerenderReady.setNotReady();
     const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
     const headTags = this.getHeadTags(combinedData);
+
+    if (metaTagsData.signpostingLinks) {
+      headTags.push(...this.getSignpostingLinkTags(metaTagsData.signpostingLinks));
+    }
+
     of(metaTagsData.osfGuid)
       .pipe(
         switchMap((osfid) =>
@@ -229,6 +234,19 @@ export class MetaTagsService {
         return acc;
       }, [])
       .filter((tag) => tag.attrs.content);
+  }
+
+  private getSignpostingLinkTags(signpostingLinks: SignpostingLink[]): HeadTagDef[] {
+    return signpostingLinks.map((link) => ({
+      type: 'link' as const,
+      attrs: {
+        rel: link.rel,
+        href: link.href,
+        ...(link.type && { type: link.type }),
+        ...(link.title && { title: link.title }),
+        class: this.metaTagClass,
+      },
+    }));
   }
 
   private buildMetaTagContent(name: string, content: Content): Content {
