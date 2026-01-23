@@ -22,9 +22,11 @@ describe('StorageItemSelectorComponent', () => {
   let component: StorageItemSelectorComponent;
   let fixture: ComponentFixture<StorageItemSelectorComponent>;
   let mockDialogService: ReturnType<DialogServiceMockBuilder['build']>;
+  let mockOperationInvocation: WritableSignal<OperationInvocation | null>;
 
   beforeEach(async () => {
     mockDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
+    mockOperationInvocation = signal<OperationInvocation | null>(null);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -47,6 +49,10 @@ describe('StorageItemSelectorComponent', () => {
               selector: AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting,
               value: false,
             },
+            {
+              selector: AddonsSelectors.getOperationInvocation,
+              value: mockOperationInvocation,
+            },
           ],
         }),
         MockProvider(DialogService, mockDialogService),
@@ -55,6 +61,10 @@ describe('StorageItemSelectorComponent', () => {
 
     fixture = TestBed.createComponent(StorageItemSelectorComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('isGoogleFilePicker', false);
+    fixture.componentRef.setInput('accountName', 'test-account');
+    fixture.componentRef.setInput('accountId', 'test-id');
+    fixture.componentRef.setInput('operationInvocationResult', []);
   });
 
   it('should create', () => {
@@ -119,53 +129,6 @@ describe('StorageItemSelectorComponent', () => {
   });
 
   describe('showLoadMoreButton', () => {
-    let mockOperationInvocation: WritableSignal<OperationInvocation | null>;
-
-    beforeEach(async () => {
-      mockDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
-      mockOperationInvocation = signal<OperationInvocation | null>(null);
-
-      await TestBed.resetTestingModule()
-        .configureTestingModule({
-          imports: [
-            StorageItemSelectorComponent,
-            OSFTestingModule,
-            ...MockComponents(GoogleFilePickerComponent, SelectComponent),
-          ],
-          providers: [
-            provideMockStore({
-              signals: [
-                {
-                  selector: AddonsSelectors.getSelectedStorageItem,
-                  value: null,
-                },
-                {
-                  selector: AddonsSelectors.getOperationInvocationSubmitting,
-                  value: false,
-                },
-                {
-                  selector: AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting,
-                  value: false,
-                },
-                {
-                  selector: AddonsSelectors.getOperationInvocation,
-                  value: mockOperationInvocation,
-                },
-              ],
-            }),
-            MockProvider(DialogService, mockDialogService),
-          ],
-        })
-        .compileComponents();
-
-      fixture = TestBed.createComponent(StorageItemSelectorComponent);
-      component = fixture.componentInstance;
-      fixture.componentRef.setInput('isGoogleFilePicker', false);
-      fixture.componentRef.setInput('accountName', 'test-account');
-      fixture.componentRef.setInput('accountId', 'test-id');
-      fixture.componentRef.setInput('operationInvocationResult', []);
-    });
-
     it('should return false when operationInvocation is null', () => {
       mockOperationInvocation.set(null);
       fixture.detectChanges();
