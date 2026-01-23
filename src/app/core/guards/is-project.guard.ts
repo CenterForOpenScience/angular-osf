@@ -22,7 +22,7 @@ export const isProjectGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
   return store.dispatch(new GetResource(id)).pipe(
     switchMap(() => store.select(CurrentResourceSelectors.getCurrentResource)),
     map((resource) => {
-      if (!resource || !id.startsWith(resource.id)) {
+      if (!resource || !resource.id.startsWith(id)) {
         return false;
       }
 
