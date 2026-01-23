@@ -6,7 +6,7 @@ import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ListInfoShortenerComponent } from '@osf/shared/components/list-info-shortener/list-info-shortener.component';
+import { ContributorsListShortenerComponent } from '@osf/shared/components/contributors-list-shortener/contributors-list-shortener.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
@@ -54,7 +54,7 @@ describe('MyPreprintsComponent', () => {
       imports: [
         MyPreprintsComponent,
         OSFTestingModule,
-        ...MockComponents(SubHeaderComponent, SearchInputComponent, ListInfoShortenerComponent),
+        ...MockComponents(SubHeaderComponent, SearchInputComponent, ContributorsListShortenerComponent),
         MockPipe(TitleCasePipe),
       ],
       providers: [

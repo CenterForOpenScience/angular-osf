@@ -1,4 +1,5 @@
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { ContributorsMapper } from '@osf/shared/mappers/contributors';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
@@ -170,20 +171,13 @@ export class PreprintsMapper {
     >
   ): PreprintShortInfoWithTotalCount {
     return {
-      data: response.data.map((preprintData) => {
-        return {
-          id: preprintData.id,
-          title: replaceBadEncodedChars(preprintData.attributes.title),
-          dateModified: preprintData.attributes.date_modified,
-          contributors: preprintData.embeds.bibliographic_contributors.data.map((contrData) => {
-            return {
-              id: contrData.id,
-              name: contrData.embeds.users.data.attributes.full_name,
-            };
-          }),
-          providerId: preprintData.relationships.provider.data.id,
-        };
-      }),
+      data: response.data.map((preprintData) => ({
+        id: preprintData.id,
+        title: replaceBadEncodedChars(preprintData.attributes.title),
+        dateModified: preprintData.attributes.date_modified,
+        contributors: ContributorsMapper.getContributors(preprintData.embeds?.bibliographic_contributors?.data),
+        providerId: preprintData.relationships.provider.data.id,
+      })),
       totalCount: response.meta.total,
     };
   }
