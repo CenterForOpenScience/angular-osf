@@ -2,19 +2,19 @@ import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { ListInfoShortenerComponent } from './list-info-shortener.component';
+import { ContributorsListShortenerComponent } from './contributors-list-shortener.component';
 
-describe('ListInfoShortenerComponent', () => {
-  let component: ListInfoShortenerComponent;
-  let fixture: ComponentFixture<ListInfoShortenerComponent>;
-  let componentRef: ComponentRef<ListInfoShortenerComponent>;
+describe('ContributorsListShortenerComponent', () => {
+  let component: ContributorsListShortenerComponent;
+  let fixture: ComponentFixture<ContributorsListShortenerComponent>;
+  let componentRef: ComponentRef<ContributorsListShortenerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListInfoShortenerComponent],
+      imports: [ContributorsListShortenerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ListInfoShortenerComponent);
+    fixture = TestBed.createComponent(ContributorsListShortenerComponent);
     component = fixture.componentInstance;
     componentRef = fixture.componentRef;
   });

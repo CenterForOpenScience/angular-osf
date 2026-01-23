@@ -5,7 +5,11 @@
         class="activity-item flex justify-content-between align-items-center gap-2 pb-2 px-3"
         data-test="recent-activity-item"
       >
-        <div [innerHTML]="activityLog.formattedActivity" data-test="recent-activity-item-content"></div>
+        <div
+          class="word-break-word"
+          [innerHTML]="activityLog.formattedActivity"
+          data-test="recent-activity-item-content"
+        ></div>
 
         <p class="activity-date hidden text-right sm:block" data-test="recent-activity-item-date">
           {{ activityLog.date | date: 'MMM d, y hh:mm a' }}
