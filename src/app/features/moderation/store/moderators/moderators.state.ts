@@ -16,6 +16,7 @@ import {
   DeleteModerator,
   LoadModerators,
   SearchUsers,
+  SearchUsersPageChange,
   UpdateModerator,
   UpdateModeratorsSearchValue,
 } from './moderators.actions';
@@ -141,14 +142,43 @@ export class ModeratorsState {
       return of([]);
     }
 
-    return this.moderatorsService.searchUsers(action.searchValue, action.page).pipe(
-      tap((users) => {
+    return this.moderatorsService.searchUsers(action.searchValue).pipe(
+      tap((response) => {
         ctx.patchState({
           users: {
-            data: users.data.filter((user) => !addedModeratorsIds.includes(user.id!)),
+            data: response.users.filter((user) => !addedModeratorsIds.includes(user.id!)),
             isLoading: false,
             error: '',
-            totalCount: users.totalCount,
+            totalCount: response.totalCount,
+            next: response.next,
+            previous: response.previous,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'users', error))
+    );
+  }
+
+  @Action(SearchUsersPageChange)
+  searchUsersPageChange(ctx: StateContext<ModeratorsStateModel>, action: SearchUsersPageChange) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      users: { ...state.users, isLoading: true, error: null },
+    });
+
+    const addedModeratorsIds = state.moderators.data.map((moderator) => moderator.userId);
+
+    return this.moderatorsService.getUsersByLink(action.link).pipe(
+      tap((response) => {
+        ctx.patchState({
+          users: {
+            data: response.users.filter((user) => !addedModeratorsIds.includes(user.id!)),
+            isLoading: false,
+            error: '',
+            totalCount: response.totalCount,
+            next: response.next,
+            previous: response.previous,
           },
         });
       }),
@@ -158,6 +188,8 @@ export class ModeratorsState {
 
   @Action(ClearUsers)
   clearUsers(ctx: StateContext<ModeratorsStateModel>) {
-    ctx.patchState({ users: { data: [], isLoading: false, error: null, totalCount: 0 } });
+    ctx.patchState({
+      users: { data: [], isLoading: false, error: null, totalCount: 0, next: null, previous: null },
+    });
   }
 }

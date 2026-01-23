@@ -78,10 +78,13 @@ export class DeleteContributor {
 export class SearchUsers {
   static readonly type = '[Contributors] Search Users';
 
-  constructor(
-    public searchValue: string | null,
-    public page: number
-  ) {}
+  constructor(public searchValue: string | null) {}
+}
+
+export class SearchUsersPageChange {
+  static readonly type = '[Contributors] Search Users Page Change';
+
+  constructor(public link: string) {}
 }
 
 export class ClearUsers {

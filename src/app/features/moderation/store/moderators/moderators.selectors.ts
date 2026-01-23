@@ -39,4 +39,14 @@ export class ModeratorsSelectors {
   static getUsersTotalCount(state: ModeratorsStateModel): number {
     return state.users.totalCount;
   }
+
+  @Selector([ModeratorsState])
+  static getUsersNextLink(state: ModeratorsStateModel) {
+    return state?.users?.next || null;
+  }
+
+  @Selector([ModeratorsState])
+  static getUsersPreviousLink(state: ModeratorsStateModel) {
+    return state?.users?.previous || null;
+  }
 }

@@ -111,7 +111,6 @@ export class FetchSubmittedRegistrations {
   static readonly type = '[Registries] Fetch Submitted Registrations';
 
   constructor(
-    public userId: string | undefined,
     public page = 1,
     public pageSize = 10
   ) {}

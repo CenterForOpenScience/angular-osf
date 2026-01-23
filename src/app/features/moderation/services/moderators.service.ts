@@ -1,16 +1,19 @@
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { JsonApiResponse, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { parseSearchTotalCount } from '@osf/shared/helpers/search-total-count.helper';
+import { MapResources } from '@osf/shared/mappers/search';
+import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
-import { UserDataJsonApi } from '@osf/shared/models/user/user-json-api.model';
+import { IndexCardSearchResponseJsonApi } from '@osf/shared/models/search/index-card-search-json-api.models';
+import { SearchUserDataModel } from '@osf/shared/models/user/search-user-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { StringOrNull } from '@shared/helpers/types.helper';
 
-import { AddModeratorType } from '../enums';
+import { AddModeratorType, ModeratorPermission } from '../enums';
 import { ModerationMapper } from '../mappers';
 import { ModeratorAddModel, ModeratorDataJsonApi, ModeratorModel, ModeratorResponseJsonApi } from '../models';
 
@@ -23,6 +26,14 @@ export class ModeratorsService {
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
+  }
+
+  get shareTroveUrl() {
+    return this.environment.shareTroveUrl;
+  }
+
+  get webUrl() {
+    return this.environment.webUrl;
   }
 
   private readonly urlMap = new Map<ResourceType, string>([
@@ -84,11 +95,86 @@ export class ModeratorsService {
     return this.jsonApiService.delete(baseUrl);
   }
 
-  searchUsers(value: string, page = 1): Observable<PaginatedData<ModeratorAddModel[]>> {
-    const baseUrl = `${this.apiUrl}/search/users/?q=${value}*&page=${page}`;
+  searchUsers(value: string, pageSize = 10): Observable<SearchUserDataModel<ModeratorAddModel[]>> {
+    if (value.length === 5) {
+      return forkJoin([this.searchUsersByName(value, pageSize), this.searchUsersById(value, pageSize)]).pipe(
+        map(([nameResults, idResults]) => {
+          const users = [...nameResults.users];
+          const existingIds = new Set(users.map((u) => u.id));
+
+          idResults.users.forEach((user) => {
+            if (!existingIds.has(user.id)) {
+              users.push(user);
+              existingIds.add(user.id);
+            }
+          });
+
+          return {
+            users,
+            totalCount: nameResults.totalCount + idResults.totalCount,
+            next: nameResults.next,
+            previous: nameResults.previous,
+          };
+        })
+      );
+    } else {
+      return this.searchUsersByName(value, pageSize);
+    }
+  }
+
+  searchUsersByName(value: string, pageSize = 10): Observable<SearchUserDataModel<ModeratorAddModel[]>> {
+    const baseUrl = `${this.shareTroveUrl}/index-card-search`;
+    const params = {
+      'cardSearchFilter[resourceType]': 'Person',
+      'cardSearchFilter[accessService]': this.webUrl,
+      'cardSearchText[name]': `${value}*`,
+      acceptMediatype: 'application/vnd.api+json',
+      'page[size]': pageSize,
+    };
 
     return this.jsonApiService
-      .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
-      .pipe(map((response) => ModerationMapper.fromUsersWithPaginationGetResponse(response)));
+      .get<IndexCardSearchResponseJsonApi>(baseUrl, params)
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
+  }
+
+  searchUsersById(value: string, pageSize = 10): Observable<SearchUserDataModel<ModeratorAddModel[]>> {
+    const baseUrl = `${this.shareTroveUrl}/index-card-search`;
+    const params = {
+      'cardSearchFilter[resourceType]': 'Person',
+      'cardSearchFilter[accessService]': this.webUrl,
+      'cardSearchFilter[sameAs]': `${this.webUrl}/${value}`,
+      acceptMediatype: 'application/vnd.api+json',
+      'page[size]': pageSize,
+    };
+
+    return this.jsonApiService
+      .get<IndexCardSearchResponseJsonApi>(baseUrl, params)
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
+  }
+
+  getUsersByLink(link: string): Observable<SearchUserDataModel<ModeratorAddModel[]>> {
+    return this.jsonApiService
+      .get<IndexCardSearchResponseJsonApi>(link)
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
+  }
+
+  private handleResourcesRawResponse(
+    response: IndexCardSearchResponseJsonApi
+  ): SearchUserDataModel<ModeratorAddModel[]> {
+    const users = MapResources(response).map(
+      (user) =>
+        ({
+          id: user.absoluteUrl.split('/').pop(),
+          fullName: user.name,
+          permission: ModeratorPermission.Moderator,
+        }) as ModeratorAddModel
+    );
+
+    return {
+      users,
+      totalCount: parseSearchTotalCount(response),
+      next: response.data?.relationships?.searchResultPage.links?.next?.href ?? null,
+      previous: response.data?.relationships?.searchResultPage.links?.prev?.href ?? null,
+    };
   }
 }
