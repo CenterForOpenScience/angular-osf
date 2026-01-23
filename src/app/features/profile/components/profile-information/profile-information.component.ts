@@ -35,6 +35,7 @@ import { mapUserSocials } from '../../helpers';
 })
 export class ProfileInformationComponent {
   currentUser = input<UserModel | null>();
+
   currentUserInstitutions = input<Institution[]>();
   showEdit = input(false);
   editProfile = output<void>();

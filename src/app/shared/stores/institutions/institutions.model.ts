@@ -4,7 +4,6 @@ import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-w
 
 export interface InstitutionsStateModel {
   userInstitutions: AsyncStateModel<Institution[]>;
-  userInstitutionsById: Record<string, AsyncStateModel<Institution[]>>;
   institutions: AsyncStateWithTotalCount<Institution[]>;
   resourceInstitutions: AsyncStateModel<Institution[]>;
 }
@@ -15,7 +14,6 @@ export const INSTITUTIONS_STATE_DEFAULTS: InstitutionsStateModel = {
     isLoading: false,
     error: null,
   },
-  userInstitutionsById: {},
   institutions: {
     data: [],
     isLoading: false,
