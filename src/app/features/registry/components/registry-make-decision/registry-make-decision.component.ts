@@ -115,6 +115,11 @@ export class RegistryMakeDecisionComponent {
     return SchemaResponseActionTrigger.RejectRevision;
   }
 
+  get isSubmitDisabled(): boolean {
+    const actionControl = this.requestForm?.get(ModerationDecisionFormControls.Action);
+    return !actionControl?.value || this.isSubmitting()!;
+  }
+
   constructor() {
     this.initForm();
 

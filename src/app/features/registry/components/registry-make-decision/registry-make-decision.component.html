@@ -127,7 +127,7 @@
         [label]="'moderation.makeDecision.submitDecision' | translate"
         (click)="handleSubmission()"
         severity="success"
-        [disabled]="!requestForm.valid || isSubmitting()"
+        [disabled]="isSubmitDisabled"
         [loading]="isSubmitting()"
         class="btn-full-width"
       />
