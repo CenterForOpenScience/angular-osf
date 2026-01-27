@@ -8,7 +8,7 @@ import { PaginatorState } from 'primeng/paginator';
 
 import { map, of } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,6 +16,7 @@ import {
   DestroyRef,
   effect,
   inject,
+  PLATFORM_ID,
   Signal,
   signal,
 } from '@angular/core';
@@ -68,6 +69,8 @@ export class ViewDuplicatesComponent {
   private destroyRef = inject(DestroyRef);
   private project = select(ProjectOverviewSelectors.getProject);
   private registration = select(RegistrySelectors.getRegistry);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
@@ -197,9 +200,11 @@ export class ViewDuplicatesComponent {
 
   setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.actions.clearDuplicates();
-      this.actions.clearProject();
-      this.actions.clearRegistration();
+      if (this.isBrowser) {
+        this.actions.clearDuplicates();
+        this.actions.clearProject();
+        this.actions.clearRegistration();
+      }
     });
   }
 

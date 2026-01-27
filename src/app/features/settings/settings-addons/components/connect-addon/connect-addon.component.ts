@@ -6,7 +6,8 @@ import { Button } from 'primeng/button';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
 
-import { Component, computed, DestroyRef, effect, inject, signal, viewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, DestroyRef, effect, inject, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -49,6 +50,8 @@ export class ConnectAddonComponent {
   private readonly toastService = inject(ToastService);
   private readonly oauthService = inject(AddonOAuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly stepper = viewChild(Stepper);
   readonly AddonType = AddonType;
@@ -96,7 +99,9 @@ export class ConnectAddonComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.oauthService.stopOAuthTracking();
+      if (this.isBrowser) {
+        this.oauthService.stopOAuthTracking();
+      }
     });
   }
 

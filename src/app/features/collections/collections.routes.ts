@@ -31,7 +31,7 @@ export const collectionsRoutes: Routes = [
       },
       {
         path: ':providerId',
-        redirectTo: ':providerId/discover',
+        redirectTo: ({ params }) => `${params['providerId']}/discover`,
       },
       {
         path: ':providerId/discover',

@@ -6,7 +6,17 @@ import { PaginatorState } from 'primeng/paginator';
 
 import { map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
@@ -23,6 +33,8 @@ import { ActivityLogsSelectors, ClearActivityLogs, GetActivityLogs } from '@osf/
 })
 export class RegistrationRecentActivityComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly pageSize = ACTIVITY_LOGS_DEFAULT_PAGE_SIZE;
 
@@ -52,7 +64,9 @@ export class RegistrationRecentActivityComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.clearActivityLogsStore();
+    if (this.isBrowser) {
+      this.actions.clearActivityLogsStore();
+    }
   }
 
   onPageChange(event: PaginatorState) {

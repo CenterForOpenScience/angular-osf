@@ -13,6 +13,7 @@ import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,6 +23,7 @@ import {
   inject,
   input,
   output,
+  PLATFORM_ID,
   signal,
   untracked,
 } from '@angular/core';
@@ -75,6 +77,9 @@ export class ProjectMetadataStepComponent {
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formService = inject(ProjectMetadataFormService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+
   readonly currentYear = new Date();
 
   readonly ProjectMetadataFormControls = ProjectMetadataFormControls;
@@ -244,7 +249,9 @@ export class ProjectMetadataStepComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearProjects();
+      if (this.isBrowser) {
+        this.actions.clearProjects();
+      }
     });
   }
 }

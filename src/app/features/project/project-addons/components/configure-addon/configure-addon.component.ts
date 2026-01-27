@@ -7,6 +7,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,6 +16,7 @@ import {
   effect,
   inject,
   OnInit,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -70,7 +72,9 @@ export class ConfigureAddonComponent implements OnInit {
   private addonFormService = inject(AddonFormService);
   private operationInvocationService = inject(AddonOperationInvocationService);
   private store = inject(Store);
-  private readonly environment = inject(ENVIRONMENT);
+  private environment = inject(ENVIRONMENT);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   accountNameControl = new FormControl('');
   storageAddon = signal<AddonModel | null>(null);
@@ -135,7 +139,9 @@ export class ConfigureAddonComponent implements OnInit {
     this.initializeAddon();
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearOperationInvocations();
+      if (this.isBrowser) {
+        this.actions.clearOperationInvocations();
+      }
     });
 
     effect(() => {
@@ -146,8 +152,6 @@ export class ConfigureAddonComponent implements OnInit {
   }
 
   private initializeAddon(): void {
-    // TODO this should be reviewed to have the addon be retrieved from the store
-    // I have limited my testing because it will create a false/positive test based on the required data
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredAddonModel;
 
     if (addon) {

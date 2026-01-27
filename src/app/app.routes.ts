@@ -101,6 +101,13 @@ export const routes: Routes = [
         loadChildren: () => import('./features/preprints/preprints.routes').then((mod) => mod.preprintsRoutes),
       },
       {
+        path: 'preprints/:providerId/:id/pending-moderation',
+        loadComponent: () =>
+          import(
+            '@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component'
+          ).then((mod) => mod.PreprintPendingModerationComponent),
+      },
+      {
         path: 'preprints/:providerId/:id',
         loadComponent: () =>
           import('@osf/features/preprints/pages/preprint-details/preprint-details.component').then(
@@ -157,13 +164,6 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'preprints/:providerId/:id/pending-moderation',
-        loadComponent: () =>
-          import(
-            '@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component'
-          ).then((mod) => mod.PreprintPendingModerationComponent),
-      },
-      {
         path: 'request-access/:id',
         loadComponent: () =>
           import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
@@ -176,7 +176,7 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: ':id/files/:provider/:fileId',
+        path: 'project/:id/node/:nodeId/files/:provider/:fileId',
         loadComponent: () =>
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },
@@ -186,7 +186,7 @@ export const routes: Routes = [
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },
       {
-        path: 'project/:id/node/:nodeId/files/:provider/:fileId',
+        path: ':id/files/:provider/:fileId',
         loadComponent: () =>
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },

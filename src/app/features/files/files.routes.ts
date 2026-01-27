@@ -32,7 +32,6 @@ export const filesRoutes: Routes = [
             (c) => c.FileDetailComponent
           );
         },
-
         children: [
           {
             path: 'metadata',

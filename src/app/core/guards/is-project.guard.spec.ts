@@ -1,3 +1,5 @@
+import { MockProvider } from 'ng-mocks';
+
 import { of } from 'rxjs';
 
 import { runInInjectionContext } from '@angular/core';
@@ -33,10 +35,7 @@ describe('isProjectGuard', () => {
           selectors: [],
           actions: [],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -70,10 +69,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -115,10 +111,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -164,10 +157,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -214,10 +204,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -263,10 +250,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -316,10 +300,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -369,10 +350,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -417,10 +395,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
