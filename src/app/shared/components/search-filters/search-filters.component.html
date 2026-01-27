@@ -42,7 +42,7 @@
 
       @if (splitFilters().grouped.length > 0) {
         <p-accordion-panel [value]="'is-present-group'">
-          <p-accordion-header>{{ 'Additional Filters' }}</p-accordion-header>
+          <p-accordion-header>{{ 'collections.filters.additionalFilters' | translate }}</p-accordion-header>
           <p-accordion-content>
             <div class="flex flex-column gap-2">
               @for (filter of splitFilters().grouped; track filter.key) {
