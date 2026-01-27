@@ -290,7 +290,7 @@ export class GlobalSearchState {
       ...this.buildParamsForIndexCardSearch(state),
       'page[size]': '200',
       valueSearchPropertyPath: filterKey,
-      valueSearchText: valueSearchText ?? '',
+      valueSearchText: valueSearchText ? `${valueSearchText}*` : '',
     };
   }
 
@@ -315,7 +315,9 @@ export class GlobalSearchState {
 
     filtersParams['cardSearchFilter[resourceType]'] = getResourceTypeStringFromEnum(state.resourceType);
     filtersParams['cardSearchFilter[accessService]'] = `${this.environment.webUrl}/`;
-    filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
+    filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText
+      ? `${state.searchText}*`
+      : '';
     filtersParams['page[size]'] = '10';
 
     const sortBy = state.sortBy;

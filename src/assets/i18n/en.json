@@ -1316,6 +1316,7 @@
       "noFiltersAvailable": "No filters available",
       "noOptionsAvailable": "No options available",
       "searchCreators": "Search for creators",
+      "additionalFilters": "Additional Filters",
       "programArea": {
         "label": "Program Area",
         "placeholder": "Select program areas",
