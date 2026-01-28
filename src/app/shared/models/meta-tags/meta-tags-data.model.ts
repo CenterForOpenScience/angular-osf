@@ -2,6 +2,13 @@ import { MetaTagAuthor } from './meta-tag-author.model';
 
 export type Content = string | number | null | undefined | MetaTagAuthor;
 
+export interface SignpostingLink {
+  rel: string;
+  href: string;
+  type?: string;
+  title?: string;
+}
+
 export type DataContent = Content | Content[];
 
 export interface MetaTagsData {
@@ -28,4 +35,5 @@ export interface MetaTagsData {
   twitterCreator?: DataContent;
   contributors?: DataContent;
   keywords?: DataContent;
+  signpostingLinks?: SignpostingLink[];
 }
