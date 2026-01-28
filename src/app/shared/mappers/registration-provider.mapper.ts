@@ -1,3 +1,4 @@
+import { replaceBadEncodedChars } from '../helpers/format-bad-encoding.helper';
 import { ProvidersResponseJsonApi } from '../models/provider/providers-json-api.model';
 import { RegistryProviderDetailsJsonApi } from '../models/provider/registration-provider-json-api.model';
 import { RegistryProviderDetails } from '../models/provider/registry-provider.model';
@@ -16,8 +17,8 @@ export class RegistrationProviderMapper {
 
     return {
       id: response.id,
-      name: response.attributes.name,
-      descriptionHtml: response.attributes.description,
+      name: replaceBadEncodedChars(response.attributes.name),
+      descriptionHtml: replaceBadEncodedChars(response.attributes.description),
       permissions: response.attributes.permissions,
       brand: brandRaw
         ? {

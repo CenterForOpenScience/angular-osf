@@ -1,30 +1,20 @@
-import { Store } from '@ngxs/store';
-
 import { MockComponent } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
+import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.const';
 
 import { SearchComponent } from './search.component';
 
-describe.skip('SearchComponent', () => {
+describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
-  let store: Store;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SearchComponent, MockComponent(GlobalSearchComponent)],
-      providers: [],
     }).compileComponents();
-
-    store = TestBed.inject(Store);
-    jest.spyOn(store, 'selectSignal').mockReturnValue(signal(''));
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;
@@ -33,5 +23,18 @@ describe.skip('SearchComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize searchTabOptions with SEARCH_TAB_OPTIONS', () => {
+    expect(component.searchTabOptions).toEqual(SEARCH_TAB_OPTIONS);
+  });
+
+  it('should render template with correct structure', () => {
+    const hostElement = fixture.debugElement.nativeElement;
+    const containerDiv = hostElement.querySelector('div.mt-6.pt-5');
+    expect(containerDiv).toBeTruthy();
+
+    const globalSearch = containerDiv.querySelector('osf-global-search');
+    expect(globalSearch).toBeTruthy();
   });
 });

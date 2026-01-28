@@ -14,11 +14,10 @@ import { BrandService } from '@osf/shared/services/brand.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { RegistryProviderDetails } from '@shared/models/provider/registry-provider.model';
-import { DecodeHtmlPipe } from '@shared/pipes/decode-html.pipe';
 
 @Component({
   selector: 'osf-registry-provider-hero',
-  imports: [DecodeHtmlPipe, SearchInputComponent, Skeleton, TitleCasePipe, TranslatePipe, Button],
+  imports: [SearchInputComponent, Skeleton, TitleCasePipe, TranslatePipe, Button],
   templateUrl: './registry-provider-hero.component.html',
   styleUrl: './registry-provider-hero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,6 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,6 +17,7 @@ import {
   inject,
   input,
   OnInit,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -50,6 +52,8 @@ export class CitationAddonCardComponent implements OnInit {
   private readonly operationInvocationService = inject(AddonOperationInvocationService);
   private readonly cslStyleManager = inject(CslStyleManagerService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly filterSubject = new Subject<string>();
 
   readonly addon = input.required<ConfiguredAddonModel>();
@@ -193,7 +197,9 @@ export class CitationAddonCardComponent implements OnInit {
 
   private setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.cslStyleManager.clearCache();
+      if (this.isBrowser) {
+        this.cslStyleManager.clearCache();
+      }
     });
   }
 }

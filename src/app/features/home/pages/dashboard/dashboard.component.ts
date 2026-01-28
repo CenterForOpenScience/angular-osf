@@ -8,7 +8,8 @@ import { TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
-import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, DestroyRef, effect, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -51,6 +52,8 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly searchControl = new FormControl<string>('');
   readonly activeProject = signal<MyResourcesItem | null>(null);
@@ -126,7 +129,9 @@ export class DashboardComponent implements OnInit {
 
   setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.actions.clearMyResources();
+      if (this.isBrowser) {
+        this.actions.clearMyResources();
+      }
     });
   }
 

@@ -1,4 +1,4 @@
-import { MockComponent } from 'ng-mocks';
+import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -6,6 +6,7 @@ import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
 
+import { ContributorsListShortenerComponent } from '../contributors-list-shortener/contributors-list-shortener.component';
 import { IconComponent } from '../icon/icon.component';
 
 import { MyProjectsTableComponent } from './my-projects-table.component';
@@ -42,7 +43,7 @@ describe('MyProjectsTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MyProjectsTableComponent, MockComponent(IconComponent)],
+      imports: [MyProjectsTableComponent, ...MockComponents(IconComponent, ContributorsListShortenerComponent)],
       providers: [TranslateServiceMock],
     }).compileComponents();
 

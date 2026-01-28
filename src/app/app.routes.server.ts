@@ -3,27 +3,27 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   {
     path: 'terms-of-use',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Prerender,
   },
   {
     path: 'privacy-policy',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Prerender,
   },
   {
     path: 'forbidden',
-    renderMode: RenderMode.Server,
-  },
-  {
-    path: 'request-access/:id',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Prerender,
   },
   {
     path: 'not-found',
-    renderMode: RenderMode.Server,
+    renderMode: RenderMode.Prerender,
   },
   {
-    path: 'preprints/:providerId/:id',
-    renderMode: RenderMode.Server,
+    path: 'forgotpassword',
+    renderMode: RenderMode.Prerender,
+  },
+  {
+    path: '',
+    renderMode: RenderMode.Prerender,
   },
   {
     path: 'dashboard',
@@ -42,7 +42,19 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'register',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: 'profile',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'registries/drafts/**',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'registries/revisions/**',
     renderMode: RenderMode.Client,
   },
   {
@@ -50,7 +62,107 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'request-access/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'resetpassword/:userId/:token',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'search',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'preprints/discover',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'preprints/:providerId/:id/pending-moderation',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'preprints/:providerId/discover',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'preprints/:providerId/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'preprints/:providerId',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'registries/discover',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'registries/:providerId',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'institutions',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'institutions/:institutionId',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'collections/:providerId/discover',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'meetings/**',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'user/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'project/:id/node/:nodeId/files/:provider/:fileId',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'project/:id/files/:provider/:fileId',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/files/:provider/:fileId',
+    renderMode: RenderMode.Server,
+  },
+  {
     path: ':id/overview',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/files/**',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/registrations',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/analytics',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/links',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/resources',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/components',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/recent-activity',
     renderMode: RenderMode.Server,
   },
   {

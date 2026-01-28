@@ -1,6 +1,6 @@
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers/types.helper';
-import { IdNameModel } from '@shared/models/common/id-name.model';
+import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
 import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
 
@@ -57,7 +57,7 @@ export interface PreprintShortInfo {
   id: string;
   title: string;
   dateModified: string;
-  contributors: IdNameModel[];
+  contributors: ContributorModel[];
   providerId: string;
 }
 

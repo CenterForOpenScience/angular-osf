@@ -12,7 +12,6 @@ import { ChangeDetectionStrategy, Component, HostBinding, OnInit } from '@angula
 import { RouterLink } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { DecodeHtmlPipe } from '@osf/shared/pipes/decode-html.pipe';
 
 import { PreprintProviderShortInfo } from '../../models';
 import { GetPreprintProvidersAllowingSubmissions, PreprintProvidersSelectors } from '../../store/preprint-providers';
@@ -20,7 +19,7 @@ import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../s
 
 @Component({
   selector: 'osf-select-preprint-service',
-  imports: [SubHeaderComponent, Card, Button, NgClass, Tooltip, DecodeHtmlPipe, Skeleton, TranslatePipe, RouterLink],
+  imports: [SubHeaderComponent, Card, Button, NgClass, Tooltip, Skeleton, TranslatePipe, RouterLink],
   templateUrl: './select-preprint-service.component.html',
   styleUrl: './select-preprint-service.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

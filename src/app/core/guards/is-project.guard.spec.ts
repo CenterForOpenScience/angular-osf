@@ -1,3 +1,5 @@
+import { MockProvider } from 'ng-mocks';
+
 import { of } from 'rxjs';
 
 import { runInInjectionContext } from '@angular/core';
@@ -33,10 +35,7 @@ describe('isProjectGuard', () => {
           selectors: [],
           actions: [],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -70,10 +69,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -115,10 +111,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -142,7 +135,7 @@ describe('isProjectGuard', () => {
 
   it('should navigate and return true for Projects with parentId', (done) => {
     const resource = createMockResource({
-      id: 'parent-id',
+      id: 'parent-id/child-id',
       type: CurrentResourceType.Projects,
       parentId: 'parent-id',
     });
@@ -164,10 +157,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -214,10 +204,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -241,7 +228,7 @@ describe('isProjectGuard', () => {
 
   it('should navigate and return true for Preprints with parentId', (done) => {
     const resource = createMockResource({
-      id: 'parent-id',
+      id: 'parent-id/child-id',
       type: CurrentResourceType.Preprints,
       parentId: 'parent-id',
     });
@@ -263,10 +250,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -316,10 +300,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -369,10 +350,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 
@@ -417,10 +395,7 @@ describe('isProjectGuard', () => {
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, RouterMockBuilder.create().build()),
       ],
     });
 

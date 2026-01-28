@@ -6,7 +6,17 @@ import { Button } from 'primeng/button';
 
 import { debounceTime } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -56,6 +66,8 @@ export class CollectionsDiscoverComponent {
   private destroyRef = inject(DestroyRef);
   private brandService = inject(BrandService);
   private headerStyleHelper = inject(HeaderStyleService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   searchControl = new FormControl('');
   providerId = signal<string>('');
@@ -152,9 +164,11 @@ export class CollectionsDiscoverComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearCollections();
-      this.headerStyleHelper.resetToDefaults();
-      this.brandService.resetBranding();
+      if (this.isBrowser) {
+        this.actions.clearCollections();
+        this.headerStyleHelper.resetToDefaults();
+        this.brandService.resetBranding();
+      }
     });
   }
 

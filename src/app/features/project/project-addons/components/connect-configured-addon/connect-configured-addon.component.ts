@@ -9,7 +9,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
 
-import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, DestroyRef, inject, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -80,7 +81,9 @@ export class ConnectConfiguredAddonComponent {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private readonly environment = inject(ENVIRONMENT);
+  private environment = inject(ENVIRONMENT);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
 
@@ -175,7 +178,9 @@ export class ConnectConfiguredAddonComponent {
     this.addon.set(addon);
 
     this.destroyRef.onDestroy(() => {
-      this.oauthService.stopOAuthTracking();
+      if (this.isBrowser) {
+        this.oauthService.stopOAuthTracking();
+      }
     });
   }
 

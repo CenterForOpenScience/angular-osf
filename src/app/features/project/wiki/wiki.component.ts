@@ -7,7 +7,8 @@ import { ButtonGroupModule } from 'primeng/buttongroup';
 
 import { filter, map, mergeMap, of, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -62,6 +63,8 @@ export class WikiComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   WikiModes = WikiModes;
   homeWikiName = 'Home';
@@ -133,7 +136,9 @@ export class WikiComponent {
       .subscribe();
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearWiki();
+      if (this.isBrowser) {
+        this.actions.clearWiki();
+      }
     });
   }
 

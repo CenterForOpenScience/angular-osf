@@ -9,9 +9,9 @@
 </div>
 
 <div class="flex flex-column mt-4">
-  <label for="withdrawalJustification">{{
-    'preprints.details.withdrawDialog.justificationInputLabel' | translate | titlecase
-  }}</label>
+  <label for="withdrawalJustification">
+    {{ 'preprints.details.withdrawDialog.justificationInputLabel' | translate | titlecase }}
+  </label>
   <textarea
     pTextarea
     id="withdrawalJustification"
@@ -39,12 +39,12 @@
     class="w-12rem btn-full-width"
     [label]="'common.buttons.cancel' | translate"
     severity="info"
-    (click)="dialogRef.close()"
+    (onClick)="dialogRef.close()"
   />
   <p-button
     class="w-12rem btn-full-width"
     [label]="'common.buttons.withdraw' | translate"
-    (click)="withdraw()"
+    (onClick)="withdraw()"
     [loading]="withdrawRequestInProgress()"
     [disabled]="withdrawalJustificationFormControl.invalid"
     severity="danger"

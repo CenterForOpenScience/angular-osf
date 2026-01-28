@@ -12,6 +12,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { timer } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,6 +24,7 @@ import {
   model,
   OnInit,
   output,
+  PLATFORM_ID,
   signal,
   viewChild,
 } from '@angular/core';
@@ -68,6 +70,8 @@ export class StorageItemSelectorComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private customDialogService = inject(CustomDialogService);
   private translateService = inject(TranslateService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   readonly AddonType = AddonType;
   isMobile = toSignal(inject(IS_XSMALL));
@@ -148,7 +152,9 @@ export class StorageItemSelectorComponent implements OnInit {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearOperationInvocations();
+      if (this.isBrowser) {
+        this.actions.clearOperationInvocations();
+      }
     });
   }
 
