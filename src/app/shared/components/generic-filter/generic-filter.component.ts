@@ -54,7 +54,7 @@ export class GenericFilterComponent {
     const isSearching = this.isActivelySearching();
 
     if (isSearching && this.stableOptionsArray.length > 0) {
-      return this.stableOptionsArray;
+      return [...this.stableOptionsArray];
     }
 
     let newOptions: FilterOption[];
@@ -68,7 +68,7 @@ export class GenericFilterComponent {
     }
 
     this.updateStableArray(newOptions);
-    return this.stableOptionsArray;
+    return [...this.stableOptionsArray];
   });
 
   selectedOptionValues = computed(() => this.selectedOptions().map((option) => option.value));
