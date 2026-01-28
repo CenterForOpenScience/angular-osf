@@ -1,8 +1,8 @@
-import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models/collection-license-json-api.models';
+import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models/collection-license-json-api.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { NodesResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { ProjectMetadataUpdatePayload } from '@osf/shared/models/project-metadata-update-payload.model';
-import { ProjectModel } from '@osf/shared/models/projects/projects.models';
+import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class ProjectsMapper {

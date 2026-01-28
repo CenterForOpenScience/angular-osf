@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
 import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 

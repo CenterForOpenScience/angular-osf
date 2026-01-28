@@ -12,7 +12,7 @@ import {
   InstitutionsJsonApiResponse,
   InstitutionsWithMetaJsonApiResponse,
 } from '../models/institutions/institution-json-api.model';
-import { Institution, InstitutionsWithTotalCount } from '../models/institutions/institutions.models';
+import { Institution, InstitutionsWithTotalCount } from '../models/institutions/institutions.model';
 
 import { JsonApiService } from './json-api.service';
 

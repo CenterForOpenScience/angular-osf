@@ -17,11 +17,11 @@ import { UserSelectors } from '@core/store/user';
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
 import { ComponentFormControls } from '@osf/shared/enums/create-component-form-controls.enum';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { FetchRegions, RegionsSelectors } from '@osf/shared/stores/regions';
 import { ComponentForm } from '@shared/models/create-component-form.model';
-import { Institution } from '@shared/models/institutions/institutions.models';
 
 import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
 

@@ -17,11 +17,11 @@ import { AddonServiceNames } from '@osf/shared/enums/addon-service-names.enum';
 import { AddonType } from '@osf/shared/enums/addon-type.enum';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums/profile-addons-stepper.enum';
 import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers/addon-type.helper';
+import { AuthorizedAddonRequestJsonApi } from '@osf/shared/models/addons/addon-json-api.model';
+import { AddonTerm } from '@osf/shared/models/addons/addon-utils.model';
 import { AddonOAuthService } from '@osf/shared/services/addons/addon-oauth.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { AddonModel } from '@shared/models/addons/addon.model';
-import { AuthorizedAddonRequestJsonApi } from '@shared/models/addons/addon-json-api.models';
-import { AddonTerm } from '@shared/models/addons/addon-utils.models';
 import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
 

@@ -11,7 +11,7 @@ import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/
 import { PreprintStepperSelectors, SetInstitutionsChanged } from '@osf/features/preprints/store/preprint-stepper';
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import {
   FetchResourceInstitutions,
   FetchUserInstitutions,

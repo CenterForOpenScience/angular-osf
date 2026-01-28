@@ -13,11 +13,11 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
+import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { FetchRegions, RegionsSelectors } from '@osf/shared/stores/regions';
-import { Institution } from '@shared/models/institutions/institutions.models';
 import { ProjectForm } from '@shared/models/projects/create-project-form.model';
-import { ProjectModel } from '@shared/models/projects/projects.models';
 
 import { AffiliatedInstitutionSelectComponent } from '../affiliated-institution-select/affiliated-institution-select.component';
 import { ProjectSelectorComponent } from '../project-selector/project-selector.component';

@@ -6,7 +6,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { PreprintRequestActionsMapper } from '@osf/features/preprints/mappers/preprint-request-actions.mapper';
-import { PreprintRequestAction } from '@osf/features/preprints/models/preprint-request-action.models';
+import { PreprintRequestAction } from '@osf/features/preprints/models/preprint-request-action.model';
 import { searchPreferencesToJsonApiQueryParams } from '@osf/shared/helpers/search-pref-to-json-api-query-params.helper';
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import {

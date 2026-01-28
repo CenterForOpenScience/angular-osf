@@ -30,6 +30,8 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
+import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ProjectRedirectDialogService } from '@osf/shared/services/project-redirect-dialog.service';
 import { BookmarksSelectors, GetAllMyBookmarks, GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
@@ -40,8 +42,6 @@ import {
   GetMyRegistrations,
   MyResourcesSelectors,
 } from '@osf/shared/stores/my-resources';
-import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
-import { MyResourcesSearchFilters } from '@shared/models/my-resources/my-resources-search-filters.models';
 import { QueryParams } from '@shared/models/query-params.model';
 import { TableParameters } from '@shared/models/table-parameters.model';
 

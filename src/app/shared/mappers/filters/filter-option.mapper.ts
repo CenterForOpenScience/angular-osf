@@ -1,6 +1,6 @@
 import { FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
-import { FilterOptionItem } from '@osf/shared/models/search/filter-options-json-api.models';
-import { SearchResultDataJsonApi } from '@osf/shared/models/search/index-card-search-json-api.models';
+import { FilterOptionItem } from '@osf/shared/models/search/filter-options-json-api.model';
+import { SearchResultDataJsonApi } from '@osf/shared/models/search/index-card-search-json-api.model';
 
 export function mapFilterOptions(
   searchResultItems: SearchResultDataJsonApi[],

@@ -9,9 +9,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
 import { MyResourcesSelectors } from '@osf/shared/stores/my-resources';
 import { NodeLinksSelectors } from '@osf/shared/stores/node-links';
-import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
 
 import { ProjectOverviewSelectors } from '../../store';
 

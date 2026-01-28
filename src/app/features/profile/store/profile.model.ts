@@ -1,5 +1,5 @@
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
-import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserModel } from '@osf/shared/models/user/user.model';
 
 export interface ProfileStateModel {
   userProfile: AsyncStateModel<UserModel | null>;

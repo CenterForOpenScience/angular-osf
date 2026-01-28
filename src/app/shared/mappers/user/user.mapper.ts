@@ -1,4 +1,4 @@
-import { UserData, UserModel } from '@osf/shared/models/user/user.models';
+import { UserData, UserModel } from '@osf/shared/models/user/user.model';
 import {
   UserAcceptedTermsOfServiceJsonApi,
   UserAttributesJsonApi,
