@@ -1,3 +1,5 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { MenuItem } from 'primeng/api';
@@ -7,7 +9,9 @@ import { TieredMenu } from 'primeng/tieredmenu';
 import { Component, computed, inject, input, output, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
+import { shouldShowItem } from '@osf/shared/helpers/file-menu.helper';
 import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { MenuManagerService } from '@osf/shared/services/menu-manager.service';
 import { FileMenuAction, FileMenuData, FileMenuFlags } from '@shared/models/files/file-menu-action.model';
@@ -27,6 +31,7 @@ export class FileMenuComponent {
   action = output<FileMenuAction>();
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  private activeFlags = select(UserSelectors.getActiveFlags);
 
   private readonly allMenuItems: MenuItem[] = [
     {
@@ -57,6 +62,12 @@ export class FileMenuComponent {
           label: 'files.detail.actions.share.facebook',
           icon: 'fab fa-facebook',
           command: () => this.emitAction(FileMenuType.Share, { type: 'facebook' }),
+        },
+        {
+          id: `${FileMenuType.Share}-copy-link`,
+          label: 'files.detail.actions.share.copyLink',
+          icon: 'fas fa-link',
+          command: () => this.emitAction(FileMenuType.Share, { type: 'copy-link' }),
         },
       ],
     },
@@ -106,6 +117,14 @@ export class FileMenuComponent {
   ];
 
   menuItems = computed(() => {
+    const flags = this.activeFlags();
+
+    const visibleItems = this.allMenuItems
+      .filter((item) => shouldShowItem(item.id, flags))
+      .map((item) =>
+        item.items ? { ...item, items: item.items.filter((sub) => shouldShowItem(sub.id, flags)) } : item
+      );
+
     if (this.hasViewOnly()) {
       const allowedActionsForFiles = [
         FileMenuType.Download,
@@ -120,7 +139,7 @@ export class FileMenuComponent {
 
       const allowedActions = this.isFolder() ? allowedActionsForFolders : allowedActionsForFiles;
 
-      return this.allMenuItems.filter((item) => {
+      return visibleItems.filter((item) => {
         if (item.command) {
           return allowedActions.includes(item.id as FileMenuType);
         }
@@ -135,11 +154,11 @@ export class FileMenuComponent {
 
     if (this.isFolder()) {
       const disallowedActions = [FileMenuType.Share, FileMenuType.Embed];
-      return this.allMenuItems.filter(
+      return visibleItems.filter(
         (item) => !disallowedActions.includes(item.id as FileMenuType) && this.allowedActions()[item.id as FileMenuType]
       );
     }
-    return this.allMenuItems.filter((item) => this.allowedActions()[item.id as FileMenuType]);
+    return visibleItems.filter((item) => this.allowedActions()[item.id as FileMenuType]);
   });
 
   onMenuToggle(event: Event): void {

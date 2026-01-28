@@ -1247,7 +1247,8 @@
         "share": {
           "email": "Email",
           "x": "X",
-          "facebook": "Facebook"
+          "facebook": "Facebook",
+          "copyLink": "Copy Link"
         }
       },
       "fileMetadata": {
