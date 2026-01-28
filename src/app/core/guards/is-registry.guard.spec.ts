@@ -135,7 +135,7 @@ describe('isRegistryGuard', () => {
 
   it('should navigate and return true for Registrations with parentId', (done) => {
     const resource = createMockResource({
-      id: 'parent-id',
+      id: 'parent-id/child-id',
       type: CurrentResourceType.Registrations,
       parentId: 'parent-id',
     });
@@ -228,7 +228,7 @@ describe('isRegistryGuard', () => {
 
   it('should navigate and return true for Preprints with parentId', (done) => {
     const resource = createMockResource({
-      id: 'parent-id',
+      id: 'parent-id/child-id',
       type: CurrentResourceType.Preprints,
       parentId: 'parent-id',
     });

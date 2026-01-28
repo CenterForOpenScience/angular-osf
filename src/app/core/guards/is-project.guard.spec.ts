@@ -135,7 +135,7 @@ describe('isProjectGuard', () => {
 
   it('should navigate and return true for Projects with parentId', (done) => {
     const resource = createMockResource({
-      id: 'parent-id',
+      id: 'parent-id/child-id',
       type: CurrentResourceType.Projects,
       parentId: 'parent-id',
     });
@@ -228,7 +228,7 @@ describe('isProjectGuard', () => {
 
   it('should navigate and return true for Preprints with parentId', (done) => {
     const resource = createMockResource({
-      id: 'parent-id',
+      id: 'parent-id/child-id',
       type: CurrentResourceType.Preprints,
       parentId: 'parent-id',
     });
