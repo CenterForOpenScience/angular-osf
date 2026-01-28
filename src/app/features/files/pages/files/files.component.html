@@ -116,6 +116,18 @@
               ></osf-google-file-picker>
             }
           }
+          @if (currentFolder()) {
+            @for (ext of toolbarButtons(); track ext.id) {
+              <p-button
+                [disabled]="ext.disabled ? ext.disabled(actionContext()) : false"
+                outlined
+                raised
+                [icon]="ext.icon"
+                [label]="ext.label"
+                (onClick)="ext.command(actionContext())"
+              />
+            }
+          }
           <input #fileInput type="file" multiple class="hidden" (change)="onFileSelected($event)" />
         </div>
       </div>

@@ -44,3 +44,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Generated extensions config
+src/app/extensions.config.ts

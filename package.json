@@ -4,6 +4,8 @@
   "scripts": {
     "ng": "ng",
     "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks",
+    "prebuild": "node scripts/setup-extensions.js",
+    "prestart": "node scripts/setup-extensions.js",
     "build": "ng build",
     "check:config": "node ./docker/check-config.js",
     "ci:test": "jest",
@@ -23,6 +25,7 @@
     "start:docker:local": "npm run check:config && ng serve --host 0.0.0.0 --port 4200 --poll 2000 --configuration docker",
     "start:test": "ng serve --configuration test-osf",
     "start:test:future": "ng serve --configuration test",
+    "pretest": "node scripts/setup-extensions.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage && npm run test:display",
