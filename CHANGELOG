@@ -2,6 +2,11 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.2.0 (2026-01-29)
+===================
+
+* Misc. improvements and bug fixes
+
 26.1.0 (2026-01-01)
 ===================
 
