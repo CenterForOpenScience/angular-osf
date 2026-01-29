@@ -37,7 +37,7 @@ describe('AddToCollectionComponent', () => {
 
   beforeEach(async () => {
     mockRouter = RouterMockBuilder.create().build();
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: '1' }).build();
+    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: null }).build();
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({

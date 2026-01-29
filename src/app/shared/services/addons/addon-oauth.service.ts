@@ -1,6 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { DestroyRef, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OAuthCallbacks } from '@osf/shared/models/addons/addon-utils.models';
@@ -12,6 +13,7 @@ import { AddonsSelectors, DeleteAuthorizedAddon, GetAuthorizedStorageOauthToken 
 })
 export class AddonOAuthService {
   private destroyRef = inject(DestroyRef);
+  private platformId = inject(PLATFORM_ID);
 
   private pendingOauth = signal<boolean>(false);
   private createdAddon = signal<AuthorizedAccountModel | null>(null);
@@ -33,7 +35,9 @@ export class AddonOAuthService {
     this.addonTypeString.set(addonTypeString);
     this.callbacks.set(callbacks);
 
-    document.addEventListener('visibilitychange', this.boundOnVisibilityChange);
+    if (isPlatformBrowser(this.platformId)) {
+      document.addEventListener('visibilitychange', this.boundOnVisibilityChange);
+    }
   }
 
   stopOAuthTracking(): void {
@@ -41,7 +45,7 @@ export class AddonOAuthService {
   }
 
   private onVisibilityChange(): void {
-    if (document.visibilityState === 'visible' && this.pendingOauth()) {
+    if (isPlatformBrowser(this.platformId) && document.visibilityState === 'visible' && this.pendingOauth()) {
       this.checkOauthSuccess();
     }
   }
@@ -71,7 +75,9 @@ export class AddonOAuthService {
 
   private completeOauthFlow(updatedAddon?: AuthorizedAccountModel): void {
     this.pendingOauth.set(false);
-    document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
+    if (isPlatformBrowser(this.platformId)) {
+      document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
+    }
 
     if (updatedAddon && this.callbacks()?.onSuccess) {
       const originalAddon = this.createdAddon();
@@ -87,7 +93,9 @@ export class AddonOAuthService {
 
   private cleanupService(): void {
     this.cleanupIncompleteOAuthAddon();
-    document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
+    if (isPlatformBrowser(this.platformId)) {
+      document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
+    }
     this.resetServiceData();
   }
 

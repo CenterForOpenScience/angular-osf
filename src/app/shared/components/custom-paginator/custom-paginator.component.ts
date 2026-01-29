@@ -14,6 +14,7 @@ export class CustomPaginatorComponent {
   rows = input<number>(10);
   totalCount = input<number>(0);
   showFirstLastIcon = input<boolean>(false);
+  showPageLinks = input<boolean>(true);
 
   pageChanged = output<PaginatorState>();
 }

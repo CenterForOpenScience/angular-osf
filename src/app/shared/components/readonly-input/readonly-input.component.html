@@ -6,6 +6,8 @@
     [readonly]="readonly()"
     [disabled]="disabled()"
     [placeholder]="placeholder()"
+    [attr.aria-label]="ariaLabelKey().length ? (ariaLabelKey() | translate) : null"
+    [attr.aria-labelledby]="ariaLabelledBy() || null"
   />
   <p-inputicon
     class="fas fa-close remove-icon cursor-pointer"

@@ -3,15 +3,15 @@ import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 export interface RouteContext {
   resourceId: string | undefined;
   providerId?: string;
-  isProject: boolean;
   wikiPageVisible?: boolean;
+  isProject: boolean;
   isRegistry: boolean;
   isPreprint: boolean;
+  isCollections: boolean;
   preprintReviewsPageVisible?: boolean;
   registrationModerationPageVisible?: boolean;
   collectionModerationPageVisible?: boolean;
-  isCollections: boolean;
   currentUrl?: string;
-  isViewOnly?: boolean;
+  viewOnly?: string | null;
   permissions?: UserPermissions[];
 }

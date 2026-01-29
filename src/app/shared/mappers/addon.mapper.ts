@@ -29,6 +29,7 @@ export class AddonMapper {
       credentialsFormat: response.attributes.credentials_format,
       providerName: response.attributes.display_name,
       iconUrl: response.attributes.icon_url,
+      redirectUrl: response.attributes.redirect_url,
       configurableApiRoot: response.attributes.configurable_api_root,
     };
   }
@@ -56,6 +57,7 @@ export class AddonMapper {
     const displayName = (matchingService?.['display_name'] as string) || '';
     const credentialsFormat = (matchingService?.['credentials_format'] as string) || '';
     const supportedFeatures = (matchingService?.['supported_features'] as string[]) || [];
+    const iconUrl = (matchingService?.['icon_url'] as string) || '';
 
     return {
       type: response.type,
@@ -73,12 +75,32 @@ export class AddonMapper {
       externalServiceName,
       supportedFeatures,
       credentialsFormat,
+      iconUrl,
       providerName: displayName,
     };
   }
 
-  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddonModel {
+  static fromConfiguredAddonResponse(
+    response: ConfiguredAddonGetResponseJsonApi,
+    included?: IncludedAddonData[]
+  ): ConfiguredAddonModel {
     const isLinkAddon = response.type === ConfiguredAddonType.LINK;
+    const externalServiceData =
+      response.relationships?.external_storage_service?.data ||
+      response.relationships?.external_citation_service?.data ||
+      response.relationships?.external_link_service?.data;
+
+    const externalServiceId = externalServiceData?.id;
+
+    const matchingService = included?.find(
+      (item) =>
+        (item.type === AddonCategory.EXTERNAL_STORAGE_SERVICES ||
+          item.type === AddonCategory.EXTERNAL_CITATION_SERVICES ||
+          item.type === AddonCategory.EXTERNAL_LINK_SERVICES) &&
+        item.id === externalServiceId
+    )?.attributes;
+    const iconUrl = (matchingService?.['icon_url'] as string) || '';
+
     return {
       type: response.type,
       id: response.id,
@@ -94,6 +116,7 @@ export class AddonMapper {
       baseAccountType: response.relationships.base_account.data.type,
       externalStorageServiceId: response.relationships?.external_storage_service?.data?.id,
       rootFolderId: response.attributes.root_folder,
+      iconUrl,
     };
   }
 

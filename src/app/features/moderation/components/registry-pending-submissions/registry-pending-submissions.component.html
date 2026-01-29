@@ -39,6 +39,8 @@
             [submission]="item"
             [status]="selectedReviewOption()"
             (selected)="navigateToRegistration(item)"
+            (loadContributors)="loadContributors(item)"
+            (loadMoreContributors)="loadMoreContributors(item)"
           ></osf-registry-submission-item>
         </div>
       }

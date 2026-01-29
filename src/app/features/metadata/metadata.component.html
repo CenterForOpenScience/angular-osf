@@ -62,6 +62,13 @@
           [affiliatedInstitutions]="affiliatedInstitutions()"
           [readonly]="!hasWriteAccess()"
         />
+
+        @if (isProjectType()) {
+          <osf-metadata-collections
+            [projectSubmissions]="projectSubmissions()"
+            [isProjectSubmissionsLoading]="isProjectSubmissionsLoading()"
+          />
+        }
       </div>
 
       <div class="col-12 lg:col-6 flex flex-column gap-4">

@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,6 +13,7 @@ import {
   input,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -63,6 +65,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   private actions = createDispatchMap({
     fetchResources: FetchResources,
@@ -113,7 +117,9 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.actions.resetSearchState();
+    if (this.isBrowser) {
+      this.actions.resetSearchState();
+    }
   }
 
   onLoadFilterOptions(filter: DiscoverableFilter): void {
@@ -145,11 +151,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.actions.setResourceType(resourceTab);
     this.updateUrlWithTab(resourceTab);
 
-    this.actions.fetchResources().subscribe({
-      next: () => {
-        this.updateUrlWithFilterOptions(this.filterOptions());
-      },
-    });
+    this.actions.fetchResources().subscribe(() => this.updateUrlWithFilterOptions(this.filterOptions()));
   }
 
   onSortChanged(sortBy: string): void {
@@ -158,11 +160,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   onPageChanged(link: string): void {
-    this.actions.getResourcesByLink(link).subscribe({
-      next: () => {
-        this.scrollToTop();
-      },
-    });
+    this.actions.getResourcesByLink(link).subscribe(() => this.scrollToTop());
   }
 
   scrollToTop() {

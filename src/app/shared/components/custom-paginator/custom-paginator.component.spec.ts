@@ -27,34 +27,7 @@ describe('CustomPaginatorComponent', () => {
     expect(component.rows()).toBe(10);
     expect(component.totalCount()).toBe(0);
     expect(component.showFirstLastIcon()).toBe(false);
-  });
-
-  it('should accept first input', () => {
-    fixture.componentRef.setInput('first', 20);
-    fixture.detectChanges();
-
-    expect(component.first()).toBe(20);
-  });
-
-  it('should accept rows input', () => {
-    fixture.componentRef.setInput('rows', 25);
-    fixture.detectChanges();
-
-    expect(component.rows()).toBe(25);
-  });
-
-  it('should accept totalCount input', () => {
-    fixture.componentRef.setInput('totalCount', 100);
-    fixture.detectChanges();
-
-    expect(component.totalCount()).toBe(100);
-  });
-
-  it('should accept showFirstLastIcon input', () => {
-    fixture.componentRef.setInput('showFirstLastIcon', true);
-    fixture.detectChanges();
-
-    expect(component.showFirstLastIcon()).toBe(true);
+    expect(component.showPageLinks()).toBe(true);
   });
 
   it('should emit pageChanged event', () => {
@@ -76,12 +49,14 @@ describe('CustomPaginatorComponent', () => {
     fixture.componentRef.setInput('rows', 15);
     fixture.componentRef.setInput('totalCount', 150);
     fixture.componentRef.setInput('showFirstLastIcon', true);
+    fixture.componentRef.setInput('showPageLinks', false);
     fixture.detectChanges();
 
     expect(component.first()).toBe(30);
     expect(component.rows()).toBe(15);
     expect(component.totalCount()).toBe(150);
     expect(component.showFirstLastIcon()).toBe(true);
+    expect(component.showPageLinks()).toBe(false);
   });
 
   it('should handle input updates', () => {

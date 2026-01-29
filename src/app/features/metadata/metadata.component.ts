@@ -25,6 +25,7 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 import {
   ContributorsSelectors,
   GetBibliographicContributors,
@@ -46,6 +47,7 @@ import {
 import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 import { SubjectModel } from '@shared/models/subject/subject.model';
 
+import { MetadataCollectionsComponent } from './components/metadata-collections/metadata-collections.component';
 import { EditTitleDialogComponent } from './dialogs/edit-title-dialog/edit-title-dialog.component';
 import {
   MetadataAffiliatedInstitutionsComponent,
@@ -109,6 +111,7 @@ import {
     MetadataTagsComponent,
     MetadataTitleComponent,
     MetadataRegistrationDoiComponent,
+    MetadataCollectionsComponent,
   ],
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
@@ -131,6 +134,8 @@ export class MetadataComponent implements OnInit {
   selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
+  resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
+
   metadata = select(MetadataSelectors.getResourceMetadata);
   isMetadataLoading = select(MetadataSelectors.getLoading);
   customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
@@ -141,11 +146,13 @@ export class MetadataComponent implements OnInit {
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
   selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
-  resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
   isSubmitting = select(MetadataSelectors.getSubmitting);
   affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
   areInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
   areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
+
+  projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
+  isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
 
   hasWriteAccess = select(MetadataSelectors.hasWriteAccess);
   hasAdminAccess = select(MetadataSelectors.hasAdminAccess);
@@ -179,6 +186,8 @@ export class MetadataComponent implements OnInit {
     fetchChildrenSubjects: FetchChildrenSubjects,
     updateResourceSubjects: UpdateResourceSubjects,
     updateContributorsSearchValue: UpdateContributorsSearchValue,
+
+    getProjectSubmissions: GetProjectSubmissions,
   });
 
   isLoading = computed(
@@ -195,6 +204,7 @@ export class MetadataComponent implements OnInit {
       (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
   );
 
+  isProjectType = computed(() => this.resourceType() === ResourceType.Project);
   isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
 
   constructor() {
@@ -253,6 +263,10 @@ export class MetadataComponent implements OnInit {
       this.actions.getCedarRecords(this.resourceId, this.resourceType());
       this.actions.getCedarTemplates();
       this.actions.fetchSelectedSubjects(this.resourceId, this.resourceType());
+
+      if (this.isProjectType()) {
+        this.actions.getProjectSubmissions(this.resourceId);
+      }
     }
   }
 

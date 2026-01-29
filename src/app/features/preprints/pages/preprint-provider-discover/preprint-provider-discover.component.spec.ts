@@ -5,9 +5,9 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
-import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { BrandService } from '@osf/shared/services/brand.service';
+import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
 import { PreprintProviderHeroComponent } from '../../components';
 import { PreprintProviderDetails } from '../../models';
@@ -29,13 +29,6 @@ describe('PreprintProviderDiscoverComponent', () => {
   const mockProviderId = 'osf';
 
   beforeEach(async () => {
-    jest.spyOn(BrowserTabHelper, 'updateTabStyles').mockImplementation(() => {});
-    jest.spyOn(BrowserTabHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'applyHeaderStyles').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'applyBranding').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'resetBranding').mockImplementation(() => {});
-
     routeMock = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })
       .withQueryParams({})
@@ -48,6 +41,9 @@ describe('PreprintProviderDiscoverComponent', () => {
         ...MockComponents(PreprintProviderHeroComponent, GlobalSearchComponent),
       ],
       providers: [
+        MockProvider(BrandService),
+        MockProvider(BrowserTabService),
+        MockProvider(HeaderStyleService),
         MockProvider(ActivatedRoute, routeMock),
         provideMockStore({
           signals: [
@@ -67,10 +63,6 @@ describe('PreprintProviderDiscoverComponent', () => {
     fixture = TestBed.createComponent(PreprintProviderDiscoverComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should initialize with correct default values', () => {

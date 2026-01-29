@@ -3,9 +3,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, si
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { OperationNames } from '@osf/shared/enums/operation-names.enum';
 import { StorageItemType } from '@osf/shared/enums/storage-item-type.enum';
-import { formatCitation, getItemUrl } from '@osf/shared/helpers/citation-formatter.helper';
+import { getItemUrl } from '@osf/shared/helpers/citation-formatter.helper';
 import { AddonOperationInvocationService } from '@osf/shared/services/addons/addon-operation-invocation.service';
 import { AddonsService } from '@osf/shared/services/addons/addons.service';
+import { CslStyleManagerService } from '@osf/shared/services/csl-style-manager.service';
 import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 import { OperationInvocation } from '@shared/models/addons/operation-invocation.model';
 import { StorageItem } from '@shared/models/addons/storage-item.model';
@@ -22,6 +23,7 @@ import { CitationItemComponent } from '../citation-item/citation-item.component'
 export class CitationCollectionItemComponent implements OnInit {
   private readonly operationInvocationService = inject(AddonOperationInvocationService);
   private readonly addonsService = inject(AddonsService);
+  private readonly cslStyleManager = inject(CslStyleManagerService);
 
   readonly addon = input.required<ConfiguredAddonModel>();
   readonly collection = input.required<StorageItem>();
@@ -42,7 +44,7 @@ export class CitationCollectionItemComponent implements OnInit {
       .filter((child) => this.isDocument(child.item))
       .map((child) => ({
         item: child.item,
-        formattedCitation: formatCitation(child.item, style),
+        formattedCitation: this.cslStyleManager.formatCitation(child.item, style),
         itemUrl: getItemUrl(child.item),
       }));
   });

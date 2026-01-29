@@ -1,0 +1,8 @@
+.activity-item {
+  border-bottom: 1px solid var(--grey-2);
+  line-height: 1.5rem;
+
+  .activity-date {
+    min-width: 25%;
+  }
+}

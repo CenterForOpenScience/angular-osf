@@ -1,5 +1,6 @@
 import { BlockType } from '@osf/shared/enums/block-type.enum';
 import { FieldType } from '@osf/shared/enums/field-type.enum';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 import { PageSchema, Question, Section } from '@shared/models/registration/page-schema.model';
 import { SchemaBlocksResponseJsonApi } from '@shared/models/registration/schema-blocks-json-api.model';
 
@@ -19,7 +20,7 @@ export class PageSchemaMapper {
         case BlockType.PageHeading:
           currentPage = {
             id: item.id,
-            title: item.attributes.display_text,
+            title: replaceBadEncodedChars(item.attributes.display_text),
             helpText: item.attributes.help_text,
             questions: [],
           };
@@ -31,7 +32,7 @@ export class PageSchemaMapper {
           if (currentPage) {
             currentSection = {
               id: item.id,
-              title: item.attributes.display_text,
+              title: replaceBadEncodedChars(item.attributes.display_text),
               helpText: item.attributes.help_text,
               questions: [],
             };

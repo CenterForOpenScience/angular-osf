@@ -2,7 +2,19 @@
   <osf-loading-spinner />
 } @else {
   @if (user()) {
-    <osf-profile-information [currentUser]="user()" [showEdit]="isMyProfile()" (editProfile)="toProfileSettings()" />
+    <div class="mt-7 px-3 md:px-5 xl:px-4">
+      @if (user()?.mergedBy) {
+        <p-message class="overview-message w-full mb-4" severity="info">
+          <ng-template #container>
+            <span>
+              {{ 'profile.mergedAccount.message' | translate }}
+              <a [href]="user()?.mergedBy">{{ user()?.mergedBy }}</a>
+            </span>
+          </ng-template>
+        </p-message>
+      }
+      <osf-profile-information [currentUser]="user()" [showEdit]="isMyProfile()" (editProfile)="toProfileSettings()" />
+    </div>
 
     @if (defaultSearchFiltersInitialized()) {
       <div class="mt-6">

@@ -2,8 +2,8 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { MessageModule } from 'primeng/message';
 
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 
 import { fadeInOutAnimation } from '@core/animations/fade.in-out.animation';
 
@@ -52,6 +52,7 @@ export class MaintenanceBannerComponent implements OnInit {
    * Cookie service used to persist dismissal state in the browser.
    */
   private readonly cookies = inject(CookieService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   /**
    * The cookie name used to store whether the user dismissed the banner.
@@ -69,7 +70,10 @@ export class MaintenanceBannerComponent implements OnInit {
    * - If not dismissed, triggers a fetch of current maintenance status
    */
   ngOnInit(): void {
-    this.dismissed.set(this.cookies.check(this.cookieName));
+    if (isPlatformBrowser(this.platformId)) {
+      this.dismissed.set(this.cookies.check(this.cookieName));
+    }
+
     if (!this.dismissed()) {
       this.fetchMaintenanceStatus();
     }
@@ -93,7 +97,10 @@ export class MaintenanceBannerComponent implements OnInit {
    * - Updates the `dismissed` and `maintenance` signals
    */
   dismiss(): void {
-    this.cookies.set(this.cookieName, '1', this.cookieDurationHours, '/');
+    if (isPlatformBrowser(this.platformId)) {
+      this.cookies.set(this.cookieName, '1', this.cookieDurationHours, '/');
+    }
+
     this.dismissed.set(true);
     this.maintenance.set(null);
   }

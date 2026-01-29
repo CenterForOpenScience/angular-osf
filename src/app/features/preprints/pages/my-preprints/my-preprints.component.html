@@ -54,7 +54,7 @@
           <tr class="cursor-pointer" (click)="navigateToPreprintDetails(item)">
             <td>{{ item.title | fixSpecialChar }}</td>
             <td>
-              <osf-list-info-shortener [data]="item.contributors" />
+              <osf-contributors-list-shortener [data]="item.contributors" />
             </td>
             <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
           </tr>

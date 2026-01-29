@@ -30,6 +30,7 @@ import {
   GetConfiguredLinkAddons,
   GetConfiguredStorageAddons,
   GetLinkAddons,
+  GetRedirectAddons,
   GetStorageAddons,
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
@@ -116,6 +117,30 @@ export class AddonsState {
     );
   }
 
+  @Action(GetRedirectAddons)
+  getRedirectAddons(ctx: StateContext<AddonsStateModel>) {
+    const state = ctx.getState();
+    ctx.patchState({
+      redirectAddons: {
+        ...state.redirectAddons,
+        isLoading: true,
+      },
+    });
+
+    return this.addonsService.getAddons(AddonType.REDIRECT).pipe(
+      tap((addons) => {
+        ctx.patchState({
+          redirectAddons: {
+            data: addons,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'redirectAddons', error))
+    );
+  }
+
   @Action(GetAuthorizedStorageAddons)
   getAuthorizedStorageAddons(ctx: StateContext<AddonsStateModel>, action: GetAuthorizedStorageAddons) {
     const state = ctx.getState();
@@ -156,6 +181,10 @@ export class AddonsState {
           const existing = state.authorizedStorageAddons.data.find(
             (existingAddon: AuthorizedAccountModel) => existingAddon.id === addon.id
           );
+
+          if (existing && !addon.iconUrl) {
+            addon.iconUrl = existing.iconUrl;
+          }
           const updatedData = existing
             ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedAccountModel) =>
                 existingAddon.id === addon.id ? { ...existingAddon, ...addon } : existingAddon

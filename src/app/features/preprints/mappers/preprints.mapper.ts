@@ -1,7 +1,9 @@
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { ContributorsMapper } from '@osf/shared/mappers/contributors';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import {
   PreprintAttributesJsonApi,
@@ -18,7 +20,7 @@ export class PreprintsMapper {
     return {
       data: {
         attributes: {
-          title: title,
+          title: replaceBadEncodedChars(title),
           description: abstract,
         },
         relationships: {
@@ -44,7 +46,7 @@ export class PreprintsMapper {
       dateWithdrawn: response.attributes.date_withdrawn,
       datePublished: response.attributes.date_published,
       dateLastTransitioned: response.attributes.date_last_transitioned,
-      title: response.attributes.title,
+      title: replaceBadEncodedChars(response.attributes.title),
       description: response.attributes.description,
       reviewsState: response.attributes.reviews_state,
       preprintDoiCreated: response.attributes.preprint_doi_created,
@@ -102,7 +104,7 @@ export class PreprintsMapper {
       dateWithdrawn: data.attributes.date_withdrawn,
       datePublished: data.attributes.date_published,
       dateLastTransitioned: data.attributes.date_last_transitioned,
-      title: data.attributes.title,
+      title: replaceBadEncodedChars(data.attributes.title),
       description: data.attributes.description,
       reviewsState: data.attributes.reviews_state,
       preprintDoiCreated: data.attributes.preprint_doi_created,
@@ -169,20 +171,13 @@ export class PreprintsMapper {
     >
   ): PreprintShortInfoWithTotalCount {
     return {
-      data: response.data.map((preprintData) => {
-        return {
-          id: preprintData.id,
-          title: preprintData.attributes.title,
-          dateModified: preprintData.attributes.date_modified,
-          contributors: preprintData.embeds.bibliographic_contributors.data.map((contrData) => {
-            return {
-              id: contrData.id,
-              name: contrData.embeds.users.data.attributes.full_name,
-            };
-          }),
-          providerId: preprintData.relationships.provider.data.id,
-        };
-      }),
+      data: response.data.map((preprintData) => ({
+        id: preprintData.id,
+        title: replaceBadEncodedChars(preprintData.attributes.title),
+        dateModified: preprintData.attributes.date_modified,
+        contributors: ContributorsMapper.getContributors(preprintData.embeds?.bibliographic_contributors?.data),
+        providerId: preprintData.relationships.provider.data.id,
+      })),
       totalCount: response.meta.total,
     };
   }

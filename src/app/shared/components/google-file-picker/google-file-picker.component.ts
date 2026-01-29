@@ -4,7 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, signal } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
@@ -48,6 +48,18 @@ export class GoogleFilePickerComponent implements OnInit {
     return !!this.apiKey && !!this.appId;
   }
 
+  constructor() {
+    effect(() => {
+      const isReady = !this.isGFPDisabled();
+      const hasRootFolder = !!this.rootFolder();
+      const isFilePicker = !this.isFolderPicker();
+
+      if (isReady && hasRootFolder && isFilePicker) {
+        this.createPicker();
+      }
+    });
+  }
+
   ngOnInit(): void {
     if (!this.isPickerConfigured) {
       this.isGFPDisabled.set(true);
@@ -76,6 +88,31 @@ export class GoogleFilePickerComponent implements OnInit {
 
   createPicker(): void {
     if (!this.isPickerConfigured) return;
+
+    this.refreshOauthTokenAndOpenPicker();
+  }
+
+  private refreshOauthTokenAndOpenPicker(): void {
+    if (!this.accountId()) {
+      this.openPickerWithCurrentToken();
+      return;
+    }
+
+    this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId(), this.currentAddonType())).subscribe({
+      complete: () => {
+        this.accessToken.set(
+          this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
+        );
+        this.isGFPDisabled.set(!this.accessToken());
+        this.openPickerWithCurrentToken();
+      },
+      error: () => {
+        this.openPickerWithCurrentToken();
+      },
+    });
+  }
+
+  private openPickerWithCurrentToken(): void {
     const google = window.google;
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);

@@ -70,17 +70,21 @@ export class DeleteContributor {
     public resourceId: string | undefined | null,
     public resourceType: ResourceType | undefined,
     public contributorId: string,
-    public skipRefresh = false
+    public skipRefresh = false,
+    public removeFromChildren = false
   ) {}
 }
 
 export class SearchUsers {
   static readonly type = '[Contributors] Search Users';
 
-  constructor(
-    public searchValue: string | null,
-    public page: number
-  ) {}
+  constructor(public searchValue: string | null) {}
+}
+
+export class SearchUsersPageChange {
+  static readonly type = '[Contributors] Search Users Page Change';
+
+  constructor(public link: string) {}
 }
 
 export class ClearUsers {

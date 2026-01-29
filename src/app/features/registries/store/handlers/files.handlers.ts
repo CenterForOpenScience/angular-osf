@@ -34,23 +34,27 @@ export class FilesHandlers {
     );
   }
 
-  getProjectFiles(ctx: StateContext<RegistriesStateModel>, { filesLink }: GetFiles) {
+  getProjectFiles(ctx: StateContext<RegistriesStateModel>, { filesLink, page }: GetFiles) {
     const state = ctx.getState();
     ctx.patchState({
       files: {
         ...state.files,
         isLoading: true,
+        error: null,
+        totalCount: 0,
       },
     });
 
-    return this.filesService.getFilesWithoutFiltering(filesLink).pipe(
+    return this.filesService.getFilesWithoutFiltering(filesLink, page).pipe(
       tap((response) => {
+        const newData = page === 1 ? response.data : [...(state.files.data ?? []), ...response.data];
+
         ctx.patchState({
           files: {
-            data: response,
+            data: newData,
             isLoading: false,
             error: null,
-            totalCount: response.length,
+            totalCount: response.totalCount,
           },
         });
       }),

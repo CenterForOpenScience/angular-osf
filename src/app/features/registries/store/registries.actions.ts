@@ -111,7 +111,6 @@ export class FetchSubmittedRegistrations {
   static readonly type = '[Registries] Fetch Submitted Registrations';
 
   constructor(
-    public userId: string | undefined,
     public page = 1,
     public pageSize = 10
   ) {}
@@ -157,8 +156,8 @@ export class CreateFolder {
   ) {}
 }
 
-export class SetCurrentFolder {
-  static readonly type = '[Registries] Set Current Folder';
+export class SetRegistriesCurrentFolder {
+  static readonly type = '[Registries] Set Registries Current Folder';
 
   constructor(public folder: FileFolderModel | null) {}
 }

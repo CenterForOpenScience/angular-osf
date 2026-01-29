@@ -1,6 +1,6 @@
-import { MockProvider } from 'ng-mocks';
-
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { of, throwError } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -11,49 +11,47 @@ import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-
 import { MOCK_PROJECT } from '@testing/mocks/project.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe('AddToCollectionConfirmationDialogComponent', () => {
   let component: AddToCollectionConfirmationDialogComponent;
   let fixture: ComponentFixture<AddToCollectionConfirmationDialogComponent>;
-  let mockDialogRef: DynamicDialogRef;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
-
-  const mockPayload = {
-    collectionId: 'collection-1',
-    projectId: 'project-1',
-    collectionMetadata: { title: 'Test Collection' },
-    userId: 'user-1',
-  };
-
-  const mockProject = MOCK_PROJECT;
+  let dialogRef: DynamicDialogRef;
+  let toastService: jest.Mocked<ToastService>;
+  let configData: { payload?: any; project?: any };
+  let updateProjectPublicStatus: jest.Mock;
+  let createCollectionSubmission: jest.Mock;
 
   beforeEach(async () => {
-    mockDialogRef = {
-      close: jest.fn(),
-    } as any;
-
-    toastServiceMock = ToastServiceMockBuilder.create().build();
+    dialogRef = { close: jest.fn() } as any;
+    toastService = { showSuccess: jest.fn() } as any;
+    configData = {
+      payload: {
+        collectionId: 'collection-1',
+        projectId: 'project-1',
+        collectionMetadata: { title: 'Test Collection' },
+        userId: 'user-1',
+      },
+      project: { ...MOCK_PROJECT, isPublic: false, id: 'project-1' },
+    };
+    updateProjectPublicStatus = jest.fn().mockReturnValue(of(null));
+    createCollectionSubmission = jest.fn().mockReturnValue(of(null));
 
     await TestBed.configureTestingModule({
       imports: [AddToCollectionConfirmationDialogComponent, OSFTestingModule],
       providers: [
-        MockProvider(DynamicDialogRef, mockDialogRef),
-        MockProvider(ToastService, toastServiceMock),
-        MockProvider(DynamicDialogConfig, {
-          data: {
-            payload: mockPayload,
-            project: mockProject,
-          },
-        }),
-        provideMockStore({
-          signals: [],
-        }),
+        { provide: DynamicDialogRef, useValue: dialogRef },
+        { provide: ToastService, useValue: toastService },
+        { provide: DynamicDialogConfig, useValue: { data: configData } },
+        provideMockStore({ signals: [] }),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddToCollectionConfirmationDialogComponent);
     component = fixture.componentInstance;
+    component.actions = {
+      updateProjectPublicStatus,
+      createCollectionSubmission,
+    } as any;
     fixture.detectChanges();
   });
 
@@ -61,38 +59,43 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with dialog data', () => {
-    expect(component.config.data.payload).toEqual(mockPayload);
-    expect(component.config.data.project).toEqual(mockProject);
-  });
-
-  it('should handle add to collection confirmation', () => {
+  it('should dispatch updates and close on confirm when project is private', () => {
     component.handleAddToCollectionConfirm();
 
-    expect(mockDialogRef.close).toHaveBeenCalledWith(true);
-  });
-
-  it('should have config data', () => {
-    expect(component.config.data.payload).toBeDefined();
-    expect(component.config.data.payload.collectionId).toBe('collection-1');
-    expect(component.config.data.payload.projectId).toBe('project-1');
-    expect(component.config.data.payload.userId).toBe('user-1');
-  });
-
-  it('should have project data in config', () => {
-    expect(component.config.data.project).toBeDefined();
-    expect(component.config.data.project.id).toBe('project-1');
-    expect(component.config.data.project.title).toBe('Test Project');
-    expect(component.config.data.project.isPublic).toBe(true);
-  });
-
-  it('should have actions defined', () => {
-    expect(component.actions).toBeDefined();
-    expect(component.actions.createCollectionSubmission).toBeDefined();
-    expect(component.actions.updateProjectPublicStatus).toBeDefined();
-  });
-
-  it('should have isSubmitting signal', () => {
+    expect(updateProjectPublicStatus).toHaveBeenCalledWith([{ id: 'project-1', public: true }]);
+    expect(createCollectionSubmission).toHaveBeenCalledWith(configData.payload);
+    expect(dialogRef.close).toHaveBeenCalledWith(true);
+    expect(toastService.showSuccess).toHaveBeenCalledWith('collections.addToCollection.confirmationDialogToastMessage');
     expect(component.isSubmitting()).toBe(false);
+  });
+
+  it('should skip public status update when project already public', () => {
+    configData.project.isPublic = true;
+    updateProjectPublicStatus.mockClear();
+
+    component.handleAddToCollectionConfirm();
+
+    expect(updateProjectPublicStatus).not.toHaveBeenCalled();
+    expect(createCollectionSubmission).toHaveBeenCalledWith(configData.payload);
+    expect(dialogRef.close).toHaveBeenCalledWith(true);
+  });
+
+  it('should do nothing when payload or project is missing', () => {
+    configData.payload = undefined;
+    component.handleAddToCollectionConfirm();
+
+    expect(updateProjectPublicStatus).not.toHaveBeenCalled();
+    expect(createCollectionSubmission).not.toHaveBeenCalled();
+    expect(dialogRef.close).not.toHaveBeenCalled();
+  });
+
+  it('should reset submitting state and not close on error', () => {
+    createCollectionSubmission.mockReturnValue(throwError(() => new Error('fail')));
+
+    component.handleAddToCollectionConfirm();
+
+    expect(component.isSubmitting()).toBe(false);
+    expect(dialogRef.close).not.toHaveBeenCalled();
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
   });
 });

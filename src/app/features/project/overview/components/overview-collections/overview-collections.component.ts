@@ -5,13 +5,14 @@ import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
-import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
 import { CollectionSubmission } from '@osf/shared/models/collections/collections.models';
+import { KeyValueModel } from '@osf/shared/models/common/key-value.model';
+import { CollectionStatusSeverityPipe } from '@osf/shared/pipes/collection-status-severity.pipe';
 
 @Component({
   selector: 'osf-overview-collections',
@@ -25,28 +26,32 @@ import { CollectionSubmission } from '@osf/shared/models/collections/collections
     Tag,
     Button,
     StopPropagationDirective,
+    RouterLink,
+    CollectionStatusSeverityPipe,
   ],
   templateUrl: './overview-collections.component.html',
   styleUrl: './overview-collections.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewCollectionsComponent {
-  private readonly router = inject(Router);
-  readonly SubmissionReviewStatus = SubmissionReviewStatus;
-
   projectSubmissions = input<CollectionSubmission[] | null>(null);
   isProjectSubmissionsLoading = input<boolean>(false);
 
-  submissionAttributes(submission: CollectionSubmission) {
-    return collectionFilterNames
-      .map((attribute) => ({
-        ...attribute,
-        value: submission[attribute.key as keyof CollectionSubmission] as string,
-      }))
-      .filter((attribute) => attribute.value);
-  }
+  getSubmissionAttributes(submission: CollectionSubmission): KeyValueModel[] {
+    const attributes: KeyValueModel[] = [];
 
-  navigateToCollection(submission: CollectionSubmission) {
-    this.router.navigate([`collections/${submission.collectionId}/`]);
+    for (const filter of collectionFilterNames) {
+      const value = submission[filter.key as keyof CollectionSubmission];
+
+      if (value) {
+        attributes.push({
+          key: filter.key,
+          label: filter.label,
+          value: String(value),
+        });
+      }
+    }
+
+    return attributes;
   }
 }

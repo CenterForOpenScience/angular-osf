@@ -20,32 +20,24 @@ import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/ins
 })
 export class SettingsProjectAffiliationComponent implements OnInit {
   affiliations = input<Institution[]>([]);
-  userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
-  removed = output<Institution>();
   canEdit = input<boolean>(false);
+  canRemove = input<boolean>(false);
+  removed = output<Institution>();
 
-  removeAffiliationPermission = computed(() => {
-    const affiliatedInstitutions = this.affiliations();
-    const userInstitutions = this.userInstitutions();
+  userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
 
-    const result = new Map<string, boolean>();
+  readonly userInstitutionIds = computed(() => new Set(this.userInstitutions().map((inst) => inst.id)));
 
-    for (const institution of affiliatedInstitutions) {
-      const isUserAffiliatedWithCurrentInstitution = userInstitutions.some(
-        (userInstitution) => userInstitution.id === institution.id
-      );
-      result.set(institution.id, isUserAffiliatedWithCurrentInstitution);
-    }
-
-    return result;
-  });
-
-  private readonly actions = createDispatchMap({
-    fetchUserInstitutions: FetchUserInstitutions,
-  });
+  private readonly actions = createDispatchMap({ fetchUserInstitutions: FetchUserInstitutions });
 
   ngOnInit() {
-    this.actions.fetchUserInstitutions();
+    if (this.canEdit()) {
+      this.actions.fetchUserInstitutions();
+    }
+  }
+
+  canRemoveAffiliation(institution: Institution): boolean {
+    return this.canRemove() || (this.canEdit() && this.userInstitutionIds().has(institution.id));
   }
 
   removeAffiliation(affiliation: Institution) {

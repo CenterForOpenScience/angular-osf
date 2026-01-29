@@ -1,16 +1,30 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Message } from 'primeng/message';
+
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { UserSelectors } from '@core/store/user';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.const';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { UserModel } from '@osf/shared/models/user/user.models';
 import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
-import { UserModel } from '@shared/models/user/user.models';
 
 import { ProfileInformationComponent } from './components';
 import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';
@@ -20,22 +34,24 @@ import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent],
+  imports: [ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent, Message, TranslatePipe],
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  private readonly prerenderReady = inject(PrerenderReadyService);
+
   private actions = createDispatchMap({
     fetchUserProfile: FetchUserProfile,
     setDefaultFilterValue: SetDefaultFilterValue,
     setUserProfile: SetUserProfile,
   });
 
-  private loggedInUser = select(UserSelectors.getCurrentUser);
-  private userProfile = select(ProfileSelectors.getUserProfile);
-
+  loggedInUser = select(UserSelectors.getCurrentUser);
+  userProfile = select(ProfileSelectors.getUserProfile);
   isUserLoading = select(ProfileSelectors.isUserProfileLoading);
+
   resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceType.Agent);
 
   isMyProfile = computed(() => !this.route.snapshot.params['id']);
@@ -53,6 +69,10 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.prerenderReady.setNotReady();
+  }
+
   toProfileSettings(): void {
     this.router.navigate(['settings/profile']);
   }
@@ -66,17 +86,23 @@ export class ProfileComponent implements OnInit {
 
   private setupMyProfile(user: UserModel): void {
     this.actions.setUserProfile(user);
+
     if (user?.iri) {
       this.actions.setDefaultFilterValue('creator,isContainedBy.creator', user.iri);
       this.defaultSearchFiltersInitialized.set(true);
     }
+
+    this.prerenderReady.setReady();
   }
 
   private setSearchFilter(): void {
     const currentUser = this.user();
+
     if (currentUser?.iri) {
       this.actions.setDefaultFilterValue('creator,isContainedBy.creator', currentUser.iri);
       this.defaultSearchFiltersInitialized.set(true);
     }
+
+    this.prerenderReady.setReady();
   }
 }

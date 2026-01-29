@@ -1,10 +1,10 @@
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Panel } from 'primeng/panel';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { WikiVersion } from '@osf/shared/models/wiki/wiki.model';
@@ -25,20 +25,23 @@ export class CompareSectionComponent {
   isLoading = input.required<boolean>();
   selectVersion = output<string>();
 
+  translateService = inject(TranslateService);
+
   selectedVersion: string | null = null;
 
+  private readonly currentLabel = this.translateService.instant('project.wiki.version.current');
+  private readonly unknownAuthorLabel = this.translateService.instant('project.wiki.version.unknownAuthor');
+
   mappedVersions = computed(() => [
-    ...this.versions().map((version, index) => {
-      const labelPrefix = index === 0 ? '(Current)' : `(${this.versions().length - index})`;
-      return {
-        label: `${labelPrefix} ${version.createdBy}: (${new Date(version.createdAt).toLocaleString()})`,
-        value: version.id,
-      };
-    }),
+    ...this.versions().map((version, index) => ({
+      label: this.formatVersionLabel(version, index),
+      value: version.id,
+    })),
   ]);
 
   content = computed(() => {
     const changes = Diff.diffWords(this.versionContent(), this.previewContent());
+
     return changes
       .map((change) => {
         if (change.added) {
@@ -54,13 +57,21 @@ export class CompareSectionComponent {
   constructor() {
     effect(() => {
       this.selectedVersion = this.versions()[0]?.id;
+
       if (this.selectedVersion) {
         this.selectVersion.emit(this.selectedVersion);
       }
     });
   }
+
   onVersionChange(versionId: string): void {
     this.selectedVersion = versionId;
     this.selectVersion.emit(versionId);
+  }
+
+  private formatVersionLabel(version: WikiVersion, index: number): string {
+    const prefix = index === 0 ? `(${this.currentLabel})` : `(${this.versions().length - index})`;
+    const creator = version.createdBy || this.unknownAuthorLabel;
+    return `${prefix} ${creator}: (${new Date(version.createdAt).toLocaleString()})`;
   }
 }

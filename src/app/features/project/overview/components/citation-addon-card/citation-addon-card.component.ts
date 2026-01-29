@@ -7,6 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,13 +17,14 @@ import {
   inject,
   input,
   OnInit,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OperationNames } from '@osf/shared/enums/operation-names.enum';
 import { StorageItemType } from '@osf/shared/enums/storage-item-type.enum';
-import { formatCitation, getItemUrl } from '@osf/shared/helpers/citation-formatter.helper';
+import { getItemUrl } from '@osf/shared/helpers/citation-formatter.helper';
 import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
 import { StorageItem } from '@osf/shared/models/addons/storage-item.model';
 import { CitationStyle } from '@osf/shared/models/citations/citation-style.model';
@@ -50,6 +52,8 @@ export class CitationAddonCardComponent implements OnInit {
   private readonly operationInvocationService = inject(AddonOperationInvocationService);
   private readonly cslStyleManager = inject(CslStyleManagerService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly filterSubject = new Subject<string>();
 
   readonly addon = input.required<ConfiguredAddonModel>();
@@ -104,7 +108,7 @@ export class CitationAddonCardComponent implements OnInit {
 
     return items.map((item) => ({
       item,
-      formattedCitation: formatCitation(item, style),
+      formattedCitation: this.cslStyleManager.formatCitation(item, style),
       itemUrl: getItemUrl(item),
     }));
   });
@@ -193,7 +197,9 @@ export class CitationAddonCardComponent implements OnInit {
 
   private setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.cslStyleManager.clearCache();
+      if (this.isBrowser) {
+        this.cslStyleManager.clearCache();
+      }
     });
   }
 }
