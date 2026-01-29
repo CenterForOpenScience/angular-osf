@@ -21,13 +21,12 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { ResetState } from '@osf/features/files/store';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
-import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { BrandService } from '@osf/shared/services/brand.service';
+import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { CanDeactivateComponent } from '@shared/models/can-deactivate.interface';
 import { StepOption } from '@shared/models/step-option.model';
 
@@ -45,6 +44,7 @@ import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store
 import {
   FetchPreprintById,
   PreprintStepperSelectors,
+  ResetPreprintStepperState,
   SetSelectedPreprintProviderId,
 } from '../../store/preprint-stepper';
 
@@ -69,6 +69,9 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly route = inject(ActivatedRoute);
+  private readonly brandService = inject(BrandService);
+  private readonly headerStyleHelper = inject(HeaderStyleService);
+  private readonly browserTabHelper = inject(BrowserTabService);
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['preprintId'])) ?? of(undefined));
@@ -76,7 +79,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
-    resetState: ResetState,
+    resetState: ResetPreprintStepperState,
     fetchPreprint: FetchPreprintById,
   });
 
@@ -141,19 +144,19 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
 
       if (provider) {
         this.actions.setSelectedPreprintProviderId(provider.id);
-        BrandService.applyBranding(provider.brand);
-        HeaderStyleHelper.applyHeaderStyles(
+        this.brandService.applyBranding(provider.brand);
+        this.headerStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,
           provider.brand.secondaryColor,
           provider.brand.heroBackgroundImageUrl
         );
-        BrowserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
+        this.browserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
       }
     });
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
+  onBeforeUnload($event: BeforeUnloadEvent): boolean {
     $event.preventDefault();
     return false;
   }
@@ -168,9 +171,9 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   }
 
   ngOnDestroy() {
-    HeaderStyleHelper.resetToDefaults();
-    BrandService.resetBranding();
-    BrowserTabHelper.resetToDefaults();
+    this.headerStyleHelper.resetToDefaults();
+    this.brandService.resetBranding();
+    this.browserTabHelper.resetToDefaults();
     this.actions.resetState();
   }
 

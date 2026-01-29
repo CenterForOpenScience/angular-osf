@@ -10,6 +10,7 @@ export interface AddonGetResponseJsonApi {
     credentials_format: string;
     wb_key: string;
     icon_url: string;
+    redirect_url?: string;
     configurable_api_root: boolean;
     [key: string]: unknown;
   };
@@ -85,7 +86,19 @@ export interface ConfiguredAddonGetResponseJsonApi {
         id: string;
       };
     };
-    external_storage_service: {
+    external_storage_service?: {
+      data: {
+        type: string;
+        id: string;
+      };
+    };
+    external_citation_service?: {
+      data: {
+        type: string;
+        id: string;
+      };
+    };
+    external_link_service?: {
       data: {
         type: string;
         id: string;

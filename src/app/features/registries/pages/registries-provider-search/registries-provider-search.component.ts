@@ -1,6 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -25,6 +26,8 @@ import { RegistryProviderHeroComponent } from '../../components/registry-provide
 })
 export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   private actions = createDispatchMap({
     getProvider: GetRegistryProvider,
@@ -54,7 +57,9 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.clearCurrentProvider();
-    this.actions.clearRegistryProvider();
+    if (this.isBrowser) {
+      this.actions.clearCurrentProvider();
+      this.actions.clearRegistryProvider();
+    }
   }
 }

@@ -18,6 +18,27 @@ WORKDIR /code
 
 COPY --from=build /app/dist /code/dist
 
+# SSR
+FROM node:22-alpine AS ssr
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm link @angular/cli
+RUN NG_BUILD_OPTIMIZE_CHUNKS=1 ng build --configuration=ssr --verbose
+
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+
+EXPOSE 4000
+
+ENV PORT=4000
+
+CMD ["node", "dist/osf/server/server.mjs"]
+
 # Dev - run only
 FROM build AS dev
 

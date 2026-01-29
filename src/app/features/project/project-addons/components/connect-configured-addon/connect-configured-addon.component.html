@@ -11,7 +11,7 @@
             </h2>
 
             <div class="mt-4">
-              <osf-addon-terms [addon]="addon()" />
+              <osf-addon-terms [addon]="addon()" [redirectUrl]="redirectUrl()" />
             </div>
 
             <div class="flex flex-column gap-2 mt-4">
@@ -33,17 +33,29 @@
                 [routerLink]="[baseUrl() + '/addons']"
                 data-test-addon-cancel-button
               ></p-button>
-              <p-button
-                [label]="
-                  !isAuthorizedAddonsLoading()
-                    ? ('settings.addons.form.buttons.next' | translate)
-                    : ('settings.addons.form.buttons.acceptingTerms' | translate)
-                "
-                class="w-10rem btn-full-width"
-                [loading]="isAuthorizedAddonsLoading()"
-                (onClick)="handleAuthorizedAccountsPresenceCheck()"
-                data-test-addon-terms-confirm-button
-              ></p-button>
+              @if (addonTypeString() === AddonType.REDIRECT) {
+                <p-button
+                  [label]="
+                    'settings.addons.connectAddon.redirectAddons.goToService'
+                      | translate: { serviceName: addon()?.displayName }
+                  "
+                  class="w-10rem btn-full-width"
+                  (onClick)="goToService()"
+                  data-test-addon-redirect-button
+                />
+              } @else {
+                <p-button
+                  [label]="
+                    !isAuthorizedAddonsLoading()
+                      ? ('settings.addons.form.buttons.next' | translate)
+                      : ('settings.addons.form.buttons.acceptingTerms' | translate)
+                  "
+                  class="w-10rem btn-full-width"
+                  [loading]="isAuthorizedAddonsLoading()"
+                  (onClick)="handleAuthorizedAccountsPresenceCheck()"
+                  data-test-addon-terms-confirm-button
+                ></p-button>
+              }
             </div>
           </section>
         </ng-template>
@@ -183,7 +195,7 @@
             <p>
               {{ 'settings.addons.connectAddon.oauthDescription' | translate }}
             </p>
-            <a [href]="addonAuthUrl()" target="_blank" rel="noopener noreferrer">
+            <a class="font-bold" [href]="addonAuthUrl()" target="_blank" rel="noopener noreferrer">
               {{ 'settings.addons.connectAddon.startOauth' | translate }}
             </a>
           </div>

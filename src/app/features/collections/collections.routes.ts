@@ -3,15 +3,20 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { authGuard } from '@core/guards/auth.guard';
-import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
-import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
-import { ConfirmLeavingGuard } from '@shared/guards';
-import { BookmarksState } from '@shared/stores/bookmarks';
-import { CitationsState } from '@shared/stores/citations';
-import { CollectionsState } from '@shared/stores/collections';
-import { NodeLinksState } from '@shared/stores/node-links';
-import { ProjectsState } from '@shared/stores/projects';
-import { SubjectsState } from '@shared/stores/subjects';
+import { ConfirmLeavingGuard } from '@osf/shared/guards';
+import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
+import { BookmarksState } from '@osf/shared/stores/bookmarks';
+import { CitationsState } from '@osf/shared/stores/citations';
+import { CollectionsState } from '@osf/shared/stores/collections';
+import { NodeLinksState } from '@osf/shared/stores/node-links';
+import { ProjectsState } from '@osf/shared/stores/projects';
+import { SubjectsState } from '@osf/shared/stores/subjects';
+
+import { CollectionsModerationState } from '../moderation/store/collections-moderation';
+import { ProjectOverviewState } from '../project/overview/store';
+import { SettingsState } from '../project/settings/store';
+
+import { AddToCollectionState } from './store/add-to-collection';
 
 export const collectionsRoutes: Routes = [
   {
@@ -26,7 +31,7 @@ export const collectionsRoutes: Routes = [
       },
       {
         path: ':providerId',
-        redirectTo: ':providerId/discover',
+        redirectTo: ({ params }) => `${params['providerId']}/discover`,
       },
       {
         path: ':providerId/discover',
@@ -40,6 +45,16 @@ export const collectionsRoutes: Routes = [
       {
         path: ':providerId/add',
         pathMatch: 'full',
+        loadComponent: () =>
+          import('@osf/features/collections/components/add-to-collection/add-to-collection.component').then(
+            (mod) => mod.AddToCollectionComponent
+          ),
+        providers: [provideStates([ProjectsState, CollectionsState, AddToCollectionState])],
+        canActivate: [authGuard],
+        canDeactivate: [ConfirmLeavingGuard],
+      },
+      {
+        path: ':providerId/:id/edit',
         loadComponent: () =>
           import('@osf/features/collections/components/add-to-collection/add-to-collection.component').then(
             (mod) => mod.AddToCollectionComponent
@@ -63,12 +78,15 @@ export const collectionsRoutes: Routes = [
           ).then((mod) => mod.CollectionSubmissionOverviewComponent),
         providers: [
           provideStates([
+            ProjectOverviewState,
             NodeLinksState,
             CitationsState,
-            CollectionsModerationState,
             CollectionsState,
+            CollectionsModerationState,
+            ActivityLogsState,
             BookmarksState,
             SubjectsState,
+            SettingsState,
           ]),
         ],
       },

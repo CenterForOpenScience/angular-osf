@@ -30,6 +30,7 @@ $base-font-size: 16px;
   --grey-1: #8b97a4;
   --grey-2: #e0e1e2;
   --grey-3: #eff0f1;
+  --grey-4: #606b7b;
   --grey-outline: #00000029;
   --white: #ffffff;
 
@@ -90,7 +91,7 @@ $base-font-size: 16px;
   --p-form-field-hover-border-color: var(--grey-1);
   --p-form-field-disabled-background: var(--white);
   --p-form-field-disabled-color: var(--grey-1);
-  --p-form-field-placeholder-color: var(--grey-1);
+  --p-form-field-placeholder-color: var(--grey-4);
   --p-list-option-color: var(--dark-blue-1);
   --p-list-option-focus-color: var(--dark-blue-1);
   --p-list-option-focus-background: var(--bg-blue-3);

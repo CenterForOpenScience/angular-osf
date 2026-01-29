@@ -32,7 +32,7 @@ export class UpdatePreprint {
 }
 
 export class FetchPreprintById {
-  static readonly type = '[Preprint Stepper] Get Preprint By Id';
+  static readonly type = '[Preprint Stepper] Fetch Preprint By Id';
 
   constructor(public id: string) {}
 }
@@ -90,7 +90,10 @@ export class SetProjectRootFolder {
 export class FetchProjectFilesByLink {
   static readonly type = '[Preprint Stepper] Get Project Files By Link';
 
-  constructor(public filesLink: string) {}
+  constructor(
+    public filesLink: string,
+    public page: number
+  ) {}
 }
 
 export class FetchLicenses {
@@ -142,7 +145,7 @@ export class CreateNewVersion {
   constructor(public preprintId: string) {}
 }
 
-export class ResetState {
+export class ResetPreprintStepperState {
   static readonly type = '[Preprint Stepper] Reset State';
 }
 
@@ -150,8 +153,8 @@ export class DeletePreprint {
   static readonly type = '[Preprint Stepper]  Delete Preprint';
 }
 
-export class SetCurrentFolder {
-  static readonly type = '[Preprint Stepper] Set Current Folder';
+export class SetPreprintStepperCurrentFolder {
+  static readonly type = '[Preprint Stepper] Set Preprint Stepper Current Folder';
 
   constructor(public folder: FileFolderModel | null) {}
 }

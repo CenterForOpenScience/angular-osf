@@ -19,36 +19,10 @@ export const isProjectGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
     return false;
   }
 
-  const currentResource = store.selectSnapshot(CurrentResourceSelectors.getCurrentResource);
-  const currentUser = store.selectSnapshot(UserSelectors.getCurrentUser);
-
-  if (currentResource && !id.startsWith(currentResource.id)) {
-    if (currentResource.type === CurrentResourceType.Projects && currentResource.parentId) {
-      router.navigate(['/', currentResource.parentId, 'files', id], { queryParamsHandling: 'preserve' });
-      return true;
-    }
-
-    if (currentResource.type === CurrentResourceType.Preprints && currentResource.parentId) {
-      router.navigate(['/preprints', currentResource.parentId, id]);
-      return true;
-    }
-
-    if (currentResource.type === CurrentResourceType.Users) {
-      if (currentUser && currentUser.id === currentResource.id) {
-        router.navigate(['/profile']);
-      } else {
-        router.navigate(['/user', id]);
-      }
-      return false;
-    }
-
-    return currentResource.type === CurrentResourceType.Projects;
-  }
-
   return store.dispatch(new GetResource(id)).pipe(
     switchMap(() => store.select(CurrentResourceSelectors.getCurrentResource)),
     map((resource) => {
-      if (!resource || !id.startsWith(resource.id)) {
+      if (!resource || !resource.id.startsWith(id)) {
         return false;
       }
 
@@ -63,11 +37,14 @@ export const isProjectGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
       }
 
       if (resource.type === CurrentResourceType.Users) {
+        const currentUser = store.selectSnapshot(UserSelectors.getCurrentUser);
+
         if (currentUser && currentUser.id === resource.id) {
           router.navigate(['/profile']);
         } else {
           router.navigate(['/user', id]);
         }
+
         return false;
       }
 

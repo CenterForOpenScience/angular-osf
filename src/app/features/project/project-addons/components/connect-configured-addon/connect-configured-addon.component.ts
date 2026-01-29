@@ -9,7 +9,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
 
-import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, DestroyRef, inject, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -80,7 +81,9 @@ export class ConnectConfiguredAddonComponent {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private readonly environment = inject(ENVIRONMENT);
+  private environment = inject(ENVIRONMENT);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
 
@@ -146,6 +149,17 @@ export class ConnectConfiguredAddonComponent {
 
   addonTypeString = computed(() => getAddonTypeString(this.addon()) as AddonType);
 
+  redirectUrl = computed(() => {
+    const addon = this.addon();
+    if (!addon || !addon.redirectUrl) {
+      return null;
+    }
+    const openURL = new URL(addon.redirectUrl);
+    openURL.searchParams.set('nodeIri', this.resourceUri());
+    openURL.searchParams.set('userIri', this.addonsUserReference()[0]?.attributes.user_uri);
+    return openURL.toString();
+  });
+
   readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
@@ -164,7 +178,9 @@ export class ConnectConfiguredAddonComponent {
     this.addon.set(addon);
 
     this.destroyRef.onDestroy(() => {
-      this.oauthService.stopOAuthTracking();
+      if (this.isBrowser) {
+        this.oauthService.stopOAuthTracking();
+      }
     });
   }
 
@@ -192,7 +208,13 @@ export class ConnectConfiguredAddonComponent {
       complete: () => {
         const createdAddon = this.createdConfiguredAddon();
         if (createdAddon) {
-          this.router.navigate([`${this.baseUrl()}/addons`]);
+          const addonType = this.addonTypeString()?.toLowerCase();
+          this.router.navigate([`${this.baseUrl()}/addons`], {
+            queryParams: {
+              activeTab: 1,
+              addonType: addonType,
+            },
+          });
           this.toastService.showSuccess('settings.addons.toast.createSuccess', {
             addonName: AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames],
           });
@@ -253,6 +275,22 @@ export class ConnectConfiguredAddonComponent {
         this.processAuthorizedAddons(addonConfig, currentAddon);
       },
     });
+  }
+
+  goToService() {
+    if (!this.redirectUrl()) return;
+
+    const newWindow = window.open(
+      this.redirectUrl()!.toString(),
+      '_blank',
+      'popup,width=600,height=600,scrollbars=yes,resizable=yes'
+    );
+    if (newWindow) {
+      this.router.navigate([`${this.baseUrl()}/addons`]);
+      newWindow.focus();
+    } else {
+      this.toastService.showError('addons.redirect.popUpError');
+    }
   }
 
   private getDataForAccountCheck() {

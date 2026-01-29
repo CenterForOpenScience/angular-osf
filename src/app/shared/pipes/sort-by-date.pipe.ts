@@ -4,7 +4,6 @@ import { DateSortable } from '../models/user/date-sortable.model';
 
 @Pipe({
   name: 'sortByDate',
-  standalone: true,
 })
 export class SortByDatePipe implements PipeTransform {
   transform<T extends DateSortable>(items: T[] | null | undefined): T[] {

@@ -13,4 +13,9 @@ export class AddToCollectionSelectors {
   static getCollectionLicensesLoading(state: AddToCollectionStateModel) {
     return state.collectionLicenses.isLoading;
   }
+
+  @Selector([AddToCollectionState])
+  static getCurrentCollectionSubmission(state: AddToCollectionStateModel) {
+    return state.currentProjectSubmission.data;
+  }
 }

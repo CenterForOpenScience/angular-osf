@@ -3,6 +3,7 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { UserSelectors } from '@core/store/user';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
@@ -36,6 +37,7 @@ describe('ProfileComponent', () => {
       providers: [
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
+        MockProvider(PrerenderReadyService),
         provideMockStore({
           signals: [
             { selector: UserSelectors.getCurrentUser, value: null },

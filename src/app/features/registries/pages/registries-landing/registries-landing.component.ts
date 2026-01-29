@@ -4,7 +4,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -23,7 +24,7 @@ import {
   RegistrationProviderSelectors,
 } from '@osf/shared/stores/registration-provider';
 
-import { RegistryServicesComponent } from '../../components';
+import { RegistryServicesComponent } from '../../components/registry-services/registry-services.component';
 import { GetRegistries, RegistriesSelectors } from '../../store';
 
 @Component({
@@ -45,6 +46,8 @@ import { GetRegistries, RegistriesSelectors } from '../../store';
 export class RegistriesLandingComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   private actions = createDispatchMap({
     getRegistries: GetRegistries,
@@ -67,8 +70,10 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.clearCurrentProvider();
-    this.actions.clearRegistryProvider();
+    if (this.isBrowser) {
+      this.actions.clearCurrentProvider();
+      this.actions.clearRegistryProvider();
+    }
   }
 
   redirectToSearchPageWithValue(): void {

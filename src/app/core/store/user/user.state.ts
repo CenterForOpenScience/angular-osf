@@ -4,6 +4,7 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { StorageService } from '@core/services/storage.service';
 import { UserService } from '@core/services/user.service';
 import { ProfileSettingsKey } from '@osf/shared/enums/profile-settings-key.enum';
 import { removeNullable } from '@osf/shared/helpers/remove-nullable.helper';
@@ -30,11 +31,13 @@ import { USER_STATE_INITIAL, UserStateModel } from './user.model';
 @Injectable()
 export class UserState {
   private userService = inject(UserService);
+  private storage = inject(StorageService);
 
   @Action(GetCurrentUser)
   getCurrentUser(ctx: StateContext<UserStateModel>) {
-    const currentUser = localStorage.getItem('currentUser');
-    const activeFlags = localStorage.getItem('activeFlags');
+    const currentUser = this.storage.getItem('currentUser');
+    const activeFlags = this.storage.getItem('activeFlags');
+
     if (activeFlags) {
       ctx.patchState({
         activeFlags: JSON.parse(activeFlags),
@@ -74,10 +77,11 @@ export class UserState {
         });
 
         if (data.currentUser) {
-          localStorage.setItem('currentUser', JSON.stringify(data.currentUser));
+          this.storage.setItem('currentUser', JSON.stringify(data.currentUser));
         }
+
         if (data.activeFlags) {
-          localStorage.setItem('activeFlags', JSON.stringify(data.activeFlags));
+          this.storage.setItem('activeFlags', JSON.stringify(data.activeFlags));
         }
       })
     );
@@ -93,7 +97,7 @@ export class UserState {
       },
     });
 
-    localStorage.setItem('currentUser', JSON.stringify(action.user));
+    this.storage.setItem('currentUser', JSON.stringify(action.user));
   }
 
   @Action(UpdateProfileSettingsEmployment)
@@ -116,7 +120,7 @@ export class UserState {
           },
         });
 
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.storage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -141,7 +145,7 @@ export class UserState {
           },
         });
 
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.storage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -166,7 +170,7 @@ export class UserState {
           },
         });
 
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.storage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -198,7 +202,7 @@ export class UserState {
           },
         });
 
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.storage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -229,7 +233,7 @@ export class UserState {
               },
             },
           });
-          localStorage.setItem('currentUser', JSON.stringify(response));
+          this.storage.setItem('currentUser', JSON.stringify(response));
         }
       })
     );
@@ -246,6 +250,6 @@ export class UserState {
       activeFlags: [],
     });
 
-    localStorage.removeItem('currentUser');
+    this.storage.removeItem('currentUser');
   }
 }

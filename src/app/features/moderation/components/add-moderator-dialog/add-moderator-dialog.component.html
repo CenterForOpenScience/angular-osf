@@ -11,7 +11,7 @@
       @for (item of users(); track $index) {
         <div class="border-divider flex pb-3">
           <p-checkbox variant="filled" [value]="item" [inputId]="item.id" [(ngModel)]="selectedUsers"></p-checkbox>
-          <label class="label mb-0 ml-2 cursor-pointer" [for]="item.id">{{ item.fullName }}</label>
+          <a class="ml-2 font-bold" [href]="item.id" target="_blank">{{ item.fullName }}</a>
         </div>
       }
 
@@ -27,6 +27,7 @@
       [first]="first()"
       [rows]="rows()"
       [totalCount]="totalUsersCount()"
+      [showPageLinks]="false"
       (pageChanged)="pageChanged($event)"
     ></osf-custom-paginator>
   }

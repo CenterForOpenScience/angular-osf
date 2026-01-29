@@ -2,6 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -23,7 +24,14 @@ import {
 
 @Component({
   selector: 'osf-institutions-summary',
-  imports: [StatisticCardComponent, LoadingSpinnerComponent, DoughnutChartComponent, BarChartComponent, TranslatePipe],
+  imports: [
+    StatisticCardComponent,
+    LoadingSpinnerComponent,
+    DoughnutChartComponent,
+    BarChartComponent,
+    TranslatePipe,
+    DatePipe,
+  ],
   templateUrl: './institutions-summary.component.html',
   styleUrl: './institutions-summary.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,8 +71,8 @@ export class InstitutionsSummaryComponent implements OnInit {
   storageLabels = signal<string[]>([]);
   storageDataset = signal<DatasetInput[]>([]);
 
-  licenceLabels = signal<string[]>([]);
-  licenceDataset = signal<DatasetInput[]>([]);
+  licenseLabels = signal<string[]>([]);
+  licenseDataset = signal<DatasetInput[]>([]);
 
   addonLabels = signal<string[]>([]);
   addonDataset = signal<DatasetInput[]>([]);
@@ -238,8 +246,8 @@ export class InstitutionsSummaryComponent implements OnInit {
     effect(() => {
       const licenses = this.rightsSearch();
 
-      this.licenceLabels.set(licenses.map((result) => result.label));
-      this.licenceDataset.set([{ label: '', data: licenses.map((result) => +result.value).sort((a, b) => b - a) }]);
+      this.licenseLabels.set(licenses.map((result) => result.label));
+      this.licenseDataset.set([{ label: '', data: licenses.map((result) => +result.value).sort((a, b) => b - a) }]);
     });
   }
 }

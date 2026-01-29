@@ -41,7 +41,7 @@
               [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
             />
 
-            <h4 class="mt-3">{{ provider.name }}</h4>
+            <h4 class="text-center mt-3">{{ provider.name }}</h4>
             <p-button
               class="mt-4"
               [label]="
@@ -55,7 +55,7 @@
         </p-card>
 
         <ng-template #descriptionTooltip>
-          <div [innerHTML]="provider.descriptionHtml | decodeHtml"></div>
+          <div [innerHTML]="provider.descriptionHtml"></div>
         </ng-template>
       }
     }

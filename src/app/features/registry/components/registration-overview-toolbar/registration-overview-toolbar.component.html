@@ -2,10 +2,10 @@
   <div class="flex gap-2 justify-content-end">
     @if (isAuthenticated()) {
       <p-button
-        class="flex"
+        styleClass="px-4"
         [pTooltip]="'project.overview.tooltips.bookmarks' | translate"
         tooltipPosition="bottom"
-        [icon]="isBookmarked() ? 'fas fa-bookmark fa-xl' : 'far fa-bookmark fa-xl'"
+        [icon]="isBookmarked() ? 'fas fa-bookmark text-2xl' : 'far fa-bookmark text-2xl'"
         [loading]="isBookmarksLoading() || isBookmarksSubmitting()"
         [ariaLabel]="'project.overview.tooltips.bookmarks' | translate"
         (onClick)="toggleBookmark()"

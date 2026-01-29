@@ -57,6 +57,7 @@ export const MOCK_USER: UserModel = {
   defaultRegionId: 'us',
   allowIndexing: true,
   canViewReviews: true,
+  mergedBy: undefined,
 };
 
 export const MOCK_USER_RELATED_COUNTS: UserRelatedCounts = {

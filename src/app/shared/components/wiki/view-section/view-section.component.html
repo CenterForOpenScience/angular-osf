@@ -8,17 +8,20 @@
     <ng-template #header>
       <h2 class="mr-2">{{ 'project.wiki.view' | translate }}</h2>
     </ng-template>
+
     <div class="flex flex-wrap align-items-center mb-4 lg:flex-nowrap">
       <span class="mr-2">{{ 'project.wiki.version.title' | translate }}:</span>
+
       <p-select
+        class="w-full"
+        styleClass="select-version"
         [options]="mappedVersions()"
         [ngModel]="selectedVersion()"
         (onChange)="onVersionChange($event.value)"
         [placeholder]="'project.wiki.version.select' | translate"
-        class="w-full"
-        styleClass="select-version"
       />
     </div>
+
     <p-panel class="view-panel" showHeader="false">
       <div class="editor-view-mode mt-3">
         @if (content()) {

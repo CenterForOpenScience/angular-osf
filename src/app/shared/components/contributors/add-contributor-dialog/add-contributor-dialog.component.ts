@@ -26,7 +26,7 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
 import { AddDialogState } from '@osf/shared/enums/contributors/add-dialog-state.enum';
-import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores/contributors';
+import { ClearUsers, ContributorsSelectors, SearchUsers, SearchUsersPageChange } from '@osf/shared/stores/contributors';
 import { ComponentCheckboxItemModel } from '@shared/models/component-checkbox-item.model';
 import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
 import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
@@ -58,11 +58,17 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   readonly dialogRef = inject(DynamicDialogRef);
   private readonly destroyRef = inject(DestroyRef);
   private readonly config = inject(DynamicDialogConfig);
-  private readonly actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
+  private readonly actions = createDispatchMap({
+    searchUsers: SearchUsers,
+    searchUsersPageChange: SearchUsersPageChange,
+    clearUsers: ClearUsers,
+  });
 
   readonly users = select(ContributorsSelectors.getUsers);
   readonly isLoading = select(ContributorsSelectors.isUsersLoading);
   readonly totalUsersCount = select(ContributorsSelectors.getUsersTotalCount);
+  readonly usersNextLink = select(ContributorsSelectors.getUsersNextLink);
+  readonly usersPreviousLink = select(ContributorsSelectors.getUsersPreviousLink);
 
   readonly searchControl = new FormControl<string>('');
   readonly isInitialState = signal(true);
@@ -139,9 +145,31 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   }
 
   pageChanged(event: PaginatorState): void {
-    this.currentPage.set(event.page ? this.currentPage() + 1 : 1);
-    this.first.set(event.first ?? 0);
-    this.actions.searchUsers(this.searchControl.value, this.currentPage());
+    if (event.page === undefined) {
+      return;
+    }
+
+    const eventPageOneBased = event.page + 1;
+
+    if (eventPageOneBased === 1) {
+      const searchTerm = this.searchControl.value?.trim();
+
+      if (searchTerm) {
+        this.actions.searchUsers(searchTerm);
+        this.currentPage.set(1);
+        this.first.set(0);
+      }
+
+      return;
+    }
+
+    const link = eventPageOneBased > this.currentPage() ? this.usersNextLink() : this.usersPreviousLink();
+
+    if (link) {
+      this.actions.searchUsersPageChange(link);
+      this.currentPage.set(eventPageOneBased);
+      this.first.set(event.first ?? 0);
+    }
   }
 
   private initializeDialogData(): void {
@@ -189,7 +217,7 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         switchMap((searchTerm) => {
           this.resetPagination();
-          return this.actions.searchUsers(searchTerm, this.currentPage());
+          return this.actions.searchUsers(searchTerm);
         }),
         takeUntilDestroyed(this.destroyRef)
       )

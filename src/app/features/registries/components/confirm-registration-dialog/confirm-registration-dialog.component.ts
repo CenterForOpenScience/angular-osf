@@ -62,6 +62,8 @@ export class ConfirmRegistrationDialogComponent {
 
   submit(): void {
     const embargoDate = this.form.value.embargoDate ? new Date(this.form.value.embargoDate)?.toISOString() : '';
+    this.form.disable();
+
     this.actions
       .registerDraft(
         this.config.data.draftId,
@@ -71,9 +73,8 @@ export class ConfirmRegistrationDialogComponent {
         this.config.data.components
       )
       .subscribe({
-        complete: () => {
-          this.dialogRef.close(true);
-        },
+        error: () => this.form.enable(),
+        complete: () => this.dialogRef.close(true),
       });
   }
 }

@@ -16,6 +16,7 @@ import {
   OsfFileRevision,
   PatchFileMetadata,
 } from '@osf/features/files/models';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 
 import { FileKind } from '../enums/file-kind.enum';
 import { AddonMapper } from '../mappers/addon.mapper';
@@ -85,10 +86,17 @@ export class FilesService {
       .pipe(map((response) => ({ files: FilesMapper.getFileFolders(response.data), meta: response.meta })));
   }
 
-  getFilesWithoutFiltering(filesLink: string): Observable<FileModel[]> {
-    return this.jsonApiService
-      .get<FilesResponseJsonApi>(filesLink)
-      .pipe(map((response) => FilesMapper.getFiles(response.data)));
+  getFilesWithoutFiltering(filesLink: string, page = 1): Observable<PaginatedData<FileModel[]>> {
+    const params: Record<string, string> = {
+      page: page.toString(),
+    };
+    return this.jsonApiService.get<FilesResponseJsonApi>(filesLink, params).pipe(
+      map((response) => ({
+        data: FilesMapper.getFiles(response.data),
+        totalCount: response.meta.total,
+        pageSize: response.meta.per_page,
+      }))
+    );
   }
 
   uploadFile(

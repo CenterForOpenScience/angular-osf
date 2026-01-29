@@ -4,19 +4,24 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
-import { RegistryOverview } from '../../models';
+import { RegistrationOverviewModel } from '../../models';
 import { ShortRegistrationInfoComponent } from '../short-registration-info/short-registration-info.component';
 
 import { WithdrawnMessageComponent } from './withdrawn-message.component';
 
-import { MOCK_REGISTRY_OVERVIEW } from '@testing/mocks/registry-overview.mock';
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('WithdrawnMessageComponent', () => {
   let component: WithdrawnMessageComponent;
   let fixture: ComponentFixture<WithdrawnMessageComponent>;
 
-  const mockRegistration: RegistryOverview = MOCK_REGISTRY_OVERVIEW;
+  const mockRegistration: RegistrationOverviewModel = {
+    ...MOCK_REGISTRATION_OVERVIEW_MODEL,
+    dateWithdrawn: '2023-06-15T10:30:00Z',
+    withdrawalJustification: 'Test withdrawal justification',
+    withdrawn: true,
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,57 +47,65 @@ describe('WithdrawnMessageComponent', () => {
     expect(component.registration()).toEqual(mockRegistration);
   });
 
-  it('should handle different registration statuses', () => {
-    const statuses = ['withdrawn', 'pending', 'approved', 'rejected'];
-
-    statuses.forEach((status) => {
-      const registrationWithStatus = { ...mockRegistration, status };
-      fixture.componentRef.setInput('registration', registrationWithStatus);
-      fixture.detectChanges();
-
-      expect(component.registration().status).toBe(status);
-    });
-  });
-
-  it('should handle registration with different properties', () => {
-    const complexRegistration: RegistryOverview = {
-      ...mockRegistration,
-      title: 'Complex Registration Title',
-      description: 'A very detailed description of the registration',
-      doi: '10.1234/complex-test',
-      iaUrl: 'https://example.com/complex-test',
-    };
-
-    fixture.componentRef.setInput('registration', complexRegistration);
-    fixture.detectChanges();
-
-    expect(component.registration().title).toBe('Complex Registration Title');
-    expect(component.registration().description).toBe('A very detailed description of the registration');
-    expect(component.registration().doi).toBe('10.1234/complex-test');
-    expect(component.registration().iaUrl).toBe('https://example.com/complex-test');
-  });
-
-  it('should handle registration with minimal data', () => {
-    const minimalRegistration: RegistryOverview = {
-      id: 'minimal-id',
-      title: 'Minimal Title',
-      status: 'withdrawn',
-    } as RegistryOverview;
-
-    fixture.componentRef.setInput('registration', minimalRegistration);
-    fixture.detectChanges();
-
-    expect(component.registration().id).toBe('minimal-id');
-    expect(component.registration().title).toBe('Minimal Title');
-    expect(component.registration().status).toBe('withdrawn');
-  });
-
   it('should be reactive to registration input changes', () => {
-    const updatedRegistration = { ...mockRegistration, title: 'Updated Title' };
+    const updatedRegistration: RegistrationOverviewModel = {
+      ...mockRegistration,
+      dateWithdrawn: '2024-01-20T12:00:00Z',
+      withdrawalJustification: 'Updated justification',
+    };
 
     fixture.componentRef.setInput('registration', updatedRegistration);
     fixture.detectChanges();
 
-    expect(component.registration().title).toBe('Updated Title');
+    expect(component.registration().dateWithdrawn).toBe('2024-01-20T12:00:00Z');
+    expect(component.registration().withdrawalJustification).toBe('Updated justification');
+  });
+
+  it('should handle registration with null withdrawal date', () => {
+    const registrationWithNullDate: RegistrationOverviewModel = {
+      ...mockRegistration,
+      dateWithdrawn: null,
+    };
+
+    fixture.componentRef.setInput('registration', registrationWithNullDate);
+    fixture.detectChanges();
+
+    expect(component.registration().dateWithdrawn).toBeNull();
+  });
+
+  it('should handle different withdrawal dates', () => {
+    const dates = ['2023-01-01T00:00:00Z', '2023-12-31T23:59:59Z', '2024-06-15T10:30:00Z'];
+
+    dates.forEach((date) => {
+      const registrationWithDate: RegistrationOverviewModel = {
+        ...mockRegistration,
+        dateWithdrawn: date,
+      };
+
+      fixture.componentRef.setInput('registration', registrationWithDate);
+      fixture.detectChanges();
+
+      expect(component.registration().dateWithdrawn).toBe(date);
+    });
+  });
+
+  it('should handle different withdrawal justifications', () => {
+    const justifications = [
+      'Short justification',
+      'Very long justification that contains multiple sentences and provides detailed explanation of why the registration was withdrawn.',
+      '',
+    ];
+
+    justifications.forEach((justification) => {
+      const registrationWithJustification: RegistrationOverviewModel = {
+        ...mockRegistration,
+        withdrawalJustification: justification,
+      };
+
+      fixture.componentRef.setInput('registration', registrationWithJustification);
+      fixture.detectChanges();
+
+      expect(component.registration().withdrawalJustification).toBe(justification);
+    });
   });
 });

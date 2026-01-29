@@ -1,4 +1,5 @@
 import { ResourceType } from '@shared/enums/resource-type.enum';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 import {
   IndexCardDataJsonApi,
   IndexCardSearchResponseJsonApi,
@@ -34,7 +35,7 @@ export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResp
       absoluteUrl: resourceMetadata['@id'],
       resourceType: ResourceType[resourceMetadata.resourceType[0]['@id'] as keyof typeof ResourceType],
       name: resourceMetadata.name?.[0]?.['@value'],
-      title: resourceMetadata.title?.[0]?.['@value'],
+      title: replaceBadEncodedChars(resourceMetadata.title?.[0]?.['@value']),
       fileName: resourceMetadata.fileName?.[0]?.['@value'],
       description: resourceMetadata.description?.[0]?.['@value'],
 

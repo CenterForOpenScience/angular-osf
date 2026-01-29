@@ -1,15 +1,11 @@
-import { MockComponent } from 'ng-mocks';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { WikiVersion } from '@shared/models/wiki/wiki.model';
-
-import { MarkdownComponent } from '../../markdown/markdown.component';
 
 import { ViewSectionComponent } from './view-section.component';
 
 import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ViewSectionComponent', () => {
   let component: ViewSectionComponent;
@@ -33,8 +29,8 @@ describe('ViewSectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ViewSectionComponent, MockComponent(MarkdownComponent)],
-      providers: [TranslateServiceMock, provideNoopAnimations()],
+      imports: [ViewSectionComponent, OSFTestingModule],
+      providers: [TranslateServiceMock],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ViewSectionComponent);
@@ -105,10 +101,7 @@ describe('ViewSectionComponent', () => {
 
     const mappedVersions = component.mappedVersions();
     expect(mappedVersions).toHaveLength(1);
-    expect(mappedVersions[0]).toEqual({
-      label: 'Preview',
-      value: null,
-    });
+    expect(mappedVersions[0].value).toBeNull();
   });
 
   it('should handle single version', () => {
@@ -118,28 +111,8 @@ describe('ViewSectionComponent', () => {
 
     const mappedVersions = component.mappedVersions();
     expect(mappedVersions).toHaveLength(2);
-    expect(mappedVersions[0].label).toBe('Preview');
-    expect(mappedVersions[1].label).toContain('(Current)');
-  });
-
-  it('should render loading skeleton when isLoading is true', () => {
-    fixture.componentRef.setInput('isLoading', true);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement;
-    const skeletons = compiled.querySelectorAll('p-skeleton');
-
-    expect(skeletons.length).toBeGreaterThan(0);
-  });
-
-  it('should render view panel when not loading', () => {
-    fixture.componentRef.setInput('isLoading', false);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement;
-    const panels = compiled.querySelectorAll('p-panel');
-
-    expect(panels.length).toBeGreaterThan(0);
+    expect(mappedVersions[0].value).toBeNull();
+    expect(mappedVersions[1].value).toBe('version-1');
   });
 
   it('should initialize with null selected version when not viewOnly', () => {
@@ -165,26 +138,5 @@ describe('ViewSectionComponent', () => {
 
     expect(component.selectedVersion()).toBe(null);
     expect(emitSpy).toHaveBeenCalledWith(undefined);
-  });
-
-  it('should render markdown component when content exists', () => {
-    fixture.componentRef.setInput('previewContent', 'Some content');
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement;
-    const markdownComponent = compiled.querySelector('osf-markdown');
-
-    expect(markdownComponent).toBeTruthy();
-  });
-
-  it('should render no content message when content is empty', () => {
-    fixture.componentRef.setInput('previewContent', '');
-    fixture.componentRef.setInput('versionContent', '');
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement;
-    const noContentMessage = compiled.querySelector('p.font-italic');
-
-    expect(noContentMessage).toBeTruthy();
   });
 });

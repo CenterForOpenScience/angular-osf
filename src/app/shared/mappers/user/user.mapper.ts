@@ -37,6 +37,7 @@ export class UserMapper {
       canViewReviews: user.attributes.can_view_reviews === true, // [NS] Do not simplify it
       timezone: user.attributes.timezone,
       locale: user.attributes.locale,
+      mergedBy: user.links.merged_by,
     };
   }
 

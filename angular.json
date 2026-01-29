@@ -29,8 +29,11 @@
               "cedar-embeddable-editor",
               "cedar-artifact-viewer",
               "markdown-it-video",
+              "markdown-it-anchor",
+              "markdown-it-toc-done-right",
               "ace-builds/src-noconflict/ext-language_tools",
               "@traptitech/markdown-it-katex",
+              "@centerforopenscience/markdown-it-atrules",
               "@citation-js/core",
               "@citation-js/plugin-csl"
             ],
@@ -60,10 +63,39 @@
               "node_modules/ngx-markdown-editor/assets/highlight.js/highlight.min.js",
               "node_modules/ngx-markdown-editor/assets/marked.min.js",
               "src/assets/js/ace/snippetsMarkdown.js"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
+              "outputMode": "static",
+              "server": false,
+              "ssr": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "9MB",
+                  "maximumError": "10MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "20KB",
+                  "maximumError": "25kB"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
+            "ssr": {
+              "outputMode": "server",
+              "server": "src/main.server.ts",
+              "ssr": {
+                "entry": "src/server.ts"
+              },
               "budgets": [
                 {
                   "type": "initial",
@@ -116,57 +148,33 @@
                   "with": "src/environments/environment.staging.ts"
                 }
               ]
-            },
-            "test": {
-              "optimization": true,
-              "extractLicenses": false,
-              "sourceMap": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test.ts"
-                }
-              ]
-            },
-            "test-osf": {
-              "optimization": true,
-              "extractLicenses": false,
-              "sourceMap": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test-osf.ts"
-                }
-              ]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "hmr": false
+          },
           "configurations": {
             "production": {
               "buildTarget": "osf:build:production"
             },
             "development": {
-              "buildTarget": "osf:build:development",
-              "hmr": true
+              "buildTarget": "osf:build:development"
             },
             "docker": {
-              "buildTarget": "osf:build:docker",
-              "hmr": true
+              "buildTarget": "osf:build:docker"
             },
             "staging": {
-              "buildTarget": "osf:build:staging",
-              "hmr": true
+              "buildTarget": "osf:build:staging"
             },
             "test": {
-              "buildTarget": "osf:build:test",
-              "hmr": false
+              "buildTarget": "osf:build:test"
             },
             "test-osf": {
-              "buildTarget": "osf:build:test-osf",
-              "hmr": false
+              "buildTarget": "osf:build:test-osf"
             }
           },
           "defaultConfiguration": "development"

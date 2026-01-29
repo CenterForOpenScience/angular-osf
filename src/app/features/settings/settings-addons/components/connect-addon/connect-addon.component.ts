@@ -6,7 +6,8 @@ import { Button } from 'primeng/button';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
 
-import { Component, computed, DestroyRef, effect, inject, signal, viewChild } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, computed, DestroyRef, effect, inject, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -49,6 +50,8 @@ export class ConnectAddonComponent {
   private readonly toastService = inject(ToastService);
   private readonly oauthService = inject(AddonOAuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly stepper = viewChild(Stepper);
   readonly AddonType = AddonType;
@@ -72,6 +75,16 @@ export class ConnectAddonComponent {
     updateAuthorizedAddon: UpdateAuthorizedAddon,
   });
 
+  redirectUrl = computed(() => {
+    const addon = this.addon();
+    if (!addon || !addon.redirectUrl) {
+      return null;
+    }
+    const openURL = new URL(addon.redirectUrl);
+    openURL.searchParams.set('userIri', this.addonsUserReference()[0]?.attributes.user_uri);
+    return openURL.toString();
+  });
+
   constructor() {
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAccountModel;
     if (!addon) {
@@ -86,7 +99,9 @@ export class ConnectAddonComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.oauthService.stopOAuthTracking();
+      if (this.isBrowser) {
+        this.oauthService.stopOAuthTracking();
+      }
     });
   }
 
@@ -109,6 +124,22 @@ export class ConnectAddonComponent {
     });
   }
 
+  goToService() {
+    if (!this.redirectUrl()) return;
+
+    const newWindow = window.open(
+      this.redirectUrl()!.toString(),
+      '_blank',
+      'popup,width=600,height=600,scrollbars=yes,resizable=yes'
+    );
+    if (newWindow) {
+      this.router.navigate([`${this.baseUrl()}/addons`]);
+      newWindow.focus();
+    } else {
+      this.toastService.showError('addons.redirect.popUpError');
+    }
+  }
+
   private startOauthFlow(createdAddon: AuthorizedAccountModel): void {
     this.addonAuthUrl.set(createdAddon.authUrl!);
     window.open(createdAddon.authUrl!, '_blank');
@@ -122,7 +153,13 @@ export class ConnectAddonComponent {
   }
 
   private showSuccessAndRedirect(createdAddon: AuthorizedAccountModel | null): void {
-    this.router.navigate([`${this.baseUrl()}/addons`]);
+    const addonType = this.addonTypeString()?.toLowerCase();
+    this.router.navigate([`${this.baseUrl()}/addons`], {
+      queryParams: {
+        activeTab: 1,
+        addonType: addonType,
+      },
+    });
     this.toastService.showSuccess('settings.addons.toast.createSuccess', {
       addonName: AddonServiceNames[createdAddon?.externalServiceName as keyof typeof AddonServiceNames],
     });

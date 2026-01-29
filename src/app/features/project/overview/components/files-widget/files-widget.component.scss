@@ -2,3 +2,19 @@
   border: 1px solid var(--grey-2);
   border-radius: 0.75rem;
 }
+
+.addon-tab:hover {
+  .addon-option {
+    background-color: var(--grey-3);
+  }
+}
+
+.addon-option {
+  color: var(--grey-4);
+  line-height: 1.5rem;
+  padding: 0.625rem 1rem;
+
+  &.selected {
+    color: var(--dark-blue-1);
+  }
+}

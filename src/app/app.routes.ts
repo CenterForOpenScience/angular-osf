@@ -4,10 +4,10 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from '@core/guards/auth.guard';
 import { isFileGuard } from '@core/guards/is-file.guard';
+import { isProjectGuard } from '@core/guards/is-project.guard';
+import { isRegistryGuard } from '@core/guards/is-registry.guard';
 import { redirectIfLoggedInGuard } from '@core/guards/redirect-if-logged-in.guard';
 
-import { isProjectGuard } from './core/guards/is-project.guard';
-import { isRegistryGuard } from './core/guards/is-registry.guard';
 import { MyPreprintsState } from './features/preprints/store/my-preprints';
 import { ProfileState } from './features/profile/store';
 import { RegistriesState } from './features/registries/store';
@@ -74,7 +74,10 @@ export const routes: Routes = [
       {
         path: 'my-registrations',
         canActivate: [authGuard],
-        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
+        loadComponent: () =>
+          import('@osf/features/registries/pages/my-registrations/my-registrations.component').then(
+            (c) => c.MyRegistrationsComponent
+          ),
         providers: [
           provideStates([RegistriesState]),
           ProvidersHandlers,
@@ -96,6 +99,13 @@ export const routes: Routes = [
       {
         path: 'preprints',
         loadChildren: () => import('./features/preprints/preprints.routes').then((mod) => mod.preprintsRoutes),
+      },
+      {
+        path: 'preprints/:providerId/:id/pending-moderation',
+        loadComponent: () =>
+          import(
+            '@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component'
+          ).then((mod) => mod.PreprintPendingModerationComponent),
       },
       {
         path: 'preprints/:providerId/:id',
@@ -166,7 +176,7 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: ':id/files/:provider/:fileId',
+        path: 'project/:id/node/:nodeId/files/:provider/:fileId',
         loadComponent: () =>
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },
@@ -176,7 +186,7 @@ export const routes: Routes = [
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },
       {
-        path: 'project/:id/node/:nodeId/files/:provider/:fileId',
+        path: ':id/files/:provider/:fileId',
         loadComponent: () =>
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },
@@ -189,13 +199,11 @@ export const routes: Routes = [
         path: ':id',
         canMatch: [isProjectGuard],
         loadChildren: () => import('./features/project/project.routes').then((m) => m.projectRoutes),
-        providers: [provideStates([ProjectsState, BookmarksState])],
       },
       {
         path: ':id',
         canMatch: [isRegistryGuard],
         loadChildren: () => import('./features/registry/registry.routes').then((m) => m.registryRoutes),
-        providers: [provideStates([BookmarksState])],
       },
       {
         path: '**',

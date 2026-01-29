@@ -22,7 +22,7 @@ export interface WikisWithMeta {
 export interface WikiVersion {
   id: string;
   createdAt: string;
-  createdBy: string;
+  createdBy: string | undefined;
 }
 
 export interface ComponentWiki {

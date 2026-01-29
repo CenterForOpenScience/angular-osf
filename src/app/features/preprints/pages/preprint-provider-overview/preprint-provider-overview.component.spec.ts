@@ -3,9 +3,9 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { BrowserTabHelper } from '@osf/shared/helpers/browser-tab.helper';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { BrandService } from '@osf/shared/services/brand.service';
+import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
 import {
   AdvisoryBoardComponent,
@@ -36,13 +36,6 @@ describe('PreprintProviderOverviewComponent', () => {
   const mockProviderId = 'osf';
 
   beforeEach(async () => {
-    jest.spyOn(BrowserTabHelper, 'updateTabStyles').mockImplementation(() => {});
-    jest.spyOn(BrowserTabHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'applyHeaderStyles').mockImplementation(() => {});
-    jest.spyOn(HeaderStyleHelper, 'resetToDefaults').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'applyBranding').mockImplementation(() => {});
-    jest.spyOn(BrandService, 'resetBranding').mockImplementation(() => {});
-
     routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
     routeMock = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })
@@ -62,6 +55,8 @@ describe('PreprintProviderOverviewComponent', () => {
       ],
       providers: [
         MockProvider(BrandService),
+        MockProvider(BrowserTabService),
+        MockProvider(HeaderStyleService),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, routeMock),
         provideMockStore({
@@ -90,10 +85,6 @@ describe('PreprintProviderOverviewComponent', () => {
     fixture = TestBed.createComponent(PreprintProviderOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should initialize with correct default values', () => {

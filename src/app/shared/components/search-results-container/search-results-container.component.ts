@@ -2,7 +2,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { NgTemplateOutlet } from '@angular/common';
 import {
@@ -38,9 +37,6 @@ import { SelectComponent } from '../select/select.component';
     TranslatePipe,
     SelectComponent,
     NgTemplateOutlet,
-    Tab,
-    TabList,
-    Tabs,
     LoadingSpinnerComponent,
   ],
   templateUrl: './search-results-container.component.html',
@@ -85,6 +81,10 @@ export class SearchResultsContainerComponent {
   }
 
   selectTab(value?: ResourceType): void {
+    if (value === this.selectedTab()) {
+      return;
+    }
+
     this.tabChanged.emit(value !== undefined ? value : this.selectedTab());
   }
 

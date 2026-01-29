@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ADDON_TERMS } from '@osf/shared/constants/addon-terms.const';
-import { isCitationAddon } from '@osf/shared/helpers/addon-type.helper';
+import { isCitationAddon, isRedirectAddon } from '@osf/shared/helpers/addon-type.helper';
 import { AddonModel } from '@osf/shared/models/addons/addon.model';
 import { AddonTerm } from '@osf/shared/models/addons/addon-utils.models';
 
@@ -12,12 +12,14 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 
 jest.mock('@shared/helpers/addon-type.helper.ts', () => ({
   isCitationAddon: jest.fn(),
+  isRedirectAddon: jest.fn(),
 }));
 
 describe('AddonTermsComponent', () => {
   let component: AddonTermsComponent;
   let fixture: ComponentFixture<AddonTermsComponent>;
   const mockIsCitationAddon = isCitationAddon as jest.MockedFunction<typeof isCitationAddon>;
+  const mockIsRedirectAddon = isRedirectAddon as jest.MockedFunction<typeof isRedirectAddon>;
   const mockAddon: AddonModel = MOCK_ADDON;
 
   beforeEach(async () => {
@@ -29,6 +31,7 @@ describe('AddonTermsComponent', () => {
     component = fixture.componentInstance;
 
     mockIsCitationAddon.mockReturnValue(false);
+    mockIsRedirectAddon.mockReturnValue(false);
   });
 
   it('should create', () => {
@@ -211,5 +214,24 @@ describe('AddonTermsComponent', () => {
     const hasDangerTerm = terms.some((term: AddonTerm) => term.type === 'danger');
 
     expect(hasInfoTerm || hasWarningTerm || hasDangerTerm).toBe(true);
+  });
+
+  it('should handle redirect terms correctly', () => {
+    const redirectAddon: AddonModel = {
+      ...mockAddon,
+      type: 'redirect',
+    };
+
+    mockIsRedirectAddon.mockReturnValue(true);
+    fixture.componentRef.setInput('addon', redirectAddon);
+    fixture.detectChanges();
+
+    const terms = component.terms();
+    expect(terms).toEqual([]);
+
+    const termsElement: HTMLElement = fixture.nativeElement;
+    expect(termsElement.querySelectorAll('tr').length).toBe(0);
+    expect(termsElement.querySelectorAll('p').length).toBe(2);
+    expect(termsElement.textContent).toContain('settings.addons.connectAddon.redirectAddons.terms');
   });
 });

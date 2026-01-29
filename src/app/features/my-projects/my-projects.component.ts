@@ -8,6 +8,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,6 +17,7 @@ import {
   effect,
   inject,
   OnInit,
+  PLATFORM_ID,
   signal,
   untracked,
 } from '@angular/core';
@@ -79,6 +81,8 @@ export class MyProjectsComponent implements OnInit {
   readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
   readonly queryService = inject(MyProjectsQueryService);
   readonly tableParamsService = inject(MyProjectsTableParamsService);
+  readonly platformId = inject(PLATFORM_ID);
+  readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly isLoading = signal(false);
   readonly isMedium = toSignal(inject(IS_MEDIUM));
@@ -186,7 +190,9 @@ export class MyProjectsComponent implements OnInit {
 
   private setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.actions.clearMyProjects();
+      if (this.isBrowser) {
+        this.actions.clearMyProjects();
+      }
     });
   }
 

@@ -10,15 +10,14 @@ import { Router } from '@angular/router';
 
 import { PreprintsHelpDialogComponent } from '@osf/features/preprints/components';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { RegistryProviderDetails } from '@shared/models/provider/registry-provider.model';
-import { DecodeHtmlPipe } from '@shared/pipes/decode-html.pipe';
 
 @Component({
   selector: 'osf-registry-provider-hero',
-  imports: [DecodeHtmlPipe, SearchInputComponent, Skeleton, TitleCasePipe, TranslatePipe, Button],
+  imports: [SearchInputComponent, Skeleton, TitleCasePipe, TranslatePipe, Button],
   templateUrl: './registry-provider-hero.component.html',
   styleUrl: './registry-provider-hero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +25,8 @@ import { DecodeHtmlPipe } from '@shared/pipes/decode-html.pipe';
 export class RegistryProviderHeroComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly customDialogService = inject(CustomDialogService);
+  private readonly brandService = inject(BrandService);
+  private readonly headerStyleHelper = inject(HeaderStyleService);
 
   private readonly WHITE = '#ffffff';
   searchControl = input<FormControl>(new FormControl());
@@ -42,8 +43,8 @@ export class RegistryProviderHeroComponent implements OnDestroy {
       const provider = this.provider();
 
       if (provider?.brand) {
-        BrandService.applyBranding(provider.brand);
-        HeaderStyleHelper.applyHeaderStyles(
+        this.brandService.applyBranding(provider.brand);
+        this.headerStyleHelper.applyHeaderStyles(
           this.WHITE,
           provider.brand.primaryColor,
           provider.brand.heroBackgroundImageUrl
@@ -53,8 +54,8 @@ export class RegistryProviderHeroComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    HeaderStyleHelper.resetToDefaults();
-    BrandService.resetBranding();
+    this.headerStyleHelper.resetToDefaults();
+    this.brandService.resetBranding();
   }
 
   openHelpDialog() {

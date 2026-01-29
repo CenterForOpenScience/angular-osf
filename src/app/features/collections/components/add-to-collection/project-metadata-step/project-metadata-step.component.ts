@@ -13,6 +13,7 @@ import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,6 +23,7 @@ import {
   inject,
   input,
   output,
+  PLATFORM_ID,
   signal,
   untracked,
 } from '@angular/core';
@@ -29,7 +31,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
-import { ProjectMetadataForm } from '@osf/features/collections/models';
+import { ProjectMetadataForm } from '@osf/features/collections/models/project-metadata-form.model';
 import { ProjectMetadataFormService } from '@osf/features/collections/services';
 import { AddToCollectionSelectors, GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection';
 import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
@@ -75,6 +77,9 @@ export class ProjectMetadataStepComponent {
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formService = inject(ProjectMetadataFormService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+
   readonly currentYear = new Date();
 
   readonly ProjectMetadataFormControls = ProjectMetadataFormControls;
@@ -244,7 +249,9 @@ export class ProjectMetadataStepComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearProjects();
+      if (this.isBrowser) {
+        this.actions.clearProjects();
+      }
     });
   }
 }

@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { Router } from '@angular/router';
 
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { FilesSelectors } from '../../store';
 
@@ -22,11 +22,12 @@ import { FilesSelectors } from '../../store';
 })
 export class FileResourceMetadataComponent {
   private readonly router = inject(Router);
+  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   resourceType = input<string>('nodes');
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   contributors = select(FilesSelectors.getContributors);
   isResourceMetadataLoading = select(FilesSelectors.isResourceMetadataLoading);
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 }

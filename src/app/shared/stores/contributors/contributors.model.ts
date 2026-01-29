@@ -5,23 +5,28 @@ import { RequestAccessModel } from '@shared/models/request-access/request-access
 import { AsyncStateModel } from '@shared/models/store/async-state.model';
 import { AsyncStateWithTotalCount } from '@shared/models/store/async-state-with-total-count.model';
 
-export interface ContributorsList extends AsyncStateWithTotalCount<ContributorModel[]> {
+interface ContributorsList extends AsyncStateWithTotalCount<ContributorModel[]> {
   page: number;
   pageSize: number;
 }
 
-export interface ContributorsListWithFiltersModel extends ContributorsList {
+interface ContributorsListWithFiltersModel extends ContributorsList {
   searchValue: string | null;
   permissionFilter: string | null;
   bibliographyFilter: boolean | null;
   isLoadingMore: boolean;
 }
 
+interface UserListModel extends AsyncStateWithTotalCount<ContributorAddModel[]> {
+  next: string | null;
+  previous: string | null;
+}
+
 export interface ContributorsStateModel {
   contributorsList: ContributorsListWithFiltersModel;
   bibliographicContributorsList: ContributorsList;
   requestAccessList: AsyncStateModel<RequestAccessModel[]>;
-  users: AsyncStateWithTotalCount<ContributorAddModel[]>;
+  users: UserListModel;
 }
 
 export const CONTRIBUTORS_STATE_DEFAULTS: ContributorsStateModel = {
@@ -56,5 +61,7 @@ export const CONTRIBUTORS_STATE_DEFAULTS: ContributorsStateModel = {
     isLoading: false,
     error: null,
     totalCount: 0,
+    next: null,
+    previous: null,
   },
 };

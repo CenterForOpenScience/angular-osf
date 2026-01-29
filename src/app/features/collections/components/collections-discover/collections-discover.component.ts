@@ -6,7 +6,17 @@ import { Button } from 'primeng/button';
 
 import { debounceTime } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -14,10 +24,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
-import { HeaderStyleHelper } from '@osf/shared/helpers/header-style.helper';
 import { CollectionsFilters } from '@osf/shared/models/collections/collections-filters.model';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import {
   ClearCollections,
   ClearCollectionSubmissions,
@@ -54,6 +64,10 @@ export class CollectionsDiscoverComponent {
   private customDialogService = inject(CustomDialogService);
   private querySyncService = inject(CollectionsQuerySyncService);
   private destroyRef = inject(DestroyRef);
+  private brandService = inject(BrandService);
+  private headerStyleHelper = inject(HeaderStyleService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   searchControl = new FormControl('');
   providerId = signal<string>('');
@@ -118,8 +132,8 @@ export class CollectionsDiscoverComponent {
       const provider = this.collectionProvider();
 
       if (provider && provider.brand) {
-        BrandService.applyBranding(provider.brand);
-        HeaderStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
+        this.brandService.applyBranding(provider.brand);
+        this.headerStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
       }
     });
 
@@ -150,9 +164,11 @@ export class CollectionsDiscoverComponent {
     });
 
     this.destroyRef.onDestroy(() => {
-      this.actions.clearCollections();
-      HeaderStyleHelper.resetToDefaults();
-      BrandService.resetBranding();
+      if (this.isBrowser) {
+        this.actions.clearCollections();
+        this.headerStyleHelper.resetToDefaults();
+        this.brandService.resetBranding();
+      }
     });
   }
 

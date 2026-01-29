@@ -50,6 +50,7 @@
 
       <osf-settings-project-affiliation
         [canEdit]="hasWriteAccess()"
+        [canRemove]="hasAdminAccess()"
         [affiliations]="projectDetails().affiliatedInstitutions"
         (removed)="removeAffiliation($event)"
       ></osf-settings-project-affiliation>

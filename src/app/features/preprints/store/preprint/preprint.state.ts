@@ -12,7 +12,7 @@ import { FilesService } from '@osf/shared/services/files.service';
 import { PreprintsService } from '../../services';
 
 import {
-  FetchPreprintById,
+  FetchPreprintDetails,
   FetchPreprintFile,
   FetchPreprintFileVersions,
   FetchPreprintMetrics,
@@ -20,7 +20,7 @@ import {
   FetchPreprintRequests,
   FetchPreprintReviewActions,
   FetchPreprintVersionIds,
-  ResetState,
+  ResetPreprintState,
   SubmitRequestsDecision,
   SubmitReviewsDecision,
   WithdrawPreprint,
@@ -36,8 +36,8 @@ export class PreprintState {
   private preprintsService = inject(PreprintsService);
   private fileService = inject(FilesService);
 
-  @Action(FetchPreprintById)
-  fetchPreprintById(ctx: StateContext<PreprintStateModel>, action: FetchPreprintById) {
+  @Action(FetchPreprintDetails)
+  fetchPreprintDetails(ctx: StateContext<PreprintStateModel>, action: FetchPreprintDetails) {
     ctx.setState(
       patch({
         preprint: patch({ isLoading: true, data: null }),
@@ -213,7 +213,7 @@ export class PreprintState {
     return this.preprintsService.submitRequestsDecision(action.requestId, action.trigger, action.comment);
   }
 
-  @Action(ResetState)
+  @Action(ResetPreprintState)
   resetState(ctx: StateContext<PreprintStateModel>) {
     ctx.setState(patch({ ...DefaultState }));
   }

@@ -3,62 +3,76 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PaginatorState } from 'primeng/paginator';
-import { Skeleton } from 'primeng/skeleton';
 
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
+import { map, of } from 'rxjs';
+
+import { isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
-import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@shared/constants/activity-logs';
-import {
-  ActivityLogsSelectors,
-  ClearActivityLogsStore,
-  GetRegistrationActivityLogs,
-} from '@shared/stores/activity-logs';
+import { RecentActivityListComponent } from '@osf/shared/components/recent-activity/recent-activity-list.component';
+import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@osf/shared/constants/activity-logs';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ActivityLogsSelectors, ClearActivityLogs, GetActivityLogs } from '@osf/shared/stores/activity-logs';
 
 @Component({
   selector: 'osf-registration-recent-activity',
-  imports: [TranslatePipe, DatePipe, CustomPaginatorComponent, Skeleton],
+  imports: [RecentActivityListComponent, TranslatePipe],
   templateUrl: './registration-recent-activity.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationRecentActivityComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
-  readonly environment = inject(ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  readonly pageSize = this.environment.activityLogs?.pageSize ?? ACTIVITY_LOGS_DEFAULT_PAGE_SIZE;
+  readonly pageSize = ACTIVITY_LOGS_DEFAULT_PAGE_SIZE;
 
-  private readonly registrationId: string = (this.route.snapshot.params['id'] ??
-    this.route.parent?.snapshot.params['id']) as string;
+  readonly registrationId = toSignal<string | undefined>(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
 
   currentPage = signal<number>(1);
 
-  formattedActivityLogs = select(ActivityLogsSelectors.getFormattedActivityLogs);
+  activityLogs = select(ActivityLogsSelectors.getActivityLogs);
   totalCount = select(ActivityLogsSelectors.getActivityLogsTotalCount);
   isLoading = select(ActivityLogsSelectors.getActivityLogsLoading);
 
   firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize);
 
-  actions = createDispatchMap({
-    getRegistrationActivityLogs: GetRegistrationActivityLogs,
-    clearActivityLogsStore: ClearActivityLogsStore,
-  });
+  actions = createDispatchMap({ getActivityLogs: GetActivityLogs, clearActivityLogsStore: ClearActivityLogs });
 
   constructor() {
-    this.actions.getRegistrationActivityLogs(this.registrationId, 1, this.pageSize);
+    effect(() => {
+      const registrationId = this.registrationId();
+      const page = this.currentPage();
+
+      if (registrationId) {
+        this.actions.getActivityLogs(registrationId, CurrentResourceType.Registrations, page, this.pageSize);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.isBrowser) {
+      this.actions.clearActivityLogsStore();
+    }
   }
 
   onPageChange(event: PaginatorState) {
     if (event.page !== undefined) {
       const pageNumber = event.page + 1;
       this.currentPage.set(pageNumber);
-      this.actions.getRegistrationActivityLogs(this.registrationId, pageNumber, this.pageSize);
     }
-  }
-
-  ngOnDestroy(): void {
-    this.actions.clearActivityLogsStore();
   }
 }

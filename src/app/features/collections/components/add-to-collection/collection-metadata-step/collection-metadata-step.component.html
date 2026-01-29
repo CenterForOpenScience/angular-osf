@@ -8,22 +8,25 @@
     <ng-template #content>
       <div class="flex flex-column gap-4 w-full">
         <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>
+
         @if (!isDisabled() && stepperActiveValue() !== targetStepValue()) {
           @if (collectionMetadataSaved()) {
             @for (filterEntry of availableFilterEntries(); track filterEntry.key) {
               <div>
                 <p class="font-bold">{{ filterEntry.labelKey | translate }}</p>
+
                 <p class="mt-2">
                   {{ collectionMetadataForm().get(filterEntry.key)?.value }}
                 </p>
               </div>
             }
           }
+
           <p-button
-            (click)="handleEditStep()"
-            severity="secondary"
             class="align-self-end"
+            severity="secondary"
             [label]="'common.buttons.clickToEdit' | translate"
+            (onClick)="handleEditStep()"
           ></p-button>
         }
       </div>
@@ -46,16 +49,17 @@
           </div>
         }
       </form>
-      <div class="flex mt-4 justify-content-end gap-3">
+
+      <div class="flex justify-content-end gap-3 mt-4">
         <p-button
-          (click)="handleDiscardChanges()"
           severity="info"
           [label]="'common.buttons.discardChanges' | translate"
+          (onClick)="handleDiscardChanges()"
         />
         <p-button
           [label]="'common.buttons.saveAndContinue' | translate"
           [disabled]="!collectionMetadataForm().valid"
-          (click)="handleSaveMetadata()"
+          (onClick)="handleSaveMetadata()"
         />
       </div>
     </ng-template>

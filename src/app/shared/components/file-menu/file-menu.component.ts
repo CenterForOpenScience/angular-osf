@@ -8,8 +8,8 @@ import { Component, computed, inject, input, output, viewChild } from '@angular/
 import { Router } from '@angular/router';
 
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
-import { hasViewOnlyParam } from '@osf/shared/helpers/view-only.helper';
 import { MenuManagerService } from '@osf/shared/services/menu-manager.service';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { FileMenuAction, FileMenuData, FileMenuFlags } from '@shared/models/files/file-menu-action.model';
 
 @Component({
@@ -21,12 +21,14 @@ import { FileMenuAction, FileMenuData, FileMenuFlags } from '@shared/models/file
 export class FileMenuComponent {
   private router = inject(Router);
   private menuManager = inject(MenuManagerService);
+  private viewOnlyService = inject(ViewOnlyLinkHelperService);
+
   isFolder = input<boolean>(false);
   allowedActions = input<FileMenuFlags>({} as FileMenuFlags);
   menu = viewChild.required<TieredMenu>('menu');
   action = output<FileMenuAction>();
 
-  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   private readonly allMenuItems: MenuItem[] = [
     {
