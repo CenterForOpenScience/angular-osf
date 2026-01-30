@@ -2645,6 +2645,7 @@
       },
       "metadata": {
         "type": "Registration Type",
+        "registry": "Registry",
         "registeredDate": "Date registered",
         "doi": "Registration DOI",
         "associatedProject": "Associated project"
