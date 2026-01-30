@@ -47,8 +47,8 @@ export class InstitutionsService {
       .pipe(map((response) => InstitutionsMapper.fromResponseWithMeta(response)));
   }
 
-  getUserInstitutions(): Observable<Institution[]> {
-    const url = `${this.apiUrl}/users/me/institutions/`;
+  getUserInstitutions(userId: string): Observable<Institution[]> {
+    const url = `${this.apiUrl}/users/${userId}/institutions/`;
 
     return this.jsonApiService
       .get<InstitutionsJsonApiResponse>(url)

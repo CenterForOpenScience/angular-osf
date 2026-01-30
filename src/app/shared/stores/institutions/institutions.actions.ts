@@ -3,6 +3,7 @@ import { Institution } from '@shared/models/institutions/institutions.models';
 
 export class FetchUserInstitutions {
   static readonly type = '[Institutions] Fetch User Institutions';
+  constructor(public userId = 'me') {}
 }
 
 export class FetchInstitutions {
