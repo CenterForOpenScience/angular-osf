@@ -37,6 +37,7 @@ export interface PreprintAttributesJsonApi {
   why_no_prereg: StringOrNull;
   prereg_links: string[];
   prereg_link_info: PreregLinkInfo | null;
+  default_license_id: string;
 }
 
 export interface PreprintRelationshipsJsonApi {

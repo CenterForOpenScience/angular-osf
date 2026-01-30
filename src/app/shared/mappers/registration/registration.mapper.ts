@@ -47,6 +47,7 @@ export class RegistrationMapper {
           },
       providerId: response.relationships.provider?.data?.id || '',
       hasProject: !!response.attributes.has_project,
+      defaultLicenseId: response.attributes?.default_license_id,
       components: [],
       currentUserPermissions: response.attributes.current_user_permissions,
     };
