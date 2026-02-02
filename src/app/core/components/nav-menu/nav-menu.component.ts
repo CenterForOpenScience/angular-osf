@@ -44,10 +44,12 @@ export class NavMenuComponent {
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   private readonly provider = select(ProviderSelectors.getCurrentProvider);
+  private readonly translationsReady = toSignal(this.translateService.stream('navigation.overview'));
 
   readonly actions = createDispatchMap({ getResourceDetails: GetResourceDetails });
 
   readonly mainMenuItems = computed(() => {
+    this.translationsReady();
     const isAuthenticated = this.isAuthenticated();
     const filtered = filterMenuItems(MENU_ITEMS, isAuthenticated);
 
