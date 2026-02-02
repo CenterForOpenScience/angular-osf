@@ -20,6 +20,7 @@
       [virtualScrollItemSize]="40"
       scrollHeight="200px"
       [autoOptionFocus]="false"
+      [emptyFilterMessage]="filterMessage() | translate"
       [loading]="isPaginationLoading() || isSearchLoading()"
       (onFilter)="onFilterChange($event)"
       (onChange)="onMultiChange($event)"
