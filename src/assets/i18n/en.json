@@ -84,6 +84,7 @@
     "search": {
       "title": "Search",
       "noResultsFound": "No results found.",
+      "loading": "Loading results",
       "tabs": {
         "all": "All",
         "preprints": "Preprints",
