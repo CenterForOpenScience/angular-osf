@@ -154,7 +154,7 @@ describe('FundingDialogComponent', () => {
 
     expect(entry.get('funderName')?.value).toBe('Test Funder');
     expect(entry.get('funderIdentifier')?.value).toBe('https://ror.org/0test');
-    expect(entry.get('funderIdentifierType')?.value).toBe('ROR ID');
+    expect(entry.get('funderIdentifierType')?.value).toBe('ROR');
   });
 
   it('should remove funding entry when more than one exists', () => {
