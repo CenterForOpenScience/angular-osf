@@ -2,6 +2,11 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.2.1 (2026-02-03)
+===================
+
+* Hotfix for navigation translations and contributor search
+
 26.2.0 (2026-01-29)
 ===================
 
