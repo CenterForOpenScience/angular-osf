@@ -5,3 +5,4 @@ export * from './funding-dialog.model';
 export * from './metadata.model';
 export * from './metadata-json-api.model';
 export * from './resource-information-form.model';
+export * from './ror.model';

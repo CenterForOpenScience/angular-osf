@@ -33,15 +33,6 @@ export class FundingDialogComponent implements OnInit {
 
   fundersList = select(MetadataSelectors.getFundersList);
   fundersLoading = select(MetadataSelectors.getFundersLoading);
-  funderOptions = computed(() => {
-    const funders = this.fundersList() || [];
-    return funders.map((funder) => ({
-      label: funder.name,
-      value: funder.name,
-      id: funder.id,
-      uri: funder.uri,
-    }));
-  });
 
   fundingForm = new FormGroup<FundingForm>({ fundingEntries: new FormArray<FormGroup<FundingEntryForm>>([]) });
 
@@ -132,8 +123,8 @@ export class FundingDialogComponent implements OnInit {
       const entry = this.fundingEntries.at(index);
       entry.patchValue({
         funderName: selectedFunder.name,
-        funderIdentifier: selectedFunder.uri,
-        funderIdentifierType: 'Crossref Funder ID',
+        funderIdentifier: selectedFunder.id,
+        funderIdentifierType: 'ROR',
       });
     }
   }

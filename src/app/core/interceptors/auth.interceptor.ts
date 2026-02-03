@@ -9,7 +9,7 @@ export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
-  if (req.url.includes('/api.crossref.org/funders')) {
+  if (req.url.includes('/api.ror')) {
     return next(req);
   }
 

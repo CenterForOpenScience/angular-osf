@@ -118,9 +118,9 @@ export class MetadataState {
     });
 
     return this.metadataService.getFundersList(action.search).pipe(
-      tap((response) => {
+      tap((options) => {
         ctx.patchState({
-          fundersList: { data: response.message.items, isLoading: false, error: null },
+          fundersList: { data: options, isLoading: false, error: null },
         });
       }),
       catchError((error) => handleSectionError(ctx, 'fundersList', error))
