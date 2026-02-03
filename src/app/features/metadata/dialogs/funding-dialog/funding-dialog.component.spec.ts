@@ -1,12 +1,14 @@
+import { Store } from '@ngxs/store';
+
 import { MockProvider, MockProviders } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { DestroyRef } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DestroyRef, signal } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { RorFunderOption } from '../../models/ror.model';
-import { MetadataSelectors } from '../../store';
+import { GetFundersList, MetadataSelectors } from '../../store';
 
 import { FundingDialogComponent } from './funding-dialog.component';
 
@@ -43,22 +45,15 @@ describe('FundingDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should add funding entry', () => {
-    const initialLength = component.fundingEntries.length;
-    component.addFundingEntry();
-
-    expect(component.fundingEntries.length).toBe(initialLength + 1);
-    const entry = component.fundingEntries.at(component.fundingEntries.length - 1);
-    expect(entry.get('funderName')?.value).toBe(null);
-    expect(entry.get('awardTitle')?.value).toBe('');
-  });
-
-  it('should not remove funding entry when only one exists', () => {
+  it('should not remove last funding entry and close dialog with empty result', () => {
+    const dialogRef = TestBed.inject(DynamicDialogRef);
+    const closeSpy = jest.spyOn(dialogRef, 'close');
     expect(component.fundingEntries.length).toBe(1);
 
     component.removeFundingEntry(0);
 
     expect(component.fundingEntries.length).toBe(1);
+    expect(closeSpy).toHaveBeenCalledWith({ fundingEntries: [] });
   });
 
   it('should save valid form data', () => {
@@ -165,13 +160,6 @@ describe('FundingDialogComponent', () => {
     expect(component.fundingEntries.length).toBe(1);
   });
 
-  it('should not remove funding entry when only one exists', () => {
-    expect(component.fundingEntries.length).toBe(1);
-
-    component.removeFundingEntry(0);
-    expect(component.fundingEntries.length).toBe(1);
-  });
-
   it('should not remove funding entry when index is out of bounds', () => {
     component.addFundingEntry();
     const initialLength = component.fundingEntries.length;
@@ -239,32 +227,117 @@ describe('FundingDialogComponent', () => {
     expect(entry.get('awardNumber')?.value).toBe('');
   });
 
-  it('should emit search query to searchSubject', () => {
-    const searchSpy = jest.spyOn(component['searchSubject'], 'next');
+  it('should dispatch getFundersList after debounce when searching', fakeAsync(() => {
+    const store = TestBed.inject(Store);
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-    component.onFunderSearch('test search');
+    component.onFunderSearch('query');
+    expect(dispatchSpy).not.toHaveBeenCalled();
+    tick(300);
+    expect(dispatchSpy).toHaveBeenCalledWith(new GetFundersList('query'));
+  }));
 
-    expect(searchSpy).toHaveBeenCalledWith('test search');
+  it('should pre-populate entries from config funders on init', () => {
+    TestBed.resetTestingModule();
+    const configFunders = [
+      {
+        funderName: 'NSF',
+        funderIdentifier: 'https://ror.org/nsf',
+        funderIdentifierType: 'ROR',
+        awardTitle: 'Grant A',
+        awardUri: 'https://example.com/a',
+        awardNumber: '123',
+      },
+    ];
+    TestBed.configureTestingModule({
+      imports: [FundingDialogComponent, OSFTestingModule],
+      providers: [
+        MockProviders(DynamicDialogRef, DestroyRef),
+        MockProvider(DynamicDialogConfig, { data: { funders: configFunders } }),
+        provideMockStore({
+          signals: [
+            { selector: MetadataSelectors.getFundersList, value: [] },
+            { selector: MetadataSelectors.getFundersLoading, value: false },
+          ],
+        }),
+      ],
+    }).compileComponents();
+    const f = TestBed.createComponent(FundingDialogComponent);
+    f.detectChanges();
+    const c = f.componentInstance;
+    expect(c.fundingEntries.length).toBe(1);
+    const entry = c.fundingEntries.at(0);
+    expect(entry.get('funderName')?.value).toBe('NSF');
+    expect(entry.get('funderIdentifier')?.value).toBe('https://ror.org/nsf');
+    expect(entry.get('funderIdentifierType')?.value).toBe('ROR');
+    expect(entry.get('awardTitle')?.value).toBe('Grant A');
+    expect(entry.get('awardUri')?.value).toBe('https://example.com/a');
+    expect(entry.get('awardNumber')?.value).toBe('123');
   });
 
-  it('should handle empty search term', () => {
-    const searchSpy = jest.spyOn(component['searchSubject'], 'next');
-
-    component.onFunderSearch('');
-
-    expect(searchSpy).toHaveBeenCalledWith('');
+  it('getOptionsForIndex returns custom option plus list when entry name is not in list', () => {
+    const entry = component.fundingEntries.at(0);
+    entry.patchValue({ funderName: 'Custom Funder', funderIdentifier: 'custom-id' });
+    const options = component.getOptionsForIndex(0);
+    expect(options).toHaveLength(2);
+    expect(options[0]).toEqual({ id: 'custom-id', name: 'Custom Funder' });
+    expect(options[1]).toEqual(MOCK_ROR_FUNDERS[0]);
   });
 
-  it('should handle multiple search calls', () => {
-    const searchSpy = jest.spyOn(component['searchSubject'], 'next');
+  it('getOptionsForIndex returns list when entry has no name', () => {
+    const options = component.getOptionsForIndex(0);
+    expect(options).toEqual(MOCK_ROR_FUNDERS);
+  });
 
-    component.onFunderSearch('first');
-    component.onFunderSearch('second');
-    component.onFunderSearch('third');
+  it('filterMessage returns loading key when funders loading', () => {
+    TestBed.resetTestingModule();
+    const loadingSignal = signal(true);
+    TestBed.configureTestingModule({
+      imports: [FundingDialogComponent, OSFTestingModule],
+      providers: [
+        MockProviders(DynamicDialogRef, DestroyRef),
+        MockProvider(DynamicDialogConfig, { data: { funders: [] } }),
+        provideMockStore({
+          signals: [
+            { selector: MetadataSelectors.getFundersList, value: [] },
+            { selector: MetadataSelectors.getFundersLoading, value: loadingSignal },
+          ],
+        }),
+      ],
+    }).compileComponents();
+    const f = TestBed.createComponent(FundingDialogComponent);
+    f.detectChanges();
+    expect(f.componentInstance.filterMessage()).toBe('project.metadata.funding.dialog.loadingFunders');
+    loadingSignal.set(false);
+    expect(f.componentInstance.filterMessage()).toBe('project.metadata.funding.dialog.noFundersFound');
+  });
 
-    expect(searchSpy).toHaveBeenCalledTimes(3);
-    expect(searchSpy).toHaveBeenNthCalledWith(1, 'first');
-    expect(searchSpy).toHaveBeenNthCalledWith(2, 'second');
-    expect(searchSpy).toHaveBeenNthCalledWith(3, 'third');
+  it('save returns only entries with at least one of funderName, awardTitle, awardUri, awardNumber', () => {
+    const dialogRef = TestBed.inject(DynamicDialogRef);
+    const closeSpy = jest.spyOn(dialogRef, 'close');
+    component.addFundingEntry();
+    component.fundingEntries.at(0).patchValue({ funderName: 'Funder A', awardTitle: 'Award A' });
+    component.fundingEntries.at(1).patchValue({ funderName: 'Funder B', awardTitle: 'Award B' });
+    fixture.detectChanges();
+    component.save();
+    expect(closeSpy).toHaveBeenCalledWith({
+      fundingEntries: [
+        expect.objectContaining({ funderName: 'Funder A', awardTitle: 'Award A' }),
+        expect.objectContaining({ funderName: 'Funder B', awardTitle: 'Award B' }),
+      ],
+    });
+  });
+
+  it('should not save when awardUri is invalid', () => {
+    const dialogRef = TestBed.inject(DynamicDialogRef);
+    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const entry = component.fundingEntries.at(0);
+    entry.patchValue({
+      funderName: 'Test Funder',
+      awardUri: 'not-a-valid-url',
+    });
+    fixture.detectChanges();
+    component.save();
+    expect(closeSpy).not.toHaveBeenCalled();
   });
 });
