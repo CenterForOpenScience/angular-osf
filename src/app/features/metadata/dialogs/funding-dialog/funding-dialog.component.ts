@@ -15,7 +15,14 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 
-import { Funder, FundingDialogResult, FundingEntryForm, FundingForm, SupplementData } from '../../models';
+import {
+  Funder,
+  FundingDialogResult,
+  FundingEntryForm,
+  FundingForm,
+  RorFunderOption,
+  SupplementData,
+} from '../../models';
 import { GetFundersList, MetadataSelectors } from '../../store';
 
 @Component({
@@ -97,6 +104,18 @@ export class FundingDialogComponent implements OnInit {
         nonNullable: true,
       }),
     });
+  }
+
+  getOptionsForIndex(index: number): RorFunderOption[] {
+    const list = this.fundersList() ?? [];
+    const entry = this.fundingEntries.at(index);
+    const name = entry?.get('funderName')?.value;
+
+    if (!name || list.some((f) => f.name === name)) {
+      return list;
+    }
+
+    return [{ id: entry?.get('funderIdentifier')?.value ?? '', name }, ...list];
   }
 
   addFundingEntry(supplement?: SupplementData): void {

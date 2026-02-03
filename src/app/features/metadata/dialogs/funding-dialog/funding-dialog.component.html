@@ -10,7 +10,7 @@
           <p-select
             [id]="'funderName-' + $index"
             formControlName="funderName"
-            [options]="fundersList()"
+            [options]="getOptionsForIndex($index)"
             optionLabel="name"
             optionValue="name"
             [placeholder]="'project.metadata.funding.dialog.selectFunder' | translate"
