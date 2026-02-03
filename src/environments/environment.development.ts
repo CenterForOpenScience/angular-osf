@@ -27,9 +27,9 @@ export const environment = {
    */
   addonsApiUrl: 'https://addons.staging3.osf.io/v1',
   /**
-   * API endpoint for funder metadata resolution via Crossref.
+   * API endpoint for funder metadata resolution via ROR.
    */
-  funderApiUrl: 'https://api.crossref.org/',
+  funderApiUrl: 'https://api.ror.org/v2',
   /**
    * URL for OSF Central Authentication Service (CAS).
    */

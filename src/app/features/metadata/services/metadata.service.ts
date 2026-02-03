@@ -10,7 +10,7 @@ import { LicenseOptions } from '@osf/shared/models/license/license.model';
 import { BaseNodeAttributesJsonApi } from '@osf/shared/models/nodes/base-node-attributes-json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
-import { CedarRecordsMapper, MetadataMapper } from '../mappers';
+import { CedarRecordsMapper, MetadataMapper, RorMapper } from '../mappers';
 import {
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
@@ -21,7 +21,8 @@ import {
   MetadataJsonApi,
   MetadataJsonApiResponse,
 } from '../models';
-import { CrossRefFundersResponse, CustomItemMetadataRecord, MetadataModel } from '../models/metadata.model';
+import { CustomItemMetadataRecord, MetadataModel } from '../models/metadata.model';
+import { RorFunderOption, RorSearchResponse } from '../models/ror.model';
 
 @Injectable({
   providedIn: 'root',
@@ -78,14 +79,14 @@ export class MetadataService {
     );
   }
 
-  getFundersList(searchQuery?: string): Observable<CrossRefFundersResponse> {
-    let url = `${this.funderApiUrl}funders?mailto=support%40osf.io`;
+  getFundersList(searchQuery?: string): Observable<RorFunderOption[]> {
+    let url = `${this.funderApiUrl}/organizations?filter=types:funder`;
 
     if (searchQuery && searchQuery.trim()) {
       url += `&query=${encodeURIComponent(searchQuery.trim())}`;
     }
 
-    return this.jsonApiService.get<CrossRefFundersResponse>(url);
+    return this.jsonApiService.get<RorSearchResponse>(url).pipe(map((response) => RorMapper.toFunderOptions(response)));
   }
 
   getMetadataCedarTemplates(url?: string): Observable<CedarMetadataTemplateJsonApi> {

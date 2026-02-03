@@ -13,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (
 
   const csrfToken = cookieService.get('api-csrf');
 
-  if (!req.url.includes('/api.crossref.org/funders')) {
+  if (!req.url.includes('/api.ror')) {
     const headers: Record<string, string> = {};
 
     headers['Accept'] = req.responseType === 'text' ? '*/*' : 'application/vnd.api+json;version=2.20';

@@ -5,13 +5,15 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DestroyRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { RorFunderOption } from '../../models/ror.model';
 import { MetadataSelectors } from '../../store';
 
 import { FundingDialogComponent } from './funding-dialog.component';
 
-import { MOCK_FUNDERS } from '@testing/mocks/funder.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+const MOCK_ROR_FUNDERS: RorFunderOption[] = [{ id: 'https://ror.org/0test', name: 'Test Funder' }];
 
 describe('FundingDialogComponent', () => {
   let component: FundingDialogComponent;
@@ -25,7 +27,7 @@ describe('FundingDialogComponent', () => {
         MockProvider(DynamicDialogConfig, { data: { funders: [] } }),
         provideMockStore({
           signals: [
-            { selector: MetadataSelectors.getFundersList, value: MOCK_FUNDERS },
+            { selector: MetadataSelectors.getFundersList, value: MOCK_ROR_FUNDERS },
             { selector: MetadataSelectors.getFundersLoading, value: false },
           ],
         }),
@@ -143,6 +145,16 @@ describe('FundingDialogComponent', () => {
     expect(entry.get('funderName')?.value).toBe(initialValues.funderName);
     expect(entry.get('funderIdentifier')?.value).toBe(initialValues.funderIdentifier);
     expect(entry.get('funderIdentifierType')?.value).toBe(initialValues.funderIdentifierType);
+  });
+
+  it('should update funding entry when funder is selected from ROR list', () => {
+    const entry = component.fundingEntries.at(0);
+
+    component.onFunderSelected('Test Funder', 0);
+
+    expect(entry.get('funderName')?.value).toBe('Test Funder');
+    expect(entry.get('funderIdentifier')?.value).toBe('https://ror.org/0test');
+    expect(entry.get('funderIdentifierType')?.value).toBe('ROR ID');
   });
 
   it('should remove funding entry when more than one exists', () => {
