@@ -12,6 +12,7 @@ import { GetFundersList, MetadataSelectors } from '../../store';
 
 import { FundingDialogComponent } from './funding-dialog.component';
 
+import { MOCK_FUNDERS } from '@testing/mocks/funder.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -172,7 +173,7 @@ describe('FundingDialogComponent', () => {
     const supplement = {
       funderName: 'Test Funder',
       funderIdentifier: 'test-id',
-      funderIdentifierType: 'Crossref Funder ID',
+      funderIdentifierType: 'ROR',
       title: 'Test Award',
       url: 'https://test.com',
       awardNumber: 'AWARD-123',
@@ -183,7 +184,7 @@ describe('FundingDialogComponent', () => {
     const entry = component.fundingEntries.at(component.fundingEntries.length - 1);
     expect(entry.get('funderName')?.value).toBe('Test Funder');
     expect(entry.get('funderIdentifier')?.value).toBe('test-id');
-    expect(entry.get('funderIdentifierType')?.value).toBe('Crossref Funder ID');
+    expect(entry.get('funderIdentifierType')?.value).toBe('ROR');
     expect(entry.get('awardTitle')?.value).toBe('Test Award');
     expect(entry.get('awardUri')?.value).toBe('https://test.com');
     expect(entry.get('awardNumber')?.value).toBe('AWARD-123');
@@ -239,21 +240,11 @@ describe('FundingDialogComponent', () => {
 
   it('should pre-populate entries from config funders on init', () => {
     TestBed.resetTestingModule();
-    const configFunders = [
-      {
-        funderName: 'NSF',
-        funderIdentifier: 'https://ror.org/nsf',
-        funderIdentifierType: 'ROR',
-        awardTitle: 'Grant A',
-        awardUri: 'https://example.com/a',
-        awardNumber: '123',
-      },
-    ];
     TestBed.configureTestingModule({
       imports: [FundingDialogComponent, OSFTestingModule],
       providers: [
         MockProviders(DynamicDialogRef, DestroyRef),
-        MockProvider(DynamicDialogConfig, { data: { funders: configFunders } }),
+        MockProvider(DynamicDialogConfig, { data: { funders: [MOCK_FUNDERS[0]] } }),
         provideMockStore({
           signals: [
             { selector: MetadataSelectors.getFundersList, value: [] },
@@ -267,12 +258,12 @@ describe('FundingDialogComponent', () => {
     const c = f.componentInstance;
     expect(c.fundingEntries.length).toBe(1);
     const entry = c.fundingEntries.at(0);
-    expect(entry.get('funderName')?.value).toBe('NSF');
-    expect(entry.get('funderIdentifier')?.value).toBe('https://ror.org/nsf');
-    expect(entry.get('funderIdentifierType')?.value).toBe('ROR');
-    expect(entry.get('awardTitle')?.value).toBe('Grant A');
-    expect(entry.get('awardUri')?.value).toBe('https://example.com/a');
-    expect(entry.get('awardNumber')?.value).toBe('123');
+    expect(entry.get('funderName')?.value).toBe(MOCK_FUNDERS[0].funderName);
+    expect(entry.get('funderIdentifier')?.value).toBe(MOCK_FUNDERS[0].funderIdentifier);
+    expect(entry.get('funderIdentifierType')?.value).toBe(MOCK_FUNDERS[0].funderIdentifierType);
+    expect(entry.get('awardTitle')?.value).toBe(MOCK_FUNDERS[0].awardTitle);
+    expect(entry.get('awardUri')?.value).toBe(MOCK_FUNDERS[0].awardUri);
+    expect(entry.get('awardNumber')?.value).toBe(MOCK_FUNDERS[0].awardNumber);
   });
 
   it('getOptionsForIndex returns custom option plus list when entry name is not in list', () => {

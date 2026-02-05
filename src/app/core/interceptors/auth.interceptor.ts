@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 
+import { environment } from 'src/environments/environment';
+
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
@@ -13,7 +15,7 @@ export const authInterceptor: HttpInterceptorFn = (
 
   const csrfToken = cookieService.get('api-csrf');
 
-  if (!req.url.includes('/api.ror')) {
+  if (!req.url.startsWith(environment.funderApiUrl)) {
     const headers: Record<string, string> = {};
 
     headers['Accept'] = req.responseType === 'text' ? '*/*' : 'application/vnd.api+json;version=2.20';
