@@ -7,12 +7,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EducationHistoryComponent } from '@osf/shared/components/education-history/education-history.component';
 import { EmploymentHistoryComponent } from '@osf/shared/components/employment-history/employment-history.component';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { UserModel } from '@osf/shared/models/user/user.model';
 import { SocialModel } from '@shared/models/user/social.model';
 
 import { ProfileInformationComponent } from './profile-information.component';
 
 import { MOCK_USER } from '@testing/mocks/data.mock';
+import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { MOCK_EDUCATION, MOCK_EMPLOYMENT } from '@testing/mocks/user-employment-education.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
@@ -44,6 +46,7 @@ describe('ProfileInformationComponent', () => {
   it('should initialize with default inputs', () => {
     expect(component.currentUser()).toBeUndefined();
     expect(component.showEdit()).toBe(false);
+    expect(component.currentUserInstitutions()).toBeUndefined();
   });
 
   it('should accept user input', () => {
@@ -171,5 +174,29 @@ describe('ProfileInformationComponent', () => {
     jest.spyOn(component.editProfile, 'emit');
     component.toProfileSettings();
     expect(component.editProfile.emit).toHaveBeenCalled();
+  });
+
+  it('should accept currentUserInstitutions input', () => {
+    const mockInstitutions: Institution[] = [MOCK_INSTITUTION];
+    fixture.componentRef.setInput('currentUserInstitutions', mockInstitutions);
+    fixture.detectChanges();
+    expect(component.currentUserInstitutions()).toEqual(mockInstitutions);
+  });
+
+  it('should not render institution logos when currentUserInstitutions is undefined', () => {
+    fixture.componentRef.setInput('currentUserInstitutions', undefined);
+    fixture.detectChanges();
+    const logos = fixture.nativeElement.querySelectorAll('img.fit-contain');
+    expect(logos.length).toBe(0);
+  });
+
+  it('should render institution logos when currentUserInstitutions is provided', () => {
+    const institutions: Institution[] = [MOCK_INSTITUTION];
+    fixture.componentRef.setInput('currentUserInstitutions', institutions);
+    fixture.detectChanges();
+
+    const logos = fixture.nativeElement.querySelectorAll('img.fit-contain');
+    expect(logos.length).toBe(institutions.length);
+    expect(logos[0].alt).toBe(institutions[0].name);
   });
 });

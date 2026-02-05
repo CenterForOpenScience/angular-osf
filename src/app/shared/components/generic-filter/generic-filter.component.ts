@@ -1,3 +1,5 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { MultiSelect, MultiSelectChangeEvent } from 'primeng/multiselect';
 import { SelectLazyLoadEvent } from 'primeng/select';
 
@@ -23,7 +25,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 
 @Component({
   selector: 'osf-generic-filter',
-  imports: [MultiSelect, FormsModule, LoadingSpinnerComponent],
+  imports: [MultiSelect, FormsModule, LoadingSpinnerComponent, TranslatePipe],
   templateUrl: './generic-filter.component.html',
   styleUrls: ['./generic-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,7 +56,7 @@ export class GenericFilterComponent {
     const isSearching = this.isActivelySearching();
 
     if (isSearching && this.stableOptionsArray.length > 0) {
-      return this.stableOptionsArray;
+      return [...this.stableOptionsArray];
     }
 
     let newOptions: FilterOption[];
@@ -68,10 +70,12 @@ export class GenericFilterComponent {
     }
 
     this.updateStableArray(newOptions);
-    return this.stableOptionsArray;
+    return [...this.stableOptionsArray];
   });
 
   selectedOptionValues = computed(() => this.selectedOptions().map((option) => option.value));
+
+  filterMessage = computed(() => (this.isSearchLoading() ? 'common.search.loading' : 'common.search.noResultsFound'));
 
   constructor() {
     effect(() => {

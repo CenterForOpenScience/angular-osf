@@ -42,6 +42,11 @@
       <p>{{ resource.registrationSupplement }}</p>
     </div>
 
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'registry.overview.metadata.registry' | translate }}</h3>
+      <p>{{ registryProvider()?.name }}</p>
+    </div>
+
     @if (resource.associatedProjectId) {
       <div class="flex flex-column gap-2">
         <h3>{{ 'registry.overview.metadata.associatedProject' | translate }}</h3>

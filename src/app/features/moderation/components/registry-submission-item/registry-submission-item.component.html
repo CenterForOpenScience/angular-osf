@@ -64,11 +64,18 @@
 
           <osf-contributors-list
             [contributors]="submission().contributors || []"
-            [isLoading]="!!submission().contributorsLoading || false"
+            [isLoading]="submission().contributorsLoading || false"
             [hasLoadMore]="hasMoreContributors()"
             (loadMoreContributors)="loadMoreContributors.emit()"
           >
           </osf-contributors-list>
+        </div>
+        <div>
+          <osf-funder-awards-list
+            [funders]="submission().funders || []"
+            [isLoading]="submission().fundersLoading || false"
+            [registryId]="submission().id"
+          ></osf-funder-awards-list>
         </div>
       </p-accordion-content>
     </p-accordion-panel>

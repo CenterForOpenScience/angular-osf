@@ -47,6 +47,7 @@ export interface PreprintModel {
   articleDoiLink?: string;
   identifiers?: IdentifierModel[];
   providerId: string;
+  defaultLicenseId?: string;
 }
 
 export interface PreprintFilesLinks {
