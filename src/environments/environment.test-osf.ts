@@ -7,7 +7,7 @@ export const environment = {
   apiDomainUrl: 'https://api.test.osf.io',
   shareTroveUrl: 'https://staging-share.osf.io/trove',
   addonsApiUrl: 'https://addons.test.osf.io/v1',
-  funderApiUrl: 'https://api.crossref.org/',
+  funderApiUrl: 'https://api.ror.org/v2',
   casUrl: 'https://accounts.test.osf.io',
   recaptchaSiteKey: '6LdPCWgUAAAAAKAD7jTctbZwF4sqYQjTYF3c3pOk',
   twitterHandle: 'OSFramework',
