@@ -86,7 +86,11 @@ export class MetadataService {
       url += `&query=${encodeURIComponent(searchQuery.trim())}`;
     }
 
-    return this.jsonApiService.get<RorSearchResponse>(url).pipe(map((response) => RorMapper.toFunderOptions(response)));
+    const headers = this.environment.rorClientId ? { 'Client-Id': this.environment.rorClientId } : undefined;
+
+    return this.jsonApiService
+      .get<RorSearchResponse>(url, undefined, undefined, headers)
+      .pipe(map((response) => RorMapper.toFunderOptions(response)));
   }
 
   getMetadataCedarTemplates(url?: string): Observable<CedarMetadataTemplateJsonApi> {

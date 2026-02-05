@@ -5,6 +5,7 @@ export const environment = {
   shareTroveUrl: 'https://localhost:8003/trove',
   addonsApiUrl: 'http://localhost:8004/v1',
   funderApiUrl: 'https://api.ror.org/v2',
+  rorClientId: '',
   casUrl: 'http://localhost:8080',
   recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   twitterHandle: 'OSFramework',

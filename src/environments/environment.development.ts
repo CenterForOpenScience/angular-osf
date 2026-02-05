@@ -30,6 +30,7 @@ export const environment = {
    * API endpoint for funder metadata resolution via ROR.
    */
   funderApiUrl: 'https://api.ror.org/v2',
+  rorClientId: '',
   /**
    * URL for OSF Central Authentication Service (CAS).
    */

@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
+import { environment } from 'src/environments/environment';
+
 export const viewOnlyInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
@@ -15,7 +17,7 @@ export const viewOnlyInterceptor: HttpInterceptorFn = (
 
   const viewOnlyParam = viewOnlyHelper.getViewOnlyParam(router);
 
-  if (!req.url.includes('/api.crossref.org/funders') && viewOnlyParam) {
+  if (!req.url.startsWith(environment.funderApiUrl) && viewOnlyParam) {
     if (req.url.includes('view_only=')) {
       return next(req);
     }

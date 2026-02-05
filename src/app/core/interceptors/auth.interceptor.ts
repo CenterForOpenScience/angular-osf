@@ -5,11 +5,13 @@ import { Observable } from 'rxjs';
 import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 
+import { environment } from 'src/environments/environment';
+
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
-  if (req.url.includes('/api.ror')) {
+  if (req.url.startsWith(environment.funderApiUrl)) {
     return next(req);
   }
 
