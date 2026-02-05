@@ -629,6 +629,7 @@ describe('RegistryOverviewComponent', () => {
       }).compileComponents();
       fixture = TestBed.createComponent(RegistryOverviewComponent);
       component = fixture.componentInstance;
+      document.head.innerHTML = '';
     });
 
     it('should render server-side without errors', () => {
@@ -636,6 +637,16 @@ describe('RegistryOverviewComponent', () => {
         fixture.detectChanges();
       }).not.toThrow();
       expect(component).toBeTruthy();
+    });
+
+    it('should add signposting tags during SSR', () => {
+      fixture.detectChanges();
+      const linkTags = Array.from(document.head.querySelectorAll('link[rel="linkset"]'));
+      expect(linkTags.length).toBe(2);
+      expect(linkTags[0].getAttribute('href')).toBe('http://localhost:4200/metadata/registry-1/?format=linkset');
+      expect(linkTags[0].getAttribute('type')).toBe('application/linkset');
+      expect(linkTags[1].getAttribute('href')).toBe('http://localhost:4200/metadata/registry-1/?format=linkset%2Bjson');
+      expect(linkTags[1].getAttribute('type')).toBe('application/linkset+json');
     });
 
     it('should not access browser-only APIs during SSR', () => {
