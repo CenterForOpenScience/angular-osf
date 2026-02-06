@@ -20,8 +20,16 @@ export class BaseNodeMapper {
     };
   }
 
-  static getNodesWithChildren(data: BaseNodeDataJsonApi[], parentId: string): NodeShortInfoModel[] {
-    return this.getAllDescendants(data, parentId).map((item) => ({
+  static getNodesWithChildren(
+    data: BaseNodeDataJsonApi[],
+    parentId: string,
+    includeAncestors = false
+  ): NodeShortInfoModel[] {
+    const nodes = includeAncestors
+      ? this.getAllAncestorsAndDescendants(data, parentId)
+      : this.getAllDescendants(data, parentId);
+
+    return nodes.map((item) => ({
       id: item.id,
       title: replaceBadEncodedChars(item.attributes.title),
       isPublic: item.attributes.public,
@@ -81,5 +89,24 @@ export class BaseNodeMapper {
     const descendants = directChildren.flatMap((child) => this.getAllDescendants(allNodes, child.id));
 
     return [parent, ...descendants];
+  }
+
+  static getAllAncestors(allNodes: BaseNodeDataJsonApi[], nodeId: string): BaseNodeDataJsonApi[] {
+    const node = allNodes.find((n) => n.id === nodeId);
+    if (!node) return [];
+
+    const parentId = node.relationships.parent?.data?.id;
+    if (!parentId) return [node];
+
+    const ancestors = this.getAllAncestors(allNodes, parentId);
+
+    return [node, ...ancestors];
+  }
+
+  static getAllAncestorsAndDescendants(allNodes: BaseNodeDataJsonApi[], nodeId: string): BaseNodeDataJsonApi[] {
+    const ancestors = this.getAllAncestors(allNodes, nodeId);
+    const descendants = this.getAllDescendants(allNodes, nodeId).slice(1);
+
+    return [...ancestors, ...descendants];
   }
 }

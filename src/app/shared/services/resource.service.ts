@@ -76,12 +76,13 @@ export class ResourceGuidService {
   getResourceWithChildren(
     rootParentId: string,
     resourceId: string,
-    resourceType: ResourceType
+    resourceType: ResourceType,
+    includeAncestors = false
   ): Observable<NodeShortInfoModel[]> {
     const resourcePath = this.urlMap.get(resourceType);
 
     return this.jsonApiService
       .get<NodesResponseJsonApi>(`${this.apiUrl}/${resourcePath}/?filter[root]=${rootParentId}&page[size]=100`)
-      .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data, resourceId)));
+      .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data, resourceId, includeAncestors)));
   }
 }

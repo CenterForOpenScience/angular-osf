@@ -87,7 +87,7 @@ export class CurrentResourceState {
     });
 
     return this.resourceService
-      .getResourceWithChildren(action.rootParentId, action.resourceId, action.resourceType)
+      .getResourceWithChildren(action.rootParentId, action.resourceId, action.resourceType, action.includeAncestors)
       .pipe(
         tap((children) => {
           ctx.patchState({
