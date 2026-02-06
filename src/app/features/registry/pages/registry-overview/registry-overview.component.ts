@@ -15,6 +15,7 @@ import {
   effect,
   HostBinding,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -32,6 +33,7 @@ import { toCamelCase } from '@osf/shared/helpers/camel-case';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
@@ -75,7 +77,7 @@ import {
   styleUrl: './registry-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistryOverviewComponent {
+export class RegistryOverviewComponent implements OnInit {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -84,6 +86,7 @@ export class RegistryOverviewComponent {
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly loaderService = inject(LoaderService);
+  private readonly signpostingService = inject(SignpostingService);
 
   readonly registry = select(RegistrySelectors.getRegistry);
   readonly isRegistryLoading = select(RegistrySelectors.isRegistryLoading);
@@ -167,6 +170,10 @@ export class RegistryOverviewComponent {
         })
       )
       .subscribe();
+  }
+
+  ngOnInit(): void {
+    this.signpostingService.addSignposting(this.registryId());
   }
 
   openRevision(revisionIndex: number): void {

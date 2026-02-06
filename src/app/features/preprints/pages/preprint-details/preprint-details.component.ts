@@ -35,6 +35,7 @@ import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 
@@ -104,6 +105,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly prerenderReady = inject(PrerenderReadyService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly signpostingService = inject(SignpostingService);
 
   private readonly environment = inject(ENVIRONMENT);
 
@@ -303,6 +305,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.actions.getPreprintProviderById(this.providerId());
     this.fetchPreprint(this.preprintId());
+
+    this.signpostingService.addSignposting(this.preprintId());
 
     this.dataciteService.logIdentifiableView(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }

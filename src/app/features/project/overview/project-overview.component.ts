@@ -35,6 +35,7 @@ import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-l
 import { Mode } from '@osf/shared/enums/mode.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import {
@@ -104,6 +105,7 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly signpostingService = inject(SignpostingService);
 
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
@@ -193,6 +195,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getBookmarksId();
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
+      this.signpostingService.addSignposting(projectId);
     }
   }
 

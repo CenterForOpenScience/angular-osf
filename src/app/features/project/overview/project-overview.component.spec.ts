@@ -262,6 +262,7 @@ describe('ProjectOverviewComponent SSR Tests', () => {
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ProjectOverviewComponent);
     component = fixture.componentInstance;
+    document.head.innerHTML = '';
   });
 
   it('should render ProjectOverviewComponent server-side without errors', () => {
@@ -283,6 +284,17 @@ describe('ProjectOverviewComponent SSR Tests', () => {
     fixture.detectChanges();
     expect(dispatchSpy).toHaveBeenCalled();
     expect(component).toBeTruthy();
+  });
+
+  it('should add signposting tags during SSR', () => {
+    fixture.detectChanges();
+
+    const linkTags = Array.from(document.head.querySelectorAll('link[rel="linkset"]'));
+    expect(linkTags.length).toBe(2);
+    expect(linkTags[0].getAttribute('href')).toBe('http://localhost:4200/metadata/project-123/?format=linkset');
+    expect(linkTags[0].getAttribute('type')).toBe('application/linkset');
+    expect(linkTags[1].getAttribute('href')).toBe('http://localhost:4200/metadata/project-123/?format=linkset%2Bjson');
+    expect(linkTags[1].getAttribute('type')).toBe('application/linkset+json');
   });
 
   it('should not call browser-only actions in ngOnDestroy during SSR', () => {
