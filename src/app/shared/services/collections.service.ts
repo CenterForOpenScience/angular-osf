@@ -23,7 +23,7 @@ import {
   CollectionSubmissionActionType,
   CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
-} from '../models/collections/collections.models';
+} from '../models/collections/collections.model';
 import {
   CollectionDetailsGetResponseJsonApi,
   CollectionDetailsResponseJsonApi,
@@ -31,7 +31,7 @@ import {
   CollectionSubmissionJsonApi,
   CollectionSubmissionsSearchPayloadJsonApi,
   CollectionSubmissionWithGuidJsonApi,
-} from '../models/collections/collections-json-api.models';
+} from '../models/collections/collections-json-api.model';
 import { JsonApiResponse, ResponseJsonApi } from '../models/common/json-api.model';
 import { ContributorModel } from '../models/contributors/contributor.model';
 import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';

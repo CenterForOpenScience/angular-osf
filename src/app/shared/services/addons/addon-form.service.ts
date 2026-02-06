@@ -5,12 +5,12 @@ import { AddonFormControls } from '@osf/shared/enums/addon-form-controls.enum';
 import { AddonType } from '@osf/shared/enums/addon-type.enum';
 import { CredentialsFormat } from '@osf/shared/enums/addons-credentials-format.enum';
 import { isAuthorizedAddon } from '@osf/shared/helpers/addon-type.helper';
-import { AddonModel } from '@shared/models/addons/addon.model';
 import {
   AuthorizedAddonRequestJsonApi,
   ConfiguredAddonRequestJsonApi,
-} from '@shared/models/addons/addon-json-api.models';
-import { AddonForm } from '@shared/models/addons/addon-utils.models';
+} from '@osf/shared/models/addons/addon-json-api.model';
+import { AddonForm } from '@osf/shared/models/addons/addon-utils.model';
+import { AddonModel } from '@shared/models/addons/addon.model';
 import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
 import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 

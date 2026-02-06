@@ -7,9 +7,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EducationHistoryComponent } from '@osf/shared/components/education-history/education-history.component';
 import { EmploymentHistoryComponent } from '@osf/shared/components/employment-history/employment-history.component';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
-import { Institution } from '@shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
+import { UserModel } from '@osf/shared/models/user/user.model';
 import { SocialModel } from '@shared/models/user/social.model';
-import { UserModel } from '@shared/models/user/user.models';
 
 import { ProfileInformationComponent } from './profile-information.component';
 

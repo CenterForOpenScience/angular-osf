@@ -11,13 +11,13 @@ import {
   CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionWithGuid,
-} from '@osf/shared/models/collections/collections.models';
+} from '@osf/shared/models/collections/collections.model';
 import {
   CollectionDetailsResponseJsonApi,
   CollectionProviderResponseJsonApi,
   CollectionSubmissionJsonApi,
   CollectionSubmissionWithGuidJsonApi,
-} from '@osf/shared/models/collections/collections-json-api.models';
+} from '@osf/shared/models/collections/collections-json-api.model';
 import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';

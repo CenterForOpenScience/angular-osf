@@ -1,5 +1,5 @@
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { Institution } from '@shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 
 export class FetchUserInstitutions {
   static readonly type = '[Institutions] Fetch User Institutions';

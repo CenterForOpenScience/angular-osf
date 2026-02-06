@@ -5,8 +5,6 @@ import { MessageModule } from 'primeng/message';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 
-import { fadeInOutAnimation } from '@core/animations/fade.in-out.animation';
-
 import { MaintenanceModel } from '../models/maintenance.model';
 import { MaintenanceService } from '../services/maintenance.service';
 
@@ -16,8 +14,6 @@ import { MaintenanceService } from '../services/maintenance.service';
  * This component checks a cookie to determine whether the user has previously dismissed
  * the banner. If not, it queries the maintenance status from the server and displays
  * the maintenance message if one is active.
- *
- * The component supports animation via `fadeInOutAnimation` and is optimized with `OnPush` change detection.
  *
  * @example
  * ```html
@@ -29,7 +25,6 @@ import { MaintenanceService } from '../services/maintenance.service';
   imports: [CommonModule, MessageModule],
   templateUrl: './maintenance-banner.component.html',
   styleUrls: ['./maintenance-banner.component.scss'],
-  animations: [fadeInOutAnimation],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MaintenanceBannerComponent implements OnInit {

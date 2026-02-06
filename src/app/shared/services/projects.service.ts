@@ -8,7 +8,7 @@ import { ProjectsMapper } from '../mappers/projects';
 import { BaseNodeDataJsonApi } from '../models/nodes/base-node-data-json-api.model';
 import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
 import { ProjectMetadataUpdatePayload } from '../models/project-metadata-update-payload.model';
-import { ProjectModel } from '../models/projects/projects.models';
+import { ProjectModel } from '../models/projects/projects.model';
 
 import { JsonApiService } from './json-api.service';
 

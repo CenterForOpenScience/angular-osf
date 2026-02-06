@@ -1,6 +1,6 @@
 import { ReviewAction } from '@osf/features/moderation/models';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';

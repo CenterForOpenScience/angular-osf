@@ -5,9 +5,9 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ProfileSettingsKey } from '@osf/shared/enums/profile-settings-key.enum';
 import { UserMapper } from '@osf/shared/mappers/user';
+import { UserData, UserModel } from '@osf/shared/models/user/user.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { ProfileSettingsUpdate } from '@shared/models/profile-settings-update.model';
-import { UserData, UserModel } from '@shared/models/user/user.models';
 import {
   UserAcceptedTermsOfServiceJsonApi,
   UserDataJsonApi,

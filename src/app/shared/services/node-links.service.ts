@@ -7,7 +7,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { BaseNodeMapper } from '../mappers/nodes';
 import { JsonApiResponse } from '../models/common/json-api.model';
-import { MyResourcesItem } from '../models/my-resources/my-resources.models';
+import { MyResourcesItem } from '../models/my-resources/my-resources.model';
 import { NodeLinkJsonApi } from '../models/node-links/node-link-json-api.model';
 import { NodeModel } from '../models/nodes/base-node.model';
 import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';

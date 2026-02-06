@@ -4,9 +4,9 @@ import { ReviewAction } from '@osf/features/moderation/models';
 import { RegistrationOverviewModel } from '@osf/features/registry/models';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
-import { Institution } from '@shared/models/institutions/institutions.models';
 import { PageSchema } from '@shared/models/registration/page-schema.model';
 
 import { RegistryStateModel } from './registry.model';

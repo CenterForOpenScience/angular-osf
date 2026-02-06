@@ -5,8 +5,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
-import { Institution } from '@shared/models/institutions/institutions.models';
 
 import { AffiliatedInstitutionsDialogComponent } from './affiliated-institutions-dialog.component';
 

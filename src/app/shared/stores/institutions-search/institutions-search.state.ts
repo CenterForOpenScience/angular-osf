@@ -6,7 +6,7 @@ import { catchError, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { InstitutionsService } from '@osf/shared/services/institutions.service';
 
 import { FetchInstitutionById } from './institutions-search.actions';

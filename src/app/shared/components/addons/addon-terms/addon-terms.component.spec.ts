@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ADDON_TERMS } from '@osf/shared/constants/addon-terms.const';
 import { isCitationAddon, isRedirectAddon } from '@osf/shared/helpers/addon-type.helper';
 import { AddonModel } from '@osf/shared/models/addons/addon.model';
-import { AddonTerm } from '@osf/shared/models/addons/addon-utils.models';
+import { AddonTerm } from '@osf/shared/models/addons/addon-utils.model';
 
 import { AddonTermsComponent } from './addon-terms.component';
 

@@ -36,9 +36,9 @@ import { OperationNames } from '@osf/shared/enums/operation-names.enum';
 import { StorageItemType } from '@osf/shared/enums/storage-item-type.enum';
 import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
 import { convertCamelCaseToNormal } from '@osf/shared/helpers/camel-case-to-normal.helper';
+import { OperationInvokeData } from '@osf/shared/models/addons/addon-utils.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores/addons';
-import { OperationInvokeData } from '@shared/models/addons/addon-utils.models';
 import { StorageItem } from '@shared/models/addons/storage-item.model';
 
 import { GoogleFilePickerComponent } from '../../google-file-picker/google-file-picker.component';

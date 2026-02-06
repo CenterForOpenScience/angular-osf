@@ -38,7 +38,7 @@ import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
-import { ProjectModel } from '@osf/shared/models/projects/projects.models';
+import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { SelectOption } from '@osf/shared/models/select-option.model';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
