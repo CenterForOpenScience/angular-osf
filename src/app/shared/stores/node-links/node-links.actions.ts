@@ -1,5 +1,5 @@
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
 import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 
 export class CreateNodeLink {

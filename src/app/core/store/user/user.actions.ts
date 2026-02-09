@@ -1,7 +1,7 @@
 import { Education } from '@osf/shared/models/user/education.model';
 import { Employment } from '@osf/shared/models/user/employment.model';
 import { SocialModel } from '@osf/shared/models/user/social.model';
-import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserModel } from '@osf/shared/models/user/user.model';
 
 export class GetCurrentUser {
   static readonly type = '[User] Get Current User';

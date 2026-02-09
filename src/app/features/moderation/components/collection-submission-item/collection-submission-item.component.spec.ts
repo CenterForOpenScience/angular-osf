@@ -4,8 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
-import { CollectionSubmissionWithGuid } from '@shared/models/collections/collections.models';
 import { DateAgoPipe } from '@shared/pipes/date-ago.pipe';
 
 import { SubmissionReviewStatus } from '../../enums';

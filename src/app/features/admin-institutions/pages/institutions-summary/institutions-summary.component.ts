@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BarChartComponent } from '@osf/shared/components/bar-chart/bar-chart.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { StatisticCardComponent } from '@osf/shared/components/statistic-card/statistic-card.component';
-import { DatasetInput } from '@osf/shared/models/charts/dataset-input';
+import { DatasetInput } from '@osf/shared/models/charts/dataset-input.model';
 import { SelectOption } from '@osf/shared/models/select-option.model';
 import { DoughnutChartComponent } from '@shared/components/doughnut-chart/doughnut-chart.component';
 

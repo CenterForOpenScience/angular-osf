@@ -12,8 +12,8 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 import { StringOrNullOrUndefined } from '@osf/shared/helpers/types.helper';
+import { LicenseForm } from '@osf/shared/models/license/license-form.model';
 import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
-import { LicenseForm } from '@shared/models/license/license-form.models';
 import { InterpolatePipe } from '@shared/pipes/interpolate.pipe';
 
 import { TextInputComponent } from '../text-input/text-input.component';

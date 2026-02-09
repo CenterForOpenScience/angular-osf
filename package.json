@@ -1,6 +1,6 @@
 {
   "name": "osf",
-  "version": "26.1.0",
+  "version": "26.2.0",
   "scripts": {
     "ng": "ng",
     "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks",

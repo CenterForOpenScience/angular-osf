@@ -3,7 +3,7 @@ import { MockComponents } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.models';
+import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
 
 import { MetadataCollectionItemComponent } from './metadata-collection-item.component';
 

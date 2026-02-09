@@ -8,7 +8,7 @@ import {
   GetCollectionSubmissionContributors,
   LoadMoreCollectionSubmissionContributors,
 } from '@osf/features/moderation/store/collections-moderation';
-import { CollectionSubmissionWithGuid } from '@shared/models/collections/collections.models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 
 import { CollectionsModerationSelectors } from '../../store/collections-moderation';
 import { CollectionSubmissionItemComponent } from '../collection-submission-item/collection-submission-item.component';

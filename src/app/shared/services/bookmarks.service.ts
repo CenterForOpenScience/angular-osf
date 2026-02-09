@@ -7,13 +7,13 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ResourceType } from '../enums/resource-type.enum';
 import { SortOrder } from '../enums/sort-order.enum';
 import { MyResourcesMapper } from '../mappers/my-resources.mapper';
-import { SparseCollectionsResponseJsonApi } from '../models/collections/collections-json-api.models';
+import { SparseCollectionsResponseJsonApi } from '../models/collections/collections-json-api.model';
 import {
   MyResourcesItem,
   MyResourcesItemGetResponseJsonApi,
   MyResourcesResponseJsonApi,
-} from '../models/my-resources/my-resources.models';
-import { MyResourcesSearchFilters } from '../models/my-resources/my-resources-search-filters.models';
+} from '../models/my-resources/my-resources.model';
+import { MyResourcesSearchFilters } from '../models/my-resources/my-resources-search-filters.model';
 import { PaginatedData } from '../models/paginated-data.model';
 
 import { JsonApiService } from './json-api.service';

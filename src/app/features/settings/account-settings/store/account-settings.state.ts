@@ -84,8 +84,8 @@ export class AccountSettingsState {
   }
 
   @Action(GetUserInstitutions)
-  getUserInstitutions(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.institutionsService.getUserInstitutions().pipe(
+  getUserInstitutions(ctx: StateContext<AccountSettingsStateModel>, action: GetUserInstitutions) {
+    return this.institutionsService.getUserInstitutions(action.userId).pipe(
       tap((userInstitutions) => ctx.patchState({ userInstitutions })),
       catchError((error) => throwError(() => error))
     );

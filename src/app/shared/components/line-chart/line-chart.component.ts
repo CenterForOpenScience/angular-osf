@@ -14,7 +14,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { DatasetInput } from '@osf/shared/models/charts/dataset-input';
+import { DatasetInput } from '@osf/shared/models/charts/dataset-input.model';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 

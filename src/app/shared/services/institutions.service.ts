@@ -12,7 +12,7 @@ import {
   InstitutionsJsonApiResponse,
   InstitutionsWithMetaJsonApiResponse,
 } from '../models/institutions/institution-json-api.model';
-import { Institution, InstitutionsWithTotalCount } from '../models/institutions/institutions.models';
+import { Institution, InstitutionsWithTotalCount } from '../models/institutions/institutions.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -47,8 +47,8 @@ export class InstitutionsService {
       .pipe(map((response) => InstitutionsMapper.fromResponseWithMeta(response)));
   }
 
-  getUserInstitutions(): Observable<Institution[]> {
-    const url = `${this.apiUrl}/users/me/institutions/`;
+  getUserInstitutions(userId: string): Observable<Institution[]> {
+    const url = `${this.apiUrl}/users/${userId}/institutions/`;
 
     return this.jsonApiService
       .get<InstitutionsJsonApiResponse>(url)

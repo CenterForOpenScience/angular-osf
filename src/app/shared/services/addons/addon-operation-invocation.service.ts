@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { OperationNames } from '@osf/shared/enums/operation-names.enum';
 import { StorageItemType } from '@osf/shared/enums/storage-item-type.enum';
 import { isCitationAddon } from '@osf/shared/helpers/addon-type.helper';
-import { OperationInvocationRequestJsonApi } from '@shared/models/addons/addon-operations-json-api.models';
+import { OperationInvocationRequestJsonApi } from '@osf/shared/models/addons/addon-operations-json-api.model';
 import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
 import { ConfiguredAddonModel } from '@shared/models/addons/configured-addon.model';
 

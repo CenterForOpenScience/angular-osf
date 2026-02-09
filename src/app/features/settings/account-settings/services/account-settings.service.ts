@@ -4,7 +4,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserMapper } from '@osf/shared/mappers/user';
-import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserModel } from '@osf/shared/models/user/user.model';
 import { UserDataJsonApi } from '@osf/shared/models/user/user-json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
