@@ -1,7 +1,7 @@
 import { CollectionProjectSubmission } from '@osf/shared/models/collections/collections.model';
+import { ProviderDefaultLicense } from '@shared/models/collections/collections.model';
 import { LicenseModel } from '@shared/models/license/license.model';
 import { AsyncStateModel } from '@shared/models/store/async-state.model';
-import { ProviderDefaultLicense } from '@shared/models/collections/collections.model';
 
 export interface AddToCollectionStateModel {
   collectionLicenses: AsyncStateModel<LicenseModel[]>;

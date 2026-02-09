@@ -11,7 +11,10 @@ import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { CollectionSubmissionPayload } from '@shared/models/collections/collection-submission-payload.model';
 import { ProviderDefaultLicense } from '@shared/models/collections/collections.model';
 import { LicenseModel } from '@shared/models/license/license.model';
-import { LicensesResponseJsonApi } from '@shared/models/license/licenses-json-api.model';
+import {
+  LicensesResponseJsonApi,
+  ProviderDefaultLicenseResponseJsonApi,
+} from '@shared/models/license/licenses-json-api.model';
 
 import { RemoveCollectionSubmissionPayload } from '../models/remove-collection-submission-payload.model';
 
@@ -37,7 +40,7 @@ export class AddToCollectionService {
 
   fetchProviderDefaultLicense(providerId: string): Observable<ProviderDefaultLicense> {
     return this.jsonApiService
-      .get<ProviderDefaultLicense>(`${this.apiUrl}/providers/collections/${providerId}/`)
+      .get<ProviderDefaultLicenseResponseJsonApi>(`${this.apiUrl}/providers/collections/${providerId}/`)
       .pipe(map((response) => LicensesMapper.fromProviderDefaultLicenseResponse(response)));
   }
 
