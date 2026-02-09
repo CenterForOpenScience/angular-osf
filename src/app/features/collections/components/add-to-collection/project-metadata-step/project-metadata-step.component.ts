@@ -33,7 +33,11 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models/project-metadata-form.model';
 import { ProjectMetadataFormService } from '@osf/features/collections/services';
-import { AddToCollectionSelectors, GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection';
+import {
+  AddToCollectionSelectors,
+  GetCollectionLicenses,
+  GetProviderDefaultLicense,
+} from '@osf/features/collections/store/add-to-collection';
 import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
@@ -87,6 +91,7 @@ export class ProjectMetadataStepComponent {
 
   readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
   readonly collectionLicenses = select(AddToCollectionSelectors.getCollectionLicenses);
+  readonly providerDefaultLicense = select(AddToCollectionSelectors.getProviderDefaultLicense);
   readonly isSelectedProjectUpdateSubmitting = select(ProjectsSelectors.getSelectedProjectUpdateSubmitting);
 
   stepperActiveValue = input.required<number>();
@@ -102,6 +107,7 @@ export class ProjectMetadataStepComponent {
     getAllContributors: GetAllContributors,
     getCollectionLicenses: GetCollectionLicenses,
     clearProjects: ClearProjects,
+    getProviderDefaultLicense: GetProviderDefaultLicense,
   });
 
   readonly projectMetadataForm: FormGroup<ProjectMetadataForm> = this.formService.createForm();
@@ -113,7 +119,9 @@ export class ProjectMetadataStepComponent {
 
   readonly projectLicense = computed(() => {
     const project = this.selectedProject();
-    return project ? (this.collectionLicenses().find((license) => license.id === project.licenseId) ?? null) : null;
+    const defaultLicense = this.providerDefaultLicense()?.id;
+    const licenseId = project?.licenseId || defaultLicense;
+    return project ? (this.collectionLicenses().find((license) => license.id === licenseId) ?? null) : null;
   });
 
   private readonly isFormUnchanged = computed(() => {
@@ -234,8 +242,9 @@ export class ProjectMetadataStepComponent {
           this.selectedLicense.set(license);
           this.formService.updateLicenseValidators(this.projectMetadataForm, license);
         });
+      } else {
+        this.actions.getProviderDefaultLicense(this.providerId());
       }
-
       this.populateFormFromProject();
     });
 

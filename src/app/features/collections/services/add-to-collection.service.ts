@@ -9,6 +9,7 @@ import { ReviewActionsMapper } from '@osf/shared/mappers/review-actions.mapper';
 import { ReviewActionPayload } from '@osf/shared/models/review-action/review-action-payload.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { CollectionSubmissionPayload } from '@shared/models/collections/collection-submission-payload.model';
+import { ProviderDefaultLicense } from '@shared/models/collections/collections.model';
 import { LicenseModel } from '@shared/models/license/license.model';
 import { LicensesResponseJsonApi } from '@shared/models/license/licenses-json-api.model';
 
@@ -32,6 +33,12 @@ export class AddToCollectionService {
         sort: 'name',
       })
       .pipe(map((licenses) => LicensesMapper.fromLicensesResponse(licenses)));
+  }
+
+  fetchProviderDefaultLicense(providerId: string): Observable<ProviderDefaultLicense> {
+    return this.jsonApiService
+      .get<ProviderDefaultLicense>(`${this.apiUrl}/providers/collections/${providerId}/`)
+      .pipe(map((response) => LicensesMapper.fromProviderDefaultLicenseResponse(response)));
   }
 
   createCollectionSubmission(payload: CollectionSubmissionPayload): Observable<void> {

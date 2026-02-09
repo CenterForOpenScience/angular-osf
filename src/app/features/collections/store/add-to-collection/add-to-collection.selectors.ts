@@ -10,6 +10,11 @@ export class AddToCollectionSelectors {
   }
 
   @Selector([AddToCollectionState])
+  static getProviderDefaultLicense(state: AddToCollectionStateModel) {
+    return state.providerDefaultLicense.data;
+  }
+
+  @Selector([AddToCollectionState])
   static getCollectionLicensesLoading(state: AddToCollectionStateModel) {
     return state.collectionLicenses.isLoading;
   }

@@ -101,6 +101,10 @@ export interface CollectionProjectSubmission {
   project: ProjectModel;
 }
 
+export interface ProviderDefaultLicense {
+  id: string;
+}
+
 export type CollectionSubmissionActionType = 'collection_submission_actions';
 
 export type CollectionSubmissionTargetType = 'collection-submissions';

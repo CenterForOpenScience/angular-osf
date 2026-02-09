@@ -1,3 +1,5 @@
+import { ProviderDefaultLicense } from '@shared/models/collections/collections.model';
+
 import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common/json-api.model';
 
 export interface LicensesResponseJsonApi {
@@ -10,7 +12,13 @@ export interface LicenseResponseJsonApi {
   data: LicenseDataJsonApi;
 }
 
+export interface ProviderDefaultLicenseAttributesJsonApi {
+  data?: ProviderDefaultLicense;
+}
+
 export type LicenseDataJsonApi = ApiData<LicenseAttributesJsonApi, null, null, null>;
+
+export type ProviderDefaultLicenseDataJsonApi = ApiData<ProviderDefaultLicenseAttributesJsonApi, null, null, null>;
 
 export interface LicenseAttributesJsonApi {
   name: string;

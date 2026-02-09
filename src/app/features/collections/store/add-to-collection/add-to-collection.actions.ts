@@ -8,6 +8,12 @@ export class GetCollectionLicenses {
   constructor(public providerId: string) {}
 }
 
+export class GetProviderDefaultLicense {
+  static readonly type = '[Add To Collection] Get Provider Default License';
+
+  constructor(public providerId: string) {}
+}
+
 export class GetCurrentCollectionSubmission {
   static readonly type = '[Add To Collection] Get Current Collection Submission';
 
