@@ -45,7 +45,7 @@ import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { GetAllContributors } from '@osf/shared/stores/contributors';
 import { ClearProjects, ProjectsSelectors, UpdateProjectMetadata } from '@osf/shared/stores/projects';
-import { CollectionsSelectors, GetCollectionProvider } from '@shared/stores/collections';
+import { CollectionsSelectors } from '@shared/stores/collections';
 
 @Component({
   selector: 'osf-project-metadata-step',
@@ -115,8 +115,7 @@ export class ProjectMetadataStepComponent {
 
   readonly projectLicense = computed(() => {
     const project = this.selectedProject();
-    const defaultProviderLicense = this.collectionProvider()?.defaultLicenseId;
-    const licenseId = project?.licenseId || defaultProviderLicense;
+    const licenseId = project?.licenseId || this.collectionProvider()?.defaultLicenseId;
     return project ? (this.collectionLicenses().find((license) => license.id === licenseId) ?? null) : null;
   });
 
