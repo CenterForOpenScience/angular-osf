@@ -10,17 +10,7 @@ export interface LicenseResponseJsonApi {
   data: LicenseDataJsonApi;
 }
 
-export interface ProviderDefaultLicenseAttributesJsonApi {
-  default_license_id: string;
-}
-
-export interface ProviderDefaultLicenseResponseJsonApi {
-  data: ProviderDefaultLicenseDataJsonApi;
-}
-
 export type LicenseDataJsonApi = ApiData<LicenseAttributesJsonApi, null, null, null>;
-
-export type ProviderDefaultLicenseDataJsonApi = ApiData<ProviderDefaultLicenseAttributesJsonApi, null, null, null>;
 
 export interface LicenseAttributesJsonApi {
   name: string;

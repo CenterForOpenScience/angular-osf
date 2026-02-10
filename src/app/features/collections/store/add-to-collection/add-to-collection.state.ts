@@ -14,7 +14,6 @@ import {
   CreateCollectionSubmission,
   GetCollectionLicenses,
   GetCurrentCollectionSubmission,
-  GetProviderDefaultLicense,
   RemoveCollectionSubmission,
   UpdateCollectionSubmission,
 } from './add-to-collection.actions';
@@ -44,30 +43,6 @@ export class AddToCollectionState {
         ctx.patchState({
           collectionLicenses: {
             data: licenses,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'collectionLicenses', error))
-    );
-  }
-
-  @Action(GetProviderDefaultLicense)
-  getProviderDefaultLicense(ctx: StateContext<AddToCollectionStateModel>, action: GetProviderDefaultLicense) {
-    const state = ctx.getState();
-    ctx.patchState({
-      providerDefaultLicense: {
-        ...state.providerDefaultLicense,
-        isLoading: true,
-      },
-    });
-
-    return this.addToCollectionService.fetchProviderDefaultLicense(action.providerId).pipe(
-      tap((defaultLicense) => {
-        ctx.patchState({
-          providerDefaultLicense: {
-            data: defaultLicense,
             isLoading: false,
             error: null,
           },

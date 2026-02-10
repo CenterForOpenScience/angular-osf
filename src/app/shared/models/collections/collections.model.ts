@@ -18,6 +18,7 @@ export interface CollectionProvider extends BaseProviderModel {
     type: string;
   };
   brand: BrandModel | null;
+  defaultLicenseId?: string | null;
 }
 
 export interface CollectionFilters {
@@ -99,10 +100,6 @@ export interface CollectionSubmissionWithGuid {
 export interface CollectionProjectSubmission {
   submission: CollectionSubmissionWithGuid;
   project: ProjectModel;
-}
-
-export interface ProviderDefaultLicense {
-  id: string;
 }
 
 export type CollectionSubmissionActionType = 'collection_submission_actions';

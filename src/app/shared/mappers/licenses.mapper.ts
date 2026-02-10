@@ -1,9 +1,5 @@
 import { LicenseModel } from '../models/license/license.model';
-import {
-  LicenseDataJsonApi,
-  LicensesResponseJsonApi,
-  ProviderDefaultLicenseResponseJsonApi,
-} from '../models/license/licenses-json-api.model';
+import { LicenseDataJsonApi, LicensesResponseJsonApi } from '../models/license/licenses-json-api.model';
 
 export class LicensesMapper {
   static fromLicensesResponse(response: LicensesResponseJsonApi): LicenseModel[] {
@@ -25,12 +21,6 @@ export class LicensesMapper {
       requiredFields: data?.attributes?.required_fields,
       url: data?.attributes?.url,
       text: data?.attributes?.text,
-    };
-  }
-
-  static fromProviderDefaultLicenseResponse(response: ProviderDefaultLicenseResponseJsonApi) {
-    return {
-      id: response?.data.attributes?.default_license_id,
     };
   }
 }
