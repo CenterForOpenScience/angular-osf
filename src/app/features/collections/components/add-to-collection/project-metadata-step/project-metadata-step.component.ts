@@ -104,7 +104,6 @@ export class ProjectMetadataStepComponent {
     getAllContributors: GetAllContributors,
     getCollectionLicenses: GetCollectionLicenses,
     clearProjects: ClearProjects,
-    getCollectionProvider: GetCollectionProvider,
   });
 
   readonly projectMetadataForm: FormGroup<ProjectMetadataForm> = this.formService.createForm();
@@ -239,8 +238,6 @@ export class ProjectMetadataStepComponent {
           this.selectedLicense.set(license);
           this.formService.updateLicenseValidators(this.projectMetadataForm, license);
         });
-      } else {
-        this.actions.getCollectionProvider(this.providerId());
       }
       this.populateFormFromProject();
     });
