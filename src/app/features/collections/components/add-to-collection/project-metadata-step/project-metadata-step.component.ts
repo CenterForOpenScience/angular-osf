@@ -117,15 +117,8 @@ export class ProjectMetadataStepComponent {
   readonly projectLicense = computed(() => {
     const project = this.selectedProject();
     const defaultProviderLicense = this.collectionProvider()?.defaultLicenseId;
-    console.log('Project License Computed:', defaultProviderLicense);
-    console.log('project?.licenseId:', project?.licenseId);
-    console.log('this.collectionLicenses() ', this.collectionLicenses());
-    // const res =  project ? (this.collectionLicenses().find((license) => license.id === licenseId) ?? null) : null;
-    // console.log('res: ', res)
     const licenseId = project?.licenseId || defaultProviderLicense;
-    const res = project ? (this.collectionLicenses().find((license) => license.id === licenseId) ?? null) : null;
-    console.log('res: ', res);
-    return res;
+    return project ? (this.collectionLicenses().find((license) => license.id === licenseId) ?? null) : null;
   });
 
   private readonly isFormUnchanged = computed(() => {
