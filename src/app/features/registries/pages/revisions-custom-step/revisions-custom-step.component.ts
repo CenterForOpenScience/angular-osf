@@ -14,31 +14,18 @@ import { RegistriesSelectors, UpdateSchemaResponse } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RevisionsCustomStepComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
   readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
   readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
 
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  actions = createDispatchMap({
-    updateRevision: UpdateSchemaResponse,
-  });
+  actions = createDispatchMap({ updateRevision: UpdateSchemaResponse });
 
-  filesLink = computed(() => {
-    return this.schemaResponse()?.filesLink || ' ';
-  });
-
-  provider = computed(() => {
-    return this.schemaResponse()?.registrationId || '';
-  });
-
-  projectId = computed(() => {
-    return this.schemaResponse()?.registrationId || '';
-  });
-
-  stepsData = computed(() => {
-    const schemaResponse = this.schemaResponse();
-    return schemaResponse?.revisionResponses || {};
-  });
+  filesLink = computed(() => this.schemaResponse()?.filesLink || ' ');
+  provider = computed(() => this.schemaResponse()?.registrationId || '');
+  projectId = computed(() => this.schemaResponse()?.registrationId || '');
+  stepsData = computed(() => this.schemaResponse()?.revisionResponses || {});
 
   onUpdateAction(data: Record<string, unknown>): void {
     const id: string = this.route.snapshot.params['id'] || '';
