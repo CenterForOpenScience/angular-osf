@@ -130,7 +130,7 @@ export class MoveFileDialogComponent {
     const currentProject = this.currentProject();
     if (currentProject) {
       const rootParentId = currentProject.rootResourceId ?? currentProject.id;
-      this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+      this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project, true);
     }
 
     effect(() => {
