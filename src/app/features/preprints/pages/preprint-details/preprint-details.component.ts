@@ -317,6 +317,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       this.actions.clearCurrentProvider();
     }
 
+    this.signpostingService.removeSignpostingLinkTags();
+
     this.helpScoutService.unsetResourceType();
   }
 

@@ -15,6 +15,7 @@ import {
   effect,
   HostBinding,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -77,7 +78,7 @@ import {
   styleUrl: './registry-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistryOverviewComponent implements OnInit {
+export class RegistryOverviewComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -174,6 +175,10 @@ export class RegistryOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.signpostingService.addSignposting(this.registryId());
+  }
+
+  ngOnDestroy(): void {
+    this.signpostingService.removeSignpostingLinkTags();
   }
 
   openRevision(revisionIndex: number): void {
