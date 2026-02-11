@@ -24,6 +24,7 @@ export class GetResourceWithChildren {
   constructor(
     public rootParentId: string,
     public resourceId: string,
-    public resourceType: ResourceType
+    public resourceType: ResourceType,
+    public includeAncestors = false
   ) {}
 }
