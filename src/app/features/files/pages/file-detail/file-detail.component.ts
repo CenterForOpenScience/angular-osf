@@ -19,6 +19,7 @@ import {
   effect,
   HostBinding,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -96,7 +97,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class FileDetailComponent implements OnInit {
+export class FileDetailComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
   readonly store = inject(Store);
@@ -289,6 +290,12 @@ export class FileDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.signpostingService.addSignposting(this.fileGuid);
+  }
+
+  ngOnDestroy(): void {
+    if (this.fileGuid) {
+      this.signpostingService.removeSignpostingLinkTags();
+    }
   }
 
   getIframeLink(version: string) {

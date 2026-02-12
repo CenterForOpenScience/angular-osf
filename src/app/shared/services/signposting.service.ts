@@ -21,7 +21,30 @@ export class SignpostingService {
     this.addSignpostingLinkTags(links);
   }
 
-  private generateSignpostingLinks(guid: string): SignpostingLink[] {
+  addMetadataSignposting(guid: string): void {
+    const links = this.generateSignpostingLinks(guid, true);
+
+    this.addSignpostingLinkHeaders(links);
+    this.addSignpostingLinkTags(links);
+  }
+
+  removeSignpostingLinkTags(): void {
+    const linkElements = this.document.head.querySelectorAll('link[rel="linkset"], link[rel="describes"]');
+    linkElements.forEach((linkElement) => {
+      this.renderer.removeChild(this.document.head, linkElement);
+    });
+  }
+
+  private generateSignpostingLinks(guid: string, isMetadata?: boolean): SignpostingLink[] {
+    if (isMetadata) {
+      return [
+        {
+          rel: 'describes',
+          href: `${this.environment.webUrl}/${guid}/`,
+          type: 'text/html',
+        },
+      ];
+    }
     const baseUrl = `${this.environment.webUrl}/metadata/${guid}/`;
 
     return [

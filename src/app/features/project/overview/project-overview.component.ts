@@ -16,6 +16,7 @@ import {
   effect,
   HostBinding,
   inject,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
@@ -94,7 +95,7 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent implements OnInit {
+export class ProjectOverviewComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -197,6 +198,10 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getLinkedProjects(projectId);
       this.signpostingService.addSignposting(projectId);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.signpostingService.removeSignpostingLinkTags();
   }
 
   handleOpenMakeDecisionDialog() {
