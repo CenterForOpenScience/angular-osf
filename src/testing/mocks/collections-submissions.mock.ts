@@ -1,4 +1,5 @@
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
+import { CollectionSubmission, CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 
 export const MOCK_COLLECTION_SUBMISSION_1: CollectionSubmissionWithGuid = {
   id: '1',
@@ -11,7 +12,7 @@ export const MOCK_COLLECTION_SUBMISSION_1: CollectionSubmissionWithGuid = {
   dateCreated: '2024-01-01T00:00:00Z',
   dateModified: '2024-01-02T00:00:00Z',
   public: false,
-  reviewsState: 'pending',
+  reviewsState: CollectionSubmissionReviewState.Pending,
   collectedType: 'preprint',
   status: 'pending',
   volume: '1',
@@ -54,7 +55,7 @@ export const MOCK_COLLECTION_SUBMISSION_2: CollectionSubmissionWithGuid = {
   dateCreated: '2024-01-02T00:00:00Z',
   dateModified: '2024-01-03T00:00:00Z',
   public: true,
-  reviewsState: 'approved',
+  reviewsState: CollectionSubmissionReviewState.Accepted,
   collectedType: 'preprint',
   status: 'approved',
   volume: '2',
@@ -87,3 +88,40 @@ export const MOCK_COLLECTION_SUBMISSION_2: CollectionSubmissionWithGuid = {
 };
 
 export const MOCK_COLLECTION_SUBMISSIONS = [MOCK_COLLECTION_SUBMISSION_1, MOCK_COLLECTION_SUBMISSION_2];
+
+export const MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS: CollectionSubmission = {
+  id: 'sub-1',
+  type: 'collection-submissions',
+  collectionTitle: 'Collection',
+  collectionId: 'col-1',
+  reviewsState: CollectionSubmissionReviewState.Pending,
+  collectedType: '',
+  status: '',
+  volume: '',
+  issue: '',
+  programArea: '',
+  schoolType: '',
+  studyDesign: '',
+  dataType: '',
+  disease: '',
+  gradeLevels: '',
+};
+
+export const MOCK_COLLECTION_SUBMISSION_WITH_FILTERS: CollectionSubmission = {
+  ...MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS,
+  reviewsState: CollectionSubmissionReviewState.Accepted,
+  collectedType: 'Article',
+  status: 'Published',
+  programArea: 'Health',
+};
+
+export const MOCK_COLLECTION_SUBMISSION_SINGLE_FILTER: CollectionSubmission = {
+  ...MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS,
+  collectedType: 'Article',
+};
+
+export const MOCK_COLLECTION_SUBMISSION_STRINGIFY: CollectionSubmission = {
+  ...MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS,
+  collectedType: 'Article',
+  status: '1',
+};

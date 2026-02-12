@@ -1,38 +1,30 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockComponents } from 'ng-mocks';
+
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
+import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 import { InstitutionsListComponent } from './institutions-list.component';
 
 import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('Component: Institutions List', () => {
+describe('InstitutionsListComponent', () => {
   let component: InstitutionsListComponent;
   let fixture: ComponentFixture<InstitutionsListComponent>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
-  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let store: Store;
 
   const mockInstitutions = [MOCK_INSTITUTION];
-  const mockTotalCount = 2;
 
   beforeEach(async () => {
-    routerMock = RouterMockBuilder.create().build();
-    activatedRouteMock = ActivatedRouteMockBuilder.create()
-      .withQueryParams({ page: '1', size: '10', search: '' })
-      .build();
-
     await TestBed.configureTestingModule({
       imports: [
         InstitutionsListComponent,
@@ -43,23 +35,41 @@ describe.skip('Component: Institutions List', () => {
         provideMockStore({
           signals: [
             { selector: InstitutionsSelectors.getInstitutions, value: mockInstitutions },
-            { selector: InstitutionsSelectors.getInstitutionsTotalCount, value: mockTotalCount },
             { selector: InstitutionsSelectors.isInstitutionsLoading, value: false },
           ],
         }),
-        MockProvider(Router, routerMock),
-        MockProvider(ActivatedRoute, activatedRouteMock),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InstitutionsListComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should dispatch FetchInstitutions on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(expect.any(FetchInstitutions));
+    const action = (store.dispatch as jest.Mock).mock.calls[0][0] as FetchInstitutions;
+    expect(action.searchValue).toBeUndefined();
+  });
+
+  it('should dispatch FetchInstitutions with search value after debounce', fakeAsync(() => {
+    (store.dispatch as jest.Mock).mockClear();
+    component.searchControl.setValue('test search');
+    tick(300);
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchInstitutions('test search'));
+  }));
+
+  it('should dispatch FetchInstitutions with empty string when search is null', fakeAsync(() => {
+    (store.dispatch as jest.Mock).mockClear();
+    component.searchControl.setValue(null);
+    tick(300);
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchInstitutions(''));
+  }));
 
   it('should initialize with correct default values', () => {
     expect(component.classes).toBe('flex-1 flex flex-column w-full');
