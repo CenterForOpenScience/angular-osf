@@ -1,4 +1,4 @@
 export enum RegistrationTab {
-  Drafts,
-  Submitted,
+  Drafts = 'drafts',
+  Submitted = 'submitted',
 }

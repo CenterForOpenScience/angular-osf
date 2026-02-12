@@ -98,7 +98,7 @@ describe('MyRegistrationsComponent', () => {
       getDraftRegistrations: jest.fn(),
       getSubmittedRegistrations: jest.fn(),
       deleteDraft: jest.fn(),
-    } as any;
+    };
     Object.defineProperty(component, 'actions', { value: actionsMock });
     const navigateSpy = jest.spyOn(mockRouter, 'navigate');
 
@@ -119,7 +119,7 @@ describe('MyRegistrationsComponent', () => {
       getDraftRegistrations: jest.fn(),
       getSubmittedRegistrations: jest.fn(),
       deleteDraft: jest.fn(),
-    } as any;
+    };
     Object.defineProperty(component, 'actions', { value: actionsMock });
     const navigateSpy = jest.spyOn(mockRouter, 'navigate');
 
@@ -135,16 +135,32 @@ describe('MyRegistrationsComponent', () => {
     });
   });
 
-  it('should not process tab change if tab is not a number', () => {
+  it('should not process tab change if tab value is invalid', () => {
     const actionsMock = {
       getDraftRegistrations: jest.fn(),
       getSubmittedRegistrations: jest.fn(),
       deleteDraft: jest.fn(),
-    } as any;
+    };
     Object.defineProperty(component, 'actions', { value: actionsMock });
     const initialTab = component.selectedTab();
 
-    component.onTabChange('invalid' as any);
+    component.onTabChange('invalid');
+
+    expect(component.selectedTab()).toBe(initialTab);
+    expect(actionsMock.getDraftRegistrations).not.toHaveBeenCalled();
+    expect(actionsMock.getSubmittedRegistrations).not.toHaveBeenCalled();
+  });
+
+  it('should not process tab change if tab is not a string', () => {
+    const actionsMock = {
+      getDraftRegistrations: jest.fn(),
+      getSubmittedRegistrations: jest.fn(),
+      deleteDraft: jest.fn(),
+    };
+    Object.defineProperty(component, 'actions', { value: actionsMock });
+    const initialTab = component.selectedTab();
+
+    component.onTabChange(0);
 
     expect(component.selectedTab()).toBe(initialTab);
     expect(actionsMock.getDraftRegistrations).not.toHaveBeenCalled();
@@ -158,17 +174,17 @@ describe('MyRegistrationsComponent', () => {
   });
 
   it('should handle drafts pagination', () => {
-    const actionsMock = { getDraftRegistrations: jest.fn() } as any;
+    const actionsMock = { getDraftRegistrations: jest.fn() };
     Object.defineProperty(component, 'actions', { value: actionsMock });
-    component.onDraftsPageChange({ page: 2, first: 20 } as any);
+    component.onDraftsPageChange({ page: 2, first: 20 });
     expect(actionsMock.getDraftRegistrations).toHaveBeenCalledWith(3);
     expect(component.draftFirst).toBe(20);
   });
 
   it('should handle submitted pagination', () => {
-    const actionsMock = { getSubmittedRegistrations: jest.fn() } as any;
+    const actionsMock = { getSubmittedRegistrations: jest.fn() };
     Object.defineProperty(component, 'actions', { value: actionsMock });
-    component.onSubmittedPageChange({ page: 1, first: 10 } as any);
+    component.onSubmittedPageChange({ page: 1, first: 10 });
     expect(actionsMock.getSubmittedRegistrations).toHaveBeenCalledWith(2);
     expect(component.submittedFirst).toBe(10);
   });
@@ -178,7 +194,7 @@ describe('MyRegistrationsComponent', () => {
       getDraftRegistrations: jest.fn(),
       getSubmittedRegistrations: jest.fn(),
       deleteDraft: jest.fn(() => of({})),
-    } as any;
+    };
     Object.defineProperty(component, 'actions', { value: actionsMock });
     customConfirmationService.confirmDelete.mockImplementation(({ onConfirm }) => {
       onConfirm();
@@ -201,7 +217,7 @@ describe('MyRegistrationsComponent', () => {
       getDraftRegistrations: jest.fn(),
       getSubmittedRegistrations: jest.fn(),
       deleteDraft: jest.fn(),
-    } as any;
+    };
     Object.defineProperty(component, 'actions', { value: actionsMock });
     customConfirmationService.confirmDelete.mockImplementation(() => {});
 
@@ -219,7 +235,7 @@ describe('MyRegistrationsComponent', () => {
       getDraftRegistrations: jest.fn(),
       getSubmittedRegistrations: jest.fn(),
       deleteDraft: jest.fn(),
-    } as any;
+    };
     Object.defineProperty(component, 'actions', { value: actionsMock });
 
     component.onTabChange(RegistrationTab.Drafts);
@@ -233,7 +249,7 @@ describe('MyRegistrationsComponent', () => {
       getDraftRegistrations: jest.fn(),
       getSubmittedRegistrations: jest.fn(),
       deleteDraft: jest.fn(),
-    } as any;
+    };
     Object.defineProperty(component, 'actions', { value: actionsMock });
 
     component.onTabChange(RegistrationTab.Submitted);

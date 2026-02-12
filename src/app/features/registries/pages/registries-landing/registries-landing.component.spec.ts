@@ -8,7 +8,6 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { ResourceCardComponent } from '@osf/shared/components/resource-card/resource-card.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { RegistryServicesComponent } from '../../components/registry-services/registry-services.component';
 import { RegistriesSelectors } from '../../store';
@@ -44,8 +43,6 @@ describe('RegistriesLandingComponent', () => {
         { provide: Router, useValue: mockRouter },
         provideMockStore({
           signals: [
-            { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
-            { selector: RegistrationProviderSelectors.isBrandedProviderLoading, value: false },
             { selector: RegistriesSelectors.getRegistries, value: [] },
             { selector: RegistriesSelectors.isRegistriesLoading, value: false },
           ],
