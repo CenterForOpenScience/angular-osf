@@ -4,8 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectionStrategy, Component, effect, input, OnInit, signal } from '@angular/core';
 
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -25,8 +24,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesAffiliatedInstitutionComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute);
-  private readonly draftId = this.route.snapshot.params['id'];
+  draftId = input.required<string>();
 
   selectedInstitutions = signal<Institution[]>([]);
 
@@ -53,10 +51,10 @@ export class RegistriesAffiliatedInstitutionComponent implements OnInit {
 
   ngOnInit() {
     this.actions.fetchUserInstitutions();
-    this.actions.fetchResourceInstitutions(this.draftId, ResourceType.DraftRegistration);
+    this.actions.fetchResourceInstitutions(this.draftId(), ResourceType.DraftRegistration);
   }
 
   institutionsSelected(institutions: Institution[]) {
-    this.actions.updateResourceInstitutions(this.draftId, ResourceType.DraftRegistration, institutions);
+    this.actions.updateResourceInstitutions(this.draftId(), ResourceType.DraftRegistration, institutions);
   }
 }

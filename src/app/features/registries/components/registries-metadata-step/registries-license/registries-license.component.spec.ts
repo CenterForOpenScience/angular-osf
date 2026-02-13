@@ -1,48 +1,57 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponent } from 'ng-mocks';
 
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
-import { RegistriesSelectors } from '@osf/features/registries/store';
+import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
 import { LicenseComponent } from '@osf/shared/components/license/license.component';
+import { LicenseModel } from '@shared/models/license/license.model';
 
 import { RegistriesLicenseComponent } from './registries-license.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RegistriesLicenseComponent', () => {
   let component: RegistriesLicenseComponent;
   let fixture: ComponentFixture<RegistriesLicenseComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let store: Store;
+  let licensesSignal: WritableSignal<LicenseModel[]>;
+  let selectedLicenseSignal: WritableSignal<{ id: string; options?: Record<string, string> } | null>;
+  let draftRegistrationSignal: WritableSignal<Partial<{ providerId: string; defaultLicenseId: string }> | null>;
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
+  const mockLicense: LicenseModel = { id: 'lic-1', name: 'MIT', requiredFields: [], url: '', text: '' };
+  const mockDefaultLicense: LicenseModel = { id: 'default-1', name: 'Default', requiredFields: [], url: '', text: '' };
 
-    await TestBed.configureTestingModule({
-      imports: [RegistriesLicenseComponent, OSFTestingModule, MockComponent(LicenseComponent)],
+  beforeEach(() => {
+    licensesSignal = signal<LicenseModel[]>([]);
+    selectedLicenseSignal = signal<{ id: string; options?: Record<string, string> } | null>(null);
+    draftRegistrationSignal = signal<Partial<{ providerId: string; defaultLicenseId: string }> | null>({
+      providerId: 'osf',
+    });
+
+    TestBed.configureTestingModule({
+      imports: [RegistriesLicenseComponent, MockComponent(LicenseComponent)],
       providers: [
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        provideOSFCore(),
         provideMockStore({
           signals: [
-            { selector: RegistriesSelectors.getLicenses, value: [] },
-            { selector: RegistriesSelectors.getSelectedLicense, value: null },
-            { selector: RegistriesSelectors.getDraftRegistration, value: { providerId: 'osf' } },
+            { selector: RegistriesSelectors.getLicenses, value: licensesSignal },
+            { selector: RegistriesSelectors.getSelectedLicense, value: selectedLicenseSignal },
+            { selector: RegistriesSelectors.getDraftRegistration, value: draftRegistrationSignal },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(RegistriesLicenseComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('control', new FormGroup({ id: new FormControl('') }));
-    const mockActions = {
-      fetchLicenses: jest.fn().mockReturnValue({}),
-      saveLicense: jest.fn().mockReturnValue({}),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: mockActions });
+    fixture.componentRef.setInput('draftId', 'draft-1');
     fixture.detectChanges();
   });
 
@@ -50,36 +59,81 @@ describe('RegistriesLicenseComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch licenses on init when draft present', () => {
-    expect((component as any).actions.fetchLicenses).toHaveBeenCalledWith('osf');
+  it('should dispatch fetchLicenses on init when draft present', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses('osf'));
+  });
+
+  it('should fetch licenses only once even if draft re-emits', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    draftRegistrationSignal.set({ providerId: 'other' });
+    fixture.detectChanges();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchLicenses));
+  });
+
+  it('should sync selected license to control when license exists in list', () => {
+    licensesSignal.set([mockLicense]);
+    selectedLicenseSignal.set({ id: 'lic-1' });
+    fixture.detectChanges();
+    expect(component.control().get('id')?.value).toBe('lic-1');
+  });
+
+  it('should apply default license and save when no selected license', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    draftRegistrationSignal.set({ providerId: 'osf', defaultLicenseId: 'default-1' });
+    licensesSignal.set([mockDefaultLicense]);
+    fixture.detectChanges();
+    expect(component.control().get('id')?.value).toBe('default-1');
+    expect(store.dispatch).toHaveBeenCalledWith(new SaveLicense('draft-1', 'default-1'));
+  });
+
+  it('should apply default license but not save when it has required fields', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    const licenseWithFields: LicenseModel = {
+      id: 'default-2',
+      name: 'CC-BY',
+      requiredFields: ['year'],
+      url: '',
+      text: '',
+    };
+    draftRegistrationSignal.set({ providerId: 'osf', defaultLicenseId: 'default-2' });
+    licensesSignal.set([licenseWithFields]);
+    fixture.detectChanges();
+    expect(component.control().get('id')?.value).toBe('default-2');
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(SaveLicense));
+  });
+
+  it('should prefer selected license over default license', () => {
+    licensesSignal.set([mockDefaultLicense, mockLicense]);
+    draftRegistrationSignal.set({ providerId: 'osf', defaultLicenseId: 'default-1' });
+    selectedLicenseSignal.set({ id: 'lic-1' });
+    fixture.detectChanges();
+    expect(component.control().get('id')?.value).toBe('lic-1');
   });
 
   it('should set control id and save license when selecting simple license', () => {
-    const saveSpy = jest.spyOn((component as any).actions, 'saveLicense');
-    component.selectLicense({ id: 'lic-1', requiredFields: [] } as any);
-    expect((component.control() as FormGroup).get('id')?.value).toBe('lic-1');
-    expect(saveSpy).toHaveBeenCalledWith('draft-1', 'lic-1');
+    (store.dispatch as jest.Mock).mockClear();
+    component.selectLicense(mockLicense);
+    expect(component.control().get('id')?.value).toBe('lic-1');
+    expect(store.dispatch).toHaveBeenCalledWith(new SaveLicense('draft-1', 'lic-1'));
   });
 
   it('should not save when license has required fields', () => {
-    const saveSpy = jest.spyOn((component as any).actions, 'saveLicense');
-    component.selectLicense({ id: 'lic-2', requiredFields: ['year'] } as any);
-    expect(saveSpy).not.toHaveBeenCalled();
+    (store.dispatch as jest.Mock).mockClear();
+    component.selectLicense({ id: 'lic-2', name: 'CC-BY', requiredFields: ['year'], url: '', text: '' });
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should create license with options', () => {
-    const saveSpy = jest.spyOn((component as any).actions, 'saveLicense');
-    component.createLicense({ id: 'lic-3', licenseOptions: { year: '2024', copyrightHolders: 'Me' } as any });
-    expect(saveSpy).toHaveBeenCalledWith('draft-1', 'lic-3', { year: '2024', copyrightHolders: 'Me' });
+  it('should dispatch saveLicense with options on createLicense', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    component.createLicense({ id: 'lic-3', licenseOptions: { year: '2024', copyrightHolders: 'Me' } });
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new SaveLicense('draft-1', 'lic-3', { year: '2024', copyrightHolders: 'Me' })
+    );
   });
 
   it('should mark control on focus out', () => {
-    const control = new FormGroup({ id: new FormControl('') });
-    fixture.componentRef.setInput('control', control);
-    const spy = jest.spyOn(control, 'updateValueAndValidity');
     component.onFocusOut();
-    expect(control.touched).toBe(true);
-    expect(control.dirty).toBe(true);
-    expect(spy).toHaveBeenCalled();
+    expect(component.control().touched).toBe(true);
+    expect(component.control().dirty).toBe(true);
   });
 });

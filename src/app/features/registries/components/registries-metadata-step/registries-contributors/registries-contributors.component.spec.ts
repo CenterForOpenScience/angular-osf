@@ -1,40 +1,59 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
+import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ContributorsSelectors } from '@osf/shared/stores/contributors/contributors.selectors';
+import {
+  BulkAddContributors,
+  BulkUpdateContributors,
+  ContributorsSelectors,
+  DeleteContributor,
+  GetAllContributors,
+  LoadMoreContributors,
+  ResetContributorsState,
+} from '@osf/shared/stores/contributors';
 import { ContributorsTableComponent } from '@shared/components/contributors/contributors-table/contributors-table.component';
+import { ContributorModel } from '@shared/models/contributors/contributor.model';
+import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
 
 import { RegistriesContributorsComponent } from './registries-contributors.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import {
+  MOCK_CONTRIBUTOR,
+  MOCK_CONTRIBUTOR_ADD,
+  MOCK_CONTRIBUTOR_WITHOUT_HISTORY,
+} from '@testing/mocks/contributors.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomConfirmationServiceMockBuilder,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import {
+  CustomDialogServiceMockBuilder,
+  CustomDialogServiceMockType,
+} from '@testing/providers/custom-dialog-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+import { ToastServiceMockBuilder, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 describe('RegistriesContributorsComponent', () => {
   let component: RegistriesContributorsComponent;
   let fixture: ComponentFixture<RegistriesContributorsComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
-  let mockCustomConfirmationService: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
-  let mockToast: ReturnType<ToastServiceMockBuilder['build']>;
+  let store: Store;
+  let mockCustomDialogService: CustomDialogServiceMockType;
+  let mockCustomConfirmationService: CustomConfirmationServiceMockType;
+  let mockToast: ToastServiceMockType;
 
-  const initialContributors = [
-    { id: '1', userId: 'u1', fullName: 'A', permission: 2 },
-    { id: '2', userId: 'u2', fullName: 'B', permission: 1 },
-  ] as any[];
+  const initialContributors: ContributorModel[] = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
 
   beforeAll(() => {
     if (typeof (globalThis as any).structuredClone !== 'function') {
@@ -46,88 +65,157 @@ describe('RegistriesContributorsComponent', () => {
     }
   });
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
+  beforeEach(() => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     mockCustomConfirmationService = CustomConfirmationServiceMockBuilder.create().build();
     mockToast = ToastServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [RegistriesContributorsComponent, OSFTestingModule, MockComponent(ContributorsTableComponent)],
+    TestBed.configureTestingModule({
+      imports: [RegistriesContributorsComponent, MockComponent(ContributorsTableComponent)],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
+        provideOSFCore(),
         MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(CustomConfirmationService, mockCustomConfirmationService),
         MockProvider(ToastService, mockToast),
         provideMockStore({
           signals: [
-            { selector: UserSelectors.getCurrentUser, value: { id: 'u1' } },
+            { selector: UserSelectors.getCurrentUser, value: { id: MOCK_CONTRIBUTOR.userId } },
             { selector: ContributorsSelectors.getContributors, value: initialContributors },
             { selector: ContributorsSelectors.isContributorsLoading, value: false },
+            { selector: ContributorsSelectors.getContributorsTotalCount, value: 2 },
+            { selector: ContributorsSelectors.isContributorsLoadingMore, value: false },
+            { selector: ContributorsSelectors.getContributorsPageSize, value: 10 },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(RegistriesContributorsComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('control', new FormControl([]));
-    const mockActions = {
-      getContributors: jest.fn().mockReturnValue(of({})),
-      updateContributor: jest.fn().mockReturnValue(of({})),
-      addContributor: jest.fn().mockReturnValue(of({})),
-      deleteContributor: jest.fn().mockReturnValue(of({})),
-      bulkUpdateContributors: jest.fn().mockReturnValue(of({})),
-      bulkAddContributors: jest.fn().mockReturnValue(of({})),
-      resetContributorsState: jest.fn().mockRejectedValue(of({})),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: mockActions });
+    fixture.componentRef.setInput('draftId', 'draft-1');
     fixture.detectChanges();
   });
 
-  it('should request contributors on init', () => {
-    const actions = (component as any).actions;
-    expect(actions.getContributors).toHaveBeenCalledWith('draft-1', ResourceType.DraftRegistration);
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should dispatch getContributors on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(new GetAllContributors('draft-1', ResourceType.DraftRegistration));
   });
 
   it('should cancel changes and reset local contributors', () => {
-    (component as any).contributors.set([{ id: '3' }]);
+    component.contributors.set([{ ...MOCK_CONTRIBUTOR, id: 'changed' }]);
     component.cancel();
     expect(component.contributors()).toEqual(JSON.parse(JSON.stringify(initialContributors)));
   });
 
   it('should save changed contributors and show success toast', () => {
-    (component as any).contributors.set([{ ...initialContributors[0] }, { ...initialContributors[1], permission: 2 }]);
+    const changedContributor = { ...MOCK_CONTRIBUTOR_WITHOUT_HISTORY, permission: MOCK_CONTRIBUTOR.permission };
+    component.contributors.set([{ ...MOCK_CONTRIBUTOR }, changedContributor]);
+    (store.dispatch as jest.Mock).mockClear();
     component.save();
-    expect(mockToast.showSuccess).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new BulkUpdateContributors('draft-1', ResourceType.DraftRegistration, [changedContributor])
+    );
+    expect(mockToast.showSuccess).toHaveBeenCalledWith(
+      'project.contributors.toastMessages.multipleUpdateSuccessMessage'
+    );
   });
 
-  it('should open add contributor dialog', () => {
+  it('should bulk add registered contributors and show toast when add dialog closes', () => {
+    const dialogClose$ = new Subject<ContributorDialogAddModel>();
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
+    (store.dispatch as jest.Mock).mockClear();
+
     component.openAddContributorDialog();
-    expect(mockCustomDialogService.open).toHaveBeenCalled();
+    dialogClose$.next({ type: AddContributorType.Registered, data: [MOCK_CONTRIBUTOR_ADD] });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new BulkAddContributors('draft-1', ResourceType.DraftRegistration, [MOCK_CONTRIBUTOR_ADD])
+    );
+    expect(mockToast.showSuccess).toHaveBeenCalledWith('project.contributors.toastMessages.multipleAddSuccessMessage');
   });
 
-  it('should open add unregistered contributor dialog', () => {
+  it('should switch to unregistered dialog when add dialog closes with unregistered type', () => {
+    const dialogClose$ = new Subject<ContributorDialogAddModel>();
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
+    const spy = jest.spyOn(component, 'openAddUnregisteredContributorDialog').mockImplementation(() => {});
+
+    component.openAddContributorDialog();
+    dialogClose$.next({ type: AddContributorType.Unregistered, data: [] });
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should bulk add unregistered contributor and show toast with name param', () => {
+    const dialogClose$ = new Subject<ContributorDialogAddModel>();
+    const unregisteredAdd = { ...MOCK_CONTRIBUTOR_ADD, fullName: 'Test User' };
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
+    (store.dispatch as jest.Mock).mockClear();
+
     component.openAddUnregisteredContributorDialog();
-    expect(mockCustomDialogService.open).toHaveBeenCalled();
+    dialogClose$.next({ type: AddContributorType.Unregistered, data: [unregisteredAdd] });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new BulkAddContributors('draft-1', ResourceType.DraftRegistration, [unregisteredAdd])
+    );
+    expect(mockToast.showSuccess).toHaveBeenCalledWith('project.contributors.toastMessages.addSuccessMessage', {
+      name: 'Test User',
+    });
+  });
+
+  it('should switch to registered dialog when unregistered dialog closes with registered type', () => {
+    const dialogClose$ = new Subject<ContributorDialogAddModel>();
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
+    const spy = jest.spyOn(component, 'openAddContributorDialog').mockImplementation(() => {});
+
+    component.openAddUnregisteredContributorDialog();
+    dialogClose$.next({ type: AddContributorType.Registered, data: [] });
+
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should remove contributor after confirmation and show success toast', () => {
-    const contributor = { id: '2', userId: 'u2', fullName: 'B' } as any;
-    component.removeContributor(contributor);
+    (store.dispatch as jest.Mock).mockClear();
+    component.removeContributor(MOCK_CONTRIBUTOR_WITHOUT_HISTORY);
     expect(mockCustomConfirmationService.confirmDelete).toHaveBeenCalled();
-    const call = (mockCustomConfirmationService.confirmDelete as any).mock.calls[0][0];
+    const call = (mockCustomConfirmationService.confirmDelete as jest.Mock).mock.calls[0][0];
     call.onConfirm();
-    expect(mockToast.showSuccess).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new DeleteContributor('draft-1', ResourceType.DraftRegistration, MOCK_CONTRIBUTOR_WITHOUT_HISTORY.userId)
+    );
+    expect(mockToast.showSuccess).toHaveBeenCalledWith('project.contributors.removeDialog.successMessage', {
+      name: MOCK_CONTRIBUTOR_WITHOUT_HISTORY.fullName,
+    });
+  });
+
+  it('should return true for hasChanges when contributors differ from initial', () => {
+    component.contributors.set([{ ...MOCK_CONTRIBUTOR, id: 'changed' }]);
+    expect(component.hasChanges).toBe(true);
+  });
+
+  it('should return false for hasChanges when contributors match initial', () => {
+    expect(component.hasChanges).toBe(false);
+  });
+
+  it('should dispatch resetContributorsState on destroy', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    component.ngOnDestroy();
+    expect(store.dispatch).toHaveBeenCalledWith(new ResetContributorsState());
+  });
+
+  it('should dispatch loadMoreContributors', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    component.loadMoreContributors();
+    expect(store.dispatch).toHaveBeenCalledWith(new LoadMoreContributors('draft-1', ResourceType.DraftRegistration));
   });
 
   it('should mark control touched and dirty on focus out', () => {
-    const control = new FormControl([]);
-    const spy = jest.spyOn(control, 'updateValueAndValidity');
-    fixture.componentRef.setInput('control', control);
     component.onFocusOut();
-    expect(control.touched).toBe(true);
-    expect(control.dirty).toBe(true);
-    expect(spy).toHaveBeenCalled();
+    expect(component.control().touched).toBe(true);
+    expect(component.control().dirty).toBe(true);
   });
 });

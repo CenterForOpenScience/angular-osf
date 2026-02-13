@@ -1,36 +1,34 @@
-import { of } from 'rxjs';
+import { Store } from '@ngxs/store';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
 
-import { RegistriesSelectors } from '@osf/features/registries/store';
+import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
 
 import { RegistriesTagsComponent } from './registries-tags.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RegistriesTagsComponent', () => {
   let component: RegistriesTagsComponent;
   let fixture: ComponentFixture<RegistriesTagsComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let store: Store;
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'someId' }).build();
-
-    await TestBed.configureTestingModule({
-      imports: [RegistriesTagsComponent, OSFTestingModule],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RegistriesTagsComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        provideOSFCore(),
         provideMockStore({
           signals: [{ selector: RegistriesSelectors.getSelectedTags, value: [] }],
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(RegistriesTagsComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('draftId', 'someId');
     fixture.detectChanges();
   });
 
@@ -44,11 +42,7 @@ describe('RegistriesTagsComponent', () => {
   });
 
   it('should update tags on change', () => {
-    const mockActions = {
-      updateDraft: jest.fn().mockReturnValue(of({})),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: mockActions });
     component.onTagsChanged(['a', 'b']);
-    expect(mockActions.updateDraft).toHaveBeenCalledWith('someId', { tags: ['a', 'b'] });
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateDraft('someId', { tags: ['a', 'b'] }));
   });
 });
