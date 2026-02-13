@@ -1,35 +1,39 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents } from 'ng-mocks';
 
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
+import { ClearCurrentProvider } from '@core/store/provider';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '@osf/shared/components/resource-card/resource-card.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ClearRegistryProvider, GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
 import { RegistryServicesComponent } from '../../components/registry-services/registry-services.component';
-import { RegistriesSelectors } from '../../store';
+import { GetRegistries, RegistriesSelectors } from '../../store';
 
 import { RegistriesLandingComponent } from './registries-landing.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RegistriesLandingComponent', () => {
   let component: RegistriesLandingComponent;
   let fixture: ComponentFixture<RegistriesLandingComponent>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
+  let store: Store;
+  let mockRouter: RouterMockType;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockRouter = RouterMockBuilder.create().withUrl('/registries').build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         RegistriesLandingComponent,
-        OSFTestingModule,
         ...MockComponents(
           SearchInputComponent,
           RegistryServicesComponent,
@@ -40,7 +44,9 @@ describe('RegistriesLandingComponent', () => {
         ),
       ],
       providers: [
-        { provide: Router, useValue: mockRouter },
+        provideOSFCore(),
+        provideRouterMock(mockRouter),
+        { provide: PLATFORM_ID, useValue: 'browser' },
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getRegistries, value: [] },
@@ -48,10 +54,11 @@ describe('RegistriesLandingComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RegistriesLandingComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   });
 
@@ -59,51 +66,31 @@ describe('RegistriesLandingComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch get registries and provider on init', () => {
-    const actionsMock = {
-      getRegistries: jest.fn(),
-      getProvider: jest.fn(),
-      clearCurrentProvider: jest.fn(),
-      clearRegistryProvider: jest.fn(),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-
-    component.ngOnInit();
-
-    expect(actionsMock.getRegistries).toHaveBeenCalled();
-    expect(actionsMock.getProvider).toHaveBeenCalledWith(component.defaultProvider);
+  it('should dispatch getRegistries and getProvider on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistries());
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistryProvider(component.defaultProvider));
   });
 
-  it('should clear providers on destroy', () => {
-    const actionsMock = {
-      getRegistries: jest.fn(),
-      getProvider: jest.fn(),
-      clearCurrentProvider: jest.fn(),
-      clearRegistryProvider: jest.fn(),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-
+  it('should dispatch clear actions on destroy', () => {
+    (store.dispatch as jest.Mock).mockClear();
     fixture.destroy();
-    expect(actionsMock.clearCurrentProvider).toHaveBeenCalled();
-    expect(actionsMock.clearRegistryProvider).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearCurrentProvider());
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearRegistryProvider());
   });
 
   it('should navigate to search with value', () => {
-    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
     component.searchControl.setValue('abc');
     component.redirectToSearchPageWithValue();
-    expect(navSpy).toHaveBeenCalledWith(['/search'], { queryParams: { search: 'abc', tab: 3 } });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { search: 'abc', tab: 3 } });
   });
 
   it('should navigate to search registrations tab', () => {
-    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
     component.redirectToSearchPageRegistrations();
-    expect(navSpy).toHaveBeenCalledWith(['/search'], { queryParams: { tab: 3 } });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { tab: 3 } });
   });
 
   it('should navigate to create page', () => {
-    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
     component.goToCreateRegistration();
-    expect(navSpy).toHaveBeenCalledWith(['/registries/osf/new']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([`/registries/${component.defaultProvider}/new`]);
   });
 });

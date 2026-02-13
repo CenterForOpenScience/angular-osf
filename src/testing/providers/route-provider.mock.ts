@@ -6,6 +6,7 @@ export class ActivatedRouteMockBuilder {
   private paramsObj: Record<string, any> = {};
   private queryParamsObj: Record<string, any> = {};
   private dataObj: Record<string, any> = {};
+  private firstChildBuilder: ActivatedRouteMockBuilder | null = null;
 
   private params$ = new BehaviorSubject<Record<string, any>>({});
   private queryParams$ = new BehaviorSubject<Record<string, any>>({});
@@ -39,6 +40,12 @@ export class ActivatedRouteMockBuilder {
     return this;
   }
 
+  withFirstChild(configureFn: (builder: ActivatedRouteMockBuilder) => void): ActivatedRouteMockBuilder {
+    this.firstChildBuilder = new ActivatedRouteMockBuilder();
+    configureFn(this.firstChildBuilder);
+    return this;
+  }
+
   build(): Partial<ActivatedRoute> {
     const paramMap = {
       get: jest.fn((key: string) => this.paramsObj[key]),
@@ -46,6 +53,8 @@ export class ActivatedRouteMockBuilder {
       getAll: jest.fn((key: string) => (this.paramsObj[key] ? [this.paramsObj[key]] : [])),
       keys: Object.keys(this.paramsObj),
     };
+
+    const firstChild = this.firstChildBuilder ? this.firstChildBuilder.build() : null;
 
     const route: Partial<ActivatedRoute> = {
       parent: {
@@ -59,7 +68,9 @@ export class ActivatedRouteMockBuilder {
         queryParams: this.queryParamsObj,
         data: this.dataObj,
         paramMap: paramMap,
+        firstChild: firstChild?.snapshot ?? null,
       } as any,
+      firstChild: firstChild as any,
       params: this.params$.asObservable(),
       queryParams: this.queryParams$.asObservable(),
       data: this.data$.asObservable(),

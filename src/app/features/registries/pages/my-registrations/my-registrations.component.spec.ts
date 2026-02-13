@@ -1,9 +1,9 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
 
-import { of } from 'rxjs';
+import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { RegistrationTab } from '@osf/features/registries/enums';
@@ -15,35 +15,40 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
+import { DeleteDraft, FetchDraftRegistrations, FetchSubmittedRegistrations } from '../../store';
+
 import { MyRegistrationsComponent } from './my-registrations.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
+import { provideOSFCore, provideOSFToast } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
+import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('MyRegistrationsComponent', () => {
   let component: MyRegistrationsComponent;
   let fixture: ComponentFixture<MyRegistrationsComponent>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockActivatedRoute: Partial<ActivatedRoute>;
+  let store: Store;
+  let mockRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockRouter: RouterMockType;
   let customConfirmationService: jest.Mocked<CustomConfirmationService>;
   let toastService: jest.Mocked<ToastService>;
 
-  beforeEach(async () => {
+  function setup(queryParams: Record<string, string> = {}) {
     mockRouter = RouterMockBuilder.create().withUrl('/registries/me').build();
-    mockActivatedRoute = { snapshot: { queryParams: {} } } as any;
+    mockRoute = ActivatedRouteMockBuilder.create().withQueryParams(queryParams).build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         MyRegistrationsComponent,
-        OSFTestingModule,
         ...MockComponents(SubHeaderComponent, SelectComponent, RegistrationCardComponent, CustomPaginatorComponent),
       ],
       providers: [
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        MockProvider(CustomConfirmationService, { confirmDelete: jest.fn() }),
-        MockProvider(ToastService, { showSuccess: jest.fn(), showWarn: jest.fn(), showError: jest.fn() }),
+        provideOSFCore(),
+        provideRouterMock(mockRouter),
+        provideActivatedRouteMock(mockRoute),
+        MockCustomConfirmationServiceProvider,
+        provideOSFToast(),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getDraftRegistrations, value: [] },
@@ -56,146 +61,109 @@ describe('MyRegistrationsComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(MyRegistrationsComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
     customConfirmationService = TestBed.inject(CustomConfirmationService) as jest.Mocked<CustomConfirmationService>;
     toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
-  it('should default to submitted tab when no query param', () => {
+  it('should default to submitted tab and fetch submitted registrations', () => {
+    setup();
     expect(component.selectedTab()).toBe(RegistrationTab.Submitted);
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSubmittedRegistrations());
   });
 
-  it('should switch to drafts tab when query param is drafts', () => {
-    (mockActivatedRoute.snapshot as any).queryParams = { tab: 'drafts' };
-
-    fixture = TestBed.createComponent(MyRegistrationsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
+  it('should switch to drafts tab from query param and fetch drafts', () => {
+    setup({ tab: 'drafts' });
     expect(component.selectedTab()).toBe(RegistrationTab.Drafts);
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchDraftRegistrations());
   });
 
-  it('should switch to submitted tab when query param is submitted', () => {
-    (mockActivatedRoute.snapshot as any).queryParams = { tab: 'submitted' };
-
-    fixture = TestBed.createComponent(MyRegistrationsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    expect(component.selectedTab()).toBe(RegistrationTab.Submitted);
-  });
-
-  it('should handle tab change and update query params', () => {
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-    const navigateSpy = jest.spyOn(mockRouter, 'navigate');
+  it('should change tab to drafts, reset pagination, fetch data, and update query params', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
+    (mockRouter.navigate as jest.Mock).mockClear();
 
     component.onTabChange(RegistrationTab.Drafts);
 
     expect(component.selectedTab()).toBe(RegistrationTab.Drafts);
     expect(component.draftFirst).toBe(0);
-    expect(actionsMock.getDraftRegistrations).toHaveBeenCalledWith();
-    expect(navigateSpy).toHaveBeenCalledWith([], {
-      relativeTo: mockActivatedRoute,
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchDraftRegistrations());
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: TestBed.inject(ActivatedRoute),
       queryParams: { tab: 'drafts' },
       queryParamsHandling: 'merge',
     });
   });
 
-  it('should handle tab change to submitted and update query params', () => {
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-    const navigateSpy = jest.spyOn(mockRouter, 'navigate');
+  it('should change tab to submitted, reset pagination, fetch data, and update query params', () => {
+    setup();
+    component.onTabChange(RegistrationTab.Drafts);
+    (store.dispatch as jest.Mock).mockClear();
+    (mockRouter.navigate as jest.Mock).mockClear();
 
     component.onTabChange(RegistrationTab.Submitted);
 
     expect(component.selectedTab()).toBe(RegistrationTab.Submitted);
     expect(component.submittedFirst).toBe(0);
-    expect(actionsMock.getSubmittedRegistrations).toHaveBeenCalledWith();
-    expect(navigateSpy).toHaveBeenCalledWith([], {
-      relativeTo: mockActivatedRoute,
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSubmittedRegistrations());
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: TestBed.inject(ActivatedRoute),
       queryParams: { tab: 'submitted' },
       queryParamsHandling: 'merge',
     });
   });
 
-  it('should not process tab change if tab value is invalid', () => {
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
+  it('should ignore invalid tab values', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
     const initialTab = component.selectedTab();
 
     component.onTabChange('invalid');
-
-    expect(component.selectedTab()).toBe(initialTab);
-    expect(actionsMock.getDraftRegistrations).not.toHaveBeenCalled();
-    expect(actionsMock.getSubmittedRegistrations).not.toHaveBeenCalled();
-  });
-
-  it('should not process tab change if tab is not a string', () => {
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-    const initialTab = component.selectedTab();
-
     component.onTabChange(0);
 
     expect(component.selectedTab()).toBe(initialTab);
-    expect(actionsMock.getDraftRegistrations).not.toHaveBeenCalled();
-    expect(actionsMock.getSubmittedRegistrations).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
   it('should navigate to create registration page', () => {
-    const navSpy = jest.spyOn(mockRouter, 'navigate');
+    setup();
     component.goToCreateRegistration();
-    expect(navSpy).toHaveBeenLastCalledWith(['/registries', 'osf', 'new']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/registries', 'osf', 'new']);
   });
 
   it('should handle drafts pagination', () => {
-    const actionsMock = { getDraftRegistrations: jest.fn() };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
+
     component.onDraftsPageChange({ page: 2, first: 20 });
-    expect(actionsMock.getDraftRegistrations).toHaveBeenCalledWith(3);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchDraftRegistrations(3));
     expect(component.draftFirst).toBe(20);
   });
 
   it('should handle submitted pagination', () => {
-    const actionsMock = { getSubmittedRegistrations: jest.fn() };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
+
     component.onSubmittedPageChange({ page: 1, first: 10 });
-    expect(actionsMock.getSubmittedRegistrations).toHaveBeenCalledWith(2);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSubmittedRegistrations(2));
     expect(component.submittedFirst).toBe(10);
   });
 
   it('should delete draft after confirmation', () => {
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(() => of({})),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
     customConfirmationService.confirmDelete.mockImplementation(({ onConfirm }) => {
       onConfirm();
     });
@@ -207,53 +175,21 @@ describe('MyRegistrationsComponent', () => {
       messageKey: 'registries.confirmDeleteDraft',
       onConfirm: expect.any(Function),
     });
-    expect(actionsMock.deleteDraft).toHaveBeenCalledWith('draft-123');
-    expect(actionsMock.getDraftRegistrations).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteDraft('draft-123'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchDraftRegistrations());
     expect(toastService.showSuccess).toHaveBeenCalledWith('registries.successDeleteDraft');
   });
 
   it('should not delete draft if confirmation is cancelled', () => {
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
+    toastService.showSuccess.mockClear();
     customConfirmationService.confirmDelete.mockImplementation(() => {});
 
     component.onDeleteDraft('draft-123');
 
     expect(customConfirmationService.confirmDelete).toHaveBeenCalled();
-    expect(actionsMock.deleteDraft).not.toHaveBeenCalled();
-    expect(actionsMock.getDraftRegistrations).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalled();
     expect(toastService.showSuccess).not.toHaveBeenCalled();
-  });
-
-  it('should reset draftFirst when switching to drafts tab', () => {
-    component.draftFirst = 20;
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-
-    component.onTabChange(RegistrationTab.Drafts);
-
-    expect(component.draftFirst).toBe(0);
-  });
-
-  it('should reset submittedFirst when switching to submitted tab', () => {
-    component.submittedFirst = 20;
-    const actionsMock = {
-      getDraftRegistrations: jest.fn(),
-      getSubmittedRegistrations: jest.fn(),
-      deleteDraft: jest.fn(),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-
-    component.onTabChange(RegistrationTab.Submitted);
-
-    expect(component.submittedFirst).toBe(0);
   });
 });

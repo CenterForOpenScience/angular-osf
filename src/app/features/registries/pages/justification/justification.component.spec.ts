@@ -1,26 +1,25 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockProvider } from 'ng-mocks';
-
-import { of } from 'rxjs';
+import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
-import { LoaderService } from '@osf/shared/services/loader.service';
 
-import { RegistriesSelectors } from '../../store';
+import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors } from '../../store';
 
 import { JustificationComponent } from './justification.component';
 
 import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
+import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 const MOCK_SCHEMA_RESPONSE = createMockSchemaResponse('resp-1', RevisionReviewStates.RevisionInProgress);
@@ -30,36 +29,24 @@ const MOCK_PAGES: PageSchema[] = [
   { id: 'page-2', title: 'Page Two', questions: [{ id: 'q2', displayText: 'Q2', required: false, responseKey: 'q2' }] },
 ];
 
-function buildActivatedRoute(params: Record<string, any> = {}) {
-  return {
-    snapshot: { firstChild: { params } },
-    firstChild: { snapshot: { params } },
-  } as unknown as ActivatedRoute;
+interface SetupOptions {
+  routeParams?: Record<string, any>;
+  routerUrl?: string;
+  schemaResponse?: SchemaResponse | null;
+  pages?: PageSchema[];
+  stepsState?: Record<string, { invalid: boolean; touched: boolean }>;
+  revisionData?: Record<string, any>;
 }
 
 describe('JustificationComponent', () => {
   let component: JustificationComponent;
   let fixture: ComponentFixture<JustificationComponent>;
+  let store: Store;
   let mockRouter: RouterMockType;
   let routerBuilder: RouterMockBuilder;
-  let loaderService: jest.Mocked<LoaderService>;
-  let actionsMock: {
-    getSchemaBlocks: jest.Mock;
-    clearState: jest.Mock;
-    getSchemaResponse: jest.Mock;
-    updateStepState: jest.Mock;
-  };
+  let loaderService: LoaderServiceMock;
 
-  function setup(
-    options: {
-      routeParams?: Record<string, any>;
-      routerUrl?: string;
-      schemaResponse?: SchemaResponse | null;
-      pages?: PageSchema[];
-      stepsState?: Record<string, { invalid: boolean; touched: boolean }>;
-      revisionData?: Record<string, any>;
-    } = {}
-  ) {
+  function setup(options: SetupOptions = {}) {
     const {
       routeParams = { id: 'rev-1' },
       routerUrl = '/registries/revisions/rev-1/justification',
@@ -69,19 +56,21 @@ describe('JustificationComponent', () => {
       revisionData = MOCK_SCHEMA_RESPONSE.revisionResponses,
     } = options;
 
-    fixture?.destroy();
-    TestBed.resetTestingModule();
-
     routerBuilder = RouterMockBuilder.create().withUrl(routerUrl);
     mockRouter = routerBuilder.build();
-    loaderService = { show: jest.fn(), hide: jest.fn() } as unknown as jest.Mocked<LoaderService>;
+    loaderService = new LoaderServiceMock();
+
+    const mockRoute = ActivatedRouteMockBuilder.create()
+      .withFirstChild((child) => child.withParams(routeParams))
+      .build();
 
     TestBed.configureTestingModule({
-      imports: [JustificationComponent, OSFTestingModule, ...MockComponents(StepperComponent, SubHeaderComponent)],
+      imports: [JustificationComponent, ...MockComponents(StepperComponent, SubHeaderComponent)],
       providers: [
-        { provide: ActivatedRoute, useValue: buildActivatedRoute(routeParams) },
-        { provide: Router, useValue: mockRouter },
-        MockProvider(LoaderService, loaderService),
+        provideOSFCore(),
+        provideActivatedRouteMock(mockRoute),
+        provideRouterMock(mockRouter),
+        provideLoaderServiceMock(loaderService),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getSchemaResponse, value: schemaResponse },
@@ -95,23 +84,12 @@ describe('JustificationComponent', () => {
 
     fixture = TestBed.createComponent(JustificationComponent);
     component = fixture.componentInstance;
-
-    actionsMock = {
-      getSchemaBlocks: jest.fn().mockReturnValue(of({})),
-      clearState: jest.fn().mockReturnValue(of({})),
-      getSchemaResponse: jest.fn().mockReturnValue(of({})),
-      updateStepState: jest.fn().mockReturnValue(of({})),
-    };
-    Object.defineProperty(component, 'actions', { value: actionsMock, writable: true });
-
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   }
 
-  beforeEach(() => setup());
-
-  afterEach(() => fixture?.destroy());
-
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
@@ -126,6 +104,7 @@ describe('JustificationComponent', () => {
   });
 
   it('should build justification as first and review as last step with custom steps in between', () => {
+    setup();
     const steps = component.steps();
     expect(steps.length).toBe(4);
     expect(steps[0]).toEqual(expect.objectContaining({ index: 0, value: 'justification', routeLink: 'justification' }));
@@ -178,54 +157,61 @@ describe('JustificationComponent', () => {
   });
 
   it('should default currentStepIndex to 0 when no step param', () => {
+    setup();
     expect(component.currentStepIndex()).toBe(0);
   });
 
   it('should return the step at currentStepIndex', () => {
+    setup();
     component.currentStepIndex.set(0);
     expect(component.currentStep().value).toBe('justification');
   });
 
   it('should update currentStepIndex and navigate on stepChange', () => {
+    setup();
     component.stepChange({ index: 1, label: 'Page One', value: 'page-1' } as any);
-
     expect(component.currentStepIndex()).toBe(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/registries/revisions/rev-1/', '1']);
   });
 
   it('should navigate to review route for last step', () => {
+    setup();
     const reviewIndex = component.steps().length - 1;
     component.stepChange({ index: reviewIndex, label: 'Review', value: 'review' } as any);
-
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/registries/revisions/rev-1/', 'review']);
   });
 
   it('should update currentStepIndex on NavigationEnd', () => {
     setup({ routeParams: { id: 'rev-1', step: '2' }, routerUrl: '/registries/revisions/rev-1/2' });
-
     routerBuilder.emit(new NavigationEnd(1, '/test', '/test'));
-
     expect(component.currentStepIndex()).toBe(2);
   });
 
   it('should show loader on init', () => {
+    setup();
     expect(loaderService.show).toHaveBeenCalled();
   });
 
   it('should dispatch FetchSchemaResponse when not already loaded', () => {
     setup({ schemaResponse: null });
-    const store = TestBed.inject(Store);
-    expect(store.dispatch).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSchemaResponse('rev-1'));
   });
 
   it('should not dispatch FetchSchemaResponse when already loaded', () => {
-    const store = TestBed.inject(Store);
-    expect(store.dispatch).not.toHaveBeenCalled();
+    setup();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchSchemaResponse));
+  });
+
+  it('should dispatch FetchSchemaBlocks when schemaResponse has registrationSchemaId', () => {
+    setup();
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSchemaBlocks(MOCK_SCHEMA_RESPONSE.registrationSchemaId));
   });
 
   it('should dispatch clearState on destroy', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
     component.ngOnDestroy();
-    expect(actionsMock.clearState).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearState());
   });
 
   it('should detect review page from URL', () => {
@@ -234,6 +220,21 @@ describe('JustificationComponent', () => {
   });
 
   it('should return false for isReviewPage when not on review', () => {
+    setup();
     expect(component['isReviewPage']).toBe(false);
+  });
+
+  it('should set currentStepIndex to last step on NavigationEnd when on review page without step param', () => {
+    setup({ routeParams: { id: 'rev-1' }, routerUrl: '/registries/revisions/rev-1/review' });
+    component.currentStepIndex.set(0);
+    routerBuilder.emit(new NavigationEnd(2, '/review', '/review'));
+    expect(component.currentStepIndex()).toBe(MOCK_PAGES.length + 1);
+  });
+
+  it('should reset currentStepIndex to 0 on NavigationEnd when not on review and no step param', () => {
+    setup({ routeParams: { id: 'rev-1' }, routerUrl: '/registries/revisions/rev-1/justification' });
+    component.currentStepIndex.set(2);
+    routerBuilder.emit(new NavigationEnd(2, '/justification', '/justification'));
+    expect(component.currentStepIndex()).toBe(0);
   });
 });
