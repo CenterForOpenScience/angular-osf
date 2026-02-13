@@ -131,6 +131,15 @@ describe('RegistriesLicenseComponent', () => {
     );
   });
 
+  it('should not apply default license when defaultLicenseId is not in the list', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    draftRegistrationSignal.set({ providerId: 'osf', defaultLicenseId: 'non-existent' });
+    licensesSignal.set([mockLicense]);
+    fixture.detectChanges();
+    expect(component.control().get('id')?.value).toBe('');
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(SaveLicense));
+  });
+
   it('should mark control on focus out', () => {
     component.onFocusOut();
     expect(component.control().touched).toBe(true);
