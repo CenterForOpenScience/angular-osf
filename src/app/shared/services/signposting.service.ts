@@ -55,7 +55,7 @@ export class SignpostingService {
       },
       {
         rel: 'linkset',
-        href: this.buildUrl(baseUrl, 'linkset+json'),
+        href: this.buildUrl(baseUrl, 'linkset-json'),
         type: LINKSET_JSON_TYPE,
       },
     ];

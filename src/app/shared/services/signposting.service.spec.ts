@@ -44,7 +44,7 @@ describe('Service: Signposting', () => {
     service.addSignposting('abcde');
     const linkHeader = (mockResponseInit.headers as Headers).get('Link');
     expect(linkHeader).toBe(
-      '<https://staging3.osf.io/metadata/abcde/?format=linkset>; rel="linkset"; type="application/linkset", <https://staging3.osf.io/metadata/abcde/?format=linkset%2Bjson>; rel="linkset"; type="application/linkset+json"'
+      '<https://staging3.osf.io/metadata/abcde/?format=linkset>; rel="linkset"; type="application/linkset", <https://staging3.osf.io/metadata/abcde/?format=linkset-json>; rel="linkset"; type="application/linkset+json"'
     );
   });
 
@@ -59,7 +59,7 @@ describe('Service: Signposting', () => {
       },
       {
         rel: 'linkset',
-        href: 'https://staging3.osf.io/metadata/abcde/?format=linkset%2Bjson',
+        href: 'https://staging3.osf.io/metadata/abcde/?format=linkset-json',
         type: 'application/linkset+json',
       },
     ]);
