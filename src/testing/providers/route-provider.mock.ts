@@ -87,3 +87,10 @@ export const ActivatedRouteMock = {
     return ActivatedRouteMockBuilder.create().withData(data);
   },
 };
+
+export function provideActivatedRouteMock(mock?: ReturnType<ActivatedRouteMockBuilder['build']>) {
+  return {
+    provide: ActivatedRoute,
+    useFactory: () => mock ?? ActivatedRouteMockBuilder.create().build(),
+  };
+}

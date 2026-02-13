@@ -60,3 +60,10 @@ export const RouterMock = {
     return RouterMockBuilder.create();
   },
 };
+
+export function provideRouterMock(mock?: RouterMockType) {
+  return {
+    provide: Router,
+    useFactory: () => mock ?? RouterMockBuilder.create().build(),
+  };
+}
