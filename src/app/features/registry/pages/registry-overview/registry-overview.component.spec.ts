@@ -645,7 +645,7 @@ describe('RegistryOverviewComponent', () => {
       expect(linkTags.length).toBe(2);
       expect(linkTags[0].getAttribute('href')).toBe('http://localhost:4200/metadata/registry-1/?format=linkset');
       expect(linkTags[0].getAttribute('type')).toBe('application/linkset');
-      expect(linkTags[1].getAttribute('href')).toBe('http://localhost:4200/metadata/registry-1/?format=linkset%2Bjson');
+      expect(linkTags[1].getAttribute('href')).toBe('http://localhost:4200/metadata/registry-1/?format=linkset-json');
       expect(linkTags[1].getAttribute('type')).toBe('application/linkset+json');
     });
 
