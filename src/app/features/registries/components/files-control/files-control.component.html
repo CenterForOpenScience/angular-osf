@@ -13,7 +13,7 @@
             severity="success"
             [icon]="'fas fa-plus'"
             [label]="'files.actions.createFolder' | translate"
-            (click)="createFolder()"
+            (onClick)="createFolder()"
           >
           </p-button>
 
@@ -24,7 +24,7 @@
             severity="success"
             [icon]="'fas fa-upload'"
             [label]="'files.actions.uploadFile' | translate"
-            (click)="fileInput.click()"
+            (onClick)="fileInput.click()"
           >
           </p-button>
 
@@ -50,6 +50,8 @@
       [viewOnly]="filesViewOnly()"
       [resourceId]="projectId()"
       [provider]="provider()"
+      [selectedFiles]="filesSelection"
+      (selectFile)="onFileTreeSelected($event)"
       (entryFileClicked)="selectFile($event)"
       (uploadFilesConfirmed)="uploadFiles($event)"
       (loadFiles)="onLoadFiles($event)"

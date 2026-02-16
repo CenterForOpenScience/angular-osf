@@ -60,7 +60,7 @@
   }
 
   <div class="flex flex-wrap justify-content-end gap-3">
-    @if (inProgress) {
+    @if (inProgress()) {
       <p-button [label]="'common.buttons.back' | translate" severity="info" (onClick)="goBack()"></p-button>
 
       <p-button
@@ -76,7 +76,7 @@
         (onClick)="submit()"
         [loading]="isSchemaResponseLoading()"
       ></p-button>
-    } @else if (isUnapproved) {
+    } @else if (isUnapproved()) {
       <p-button
         [label]="'registries.justification.acceptChanges' | translate"
         severity="success"

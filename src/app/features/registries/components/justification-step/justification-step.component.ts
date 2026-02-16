@@ -6,9 +6,10 @@ import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { Textarea } from 'primeng/textarea';
 
-import { tap } from 'rxjs';
+import { filter, take } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -40,13 +41,13 @@ export class JustificationStepComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
-  readonly stepsState = select(RegistriesSelectors.getStepsState);
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     updateStepState: UpdateStepState,
     updateRevision: UpdateSchemaResponse,
     deleteSchemaResponse: DeleteSchemaResponse,
@@ -54,40 +55,51 @@ export class JustificationStepComponent implements OnDestroy {
   });
 
   private readonly revisionId = this.route.snapshot.params['id'];
+  private readonly isDraftDeleted = signal(false);
 
-  justificationForm = this.fb.group({
+  readonly justificationForm = this.fb.group({
     justification: ['', [Validators.maxLength(InputLimits.description.maxLength), CustomValidators.requiredTrimmed()]],
   });
 
-  get isJustificationValid(): boolean {
+  get showJustificationError(): boolean {
     const control = this.justificationForm.controls['justification'];
     return control.errors?.['required'] && (control.touched || control.dirty);
   }
 
-  isDraftDeleted = false;
-
   constructor() {
-    effect(() => {
-      const revisionJustification = this.schemaResponse()?.revisionJustification;
-      if (revisionJustification) {
-        this.justificationForm.patchValue({ justification: revisionJustification });
-      }
-    });
+    this.setupInitialJustification();
+  }
+
+  ngOnDestroy(): void {
+    if (this.isDraftDeleted()) {
+      return;
+    }
+
+    this.actions.updateStepState('0', this.justificationForm.invalid, true);
+
+    const changes = findChangedFields(
+      { justification: this.justificationForm.value.justification! },
+      { justification: this.schemaResponse()?.revisionJustification }
+    );
+
+    if (Object.keys(changes).length > 0) {
+      this.actions.updateRevision(this.revisionId, this.justificationForm.value.justification!);
+    }
+
+    this.justificationForm.markAllAsTouched();
   }
 
   submit(): void {
     this.actions
       .updateRevision(this.revisionId, this.justificationForm.value.justification!)
-      .pipe(
-        tap(() => {
-          this.justificationForm.markAllAsTouched();
-          this.router.navigate(['../1'], {
-            relativeTo: this.route,
-            onSameUrlNavigation: 'reload',
-          });
-        })
-      )
-      .subscribe();
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.justificationForm.markAllAsTouched();
+        this.router.navigate(['../1'], {
+          relativeTo: this.route,
+          onSameUrlNavigation: 'reload',
+        });
+      });
   }
 
   deleteDraftUpdate() {
@@ -96,29 +108,25 @@ export class JustificationStepComponent implements OnDestroy {
       messageKey: 'registries.justification.confirmDeleteUpdate.message',
       onConfirm: () => {
         const registrationId = this.schemaResponse()?.registrationId || '';
-        this.actions.deleteSchemaResponse(this.revisionId).subscribe({
-          next: () => {
-            this.isDraftDeleted = true;
+        this.actions
+          .deleteSchemaResponse(this.revisionId)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
+            this.isDraftDeleted.set(true);
             this.actions.clearState();
             this.toastService.showSuccess('registries.justification.successDeleteDraft');
             this.router.navigateByUrl(`/${registrationId}/overview`);
-          },
-        });
+          });
       },
     });
   }
 
-  ngOnDestroy(): void {
-    if (!this.isDraftDeleted) {
-      this.actions.updateStepState('0', this.justificationForm.invalid, true);
-      const changes = findChangedFields(
-        { justification: this.justificationForm.value.justification! },
-        { justification: this.schemaResponse()?.revisionJustification }
-      );
-      if (Object.keys(changes).length > 0) {
-        this.actions.updateRevision(this.revisionId, this.justificationForm.value.justification!);
-      }
-      this.justificationForm.markAllAsTouched();
-    }
+  private setupInitialJustification() {
+    toObservable(this.schemaResponse)
+      .pipe(
+        filter((response) => !!response?.revisionJustification),
+        take(1)
+      )
+      .subscribe((response) => this.justificationForm.patchValue({ justification: response!.revisionJustification }));
   }
 }

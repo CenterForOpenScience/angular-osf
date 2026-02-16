@@ -26,7 +26,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
@@ -41,28 +41,27 @@ import { FilePayloadJsonApi } from '@shared/models/files/file-payload-json-api.m
 import { PageSchema } from '@shared/models/registration/page-schema.model';
 
 import { FilesMapper } from '../../mappers/files.mapper';
+import { AttachedFile } from '../../models/attached-file.model';
 import { RegistriesSelectors, SetUpdatedFields, UpdateStepState } from '../../store';
 import { FilesControlComponent } from '../files-control/files-control.component';
 
 @Component({
   selector: 'osf-custom-step',
   imports: [
-    Card,
-    Textarea,
-    RadioButton,
-    FormsModule,
-    Checkbox,
-    TranslatePipe,
-    InputText,
-    NgTemplateOutlet,
-    Inplace,
-    TranslatePipe,
-    InfoIconComponent,
     Button,
-    ReactiveFormsModule,
-    Message,
-    FilesControlComponent,
+    Card,
+    Checkbox,
     Chip,
+    Inplace,
+    InputText,
+    Message,
+    RadioButton,
+    Textarea,
+    ReactiveFormsModule,
+    NgTemplateOutlet,
+    InfoIconComponent,
+    FilesControlComponent,
+    TranslatePipe,
   ],
   templateUrl: './custom-step.component.html',
   styleUrl: './custom-step.component.scss',
@@ -80,159 +79,72 @@ export class CustomStepComponent implements OnDestroy {
   updateAction = output<Record<string, any>>();
   back = output<void>();
   next = output<void>();
+
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
-  private toastService = inject(ToastService);
+  private readonly toastService = inject(ToastService);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
-  readonly FieldType = FieldType;
   readonly stepsState = select(RegistriesSelectors.getStepsState);
 
-  readonly actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     updateStepState: UpdateStepState,
     setUpdatedFields: SetUpdatedFields,
   });
 
+  readonly FieldType = FieldType;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   step = signal(this.route.snapshot.params['step']);
   currentPage = computed(() => this.pages()[this.step() - 1]);
 
-  radio = null;
-
-  stepForm!: FormGroup;
-
-  attachedFiles: Record<string, Partial<FileModel & { file_id: string }>[]> = {};
+  stepForm: FormGroup = this.fb.group({});
+  attachedFiles: Record<string, AttachedFile[]> = {};
 
   constructor() {
-    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      this.updateStepState();
-      this.step.set(+params['step']);
-    });
-
-    effect(() => {
-      const page = this.currentPage();
-      if (page) {
-        this.initStepForm(page);
-      }
-    });
+    this.setupRouteWatcher();
+    this.setupPageFormInit();
   }
 
-  private initStepForm(page: PageSchema): void {
-    this.stepForm = this.fb.group({});
-    let questions = page.questions || [];
-    if (page.sections?.length) {
-      questions = [...questions, ...page.sections.flatMap((section) => section.questions ?? [])];
-    }
-    questions?.forEach((q) => {
-      const controlName = q.responseKey as string;
-      let control: FormControl;
-
-      switch (q.fieldType) {
-        case FieldType.Text:
-        case FieldType.TextArea:
-          control = this.fb.control(this.stepsData()[controlName], {
-            validators: q.required ? [CustomValidators.requiredTrimmed()] : [],
-          });
-          break;
-
-        case FieldType.Checkbox:
-          control = this.fb.control(this.stepsData()[controlName] || [], {
-            validators: q.required ? [Validators.required] : [],
-          });
-          break;
-
-        case FieldType.Radio:
-        case FieldType.Select:
-          control = this.fb.control(this.stepsData()[controlName], {
-            validators: q.required ? [Validators.required] : [],
-          });
-          break;
-
-        case FieldType.File:
-          control = this.fb.control(this.stepsData()[controlName] || [], {
-            validators: q.required ? [Validators.required] : [],
-          });
-          this.attachedFiles[controlName] =
-            this.stepsData()[controlName]?.map((file: FilePayloadJsonApi) => ({ ...file, name: file.file_name })) || [];
-          break;
-
-        default:
-          return;
-      }
-
-      this.stepForm.addControl(controlName, control);
-    });
-    if (this.stepsState()?.[this.step()]?.invalid) {
-      this.stepForm.markAllAsTouched();
-    }
-  }
-
-  private updateDraft() {
-    const changedFields = findChangedFields(this.stepForm.value, this.stepsData());
-    if (Object.keys(changedFields).length > 0) {
-      this.actions.setUpdatedFields(changedFields);
-      this.updateAction.emit(this.stepForm.value);
-    }
-  }
-
-  private updateStepState() {
-    if (this.stepForm) {
-      this.updateDraft();
-      this.stepForm.markAllAsTouched();
-      this.actions.updateStepState(this.step(), this.stepForm.invalid, true);
-    }
+  ngOnDestroy(): void {
+    this.saveStepState();
   }
 
   onAttachFile(file: FileModel, questionKey: string): void {
     this.attachedFiles[questionKey] = this.attachedFiles[questionKey] || [];
 
-    if (!this.attachedFiles[questionKey].some((f) => f.file_id === file.id)) {
-      if (this.attachedFiles[questionKey].length >= FILE_COUNT_ATTACHMENTS_LIMIT) {
-        this.toastService.showWarn('shared.files.limitText');
-        return;
-      }
-      this.attachedFiles[questionKey].push(file);
-      this.stepForm.patchValue({
-        [questionKey]: [...(this.attachedFiles[questionKey] || []), file],
-      });
-      const otherFormValues = { ...this.stepForm.value };
-      delete otherFormValues[questionKey];
-      this.updateAction.emit({
-        [questionKey]: [
-          ...this.attachedFiles[questionKey].map((f) => {
-            if (f.file_id) {
-              const { name: _, ...payload } = f;
-              return payload;
-            }
-            return FilesMapper.toFilePayload(f as FileModel);
-          }),
-        ],
-        ...otherFormValues,
-      });
+    if (this.attachedFiles[questionKey].some((f) => f.file_id === file.id)) {
+      return;
     }
+
+    if (this.attachedFiles[questionKey].length >= FILE_COUNT_ATTACHMENTS_LIMIT) {
+      this.toastService.showWarn('shared.files.limitText');
+      return;
+    }
+
+    this.attachedFiles[questionKey] = [...this.attachedFiles[questionKey], file];
+    this.stepForm.patchValue({ [questionKey]: this.attachedFiles[questionKey] });
+
+    const otherFormValues = { ...this.stepForm.value };
+    delete otherFormValues[questionKey];
+    this.updateAction.emit({
+      [questionKey]: this.mapFilesToPayload(this.attachedFiles[questionKey]),
+      ...otherFormValues,
+    });
   }
 
-  removeFromAttachedFiles(file: Partial<FileModel & { file_id: string }>, questionKey: string): void {
-    if (this.attachedFiles[questionKey]) {
-      this.attachedFiles[questionKey] = this.attachedFiles[questionKey].filter((f) => f.file_id !== file.file_id);
-      this.stepForm.patchValue({
-        [questionKey]: this.attachedFiles[questionKey],
-      });
-      this.updateAction.emit({
-        [questionKey]: [
-          ...this.attachedFiles[questionKey].map((f) => {
-            if (f.file_id) {
-              const { name: _, ...payload } = f;
-              return payload;
-            }
-            return FilesMapper.toFilePayload(f as FileModel);
-          }),
-        ],
-      });
+  removeFromAttachedFiles(file: AttachedFile, questionKey: string): void {
+    if (!this.attachedFiles[questionKey]) {
+      return;
     }
+
+    this.attachedFiles[questionKey] = this.attachedFiles[questionKey].filter((f) => f.file_id !== file.file_id);
+    this.stepForm.patchValue({ [questionKey]: this.attachedFiles[questionKey] });
+    this.updateAction.emit({
+      [questionKey]: this.mapFilesToPayload(this.attachedFiles[questionKey]),
+    });
   }
 
   goBack(): void {
@@ -253,7 +165,96 @@ export class CustomStepComponent implements OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.updateStepState();
+  private setupRouteWatcher() {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.saveStepState();
+      this.step.set(+params['step']);
+    });
+  }
+
+  private setupPageFormInit() {
+    effect(() => {
+      const page = this.currentPage();
+      if (page) {
+        this.initStepForm(page);
+      }
+    });
+  }
+
+  private initStepForm(page: PageSchema): void {
+    this.stepForm = this.fb.group({});
+    const questions = [
+      ...(page.questions || []),
+      ...(page.sections?.flatMap((section) => section.questions ?? []) ?? []),
+    ];
+
+    questions.forEach((q) => {
+      const controlName = q.responseKey as string;
+      const control = this.createControl(q.fieldType!, controlName, q.required);
+      if (!control) return;
+
+      if (q.fieldType === FieldType.File) {
+        this.attachedFiles[controlName] =
+          this.stepsData()[controlName]?.map((file: FilePayloadJsonApi) => ({ ...file, name: file.file_name })) || [];
+      }
+
+      this.stepForm.addControl(controlName, control);
+    });
+
+    if (this.stepsState()?.[this.step()]?.invalid) {
+      this.stepForm.markAllAsTouched();
+    }
+  }
+
+  private createControl(fieldType: FieldType, controlName: string, required: boolean): FormControl | null {
+    const value = this.stepsData()[controlName];
+
+    switch (fieldType) {
+      case FieldType.Text:
+      case FieldType.TextArea:
+        return this.fb.control(value, {
+          validators: required ? [CustomValidators.requiredTrimmed()] : [],
+        });
+
+      case FieldType.Checkbox:
+      case FieldType.File:
+        return this.fb.control(value || [], {
+          validators: required ? [Validators.required] : [],
+        });
+
+      case FieldType.Radio:
+      case FieldType.Select:
+        return this.fb.control(value, {
+          validators: required ? [Validators.required] : [],
+        });
+
+      default:
+        return null;
+    }
+  }
+
+  private saveStepState() {
+    if (!this.stepForm.controls || !Object.keys(this.stepForm.controls).length) {
+      return;
+    }
+
+    const changedFields = findChangedFields(this.stepForm.value, this.stepsData());
+    if (Object.keys(changedFields).length > 0) {
+      this.actions.setUpdatedFields(changedFields);
+      this.updateAction.emit(this.stepForm.value);
+    }
+
+    this.stepForm.markAllAsTouched();
+    this.actions.updateStepState(this.step(), this.stepForm.invalid, true);
+  }
+
+  private mapFilesToPayload(files: AttachedFile[]): FilePayloadJsonApi[] {
+    return files.map((f) => {
+      if (f.file_id) {
+        const { name: _, ...payload } = f;
+        return payload as FilePayloadJsonApi;
+      }
+      return FilesMapper.toFilePayload(f as FileModel);
+    });
   }
 }

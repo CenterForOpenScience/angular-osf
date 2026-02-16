@@ -4,7 +4,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.title' | translate }}</h4>
-      <p data-test-review-response="title">{{ draftRegistration()?.title | fixSpecialChar }}</p>
+      <p data-test-review-response="title">{{ draftRegistration()?.title }}</p>
       @if (!draftRegistration()?.title) {
         <p>{{ 'common.labels.title' | translate }}</p>
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
@@ -16,7 +16,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.description' | translate }}</h4>
-      <p data-test-review-response="description">{{ draftRegistration()?.description | fixSpecialChar }}</p>
+      <p data-test-review-response="description">{{ draftRegistration()?.description }}</p>
       @if (!draftRegistration()?.description) {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
         <p-message class="mt-1" severity="error" variant="simple" size="small">
@@ -120,13 +120,13 @@
       [label]="'common.buttons.back' | translate"
       severity="info"
       class="mr-2"
-      (click)="goBack()"
+      (onClick)="goBack()"
     ></p-button>
     <p-button
       [label]="'registries.deleteDraft' | translate"
       severity="danger"
       [disabled]="!hasAdminAccess()"
-      (click)="deleteDraft()"
+      (onClick)="deleteDraft()"
       class="mr-2"
     >
     </p-button>
@@ -135,7 +135,7 @@
       data-test-goto-register
       [label]="'registries.review.register' | translate"
       [disabled]="registerButtonDisabled()"
-      (click)="confirmRegistration()"
+      (onClick)="confirmRegistration()"
     ></p-button>
   </div>
 </section>

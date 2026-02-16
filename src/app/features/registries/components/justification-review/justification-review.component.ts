@@ -6,12 +6,14 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { filter } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
-import { FieldType } from '@osf/shared/enums/field-type.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -34,6 +36,7 @@ export class JustificationReviewComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
@@ -42,10 +45,8 @@ export class JustificationReviewComponent {
   readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  readonly FieldType = FieldType;
-  readonly RevisionReviewStates = RevisionReviewStates;
 
-  actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     deleteSchemaResponse: DeleteSchemaResponse,
     handleSchemaResponse: HandleSchemaResponse,
     clearState: ClearState,
@@ -53,50 +54,27 @@ export class JustificationReviewComponent {
 
   private readonly revisionId = this.route.snapshot.params['id'];
 
-  get isUnapproved() {
-    return this.schemaResponse()?.reviewsState === RevisionReviewStates.Unapproved;
-  }
-
-  get inProgress() {
-    return this.schemaResponse()?.reviewsState === RevisionReviewStates.RevisionInProgress;
-  }
+  readonly isUnapproved = computed(() => this.schemaResponse()?.reviewsState === RevisionReviewStates.Unapproved);
+  readonly inProgress = computed(() => this.schemaResponse()?.reviewsState === RevisionReviewStates.RevisionInProgress);
 
   changes = computed(() => {
-    let questions: Record<string, string> = {};
-    this.pages().forEach((page) => {
-      if (page.sections?.length) {
-        questions = {
-          ...questions,
-          ...Object.fromEntries(
-            page.sections.flatMap(
-              (section) => section.questions?.map((q) => [q.responseKey, q.displayText || '']) || []
-            )
-          ),
-        };
-      } else {
-        questions = {
-          ...questions,
-          ...Object.fromEntries(page.questions?.map((q) => [q.responseKey, q.displayText]) || []),
-        };
-      }
-    });
-    const updatedFields = this.updatedFields();
+    const questions = this.buildQuestionMap();
     const updatedResponseKeys = this.schemaResponse()?.updatedResponseKeys || [];
-    const uniqueKeys = new Set([...updatedResponseKeys, ...Object.keys(updatedFields)]);
+    const uniqueKeys = new Set([...updatedResponseKeys, ...Object.keys(this.updatedFields())]);
     return Array.from(uniqueKeys).map((key) => questions[key]);
   });
 
   submit(): void {
-    this.actions.handleSchemaResponse(this.revisionId, SchemaActionTrigger.Submit).subscribe({
-      next: () => {
+    this.actions
+      .handleSchemaResponse(this.revisionId, SchemaActionTrigger.Submit)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
         this.toastService.showSuccess('registries.justification.successSubmit');
-      },
-    });
+      });
   }
 
   goBack(): void {
-    const previousStep = this.pages().length;
-    this.router.navigate(['../', previousStep], { relativeTo: this.route });
+    this.router.navigate(['../', this.pages().length], { relativeTo: this.route });
   }
 
   deleteDraftUpdate() {
@@ -105,24 +83,26 @@ export class JustificationReviewComponent {
       messageKey: 'registries.justification.confirmDeleteUpdate.message',
       onConfirm: () => {
         const registrationId = this.schemaResponse()?.registrationId || '';
-        this.actions.deleteSchemaResponse(this.revisionId).subscribe({
-          next: () => {
+        this.actions
+          .deleteSchemaResponse(this.revisionId)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
             this.toastService.showSuccess('registries.justification.successDeleteDraft');
             this.actions.clearState();
             this.router.navigateByUrl(`/${registrationId}/overview`);
-          },
-        });
+          });
       },
     });
   }
 
   acceptChanges() {
-    this.actions.handleSchemaResponse(this.revisionId, SchemaActionTrigger.Approve).subscribe({
-      next: () => {
+    this.actions
+      .handleSchemaResponse(this.revisionId, SchemaActionTrigger.Approve)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
         this.toastService.showSuccess('registries.justification.successAccept');
         this.router.navigateByUrl(`/${this.schemaResponse()?.registrationId}/overview`);
-      },
-    });
+      });
   }
 
   continueEditing() {
@@ -130,14 +110,23 @@ export class JustificationReviewComponent {
       .open(ConfirmContinueEditingDialogComponent, {
         header: 'registries.justification.confirmContinueEditing.header',
         width: '552px',
-        data: {
-          revisionId: this.revisionId,
-        },
+        data: { revisionId: this.revisionId },
       })
-      .onClose.subscribe((result) => {
-        if (result) {
-          this.toastService.showSuccess('registries.justification.decisionRecorded');
-        }
-      });
+      .onClose.pipe(
+        filter((result) => !!result),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.toastService.showSuccess('registries.justification.decisionRecorded'));
+  }
+
+  private buildQuestionMap(): Record<string, string> {
+    return Object.fromEntries(
+      this.pages().flatMap((page) => {
+        const questions = page.sections?.length
+          ? page.sections.flatMap((section) => section.questions || [])
+          : page.questions || [];
+        return questions.map((q) => [q.responseKey, q.displayText || '']);
+      })
+    );
   }
 }
