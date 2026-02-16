@@ -5,6 +5,7 @@ export interface EnvironmentModel {
   shareTroveUrl: string;
   addonsApiUrl: string;
   funderApiUrl: string;
+  rorClientId: string;
   casUrl: string;
   recaptchaSiteKey: string;
   twitterHandle: string;
