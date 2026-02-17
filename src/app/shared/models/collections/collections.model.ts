@@ -18,6 +18,7 @@ export interface CollectionProvider extends BaseProviderModel {
     type: string;
   };
   brand: BrandModel | null;
+  defaultLicenseId?: string | null;
 }
 
 export interface CollectionFilters {
