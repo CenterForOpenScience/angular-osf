@@ -1,99 +1,94 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponent, MockProvider } from 'ng-mocks';
-
-import { of } from 'rxjs';
+import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 
-import { DraftRegistrationAttributesJsonApi } from '@osf/shared/models/registration/registration-json-api.model';
+import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
+import { DraftRegistrationModel } from '@osf/shared/models/registration/draft-registration.model';
 
 import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
-import { RegistriesSelectors, UpdateDraft } from '../../store';
 
 import { DraftRegistrationCustomStepComponent } from './draft-registration-custom-step.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { MOCK_REGISTRIES_PAGE } from '@testing/mocks/registries.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
+import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+const MOCK_DRAFT: Partial<DraftRegistrationModel> = {
+  id: 'draft-1',
+  providerId: 'prov-1',
+  branchedFrom: { id: 'node-1', filesLink: '/files' },
+};
+const MOCK_STEPS_DATA: Record<string, string> = { 'question-1': 'answer-1' };
 
 describe('DraftRegistrationCustomStepComponent', () => {
   let component: DraftRegistrationCustomStepComponent;
   let fixture: ComponentFixture<DraftRegistrationCustomStepComponent>;
   let store: Store;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockRouter: RouterMockType;
 
-  const mockStepsData = { stepKey: { field: 'value' } };
-  const mockDraftRegistration = {
-    id: 'draft-1',
-    providerId: 'prov-1',
-    branchedFrom: { id: 'proj-1', filesLink: '/project/proj-1/files/' },
-  };
+  function setup(
+    draft: Partial<DraftRegistrationModel> | null = MOCK_DRAFT,
+    stepsData: Record<string, string> = MOCK_STEPS_DATA
+  ) {
+    const mockRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1', step: '1' }).build();
+    mockRouter = RouterMockBuilder.create().withUrl('/registries/prov-1/draft/draft-1/custom').build();
 
-  beforeEach(async () => {
-    mockRouter = RouterMockBuilder.create().build();
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
-
-    await TestBed.configureTestingModule({
-      imports: [DraftRegistrationCustomStepComponent, OSFTestingModule, MockComponent(CustomStepComponent)],
+    TestBed.configureTestingModule({
+      imports: [DraftRegistrationCustomStepComponent, MockComponent(CustomStepComponent)],
       providers: [
-        MockProvider(Router, mockRouter),
-        MockProvider(ActivatedRoute, mockActivatedRoute),
+        provideOSFCore(),
+        provideActivatedRouteMock(mockRoute),
+        provideRouterMock(mockRouter),
         provideMockStore({
           signals: [
-            { selector: RegistriesSelectors.getStepsData, value: mockStepsData },
-            { selector: RegistriesSelectors.getDraftRegistration, value: mockDraftRegistration },
+            { selector: RegistriesSelectors.getStepsData, value: stepsData },
+            { selector: RegistriesSelectors.getDraftRegistration, value: draft },
+            { selector: RegistriesSelectors.getPagesSchema, value: [MOCK_REGISTRIES_PAGE] },
+            { selector: RegistriesSelectors.getStepsState, value: { 1: { invalid: false } } },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(DraftRegistrationCustomStepComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(Store);
-    (store.dispatch as jest.Mock).mockReturnValue(of(void 0));
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
-  it('should return stepsData and draftRegistration from store', () => {
-    expect(component.stepsData()).toEqual(mockStepsData);
-    expect(component.draftRegistration()).toEqual(mockDraftRegistration);
-  });
-
-  it('should compute filesLink from draftRegistration branchedFrom', () => {
-    expect(component.filesLink()).toBe('/project/proj-1/files/');
-  });
-
-  it('should compute provider from draftRegistration providerId', () => {
+  it('should compute inputs from draft registration', () => {
+    setup();
+    expect(component.filesLink()).toBe('/files');
     expect(component.provider()).toBe('prov-1');
+    expect(component.projectId()).toBe('node-1');
   });
 
-  it('should compute projectId from draftRegistration branchedFrom id', () => {
-    expect(component.projectId()).toBe('proj-1');
+  it('should return empty strings when draftRegistration is null', () => {
+    setup(null, {});
+    expect(component.filesLink()).toBe('');
+    expect(component.provider()).toBe('');
+    expect(component.projectId()).toBe('');
   });
 
-  it('should dispatch UpdateDraft with id and registration_responses payload on onUpdateAction', () => {
-    const attributes: Partial<DraftRegistrationAttributesJsonApi> = {
-      registration_responses: { field1: 'value1' },
-    };
-    (store.dispatch as jest.Mock).mockClear();
-
-    component.onUpdateAction(attributes);
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(UpdateDraft));
-    const call = (store.dispatch as jest.Mock).mock.calls.find((c) => c[0] instanceof UpdateDraft);
-    expect(call[0].draftId).toBe('draft-1');
-    expect(call[0].attributes).toEqual({ registration_responses: { registration_responses: { field1: 'value1' } } });
+  it('should dispatch updateDraft with wrapped registration_responses', () => {
+    setup();
+    component.onUpdateAction({ field1: 'value1', field2: ['a', 'b'] } as any);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateDraft('draft-1', { registration_responses: { field1: 'value1', field2: ['a', 'b'] } })
+    );
   });
 
-  it('should navigate to ../metadata on onBack', () => {
+  it('should navigate back to metadata on onBack', () => {
+    setup();
     component.onBack();
     expect(mockRouter.navigate).toHaveBeenCalledWith(
       ['../', 'metadata'],
@@ -101,42 +96,12 @@ describe('DraftRegistrationCustomStepComponent', () => {
     );
   });
 
-  it('should navigate to ../review on onNext', () => {
+  it('should navigate to review on onNext', () => {
+    setup();
     component.onNext();
     expect(mockRouter.navigate).toHaveBeenCalledWith(
       ['../', 'review'],
       expect.objectContaining({ relativeTo: expect.anything() })
     );
-  });
-});
-
-describe('DraftRegistrationCustomStepComponent when no draft registration', () => {
-  let component: DraftRegistrationCustomStepComponent;
-  let fixture: ComponentFixture<DraftRegistrationCustomStepComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DraftRegistrationCustomStepComponent, OSFTestingModule, MockComponent(CustomStepComponent)],
-      providers: [
-        MockProvider(Router, RouterMockBuilder.create().build()),
-        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build()),
-        provideMockStore({
-          signals: [
-            { selector: RegistriesSelectors.getStepsData, value: {} },
-            { selector: RegistriesSelectors.getDraftRegistration, value: null },
-          ],
-        }),
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(DraftRegistrationCustomStepComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should compute empty filesLink provider and projectId', () => {
-    expect(component.filesLink()).toBe('');
-    expect(component.provider()).toBe('');
-    expect(component.projectId()).toBe('');
   });
 });

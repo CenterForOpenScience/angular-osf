@@ -1,67 +1,115 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
 
+import { MockComponents } from 'ng-mocks';
+
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
 
-import { RegistryProviderHeroComponent } from '@osf/features/registries/components/registry-provider-hero/registry-provider-hero.component';
+import { ClearCurrentProvider } from '@core/store/provider';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
-import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
-import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { RegistryProviderDetails } from '@osf/shared/models/provider/registry-provider.model';
+import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
+import {
+  ClearRegistryProvider,
+  GetRegistryProvider,
+  RegistrationProviderSelectors,
+} from '@osf/shared/stores/registration-provider';
+
+import { RegistryProviderHeroComponent } from '../../components/registry-provider-hero/registry-provider-hero.component';
 
 import { RegistriesProviderSearchComponent } from './registries-provider-search.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+const MOCK_PROVIDER: RegistryProviderDetails = {
+  id: 'provider-1',
+  name: 'Test Provider',
+  descriptionHtml: '',
+  permissions: [],
+  brand: null,
+  iri: 'http://iri.example.com',
+  reviewsWorkflow: 'pre-moderation',
+};
 
 describe('RegistriesProviderSearchComponent', () => {
   let component: RegistriesProviderSearchComponent;
   let fixture: ComponentFixture<RegistriesProviderSearchComponent>;
+  let store: Store;
 
-  beforeEach(async () => {
-    const routeMock = ActivatedRouteMockBuilder.create().withParams({ name: 'osf' }).build();
+  const PROVIDER_ID = 'provider-1';
 
-    await TestBed.configureTestingModule({
+  function setup(params: Record<string, string> = { providerId: PROVIDER_ID }, platformId = 'browser') {
+    const mockRoute = ActivatedRouteMockBuilder.create().withParams(params).build();
+
+    TestBed.configureTestingModule({
       imports: [
         RegistriesProviderSearchComponent,
-        OSFTestingModule,
-        ...MockComponents(GlobalSearchComponent, RegistryProviderHeroComponent),
+        ...MockComponents(RegistryProviderHeroComponent, GlobalSearchComponent),
       ],
       providers: [
-        { provide: ActivatedRoute, useValue: routeMock },
-        MockProvider(CustomDialogService, { open: jest.fn() }),
+        provideOSFCore(),
+        provideActivatedRouteMock(mockRoute),
+        { provide: PLATFORM_ID, useValue: platformId },
         provideMockStore({
           signals: [
-            { selector: RegistrationProviderSelectors.getBrandedProvider, value: { iri: 'http://iri/provider' } },
+            { selector: RegistrationProviderSelectors.getBrandedProvider, value: MOCK_PROVIDER },
             { selector: RegistrationProviderSelectors.isBrandedProviderLoading, value: false },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RegistriesProviderSearchComponent);
     component = fixture.componentInstance;
-  });
+    store = TestBed.inject(Store);
+    fixture.detectChanges();
+  }
 
   it('should create', () => {
-    fixture.detectChanges();
+    setup();
     expect(component).toBeTruthy();
   });
 
-  it('should clear providers on destroy', () => {
-    fixture.detectChanges();
+  it('should fetch provider and initialize search filters on init', () => {
+    setup();
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistryProvider(PROVIDER_ID));
+    expect(store.dispatch).toHaveBeenCalledWith(new SetDefaultFilterValue('publisher', MOCK_PROVIDER.iri));
+    expect(store.dispatch).toHaveBeenCalledWith(new SetResourceType(ResourceType.Registration));
+    expect(component.defaultSearchFiltersInitialized()).toBe(true);
+  });
 
-    const actionsMock = {
-      getProvider: jest.fn(),
-      setDefaultFilterValue: jest.fn(),
-      setResourceType: jest.fn(),
-      clearCurrentProvider: jest.fn(),
-      clearRegistryProvider: jest.fn(),
-    } as any;
-    Object.defineProperty(component as any, 'actions', { value: actionsMock });
+  it('should initialize searchControl with empty string', () => {
+    setup();
+    expect(component.searchControl.value).toBe('');
+  });
 
-    fixture.destroy();
-    expect(actionsMock.clearCurrentProvider).toHaveBeenCalled();
-    expect(actionsMock.clearRegistryProvider).toHaveBeenCalled();
+  it('should expose provider and isProviderLoading from store', () => {
+    setup();
+    expect(component.provider()).toEqual(MOCK_PROVIDER);
+    expect(component.isProviderLoading()).toBe(false);
+  });
+
+  it('should dispatch clear actions on destroy in browser', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
+    component.ngOnDestroy();
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearCurrentProvider());
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearRegistryProvider());
+  });
+
+  it('should not fetch provider or initialize filters when providerId is missing', () => {
+    setup({});
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetRegistryProvider));
+    expect(component.defaultSearchFiltersInitialized()).toBe(false);
+  });
+
+  it('should not dispatch clear actions on destroy on server', () => {
+    setup({}, 'server');
+    (store.dispatch as jest.Mock).mockClear();
+    component.ngOnDestroy();
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 });

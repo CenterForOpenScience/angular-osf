@@ -1,33 +1,35 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
+
+import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
-import { RegistriesSelectors } from '../../store';
+import { RegistriesSelectors, UpdateSchemaResponse } from '../../store';
 
 import { RevisionsCustomStepComponent } from './revisions-custom-step.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
+import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RevisionsCustomStepComponent', () => {
   let component: RevisionsCustomStepComponent;
   let fixture: ComponentFixture<RevisionsCustomStepComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
+  let store: Store;
+  let mockRouter: RouterMockType;
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'rev-1', step: '1' }).build();
+  beforeEach(() => {
+    const mockRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'rev-1', step: '1' }).build();
     mockRouter = RouterMockBuilder.create().withUrl('/registries/revisions/rev-1/1').build();
 
-    await TestBed.configureTestingModule({
-      imports: [RevisionsCustomStepComponent, OSFTestingModule, MockComponents(CustomStepComponent)],
+    TestBed.configureTestingModule({
+      imports: [RevisionsCustomStepComponent, MockComponents(CustomStepComponent)],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
-        MockProvider(Router, mockRouter),
+        provideOSFCore(),
+        provideActivatedRouteMock(mockRoute),
+        provideRouterMock(mockRouter),
         provideMockStore({
           signals: [
             {
@@ -43,10 +45,11 @@ describe('RevisionsCustomStepComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RevisionsCustomStepComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
     fixture.detectChanges();
   });
 
@@ -62,21 +65,23 @@ describe('RevisionsCustomStepComponent', () => {
   });
 
   it('should dispatch updateRevision on onUpdateAction', () => {
-    const actionsMock = { updateRevision: jest.fn() } as any;
-    Object.defineProperty(component, 'actions', { value: actionsMock });
     component.onUpdateAction({ x: 2 });
-    expect(actionsMock.updateRevision).toHaveBeenCalledWith('rev-1', 'because', { x: 2 });
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateSchemaResponse('rev-1', 'because', { x: 2 }));
   });
 
   it('should navigate back to justification on onBack', () => {
-    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
     component.onBack();
-    expect(navSpy).toHaveBeenCalledWith(['../', 'justification'], { relativeTo: TestBed.inject(ActivatedRoute) });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      ['../', 'justification'],
+      expect.objectContaining({ relativeTo: expect.anything() })
+    );
   });
 
   it('should navigate to review on onNext', () => {
-    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
     component.onNext();
-    expect(navSpy).toHaveBeenCalledWith(['../', 'review'], { relativeTo: TestBed.inject(ActivatedRoute) });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      ['../', 'review'],
+      expect.objectContaining({ relativeTo: expect.anything() })
+    );
   });
 });
