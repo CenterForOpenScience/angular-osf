@@ -3,7 +3,7 @@ import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-su
 
 import { BrandModel } from '../brand/brand.model';
 import { ContributorModel } from '../contributors/contributor.model';
-import { ProjectModel } from '../projects/projects.models';
+import { ProjectModel } from '../projects/projects.model';
 import { BaseProviderModel } from '../provider/provider.model';
 
 export interface CollectionProvider extends BaseProviderModel {

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserModel } from '@osf/shared/models/user/user.model';
 
 import { GENERATIONAL_SUFFIXES, ORDINAL_SUFFIXES } from '../constants/citation-suffix.const';
 

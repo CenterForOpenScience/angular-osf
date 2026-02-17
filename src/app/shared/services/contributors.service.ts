@@ -14,7 +14,7 @@ import { ContributorModel } from '../models/contributors/contributor.model';
 import { ContributorAddModel } from '../models/contributors/contributor-add.model';
 import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
-import { IndexCardSearchResponseJsonApi } from '../models/search/index-card-search-json-api.models';
+import { IndexCardSearchResponseJsonApi } from '../models/search/index-card-search-json-api.model';
 import { SearchUserDataModel } from '../models/user/search-user-data.model';
 
 import { JsonApiService } from './json-api.service';

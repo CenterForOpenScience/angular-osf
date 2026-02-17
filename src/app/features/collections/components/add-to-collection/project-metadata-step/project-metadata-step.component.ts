@@ -40,7 +40,7 @@ import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/tr
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
-import { ProjectModel } from '@osf/shared/models/projects/projects.models';
+import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { GetAllContributors } from '@osf/shared/stores/contributors';

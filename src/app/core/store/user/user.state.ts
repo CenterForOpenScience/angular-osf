@@ -9,8 +9,8 @@ import { UserService } from '@core/services/user.service';
 import { ProfileSettingsKey } from '@osf/shared/enums/profile-settings-key.enum';
 import { removeNullable } from '@osf/shared/helpers/remove-nullable.helper';
 import { UserMapper } from '@osf/shared/mappers/user';
+import { UserModel } from '@osf/shared/models/user/user.model';
 import { SocialModel } from '@shared/models/user/social.model';
-import { UserModel } from '@shared/models/user/user.models';
 
 import {
   AcceptTermsOfServiceByUser,

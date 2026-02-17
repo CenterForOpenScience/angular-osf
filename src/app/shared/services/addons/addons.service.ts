@@ -21,11 +21,11 @@ import {
   IncludedAddonData,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
-} from '@osf/shared/models/addons/addon-json-api.models';
+} from '@osf/shared/models/addons/addon-json-api.model';
 import {
   OperationInvocationRequestJsonApi,
   OperationInvocationResponseJsonApi,
-} from '@osf/shared/models/addons/addon-operations-json-api.models';
+} from '@osf/shared/models/addons/addon-operations-json-api.model';
 import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
 import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
 import { OperationInvocation } from '@osf/shared/models/addons/operation-invocation.model';

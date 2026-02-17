@@ -4,7 +4,7 @@ import { BrandDataJsonApi } from '@osf/shared/models/brand/brand.json-api.model'
 
 import { ProviderReviewsWorkflow } from '../enums';
 
-import { PreprintWord } from './preprint-provider.models';
+import { PreprintWord } from './preprint-provider.model';
 
 export interface PreprintProviderDetailsJsonApi {
   id: string;

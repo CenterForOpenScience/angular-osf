@@ -1,6 +1,6 @@
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
-import { MyResourcesItem, MyResourcesItemGetResponseJsonApi } from '../models/my-resources/my-resources.models';
+import { MyResourcesItem, MyResourcesItemGetResponseJsonApi } from '../models/my-resources/my-resources.model';
 
 import { ContributorsMapper } from './contributors';
 

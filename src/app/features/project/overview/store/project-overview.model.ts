@@ -1,10 +1,10 @@
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { NodePreprintModel } from '@osf/shared/models/nodes/node-preprint.model';
 import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
-import { Institution } from '@shared/models/institutions/institutions.models';
 import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewModel } from '../models';

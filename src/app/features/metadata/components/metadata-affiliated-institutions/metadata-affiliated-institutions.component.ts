@@ -6,7 +6,7 @@ import { Card } from 'primeng/card';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 
 @Component({
   selector: 'osf-metadata-affiliated-institutions',

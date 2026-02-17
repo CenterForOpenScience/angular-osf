@@ -5,9 +5,9 @@ import { catchError, finalize, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { MetadataService } from '@osf/shared/services/metadata.service';
 
 import { CedarMetadataRecord, CedarMetadataRecordJsonApi, MetadataModel } from '../models';
-import { MetadataService } from '../services';
 
 import {
   AddCedarMetadataRecordToState,

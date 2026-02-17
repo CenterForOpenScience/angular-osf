@@ -24,6 +24,8 @@ export class DeleteExternalIdentity {
 
 export class GetUserInstitutions {
   static readonly type = '[AccountSettings] Get User Institutions';
+
+  constructor(public userId = 'me') {}
 }
 
 export class DeleteUserInstitution {

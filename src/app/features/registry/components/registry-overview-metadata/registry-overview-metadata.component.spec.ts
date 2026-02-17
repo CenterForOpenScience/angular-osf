@@ -17,6 +17,7 @@ import { SubjectsListComponent } from '@osf/shared/components/subjects-list/subj
 import { TagsListComponent } from '@osf/shared/components/tags-list/tags-list.component';
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/shared/stores/contributors';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import {
@@ -79,6 +80,7 @@ describe('RegistryOverviewMetadataComponent', () => {
             { selector: RegistrySelectors.isIdentifiersLoading, value: false },
             { selector: RegistrySelectors.getInstitutions, value: [] },
             { selector: RegistrySelectors.isInstitutionsLoading, value: false },
+            { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
             { selector: SubjectsSelectors.getSubjects, value: [] },
             { selector: SubjectsSelectors.getSubjectsLoading, value: false },
             { selector: ContributorsSelectors.getBibliographicContributors, value: [] },

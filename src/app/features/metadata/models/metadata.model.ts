@@ -1,6 +1,6 @@
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { UserPermissions } from '@shared/enums/user-permissions.enum';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
-import { Institution } from '@shared/models/institutions/institutions.models';
 import { LicenseModel } from '@shared/models/license/license.model';
 
 export interface MetadataModel {
@@ -24,6 +24,7 @@ export interface MetadataModel {
   };
   public?: boolean;
   currentUserPermissions: UserPermissions[];
+  registrationSupplement?: string;
 }
 
 export interface CustomItemMetadataRecord {

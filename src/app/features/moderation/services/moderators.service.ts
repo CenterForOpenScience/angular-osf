@@ -8,7 +8,7 @@ import { parseSearchTotalCount } from '@osf/shared/helpers/search-total-count.he
 import { MapResources } from '@osf/shared/mappers/search';
 import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
-import { IndexCardSearchResponseJsonApi } from '@osf/shared/models/search/index-card-search-json-api.models';
+import { IndexCardSearchResponseJsonApi } from '@osf/shared/models/search/index-card-search-json-api.model';
 import { SearchUserDataModel } from '@osf/shared/models/user/search-user-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { StringOrNull } from '@shared/helpers/types.helper';
