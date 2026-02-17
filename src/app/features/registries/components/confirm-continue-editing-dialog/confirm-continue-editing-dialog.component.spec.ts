@@ -1,46 +1,42 @@
+import { Store } from '@ngxs/store';
+
 import { MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaActionTrigger } from '@osf/features/registries/enums';
+import { HandleSchemaResponse } from '@osf/features/registries/store';
 
 import { ConfirmContinueEditingDialogComponent } from './confirm-continue-editing-dialog.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('ConfirmContinueEditingDialogComponent', () => {
   let component: ConfirmContinueEditingDialogComponent;
   let fixture: ComponentFixture<ConfirmContinueEditingDialogComponent>;
-  let mockDialogRef: DynamicDialogRef;
-  let mockDialogConfig: jest.Mocked<DynamicDialogConfig>;
+  let store: Store;
+  let dialogRef: DynamicDialogRef;
 
   const MOCK_REVISION_ID = 'test-revision-id';
 
-  beforeEach(async () => {
-    mockDialogRef = {
-      close: jest.fn(),
-    } as any;
-
-    mockDialogConfig = {
-      data: { revisionId: MOCK_REVISION_ID },
-    } as jest.Mocked<DynamicDialogConfig>;
-
-    await TestBed.configureTestingModule({
-      imports: [ConfirmContinueEditingDialogComponent, OSFTestingModule],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ConfirmContinueEditingDialogComponent],
       providers: [
-        MockProvider(DynamicDialogRef, mockDialogRef),
-        MockProvider(DynamicDialogConfig, mockDialogConfig),
-        provideMockStore({
-          signals: [],
-        }),
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        // MockProvider(DynamicDialogRef),
+        MockProvider(DynamicDialogConfig, { data: { revisionId: MOCK_REVISION_ID } }),
+        provideMockStore(),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(ConfirmContinueEditingDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -54,87 +50,27 @@ describe('ConfirmContinueEditingDialogComponent', () => {
     expect(component.isSubmitting).toBe(false);
   });
 
-  it('should submit with comment', () => {
-    const testComment = 'Test comment';
-    component.form.patchValue({ comment: testComment });
-
-    const mockActions = {
-      handleSchemaResponse: jest.fn().mockReturnValue(of({})),
-    };
-
-    Object.defineProperty(component, 'actions', {
-      value: mockActions,
-      writable: true,
-    });
+  it('should dispatch handleSchemaResponse with comment on submit', () => {
+    component.form.patchValue({ comment: 'Test comment' });
 
     component.submit();
 
-    expect(mockActions.handleSchemaResponse).toHaveBeenCalledWith(
-      MOCK_REVISION_ID,
-      SchemaActionTrigger.AdminReject,
-      testComment
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new HandleSchemaResponse(MOCK_REVISION_ID, SchemaActionTrigger.AdminReject, 'Test comment')
     );
+    expect(dialogRef.close).toHaveBeenCalledWith(true);
   });
 
-  it('should submit with empty comment', () => {
-    const mockActions = {
-      handleSchemaResponse: jest.fn().mockReturnValue(of({})),
-    };
-
-    Object.defineProperty(component, 'actions', {
-      value: mockActions,
-      writable: true,
-    });
-
+  it('should dispatch handleSchemaResponse with empty comment on submit', () => {
     component.submit();
 
-    expect(mockActions.handleSchemaResponse).toHaveBeenCalledWith(
-      MOCK_REVISION_ID,
-      SchemaActionTrigger.AdminReject,
-      ''
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new HandleSchemaResponse(MOCK_REVISION_ID, SchemaActionTrigger.AdminReject, '')
     );
-  });
-
-  it('should set isSubmitting to true when submitting', () => {
-    const mockActions = {
-      handleSchemaResponse: jest.fn().mockReturnValue(of({}).pipe()),
-    };
-
-    Object.defineProperty(component, 'actions', {
-      value: mockActions,
-      writable: true,
-    });
-
-    component.submit();
-    expect(mockActions.handleSchemaResponse).toHaveBeenCalled();
   });
 
   it('should update comment value', () => {
-    const testComment = 'New comment';
-    component.form.patchValue({ comment: testComment });
-
-    expect(component.form.get('comment')?.value).toBe(testComment);
-  });
-
-  it('should handle different revision IDs', () => {
-    const differentRevisionId = 'different-revision-id';
-    (component as any).config.data = { revisionId: differentRevisionId } as any;
-
-    const mockActions = {
-      handleSchemaResponse: jest.fn().mockReturnValue(of({})),
-    };
-
-    Object.defineProperty(component, 'actions', {
-      value: mockActions,
-      writable: true,
-    });
-
-    component.submit();
-
-    expect(mockActions.handleSchemaResponse).toHaveBeenCalledWith(
-      differentRevisionId,
-      SchemaActionTrigger.AdminReject,
-      ''
-    );
+    component.form.patchValue({ comment: 'New comment' });
+    expect(component.form.get('comment')?.value).toBe('New comment');
   });
 });

@@ -10,13 +10,13 @@
       class="w-12rem btn-full-width"
       [label]="'common.buttons.cancel' | translate"
       severity="info"
-      (click)="dialogRef.close()"
+      (onClick)="dialogRef.close()"
     />
     <p-button
       class="w-12rem btn-full-width"
       [loading]="isSubmitting"
       [label]="'common.buttons.submit' | translate"
-      (click)="submit()"
+      (onClick)="submit()"
     />
   </div>
 </form>

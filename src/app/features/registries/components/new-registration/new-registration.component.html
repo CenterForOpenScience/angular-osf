@@ -16,25 +16,25 @@
       <div class="flex gap-2">
         <p-button
           class="btn-full-width w-2 font-bold"
-          [class]="{ 'pointer-events-none': fromProject }"
+          [class]="{ 'pointer-events-none': fromProject() }"
           severity="info"
           [label]="'common.buttons.yes' | translate"
-          [raised]="fromProject"
+          [raised]="fromProject()"
           (onClick)="toggleFromProject()"
         />
         <p-button
           class="btn-full-width w-2"
-          [class]="{ 'pointer-events-none': !fromProject }"
+          [class]="{ 'pointer-events-none': !fromProject() }"
           severity="info"
           [label]="'common.buttons.no' | translate"
-          [raised]="!fromProject"
+          [raised]="!fromProject()"
           (onClick)="toggleFromProject()"
         />
       </div>
     </p-card>
 
     <form [formGroup]="draftForm" (ngSubmit)="createDraft()" class="flex flex-column gap-4">
-      @if (fromProject) {
+      @if (fromProject()) {
         <p-card class="w-full">
           <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} 2</h2>
           <p class="mb-3 text-lg font-bold">{{ 'registries.new.steps.step2' | translate }}</p>
@@ -49,7 +49,6 @@
               optionValue="id"
               filter="true"
               [loading]="isProjectsLoading()"
-              (onChange)="onSelectProject($event.value)"
               (onFilter)="onProjectFilter($event.filter)"
               class="w-6"
             />
@@ -58,7 +57,7 @@
       }
 
       <p-card class="w-full">
-        <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} {{ fromProject ? '3' : '2' }}</h2>
+        <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} {{ fromProject() ? '3' : '2' }}</h2>
         <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.step3' | translate }}</p>
         <div class="flex">
           <p-select
@@ -68,7 +67,6 @@
             optionLabel="name"
             optionValue="id"
             [loading]="isProvidersLoading()"
-            (onChange)="onSelectProviderSchema($event.value)"
             class="w-6"
           />
         </div>

@@ -1,9 +1,9 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { RegistrationTab } from '@osf/features/registries/enums';
@@ -19,11 +19,12 @@ import { DeleteDraft, FetchDraftRegistrations, FetchSubmittedRegistrations } fro
 
 import { MyRegistrationsComponent } from './my-registrations.component';
 
-import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
-import { provideOSFCore, provideOSFToast } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
-import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomConfirmationServiceMock } from '@testing/providers/custom-confirmation-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
 describe('MyRegistrationsComponent', () => {
   let component: MyRegistrationsComponent;
@@ -45,10 +46,10 @@ describe('MyRegistrationsComponent', () => {
       ],
       providers: [
         provideOSFCore(),
-        provideRouterMock(mockRouter),
-        provideActivatedRouteMock(mockRoute),
-        MockCustomConfirmationServiceProvider,
-        provideOSFToast(),
+        MockProvider(Router, mockRouter),
+        MockProvider(ActivatedRoute, mockRoute),
+        MockProvider(CustomConfirmationService, CustomConfirmationServiceMock.simple()),
+        MockProvider(ToastService, ToastServiceMock.simple()),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getDraftRegistrations, value: [] },

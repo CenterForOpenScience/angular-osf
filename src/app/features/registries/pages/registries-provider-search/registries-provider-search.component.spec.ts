@@ -1,9 +1,10 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { ClearCurrentProvider } from '@core/store/provider';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
@@ -21,7 +22,7 @@ import { RegistryProviderHeroComponent } from '../../components/registry-provide
 import { RegistriesProviderSearchComponent } from './registries-provider-search.component';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 const MOCK_PROVIDER: RegistryProviderDetails = {
@@ -51,7 +52,7 @@ describe('RegistriesProviderSearchComponent', () => {
       ],
       providers: [
         provideOSFCore(),
-        provideActivatedRouteMock(mockRoute),
+        MockProvider(ActivatedRoute, mockRoute),
         { provide: PLATFORM_ID, useValue: platformId },
         provideMockStore({
           signals: [

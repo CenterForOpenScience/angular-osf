@@ -1,9 +1,10 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { ClearCurrentProvider } from '@core/store/provider';
@@ -19,7 +20,7 @@ import { GetRegistries, RegistriesSelectors } from '../../store';
 import { RegistriesLandingComponent } from './registries-landing.component';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RegistriesLandingComponent', () => {
@@ -45,7 +46,7 @@ describe('RegistriesLandingComponent', () => {
       ],
       providers: [
         provideOSFCore(),
-        provideRouterMock(mockRouter),
+        MockProvider(Router, mockRouter),
         { provide: PLATFORM_ID, useValue: 'browser' },
         provideMockStore({
           signals: [

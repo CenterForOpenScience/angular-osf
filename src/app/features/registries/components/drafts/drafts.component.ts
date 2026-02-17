@@ -2,7 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { filter, tap } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -12,11 +12,10 @@ import {
   effect,
   inject,
   OnDestroy,
-  Signal,
   signal,
   untracked,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
@@ -37,7 +36,6 @@ import { ClearState, FetchDraft, FetchSchemaBlocks, RegistriesSelectors, UpdateS
   templateUrl: './drafts.component.html',
   styleUrl: './drafts.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TranslateService],
 })
 export class DraftsComponent implements OnDestroy {
   private readonly router = inject(Router);
@@ -48,13 +46,12 @@ export class DraftsComponent implements OnDestroy {
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  stepsState = select(RegistriesSelectors.getStepsState);
-  readonly stepsData = select(RegistriesSelectors.getStepsData);
-  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  initialContributors = select(ContributorsSelectors.getContributors);
-  readonly contributors = select(ContributorsSelectors.getContributors);
-  readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
-  readonly registrationLicense = select(RegistriesSelectors.getRegistrationLicense);
+  readonly stepsState = select(RegistriesSelectors.getStepsState);
+
+  private readonly stepsData = select(RegistriesSelectors.getStepsData);
+  private readonly registrationLicense = select(RegistriesSelectors.getRegistrationLicense);
+  private readonly selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  private readonly contributors = select(ContributorsSelectors.getContributors);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,
@@ -69,53 +66,45 @@ export class DraftsComponent implements OnDestroy {
     return this.router.url.includes('/review');
   }
 
-  isMetaDataInvalid = computed(() => {
-    return (
+  isMetaDataInvalid = computed(
+    () =>
       !this.draftRegistration()?.title ||
       !this.draftRegistration()?.description ||
       !this.registrationLicense() ||
       !this.selectedSubjects()?.length
-    );
-  });
+  );
 
-  defaultSteps: StepOption[] = [];
-
-  isLoaded = false;
-
-  steps: Signal<StepOption[]> = computed(() => {
+  steps = computed(() => {
     const stepState = this.stepsState();
     const stepData = this.stepsData();
-    this.defaultSteps = DEFAULT_STEPS.map((step) => ({
-      ...step,
-      label: this.translateService.instant(step.label),
-      invalid: stepState?.[step.index]?.invalid || false,
+
+    const metadataStep: StepOption = {
+      ...DEFAULT_STEPS[0],
+      label: this.translateService.instant(DEFAULT_STEPS[0].label),
+      invalid: this.isMetaDataInvalid(),
+      touched: true,
+    };
+
+    const customSteps: StepOption[] = this.pages().map((page, index) => ({
+      index: index + 1,
+      label: page.title,
+      value: page.id,
+      routeLink: `${index + 1}`,
+      invalid: stepState?.[index + 1]?.invalid || false,
+      touched: stepState?.[index + 1]?.touched || this.hasStepData(page, stepData),
     }));
 
-    this.defaultSteps[0].invalid = this.isMetaDataInvalid();
-    this.defaultSteps[0].touched = true;
-    const customSteps = this.pages().map((page, index) => {
-      const pageStep = this.pages()[index];
-      const allQuestions = this.getAllQuestions(pageStep);
-      const wasTouched =
-        allQuestions?.some((question) => {
-          const questionData = stepData[question.responseKey!];
-          return Array.isArray(questionData) ? questionData.length : questionData;
-        }) || false;
-      return {
-        index: index + 1,
-        label: page.title,
-        value: page.id,
-        routeLink: `${index + 1}`,
-        invalid: stepState?.[index + 1]?.invalid || false,
-        touched: stepState?.[index + 1]?.touched || wasTouched,
-      };
-    });
-    return [
-      this.defaultSteps[0],
-      ...customSteps,
-      { ...this.defaultSteps[1], index: customSteps.length + 1, invalid: false },
-    ];
+    const reviewStep: StepOption = {
+      ...DEFAULT_STEPS[1],
+      label: this.translateService.instant(DEFAULT_STEPS[1].label),
+      index: customSteps.length + 1,
+      invalid: false,
+    };
+
+    return [metadataStep, ...customSteps, reviewStep];
   });
+
+  registrationId = this.route.snapshot.firstChild?.params['id'] || '';
 
   currentStepIndex = signal(
     this.route.snapshot.firstChild?.params['step'] ? +this.route.snapshot.firstChild?.params['step'] : 0
@@ -123,92 +112,115 @@ export class DraftsComponent implements OnDestroy {
 
   currentStep = computed(() => this.steps()[this.currentStepIndex()]);
 
-  registrationId = this.route.snapshot.firstChild?.params['id'] || '';
-
   constructor() {
+    this.loadInitialData();
+    this.setupSchemaLoader();
+    this.setupRouteWatcher();
+    this.setupReviewStepSync();
+    this.setupStepValidation();
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearState();
+  }
+
+  stepChange(step: StepOption): void {
+    this.currentStepIndex.set(step.index);
+    this.router.navigate([`/registries/drafts/${this.registrationId}/`, this.steps()[step.index].routeLink]);
+  }
+
+  private loadInitialData() {
+    this.loaderService.show();
+
+    if (!this.draftRegistration()) {
+      this.actions.getDraftRegistration(this.registrationId);
+    }
+
+    if (!this.contributors()?.length) {
+      this.actions.getContributors(this.registrationId, ResourceType.DraftRegistration);
+    }
+
+    if (!this.selectedSubjects()?.length) {
+      this.actions.getSubjects(this.registrationId, ResourceType.DraftRegistration);
+    }
+  }
+
+  private setupSchemaLoader() {
+    toObservable(this.draftRegistration)
+      .pipe(
+        filter((draft) => !!draft?.registrationSchemaId),
+        take(1),
+        switchMap((draft) => this.actions.getSchemaBlocks(draft!.registrationSchemaId)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.loaderService.hide());
+  }
+
+  private setupRouteWatcher() {
     this.router.events
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         const step = this.route.firstChild?.snapshot.params['step'];
         if (step) {
           this.currentStepIndex.set(+step);
         } else if (this.isReviewPage) {
-          const reviewStepIndex = this.pages().length + 1;
-          this.currentStepIndex.set(reviewStepIndex);
+          this.currentStepIndex.set(this.pages().length + 1);
         } else {
           this.currentStepIndex.set(0);
         }
       });
+  }
 
-    this.loaderService.show();
-    if (!this.draftRegistration()) {
-      this.actions.getDraftRegistration(this.registrationId);
-    }
-    if (!this.contributors()?.length) {
-      this.actions.getContributors(this.registrationId, ResourceType.DraftRegistration);
-    }
-    if (!this.subjects()?.length) {
-      this.actions.getSubjects(this.registrationId, ResourceType.DraftRegistration);
-    }
-    effect(() => {
-      const registrationSchemaId = this.draftRegistration()?.registrationSchemaId;
-      if (registrationSchemaId && !this.isLoaded) {
-        this.actions
-          .getSchemaBlocks(registrationSchemaId || '')
-          .pipe(
-            tap(() => {
-              this.isLoaded = true;
-              this.loaderService.hide();
-            })
-          )
-          .subscribe();
-      }
-    });
-
+  private setupReviewStepSync() {
     effect(() => {
       const reviewStepIndex = this.pages().length + 1;
       if (this.isReviewPage) {
         this.currentStepIndex.set(reviewStepIndex);
       }
     });
+  }
 
+  private setupStepValidation() {
     effect(() => {
       const stepState = untracked(() => this.stepsState());
-      if (this.currentStepIndex() > 0) {
+      const currentIndex = this.currentStepIndex();
+
+      if (currentIndex > 0) {
         this.actions.updateStepState('0', this.isMetaDataInvalid(), stepState?.[0]?.touched || false);
       }
-      if (this.pages().length && this.currentStepIndex() > 0 && this.stepsData()) {
-        for (let i = 1; i < this.currentStepIndex(); i++) {
-          const pageStep = this.pages()[i - 1];
-          const allQuestions = this.getAllQuestions(pageStep);
-          const isStepInvalid =
-            allQuestions?.some((question) => {
-              const questionData = this.stepsData()[question.responseKey!];
-              return question.required && (Array.isArray(questionData) ? !questionData.length : !questionData);
-            }) || false;
-          this.actions.updateStepState(i.toString(), isStepInvalid, stepState?.[i]?.touched || false);
+
+      if (this.pages().length && currentIndex > 0 && this.stepsData()) {
+        for (let i = 1; i < currentIndex; i++) {
+          const page = this.pages()[i - 1];
+          const invalid = this.isPageInvalid(page, this.stepsData());
+          this.actions.updateStepState(i.toString(), invalid, stepState?.[i]?.touched || false);
         }
       }
     });
   }
 
-  stepChange(step: StepOption): void {
-    this.currentStepIndex.set(step.index);
-    const pageLink = this.steps()[step.index].routeLink;
-    this.router.navigate([`/registries/drafts/${this.registrationId}/`, pageLink]);
+  private getAllQuestions(page: PageSchema): Question[] {
+    return [...(page?.questions ?? []), ...(page?.sections?.flatMap((section) => section.questions ?? []) ?? [])];
   }
 
-  private getAllQuestions(pageStep: PageSchema): Question[] {
-    return [
-      ...(pageStep?.questions ?? []),
-      ...(pageStep?.sections?.flatMap((section) => section.questions ?? []) ?? []),
-    ];
+  private hasStepData(page: PageSchema, stepData: Record<string, unknown>): boolean {
+    return (
+      this.getAllQuestions(page).some((question) => {
+        const data = stepData[question.responseKey!];
+        return Array.isArray(data) ? data.length : data;
+      }) || false
+    );
   }
 
-  ngOnDestroy(): void {
-    this.actions.clearState();
+  private isPageInvalid(page: PageSchema, stepData: Record<string, unknown>): boolean {
+    return (
+      this.getAllQuestions(page).some((question) => {
+        const data = stepData[question.responseKey!];
+        return question.required && (Array.isArray(data) ? !data.length : !data);
+      }) || false
+    );
   }
 }

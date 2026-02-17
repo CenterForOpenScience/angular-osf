@@ -1,15 +1,16 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NavigationEnd } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
+import { LoaderService } from '@osf/shared/services/loader.service';
 
 import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors } from '../../store';
 
@@ -17,9 +18,9 @@ import { JustificationComponent } from './justification.component';
 
 import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
-import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
-import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 const MOCK_SCHEMA_RESPONSE = createMockSchemaResponse('resp-1', RevisionReviewStates.RevisionInProgress);
@@ -68,9 +69,9 @@ describe('JustificationComponent', () => {
       imports: [JustificationComponent, ...MockComponents(StepperComponent, SubHeaderComponent)],
       providers: [
         provideOSFCore(),
-        provideActivatedRouteMock(mockRoute),
-        provideRouterMock(mockRouter),
-        provideLoaderServiceMock(loaderService),
+        MockProvider(ActivatedRoute, mockRoute),
+        MockProvider(Router, mockRouter),
+        MockProvider(LoaderService, loaderService),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getSchemaResponse, value: schemaResponse },

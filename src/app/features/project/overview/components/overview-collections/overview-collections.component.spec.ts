@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.models';
+import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
 
 import { OverviewCollectionsComponent } from './overview-collections.component';
 
