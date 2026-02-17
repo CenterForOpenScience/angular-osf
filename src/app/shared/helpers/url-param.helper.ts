@@ -4,7 +4,7 @@ export const urlParam = (params: Record<string, string>) => {
     .join('&');
 };
 
-export const localUrlParam = (params: { service: string; next?: string }): string => {
+export const doubleEncodedUrlParam = (params: { service: string; next?: string }): string => {
   const { service, next } = params;
 
   if (!next) {
