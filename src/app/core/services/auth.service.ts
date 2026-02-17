@@ -8,7 +8,7 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { SignUpModel } from '@core/models/sign-up.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentUser } from '@osf/core/store/user';
-import { urlParam } from '@osf/shared/helpers/url-param.helper';
+import { localUrlParam, urlParam } from '@osf/shared/helpers/url-param.helper';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 
@@ -41,7 +41,14 @@ export class AuthService {
     }
 
     this.loaderService.show();
-    const loginUrl = `${this.casUrl}/login?${urlParam({ service: `${this.webUrl}/login`, next: window.location.href })}`;
+    let loginUrl = null;
+    if (this.environment.webUrl.includes('localhost')) {
+      // CAS should handle auth instead of angular, so we need to pass the next param
+      // in the service param to ensure the user is redirected back to the correct page after login
+      loginUrl = `${this.casUrl}/login?${localUrlParam({ service: `${this.webUrl.replace('4200', '5000')}/login`, next: window.location.href })}`;
+    } else {
+      loginUrl = `${this.casUrl}/login?${urlParam({ service: `${this.webUrl}/login`, next: window.location.href })}`;
+    }
     window.location.href = loginUrl;
   }
 
