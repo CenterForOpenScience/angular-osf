@@ -395,37 +395,49 @@ export class ContributorsComponent implements OnInit, OnDestroy {
 
   removeContributor(contributor: ContributorModel) {
     const isDeletingSelf = contributor.userId === this.currentUser()?.id;
+    const resourceDetails = this.resourceDetails();
+    const resourceId = this.resourceId();
+    const rootParentId = resourceDetails.rootParentId ?? resourceId;
 
-    this.customDialogService
-      .open(RemoveContributorDialogComponent, {
-        header: 'project.contributors.removeDialog.title',
-        width: '448px',
-        data: {
-          name: contributor.fullName,
-          hasChildren: !!this.resourceChildren()?.length,
-        },
-      })
-      .onClose.pipe(
-        filter((res) => res !== undefined),
-        switchMap((removeFromChildren: boolean) =>
-          this.actions.deleteContributor(
-            this.resourceId(),
-            this.resourceType(),
-            contributor.userId,
-            isDeletingSelf,
-            removeFromChildren
-          )
-        ),
-        takeUntilDestroyed(this.destroyRef)
-      )
+    this.loaderService.show();
+
+    this.actions
+      .getResourceWithChildren(rootParentId, resourceId, this.resourceType())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
-          name: contributor.fullName,
-        });
+        this.loaderService.hide();
 
-        if (isDeletingSelf) {
-          this.router.navigate(['/']);
-        }
+        this.customDialogService
+          .open(RemoveContributorDialogComponent, {
+            header: 'project.contributors.removeDialog.title',
+            width: '448px',
+            data: {
+              name: contributor.fullName,
+              hasChildren: !!this.resourceChildren()?.length,
+            },
+          })
+          .onClose.pipe(
+            filter((res) => res !== undefined),
+            switchMap((removeFromChildren: boolean) =>
+              this.actions.deleteContributor(
+                this.resourceId(),
+                this.resourceType(),
+                contributor.userId,
+                isDeletingSelf,
+                removeFromChildren
+              )
+            ),
+            takeUntilDestroyed(this.destroyRef)
+          )
+          .subscribe(() => {
+            this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
+              name: contributor.fullName,
+            });
+
+            if (isDeletingSelf) {
+              this.router.navigate(['/']);
+            }
+          });
       });
   }
 

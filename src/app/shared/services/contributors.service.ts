@@ -248,11 +248,9 @@ export class ContributorsService {
     userId: string,
     removeFromChildren = false
   ): Observable<void> {
-    let baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
-    if (removeFromChildren) {
-      baseUrl = baseUrl.concat('?propagate_to_children=true');
-    }
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
+    const url = removeFromChildren ? `${baseUrl}?include_children=true` : baseUrl;
 
-    return this.jsonApiService.delete(baseUrl);
+    return this.jsonApiService.delete(url);
   }
 }
