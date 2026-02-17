@@ -1,15 +1,17 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
 
+import { MockComponents, MockModule, ngMocks } from 'ng-mocks';
+
+import { TextareaModule } from 'primeng/textarea';
+
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
-import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
-import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
-import { RegistriesSelectors } from '../../store';
+import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepState } from '../../store';
 
 import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
 import { RegistriesContributorsComponent } from './registries-contributors/registries-contributors.component';
@@ -18,25 +20,36 @@ import { RegistriesSubjectsComponent } from './registries-subjects/registries-su
 import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
 import { RegistriesMetadataStepComponent } from './registries-metadata-step.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import {
+  CustomConfirmationServiceMock,
+  MockCustomConfirmationServiceProvider,
+} from '@testing/mocks/custom-confirmation.service.mock';
+import { MOCK_DRAFT_REGISTRATION } from '@testing/mocks/draft-registration.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
+import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('RegistriesMetadataStepComponent', () => {
+describe('RegistriesMetadataStepComponent', () => {
+  ngMocks.faster();
+
   let component: RegistriesMetadataStepComponent;
   let fixture: ComponentFixture<RegistriesMetadataStepComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
+  let store: Store;
+  let mockRouter: RouterMockType;
+  let stepsStateSignal: WritableSignal<{ invalid: boolean }[]>;
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
+  const mockDraft = { ...MOCK_DRAFT_REGISTRATION, title: 'Test Title', description: 'Test Description' };
+
+  beforeEach(() => {
+    const mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
     mockRouter = RouterMockBuilder.create().withUrl('/registries/osf/draft/draft-1/metadata').build();
+    stepsStateSignal = signal<{ invalid: boolean }[]>([{ invalid: true }]);
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         RegistriesMetadataStepComponent,
-        OSFTestingModule,
+        MockModule(TextareaModule),
         ...MockComponents(
           TextInputComponent,
           RegistriesContributorsComponent,
@@ -47,20 +60,23 @@ describe.skip('RegistriesMetadataStepComponent', () => {
         ),
       ],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
-        MockProvider(Router, mockRouter),
-        MockProvider(CustomConfirmationService, { confirmDelete: jest.fn() }),
+        provideOSFCore(),
+        provideActivatedRouteMock(mockActivatedRoute),
+        provideRouterMock(mockRouter),
+        MockCustomConfirmationServiceProvider,
         provideMockStore({
           signals: [
-            { selector: RegistriesSelectors.getStepsState, value: { 0: { invalid: false } } },
+            { selector: RegistriesSelectors.getDraftRegistration, value: mockDraft },
+            { selector: RegistriesSelectors.getStepsState, value: stepsStateSignal },
+            { selector: RegistriesSelectors.hasDraftAdminAccess, value: true },
             { selector: ContributorsSelectors.getContributors, value: [] },
             { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
-            { selector: InstitutionsSelectors.getResourceInstitutions, value: [] },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(RegistriesMetadataStepComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -70,66 +86,97 @@ describe.skip('RegistriesMetadataStepComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with draft data', () => {
-    expect(component.metadataForm.value.title).toBe(' My Title ');
-    expect(component.metadataForm.value.description).toBe(' Description ');
-    expect(component.metadataForm.value.license).toEqual({ id: 'mit' });
+  it('should initialize metadataForm with required controls', () => {
+    expect(component.metadataForm.get('title')).toBeTruthy();
+    expect(component.metadataForm.get('description')).toBeTruthy();
+    expect(component.metadataForm.get('contributors')).toBeTruthy();
+    expect(component.metadataForm.get('subjects')).toBeTruthy();
+    expect(component.metadataForm.get('tags')).toBeTruthy();
+    expect(component.metadataForm.get('license.id')).toBeTruthy();
   });
 
-  it('should compute hasAdminAccess', () => {
-    expect(component.hasAdminAccess()).toBe(true);
+  it('should have form invalid when title is empty', () => {
+    component.metadataForm.patchValue({ title: '', description: 'Valid' });
+    expect(component.metadataForm.get('title')?.valid).toBe(false);
   });
 
-  it('should submit metadata, trim values and navigate to first step', () => {
-    const actionsMock = {
-      updateDraft: jest.fn().mockReturnValue({ pipe: () => ({ subscribe: jest.fn() }) }),
-      deleteDraft: jest.fn(),
-      clearState: jest.fn(),
-      updateStepState: jest.fn(),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
+  it('should submit metadata and navigate to step 1', () => {
+    component.metadataForm.patchValue({ title: 'New Title', description: 'New Desc' });
+    (store.dispatch as jest.Mock).mockClear();
 
     component.submitMetadata();
 
-    expect(actionsMock.updateDraft).toHaveBeenCalledWith('draft-1', {
-      title: 'My Title',
-      description: 'Description',
-    });
-    expect(navSpy).toHaveBeenCalledWith(['../1'], {
-      relativeTo: TestBed.inject(ActivatedRoute),
-      onSameUrlNavigation: 'reload',
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateDraft('draft-1', { title: 'New Title', description: 'New Desc' })
+    );
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      ['../1'],
+      expect.objectContaining({ onSameUrlNavigation: 'reload' })
+    );
   });
 
-  it('should delete draft on confirm and navigate to new registration', () => {
-    const confirmService = TestBed.inject(CustomConfirmationService) as jest.Mocked<CustomConfirmationService> as any;
-    const actionsMock = {
-      deleteDraft: jest.fn().mockReturnValue({ subscribe: ({ next }: any) => next() }),
-      clearState: jest.fn(),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: actionsMock });
-    const navSpy = jest.spyOn(TestBed.inject(Router), 'navigateByUrl');
+  it('should trim title and description on submit', () => {
+    component.metadataForm.patchValue({ title: '  Padded Title  ', description: '  Padded Desc  ' });
+    (store.dispatch as jest.Mock).mockClear();
 
-    (confirmService.confirmDelete as jest.Mock).mockImplementation(({ onConfirm }) => onConfirm());
+    component.submitMetadata();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateDraft('draft-1', { title: 'Padded Title', description: 'Padded Desc' })
+    );
+  });
+
+  it('should call confirmDelete when deleteDraft is called', () => {
+    component.deleteDraft();
+    expect(CustomConfirmationServiceMock.confirmDelete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        headerKey: 'registries.deleteDraft',
+        messageKey: 'registries.confirmDeleteDraft',
+      })
+    );
+  });
+
+  it('should set isDraftDeleted and navigate on deleteDraft confirm', () => {
+    CustomConfirmationServiceMock.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
+    (store.dispatch as jest.Mock).mockClear();
 
     component.deleteDraft();
 
-    expect(actionsMock.clearState).toHaveBeenCalled();
-    expect(navSpy).toHaveBeenCalledWith('/registries/osf/new');
+    expect(component.isDraftDeleted).toBe(true);
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteDraft('draft-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearState());
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/registries/osf/new');
   });
 
-  it('should update step state and draft on destroy if changed', () => {
-    const actionsMock = {
-      updateStepState: jest.fn(),
-      updateDraft: jest.fn(),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: actionsMock });
+  it('should skip updates on destroy when isDraftDeleted is true', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    component.isDraftDeleted = true;
+    component.ngOnDestroy();
 
-    component.metadataForm.patchValue({ title: 'Changed', description: 'Changed desc' });
-    fixture.destroy();
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
 
-    expect(actionsMock.updateStepState).toHaveBeenCalledWith('0', true, true);
-    expect(actionsMock.updateDraft).toHaveBeenCalledWith('draft-1', { title: 'Changed', description: 'Changed desc' });
+  it('should update step state on destroy when fields are unchanged', () => {
+    component.metadataForm.patchValue({ title: 'Test Title', description: 'Test Description' });
+    (store.dispatch as jest.Mock).mockClear();
+    component.ngOnDestroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateStepState('0', expect.any(Boolean), true));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateDraft));
+  });
+
+  it('should dispatch updateDraft on destroy when fields have changed', () => {
+    component.metadataForm.patchValue({ title: 'Changed Title', description: 'Test Description' });
+    (store.dispatch as jest.Mock).mockClear();
+    component.ngOnDestroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateStepState('0', expect.any(Boolean), true));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateDraft('draft-1', expect.objectContaining({ title: 'Changed Title' }))
+    );
+  });
+
+  it('should mark form as touched when step state is invalid on init', () => {
+    expect(component.metadataForm.touched).toBe(true);
   });
 });

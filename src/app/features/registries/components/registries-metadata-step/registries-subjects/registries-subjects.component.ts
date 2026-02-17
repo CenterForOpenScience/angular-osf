@@ -5,9 +5,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
 import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
@@ -31,8 +30,7 @@ import { SubjectModel } from '@shared/models/subject/subject.model';
 })
 export class RegistriesSubjectsComponent {
   control = input.required<FormControl>();
-  private readonly route = inject(ActivatedRoute);
-  private readonly draftId = this.route.snapshot.params['id'];
+  draftId = input.required<string>();
 
   selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
@@ -47,14 +45,14 @@ export class RegistriesSubjectsComponent {
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  private isLoaded = false;
+  private readonly isLoaded = signal(false);
 
   constructor() {
     effect(() => {
-      if (this.draftRegistration() && !this.isLoaded) {
+      if (this.draftRegistration() && !this.isLoaded()) {
         this.actions.fetchSubjects(ResourceType.Registration, this.draftRegistration()?.providerId);
-        this.actions.fetchSelectedSubjects(this.draftId, ResourceType.DraftRegistration);
-        this.isLoaded = true;
+        this.actions.fetchSelectedSubjects(this.draftId(), ResourceType.DraftRegistration);
+        this.isLoaded.set(true);
       }
     });
   }
@@ -69,23 +67,21 @@ export class RegistriesSubjectsComponent {
 
   updateSelectedSubjects(subjects: SubjectModel[]) {
     this.updateControlState(subjects);
-    this.actions.updateResourceSubjects(this.draftId, ResourceType.DraftRegistration, subjects);
+    this.actions.updateResourceSubjects(this.draftId(), ResourceType.DraftRegistration, subjects);
   }
 
   onFocusOut() {
-    if (this.control()) {
-      this.control().markAsTouched();
-      this.control().markAsDirty();
-      this.control().updateValueAndValidity();
-    }
+    const control = this.control();
+    control.markAsTouched();
+    control.markAsDirty();
+    control.updateValueAndValidity();
   }
 
   updateControlState(value: SubjectModel[]) {
-    if (this.control()) {
-      this.control().setValue(value);
-      this.control().markAsTouched();
-      this.control().markAsDirty();
-      this.control().updateValueAndValidity();
-    }
+    const control = this.control();
+    control.setValue(value);
+    control.markAsTouched();
+    control.markAsDirty();
+    control.updateValueAndValidity();
   }
 }

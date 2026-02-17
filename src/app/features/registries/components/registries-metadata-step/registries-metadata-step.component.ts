@@ -7,9 +7,10 @@ import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 import { TextareaModule } from 'primeng/textarea';
 
-import { tap } from 'rxjs';
+import { filter, take, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -21,7 +22,6 @@ import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
-import { UserPermissions } from '@shared/enums/user-permissions.enum';
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
 import { DraftRegistrationModel } from '@shared/models/registration/draft-registration.model';
 import { SubjectModel } from '@shared/models/subject/subject.model';
@@ -58,21 +58,18 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   readonly titleLimit = InputLimits.title.maxLength;
 
-  private readonly draftId = this.route.snapshot.params['id'];
-  readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  readonly draftId = this.route.snapshot.params['id'];
+
+  draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   initialContributors = select(ContributorsSelectors.getContributors);
   stepsState = select(RegistriesSelectors.getStepsState);
-
-  hasAdminAccess = computed(() => {
-    const registry = this.draftRegistration();
-    if (!registry) return false;
-    return registry.currentUserPermissions.includes(UserPermissions.Admin);
-  });
+  hasAdminAccess = select(RegistriesSelectors.hasDraftAdminAccess);
 
   actions = createDispatchMap({
     deleteDraft: DeleteDraft,
@@ -89,35 +86,29 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
     contributors: [[] as ContributorModel[], Validators.required],
     subjects: [[] as SubjectModel[], Validators.required],
     tags: [[]],
-    license: this.fb.group({
-      id: ['', Validators.required],
-    }),
+    license: this.fb.group({ id: ['', Validators.required] }),
   });
 
   isDraftDeleted = false;
-  isFormUpdated = false;
 
   constructor() {
-    effect(() => {
-      const draft = this.draftRegistration();
-      // TODO: This shouldn't be an effect()
-      if (draft && !this.isFormUpdated) {
-        this.updateFormValue(draft);
-        this.isFormUpdated = true;
-      }
-    });
+    toObservable(this.draftRegistration)
+      .pipe(filter(Boolean), take(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe((draft) => this.updateFormValue(draft));
   }
 
-  private updateFormValue(data: DraftRegistrationModel): void {
-    this.metadataForm.patchValue({
-      title: data.title,
-      description: data.description,
-      license: data.license,
-      contributors: this.initialContributors(),
-      subjects: this.selectedSubjects(),
-    });
-    if (this.stepsState()?.[0]?.invalid) {
-      this.metadataForm.markAllAsTouched();
+  ngOnDestroy(): void {
+    if (!this.isDraftDeleted) {
+      this.actions.updateStepState('0', this.metadataForm.invalid, true);
+      const changedFields = findChangedFields(
+        { title: this.metadataForm.value.title!, description: this.metadataForm.value.description! },
+        { title: this.draftRegistration()?.title, description: this.draftRegistration()?.description }
+      );
+
+      if (Object.keys(changedFields).length > 0) {
+        this.actions.updateDraft(this.draftId, changedFields);
+        this.metadataForm.markAllAsTouched();
+      }
     }
   }
 
@@ -156,17 +147,17 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    if (!this.isDraftDeleted) {
-      this.actions.updateStepState('0', this.metadataForm.invalid, true);
-      const changedFields = findChangedFields(
-        { title: this.metadataForm.value.title!, description: this.metadataForm.value.description! },
-        { title: this.draftRegistration()?.title, description: this.draftRegistration()?.description }
-      );
-      if (Object.keys(changedFields).length > 0) {
-        this.actions.updateDraft(this.draftId, changedFields);
-        this.metadataForm.markAllAsTouched();
-      }
+  private updateFormValue(data: DraftRegistrationModel): void {
+    this.metadataForm.patchValue({
+      title: data.title,
+      description: data.description,
+      license: data.license,
+      contributors: this.initialContributors(),
+      subjects: this.selectedSubjects(),
+    });
+
+    if (this.stepsState()?.[0]?.invalid) {
+      this.metadataForm.markAllAsTouched();
     }
   }
 }
