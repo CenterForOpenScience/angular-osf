@@ -1,8 +1,9 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponent } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
 import { DraftRegistrationModel } from '@osf/shared/models/registration/draft-registration.model';
@@ -13,8 +14,8 @@ import { DraftRegistrationCustomStepComponent } from './draft-registration-custo
 
 import { MOCK_REGISTRIES_PAGE } from '@testing/mocks/registries.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
-import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 const MOCK_DRAFT: Partial<DraftRegistrationModel> = {
@@ -41,8 +42,8 @@ describe('DraftRegistrationCustomStepComponent', () => {
       imports: [DraftRegistrationCustomStepComponent, MockComponent(CustomStepComponent)],
       providers: [
         provideOSFCore(),
-        provideActivatedRouteMock(mockRoute),
-        provideRouterMock(mockRouter),
+        MockProvider(ActivatedRoute, mockRoute),
+        MockProvider(Router, mockRouter),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getStepsData, value: stepsData },

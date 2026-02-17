@@ -1,13 +1,15 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockModule, ngMocks } from 'ng-mocks';
+import { MockComponents, MockModule, MockProvider, ngMocks } from 'ng-mocks';
 
 import { TextareaModule } from 'primeng/textarea';
 
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
@@ -20,14 +22,14 @@ import { RegistriesSubjectsComponent } from './registries-subjects/registries-su
 import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
 import { RegistriesMetadataStepComponent } from './registries-metadata-step.component';
 
-import {
-  CustomConfirmationServiceMock,
-  MockCustomConfirmationServiceProvider,
-} from '@testing/mocks/custom-confirmation.service.mock';
 import { MOCK_DRAFT_REGISTRATION } from '@testing/mocks/draft-registration.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
-import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import {
+  CustomConfirmationServiceMock,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RegistriesMetadataStepComponent', () => {
@@ -38,6 +40,7 @@ describe('RegistriesMetadataStepComponent', () => {
   let store: Store;
   let mockRouter: RouterMockType;
   let stepsStateSignal: WritableSignal<{ invalid: boolean }[]>;
+  let customConfirmationService: CustomConfirmationServiceMockType;
 
   const mockDraft = { ...MOCK_DRAFT_REGISTRATION, title: 'Test Title', description: 'Test Description' };
 
@@ -45,6 +48,7 @@ describe('RegistriesMetadataStepComponent', () => {
     const mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
     mockRouter = RouterMockBuilder.create().withUrl('/registries/osf/draft/draft-1/metadata').build();
     stepsStateSignal = signal<{ invalid: boolean }[]>([{ invalid: true }]);
+    customConfirmationService = CustomConfirmationServiceMock.simple();
 
     TestBed.configureTestingModule({
       imports: [
@@ -61,9 +65,9 @@ describe('RegistriesMetadataStepComponent', () => {
       ],
       providers: [
         provideOSFCore(),
-        provideActivatedRouteMock(mockActivatedRoute),
-        provideRouterMock(mockRouter),
-        MockCustomConfirmationServiceProvider,
+        MockProvider(ActivatedRoute, mockActivatedRoute),
+        MockProvider(Router, mockRouter),
+        MockProvider(CustomConfirmationService, customConfirmationService),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getDraftRegistration, value: mockDraft },
@@ -128,7 +132,7 @@ describe('RegistriesMetadataStepComponent', () => {
 
   it('should call confirmDelete when deleteDraft is called', () => {
     component.deleteDraft();
-    expect(CustomConfirmationServiceMock.confirmDelete).toHaveBeenCalledWith(
+    expect(customConfirmationService.confirmDelete).toHaveBeenCalledWith(
       expect.objectContaining({
         headerKey: 'registries.deleteDraft',
         messageKey: 'registries.confirmDeleteDraft',
@@ -137,7 +141,7 @@ describe('RegistriesMetadataStepComponent', () => {
   });
 
   it('should set isDraftDeleted and navigate on deleteDraft confirm', () => {
-    CustomConfirmationServiceMock.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
+    customConfirmationService.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
     (store.dispatch as jest.Mock).mockClear();
 
     component.deleteDraft();

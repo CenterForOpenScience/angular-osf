@@ -1,8 +1,9 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
 import { RegistriesSelectors, UpdateSchemaResponse } from '../../store';
@@ -10,8 +11,8 @@ import { RegistriesSelectors, UpdateSchemaResponse } from '../../store';
 import { RevisionsCustomStepComponent } from './revisions-custom-step.component';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder, provideActivatedRouteMock } from '@testing/providers/route-provider.mock';
-import { provideRouterMock, RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RevisionsCustomStepComponent', () => {
@@ -28,8 +29,8 @@ describe('RevisionsCustomStepComponent', () => {
       imports: [RevisionsCustomStepComponent, MockComponents(CustomStepComponent)],
       providers: [
         provideOSFCore(),
-        provideActivatedRouteMock(mockRoute),
-        provideRouterMock(mockRouter),
+        MockProvider(ActivatedRoute, mockRoute),
+        MockProvider(Router, mockRouter),
         provideMockStore({
           signals: [
             {

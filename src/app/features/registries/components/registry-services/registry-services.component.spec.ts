@@ -1,17 +1,21 @@
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { RegistryServicesComponent } from './registry-services.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 describe('RegistryServicesComponent', () => {
   let component: RegistryServicesComponent;
   let fixture: ComponentFixture<RegistryServicesComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RegistryServicesComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RegistryServicesComponent],
+      providers: [provideOSFCore(), MockProvider(ActivatedRoute)],
+    });
 
     fixture = TestBed.createComponent(RegistryServicesComponent);
     component = fixture.componentInstance;
