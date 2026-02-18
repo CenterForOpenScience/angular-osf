@@ -45,6 +45,7 @@ import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { GetAllContributors } from '@osf/shared/stores/contributors';
 import { ClearProjects, ProjectsSelectors, UpdateProjectMetadata } from '@osf/shared/stores/projects';
+import { CollectionsSelectors } from '@shared/stores/collections';
 
 @Component({
   selector: 'osf-project-metadata-step',
@@ -86,6 +87,7 @@ export class ProjectMetadataStepComponent {
   readonly inputLimits = InputLimits;
 
   readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
+  readonly collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   readonly collectionLicenses = select(AddToCollectionSelectors.getCollectionLicenses);
   readonly isSelectedProjectUpdateSubmitting = select(ProjectsSelectors.getSelectedProjectUpdateSubmitting);
 
@@ -113,7 +115,8 @@ export class ProjectMetadataStepComponent {
 
   readonly projectLicense = computed(() => {
     const project = this.selectedProject();
-    return project ? (this.collectionLicenses().find((license) => license.id === project.licenseId) ?? null) : null;
+    const licenseId = project?.licenseId || this.collectionProvider()?.defaultLicenseId;
+    return project ? (this.collectionLicenses().find((license) => license.id === licenseId) ?? null) : null;
   });
 
   private readonly isFormUnchanged = computed(() => {
@@ -235,7 +238,6 @@ export class ProjectMetadataStepComponent {
           this.formService.updateLicenseValidators(this.projectMetadataForm, license);
         });
       }
-
       this.populateFormFromProject();
     });
 
