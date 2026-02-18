@@ -20,7 +20,6 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CreateSchemaResponse } from '@osf/features/registries/store';
 import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -46,6 +45,7 @@ import { RegistryRevisionsComponent } from '../../components/registry-revisions/
 import { RegistryStatusesComponent } from '../../components/registry-statuses/registry-statuses.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
 import {
+  CreateSchemaResponse,
   GetRegistryById,
   GetRegistryReviewActions,
   GetRegistrySchemaResponses,
