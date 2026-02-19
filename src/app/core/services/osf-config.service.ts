@@ -43,20 +43,24 @@ export class OSFConfigService {
    * On the server, this is skipped as config is only needed in the browser.
    */
   async load(): Promise<void> {
-    if (!this.config && isPlatformBrowser(this.platformId)) {
+    if (this.config) return;
+
+    if (isPlatformBrowser(this.platformId)) {
       this.config = await lastValueFrom<ConfigModel>(
         this.http.get<ConfigModel>('/assets/config/config.json').pipe(
           shareReplay(1),
           catchError(() => of({} as ConfigModel))
         )
       );
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.config = ((globalThis as any).__SSR_CONFIG__ ?? {}) as ConfigModel;
+    }
 
-      // Apply every key from config to environment
-      for (const [key, value] of Object.entries(this.config)) {
-        // eslint-disable-next-line
-        // @ts-ignore
-        this.environment[key] = value;
-      }
+    for (const [key, value] of Object.entries(this.config)) {
+      // eslint-disable-next-line
+      // @ts-ignore
+      this.environment[key] = value;
     }
   }
 }

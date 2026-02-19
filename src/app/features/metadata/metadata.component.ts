@@ -11,6 +11,7 @@ import {
   DestroyRef,
   effect,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -24,6 +25,7 @@ import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 import {
@@ -117,7 +119,7 @@ import {
   styleUrl: './metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MetadataComponent implements OnInit {
+export class MetadataComponent implements OnInit, OnDestroy {
   private readonly activeRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -125,6 +127,7 @@ export class MetadataComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly signpostingService = inject(SignpostingService);
 
   private resourceId = '';
 
@@ -264,10 +267,16 @@ export class MetadataComponent implements OnInit {
       this.actions.getCedarTemplates();
       this.actions.fetchSelectedSubjects(this.resourceId, this.resourceType());
 
+      this.signpostingService.addMetadataSignposting(this.resourceId);
+
       if (this.isProjectType()) {
         this.actions.getProjectSubmissions(this.resourceId);
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.signpostingService.removeSignpostingLinkTags();
   }
 
   onTabChange(tabId: string | number): void {
