@@ -22,12 +22,14 @@ import { ActivatedRoute } from '@angular/router';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AddResourceDialogComponent } from '../../components/add-resource-dialog/add-resource-dialog.component';
 import { EditResourceDialogComponent } from '../../components/edit-resource-dialog/edit-resource-dialog.component';
+import { resourceTypeOptions } from '../../constants';
 import { RegistryResource } from '../../models';
 import { RegistrySelectors } from '../../store/registry';
 import {
@@ -71,9 +73,15 @@ export class RegistryResourcesComponent {
     deleteResource: DeleteResource,
   });
 
+  readonly RegistryResourceType = RegistryResourceType;
+
   canEdit = select(RegistrySelectors.hasWriteAccess);
 
   addButtonVisible = computed(() => !!this.identifiers().length && this.canEdit());
+
+  getResourceTypeTranslationKey(type: string): string {
+    return resourceTypeOptions.find((opt) => opt.value === type)?.label ?? '';
+  }
 
   constructor() {
     effect(() => {

@@ -267,4 +267,17 @@ describe('RegistryResourcesComponent', () => {
 
     expect(mockConfirmationService.confirmDelete).not.toHaveBeenCalled();
   });
+
+  it('should return translation key for known resource type', () => {
+    const { component } = setup();
+
+    expect(component.getResourceTypeTranslationKey(RegistryResourceType.Data)).toBe('resources.typeOptions.data');
+    expect(component.getResourceTypeTranslationKey(RegistryResourceType.Code)).toBe('resources.typeOptions.code');
+  });
+
+  it('should return empty string for unknown resource type', () => {
+    const { component } = setup();
+
+    expect(component.getResourceTypeTranslationKey('unknown')).toBe('');
+  });
 });
