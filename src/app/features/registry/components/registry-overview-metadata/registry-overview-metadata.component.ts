@@ -34,10 +34,10 @@ import {
   selector: 'osf-registry-overview-metadata',
   imports: [
     Button,
-    TranslatePipe,
-    TruncatedTextComponent,
     RouterLink,
     DatePipe,
+    TranslatePipe,
+    TruncatedTextComponent,
     ResourceCitationsComponent,
     ResourceDoiComponent,
     ResourceLicenseComponent,
@@ -87,11 +87,13 @@ export class RegistryOverviewMetadataComponent {
 
   constructor() {
     effect(() => {
-      if (this.registry()?.id) {
-        this.actions.getInstitutions(this.registry()!.id);
-        this.actions.getSubjects(this.registry()!.id, ResourceType.Registration);
-        this.actions.getLicense(this.registry()!.licenseId);
-        this.actions.getIdentifiers(this.registry()!.id);
+      const registry = this.registry();
+
+      if (registry?.id) {
+        this.actions.getInstitutions(registry.id);
+        this.actions.getSubjects(registry.id, ResourceType.Registration);
+        this.actions.getLicense(registry.licenseId);
+        this.actions.getIdentifiers(registry.id);
       }
     });
   }
@@ -101,7 +103,10 @@ export class RegistryOverviewMetadataComponent {
   }
 
   handleLoadMoreContributors(): void {
-    this.actions.loadMoreBibliographicContributors(this.registry()?.id, ResourceType.Registration);
+    const registryId = this.registry()?.id;
+    if (!registryId) return;
+
+    this.actions.loadMoreBibliographicContributors(registryId, ResourceType.Registration);
   }
 
   tagClicked(tag: string) {

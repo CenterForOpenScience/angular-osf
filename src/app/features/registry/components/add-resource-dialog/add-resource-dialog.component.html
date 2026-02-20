@@ -7,13 +7,12 @@
     @let resourceType = currentResource()?.type;
     @let iconName = resourceType === 'analytic_code' ? 'code' : resourceType;
     @let icon = `custom-icon-${iconName} icon-resource-size`;
-    @let resourceName = resourceType === RegistryResourceType.Code ? 'Analytic Code' : resourceType;
 
     <div class="flex align-content-end gap-3 content">
       <osf-icon class="align-self-start" [iconClass]="icon"></osf-icon>
       <div class="flex flex-column gap-3 mt-1">
         <div class="flex flex-column gap-2">
-          <h2>{{ resourceName }}</h2>
+          <h2>{{ resourceTypeTranslationKey() | translate }}</h2>
           <a class="font-bold" [href]="doiLink()" target="_blank" rel="noopener noreferrer">
             {{ doiLink() }}
           </a>

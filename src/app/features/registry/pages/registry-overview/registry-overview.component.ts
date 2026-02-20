@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Message } from 'primeng/message';
 
-import { map, of, switchMap, tap } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -28,13 +28,12 @@ import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { toCamelCase } from '@osf/shared/helpers/camel-case';
-import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
-import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
+import { GetBibliographicContributors } from '@osf/shared/stores/contributors';
 
 import { ArchivingMessageComponent } from '../../components/archiving-message/archiving-message.component';
 import { RegistrationOverviewToolbarComponent } from '../../components/registration-overview-toolbar/registration-overview-toolbar.component';
@@ -56,6 +55,7 @@ import {
 @Component({
   selector: 'osf-registry-overview',
   imports: [
+    Message,
     SubHeaderComponent,
     LoadingSpinnerComponent,
     RegistryOverviewMetadataComponent,
@@ -63,13 +63,12 @@ import {
     RegistryStatusesComponent,
     DataResourcesComponent,
     ArchivingMessageComponent,
-    TranslatePipe,
     WithdrawnMessageComponent,
-    Message,
-    DatePipe,
     ViewOnlyLinkMessageComponent,
     RegistrationOverviewToolbarComponent,
     RegistryBlocksSectionComponent,
+    DatePipe,
+    TranslatePipe,
   ],
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
@@ -94,39 +93,40 @@ export class RegistryOverviewComponent {
   readonly isSchemaBlocksLoading = select(RegistrySelectors.isSchemaBlocksLoading);
   readonly areReviewActionsLoading = select(RegistrySelectors.areReviewActionsLoading);
   readonly currentRevision = select(RegistrySelectors.getSchemaResponse);
-
-  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
-  isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
-  hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
-
-  readonly hasWriteAccess = select(RegistrySelectors.hasWriteAccess);
   readonly hasAdminAccess = select(RegistrySelectors.hasAdminAccess);
 
-  isModeration = false;
-  revisionId: string | null = null;
-  revisionInProgress: SchemaResponse | undefined;
-  selectedRevisionIndex = signal(0);
+  readonly selectedRevisionIndex = signal(0);
 
-  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
-  showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn);
-  isInitialState = computed(() => this.registry()?.reviewsState === RegistrationReviewStates.Initial);
-  canMakeDecision = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration);
+  private readonly queryParams = toSignal(this.route.queryParams);
+  readonly revisionId = computed(() => (this.queryParams()?.['revisionId'] as string) ?? null);
+  readonly isModeration = computed(() => this.queryParams()?.['mode'] === 'moderator');
+
+  readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
+  readonly showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn);
+  readonly isInitialState = computed(() => this.registry()?.reviewsState === RegistrationReviewStates.Initial);
+  readonly canMakeDecision = computed(
+    () => !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration()
+  );
 
   isRootRegistration = computed(() => {
     const rootId = this.registry()?.rootParentId;
     return !rootId || rootId === this.registry()?.id;
   });
 
-  private registryId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly revisionInProgress = computed(() => {
+    const responses = this.schemaResponses() || [];
+    return responses.find((r) => r.reviewsState === RevisionReviewStates.RevisionInProgress);
+  });
 
   readonly schemaResponse = computed(() => {
     const index = this.selectedRevisionIndex();
     const schemaResponses = this.schemaResponses() || [];
-
-    this.revisionInProgress = schemaResponses?.find((r) => r.reviewsState === RevisionReviewStates.RevisionInProgress);
-
     return index !== null ? schemaResponses[index] : null;
   });
+
+  private readonly registryId = toSignal(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
 
   private readonly actions = createDispatchMap({
     getRegistryById: GetRegistryById,
@@ -141,32 +141,21 @@ export class RegistryOverviewComponent {
   constructor() {
     effect(() => {
       const registry = this.registry();
-
-      if (registry?.id && !registry?.withdrawn) {
+      if (registry?.id && !registry.withdrawn) {
         this.actions.getSchemaBlocks(registry.registrationSchemaLink);
-        this.actions.getSchemaResponses(registry?.id);
+        this.actions.getSchemaResponses(registry.id);
       }
     });
 
     effect(() => {
-      if (this.registryId()) {
-        this.actions.getRegistryById(this.registryId());
-        this.actions.getBibliographicContributors(this.registryId(), ResourceType.Registration);
+      const id = this.registryId();
+      if (id) {
+        this.actions.getRegistryById(id);
+        this.actions.getBibliographicContributors(id, ResourceType.Registration);
       }
     });
 
     this.actions.getBookmarksId();
-
-    this.route.queryParams
-      .pipe(
-        takeUntilDestroyed(),
-        map((params) => ({ revisionId: params['revisionId'], mode: params['mode'] })),
-        tap(({ revisionId, mode }) => {
-          this.revisionId = revisionId;
-          this.isModeration = mode === 'moderator';
-        })
-      )
-      .subscribe();
   }
 
   openRevision(revisionIndex: number): void {
@@ -175,41 +164,34 @@ export class RegistryOverviewComponent {
 
   onUpdateRegistration(id: string): void {
     this.loaderService.show();
-
     this.actions
       .createSchemaResponse(id)
-      .pipe(
-        tap(() => {
-          this.revisionInProgress = this.currentRevision()!;
-          this.navigateToJustificationPage();
-        })
-      )
-      .subscribe();
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          const revisionId = this.currentRevision()?.id;
+          if (revisionId) {
+            this.router.navigate([`/registries/revisions/${revisionId}/justification`]);
+          }
+        },
+      });
   }
 
   onContinueUpdateRegistration(): void {
-    const unapproved = this.revisionInProgress?.reviewsState === RevisionReviewStates.Unapproved;
-
+    const unapproved = this.revisionInProgress()?.reviewsState === RevisionReviewStates.Unapproved;
     if (unapproved) {
-      this.navigateToJustificationReview();
+      this.navigateToRevision('review');
     } else {
-      this.navigateToJustificationPage();
+      this.navigateToRevision('justification');
     }
   }
 
-  private navigateToJustificationPage(): void {
-    const revisionId = this.revisionId || this.revisionInProgress?.id;
-    this.router.navigate([`/registries/revisions/${revisionId}/justification`]);
-  }
+  handleOpenMakeDecisionDialog(): void {
+    const registryId = this.registry()?.id;
+    if (!registryId) return;
 
-  private navigateToJustificationReview(): void {
-    const revisionId = this.revisionId || this.revisionInProgress?.id;
-    this.router.navigate([`/registries/revisions/${revisionId}/review`]);
-  }
-
-  handleOpenMakeDecisionDialog() {
     this.actions
-      .getRegistryReviewActions(this.registry()?.id || '')
+      .getRegistryReviewActions(registryId)
       .pipe(
         switchMap(() =>
           this.customDialogService
@@ -218,11 +200,12 @@ export class RegistryOverviewComponent {
               width: '600px',
               data: {
                 registry: this.registry(),
-                revisionId: this.revisionId,
+                revisionId: this.revisionId(),
               },
             })
             .onClose.pipe(takeUntilDestroyed(this.destroyRef))
-        )
+        ),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((data) => {
         if (data) {
@@ -236,8 +219,14 @@ export class RegistryOverviewComponent {
             this.router.navigateByUrl(currentUrl);
           });
 
-          this.actions.getRegistryById(this.registry()?.id || '');
+          this.actions.getRegistryById(registryId);
         }
       });
+  }
+
+  private navigateToRevision(page: 'justification' | 'review'): void {
+    const revisionId = this.revisionId() || this.revisionInProgress()?.id;
+    if (!revisionId) return;
+    this.router.navigate([`/registries/revisions/${revisionId}/${page}`]);
   }
 }

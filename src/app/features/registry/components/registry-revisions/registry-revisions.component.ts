@@ -33,15 +33,25 @@ export class RegistryRevisionsComponent {
   readonly continueUpdate = output<void>();
   readonly RevisionReviewStates = RevisionReviewStates;
 
-  unApprovedRevisionId: string | null = null;
+  readonly registryInProgress = computed(
+    () => this.registry()?.revisionState === RevisionReviewStates.RevisionInProgress
+  );
+
+  readonly registryApproved = computed(() => this.registry()?.revisionState === RevisionReviewStates.Approved);
+
+  readonly registryAcceptedUnapproved = computed(
+    () =>
+      this.registry()?.revisionState === RevisionReviewStates.Unapproved &&
+      this.registry()?.reviewsState === RegistrationReviewStates.Accepted
+  );
+
+  readonly unApprovedRevisionId = computed(() => {
+    if (!this.registryAcceptedUnapproved()) return null;
+    return this.schemaResponses()?.find((r) => r.reviewsState === RevisionReviewStates.Unapproved)?.id ?? null;
+  });
 
   revisions = computed(() => {
     let schemaResponses = this.schemaResponses() || [];
-
-    if (this.registryAcceptedUnapproved) {
-      this.unApprovedRevisionId =
-        schemaResponses.find((response) => response.reviewsState === RevisionReviewStates.Unapproved)?.id || null;
-    }
 
     schemaResponses = this.isModeration()
       ? schemaResponses
@@ -64,21 +74,6 @@ export class RegistryRevisionsComponent {
       };
     });
   });
-
-  get registryInProgress(): boolean {
-    return this.registry()?.revisionState === RevisionReviewStates.RevisionInProgress;
-  }
-
-  get registryApproved(): boolean {
-    return this.registry()?.revisionState === RevisionReviewStates.Approved;
-  }
-
-  get registryAcceptedUnapproved(): boolean {
-    return (
-      this.registry()?.revisionState === RevisionReviewStates.Unapproved &&
-      this.registry()?.reviewsState === RegistrationReviewStates.Accepted
-    );
-  }
 
   emitOpenRevision(index: number) {
     this.openRevision.emit(index);

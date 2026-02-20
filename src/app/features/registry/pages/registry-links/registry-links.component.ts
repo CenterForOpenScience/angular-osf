@@ -2,9 +2,10 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { tap } from 'rxjs';
+import { finalize, map, of, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
@@ -17,17 +18,20 @@ import { GetLinkedNodes, GetLinkedRegistrations, RegistryLinksSelectors } from '
 
 @Component({
   selector: 'osf-registry-links',
-  imports: [SubHeaderComponent, TranslatePipe, LoadingSpinnerComponent, RegistrationLinksCardComponent],
+  imports: [SubHeaderComponent, LoadingSpinnerComponent, RegistrationLinksCardComponent, TranslatePipe],
   templateUrl: './registry-links.component.html',
   styleUrl: './registry-links.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistryLinksComponent implements OnInit {
+export class RegistryLinksComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly loaderService = inject(LoaderService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  private registryId = signal('');
+  private readonly registryId = toSignal<string | undefined>(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
 
   actions = createDispatchMap({
     getLinkedNodes: GetLinkedNodes,
@@ -43,16 +47,18 @@ export class RegistryLinksComponent implements OnInit {
 
   schemaResponse = select(RegistriesSelectors.getSchemaResponse);
 
-  ngOnInit(): void {
-    this.registryId.set(this.route.parent?.parent?.snapshot.params['id']);
+  constructor() {
+    effect(() => {
+      const registryId = this.registryId();
 
-    if (this.registryId()) {
-      this.actions.getLinkedNodes(this.registryId());
-      this.actions.getLinkedRegistrations(this.registryId());
-    }
+      if (registryId) {
+        this.actions.getLinkedNodes(registryId);
+        this.actions.getLinkedRegistrations(registryId);
+      }
+    });
   }
 
-  navigateToRegistrations(id: string): void {
+  navigateToOverview(id: string): void {
     this.router.navigate([id, 'overview']);
   }
 
@@ -61,20 +67,18 @@ export class RegistryLinksComponent implements OnInit {
     this.actions
       .getSchemaResponse(id)
       .pipe(
-        tap(() => {
-          this.loaderService.hide();
-          this.navigateToJustificationPage();
-        })
+        tap(() => this.navigateToJustificationPage()),
+        finalize(() => this.loaderService.hide()),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
-  navigateToNodes(id: string): void {
-    this.router.navigate([id, 'overview']);
-  }
-
   private navigateToJustificationPage(): void {
     const revisionId = this.schemaResponse()?.id;
-    this.router.navigate([`/registries/revisions/${revisionId}/justification`]);
+
+    if (revisionId) {
+      this.router.navigate([`/registries/revisions/${revisionId}/justification`]);
+    }
   }
 }

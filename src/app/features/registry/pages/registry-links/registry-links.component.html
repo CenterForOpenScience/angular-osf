@@ -19,7 +19,7 @@
         <div class="flex flex-column gap-4">
           @for (node of linkedNodes(); track node.id) {
             <osf-registration-links-card
-              (reviewEmitRegistrationData)="navigateToNodes($event)"
+              (reviewEmitRegistrationData)="navigateToOverview($event)"
               [registrationData]="node"
             />
           }
@@ -44,7 +44,7 @@
         <div class="flex flex-column gap-4">
           @for (registration of linkedRegistrations(); track registration.id) {
             <osf-registration-links-card
-              (reviewEmitRegistrationData)="navigateToRegistrations($event)"
+              (reviewEmitRegistrationData)="navigateToOverview($event)"
               (updateEmitRegistrationData)="updateRegistration($event)"
               [registrationData]="registration"
             />
