@@ -65,6 +65,15 @@ export class AddResourceDialogComponent {
 
   readonly RegistryResourceType = RegistryResourceType;
 
+  readonly resourceTypeTranslationKey = computed(() => {
+    const type = this.currentResource()?.type;
+    const options = this.resourceOptions();
+
+    if (!type || !options.length) return '';
+
+    return options.find((opt) => opt.value === type)?.label ?? '';
+  });
+
   previewResource(): void {
     if (this.form.invalid) {
       return;

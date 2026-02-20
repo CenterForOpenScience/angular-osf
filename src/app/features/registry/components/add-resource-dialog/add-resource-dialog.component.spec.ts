@@ -8,7 +8,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
 
+import { RegistryResource } from '../../models';
 import { RegistryResourcesSelectors } from '../../store/registry-resources';
 import { ResourceFormComponent } from '../resource-form/resource-form.component';
 
@@ -18,7 +20,13 @@ import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.m
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
-const MOCK_RESOURCE = { id: 'res-1', description: 'Test', finalized: false, type: 'data', pid: '10.1234/test' };
+const MOCK_RESOURCE: RegistryResource = {
+  id: 'res-1',
+  description: 'Test',
+  finalized: false,
+  type: RegistryResourceType.Data,
+  pid: '10.1234/test',
+};
 
 interface SetupOverrides {
   registryId?: string;
@@ -189,5 +197,28 @@ describe('AddResourceDialogComponent', () => {
     });
 
     expect(component.doiLink()).toBe('https://doi.org/10.1234/test');
+  });
+
+  it('should return empty string for resourceTypeTranslationKey when currentResource is null', () => {
+    const { component } = setup();
+
+    expect(component.resourceTypeTranslationKey()).toBe('');
+  });
+
+  it('should return translation key for resourceTypeTranslationKey when resource type matches', () => {
+    const { component } = setup({
+      selectorOverrides: [{ selector: RegistryResourcesSelectors.getCurrentResource, value: MOCK_RESOURCE }],
+    });
+
+    expect(component.resourceTypeTranslationKey()).toBe('resources.typeOptions.data');
+  });
+
+  it('should return empty string for resourceTypeTranslationKey when type is unknown', () => {
+    const unknownResource = { ...MOCK_RESOURCE, type: 'unknown_type' as RegistryResourceType };
+    const { component } = setup({
+      selectorOverrides: [{ selector: RegistryResourcesSelectors.getCurrentResource, value: unknownResource }],
+    });
+
+    expect(component.resourceTypeTranslationKey()).toBe('');
   });
 });
