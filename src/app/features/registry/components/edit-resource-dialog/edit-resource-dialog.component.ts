@@ -2,8 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { finalize, take } from 'rxjs';
-
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -16,7 +14,7 @@ import { ResourceFormComponent } from '../resource-form/resource-form.component'
 
 @Component({
   selector: 'osf-edit-resource-dialog',
-  imports: [LoadingSpinnerComponent, ReactiveFormsModule, ResourceFormComponent],
+  imports: [ReactiveFormsModule, LoadingSpinnerComponent, ResourceFormComponent],
   templateUrl: './edit-resource-dialog.component.html',
   styleUrl: './edit-resource-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +23,7 @@ export class EditResourceDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly isCurrentResourceLoading = select(RegistryResourcesSelectors.isCurrentResourceLoading);
 
-  private dialogConfig = inject(DynamicDialogConfig);
+  private readonly dialogConfig = inject(DynamicDialogConfig);
   private registryId: string = this.dialogConfig.data.id;
   private resource: RegistryResource = this.dialogConfig.data.resource as RegistryResource;
 
@@ -58,12 +56,6 @@ export class EditResourceDialogComponent {
 
     this.actions
       .updateResource(this.registryId, this.resource.id, addResource)
-      .pipe(
-        take(1),
-        finalize(() => {
-          this.dialogRef.close(true);
-        })
-      )
-      .subscribe();
+      .subscribe(() => this.dialogRef.close(true));
   }
 }

@@ -72,7 +72,7 @@
               <osf-registry-statuses
                 [registry]="registry()"
                 [canEdit]="hasAdminAccess()"
-                [isModeration]="isModeration"
+                [isModeration]="isModeration()"
               ></osf-registry-statuses>
 
               <osf-registry-revisions
@@ -82,7 +82,7 @@
                 (openRevision)="openRevision($event)"
                 (updateRegistration)="onUpdateRegistration($event)"
                 (continueUpdate)="onContinueUpdateRegistration()"
-                [isModeration]="isModeration"
+                [isModeration]="isModeration()"
                 [isSubmitting]="isSchemaResponsesLoading()"
                 [canEdit]="hasAdminAccess()"
               >

@@ -9,7 +9,7 @@
           styleClass="text-lg"
           link
           [label]="registrationData().title || 'project.registrations.card.noTitle' | translate"
-          (click)="reviewEmitRegistrationData.emit(registrationData()!.id)"
+          (onClick)="reviewEmitRegistrationData.emit(registrationData()!.id)"
         ></p-button>
       </div>
       <div class="flex flex-wrap flex-column lg:flex-nowrap lg:flex-row justify-content-between gap-5">
@@ -82,17 +82,13 @@
             <p-button
               severity="primary"
               [label]="'common.buttons.view' | translate"
-              (click)="reviewEmitRegistrationData.emit(registrationData()!.id)"
+              (onClick)="reviewEmitRegistrationData.emit(registrationData()!.id)"
             ></p-button>
 
-            @if (
-              registrationDataTyped() &&
-              registrationDataTyped()?.currentUserPermissions &&
-              registrationDataTyped()!.currentUserPermissions.length > 1
-            ) {
+            @if (hasWriteAccess()) {
               <p-button
                 severity="secondary"
-                (click)="updateEmitRegistrationData.emit(registrationData().id)"
+                (onClick)="updateEmitRegistrationData.emit(registrationData().id)"
                 [label]="'common.buttons.update' | translate"
               ></p-button>
             }

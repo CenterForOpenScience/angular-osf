@@ -1,11 +1,11 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { finalize, take } from 'rxjs';
+import { finalize } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -38,7 +38,6 @@ export class AddResourceDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
   readonly isCurrentResourceLoading = select(RegistryResourcesSelectors.isCurrentResourceLoading);
-  private readonly translateService = inject(TranslateService);
 
   private dialogConfig = inject(DynamicDialogConfig);
   private registryId: string = this.dialogConfig.data.id;
@@ -61,8 +60,8 @@ export class AddResourceDialogComponent {
     deleteResource: SilentDelete,
   });
 
-  public resourceOptions = signal<SelectOption[]>(resourceTypeOptions);
-  public isPreviewMode = signal<boolean>(false);
+  resourceOptions = signal<SelectOption[]>(resourceTypeOptions);
+  isPreviewMode = signal<boolean>(false);
 
   readonly RegistryResourceType = RegistryResourceType;
 
@@ -79,7 +78,7 @@ export class AddResourceDialogComponent {
 
     const currentResource = this.currentResource();
     if (!currentResource) {
-      throw new Error(this.translateService.instant('resources.errors.noCurrentResource'));
+      return;
     }
 
     this.actions.previewResource(currentResource.id, addResource).subscribe(() => this.isPreviewMode.set(true));
@@ -94,28 +93,23 @@ export class AddResourceDialogComponent {
     const currentResource = this.currentResource();
 
     if (!currentResource) {
-      throw new Error(this.translateService.instant('resources.errors.noRegistryId'));
+      return;
     }
 
     this.isResourceConfirming.set(true);
     this.actions
       .confirmAddResource(addResource, currentResource.id, this.registryId)
-      .pipe(
-        take(1),
-        finalize(() => {
-          this.dialogRef.close(true);
-          this.isResourceConfirming.set(false);
-        })
-      )
-      .subscribe({});
+      .pipe(finalize(() => this.isResourceConfirming.set(false)))
+      .subscribe(() => this.dialogRef.close(true));
   }
 
   closeDialog(): void {
-    this.dialogRef.close();
     const currentResource = this.currentResource();
 
     if (currentResource) {
       this.actions.deleteResource(currentResource.id);
     }
+
+    this.dialogRef.close();
   }
 }

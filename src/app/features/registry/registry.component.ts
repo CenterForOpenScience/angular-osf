@@ -63,17 +63,19 @@ export class RegistryComponent implements OnDestroy {
     getIdentifiers: GetRegistryIdentifiers,
   });
 
-  private registryId = toSignal(this.route.params.pipe(map((params) => params['id'])));
-  readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
-  readonly registry = select(RegistrySelectors.getRegistry);
-  readonly isRegistryLoading = select(RegistrySelectors.isRegistryLoading);
-  readonly identifiersForDatacite$ = toObservable(select(RegistrySelectors.getIdentifiers)).pipe(
+  private readonly registryId = toSignal(this.route.params.pipe(map((params) => params['id'])));
+  private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
+  private readonly registry = select(RegistrySelectors.getRegistry);
+  private readonly isRegistryLoading = select(RegistrySelectors.isRegistryLoading);
+  private readonly identifiersForDatacite$ = toObservable(select(RegistrySelectors.getIdentifiers)).pipe(
     map((identifiers) => (identifiers?.length ? { identifiers } : null))
   );
-  readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
-  readonly isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
-  readonly license = select(RegistrySelectors.getLicense);
-  readonly isLicenseLoading = select(RegistrySelectors.isLicenseLoading);
+  private readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  private readonly isBibliographicContributorsLoading = select(
+    ContributorsSelectors.isBibliographicContributorsLoading
+  );
+  private readonly license = select(RegistrySelectors.getLicense);
+  private readonly isLicenseLoading = select(RegistrySelectors.isLicenseLoading);
 
   private readonly lastMetaTagsRegistryId = signal<string | null>(null);
 
@@ -118,10 +120,10 @@ export class RegistryComponent implements OnDestroy {
 
     this.router.events
       .pipe(
-        filter((event) => event instanceof NavigationEnd),
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((event: NavigationEnd) => {
+      .subscribe((event) => {
         this.analyticsService.sendCountedUsageForRegistrationAndProjects(
           event.urlAfterRedirects,
           this.currentResource()

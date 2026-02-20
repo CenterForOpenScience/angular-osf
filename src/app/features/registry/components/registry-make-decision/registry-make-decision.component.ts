@@ -8,12 +8,10 @@ import { Message } from 'primeng/message';
 import { RadioButton } from 'primeng/radiobutton';
 import { Textarea } from 'primeng/textarea';
 
-import { tap } from 'rxjs';
-
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
@@ -29,95 +27,64 @@ import { RegistrySelectors, SubmitDecision } from '../../store/registry';
 
 @Component({
   selector: 'osf-registry-make-decision',
-  imports: [
-    Button,
-    TranslatePipe,
-    DateAgoPipe,
-    FormsModule,
-    RadioButton,
-    ReactiveFormsModule,
-    Textarea,
-    DatePipe,
-    Message,
-  ],
+  imports: [Button, RadioButton, Textarea, Message, ReactiveFormsModule, TranslatePipe, DateAgoPipe, DatePipe],
   templateUrl: './registry-make-decision.component.html',
   styleUrl: './registry-make-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistryMakeDecisionComponent {
-  private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly config = inject(DynamicDialogConfig);
 
-  readonly config = inject(DynamicDialogConfig);
   readonly dialogRef = inject(DynamicDialogRef);
 
   readonly ReviewActionTrigger = ReviewActionTrigger;
-  readonly SchemaResponseActionTrigger = SchemaResponseActionTrigger;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
   readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
-  reviewActions = select(RegistrySelectors.getReviewActions);
-
-  isSubmitting = select(RegistrySelectors.isReviewActionSubmitting);
-  requestForm!: FormGroup;
-
-  actions = createDispatchMap({ submitDecision: SubmitDecision });
-
-  registry = this.config.data.registry as RegistrationOverviewModel;
-  embargoEndDate = this.registry.embargoEndDate;
-
-  RevisionReviewStates = RevisionReviewStates;
-  RegistrationReviewStates = RegistrationReviewStates;
-
-  decisionCommentLimit = InputLimits.decisionComment.maxLength;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  readonly decisionCommentLimit = InputLimits.decisionComment.maxLength;
 
-  get isPendingModeration(): boolean {
-    return this.registry.revisionState === RevisionReviewStates.RevisionPendingModeration;
-  }
+  readonly reviewActions = select(RegistrySelectors.getReviewActions);
+  readonly isSubmitting = select(RegistrySelectors.isReviewActionSubmitting);
 
-  get isPendingReview(): boolean {
-    return this.registry.reviewsState === RegistrationReviewStates.Pending;
-  }
+  private readonly actions = createDispatchMap({ submitDecision: SubmitDecision });
 
-  get isPendingWithdrawal(): boolean {
-    return this.registry.reviewsState === RegistrationReviewStates.PendingWithdraw;
-  }
+  readonly registry = this.config.data.registry as RegistrationOverviewModel;
+  readonly embargoEndDate = this.registry.embargoEndDate;
 
-  get canWithdraw(): boolean {
-    return (
-      this.registry.reviewsState === RegistrationReviewStates.Accepted &&
-      this.registry.revisionState === RevisionReviewStates.Approved
-    );
-  }
+  readonly isPendingModeration = this.registry.revisionState === RevisionReviewStates.RevisionPendingModeration;
+
+  readonly isPendingReview = this.registry.reviewsState === RegistrationReviewStates.Pending;
+
+  readonly isPendingWithdrawal = this.registry.reviewsState === RegistrationReviewStates.PendingWithdraw;
+
+  readonly canWithdraw =
+    this.registry.reviewsState === RegistrationReviewStates.Accepted &&
+    this.registry.revisionState === RevisionReviewStates.Approved;
+
+  readonly acceptValue = this.isPendingReview
+    ? ReviewActionTrigger.AcceptSubmission
+    : this.isPendingWithdrawal
+      ? ReviewActionTrigger.AcceptWithdrawal
+      : SchemaResponseActionTrigger.AcceptRevision;
+
+  readonly rejectValue = this.isPendingReview
+    ? ReviewActionTrigger.RejectSubmission
+    : this.isPendingWithdrawal
+      ? ReviewActionTrigger.RejectWithdrawal
+      : SchemaResponseActionTrigger.RejectRevision;
+
+  readonly requestForm = new FormGroup({
+    [ModerationDecisionFormControls.Action]: new FormControl('', [Validators.required]),
+    [ModerationDecisionFormControls.Comment]: new FormControl('', [Validators.maxLength(this.decisionCommentLimit)]),
+  });
+
   get isCommentInvalid(): boolean {
-    return (
-      this.requestForm.controls[ModerationDecisionFormControls.Comment].errors?.['required'] &&
-      (this.requestForm.controls[ModerationDecisionFormControls.Comment].touched ||
-        this.requestForm.controls[ModerationDecisionFormControls.Comment].dirty)
-    );
-  }
-
-  get acceptValue(): string {
-    if (this.isPendingReview) {
-      return ReviewActionTrigger.AcceptSubmission;
-    } else if (this.isPendingWithdrawal) {
-      return ReviewActionTrigger.AcceptWithdrawal;
-    }
-    return SchemaResponseActionTrigger.AcceptRevision;
-  }
-
-  get rejectValue(): string {
-    if (this.isPendingReview) {
-      return ReviewActionTrigger.RejectSubmission;
-    } else if (this.isPendingWithdrawal) {
-      return ReviewActionTrigger.RejectWithdrawal;
-    }
-    return SchemaResponseActionTrigger.RejectRevision;
+    const comment = this.requestForm.controls[ModerationDecisionFormControls.Comment];
+    return comment.errors?.['required'] && (comment.touched || comment.dirty);
   }
 
   constructor() {
-    this.initForm();
-
     this.requestForm
       .get(ModerationDecisionFormControls.Action)
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
@@ -132,16 +99,16 @@ export class RegistryMakeDecisionComponent {
       .submitDecision(
         {
           targetId: revisionId ? revisionId : this.registry.id,
-          action: this.requestForm.value[ModerationDecisionFormControls.Action],
-          comment: this.requestForm.value[ModerationDecisionFormControls.Comment],
+          action: this.requestForm.value[ModerationDecisionFormControls.Action] ?? '',
+          comment: this.requestForm.value[ModerationDecisionFormControls.Comment] ?? '',
         },
         !!revisionId
       )
-      .pipe(tap(() => this.dialogRef.close(this.requestForm.value)))
-      .subscribe();
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.dialogRef.close(this.requestForm.value));
   }
 
-  isCommentRequired(action: string): boolean {
+  isCommentRequired(action: string | null): boolean {
     return (
       action === ReviewActionTrigger.RejectSubmission ||
       action === SchemaResponseActionTrigger.RejectRevision ||
@@ -150,7 +117,7 @@ export class RegistryMakeDecisionComponent {
     );
   }
 
-  private updateCommentValidators(action: string): void {
+  private updateCommentValidators(action: string | null): void {
     const commentControl = this.requestForm.get(ModerationDecisionFormControls.Comment);
     if (commentControl) {
       if (this.isCommentRequired(action)) {
@@ -161,12 +128,5 @@ export class RegistryMakeDecisionComponent {
       commentControl.updateValueAndValidity();
     }
     this.requestForm.updateValueAndValidity();
-  }
-
-  private initForm(): void {
-    this.requestForm = this.fb.group({
-      [ModerationDecisionFormControls.Action]: new FormControl('', [Validators.required]),
-      [ModerationDecisionFormControls.Comment]: new FormControl('', [Validators.maxLength(this.decisionCommentLimit)]),
-    });
   }
 }

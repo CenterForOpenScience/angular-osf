@@ -12,7 +12,7 @@
 
   <osf-form-select
     [fullWidth]="true"
-    [options]="resourceOptions()"
+    [options]="resourceOptions"
     [appendTo]="'body'"
     [control]="getControl('resourceType')"
     [placeholder]="'resources.selectAResourceType'"
@@ -41,8 +41,8 @@
     }
     <p-button
       class="btn-full-width"
+      type="submit"
       [label]="primaryButtonLabel() | translate"
-      (onClick)="handleSubmit()"
       [disabled]="formGroup().invalid"
     />
   </div>

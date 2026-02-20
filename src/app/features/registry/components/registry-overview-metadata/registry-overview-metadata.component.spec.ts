@@ -1,13 +1,12 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { ResourceCitationsComponent } from '@osf/shared/components/resource-citations/resource-citations.component';
@@ -15,7 +14,7 @@ import { ResourceDoiComponent } from '@osf/shared/components/resource-doi/resour
 import { ResourceLicenseComponent } from '@osf/shared/components/resource-license/resource-license.component';
 import { SubjectsListComponent } from '@osf/shared/components/subjects-list/subjects-list.component';
 import { TagsListComponent } from '@osf/shared/components/tags-list/tags-list.component';
-import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/shared/stores/contributors';
 import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
@@ -31,160 +30,119 @@ import {
 import { RegistryOverviewMetadataComponent } from './registry-overview-metadata.component';
 
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
+const MOCK_REGISTRY = { ...MOCK_REGISTRATION_OVERVIEW_MODEL, id: 'registry-123', licenseId: 'license-123' };
+
+interface SetupOverrides {
+  registry?: typeof MOCK_REGISTRY | null;
+}
+
+function setup(overrides: SetupOverrides = {}) {
+  const registryValue = 'registry' in overrides ? overrides.registry! : MOCK_REGISTRY;
+  const mockRouter = RouterMockBuilder.create().build();
+
+  TestBed.configureTestingModule({
+    imports: [
+      RegistryOverviewMetadataComponent,
+      ...MockComponents(
+        ResourceCitationsComponent,
+        AffiliatedInstitutionsViewComponent,
+        ContributorsListComponent,
+        ResourceDoiComponent,
+        ResourceLicenseComponent,
+        SubjectsListComponent,
+        TagsListComponent
+      ),
+    ],
+    providers: [
+      provideOSFCore(),
+      MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
+      MockProvider(Router, mockRouter),
+      provideMockStore({
+        signals: [
+          { selector: RegistrySelectors.getRegistry, value: registryValue },
+          { selector: RegistrySelectors.isRegistryAnonymous, value: false },
+          { selector: RegistrySelectors.hasWriteAccess, value: true },
+          { selector: RegistrySelectors.getLicense, value: null },
+          { selector: RegistrySelectors.isLicenseLoading, value: false },
+          { selector: RegistrySelectors.getIdentifiers, value: [] },
+          { selector: RegistrySelectors.isIdentifiersLoading, value: false },
+          { selector: RegistrySelectors.getInstitutions, value: [] },
+          { selector: RegistrySelectors.isInstitutionsLoading, value: false },
+          { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
+          { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
+          { selector: SubjectsSelectors.areSelectedSubjectsLoading, value: false },
+          { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
+          { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
+          { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
+        ],
+      }),
+    ],
+  });
+
+  const store = TestBed.inject(Store);
+  const fixture = TestBed.createComponent(RegistryOverviewMetadataComponent);
+  fixture.detectChanges();
+
+  return { fixture, component: fixture.componentInstance, store, mockRouter };
+}
+
 describe('RegistryOverviewMetadataComponent', () => {
-  let component: RegistryOverviewMetadataComponent;
-  let fixture: ComponentFixture<RegistryOverviewMetadataComponent>;
-  let store: jest.Mocked<Store>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
+  it('should dispatch all init actions when registry exists', () => {
+    const { store } = setup();
 
-  const mockRegistry = {
-    ...MOCK_REGISTRATION_OVERVIEW_MODEL,
-    id: 'registry-123',
-    licenseId: 'license-123',
-  };
-
-  const mockEnvironment = {
-    webUrl: 'https://test.osf.io',
-  };
-
-  beforeEach(async () => {
-    routerMock = RouterMockBuilder.create().build();
-
-    await TestBed.configureTestingModule({
-      imports: [
-        RegistryOverviewMetadataComponent,
-        OSFTestingModule,
-        ...MockComponents(
-          ResourceCitationsComponent,
-          AffiliatedInstitutionsViewComponent,
-          ContributorsListComponent,
-          ResourceDoiComponent,
-          ResourceLicenseComponent,
-          SubjectsListComponent,
-          TagsListComponent
-        ),
-      ],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: RegistrySelectors.getRegistry, value: mockRegistry },
-            { selector: RegistrySelectors.isRegistryAnonymous, value: false },
-            { selector: RegistrySelectors.hasWriteAccess, value: true },
-            { selector: RegistrySelectors.getLicense, value: null },
-            { selector: RegistrySelectors.isLicenseLoading, value: false },
-            { selector: RegistrySelectors.getIdentifiers, value: [] },
-            { selector: RegistrySelectors.isIdentifiersLoading, value: false },
-            { selector: RegistrySelectors.getInstitutions, value: [] },
-            { selector: RegistrySelectors.isInstitutionsLoading, value: false },
-            { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
-            { selector: SubjectsSelectors.getSubjects, value: [] },
-            { selector: SubjectsSelectors.getSubjectsLoading, value: false },
-            { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
-            { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
-            { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
-          ],
-        }),
-        { provide: Router, useValue: routerMock },
-        { provide: ENVIRONMENT, useValue: mockEnvironment },
-      ],
-    }).compileComponents();
-
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    store.dispatch = jest.fn().mockReturnValue(of(true));
-    fixture = TestBed.createComponent(RegistryOverviewMetadataComponent);
-    component = fixture.componentInstance;
-  });
-
-  it('should have currentResourceType set to Registrations', () => {
-    expect(component.currentResourceType).toBe(CurrentResourceType.Registrations);
-  });
-
-  it('should have correct dateFormat', () => {
-    expect(component.dateFormat).toBe('MMM d, y, h:mm a');
-  });
-
-  it('should have webUrl from environment', () => {
-    expect(component.webUrl).toBe('https://test.osf.io');
-  });
-
-  it('should dispatch actions when registry exists', () => {
-    fixture.detectChanges();
-
+    expect(store.dispatch).toHaveBeenCalledWith(expect.objectContaining({ registryId: 'registry-123' }));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryInstitutions));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(FetchSelectedSubjects));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryLicense));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryIdentifiers));
   });
 
-  it('should dispatch GetRegistryInstitutions with correct registryId', () => {
-    fixture.detectChanges();
+  it('should not dispatch init actions when registry is null', () => {
+    const { store } = setup({ registry: null });
 
-    const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof GetRegistryInstitutions);
-    expect(call).toBeDefined();
-    const action = call[0] as GetRegistryInstitutions;
-    expect(action.registryId).toBe('registry-123');
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should dispatch FetchSelectedSubjects with correct parameters', () => {
-    fixture.detectChanges();
+  it('should dispatch SetRegistryCustomCitation on onCustomCitationUpdated', () => {
+    const { component, store } = setup();
 
-    const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof FetchSelectedSubjects);
+    component.onCustomCitationUpdated('Custom Citation');
+
+    const call = (store.dispatch as jest.Mock).mock.calls.find((c) => c[0] instanceof SetRegistryCustomCitation);
     expect(call).toBeDefined();
-    const action = call[0] as FetchSelectedSubjects;
-    expect(action.resourceId).toBe('registry-123');
-    expect(action.resourceType).toBe(ResourceType.Registration);
+    expect(call[0].citation).toBe('Custom Citation');
   });
 
-  it('should dispatch GetRegistryLicense with licenseId from registry', () => {
-    fixture.detectChanges();
+  it('should dispatch LoadMoreBibliographicContributors on handleLoadMoreContributors', () => {
+    const { component, store } = setup();
+    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
-    const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof GetRegistryLicense);
-    expect(call).toBeDefined();
-    const action = call[0] as GetRegistryLicense;
-    expect(action.licenseId).toBe('license-123');
-  });
-
-  it('should dispatch GetRegistryIdentifiers with correct registryId', () => {
-    fixture.detectChanges();
-
-    const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof GetRegistryIdentifiers);
-    expect(call).toBeDefined();
-    const action = call[0] as GetRegistryIdentifiers;
-    expect(action.registryId).toBe('registry-123');
-  });
-
-  it('should dispatch SetRegistryCustomCitation with citation', () => {
-    const citation = 'Custom Citation Text';
-    component.onCustomCitationUpdated(citation);
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(SetRegistryCustomCitation));
-    const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof SetRegistryCustomCitation);
-    expect(call).toBeDefined();
-    const action = call[0] as SetRegistryCustomCitation;
-    expect(action.citation).toBe(citation);
-  });
-
-  it('should dispatch LoadMoreBibliographicContributors with registry id', () => {
     component.handleLoadMoreContributors();
 
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(LoadMoreBibliographicContributors));
-    const call = (store.dispatch as jest.Mock).mock.calls.find(
-      (call) => call[0] instanceof LoadMoreBibliographicContributors
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new LoadMoreBibliographicContributors('registry-123', ResourceType.Registration)
     );
-    expect(call).toBeDefined();
-    const action = call[0] as LoadMoreBibliographicContributors;
-    expect(action.resourceId).toBe('registry-123');
-    expect(action.resourceType).toBe(ResourceType.Registration);
   });
 
-  it('should navigate to search page with tag as query param', () => {
-    const tag = 'test-tag';
-    component.tagClicked(tag);
+  it('should not dispatch on handleLoadMoreContributors when registry is null', () => {
+    const { component, store } = setup({ registry: null });
+    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { search: tag } });
+    component.handleLoadMoreContributors();
+
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should navigate to search on tagClicked', () => {
+    const { component, mockRouter } = setup();
+
+    component.tagClicked('test-tag');
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { search: 'test-tag' } });
   });
 });

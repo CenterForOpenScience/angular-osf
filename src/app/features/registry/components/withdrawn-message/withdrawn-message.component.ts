@@ -13,7 +13,7 @@ import { ShortRegistrationInfoComponent } from '../short-registration-info/short
 
 @Component({
   selector: 'osf-withdrawn-message',
-  imports: [TranslatePipe, Divider, ShortRegistrationInfoComponent, IconComponent, Card, DatePipe],
+  imports: [Card, Divider, ShortRegistrationInfoComponent, IconComponent, DatePipe, TranslatePipe],
   templateUrl: './withdrawn-message.component.html',
   styleUrl: './withdrawn-message.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

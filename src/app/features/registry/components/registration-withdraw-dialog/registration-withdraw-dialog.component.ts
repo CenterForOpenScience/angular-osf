@@ -5,9 +5,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { finalize, take } from 'rxjs';
+import { finalize } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { WithdrawRegistration } from '@osf/features/registry/store/registry';
@@ -17,7 +17,7 @@ import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.hel
 
 @Component({
   selector: 'osf-registration-withdraw-dialog',
-  imports: [TranslatePipe, TextInputComponent, Button],
+  imports: [Button, TextInputComponent, TranslatePipe],
   templateUrl: './registration-withdraw-dialog.component.html',
   styleUrl: './registration-withdraw-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,22 +32,16 @@ export class RegistrationWithdrawDialogComponent {
   });
   readonly inputLimits = InputLimits;
 
-  submitting = false;
+  readonly submitting = signal(false);
 
   withdrawRegistration(): void {
     const registryId = this.config.data.registryId;
-    if (registryId) {
-      this.submitting = true;
-      this.actions
-        .withdrawRegistration(registryId, this.form.controls.text.value ?? '')
-        .pipe(
-          take(1),
-          finalize(() => {
-            this.submitting = false;
-            this.dialogRef.close();
-          })
-        )
-        .subscribe();
-    }
+    if (!registryId) return;
+
+    this.submitting.set(true);
+    this.actions
+      .withdrawRegistration(registryId, this.form.controls.text.value ?? '')
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe(() => this.dialogRef.close());
   }
 }

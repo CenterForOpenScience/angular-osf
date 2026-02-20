@@ -2,7 +2,10 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { map, of } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
@@ -17,21 +20,23 @@ import { GetRegistryComponents, RegistryComponentsSelectors } from '../../store/
   selector: 'osf-registry-components',
   imports: [
     SubHeaderComponent,
-    TranslatePipe,
     LoadingSpinnerComponent,
     RegistrationLinksCardComponent,
     ViewOnlyLinkMessageComponent,
+    TranslatePipe,
   ],
   templateUrl: './registry-components.component.html',
   styleUrl: './registry-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistryComponentsComponent implements OnInit {
+export class RegistryComponentsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
-  private registryId = signal('');
+  private readonly registryId = toSignal<string | undefined>(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
 
   actions = createDispatchMap({ getRegistryComponents: GetRegistryComponents });
 
@@ -40,12 +45,14 @@ export class RegistryComponentsComponent implements OnInit {
   registryComponents = select(RegistryComponentsSelectors.getRegistryComponents);
   registryComponentsLoading = select(RegistryComponentsSelectors.getRegistryComponentsLoading);
 
-  ngOnInit(): void {
-    this.registryId.set(this.route.parent?.parent?.snapshot.params['id']);
+  constructor() {
+    effect(() => {
+      const registryId = this.registryId();
 
-    if (this.registryId()) {
-      this.actions.getRegistryComponents(this.registryId());
-    }
+      if (registryId) {
+        this.actions.getRegistryComponents(registryId);
+      }
+    });
   }
 
   reviewComponentDetails(id: string): void {

@@ -1,6 +1,9 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { signal, WritableSignal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
@@ -13,77 +16,118 @@ import { RegistryLinksSelectors } from '../../store/registry-links';
 
 import { RegistryLinksComponent } from './registry-links.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('RegistryLinksComponent', () => {
-  let component: RegistryLinksComponent;
-  let fixture: ComponentFixture<RegistryLinksComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockLoaderService: jest.Mocked<LoaderService>;
+function setup(overrides: BaseSetupOverrides = {}) {
+  const routeBuilder = ActivatedRouteMockBuilder.create().withParams(overrides.routeParams ?? { id: 'reg-1' });
+  if (overrides.hasParent === false) routeBuilder.withNoParent();
+  const mockRoute = routeBuilder.build();
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().build();
-    mockRouter = RouterMockBuilder.create().withUrl('/test-url').build();
-    mockLoaderService = {
-      show: jest.fn(),
-      hide: jest.fn(),
-    } as any;
+  const mockRouter = RouterMockBuilder.create().withUrl('/test-url').build();
+  const mockLoaderService = new LoaderServiceMock();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        RegistryLinksComponent,
-        OSFTestingModule,
-        ...MockComponents(SubHeaderComponent, LoadingSpinnerComponent, RegistrationLinksCardComponent),
-      ],
-      providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
-        MockProvider(Router, mockRouter),
-        MockProvider(LoaderService, mockLoaderService),
-        provideMockStore({
-          signals: [
-            { selector: RegistryLinksSelectors.getLinkedNodes, value: [] },
-            { selector: RegistryLinksSelectors.getLinkedNodesLoading, value: false },
-            { selector: RegistryLinksSelectors.getLinkedRegistrations, value: [] },
-            { selector: RegistryLinksSelectors.getLinkedRegistrationsLoading, value: false },
-            { selector: RegistriesSelectors.getSchemaResponse, value: null },
-          ],
-        }),
-      ],
-    }).compileComponents();
+  const defaultSignals = [
+    { selector: RegistryLinksSelectors.getLinkedNodes, value: [] },
+    { selector: RegistryLinksSelectors.getLinkedNodesLoading, value: false },
+    { selector: RegistryLinksSelectors.getLinkedRegistrations, value: [] },
+    { selector: RegistryLinksSelectors.getLinkedRegistrationsLoading, value: false },
+    { selector: RegistriesSelectors.getSchemaResponse, value: null },
+  ];
 
-    fixture = TestBed.createComponent(RegistryLinksComponent);
-    component = fixture.componentInstance;
+  const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
+
+  TestBed.configureTestingModule({
+    imports: [
+      RegistryLinksComponent,
+      ...MockComponents(SubHeaderComponent, LoadingSpinnerComponent, RegistrationLinksCardComponent),
+    ],
+    providers: [
+      provideOSFCore(),
+      MockProvider(ActivatedRoute, mockRoute),
+      MockProvider(Router, mockRouter),
+      MockProvider(LoaderService, mockLoaderService),
+      provideMockStore({ signals }),
+    ],
   });
 
+  const store = TestBed.inject(Store);
+  const fixture = TestBed.createComponent(RegistryLinksComponent);
+  const component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  return { fixture, component, store, mockRouter, mockLoaderService };
+}
+
+describe('RegistryLinksComponent', () => {
   it('should create', () => {
+    const { component } = setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize actions', () => {
-    expect(component.actions).toBeDefined();
+  it('should dispatch GetLinkedNodes and GetLinkedRegistrations when registryId is available', () => {
+    const { store } = setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(expect.objectContaining({ registryId: 'reg-1' }));
+    expect(store.dispatch).toHaveBeenCalledTimes(2);
   });
 
-  it('should navigate to registrations', () => {
-    const registrationId = 'test-registration-id';
-    component.navigateToRegistrations(registrationId);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([registrationId, 'overview']);
+  it('should not dispatch when registryId is not available', () => {
+    const { store } = setup({ hasParent: false });
+
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should navigate to nodes', () => {
-    const nodeId = 'test-node-id';
-    component.navigateToNodes(nodeId);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([nodeId, 'overview']);
+  it('should navigate to overview', () => {
+    const { component, mockRouter } = setup();
+
+    component.navigateToOverview('node-1');
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['node-1', 'overview']);
   });
 
-  it('should update registration with loader', () => {
-    const registrationId = 'test-registration-id';
+  it('should show loader and navigate to justification page on updateRegistration', () => {
+    const schemaResponseSignal: WritableSignal<{ id: string } | null> = signal({ id: 'revision-1' });
+    const { component, mockRouter, mockLoaderService } = setup({
+      selectorOverrides: [{ selector: RegistriesSelectors.getSchemaResponse, value: schemaResponseSignal }],
+    });
 
-    expect(() => component.updateRegistration(registrationId)).not.toThrow();
+    component.updateRegistration('reg-1');
 
     expect(mockLoaderService.show).toHaveBeenCalled();
+    expect(mockLoaderService.hide).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/registries/revisions/revision-1/justification']);
+  });
+
+  it('should hide loader but not navigate when schemaResponse is null', () => {
+    const { component, mockRouter, mockLoaderService } = setup();
+
+    component.updateRegistration('reg-1');
+
+    expect(mockLoaderService.show).toHaveBeenCalled();
+    expect(mockLoaderService.hide).toHaveBeenCalled();
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should return selector values', () => {
+    const mockNodes = [{ id: 'node-1', title: 'Node 1' }];
+    const mockRegistrations = [{ id: 'reg-1', title: 'Registration 1' }];
+    const { component } = setup({
+      selectorOverrides: [
+        { selector: RegistryLinksSelectors.getLinkedNodes, value: mockNodes },
+        { selector: RegistryLinksSelectors.getLinkedNodesLoading, value: true },
+        { selector: RegistryLinksSelectors.getLinkedRegistrations, value: mockRegistrations },
+        { selector: RegistryLinksSelectors.getLinkedRegistrationsLoading, value: true },
+      ],
+    });
+
+    expect(component.linkedNodes()).toEqual(mockNodes);
+    expect(component.linkedNodesLoading()).toBe(true);
+    expect(component.linkedRegistrations()).toEqual(mockRegistrations);
+    expect(component.linkedRegistrationsLoading()).toBe(true);
   });
 });

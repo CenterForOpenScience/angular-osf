@@ -4,10 +4,19 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { filter, finalize, switchMap, take } from 'rxjs';
+import { filter, finalize, map, of, switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
@@ -30,7 +39,7 @@ import {
 
 @Component({
   selector: 'osf-registry-resources',
-  imports: [SubHeaderComponent, TranslatePipe, Button, LoadingSpinnerComponent, IconComponent],
+  imports: [Button, SubHeaderComponent, LoadingSpinnerComponent, IconComponent, TranslatePipe],
   templateUrl: './registry-resources.component.html',
   styleUrl: './registry-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,7 +58,10 @@ export class RegistryResourcesComponent {
   readonly registry = select(RegistrySelectors.getRegistry);
   readonly identifiers = select(RegistrySelectors.getIdentifiers);
 
-  registryId = this.route.snapshot.parent?.params['id'];
+  private readonly registryId = toSignal<string | undefined>(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
+
   isAddingResource = signal(false);
   doiDomain = 'https://doi.org/';
 
@@ -64,19 +76,25 @@ export class RegistryResourcesComponent {
   addButtonVisible = computed(() => !!this.identifiers().length && this.canEdit());
 
   constructor() {
-    this.actions.getResources(this.registryId);
+    effect(() => {
+      const registryId = this.registryId();
+
+      if (registryId) {
+        this.actions.getResources(registryId);
+      }
+    });
   }
 
   addResource() {
-    if (!this.registryId) return;
+    const registryId = this.registryId();
+    if (!registryId) return;
 
     this.isAddingResource.set(true);
 
     this.actions
-      .addResource(this.registryId)
+      .addResource(registryId)
       .pipe(
-        take(1),
-        switchMap(() => this.openAddResourceDialog()),
+        switchMap(() => this.openAddResourceDialog(registryId)),
         filter((res) => !!res),
         finalize(() => this.isAddingResource.set(false)),
         takeUntilDestroyed(this.destroyRef)
@@ -87,22 +105,15 @@ export class RegistryResourcesComponent {
       });
   }
 
-  openAddResourceDialog() {
-    return this.customDialogService.open(AddResourceDialogComponent, {
-      header: 'resources.add',
-      width: '500px',
-      data: { id: this.registryId },
-    }).onClose;
-  }
-
   updateResource(resource: RegistryResource) {
-    if (!this.registryId) return;
+    const registryId = this.registryId();
+    if (!registryId) return;
 
     this.customDialogService
       .open(EditResourceDialogComponent, {
         header: 'resources.edit',
         width: '500px',
-        data: { id: this.registryId, resource: resource },
+        data: { id: registryId, resource },
       })
       .onClose.pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -115,7 +126,8 @@ export class RegistryResourcesComponent {
   }
 
   deleteResource(id: string) {
-    if (!this.registryId) return;
+    const registryId = this.registryId();
+    if (!registryId) return;
 
     this.customConfirmationService.confirmDelete({
       headerKey: 'resources.delete',
@@ -123,10 +135,18 @@ export class RegistryResourcesComponent {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteResource(id, this.registryId)
-          .pipe(take(1))
+          .deleteResource(id, registryId)
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => this.toastService.showSuccess('resources.toastMessages.deletedResourceSuccess'));
       },
     });
+  }
+
+  private openAddResourceDialog(registryId: string) {
+    return this.customDialogService.open(AddResourceDialogComponent, {
+      header: 'resources.add',
+      width: '500px',
+      data: { id: registryId },
+    }).onClose;
   }
 }
