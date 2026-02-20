@@ -135,8 +135,7 @@ interface SetupOverrides extends BaseSetupOverrides {
 }
 
 function setup(overrides: SetupOverrides = {}) {
-  const routeBuilder = ActivatedRouteMockBuilder.create()
-    .withParams(overrides.routeParams ?? { id: 'draft-1' });
+  const routeBuilder = ActivatedRouteMockBuilder.create().withParams(overrides.routeParams ?? { id: 'draft-1' });
   if (overrides.hasParent === false) routeBuilder.withNoParent();
   const mockRoute = routeBuilder.build();
 
@@ -336,10 +335,7 @@ const mockRoute = ActivatedRouteMockBuilder.create()
   .build();
 
 // No parent route (for testing components that guard against missing parent)
-const mockRoute = ActivatedRouteMockBuilder.create()
-  .withParams({ id: 'reg-1' })
-  .withNoParent()
-  .build();
+const mockRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'reg-1' }).withNoParent().build();
 ```
 
 ### Router
