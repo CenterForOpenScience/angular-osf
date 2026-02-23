@@ -6,24 +6,11 @@ import {
 } from '@angular/ssr/node';
 
 import express from 'express';
-import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
-
-const configPath = resolve(browserDistFolder, 'assets/config/config.json');
-
-if (existsSync(configPath)) {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (globalThis as any).__SSR_CONFIG__ = JSON.parse(readFileSync(configPath, 'utf-8'));
-  } catch {
-    // eslint-disable-next-line no-console
-    console.warn('Failed to parse SSR config at', configPath);
-  }
-}
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
