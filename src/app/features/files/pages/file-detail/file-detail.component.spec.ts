@@ -41,8 +41,8 @@ describe('FileDetailComponent', () => {
     } as unknown as jest.Mocked<DataciteService>;
 
     const mockRoute: Partial<ActivatedRoute> = {
-      params: of({ providerId: 'osf', preprintId: 'p1' }),
-      queryParams: of({ providerId: 'osf', preprintId: 'p1' }),
+      params: of({ providerId: 'osf', fileGuid: 'file-1' }),
+      queryParams: of({ providerId: 'osf', fileGuid: 'file-1' }),
     };
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
       switch (selector) {
@@ -79,6 +79,7 @@ describe('FileDetailComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(FileDetailComponent);
     component = fixture.componentInstance;
+    document.head.innerHTML = '';
     fixture.detectChanges();
   });
 
@@ -94,5 +95,16 @@ describe('FileDetailComponent', () => {
 
   it('should call dataciteService.logIdentifiableView on start  ', () => {
     expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.fileMetadata$);
+  });
+
+  it('should add signposting tags during SSR', () => {
+    fixture.detectChanges();
+
+    const linkTags = Array.from(document.head.querySelectorAll('link[rel="linkset"]'));
+    expect(linkTags.length).toBe(2);
+    expect(linkTags[0].getAttribute('href')).toBe('http://localhost:4200/metadata/file-1/?format=linkset');
+    expect(linkTags[0].getAttribute('type')).toBe('application/linkset');
+    expect(linkTags[1].getAttribute('href')).toBe('http://localhost:4200/metadata/file-1/?format=linkset-json');
+    expect(linkTags[1].getAttribute('type')).toBe('application/linkset+json');
   });
 });
