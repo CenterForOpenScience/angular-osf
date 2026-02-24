@@ -5,7 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
-import { catchError, EMPTY, filter, map, of } from 'rxjs';
+import { catchError, EMPTY, filter, map } from 'rxjs';
 
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -31,7 +31,6 @@ import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
 import { pathJoin } from '@osf/shared/helpers/path-join.helper';
-import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
@@ -66,21 +65,20 @@ import { CreateNewVersion, PreprintStepperSelectors } from '../../store/preprint
 @Component({
   selector: 'osf-preprint-details',
   imports: [
+    Button,
     Skeleton,
     PreprintFileSectionComponent,
-    Button,
     ShareAndDownloadComponent,
     GeneralInformationComponent,
     AdditionalInfoComponent,
     StatusBannerComponent,
-    TranslatePipe,
     PreprintTombstoneComponent,
     PreprintWarningBannerComponent,
     ModerationStatusBannerComponent,
     PreprintMakeDecisionComponent,
     PreprintMetricsInfoComponent,
     RouterLink,
-    FixSpecialCharPipe,
+    TranslatePipe,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
@@ -103,13 +101,13 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly dataciteService = inject(DataciteService);
   private readonly prerenderReady = inject(PrerenderReadyService);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly isBrowser = isPlatformBrowser(this.platformId);
-
   private readonly environment = inject(ENVIRONMENT);
 
-  private preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  private actions = createDispatchMap({
+  private readonly preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])));
+
+  private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     resetState: ResetPreprintState,
     fetchPreprintById: FetchPreprintDetails,
@@ -120,12 +118,12 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     clearCurrentProvider: ClearCurrentProvider,
   });
 
-  providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
+  readonly providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])));
   currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   preprint = select(PreprintSelectors.getPreprint);
-  preprint$ = toObservable(select(PreprintSelectors.getPreprint));
+  preprint$ = toObservable(this.preprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
   contributors = select(ContributorsSelectors.getBibliographicContributors);
   areContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
@@ -150,26 +148,17 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   latestAction = computed(() => {
     const actions = this.reviewActions();
-
-    if (actions.length < 1) return null;
-
-    return actions[0];
+    return actions.length > 0 ? actions[0] : null;
   });
 
   latestWithdrawalRequest = computed(() => {
     const requests = this.withdrawalRequests();
-
-    if (requests.length < 1) return null;
-
-    return requests[0];
+    return requests.length > 0 ? requests[0] : null;
   });
 
   latestRequestAction = computed(() => {
     const actions = this.requestActions();
-
-    if (actions.length < 1) return null;
-
-    return actions[0];
+    return actions.length > 0 ? actions[0] : null;
   });
 
   constructor() {
@@ -219,6 +208,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     if (preprint.isLatestVersion || preprint.reviewsState === ReviewsState.Initial) {
       return true;
     }
+
     if (providerIsPremod) {
       if (preprint.reviewsState === ReviewsState.Pending) {
         return true;
@@ -228,6 +218,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         return true;
       }
     }
+
     return false;
   });
 
@@ -250,7 +241,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   isWithdrawalRejected = computed(() => {
     const latestRequestActions = this.latestRequestAction();
     if (!latestRequestActions) return false;
-    return latestRequestActions?.trigger === 'reject';
+    return latestRequestActions.trigger === 'reject';
   });
 
   withdrawalButtonVisible = computed(() => {
@@ -300,14 +291,22 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     );
   });
 
-  ngOnInit() {
-    this.actions.getPreprintProviderById(this.providerId());
-    this.fetchPreprint(this.preprintId());
+  ngOnInit(): void {
+    const providerId = this.providerId();
+    const preprintId = this.preprintId();
+
+    if (providerId) {
+      this.actions.getPreprintProviderById(providerId);
+    }
+
+    if (preprintId) {
+      this.fetchPreprint(preprintId);
+    }
 
     this.dataciteService.logIdentifiableView(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.isBrowser) {
       this.actions.resetState();
       this.actions.clearCurrentProvider();
@@ -316,7 +315,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     this.helpScoutService.unsetResourceType();
   }
 
-  handleWithdrawClicked() {
+  handleWithdrawClicked(): void {
     this.customDialogService
       .open(PreprintWithdrawDialogComponent, {
         header: this.translateService.instant('preprints.details.withdrawDialog.title', {
@@ -329,20 +328,29 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         },
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean))
-      .subscribe({
-        next: () => {
-          this.fetchPreprint(this.preprintId());
-        },
-      });
+      .subscribe(() => this.fetchPreprint(this.preprintId()));
   }
 
-  editPreprintClicked() {
-    this.router.navigate(['preprints', this.providerId(), 'edit', this.preprintId()]);
+  editPreprintClicked(): void {
+    const providerId = this.providerId();
+    const preprintId = this.preprintId();
+
+    if (!providerId || !preprintId) {
+      return;
+    }
+
+    this.router.navigate(['preprints', providerId, 'edit', preprintId]);
   }
 
-  createNewVersionClicked() {
+  createNewVersionClicked(): void {
+    const preprintId = this.preprintId();
+
+    if (!preprintId) {
+      return;
+    }
+
     this.actions
-      .createNewVersion(this.preprintId())
+      .createNewVersion(preprintId)
       .pipe(
         catchError((e) => {
           if (e instanceof HttpErrorResponse && e.status === 409) {
@@ -355,12 +363,18 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         complete: () => {
           const newVersionPreprint = this.store.selectSnapshot(PreprintStepperSelectors.getPreprint);
-          this.router.navigate(['preprints', this.providerId(), 'new-version', newVersionPreprint!.id]);
+          if (newVersionPreprint?.id) {
+            this.router.navigate(['preprints', this.providerId(), 'new-version', newVersionPreprint.id]);
+          }
         },
       });
   }
 
-  fetchPreprint(preprintId: string) {
+  fetchPreprint(preprintId: string): void {
+    if (!preprintId) {
+      return;
+    }
+
     this.prerenderReady.setNotReady();
 
     this.actions.fetchPreprintById(preprintId).subscribe({
@@ -420,7 +434,11 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   private checkAndSetVersionToTheUrl() {
     const currentUrl = this.router.url;
-    const newPreprintId = this.preprint()!.id;
+    const newPreprintId = this.preprint()?.id;
+
+    if (!newPreprintId) {
+      return;
+    }
 
     const urlSegments = currentUrl.split('/');
     const preprintIdFromUrl = urlSegments[urlSegments.length - 1];

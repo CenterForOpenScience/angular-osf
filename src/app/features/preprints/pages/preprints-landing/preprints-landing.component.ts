@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -25,15 +25,15 @@ import {
 } from '../../store/preprint-providers';
 
 @Component({
-  selector: 'osf-overview',
+  selector: 'osf-preprints-landing',
   imports: [
     Button,
-    SearchInputComponent,
+    Skeleton,
     RouterLink,
+    SearchInputComponent,
     AdvisoryBoardComponent,
     PreprintServicesComponent,
     BrowseBySubjectsComponent,
-    Skeleton,
     TranslatePipe,
     TitleCasePipe,
   ],
@@ -41,33 +41,37 @@ import {
   styleUrl: './preprints-landing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintsLandingComponent implements OnInit, OnDestroy {
+export class PreprintsLandingComponent implements OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
-
-  searchControl = new FormControl<string>('');
 
   private readonly environment = inject(ENVIRONMENT);
   private readonly brandService = inject(BrandService);
+  private readonly router = inject(Router);
 
   readonly supportEmail = this.environment.supportEmail;
-  private readonly OSF_PROVIDER_ID = this.environment.defaultProvider;
+  private readonly defaultProviderId = this.environment.defaultProvider;
 
-  private readonly router = inject(Router);
+  searchControl = new FormControl('', { nonNullable: true });
+
   private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     getPreprintProvidersToAdvertise: GetPreprintProvidersToAdvertise,
     getHighlightedSubjectsByProviderId: GetHighlightedSubjectsByProviderId,
   });
 
-  osfPreprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.OSF_PROVIDER_ID));
-  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
+  provider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.defaultProviderId));
+  isProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   preprintProvidersToAdvertise = select(PreprintProvidersSelectors.getPreprintProvidersToAdvertise);
-  highlightedSubjectsByProviderId = select(PreprintProvidersSelectors.getHighlightedSubjectsForProvider);
+  highlightedSubjects = select(PreprintProvidersSelectors.getHighlightedSubjectsForProvider);
   areSubjectsLoading = select(PreprintProvidersSelectors.areSubjectsLoading);
 
   constructor() {
+    this.actions.getPreprintProviderById(this.defaultProviderId);
+    this.actions.getPreprintProvidersToAdvertise();
+    this.actions.getHighlightedSubjectsByProviderId(this.defaultProviderId);
+
     effect(() => {
-      const provider = this.osfPreprintProvider();
+      const provider = this.provider();
 
       if (provider) {
         this.brandService.applyBranding(provider.brand);
@@ -75,21 +79,17 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.actions.getPreprintProviderById(this.OSF_PROVIDER_ID);
-    this.actions.getPreprintProvidersToAdvertise();
-    this.actions.getHighlightedSubjectsByProviderId(this.OSF_PROVIDER_ID);
-  }
-
   ngOnDestroy() {
     this.brandService.resetBranding();
   }
 
-  redirectToSearchPageWithValue() {
-    const searchValue = normalizeQuotes(this.searchControl.value);
+  submitSearch(): void {
+    const searchValue = normalizeQuotes(this.searchControl.value)?.trim();
 
-    this.router.navigate(['/search'], {
-      queryParams: { search: searchValue, tab: ResourceType.Preprint },
-    });
+    if (!searchValue) {
+      return;
+    }
+
+    this.router.navigate(['/search'], { queryParams: { search: searchValue, tab: ResourceType.Preprint } });
   }
 }

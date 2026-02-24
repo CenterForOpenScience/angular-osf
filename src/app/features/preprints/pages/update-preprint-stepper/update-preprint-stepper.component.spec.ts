@@ -1,13 +1,14 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
-import { StepOption } from '@osf/shared/models/step-option.model';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
@@ -21,42 +22,57 @@ import {
   TitleAndAbstractStepComponent,
 } from '../../components';
 import { submitPreprintSteps } from '../../constants';
-import { PreprintSteps } from '../../enums';
+import { PreprintSteps, ReviewsState } from '../../enums';
 import { PreprintProviderDetails } from '../../models';
-import { PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { PreprintStepperSelectors } from '../../store/preprint-stepper';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 import { UpdatePreprintStepperComponent } from './update-preprint-stepper.component';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { BrandServiceMock, BrandServiceMockType } from '@testing/providers/brand-service.mock';
+import { BrowserTabServiceMock, BrowserTabServiceMockType } from '@testing/providers/browser-tab-service.mock';
+import { HeaderStyleServiceMock, HeaderStyleServiceMockType } from '@testing/providers/header-style-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 describe('UpdatePreprintStepperComponent', () => {
   let component: UpdatePreprintStepperComponent;
   let fixture: ComponentFixture<UpdatePreprintStepperComponent>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
-  let routeMock: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let store: Store;
+  let brandServiceMock: BrandServiceMockType;
+  let headerStyleMock: HeaderStyleServiceMockType;
+  let browserTabMock: BrowserTabServiceMockType;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockPreprint = PREPRINT_MOCK;
   const mockProviderId = 'osf';
   const mockPreprintId = 'test_preprint_123';
 
-  beforeEach(async () => {
-    routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
-    routeMock = ActivatedRouteMockBuilder.create()
+  const defaultSignals: SignalOverride[] = [
+    { selector: PreprintProvidersSelectors.getPreprintProviderDetails(mockProviderId), value: mockProvider },
+    { selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading, value: false },
+    { selector: PreprintStepperSelectors.getPreprint, value: mockPreprint },
+    { selector: PreprintStepperSelectors.hasBeenSubmitted, value: false },
+    { selector: PreprintStepperSelectors.hasAdminAccess, value: false },
+  ];
+
+  function setup(overrides?: { selectorOverrides?: SignalOverride[] }) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
+
+    const routeMock = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId, preprintId: mockPreprintId })
-      .withQueryParams({})
       .build();
 
-    await TestBed.configureTestingModule({
+    brandServiceMock = BrandServiceMock.simple();
+    headerStyleMock = HeaderStyleServiceMock.simple();
+    browserTabMock = BrowserTabServiceMock.simple();
+
+    TestBed.configureTestingModule({
       imports: [
         UpdatePreprintStepperComponent,
-        OSFTestingModule,
         ...MockComponents(
           AuthorAssertionsStepComponent,
           StepperComponent,
@@ -68,159 +84,234 @@ describe('UpdatePreprintStepperComponent', () => {
         ),
       ],
       providers: [
-        MockProvider(BrandService),
-        MockProvider(BrowserTabService),
-        MockProvider(HeaderStyleService),
-        MockProvider(Router, routerMock),
+        provideOSFCore(),
         MockProvider(ActivatedRoute, routeMock),
+        MockProvider(BrandService, brandServiceMock),
+        MockProvider(HeaderStyleService, headerStyleMock),
+        MockProvider(BrowserTabService, browserTabMock),
         MockProvider(IS_WEB, of(true)),
-        provideMockStore({
-          signals: [
-            {
-              selector: PreprintProvidersSelectors.getPreprintProviderDetails(mockProviderId),
-              value: mockProvider,
-            },
-            {
-              selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintStepperSelectors.getPreprint,
-              value: mockPreprint,
-            },
-            {
-              selector: PreprintStepperSelectors.hasBeenSubmitted,
-              value: false,
-            },
-          ],
-        }),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(UpdatePreprintStepperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  }
+
+  afterEach(() => {
+    fixture?.destroy();
+    jest.restoreAllMocks();
   });
 
   it('should initialize with correct default values', () => {
+    setup();
+
     expect(component.PreprintSteps).toBe(PreprintSteps);
     expect(component.classes).toBe('flex-1 flex flex-column w-full');
     expect(component.currentStep()).toEqual(submitPreprintSteps[0]);
   });
 
-  it('should return preprint provider from store', () => {
-    const provider = component.preprintProvider();
-    expect(provider).toBe(mockProvider);
+  it('should dispatch initial actions on creation', () => {
+    setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetPreprintProviderById(mockProviderId));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintById(mockPreprintId));
   });
 
-  it('should return preprint from store', () => {
-    const preprint = component.preprint();
-    expect(preprint).toBe(mockPreprint);
+  it('should apply branding when provider is available', () => {
+    setup();
+
+    expect(brandServiceMock.applyBranding).toHaveBeenCalledWith(mockProvider.brand);
+    expect(headerStyleMock.applyHeaderStyles).toHaveBeenCalledWith(
+      mockProvider.brand.primaryColor,
+      mockProvider.brand.secondaryColor,
+      mockProvider.brand.heroBackgroundImageUrl
+    );
+    expect(browserTabMock.updateTabStyles).toHaveBeenCalledWith(mockProvider.faviconUrl, mockProvider.name);
   });
 
-  it('should return web environment state', () => {
-    const isWeb = component.isWeb();
-    expect(typeof isWeb).toBe('boolean');
+  it('should reset services on destroy', () => {
+    setup();
+
+    component.ngOnDestroy();
+
+    expect(headerStyleMock.resetToDefaults).toHaveBeenCalled();
+    expect(brandServiceMock.resetBranding).toHaveBeenCalled();
+    expect(browserTabMock.resetToDefaults).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new ResetPreprintStepperState());
   });
 
-  it('should initialize with first step as current step', () => {
+  it('should filter out File and AuthorAssertions steps by default', () => {
+    setup();
+
+    const steps = component.updateSteps();
+    const stepValues = steps.map((s) => s.value);
+
+    expect(stepValues).not.toContain(PreprintSteps.File);
+    expect(stepValues).not.toContain(PreprintSteps.AuthorAssertions);
+    expect(stepValues).toContain(PreprintSteps.TitleAndAbstract);
+    expect(stepValues).toContain(PreprintSteps.Metadata);
+    expect(stepValues).toContain(PreprintSteps.Supplements);
+    expect(stepValues).toContain(PreprintSteps.Review);
+  });
+
+  it('should re-index steps sequentially', () => {
+    setup();
+
+    const steps = component.updateSteps();
+    steps.forEach((step, i) => expect(step.index).toBe(i));
+  });
+
+  it('should return empty steps when provider is unavailable', () => {
+    setup({
+      selectorOverrides: [
+        { selector: PreprintProvidersSelectors.getPreprintProviderDetails(mockProviderId), value: null },
+        { selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading, value: true },
+      ],
+    });
+
+    expect(component.updateSteps()).toEqual([]);
+  });
+
+  it('should return empty steps when preprint is unavailable', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: null }],
+    });
+
+    expect(component.updateSteps()).toEqual([]);
+  });
+
+  it('should include File step in edit-and-resubmit mode', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintStepperSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Rejected },
+        },
+      ],
+    });
+
+    const stepValues = component.updateSteps().map((s) => s.value);
+    expect(stepValues).toContain(PreprintSteps.File);
+  });
+
+  it('should include AuthorAssertions step when enabled and user has admin access', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintProvidersSelectors.getPreprintProviderDetails(mockProviderId),
+          value: { ...mockProvider, assertionsEnabled: true },
+        },
+        { selector: PreprintStepperSelectors.hasAdminAccess, value: true },
+      ],
+    });
+
+    const stepValues = component.updateSteps().map((s) => s.value);
+    expect(stepValues).toContain(PreprintSteps.AuthorAssertions);
+  });
+
+  it('should prevent beforeunload when not submitted', () => {
+    setup();
+    const event = { preventDefault: jest.fn() } as unknown as BeforeUnloadEvent;
+
+    component.onBeforeUnload(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should not prevent beforeunload when submitted', () => {
+    setup({ selectorOverrides: [{ selector: PreprintStepperSelectors.hasBeenSubmitted, value: true }] });
+    const event = { preventDefault: jest.fn() } as unknown as BeforeUnloadEvent;
+
+    component.onBeforeUnload(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('should not prevent beforeunload when preprint is accepted', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintStepperSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Accepted },
+        },
+      ],
+    });
+    const event = { preventDefault: jest.fn() } as unknown as BeforeUnloadEvent;
+
+    component.onBeforeUnload(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('should prevent deactivation when not submitted', () => {
+    setup();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should allow deactivation when submitted', () => {
+    setup({ selectorOverrides: [{ selector: PreprintStepperSelectors.hasBeenSubmitted, value: true }] });
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should ignore stepping forward via stepper', () => {
+    setup();
+
+    component.stepChange(component.updateSteps()[1]);
+
     expect(component.currentStep()).toEqual(submitPreprintSteps[0]);
   });
 
-  it('should compute updateSteps correctly', () => {
-    const steps = component.updateSteps();
-    expect(steps).toBeDefined();
-    expect(Array.isArray(steps)).toBe(true);
-  });
+  it('should allow stepping back via stepper', () => {
+    setup();
+    component.moveToNextStep();
 
-  it('should compute currentUserIsAdmin correctly', () => {
-    const isAdmin = component.currentUserIsAdmin();
-    expect(typeof isAdmin).toBe('boolean');
-  });
+    component.stepChange(component.updateSteps()[0]);
 
-  it('should compute editAndResubmitMode correctly', () => {
-    const editMode = component.editAndResubmitMode();
-    expect(typeof editMode).toBe('boolean');
-  });
-
-  it('should handle step change when moving to previous step', () => {
-    const previousStep = submitPreprintSteps[0];
-
-    component.stepChange(previousStep);
-
-    expect(component.currentStep()).toEqual(previousStep);
-  });
-
-  it('should not change step when moving to next step', () => {
-    const currentStep = component.currentStep();
-    const nextStep = submitPreprintSteps[1];
-
-    component.stepChange(nextStep);
-
-    expect(component.currentStep()).toEqual(currentStep);
+    expect(component.currentStep()).toEqual(component.updateSteps()[0]);
   });
 
   it('should move to next step', () => {
-    const currentIndex = component.currentStep()?.index ?? 0;
-    const nextStep = component.updateSteps()[currentIndex + 1];
+    setup();
+    const expectedNext = component.updateSteps()[1];
 
-    if (nextStep) {
-      component.moveToNextStep();
-      expect(component.currentStep()).toEqual(nextStep);
-    }
+    component.moveToNextStep();
+
+    expect(component.currentStep()).toEqual(expectedNext);
+  });
+
+  it('should not move past the last step', () => {
+    setup();
+    const steps = component.updateSteps();
+    const lastStep = steps[steps.length - 1];
+    component.currentStep.set(lastStep);
+
+    component.moveToNextStep();
+
+    expect(component.currentStep()).toEqual(lastStep);
   });
 
   it('should move to previous step', () => {
+    setup();
     component.moveToNextStep();
-    const nextStep = component.currentStep();
+    const firstStep = component.updateSteps()[0];
 
     component.moveToPreviousStep();
-    const previousStep = component.currentStep();
 
-    expect(previousStep?.index).toBeLessThan(nextStep?.index ?? 0);
+    expect(component.currentStep()).toEqual(firstStep);
   });
 
-  it('should handle beforeunload event', () => {
-    const event = {
-      preventDefault: jest.fn(),
-    } as unknown as BeforeUnloadEvent;
-
-    const result = component.onBeforeUnload(event);
-
-    expect(event.preventDefault).toHaveBeenCalled();
-    expect(result).toBe(false);
-  });
-
-  it('should handle step navigation correctly', () => {
-    component.moveToNextStep();
-    const nextStep = component.currentStep();
-    expect(nextStep).toBeDefined();
+  it('should not move before the first step', () => {
+    setup();
+    const firstStep = component.updateSteps()[0];
+    component.currentStep.set(firstStep);
 
     component.moveToPreviousStep();
-    const previousStep = component.currentStep();
-    expect(previousStep).toBeDefined();
-  });
 
-  it('should handle edge case when moving to next step with undefined current step', () => {
-    component.currentStep.set({} as StepOption);
-
-    expect(() => component.moveToNextStep()).not.toThrow();
-  });
-
-  it('should handle edge case when moving to previous step with undefined current step', () => {
-    component.currentStep.set({} as StepOption);
-
-    expect(() => component.moveToPreviousStep()).not.toThrow();
-  });
-
-  it('should handle empty updateSteps array', () => {
-    const steps = component.updateSteps();
-    expect(steps).toBeDefined();
-    expect(Array.isArray(steps)).toBe(true);
-  });
-
-  it('should handle null preprint provider', () => {
-    const provider = component.preprintProvider();
-    expect(provider).toBeDefined();
+    expect(component.currentStep()).toEqual(firstStep);
   });
 });

@@ -1,6 +1,7 @@
 import { Selector } from '@ngxs/store';
 
 import { PreprintStepperState, PreprintStepperStateModel } from '@osf/features/preprints/store/preprint-stepper';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 export class PreprintStepperSelectors {
   @Selector([PreprintStepperState])
@@ -86,6 +87,11 @@ export class PreprintStepperSelectors {
   @Selector([PreprintStepperState])
   static hasBeenSubmitted(state: PreprintStepperStateModel) {
     return state.hasBeenSubmitted;
+  }
+
+  @Selector([PreprintStepperState])
+  static hasAdminAccess(state: PreprintStepperStateModel) {
+    return state.preprint.data?.currentUserPermissions.includes(UserPermissions.Admin) || false;
   }
 
   @Selector([PreprintStepperState])

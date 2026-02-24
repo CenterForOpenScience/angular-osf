@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnDestroy, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -21,7 +21,7 @@ import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store
   styleUrl: './preprint-provider-discover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
+export class PreprintProviderDiscoverComponent implements OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
 
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -29,39 +29,43 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
   private readonly headerStyleHelper = inject(HeaderStyleService);
   private readonly browserTabHelper = inject(BrowserTabService);
 
-  private actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setDefaultFilterValue: SetDefaultFilterValue,
     setResourceType: SetResourceType,
   });
 
-  providerId = this.activatedRoute.snapshot.params['providerId'];
+  readonly providerId = this.activatedRoute.snapshot.params['providerId'];
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
 
-  searchControl = new FormControl('');
+  searchControl = new FormControl('', { nonNullable: true });
   defaultSearchFiltersInitialized = signal<boolean>(false);
 
-  ngOnInit() {
-    this.actions.getPreprintProviderById(this.providerId).subscribe({
-      next: () => {
-        const provider = this.preprintProvider();
+  constructor() {
+    this.actions.getPreprintProviderById(this.providerId);
 
-        if (provider) {
-          this.actions.setDefaultFilterValue('publisher', provider.iri);
-          this.actions.setResourceType(ResourceType.Preprint);
-          this.defaultSearchFiltersInitialized.set(true);
+    effect(() => {
+      const provider = this.preprintProvider();
 
-          this.brandService.applyBranding(provider.brand);
-          this.headerStyleHelper.applyHeaderStyles(
-            provider.brand.primaryColor,
-            provider.brand.secondaryColor,
-            provider.brand.heroBackgroundImageUrl
-          );
-          this.browserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
-        }
-      },
+      if (!provider) {
+        return;
+      }
+
+      if (!this.defaultSearchFiltersInitialized()) {
+        this.actions.setDefaultFilterValue('publisher', provider.iri);
+        this.actions.setResourceType(ResourceType.Preprint);
+        this.defaultSearchFiltersInitialized.set(true);
+      }
+
+      this.brandService.applyBranding(provider.brand);
+      this.headerStyleHelper.applyHeaderStyles(
+        provider.brand.primaryColor,
+        provider.brand.secondaryColor,
+        provider.brand.heroBackgroundImageUrl
+      );
+      this.browserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
     });
   }
 

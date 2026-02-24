@@ -1,23 +1,25 @@
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 
 import { PreprintsComponent } from './preprints.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { HelpScoutServiceMockFactory } from '@testing/providers/help-scout.service.mock';
 
 describe('Component: Preprint', () => {
   let fixture: ComponentFixture<PreprintsComponent>;
   let helpScoutService: HelpScoutService;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     helpScoutService = HelpScoutServiceMockFactory();
 
-    await TestBed.configureTestingModule({
-      imports: [PreprintsComponent, OSFTestingModule],
-      providers: [{ provide: HelpScoutService, useValue: helpScoutService }],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [PreprintsComponent],
+      providers: [provideOSFCore(), MockProvider(HelpScoutService, helpScoutService)],
+    });
 
     helpScoutService = TestBed.inject(HelpScoutService);
     fixture = TestBed.createComponent(PreprintsComponent);

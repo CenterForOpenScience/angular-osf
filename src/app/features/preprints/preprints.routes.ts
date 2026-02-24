@@ -31,7 +31,7 @@ export const preprintsRoutes: Routes = [
       {
         path: 'discover',
         loadComponent: () =>
-          import('@osf/features/preprints/pages/landing/preprints-landing.component').then(
+          import('@osf/features/preprints/pages/preprints-landing/preprints-landing.component').then(
             (c) => c.PreprintsLandingComponent
           ),
       },

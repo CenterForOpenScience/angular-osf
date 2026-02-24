@@ -6,9 +6,9 @@
     } @else {
       <img
         class="preprint-provider-hero-logo"
-        alt="Provider Logo"
         height="40"
         [src]="preprintProvider()!.brand.heroLogoImageUrl"
+        [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
       />
       <h1 class="preprint-provider-name">
         {{ 'preprints.updatePreprint' | translate: { preprintWord: preprintProvider()!.preprintWord } }}
@@ -35,7 +35,7 @@
     @case (PreprintSteps.TitleAndAbstract) {
       <osf-title-and-abstract-step (nextClicked)="moveToNextStep()" />
     }
-    @case (SubmitStepsEnum.File) {
+    @case (PreprintSteps.File) {
       <osf-file-step
         [provider]="preprintProvider()"
         (nextClicked)="moveToNextStep()"
