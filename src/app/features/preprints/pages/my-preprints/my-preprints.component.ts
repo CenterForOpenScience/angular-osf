@@ -32,7 +32,6 @@ import { parseQueryFilterParams } from '@osf/shared/helpers/http.helper';
 import { QueryParams } from '@osf/shared/models/query-params.model';
 import { SearchFilters } from '@osf/shared/models/search-filters.model';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
-import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 
 import { PreprintShortInfo } from '../../models';
 import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints';
@@ -40,15 +39,14 @@ import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints
 @Component({
   selector: 'osf-my-preprints',
   imports: [
-    SubHeaderComponent,
-    SearchInputComponent,
-    TranslatePipe,
     TableModule,
     Skeleton,
-    DatePipe,
+    SearchInputComponent,
+    SubHeaderComponent,
     ContributorsListShortenerComponent,
+    DatePipe,
+    TranslatePipe,
     TitleCasePipe,
-    FixSpecialCharPipe,
   ],
   templateUrl: './my-preprints.component.html',
   styleUrl: './my-preprints.component.scss',
@@ -56,19 +54,17 @@ import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints
 })
 export class MyPreprintsComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
+
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly actions = createDispatchMap({ fetchMyPreprints: FetchMyPreprints });
 
-  private readonly defaultSortColumn = 'dateModified';
-  searchControl = new FormControl<string>('');
+  searchControl = new FormControl('', { nonNullable: true });
 
-  queryParams = toSignal(this.route.queryParams);
+  private readonly queryParams = toSignal(this.route.queryParams);
   sortColumn = signal('');
   sortOrder = signal<SortOrder>(SortOrder.Desc);
-  currentPage = signal(1);
-  currentPageSize = signal(DEFAULT_TABLE_PARAMS.rows);
   tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS, firstRowIndex: 0 });
 
   preprints = select(MyPreprintsSelectors.getMyPreprints);
@@ -99,12 +95,16 @@ export class MyPreprintsComponent {
     if (event.field) {
       this.updateQueryParams({
         sortColumn: event.field,
-        sortOrder: event.order as SortOrder.Asc,
+        sortOrder: event.order === 1 ? SortOrder.Asc : SortOrder.Desc,
       });
     }
   }
 
-  setupQueryParamsEffect(): void {
+  navigateToAddPreprint(): void {
+    this.router.navigateByUrl('/preprints/select');
+  }
+
+  private setupQueryParamsEffect(): void {
     effect(() => {
       const rawQueryParams = this.queryParams();
       if (!rawQueryParams) return;
@@ -119,16 +119,16 @@ export class MyPreprintsComponent {
 
   private setupSearchSubscription(): void {
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef), skip(1))
-      .subscribe((searchControl) => {
+      .pipe(skip(1), debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
         this.updateQueryParams({
-          search: searchControl ?? '',
+          search: value,
           page: 1,
         });
       });
   }
 
-  private setupTotalRecordsEffect() {
+  private setupTotalRecordsEffect(): void {
     effect(() => {
       const totalRecords = this.preprintsTotalCount();
       untracked(() => {
@@ -169,8 +169,6 @@ export class MyPreprintsComponent {
 
   private updateComponentState(params: QueryParams): void {
     untracked(() => {
-      this.currentPage.set(params.page);
-      this.currentPageSize.set(params.size);
       this.searchControl.setValue(params.search);
       this.sortColumn.set(params.sortColumn);
       this.sortOrder.set(params.sortOrder);
@@ -186,12 +184,8 @@ export class MyPreprintsComponent {
     return {
       searchValue: params.search,
       searchFields: ['title', 'tags', 'description'],
-      sortColumn: params.sortColumn || this.defaultSortColumn,
+      sortColumn: params.sortColumn || 'dateModified',
       sortOrder: params.sortOrder,
     };
-  }
-
-  addPreprintBtnClicked() {
-    this.router.navigateByUrl('/preprints/select');
   }
 }

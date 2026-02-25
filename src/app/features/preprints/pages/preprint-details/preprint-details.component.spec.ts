@@ -2,9 +2,9 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
-import { HttpTestingController } from '@angular/common/http/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideServerRendering } from '@angular/platform-server';
@@ -12,10 +12,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
-import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { ClearCurrentProvider } from '@core/store/provider';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
+import { ToastService } from '@osf/shared/services/toast.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 
 import {
@@ -31,8 +32,16 @@ import {
   StatusBannerComponent,
 } from '../../components';
 import { ReviewsState } from '../../enums';
-import { PreprintSelectors } from '../../store/preprint';
-import { PreprintProvidersSelectors } from '../../store/preprint-providers';
+import {
+  FetchPreprintDetails,
+  FetchPreprintRequestActions,
+  FetchPreprintRequests,
+  FetchPreprintReviewActions,
+  PreprintSelectors,
+  ResetPreprintState,
+} from '../../store/preprint';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { CreateNewVersion } from '../../store/preprint-stepper';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
 
@@ -42,59 +51,100 @@ import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
-import { ToastServiceMock } from '@testing/mocks/toast.service.mock';
-import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { HelpScoutServiceMockFactory } from '@testing/providers/help-scout.service.mock';
 import { MetaTagsServiceMockFactory } from '@testing/providers/meta-tags.service.mock';
 import { PrerenderReadyServiceMockFactory } from '@testing/providers/prerender-ready.service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 describe('PreprintDetailsComponent', () => {
   let component: PreprintDetailsComponent;
   let fixture: ComponentFixture<PreprintDetailsComponent>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
-  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let dataciteService: jest.Mocked<DataciteService>;
-  let metaTagsService: jest.Mocked<MetaTagsService>;
-  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
+  let store: Store;
+  let routerMock: RouterMockType;
+  let helpScoutServiceMock: jest.Mocked<HelpScoutService>;
+  let prerenderReadyServiceMock: jest.Mocked<PrerenderReadyService>;
+  let dataciteServiceMock: ReturnType<typeof DataciteMockFactory>;
+  let metaTagsServiceMock: ReturnType<typeof MetaTagsServiceMockFactory>;
+  let customDialogServiceMock: ReturnType<CustomDialogServiceMockBuilder['build']>;
+  let toastService: ToastServiceMockType;
 
-  const mockPreprint = PREPRINT_MOCK;
   const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockPreprint = PREPRINT_MOCK;
   const mockReviewActions = [REVIEW_ACTION_MOCK];
-  const mockWithdrawalRequests = [PREPRINT_REQUEST_MOCK];
-  const mockRequestActions = [REVIEW_ACTION_MOCK];
+  const mockRequests = [PREPRINT_REQUEST_MOCK];
   const mockContributors = [MOCK_CONTRIBUTOR];
 
-  beforeEach(async () => {
+  const defaultSignals: SignalOverride[] = [
+    { selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'), value: mockProvider },
+    { selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading, value: false },
+    { selector: PreprintSelectors.getPreprint, value: mockPreprint },
+    { selector: PreprintSelectors.isPreprintLoading, value: false },
+    { selector: ContributorsSelectors.getBibliographicContributors, value: mockContributors },
+    { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
+    { selector: PreprintSelectors.getPreprintReviewActions, value: mockReviewActions },
+    { selector: PreprintSelectors.arePreprintReviewActionsLoading, value: false },
+    { selector: PreprintSelectors.getPreprintRequests, value: mockRequests },
+    { selector: PreprintSelectors.arePreprintRequestsLoading, value: false },
+    { selector: PreprintSelectors.getPreprintRequestActions, value: mockReviewActions },
+    { selector: PreprintSelectors.arePreprintRequestActionsLoading, value: false },
+    { selector: PreprintSelectors.hasAdminAccess, value: false },
+    { selector: PreprintSelectors.hasWriteAccess, value: true },
+    { selector: PreprintSelectors.getPreprintMetrics, value: null },
+    { selector: PreprintSelectors.arePreprintMetricsLoading, value: false },
+  ];
+
+  function setup(overrides?: {
+    selectorOverrides?: SignalOverride[];
+    routeParams?: { providerId: string; id: string };
+    queryParams?: Record<string, unknown>;
+    routerUrl?: string;
+    dialogReturnsCloseValue?: boolean;
+  }) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
+    const routeParams = overrides?.routeParams ?? { providerId: 'osf', id: 'preprint-1' };
+    const queryParams = overrides?.queryParams ?? { mode: 'moderator' };
+
     routerMock = RouterMockBuilder.create()
+      .withUrl(overrides?.routerUrl ?? '/preprints/osf/preprint-1')
       .withNavigate(jest.fn().mockResolvedValue(true))
       .withNavigateByUrl(jest.fn().mockResolvedValue(true))
       .build();
-
-    activatedRouteMock = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: 'osf', id: 'preprint-1' })
-      .withQueryParams({ mode: 'moderator' })
+    const activatedRouteMock = ActivatedRouteMockBuilder.create()
+      .withParams(routeParams)
+      .withQueryParams(queryParams)
       .build();
+    helpScoutServiceMock = HelpScoutServiceMockFactory();
+    prerenderReadyServiceMock = PrerenderReadyServiceMockFactory();
+    dataciteServiceMock = DataciteMockFactory();
+    metaTagsServiceMock = MetaTagsServiceMockFactory();
+    toastService = ToastServiceMock.simple();
+    customDialogServiceMock =
+      overrides?.dialogReturnsCloseValue === false
+        ? CustomDialogServiceMockBuilder.create()
+            .withOpen(
+              jest.fn().mockReturnValue({
+                onClose: of(false),
+                close: jest.fn(),
+              } as any)
+            )
+            .build()
+        : CustomDialogServiceMockBuilder.create()
+            .withOpen(
+              jest.fn().mockReturnValue({
+                onClose: of(true),
+                close: jest.fn(),
+              } as any)
+            )
+            .build();
 
-    mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
-
-    dataciteService = {
-      logIdentifiableView: jest.fn().mockReturnValue(of(void 0)),
-      logIdentifiableDownload: jest.fn().mockReturnValue(of(void 0)),
-    } as any;
-
-    metaTagsService = {
-      updateMetaTags: jest.fn(),
-    } as any;
-
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         PreprintDetailsComponent,
-        OSFTestingModule,
         ...MockComponents(
           PreprintFileSectionComponent,
           ShareAndDownloadComponent,
@@ -109,263 +159,342 @@ describe('PreprintDetailsComponent', () => {
         ),
       ],
       providers: [
-        TranslationServiceMock,
-        ToastServiceMock,
+        provideOSFCore(),
+        MockProvider(ToastService, toastService),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
-        MockProvider(DataciteService, dataciteService),
-        MockProvider(MetaTagsService, metaTagsService),
-        MockProvider(CustomDialogService, mockCustomDialogService),
-        provideMockStore({
-          signals: [
-            {
-              selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'),
-              value: mockProvider,
-            },
-            {
-              selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprint,
-              value: mockPreprint,
-            },
-            {
-              selector: PreprintSelectors.isPreprintLoading,
-              value: false,
-            },
-            {
-              selector: ContributorsSelectors.getBibliographicContributors,
-              value: mockContributors,
-            },
-            {
-              selector: ContributorsSelectors.isBibliographicContributorsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintReviewActions,
-              value: mockReviewActions,
-            },
-            {
-              selector: PreprintSelectors.arePreprintReviewActionsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintRequests,
-              value: mockWithdrawalRequests,
-            },
-            {
-              selector: PreprintSelectors.arePreprintRequestsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintRequestActions,
-              value: mockRequestActions,
-            },
-            {
-              selector: PreprintSelectors.arePreprintRequestActionsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.hasAdminAccess,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.hasWriteAccess,
-              value: false,
-            },
-          ],
-        }),
+        MockProvider(HelpScoutService, helpScoutServiceMock),
+        MockProvider(PrerenderReadyService, prerenderReadyServiceMock),
+        MockProvider(DataciteService, dataciteServiceMock),
+        MockProvider(MetaTagsService, metaTagsServiceMock),
+        MockProvider(CustomDialogService, customDialogServiceMock),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(PreprintDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  }
+
+  afterEach(() => {
+    fixture?.destroy();
+    jest.restoreAllMocks();
   });
 
-  it('should return preprint from store', () => {
-    const preprint = component.preprint();
-    expect(preprint).toBe(mockPreprint);
+  it('should dispatch initial fetch actions on creation', () => {
+    setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetPreprintProviderById('osf'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintDetails('preprint-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintReviewActions());
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintRequests());
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintRequestActions(PREPRINT_REQUEST_MOCK.id));
   });
 
-  it('should return preprint provider from store', () => {
-    const provider = component.preprintProvider();
-    expect(provider).toBe(mockProvider);
+  it('should set HelpScout and datacite tracking on initialization', () => {
+    setup();
+
+    expect(helpScoutServiceMock.setResourceType).toHaveBeenCalledWith('preprint');
+    expect(dataciteServiceMock.logIdentifiableView).toHaveBeenCalledTimes(1);
+    expect(prerenderReadyServiceMock.setNotReady).toHaveBeenCalled();
   });
 
-  it('should return loading states from store', () => {
-    expect(component.isPreprintLoading()).toBe(false);
-    expect(component.isPreprintProviderLoading()).toBe(false);
-    expect(component.areReviewActionsLoading()).toBe(false);
-    expect(component.areWithdrawalRequestsLoading()).toBe(false);
-    expect(component.areRequestActionsLoading()).toBe(false);
+  it('should update meta tags when preprint and contributors are loaded', () => {
+    setup();
+
+    expect(metaTagsServiceMock.updateMetaTags).toHaveBeenCalled();
   });
 
-  it('should return review actions from store', () => {
-    const actions = component.reviewActions();
-    expect(actions).toBe(mockReviewActions);
+  it('should not fetch moderation actions when not moderator and no permissions', () => {
+    setup({
+      queryParams: {},
+      selectorOverrides: [
+        {
+          selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'),
+          value: { ...mockProvider, permissions: [] },
+        },
+      ],
+    });
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(new FetchPreprintReviewActions());
+    expect(store.dispatch).not.toHaveBeenCalledWith(new FetchPreprintRequests());
   });
 
-  it('should return withdrawal requests from store', () => {
-    const requests = component.withdrawalRequests();
-    expect(requests).toBe(mockWithdrawalRequests);
+  it('should navigate to canonical version id when url id differs', () => {
+    setup({ routeParams: { providerId: 'osf', id: 'old-id' }, routerUrl: '/preprints/osf/old-id' });
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['../', 'preprint-1'], {
+      relativeTo: expect.anything(),
+      replaceUrl: true,
+      queryParamsHandling: 'preserve',
+    });
   });
 
-  it('should return request actions from store', () => {
-    const actions = component.requestActions();
-    expect(actions).toBe(mockRequestActions);
-  });
+  it('should navigate to edit page when edit is clicked', () => {
+    setup();
 
-  it('should return contributors from store', () => {
-    const contributors = component.contributors();
-    expect(contributors).toBe(mockContributors);
-  });
-
-  it('should return contributors loading state from store', () => {
-    const loading = component.areContributorsLoading();
-    expect(loading).toBe(false);
-  });
-
-  it('should compute latest action correctly', () => {
-    const latestAction = component.latestAction();
-    expect(latestAction).toBe(mockReviewActions[0]);
-  });
-
-  it('should compute latest withdrawal request correctly', () => {
-    const latestRequest = component.latestWithdrawalRequest();
-    expect(latestRequest).toBe(mockWithdrawalRequests[0]);
-  });
-
-  it('should compute latest request action correctly', () => {
-    const latestAction = component.latestRequestAction();
-    expect(latestAction).toBe(mockRequestActions[0]);
-  });
-
-  it('should compute isOsfPreprint correctly', () => {
-    const isOsf = component.isOsfPreprint();
-    expect(isOsf).toBe(true);
-  });
-
-  it('should compute moderation mode correctly', () => {
-    const moderationMode = component.moderationMode();
-    expect(moderationMode).toBe(true);
-  });
-
-  it('should compute create new version button visibility', () => {
-    const visible = component.createNewVersionButtonVisible();
-    expect(typeof visible).toBe('boolean');
-  });
-
-  it('should compute edit button visibility', () => {
-    const visible = component.editButtonVisible();
-    expect(typeof visible).toBe('boolean');
-  });
-
-  it('should compute edit button label', () => {
-    const label = component.editButtonLabel();
-    expect(typeof label).toBe('string');
-  });
-
-  it('should compute withdrawal button visibility', () => {
-    const visible = component.withdrawalButtonVisible();
-    expect(typeof visible).toBe('boolean');
-  });
-
-  it('should compute is pending withdrawal', () => {
-    const pending = component.isPendingWithdrawal();
-    expect(typeof pending).toBe('boolean');
-  });
-
-  it('should compute is withdrawal rejected', () => {
-    const rejected = component.isWithdrawalRejected();
-    expect(typeof rejected).toBe('boolean');
-  });
-
-  it('should compute moderation status banner visibility', () => {
-    const visible = component.moderationStatusBannerVisible();
-    expect(typeof visible).toBe('boolean');
-  });
-
-  it('should compute status banner visibility', () => {
-    const visible = component.statusBannerVisible();
-    expect(typeof visible).toBe('boolean');
-  });
-
-  it('should navigate to edit page when editPreprintClicked is called', () => {
     component.editPreprintClicked();
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['preprints', 'osf', 'edit', 'preprint-1']);
   });
 
-  it('should handle create new version clicked', () => {
-    expect(() => component.createNewVersionClicked()).not.toThrow();
+  it('should create new version and navigate to new version route', () => {
+    setup();
+    jest.spyOn(store, 'selectSnapshot').mockReturnValue({ id: 'new-version-id' } as any);
+
+    component.createNewVersionClicked();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new CreateNewVersion('preprint-1'));
+    expect(routerMock.navigate).toHaveBeenCalledWith(['preprints', 'osf', 'new-version', 'new-version-id']);
   });
 
-  it('should handle preprint with different states', () => {
-    const acceptedPreprint = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
-    jest.spyOn(component, 'preprint').mockReturnValue(acceptedPreprint);
+  it('should return early in createNewVersionClicked when preprint id is missing', () => {
+    setup({ routeParams: { providerId: 'osf', id: '' } });
+    (store.dispatch as jest.Mock).mockClear();
 
-    const withdrawable = component['preprintWithdrawableState']();
-    expect(typeof withdrawable).toBe('boolean');
+    component.createNewVersionClicked();
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(CreateNewVersion));
   });
 
-  it('should handle preprint with pending state', () => {
-    const pendingPreprint = { ...mockPreprint, reviewsState: ReviewsState.Pending };
-    jest.spyOn(component, 'preprint').mockReturnValue(pendingPreprint);
+  it('should show toast error for 409 on create new version', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockImplementation((action: unknown): Observable<unknown> => {
+      if (action instanceof CreateNewVersion) {
+        return throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 409,
+              error: { errors: [{ detail: 'Version already exists' }] },
+            })
+        );
+      }
 
-    const withdrawable = component['preprintWithdrawableState']();
-    expect(withdrawable).toBe(true);
+      return of(true);
+    });
+
+    component.createNewVersionClicked();
+
+    expect(toastService.showError).toHaveBeenCalledWith('Version already exists');
   });
 
-  it('should handle preprint with accepted state', () => {
-    const acceptedPreprint = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
-    jest.spyOn(component, 'preprint').mockReturnValue(acceptedPreprint);
+  it('should refetch preprint after successful withdraw dialog close', () => {
+    setup();
+    const fetchSpy = jest.spyOn(component, 'fetchPreprint');
 
-    const withdrawable = component['preprintWithdrawableState']();
-    expect(withdrawable).toBe(true);
+    component.handleWithdrawClicked();
+
+    expect(customDialogServiceMock.open).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith('preprint-1');
   });
 
-  it('should handle preprint with pending state', () => {
-    const pendingPreprint = { ...mockPreprint, reviewsState: ReviewsState.Pending };
-    jest.spyOn(component, 'preprint').mockReturnValue(pendingPreprint);
+  it('should navigate to pending moderation page on matching 403 error', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockImplementation((action: unknown): Observable<unknown> => {
+      if (action instanceof FetchPreprintDetails) {
+        return throwError(
+          () =>
+            new HttpErrorResponse({
+              status: 403,
+              error: {
+                errors: [{ detail: 'This preprint is pending moderation and is not yet publicly available.' }],
+              },
+            })
+        );
+      }
 
-    const withdrawable = component['preprintWithdrawableState']();
-    expect(withdrawable).toBe(true);
+      return of(true);
+    });
+
+    component.fetchPreprint('preprint-1');
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/preprints', 'osf', 'preprint-1', 'pending-moderation']);
   });
 
-  it('should handle preprint without write permissions', () => {
-    const preprintWithoutWrite = {
-      ...mockPreprint,
-      currentUserPermissions: [UserPermissions.Read],
-    };
-    jest.spyOn(component, 'preprint').mockReturnValue(preprintWithoutWrite);
+  it('should return early in fetchPreprint when preprint id is missing', () => {
+    setup();
+    const prerenderSpy = prerenderReadyServiceMock.setNotReady as jest.Mock;
+    prerenderSpy.mockClear();
+    (store.dispatch as jest.Mock).mockClear();
 
-    const hasAccess = component['hasWriteAccess']();
-    expect(hasAccess).toBe(false);
+    component.fetchPreprint('');
+
+    expect(prerenderSpy).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintDetails));
+  });
+
+  it('should reset state and provider on destroy in browser', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.ngOnDestroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new ResetPreprintState());
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearCurrentProvider());
+    expect(helpScoutServiceMock.unsetResourceType).toHaveBeenCalled();
+  });
+
+  it('should expose expected computed values for default mocks', () => {
+    setup();
+
+    expect(component.latestAction()).toBe(mockReviewActions[0]);
+    expect(component.latestWithdrawalRequest()).toBe(mockRequests[0]);
+    expect(component.latestRequestAction()).toBe(mockReviewActions[0]);
+    expect(component.isPendingWithdrawal()).toBe(true);
+    expect(component.isWithdrawalRejected()).toBe(false);
+    expect(component.moderationMode()).toBe(true);
+    expect(component.isOsfPreprint()).toBe(true);
+  });
+
+  it('should mark preprint withdrawable for pending and accepted states', () => {
+    setup();
+    jest.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, reviewsState: ReviewsState.Pending } as any);
+    expect(component['preprintWithdrawableState']()).toBe(true);
+
+    jest.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, reviewsState: ReviewsState.Accepted } as any);
+    expect(component['preprintWithdrawableState']()).toBe(true);
+  });
+
+  it('should hide edit button when preprint is withdrawn', () => {
+    setup({
+      selectorOverrides: [
+        { selector: PreprintSelectors.getPreprint, value: { ...mockPreprint, dateWithdrawn: '2024-01-01' } },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(false);
+  });
+
+  it('should show edit button for latest or initial preprint', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, isLatestVersion: false, reviewsState: ReviewsState.Initial },
+        },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(true);
+  });
+
+  it('should show edit button for pending premoderation preprint', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, isLatestVersion: false, reviewsState: ReviewsState.Pending },
+        },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(true);
+  });
+
+  it('should show edit-and-resubmit for rejected premoderation preprint with admin access', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, isLatestVersion: false, reviewsState: ReviewsState.Rejected },
+        },
+        { selector: PreprintSelectors.hasAdminAccess, value: true },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(true);
+  });
+
+  it('should hide edit button when none of edit visibility conditions are met', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, isLatestVersion: false, reviewsState: ReviewsState.Rejected },
+        },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(false);
+  });
+
+  it('should return false for statusBannerVisible when provider is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'), value: null }],
+    });
+
+    expect(component.statusBannerVisible()).toBe(false);
+  });
+
+  it('should return false for statusBannerVisible when preprint is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.getPreprint, value: null }],
+    });
+
+    expect(component.statusBannerVisible()).toBe(false);
+  });
+
+  it('should return false for statusBannerVisible when related request data is loading', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.arePreprintRequestsLoading, value: true }],
+    });
+
+    expect(component.statusBannerVisible()).toBe(false);
+  });
+
+  it('should return false for isPendingWithdrawal when no withdrawal request exists', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.getPreprintRequests, value: [] }],
+    });
+
+    expect(component.isPendingWithdrawal()).toBe(false);
+  });
+
+  it('should return false for isWithdrawalRejected when no request action exists', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.getPreprintRequestActions, value: [] }],
+    });
+
+    expect(component.isWithdrawalRejected()).toBe(false);
+  });
+
+  it('should return false for withdrawalButtonVisible while withdrawal data is loading', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.arePreprintRequestsLoading, value: true }],
+    });
+
+    expect(component.withdrawalButtonVisible()).toBe(false);
+  });
+
+  it('should return early in editPreprintClicked when route ids are missing', () => {
+    setup({ routeParams: { providerId: '', id: '' } });
+    (routerMock.navigate as jest.Mock).mockClear();
+
+    component.editPreprintClicked();
+
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 });
 
-describe('PreprintDetailsComponent SSR Tests', () => {
+describe('PreprintDetailsComponent SSR', () => {
   let component: PreprintDetailsComponent;
   let fixture: ComponentFixture<PreprintDetailsComponent>;
-  let httpMock: HttpTestingController;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
   let store: Store;
-
-  const mockPreprint = PREPRINT_MOCK;
   const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockPreprint = PREPRINT_MOCK;
   const mockContributors = [MOCK_CONTRIBUTOR];
 
-  beforeEach(async () => {
-    mockRouter = RouterMockBuilder.create().build();
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: 'osf', id: 'preprint-1' }).build();
+  function setup() {
+    const routerMock = RouterMockBuilder.create().build();
+    const activatedRouteMock = ActivatedRouteMockBuilder.create()
+      .withParams({ providerId: 'osf', id: 'preprint-1' })
+      .build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         PreprintDetailsComponent,
-        OSFTestingModule,
         ...MockComponents(
           PreprintFileSectionComponent,
           ShareAndDownloadComponent,
@@ -381,118 +510,64 @@ describe('PreprintDetailsComponent SSR Tests', () => {
       ],
       providers: [
         provideServerRendering(),
-        { provide: PLATFORM_ID, useValue: 'server' },
-        MockProvider(ActivatedRoute, mockActivatedRoute),
-        MockProvider(Router, mockRouter),
-        MockProvider(CustomDialogService, CustomDialogServiceMockBuilder.create().build()),
+        provideOSFCore(),
+        MockProvider(PLATFORM_ID, 'server'),
+        MockProvider(ToastService, ToastServiceMock.simple()),
+        MockProvider(ActivatedRoute, activatedRouteMock),
+        MockProvider(Router, routerMock),
+        MockProvider(CustomDialogService, CustomDialogServiceMockBuilder.create().withDefaultOpen().build()),
         MockProvider(DataciteService, DataciteMockFactory()),
         MockProvider(MetaTagsService, MetaTagsServiceMockFactory()),
         MockProvider(PrerenderReadyService, PrerenderReadyServiceMockFactory()),
         MockProvider(HelpScoutService, HelpScoutServiceMockFactory()),
-        TranslationServiceMock,
-        ToastServiceMock,
         provideMockStore({
           signals: [
-            {
-              selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'),
-              value: mockProvider,
-            },
-            {
-              selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprint,
-              value: mockPreprint,
-            },
-            {
-              selector: PreprintSelectors.isPreprintLoading,
-              value: false,
-            },
-            {
-              selector: ContributorsSelectors.getBibliographicContributors,
-              value: mockContributors,
-            },
-            {
-              selector: ContributorsSelectors.isBibliographicContributorsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintReviewActions,
-              value: [],
-            },
-            {
-              selector: PreprintSelectors.arePreprintReviewActionsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintRequests,
-              value: [],
-            },
-            {
-              selector: PreprintSelectors.arePreprintRequestsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintRequestActions,
-              value: [],
-            },
-            {
-              selector: PreprintSelectors.arePreprintRequestActionsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.hasAdminAccess,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.hasWriteAccess,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintMetrics,
-              value: null,
-            },
-            {
-              selector: PreprintSelectors.arePreprintMetricsLoading,
-              value: false,
-            },
+            { selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'), value: mockProvider },
+            { selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading, value: false },
+            { selector: PreprintSelectors.getPreprint, value: mockPreprint },
+            { selector: PreprintSelectors.isPreprintLoading, value: false },
+            { selector: ContributorsSelectors.getBibliographicContributors, value: mockContributors },
+            { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
+            { selector: PreprintSelectors.getPreprintReviewActions, value: [] },
+            { selector: PreprintSelectors.arePreprintReviewActionsLoading, value: false },
+            { selector: PreprintSelectors.getPreprintRequests, value: [] },
+            { selector: PreprintSelectors.arePreprintRequestsLoading, value: false },
+            { selector: PreprintSelectors.getPreprintRequestActions, value: [] },
+            { selector: PreprintSelectors.arePreprintRequestActionsLoading, value: false },
+            { selector: PreprintSelectors.hasAdminAccess, value: false },
+            { selector: PreprintSelectors.hasWriteAccess, value: false },
+            { selector: PreprintSelectors.getPreprintMetrics, value: null },
+            { selector: PreprintSelectors.arePreprintMetricsLoading, value: false },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
-    httpMock = TestBed.inject(HttpTestingController);
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(PreprintDetailsComponent);
     component = fixture.componentInstance;
+  }
+
+  afterEach(() => {
+    fixture?.destroy();
+    jest.restoreAllMocks();
   });
 
-  it('should render PreprintDetailsComponent server-side without errors', () => {
-    expect(() => {
-      fixture.detectChanges();
-    }).not.toThrow();
+  it('should render without browser-only errors in SSR', () => {
+    setup();
+
+    expect(() => fixture.detectChanges()).not.toThrow();
     expect(component).toBeTruthy();
   });
 
-  it('should not access browser-only APIs during SSR', () => {
-    const platformId = TestBed.inject(PLATFORM_ID);
-    expect(platformId).toBe('server');
+  it('should skip reset dispatches in ngOnDestroy on SSR', () => {
+    setup();
     fixture.detectChanges();
-    expect(component).toBeTruthy();
-  });
-
-  it('should not call browser-only actions in ngOnDestroy during SSR', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-    fixture.detectChanges();
     dispatchSpy.mockClear();
+
     component.ngOnDestroy();
 
     expect(dispatchSpy).not.toHaveBeenCalled();
-  });
-
-  afterEach(() => {
-    httpMock.verify();
   });
 });

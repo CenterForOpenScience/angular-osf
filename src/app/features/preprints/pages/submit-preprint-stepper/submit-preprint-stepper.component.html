@@ -6,9 +6,9 @@
     } @else {
       <img
         class="preprint-provider-hero-logo"
-        alt="Provider Logo"
         height="40"
         [src]="preprintProvider()!.brand.heroLogoImageUrl"
+        [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
       />
       <h1 class="preprint-provider-name">
         {{ 'preprints.addPreprint' | translate: { preprintWord: preprintProvider()!.preprintWord } }}
@@ -22,7 +22,7 @@
     } @else {
       <osf-stepper
         class="mt-6"
-        [steps]="submitPreprintSteps()"
+        [steps]="steps()"
         [currentStep]="currentStep()"
         (currentStepChange)="stepChange($event)"
       />
@@ -30,33 +30,33 @@
   }
 </section>
 
-<section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
-  @switch (currentStep().value) {
-    @case (SubmitStepsEnum.TitleAndAbstract) {
-      <osf-title-and-abstract-step (nextClicked)="moveToNextStep()" />
+@let provider = preprintProvider();
+
+@if (provider) {
+  <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
+    @switch (currentStep().value) {
+      @case (PreprintSteps.TitleAndAbstract) {
+        <osf-title-and-abstract-step (nextClicked)="moveToNextStep()" />
+      }
+      @case (PreprintSteps.File) {
+        <osf-file-step [provider]="provider" (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+      }
+      @case (PreprintSteps.Metadata) {
+        <osf-preprints-metadata
+          [provider]="provider"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+        />
+      }
+      @case (PreprintSteps.AuthorAssertions) {
+        <osf-author-assertions-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+      }
+      @case (PreprintSteps.Supplements) {
+        <osf-supplements-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+      }
+      @case (PreprintSteps.Review) {
+        <osf-review-step [provider]="provider" />
+      }
     }
-    @case (SubmitStepsEnum.File) {
-      <osf-file-step
-        [provider]="preprintProvider()"
-        (nextClicked)="moveToNextStep()"
-        (backClicked)="moveToPreviousStep()"
-      />
-    }
-    @case (SubmitStepsEnum.Metadata) {
-      <osf-preprints-metadata
-        (nextClicked)="moveToNextStep()"
-        (backClicked)="moveToPreviousStep()"
-        [provider]="preprintProvider()"
-      />
-    }
-    @case (SubmitStepsEnum.AuthorAssertions) {
-      <osf-author-assertions-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
-    }
-    @case (SubmitStepsEnum.Supplements) {
-      <osf-supplements-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
-    }
-    @case (SubmitStepsEnum.Review) {
-      <osf-review-step [provider]="preprintProvider()" />
-    }
-  }
-</section>
+  </section>
+}

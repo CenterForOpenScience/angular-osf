@@ -47,7 +47,7 @@ export class PreprintsMapper {
       datePublished: response.attributes.date_published,
       dateLastTransitioned: response.attributes.date_last_transitioned,
       title: replaceBadEncodedChars(response.attributes.title),
-      description: response.attributes.description,
+      description: replaceBadEncodedChars(response.attributes.description),
       reviewsState: response.attributes.reviews_state,
       preprintDoiCreated: response.attributes.preprint_doi_created,
       currentUserPermissions: response.attributes.current_user_permissions,

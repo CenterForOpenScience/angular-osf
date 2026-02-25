@@ -57,8 +57,8 @@ export class PreprintProvidersMapper {
   ): PreprintProviderShortInfo[] {
     return response.map((item) => ({
       id: item.id,
-      descriptionHtml: item.attributes.description,
-      name: item.attributes.name,
+      name: replaceBadEncodedChars(item.attributes.name),
+      descriptionHtml: replaceBadEncodedChars(item.attributes.description),
       whiteWideImageUrl: item.attributes.assets?.wide_white,
       squareColorNoTransparentImageUrl: item.attributes.assets?.square_color_no_transparent,
     }));

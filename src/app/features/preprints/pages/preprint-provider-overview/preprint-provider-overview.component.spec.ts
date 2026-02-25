@@ -1,3 +1,5 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -14,38 +16,57 @@ import {
   PreprintProviderHeroComponent,
 } from '../../components';
 import { PreprintProviderDetails } from '../../models';
-import { PreprintProvidersSelectors } from '../../store/preprint-providers';
+import {
+  GetHighlightedSubjectsByProviderId,
+  GetPreprintProviderById,
+  PreprintProvidersSelectors,
+} from '../../store/preprint-providers';
 
 import { PreprintProviderOverviewComponent } from './preprint-provider-overview.component';
 
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { BrandServiceMock, BrandServiceMockType } from '@testing/providers/brand-service.mock';
+import { BrowserTabServiceMock, BrowserTabServiceMockType } from '@testing/providers/browser-tab-service.mock';
+import { HeaderStyleServiceMock, HeaderStyleServiceMockType } from '@testing/providers/header-style-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 describe('PreprintProviderOverviewComponent', () => {
   let component: PreprintProviderOverviewComponent;
   let fixture: ComponentFixture<PreprintProviderOverviewComponent>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
+  let store: Store;
+  let routerMock: RouterMockType;
   let routeMock: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let brandServiceMock: BrandServiceMockType;
+  let headerStyleMock: HeaderStyleServiceMockType;
+  let browserTabMock: BrowserTabServiceMockType;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockSubjects = SUBJECTS_MOCK;
   const mockProviderId = 'osf';
 
-  beforeEach(async () => {
-    routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
-    routeMock = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: mockProviderId })
-      .withQueryParams({})
-      .build();
+  const defaultSignals: SignalOverride[] = [
+    { selector: PreprintProvidersSelectors.getPreprintProviderDetails(mockProviderId), value: mockProvider },
+    { selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading, value: false },
+    { selector: PreprintProvidersSelectors.getHighlightedSubjectsForProvider, value: mockSubjects },
+    { selector: PreprintProvidersSelectors.areSubjectsLoading, value: false },
+  ];
 
-    await TestBed.configureTestingModule({
+  function setup(overrides?: { selectorOverrides?: SignalOverride[] }) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
+
+    routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
+    routeMock = ActivatedRouteMockBuilder.create().withParams({ providerId: mockProviderId }).build();
+    brandServiceMock = BrandServiceMock.simple();
+    headerStyleMock = HeaderStyleServiceMock.simple();
+    browserTabMock = BrowserTabServiceMock.simple();
+
+    TestBed.configureTestingModule({
       imports: [
         PreprintProviderOverviewComponent,
-        OSFTestingModule,
         ...MockComponents(
           PreprintProviderHeroComponent,
           PreprintProviderFooterComponent,
@@ -54,135 +75,83 @@ describe('PreprintProviderOverviewComponent', () => {
         ),
       ],
       providers: [
-        MockProvider(BrandService),
-        MockProvider(BrowserTabService),
-        MockProvider(HeaderStyleService),
+        provideOSFCore(),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, routeMock),
-        provideMockStore({
-          signals: [
-            {
-              selector: PreprintProvidersSelectors.getPreprintProviderDetails(mockProviderId),
-              value: mockProvider,
-            },
-            {
-              selector: PreprintProvidersSelectors.isPreprintProviderDetailsLoading,
-              value: false,
-            },
-            {
-              selector: PreprintProvidersSelectors.getHighlightedSubjectsForProvider,
-              value: mockSubjects,
-            },
-            {
-              selector: PreprintProvidersSelectors.areSubjectsLoading,
-              value: false,
-            },
-          ],
-        }),
+        MockProvider(BrandService, brandServiceMock),
+        MockProvider(HeaderStyleService, headerStyleMock),
+        MockProvider(BrowserTabService, browserTabMock),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(PreprintProviderOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  }
+
+  afterEach(() => {
+    fixture?.destroy();
+    jest.restoreAllMocks();
   });
 
-  it('should initialize with correct default values', () => {
-    expect(component.preprintProvider).toBeDefined();
-    expect(component.isPreprintProviderLoading).toBeDefined();
-    expect(component.highlightedSubjectsByProviderId).toBeDefined();
-    expect(component.areSubjectsLoading).toBeDefined();
+  it('should dispatch initial actions on creation', () => {
+    setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetPreprintProviderById(mockProviderId));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetHighlightedSubjectsByProviderId(mockProviderId));
   });
 
-  it('should return preprint provider from store', () => {
-    const provider = component.preprintProvider();
-    expect(provider).toBe(mockProvider);
+  it('should apply branding when provider is available', () => {
+    setup();
+
+    expect(brandServiceMock.applyBranding).toHaveBeenCalledWith(mockProvider.brand);
+    expect(headerStyleMock.applyHeaderStyles).toHaveBeenCalledWith(
+      mockProvider.brand.primaryColor,
+      mockProvider.brand.secondaryColor,
+      mockProvider.brand.heroBackgroundImageUrl
+    );
+    expect(browserTabMock.updateTabStyles).toHaveBeenCalledWith(mockProvider.faviconUrl, mockProvider.name);
   });
 
-  it('should return loading state from store', () => {
-    const loading = component.isPreprintProviderLoading();
-    expect(loading).toBe(false);
-  });
+  it('should reset branding and header styles on destroy', () => {
+    setup();
 
-  it('should return highlighted subjects from store', () => {
-    const subjects = component.highlightedSubjectsByProviderId();
-    expect(subjects).toBe(mockSubjects);
-  });
+    component.ngOnDestroy();
 
-  it('should return subjects loading state from store', () => {
-    const loading = component.areSubjectsLoading();
-    expect(loading).toBe(false);
-  });
-
-  it('should handle provider data correctly', () => {
-    const provider = component.preprintProvider();
-    expect(provider).toBe(mockProvider);
-    expect(provider?.id).toBe(mockProvider.id);
-    expect(provider?.name).toBe(mockProvider.name);
-  });
-
-  it('should handle subjects data correctly', () => {
-    const subjects = component.highlightedSubjectsByProviderId();
-    expect(subjects).toBe(mockSubjects);
-    expect(Array.isArray(subjects)).toBe(true);
-  });
-
-  it('should handle loading states correctly', () => {
-    const providerLoading = component.isPreprintProviderLoading();
-    const subjectsLoading = component.areSubjectsLoading();
-
-    expect(typeof providerLoading).toBe('boolean');
-    expect(typeof subjectsLoading).toBe('boolean');
-    expect(providerLoading).toBe(false);
-    expect(subjectsLoading).toBe(false);
+    expect(headerStyleMock.resetToDefaults).toHaveBeenCalled();
+    expect(brandServiceMock.resetBranding).toHaveBeenCalled();
+    expect(browserTabMock.resetToDefaults).toHaveBeenCalled();
   });
 
   it('should navigate to discover page with search value', () => {
+    setup();
     const searchValue = 'test search';
+
     component.redirectToDiscoverPageWithValue(searchValue);
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['discover'], {
-      relativeTo: expect.any(Object),
+      relativeTo: expect.anything(),
       queryParams: { search: searchValue },
     });
   });
 
   it('should navigate to discover page with empty search value', () => {
+    setup();
     const searchValue = '';
+
     component.redirectToDiscoverPageWithValue(searchValue);
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['discover'], {
-      relativeTo: expect.any(Object),
+      relativeTo: expect.anything(),
       queryParams: { search: searchValue },
     });
   });
 
-  it('should navigate to discover page with null search value', () => {
-    const searchValue = null as any;
-    component.redirectToDiscoverPageWithValue(searchValue);
+  it('should expose highlighted subjects from store', () => {
+    setup();
 
-    expect(routerMock.navigate).toHaveBeenCalledWith(['discover'], {
-      relativeTo: expect.any(Object),
-      queryParams: { search: searchValue },
-    });
-  });
-
-  it('should initialize signals correctly', () => {
-    expect(component.preprintProvider).toBeDefined();
-    expect(component.isPreprintProviderLoading).toBeDefined();
-    expect(component.highlightedSubjectsByProviderId).toBeDefined();
-    expect(component.areSubjectsLoading).toBeDefined();
-  });
-
-  it('should handle provider data with null values', () => {
-    const provider = component.preprintProvider();
-    expect(provider).toBeDefined();
-    expect(provider).toBe(mockProvider);
-  });
-
-  it('should handle subjects data with empty array', () => {
-    const subjects = component.highlightedSubjectsByProviderId();
-    expect(subjects).toBeDefined();
-    expect(Array.isArray(subjects)).toBe(true);
+    expect(component.highlightedSubjectsByProviderId()).toBe(mockSubjects);
   });
 });
