@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -23,6 +23,9 @@ export class MetadataRecordsService {
   }
 
   getMetadataRecord(osfid: string, format: MetadataRecordFormat): Observable<string> {
-    return this.http.get(this.metadataRecordUrl(osfid, format), { responseType: 'text' });
+    return this.http.get(this.metadataRecordUrl(osfid, format), {
+      responseType: 'text',
+      headers: new HttpHeaders({ 'X-No-Auth-Redirect': 'true' }),
+    });
   }
 }
