@@ -28,16 +28,6 @@ describe('ContributorsDialogComponent', () => {
 
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR];
 
-  beforeAll(() => {
-    if (typeof (globalThis as any).structuredClone !== 'function') {
-      Object.defineProperty(globalThis as any, 'structuredClone', {
-        configurable: true,
-        writable: true,
-        value: (o: unknown) => JSON.parse(JSON.stringify(o)),
-      });
-    }
-  });
-
   beforeEach(async () => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
