@@ -81,13 +81,17 @@ export class UpdatePreprintStepperComponent implements OnDestroy, CanDeactivateC
     fetchPreprint: FetchPreprintById,
   });
 
-  readonly PreprintSteps = PreprintSteps;
-
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   preprint = select(PreprintStepperSelectors.getPreprint);
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
   hasAdminAccess = select(PreprintStepperSelectors.hasAdminAccess);
+
+  isWeb = toSignal(inject(IS_WEB));
+
+  currentStep = signal<StepOption>(submitPreprintSteps[0]);
+
+  readonly PreprintSteps = PreprintSteps;
 
   editAndResubmitMode = computed(() => {
     const providerIsPremod = this.preprintProvider()?.reviewsWorkflow === ProviderReviewsWorkflow.PreModeration;
@@ -116,9 +120,6 @@ export class UpdatePreprintStepperComponent implements OnDestroy, CanDeactivateC
       })
       .map((step, index) => ({ ...step, index }));
   });
-
-  currentStep = signal<StepOption>(submitPreprintSteps[0]);
-  isWeb = toSignal(inject(IS_WEB));
 
   constructor() {
     this.actions.getPreprintProviderById(this.providerId());

@@ -57,11 +57,7 @@
 
 <osf-preprint-services [preprintProvidersToAdvertise]="preprintProvidersToAdvertise()" />
 
-<osf-advisory-board
-  [htmlContent]="providerDetails?.advisoryBoardHtml"
-  [brand]="providerDetails?.brand"
-  [isLandingPage]="true"
-/>
+<osf-advisory-board [htmlContent]="providerDetails?.advisoryBoardHtml" [isLandingPage]="true" />
 
 <section
   class="blue-dark-gradient py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4 lg:flex-row lg:align-items-center lg:justify-content-between"
