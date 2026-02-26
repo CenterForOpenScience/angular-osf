@@ -48,8 +48,8 @@ describe('authInterceptor', () => {
     return handler;
   };
 
-  it('should skip CrossRef funders API requests', () => {
-    const request = createRequest('/api.crossref.org/funders/10.13039/100000001');
+  it('should skip ROR funders API requests', () => {
+    const request = createRequest('https://api.ror.org/v2');
     const handler = createHandler();
 
     runInInjectionContext(TestBed, () => authInterceptor(request, handler));
