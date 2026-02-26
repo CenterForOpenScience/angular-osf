@@ -8,7 +8,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -16,7 +16,6 @@ import { SafeHtmlPipe } from '@osf/shared/pipes/safe-html.pipe';
 
 import { PreprintProviderShortInfo } from '../../models';
 import { GetPreprintProvidersAllowingSubmissions, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-select-preprint-service',
@@ -30,12 +29,12 @@ export class SelectPreprintServiceComponent {
 
   private actions = createDispatchMap({
     getPreprintProvidersAllowingSubmissions: GetPreprintProvidersAllowingSubmissions,
-    setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
   });
 
   preprintProvidersAllowingSubmissions = select(PreprintProvidersSelectors.getPreprintProvidersAllowingSubmissions);
   areProvidersLoading = select(PreprintProvidersSelectors.arePreprintProvidersAllowingSubmissionsLoading);
-  selectedProviderId = select(PreprintStepperSelectors.getSelectedProviderId);
+
+  selectedProviderId = signal<string | null>(null);
   skeletonArray = new Array(8);
 
   constructor() {
@@ -44,10 +43,10 @@ export class SelectPreprintServiceComponent {
 
   toggleProviderSelection(provider: PreprintProviderShortInfo): void {
     if (provider.id === this.selectedProviderId()) {
-      this.actions.setSelectedPreprintProviderId(null);
+      this.selectedProviderId.set(null);
       return;
     }
 
-    this.actions.setSelectedPreprintProviderId(provider.id);
+    this.selectedProviderId.set(provider.id);
   }
 }

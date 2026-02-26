@@ -1,167 +1,91 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 
-import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
-import { SubjectModel } from '@osf/shared/models/subject/subject.model';
-import { SubjectsSelectors } from '@osf/shared/stores/subjects';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import {
+  FetchChildrenSubjects,
+  FetchSelectedSubjects,
+  FetchSubjects,
+  SubjectsSelectors,
+  UpdateResourceSubjects,
+} from '@osf/shared/stores/subjects';
 
 import { PreprintsSubjectsComponent } from './preprints-subjects.component';
 
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 describe('PreprintsSubjectsComponent', () => {
   let component: PreprintsSubjectsComponent;
   let fixture: ComponentFixture<PreprintsSubjectsComponent>;
+  let store: Store;
 
-  const mockSubjects: SubjectModel[] = SUBJECTS_MOCK;
+  const mockSubjects = SUBJECTS_MOCK;
+  const defaultSignals: SignalOverride[] = [
+    { selector: SubjectsSelectors.getSelectedSubjects, value: mockSubjects },
+    { selector: SubjectsSelectors.areSelectedSubjectsLoading, value: false },
+  ];
 
-  const mockFormControl = new FormControl([]);
+  function setup(overrides?: { preprintId?: string; providerId?: string; selectorOverrides?: SignalOverride[] }) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
+    const control = new FormControl([]);
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PreprintsSubjectsComponent, OSFTestingModule, MockComponent(SubjectsComponent)],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: PreprintStepperSelectors.getSelectedProviderId, value: 'test-provider-id' },
-            { selector: SubjectsSelectors.getSelectedSubjects, value: mockSubjects },
-            { selector: SubjectsSelectors.areSelectedSubjectsLoading, value: false },
-          ],
-        }),
-      ],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [PreprintsSubjectsComponent, MockComponent(SubjectsComponent)],
+      providers: [provideOSFCore(), provideMockStore({ signals })],
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(PreprintsSubjectsComponent);
     component = fixture.componentInstance;
-
-    fixture.componentRef.setInput('preprintId', 'test-preprint-id');
-    fixture.componentRef.setInput('control', mockFormControl);
-
+    fixture.componentRef.setInput('control', control);
+    fixture.componentRef.setInput('providerId', overrides?.providerId ?? 'test-provider-id');
+    fixture.componentRef.setInput(
+      'preprintId',
+      overrides && 'preprintId' in overrides ? overrides.preprintId : 'test-preprint-id'
+    );
     fixture.detectChanges();
+  }
+
+  it('should fetch provider subjects and selected subjects on init when ids exist', () => {
+    setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSubjects(ResourceType.Preprint, 'test-provider-id'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSelectedSubjects('test-preprint-id', ResourceType.Preprint));
+    expect(component.control().value).toEqual(mockSubjects);
   });
 
-  describe('Component Creation', () => {
-    it('should create', () => {
-      expect(component).toBeTruthy();
-    });
+  it('should dispatch child subjects fetch', () => {
+    setup();
 
-    it('should be an instance of PreprintsSubjectsComponent', () => {
-      expect(component).toBeInstanceOf(PreprintsSubjectsComponent);
-    });
+    component.getSubjectChildren('parent-123');
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchChildrenSubjects('parent-123'));
   });
 
-  it('should have required inputs', () => {
-    expect(component.preprintId()).toBe('test-preprint-id');
-    expect(component.control()).toBe(mockFormControl);
+  it('should search subjects', () => {
+    setup();
+    component.searchSubjects('math');
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSubjects(ResourceType.Preprint, 'test-provider-id', 'math'));
   });
 
-  it('should have NGXS selectors defined', () => {
-    expect(component.selectedSubjects).toBeDefined();
-    expect(component.isSubjectsUpdating).toBeDefined();
-    expect(component['selectedProviderId']).toBeDefined();
-  });
+  it('should update control state and resource subjects when preprint id exists', () => {
+    setup();
+    const control = component.control();
 
-  it('should have actions defined', () => {
-    expect(component.actions).toBeDefined();
-    expect(component.actions.fetchSubjects).toBeDefined();
-    expect(component.actions.fetchSelectedSubjects).toBeDefined();
-    expect(component.actions.fetchChildrenSubjects).toBeDefined();
-    expect(component.actions.updateResourceSubjects).toBeDefined();
-  });
+    component.updateSelectedSubjects(mockSubjects);
 
-  it('should have INPUT_VALIDATION_MESSAGES constant', () => {
-    expect(component.INPUT_VALIDATION_MESSAGES).toBeDefined();
-  });
-
-  it('should get selected subjects from store', () => {
-    expect(component.selectedSubjects()).toEqual(mockSubjects);
-  });
-
-  it('should get subjects loading state from store', () => {
-    expect(component.isSubjectsUpdating()).toBe(false);
-  });
-
-  it('should get selected provider ID from store', () => {
-    expect(component['selectedProviderId']()).toBe('test-provider-id');
-  });
-
-  it('should call getSubjectChildren with parent ID', () => {
-    const parentId = 'parent-123';
-
-    expect(() => component.getSubjectChildren(parentId)).not.toThrow();
-  });
-
-  it('should call searchSubjects with search term', () => {
-    const searchTerm = 'mathematics';
-
-    expect(() => component.searchSubjects(searchTerm)).not.toThrow();
-  });
-
-  it('should handle null control gracefully', () => {
-    const nullControl = new FormControl(null);
-    fixture.componentRef.setInput('control', nullControl);
-
-    expect(() => component.updateControlState(mockSubjects)).not.toThrow();
-  });
-
-  it('should mark control as touched and dirty', () => {
-    const freshControl = new FormControl([]);
-    fixture.componentRef.setInput('control', freshControl);
-
-    component.updateControlState(mockSubjects);
-
-    expect(freshControl.touched).toBe(true);
-    expect(freshControl.dirty).toBe(true);
-  });
-
-  it('should render subjects component', () => {
-    const subjectsComponent = fixture.nativeElement.querySelector('osf-subjects');
-    expect(subjectsComponent).toBeTruthy();
-  });
-
-  it('should handle control with required error', () => {
-    mockFormControl.setErrors({ required: true });
-    mockFormControl.markAsTouched();
-    mockFormControl.markAsDirty();
-    fixture.detectChanges();
-
-    expect(component).toBeTruthy();
-    expect(mockFormControl.errors).toEqual({ required: true });
-  });
-
-  it('should not show error message when control is valid', () => {
-    mockFormControl.setErrors(null);
-    fixture.detectChanges();
-
-    const errorMessage = fixture.nativeElement.querySelector('p-message');
-    expect(errorMessage).toBeFalsy();
-  });
-
-  it('should handle empty preprintId', () => {
-    fixture.componentRef.setInput('preprintId', '');
-
-    expect(() => component.ngOnInit()).not.toThrow();
-  });
-
-  it('should handle undefined preprintId', () => {
-    fixture.componentRef.setInput('preprintId', undefined);
-
-    expect(() => component.ngOnInit()).not.toThrow();
-  });
-
-  it('should handle empty subjects array', () => {
-    const emptySubjects: SubjectModel[] = [];
-
-    expect(() => component.updateSelectedSubjects(emptySubjects)).not.toThrow();
-    expect(mockFormControl.value).toEqual(emptySubjects);
-  });
-
-  it('should handle null subjects', () => {
-    expect(() => component.updateControlState(null as any)).not.toThrow();
+    expect(control.value).toEqual(mockSubjects);
+    expect(control.touched).toBe(true);
+    expect(control.dirty).toBe(true);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateResourceSubjects('test-preprint-id', ResourceType.Preprint, mockSubjects)
+    );
   });
 });

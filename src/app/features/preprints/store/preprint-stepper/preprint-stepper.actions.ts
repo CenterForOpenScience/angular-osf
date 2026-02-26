@@ -6,12 +6,6 @@ import { LicenseOptions } from '@osf/shared/models/license/license.model';
 import { PreprintFileSource } from '../../enums';
 import { PreprintModel } from '../../models';
 
-export class SetSelectedPreprintProviderId {
-  static readonly type = '[Preprint Stepper] Set Selected Preprint Provider Id';
-
-  constructor(public id: StringOrNull) {}
-}
-
 export class CreatePreprint {
   static readonly type = '[Preprint Stepper] Create Preprint';
 
@@ -98,6 +92,8 @@ export class FetchProjectFilesByLink {
 
 export class FetchLicenses {
   static readonly type = '[Preprint Stepper] Fetch Licenses';
+
+  constructor(public providerId: string) {}
 }
 
 export class SaveLicense {

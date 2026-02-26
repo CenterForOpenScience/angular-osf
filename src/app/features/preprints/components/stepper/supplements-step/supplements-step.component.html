@@ -15,7 +15,7 @@
       styleClass="w-full"
       [label]="'preprints.preprintStepper.supplements.options.connectExisting' | translate"
       severity="secondary"
-      (click)="selectSupplementOption(SupplementOptions.ConnectExistingProject)"
+      (onClick)="selectSupplementOption(SupplementOptions.ConnectExistingProject)"
     />
     <p-button
       [ngClass]="{
@@ -25,7 +25,7 @@
       styleClass="w-full"
       [label]="'preprints.preprintStepper.supplements.options.createNew' | translate"
       severity="secondary"
-      (click)="selectSupplementOption(SupplementOptions.CreateNewProject)"
+      (onClick)="selectSupplementOption(SupplementOptions.CreateNewProject)"
     />
   </section>
 
@@ -33,26 +33,26 @@
     <p-card styleClass="mt-4" class="card">
       <div>
         <p class="line-height-3">
-          {{ 'preprints.preprintStepper.supplements.projectSelection.description' | translate }}
+          {{ 'preprints.preprintStepper.projectSelection.description' | translate }}
         </p>
         <p class="line-height-3">
-          {{ 'preprints.preprintStepper.supplements.projectSelection.subDescription' | translate }}
+          {{ 'preprints.preprintStepper.projectSelection.subDescription' | translate }}
         </p>
 
         <p-select
           id="project-select"
-          [options]="availableProjects()"
+          class="w-12 md:w-6"
+          styleClass="mt-4"
+          appendTo="body"
           optionLabel="name"
           optionValue="id"
-          [placeholder]="'preprints.preprintStepper.supplements.projectSelection.title' | translate"
-          class="w-12 md:w-6"
-          [editable]="true"
-          styleClass="mt-4"
+          [options]="availableProjects()"
           [formControl]="projectNameControl"
-          appendTo="body"
+          [placeholder]="'preprints.preprintStepper.projectSelection.selectProject' | translate"
+          [editable]="true"
+          [showClear]="false"
           [loading]="areAvailableProjectsLoading() || isPreprintSubmitting()"
           (onChange)="selectProject($event)"
-          [showClear]="false"
         />
       </div>
     </p-card>
@@ -88,7 +88,7 @@
     styleClass="w-full"
     [label]="'common.buttons.back' | translate"
     severity="info"
-    (click)="backButtonClicked()"
+    (onClick)="backButtonClicked()"
   />
   <p-button
     class="w-6 md:w-9rem"
@@ -96,6 +96,6 @@
     [label]="'common.buttons.next' | translate"
     [disabled]="isNextButtonDisabled()"
     [loading]="isPreprintSubmitting()"
-    (click)="nextButtonClicked()"
+    (onClick)="nextButtonClicked()"
   />
 </section>

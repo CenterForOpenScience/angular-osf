@@ -40,12 +40,7 @@ import {
 import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps } from '../../enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import {
-  DeletePreprint,
-  PreprintStepperSelectors,
-  ResetPreprintStepperState,
-  SetSelectedPreprintProviderId,
-} from '../../store/preprint-stepper';
+import { DeletePreprint, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
@@ -77,7 +72,6 @@ export class SubmitPreprintStepperComponent implements OnDestroy, CanDeactivateC
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
-    setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
     resetState: ResetPreprintStepperState,
     deletePreprint: DeletePreprint,
   });
@@ -109,7 +103,6 @@ export class SubmitPreprintStepperComponent implements OnDestroy, CanDeactivateC
       const provider = this.preprintProvider();
 
       if (provider) {
-        this.actions.setSelectedPreprintProviderId(provider.id);
         this.brandService.applyBranding(provider.brand);
         this.headerStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,

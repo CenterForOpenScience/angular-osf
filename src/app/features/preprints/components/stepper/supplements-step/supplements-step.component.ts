@@ -61,28 +61,32 @@ import { ProjectForm } from '@shared/models/projects/create-project-form.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SupplementsStepComponent implements OnInit {
-  private customConfirmationService = inject(CustomConfirmationService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
-  private actions = createDispatchMap({
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly actions = createDispatchMap({
     getAvailableProjects: FetchAvailableProjects,
     connectProject: ConnectProject,
     disconnectProject: DisconnectProject,
     fetchPreprintProject: FetchPreprintProject,
     createNewProject: CreateNewProject,
   });
-  private destroyRef = inject(DestroyRef);
 
-  readonly SupplementOptions = SupplementOptions;
-
-  createdPreprint = select(PreprintStepperSelectors.getPreprint);
-  isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
-  availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
-  areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
-  preprintProject = select(PreprintStepperSelectors.getPreprintProject);
-  isPreprintProjectLoading = select(PreprintStepperSelectors.isPreprintProjectLoading);
+  readonly createdPreprint = select(PreprintStepperSelectors.getPreprint);
+  readonly isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
+  readonly availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
+  readonly areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
+  readonly preprintProject = select(PreprintStepperSelectors.getPreprintProject);
+  readonly isPreprintProjectLoading = select(PreprintStepperSelectors.isPreprintProjectLoading);
 
   selectedSupplementOption = signal<SupplementOptions>(SupplementOptions.None);
   selectedProjectId = signal<StringOrNull>(null);
+
+  nextClicked = output<void>();
+  backClicked = output<void>();
+
+  readonly SupplementOptions = SupplementOptions;
 
   readonly projectNameControl = new FormControl<StringOrNull>(null);
   readonly createProjectForm = new FormGroup<ProjectForm>({
@@ -124,19 +128,15 @@ export class SupplementsStepComponent implements OnInit {
         return;
       }
 
-      untracked(() => {
-        const preprintProject = this.preprintProject();
-        if (preprint.nodeId === preprintProject?.id) {
-          return;
-        }
-      });
+      const shouldFetchPreprintProject = untracked(() => preprint.nodeId !== this.preprintProject()?.id);
+
+      if (!shouldFetchPreprintProject) {
+        return;
+      }
 
       this.actions.fetchPreprintProject();
     });
   }
-
-  nextClicked = output<void>();
-  backClicked = output<void>();
 
   ngOnInit() {
     this.projectNameControl.valueChanges
@@ -164,6 +164,7 @@ export class SupplementsStepComponent implements OnInit {
     if (!(event.originalEvent instanceof PointerEvent)) {
       return;
     }
+
     this.selectedProjectId.set(event.value);
 
     this.actions.connectProject(event.value).subscribe({

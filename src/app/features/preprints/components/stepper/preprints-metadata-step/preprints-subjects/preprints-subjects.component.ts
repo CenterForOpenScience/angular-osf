@@ -8,7 +8,6 @@ import { Message } from 'primeng/message';
 import { ChangeDetectionStrategy, Component, effect, input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -29,20 +28,21 @@ import { SubjectModel } from '@shared/models/subject/subject.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintsSubjectsComponent implements OnInit {
-  preprintId = input<string>();
+  readonly control = input.required<FormControl>();
+  readonly providerId = input.required<string>();
+  readonly preprintId = input.required<string>();
 
-  private readonly selectedProviderId = select(PreprintStepperSelectors.getSelectedProviderId);
-  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
-  control = input.required<FormControl>();
+  readonly selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
-  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     fetchSubjects: FetchSubjects,
     fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,
     updateResourceSubjects: UpdateResourceSubjects,
   });
+
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   constructor() {
     effect(() => {
@@ -51,30 +51,28 @@ export class PreprintsSubjectsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.actions.fetchSubjects(ResourceType.Preprint, this.selectedProviderId()!);
+    this.actions.fetchSubjects(ResourceType.Preprint, this.providerId());
     this.actions.fetchSelectedSubjects(this.preprintId()!, ResourceType.Preprint);
   }
 
-  getSubjectChildren(parentId: string) {
+  getSubjectChildren(parentId: string): void {
     this.actions.fetchChildrenSubjects(parentId);
   }
 
-  searchSubjects(search: string) {
-    this.actions.fetchSubjects(ResourceType.Preprint, this.selectedProviderId()!, search);
+  searchSubjects(search: string): void {
+    this.actions.fetchSubjects(ResourceType.Preprint, this.providerId(), search);
   }
 
-  updateSelectedSubjects(subjects: SubjectModel[]) {
+  updateSelectedSubjects(subjects: SubjectModel[]): void {
     this.updateControlState(subjects);
-
-    this.actions.updateResourceSubjects(this.preprintId()!, ResourceType.Preprint, subjects);
+    this.actions.updateResourceSubjects(this.preprintId(), ResourceType.Preprint, subjects);
   }
 
-  updateControlState(value: SubjectModel[]) {
-    if (this.control()) {
-      this.control().setValue(value);
-      this.control().markAsTouched();
-      this.control().markAsDirty();
-      this.control().updateValueAndValidity();
-    }
+  updateControlState(value: SubjectModel[]): void {
+    const control = this.control();
+    control.setValue(value);
+    control.markAsTouched();
+    control.markAsDirty();
+    control.updateValueAndValidity();
   }
 }

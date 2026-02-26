@@ -5,11 +5,6 @@ import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 export class PreprintStepperSelectors {
   @Selector([PreprintStepperState])
-  static getSelectedProviderId(state: PreprintStepperStateModel) {
-    return state.selectedProviderId;
-  }
-
-  @Selector([PreprintStepperState])
   static getPreprint(state: PreprintStepperStateModel) {
     return state.preprint.data;
   }

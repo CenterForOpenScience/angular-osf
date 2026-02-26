@@ -41,7 +41,6 @@ import {
   SetPreprintStepperCurrentFolder,
   SetProjectRootFolder,
   SetSelectedPreprintFileSource,
-  SetSelectedPreprintProviderId,
   SubmitPreprint,
   UpdatePreprint,
   UpdatePrimaryFileRelationship,
@@ -60,11 +59,6 @@ export class PreprintStepperState {
   private fileService = inject(FilesService);
   private licensesService = inject(PreprintLicensesService);
   private preprintProjectsService = inject(PreprintsProjectsService);
-
-  @Action(SetSelectedPreprintProviderId)
-  setSelectedPreprintProviderId(ctx: StateContext<PreprintStepperStateModel>, action: SetSelectedPreprintProviderId) {
-    ctx.patchState({ selectedProviderId: action.id });
-  }
 
   @Action(CreatePreprint)
   createPreprint(ctx: StateContext<PreprintStepperStateModel>, action: CreatePreprint) {
@@ -323,12 +317,10 @@ export class PreprintStepperState {
   }
 
   @Action(FetchLicenses)
-  fetchLicenses(ctx: StateContext<PreprintStepperStateModel>) {
-    const providerId = ctx.getState().selectedProviderId;
-    if (!providerId) return;
+  fetchLicenses(ctx: StateContext<PreprintStepperStateModel>, action: FetchLicenses) {
     ctx.setState(patch({ licenses: patch({ isLoading: true }) }));
 
-    return this.licensesService.getLicenses(providerId).pipe(
+    return this.licensesService.getLicenses(action.providerId).pipe(
       tap((licenses) => {
         ctx.setState(patch({ licenses: patch({ isLoading: false, data: licenses }) }));
       }),

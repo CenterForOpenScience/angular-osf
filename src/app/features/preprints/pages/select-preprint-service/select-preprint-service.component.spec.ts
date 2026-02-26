@@ -9,7 +9,6 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 
 import { PreprintProviderShortInfo } from '../../models';
 import { GetPreprintProvidersAllowingSubmissions, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
 
 import { SelectPreprintServiceComponent } from './select-preprint-service.component';
 
@@ -29,7 +28,6 @@ describe('SelectPreprintServiceComponent', () => {
   const defaultSignals: SignalOverride[] = [
     { selector: PreprintProvidersSelectors.getPreprintProvidersAllowingSubmissions, value: mockProviders },
     { selector: PreprintProvidersSelectors.arePreprintProvidersAllowingSubmissionsLoading, value: false },
-    { selector: PreprintStepperSelectors.getSelectedProviderId, value: null },
   ];
 
   function setup(overrides?: { selectorOverrides?: SignalOverride[] }) {
@@ -73,26 +71,24 @@ describe('SelectPreprintServiceComponent', () => {
 
     component.toggleProviderSelection(mockProvider);
 
-    expect(store.dispatch).toHaveBeenCalledWith(new SetSelectedPreprintProviderId(mockProvider.id));
+    expect(component.selectedProviderId()).toBe(mockProvider.id);
   });
 
-  it('should dispatch deselect action when toggling the already selected provider', () => {
-    setup({
-      selectorOverrides: [{ selector: PreprintStepperSelectors.getSelectedProviderId, value: mockProvider.id }],
-    });
+  it('should deselect when toggling the already selected provider', () => {
+    setup();
+    component.selectedProviderId.set(mockProvider.id);
 
     component.toggleProviderSelection(mockProvider);
 
-    expect(store.dispatch).toHaveBeenCalledWith(new SetSelectedPreprintProviderId(null));
+    expect(component.selectedProviderId()).toBeNull();
   });
 
-  it('should dispatch select action when toggling a different provider', () => {
-    setup({
-      selectorOverrides: [{ selector: PreprintStepperSelectors.getSelectedProviderId, value: 'other-provider' }],
-    });
+  it('should select when toggling a different provider', () => {
+    setup();
+    component.selectedProviderId.set('other-provider');
 
     component.toggleProviderSelection(mockProvider);
 
-    expect(store.dispatch).toHaveBeenCalledWith(new SetSelectedPreprintProviderId(mockProvider.id));
+    expect(component.selectedProviderId()).toBe(mockProvider.id);
   });
 });

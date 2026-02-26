@@ -39,7 +39,7 @@
         <osf-file-step [provider]="provider" (nextClicked)="moveToNextStep()" (backClicked)="navigateBack()" />
       }
       @case (PreprintSteps.Review) {
-        <osf-review-step [provider]="preprintProvider()" />
+        <osf-review-step [provider]="provider" />
       }
     }
   </section>

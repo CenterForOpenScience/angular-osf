@@ -15,11 +15,11 @@ import { TextInputComponent } from '@osf/shared/components/text-input/text-input
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArrayInputComponent {
-  formArray = input.required<FormArray<FormControl>>();
-  inputPlaceholder = input.required<string>();
-  validators = input.required<ValidatorFn[]>();
+  readonly formArray = input.required<FormArray<FormControl>>();
+  readonly inputPlaceholder = input.required<string>();
+  readonly validators = input<ValidatorFn[]>([]);
 
-  add() {
+  add(): void {
     this.formArray().push(
       new FormControl('', {
         nonNullable: true,
@@ -28,9 +28,11 @@ export class ArrayInputComponent {
     );
   }
 
-  remove(index: number) {
-    if (this.formArray().length > 1) {
-      this.formArray().removeAt(index);
+  remove(index: number): void {
+    const formArray = this.formArray();
+
+    if (formArray.length > 1) {
+      formArray.removeAt(index);
     }
   }
 }

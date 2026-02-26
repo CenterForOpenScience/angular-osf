@@ -31,12 +31,7 @@ import { FileStepComponent, ReviewStepComponent } from '../../components';
 import { createNewVersionStepsConst } from '../../constants';
 import { PreprintSteps } from '../../enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import {
-  FetchPreprintById,
-  PreprintStepperSelectors,
-  ResetPreprintStepperState,
-  SetSelectedPreprintProviderId,
-} from '../../store/preprint-stepper';
+import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-create-new-version',
@@ -59,19 +54,19 @@ export class CreateNewVersionComponent implements OnDestroy, CanDeactivateCompon
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
-    setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
-    resetState: ResetPreprintStepperState,
     fetchPreprint: FetchPreprintById,
+    resetState: ResetPreprintStepperState,
   });
-
-  readonly PreprintSteps = PreprintSteps;
-  readonly newVersionSteps = createNewVersionStepsConst;
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
+
   currentStep = signal<StepOption>(createNewVersionStepsConst[0]);
   isWeb = toSignal(inject(IS_WEB));
+
+  readonly PreprintSteps = PreprintSteps;
+  readonly newVersionSteps = createNewVersionStepsConst;
 
   constructor() {
     this.actions.getPreprintProviderById(this.providerId());
@@ -81,7 +76,6 @@ export class CreateNewVersionComponent implements OnDestroy, CanDeactivateCompon
       const provider = this.preprintProvider();
 
       if (provider) {
-        this.actions.setSelectedPreprintProviderId(provider.id);
         this.brandService.applyBranding(provider.brand);
         this.headerStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,

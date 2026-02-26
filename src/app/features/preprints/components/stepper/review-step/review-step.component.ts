@@ -26,7 +26,6 @@ import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affi
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
-import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
@@ -40,26 +39,28 @@ import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subject
 @Component({
   selector: 'osf-review-step',
   imports: [
-    Card,
-    TruncatedTextComponent,
-    Tag,
-    DatePipe,
     Button,
-    TitleCasePipe,
-    TranslatePipe,
+    Card,
+    Tag,
     AffiliatedInstitutionsViewComponent,
     ContributorsListComponent,
     LicenseDisplayComponent,
-    FixSpecialCharPipe,
+    TruncatedTextComponent,
+    DatePipe,
+    TitleCasePipe,
+    TranslatePipe,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReviewStepComponent implements OnInit {
-  private router = inject(Router);
-  private toastService = inject(ToastService);
-  private actions = createDispatchMap({
+  private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
+
+  readonly provider = input.required<PreprintProviderDetails>();
+
+  private readonly actions = createDispatchMap({
     getBibliographicContributors: GetBibliographicContributors,
     fetchSubjects: FetchSelectedSubjects,
     fetchLicenses: FetchLicenses,
@@ -71,41 +72,55 @@ export class ReviewStepComponent implements OnInit {
     loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
   });
 
-  provider = input.required<PreprintProviderDetails | undefined>();
+  readonly preprint = select(PreprintStepperSelectors.getPreprint);
+  readonly preprintFile = select(PreprintStepperSelectors.getPreprintFile);
+  readonly isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
-  preprint = select(PreprintStepperSelectors.getPreprint);
-  preprintFile = select(PreprintStepperSelectors.getPreprintFile);
-  isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
-
-  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
-  areContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
-  hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
-  subjects = select(SubjectsSelectors.getSelectedSubjects);
-  affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
-  license = select(PreprintStepperSelectors.getPreprintLicense);
-  preprintProject = select(PreprintStepperSelectors.getPreprintProject);
-  licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
+  readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  readonly areContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  readonly hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
+  readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
+  readonly license = select(PreprintStepperSelectors.getPreprintLicense);
+  readonly preprintProject = select(PreprintStepperSelectors.getPreprintProject);
+  readonly licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly PreregLinkInfo = PreregLinkInfo;
 
   ngOnInit(): void {
-    this.actions.getBibliographicContributors(this.preprint()?.id, ResourceType.Preprint);
-    this.actions.fetchSubjects(this.preprint()!.id, ResourceType.Preprint);
-    this.actions.fetchLicenses();
+    this.actions.fetchLicenses(this.provider().id);
     this.actions.fetchPreprintProject();
-    this.actions.fetchResourceInstitutions(this.preprint()!.id, ResourceType.Preprint);
+
+    const preprintId = this.preprint()?.id;
+    if (!preprintId) {
+      return;
+    }
+
+    this.actions.getBibliographicContributors(preprintId, ResourceType.Preprint);
+    this.actions.fetchSubjects(preprintId, ResourceType.Preprint);
+    this.actions.fetchResourceInstitutions(preprintId, ResourceType.Preprint);
   }
 
-  submitPreprint() {
-    const preprint = this.preprint()!;
-    const preprintFile = this.preprintFile()!;
+  submitPreprint(): void {
+    const preprint = this.preprint();
+    const provider = this.provider();
+
+    if (!preprint) {
+      return;
+    }
+
+    const preprintFileId = this.preprintFile()?.id ?? preprint.primaryFileId;
+
+    if (!preprintFileId) {
+      return;
+    }
 
     this.actions
-      .updatePrimaryFileRelationship(preprintFile?.id ?? preprint.primaryFileId)
+      .updatePrimaryFileRelationship(preprintFileId)
       .pipe(
         switchMap(() => {
-          if (!this.provider()?.reviewsWorkflow) {
+          if (!provider.reviewsWorkflow) {
             return this.actions.updatePreprint(preprint.id, { isPublished: true });
           }
 
@@ -116,13 +131,13 @@ export class ReviewStepComponent implements OnInit {
         }),
         tap(() => {
           this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
-          this.router.navigate(['/preprints', this.provider()!.id, preprint.id]);
+          this.router.navigate(['/preprints', provider.id, preprint.id]);
         })
       )
       .subscribe();
   }
 
-  cancelSubmission() {
+  cancelSubmission(): void {
     this.router.navigateByUrl('/preprints');
   }
 

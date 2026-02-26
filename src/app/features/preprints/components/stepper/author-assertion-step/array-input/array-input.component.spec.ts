@@ -12,52 +12,49 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 describe('ArrayInputComponent', () => {
   let component: ArrayInputComponent;
   let fixture: ComponentFixture<ArrayInputComponent>;
-  let formArray: FormArray<FormControl>;
+  let formArray: FormArray<FormControl<string>>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  function setup(overrides?: { withValidators?: boolean; formArray?: FormArray<FormControl<string>> }) {
+    TestBed.configureTestingModule({
       imports: [ArrayInputComponent, MockComponent(TextInputComponent), OSFTestingModule],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ArrayInputComponent);
     component = fixture.componentInstance;
 
-    formArray = new FormArray<FormControl>([new FormControl('test')]);
-    fixture.componentRef.setInput('formArray', formArray);
+    formArray =
+      overrides?.formArray ?? new FormArray<FormControl<string>>([new FormControl('test', { nonNullable: true })]);
+    fixture.componentRef.setInput('formArray', formArray as FormArray<FormControl>);
     fixture.componentRef.setInput('inputPlaceholder', 'Enter value');
-    fixture.componentRef.setInput('validators', [Validators.required]);
+    if (overrides?.withValidators ?? true) {
+      fixture.componentRef.setInput('validators', [Validators.required]);
+    }
 
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should have correct input values', () => {
-    expect(component.formArray()).toBe(formArray);
-    expect(component.inputPlaceholder()).toBe('Enter value');
-    expect(component.validators()).toEqual([Validators.required]);
-  });
+  }
 
   it('should add new control to form array', () => {
+    setup();
     const initialLength = formArray.length;
 
     component.add();
 
     expect(formArray.length).toBe(initialLength + 1);
-    expect(formArray.at(formArray.length - 1)).toBeInstanceOf(FormControl);
-  });
-
-  it('should add control with correct validators', () => {
-    component.add();
-
     const newControl = formArray.at(formArray.length - 1);
+    expect(newControl.value).toBe('');
     expect(newControl.hasError('required')).toBe(true);
   });
 
-  it('should remove control at specified index', () => {
+  it('should add control without validators when validators input is not set', () => {
+    setup({ withValidators: false });
     component.add();
+
+    const newControl = formArray.at(formArray.length - 1);
+    expect(newControl.errors).toBeNull();
+  });
+
+  it('should remove control at specified index', () => {
+    setup();
     component.add();
     const initialLength = formArray.length;
 
@@ -67,37 +64,13 @@ describe('ArrayInputComponent', () => {
   });
 
   it('should not remove control if only one control exists', () => {
-    const singleControlArray = new FormArray<FormControl>([new FormControl('only')]);
-    fixture.componentRef.setInput('formArray', singleControlArray);
-    fixture.detectChanges();
+    const singleControlArray = new FormArray<FormControl<string>>([new FormControl('only', { nonNullable: true })]);
+    setup({ formArray: singleControlArray });
 
     const initialLength = singleControlArray.length;
 
     component.remove(0);
 
     expect(singleControlArray.length).toBe(initialLength);
-  });
-
-  it('should handle multiple add and remove operations', () => {
-    const initialLength = formArray.length;
-
-    component.add();
-    component.add();
-    component.add();
-
-    expect(formArray.length).toBe(initialLength + 3);
-
-    component.remove(1);
-    component.remove(2);
-
-    expect(formArray.length).toBe(initialLength + 1);
-  });
-
-  it('should create controls with nonNullable true', () => {
-    component.add();
-
-    const newControl = formArray.at(formArray.length - 1);
-    expect(newControl.value).toBe('');
-    expect(newControl.hasError('required')).toBe(true);
   });
 });

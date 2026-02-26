@@ -42,6 +42,7 @@ import {
 } from '@osf/features/preprints/store/preprint-stepper';
 import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { ClearFileDirective } from '@osf/shared/directives/clear-file.directive';
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
@@ -52,16 +53,17 @@ import { ToastService } from '@osf/shared/services/toast.service';
   selector: 'osf-file-step',
   imports: [
     Button,
-    TitleCasePipe,
-    NgClass,
+    Card,
     Tooltip,
     Skeleton,
-    IconComponent,
-    Card,
     Select,
+    NgClass,
     ReactiveFormsModule,
+    IconComponent,
     FilesTreeComponent,
+    TitleCasePipe,
     TranslatePipe,
+    ClearFileDirective,
   ],
   templateUrl: './file-step.component.html',
   styleUrl: './file-step.component.scss',
@@ -70,6 +72,8 @@ import { ToastService } from '@osf/shared/services/toast.service';
 export class FileStepComponent implements OnInit {
   private toastService = inject(ToastService);
   private customConfirmationService = inject(CustomConfirmationService);
+  private destroyRef = inject(DestroyRef);
+
   private actions = createDispatchMap({
     setSelectedFileSource: SetSelectedPreprintFileSource,
     getPreprintFilesLinks: FetchPreprintFilesLinks,
@@ -82,13 +86,11 @@ export class FileStepComponent implements OnInit {
     copyFileFromProject: CopyFileFromProject,
     setCurrentFolder: SetPreprintStepperCurrentFolder,
   });
-  private destroyRef = inject(DestroyRef);
 
   readonly PreprintFileSource = PreprintFileSource;
 
-  provider = input.required<PreprintProviderDetails | undefined>();
+  provider = input.required<PreprintProviderDetails>();
   preprint = select(PreprintStepperSelectors.getPreprint);
-  providerId = select(PreprintStepperSelectors.getSelectedProviderId);
   selectedFileSource = select(PreprintStepperSelectors.getSelectedFileSource);
   fileUploadLink = select(PreprintStepperSelectors.getUploadLink);
 
@@ -120,12 +122,15 @@ export class FileStepComponent implements OnInit {
   backClicked = output<void>();
 
   isFileSourceSelected = computed(() => this.selectedFileSource() !== PreprintFileSource.None);
+  canProceedToNext = computed(() => !!this.preprintFile() && !this.versionFileMode());
 
   ngOnInit() {
     this.actions.getPreprintFilesLinks();
+
     if (this.preprintHasPrimaryFile() && !this.preprintFile()) {
       this.actions.fetchPreprintFile();
     }
+
     this.projectNameControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((projectNameOrId) => {
@@ -150,7 +155,7 @@ export class FileStepComponent implements OnInit {
   }
 
   nextButtonClicked() {
-    if (!this.preprint()?.primaryFileId) {
+    if (!this.canProceedToNext() || !this.preprint()?.primaryFileId) {
       return;
     }
 
@@ -163,20 +168,14 @@ export class FileStepComponent implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
 
-    if (this.versionFileMode()) {
+    const isVersionFileMode = this.versionFileMode();
+
+    if (isVersionFileMode) {
       this.versionFileMode.set(false);
-      this.actions.reuploadFile(file).subscribe({
-        next: () => {
-          this.actions.fetchPreprintFile();
-        },
-      });
-    } else {
-      this.actions.uploadFile(file).subscribe({
-        next: () => {
-          this.actions.fetchPreprintFile();
-        },
-      });
     }
+
+    const uploadAction = isVersionFileMode ? this.actions.reuploadFile(file) : this.actions.uploadFile(file);
+    uploadAction.subscribe(() => this.actions.fetchPreprintFile());
   }
 
   selectProject(event: SelectChangeEvent) {
@@ -185,6 +184,7 @@ export class FileStepComponent implements OnInit {
     }
 
     this.selectedProjectId.set(event.value);
+
     this.actions
       .setProjectRootFolder(event.value)
       .pipe(
@@ -201,11 +201,7 @@ export class FileStepComponent implements OnInit {
   }
 
   selectProjectFile(file: FileModel) {
-    this.actions.copyFileFromProject(file).subscribe({
-      next: () => {
-        this.actions.fetchPreprintFile();
-      },
-    });
+    this.actions.copyFileFromProject(file).subscribe(() => this.actions.fetchPreprintFile());
   }
 
   versionFile() {
@@ -232,6 +228,7 @@ export class FileStepComponent implements OnInit {
     if (this.currentFolder()?.id === folder.id) {
       return;
     }
+
     this.actions.setCurrentFolder(folder);
     this.actions.getProjectFilesByLink(folder.links.filesLink, 1);
   }

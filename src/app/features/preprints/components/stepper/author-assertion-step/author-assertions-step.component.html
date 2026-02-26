@@ -224,7 +224,7 @@
     styleClass="w-full"
     [label]="'common.buttons.back' | translate"
     severity="info"
-    (click)="backButtonClicked()"
+    (onClick)="backButtonClicked()"
   />
   <p-button
     class="w-6 md:w-9rem"
@@ -236,6 +236,6 @@
     tooltipPosition="top"
     [disabled]="authorAssertionsForm.invalid"
     [loading]="isUpdatingPreprint()"
-    (click)="nextButtonClicked()"
+    (onClick)="nextButtonClicked()"
   />
 </section>
