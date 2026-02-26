@@ -2,6 +2,16 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.3.1 (2026-02-25)
+===================
+
+* Hotfix to prevent 403 error when fetching metadata from causing a redirect
+
+26.3.0 (2026-02-24)
+===================
+
+* FAIR Signposting
+
 26.2.1 (2026-02-03)
 ===================
 

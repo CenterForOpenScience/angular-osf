@@ -19,6 +19,8 @@ import {
   effect,
   HostBinding,
   inject,
+  OnDestroy,
+  OnInit,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -47,6 +49,7 @@ import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { FileDetailsModel } from '@shared/models/files/file.model';
@@ -94,7 +97,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class FileDetailComponent {
+export class FileDetailComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
   readonly store = inject(Store);
@@ -111,6 +114,7 @@ export class FileDetailComponent {
   private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly clipboard = inject(Clipboard);
+  private readonly signpostingService = inject(SignpostingService);
 
   readonly dataciteService = inject(DataciteService);
 
@@ -282,6 +286,16 @@ export class FileDetailComponent {
     });
 
     this.dataciteService.logIdentifiableView(this.fileMetadata$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
+
+  ngOnInit(): void {
+    this.signpostingService.addSignposting(this.fileGuid);
+  }
+
+  ngOnDestroy(): void {
+    if (this.fileGuid) {
+      this.signpostingService.removeSignpostingLinkTags();
+    }
   }
 
   getIframeLink(version: string) {

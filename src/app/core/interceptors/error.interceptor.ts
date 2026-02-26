@@ -63,7 +63,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (error.status === 403) {
         const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
-        if (error.url && requestAccessRegex.test(error.url)) {
+
+        if (error.url && (requestAccessRegex.test(error.url) || req.headers.has('X-No-Auth-Redirect'))) {
           loaderService.hide();
           return throwError(() => error);
         }
