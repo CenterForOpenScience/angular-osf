@@ -3,3 +3,15 @@ export const urlParam = (params: Record<string, string>) => {
     .map((entry) => entry.map((comp) => encodeURIComponent(comp)).join('='))
     .join('&');
 };
+
+export const doubleEncodedUrlParam = (params: { service: string; next?: string }): string => {
+  const { service, next } = params;
+
+  if (!next) {
+    return `service=${encodeURIComponent(service)}`;
+  }
+
+  const encodedNext = encodeURIComponent(next);
+  const valueAfterService = `${service}?next=${encodedNext}`;
+  return `service=${encodeURIComponent(valueAfterService)}`;
+};
