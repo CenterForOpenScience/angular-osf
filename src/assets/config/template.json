@@ -26,5 +26,6 @@
   "newRelicLoaderConfigTrustKey": "",
   "newRelicLoaderConfigAgentID": "",
   "newRelicLoaderConfigLicenseKey": "",
-  "newRelicLoaderConfigApplicationID": ""
+  "newRelicLoaderConfigApplicationID": "",
+  "throttleToken": ""
 }

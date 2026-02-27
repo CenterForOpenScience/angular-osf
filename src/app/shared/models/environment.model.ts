@@ -63,4 +63,5 @@ export interface EnvironmentModel {
    * @example 123456789012
    */
   googleFilePickerAppId: number;
+  throttleToken: string;
 }

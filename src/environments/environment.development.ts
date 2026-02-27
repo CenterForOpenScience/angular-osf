@@ -71,4 +71,5 @@ export const environment = {
   newRelicLoaderConfigAgentID: '',
   newRelicLoaderConfigLicenseKey: '',
   newRelicLoaderConfigApplicationID: '',
+  throttleToken: '',
 };

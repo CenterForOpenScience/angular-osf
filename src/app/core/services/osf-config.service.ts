@@ -4,44 +4,18 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
+import { SSR_CONFIG } from '@core/constants/ssr-config.token';
 import { ConfigModel } from '@core/models/config.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-/**
- * Service for loading and accessing configuration values
- * from the static JSON file at `/assets/config/config.json`.
- *
- * This service ensures that the configuration is only fetched once
- * and made available application-wide via promise-based access.
- *
- * Consumers must call `get()` or `has()` using `await` to ensure
- * that config values are available after loading completes.
- */
 @Injectable({ providedIn: 'root' })
 export class OSFConfigService {
-  /**
-   * Angular's HttpClient used to fetch the configuration JSON.
-   * Injected via Angular's dependency injection system.
-   */
   private http: HttpClient = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
-
-  /**
-   * Injected instance of the application environment configuration.
-   * */
   private environment = inject(ENVIRONMENT);
-
-  /**
-   * Stores the loaded configuration object after it is fetched from the server.
-   * Remains `null` until `load()` is successfully called.
-   */
+  private ssrConfig = inject(SSR_CONFIG, { optional: true });
   private config: ConfigModel | null = null;
 
-  /**
-   * Loads the configuration from the JSON file if not already loaded.
-   * Ensures that only one request is made.
-   * On the server, this is skipped as config is only needed in the browser.
-   */
   async load(): Promise<void> {
     if (this.config) return;
 
@@ -53,8 +27,7 @@ export class OSFConfigService {
         )
       );
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.config = ((globalThis as any).__SSR_CONFIG__ ?? {}) as ConfigModel;
+      this.config = (this.ssrConfig ?? {}) as ConfigModel;
     }
 
     for (const [key, value] of Object.entries(this.config)) {
