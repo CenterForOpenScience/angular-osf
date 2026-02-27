@@ -1,29 +1,31 @@
+@let providerDetails = provider();
+
 <section class="subheader py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4">
   <div class="flex flex-column align-items-start gap-4 md:flex-row">
     <div class="flex align-items-center gap-2">
       <i class="custom-icon-preprints-dark"></i>
       <h1>{{ 'preprints.title' | translate }}</h1>
     </div>
-    @if (isPreprintProviderLoading()) {
+    @if (isProviderLoading()) {
       <p-skeleton class="ml-auto w-full md:w-auto" height="2rem" />
     } @else {
       <p-button
         class="ml-auto w-full md:w-auto"
         styleClass="w-full md:w-auto"
-        [label]="'preprints.addPreprint' | translate: { preprintWord: osfPreprintProvider()?.preprintWord } | titlecase"
+        [label]="'preprints.addPreprint' | translate: { preprintWord: providerDetails?.preprintWord } | titlecase"
         routerLink="/preprints/select"
       />
     }
   </div>
 
   <div class="provider-description">
-    @if (isPreprintProviderLoading()) {
+    @if (isProviderLoading()) {
       <div class="flex flex-column gap-2">
         <p-skeleton width="40%" height="1.5rem" />
         <p-skeleton width="70%" height="1.5rem" />
       </div>
     } @else {
-      <div [innerHTML]="osfPreprintProvider()?.descriptionHtml"></div>
+      <div [innerHTML]="providerDetails?.descriptionHtml"></div>
     }
     <a class="dark-blue-two-link font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
   </div>
@@ -32,34 +34,30 @@
     class="w-full"
     [control]="searchControl"
     [placeholder]="'preprints.searchPlaceholder' | translate: { preprintWord: 'preprint' } | titlecase"
-    (triggerSearch)="redirectToSearchPageWithValue()"
+    (triggerSearch)="submitSearch()"
   />
 
-  @if (isPreprintProviderLoading()) {
+  @if (isProviderLoading()) {
     <p-skeleton width="10%" height="1rem" />
-  } @else if (osfPreprintProvider()!.examplePreprintId) {
+  } @else if (providerDetails?.examplePreprintId) {
     <a
       class="dark-blue-two-link font-bold"
-      [routerLink]="['/preprints', osfPreprintProvider()!.id, osfPreprintProvider()!.examplePreprintId]"
+      [routerLink]="['/preprints', providerDetails!.id, providerDetails!.examplePreprintId]"
       >{{ 'preprints.showExample' | translate }}
     </a>
   }
 </section>
 
 <osf-browse-by-subjects
-  [subjects]="highlightedSubjectsByProviderId()"
+  [subjects]="highlightedSubjects()"
   [areSubjectsLoading]="areSubjectsLoading()"
-  [isProviderLoading]="isPreprintProviderLoading()"
+  [isProviderLoading]="isProviderLoading()"
   [isLandingPage]="true"
 />
 
 <osf-preprint-services [preprintProvidersToAdvertise]="preprintProvidersToAdvertise()" />
 
-<osf-advisory-board
-  [htmlContent]="osfPreprintProvider()?.advisoryBoardHtml"
-  [brand]="osfPreprintProvider()?.brand"
-  [isLandingPage]="true"
-/>
+<osf-advisory-board [htmlContent]="providerDetails?.advisoryBoardHtml" [isLandingPage]="true" />
 
 <section
   class="blue-dark-gradient py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4 lg:flex-row lg:align-items-center lg:justify-content-between"

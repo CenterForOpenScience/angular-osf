@@ -1,8 +1,8 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { map, of } from 'rxjs';
+import { map } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -23,7 +23,7 @@ import {
 } from '../../store/preprint-providers';
 
 @Component({
-  selector: 'osf-provider-overview',
+  selector: 'osf-preprint-provider-overview',
   imports: [
     AdvisoryBoardComponent,
     BrowseBySubjectsComponent,
@@ -34,15 +34,16 @@ import {
   styleUrl: './preprint-provider-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
+export class PreprintProviderOverviewComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly brandService = inject(BrandService);
   private readonly headerStyleHelper = inject(HeaderStyleService);
   private readonly browserTabHelper = inject(BrowserTabService);
-  private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
 
-  private actions = createDispatchMap({
+  private readonly providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])));
+
+  private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     getHighlightedSubjectsByProviderId: GetHighlightedSubjectsByProviderId,
   });
@@ -53,6 +54,9 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
   areSubjectsLoading = select(PreprintProvidersSelectors.areSubjectsLoading);
 
   constructor() {
+    this.actions.getPreprintProviderById(this.providerId());
+    this.actions.getHighlightedSubjectsByProviderId(this.providerId());
+
     effect(() => {
       const provider = this.preprintProvider();
 
@@ -68,18 +72,13 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-    this.actions.getPreprintProviderById(this.providerId());
-    this.actions.getHighlightedSubjectsByProviderId(this.providerId());
-  }
-
   ngOnDestroy() {
     this.headerStyleHelper.resetToDefaults();
     this.brandService.resetBranding();
     this.browserTabHelper.resetToDefaults();
   }
 
-  redirectToDiscoverPageWithValue(searchValue: string) {
+  redirectToDiscoverPageWithValue(searchValue: string): void {
     this.router.navigate(['discover'], {
       relativeTo: this.route,
       queryParams: { search: searchValue },

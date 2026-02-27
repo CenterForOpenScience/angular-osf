@@ -24,14 +24,14 @@
         </p-card>
       }
     } @else {
-      @for (provider of preprintProvidersAllowingSubmissions(); track $index) {
+      @for (provider of preprintProvidersAllowingSubmissions(); track provider.id) {
         <p-card
           [ngClass]="{ active: selectedProviderId() === provider.id }"
           class="provider-card"
           [pTooltip]="descriptionTooltip"
           tooltipPosition="bottom"
           autoHide="false"
-          (click)="selectDeselectProvider(provider)"
+          (click)="toggleProviderSelection(provider)"
         >
           <div class="h-10rem w-13rem grid-item flex flex-column align-items-center justify-content-end">
             <img
@@ -55,7 +55,7 @@
         </p-card>
 
         <ng-template #descriptionTooltip>
-          <div [innerHTML]="provider.descriptionHtml"></div>
+          <div [innerHTML]="provider.descriptionHtml | safeHtml"></div>
         </ng-template>
       }
     }

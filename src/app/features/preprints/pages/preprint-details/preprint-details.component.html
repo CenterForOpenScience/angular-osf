@@ -13,11 +13,11 @@
         >
           <img
             class="fit-contain"
-            alt="Provider Logo"
             height="36"
             [src]="preprintProvider()?.brand?.heroLogoImageUrl"
+            [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
           />
-          <h1>{{ preprint()?.title | fixSpecialChar }}</h1>
+          <h1>{{ preprint()?.title }}</h1>
         </a>
       }
 

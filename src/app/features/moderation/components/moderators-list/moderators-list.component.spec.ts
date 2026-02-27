@@ -41,16 +41,6 @@ describe('ModeratorsListComponent', () => {
 
   const mockModerators: ModeratorModel[] = MOCK_MODERATORS;
 
-  beforeAll(() => {
-    if (typeof (globalThis as any).structuredClone !== 'function') {
-      Object.defineProperty(globalThis as any, 'structuredClone', {
-        configurable: true,
-        writable: true,
-        value: (o: unknown) => JSON.parse(JSON.stringify(o)),
-      });
-    }
-  });
-
   beforeEach(async () => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })

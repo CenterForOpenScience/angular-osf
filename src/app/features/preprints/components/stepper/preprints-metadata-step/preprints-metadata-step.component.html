@@ -1,8 +1,12 @@
+@let preprint = createdPreprint();
+
 <h2>{{ 'preprints.preprintStepper.metadata.title' | translate }}</h2>
 
-<div class="mt-4">
-  <osf-preprints-contributors [preprintId]="createdPreprint()?.id" />
-</div>
+@if (preprint) {
+  <div class="mt-4">
+    <osf-preprints-contributors [preprintId]="preprint.id" />
+  </div>
+}
 
 <p-card class="w-full card" styleClass="mt-4">
   <h2 class="mb-2">{{ 'shared.license.title' | translate }}</h2>
@@ -14,6 +18,7 @@
       {{ 'common.links.helpGuide' | translate }}.
     </a>
   </p>
+
   <osf-license
     [licenses]="licenses()"
     [selectedLicenseId]="createdPreprint()?.licenseId || defaultLicense()"
@@ -24,13 +29,19 @@
   />
 </p-card>
 
-<div class="mt-4">
-  <osf-preprints-affiliated-institutions [preprint]="createdPreprint()" [provider]="provider()" />
-</div>
+@if (preprint) {
+  <div class="mt-4">
+    <osf-preprints-affiliated-institutions [preprint]="preprint" [provider]="provider()" />
+  </div>
 
-<div class="mt-4">
-  <osf-preprints-subjects [control]="metadataForm.controls['subjects']" [preprintId]="createdPreprint()?.id" />
-</div>
+  <div class="mt-4">
+    <osf-preprints-subjects
+      [control]="metadataForm.controls['subjects']"
+      [providerId]="provider().id"
+      [preprintId]="preprint.id"
+    />
+  </div>
+}
 
 <p-card styleClass="mt-4" class="card">
   <div>
@@ -47,10 +58,12 @@
     <h2>{{ 'preprints.preprintStepper.metadata.publicationDoi.title' | translate }}</h2>
 
     <input id="doi" class="mt-4" pInputText type="text" [formControl]="metadataForm.controls['doi']" />
+
     @let doiControl = metadataForm.controls['doi'];
+
     @if (doiControl.errors?.['pattern'] && (doiControl.touched || doiControl.dirty)) {
-      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small"
-        >{{ 'preprints.preprintStepper.metadata.publicationDoi.patternError' | translate }}
+      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+        {{ 'preprints.preprintStepper.metadata.publicationDoi.patternError' | translate }}
       </p-message>
     }
   </div>
@@ -91,7 +104,7 @@
     styleClass="w-full"
     [label]="'common.buttons.back' | translate"
     severity="info"
-    (click)="backButtonClicked()"
+    (onClick)="backButtonClicked()"
   />
   <p-button
     class="w-6 md:w-9rem"
@@ -103,6 +116,6 @@
     tooltipPosition="top"
     [disabled]="metadataForm.invalid || !createdPreprint()?.licenseId"
     [loading]="isUpdatingPreprint()"
-    (click)="nextButtonClicked()"
+    (onClick)="nextButtonClicked()"
   />
 </section>

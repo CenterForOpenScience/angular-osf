@@ -52,3 +52,11 @@ jest.mock('@newrelic/browser-agent/loaders/browser-agent', () => ({
     stop: jest.fn(),
   })),
 }));
+
+if (!globalThis.structuredClone) {
+  Object.defineProperty(globalThis, 'structuredClone', {
+    value: <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T,
+    writable: true,
+    configurable: true,
+  });
+}

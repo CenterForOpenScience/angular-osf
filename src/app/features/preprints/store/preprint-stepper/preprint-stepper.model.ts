@@ -1,4 +1,3 @@
-import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import { IdNameModel } from '@osf/shared/models/common/id-name.model';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
@@ -10,7 +9,6 @@ import { PreprintFileSource } from '../../enums';
 import { PreprintFilesLinks, PreprintModel } from '../../models';
 
 export interface PreprintStepperStateModel {
-  selectedProviderId: StringOrNull;
   preprint: AsyncStateModel<PreprintModel | null>;
   fileSource: PreprintFileSource;
   preprintFilesLinks: AsyncStateModel<PreprintFilesLinks | null>;
@@ -25,7 +23,6 @@ export interface PreprintStepperStateModel {
 }
 
 export const DEFAULT_PREPRINT_STEPPER_STATE: PreprintStepperStateModel = {
-  selectedProviderId: null,
   preprint: {
     data: null,
     isLoading: false,

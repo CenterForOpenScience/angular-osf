@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 
-import { ChangeDetectionStrategy, Component, effect, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, OnInit, signal } from '@angular/core';
 
 import { ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -27,17 +27,17 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
-  provider = input.required<PreprintProviderDetails | undefined>();
-  preprint = input.required<PreprintModel | null>();
+  readonly provider = input.required<PreprintProviderDetails>();
+  readonly preprint = input.required<PreprintModel>();
 
-  selectedInstitutions = signal<Institution[]>([]);
+  readonly selectedInstitutions = signal<Institution[]>([]);
 
-  userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
-  areUserInstitutionsLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);
-  resourceInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
-  areResourceInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
-  areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
-  institutionsChanged = select(PreprintStepperSelectors.getInstitutionsChanged);
+  readonly userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
+  readonly areUserInstitutionsLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);
+  readonly resourceInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
+  readonly areResourceInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
+  readonly areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
+  readonly institutionsChanged = select(PreprintStepperSelectors.getInstitutionsChanged);
 
   private readonly actions = createDispatchMap({
     fetchUserInstitutions: FetchUserInstitutions,
@@ -45,6 +45,13 @@ export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
     updateResourceInstitutions: UpdateResourceInstitutions,
     setInstitutionsChanged: SetInstitutionsChanged,
   });
+
+  isLoading = computed(
+    () =>
+      this.areUserInstitutionsLoading() ||
+      this.areResourceInstitutionsLoading() ||
+      this.areResourceInstitutionsSubmitting()
+  );
 
   constructor() {
     effect(() => {
@@ -56,7 +63,7 @@ export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
 
     effect(() => {
       const userInstitutions = this.userInstitutions();
-      const isCreateFlow = this.preprint()?.reviewsState === ReviewsState.Initial;
+      const isCreateFlow = this.preprint().reviewsState === ReviewsState.Initial;
 
       if (userInstitutions.length > 0 && isCreateFlow && !this.institutionsChanged()) {
         this.actions.setInstitutionsChanged(true);
@@ -67,7 +74,7 @@ export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
 
   ngOnInit() {
     this.actions.fetchUserInstitutions();
-    this.actions.fetchResourceInstitutions(this.preprint()!.id, ResourceType.Preprint);
+    this.actions.fetchResourceInstitutions(this.preprint().id, ResourceType.Preprint);
   }
 
   onInstitutionsChange(institutions: Institution[]): void {

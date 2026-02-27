@@ -4,7 +4,7 @@
   <p class="line-height-3">
     {{
       'preprints.preprintStepper.file.uploadDescription'
-        | translate: { preprintWord: provider()?.preprintWord | titlecase }
+        | translate: { preprintWord: provider().preprintWord | titlecase }
     }}
   </p>
   <p class="line-height-3">{{ 'preprints.preprintStepper.file.note' | translate }}</p>
@@ -56,7 +56,7 @@
         (onClick)="fileInput.click()"
       />
 
-      <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
+      <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" osfClearFile />
     }
   </section>
 }
@@ -64,25 +64,27 @@
 @if (selectedFileSource() === PreprintFileSource.Project && !preprintFile() && !isPreprintFileLoading()) {
   <p-card styleClass="mt-6" class="card">
     <div>
-      <p class="line-height-3">{{ 'preprints.preprintStepper.file.projectSelection.description' | translate }}</p>
       <p class="line-height-3">
-        {{ 'preprints.preprintStepper.file.projectSelection.subDescription' | translate }}
+        {{ 'preprints.preprintStepper.projectSelection.description' | translate }}
+      </p>
+      <p class="line-height-3">
+        {{ 'preprints.preprintStepper.projectSelection.subDescription' | translate }}
       </p>
 
       <p-select
         id="project-select"
-        [options]="availableProjects()"
-        optionLabel="name"
-        optionValue="id"
-        [formControl]="projectNameControl"
-        [placeholder]="'preprints.preprintStepper.file.projectSelection.title' | translate"
         class="w-12 md:w-6"
-        [editable]="true"
         styleClass="mt-4"
         appendTo="body"
-        [loading]="areAvailableProjectsLoading()"
-        (onChange)="selectProject($event)"
+        optionLabel="name"
+        optionValue="id"
+        [options]="availableProjects()"
+        [formControl]="projectNameControl"
+        [placeholder]="'preprints.preprintStepper.projectSelection.selectProject' | translate"
+        [editable]="true"
         [showClear]="false"
+        [loading]="areAvailableProjectsLoading() || areProjectFilesLoading() || isCurrentFolderLoading()"
+        (onChange)="selectProject($event)"
       />
     </div>
   </p-card>
@@ -154,11 +156,9 @@
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"
-    [disabled]="!preprintFile() || versionFileMode()"
+    [disabled]="!canProceedToNext()"
     [pTooltip]="
-      !preprintFile() || versionFileMode()
-        ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate)
-        : ''
+      !canProceedToNext() ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate) : ''
     "
     tooltipPosition="top"
     (onClick)="nextButtonClicked()"
