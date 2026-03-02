@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { ResourceIsSpammedComponent } from './resource-is-spammed.component';
 
 describe('ResourceIsSpammedComponent', () => {
@@ -8,7 +8,7 @@ describe('ResourceIsSpammedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResourceIsSpammedComponent],
+      imports: [TranslateModule.forRoot(), ResourceIsSpammedComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResourceIsSpammedComponent);
