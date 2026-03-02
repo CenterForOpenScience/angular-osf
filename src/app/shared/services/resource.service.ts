@@ -1,6 +1,7 @@
-import { finalize, map, Observable } from 'rxjs';
+import { catchError, finalize, map, Observable, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
@@ -24,6 +25,7 @@ export class ResourceGuidService {
   private jsonApiService = inject(JsonApiService);
   private loaderService = inject(LoaderService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly router = inject(Router);
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
@@ -59,7 +61,13 @@ export class ResourceGuidService {
             title: res.data.attributes?.title,
           }) as CurrentResource
       ),
-      finalize(() => this.loaderService.hide())
+      finalize(() => this.loaderService.hide()),
+      catchError((error) => {
+        if (error.status === 410) {
+          this.router.navigate(['/content-flagged-as-spam']);
+        }
+        return throwError(() => error);
+      })
     );
   }
 

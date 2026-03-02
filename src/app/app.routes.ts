@@ -176,6 +176,13 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: 'content-flagged-as-spam',
+        loadComponent: () =>
+          import('./core/components/resource-is-spammed/resource-is-spammed.component').then(
+            (mod) => mod.ResourceIsSpammedComponent
+          ),
+      },
+      {
         path: 'project/:id/node/:nodeId/files/:provider/:fileId',
         loadComponent: () =>
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),

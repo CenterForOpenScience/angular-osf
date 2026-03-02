@@ -2831,6 +2831,12 @@
     "requestedSuccessMessage": "Your request for access has been sent.",
     "alreadyRequestedMessage": "You already requested access."
   },
+  "resourceSpammed": {
+    "title": "This Page Is Temporarily Unavailable.",
+    "message": "This content was flagged as potential spam.",
+    "contact": "If this is a mistake, reach out to",
+    "footer": "for assistance. Your content remains safe and will be restored once verified."
+  },
   "validation": {
     "required": "The field is required.",
     "email": "Please enter a valid email address.",

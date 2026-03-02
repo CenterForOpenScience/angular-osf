@@ -1,6 +1,7 @@
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
@@ -38,6 +39,7 @@ import {
 export class PreprintsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly router = inject(Router);
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
@@ -95,7 +97,15 @@ export class PreprintsService {
           null
         >
       >(`${this.apiUrl}/preprints/${id}/`, params)
-      .pipe(map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)));
+      .pipe(
+        map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)),
+        catchError((error) => {
+          if (error.status === 410) {
+            this.router.navigate(['/content-flagged-as-spam']);
+          }
+          return throwError(() => error);
+        })
+      );
   }
 
   getPreprintMetrics(id: string) {
