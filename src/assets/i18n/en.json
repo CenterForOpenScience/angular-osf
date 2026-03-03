@@ -2832,7 +2832,7 @@
     "alreadyRequestedMessage": "You already requested access."
   },
   "resourceSpammed": {
-    "title": "This Page Is Temporarily Unavailable.",
+    "title": "This page is temporarily unavailable.",
     "message": "This content was flagged as potential spam.",
     "contact": "If this is a mistake, reach out to",
     "footer": "for assistance. Your content remains safe and will be restored once verified."

@@ -2,7 +2,7 @@ export const environment = {
   production: false,
   webUrl: 'http://localhost:5000',
   apiDomainUrl: 'http://localhost:8000',
-  shareTroveUrl: 'https://localhost:8003/trove',
+  shareTroveUrl: 'http://localhost:8003/trove',
   addonsApiUrl: 'http://localhost:8004/v1',
   funderApiUrl: 'https://api.crossref.org/',
   casUrl: 'http://localhost:8080',

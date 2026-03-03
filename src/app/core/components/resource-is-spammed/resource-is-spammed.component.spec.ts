@@ -1,17 +1,18 @@
-import { TranslateModule } from '@ngx-translate/core';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceIsSpammedComponent } from './resource-is-spammed.component';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 describe('ResourceIsSpammedComponent', () => {
   let component: ResourceIsSpammedComponent;
   let fixture: ComponentFixture<ResourceIsSpammedComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), ResourceIsSpammedComponent],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ResourceIsSpammedComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ResourceIsSpammedComponent);
     component = fixture.componentInstance;
@@ -20,5 +21,9 @@ describe('ResourceIsSpammedComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set supportEmail from environment token', () => {
+    expect(component.supportEmail).toBe('support@test.com');
   });
 });

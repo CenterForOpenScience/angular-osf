@@ -64,7 +64,7 @@ export class ResourceGuidService {
       finalize(() => this.loaderService.hide()),
       catchError((error) => {
         if (error.status === 410) {
-          this.router.navigate(['/content-flagged-as-spam']);
+          this.router.navigate(['/spam-content']);
         }
         return throwError(() => error);
       })
