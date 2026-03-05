@@ -20,6 +20,7 @@
     "ngxs:store": "ng generate @ngxs/store:store --name --path",
     "prepare": "husky",
     "start": "ng serve",
+    "start:ssr": "ng serve --configuration dev-ssr",
     "start:docker": "npm run check:config && ng serve --host 0.0.0.0 --port 4200 --poll 2000 --configuration development",
     "start:docker:local": "npm run check:config && ng serve --host 0.0.0.0 --port 4200 --poll 2000 --configuration docker",
     "test": "jest",
