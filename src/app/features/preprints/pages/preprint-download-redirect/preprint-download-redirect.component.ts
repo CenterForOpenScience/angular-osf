@@ -1,5 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import { SocialShareService } from '@osf/shared/services/social-share.service';
 
 @Component({
   selector: 'osf-preprint-download-redirect',
@@ -7,12 +10,18 @@ import { ActivatedRoute } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintDownloadRedirectComponent {
-  constructor() {
-    const route = inject(ActivatedRoute);
-    const id = route.snapshot.paramMap.get('id') ?? '';
+  private readonly route = inject(ActivatedRoute);
+  private readonly socialShareService = inject(SocialShareService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-    if (id) {
-      window.location.href = `/download/${id}`;
+  constructor() {
+    const id = this.route.snapshot.paramMap.get('id') ?? '';
+
+    if (!id || !this.isBrowser) {
+      return;
     }
+
+    const url = this.socialShareService.createDownloadUrl(id);
+    window.location.replace(url);
   }
 }
