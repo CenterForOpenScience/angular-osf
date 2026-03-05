@@ -1,3 +1,5 @@
+import { TranslateModule } from '@ngx-translate/core';
+
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -6,8 +8,9 @@ import { SocialShareService } from '@osf/shared/services/social-share.service';
 
 @Component({
   selector: 'osf-preprint-download-redirect',
-  template: '',
+  template: `<p>{{ 'preprints.downloadRedirect.message' | translate }}</p>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslateModule],
 })
 export class PreprintDownloadRedirectComponent {
   private readonly route = inject(ActivatedRoute);

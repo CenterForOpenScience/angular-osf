@@ -2345,6 +2345,9 @@
         "singularCapitalized": "Thesis"
       }
     },
+    "downloadRedirect": {
+      "message": "Your download will begin shortly."
+    },
     "details": {
       "reasonForWithdrawal": "Reason for withdrawal",
       "originalPublicationDate": "Original Publication Date",

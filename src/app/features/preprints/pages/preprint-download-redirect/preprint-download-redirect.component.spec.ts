@@ -43,7 +43,7 @@ describe('PreprintDownloadRedirectComponent', () => {
         provideOSFCore(),
         MockProvider(ActivatedRoute, mockRoute),
         MockProvider(SocialShareService, mockSocialShareService),
-        { provide: PLATFORM_ID, useValue: isBrowser ? 'browser' : 'server' },
+        MockProvider(PLATFORM_ID, isBrowser ? 'browser' : 'server'),
       ],
     });
 
@@ -54,6 +54,12 @@ describe('PreprintDownloadRedirectComponent', () => {
   it('should create', () => {
     const { component } = setup();
     expect(component).toBeTruthy();
+  });
+
+  it('should render download message', () => {
+    const { fixture } = setup();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('p').textContent).toContain('preprints.downloadRedirect.message');
   });
 
   it('should redirect to download URL when id is present in browser', () => {
