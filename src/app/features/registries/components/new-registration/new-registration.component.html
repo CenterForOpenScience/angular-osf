@@ -1,4 +1,4 @@
-@if (!isProvidersLoading() && allowedSubmissions()) {
+@if (canShowForm()) {
   <section class="h-full" data-test-new-registration-form>
     <osf-sub-header [title]="'registries.new.addNewRegistry' | translate" />
 
@@ -85,4 +85,8 @@
       </form>
     </section>
   </section>
+} @else {
+  <div class="flex-1">
+    <osf-loading-spinner />
+  </div>
 }
