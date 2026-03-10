@@ -151,4 +151,31 @@ describe('NewRegistrationComponent', () => {
     expect(getProjectsCalls.length).toBe(1);
     expect(getProjectsCalls[0][0]).toEqual(new GetProjects('user-1', 'abc'));
   }));
+
+  it('should navigate and show error toast when provider does not allow submissions', () => {
+    const toastServiceSpy = jest.spyOn(TestBed.inject(ToastService), 'showError');
+    const routerSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
+    const providerSignal = component.provider as any;
+
+    providerSignal.set({ id: 'prov-1', allowSubmissions: false });
+    fixture.detectChanges();
+    expect(toastServiceSpy).toHaveBeenCalledWith('registries.new.registryClosedForSubmissions');
+    expect(routerSpy).toHaveBeenCalledWith(['/registries', 'prov-1']);
+  });
+
+  it('should compute canShowForm correctly', () => {
+    const isProvidersLoadingSignal = component.isProvidersLoading as any;
+    const providerSignal = component.provider as any;
+
+    isProvidersLoadingSignal.set(false);
+    providerSignal.set({ allowSubmissions: true });
+    expect(component.canShowForm()).toBe(true);
+
+    isProvidersLoadingSignal.set(true);
+    expect(component.canShowForm()).toBe(false);
+
+    isProvidersLoadingSignal.set(false);
+    providerSignal.set(null);
+    expect(component.canShowForm()).toBe(false);
+  });
 });
