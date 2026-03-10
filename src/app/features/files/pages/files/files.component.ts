@@ -292,7 +292,9 @@ export class FilesComponent {
         const rootFoldersOption = rootFoldersOptions.find((option) => option.folder.provider === providerName);
 
         if (!rootFoldersOption) {
-          this.router.navigate([`/${this.resourceId()}/files`, FileProvider.OsfStorage]);
+          this.router.navigate([`/${this.resourceId()}/files`, FileProvider.OsfStorage], {
+            queryParamsHandling: 'preserve',
+          });
         } else {
           this.currentRootFolder.set({
             label: rootFoldersOption.label,
@@ -688,6 +690,6 @@ export class FilesComponent {
   handleRootFolderChange(selectedFolder: FileLabelModel) {
     const provider = selectedFolder.folder?.provider;
     const resourceId = this.resourceId();
-    this.router.navigate([`/${resourceId}/files`, provider]);
+    this.router.navigate([`/${resourceId}/files`, provider], { queryParamsHandling: 'preserve' });
   }
 }
