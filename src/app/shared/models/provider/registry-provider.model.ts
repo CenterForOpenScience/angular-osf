@@ -10,4 +10,5 @@ export interface RegistryProviderDetails {
   brand: BrandModel | null;
   iri: string;
   reviewsWorkflow: string;
+  allowSubmissions: boolean;
 }

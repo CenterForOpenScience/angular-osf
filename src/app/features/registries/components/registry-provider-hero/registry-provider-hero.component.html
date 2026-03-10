@@ -13,11 +13,13 @@
       }
     </div>
 
-    <p-button
-      [label]="'registries.addRegistration' | translate"
-      (onClick)="navigateToCreatePage()"
-      styleClass="w-max"
-    ></p-button>
+    @if (!isProviderLoading() && provider()!.allowSubmissions) {
+      <p-button
+        [label]="'registries.addRegistration' | translate"
+        (onClick)="navigateToCreatePage()"
+        styleClass="w-max"
+      ></p-button>
+    }
   </div>
 
   <div class="provider-description">

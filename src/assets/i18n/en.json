@@ -2511,7 +2511,8 @@
       },
       "selectProject": "Select your project",
       "createDraft": "Create draft",
-      "createdSuccessfully": "Draft created successfully"
+      "createdSuccessfully": "Draft created successfully",
+      "registryClosedForSubmissions": "This registry is closed for new submissions. Please start a new registration with a different registry."
     },
     "deleteDraft": "Delete Draft",
     "confirmDeleteDraft": "Are you sure you want to delete this draft registration?",

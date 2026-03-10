@@ -16,7 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { GetRegistryProvider } from '@shared/stores/registration-provider';
+import { GetRegistryProvider, RegistrationProviderSelectors } from '@shared/stores/registration-provider';
 
 import { CreateDraft, GetProjects, GetProviderSchemas, RegistriesSelectors } from '../../store';
 
@@ -37,6 +37,7 @@ export class NewRegistrationComponent {
   readonly user = select(UserSelectors.getCurrentUser);
   readonly projects = select(RegistriesSelectors.getProjects);
   readonly providerSchemas = select(RegistriesSelectors.getProviderSchemas);
+  readonly provider = select(RegistrationProviderSelectors.getBrandedProvider);
   readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
   readonly isProvidersLoading = select(RegistriesSelectors.isProvidersLoading);
   readonly isProjectsLoading = select(RegistriesSelectors.isProjectsLoading);
@@ -73,6 +74,15 @@ export class NewRegistrationComponent {
     const projectControl = this.draftForm.get('project');
     projectControl?.setValidators(this.fromProject() ? Validators.required : null);
     projectControl?.updateValueAndValidity();
+  }
+
+  allowedSubmissions() {
+    const provider = this.provider();
+    if (provider?.allowSubmissions === false) {
+      this.toastService.showError('registries.new.registryClosedForSubmissions');
+      this.router.navigate(['/registries/', provider.id]);
+    }
+    return true;
   }
 
   createDraft() {
