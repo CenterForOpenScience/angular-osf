@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -34,7 +35,11 @@ describe('ProfileSettingsComponent', () => {
           SelectComponent
         ),
       ],
-      providers: [MockProvider(IS_MEDIUM, isMedium), MockProvider(TranslateService)],
+      providers: [
+        MockProvider(IS_MEDIUM, isMedium),
+        MockProvider(TranslateService),
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProfileSettingsComponent);
@@ -44,6 +49,14 @@ describe('ProfileSettingsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update selected tab on init based on query param', () => {
+    const testTabValue = 2;
+    component['route'] = { snapshot: { queryParams: { tab: testTabValue } } } as any;
+
+    component.ngOnInit();
+    expect(component['selectedTab']).toBe(testTabValue);
   });
 
   it('should update selected tab when onTabChange is called', () => {
