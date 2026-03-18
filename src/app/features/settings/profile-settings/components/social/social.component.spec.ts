@@ -4,6 +4,7 @@ import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@osf/core/store/user';
+import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -27,11 +28,23 @@ describe('SocialComponent', () => {
       imports: [SocialComponent, MockComponent(SocialFormComponent), MockPipe(TranslatePipe)],
       providers: [
         provideMockStore({
-          signals: [{ selector: UserSelectors.getSocialLinks, value: MOCK_USER.social }],
+          signals: [
+            { selector: UserSelectors.getSocialLinks, value: MOCK_USER.social },
+            {
+              selector: AccountSettingsSelectors.getExternalIdentities,
+              value: [
+                {
+                  id: 'ORCID',
+                  externalId: '0001-0002-0003-0004',
+                  status: 'VERIFIED',
+                },
+              ],
+            },
+          ],
         }),
         MockProvider(ToastService),
         MockProvider(LoaderService),
-        { provide: CustomConfirmationService, useValue: MockCustomConfirmationServiceProvider },
+        { provide: CustomConfirmationService, useValue: MockCustomConfirmationServiceProvider.useValue },
       ],
     }).compileComponents();
 
@@ -47,5 +60,11 @@ describe('SocialComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show existing user ORCID when present in external identities', () => {
+    expect(component.existingOrcid).toEqual('0001-0002-0003-0004');
+    component.disconnectOrcid();
+    expect(MockCustomConfirmationServiceProvider.useValue.confirmDelete).toHaveBeenCalled();
   });
 });

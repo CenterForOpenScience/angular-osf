@@ -1848,9 +1848,11 @@
         "successUpdate": "Settings successfully updated."
       },
       "social": {
+        "disconnectOrcid": "Disconnect ORCID",
         "title": "Social Link {{index}}",
         "successUpdate": "Social successfully updated.",
         "labels": {
+          "authenticatedIdentity": "Authenticated identity",
           "researcherId": "ResearcherID",
           "orcid": "ORCID",
           "linkedIn": "LinkedIn",
