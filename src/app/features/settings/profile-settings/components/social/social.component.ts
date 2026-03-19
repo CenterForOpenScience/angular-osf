@@ -3,9 +3,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { Tooltip } from 'primeng/tooltip';
-
-import { finalize } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -27,17 +24,13 @@ import { ToastService } from '@osf/shared/services/toast.service';
 import { SocialModel } from '@shared/models/user/social.model';
 import { SocialLinksForm } from '@shared/models/user/social-links.model';
 
-import {
-  AccountSettingsSelectors,
-  DeleteExternalIdentity,
-  GetExternalIdentities,
-} from '../../../account-settings/store';
 import { hasSocialLinkChanges, mapSocialLinkToPayload } from '../../helpers';
+import { AuthenticatedIdentityComponent } from '../authenticated-identity/authenticated-identity.component';
 import { SocialFormComponent } from '../social-form/social-form.component';
 
 @Component({
   selector: 'osf-social',
-  imports: [Button, ReactiveFormsModule, SocialFormComponent, Tooltip, TranslatePipe],
+  imports: [Button, ReactiveFormsModule, SocialFormComponent, AuthenticatedIdentityComponent, TranslatePipe],
   templateUrl: './social.component.html',
   styleUrl: './social.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,20 +47,14 @@ export class SocialComponent {
 
   private readonly socials = SOCIAL_LINKS;
 
-  readonly actions = createDispatchMap({
-    updateProfileSettingsSocialLinks: UpdateProfileSettingsSocialLinks,
-    deleteExternalIdentity: DeleteExternalIdentity,
-    getExternalIdentities: GetExternalIdentities,
-  });
+  readonly actions = createDispatchMap({ updateProfileSettingsSocialLinks: UpdateProfileSettingsSocialLinks });
   readonly socialLinks = select(UserSelectors.getSocialLinks);
-  readonly externalIdentities = select(AccountSettingsSelectors.getExternalIdentities);
 
   readonly socialLinksForm = this.fb.group({ links: this.fb.array<SocialLinksForm>([]) });
 
   constructor() {
     effect(() => {
       this.setInitialData();
-      this.actions.getExternalIdentities();
     });
   }
 
@@ -120,30 +107,6 @@ export class SocialComponent {
     if (!initialSocialLinks || !currentLinks) return false;
 
     return currentLinks.some((link, index) => hasSocialLinkChanges(link, initialSocialLinks, index, this.socials));
-  }
-
-  get existingOrcid(): string | undefined {
-    const externalIdentities = this.externalIdentities();
-    const existingOrcid = externalIdentities?.find((identity) => identity.id === 'ORCID');
-    if (existingOrcid && existingOrcid.status === 'VERIFIED') {
-      return existingOrcid.externalId;
-    }
-    return undefined;
-  }
-
-  disconnectOrcid(): void {
-    this.customConfirmationService.confirmDelete({
-      headerKey: 'settings.accountSettings.connectedIdentities.deleteDialog.header',
-      messageParams: { name: 'ORCID' },
-      messageKey: 'settings.accountSettings.connectedIdentities.deleteDialog.message',
-      onConfirm: () => {
-        this.loaderService.show();
-        this.actions
-          .deleteExternalIdentity('ORCID')
-          .pipe(finalize(() => this.loaderService.hide()))
-          .subscribe(() => this.toastService.showSuccess('settings.accountSettings.connectedIdentities.successDelete'));
-      },
-    });
   }
 
   private setInitialData(): void {

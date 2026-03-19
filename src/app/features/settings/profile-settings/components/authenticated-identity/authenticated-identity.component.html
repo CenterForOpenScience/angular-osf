@@ -1,0 +1,39 @@
+<div class="flex flex-column row-gap-4 border-1 border-round-lg grey-border-color p-3 md:p-4 xl:p-5">
+  <div class="flex flex-row justify-content-between">
+    <h2>
+      {{ 'settings.profileSettings.social.labels.authenticatedIdentity' | translate }}
+    </h2>
+  </div>
+  <div class="flex flex-column row-gap-4 w-full md:flex-row md:align-items-end md:column-gap-3">
+    <div class="w-full md:w-12">
+      @if (existingOrcid) {
+        <div class="flex flex-row align-items-center gap-2">
+          <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
+          <a class="font-bold" [href]="orcidUrl()"> {{ orcidUrl() }} </a>
+          <p-button
+            icon="fas fa-times"
+            class="w-6 md:w-auto"
+            severity="danger"
+            variant="text"
+            [pTooltip]="'settings.profileSettings.social.disconnectOrcid' | translate"
+            [ariaLabel]="'settings.profileSettings.social.disconnectOrcid' | translate"
+            (onClick)="disconnectOrcid()"
+          >
+          </p-button>
+        </div>
+      } @else {
+        <p-button
+          class="w-6 md:w-auto"
+          [label]="'settings.profileSettings.social.connectOrcid' | translate"
+          severity="secondary"
+          (onClick)="connectOrcid()"
+        >
+        </p-button>
+        <p
+          class="mt-2 text-sm text-gray-600"
+          [innerHTML]="'settings.profileSettings.social.orcidDescription' | translate"
+        ></p>
+      }
+    </div>
+  </div>
+</div>
