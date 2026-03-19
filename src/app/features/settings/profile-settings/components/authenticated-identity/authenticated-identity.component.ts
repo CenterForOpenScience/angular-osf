@@ -8,8 +8,9 @@ import { Tooltip } from 'primeng/tooltip';
 import { finalize } from 'rxjs';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 
+import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -27,15 +28,15 @@ import {
   styleUrl: './authenticated-identity.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AuthenticatedIdentityComponent {
+export class AuthenticatedIdentityComponent implements OnInit {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
   private readonly loaderService = inject(LoaderService);
 
-  constructor() {
-    effect(() => {
-      this.actions.getExternalIdentities();
-    });
+  private readonly ORCID_PROVIDER = 'ORCID';
+
+  ngOnInit() {
+    this.actions.getExternalIdentities();
   }
 
   readonly actions = createDispatchMap({
@@ -46,27 +47,24 @@ export class AuthenticatedIdentityComponent {
   readonly externalIdentities = select(AccountSettingsSelectors.getExternalIdentities);
 
   readonly orcidUrl = computed(() => {
-    return this.existingOrcid ? `https://orcid.org/${this.existingOrcid}` : null;
+    return this.existingOrcid() ? `https://orcid.org/${this.existingOrcid()}` : null;
   });
 
-  get existingOrcid(): string | undefined {
-    const externalIdentities = this.externalIdentities();
-    const existingOrcid = externalIdentities?.find((identity) => identity.id === 'ORCID');
-    if (existingOrcid && existingOrcid.status === 'VERIFIED') {
-      return existingOrcid.externalId;
-    }
-    return undefined;
-  }
+  readonly existingOrcid = computed(
+    (): string | undefined =>
+      this.externalIdentities()?.find((i) => i.id === 'ORCID' && i.status === ExternalIdentityStatus.VERIFIED)
+        ?.externalId
+  );
 
   disconnectOrcid(): void {
     this.customConfirmationService.confirmDelete({
       headerKey: 'settings.accountSettings.connectedIdentities.deleteDialog.header',
-      messageParams: { name: 'ORCID' },
+      messageParams: { name: this.ORCID_PROVIDER },
       messageKey: 'settings.accountSettings.connectedIdentities.deleteDialog.message',
       onConfirm: () => {
         this.loaderService.show();
         this.actions
-          .deleteExternalIdentity('ORCID')
+          .deleteExternalIdentity(this.ORCID_PROVIDER)
           .pipe(finalize(() => this.loaderService.hide()))
           .subscribe(() => this.toastService.showSuccess('settings.accountSettings.connectedIdentities.successDelete'));
       },

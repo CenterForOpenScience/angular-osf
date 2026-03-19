@@ -9,6 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { EducationHistoryComponent } from '@osf/shared/components/education-history/education-history.component';
 import { EmploymentHistoryComponent } from '@osf/shared/components/employment-history/employment-history.component';
 import { SOCIAL_LINKS } from '@osf/shared/constants/social-links.const';
+import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { UserModel } from '@osf/shared/models/user/user.models';
 import { SortByDatePipe } from '@osf/shared/pipes/sort-by-date.pipe';
@@ -45,7 +46,7 @@ export class ProfileInformationComponent {
 
   orcidId = computed(() => {
     const orcid = this.currentUser()?.external_identity?.ORCID;
-    return orcid?.status?.toUpperCase() === 'VERIFIED' ? orcid.id : undefined;
+    return orcid?.status?.toUpperCase() === ExternalIdentityStatus.VERIFIED ? orcid.id : undefined;
   });
 
   toProfileSettings() {
