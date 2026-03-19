@@ -21,6 +21,17 @@
           >
           </p-button>
         </div>
+      } @else {
+        <p-button
+          class="w-6 md:w-auto"
+          [label]="'settings.profileSettings.social.connectOrcid' | translate"
+          severity="secondary"
+        >
+        </p-button>
+        <p
+          class="mt-2 text-sm text-gray-600"
+          [innerHTML]="'settings.profileSettings.social.orcidDescription' | translate"
+        ></p>
       }
     </div>
   </div>
