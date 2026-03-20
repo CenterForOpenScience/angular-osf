@@ -11,12 +11,16 @@ import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AuthenticatedIdentityComponent } from './authenticated-identity.component';
 
-import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
+import {
+  CustomConfirmationServiceMock,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AuthenticatedIdentityComponent', () => {
   let component: AuthenticatedIdentityComponent;
   let fixture: ComponentFixture<AuthenticatedIdentityComponent>;
+  let customConfirmationServiceMock: CustomConfirmationServiceMockType;
 
   const mockExternalIdentities = signal([
     {
@@ -27,13 +31,14 @@ describe('AuthenticatedIdentityComponent', () => {
   ]);
 
   beforeEach(async () => {
+    customConfirmationServiceMock = CustomConfirmationServiceMock.simple();
     await TestBed.configureTestingModule({
       imports: [AuthenticatedIdentityComponent, MockPipe(TranslatePipe)],
       providers: [
         MockProvider(ToastService),
         MockProvider(LoaderService),
         MockProvider(TranslateService),
-        { provide: CustomConfirmationService, useValue: MockCustomConfirmationServiceProvider.useValue },
+        MockProvider(CustomConfirmationService, customConfirmationServiceMock),
         provideMockStore({
           signals: [
             {
@@ -58,7 +63,7 @@ describe('AuthenticatedIdentityComponent', () => {
     expect(component.existingOrcid()).toEqual('0001-0002-0003-0004');
     expect(component.orcidUrl()).toEqual('https://orcid.org/0001-0002-0003-0004');
     component.disconnectOrcid();
-    expect(MockCustomConfirmationServiceProvider.useValue.confirmDelete).toHaveBeenCalled();
+    expect(customConfirmationServiceMock.confirmDelete).toHaveBeenCalled();
   });
 
   it('should show connect button when no existing ORCID is present in external identities', () => {
