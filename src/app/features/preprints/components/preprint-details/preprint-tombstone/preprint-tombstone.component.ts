@@ -6,8 +6,18 @@ import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnDestroy, output } from '@angular/core';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  OnDestroy,
+  output,
+  PLATFORM_ID,
+} from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
@@ -57,6 +67,8 @@ export class PreprintTombstoneComponent implements OnDestroy {
   });
   private router = inject(Router);
 
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   preprintVersionSelected = output<string>();
 
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
@@ -91,7 +103,9 @@ export class PreprintTombstoneComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.resetContributorsState();
+    if (this.isBrowser) {
+      this.actions.resetContributorsState();
+    }
   }
 
   tagClicked(tag: string) {

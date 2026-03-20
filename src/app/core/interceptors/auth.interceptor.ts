@@ -2,8 +2,11 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Observable } from 'rxjs';
 
+import { isPlatformServer } from '@angular/common';
 import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
+
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { environment } from 'src/environments/environment';
 
@@ -15,6 +18,7 @@ export const authInterceptor: HttpInterceptorFn = (
     return next(req);
   }
 
+  const platformId = inject(PLATFORM_ID);
   const cookieService = inject(CookieService);
   const csrfToken = cookieService.get('api-csrf');
 
@@ -28,6 +32,14 @@ export const authInterceptor: HttpInterceptorFn = (
 
   if (csrfToken) {
     headers['X-CSRFToken'] = csrfToken;
+  }
+
+  if (isPlatformServer(platformId)) {
+    const environment = inject(ENVIRONMENT);
+
+    if (environment.throttleToken) {
+      headers['X-Throttle-Token'] = environment.throttleToken;
+    }
   }
 
   const authReq = req.clone({ setHeaders: headers, withCredentials: true });
