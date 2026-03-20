@@ -1,16 +1,14 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store/account-settings.selectors';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
-import { LoaderService } from '@osf/shared/services/loader.service';
-import { ToastService } from '@osf/shared/services/toast.service';
 
 import { AuthenticatedIdentityComponent } from './authenticated-identity.component';
 
+import { OSFTestingModule } from '@testing/osf.testing.module';
 import {
   CustomConfirmationServiceMock,
   CustomConfirmationServiceMockType,
@@ -33,11 +31,8 @@ describe('AuthenticatedIdentityComponent', () => {
   beforeEach(async () => {
     customConfirmationServiceMock = CustomConfirmationServiceMock.simple();
     await TestBed.configureTestingModule({
-      imports: [AuthenticatedIdentityComponent, MockPipe(TranslatePipe)],
+      imports: [AuthenticatedIdentityComponent, OSFTestingModule],
       providers: [
-        MockProvider(ToastService),
-        MockProvider(LoaderService),
-        MockProvider(TranslateService),
         MockProvider(CustomConfirmationService, customConfirmationServiceMock),
         provideMockStore({
           signals: [
