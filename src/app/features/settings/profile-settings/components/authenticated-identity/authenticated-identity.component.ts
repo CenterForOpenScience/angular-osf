@@ -10,6 +10,7 @@ import { finalize } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
@@ -20,6 +21,7 @@ import {
   DeleteExternalIdentity,
   GetExternalIdentities,
 } from '../../../account-settings/store';
+import { ProfileSettingsTabOption } from '../../enums';
 
 @Component({
   selector: 'osf-authenticated-identity',
@@ -29,6 +31,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthenticatedIdentityComponent implements OnInit {
+  private readonly environment = inject(ENVIRONMENT);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
   private readonly loaderService = inject(LoaderService);
@@ -72,6 +75,18 @@ export class AuthenticatedIdentityComponent implements OnInit {
   }
 
   connectOrcid(): void {
-    /* no-op for now*/
+    const webUrl = this.environment.webUrl;
+    const casUrl = this.environment.casUrl;
+    const finalDestination = new URL(`${webUrl}/settings/profile`);
+    finalDestination.searchParams.set('tab', ProfileSettingsTabOption.Social.toString());
+    const casLoginUrl = new URL(`${casUrl}/login`);
+    casLoginUrl.search = new URLSearchParams({
+      redirectOrcid: 'true',
+      service: `${webUrl}/login`,
+      next: encodeURIComponent(finalDestination.toString()),
+    }).toString();
+    const logoutUrl = new URL(`${webUrl}/logout/`);
+    logoutUrl.searchParams.set('next', casLoginUrl.toString());
+    window.location.href = logoutUrl.toString();
   }
 }
