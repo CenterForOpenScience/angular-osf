@@ -19,7 +19,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { FilterOperatorOption, FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
+import { FilterOperatorOption, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 

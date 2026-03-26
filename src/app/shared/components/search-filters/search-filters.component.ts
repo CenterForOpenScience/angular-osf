@@ -16,7 +16,7 @@ import {
   DiscoverableFilter,
   FilterOperatorOption,
   FilterOption,
-} from '@shared/models/search/discaverable-filter.model';
+} from '@osf/shared/models/search/discoverable-filter.model';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';

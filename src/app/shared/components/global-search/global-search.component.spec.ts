@@ -5,12 +5,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
   DiscoverableFilter,
   FilterOperatorOption,
   FilterOption,
-} from '@shared/models/search/discaverable-filter.model';
+} from '@osf/shared/models/search/discoverable-filter.model';
+import { ResourceType } from '@shared/enums/resource-type.enum';
 import { GlobalSearchSelectors } from '@shared/stores/global-search';
 
 import { FilterChipsComponent } from '../filter-chips/filter-chips.component';

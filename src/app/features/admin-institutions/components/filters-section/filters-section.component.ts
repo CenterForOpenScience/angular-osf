@@ -9,16 +9,14 @@ import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 
 import { FilterChipsComponent } from '@osf/shared/components/filter-chips/filter-chips.component';
 import { SearchFiltersComponent } from '@osf/shared/components/search-filters/search-filters.component';
-import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
 import {
   ClearFilterSearchResults,
   FetchResources,
   GlobalSearchSelectors,
   LoadFilterOptions,
-  LoadFilterOptionsAndSetValues,
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
-  SetDefaultFilterValue,
   UpdateSelectedFilterOption,
 } from '@osf/shared/stores/global-search';
 
@@ -32,12 +30,10 @@ import {
 export class FiltersSectionComponent {
   private actions = createDispatchMap({
     loadFilterOptions: LoadFilterOptions,
-    loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
     loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
     loadMoreFilterOptions: LoadMoreFilterOptions,
     updateSelectedFilterOption: UpdateSelectedFilterOption,
     clearFilterSearchResults: ClearFilterSearchResults,
-    setDefaultFilterValue: SetDefaultFilterValue,
     fetchResources: FetchResources,
   });
 
