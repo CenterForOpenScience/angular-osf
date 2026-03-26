@@ -14,6 +14,10 @@ import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import {
+  INSTITUTIONS_SSO_AVAILABILITY_KEY,
+  INSTITUTIONS_SSO_AVAILABILITY_VALUE,
+} from '@osf/shared/constants/institutions-filters.const';
 import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 @Component({
@@ -43,7 +47,7 @@ export class InstitutionsListComponent {
   institutionsLoading = select(InstitutionsSelectors.isInstitutionsLoading);
 
   constructor() {
-    this.actions.getInstitutions();
+    this.actions.getInstitutions(INSTITUTIONS_SSO_AVAILABILITY_VALUE, INSTITUTIONS_SSO_AVAILABILITY_KEY);
     this.setupSearchSubscription();
   }
 

@@ -35,11 +35,11 @@ export class InstitutionsService {
     [ResourceType.DraftRegistration, 'draft_registrations'],
   ]);
 
-  getInstitutions(searchValue?: string): Observable<InstitutionsWithTotalCount> {
+  getInstitutions(searchValue?: string, searchKey = 'name'): Observable<InstitutionsWithTotalCount> {
     const params: Record<string, unknown> = {};
 
     if (searchValue && searchValue.trim()) {
-      params['filter[name]'] = searchValue.trim();
+      params[`filter[${searchKey}]`] = searchValue.trim();
     }
 
     return this.jsonApiService

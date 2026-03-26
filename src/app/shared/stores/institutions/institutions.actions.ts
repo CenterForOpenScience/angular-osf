@@ -8,7 +8,10 @@ export class FetchUserInstitutions {
 export class FetchInstitutions {
   static readonly type = '[Institutions] Fetch Institutions';
 
-  constructor(public searchValue?: string) {}
+  constructor(
+    public searchValue?: string,
+    public searchKey?: string
+  ) {}
 }
 
 export class FetchResourceInstitutions {
