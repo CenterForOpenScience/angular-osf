@@ -54,7 +54,7 @@ export class InstitutionsState {
       },
     });
 
-    return this.institutionsService.getInstitutions(action.searchValue).pipe(
+    return this.institutionsService.getInstitutions(action.searchValue, action.searchKey).pipe(
       tap((response) => {
         ctx.setState(
           patch({

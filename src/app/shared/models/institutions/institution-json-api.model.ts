@@ -23,6 +23,7 @@ interface InstitutionAttributesJsonApi {
   institutional_request_access_enabled: boolean;
   logo_path: string;
   link_to_external_reports_archive: string;
+  sso_availability: string;
 }
 
 interface InstitutionLinksJsonApi {
