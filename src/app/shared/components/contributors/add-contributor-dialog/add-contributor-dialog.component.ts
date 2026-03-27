@@ -115,6 +115,7 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
     const state = this.currentState();
 
     if (state === AddDialogState.Search) {
+      this.selectedUsers.set(this.selectedUsers().filter((user) => !user.disabled));
       this.currentState.set(AddDialogState.Details);
       return;
     }
@@ -170,6 +171,14 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
       this.currentPage.set(eventPageOneBased);
       this.first.set(event.first ?? 0);
     }
+  }
+
+  onSelectedUsersChange(users: ContributorAddModel[]): void {
+    users.forEach((user) => {
+      user.isBibliographic = true;
+    });
+
+    this.selectedUsers.set([...users]);
   }
 
   private initializeDialogData(): void {

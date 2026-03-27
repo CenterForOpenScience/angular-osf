@@ -14,7 +14,8 @@
             <p-checkbox
               variant="filled"
               [value]="item"
-              [(ngModel)]="selectedUsers"
+              [ngModel]="selectedUsers()"
+              (ngModelChange)="onSelectedUsersChange($event)"
               [disabled]="!!item.disabled"
             ></p-checkbox>
             <a class="ml-2 font-bold" [href]="item.id" target="_blank">{{ item.fullName }}</a>
@@ -42,7 +43,7 @@
           class="btn-full-width md:w-auto"
           severity="secondary"
           [label]="'project.contributors.addDialog.addUnregisteredContributor' | translate"
-          (click)="addUnregistered()"
+          (onClick)="addUnregistered()"
           data-test-add-unregistered-contributor-button
         />
       </div>
@@ -91,7 +92,7 @@
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="dialogRef.close()"
+      (onClick)="dialogRef.close()"
       severity="info"
       [label]="'common.buttons.cancel' | translate"
       data-test-cancel-add-contributor-button
@@ -101,7 +102,7 @@
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="addContributor()"
+      (onClick)="addContributor()"
       [label]="buttonLabel() | translate"
       [disabled]="!selectedUsers().length"
       data-test-add-contributor-button

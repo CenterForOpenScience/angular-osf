@@ -1,54 +1,100 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 
-import { signal } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
 import { AddDialogState } from '@osf/shared/enums/contributors/add-dialog-state.enum';
-import { AddContributorItemComponent } from '@shared/components/contributors/add-contributor-item/add-contributor-item.component';
-import { ContributorsSelectors } from '@shared/stores/contributors';
+import { ClearUsers, ContributorsSelectors, SearchUsers, SearchUsersPageChange } from '@osf/shared/stores/contributors';
+import { ComponentCheckboxItemModel } from '@shared/models/component-checkbox-item.model';
+import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
 
 import { ComponentsSelectionListComponent } from '../../components-selection-list/components-selection-list.component';
 import { CustomPaginatorComponent } from '../../custom-paginator/custom-paginator.component';
 import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '../../search-input/search-input.component';
+import { AddContributorItemComponent } from '../add-contributor-item/add-contributor-item.component';
 
 import { AddContributorDialogComponent } from './add-contributor-dialog.component';
 
 import {
   MOCK_COMPONENT_CHECKBOX_ITEM,
   MOCK_COMPONENT_CHECKBOX_ITEM_CURRENT,
+  MOCK_COMPONENT_CHECKBOX_ITEM_UNCHECKED,
   MOCK_CONTRIBUTOR_ADD,
   MOCK_CONTRIBUTOR_ADD_DISABLED,
 } from '@testing/mocks/contributors.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+interface SetupOverrides extends BaseSetupOverrides {
+  dialogData?: {
+    components?: ComponentCheckboxItemModel[];
+    resourceName?: string;
+    parentResourceName?: string;
+    allowAddingContributorsFromParentProject?: boolean;
+  };
+}
 
 describe('AddContributorDialogComponent', () => {
   let component: AddContributorDialogComponent;
   let fixture: ComponentFixture<AddContributorDialogComponent>;
-  let dialogRef: jest.Mocked<DynamicDialogRef>;
-  let dialogConfig: DynamicDialogConfig;
+  let dialogRef: DynamicDialogRef;
   let store: Store;
 
-  beforeEach(async () => {
-    dialogRef = {
-      close: jest.fn(),
-    } as any;
+  const users: ContributorAddModel[] = [
+    {
+      ...MOCK_CONTRIBUTOR_ADD,
+      id: 'u1',
+      fullName: 'User One',
+      email: 'one@example.com',
+      isBibliographic: false,
+    },
+    {
+      ...MOCK_CONTRIBUTOR_ADD_DISABLED,
+      id: 'u2',
+      fullName: 'User Two',
+      email: 'two@example.com',
+      permission: 'read',
+      checked: false,
+    },
+  ];
 
-    dialogConfig = {
-      data: {},
-    } as DynamicDialogConfig;
+  const components: ComponentCheckboxItemModel[] = [
+    { ...MOCK_COMPONENT_CHECKBOX_ITEM_CURRENT, id: 'n1', title: 'Current', checked: true },
+    { ...MOCK_COMPONENT_CHECKBOX_ITEM, id: 'n2', title: 'Child A', checked: true },
+    { ...MOCK_COMPONENT_CHECKBOX_ITEM_UNCHECKED, id: 'n3', title: 'Child B' },
+  ];
 
-    await TestBed.configureTestingModule({
+  const singleComponent: ComponentCheckboxItemModel[] = [
+    { id: 'n1', title: 'Current', checked: true, disabled: false, isCurrent: true },
+  ];
+
+  function setup(overrides: SetupOverrides = {}): void {
+    const defaultSignals = [
+      { selector: ContributorsSelectors.getUsers, value: users },
+      { selector: ContributorsSelectors.isUsersLoading, value: false },
+      { selector: ContributorsSelectors.getUsersTotalCount, value: 25 },
+      { selector: ContributorsSelectors.getUsersNextLink, value: '/next' },
+      { selector: ContributorsSelectors.getUsersPreviousLink, value: '/prev' },
+    ];
+
+    const dialogData = {
+      components,
+      resourceName: 'Resource Name',
+      parentResourceName: 'Parent Name',
+      allowAddingContributorsFromParentProject: true,
+      ...overrides.dialogData,
+    };
+
+    TestBed.configureTestingModule({
       imports: [
         AddContributorDialogComponent,
-        OSFTestingModule,
         ...MockComponents(
           SearchInputComponent,
           LoadingSpinnerComponent,
@@ -58,126 +104,141 @@ describe('AddContributorDialogComponent', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, { data: dialogData }),
         provideMockStore({
-          signals: [
-            { selector: ContributorsSelectors.getUsers, value: signal([]) },
-            { selector: ContributorsSelectors.isUsersLoading, value: false },
-            { selector: ContributorsSelectors.getUsersTotalCount, value: 0 },
-            { selector: ContributorsSelectors.getUsersNextLink, value: signal(null) },
-            { selector: ContributorsSelectors.getUsersPreviousLink, value: signal(null) },
-          ],
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
         }),
-        { provide: DynamicDialogRef, useValue: dialogRef },
-        { provide: DynamicDialogConfig, useValue: dialogConfig },
       ],
-    }).compileComponents();
+    });
 
     store = TestBed.inject(Store);
-    fixture = TestBed.createComponent(AddContributorDialogComponent);
-    component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should initialize with default values', () => {
-    expect(component.currentState()).toBe(AddDialogState.Search);
-    expect(component.isInitialState()).toBe(true);
-    expect(component.selectedUsers()).toEqual([]);
-  });
-
-  it('should initialize dialog data from config', () => {
-    const mockComponents = [MOCK_COMPONENT_CHECKBOX_ITEM];
-    dialogConfig.data = {
-      components: mockComponents,
-      resourceName: 'Test Resource',
-      parentResourceName: 'Parent Resource',
-      allowAddingContributorsFromParentProject: true,
-    };
-
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(AddContributorDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  }
 
-    expect(component.components()).toEqual(mockComponents);
-    expect(component.resourceName()).toBe('Test Resource');
+  it('should create and initialize dialog data', () => {
+    setup();
+    expect(component).toBeTruthy();
+    expect(component.resourceName()).toBe('Resource Name');
+    expect(component.parentResourceName()).toBe('Parent Name');
+    expect(component.allowAddingContributorsFromParentProject()).toBe(true);
+    expect(component.components()).toEqual(components);
   });
 
-  it('should compute contributorNames correctly', () => {
-    component.selectedUsers.set([MOCK_CONTRIBUTOR_ADD, MOCK_CONTRIBUTOR_ADD_DISABLED]);
-    expect(component.contributorNames()).toBe('John Doe, Jane Smith');
+  it('should pre-populate selectedUsers with checked users from store', () => {
+    const checkedUsers: ContributorAddModel[] = [
+      {
+        id: 'u5',
+        fullName: 'Auto Selected',
+        email: 'auto@example.com',
+        permission: 'read',
+        isBibliographic: false,
+        checked: true,
+        disabled: false,
+      },
+    ];
+    setup({ selectorOverrides: [{ selector: ContributorsSelectors.getUsers, value: checkedUsers }] });
+    expect(component.selectedUsers()).toEqual(checkedUsers);
   });
 
-  it('should compute state flags correctly', () => {
-    component.currentState.set(AddDialogState.Search);
-    expect(component.isSearchState()).toBe(true);
-    expect(component.isDetailsState()).toBe(false);
-
-    component.currentState.set(AddDialogState.Details);
-    expect(component.isDetailsState()).toBe(true);
-    expect(component.isSearchState()).toBe(false);
+  it('should not overwrite selectedUsers when no store users are checked', () => {
+    const uncheckedUsers: ContributorAddModel[] = [
+      {
+        id: 'u6',
+        fullName: 'Not Checked',
+        email: 'nc@example.com',
+        permission: 'read',
+        isBibliographic: false,
+        checked: false,
+        disabled: false,
+      },
+    ];
+    setup({ selectorOverrides: [{ selector: ContributorsSelectors.getUsers, value: uncheckedUsers }] });
+    expect(component.selectedUsers()).toEqual([]);
   });
 
-  it('should compute hasComponents correctly', () => {
-    component.components.set([MOCK_COMPONENT_CHECKBOX_ITEM, MOCK_COMPONENT_CHECKBOX_ITEM_CURRENT]);
-    expect(component.hasComponents()).toBe(true);
-
-    component.components.set([MOCK_COMPONENT_CHECKBOX_ITEM]);
-    expect(component.hasComponents()).toBe(false);
-  });
-
-  it('should compute buttonLabel based on state and components', () => {
-    component.currentState.set(AddDialogState.Search);
-    expect(component.buttonLabel()).toBe('common.buttons.next');
-
-    component.currentState.set(AddDialogState.Details);
-    component.components.set([]);
-    expect(component.buttonLabel()).toBe('common.buttons.done');
-
-    component.components.set([MOCK_COMPONENT_CHECKBOX_ITEM, MOCK_COMPONENT_CHECKBOX_ITEM_CURRENT]);
-    expect(component.buttonLabel()).toBe('common.buttons.next');
-
-    component.currentState.set(AddDialogState.Components);
-    expect(component.buttonLabel()).toBe('common.buttons.done');
-  });
-
-  it('should transition states and close dialog appropriately', () => {
-    component.currentState.set(AddDialogState.Search);
+  it('should move Search → Details and filter out disabled users', () => {
+    setup();
+    component.selectedUsers.set([...users]);
     component.addContributor();
     expect(component.currentState()).toBe(AddDialogState.Details);
+    expect(component.selectedUsers()).toEqual([users[0]]);
+  });
 
+  it('should move Details → Components when multiple components exist', () => {
+    setup();
+    component.selectedUsers.set([users[0]]);
     component.currentState.set(AddDialogState.Details);
-    component.components.set([MOCK_COMPONENT_CHECKBOX_ITEM, MOCK_COMPONENT_CHECKBOX_ITEM_CURRENT]);
     component.addContributor();
     expect(component.currentState()).toBe(AddDialogState.Components);
+    expect(dialogRef.close).not.toHaveBeenCalled();
+  });
 
+  it('should close and reset to Search from Details when no extra components', () => {
+    setup({ dialogData: { components: singleComponent } });
+    component.selectedUsers.set([...users]);
     component.currentState.set(AddDialogState.Details);
-    component.components.set([]);
-    component.selectedUsers.set([MOCK_CONTRIBUTOR_ADD]);
     component.addContributor();
+    expect(component.currentState()).toBe(AddDialogState.Search);
     expect(dialogRef.close).toHaveBeenCalledWith({
-      data: [MOCK_CONTRIBUTOR_ADD],
+      data: [users[0]],
       type: AddContributorType.Registered,
       childNodeIds: undefined,
     });
-
-    component.currentState.set(AddDialogState.Components);
-    component.components.set([{ ...MOCK_COMPONENT_CHECKBOX_ITEM, checked: true }]);
-    component.addContributor();
-    expect(dialogRef.close).toHaveBeenCalledTimes(2);
   });
 
-  it('should close dialog with correct data for different actions', () => {
-    component.selectedUsers.set([MOCK_CONTRIBUTOR_ADD]);
+  it('should close from Components with checked non-current child ids', () => {
+    setup();
+    component.selectedUsers.set([users[0]]);
+    component.currentState.set(AddDialogState.Components);
+    component.addContributor();
+    expect(dialogRef.close).toHaveBeenCalledWith({
+      data: [users[0]],
+      type: AddContributorType.Registered,
+      childNodeIds: ['n2'],
+    });
+  });
 
+  it('should close from Components with childNodeIds undefined when no children are checked', () => {
+    setup({ dialogData: { components: singleComponent } });
+    component.selectedUsers.set([users[0]]);
+    component.currentState.set(AddDialogState.Components);
+    component.addContributor();
+    expect(dialogRef.close).toHaveBeenCalledWith({
+      data: [users[0]],
+      type: AddContributorType.Registered,
+      childNodeIds: undefined,
+    });
+  });
+
+  it('should close with ParentProject type and child ids', () => {
+    setup();
+    component.selectedUsers.set([...users]);
     component.addSourceProjectContributors();
     expect(dialogRef.close).toHaveBeenCalledWith({
-      data: [MOCK_CONTRIBUTOR_ADD],
+      data: [users[0]],
+      type: AddContributorType.ParentProject,
+      childNodeIds: ['n2'],
+    });
+  });
+
+  it('should close with ParentProject type and undefined child ids when none selected', () => {
+    setup({ dialogData: { components: singleComponent } });
+    component.selectedUsers.set([users[0]]);
+    component.addSourceProjectContributors();
+    expect(dialogRef.close).toHaveBeenCalledWith({
+      data: [users[0]],
       type: AddContributorType.ParentProject,
       childNodeIds: undefined,
     });
+  });
 
+  it('should close with Unregistered type and empty data', () => {
+    setup();
     component.addUnregistered();
     expect(dialogRef.close).toHaveBeenCalledWith({
       data: [],
@@ -185,122 +246,143 @@ describe('AddContributorDialogComponent', () => {
     });
   });
 
-  it('should handle pagination correctly', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-
+  it('should do nothing when page is undefined', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
     component.pageChanged({ first: 0 } as PaginatorState);
-    expect(dispatchSpy).not.toHaveBeenCalled();
-
-    component.searchControl.setValue('test');
-    component.pageChanged({ page: 0, first: 0, rows: 10 } as PaginatorState);
-    expect(dispatchSpy).toHaveBeenCalled();
-    expect(component.currentPage()).toBe(1);
-    expect(component.first()).toBe(0);
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should navigate to next page when link is available', () => {
-    const nextLink = 'http://api.example.com/users?page=3';
-    const originalSelect = store.select.bind(store);
-    (store.select as jest.Mock) = jest.fn((selector) => {
-      if (selector === ContributorsSelectors.getUsersNextLink) {
-        return signal(nextLink);
-      }
-      return originalSelect(selector);
-    });
-
-    Object.defineProperty(component, 'usersNextLink', {
-      get: () => signal(nextLink),
-      configurable: true,
-    });
-
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-    component.currentPage.set(2);
-    component.pageChanged({ page: 2, first: 20, rows: 10 } as PaginatorState);
-
-    expect(dispatchSpy).toHaveBeenCalled();
-    expect(component.currentPage()).toBe(3);
-    expect(component.first()).toBe(20);
-  });
-
-  it('should debounce and filter search input', fakeAsync(() => {
-    fixture.detectChanges();
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-    component.searchControl.setValue('t');
-    tick(200);
-    component.searchControl.setValue('test');
-    tick(500);
-
-    expect(dispatchSpy).toHaveBeenCalledTimes(1);
-    expect(component.isInitialState()).toBe(false);
-    expect(component.selectedUsers()).toEqual([]);
-  }));
-
-  it('should not search empty or whitespace values', fakeAsync(() => {
-    fixture.detectChanges();
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-    component.searchControl.setValue('');
-    tick(500);
-    expect(dispatchSpy).not.toHaveBeenCalled();
-
-    component.searchControl.setValue('   ');
-    tick(500);
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  }));
-
-  it('should reset pagination on search', fakeAsync(() => {
-    fixture.detectChanges();
+  it('should dispatch SearchUsers and reset pagination when navigating to page 1', () => {
+    setup();
+    component.searchControl.setValue('john');
     component.currentPage.set(3);
     component.first.set(20);
-
-    component.searchControl.setValue('test');
-    tick(500);
-
+    component.pageChanged({ page: 0, first: 0 });
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsers('john'));
     expect(component.currentPage()).toBe(1);
     expect(component.first()).toBe(0);
-  }));
-
-  it('should update selectedUsers from checked users', () => {
-    const checkedUsers = [MOCK_CONTRIBUTOR_ADD];
-    const usersSignal = signal(checkedUsers);
-
-    Object.defineProperty(component, 'users', {
-      get: () => usersSignal,
-      configurable: true,
-    });
-
-    fixture.detectChanges();
-    usersSignal.set(checkedUsers);
-    fixture.detectChanges();
-
-    expect(component.selectedUsers().length).toBeGreaterThan(0);
   });
 
-  it('should filter disabled users and include childNodeIds', () => {
-    component.selectedUsers.set([MOCK_CONTRIBUTOR_ADD, MOCK_CONTRIBUTOR_ADD_DISABLED]);
-    component.components.set([]);
-    component['closeDialogWithData']();
-
-    expect(dialogRef.close).toHaveBeenCalledWith({
-      data: [MOCK_CONTRIBUTOR_ADD],
-      type: AddContributorType.Registered,
-      childNodeIds: undefined,
-    });
-
-    component.components.set([{ ...MOCK_COMPONENT_CHECKBOX_ITEM, checked: true }]);
-    component['closeDialogWithData'](AddContributorType.ParentProject);
-
-    expect(dialogRef.close).toHaveBeenCalledWith({
-      data: [MOCK_CONTRIBUTOR_ADD],
-      type: AddContributorType.ParentProject,
-      childNodeIds: [MOCK_COMPONENT_CHECKBOX_ITEM.id],
-    });
+  it('should do nothing on page 1 navigation when search term is empty', () => {
+    setup();
+    component.searchControl.setValue('');
+    (store.dispatch as jest.Mock).mockClear();
+    component.pageChanged({ page: 0, first: 0 });
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should clear users on destroy', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-    component.ngOnDestroy();
-    expect(dispatchSpy).toHaveBeenCalled();
+  it('should dispatch next link and update page state when moving forward', () => {
+    setup();
+    component.currentPage.set(1);
+    component.pageChanged({ page: 1, first: 10 });
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsersPageChange('/next'));
+    expect(component.currentPage()).toBe(2);
+    expect(component.first()).toBe(10);
+  });
+
+  it('should dispatch previous link and update page state when moving backward', () => {
+    setup();
+    component.currentPage.set(3);
+    component.pageChanged({ page: 1, first: 10 });
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsersPageChange('/prev'));
+    expect(component.currentPage()).toBe(2);
+    expect(component.first()).toBe(10);
+  });
+
+  it.each([
+    ['forward', 1, { selector: ContributorsSelectors.getUsersNextLink, value: null }],
+    ['backward', 3, { selector: ContributorsSelectors.getUsersPreviousLink, value: null }],
+  ])('should not dispatch when moving %s with no link available', (_, currentPage, selectorOverride) => {
+    setup({ selectorOverrides: [selectorOverride] });
+    component.currentPage.set(currentPage as number);
+    (store.dispatch as jest.Mock).mockClear();
+    component.pageChanged({ page: 1, first: 10 });
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch ClearUsers on destroy', () => {
+    setup();
+    (store.dispatch as jest.Mock).mockClear();
+    fixture.destroy();
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearUsers());
+  });
+
+  it('should set isBibliographic to true and preserve all other fields', () => {
+    setup();
+    const selected: ContributorAddModel[] = [
+      {
+        id: 'u4',
+        fullName: 'User Four',
+        permission: 'write',
+        email: 'four@example.com',
+        isBibliographic: false,
+        checked: true,
+        disabled: false,
+      },
+    ];
+    component.onSelectedUsersChange(selected);
+    expect(component.selectedUsers()).toEqual([
+      {
+        id: 'u4',
+        fullName: 'User Four',
+        permission: 'write',
+        email: 'four@example.com',
+        isBibliographic: true,
+        checked: true,
+        disabled: false,
+      },
+    ]);
+  });
+
+  it('should debounce search, dispatch SearchUsers, and reset pagination and selection', () => {
+    jest.useFakeTimers();
+    try {
+      setup();
+      component.selectedUsers.set([users[0]]);
+      component.currentPage.set(3);
+      component.first.set(20);
+      component.searchControl.setValue('query');
+      jest.advanceTimersByTime(500);
+      expect(store.dispatch).toHaveBeenCalledWith(new SearchUsers('query'));
+      expect(component.isInitialState()).toBe(false);
+      expect(component.selectedUsers()).toEqual([]);
+      expect(component.currentPage()).toBe(1);
+      expect(component.first()).toBe(0);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it.each(['', '   '])('should not dispatch SearchUsers for blank input "%s"', (value) => {
+    jest.useFakeTimers();
+    try {
+      setup();
+      (store.dispatch as jest.Mock).mockClear();
+      component.searchControl.setValue(value);
+      jest.advanceTimersByTime(500);
+      expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(SearchUsers));
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('should compute contributorNames as comma-separated full names', () => {
+    setup();
+    component.selectedUsers.set([users[0], users[1]]);
+    expect(component.contributorNames()).toBe('User One, User Two');
+    component.selectedUsers.set([]);
+    expect(component.contributorNames()).toBe('');
+  });
+
+  it.each([
+    ['Search state', AddDialogState.Search, components, 'common.buttons.next'],
+    ['Details with multiple components', AddDialogState.Details, components, 'common.buttons.next'],
+    ['Details with single component', AddDialogState.Details, singleComponent, 'common.buttons.done'],
+    ['Components state', AddDialogState.Components, components, 'common.buttons.done'],
+  ])('buttonLabel: %s → "%s"', (_, state, dialogComponents, expected) => {
+    setup({ dialogData: { components: dialogComponents } });
+    component.currentState.set(state);
+    expect(component.buttonLabel()).toBe(expected);
   });
 });
