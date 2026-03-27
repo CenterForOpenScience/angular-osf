@@ -1,7 +1,9 @@
 <div class="flex flex-column gap-2">
   @let resourceValue = resource();
   @if (resourceValue.description) {
-    <p>{{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}</p>
+    <p class="preserve-whitespace">
+      {{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}
+    </p>
   }
 
   @if (resourceValue.funders.length > 0) {

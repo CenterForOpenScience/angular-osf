@@ -6,7 +6,7 @@
   line-clamp: var(--line-clamp);
   -webkit-line-clamp: var(--line-clamp);
   -webkit-box-orient: vertical;
-  white-space: pre-line;
+  white-space: pre-wrap;
 
   &.expanded {
     display: block;
