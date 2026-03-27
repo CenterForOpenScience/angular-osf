@@ -172,6 +172,7 @@ export class ContributorsService {
         ({
           id: user.absoluteUrl.split('/').pop(),
           fullName: user.name,
+          isBibliographic: true,
           permission: ContributorPermission.Write,
         }) as ContributorAddModel
     );
