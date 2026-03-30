@@ -9,13 +9,12 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { MetadataForm, PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
-  CreatePreprint,
   FetchLicenses,
   PreprintStepperSelectors,
   SaveLicense,
@@ -39,21 +38,21 @@ import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subje
 @Component({
   selector: 'osf-preprints-metadata',
   imports: [
-    PreprintsContributorsComponent,
     Button,
     Card,
-    ReactiveFormsModule,
     Message,
-    TranslatePipe,
     DatePicker,
-    IconComponent,
     InputText,
-    TextInputComponent,
     Tooltip,
+    ReactiveFormsModule,
+    IconComponent,
     LicenseComponent,
     TagsInputComponent,
     PreprintsSubjectsComponent,
+    PreprintsContributorsComponent,
     PreprintsAffiliatedInstitutionsComponent,
+    TextInputComponent,
+    TranslatePipe,
   ],
   templateUrl: './preprints-metadata-step.component.html',
   styleUrl: './preprints-metadata-step.component.scss',
@@ -62,28 +61,48 @@ import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subje
 export class PreprintsMetadataStepComponent implements OnInit {
   private customConfirmationService = inject(CustomConfirmationService);
   private toastService = inject(ToastService);
+
+  provider = input.required<PreprintProviderDetails>();
+  nextClicked = output<void>();
+  backClicked = output<void>();
+
   private actions = createDispatchMap({
-    createPreprint: CreatePreprint,
     updatePreprint: UpdatePreprint,
     fetchLicenses: FetchLicenses,
     saveLicense: SaveLicense,
   });
 
-  metadataForm!: FormGroup<MetadataForm>;
-  inputLimits = formInputLimits;
-  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  today = new Date();
-
   licenses = select(PreprintStepperSelectors.getLicenses);
   createdPreprint = select(PreprintStepperSelectors.getPreprint);
   isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
-  provider = input.required<PreprintProviderDetails | undefined>();
-  nextClicked = output<void>();
-  backClicked = output<void>();
+  metadataForm!: FormGroup<MetadataForm>;
+  today = new Date();
+
+  defaultLicense = signal<string | undefined>(undefined);
+
+  readonly inputLimits = formInputLimits;
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+
+  constructor() {
+    effect(() => {
+      const licenses = this.licenses();
+      const preprint = this.createdPreprint();
+
+      if (licenses.length && preprint && !preprint.licenseId && preprint.defaultLicenseId) {
+        const defaultLicense = licenses.find((license) => license.id === preprint?.defaultLicenseId);
+        if (defaultLicense) {
+          this.defaultLicense.set(defaultLicense.id);
+          if (!defaultLicense.requiredFields.length) {
+            this.actions.saveLicense(defaultLicense.id);
+          }
+        }
+      }
+    });
+  }
 
   ngOnInit() {
-    this.actions.fetchLicenses();
+    this.actions.fetchLicenses(this.provider().id);
     this.initForm();
   }
 
@@ -118,11 +137,16 @@ export class PreprintsMetadataStepComponent implements OnInit {
       return;
     }
 
+    const preprint = this.createdPreprint();
+
+    if (!preprint) {
+      return;
+    }
+
     const model = this.metadataForm.value;
+    const changedFields = findChangedFields<PreprintModel>(model, preprint);
 
-    const changedFields = findChangedFields<PreprintModel>(model, this.createdPreprint()!);
-
-    this.actions.updatePreprint(this.createdPreprint()!.id, changedFields).subscribe({
+    this.actions.updatePreprint(preprint.id, changedFields).subscribe({
       complete: () => {
         this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
         this.nextClicked.emit();
@@ -138,6 +162,7 @@ export class PreprintsMetadataStepComponent implements OnInit {
     if (license.requiredFields.length) {
       return;
     }
+
     this.actions.saveLicense(license.id);
   }
 
@@ -148,9 +173,14 @@ export class PreprintsMetadataStepComponent implements OnInit {
   }
 
   backButtonClicked() {
-    const formValue = this.metadataForm.value;
-    delete formValue.subjects;
-    const changedFields = findChangedFields<PreprintModel>(formValue, this.createdPreprint()!);
+    const preprint = this.createdPreprint();
+
+    if (!preprint) {
+      return;
+    }
+
+    const { subjects: _subjects, ...formValue } = this.metadataForm.value;
+    const changedFields = findChangedFields<PreprintModel>(formValue, preprint);
 
     if (!Object.keys(changedFields).length) {
       this.backClicked.emit();

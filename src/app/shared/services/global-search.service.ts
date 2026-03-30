@@ -9,11 +9,11 @@ import { mapFilterOptions } from '../mappers/filters/filter-option.mapper';
 import { MapFilters } from '../mappers/filters/filters.mapper';
 import { MapResources } from '../mappers/search';
 import { FilterOption } from '../models/search/discaverable-filter.model';
-import { FilterOptionItem, FilterOptionsResponseJsonApi } from '../models/search/filter-options-json-api.models';
+import { FilterOptionItem, FilterOptionsResponseJsonApi } from '../models/search/filter-options-json-api.model';
 import {
   IndexCardSearchResponseJsonApi,
   SearchResultDataJsonApi,
-} from '../models/search/index-card-search-json-api.models';
+} from '../models/search/index-card-search-json-api.model';
 import { ResourcesData } from '../models/search/resource.model';
 
 import { JsonApiService } from './json-api.service';

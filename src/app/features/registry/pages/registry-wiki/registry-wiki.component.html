@@ -22,7 +22,7 @@
 <section class="flex flex-column lg:flex-row lg:flex-wrap bg-white flex-1 p-5 gap-4 w-full wiki-page">
   <osf-wiki-list
     [list]="wikiList()"
-    [resourceId]="resourceId"
+    [resourceId]="resourceId() ?? ''"
     [isLoading]="isWikiListLoading()"
     [componentsList]="componentsWikiList()"
     [currentWikiId]="currentWikiId()"

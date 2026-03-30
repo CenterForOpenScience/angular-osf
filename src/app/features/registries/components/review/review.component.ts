@@ -7,10 +7,19 @@ import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 import { Tag } from 'primeng/tag';
 
-import { map, of } from 'rxjs';
+import { filter, map } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -18,10 +27,7 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
 import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
-import { FieldType } from '@osf/shared/enums/field-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
-import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -33,14 +39,7 @@ import {
 } from '@osf/shared/stores/contributors';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
-import {
-  ClearState,
-  DeleteDraft,
-  FetchLicenses,
-  FetchProjectChildren,
-  RegistriesSelectors,
-  UpdateStepState,
-} from '../../store';
+import { ClearState, DeleteDraft, FetchLicenses, FetchProjectChildren, RegistriesSelectors } from '../../store';
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
 import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
 
@@ -55,7 +54,6 @@ import { SelectComponentsDialogComponent } from '../select-components-dialog/sel
     RegistrationBlocksDataComponent,
     ContributorsListComponent,
     LicenseDisplayComponent,
-    FixSpecialCharPipe,
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.scss',
@@ -67,6 +65,7 @@ export class ReviewComponent implements OnDestroy {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly environment = inject(ENVIRONMENT);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
@@ -74,68 +73,65 @@ export class ReviewComponent implements OnDestroy {
   readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
   readonly isDraftLoading = select(RegistriesSelectors.isDraftLoading);
   readonly stepsData = select(RegistriesSelectors.getStepsData);
-  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  readonly components = select(RegistriesSelectors.getRegistrationComponents);
+  readonly license = select(RegistriesSelectors.getRegistrationLicense);
+  readonly newRegistration = select(RegistriesSelectors.getRegistration);
+  readonly stepsState = select(RegistriesSelectors.getStepsState);
   readonly contributors = select(ContributorsSelectors.getContributors);
   readonly areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly hasMoreContributors = select(ContributorsSelectors.hasMoreContributors);
   readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
-  readonly components = select(RegistriesSelectors.getRegistrationComponents);
-  readonly license = select(RegistriesSelectors.getRegistrationLicense);
-  readonly newRegistration = select(RegistriesSelectors.getRegistration);
+  readonly hasAdminAccess = select(RegistriesSelectors.hasDraftAdminAccess);
 
-  readonly FieldType = FieldType;
-
-  actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     getContributors: GetAllContributors,
     getSubjects: FetchSelectedSubjects,
     deleteDraft: DeleteDraft,
     clearState: ClearState,
     getProjectsComponents: FetchProjectChildren,
     fetchLicenses: FetchLicenses,
-    updateStepState: UpdateStepState,
     loadMoreContributors: LoadMoreContributors,
     resetContributorsState: ResetContributorsState,
   });
 
-  private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  stepsState = select(RegistriesSelectors.getStepsState);
+  private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])));
 
-  isDraftInvalid = computed(() => Object.values(this.stepsState()).some((step) => step.invalid));
-
-  licenseOptionsRecord = computed(() => (this.draftRegistration()?.license.options ?? {}) as Record<string, string>);
-
-  hasAdminAccess = computed(() => {
-    const registry = this.draftRegistration();
-    if (!registry) return false;
-    return registry.currentUserPermissions.includes(UserPermissions.Admin);
+  private readonly resolvedProviderId = computed(() => {
+    const draft = this.draftRegistration();
+    return draft ? (draft.providerId ?? this.environment.defaultProvider) : undefined;
   });
 
+  private readonly componentsLoaded = signal(false);
+
+  isDraftInvalid = computed(() => Object.values(this.stepsState()).some((step) => step.invalid));
+  licenseOptionsRecord = computed(() => (this.draftRegistration()?.license.options ?? {}) as Record<string, string>);
   registerButtonDisabled = computed(() => this.isDraftLoading() || this.isDraftInvalid() || !this.hasAdminAccess());
 
   constructor() {
     if (!this.contributors()?.length) {
       this.actions.getContributors(this.draftId(), ResourceType.DraftRegistration);
     }
+
     if (!this.subjects()?.length) {
       this.actions.getSubjects(this.draftId(), ResourceType.DraftRegistration);
     }
 
     effect(() => {
-      if (this.draftRegistration()) {
-        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.environment.defaultProvider);
+      const providerId = this.resolvedProviderId();
+
+      if (providerId) {
+        this.actions.fetchLicenses(providerId);
       }
     });
 
-    let componentsLoaded = false;
     effect(() => {
-      if (!this.isDraftSubmitting()) {
-        const draftRegistrations = this.draftRegistration();
-        if (draftRegistrations?.hasProject) {
-          if (!componentsLoaded) {
-            this.actions.getProjectsComponents(draftRegistrations?.branchedFrom?.id ?? '');
-            componentsLoaded = true;
-          }
+      if (!this.isDraftSubmitting() && !this.componentsLoaded()) {
+        const draft = this.draftRegistration();
+        if (draft?.hasProject) {
+          this.actions.getProjectsComponents(draft.branchedFrom?.id ?? '');
+          this.componentsLoaded.set(true);
         }
       }
     });
@@ -156,12 +152,13 @@ export class ReviewComponent implements OnDestroy {
       messageKey: 'registries.confirmDeleteDraft',
       onConfirm: () => {
         const providerId = this.draftRegistration()?.providerId;
-        this.actions.deleteDraft(this.draftId()).subscribe({
-          next: () => {
+        this.actions
+          .deleteDraft(this.draftId())
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
             this.actions.clearState();
             this.router.navigateByUrl(`/registries/${providerId}/new`);
-          },
-        });
+          });
       },
     });
   }
@@ -184,11 +181,11 @@ export class ReviewComponent implements OnDestroy {
           components: this.components(),
         },
       })
-      .onClose.subscribe((selectedComponents) => {
-        if (selectedComponents) {
-          this.openConfirmRegistrationDialog(selectedComponents);
-        }
-      });
+      .onClose.pipe(
+        filter((selectedComponents) => !!selectedComponents),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((selectedComponents) => this.openConfirmRegistrationDialog(selectedComponents));
   }
 
   openConfirmRegistrationDialog(components?: string[]): void {
@@ -206,14 +203,16 @@ export class ReviewComponent implements OnDestroy {
           components,
         },
       })
-      .onClose.subscribe((res) => {
+      .onClose.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
         if (res) {
           this.toastService.showSuccess('registries.review.confirmation.successMessage');
-          this.router.navigate([`/${this.newRegistration()?.id}/overview`]);
-        } else {
-          if (this.components()?.length) {
-            this.openSelectComponentsForRegistrationDialog();
+          const id = this.newRegistration()?.id;
+          if (id) {
+            this.router.navigate([`/${id}/overview`]);
           }
+        } else if (this.components()?.length) {
+          this.openSelectComponentsForRegistrationDialog();
         }
       });
   }

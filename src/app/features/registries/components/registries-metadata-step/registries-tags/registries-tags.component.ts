@@ -4,8 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
 import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
@@ -18,15 +17,13 @@ import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesTagsComponent {
-  private readonly route = inject(ActivatedRoute);
-  private readonly draftId = this.route.snapshot.params['id'];
+  draftId = input.required<string>();
+
+  actions = createDispatchMap({ updateDraft: UpdateDraft });
+
   selectedTags = select(RegistriesSelectors.getSelectedTags);
 
-  actions = createDispatchMap({
-    updateDraft: UpdateDraft,
-  });
-
   onTagsChanged(tags: string[]): void {
-    this.actions.updateDraft(this.draftId, { tags });
+    this.actions.updateDraft(this.draftId(), { tags });
   }
 }

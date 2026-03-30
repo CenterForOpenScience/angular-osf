@@ -16,7 +16,7 @@ import {
   statusSeverityByState,
   statusSeverityByWorkflow,
 } from '@osf/features/preprints/constants';
-import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
+import { ReviewsState } from '@osf/features/preprints/enums';
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
 import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
@@ -33,16 +33,17 @@ export class ModerationStatusBannerComponent {
   private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
 
-  webUrl = this.environment.webUrl;
+  readonly webUrl = this.environment.webUrl;
 
-  preprint = select(PreprintSelectors.getPreprint);
-  provider = input.required<PreprintProviderDetails>();
-  latestAction = input.required<ReviewAction | null>();
-  latestWithdrawalRequest = input.required<PreprintRequest | null>();
+  readonly preprint = select(PreprintSelectors.getPreprint);
 
-  isPendingWithdrawal = input.required<boolean>();
+  readonly provider = input.required<PreprintProviderDetails>();
+  readonly latestAction = input.required<ReviewAction | null>();
+  readonly latestWithdrawalRequest = input.required<PreprintRequest | null>();
+  readonly isPendingWithdrawal = input.required<boolean>();
 
   noActions = computed(() => this.latestAction() === null);
+  currentState = computed(() => this.preprint()?.reviewsState ?? ReviewsState.Pending);
 
   documentType = computed(() => {
     const provider = this.provider();
@@ -52,12 +53,12 @@ export class ModerationStatusBannerComponent {
   });
 
   labelDate = computed(() => {
-    const preprint = this.preprint()!;
-    return preprint.dateWithdrawn ? preprint.dateWithdrawn : preprint.dateLastTransitioned;
+    const preprint = this.preprint();
+    return preprint?.dateWithdrawn ? preprint.dateWithdrawn : preprint?.dateLastTransitioned;
   });
 
   status = computed(() => {
-    const currentState = this.preprint()!.reviewsState;
+    const currentState = this.currentState();
 
     if (this.isPendingWithdrawal()) {
       return statusLabelKeyByState[ReviewsState.Pending]!;
@@ -67,7 +68,7 @@ export class ModerationStatusBannerComponent {
   });
 
   iconClass = computed(() => {
-    const currentState = this.preprint()!.reviewsState;
+    const currentState = this.currentState();
 
     if (this.isPendingWithdrawal()) {
       return statusIconByState[ReviewsState.Pending];
@@ -77,19 +78,22 @@ export class ModerationStatusBannerComponent {
   });
 
   severity = computed(() => {
-    const currentState = this.preprint()!.reviewsState;
+    const currentState = this.currentState();
+    const workflow = this.provider()?.reviewsWorkflow;
 
     if (this.isPendingWithdrawal()) {
       return statusSeverityByState[ReviewsState.Pending];
-    } else {
-      return currentState === ReviewsState.Pending
-        ? statusSeverityByWorkflow[this.provider()?.reviewsWorkflow as ProviderReviewsWorkflow]
-        : statusSeverityByState[currentState];
     }
+
+    if (currentState === ReviewsState.Pending && workflow) {
+      return statusSeverityByWorkflow[workflow];
+    }
+
+    return statusSeverityByState[currentState];
   });
 
   recentActivityLanguage = computed(() => {
-    const currentState = this.preprint()!.reviewsState;
+    const currentState = this.currentState();
 
     if (this.noActions()) {
       return recentActivityMessageByState.automatic[currentState]!;
@@ -107,8 +111,16 @@ export class ModerationStatusBannerComponent {
   });
 
   actionCreatorName = computed(() => this.latestAction()?.creator?.name);
-  actionCreatorLink = computed(() => `${this.webUrl}/${this.actionCreatorId()}`);
   actionCreatorId = computed(() => this.latestAction()?.creator?.id);
+  actionCreatorLink = computed(() => {
+    const creatorId = this.actionCreatorId();
+    return creatorId ? `${this.webUrl}/${creatorId}` : null;
+  });
+
   withdrawalRequesterName = computed(() => this.latestWithdrawalRequest()?.creator.name);
   withdrawalRequesterId = computed(() => this.latestWithdrawalRequest()?.creator.id);
+  withdrawalRequesterLink = computed(() => {
+    const requesterId = this.withdrawalRequesterId();
+    return requesterId ? `${this.webUrl}/${requesterId}` : null;
+  });
 }

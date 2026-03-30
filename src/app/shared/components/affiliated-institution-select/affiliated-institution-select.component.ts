@@ -8,7 +8,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 
 @Component({
   selector: 'osf-affiliated-institution-select',

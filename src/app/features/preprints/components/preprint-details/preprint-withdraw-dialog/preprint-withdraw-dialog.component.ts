@@ -7,6 +7,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { Textarea } from 'primeng/textarea';
 
+import { finalize } from 'rxjs';
+
 import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -22,7 +24,7 @@ import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.hel
 
 @Component({
   selector: 'osf-preprint-withdraw-dialog',
-  imports: [Textarea, ReactiveFormsModule, Message, TranslatePipe, Button, TitleCasePipe],
+  imports: [Button, Message, Textarea, ReactiveFormsModule, TranslatePipe, TitleCasePipe],
   templateUrl: './preprint-withdraw-dialog.component.html',
   styleUrl: './preprint-withdraw-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,9 +41,9 @@ export class PreprintWithdrawDialogComponent implements OnInit {
   private provider!: PreprintProviderDetails;
   private preprint!: PreprintModel;
 
-  private actions = createDispatchMap({ withdrawPreprint: WithdrawPreprint });
+  private readonly actions = createDispatchMap({ withdrawPreprint: WithdrawPreprint });
 
-  inputLimits = formInputLimits;
+  readonly inputLimits = formInputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   withdrawalJustificationFormControl = new FormControl('', {
@@ -51,34 +53,46 @@ export class PreprintWithdrawDialogComponent implements OnInit {
       Validators.minLength(this.inputLimits.withdrawalJustification.minLength),
     ],
   });
+
   modalExplanation = signal<string>('');
   withdrawRequestInProgress = signal<boolean>(false);
-  documentType!: Record<PreprintWordGrammar, string>;
 
-  public ngOnInit() {
-    this.provider = this.config.data.provider;
-    this.preprint = this.config.data.preprint;
+  documentType: Record<PreprintWordGrammar, string> = {
+    singular: '',
+    singularCapitalized: '',
+    plural: '',
+    pluralCapitalized: '',
+  };
+
+  ngOnInit() {
+    const data = this.config.data;
+
+    if (!data?.provider || !data.preprint) {
+      this.modalExplanation.set('');
+      return;
+    }
+
+    this.provider = data.provider;
+    this.preprint = data.preprint;
     this.documentType = getPreprintDocumentType(this.provider, this.translateService);
 
     this.modalExplanation.set(this.calculateModalExplanation());
   }
 
   withdraw() {
-    if (this.withdrawalJustificationFormControl.invalid) {
+    if (this.withdrawalJustificationFormControl.invalid || !this.preprint) {
       return;
     }
 
     const withdrawalJustification = this.withdrawalJustificationFormControl.value;
     this.withdrawRequestInProgress.set(true);
-    this.actions.withdrawPreprint(this.preprint.id, withdrawalJustification).subscribe({
-      complete: () => {
-        this.withdrawRequestInProgress.set(false);
-        this.dialogRef.close(true);
-      },
-      error: () => {
-        this.withdrawRequestInProgress.set(false);
-      },
-    });
+
+    this.actions
+      .withdrawPreprint(this.preprint.id, withdrawalJustification)
+      .pipe(finalize(() => this.withdrawRequestInProgress.set(false)))
+      .subscribe({
+        complete: () => this.dialogRef.close(true),
+      });
   }
 
   private calculateModalExplanation() {
@@ -90,11 +104,12 @@ export class PreprintWithdrawDialogComponent implements OnInit {
           return this.translateService.instant('preprints.details.withdrawDialog.preModerationNoticePending', {
             singularPreprintWord: this.documentType.singular,
           });
-        } else
+        } else {
           return this.translateService.instant('preprints.details.withdrawDialog.preModerationNoticeAccepted', {
             singularPreprintWord: this.documentType.singular,
             pluralCapitalizedPreprintWord: this.documentType.pluralCapitalized,
           });
+        }
       }
       case ProviderReviewsWorkflow.PostModeration: {
         return this.translateService.instant('preprints.details.withdrawDialog.postModerationNotice', {

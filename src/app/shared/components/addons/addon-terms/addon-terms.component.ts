@@ -7,8 +7,8 @@ import { Component, computed, input } from '@angular/core';
 
 import { ADDON_TERMS } from '@osf/shared/constants/addon-terms.const';
 import { isCitationAddon, isRedirectAddon } from '@osf/shared/helpers/addon-type.helper';
+import { AddonTerm } from '@osf/shared/models/addons/addon-utils.model';
 import { AddonModel } from '@shared/models/addons/addon.model';
-import { AddonTerm } from '@shared/models/addons/addon-utils.models';
 import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
 
 @Component({

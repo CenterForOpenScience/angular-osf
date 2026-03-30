@@ -4,8 +4,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Skeleton } from 'primeng/skeleton';
 
-import { map, Observable, of } from 'rxjs';
+import { map } from 'rxjs';
 
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,7 +16,6 @@ import {
   HostListener,
   inject,
   OnDestroy,
-  OnInit,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -40,12 +40,7 @@ import {
 import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps } from '../../enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import {
-  DeletePreprint,
-  PreprintStepperSelectors,
-  ResetPreprintStepperState,
-  SetSelectedPreprintProviderId,
-} from '../../store/preprint-stepper';
+import { DeletePreprint, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
@@ -57,7 +52,6 @@ import {
     PreprintsMetadataStepComponent,
     AuthorAssertionsStepComponent,
     SupplementsStepComponent,
-    AuthorAssertionsStepComponent,
     ReviewStepComponent,
     TranslatePipe,
   ],
@@ -65,24 +59,24 @@ import {
   styleUrl: './submit-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDeactivateComponent {
+export class SubmitPreprintStepperComponent implements OnDestroy, CanDeactivateComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly route = inject(ActivatedRoute);
+  private readonly document = inject(DOCUMENT);
   private readonly brandService = inject(BrandService);
   private readonly headerStyleHelper = inject(HeaderStyleService);
   private readonly browserTabHelper = inject(BrowserTabService);
 
-  private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
+  private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])));
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
-    setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
     resetState: ResetPreprintStepperState,
     deletePreprint: DeletePreprint,
   });
 
-  readonly SubmitStepsEnum = PreprintSteps;
+  readonly PreprintSteps = PreprintSteps;
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
@@ -90,7 +84,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
   currentStep = signal<StepOption>(submitPreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
-  readonly submitPreprintSteps = computed(() => {
+  readonly steps = computed(() => {
     const provider = this.preprintProvider();
 
     if (!provider) {
@@ -98,26 +92,17 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
     }
 
     return submitPreprintSteps
-      .map((step) => {
-        if (!provider.assertionsEnabled && step.value === PreprintSteps.AuthorAssertions) {
-          return null;
-        }
-
-        return step;
-      })
-      .filter((step) => step !== null)
-      .map((step, index) => ({
-        ...step,
-        index,
-      }));
+      .filter((step) => step.value !== PreprintSteps.AuthorAssertions || provider.assertionsEnabled)
+      .map((step, index) => ({ ...step, index }));
   });
 
   constructor() {
+    this.actions.getPreprintProviderById(this.providerId());
+
     effect(() => {
       const provider = this.preprintProvider();
 
       if (provider) {
-        this.actions.setSelectedPreprintProviderId(provider.id);
         this.brandService.applyBranding(provider.brand);
         this.headerStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,
@@ -129,12 +114,15 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
     });
   }
 
-  canDeactivate(): Observable<boolean> | boolean {
-    return this.hasBeenSubmitted();
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload($event: BeforeUnloadEvent): void {
+    if (!this.hasBeenSubmitted()) {
+      $event.preventDefault();
+    }
   }
 
-  ngOnInit() {
-    this.actions.getPreprintProviderById(this.providerId());
+  canDeactivate(): boolean {
+    return this.hasBeenSubmitted();
   }
 
   ngOnDestroy() {
@@ -146,8 +134,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
   }
 
   stepChange(step: StepOption): void {
-    const currentStepIndex = this.currentStep()?.index ?? 0;
-    if (step.index >= currentStepIndex) {
+    if (step.index >= this.currentStep().index) {
       return;
     }
 
@@ -155,27 +142,29 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
     this.scrollToTop();
   }
 
-  moveToNextStep() {
-    this.currentStep.set(this.submitPreprintSteps()[this.currentStep()?.index + 1]);
-    this.scrollToTop();
+  moveToNextStep(): void {
+    const nextStep = this.steps()[this.currentStep().index + 1];
+
+    if (nextStep) {
+      this.currentStep.set(nextStep);
+      this.scrollToTop();
+    }
   }
 
-  moveToPreviousStep() {
-    this.currentStep.set(this.submitPreprintSteps()[this.currentStep()?.index - 1]);
-    this.scrollToTop();
+  moveToPreviousStep(): void {
+    const prevStep = this.steps()[this.currentStep().index - 1];
+
+    if (prevStep) {
+      this.currentStep.set(prevStep);
+      this.scrollToTop();
+    }
   }
 
-  scrollToTop() {
-    const contentWrapper = document.querySelector('.content-wrapper') as HTMLElement;
+  private scrollToTop(): void {
+    const contentWrapper = this.document.querySelector('.content-wrapper') as HTMLElement;
 
     if (contentWrapper) {
       contentWrapper.scrollTo({ top: 0, behavior: 'instant' });
     }
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
   }
 }

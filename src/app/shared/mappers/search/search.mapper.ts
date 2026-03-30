@@ -1,10 +1,10 @@
-import { ResourceType } from '@shared/enums/resource-type.enum';
-import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 import {
   IndexCardDataJsonApi,
   IndexCardSearchResponseJsonApi,
   SearchResultDataJsonApi,
-} from '@shared/models/search/index-card-search-json-api.models';
+} from '@osf/shared/models/search/index-card-search-json-api.model';
+import { ResourceType } from '@shared/enums/resource-type.enum';
+import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 import { ResourceModel } from '@shared/models/search/resource.model';
 
 export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResponseJsonApi): ResourceModel[] {

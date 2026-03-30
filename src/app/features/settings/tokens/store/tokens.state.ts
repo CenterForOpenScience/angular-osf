@@ -10,7 +10,7 @@ import { TokenModel } from '../models';
 import { TokensService } from '../services';
 
 import { CreateToken, DeleteToken, GetScopes, GetTokenById, GetTokens, UpdateToken } from './tokens.actions';
-import { TOKENS_STATE_DEFAULTS, TokensStateModel } from './tokens.models';
+import { TOKENS_STATE_DEFAULTS, TokensStateModel } from './tokens.model';
 
 @State<TokensStateModel>({
   name: 'tokens',

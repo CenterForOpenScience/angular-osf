@@ -10,7 +10,6 @@ import { TabsModule } from 'primeng/tabs';
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -30,17 +29,16 @@ import { DeleteDraft, FetchDraftRegistrations, FetchSubmittedRegistrations, Regi
 @Component({
   selector: 'osf-my-registrations',
   imports: [
-    SubHeaderComponent,
-    TranslatePipe,
-    TabsModule,
-    FormsModule,
-    SelectComponent,
-    RegistrationCardComponent,
-    CustomPaginatorComponent,
-    Skeleton,
     Button,
+    Skeleton,
+    TabsModule,
     RouterLink,
     NgTemplateOutlet,
+    CustomPaginatorComponent,
+    RegistrationCardComponent,
+    SelectComponent,
+    SubHeaderComponent,
+    TranslatePipe,
   ],
   templateUrl: './my-registrations.component.html',
   styleUrl: './my-registrations.component.scss',
@@ -82,26 +80,28 @@ export class MyRegistrationsComponent {
 
   constructor() {
     const initialTab = this.route.snapshot.queryParams['tab'];
-    const selectedTab = initialTab == 'drafts' ? RegistrationTab.Drafts : RegistrationTab.Submitted;
+    const selectedTab = initialTab === RegistrationTab.Drafts ? RegistrationTab.Drafts : RegistrationTab.Submitted;
     this.onTabChange(selectedTab);
   }
 
   onTabChange(tab: Primitive): void {
-    if (typeof tab !== 'number') {
+    if (typeof tab !== 'string' || !Object.values(RegistrationTab).includes(tab as RegistrationTab)) {
       return;
     }
 
-    this.selectedTab.set(tab);
-    this.loadTabData(tab);
+    const validTab = tab as RegistrationTab;
+
+    this.selectedTab.set(validTab);
+    this.loadTabData(validTab);
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { tab: tab === RegistrationTab.Drafts ? 'drafts' : 'submitted' },
+      queryParams: { tab },
       queryParamsHandling: 'merge',
     });
   }
 
-  private loadTabData(tab: number): void {
+  private loadTabData(tab: RegistrationTab): void {
     if (tab === RegistrationTab.Drafts) {
       this.draftFirst = 0;
       this.actions.getDraftRegistrations();

@@ -2,7 +2,7 @@ import { DiscoverableFilter, FilterOperatorOption } from '@osf/shared/models/sea
 import {
   IndexCardSearchResponseJsonApi,
   RelatedPropertyPathDataJsonApi,
-} from '@osf/shared/models/search/index-card-search-json-api.models';
+} from '@osf/shared/models/search/index-card-search-json-api.model';
 
 export function MapFilters(indexCardSearchResponseJsonApi: IndexCardSearchResponseJsonApi): DiscoverableFilter[] {
   const relatedPropertiesIds = indexCardSearchResponseJsonApi.data.relationships.relatedProperties.data.map(

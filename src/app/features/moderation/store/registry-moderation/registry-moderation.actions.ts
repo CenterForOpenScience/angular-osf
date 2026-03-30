@@ -27,3 +27,9 @@ export class LoadMoreRegistrySubmissionContributors {
 
   constructor(public registryId: string) {}
 }
+
+export class GetRegistrySubmissionFunders {
+  static readonly type = `${ACTION_SCOPE} Get Registry Submission Funders`;
+
+  constructor(public registryId: string) {}
+}

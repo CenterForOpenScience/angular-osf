@@ -5,7 +5,7 @@
 <p>
   {{
     'preprints.preprintStepper.review.workflowDescription'
-      | translate: { providerName: provider()?.name, reviewsWorkflow: provider()?.reviewsWorkflow }
+      | translate: { providerName: provider().name, reviewsWorkflow: provider().reviewsWorkflow }
   }}
 </p>
 <p>
@@ -28,30 +28,32 @@
       <h3>
         {{
           'preprints.preprintStepper.review.sections.titleAndAbstract.service'
-            | translate: { preprintWord: provider()?.preprintWord | titlecase }
+            | translate: { preprintWord: provider().preprintWord | titlecase }
         }}
       </h3>
       <div class="flex flex-row gap-2 align-items-center">
         <img
           class="fit-contain"
-          [src]="provider()?.squareColorNoTransparentImageUrl"
-          alt="Provider logo"
+          [src]="provider().squareColorNoTransparentImageUrl"
+          [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
           height="36"
           width="36"
         />
-        <p>{{ provider()?.name }}</p>
+        <p>{{ provider().name }}</p>
       </div>
     </section>
 
-    <section class="flex flex-column gap-2">
-      <h3>{{ 'preprints.preprintStepper.common.labels.title' | translate }}</h3>
-      <p>{{ preprint()!.title }}</p>
-    </section>
+    @if (preprint(); as preprint) {
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.common.labels.title' | translate }}</h3>
+        <p>{{ preprint.title }}</p>
+      </section>
 
-    <section class="flex flex-column gap-2">
-      <h3>{{ 'preprints.preprintStepper.common.labels.abstract' | translate }}</h3>
-      <osf-truncated-text [maxVisibleLines]="2" [text]="preprint()!.description" />
-    </section>
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.common.labels.abstract' | translate }}</h3>
+        <osf-truncated-text [maxVisibleLines]="2" [text]="preprint.description" />
+      </section>
+    }
   </div>
 </p-card>
 
@@ -143,7 +145,7 @@
   </div>
 </p-card>
 
-@if (provider()?.assertionsEnabled) {
+@if (provider().assertionsEnabled) {
   <p-card styleClass="mt-4" class="card">
     <div class="flex flex-column gap-4">
       <h2>{{ 'preprints.preprintStepper.review.sections.authorAssertions.title' | translate }}</h2>
@@ -222,7 +224,7 @@
   <div class="flex flex-column gap-4">
     <h2>{{ 'preprints.preprintStepper.review.sections.supplements.title' | translate }}</h2>
     @if (preprintProject()) {
-      <p>{{ preprintProject()?.name | fixSpecialChar }}</p>
+      <p>{{ preprintProject()?.name }}</p>
     } @else {
       <p>{{ 'preprints.preprintStepper.review.sections.supplements.noSupplements' | translate }}</p>
     }
@@ -235,15 +237,15 @@
     styleClass="w-full"
     [label]="'common.buttons.cancel' | translate"
     severity="info"
-    (click)="cancelSubmission()"
     [disabled]="isPreprintSubmitting()"
+    (onClick)="cancelSubmission()"
   />
   <p-button
     data-test-submit-button
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.submit' | translate"
-    (click)="submitPreprint()"
     [loading]="isPreprintSubmitting()"
+    (onClick)="submitPreprint()"
   />
 </section>

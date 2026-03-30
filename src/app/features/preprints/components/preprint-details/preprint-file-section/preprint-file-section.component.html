@@ -1,8 +1,10 @@
+@let safeLinkValue = safeLink();
+
 <section class="p-card p-card-body card gap-4 flex flex-1 file-section-height">
-  @if (safeLink()) {
+  @if (safeLinkValue) {
     <iframe
       class="flex-1 border-none"
-      [src]="safeLink()"
+      [src]="safeLinkValue | safeUrl"
       (load)="isIframeLoading = false"
       [hidden]="isIframeLoading"
       [title]="'preprints.details.file.renderingDocument' | translate"
@@ -11,6 +13,7 @@
       width="100%"
     ></iframe>
   }
+
   @if (isIframeLoading || isFileLoading()) {
     <osf-loading-spinner />
   }
@@ -29,7 +32,7 @@
         <p-button
           severity="secondary"
           [label]="'preprints.details.file.downloadPreviousVersion' | translate"
-          (click)="versionsMenu.toggle($event)"
+          (onClick)="versionsMenu.toggle($event)"
         />
 
         <p-menu #versionsMenu [model]="versionMenuItems()" appendTo="body" popup class="hidden" />
@@ -40,9 +43,8 @@
       <p-skeleton width="100%" height="1rem" />
     }
 
-    @if (file()) {
-      @let preprintValue = preprint()!;
-
+    @let preprintValue = preprint();
+    @if (file() && preprintValue) {
       <div class="flex flex-column gap-2 justify-content-start md:flex-row">
         <span>{{ dateLabel() | translate }}: {{ preprintValue.dateCreated | date: 'longDate' }}</span>
         @if (isMedium() || isLarge()) {

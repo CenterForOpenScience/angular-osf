@@ -3,7 +3,7 @@ import {
   InstitutionsJsonApiResponse,
   InstitutionsWithMetaJsonApiResponse,
 } from '@osf/shared/models/institutions/institution-json-api.model';
-import { Institution, InstitutionsWithTotalCount } from '@osf/shared/models/institutions/institutions.models';
+import { Institution, InstitutionsWithTotalCount } from '@osf/shared/models/institutions/institutions.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class InstitutionsMapper {

@@ -1,12 +1,13 @@
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { PreprintRequestActionsMapper } from '@osf/features/preprints/mappers/preprint-request-actions.mapper';
-import { PreprintRequestAction } from '@osf/features/preprints/models/preprint-request-action.models';
+import { PreprintRequestAction } from '@osf/features/preprints/models/preprint-request-action.model';
 import { searchPreferencesToJsonApiQueryParams } from '@osf/shared/helpers/search-pref-to-json-api-query-params.helper';
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import {
@@ -38,6 +39,7 @@ import {
 export class PreprintsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly router = inject(Router);
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
@@ -95,7 +97,15 @@ export class PreprintsService {
           null
         >
       >(`${this.apiUrl}/preprints/${id}/`, params)
-      .pipe(map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)));
+      .pipe(
+        map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)),
+        catchError((error) => {
+          if (error.error?.errors?.[0]?.meta?.flagged_content) {
+            this.router.navigate(['/spam-content']);
+          }
+          return throwError(() => error);
+        })
+      );
   }
 
   getPreprintMetrics(id: string) {

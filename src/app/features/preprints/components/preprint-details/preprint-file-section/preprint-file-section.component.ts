@@ -9,24 +9,23 @@ import { Skeleton } from 'primeng/skeleton';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { SafeUrlPipe } from '@osf/shared/pipes/safe-url.pipe';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 @Component({
   selector: 'osf-preprint-file-section',
-  imports: [LoadingSpinnerComponent, DatePipe, Skeleton, Menu, Button, TranslatePipe],
+  imports: [LoadingSpinnerComponent, Skeleton, Menu, Button, DatePipe, TranslatePipe, SafeUrlPipe],
   templateUrl: './preprint-file-section.component.html',
   styleUrl: './preprint-file-section.component.scss',
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintFileSectionComponent {
-  private readonly sanitizer = inject(DomSanitizer);
   private readonly datePipe = inject(DatePipe);
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
@@ -38,26 +37,17 @@ export class PreprintFileSectionComponent {
   isLarge = toSignal(inject(IS_LARGE));
 
   preprint = select(PreprintSelectors.getPreprint);
+  preprint$ = toObservable(this.preprint);
   file = select(PreprintSelectors.getPreprintFile);
-  preprint$ = toObservable(select(PreprintSelectors.getPreprint));
   isFileLoading = select(PreprintSelectors.isPreprintFileLoading);
-  safeLink = computed(() => {
-    const link = this.file()?.links.render;
-    if (!link) return null;
-
-    return this.sanitizer.bypassSecurityTrustResourceUrl(link);
-  });
-  isIframeLoading = true;
-
   fileVersions = select(PreprintSelectors.getPreprintFileVersions);
   areFileVersionsLoading = select(PreprintSelectors.arePreprintFileVersionsLoading);
 
-  logDownload() {
-    this.dataciteService.logIdentifiableDownload(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-  }
+  safeLink = computed(() => this.file()?.links.render ?? null);
+  isIframeLoading = true;
 
   versionMenuItems = computed(() => {
-    const fileVersions = this.fileVersions();
+    const fileVersions = this.fileVersions() ?? [];
     if (!fileVersions.length) return [];
 
     return fileVersions.map((version) => ({
@@ -77,4 +67,8 @@ export class PreprintFileSectionComponent {
       ? 'preprints.details.file.submitted'
       : 'preprints.details.file.created';
   });
+
+  logDownload() {
+    this.dataciteService.logIdentifiableDownload(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
 }

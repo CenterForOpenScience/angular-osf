@@ -47,7 +47,7 @@ export class PreprintsMapper {
       datePublished: response.attributes.date_published,
       dateLastTransitioned: response.attributes.date_last_transitioned,
       title: replaceBadEncodedChars(response.attributes.title),
-      description: response.attributes.description,
+      description: replaceBadEncodedChars(response.attributes.description),
       reviewsState: response.attributes.reviews_state,
       preprintDoiCreated: response.attributes.preprint_doi_created,
       currentUserPermissions: response.attributes.current_user_permissions,
@@ -71,18 +71,21 @@ export class PreprintsMapper {
           }
         : null,
       hasCoi: response.attributes.has_coi,
-      coiStatement: response.attributes.conflict_of_interest_statement,
+      coiStatement: response.attributes.conflict_of_interest_statement
+        ? replaceBadEncodedChars(response.attributes.conflict_of_interest_statement)
+        : null,
       hasDataLinks: response.attributes.has_data_links,
       dataLinks: response.attributes.data_links,
-      whyNoData: response.attributes.why_no_data,
+      whyNoData: response.attributes.why_no_data ? replaceBadEncodedChars(response.attributes.why_no_data) : null,
       hasPreregLinks: response.attributes.has_prereg_links,
-      whyNoPrereg: response.attributes.why_no_prereg,
+      whyNoPrereg: response.attributes.why_no_prereg ? replaceBadEncodedChars(response.attributes.why_no_prereg) : null,
       preregLinks: response.attributes.prereg_links,
       preregLinkInfo: response.attributes.prereg_link_info,
       preprintDoiLink: response.links.preprint_doi,
       articleDoiLink: response.links.doi,
       embeddedLicense: null,
       providerId: response.relationships?.provider?.data?.id,
+      defaultLicenseId: response.attributes.default_license_id,
     };
   }
 
@@ -105,7 +108,7 @@ export class PreprintsMapper {
       datePublished: data.attributes.date_published,
       dateLastTransitioned: data.attributes.date_last_transitioned,
       title: replaceBadEncodedChars(data.attributes.title),
-      description: data.attributes.description,
+      description: replaceBadEncodedChars(data.attributes.description),
       reviewsState: data.attributes.reviews_state,
       preprintDoiCreated: data.attributes.preprint_doi_created,
       currentUserPermissions: data.attributes.current_user_permissions,
@@ -129,12 +132,14 @@ export class PreprintsMapper {
           }
         : null,
       hasCoi: data.attributes.has_coi,
-      coiStatement: data.attributes.conflict_of_interest_statement,
+      coiStatement: data.attributes.conflict_of_interest_statement
+        ? replaceBadEncodedChars(data.attributes.conflict_of_interest_statement)
+        : null,
       hasDataLinks: data.attributes.has_data_links,
       dataLinks: data.attributes.data_links,
-      whyNoData: data.attributes.why_no_data,
+      whyNoData: data.attributes.why_no_data ? replaceBadEncodedChars(data.attributes.why_no_data) : null,
       hasPreregLinks: data.attributes.has_prereg_links,
-      whyNoPrereg: data.attributes.why_no_prereg,
+      whyNoPrereg: data.attributes.why_no_prereg ? replaceBadEncodedChars(data.attributes.why_no_prereg) : null,
       preregLinks: data.attributes.prereg_links,
       preregLinkInfo: data.attributes.prereg_link_info,
       embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds?.license?.data),

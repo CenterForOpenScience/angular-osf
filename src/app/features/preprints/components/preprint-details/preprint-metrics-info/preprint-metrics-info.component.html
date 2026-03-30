@@ -1,3 +1,5 @@
+@let metricsValue = metrics();
+
 <p-card>
   @if (isLoading()) {
     <div class="flex flex-row gap-1">
@@ -5,11 +7,11 @@
       <p-skeleton width="1rem" height="1.5rem" />
       <p-skeleton width="10rem" height="1.5rem" />
     </div>
-  } @else if (metrics()) {
+  } @else if (metricsValue) {
     <div class="flex flex-row gap-1 font-bold">
-      <span>{{ 'preprints.details.share.views' | translate }}: {{ metrics()!.views }}</span>
+      <span>{{ 'preprints.details.share.views' | translate }}: {{ metricsValue.views }}</span>
       <span>|</span>
-      <span>{{ 'preprints.details.share.downloads' | translate }}: {{ metrics()!.downloads }}</span>
+      <span>{{ 'preprints.details.share.downloads' | translate }}: {{ metricsValue.downloads }}</span>
     </div>
   }
 </p-card>

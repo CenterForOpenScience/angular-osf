@@ -10,6 +10,7 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
+import { FunderAwardsListComponent } from '@shared/funder-awards-list/funder-awards-list.component';
 
 import { REGISTRY_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
 import { ActionStatus, SubmissionReviewStatus } from '../../enums';
@@ -29,6 +30,7 @@ import { RegistryModeration } from '../../models';
     AccordionHeader,
     AccordionContent,
     ContributorsListComponent,
+    FunderAwardsListComponent,
   ],
   templateUrl: './registry-submission-item.component.html',
   styleUrl: './registry-submission-item.component.scss',
@@ -37,9 +39,8 @@ import { RegistryModeration } from '../../models';
 export class RegistrySubmissionItemComponent {
   status = input.required<SubmissionReviewStatus>();
   submission = input.required<RegistryModeration>();
-  loadContributors = output<void>();
   loadMoreContributors = output<void>();
-
+  loadAdditionalData = output<void>();
   selected = output<void>();
 
   readonly reviewStatusIcon = ReviewStatusIcon;
@@ -67,6 +68,6 @@ export class RegistrySubmissionItemComponent {
   });
 
   handleOpen() {
-    this.loadContributors.emit();
+    this.loadAdditionalData.emit();
   }
 }

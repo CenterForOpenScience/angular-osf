@@ -2,7 +2,7 @@ import { MockProvider } from 'ng-mocks';
 
 import { throwError } from 'rxjs';
 
-import { HttpContext, HttpErrorResponse, HttpRequest } from '@angular/common/http';
+import { HttpContext, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -267,6 +267,27 @@ describe('errorInterceptor', () => {
           expect(router.navigate).toHaveBeenCalledWith(['/forbidden']);
           expect(loaderService.hide).toHaveBeenCalled();
           expect(toastService.showError).toHaveBeenCalled();
+        },
+      });
+    });
+  });
+
+  it('should not navigate for 403 errors when X-No-Auth-Redirect header is true', () => {
+    const error = new HttpErrorResponse({
+      error: {},
+      status: 403,
+      url: '/metadata/abcde/?format=google-dataset-json-ld',
+      headers: new HttpHeaders({ 'X-No-Auth-Redirect': 'true' }),
+    });
+    const request = createRequest();
+
+    runInInjectionContext(TestBed, () => {
+      const result = errorInterceptor(request, createErrorHandler(error));
+      result.subscribe({
+        error: () => {
+          expect(router.navigate).not.toHaveBeenCalled();
+          expect(loaderService.hide).toHaveBeenCalled();
+          expect(toastService.showError).not.toHaveBeenCalled();
         },
       });
     });

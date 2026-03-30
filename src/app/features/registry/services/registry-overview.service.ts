@@ -13,7 +13,7 @@ import { ReviewActionsMapper } from '@osf/shared/mappers/review-actions.mapper';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';

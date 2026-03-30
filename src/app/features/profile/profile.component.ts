@@ -23,8 +23,9 @@ import { GlobalSearchComponent } from '@osf/shared/components/global-search/glob
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.const';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserModel } from '@osf/shared/models/user/user.model';
 import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
+import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 
 import { ProfileInformationComponent } from './components';
 import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';
@@ -46,11 +47,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     fetchUserProfile: FetchUserProfile,
     setDefaultFilterValue: SetDefaultFilterValue,
     setUserProfile: SetUserProfile,
+    fetchUserInstitutions: FetchUserInstitutions,
   });
 
   loggedInUser = select(UserSelectors.getCurrentUser);
   userProfile = select(ProfileSelectors.getUserProfile);
   isUserLoading = select(ProfileSelectors.isUserProfileLoading);
+  institutions = select(InstitutionsSelectors.getUserInstitutions);
 
   resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceType.Agent);
 
@@ -67,6 +70,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } else if (currentUser) {
       this.setupMyProfile(currentUser);
     }
+
+    this.actions.fetchUserInstitutions(userId || currentUser?.id);
   }
 
   ngOnDestroy(): void {

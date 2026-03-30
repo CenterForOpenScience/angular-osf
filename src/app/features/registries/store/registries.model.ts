@@ -11,7 +11,7 @@ import { ResourceModel } from '@osf/shared/models/search/resource.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
-import { ProjectShortInfoModel } from '../models';
+import { ProjectShortInfoModel } from '../models/project-short-info.model';
 
 export interface RegistriesStateModel {
   providerSchemas: AsyncStateModel<ProviderSchema[]>;

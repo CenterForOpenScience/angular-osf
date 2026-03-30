@@ -3,6 +3,8 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   globalSetup: '<rootDir>/jest.global-setup.ts',
   collectCoverage: false,
+  clearMocks: true,
+  restoreMocks: true,
   coverageReporters: ['json-summary', 'lcov', 'clover'],
   moduleNameMapper: {
     '^@osf/(.*)$': '<rootDir>/src/app/$1',
@@ -36,12 +38,10 @@ module.exports = {
     '!src/app/app.config.ts',
     '!src/app/app.routes.ts',
     '!src/app/**/*.routes.{ts,js}',
-    '!src/app/**/**/*.routes.{ts,js}',
     '!src/app/**/*.route.{ts,js}',
     '!src/app/**/mappers/**',
     '!src/app/shared/mappers/**',
-    '!src/app/**/*.models.{ts.js}',
-    '!src/app/**/*.model.{ts.js}',
+    '!src/app/**/*.model.{ts,js}',
     '!src/app/**/models/*.{ts,js}',
     '!src/app/shared/models/**',
     '!src/app/**/*.enum.{ts,js}',
@@ -54,10 +54,10 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 34.8,
-      functions: 38.0,
-      lines: 65.5,
-      statements: 66.0,
+      branches: 43.3,
+      functions: 42.7,
+      lines: 69.3,
+      statements: 69.8,
     },
   },
   watchPathIgnorePatterns: [

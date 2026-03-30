@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 @Component({

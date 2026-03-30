@@ -1,3 +1,5 @@
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
@@ -10,13 +12,13 @@ describe('MyRegistrationsRedirectComponent', () => {
   let fixture: ComponentFixture<MyRegistrationsRedirectComponent>;
   let router: jest.Mocked<Router>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const routerMock = RouterMock.create().build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [MyRegistrationsRedirectComponent],
-      providers: [{ provide: Router, useValue: routerMock }],
-    }).compileComponents();
+      providers: [MockProvider(Router, routerMock)],
+    });
 
     fixture = TestBed.createComponent(MyRegistrationsRedirectComponent);
     component = fixture.componentInstance;
@@ -28,24 +30,10 @@ describe('MyRegistrationsRedirectComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should be an instance of MyRegistrationsRedirectComponent', () => {
-    expect(component).toBeInstanceOf(MyRegistrationsRedirectComponent);
-  });
-
   it('should navigate to /my-registrations on component creation', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/my-registrations'], {
       queryParamsHandling: 'preserve',
       replaceUrl: true,
     });
-  });
-
-  it('should preserve query parameters during navigation', () => {
-    const navigationOptions = router.navigate.mock.calls[0][1];
-    expect(navigationOptions?.queryParamsHandling).toBe('preserve');
-  });
-
-  it('should replace the current URL in browser history', () => {
-    const navigationOptions = router.navigate.mock.calls[0][1];
-    expect(navigationOptions?.replaceUrl).toBe(true);
   });
 });

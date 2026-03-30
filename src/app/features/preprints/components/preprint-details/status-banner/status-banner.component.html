@@ -10,10 +10,10 @@
           <div>
             @if (reviewerComment() && !provider().reviewsCommentsPrivate && !isPendingWithdrawal()) {
               <p-button
-                [link]="true"
                 class="cursor-pointer"
-                (click)="showFeedbackDialog()"
+                [link]="true"
                 [label]="'preprints.details.statusBanner.showModeratorFeedback' | translate"
+                (onClick)="showFeedbackDialog()"
               />
 
               <p-dialog

@@ -12,7 +12,7 @@
         pTextarea
         formControlName="justification"
       ></textarea>
-      @if (isJustificationValid) {
+      @if (showJustificationError) {
         <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
           {{ INPUT_VALIDATION_MESSAGES.required | translate }}
         </p-message>
@@ -25,7 +25,7 @@
       <p-button
         [label]="'registries.justification.deleteUpdates' | translate"
         severity="danger"
-        (click)="deleteDraftUpdate()"
+        (onClick)="deleteDraftUpdate()"
         class="mr-2"
       >
       </p-button>

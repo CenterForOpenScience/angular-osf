@@ -21,6 +21,7 @@ export interface MetadataAttributesJsonApi {
   category?: string;
   node_license?: LicenseRecordJsonApi;
   public?: boolean;
+  registration_supplement?: string;
   current_user_permissions: UserPermissions[];
 }
 

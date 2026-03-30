@@ -1,5 +1,6 @@
 import { Selector } from '@ngxs/store';
 
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
@@ -11,7 +12,7 @@ import { RegistrationCard } from '@osf/shared/models/registration/registration-c
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { ResourceModel } from '@osf/shared/models/search/resource.model';
 
-import { ProjectShortInfoModel } from '../models';
+import { ProjectShortInfoModel } from '../models/project-short-info.model';
 
 import { RegistriesStateModel } from './registries.model';
 import { RegistriesState } from './registries.state';
@@ -50,6 +51,11 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static getDraftRegistration(state: RegistriesStateModel): DraftRegistrationModel | null {
     return state.draftRegistration.data;
+  }
+
+  @Selector([RegistriesState])
+  static hasDraftAdminAccess(state: RegistriesStateModel): boolean {
+    return state.draftRegistration.data?.currentUserPermissions?.includes(UserPermissions.Admin) || false;
   }
 
   @Selector([RegistriesState])

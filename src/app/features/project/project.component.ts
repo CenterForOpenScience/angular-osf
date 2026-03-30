@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { filter, map } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,8 +19,13 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import {
+  getDeepestCanonicalPathTemplateFromSnapshot,
+  resolveCanonicalPathFromSnapshot,
+} from '@osf/shared/helpers/canonical-path.helper';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
+import { MetaTagsBuilderService } from '@osf/shared/services/meta-tags-builder.service';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
 import { AnalyticsService } from '@shared/services/analytics.service';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
@@ -34,26 +38,21 @@ import { GetProjectById, GetProjectIdentifiers, GetProjectLicense, ProjectOvervi
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DatePipe],
 })
 export class ProjectComponent implements OnDestroy {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
 
   private readonly helpScoutService = inject(HelpScoutService);
   private readonly metaTags = inject(MetaTagsService);
+  private readonly metaTagsBuilder = inject(MetaTagsBuilderService);
   private readonly dataciteService = inject(DataciteService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
-  private readonly datePipe = inject(DatePipe);
   private readonly prerenderReady = inject(PrerenderReadyService);
   private readonly router = inject(Router);
   private readonly analyticsService = inject(AnalyticsService);
-  private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
 
-  readonly identifiersForDatacite$ = toObservable(select(ProjectOverviewSelectors.getIdentifiers)).pipe(
-    map((identifiers) => (identifiers?.length ? { identifiers } : null))
-  );
-
+  readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   readonly currentProject = select(ProjectOverviewSelectors.getProject);
   readonly isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
@@ -61,15 +60,8 @@ export class ProjectComponent implements OnDestroy {
   readonly license = select(ProjectOverviewSelectors.getLicense);
   readonly isLicenseLoading = select(ProjectOverviewSelectors.isLicenseLoading);
 
-  private readonly lastMetaTagsProjectId = signal<string | null>(null);
-  private readonly projectId = toSignal(this.route.params.pipe(map((params) => params['id'])));
-
-  private readonly allDataLoaded = computed(
-    () =>
-      !this.isProjectLoading() &&
-      !this.isBibliographicContributorsLoading() &&
-      !this.isLicenseLoading() &&
-      !!this.currentProject()
+  readonly identifiersForDatacite$ = toObservable(select(ProjectOverviewSelectors.getIdentifiers)).pipe(
+    map((identifiers) => (identifiers?.length ? { identifiers } : null))
   );
 
   private readonly actions = createDispatchMap({
@@ -78,6 +70,19 @@ export class ProjectComponent implements OnDestroy {
     getIdentifiers: GetProjectIdentifiers,
     getBibliographicContributors: GetBibliographicContributors,
   });
+
+  private readonly projectId = toSignal(this.route.params.pipe(map((params) => params['id'])));
+  private readonly canonicalPath = signal(this.getCanonicalPathFromSnapshot());
+  private readonly isFileDetailRoute = signal(this.isFileDetailRouteFromSnapshot());
+  private readonly lastMetaTagsKey = signal<string | null>(null);
+
+  private readonly allDataLoaded = computed(
+    () =>
+      !this.isProjectLoading() &&
+      !this.isBibliographicContributorsLoading() &&
+      !this.isLicenseLoading() &&
+      !!this.currentProject()
+  );
 
   constructor() {
     this.prerenderReady.setNotReady();
@@ -94,22 +99,35 @@ export class ProjectComponent implements OnDestroy {
     });
 
     effect(() => {
-      const project = this.currentProject();
+      const licenseId = this.currentProject()?.licenseId;
 
-      if (project?.licenseId) {
-        this.actions.getLicense(project.licenseId);
+      if (licenseId) {
+        this.actions.getLicense(licenseId);
       }
     });
 
     effect(() => {
-      if (this.allDataLoaded()) {
-        const currentProjectId = this.projectId();
-        const lastSetProjectId = this.lastMetaTagsProjectId();
-
-        if (currentProjectId && currentProjectId !== lastSetProjectId) {
-          this.setMetaTags();
-        }
+      if (!this.allDataLoaded()) {
+        this.lastMetaTagsKey.set(null);
+        return;
       }
+
+      const currentProjectId = this.currentProject()?.id;
+      const currentCanonicalPath = this.canonicalPath();
+
+      if (!currentProjectId || !currentCanonicalPath || this.isFileDetailRoute()) {
+        this.lastMetaTagsKey.set(null);
+        return;
+      }
+
+      const metaTagsKey = `${currentProjectId}:${currentCanonicalPath}`;
+
+      if (this.lastMetaTagsKey() === metaTagsKey) {
+        return;
+      }
+
+      this.lastMetaTagsKey.set(metaTagsKey);
+      this.setMetaTags();
     });
 
     this.dataciteService
@@ -123,6 +141,8 @@ export class ProjectComponent implements OnDestroy {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((event: NavigationEnd) => {
+        this.canonicalPath.set(this.getCanonicalPathFromSnapshot());
+        this.isFileDetailRoute.set(this.isFileDetailRouteFromSnapshot());
         this.analyticsService.sendCountedUsageForRegistrationAndProjects(
           event.urlAfterRedirects,
           this.currentResource()
@@ -135,29 +155,29 @@ export class ProjectComponent implements OnDestroy {
   }
 
   private setMetaTags(): void {
-    const project = this.currentProject();
-    if (!project) return;
+    const project = this.currentProject()!;
 
-    const keywords = [...(project.tags || []), ...(project.category ? [project.category] : [])];
-
-    const metaTagsData = {
-      osfGuid: project.id,
-      title: project.title,
-      description: project.description,
-      url: project.links?.iri,
-      license: this.license.name,
-      publishedDate: this.datePipe.transform(project.dateCreated, 'yyyy-MM-dd'),
-      modifiedDate: this.datePipe.transform(project.dateModified, 'yyyy-MM-dd'),
-      keywords,
-      contributors: this.bibliographicContributors().map((contributor) => ({
-        fullName: contributor.fullName,
-        givenName: contributor.givenName,
-        familyName: contributor.familyName,
-      })),
-    };
+    const metaTagsData = this.metaTagsBuilder.buildProjectMetaTagsData({
+      project,
+      canonicalPath: this.canonicalPath(),
+      contributors: this.bibliographicContributors(),
+      licenseName: this.license.name,
+    });
 
     this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+  }
 
-    this.lastMetaTagsProjectId.set(project.id);
+  private getCanonicalPathFromSnapshot(): string {
+    return resolveCanonicalPathFromSnapshot(this.route.snapshot, {
+      fallbackPath: 'overview',
+      paramDefaults: {
+        fileProvider: 'osfstorage',
+        recordId: 'osf',
+      },
+    });
+  }
+
+  private isFileDetailRouteFromSnapshot(): boolean {
+    return getDeepestCanonicalPathTemplateFromSnapshot(this.route.snapshot) === 'files/:fileGuid';
   }
 }

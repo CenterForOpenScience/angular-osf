@@ -35,4 +35,8 @@ export const RegistryServiceIcons = [
     src: 'assets/images/registries-services/GFS_Logo.png',
     id: 'gfs',
   },
+  {
+    src: 'assets/images/registries-services/SCORE_logo.png',
+    id: 'score',
+  },
 ];

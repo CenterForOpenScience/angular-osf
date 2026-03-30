@@ -5,24 +5,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TreeDragDropService } from 'primeng/api';
 import { Button } from 'primeng/button';
 
-import { EMPTY, filter, finalize, Observable, shareReplay, take } from 'rxjs';
+import { filter, finalize, switchMap, take } from 'rxjs';
 
 import { HttpEventType } from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  effect,
-  inject,
-  input,
-  OnDestroy,
-  output,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
-import { HelpScoutService } from '@core/services/help-scout.service';
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
@@ -47,12 +35,10 @@ import {
 @Component({
   selector: 'osf-files-control',
   imports: [
-    FilesTreeComponent,
     Button,
+    FilesTreeComponent,
     LoadingSpinnerComponent,
     FileUploadDialogComponent,
-    FormsModule,
-    ReactiveFormsModule,
     TranslatePipe,
     ClearFileDirective,
   ],
@@ -61,19 +47,18 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TreeDragDropService],
 })
-export class FilesControlComponent implements OnDestroy {
+export class FilesControlComponent {
   attachedFiles = input.required<Partial<FileModel>[]>();
-  attachFile = output<FileModel>();
   filesLink = input.required<string>();
   projectId = input.required<string>();
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
+  attachFile = output<FileModel>();
 
   private readonly filesService = inject(FilesService);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
-  private readonly helpScoutService = inject(HelpScoutService);
 
   readonly files = select(RegistriesSelectors.getFiles);
   readonly filesTotalCount = select(RegistriesSelectors.getFilesTotalCount);
@@ -85,6 +70,7 @@ export class FilesControlComponent implements OnDestroy {
   readonly dataLoaded = signal(false);
 
   fileIsUploading = signal(false);
+  filesSelection: FileModel[] = [];
 
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
@@ -95,44 +81,26 @@ export class FilesControlComponent implements OnDestroy {
   });
 
   constructor() {
-    this.helpScoutService.setResourceType('files');
-    effect(() => {
-      const filesLink = this.filesLink();
-      if (filesLink) {
-        this.actions
-          .getRootFolders(filesLink)
-          .pipe(shareReplay(), takeUntilDestroyed(this.destroyRef))
-          .subscribe(() => {
-            this.dataLoaded.set(true);
-          });
-      }
-    });
-
-    effect(() => {
-      const currentFolder = this.currentFolder();
-      if (currentFolder) {
-        this.updateFilesList().subscribe();
-      }
-    });
+    this.setupRootFoldersLoader();
+    this.setupCurrentFolderWatcher();
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
-    if (file && file.size >= FILE_SIZE_LIMIT) {
+    if (!file) return;
+
+    if (file.size >= FILE_SIZE_LIMIT) {
       this.toastService.showWarn('shared.files.limitText');
       return;
     }
-    if (!file) return;
 
     this.uploadFiles(file);
   }
 
   createFolder(): void {
-    const currentFolder = this.currentFolder();
-    const newFolderLink = currentFolder?.links.newFolder;
-
+    const newFolderLink = this.currentFolder()?.links.newFolder;
     if (!newFolderLink) return;
 
     this.customDialogService
@@ -140,35 +108,18 @@ export class FilesControlComponent implements OnDestroy {
         header: 'files.dialogs.createFolder.title',
         width: '448px',
       })
-      .onClose.pipe(filter((folderName: string) => !!folderName))
-      .subscribe((folderName) => {
-        this.actions
-          .createFolder(newFolderLink, folderName)
-          .pipe(
-            take(1),
-            finalize(() => {
-              this.updateFilesList().subscribe(() => this.fileIsUploading.set(false));
-            })
-          )
-          .subscribe();
-      });
-  }
-
-  updateFilesList(): Observable<void> {
-    const currentFolder = this.currentFolder();
-    if (currentFolder?.links.filesLink) {
-      this.actions.setFilesIsLoading(true);
-      return this.actions.getFiles(currentFolder?.links.filesLink, 1).pipe(take(1));
-    }
-
-    return EMPTY;
+      .onClose.pipe(
+        filter((folderName: string) => !!folderName),
+        switchMap((folderName) => this.actions.createFolder(newFolderLink, folderName)),
+        finalize(() => this.fileIsUploading.set(false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.refreshFilesList());
   }
 
   uploadFiles(files: File | File[]): void {
-    const fileArray = Array.isArray(files) ? files : [files];
-    const file = fileArray[0];
-    const currentFolder = this.currentFolder();
-    const uploadLink = currentFolder?.links.upload;
+    const file = Array.isArray(files) ? files[0] : files;
+    const uploadLink = this.currentFolder()?.links.upload;
     if (!uploadLink) return;
 
     this.fileName.set(file.name);
@@ -181,7 +132,7 @@ export class FilesControlComponent implements OnDestroy {
         finalize(() => {
           this.fileIsUploading.set(false);
           this.fileName.set('');
-          this.updateFilesList();
+          this.refreshFilesList();
         })
       )
       .subscribe((event) => {
@@ -189,17 +140,14 @@ export class FilesControlComponent implements OnDestroy {
           this.progress.set(Math.round((event.loaded / event.total) * 100));
         }
 
-        if (event.type === HttpEventType.Response) {
-          if (event.body) {
-            const fileId = event?.body?.data?.id?.split('/').pop();
-            if (fileId) {
-              this.filesService
-                .getFileGuid(fileId)
-                .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe((file) => {
-                  this.selectFile(file);
-                });
-            }
+        if (event.type === HttpEventType.Response && event.body) {
+          const fileId = event.body.data?.id?.split('/').pop();
+
+          if (fileId) {
+            this.filesService
+              .getFileGuid(fileId)
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe((uploadedFile) => this.selectFile(uploadedFile));
           }
         }
       });
@@ -210,6 +158,11 @@ export class FilesControlComponent implements OnDestroy {
     this.attachFile.emit(file);
   }
 
+  onFileTreeSelected(file: FileModel): void {
+    this.filesSelection.push(file);
+    this.filesSelection = [...new Set(this.filesSelection)];
+  }
+
   onLoadFiles(event: { link: string; page: number }) {
     this.actions.getFiles(event.link, event.page);
   }
@@ -218,7 +171,31 @@ export class FilesControlComponent implements OnDestroy {
     this.actions.setCurrentFolder(folder);
   }
 
-  ngOnDestroy(): void {
-    this.helpScoutService.unsetResourceType();
+  private setupRootFoldersLoader() {
+    toObservable(this.filesLink)
+      .pipe(
+        filter((link) => !!link),
+        take(1),
+        switchMap((link) => this.actions.getRootFolders(link)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.dataLoaded.set(true));
+  }
+
+  private setupCurrentFolderWatcher() {
+    toObservable(this.currentFolder)
+      .pipe(
+        filter((folder) => !!folder),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.refreshFilesList());
+  }
+
+  private refreshFilesList(): void {
+    const filesLink = this.currentFolder()?.links.filesLink;
+    if (!filesLink) return;
+
+    this.actions.setFilesIsLoading(true);
+    this.actions.getFiles(filesLink, 1);
   }
 }

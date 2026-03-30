@@ -19,6 +19,7 @@ import { TagsListComponent } from '@osf/shared/components/tags-list/tags-list.co
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/shared/stores/contributors';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import {
@@ -33,10 +34,10 @@ import {
   selector: 'osf-registry-overview-metadata',
   imports: [
     Button,
-    TranslatePipe,
-    TruncatedTextComponent,
     RouterLink,
     DatePipe,
+    TranslatePipe,
+    TruncatedTextComponent,
     ResourceCitationsComponent,
     ResourceDoiComponent,
     ResourceLicenseComponent,
@@ -54,6 +55,7 @@ export class RegistryOverviewMetadataComponent {
   private readonly router = inject(Router);
 
   readonly registry = select(RegistrySelectors.getRegistry);
+  readonly registryProvider = select(RegistrationProviderSelectors.getBrandedProvider);
   readonly isAnonymous = select(RegistrySelectors.isRegistryAnonymous);
 
   canEdit = select(RegistrySelectors.hasWriteAccess);
@@ -85,11 +87,13 @@ export class RegistryOverviewMetadataComponent {
 
   constructor() {
     effect(() => {
-      if (this.registry()?.id) {
-        this.actions.getInstitutions(this.registry()!.id);
-        this.actions.getSubjects(this.registry()!.id, ResourceType.Registration);
-        this.actions.getLicense(this.registry()!.licenseId);
-        this.actions.getIdentifiers(this.registry()!.id);
+      const registry = this.registry();
+
+      if (registry?.id) {
+        this.actions.getInstitutions(registry.id);
+        this.actions.getSubjects(registry.id, ResourceType.Registration);
+        this.actions.getLicense(registry.licenseId);
+        this.actions.getIdentifiers(registry.id);
       }
     });
   }
@@ -99,7 +103,10 @@ export class RegistryOverviewMetadataComponent {
   }
 
   handleLoadMoreContributors(): void {
-    this.actions.loadMoreBibliographicContributors(this.registry()?.id, ResourceType.Registration);
+    const registryId = this.registry()?.id;
+    if (!registryId) return;
+
+    this.actions.loadMoreBibliographicContributors(registryId, ResourceType.Registration);
   }
 
   tagClicked(tag: string) {

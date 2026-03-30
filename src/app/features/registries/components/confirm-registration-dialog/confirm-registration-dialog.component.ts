@@ -7,7 +7,8 @@ import { DatePicker } from 'primeng/datepicker';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { RadioButton } from 'primeng/radiobutton';
 
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { SubmitType } from '../../enums';
@@ -21,14 +22,13 @@ import { RegisterDraft, RegistriesSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmRegistrationDialogComponent {
-  readonly dialogRef = inject(DynamicDialogRef);
-  private readonly fb = inject(FormBuilder);
   readonly config = inject(DynamicDialogConfig);
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly destroyRef = inject(DestroyRef);
+  readonly fb = inject(FormBuilder);
 
   readonly isRegistrationSubmitting = select(RegistriesSelectors.isRegistrationSubmitting);
-  actions = createDispatchMap({
-    registerDraft: RegisterDraft,
-  });
+  actions = createDispatchMap({ registerDraft: RegisterDraft });
   SubmitType = SubmitType;
   showDateControl = false;
   minEmbargoDate = computed(() => {
@@ -43,21 +43,24 @@ export class ConfirmRegistrationDialogComponent {
   });
 
   constructor() {
-    this.form.get('submitOption')!.valueChanges.subscribe((value) => {
-      this.showDateControl = value === SubmitType.Embargo;
-      const dateControl = this.form.get('embargoDate');
+    this.form
+      .get('submitOption')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.showDateControl = value === SubmitType.Embargo;
+        const dateControl = this.form.get('embargoDate');
 
-      if (this.showDateControl) {
-        dateControl!.enable();
-        dateControl!.setValidators(Validators.required);
-      } else {
-        dateControl!.disable();
-        dateControl!.clearValidators();
-        dateControl!.reset();
-      }
+        if (this.showDateControl) {
+          dateControl!.enable();
+          dateControl!.setValidators(Validators.required);
+        } else {
+          dateControl!.disable();
+          dateControl!.clearValidators();
+          dateControl!.reset();
+        }
 
-      dateControl!.updateValueAndValidity();
-    });
+        dateControl!.updateValueAndValidity();
+      });
   }
 
   submit(): void {

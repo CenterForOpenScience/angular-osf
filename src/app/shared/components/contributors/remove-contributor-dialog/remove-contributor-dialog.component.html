@@ -1,5 +1,5 @@
 <div class="flex flex-column">
-  <p>{{ 'project.contributors.removeDialog.message' | translate: { name: name } }}</p>
+  <p [innerHTML]="'project.contributors.removeDialog.message' | translate: { name: name }"></p>
 
   <div class="p-field-radiobutton flex align-items-center mt-3 mb-2">
     <p-radioButton name="removeMode" [value]="false" [(ngModel)]="selectedOption" inputId="projectOnly">

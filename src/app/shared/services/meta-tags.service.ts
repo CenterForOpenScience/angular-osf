@@ -1,7 +1,7 @@
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { DestroyRef, effect, Inject, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { DestroyRef, effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -19,10 +19,13 @@ import { MetadataRecordsService } from './metadata-records.service';
   providedIn: 'root',
 })
 export class MetaTagsService {
-  private readonly metadataRecords: MetadataRecordsService = inject(MetadataRecordsService);
+  private readonly metadataRecords = inject(MetadataRecordsService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly prerenderReady = inject(PrerenderReadyService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly document = inject(DOCUMENT);
+  private readonly title = inject(Title);
+  private readonly meta = inject(Meta);
 
   get webUrl() {
     return this.environment.webUrl;
@@ -53,16 +56,11 @@ export class MetaTagsService {
   };
 
   private readonly metaTagClass = 'osf-dynamic-meta';
-
   private metaTagStack: { metaTagsData: MetaTagsData; componentDestroyRef: DestroyRef }[] = [];
 
   areMetaTagsApplied = signal(false);
 
-  constructor(
-    private meta: Meta,
-    private title: Title,
-    @Inject(DOCUMENT) private document: Document
-  ) {
+  constructor() {
     effect(() => {
       if (this.areMetaTagsApplied()) {
         this.prerenderReady.setReady();
@@ -80,25 +78,11 @@ export class MetaTagsService {
   }
 
   clearMetaTags(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!isPlatformBrowser(this.platformId) || this.removeDynamicMetaTags() === 0) {
       this.areMetaTagsApplied.set(false);
       this.prerenderReady.setNotReady();
       return;
     }
-
-    const elementsToRemove = this.document.querySelectorAll(`.${this.metaTagClass}`);
-
-    if (elementsToRemove.length === 0) {
-      this.areMetaTagsApplied.set(false);
-      this.prerenderReady.setNotReady();
-      return;
-    }
-
-    elementsToRemove.forEach((element) => {
-      if (element.parentNode) {
-        element.parentNode.removeChild(element);
-      }
-    });
 
     this.title.setTitle(String(this.defaultMetaTags.siteName));
     this.areMetaTagsApplied.set(false);
@@ -111,6 +95,7 @@ export class MetaTagsService {
 
   private applyNearestMetaTags() {
     const nearest = this.metaTagStack.at(-1);
+
     if (nearest) {
       this.applyMetaTagsData(nearest.metaTagsData);
     } else {
@@ -118,21 +103,20 @@ export class MetaTagsService {
     }
   }
 
-  private applyMetaTagsData(metaTagsData: MetaTagsData) {
+  private applyMetaTagsData(metaTagsData: MetaTagsData): void {
     this.areMetaTagsApplied.set(false);
     this.prerenderReady.setNotReady();
+    this.removeDynamicMetaTags();
+
     const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
     const headTags = this.getHeadTags(combinedData);
+
     of(metaTagsData.osfGuid)
       .pipe(
         switchMap((osfid) =>
           osfid
             ? this.getSchemaDotOrgJsonLdHeadTag(osfid).pipe(
-                tap((jsonLdHeadTag) => {
-                  if (jsonLdHeadTag) {
-                    headTags.push(jsonLdHeadTag);
-                  }
-                }),
+                tap((jsonLdHeadTag) => jsonLdHeadTag && headTags.push(jsonLdHeadTag)),
                 catchError(() => of(null))
               )
             : of(null)
@@ -146,26 +130,26 @@ export class MetaTagsService {
       .subscribe();
   }
 
+  private removeDynamicMetaTags(): number {
+    const elements = this.document.querySelectorAll(`.${this.metaTagClass}`);
+    elements.forEach((el) => el.parentNode?.removeChild(el));
+    return elements.length;
+  }
+
   private getSchemaDotOrgJsonLdHeadTag(osfid: string): Observable<HeadTagDef | null> {
-    return this.metadataRecords.getMetadataRecord(osfid, MetadataRecordFormat.SchemaDotOrgDataset).pipe(
-      map((jsonLd) =>
-        jsonLd
-          ? {
-              type: 'script' as const,
-              attrs: { type: 'application/ld+json' },
-              content: jsonLd,
-            }
-          : null
-      )
-    );
+    return this.metadataRecords
+      .getMetadataRecord(osfid, MetadataRecordFormat.SchemaDotOrgDataset)
+      .pipe(
+        map((jsonLd) =>
+          jsonLd ? { type: 'script' as const, attrs: { type: 'application/ld+json' }, content: jsonLd } : null
+        )
+      );
   }
 
   private getHeadTags(metaTagsData: MetaTagsData): HeadTagDef[] {
-    const identifiers = this.toArray(metaTagsData.url)
-      .concat(this.toArray(metaTagsData.doi))
-      .concat(this.toArray(metaTagsData.identifier));
+    const identifiers = [metaTagsData.url, metaTagsData.doi, metaTagsData.identifier].flatMap((v) => this.toArray(v));
 
-    const metaTagsDefs = {
+    const metaTagsDefs: Record<string, DataContent | number | undefined> = {
       // Citation
       citation_title: metaTagsData.title,
       citation_doi: metaTagsData.doi,
@@ -188,7 +172,7 @@ export class MetaTagsService {
       'dc.creator': metaTagsData.contributors,
       'dc.subject': metaTagsData.keywords,
 
-      // Open Graph/Facebook
+      // Open Graph / Facebook
       'fb:app_id': metaTagsData.fbAppId,
       'og:ttl': 345600,
       'og:title': metaTagsData.title,
@@ -213,37 +197,44 @@ export class MetaTagsService {
       'twitter:image:alt': metaTagsData.imageAlt,
     };
 
-    return Object.entries(metaTagsDefs)
-      .reduce((acc: HeadTagDef[], [name, content]) => {
-        if (content) {
-          const contentArray = this.toArray(content);
-          return acc.concat(
-            contentArray
-              .filter((contentItem) => contentItem)
-              .map((contentItem) => ({
-                type: 'meta' as const,
-                attrs: this.makeMetaTagAttrs(name, this.buildMetaTagContent(name, contentItem)),
-              }))
-          );
-        }
-        return acc;
-      }, [])
+    const tags: HeadTagDef[] = Object.entries(metaTagsDefs)
+      .flatMap(([name, content]) => {
+        if (!content) return [];
+
+        return this.toArray(content as DataContent)
+          .filter(Boolean)
+          .map((item) => ({
+            type: 'meta' as const,
+            attrs: this.makeMetaTagAttrs(name, this.buildMetaTagContent(name, item)),
+          }));
+      })
       .filter((tag) => tag.attrs.content);
+
+    const canonicalUrl = this.toArray(metaTagsData.canonicalUrl || metaTagsData.url).find(Boolean);
+
+    if (canonicalUrl) {
+      tags.push({
+        type: 'link',
+        attrs: { rel: 'canonical', href: String(canonicalUrl), class: this.metaTagClass } as MetaDefinition,
+      });
+    }
+
+    return tags;
   }
 
   private buildMetaTagContent(name: string, content: Content): Content {
     if (['citation_author', 'dc.creator'].includes(name) && typeof content === 'object') {
-      const author = content as MetaTagAuthor;
-      return `${author.familyName}, ${author.givenName}`;
+      const { familyName, givenName } = content as MetaTagAuthor;
+      return `${familyName}, ${givenName}`;
     }
     return content;
   }
 
   private makeMetaTagAttrs(name: string, content: Content): MetaDefinition {
-    if (['fb:', 'og:'].includes(name.substring(0, 3))) {
-      return { property: name, content: String(content), class: this.metaTagClass };
-    }
-    return { name, content: String(content), class: this.metaTagClass } as MetaDefinition;
+    const isProperty = name.startsWith('og:') || name.startsWith('fb:');
+    return isProperty
+      ? { property: name, content: String(content), class: this.metaTagClass }
+      : ({ name, content: String(content), class: this.metaTagClass } as MetaDefinition);
   }
 
   private toArray(content: DataContent): Content[] {
@@ -254,49 +245,31 @@ export class MetaTagsService {
     headTags.forEach((tag) => {
       if (tag.type === 'meta') {
         this.meta.addTag(tag.attrs);
-      } else if (tag.type === 'link') {
-        const link = this.document.createElement('link');
-        link.className = this.metaTagClass;
-        Object.entries(tag.attrs).forEach(([key, value]) => {
-          link.setAttribute(key, String(value));
-        });
-
-        this.document.head.appendChild(link);
-      } else if (tag.type === 'script') {
-        const script = this.document.createElement('script');
-        script.className = this.metaTagClass;
-        Object.entries(tag.attrs).forEach(([key, value]) => {
-          script.setAttribute(key, String(value));
-        });
-
-        if (tag.content) {
-          script.textContent = tag.content;
-        }
-
-        this.document.head.appendChild(script);
+        return;
       }
+
+      const el = this.document.createElement(tag.type);
+      el.className = this.metaTagClass;
+      Object.entries(tag.attrs).forEach(([key, value]) => el.setAttribute(key, String(value)));
+
+      if (tag.type === 'script' && tag.content) {
+        el.textContent = tag.content;
+      }
+
+      this.document.head.appendChild(el);
     });
 
-    if (headTags.some((tag) => tag.attrs.name === 'citation_title')) {
-      const titleTag = headTags.find((tag) => tag.attrs.name === 'citation_title');
-
-      if (titleTag?.attrs.content) {
-        const title = `${String(this.defaultMetaTags.siteName)} | ${String(titleTag.attrs.content)}`;
-        this.title.setTitle(replaceBadEncodedChars(title));
-      }
+    const citationTitle = headTags.find((tag) => tag.attrs.name === 'citation_title')?.attrs.content;
+    if (citationTitle) {
+      this.title.setTitle(
+        replaceBadEncodedChars(`${String(this.defaultMetaTags.siteName)} | ${String(citationTitle)}`)
+      );
     }
   }
 
   private dispatchZoteroEvent(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
+    if (!isPlatformBrowser(this.platformId)) return;
 
-    const event = new Event('ZoteroItemUpdated', {
-      bubbles: true,
-      cancelable: true,
-    });
-
-    this.document.dispatchEvent(event);
+    this.document.dispatchEvent(new Event('ZoteroItemUpdated', { bubbles: true, cancelable: true }));
   }
 }

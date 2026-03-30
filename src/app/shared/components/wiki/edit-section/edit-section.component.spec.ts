@@ -186,8 +186,8 @@ describe('EditSectionComponent', () => {
     });
   });
 
-  it('should configure editor when onEditorLoaded is called', () => {
-    component.onEditorLoaded(mockEditorInstance);
+  it('should configure editor when onEditorLoaded is called', async () => {
+    await component.onEditorLoaded(mockEditorInstance);
 
     expect((component as any).editorInstance).toBe(mockEditorInstance);
     expect(mockEditorInstance.setShowPrintMargin).toHaveBeenCalledWith(false);

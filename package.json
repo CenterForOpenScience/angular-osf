@@ -1,6 +1,6 @@
 {
   "name": "osf",
-  "version": "26.2.1",
+  "version": "26.6.1",
   "scripts": {
     "ng": "ng",
     "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks",
@@ -20,6 +20,7 @@
     "ngxs:store": "ng generate @ngxs/store:store --name --path",
     "prepare": "husky",
     "start": "ng serve",
+    "start:ssr": "ng serve --configuration dev-ssr",
     "start:docker": "npm run check:config && ng serve --host 0.0.0.0 --port 4200 --poll 2000 --configuration development",
     "start:docker:local": "npm run check:config && ng serve --host 0.0.0.0 --port 4200 --poll 2000 --configuration docker",
     "test": "jest",
@@ -28,7 +29,7 @@
     "test:check-coverage-thresholds": "node .github/scripts/check-coverage-thresholds.js",
     "test:display": "node .github/counter/counter.test.display.js",
     "watch": "ng build --watch --configuration development",
-    "serve:ssr:osf": "node dist/osf/server/server.mjs"
+    "serve:ssr:osf": "node --enable-source-maps dist/osf/server/server.mjs"
   },
   "private": true,
   "dependencies": {

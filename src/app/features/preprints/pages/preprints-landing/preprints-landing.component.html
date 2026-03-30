@@ -1,0 +1,82 @@
+@let providerDetails = provider();
+
+<section class="subheader py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4">
+  <div class="flex flex-column align-items-start gap-4 md:flex-row">
+    <div class="flex align-items-center gap-2">
+      <i class="custom-icon-preprints-dark"></i>
+      <h1>{{ 'preprints.title' | translate }}</h1>
+    </div>
+    @if (isProviderLoading()) {
+      <p-skeleton class="ml-auto w-full md:w-auto" height="2rem" />
+    } @else {
+      <p-button
+        class="ml-auto w-full md:w-auto"
+        styleClass="w-full md:w-auto"
+        [label]="'preprints.addPreprint' | translate: { preprintWord: providerDetails?.preprintWord } | titlecase"
+        routerLink="/preprints/select"
+      />
+    }
+  </div>
+
+  <div class="provider-description">
+    @if (isProviderLoading()) {
+      <div class="flex flex-column gap-2">
+        <p-skeleton width="40%" height="1.5rem" />
+        <p-skeleton width="70%" height="1.5rem" />
+      </div>
+    } @else {
+      <div [innerHTML]="providerDetails?.descriptionHtml"></div>
+    }
+    <a class="dark-blue-two-link font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
+  </div>
+
+  <osf-search-input
+    class="w-full"
+    [control]="searchControl"
+    [placeholder]="'preprints.searchPlaceholder' | translate: { preprintWord: 'preprint' } | titlecase"
+    (triggerSearch)="submitSearch()"
+  />
+
+  @if (isProviderLoading()) {
+    <p-skeleton width="10%" height="1rem" />
+  } @else if (providerDetails?.examplePreprintId) {
+    <a
+      class="dark-blue-two-link font-bold"
+      [routerLink]="['/preprints', providerDetails!.id, providerDetails!.examplePreprintId]"
+      >{{ 'preprints.showExample' | translate }}
+    </a>
+  }
+</section>
+
+<osf-browse-by-subjects
+  [subjects]="highlightedSubjects()"
+  [areSubjectsLoading]="areSubjectsLoading()"
+  [isProviderLoading]="isProviderLoading()"
+  [isLandingPage]="true"
+/>
+
+<osf-preprint-services [preprintProvidersToAdvertise]="preprintProvidersToAdvertise()" />
+
+<osf-advisory-board [htmlContent]="providerDetails?.advisoryBoardHtml" [isLandingPage]="true" />
+
+<section
+  class="blue-dark-gradient py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4 lg:flex-row lg:align-items-center lg:justify-content-between"
+>
+  <div>
+    <h2 class="text-2xl">{{ 'preprints.createServer.title' | translate }}</h2>
+    <p class="mt-2">
+      {{ 'preprints.createServer.description' | translate }}
+      <a class="font-bold" href="https://github.com/CenterForOpenScience/ember-osf-web" target="_blank">
+        {{ 'preprints.createServer.openSourceCode' | translate }}
+      </a>
+      {{ 'preprints.createServer.and' | translate }}
+      <a class="font-bold" href="https://www.cos.io/product-roadmap" target="_blank">
+        {{ 'preprints.createServer.publicRoadmap' | translate }}</a
+      >. {{ 'preprints.createServer.inputWelcome' | translate }}
+    </p>
+  </div>
+
+  <a class="p-button p-button-success font-bold align-self-start lg:align-self-auto" [href]="'mailto:' + supportEmail">
+    {{ 'preprints.createServer.contactUs' | translate | titlecase }}
+  </a>
+</section>

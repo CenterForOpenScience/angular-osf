@@ -1,5 +1,5 @@
+import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { ProjectMetadataUpdatePayload } from '@shared/models/project-metadata-update-payload.model';
-import { ProjectModel } from '@shared/models/projects/projects.models';
 
 export class GetProjects {
   static readonly type = '[Projects] Get Projects';

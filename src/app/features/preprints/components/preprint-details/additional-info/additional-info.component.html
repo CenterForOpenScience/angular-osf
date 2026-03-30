@@ -1,7 +1,7 @@
-<p-card>
-  @if (preprint()) {
-    @let preprintValue = preprint()!;
+@let preprintValue = preprint();
 
+<p-card>
+  @if (preprintValue) {
     <div class="flex flex-column gap-4">
       @if (preprintValue.customPublicationCitation) {
         <section class="flex flex-column gap-2">
@@ -19,12 +19,17 @@
         </section>
       }
 
-      @if (preprintValue.doi) {
+      @if (preprintValue.articleDoiLink) {
         <section class="flex flex-column gap-2">
           <h3>{{ 'preprints.details.publicationDoi' | translate }}</h3>
 
-          <a class="font-bold word-break-word" [href]="preprint()?.articleDoiLink">
-            {{ preprint()?.articleDoiLink }}
+          <a
+            class="font-bold word-break-word"
+            [href]="preprintValue.articleDoiLink"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ preprintValue.articleDoiLink }}
           </a>
         </section>
       }

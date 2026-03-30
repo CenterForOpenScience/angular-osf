@@ -1,6 +1,10 @@
+import { Store } from '@ngxs/store';
+
 import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { of, throwError } from 'rxjs';
 
 import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -8,163 +12,151 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { WithdrawPreprint } from '@osf/features/preprints/store/preprint';
 
 import { PreprintWithdrawDialogComponent } from './preprint-withdraw-dialog.component';
 
+import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('PreprintWithdrawDialogComponent', () => {
   let component: PreprintWithdrawDialogComponent;
   let fixture: ComponentFixture<PreprintWithdrawDialogComponent>;
-  let dialogRefMock: any;
-  let dialogConfigMock: any;
+  let dialogRefMock: { close: jest.Mock };
+  let store: Store;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockPreprint: PreprintModel = PREPRINT_MOCK;
 
-  beforeEach(async () => {
-    dialogRefMock = {
-      close: jest.fn(),
-    };
-    dialogConfigMock = {
-      data: { provider: mockProvider, preprint: mockPreprint },
+  interface SetupOverrides {
+    provider?: PreprintProviderDetails | undefined;
+    preprint?: PreprintModel | undefined;
+  }
+
+  function setup(overrides: SetupOverrides = {}) {
+    const dialogConfigMock = {
+      data: {
+        provider: 'provider' in overrides ? overrides.provider : mockProvider,
+        preprint: 'preprint' in overrides ? overrides.preprint : mockPreprint,
+      },
     };
 
-    await TestBed.configureTestingModule({
-      imports: [PreprintWithdrawDialogComponent, OSFTestingModule, MockPipe(TitleCasePipe)],
+    TestBed.configureTestingModule({
+      imports: [PreprintWithdrawDialogComponent, MockPipe(TitleCasePipe)],
       providers: [
-        MockProvider(DynamicDialogRef, dialogRefMock),
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
         MockProvider(DynamicDialogConfig, dialogConfigMock),
-        provideMockStore({
-          signals: [],
-        }),
+        provideMockStore(),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
+    dialogRefMock = TestBed.inject(DynamicDialogRef) as unknown as { close: jest.Mock };
     fixture.detectChanges();
-  });
+    (store.dispatch as jest.Mock).mockClear();
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
-  it('should set modal explanation on init', () => {
-    expect(component.modalExplanation()).toBeDefined();
-    expect(typeof component.modalExplanation()).toBe('string');
+  it('should set modal explanation for pre-moderation pending', () => {
+    setup({
+      provider: { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PreModeration },
+      preprint: { ...mockPreprint, reviewsState: ReviewsState.Pending },
+    });
+    expect(component.modalExplanation()).toContain('preprints.details.withdrawDialog.preModerationNoticePending');
   });
 
-  it('should handle form validation correctly', () => {
-    const formControl = component.withdrawalJustificationFormControl;
-
-    formControl.setValue('');
-    expect(formControl.invalid).toBe(true);
-
-    const minLength = formInputLimits.withdrawalJustification.minLength;
-    formControl.setValue('a'.repeat(minLength));
-    expect(formControl.valid).toBe(true);
+  it('should set modal explanation for pre-moderation accepted', () => {
+    setup({
+      provider: { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PreModeration },
+      preprint: { ...mockPreprint, reviewsState: ReviewsState.Accepted },
+    });
+    expect(component.modalExplanation()).toContain('preprints.details.withdrawDialog.preModerationNoticeAccepted');
   });
 
-  it('should handle withdraw with valid form', () => {
-    const validJustification = 'Valid withdrawal justification';
-    component.withdrawalJustificationFormControl.setValue(validJustification);
-
-    expect(() => component.withdraw()).not.toThrow();
+  it('should set modal explanation for post-moderation', () => {
+    setup({
+      provider: { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PostModeration },
+    });
+    expect(component.modalExplanation()).toContain('preprints.details.withdrawDialog.postModerationNotice');
   });
 
-  it('should not proceed with withdraw if form is invalid', () => {
+  it('should set modal explanation for no moderation by default', () => {
+    setup({
+      provider: { ...mockProvider, reviewsWorkflow: null },
+    });
+    expect(component.modalExplanation()).toContain('preprints.details.withdrawDialog.noModerationNotice');
+  });
+
+  it('should set empty explanation when dialog data is missing', () => {
+    setup({
+      provider: undefined,
+      preprint: undefined,
+    });
+    expect(component.modalExplanation()).toBe('');
+  });
+
+  it('should keep invalid for empty and whitespace-only justification', () => {
+    setup();
     component.withdrawalJustificationFormControl.setValue('');
-
-    expect(() => component.withdraw()).not.toThrow();
+    expect(component.withdrawalJustificationFormControl.hasError('required')).toBe(true);
+    component.withdrawalJustificationFormControl.setValue('   ');
+    expect(component.withdrawalJustificationFormControl.hasError('required')).toBe(true);
   });
 
-  it('should handle withdraw request completion', () => {
-    const validJustification = 'Valid withdrawal justification';
-    component.withdrawalJustificationFormControl.setValue(validJustification);
-
-    expect(() => component.withdraw()).not.toThrow();
-  });
-
-  it('should handle withdraw request error', () => {
-    const validJustification = 'Valid withdrawal justification';
-    component.withdrawalJustificationFormControl.setValue(validJustification);
-
-    expect(() => component.withdraw()).not.toThrow();
-  });
-
-  it('should calculate modal explanation for pre-moderation pending', () => {
-    const providerWithPreMod = { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PreModeration };
-    const preprintWithPending = { ...mockPreprint, reviewsState: ReviewsState.Pending };
-
-    dialogConfigMock.data = { provider: providerWithPreMod, preprint: preprintWithPending };
-
-    expect(() => {
-      fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
-      component = fixture.componentInstance;
-      component.ngOnInit();
-    }).not.toThrow();
-  });
-
-  it('should calculate modal explanation for pre-moderation accepted', () => {
-    const providerWithPreMod = { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PreModeration };
-    const preprintWithAccepted = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
-
-    dialogConfigMock.data = { provider: providerWithPreMod, preprint: preprintWithAccepted };
-
-    expect(() => {
-      fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
-      component = fixture.componentInstance;
-      component.ngOnInit();
-    }).not.toThrow();
-  });
-
-  it('should calculate modal explanation for post-moderation', () => {
-    const providerWithPostMod = { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PostModeration };
-
-    dialogConfigMock.data = { provider: providerWithPostMod, preprint: mockPreprint };
-
-    expect(() => {
-      fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
-      component = fixture.componentInstance;
-      component.ngOnInit();
-    }).not.toThrow();
-  });
-
-  it('should handle form control state changes', () => {
-    const formControl = component.withdrawalJustificationFormControl;
-    formControl.markAsTouched();
-    expect(formControl.touched).toBe(true);
-
-    formControl.setValue('test');
-    formControl.markAsDirty();
-    expect(formControl.dirty).toBe(true);
-  });
-
-  it('should handle minimum length validation', () => {
-    const formControl = component.withdrawalJustificationFormControl;
+  it('should enforce minimum length validation', () => {
+    setup();
     const minLength = formInputLimits.withdrawalJustification.minLength;
-
-    formControl.setValue('a'.repeat(minLength - 1));
-    expect(formControl.hasError('minlength')).toBe(true);
-
-    formControl.setValue('a'.repeat(minLength));
-    expect(formControl.hasError('minlength')).toBe(false);
+    component.withdrawalJustificationFormControl.setValue('a'.repeat(minLength - 1));
+    expect(component.withdrawalJustificationFormControl.hasError('minlength')).toBe(true);
+    component.withdrawalJustificationFormControl.setValue('a'.repeat(minLength));
+    expect(component.withdrawalJustificationFormControl.hasError('minlength')).toBe(false);
   });
 
-  it('should handle required validation', () => {
-    const formControl = component.withdrawalJustificationFormControl;
+  it('should not dispatch withdraw when form is invalid', () => {
+    setup();
+    component.withdrawalJustificationFormControl.setValue('');
+    component.withdraw();
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
 
-    formControl.setValue('');
-    expect(formControl.hasError('required')).toBe(true);
+  it('should dispatch withdraw and close dialog on success', () => {
+    setup();
+    component.withdrawalJustificationFormControl.setValue('Valid withdrawal justification');
+    (store.dispatch as jest.Mock).mockReturnValue(of(true));
+    component.withdraw();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new WithdrawPreprint(mockPreprint.id, 'Valid withdrawal justification')
+    );
+    expect(component.withdrawRequestInProgress()).toBe(false);
+    expect(dialogRefMock.close).toHaveBeenCalledWith(true);
+  });
 
-    formControl.setValue('   ');
-    expect(formControl.hasError('required')).toBe(true);
+  it('should reset loading and not close dialog on withdraw error', () => {
+    setup();
+    component.withdrawalJustificationFormControl.setValue('Valid withdrawal justification');
+    (store.dispatch as jest.Mock).mockReturnValue(throwError(() => new Error('withdraw failed')));
+    component.withdraw();
+    expect(component.withdrawRequestInProgress()).toBe(false);
+    expect(dialogRefMock.close).not.toHaveBeenCalled();
+  });
 
-    formControl.setValue('Valid text');
-    expect(formControl.hasError('required')).toBe(false);
+  it('should not dispatch withdraw when preprint is missing', () => {
+    setup({
+      provider: mockProvider,
+      preprint: undefined,
+    });
+    component.withdrawalJustificationFormControl.setValue('Valid withdrawal justification');
+    component.withdraw();
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 });

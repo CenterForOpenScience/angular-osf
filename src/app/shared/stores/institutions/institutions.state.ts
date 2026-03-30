@@ -25,10 +25,10 @@ export class InstitutionsState {
   private readonly institutionsService = inject(InstitutionsService);
 
   @Action(FetchUserInstitutions)
-  getUserInstitutions(ctx: StateContext<InstitutionsStateModel>) {
+  getUserInstitutions(ctx: StateContext<InstitutionsStateModel>, action: FetchUserInstitutions) {
     ctx.setState(patch({ userInstitutions: patch({ isLoading: true }) }));
 
-    return this.institutionsService.getUserInstitutions().pipe(
+    return this.institutionsService.getUserInstitutions(action.userId).pipe(
       tap((institutions) => {
         ctx.setState(
           patch({

@@ -13,14 +13,22 @@
             </p>
           } @else {
             <p>
-              <a [href]="`${webUrl}/${actionCreatorId()}`">{{ actionCreatorName() }}</a>
+              @if (actionCreatorLink()) {
+                <a [href]="actionCreatorLink()!">{{ actionCreatorName() }}</a>
+              } @else {
+                {{ actionCreatorName() }}
+              }
               {{ recentActivityLanguage() | translate: { documentType: documentType()?.singular } }}
               {{ labelDate() | date: 'MMM d, y' }}
             </p>
           }
 
           @if (isPendingWithdrawal()) {
-            <a [href]="actionCreatorLink()">{{ withdrawalRequesterName() }}</a>
+            @if (withdrawalRequesterLink()) {
+              <a [href]="withdrawalRequesterLink()!">{{ withdrawalRequesterName() }}</a>
+            } @else {
+              {{ withdrawalRequesterName() }}
+            }
             {{ requestActivityLanguage()! | translate: { documentType: documentType()?.singular } }}
             {{ latestWithdrawalRequest()?.dateLastTransitioned | date: 'MMM d, y' }}
           }

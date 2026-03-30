@@ -12,8 +12,8 @@ export const preprintsModeratorGuard: CanActivateFn = () => {
   const canUserViewReviews = store.selectSnapshot(UserSelectors.getCanViewReviews);
 
   if (!canUserViewReviews) {
-    router.navigateByUrl('/forbidden');
+    return router.createUrlTree(['/forbidden']);
   }
 
-  return canUserViewReviews;
+  return true;
 };

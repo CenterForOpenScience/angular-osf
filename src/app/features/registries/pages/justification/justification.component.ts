@@ -2,7 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { filter, tap } from 'rxjs';
+import { filter } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -12,7 +12,6 @@ import {
   effect,
   inject,
   OnDestroy,
-  Signal,
   signal,
   untracked,
 } from '@angular/core';
@@ -33,20 +32,13 @@ import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors
   templateUrl: './justification.component.html',
   styleUrl: './justification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TranslateService],
 })
 export class JustificationComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
-
-  readonly pages = select(RegistriesSelectors.getPagesSchema);
-  readonly stepsState = select(RegistriesSelectors.getStepsState);
-  readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
-  readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,
@@ -55,61 +47,79 @@ export class JustificationComponent implements OnDestroy {
     updateStepState: UpdateStepState,
   });
 
+  readonly pages = select(RegistriesSelectors.getPagesSchema);
+  readonly stepsState = select(RegistriesSelectors.getStepsState);
+  readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
+
+  readonly revisionId = this.route.snapshot.firstChild?.params['id'] || '';
+
   get isReviewPage(): boolean {
     return this.router.url.includes('/review');
   }
 
-  reviewStep!: StepOption;
-  justificationStep!: StepOption;
-  revisionId = this.route.snapshot.firstChild?.params['id'] || '';
+  readonly steps = computed(() => {
+    const response = this.schemaResponse();
+    const isJustificationValid = !!response?.revisionJustification;
+    const isDisabled = response?.reviewsState !== RevisionReviewStates.RevisionInProgress;
+    const stepState = this.stepsState();
+    const pages = this.pages();
 
-  steps: Signal<StepOption[]> = computed(() => {
-    const isJustificationValid = !!this.schemaResponse()?.revisionJustification;
-    this.justificationStep = {
+    const justificationStep: StepOption = {
       index: 0,
       value: 'justification',
       label: this.translateService.instant('registries.justification.step'),
       invalid: !isJustificationValid,
       touched: isJustificationValid,
       routeLink: 'justification',
-      disabled: this.schemaResponse()?.reviewsState !== RevisionReviewStates.RevisionInProgress,
+      disabled: isDisabled,
     };
 
-    this.reviewStep = {
-      index: 1,
+    const customSteps: StepOption[] = pages.map((page, index) => ({
+      index: index + 1,
+      label: page.title,
+      value: page.id,
+      routeLink: `${index + 1}`,
+      invalid: stepState?.[index + 1]?.invalid || false,
+      touched: stepState?.[index + 1]?.touched || false,
+      disabled: isDisabled,
+    }));
+
+    const reviewStep: StepOption = {
+      index: customSteps.length + 1,
       value: 'review',
       label: this.translateService.instant('registries.review.step'),
       invalid: false,
       routeLink: 'review',
     };
-    const stepState = this.stepsState();
-    const customSteps = this.pages().map((page, index) => {
-      return {
-        index: index + 1,
-        label: page.title,
-        value: page.id,
-        routeLink: `${index + 1}`,
-        invalid: stepState?.[index + 1]?.invalid || false,
-        touched: stepState?.[index + 1]?.touched || false,
-        disabled: this.schemaResponse()?.reviewsState !== RevisionReviewStates.RevisionInProgress,
-      };
-    });
-    return [
-      { ...this.justificationStep },
-      ...customSteps,
-      { ...this.reviewStep, index: customSteps.length + 1, invalid: false },
-    ];
+
+    return [justificationStep, ...customSteps, reviewStep];
   });
 
   currentStepIndex = signal(
     this.route.snapshot.firstChild?.params['step'] ? +this.route.snapshot.firstChild?.params['step'] : 0
   );
 
-  currentStep = computed(() => {
-    return this.steps()[this.currentStepIndex()];
-  });
+  currentStep = computed(() => this.steps()[this.currentStepIndex()]);
 
   constructor() {
+    this.initRouterListener();
+    this.initDataFetching();
+    this.initReviewPageSync();
+    this.initStepValidation();
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearState();
+  }
+
+  stepChange(step: StepOption): void {
+    this.currentStepIndex.set(step.index);
+    const pageLink = this.steps()[step.index].routeLink;
+    this.router.navigate([`/registries/revisions/${this.revisionId}/`, pageLink]);
+  }
+
+  private initRouterListener(): void {
     this.router.events
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -120,62 +130,61 @@ export class JustificationComponent implements OnDestroy {
         if (step) {
           this.currentStepIndex.set(+step);
         } else if (this.isReviewPage) {
-          const reviewStepIndex = this.pages().length + 1;
-          this.currentStepIndex.set(reviewStepIndex);
+          this.currentStepIndex.set(this.pages().length + 1);
         } else {
           this.currentStepIndex.set(0);
         }
       });
+  }
 
+  private initDataFetching(): void {
     this.loaderService.show();
+
     if (!this.schemaResponse()) {
       this.actions.getSchemaResponse(this.revisionId);
     }
 
     effect(() => {
       const registrationSchemaId = this.schemaResponse()?.registrationSchemaId;
+
       if (registrationSchemaId) {
-        this.actions
-          .getSchemaBlocks(registrationSchemaId)
-          .pipe(tap(() => this.loaderService.hide()))
-          .subscribe();
+        this.actions.getSchemaBlocks(registrationSchemaId).subscribe(() => this.loaderService.hide());
       }
     });
+  }
 
+  private initReviewPageSync(): void {
     effect(() => {
       const reviewStepIndex = this.pages().length + 1;
+
       if (this.isReviewPage) {
         this.currentStepIndex.set(reviewStepIndex);
       }
     });
+  }
 
+  private initStepValidation(): void {
     effect(() => {
+      const currentIndex = this.currentStepIndex();
+      const pages = this.pages();
+      const revisionData = this.schemaResponseRevisionData();
       const stepState = untracked(() => this.stepsState());
 
-      if (this.currentStepIndex() > 0) {
+      if (currentIndex > 0) {
         this.actions.updateStepState('0', true, stepState?.[0]?.touched || false);
       }
-      if (this.pages().length && this.currentStepIndex() > 0 && this.schemaResponseRevisionData()) {
-        for (let i = 1; i < this.currentStepIndex(); i++) {
-          const pageStep = this.pages()[i - 1];
+
+      if (pages.length && currentIndex > 0 && revisionData) {
+        for (let i = 1; i < currentIndex; i++) {
+          const pageStep = pages[i - 1];
           const isStepInvalid =
             pageStep?.questions?.some((question) => {
-              const questionData = this.schemaResponseRevisionData()[question.responseKey!];
+              const questionData = revisionData[question.responseKey!];
               return question.required && (Array.isArray(questionData) ? !questionData.length : !questionData);
             }) || false;
           this.actions.updateStepState(i.toString(), isStepInvalid, stepState?.[i]?.touched || false);
         }
       }
     });
-  }
-
-  stepChange(step: StepOption): void {
-    this.currentStepIndex.set(step.index);
-    const pageLink = this.steps()[step.index].routeLink;
-    this.router.navigate([`/registries/revisions/${this.revisionId}/`, pageLink]);
-  }
-
-  ngOnDestroy(): void {
-    this.actions.clearState();
   }
 }

@@ -9,6 +9,8 @@ import { RadioButton } from 'primeng/radiobutton';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
+import { finalize } from 'rxjs';
+
 import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +30,7 @@ import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
 @Component({
   selector: 'osf-preprint-make-decision',
-  imports: [Button, TranslatePipe, TitleCasePipe, Dialog, Tooltip, RadioButton, FormsModule, Textarea, Message],
+  imports: [Button, Dialog, Message, RadioButton, Textarea, Tooltip, FormsModule, TranslatePipe, TitleCasePipe],
   templateUrl: './preprint-make-decision.component.html',
   styleUrl: './preprint-make-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,18 +38,18 @@ import { StringOrNull } from '@osf/shared/helpers/types.helper';
 export class PreprintMakeDecisionComponent {
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
+
   private readonly actions = createDispatchMap({
     submitReviewsDecision: SubmitReviewsDecision,
     submitRequestsDecision: SubmitRequestsDecision,
   });
 
-  readonly ReviewsState = ReviewsState;
+  readonly provider = input.required<PreprintProviderDetails>();
+  readonly latestAction = input.required<ReviewAction | null>();
+  readonly latestWithdrawalRequest = input.required<PreprintRequest | null>();
+  readonly isPendingWithdrawal = input.required<boolean>();
 
-  preprint = select(PreprintSelectors.getPreprint);
-  provider = input.required<PreprintProviderDetails>();
-  latestAction = input.required<ReviewAction | null>();
-  latestWithdrawalRequest = input.required<PreprintRequest | null>();
-  isPendingWithdrawal = input.required<boolean>();
+  readonly preprint = select(PreprintSelectors.getPreprint);
 
   dialogVisible = false;
   didValidate = signal<boolean>(false);
@@ -56,7 +58,9 @@ export class PreprintMakeDecisionComponent {
   reviewerComment = signal<StringOrNull>(null);
   requestDecisionJustification = signal<StringOrNull>(null);
   saving = signal<boolean>(false);
-  decisionCommentLimit = InputLimits.decisionComment.maxLength;
+
+  readonly decisionCommentLimit = InputLimits.decisionComment.maxLength;
+  readonly ReviewsState = ReviewsState;
 
   labelDecisionButton = computed(() => {
     const preprint = this.preprint();
@@ -92,15 +96,17 @@ export class PreprintMakeDecisionComponent {
   });
 
   labelSubmitButton = computed(() => {
-    if (this.isPendingWithdrawal()) {
+    const preprint = this.preprint();
+    const reviewsState = preprint?.reviewsState;
+
+    if (this.isPendingWithdrawal() || reviewsState === ReviewsState.Pending) {
       return 'preprints.details.decision.submitButton.submitDecision';
-    } else if (this.preprint()?.reviewsState === ReviewsState.Pending) {
-      return 'preprints.details.decision.submitButton.submitDecision';
-    } else if (this.decisionChanged()) {
-      return 'preprints.details.decision.submitButton.modifyDecision';
-    } else if (this.commentEdited()) {
+    }
+
+    if (this.commentEdited() && !this.decisionChanged()) {
       return 'preprints.details.decision.submitButton.updateComment';
     }
+
     return 'preprints.details.decision.submitButton.modifyDecision';
   });
 
@@ -110,25 +116,22 @@ export class PreprintMakeDecisionComponent {
 
   acceptOptionExplanation = computed(() => {
     const reviewsWorkflow = this.provider().reviewsWorkflow;
-    if (reviewsWorkflow === ProviderReviewsWorkflow.PreModeration) {
-      return 'preprints.details.decision.accept.pre';
-    } else if (reviewsWorkflow === ProviderReviewsWorkflow.PostModeration) {
+
+    if (reviewsWorkflow === ProviderReviewsWorkflow.PostModeration) {
       return 'preprints.details.decision.accept.post';
     }
 
     return 'preprints.details.decision.accept.pre';
   });
 
-  rejectOptionLabel = computed(() => {
-    return this.preprint()?.isPublished
+  rejectOptionLabel = computed(() =>
+    this.preprint()?.isPublished
       ? 'preprints.details.decision.withdrawn.label'
-      : 'preprints.details.decision.reject.label';
-  });
+      : 'preprints.details.decision.reject.label'
+  );
 
   labelRequestDecisionJustification = computed(() => {
-    if (this.decision() === ReviewsState.Accepted) {
-      return 'preprints.details.decision.withdrawalJustification';
-    } else if (this.decision() === ReviewsState.Rejected) {
+    if (this.decision() === ReviewsState.Rejected) {
       return 'preprints.details.decision.denialJustification';
     }
 
@@ -136,16 +139,19 @@ export class PreprintMakeDecisionComponent {
   });
 
   rejectOptionExplanation = computed(() => {
-    const reviewsWorkflow = this.provider().reviewsWorkflow;
-    if (reviewsWorkflow === ProviderReviewsWorkflow.PreModeration) {
-      if (this.preprint()?.reviewsState === ReviewsState.Accepted) {
-        return 'preprints.details.decision.approve.explanation';
-      } else {
-        return decisionExplanation.reject[reviewsWorkflow];
-      }
-    } else {
-      return decisionExplanation.withdrawn[reviewsWorkflow!];
+    const provider = this.provider();
+    const reviewsWorkflow = provider.reviewsWorkflow;
+    const isPreModeration = reviewsWorkflow === ProviderReviewsWorkflow.PreModeration;
+
+    if (isPreModeration && this.preprint()?.reviewsState === ReviewsState.Accepted) {
+      return 'preprints.details.decision.approve.explanation';
     }
+
+    if (isPreModeration) {
+      return decisionExplanation.reject[reviewsWorkflow];
+    }
+
+    return decisionExplanation.withdrawn[ProviderReviewsWorkflow.PostModeration];
   });
 
   rejectRadioButtonValue = computed(() =>
@@ -175,22 +181,18 @@ export class PreprintMakeDecisionComponent {
     return comment.length > this.decisionCommentLimit;
   });
 
-  commentLengthErrorMessage = computed(() =>
-    this.translateService.instant('preprints.details.decision.commentLengthError', {
-      limit: this.decisionCommentLimit,
-      length: this.reviewerComment()!.length,
-    })
-  );
-
   requestDecisionJustificationErrorMessage = computed(() => {
     const justification = this.requestDecisionJustification();
     const minLength = formInputLimits.requestDecisionJustification.minLength;
+    const trimmedJustification = justification?.trim() ?? '';
 
-    if (!justification) return this.translateService.instant('preprints.details.decision.justificationRequiredError');
-    if (justification.length < minLength)
-      return this.translateService.instant('preprints.details.decision.justificationLengthError', {
-        minLength,
-      });
+    if (!trimmedJustification) {
+      return this.translateService.instant('preprints.details.decision.justificationRequiredError');
+    }
+
+    if (trimmedJustification.length < minLength) {
+      return this.translateService.instant('preprints.details.decision.justificationLengthError', { minLength });
+    }
 
     return null;
   });
@@ -200,17 +202,20 @@ export class PreprintMakeDecisionComponent {
   constructor() {
     effect(() => {
       const preprint = this.preprint();
+
+      if (!preprint) {
+        return;
+      }
+
       const latestAction = this.latestAction();
-      if (preprint && latestAction) {
-        if (preprint.reviewsState === ReviewsState.Pending) {
-          this.decision.set(ReviewsState.Accepted);
-          this.initialReviewerComment.set(null);
-          this.reviewerComment.set(null);
-        } else {
-          this.decision.set(preprint.reviewsState);
-          this.initialReviewerComment.set(latestAction?.comment);
-          this.reviewerComment.set(latestAction?.comment);
-        }
+      if (preprint.reviewsState === ReviewsState.Pending) {
+        this.decision.set(ReviewsState.Accepted);
+        this.initialReviewerComment.set(null);
+        this.reviewerComment.set(null);
+      } else {
+        this.decision.set(preprint.reviewsState);
+        this.initialReviewerComment.set(latestAction?.comment ?? null);
+        this.reviewerComment.set(latestAction?.comment ?? null);
       }
     });
 
@@ -223,8 +228,10 @@ export class PreprintMakeDecisionComponent {
   }
 
   submit() {
-    // don't remove comments
-    const preprint = this.preprint()!;
+    // Don't remove comments
+    const preprint = this.preprint();
+    if (!preprint) return;
+
     let trigger = '';
     if (preprint.reviewsState !== ReviewsState.Pending && this.commentEdited() && !this.decisionChanged()) {
       // If the submission is not pending,
@@ -256,6 +263,7 @@ export class PreprintMakeDecisionComponent {
     }
 
     let comment: StringOrNull = '';
+
     if (this.isPendingWithdrawal()) {
       if (trigger === 'reject') {
         this.didValidate.set(true);
@@ -270,26 +278,32 @@ export class PreprintMakeDecisionComponent {
     }
 
     this.saving.set(true);
+
     if (this.isPendingWithdrawal()) {
-      this.actions.submitRequestsDecision(this.latestWithdrawalRequest()!.id, trigger, comment).subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.router.navigate(['preprints', this.provider().id, 'moderation', 'withdrawals']);
-        },
-        error: () => {
-          this.saving.set(false);
-        },
-      });
+      const latestWithdrawalRequest = this.latestWithdrawalRequest();
+
+      if (!latestWithdrawalRequest) {
+        this.saving.set(false);
+        return;
+      }
+
+      this.actions
+        .submitRequestsDecision(latestWithdrawalRequest.id, trigger, comment)
+        .pipe(finalize(() => this.saving.set(false)))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['preprints', this.provider().id, 'moderation', 'withdrawals']);
+          },
+        });
     } else {
-      this.actions.submitReviewsDecision(trigger, comment).subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.router.navigate(['preprints', this.provider().id, 'moderation', 'submissions']);
-        },
-        error: () => {
-          this.saving.set(false);
-        },
-      });
+      this.actions
+        .submitReviewsDecision(trigger, comment)
+        .pipe(finalize(() => this.saving.set(false)))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['preprints', this.provider().id, 'moderation', 'submissions']);
+          },
+        });
     }
   }
 
@@ -307,7 +321,12 @@ export class PreprintMakeDecisionComponent {
 
   cancel() {
     this.dialogVisible = false;
-    this.decision.set(this.preprint()!.reviewsState);
+    const preprint = this.preprint();
+
+    if (preprint) {
+      this.decision.set(preprint.reviewsState);
+    }
+
     this.reviewerComment.set(this.initialReviewerComment());
   }
 }

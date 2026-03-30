@@ -23,7 +23,7 @@ import { AddonMapper } from '../mappers/addon.mapper';
 import { ContributorsMapper } from '../mappers/contributors';
 import { FilesMapper } from '../mappers/files/files.mapper';
 import { AddonModel } from '../models/addons/addon.model';
-import { AddonGetResponseJsonApi, ConfiguredAddonGetResponseJsonApi } from '../models/addons/addon-json-api.models';
+import { AddonGetResponseJsonApi, ConfiguredAddonGetResponseJsonApi } from '../models/addons/addon-json-api.model';
 import { ConfiguredAddonModel } from '../models/addons/configured-addon.model';
 import { ApiData, JsonApiResponse, MetaJsonApi } from '../models/common/json-api.model';
 import { ContributorModel } from '../models/contributors/contributor.model';

@@ -1,74 +1,83 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
+
+import { TestBed } from '@angular/core/testing';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
 import { RegistrationWithdrawDialogComponent } from './registration-withdraw-dialog.component';
 
-import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
+function setup(registryId = 'reg-123') {
+  TestBed.configureTestingModule({
+    imports: [RegistrationWithdrawDialogComponent, MockComponent(TextInputComponent)],
+    providers: [
+      provideOSFCore(),
+      provideDynamicDialogRefMock(),
+      MockProvider(DynamicDialogConfig, { data: { registryId } }),
+      provideMockStore(),
+    ],
+  });
+
+  const store = TestBed.inject(Store);
+  const dialogRef = TestBed.inject(DynamicDialogRef);
+  const fixture = TestBed.createComponent(RegistrationWithdrawDialogComponent);
+  fixture.detectChanges();
+
+  return { fixture, component: fixture.componentInstance, store, dialogRef };
+}
+
 describe('RegistrationWithdrawDialogComponent', () => {
-  let component: RegistrationWithdrawDialogComponent;
-  let fixture: ComponentFixture<RegistrationWithdrawDialogComponent>;
-  let mockDialogConfig: jest.Mocked<DynamicDialogConfig>;
+  it('should create with default form state', () => {
+    const { component } = setup();
 
-  beforeEach(async () => {
-    mockDialogConfig = {
-      data: { registryId: 'test-registry-id' },
-    } as jest.Mocked<DynamicDialogConfig>;
-
-    await TestBed.configureTestingModule({
-      imports: [RegistrationWithdrawDialogComponent, OSFTestingModule, MockComponent(TextInputComponent)],
-      providers: [
-        DynamicDialogRefMock,
-        MockProvider(DynamicDialogConfig, mockDialogConfig),
-        provideMockStore({
-          signals: [],
-        }),
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(RegistrationWithdrawDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.submitting()).toBe(false);
+    expect(component.form.controls.text.value).toBe('');
   });
 
-  it('should initialize with default values', () => {
-    expect(component.submitting).toBe(false);
-    expect(component.form.get('text')?.value).toBe('');
+  it('should dispatch withdraw and close dialog on success', () => {
+    const { component, store, dialogRef } = setup();
+    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+
+    component.form.controls.text.setValue('Withdrawal reason');
+    component.withdrawRegistration();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        registryId: 'reg-123',
+        justification: 'Withdrawal reason',
+      })
+    );
+    expect(component.submitting()).toBe(false);
+    expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('should have form validators', () => {
-    const textControl = component.form.get('text');
+  it('should not close dialog on dispatch error', () => {
+    const { component, store, dialogRef } = setup();
+    jest.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('fail')));
 
-    expect(textControl?.hasError('required')).toBe(true);
+    component.form.controls.text.setValue('Reason');
+    component.withdrawRegistration();
 
-    textControl?.setValue('Valid withdrawal reason');
-    expect(textControl?.hasError('required')).toBe(false);
+    expect(component.submitting()).toBe(false);
+    expect(dialogRef.close).not.toHaveBeenCalled();
   });
 
-  it('should handle form validation state', () => {
-    expect(component.form.valid).toBe(false);
+  it('should not dispatch when registryId is missing', () => {
+    const { component, store, dialogRef } = setup('');
 
-    component.form.patchValue({
-      text: 'Valid withdrawal reason',
-    });
+    component.withdrawRegistration();
 
-    expect(component.form.valid).toBe(true);
-
-    component.form.patchValue({
-      text: '',
-    });
-
-    expect(component.form.valid).toBe(false);
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(dialogRef.close).not.toHaveBeenCalled();
   });
 });

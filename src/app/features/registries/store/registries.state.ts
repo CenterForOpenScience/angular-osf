@@ -54,11 +54,11 @@ import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from './registries.mo
 })
 @Injectable()
 export class RegistriesState {
-  searchService = inject(GlobalSearchService);
-  registriesService = inject(RegistriesService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly store = inject(Store);
 
+  searchService = inject(GlobalSearchService);
+  registriesService = inject(RegistriesService);
   providersHandler = inject(ProvidersHandlers);
   projectsHandler = inject(ProjectsHandlers);
   licensesHandler = inject(LicensesHandlers);
@@ -238,7 +238,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => handleSectionError(ctx, 'draftRegistration', error))
+      catchError((error) => handleSectionError(ctx, 'registration', error))
     );
   }
 

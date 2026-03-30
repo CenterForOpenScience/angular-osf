@@ -5,7 +5,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { ProjectsService } from '@osf/shared/services/projects.service';
 
-import { ProjectShortInfoModel } from '../../models';
+import { ProjectShortInfoModel } from '../../models/project-short-info.model';
 import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from '../registries.model';
 
 @Injectable()

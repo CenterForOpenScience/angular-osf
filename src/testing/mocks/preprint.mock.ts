@@ -1,7 +1,8 @@
 import { ReviewsState } from '@osf/features/preprints/enums';
+import { PreprintModel } from '@osf/features/preprints/models';
 import { LicenseModel, LicenseOptions } from '@osf/shared/models/license/license.model';
 
-export const PREPRINT_MOCK = {
+export const PREPRINT_MOCK: PreprintModel = {
   id: 'preprint-1',
   dateCreated: '2023-01-01T00:00:00Z',
   dateModified: '2023-01-15T00:00:00Z',

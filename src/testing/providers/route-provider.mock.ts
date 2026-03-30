@@ -6,6 +6,8 @@ export class ActivatedRouteMockBuilder {
   private paramsObj: Record<string, any> = {};
   private queryParamsObj: Record<string, any> = {};
   private dataObj: Record<string, any> = {};
+  private firstChildBuilder: ActivatedRouteMockBuilder | null = null;
+  private hasParent = true;
 
   private params$ = new BehaviorSubject<Record<string, any>>({});
   private queryParams$ = new BehaviorSubject<Record<string, any>>({});
@@ -39,6 +41,17 @@ export class ActivatedRouteMockBuilder {
     return this;
   }
 
+  withNoParent(): ActivatedRouteMockBuilder {
+    this.hasParent = false;
+    return this;
+  }
+
+  withFirstChild(configureFn: (builder: ActivatedRouteMockBuilder) => void): ActivatedRouteMockBuilder {
+    this.firstChildBuilder = new ActivatedRouteMockBuilder();
+    configureFn(this.firstChildBuilder);
+    return this;
+  }
+
   build(): Partial<ActivatedRoute> {
     const paramMap = {
       get: jest.fn((key: string) => this.paramsObj[key]),
@@ -47,19 +60,27 @@ export class ActivatedRouteMockBuilder {
       keys: Object.keys(this.paramsObj),
     };
 
+    const firstChild = this.firstChildBuilder ? this.firstChildBuilder.build() : null;
+
+    const parent = this.hasParent
+      ? ({
+          params: this.params$.asObservable(),
+          snapshot: {
+            params: this.paramsObj,
+          },
+        } as any)
+      : null;
+
     const route: Partial<ActivatedRoute> = {
-      parent: {
-        params: this.params$.asObservable(),
-        snapshot: {
-          params: this.paramsObj,
-        },
-      } as any,
+      parent,
       snapshot: {
         params: this.paramsObj,
         queryParams: this.queryParamsObj,
         data: this.dataObj,
         paramMap: paramMap,
+        firstChild: firstChild?.snapshot ?? null,
       } as any,
+      firstChild: firstChild as any,
       params: this.params$.asObservable(),
       queryParams: this.queryParams$.asObservable(),
       data: this.data$.asObservable(),
@@ -87,3 +108,10 @@ export const ActivatedRouteMock = {
     return ActivatedRouteMockBuilder.create().withData(data);
   },
 };
+
+export function provideActivatedRouteMock(mock?: ReturnType<ActivatedRouteMockBuilder['build']>) {
+  return {
+    provide: ActivatedRoute,
+    useFactory: () => mock ?? ActivatedRouteMockBuilder.create().build(),
+  };
+}

@@ -11,5 +11,5 @@ import { SafeHtmlPipe } from '@osf/shared/pipes/safe-html.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintProviderFooterComponent {
-  footerHtml = input.required<StringOrNullOrUndefined>();
+  readonly footerHtml = input<StringOrNullOrUndefined>(null);
 }

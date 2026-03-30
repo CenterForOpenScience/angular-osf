@@ -10,7 +10,7 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
-import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 import { LinkedNode, LinkedRegistration, RegistryComponentModel } from '../../models';
 
@@ -36,8 +36,6 @@ export class RegistrationLinksCardComponent {
   readonly updateEmitRegistrationData = output<string>();
   readonly reviewEmitRegistrationData = output<string>();
 
-  readonly RevisionReviewStates = RevisionReviewStates;
-
   readonly isRegistrationData = computed(() => {
     const data = this.registrationData();
     return 'reviewsState' in data;
@@ -57,4 +55,8 @@ export class RegistrationLinksCardComponent {
     const data = this.registrationData();
     return this.isComponentData() ? (data as RegistryComponentModel) : null;
   });
+
+  readonly hasWriteAccess = computed(
+    () => this.registrationDataTyped()?.currentUserPermissions?.includes(UserPermissions.Write) ?? false
+  );
 }

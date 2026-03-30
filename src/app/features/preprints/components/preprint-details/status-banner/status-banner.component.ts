@@ -26,89 +26,71 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 @Component({
   selector: 'osf-preprint-status-banner',
-  imports: [TranslatePipe, TitleCasePipe, Message, Dialog, Tag, Button, IconComponent],
+  imports: [Button, Dialog, Message, Tag, IconComponent, TitleCasePipe, TranslatePipe],
   templateUrl: './status-banner.component.html',
   styleUrl: './status-banner.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBannerComponent {
   private readonly translateService = inject(TranslateService);
-  provider = input.required<PreprintProviderDetails>();
-  preprint = select(PreprintSelectors.getPreprint);
 
-  latestAction = input.required<ReviewAction | null>();
-  isPendingWithdrawal = input.required<boolean>();
-  isWithdrawalRejected = input.required<boolean>();
-  latestRequestAction = input.required<PreprintRequestAction | null>();
+  readonly provider = input.required<PreprintProviderDetails>();
+
+  readonly latestAction = input.required<ReviewAction | null>();
+  readonly isPendingWithdrawal = input.required<boolean>();
+  readonly isWithdrawalRejected = input.required<boolean>();
+  readonly latestRequestAction = input.required<PreprintRequestAction | null>();
+
+  readonly preprint = select(PreprintSelectors.getPreprint);
 
   feedbackDialogVisible = false;
 
+  currentState = computed(() => {
+    if (this.isPendingWithdrawal()) {
+      return ReviewsState.PendingWithdrawal;
+    }
+
+    if (this.isWithdrawalRejected()) {
+      return ReviewsState.WithdrawalRejected;
+    }
+
+    return this.preprint()?.reviewsState ?? ReviewsState.Pending;
+  });
+
   severity = computed(() => {
-    if (this.isPendingWithdrawal()) {
-      return statusSeverityByState[ReviewsState.PendingWithdrawal]!;
-    } else if (this.isWithdrawn()) {
-      return statusSeverityByState[ReviewsState.Withdrawn]!;
-    } else if (this.isWithdrawalRejected()) {
-      return statusSeverityByState[ReviewsState.WithdrawalRejected]!;
-    } else {
-      const reviewsState = this.preprint()?.reviewsState;
+    const currentState = this.currentState();
+    const workflow = this.provider()?.reviewsWorkflow;
 
-      return reviewsState === ReviewsState.Pending
-        ? statusSeverityByWorkflow[this.provider()?.reviewsWorkflow as ProviderReviewsWorkflow]
-        : statusSeverityByState[this.preprint()!.reviewsState]!;
-    }
-  });
-
-  status = computed(() => {
-    let currentState = this.preprint()!.reviewsState;
-
-    if (this.isPendingWithdrawal()) {
-      currentState = ReviewsState.PendingWithdrawal;
-    } else if (this.isWithdrawalRejected()) {
-      currentState = ReviewsState.WithdrawalRejected;
+    if (this.isWithdrawn()) {
+      return statusSeverityByState[ReviewsState.Withdrawn];
     }
 
-    return statusLabelKeyByState[currentState]!;
-  });
-
-  iconClass = computed(() => {
-    let currentState = this.preprint()!.reviewsState;
-
-    if (this.isPendingWithdrawal()) {
-      currentState = ReviewsState.PendingWithdrawal;
-    } else if (this.isWithdrawalRejected()) {
-      currentState = ReviewsState.WithdrawalRejected;
+    if (currentState === ReviewsState.Pending && workflow) {
+      return statusSeverityByWorkflow[workflow];
     }
 
-    return statusIconByState[currentState];
+    return statusSeverityByState[currentState];
   });
+
+  status = computed(() => statusLabelKeyByState[this.currentState()]!);
+  iconClass = computed(() => statusIconByState[this.currentState()]);
 
   reviewerName = computed(() => {
-    if (this.isWithdrawalRejected()) {
-      return this.latestRequestAction()?.creator.name;
-    } else {
-      return this.latestAction()?.creator?.name;
-    }
+    const action = this.isWithdrawalRejected() ? this.latestRequestAction() : this.latestAction();
+    return action?.creator?.name ?? '';
   });
 
   reviewerComment = computed(() => {
-    if (this.isWithdrawalRejected()) {
-      return this.latestRequestAction()?.comment;
-    } else {
-      return this.latestAction()?.comment;
-    }
+    const action = this.isWithdrawalRejected() ? this.latestRequestAction() : this.latestAction();
+    return action?.comment ?? '';
   });
 
-  isWithdrawn = computed(() => {
-    return this.preprint()?.dateWithdrawn !== null;
-  });
+  isWithdrawn = computed(() => Boolean(this.preprint()?.dateWithdrawn));
 
   bannerContent = computed(() => {
     const documentType = this.provider().preprintWord;
     if (this.isPendingWithdrawal() || this.isWithdrawn() || this.isWithdrawalRejected()) {
-      return this.translateService.instant(this.statusExplanation(), {
-        documentType,
-      });
+      return this.translateService.instant(this.statusExplanation(), { documentType });
     } else {
       const name = this.provider()!.name;
       const workflow = this.provider()?.reviewsWorkflow;
@@ -124,16 +106,10 @@ export class StatusBannerComponent {
   });
 
   private statusExplanation = computed(() => {
-    if (this.isPendingWithdrawal()) {
-      return statusMessageByState[ReviewsState.PendingWithdrawal]!;
-    } else if (this.isWithdrawalRejected()) {
-      return statusMessageByState[ReviewsState.WithdrawalRejected]!;
-    } else {
-      const reviewsState = this.preprint()?.reviewsState;
-      return reviewsState === ReviewsState.Pending
-        ? statusMessageByWorkflow[this.provider()?.reviewsWorkflow as ProviderReviewsWorkflow]
-        : statusMessageByState[this.preprint()!.reviewsState]!;
-    }
+    const currentState = this.currentState();
+    return currentState === ReviewsState.Pending
+      ? statusMessageByWorkflow[this.provider()?.reviewsWorkflow as ProviderReviewsWorkflow]
+      : statusMessageByState[currentState]!;
   });
 
   showFeedbackDialog() {

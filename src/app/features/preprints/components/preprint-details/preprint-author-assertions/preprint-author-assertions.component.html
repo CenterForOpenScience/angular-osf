@@ -1,0 +1,69 @@
+<section class="flex flex-column gap-4">
+  <section class="flex flex-column gap-2">
+    <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.publicData' | translate }}</h3>
+
+    @switch (preprint().hasDataLinks) {
+      @case (ApplicabilityStatus.NotApplicable) {
+        <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noData' | translate }}</p>
+      }
+      @case (ApplicabilityStatus.Unavailable) {
+        <p>{{ preprint().whyNoData }}</p>
+      }
+      @case (ApplicabilityStatus.Applicable) {
+        @for (link of preprint().dataLinks; track link) {
+          <p>{{ link }}</p>
+        }
+      }
+    }
+  </section>
+
+  <section class="flex flex-column gap-2">
+    <h3>
+      {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }}
+    </h3>
+
+    @switch (preprint().hasPreregLinks) {
+      @case (ApplicabilityStatus.NotApplicable) {
+        <p>
+          {{ 'preprints.preprintStepper.review.sections.authorAssertions.noPrereg' | translate }}
+        </p>
+      }
+      @case (ApplicabilityStatus.Unavailable) {
+        <p>{{ preprint().whyNoPrereg }}</p>
+      }
+      @case (ApplicabilityStatus.Applicable) {
+        @switch (preprint().preregLinkInfo) {
+          @case (PreregLinkInfo.Analysis) {
+            <p>
+              {{ 'preprints.preprintStepper.common.labels.preregTypes.analysis' | translate }}
+            </p>
+          }
+          @case (PreregLinkInfo.Designs) {
+            <p>
+              {{ 'preprints.preprintStepper.common.labels.preregTypes.designs' | translate }}
+            </p>
+          }
+          @case (PreregLinkInfo.Both) {
+            <p>
+              {{ 'preprints.preprintStepper.common.labels.preregTypes.both' | translate }}
+            </p>
+          }
+        }
+
+        @for (link of preprint().preregLinks; track $index) {
+          <a class="font-bold" [href]="link">{{ link }}</a>
+        }
+      }
+    }
+  </section>
+
+  <section class="flex flex-column gap-2">
+    <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
+
+    @if (preprint().hasCoi) {
+      <p>{{ preprint().coiStatement }}</p>
+    } @else {
+      <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
+    }
+  </section>
+</section>

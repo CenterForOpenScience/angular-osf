@@ -14,7 +14,7 @@ import { collectionFilterTypes } from '@osf/features/collections/constants';
 import { AddToCollectionSteps, CollectionFilterType } from '@osf/features/collections/enums';
 import { CollectionFilterEntry } from '@osf/features/collections/models/collection-filter-entry.model';
 import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection';
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 import { CollectionsSelectors, GetCollectionDetails } from '@osf/shared/stores/collections';
 
 @Component({

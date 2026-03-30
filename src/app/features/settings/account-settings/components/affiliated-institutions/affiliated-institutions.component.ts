@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';

@@ -10,7 +10,7 @@
     <p-skeleton width="100%" height="1.5rem" class="mb-2 flex" />
   } @else {
     @if (expanded()) {
-      <p-panel showHeader="false">
+      <p-panel ngSkipHydration [showHeader]="false">
         <div
           class="flex align-items-center mt-3 mb-2"
           [class]="canEdit() ? 'justify-content-between' : 'justify-content-end'"

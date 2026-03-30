@@ -1,4 +1,4 @@
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.models';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
 import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 export interface MyResourcesStateModel {

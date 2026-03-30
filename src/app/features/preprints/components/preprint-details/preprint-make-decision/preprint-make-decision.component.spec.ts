@@ -1,9 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Store } from '@ngxs/store';
 
-import { ReviewAction } from '@osf/features/moderation/models';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
-import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprints/models';
-import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import {
+  PreprintSelectors,
+  SubmitRequestsDecision,
+  SubmitReviewsDecision,
+} from '@osf/features/preprints/store/preprint';
 
 import { PreprintMakeDecisionComponent } from './preprint-make-decision.component';
 
@@ -11,35 +16,35 @@ import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('PreprintMakeDecisionComponent', () => {
   let component: PreprintMakeDecisionComponent;
   let fixture: ComponentFixture<PreprintMakeDecisionComponent>;
+  let store: Store;
+  let router: Router;
 
   const mockPreprint = PREPRINT_MOCK;
-  const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
-  const mockLatestAction: ReviewAction = REVIEW_ACTION_MOCK;
-  const mockWithdrawalRequest: PreprintRequest = PREPRINT_REQUEST_MOCK;
+  const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockLatestAction = REVIEW_ACTION_MOCK;
+  const mockWithdrawalRequest = PREPRINT_REQUEST_MOCK;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PreprintMakeDecisionComponent, OSFTestingModule],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [PreprintMakeDecisionComponent],
       providers: [
+        provideOSFCore(),
         provideMockStore({
-          signals: [
-            {
-              selector: PreprintSelectors.getPreprint,
-              value: mockPreprint,
-            },
-          ],
+          signals: [{ selector: PreprintSelectors.getPreprint, value: mockPreprint }],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(PreprintMakeDecisionComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store);
+    router = TestBed.inject(Router);
 
     fixture.componentRef.setInput('provider', mockProvider);
     fixture.componentRef.setInput('latestAction', mockLatestAction);
@@ -47,14 +52,28 @@ describe('PreprintMakeDecisionComponent', () => {
     fixture.componentRef.setInput('isPendingWithdrawal', false);
   });
 
-  it('should return preprint from store', () => {
-    const preprint = component.preprint();
-    expect(preprint).toBe(mockPreprint);
+  it.each([
+    {
+      caseName: 'pending preprint',
+      preprint: { ...mockPreprint, reviewsState: ReviewsState.Pending },
+      isPendingWithdrawal: false,
+      expected: 'preprints.details.decision.makeDecision',
+    },
+    {
+      caseName: 'pending withdrawal',
+      preprint: { ...mockPreprint, reviewsState: ReviewsState.Accepted },
+      isPendingWithdrawal: true,
+      expected: 'preprints.details.decision.makeDecision',
+    },
+  ])('should compute label decision button for $caseName', ({ preprint, isPendingWithdrawal, expected }) => {
+    fixture.componentRef.setInput('isPendingWithdrawal', isPendingWithdrawal);
+    jest.spyOn(component, 'preprint').mockReturnValue(preprint);
+    expect(component.labelDecisionButton()).toBe(expected);
   });
 
-  it('should compute label decision button for pending preprint', () => {
-    const label = component.labelDecisionButton();
-    expect(label).toBe('preprints.details.decision.makeDecision');
+  it('should compute label decision button for withdrawn preprint', () => {
+    jest.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, reviewsState: ReviewsState.Withdrawn });
+    expect(component.labelDecisionButton()).toBe('preprints.details.decision.withdrawalReason');
   });
 
   it('should compute make decision button disabled state', () => {
@@ -62,19 +81,42 @@ describe('PreprintMakeDecisionComponent', () => {
     expect(disabled).toBe(false);
   });
 
-  it('should compute label decision dialog header for pending preprint', () => {
-    const header = component.labelDecisionDialogHeader();
-    expect(header).toBe('preprints.details.decision.header.submitDecision');
+  it.each([
+    {
+      caseName: 'pending preprint',
+      preprint: { ...mockPreprint, reviewsState: ReviewsState.Pending },
+      isPendingWithdrawal: false,
+      expected: 'preprints.details.decision.header.submitDecision',
+    },
+    {
+      caseName: 'pending withdrawal',
+      preprint: { ...mockPreprint, reviewsState: ReviewsState.Accepted },
+      isPendingWithdrawal: true,
+      expected: 'preprints.details.decision.header.submitDecision',
+    },
+  ])('should compute label decision dialog header for $caseName', ({ preprint, isPendingWithdrawal, expected }) => {
+    fixture.componentRef.setInput('isPendingWithdrawal', isPendingWithdrawal);
+    jest.spyOn(component, 'preprint').mockReturnValue(preprint);
+    expect(component.labelDecisionDialogHeader()).toBe(expected);
   });
 
-  it('should compute label submit button for pending preprint', () => {
-    const label = component.labelSubmitButton();
-    expect(label).toBe('preprints.details.decision.submitButton.submitDecision');
+  it('should compute label decision dialog header for withdrawn preprint', () => {
+    jest.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, reviewsState: ReviewsState.Withdrawn });
+    expect(component.labelDecisionDialogHeader()).toBe('preprints.details.decision.header.withdrawalReason');
   });
 
-  it('should compute accept option explanation for pre-moderation', () => {
-    const explanation = component.acceptOptionExplanation();
-    expect(explanation).toBe('preprints.details.decision.accept.pre');
+  it.each([
+    {
+      workflow: ProviderReviewsWorkflow.PreModeration,
+      expected: 'preprints.details.decision.accept.pre',
+    },
+    {
+      workflow: ProviderReviewsWorkflow.PostModeration,
+      expected: 'preprints.details.decision.accept.post',
+    },
+  ])('should compute accept option explanation for workflow %s', ({ workflow, expected }) => {
+    fixture.componentRef.setInput('provider', { ...mockProvider, reviewsWorkflow: workflow });
+    expect(component.acceptOptionExplanation()).toBe(expected);
   });
 
   it('should compute reject option label for unpublished preprint', () => {
@@ -82,34 +124,18 @@ describe('PreprintMakeDecisionComponent', () => {
     expect(label).toBe('preprints.details.decision.reject.label');
   });
 
-  it('should compute settings comments for private comments', () => {
-    const settings = component.settingsComments();
-    expect(settings).toBeDefined();
+  it('should compute basic derived settings and state flags', () => {
+    expect(component.settingsComments()).toBeDefined();
+    expect(component.settingsNames()).toBeDefined();
+    expect(component.settingsModeration()).toBeDefined();
+    expect(typeof component.commentEdited()).toBe('boolean');
+    expect(typeof component.commentExceedsLimit()).toBe('boolean');
+    expect(typeof component.decisionChanged()).toBe('boolean');
   });
 
-  it('should compute settings names for named comments', () => {
-    const settings = component.settingsNames();
-    expect(settings).toBeDefined();
-  });
-
-  it('should compute settings moderation for pre-moderation workflow', () => {
-    const settings = component.settingsModeration();
-    expect(settings).toBeDefined();
-  });
-
-  it('should compute comment edited state', () => {
-    const edited = component.commentEdited();
-    expect(typeof edited).toBe('boolean');
-  });
-
-  it('should compute comment exceeds limit state', () => {
-    const exceeds = component.commentExceedsLimit();
-    expect(typeof exceeds).toBe('boolean');
-  });
-
-  it('should compute decision changed state', () => {
-    const changed = component.decisionChanged();
-    expect(typeof changed).toBe('boolean');
+  it('should return true when reviewer comment exceeds decision comment limit', () => {
+    component.reviewerComment.set('a'.repeat(component.decisionCommentLimit + 1));
+    expect(component.commentExceedsLimit()).toBe(true);
   });
 
   it('should have initial signal values', () => {
@@ -119,12 +145,101 @@ describe('PreprintMakeDecisionComponent', () => {
     expect(component.saving()).toBe(false);
   });
 
-  it('should handle request decision toggled', () => {
-    expect(() => component.requestDecisionToggled()).not.toThrow();
+  it('should initialize decision and comments for pending preprint in constructor effect', () => {
+    fixture.componentRef.setInput('latestAction', { ...mockLatestAction, comment: 'Latest decision comment' });
+    expect(component.decision()).toBe(ReviewsState.Accepted);
+    expect(component.initialReviewerComment()).toBeNull();
+    expect(component.reviewerComment()).toBeNull();
   });
 
-  it('should handle cancel', () => {
-    expect(() => component.cancel()).not.toThrow();
+  it('should initialize decision and comments for non-pending preprint in constructor effect', () => {
+    jest.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, reviewsState: ReviewsState.Rejected });
+    fixture.componentRef.setInput('latestAction', { ...mockLatestAction, comment: 'Updated moderator comment' });
+    fixture.detectChanges();
+    expect(component.decision()).toBe(ReviewsState.Rejected);
+    expect(component.initialReviewerComment()).toBe('Updated moderator comment');
+    expect(component.reviewerComment()).toBe('Updated moderator comment');
+  });
+
+  it('should return early in constructor effect when preprint is missing', () => {
+    component.decision.set(ReviewsState.Withdrawn);
+    component.initialReviewerComment.set('Initial');
+    component.reviewerComment.set('Current');
+    jest.spyOn(component, 'preprint').mockReturnValue(null);
+    fixture.componentRef.setInput('latestAction', { ...mockLatestAction, comment: 'Ignored comment' });
+    expect(component.decision()).toBe(ReviewsState.Withdrawn);
+    expect(component.initialReviewerComment()).toBe('Initial');
+    expect(component.reviewerComment()).toBe('Current');
+  });
+
+  it('should keep existing values when constructor effect receives null preprint', () => {
+    component.decision.set(ReviewsState.Rejected);
+    component.initialReviewerComment.set('Initial value');
+    component.reviewerComment.set('Current value');
+    jest.spyOn(component, 'preprint').mockReturnValue(null);
+
+    fixture.componentRef.setInput('latestAction', { ...mockLatestAction, comment: 'Should not apply' });
+
+    expect(component.decision()).toBe(ReviewsState.Rejected);
+    expect(component.initialReviewerComment()).toBe('Initial value');
+    expect(component.reviewerComment()).toBe('Current value');
+  });
+
+  it('should set request decision justification from latest withdrawal request in constructor effect', () => {
+    component.requestDecisionJustification.set(null);
+    fixture.componentRef.setInput('latestWithdrawalRequest', {
+      ...mockWithdrawalRequest,
+      comment: 'Withdrawal reason',
+    });
+    fixture.detectChanges();
+    expect(component.requestDecisionJustification()).toBe('Withdrawal reason');
+  });
+
+  it('should not set request decision justification when latest withdrawal request is missing', () => {
+    component.requestDecisionJustification.set('Existing value');
+    fixture.componentRef.setInput('latestWithdrawalRequest', null);
+    expect(component.requestDecisionJustification()).toBe('Existing value');
+  });
+
+  it('should keep existing justification when constructor effect receives null withdrawal request', () => {
+    component.requestDecisionJustification.set('Persisted justification');
+
+    fixture.componentRef.setInput('latestWithdrawalRequest', null);
+
+    expect(component.requestDecisionJustification()).toBe('Persisted justification');
+  });
+
+  it('should set justification from latest withdrawal request when toggled to accepted', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', true);
+    component.decision.set(ReviewsState.Accepted);
+    component.requestDecisionJustification.set(null);
+
+    component.requestDecisionToggled();
+
+    expect(component.requestDecisionJustification()).toBe(mockWithdrawalRequest.comment);
+  });
+
+  it('should clear justification when toggled to rejected', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', true);
+    component.requestDecisionJustification.set('Some justification');
+    component.decision.set(ReviewsState.Rejected);
+
+    component.requestDecisionToggled();
+
+    expect(component.requestDecisionJustification()).toBeNull();
+  });
+
+  it('should reset local dialog state on cancel', () => {
+    component.dialogVisible = true;
+    component.decision.set(ReviewsState.Rejected);
+    component.initialReviewerComment.set('Initial');
+    component.reviewerComment.set('Changed');
+
+    component.cancel();
+
+    expect(component.dialogVisible).toBe(false);
+    expect(component.decision()).toBe(mockPreprint.reviewsState);
+    expect(component.reviewerComment()).toBe('Initial');
   });
 
   it('should compute label submit button when decision changed', () => {
@@ -145,18 +260,17 @@ describe('PreprintMakeDecisionComponent', () => {
     expect(label).toBe('preprints.details.decision.submitButton.updateComment');
   });
 
+  it('should compute label submit button as submit decision for pending withdrawal', () => {
+    jest.spyOn(component, 'isPendingWithdrawal').mockReturnValue(true);
+    jest.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, reviewsState: ReviewsState.Accepted });
+    expect(component.labelSubmitButton()).toBe('preprints.details.decision.submitButton.submitDecision');
+  });
+
   it('should compute submit button disabled when neither decision changed nor comment edited', () => {
     jest.spyOn(component, 'decisionChanged').mockReturnValue(false);
     jest.spyOn(component, 'commentEdited').mockReturnValue(false);
     const disabled = component.submitButtonDisabled();
     expect(disabled).toBe(true);
-  });
-
-  it('should compute accept option explanation for post-moderation', () => {
-    const postModerationProvider = { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PostModeration };
-    fixture.componentRef.setInput('provider', postModerationProvider);
-    const explanation = component.acceptOptionExplanation();
-    expect(explanation).toBe('preprints.details.decision.accept.post');
   });
 
   it('should compute label request decision justification for accepted decision', () => {
@@ -184,6 +298,12 @@ describe('PreprintMakeDecisionComponent', () => {
     expect(explanation).toBeDefined();
   });
 
+  it('should fallback reject option explanation when workflow is null', () => {
+    fixture.componentRef.setInput('provider', { ...mockProvider, reviewsWorkflow: null });
+    const explanation = component.rejectOptionExplanation();
+    expect(explanation).toBe('preprints.details.decision.withdrawn.post');
+  });
+
   it('should compute reject radio button value for published preprint', () => {
     jest.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, isPublished: true });
     const value = component.rejectRadioButtonValue();
@@ -191,6 +311,143 @@ describe('PreprintMakeDecisionComponent', () => {
   });
 
   it('should handle submit method', () => {
+    (store.dispatch as jest.Mock).mockClear();
     expect(() => component.submit()).not.toThrow();
+    expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should not submit when preprint is missing', () => {
+    (store.dispatch as jest.Mock).mockClear();
+    jest.spyOn(component, 'preprint').mockReturnValue(null);
+    component.submit();
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(component.saving()).toBe(false);
+  });
+
+  it('should validate withdrawal rejection justification with trim-aware required check', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', true);
+    component.decision.set(ReviewsState.Rejected);
+    component.requestDecisionJustification.set('   ');
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.submit();
+
+    expect(component.didValidate()).toBe(true);
+    expect(component.requestDecisionJustificationErrorMessage()).toBe(
+      'preprints.details.decision.justificationRequiredError'
+    );
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should return justification min-length error when justification is too short', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', true);
+    component.decision.set(ReviewsState.Rejected);
+    component.requestDecisionJustification.set('a');
+    expect(component.requestDecisionJustificationErrorMessage()).toBe(
+      'preprints.details.decision.justificationLengthError'
+    );
+  });
+
+  it('should submit pending withdrawal decision and navigate to withdrawals', () => {
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    fixture.componentRef.setInput('isPendingWithdrawal', true);
+    fixture.componentRef.setInput('latestWithdrawalRequest', { ...mockWithdrawalRequest, id: 'request-123' });
+    component.decision.set(ReviewsState.Accepted);
+    component.requestDecisionJustification.set('  valid justification  ');
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.submit();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new SubmitRequestsDecision('request-123', 'accept', 'valid justification')
+    );
+    expect(navigateSpy).toHaveBeenCalledWith(['preprints', mockProvider.id, 'moderation', 'withdrawals']);
+    expect(component.saving()).toBe(false);
+  });
+
+  it('should submit edit_comment trigger when only comment changed on non-pending decision', () => {
+    jest.spyOn(component, 'preprint').mockReturnValue({
+      ...mockPreprint,
+      reviewsState: ReviewsState.Accepted,
+      isPublished: false,
+    });
+    fixture.componentRef.setInput('isPendingWithdrawal', false);
+    component.decision.set(ReviewsState.Accepted);
+    component.initialReviewerComment.set('Old comment');
+    component.reviewerComment.set('New comment');
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.submit();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new SubmitReviewsDecision('edit_comment', 'New comment'));
+  });
+
+  it('should submit reject trigger for published preprint with pending withdrawal and rejected decision', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', true);
+    fixture.componentRef.setInput('latestWithdrawalRequest', { ...mockWithdrawalRequest, id: 'request-456' });
+    jest.spyOn(component, 'preprint').mockReturnValue({
+      ...mockPreprint,
+      reviewsState: ReviewsState.Accepted,
+      isPublished: true,
+    });
+    component.decision.set(ReviewsState.Rejected);
+    component.requestDecisionJustification.set('Valid rejection reason');
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.submit();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new SubmitRequestsDecision('request-456', 'reject', 'Valid rejection reason')
+    );
+  });
+
+  it('should submit withdraw trigger for published preprint without pending withdrawal and rejected decision', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', false);
+    jest.spyOn(component, 'preprint').mockReturnValue({
+      ...mockPreprint,
+      reviewsState: ReviewsState.Accepted,
+      isPublished: true,
+    });
+    component.decision.set(ReviewsState.Rejected);
+    component.initialReviewerComment.set('Original');
+    component.reviewerComment.set('Updated rejection note');
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.submit();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new SubmitReviewsDecision('withdraw', 'Updated rejection note'));
+  });
+
+  it('should not dispatch pending-withdrawal decision when latest withdrawal request is missing', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', true);
+    fixture.componentRef.setInput('latestWithdrawalRequest', null);
+    component.decision.set(ReviewsState.Accepted);
+    component.requestDecisionJustification.set('Valid justification');
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.submit();
+
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(component.saving()).toBe(false);
+  });
+
+  it('should not reset decision in cancel when preprint is missing', () => {
+    component.decision.set(ReviewsState.Rejected);
+    component.initialReviewerComment.set('Initial');
+    component.reviewerComment.set('Changed');
+    jest.spyOn(component, 'preprint').mockReturnValue(null);
+
+    component.cancel();
+
+    expect(component.decision()).toBe(ReviewsState.Rejected);
+    expect(component.reviewerComment()).toBe('Initial');
+  });
+
+  it('should return early in requestDecisionToggled when not pending withdrawal', () => {
+    fixture.componentRef.setInput('isPendingWithdrawal', false);
+    component.decision.set(ReviewsState.Rejected);
+    component.requestDecisionJustification.set('Existing value');
+    component.requestDecisionToggled();
+    expect(component.requestDecisionJustification()).toBe('Existing value');
   });
 });

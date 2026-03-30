@@ -5,7 +5,7 @@ import { ChartModule } from 'primeng/chart';
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DatasetInput } from '@shared/models/charts/dataset-input';
+import { DatasetInput } from '@osf/shared/models/charts/dataset-input.model';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 

@@ -24,6 +24,7 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { MetadataComponent } from './metadata.component';
 
@@ -106,6 +107,7 @@ describe('MetadataComponent', () => {
             { selector: MetadataSelectors.getSubmitting, value: false },
             { selector: MetadataSelectors.getCedarRecords, value: [] },
             { selector: MetadataSelectors.getCedarTemplates, value: null },
+            { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
           ],
         }),
       ],

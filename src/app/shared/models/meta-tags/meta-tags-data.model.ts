@@ -10,6 +10,7 @@ export interface MetaTagsData {
   type?: DataContent;
   description?: DataContent;
   url?: DataContent;
+  canonicalUrl?: DataContent;
   doi?: DataContent;
   identifier?: DataContent;
   publishedDate?: DataContent;

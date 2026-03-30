@@ -1,6 +1,6 @@
 import { ApiData, JsonApiResponse, ResponseJsonApi } from '../common/json-api.model';
 
-import { InstitutionAssets } from './institutions.models';
+import { InstitutionAssets } from './institutions.model';
 
 export type InstitutionsJsonApiResponse = JsonApiResponse<InstitutionDataJsonApi[], null>;
 export type InstitutionsWithMetaJsonApiResponse = ResponseJsonApi<InstitutionDataJsonApi[]>;

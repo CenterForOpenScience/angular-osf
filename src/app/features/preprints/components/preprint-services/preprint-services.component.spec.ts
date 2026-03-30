@@ -5,7 +5,7 @@ import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
 import { PreprintServicesComponent } from './preprint-services.component';
 
 import { PREPRINT_PROVIDER_SHORT_INFO_MOCK } from '@testing/mocks/preprint-provider-short-info.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 describe('PreprintServicesComponent', () => {
   let component: PreprintServicesComponent;
@@ -13,32 +13,30 @@ describe('PreprintServicesComponent', () => {
 
   const mockProviders: PreprintProviderShortInfo[] = [PREPRINT_PROVIDER_SHORT_INFO_MOCK];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PreprintServicesComponent, OSFTestingModule],
-    }).compileComponents();
+  function setup(providers: PreprintProviderShortInfo[]) {
+    TestBed.configureTestingModule({
+      imports: [PreprintServicesComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(PreprintServicesComponent);
     component = fixture.componentInstance;
-  });
+    fixture.componentRef.setInput('preprintProvidersToAdvertise', providers);
+  }
 
   it('should create', () => {
-    fixture.componentRef.setInput('preprintProvidersToAdvertise', []);
-    fixture.detectChanges();
-
+    setup(mockProviders);
     expect(component).toBeTruthy();
   });
 
-  it('should accept preprint providers input', () => {
-    fixture.componentRef.setInput('preprintProvidersToAdvertise', mockProviders);
-    fixture.detectChanges();
+  it('should keep provided providers input', () => {
+    setup(mockProviders);
 
     expect(component.preprintProvidersToAdvertise()).toEqual(mockProviders);
   });
 
-  it('should handle empty providers array', () => {
-    fixture.componentRef.setInput('preprintProvidersToAdvertise', []);
-    fixture.detectChanges();
+  it('should keep empty providers input', () => {
+    setup([]);
 
     expect(component.preprintProvidersToAdvertise()).toEqual([]);
   });

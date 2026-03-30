@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@core/store/user';
@@ -27,23 +27,26 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationOverviewToolbarComponent {
-  private toastService = inject(ToastService);
-  private destroyRef = inject(DestroyRef);
+  private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  resourceId = input.required<string>();
-  resourceTitle = input.required<string>();
-  isPublic = input<boolean>(false);
+  readonly resourceId = input.required<string>();
+  readonly resourceTitle = input.required<string>();
+  readonly isPublic = input<boolean>(false);
 
-  isBookmarked = signal(false);
-  resourceType = ResourceType.Registration;
+  readonly resourceType = ResourceType.Registration;
 
-  bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
-  bookmarks = select(BookmarksSelectors.getBookmarks);
-  isBookmarksLoading = select(BookmarksSelectors.areBookmarksLoading);
-  isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
-  isAuthenticated = select(UserSelectors.isAuthenticated);
+  readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
+  readonly bookmarks = select(BookmarksSelectors.getBookmarks);
+  readonly isBookmarksLoading = select(BookmarksSelectors.areBookmarksLoading);
+  readonly isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
+  readonly isAuthenticated = select(UserSelectors.isAuthenticated);
 
-  actions = createDispatchMap({
+  readonly isBookmarked = computed(
+    () => this.bookmarks()?.some((bookmark) => bookmark.id === this.resourceId()) ?? false
+  );
+
+  private readonly actions = createDispatchMap({
     getResourceBookmark: GetResourceBookmark,
     addResourceToBookmarks: AddResourceToBookmarks,
     removeResourceFromBookmarks: RemoveResourceFromBookmarks,
@@ -57,17 +60,6 @@ export class RegistrationOverviewToolbarComponent {
 
       this.actions.getResourceBookmark(bookmarksCollectionId, this.resourceId(), this.resourceType);
     });
-
-    effect(() => {
-      const bookmarks = this.bookmarks();
-
-      if (!this.resourceId() || !bookmarks?.length) {
-        this.isBookmarked.set(false);
-        return;
-      }
-
-      this.isBookmarked.set(bookmarks.some((bookmark) => bookmark.id === this.resourceId()));
-    });
   }
 
   toggleBookmark(): void {
@@ -75,24 +67,14 @@ export class RegistrationOverviewToolbarComponent {
 
     if (!this.resourceId() || !bookmarksId) return;
 
-    const newBookmarkState = !this.isBookmarked();
+    const action = this.isBookmarked()
+      ? this.actions.removeResourceFromBookmarks(bookmarksId, this.resourceId(), this.resourceType)
+      : this.actions.addResourceToBookmarks(bookmarksId, this.resourceId(), this.resourceType);
 
-    if (newBookmarkState) {
-      this.actions
-        .addResourceToBookmarks(bookmarksId, this.resourceId(), this.resourceType)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          this.isBookmarked.set(newBookmarkState);
-          this.toastService.showSuccess('project.overview.dialog.toast.bookmark.add');
-        });
-    } else {
-      this.actions
-        .removeResourceFromBookmarks(bookmarksId, this.resourceId(), this.resourceType)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          this.isBookmarked.set(newBookmarkState);
-          this.toastService.showSuccess('project.overview.dialog.toast.bookmark.remove');
-        });
-    }
+    const toastKey = this.isBookmarked()
+      ? 'project.overview.dialog.toast.bookmark.remove'
+      : 'project.overview.dialog.toast.bookmark.add';
+
+    action.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.toastService.showSuccess(toastKey));
   }
 }

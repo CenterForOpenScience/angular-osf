@@ -4,6 +4,7 @@
   "shareTroveUrl": "",
   "addonsApiUrl": "",
   "funderApiUrl": "",
+  "rorClientId": "",
   "casUrl": "",
   "recaptchaSiteKey": "",
   "dataciteTrackerRepoId": null,

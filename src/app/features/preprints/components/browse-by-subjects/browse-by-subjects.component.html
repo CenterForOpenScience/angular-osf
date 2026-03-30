@@ -6,14 +6,14 @@
         <p-skeleton class="col-12 md:col-6" height="4rem" />
       }
     } @else {
-      @for (subject of subjects(); track subject) {
+      @for (subject of subjects(); track subject.id) {
         <p-button
           class="provider-subject col-12 md:col-6"
           styleClass="w-full p-4"
           [label]="subject.name"
           severity="secondary"
-          [routerLink]="isLandingPage() ? '/search' : 'discover'"
-          [queryParams]="linksToSearchPageForSubject()[$index]"
+          [routerLink]="subjectRoute()"
+          [queryParams]="getQueryParamsForSubject(subject)"
         />
       }
     }

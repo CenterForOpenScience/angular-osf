@@ -13,11 +13,11 @@
         >
           <img
             class="fit-contain"
-            alt="Provider Logo"
             height="36"
             [src]="preprintProvider()?.brand?.heroLogoImageUrl"
+            [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
           />
-          <h1>{{ preprint()?.title | fixSpecialChar }}</h1>
+          <h1>{{ preprint()?.title }}</h1>
         </a>
       }
 
@@ -53,7 +53,7 @@
             class="w-full md:w-11rem"
             styleClass="w-full"
             [label]="editButtonLabel() | translate"
-            (click)="editPreprintClicked()"
+            (onClick)="editPreprintClicked()"
           />
         }
         @if (createNewVersionButtonVisible()) {
@@ -61,7 +61,7 @@
             class="w-full md:w-11rem"
             styleClass="w-full"
             [label]="'common.buttons.createNewVersion' | translate"
-            (click)="createNewVersionClicked()"
+            (onClick)="createNewVersionClicked()"
           />
         }
         @if (withdrawalButtonVisible()) {
@@ -70,7 +70,7 @@
             styleClass="w-full"
             [label]="'common.buttons.withdraw' | translate"
             severity="danger"
-            (click)="handleWithdrawClicked()"
+            (onClick)="handleWithdrawClicked()"
           />
         }
 
