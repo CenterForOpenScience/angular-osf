@@ -55,6 +55,13 @@ export const registriesRoutes: Routes = [
           ),
       },
       {
+        path: ':providerId/discover',
+        loadComponent: () =>
+          import('@osf/features/registries/pages/registries-provider-search/registries-provider-search.component').then(
+            (c) => c.RegistriesProviderSearchComponent
+          ),
+      },
+      {
         path: ':providerId/moderation',
         canActivate: [authGuard, registrationModerationGuard],
         loadChildren: () =>
