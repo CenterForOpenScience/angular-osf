@@ -19,41 +19,33 @@ import { CitationSectionComponent } from '../citation-section/citation-section.c
 
 @Component({
   selector: 'osf-preprint-additional-info',
-  imports: [Card, TranslatePipe, Tag, Skeleton, DatePipe, CitationSectionComponent, LicenseDisplayComponent],
+  imports: [Card, Tag, Skeleton, CitationSectionComponent, LicenseDisplayComponent, DatePipe, TranslatePipe],
   templateUrl: './additional-info.component.html',
   styleUrl: './additional-info.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdditionalInfoComponent {
-  private actions = createDispatchMap({
-    fetchSubjects: FetchSelectedSubjects,
-  });
-  private router = inject(Router);
+  private readonly router = inject(Router);
+  private readonly actions = createDispatchMap({ fetchSubjects: FetchSelectedSubjects });
 
-  preprintProviderId = input.required<string>();
+  readonly preprintProviderId = input.required<string>();
 
-  preprint = select(PreprintSelectors.getPreprint);
-  isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
+  readonly preprint = select(PreprintSelectors.getPreprint);
+  readonly isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
 
-  subjects = select(SubjectsSelectors.getSelectedSubjects);
-  areSelectedSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
+  readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly areSelectedSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
-  license = computed(() => {
-    const preprint = this.preprint();
-    if (!preprint) return null;
-    return preprint.embeddedLicense;
-  });
+  readonly license = computed(() => this.preprint()?.embeddedLicense ?? null);
+  readonly licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
-  licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
-
-  skeletonData = Array.from({ length: 5 }, () => null);
+  readonly skeletonData = new Array(5).fill(null);
 
   constructor() {
     effect(() => {
-      const preprint = this.preprint();
-      if (!preprint) return;
-
-      this.actions.fetchSubjects(this.preprint()!.id, ResourceType.Preprint);
+      const preprintId = this.preprint()?.id;
+      if (!preprintId) return;
+      this.actions.fetchSubjects(preprintId, ResourceType.Preprint);
     });
   }
 

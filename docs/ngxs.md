@@ -46,7 +46,7 @@ Typical NGXS-related files are organized as follows:
 src/app/shared/stores/
   └── addons/
       ├── addons.actions.ts       # All action definitions
-      ├── addons.models.ts        # Interfaces & data models
+      ├── addons.model.ts        # Interfaces & data model
       ├── addons.state.ts         # State implementation
       ├── addons.selectors.ts     # Reusable selectors
 ```

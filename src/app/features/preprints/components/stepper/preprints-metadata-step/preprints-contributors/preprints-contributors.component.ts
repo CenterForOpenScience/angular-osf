@@ -5,7 +5,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
-import { TableModule } from 'primeng/table';
 
 import { filter } from 'rxjs';
 
@@ -21,7 +20,6 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 
 import {
   AddContributorDialogComponent,
@@ -49,25 +47,33 @@ import { TableParameters } from '@shared/models/table-parameters.model';
 
 @Component({
   selector: 'osf-preprints-contributors',
-  imports: [FormsModule, TableModule, ContributorsTableComponent, TranslatePipe, Card, Button, Message],
+  imports: [Button, Card, Message, ContributorsTableComponent, TranslatePipe],
   templateUrl: './preprints-contributors.component.html',
   styleUrl: './preprints-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintsContributorsComponent implements OnInit {
-  preprintId = input<string | undefined>('');
+  readonly preprintId = input.required<string>();
 
   readonly destroyRef = inject(DestroyRef);
   readonly customDialogService = inject(CustomDialogService);
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
 
-  initialContributors = select(ContributorsSelectors.getContributors);
-  contributors = signal<ContributorModel[]>([]);
-  contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
-  isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
-  pageSize = select(ContributorsSelectors.getContributorsPageSize);
+  readonly initialContributors = select(ContributorsSelectors.getContributors);
+  readonly contributors = signal<ContributorModel[]>([]);
+  readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
+  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
+  readonly pageSize = select(ContributorsSelectors.getContributorsPageSize);
+
+  readonly actions = createDispatchMap({
+    getContributors: GetAllContributors,
+    deleteContributor: DeleteContributor,
+    bulkUpdateContributors: BulkUpdateContributors,
+    bulkAddContributors: BulkAddContributors,
+    loadMoreContributors: LoadMoreContributors,
+  });
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,
@@ -77,14 +83,6 @@ export class PreprintsContributorsComponent implements OnInit {
     firstRowIndex: 0,
     rows: this.pageSize(),
   }));
-
-  actions = createDispatchMap({
-    getContributors: GetAllContributors,
-    deleteContributor: DeleteContributor,
-    bulkUpdateContributors: BulkUpdateContributors,
-    bulkAddContributors: BulkAddContributors,
-    loadMoreContributors: LoadMoreContributors,
-  });
 
   get hasChanges(): boolean {
     return JSON.stringify(this.initialContributors()) !== JSON.stringify(this.contributors());
@@ -155,9 +153,12 @@ export class PreprintsContributorsComponent implements OnInit {
         } else {
           const params = { name: res.data[0].fullName };
 
-          this.actions.bulkAddContributors(this.preprintId(), ResourceType.Preprint, res.data).subscribe({
-            next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
-          });
+          this.actions
+            .bulkAddContributors(this.preprintId(), ResourceType.Preprint, res.data)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() =>
+              this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params)
+            );
         }
       });
   }
@@ -172,12 +173,10 @@ export class PreprintsContributorsComponent implements OnInit {
         this.actions
           .deleteContributor(this.preprintId(), ResourceType.Preprint, contributor.userId)
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            next: () => {
-              this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
-                name: contributor.fullName,
-              });
-            },
+          .subscribe(() => {
+            this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
+              name: contributor.fullName,
+            });
           });
       },
     });

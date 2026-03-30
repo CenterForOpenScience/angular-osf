@@ -1,8 +1,8 @@
-import { TabOption } from '@osf/shared/models/tab-option.model';
+import { CustomOption } from '@osf/shared/models/select-option.model';
 
 import { RegistrationTab } from '../enums';
 
-export const REGISTRATIONS_TABS: TabOption[] = [
+export const REGISTRATIONS_TABS: CustomOption<string>[] = [
   {
     label: 'common.labels.drafts',
     value: RegistrationTab.Drafts,

@@ -2,7 +2,6 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { StringOrNullOrUndefined } from '@osf/shared/helpers/types.helper';
-import { BrandModel } from '@osf/shared/models/brand/brand.model';
 import { SafeHtmlPipe } from '@osf/shared/pipes/safe-html.pipe';
 
 @Component({
@@ -14,6 +13,5 @@ import { SafeHtmlPipe } from '@osf/shared/pipes/safe-html.pipe';
 })
 export class AdvisoryBoardComponent {
   htmlContent = input<StringOrNullOrUndefined>(null);
-  brand = input<BrandModel>();
   isLandingPage = input<boolean>(false);
 }

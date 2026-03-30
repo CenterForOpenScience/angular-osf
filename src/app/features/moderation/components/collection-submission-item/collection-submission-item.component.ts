@@ -12,7 +12,7 @@ import { collectionFilterNames } from '@osf/features/collections/constants';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
 

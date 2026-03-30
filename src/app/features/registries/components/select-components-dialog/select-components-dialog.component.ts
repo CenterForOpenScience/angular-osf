@@ -7,7 +7,7 @@ import { Tree } from 'primeng/tree';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { ProjectShortInfoModel } from '../../models';
+import { ProjectShortInfoModel } from '../../models/project-short-info.model';
 
 @Component({
   selector: 'osf-select-components-dialog',
@@ -19,6 +19,7 @@ import { ProjectShortInfoModel } from '../../models';
 export class SelectComponentsDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
+
   selectedComponents: TreeNode[] = [];
   parent: ProjectShortInfoModel = this.config.data.parent;
   components: TreeNode[] = [];
@@ -37,10 +38,14 @@ export class SelectComponentsDialogComponent {
     this.selectedComponents.push({ key: this.parent.id });
   }
 
+  continue() {
+    const selectedComponentsSet = new Set<string>([...this.selectedComponents.map((c) => c.key!), this.parent.id]);
+    this.dialogRef.close([...selectedComponentsSet]);
+  }
+
   private mapProjectToTreeNode = (project: ProjectShortInfoModel): TreeNode => {
-    this.selectedComponents.push({
-      key: project.id,
-    });
+    this.selectedComponents.push({ key: project.id });
+
     return {
       label: project.title,
       data: project.id,
@@ -49,9 +54,4 @@ export class SelectComponentsDialogComponent {
       children: project.children?.map(this.mapProjectToTreeNode) ?? [],
     };
   };
-
-  continue() {
-    const selectedComponentsSet = new Set<string>([...this.selectedComponents.map((c) => c.key!), this.parent.id]);
-    this.dialogRef.close([...selectedComponentsSet]);
-  }
 }

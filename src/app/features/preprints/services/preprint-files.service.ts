@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { map, Observable, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
@@ -18,7 +17,6 @@ import {
   FileFolderResponseJsonApi,
   FileFoldersResponseJsonApi,
 } from '@osf/shared/models/files/file-folder-json-api.model';
-import { FilesService } from '@osf/shared/services/files.service';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { FilesMapper } from '@shared/mappers/files/files.mapper';
 
@@ -26,8 +24,7 @@ import { FilesMapper } from '@shared/mappers/files/files.mapper';
   providedIn: 'root',
 })
 export class PreprintFilesService {
-  private filesService = inject(FilesService);
-  private jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
 
   get apiUrl() {
@@ -58,7 +55,7 @@ export class PreprintFilesService {
   }
 
   getPreprintFilesLinks(id: string): Observable<PreprintFilesLinks> {
-    return this.jsonApiService.get<any>(`${this.apiUrl}/preprints/${id}/files/`).pipe(
+    return this.jsonApiService.get<FileFoldersResponseJsonApi>(`${this.apiUrl}/preprints/${id}/files/`).pipe(
       map((response) => {
         const rel = response.data[0].relationships;
         const links = response.data[0].links;
@@ -72,12 +69,14 @@ export class PreprintFilesService {
   }
 
   getProjectRootFolder(projectId: string): Observable<FileFolderModel> {
-    return this.jsonApiService.get<any>(`${this.apiUrl}/nodes/${projectId}/files/`).pipe(
-      switchMap((response: FileFoldersResponseJsonApi) => {
-        return this.jsonApiService
-          .get<FileFolderResponseJsonApi>(response.data[0].relationships.root_folder.links.related.href)
-          .pipe(map((folder) => FilesMapper.getFileFolder(folder.data)));
-      })
-    );
+    return this.jsonApiService
+      .get<FileFoldersResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/files/`)
+      .pipe(
+        switchMap((response) =>
+          this.jsonApiService
+            .get<FileFolderResponseJsonApi>(response.data[0].relationships.root_folder.links.related.href)
+            .pipe(map((folder) => FilesMapper.getFileFolder(folder.data)))
+        )
+      );
   }
 }

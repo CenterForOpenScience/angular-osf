@@ -18,24 +18,24 @@ import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints
 
 @Component({
   selector: 'osf-preprint-provider-hero',
-  imports: [Button, RouterLink, SearchInputComponent, Skeleton, TranslatePipe, TitleCasePipe, SafeHtmlPipe],
+  imports: [Button, Skeleton, RouterLink, SearchInputComponent, SafeHtmlPipe, TitleCasePipe, TranslatePipe],
   templateUrl: './preprint-provider-hero.component.html',
   styleUrl: './preprint-provider-hero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintProviderHeroComponent {
-  customDialogService = inject(CustomDialogService);
+  private readonly customDialogService = inject(CustomDialogService);
 
-  searchControl = input<FormControl>(new FormControl());
-  preprintProvider = input.required<PreprintProviderDetails | undefined>();
-  isPreprintProviderLoading = input.required<boolean>();
-  triggerSearch = output<string>();
+  readonly searchControl = input<FormControl<string>>(new FormControl('', { nonNullable: true }));
+  readonly isPreprintProviderLoading = input.required<boolean>();
+  readonly preprintProvider = input<PreprintProviderDetails>();
+  readonly triggerSearch = output<string>();
 
-  onTriggerSearch(value: string) {
-    this.triggerSearch.emit(normalizeQuotes(value)!);
+  onTriggerSearch(value: string): void {
+    this.triggerSearch.emit(normalizeQuotes(value) ?? '');
   }
 
-  openHelpDialog() {
+  openHelpDialog(): void {
     this.customDialogService.open(PreprintsHelpDialogComponent, { header: 'preprints.helpDialog.header' });
   }
 }

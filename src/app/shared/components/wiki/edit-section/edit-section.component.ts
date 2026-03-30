@@ -10,8 +10,6 @@ import { FormsModule } from '@angular/forms';
 
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
-import 'ace-builds/src-noconflict/ext-language_tools';
-
 import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-syntax-help-dialog.component';
 
 @Component({
@@ -63,14 +61,16 @@ export class EditSectionComponent {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onEditorLoaded(editor: any) {
+  async onEditorLoaded(editor: any) {
     this.editorInstance = editor;
     editor.setShowPrintMargin(false);
-    const langTools = ace.require('ace/ext/language_tools');
+    await import('ace-builds/src-noconflict/ext-language_tools');
+    const aceGlobal = (globalThis as { ace?: { require?: (path: string) => { snippetCompleter?: unknown } } }).ace;
+    const langTools = aceGlobal?.require?.('ace/ext/language_tools');
     editor.setOptions({
       enableBasicAutocompletion: this.autoCompleteEnabled,
       enableLiveAutocompletion: this.autoCompleteEnabled,
-      enableSnippets: [langTools.snippetCompleter],
+      enableSnippets: langTools?.snippetCompleter ? [langTools.snippetCompleter] : [],
     });
   }
 

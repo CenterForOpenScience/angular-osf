@@ -16,4 +16,5 @@ export interface BaseProviderAttributesJsonApi {
   reviews_workflow: string;
   share_publish_type: string;
   share_source: string;
+  default_license_id?: string | null;
 }

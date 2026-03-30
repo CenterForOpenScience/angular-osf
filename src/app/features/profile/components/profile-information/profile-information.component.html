@@ -35,6 +35,25 @@
         }
       </div>
 
+      <div class="flex flex-wrap align-items-center gap-3">
+        @for (institution of currentUserInstitutions(); track $index) {
+          <a
+            class="cursor-pointer custom-light-hover"
+            [routerLink]="['/institutions', institution.id]"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              [ngSrc]="institution.assets.logo"
+              class="fit-contain"
+              width="80"
+              height="80"
+              [alt]="institution.name"
+            />
+          </a>
+        }
+      </div>
+
       @if (!isMedium() && showEdit()) {
         <div class="btn-full-width">
           <p-button

@@ -1,6 +1,6 @@
 import { createDispatchMap, select, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
@@ -10,7 +10,6 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 import { switchMap } from 'rxjs';
 
 import { Clipboard } from '@angular/cdk/clipboard';
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,6 +18,8 @@ import {
   effect,
   HostBinding,
   inject,
+  OnDestroy,
+  OnInit,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -43,10 +44,11 @@ import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/meta
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { pathJoin } from '@osf/shared/helpers/path-join.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
+import { MetaTagsBuilderService } from '@osf/shared/services/meta-tags-builder.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { FileDetailsModel } from '@shared/models/files/file.model';
@@ -92,9 +94,8 @@ import {
   templateUrl: './file-detail.component.html',
   styleUrl: './file-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DatePipe],
 })
-export class FileDetailComponent {
+export class FileDetailComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
   readonly store = inject(Store);
@@ -106,15 +107,13 @@ export class FileDetailComponent {
   readonly customConfirmationService = inject(CustomConfirmationService);
 
   private readonly metaTags = inject(MetaTagsService);
-  private readonly datePipe = inject(DatePipe);
+  private readonly metaTagsBuilder = inject(MetaTagsBuilderService);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
-  private readonly translateService = inject(TranslateService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly clipboard = inject(Clipboard);
+  private readonly signpostingService = inject(SignpostingService);
 
   readonly dataciteService = inject(DataciteService);
-
-  private readonly webUrl = this.environment.webUrl;
 
   private readonly actions = createDispatchMap({
     getFile: GetFile,
@@ -204,24 +203,14 @@ export class FileDetailComponent {
     }
 
     const file = this.file();
+
     if (!file) return null;
 
-    return {
-      osfGuid: file.guid,
-      title: this.fileCustomMetadata()?.title || file.name,
-      type: this.fileCustomMetadata()?.resourceTypeGeneral,
-      description:
-        this.fileCustomMetadata()?.description ?? this.translateService.instant('files.metaTagDescriptionPlaceholder'),
-      url: pathJoin(this.webUrl, this.fileGuid),
-      publishedDate: this.datePipe.transform(file.dateCreated, 'yyyy-MM-dd'),
-      modifiedDate: this.datePipe.transform(file.dateModified, 'yyyy-MM-dd'),
-      language: this.fileCustomMetadata()?.language,
-      contributors: this.resourceContributors()?.map((contributor) => ({
-        fullName: contributor.fullName,
-        givenName: contributor.givenName,
-        familyName: contributor.familyName,
-      })),
-    };
+    return this.metaTagsBuilder.buildFileMetaTagsData({
+      file,
+      fileMetadata: this.fileCustomMetadata(),
+      contributors: this.resourceContributors() ?? [],
+    });
   });
 
   constructor() {
@@ -282,6 +271,16 @@ export class FileDetailComponent {
     });
 
     this.dataciteService.logIdentifiableView(this.fileMetadata$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+  }
+
+  ngOnInit(): void {
+    this.signpostingService.addSignposting(this.fileGuid);
+  }
+
+  ngOnDestroy(): void {
+    if (this.fileGuid) {
+      this.signpostingService.removeSignpostingLinkTags();
+    }
   }
 
   getIframeLink(version: string) {

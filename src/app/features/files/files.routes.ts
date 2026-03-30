@@ -18,6 +18,7 @@ export const filesRoutes: Routes = [
       {
         path: ':fileProvider',
         canMatch: [isFileProvider],
+        data: { canonicalPathTemplate: 'files/:fileProvider' },
         loadComponent: () => import('@osf/features/files/pages/files/files.component').then((c) => c.FilesComponent),
       },
       {
@@ -27,18 +28,12 @@ export const filesRoutes: Routes = [
       },
       {
         path: ':fileGuid',
+        data: { canonicalPathTemplate: 'files/:fileGuid' },
         loadComponent: () => {
           return import('@osf/features/files/pages/file-detail/file-detail.component').then(
             (c) => c.FileDetailComponent
           );
         },
-        children: [
-          {
-            path: 'metadata',
-            loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
-            data: { resourceType: ResourceType.File },
-          },
-        ],
       },
     ],
   },

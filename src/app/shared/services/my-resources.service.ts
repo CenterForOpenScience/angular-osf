@@ -14,9 +14,9 @@ import {
   MyResourcesItemGetResponseJsonApi,
   MyResourcesItemResponseJsonApi,
   MyResourcesResponseJsonApi,
-} from '../models/my-resources/my-resources.models';
+} from '../models/my-resources/my-resources.model';
 import { EndpointType } from '../models/my-resources/my-resources-endpoint.type';
-import { MyResourcesSearchFilters } from '../models/my-resources/my-resources-search-filters.models';
+import { MyResourcesSearchFilters } from '../models/my-resources/my-resources-search-filters.model';
 import { CreateProjectPayloadJsoApi } from '../models/nodes/nodes-json-api.model';
 
 import { JsonApiService } from './json-api.service';

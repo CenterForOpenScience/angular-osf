@@ -8,7 +8,7 @@ import { Message } from 'primeng/message';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -27,30 +27,36 @@ import { ToastService } from '@osf/shared/services/toast.service';
 @Component({
   selector: 'osf-title-and-abstract-step',
   imports: [
-    Card,
-    FormsModule,
     Button,
+    Card,
     Textarea,
     RouterLink,
-    ReactiveFormsModule,
     Tooltip,
     Message,
-    TranslatePipe,
+    FormsModule,
+    ReactiveFormsModule,
     TextInputComponent,
+    TranslatePipe,
   ],
   templateUrl: './title-and-abstract-step.component.html',
   styleUrl: './title-and-abstract-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TitleAndAbstractStepComponent {
-  private toastService = inject(ToastService);
+  private readonly toastService = inject(ToastService);
 
-  private actions = createDispatchMap({
+  readonly providerId = input.required<string>();
+  readonly nextClicked = output<void>();
+
+  private readonly actions = createDispatchMap({
     createPreprint: CreatePreprint,
     updatePreprint: UpdatePreprint,
   });
 
-  inputLimits = formInputLimits;
+  readonly createdPreprint = select(PreprintStepperSelectors.getPreprint);
+  readonly isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
+
+  readonly inputLimits = formInputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   titleAndAbstractForm = new FormGroup<TitleAndAbstractForm>({
@@ -68,12 +74,6 @@ export class TitleAndAbstractStepComponent {
     }),
   });
 
-  createdPreprint = select(PreprintStepperSelectors.getPreprint);
-  providerId = select(PreprintStepperSelectors.getSelectedProviderId);
-
-  isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
-  nextClicked = output<void>();
-
   constructor() {
     effect(() => {
       const createdPreprint = this.createdPreprint();
@@ -86,22 +86,23 @@ export class TitleAndAbstractStepComponent {
     });
   }
 
-  nextButtonClicked() {
+  nextButtonClicked(): void {
     if (this.titleAndAbstractForm.invalid) {
       return;
     }
 
-    const model = this.titleAndAbstractForm.value;
+    const model = this.titleAndAbstractForm.getRawValue();
+    const createdPreprint = this.createdPreprint();
 
-    if (this.createdPreprint()) {
-      this.actions.updatePreprint(this.createdPreprint()!.id, model).subscribe({
+    if (createdPreprint) {
+      this.actions.updatePreprint(createdPreprint.id, model).subscribe({
         complete: () => {
           this.nextClicked.emit();
           this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
         },
       });
     } else {
-      this.actions.createPreprint(model.title!, model.description!, this.providerId()!).subscribe({
+      this.actions.createPreprint(model.title, model.description, this.providerId()).subscribe({
         complete: () => {
           this.nextClicked.emit();
           this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');

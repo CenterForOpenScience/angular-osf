@@ -1,11 +1,12 @@
-import { MockComponents, MockPipe } from 'ng-mocks';
+import { Store } from '@ngxs/store';
+
+import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
-import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { CitationSectionComponent } from '../citation-section/citation-section.component';
@@ -13,51 +14,46 @@ import { CitationSectionComponent } from '../citation-section/citation-section.c
 import { AdditionalInfoComponent } from './additional-info.component';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AdditionalInfoComponent', () => {
   let component: AdditionalInfoComponent;
   let fixture: ComponentFixture<AdditionalInfoComponent>;
+  let store: Store;
 
-  const mockPreprint = PREPRINT_MOCK;
+  interface SetupOverrides extends BaseSetupOverrides {
+    preprintProviderId?: string;
+  }
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AdditionalInfoComponent,
-        OSFTestingModule,
-        ...MockComponents(CitationSectionComponent, LicenseDisplayComponent),
-        MockPipe(InterpolatePipe),
-      ],
+  function setup(overrides: SetupOverrides = {}) {
+    TestBed.configureTestingModule({
+      imports: [AdditionalInfoComponent, ...MockComponents(CitationSectionComponent, LicenseDisplayComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
-          signals: [
-            {
-              selector: PreprintSelectors.getPreprint,
-              value: mockPreprint,
-            },
-            {
-              selector: PreprintSelectors.isPreprintLoading,
-              value: false,
-            },
-            {
-              selector: SubjectsSelectors.getSelectedSubjects,
-              value: [],
-            },
-            {
-              selector: SubjectsSelectors.areSelectedSubjectsLoading,
-              value: false,
-            },
-          ],
+          signals: mergeSignalOverrides(
+            [
+              { selector: PreprintSelectors.getPreprint, value: PREPRINT_MOCK },
+              { selector: PreprintSelectors.isPreprintLoading, value: false },
+              { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
+              { selector: SubjectsSelectors.areSelectedSubjectsLoading, value: false },
+            ],
+            overrides.selectorOverrides
+          ),
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(AdditionalInfoComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('preprintProviderId', 'osf');
+    store = TestBed.inject(Store);
+    fixture.componentRef.setInput('preprintProviderId', overrides.preprintProviderId ?? 'osf');
     fixture.detectChanges();
+  }
+
+  beforeEach(() => {
+    setup();
   });
 
   it('should create', () => {
@@ -66,12 +62,12 @@ describe('AdditionalInfoComponent', () => {
 
   it('should return license from preprint when available', () => {
     const license = component.license();
-    expect(license).toBe(mockPreprint.embeddedLicense);
+    expect(license).toBe(PREPRINT_MOCK.embeddedLicense);
   });
 
   it('should return license options record from preprint when available', () => {
     const licenseOptionsRecord = component.licenseOptionsRecord();
-    expect(licenseOptionsRecord).toEqual(mockPreprint.licenseOptions);
+    expect(licenseOptionsRecord).toEqual(PREPRINT_MOCK.licenseOptions);
   });
 
   it('should have skeleton data array with 5 null elements', () => {
@@ -88,5 +84,37 @@ describe('AdditionalInfoComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/search'], {
       queryParams: { search: 'test-tag' },
     });
+  });
+
+  it('should not render DOI link when articleDoiLink is missing', () => {
+    const doiLink = fixture.nativeElement.querySelector('a[href*="doi.org"]');
+    expect(doiLink).toBeNull();
+  });
+
+  it('should render DOI link when articleDoiLink is available', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: {
+            ...PREPRINT_MOCK,
+            articleDoiLink: 'https://doi.org/10.1234/sample.article-doi',
+          },
+        },
+      ],
+    });
+
+    const doiLink = fixture.nativeElement.querySelector('a[href*="doi.org"]') as HTMLAnchorElement | null;
+    expect(doiLink).not.toBeNull();
+    expect(doiLink?.getAttribute('href')).toBe('https://doi.org/10.1234/sample.article-doi');
+    expect(doiLink?.textContent?.trim()).toBe('https://doi.org/10.1234/sample.article-doi');
+  });
+
+  it('should not dispatch subject fetch when preprint id is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.getPreprint, value: null }],
+    });
+
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 });

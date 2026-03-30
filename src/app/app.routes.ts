@@ -108,6 +108,13 @@ export const routes: Routes = [
           ).then((mod) => mod.PreprintPendingModerationComponent),
       },
       {
+        path: 'preprints/:providerId/:id/download',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-download-redirect/preprint-download-redirect.component').then(
+            (c) => c.PreprintDownloadRedirectComponent
+          ),
+      },
+      {
         path: 'preprints/:providerId/:id',
         loadComponent: () =>
           import('@osf/features/preprints/pages/preprint-details/preprint-details.component').then(
@@ -173,6 +180,14 @@ export const routes: Routes = [
         path: 'not-found',
         loadComponent: () =>
           import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
+        data: { skipBreadcrumbs: true },
+      },
+      {
+        path: 'spam-content',
+        loadComponent: () =>
+          import('./core/components/resource-is-spammed/resource-is-spammed.component').then(
+            (mod) => mod.ResourceIsSpammedComponent
+          ),
         data: { skipBreadcrumbs: true },
       },
       {

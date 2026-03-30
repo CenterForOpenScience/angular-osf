@@ -1,4 +1,4 @@
-import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserModel } from '@osf/shared/models/user/user.model';
 import { UserRelatedCounts } from '@osf/shared/models/user-related-counts/user-related-counts.model';
 
 export const MOCK_USER: UserModel = {
@@ -58,6 +58,7 @@ export const MOCK_USER: UserModel = {
   allowIndexing: true,
   canViewReviews: true,
   mergedBy: undefined,
+  external_identity: {},
 };
 
 export const MOCK_USER_RELATED_COUNTS: UserRelatedCounts = {

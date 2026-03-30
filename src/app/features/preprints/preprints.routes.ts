@@ -3,17 +3,18 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { authGuard } from '@core/guards/auth.guard';
-import { preprintsModeratorGuard } from '@osf/features/preprints/guards';
-import { PreprintsComponent } from '@osf/features/preprints/preprints.component';
-import { PreprintState } from '@osf/features/preprints/store/preprint';
-import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
-import { PreprintStepperState } from '@osf/features/preprints/store/preprint-stepper';
-import { ConfirmLeavingGuard } from '@shared/guards';
-import { CitationsState } from '@shared/stores/citations';
-import { ProjectsState } from '@shared/stores/projects';
-import { SubjectsState } from '@shared/stores/subjects';
+import { ConfirmLeavingGuard } from '@osf/shared/guards';
+import { CitationsState } from '@osf/shared/stores/citations';
+import { ProjectsState } from '@osf/shared/stores/projects';
+import { SubjectsState } from '@osf/shared/stores/subjects';
 
 import { PreprintModerationState } from '../moderation/store/preprint-moderation';
+
+import { preprintsModeratorGuard } from './guards/preprints-moderator.guard';
+import { PreprintState } from './store/preprint';
+import { PreprintProvidersState } from './store/preprint-providers';
+import { PreprintStepperState } from './store/preprint-stepper';
+import { PreprintsComponent } from './preprints.component';
 
 export const preprintsRoutes: Routes = [
   {
@@ -31,7 +32,7 @@ export const preprintsRoutes: Routes = [
       {
         path: 'discover',
         loadComponent: () =>
-          import('@osf/features/preprints/pages/landing/preprints-landing.component').then(
+          import('@osf/features/preprints/pages/preprints-landing/preprints-landing.component').then(
             (c) => c.PreprintsLandingComponent
           ),
       },

@@ -14,7 +14,7 @@ import { ContributorModel } from '../models/contributors/contributor.model';
 import { ContributorAddModel } from '../models/contributors/contributor-add.model';
 import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
-import { IndexCardSearchResponseJsonApi } from '../models/search/index-card-search-json-api.models';
+import { IndexCardSearchResponseJsonApi } from '../models/search/index-card-search-json-api.model';
 import { SearchUserDataModel } from '../models/user/search-user-data.model';
 
 import { JsonApiService } from './json-api.service';
@@ -248,11 +248,9 @@ export class ContributorsService {
     userId: string,
     removeFromChildren = false
   ): Observable<void> {
-    let baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
-    if (removeFromChildren) {
-      baseUrl = baseUrl.concat('?propagate_to_children=true');
-    }
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
+    const url = removeFromChildren ? `${baseUrl}?include_children=true` : baseUrl;
 
-    return this.jsonApiService.delete(baseUrl);
+    return this.jsonApiService.delete(url);
   }
 }

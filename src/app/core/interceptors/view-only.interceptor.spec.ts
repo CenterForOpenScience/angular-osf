@@ -113,14 +113,14 @@ describe('viewOnlyInterceptor', () => {
   it('should not modify funders API requests even when view-only param exists', () => {
     jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('funder123');
 
-    const request = createRequest('/api.crossref.org/funders/10.13039/100000001');
+    const request = createRequest('https://api.ror.org/v2');
     const handler = createHandler();
 
     runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.url).toBe('/api.crossref.org/funders/10.13039/100000001');
+    expect(modifiedRequest.url).toBe('https://api.ror.org/v2');
   });
 
   it('should handle requests to other external APIs normally', () => {

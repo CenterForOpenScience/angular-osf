@@ -6,7 +6,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 
 @Component({
   selector: 'osf-affiliated-institutions-view',

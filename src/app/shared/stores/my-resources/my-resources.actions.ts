@@ -1,5 +1,5 @@
 import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
-import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.models';
+import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.model';
 
 export class GetMyProjects {
   static readonly type = '[My Resources] Get Projects';

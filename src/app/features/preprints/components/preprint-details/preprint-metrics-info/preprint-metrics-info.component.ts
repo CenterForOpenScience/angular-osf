@@ -15,6 +15,6 @@ import { PreprintMetrics } from '@osf/features/preprints/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintMetricsInfoComponent {
-  metrics = input<PreprintMetrics | null>();
-  isLoading = input<boolean>(false);
+  readonly metrics = input<PreprintMetrics | null>();
+  readonly isLoading = input<boolean>(false);
 }

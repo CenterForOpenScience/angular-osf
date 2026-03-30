@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
-import { ProjectModel } from '@osf/shared/models/projects';
+import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { ProjectsSelectors } from '@osf/shared/stores/projects';
 import { RegionsSelectors } from '@osf/shared/stores/regions';

@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 
 @Component({
   selector: 'osf-collections-search-result-card',

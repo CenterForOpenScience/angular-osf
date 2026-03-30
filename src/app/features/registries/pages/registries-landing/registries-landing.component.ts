@@ -18,11 +18,7 @@ import { SearchInputComponent } from '@osf/shared/components/search-input/search
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { normalizeQuotes } from '@osf/shared/helpers/normalize-quotes';
-import {
-  ClearRegistryProvider,
-  GetRegistryProvider,
-  RegistrationProviderSelectors,
-} from '@osf/shared/stores/registration-provider';
+import { ClearRegistryProvider, GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
 import { RegistryServicesComponent } from '../../components/registry-services/registry-services.component';
 import { GetRegistries, RegistriesSelectors } from '../../store';
@@ -44,10 +40,9 @@ import { GetRegistries, RegistriesSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesLandingComponent implements OnInit, OnDestroy {
-  private router = inject(Router);
+  private readonly router = inject(Router);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private actions = createDispatchMap({
     getRegistries: GetRegistries,
@@ -56,8 +51,6 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
     clearRegistryProvider: ClearRegistryProvider,
   });
 
-  provider = select(RegistrationProviderSelectors.getBrandedProvider);
-  isProviderLoading = select(RegistrationProviderSelectors.isBrandedProviderLoading);
   registries = select(RegistriesSelectors.getRegistries);
   isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
 

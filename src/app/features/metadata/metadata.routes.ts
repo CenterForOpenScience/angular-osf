@@ -14,6 +14,7 @@ export const metadataRoutes: Routes = [
   },
   {
     path: ':recordId',
+    data: { canonicalPathTemplate: 'metadata/:recordId' },
     component: MetadataComponent,
   },
 ];

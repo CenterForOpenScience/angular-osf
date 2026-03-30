@@ -5,192 +5,168 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReviewAction } from '@osf/features/moderation/models';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
-import { PreprintRequest } from '@osf/features/preprints/models';
+import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { ModerationStatusBannerComponent } from './moderation-status-banner.component';
 
-import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
+import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
-import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
-import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('ModerationStatusBannerComponent', () => {
   let component: ModerationStatusBannerComponent;
   let fixture: ComponentFixture<ModerationStatusBannerComponent>;
 
   const mockPreprint = PREPRINT_MOCK;
-  const mockProvider = MOCK_PROVIDER;
-  const mockReviewAction: ReviewAction = REVIEW_ACTION_MOCK;
-  const mockWithdrawalRequest: PreprintRequest = PREPRINT_REQUEST_MOCK;
+  const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
+  const mockReviewAction = REVIEW_ACTION_MOCK;
+  const mockWithdrawalRequest = PREPRINT_REQUEST_MOCK;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        ModerationStatusBannerComponent,
-        OSFTestingModule,
-        MockComponent(IconComponent),
-        MockPipes(TitleCasePipe, DatePipe),
-      ],
+  interface SetupOverrides extends BaseSetupOverrides {
+    provider?: PreprintProviderDetails | undefined;
+    latestAction?: ReviewAction | null;
+    latestWithdrawalRequest?: PreprintRequest | null;
+    isPendingWithdrawal?: boolean;
+  }
+
+  function setup(overrides: SetupOverrides = {}) {
+    TestBed.configureTestingModule({
+      imports: [ModerationStatusBannerComponent, MockComponent(IconComponent), ...MockPipes(TitleCasePipe, DatePipe)],
       providers: [
-        TranslationServiceMock,
-        EnvironmentTokenMock,
+        provideOSFCore(),
         provideMockStore({
-          signals: [
-            {
-              selector: PreprintSelectors.getPreprint,
-              value: mockPreprint,
-            },
-          ],
+          signals: mergeSignalOverrides(
+            [{ selector: PreprintSelectors.getPreprint, value: mockPreprint }],
+            overrides.selectorOverrides
+          ),
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ModerationStatusBannerComponent);
     component = fixture.componentInstance;
-
-    fixture.componentRef.setInput('provider', mockProvider);
-    fixture.componentRef.setInput('latestAction', mockReviewAction);
-    fixture.componentRef.setInput('latestWithdrawalRequest', mockWithdrawalRequest);
-    fixture.componentRef.setInput('isPendingWithdrawal', false);
-  });
+    fixture.componentRef.setInput('provider', 'provider' in overrides ? overrides.provider : mockProvider);
+    fixture.componentRef.setInput(
+      'latestAction',
+      'latestAction' in overrides ? overrides.latestAction : mockReviewAction
+    );
+    fixture.componentRef.setInput(
+      'latestWithdrawalRequest',
+      'latestWithdrawalRequest' in overrides ? overrides.latestWithdrawalRequest : mockWithdrawalRequest
+    );
+    fixture.componentRef.setInput('isPendingWithdrawal', overrides.isPendingWithdrawal ?? false);
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
-  it('should return preprint from store', () => {
-    const preprint = component.preprint();
-    expect(preprint).toBe(mockPreprint);
+  it('should expose store preprint and provider-based document type', () => {
+    setup();
+    expect(component.preprint()).toBe(mockPreprint);
+    expect(component.documentType()?.singular).toBeDefined();
   });
 
-  it('should compute noActions when latestAction is null', () => {
-    fixture.componentRef.setInput('latestAction', null);
-    const noActions = component.noActions();
-    expect(noActions).toBe(true);
+  it('should return null documentType when provider is missing', () => {
+    setup({ provider: undefined });
+    expect(component.documentType()).toBeNull();
   });
 
-  it('should compute noActions when latestAction exists', () => {
-    const noActions = component.noActions();
-    expect(noActions).toBe(false);
+  it('should compute currentState and fallback to pending when preprint is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.getPreprint, value: undefined }],
+    });
+    expect(component.currentState()).toBe(ReviewsState.Pending);
   });
 
-  it('should compute documentType from provider', () => {
-    const documentType = component.documentType();
-    expect(documentType).toBeDefined();
-    expect(documentType?.singular).toBeDefined();
+  it('should compute labelDate using dateLastTransitioned and prefer dateWithdrawn when present', () => {
+    setup();
+    expect(component.labelDate()).toBe(mockPreprint.dateLastTransitioned);
+
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, dateWithdrawn: '2024-01-01T00:00:00Z' },
+        },
+      ],
+    });
+    expect(component.labelDate()).toBe('2024-01-01T00:00:00Z');
   });
 
-  it('should compute labelDate from preprint dateLastTransitioned', () => {
-    const labelDate = component.labelDate();
-    expect(labelDate).toBe(mockPreprint.dateLastTransitioned);
+  it('should compute status, icon and severity for pending withdrawal', () => {
+    setup({ isPendingWithdrawal: true });
+    expect(component.status()).toBe('preprints.details.statusBanner.pending');
+    expect(component.iconClass()).toBe('hourglass');
+    expect(component.severity()).toBe('warn');
   });
 
-  it('should compute status for pending preprint', () => {
-    const status = component.status();
-    expect(status).toBe('preprints.details.statusBanner.pending');
+  it('should compute status, icon and severity from non-pending current state', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Accepted },
+        },
+      ],
+    });
+    expect(component.status()).toBe('preprints.details.statusBanner.accepted');
+    expect(component.iconClass()).toBe('check-circle');
+    expect(component.severity()).toBe('success');
   });
 
-  it('should compute status for accepted preprint', () => {
-    const acceptedPreprint = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
-    jest.spyOn(component, 'preprint').mockReturnValue(acceptedPreprint);
-    const status = component.status();
-    expect(status).toBe('preprints.details.statusBanner.accepted');
+  it('should compute severity for pending preprint based on provider workflow', () => {
+    setup({
+      provider: { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PostModeration },
+    });
+    expect(component.severity()).toBe('secondary');
   });
 
-  it('should compute status for pending withdrawal', () => {
-    fixture.componentRef.setInput('isPendingWithdrawal', true);
-    const status = component.status();
-    expect(status).toBe('preprints.details.statusBanner.pending');
+  it('should compute recent activity language for automatic and action-based paths', () => {
+    setup({ latestAction: null });
+    expect(component.noActions()).toBe(true);
+    expect(component.recentActivityLanguage()).toBe(
+      'preprints.details.moderationStatusBanner.recentActivity.automatic.pending'
+    );
+
+    setup();
+    expect(component.noActions()).toBe(false);
+    expect(component.recentActivityLanguage()).toBe('preprints.details.moderationStatusBanner.recentActivity.pending');
   });
 
-  it('should compute iconClass for pending preprint', () => {
-    const iconClass = component.iconClass();
-    expect(iconClass).toBe('hourglass');
+  it('should compute request activity language only for pending withdrawal', () => {
+    setup();
+    expect(component.requestActivityLanguage()).toBeUndefined();
+
+    setup({ isPendingWithdrawal: true });
+    expect(component.requestActivityLanguage()).toBe(
+      'preprints.details.moderationStatusBanner.recentActivity.pendingWithdrawal'
+    );
   });
 
-  it('should compute iconClass for accepted preprint', () => {
-    const acceptedPreprint = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
-    jest.spyOn(component, 'preprint').mockReturnValue(acceptedPreprint);
-    const iconClass = component.iconClass();
-    expect(iconClass).toBe('check-circle');
+  it('should compute action creator fields and nullable action creator link', () => {
+    setup();
+    expect(component.actionCreatorName()).toBe('Test User');
+    expect(component.actionCreatorId()).toBe('user-1');
+    expect(component.actionCreatorLink()).toBe(`${component.webUrl}/user-1`);
+
+    setup({ latestAction: null });
+    expect(component.actionCreatorLink()).toBeNull();
   });
 
-  it('should compute iconClass for pending withdrawal', () => {
-    fixture.componentRef.setInput('isPendingWithdrawal', true);
-    const iconClass = component.iconClass();
-    expect(iconClass).toBe('hourglass');
-  });
+  it('should compute withdrawal requester fields and nullable requester link', () => {
+    setup();
+    expect(component.withdrawalRequesterName()).toBe('John Doe');
+    expect(component.withdrawalRequesterId()).toBe('user-123');
+    expect(component.withdrawalRequesterLink()).toBe(`${component.webUrl}/user-123`);
 
-  it('should compute severity for pending preprint with post-moderation', () => {
-    const postModerationProvider = { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PostModeration };
-    fixture.componentRef.setInput('provider', postModerationProvider);
-    const severity = component.severity();
-    expect(severity).toBe('secondary');
-  });
-
-  it('should compute severity for accepted preprint', () => {
-    const acceptedPreprint = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
-    jest.spyOn(component, 'preprint').mockReturnValue(acceptedPreprint);
-    const severity = component.severity();
-    expect(severity).toBe('success');
-  });
-
-  it('should compute severity for pending withdrawal', () => {
-    fixture.componentRef.setInput('isPendingWithdrawal', true);
-    const severity = component.severity();
-    expect(severity).toBe('warn');
-  });
-
-  it('should compute recentActivityLanguage for no actions', () => {
-    fixture.componentRef.setInput('latestAction', null);
-    const language = component.recentActivityLanguage();
-    expect(language).toBe('preprints.details.moderationStatusBanner.recentActivity.automatic.pending');
-  });
-
-  it('should compute recentActivityLanguage with actions', () => {
-    const language = component.recentActivityLanguage();
-    expect(language).toBe('preprints.details.moderationStatusBanner.recentActivity.pending');
-  });
-
-  it('should compute requestActivityLanguage for pending withdrawal', () => {
-    fixture.componentRef.setInput('isPendingWithdrawal', true);
-    const language = component.requestActivityLanguage();
-    expect(language).toBe('preprints.details.moderationStatusBanner.recentActivity.pendingWithdrawal');
-  });
-
-  it('should not compute requestActivityLanguage when not pending withdrawal', () => {
-    const language = component.requestActivityLanguage();
-    expect(language).toBeUndefined();
-  });
-
-  it('should compute actionCreatorName from latestAction', () => {
-    const name = component.actionCreatorName();
-    expect(name).toBe('Test User');
-  });
-
-  it('should compute actionCreatorId from latestAction', () => {
-    const id = component.actionCreatorId();
-    expect(id).toBe('user-1');
-  });
-
-  it('should compute actionCreatorLink with environment webUrl', () => {
-    const link = component.actionCreatorLink();
-    expect(link).toBe(`${EnvironmentTokenMock.useValue.webUrl}/user-1`);
-  });
-
-  it('should compute withdrawalRequesterName from latestWithdrawalRequest', () => {
-    const name = component.withdrawalRequesterName();
-    expect(name).toBe('John Doe');
-  });
-
-  it('should compute withdrawalRequesterId from latestWithdrawalRequest', () => {
-    const id = component.withdrawalRequesterId();
-    expect(id).toBe('user-123');
+    setup({ latestWithdrawalRequest: null });
+    expect(component.withdrawalRequesterLink()).toBeNull();
   });
 });

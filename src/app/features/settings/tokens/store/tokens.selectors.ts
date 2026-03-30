@@ -2,7 +2,7 @@ import { Selector } from '@ngxs/store';
 
 import { ScopeModel, TokenModel } from '../models';
 
-import { TokensStateModel } from './tokens.models';
+import { TokensStateModel } from './tokens.model';
 import { TokensState } from './tokens.state';
 
 export class TokensSelectors {

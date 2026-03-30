@@ -96,6 +96,7 @@
               "ssr": {
                 "entry": "src/server.ts"
               },
+              "sourceMap": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -117,6 +118,20 @@
               "namedChunks": true
             },
             "development": {
+              "outputMode": "static",
+              "server": false,
+              "ssr": false,
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "dev-ssr": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
@@ -163,6 +178,9 @@
             },
             "development": {
               "buildTarget": "osf:build:development"
+            },
+            "dev-ssr": {
+              "buildTarget": "osf:build:dev-ssr"
             },
             "docker": {
               "buildTarget": "osf:build:docker"

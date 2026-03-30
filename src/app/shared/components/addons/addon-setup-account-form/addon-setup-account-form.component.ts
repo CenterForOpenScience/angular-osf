@@ -11,9 +11,9 @@ import { RouterLink } from '@angular/router';
 
 import { AddonFormControls } from '@osf/shared/enums/addon-form-controls.enum';
 import { CredentialsFormat } from '@osf/shared/enums/addons-credentials-format.enum';
+import { AuthorizedAddonRequestJsonApi } from '@osf/shared/models/addons/addon-json-api.model';
+import { AddonForm } from '@osf/shared/models/addons/addon-utils.model';
 import { AddonModel } from '@shared/models/addons/addon.model';
-import { AuthorizedAddonRequestJsonApi } from '@shared/models/addons/addon-json-api.models';
-import { AddonForm } from '@shared/models/addons/addon-utils.models';
 import { AuthorizedAccountModel } from '@shared/models/addons/authorized-account.model';
 import { AddonFormService } from '@shared/services/addons/addon-form.service';
 

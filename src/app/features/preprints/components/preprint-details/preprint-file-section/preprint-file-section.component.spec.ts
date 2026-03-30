@@ -1,6 +1,6 @@
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -8,19 +8,20 @@ import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { FileVersionModel } from '@shared/models/files/file-version.model';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { PreprintFileSectionComponent } from './preprint-file-section.component';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
-import { TranslationServiceMock } from '@testing/mocks/translation.service.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { DataciteServiceMockBuilder, DataciteServiceMockType } from '@testing/providers/datacite.service.mock';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('PreprintFileSectionComponent', () => {
   let component: PreprintFileSectionComponent;
   let fixture: ComponentFixture<PreprintFileSectionComponent>;
-  let dataciteService: jest.Mocked<DataciteService>;
+  let dataciteService: DataciteServiceMockType;
   let isMediumSubject: BehaviorSubject<boolean>;
   let isLargeSubject: BehaviorSubject<boolean>;
 
@@ -32,141 +33,134 @@ describe('PreprintFileSectionComponent', () => {
       render: 'https://example.com/render',
     },
   };
-  const mockFileVersions = [
+  const mockFileVersions: FileVersionModel[] = [
     {
       id: '1',
-      dateCreated: '2024-01-15T10:00:00Z',
+      size: 100,
+      name: 'test-file-v1.pdf',
+      dateCreated: new Date('2024-01-15T10:00:00Z'),
       downloadLink: 'https://example.com/download/1',
     },
     {
       id: '2',
-      dateCreated: '2024-01-16T10:00:00Z',
+      size: 200,
+      name: 'test-file-v2.pdf',
+      dateCreated: new Date('2024-01-16T10:00:00Z'),
       downloadLink: 'https://example.com/download/2',
     },
   ];
 
-  beforeEach(async () => {
+  interface SetupOverrides extends BaseSetupOverrides {
+    providerReviewsWorkflow?: ProviderReviewsWorkflow | null;
+  }
+
+  function setup(overrides: SetupOverrides = {}) {
     isMediumSubject = new BehaviorSubject<boolean>(false);
     isLargeSubject = new BehaviorSubject<boolean>(true);
+    dataciteService = DataciteServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [PreprintFileSectionComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
+    TestBed.configureTestingModule({
+      imports: [PreprintFileSectionComponent, MockComponent(LoadingSpinnerComponent)],
       providers: [
-        TranslationServiceMock,
-        {
-          provide: DataciteService,
-          useValue: {
-            logIdentifiableDownload: jest.fn().mockReturnValue(of(void 0)),
-          },
-        },
+        provideOSFCore(),
+        MockProvider(DataciteService, dataciteService),
         MockProvider(IS_MEDIUM, isMediumSubject),
         MockProvider(IS_LARGE, isLargeSubject),
         provideMockStore({
-          signals: [
-            {
-              selector: PreprintSelectors.getPreprint,
-              value: mockPreprint,
-            },
-            {
-              selector: PreprintSelectors.getPreprintFile,
-              value: mockFile,
-            },
-            {
-              selector: PreprintSelectors.isPreprintFileLoading,
-              value: false,
-            },
-            {
-              selector: PreprintSelectors.getPreprintFileVersions,
-              value: mockFileVersions,
-            },
-            {
-              selector: PreprintSelectors.arePreprintFileVersionsLoading,
-              value: false,
-            },
-          ],
+          signals: mergeSignalOverrides(
+            [
+              { selector: PreprintSelectors.getPreprint, value: mockPreprint },
+              { selector: PreprintSelectors.getPreprintFile, value: mockFile },
+              { selector: PreprintSelectors.isPreprintFileLoading, value: false },
+              { selector: PreprintSelectors.getPreprintFileVersions, value: mockFileVersions },
+              { selector: PreprintSelectors.arePreprintFileVersionsLoading, value: false },
+            ],
+            overrides.selectorOverrides
+          ),
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(PreprintFileSectionComponent);
     component = fixture.componentInstance;
-
-    fixture.componentRef.setInput('providerReviewsWorkflow', ProviderReviewsWorkflow.PreModeration);
-
-    dataciteService = TestBed.inject(DataciteService) as jest.MockedObject<DataciteService>;
-  });
+    fixture.componentRef.setInput(
+      'providerReviewsWorkflow',
+      overrides.providerReviewsWorkflow ?? ProviderReviewsWorkflow.PreModeration
+    );
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
-  it('should return preprint from store', () => {
-    const preprint = component.preprint();
-    expect(preprint).toBe(mockPreprint);
-  });
-
-  it('should return file from store', () => {
-    const file = component.file();
-    expect(file).toBe(mockFile);
-  });
-
-  it('should return file loading state from store', () => {
-    const loading = component.isFileLoading();
-    expect(loading).toBe(false);
-  });
-
-  it('should return file versions from store', () => {
-    const versions = component.fileVersions();
-    expect(versions).toBe(mockFileVersions);
-  });
-
-  it('should return file versions loading state from store', () => {
-    const loading = component.areFileVersionsLoading();
-    expect(loading).toBe(false);
+  it('should expose selector signals', () => {
+    setup();
+    expect(component.preprint()).toBe(mockPreprint);
+    expect(component.file()).toBe(mockFile);
+    expect(component.isFileLoading()).toBe(false);
+    expect(component.fileVersions()).toBe(mockFileVersions);
+    expect(component.areFileVersionsLoading()).toBe(false);
   });
 
   it('should compute safe link from file render link', () => {
+    setup();
     const safeLink = component.safeLink();
-    expect(safeLink).toBeDefined();
+    expect(safeLink).toBe('https://example.com/render');
+  });
+
+  it('should return null safe link when render link is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintSelectors.getPreprintFile, value: { ...mockFile, links: {} } }],
+    });
+    expect(component.safeLink()).toBeNull();
   });
 
   it('should compute version menu items from file versions', () => {
+    setup();
     const menuItems = component.versionMenuItems();
     expect(menuItems).toHaveLength(2);
-    expect(menuItems[0]).toHaveProperty('label');
-    expect(menuItems[0]).toHaveProperty('url');
-    expect(menuItems[0]).toHaveProperty('command');
+    expect(menuItems[0].label).toBeTruthy();
+    expect(menuItems[0].url).toBe('https://example.com/download/1');
+    expect(menuItems[0].command).toBeDefined();
   });
 
   it('should return empty array when no file versions', () => {
+    setup();
     jest.spyOn(component, 'fileVersions').mockReturnValue([]);
     const menuItems = component.versionMenuItems();
     expect(menuItems).toEqual([]);
   });
 
+  it('should return empty array when file versions are undefined', () => {
+    setup();
+    jest.spyOn(component, 'fileVersions').mockReturnValue(undefined as unknown as typeof mockFileVersions);
+    const menuItems = component.versionMenuItems();
+    expect(menuItems).toEqual([]);
+  });
+
   it('should compute date label for pre-moderation workflow', () => {
+    setup({ providerReviewsWorkflow: ProviderReviewsWorkflow.PreModeration });
     const label = component.dateLabel();
     expect(label).toBe('preprints.details.file.submitted');
   });
 
-  it('should compute date label for post-moderation workflow', () => {
-    fixture.componentRef.setInput('providerReviewsWorkflow', ProviderReviewsWorkflow.PostModeration);
-    const label = component.dateLabel();
-    expect(label).toBe('preprints.details.file.created');
-  });
-
-  it('should return created label when no reviews workflow', () => {
+  it('should return created label for non-pre-moderation workflows', () => {
+    setup({ providerReviewsWorkflow: ProviderReviewsWorkflow.PostModeration });
+    expect(component.dateLabel()).toBe('preprints.details.file.created');
     fixture.componentRef.setInput('providerReviewsWorkflow', null);
     const label = component.dateLabel();
     expect(label).toBe('preprints.details.file.created');
   });
 
   it('should call dataciteService.logIdentifiableDownload when logDownload is called', () => {
+    setup();
     component.logDownload();
     expect(dataciteService.logIdentifiableDownload).toHaveBeenCalledWith(component.preprint$);
   });
 
   it('should call logDownload when version menu item command is executed', () => {
+    setup();
     const menuItems = component.versionMenuItems();
     expect(menuItems.length).toBeGreaterThan(0);
 
@@ -180,11 +174,13 @@ describe('PreprintFileSectionComponent', () => {
   });
 
   it('should handle isMedium signal', () => {
+    setup();
     const isMedium = component.isMedium();
     expect(typeof isMedium).toBe('boolean');
   });
 
   it('should handle isLarge signal', () => {
+    setup();
     const isLarge = component.isLarge();
     expect(typeof isLarge).toBe('boolean');
   });

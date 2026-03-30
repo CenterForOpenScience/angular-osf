@@ -1,4 +1,4 @@
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface InstitutionsSearchModel {

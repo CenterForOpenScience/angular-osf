@@ -4,35 +4,33 @@ import { MockProvider } from 'ng-mocks';
 import { of } from 'rxjs';
 
 import { HttpRequest } from '@angular/common/http';
-import { runInInjectionContext } from '@angular/core';
+import { PLATFORM_ID, runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { EnvironmentModel } from '@osf/shared/models/environment.model';
 
 import { authInterceptor } from './auth.interceptor';
 
 describe('authInterceptor', () => {
   let cookieService: CookieService;
-  let mockHandler: jest.Mock;
+  let cookieServiceMock: { get: jest.Mock };
 
-  beforeEach(() => {
-    mockHandler = jest.fn();
+  const setup = (platformId = 'browser', environmentOverrides: Partial<EnvironmentModel> = {}) => {
+    cookieServiceMock = { get: jest.fn() };
 
     TestBed.configureTestingModule({
       providers: [
-        MockProvider(CookieService, {
-          get: jest.fn(),
-        }),
-        {
-          provide: 'PLATFORM_ID',
-          useValue: 'browser',
-        },
-        {
-          provide: 'REQUEST',
-          useValue: null,
-        },
+        MockProvider(CookieService, cookieServiceMock),
+        MockProvider(PLATFORM_ID, platformId),
+        MockProvider(ENVIRONMENT, { throttleToken: '', ...environmentOverrides } as EnvironmentModel),
       ],
     });
 
     cookieService = TestBed.inject(CookieService);
+  };
+
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
@@ -44,12 +42,13 @@ describe('authInterceptor', () => {
   };
 
   const createHandler = () => {
-    const handler = mockHandler.mockReturnValue(of({}));
+    const handler = jest.fn().mockReturnValue(of({}));
     return handler;
   };
 
-  it('should skip CrossRef funders API requests', () => {
-    const request = createRequest('/api.crossref.org/funders/10.13039/100000001');
+  it('should skip ROR funders API requests', () => {
+    setup();
+    const request = createRequest('https://api.ror.org/v2');
     const handler = createHandler();
 
     runInInjectionContext(TestBed, () => authInterceptor(request, handler));
@@ -60,6 +59,7 @@ describe('authInterceptor', () => {
   });
 
   it('should set Accept header to */* for text response type', () => {
+    setup();
     const request = createRequest('/api/v2/projects/', { responseType: 'text' });
     const handler = createHandler();
 
@@ -71,6 +71,7 @@ describe('authInterceptor', () => {
   });
 
   it('should set Accept header to API version for json response type', () => {
+    setup();
     const request = createRequest('/api/v2/projects/', { responseType: 'json' });
     const handler = createHandler();
 
@@ -82,6 +83,7 @@ describe('authInterceptor', () => {
   });
 
   it('should set Content-Type header when not present', () => {
+    setup();
     const request = createRequest('/api/v2/projects/');
     const handler = createHandler();
 
@@ -93,6 +95,7 @@ describe('authInterceptor', () => {
   });
 
   it('should not override existing Content-Type header', () => {
+    setup();
     const request = createRequest('/api/v2/projects/');
     const requestWithHeaders = request.clone({
       setHeaders: { 'Content-Type': 'application/json' },
@@ -107,7 +110,8 @@ describe('authInterceptor', () => {
   });
 
   it('should add CSRF token and withCredentials in browser platform', () => {
-    jest.spyOn(cookieService, 'get').mockReturnValue('csrf-token-123');
+    setup();
+    cookieServiceMock.get.mockReturnValue('csrf-token-123');
 
     const request = createRequest('/api/v2/projects/');
     const handler = createHandler();
@@ -122,7 +126,8 @@ describe('authInterceptor', () => {
   });
 
   it('should not add CSRF token when not available in browser platform', () => {
-    jest.spyOn(cookieService, 'get').mockReturnValue('');
+    setup();
+    cookieServiceMock.get.mockReturnValue('');
 
     const request = createRequest('/api/v2/projects/');
     const handler = createHandler();
@@ -134,5 +139,38 @@ describe('authInterceptor', () => {
     const modifiedRequest = handler.mock.calls[0][0];
     expect(modifiedRequest.headers.has('X-CSRFToken')).toBe(false);
     expect(modifiedRequest.withCredentials).toBe(true);
+  });
+
+  it('should not add X-Throttle-Token on browser platform', () => {
+    setup('browser', { throttleToken: 'test-token' });
+    const request = createRequest('/api/v2/projects/');
+    const handler = createHandler();
+
+    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
+
+    const modifiedRequest = handler.mock.calls[0][0];
+    expect(modifiedRequest.headers.has('X-Throttle-Token')).toBe(false);
+  });
+
+  it('should add X-Throttle-Token on server platform when token is present', () => {
+    setup('server', { throttleToken: 'test-token' });
+    const request = createRequest('/api/v2/projects/');
+    const handler = createHandler();
+
+    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
+
+    const modifiedRequest = handler.mock.calls[0][0];
+    expect(modifiedRequest.headers.get('X-Throttle-Token')).toBe('test-token');
+  });
+
+  it('should not add X-Throttle-Token on server platform when token is empty', () => {
+    setup('server', { throttleToken: '' });
+    const request = createRequest('/api/v2/projects/');
+    const handler = createHandler();
+
+    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
+
+    const modifiedRequest = handler.mock.calls[0][0];
+    expect(modifiedRequest.headers.has('X-Throttle-Token')).toBe(false);
   });
 });

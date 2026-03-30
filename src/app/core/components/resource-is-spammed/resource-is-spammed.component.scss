@@ -1,0 +1,7 @@
+@use "styles/mixins" as mix;
+
+:host {
+  @include mix.flex-center;
+  flex: 1;
+  background: var(--gradient-3);
+}

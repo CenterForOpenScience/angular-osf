@@ -1,5 +1,5 @@
 import { PreprintSubmissionModel } from '@osf/features/moderation/models';
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 
 import { MOCK_CONTRIBUTOR } from './contributors.mock';
 

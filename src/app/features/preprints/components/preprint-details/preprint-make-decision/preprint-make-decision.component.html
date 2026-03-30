@@ -1,10 +1,10 @@
 <p-button
-  [label]="labelDecisionButton() | translate | titlecase"
   severity="success"
-  (click)="dialogVisible = true"
+  tooltipPosition="left"
+  [label]="labelDecisionButton() | translate | titlecase"
   [disabled]="makeDecisionButtonDisabled()"
   [pTooltip]="makeDecisionButtonDisabled() ? ('preprints.details.decision.noReasonProvided' | translate) : ''"
-  tooltipPosition="left"
+  (onClick)="dialogVisible = true"
 />
 
 <p-dialog
@@ -26,7 +26,7 @@
             (change)="requestDecisionToggled()"
           />
 
-          <label for="approve">
+          <label for="approve" class="cursor-pointer">
             <h4 class="line-height-3">{{ 'preprints.details.decision.approve.label' | translate }}</h4>
             <p class="line-height-3">{{ 'preprints.details.decision.approve.explanation' | translate }}</p>
           </label>
@@ -41,7 +41,7 @@
             (change)="requestDecisionToggled()"
           />
 
-          <label for="decline">
+          <label for="decline" class="cursor-pointer">
             <h4 class="line-height-3">{{ 'preprints.details.decision.decline.label' | translate }}</h4>
             <p class="line-height-3">{{ 'preprints.details.decision.decline.explanation' | translate }}</p>
           </label>
@@ -50,8 +50,10 @@
 
       <section class="w-full">
         <div class="flex justify-content-between align-items-center gap-4">
-          <label for="withdrawalJustification">{{ labelRequestDecisionJustification() | translate }}</label>
-          <p>{{ reviewerComment()?.length ?? 0 }}/{{ decisionCommentLimit }}</p>
+          <label for="withdrawalJustification" class="cursor-pointer">
+            {{ labelRequestDecisionJustification() | translate }}
+          </label>
+          <p>{{ requestDecisionJustification()?.length ?? 0 }}/{{ decisionCommentLimit }}</p>
         </div>
 
         <textarea
@@ -73,10 +75,10 @@
       <section class="mt-6 w-full flex gap-2 justify-content-end">
         <p-button
           class="w-12rem btn-full-width"
-          [label]="labelSubmitButton() | translate | titlecase"
           severity="success"
-          (click)="submit()"
+          [label]="labelSubmitButton() | translate | titlecase"
           [loading]="saving()"
+          (onClick)="submit()"
         />
       </section>
     } @else {
@@ -97,7 +99,7 @@
           <div class="flex flex-row align-items-start gap-2">
             <p-radio-button inputId="accept" class="pt-1" [value]="ReviewsState.Accepted" [(ngModel)]="decision" />
 
-            <label for="accept">
+            <label for="accept" class="cursor-pointer">
               <h4 class="line-height-3">{{ 'preprints.details.decision.accept.label' | translate }}</h4>
               <p class="line-height-3">{{ acceptOptionExplanation() | translate }}</p>
             </label>
@@ -106,7 +108,7 @@
           <div class="flex flex-row align-items-start gap-2">
             <p-radio-button inputId="reject" class="pt-1" [value]="rejectRadioButtonValue()" [(ngModel)]="decision" />
 
-            <label for="reject">
+            <label for="reject" class="cursor-pointer">
               <h4 class="line-height-3">{{ rejectOptionLabel() | translate }}</h4>
               <p class="line-height-3">{{ rejectOptionExplanation() | translate }}</p>
             </label>
@@ -125,29 +127,24 @@
             [(ngModel)]="reviewerComment"
             [maxlength]="decisionCommentLimit"
           ></textarea>
-          @if (commentExceedsLimit()) {
-            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-              {{ commentLengthErrorMessage() }}
-            </p-message>
-          }
         </section>
 
         <section class="mt-6 w-full flex gap-2 justify-content-end">
           @if (preprint()?.reviewsState !== ReviewsState.Pending) {
             <p-button
               class="w-12rem btn-full-width"
-              [label]="'common.buttons.cancel' | translate"
               severity="info"
-              (click)="cancel()"
+              [label]="'common.buttons.cancel' | translate"
+              (onClick)="cancel()"
             />
           }
           <p-button
             class="w-12rem btn-full-width"
-            [label]="labelSubmitButton() | translate | titlecase"
             severity="success"
+            [label]="labelSubmitButton() | translate | titlecase"
             [disabled]="submitButtonDisabled()"
-            (click)="submit()"
             [loading]="saving()"
+            (onClick)="submit()"
           />
         </section>
       }

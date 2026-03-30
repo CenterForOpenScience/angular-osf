@@ -5,7 +5,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -28,20 +29,28 @@ export class ShareAndDownloadComponent {
   private readonly socialShareService = inject(SocialShareService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly dataciteService = inject(DataciteService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  preprint = select(PreprintSelectors.getPreprint);
-  preprint$ = toObservable(this.preprint);
-  resourceType = ResourceType.Preprint;
+  readonly preprint = select(PreprintSelectors.getPreprint);
+  readonly preprint$ = toObservable(this.preprint);
+
+  readonly resourceType = ResourceType.Preprint;
 
   download() {
     const preprint = this.preprint();
 
-    if (!preprint) {
+    if (!preprint || !this.isBrowser) {
       return;
     }
 
     const downloadLink = this.socialShareService.createDownloadUrl(preprint.id);
-    window.open(downloadLink)?.focus();
+    const downloadWindow = window.open(downloadLink);
+
+    if (!downloadWindow) {
+      return;
+    }
+
+    downloadWindow.focus();
 
     this.dataciteService.logIdentifiableDownload(this.preprint$).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }

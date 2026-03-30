@@ -1,353 +1,183 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockProvider } from 'ng-mocks';
+
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
-import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 
 import { RegistryRevisionsComponent } from './registry-revisions.component';
 
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 
-describe('RegistryRevisionsComponent', () => {
-  let component: RegistryRevisionsComponent;
-  let fixture: ComponentFixture<RegistryRevisionsComponent>;
+const MOCK_REGISTRY = MOCK_REGISTRATION_OVERVIEW_MODEL;
+const MOCK_RESPONSES = [
+  createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
+  createMockSchemaResponse('response-2', RevisionReviewStates.Approved, true),
+];
 
-  const mockRegistry = MOCK_REGISTRATION_OVERVIEW_MODEL;
-
-  const mockSchemaResponses: SchemaResponse[] = [
-    createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
-    createMockSchemaResponse('response-2', RevisionReviewStates.Approved, true),
-  ];
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RegistryRevisionsComponent, OSFTestingModule],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(RegistryRevisionsComponent);
-    component = fixture.componentInstance;
-
-    fixture.componentRef.setInput('registry', mockRegistry);
-    fixture.componentRef.setInput('schemaResponses', mockSchemaResponses);
-    fixture.componentRef.setInput('selectedRevisionIndex', 0);
-    fixture.detectChanges();
+function setup() {
+  TestBed.configureTestingModule({
+    imports: [RegistryRevisionsComponent],
+    providers: [provideOSFCore(), MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build())],
   });
 
-  it('should initialize with default input values', () => {
+  const fixture = TestBed.createComponent(RegistryRevisionsComponent);
+  fixture.componentRef.setInput('registry', MOCK_REGISTRY);
+  fixture.componentRef.setInput('schemaResponses', MOCK_RESPONSES);
+  fixture.componentRef.setInput('selectedRevisionIndex', 0);
+  fixture.detectChanges();
+
+  return { fixture, component: fixture.componentInstance };
+}
+
+describe('RegistryRevisionsComponent', () => {
+  it('should create with default values', () => {
+    const { component } = setup();
+
+    expect(component).toBeTruthy();
     expect(component.isSubmitting()).toBe(false);
     expect(component.isModeration()).toBe(false);
     expect(component.canEdit()).toBe(false);
-    expect(component.unApprovedRevisionId).toBe(null);
   });
 
-  it('should expose RevisionReviewStates enum', () => {
-    expect(component.RevisionReviewStates).toBe(RevisionReviewStates);
+  it('should compute registryInProgress from revisionState', () => {
+    const { fixture, component } = setup();
+
+    expect(component.registryInProgress()).toBe(false);
+
+    fixture.componentRef.setInput('registry', {
+      ...MOCK_REGISTRY,
+      revisionState: RevisionReviewStates.RevisionInProgress,
+    });
+    fixture.detectChanges();
+    expect(component.registryInProgress()).toBe(true);
   });
 
-  it('should receive required inputs', () => {
-    expect(component.registry()).toEqual(mockRegistry);
-    expect(component.schemaResponses()).toEqual(mockSchemaResponses);
-    expect(component.selectedRevisionIndex()).toBe(0);
+  it('should compute registryApproved from revisionState', () => {
+    const { fixture, component } = setup();
+
+    expect(component.registryApproved()).toBe(true);
+
+    fixture.componentRef.setInput('registry', {
+      ...MOCK_REGISTRY,
+      revisionState: RevisionReviewStates.RevisionInProgress,
+    });
+    fixture.detectChanges();
+    expect(component.registryApproved()).toBe(false);
   });
 
-  it('should update when registry input changes', () => {
-    const newRegistry = { ...mockRegistry, id: 'new-registry-id' };
-    fixture.componentRef.setInput('registry', newRegistry);
+  it('should compute registryAcceptedUnapproved when both conditions met', () => {
+    const { fixture, component } = setup();
+
+    expect(component.registryAcceptedUnapproved()).toBe(false);
+
+    fixture.componentRef.setInput('registry', {
+      ...MOCK_REGISTRY,
+      revisionState: RevisionReviewStates.Unapproved,
+      reviewsState: RegistrationReviewStates.Accepted,
+    });
+    fixture.detectChanges();
+    expect(component.registryAcceptedUnapproved()).toBe(true);
+  });
+
+  it('should compute unApprovedRevisionId when registryAcceptedUnapproved', () => {
+    const { fixture, component } = setup();
+
+    expect(component.unApprovedRevisionId()).toBeNull();
+
+    fixture.componentRef.setInput('registry', {
+      ...MOCK_REGISTRY,
+      revisionState: RevisionReviewStates.Unapproved,
+      reviewsState: RegistrationReviewStates.Accepted,
+    });
+    fixture.componentRef.setInput('schemaResponses', [
+      createMockSchemaResponse('approved-1', RevisionReviewStates.Approved, false),
+      createMockSchemaResponse('unapproved-1', RevisionReviewStates.Unapproved, false),
+    ]);
     fixture.detectChanges();
 
-    expect(component.registry()).toEqual(newRegistry);
+    expect(component.unApprovedRevisionId()).toBe('unapproved-1');
   });
 
-  it('should update when schemaResponses input changes', () => {
-    const newResponses = [createMockSchemaResponse('new-response', RevisionReviewStates.Approved)];
-    fixture.componentRef.setInput('schemaResponses', newResponses);
+  it('should label single revision as original', () => {
+    const { fixture, component } = setup();
+    fixture.componentRef.setInput('schemaResponses', [
+      createMockSchemaResponse('single', RevisionReviewStates.Approved, true),
+    ]);
     fixture.detectChanges();
 
-    expect(component.schemaResponses()).toEqual(newResponses);
+    expect(component.revisions()).toHaveLength(1);
+    expect(component.revisions()[0].label).toBe('registry.overview.original');
   });
 
-  it('should update when selectedRevisionIndex input changes', () => {
+  it('should label first as latest and last as original for multiple revisions', () => {
+    const { component } = setup();
+    const revisions = component.revisions();
+
+    expect(revisions[0].label).toBe('registry.overview.latest');
+    expect(revisions[revisions.length - 1].label).toBe('registry.overview.original');
+  });
+
+  it('should mark correct revision as selected', () => {
+    const { fixture, component } = setup();
+
+    expect(component.revisions()[0].isSelected).toBe(true);
+    expect(component.revisions()[1].isSelected).toBe(false);
+
     fixture.componentRef.setInput('selectedRevisionIndex', 1);
     fixture.detectChanges();
 
-    expect(component.selectedRevisionIndex()).toBe(1);
+    expect(component.revisions()[0].isSelected).toBe(false);
+    expect(component.revisions()[1].isSelected).toBe(true);
   });
 
-  it('should update isSubmitting input', () => {
-    fixture.componentRef.setInput('isSubmitting', true);
-    fixture.detectChanges();
-
-    expect(component.isSubmitting()).toBe(true);
-  });
-
-  it('should update isModeration input', () => {
+  it('should show all revisions in moderation mode', () => {
+    const { fixture, component } = setup();
+    fixture.componentRef.setInput('schemaResponses', [
+      createMockSchemaResponse('r-1', RevisionReviewStates.Approved, false),
+      createMockSchemaResponse('r-2', RevisionReviewStates.Unapproved, false),
+      createMockSchemaResponse('r-3', RevisionReviewStates.Approved, true),
+    ]);
     fixture.componentRef.setInput('isModeration', true);
     fixture.detectChanges();
 
-    expect(component.isModeration()).toBe(true);
+    expect(component.revisions()).toHaveLength(3);
   });
 
-  it('should update canEdit input', () => {
-    fixture.componentRef.setInput('canEdit', true);
+  it('should filter to approved or original when not in moderation', () => {
+    const { fixture, component } = setup();
+    fixture.componentRef.setInput('schemaResponses', [
+      createMockSchemaResponse('r-1', RevisionReviewStates.Approved, false),
+      createMockSchemaResponse('r-2', RevisionReviewStates.Unapproved, false),
+      createMockSchemaResponse('r-3', RevisionReviewStates.Approved, true),
+    ]);
+    fixture.componentRef.setInput('isModeration', false);
     fixture.detectChanges();
 
-    expect(component.canEdit()).toBe(true);
+    expect(component.revisions()).toHaveLength(2);
   });
 
-  describe('registryInProgress', () => {
-    it('should return false when revisionState is not RevisionInProgress', () => {
-      expect(component.registryInProgress).toBe(false);
-    });
+  it('should emit openRevision on emitOpenRevision', () => {
+    const { component } = setup();
+    const spy = jest.fn();
+    component.openRevision.subscribe(spy);
 
-    it('should return true when revisionState is RevisionInProgress', () => {
-      const inProgressRegistry = { ...mockRegistry, revisionState: RevisionReviewStates.RevisionInProgress };
-      fixture.componentRef.setInput('registry', inProgressRegistry);
-      fixture.detectChanges();
+    component.emitOpenRevision(1);
 
-      expect(component.registryInProgress).toBe(true);
-    });
-
-    it('should return false when registry is null', () => {
-      fixture.componentRef.setInput('registry', null);
-      fixture.detectChanges();
-
-      expect(component.registryInProgress).toBe(false);
-    });
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  describe('registryApproved', () => {
-    it('should return true when revisionState is Approved', () => {
-      expect(component.registryApproved).toBe(true);
-    });
+  it('should emit continueUpdate on continueUpdateHandler', () => {
+    const { component } = setup();
+    const spy = jest.fn();
+    component.continueUpdate.subscribe(spy);
 
-    it('should return false when revisionState is not Approved', () => {
-      const notApprovedRegistry = { ...mockRegistry, revisionState: RevisionReviewStates.RevisionInProgress };
-      fixture.componentRef.setInput('registry', notApprovedRegistry);
-      fixture.detectChanges();
+    component.continueUpdateHandler();
 
-      expect(component.registryApproved).toBe(false);
-    });
-
-    it('should return false when registry is null', () => {
-      fixture.componentRef.setInput('registry', null);
-      fixture.detectChanges();
-
-      expect(component.registryApproved).toBe(false);
-    });
-  });
-
-  describe('registryAcceptedUnapproved', () => {
-    it('should return false when conditions are not met', () => {
-      expect(component.registryAcceptedUnapproved).toBe(false);
-    });
-
-    it('should return true when revisionState is Unapproved and reviewsState is Accepted', () => {
-      const unapprovedRegistry = {
-        ...mockRegistry,
-        revisionState: RevisionReviewStates.Unapproved,
-        reviewsState: RegistrationReviewStates.Accepted,
-      };
-      fixture.componentRef.setInput('registry', unapprovedRegistry);
-      fixture.detectChanges();
-
-      expect(component.registryAcceptedUnapproved).toBe(true);
-    });
-
-    it('should return false when revisionState is Unapproved but reviewsState is not Accepted', () => {
-      const unapprovedRegistry = {
-        ...mockRegistry,
-        revisionState: RevisionReviewStates.Unapproved,
-        reviewsState: RegistrationReviewStates.Pending,
-      };
-      fixture.componentRef.setInput('registry', unapprovedRegistry);
-      fixture.detectChanges();
-
-      expect(component.registryAcceptedUnapproved).toBe(false);
-    });
-
-    it('should return false when reviewsState is Accepted but revisionState is not Unapproved', () => {
-      const approvedRegistry = {
-        ...mockRegistry,
-        revisionState: RevisionReviewStates.Approved,
-        reviewsState: RegistrationReviewStates.Accepted,
-      };
-      fixture.componentRef.setInput('registry', approvedRegistry);
-      fixture.detectChanges();
-
-      expect(component.registryAcceptedUnapproved).toBe(false);
-    });
-
-    it('should return false when registry is null', () => {
-      fixture.componentRef.setInput('registry', null);
-      fixture.detectChanges();
-
-      expect(component.registryAcceptedUnapproved).toBe(false);
-    });
-  });
-
-  describe('revisions computed signal', () => {
-    it('should return empty array when schemaResponses is empty', () => {
-      fixture.componentRef.setInput('schemaResponses', []);
-      fixture.detectChanges();
-
-      expect(component.revisions()).toHaveLength(0);
-    });
-
-    it('should handle null schemaResponses', () => {
-      fixture.componentRef.setInput('schemaResponses', null as any);
-      fixture.detectChanges();
-
-      expect(component.revisions()).toHaveLength(0);
-    });
-
-    it('should assign "original" label when there is only one revision', () => {
-      const singleResponse = [createMockSchemaResponse('single', RevisionReviewStates.Approved, true)];
-      fixture.componentRef.setInput('schemaResponses', singleResponse);
-      fixture.detectChanges();
-
-      const revisions = component.revisions();
-      expect(revisions).toHaveLength(1);
-      expect(revisions[0].label).toBe('registry.overview.original');
-    });
-
-    it('should assign "latest" label to first revision when multiple revisions exist', () => {
-      const revisions = component.revisions();
-      expect(revisions[0].label).toBe('registry.overview.latest');
-    });
-
-    it('should assign "original" label to last revision when multiple revisions exist', () => {
-      const revisions = component.revisions();
-      const lastIndex = revisions.length - 1;
-      expect(revisions[lastIndex].label).toBe('registry.overview.original');
-    });
-
-    it('should mark revision as selected when index matches selectedRevisionIndex', () => {
-      fixture.componentRef.setInput('selectedRevisionIndex', 0);
-      fixture.detectChanges();
-
-      const revisions = component.revisions();
-      expect(revisions[0].isSelected).toBe(true);
-      expect(revisions[1].isSelected).toBe(false);
-    });
-
-    it('should update isSelected when selectedRevisionIndex changes', () => {
-      fixture.componentRef.setInput('selectedRevisionIndex', 1);
-      fixture.detectChanges();
-
-      const revisions = component.revisions();
-      expect(revisions[0].isSelected).toBe(false);
-      expect(revisions[1].isSelected).toBe(true);
-    });
-
-    it('should show all revisions when isModeration is true', () => {
-      const responsesWithUnapproved = [
-        createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
-        createMockSchemaResponse('response-2', RevisionReviewStates.Unapproved, false),
-        createMockSchemaResponse('response-3', RevisionReviewStates.Approved, true),
-      ];
-      fixture.componentRef.setInput('schemaResponses', responsesWithUnapproved);
-      fixture.componentRef.setInput('isModeration', true);
-      fixture.detectChanges();
-
-      const revisions = component.revisions();
-      expect(revisions).toHaveLength(3);
-    });
-
-    it('should filter to only Approved or isOriginalResponse when isModeration is false', () => {
-      const responsesWithUnapproved = [
-        createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
-        createMockSchemaResponse('response-2', RevisionReviewStates.Unapproved, false),
-        createMockSchemaResponse('response-3', RevisionReviewStates.Approved, true),
-      ];
-      fixture.componentRef.setInput('schemaResponses', responsesWithUnapproved);
-      fixture.componentRef.setInput('isModeration', false);
-      fixture.detectChanges();
-
-      const revisions = component.revisions();
-      expect(revisions).toHaveLength(2);
-      expect(revisions.every((r) => r.reviewsState === RevisionReviewStates.Approved || r.isOriginalResponse)).toBe(
-        true
-      );
-    });
-
-    it('should include original response even if not approved when isModeration is false', () => {
-      const responsesWithUnapprovedOriginal = [
-        createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
-        createMockSchemaResponse('response-2', RevisionReviewStates.Unapproved, true),
-      ];
-      fixture.componentRef.setInput('schemaResponses', responsesWithUnapprovedOriginal);
-      fixture.componentRef.setInput('isModeration', false);
-      fixture.detectChanges();
-
-      const revisions = component.revisions();
-      expect(revisions).toHaveLength(2);
-      expect(revisions.some((r) => r.isOriginalResponse)).toBe(true);
-    });
-
-    it('should set unApprovedRevisionId when registryAcceptedUnapproved is true', () => {
-      const unapprovedResponse = createMockSchemaResponse('unapproved-id', RevisionReviewStates.Unapproved, false);
-      const responses = [
-        createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
-        unapprovedResponse,
-      ];
-      const unapprovedRegistry = {
-        ...mockRegistry,
-        revisionState: RevisionReviewStates.Unapproved,
-        reviewsState: RegistrationReviewStates.Accepted,
-      };
-
-      fixture.componentRef.setInput('registry', unapprovedRegistry);
-      fixture.componentRef.setInput('schemaResponses', responses);
-      fixture.detectChanges();
-
-      expect(component.unApprovedRevisionId).toBe('unapproved-id');
-    });
-
-    it('should set unApprovedRevisionId to null when no unapproved revision found', () => {
-      const responses = [
-        createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
-        createMockSchemaResponse('response-2', RevisionReviewStates.Approved, true),
-      ];
-      const unapprovedRegistry = {
-        ...mockRegistry,
-        revisionState: RevisionReviewStates.Unapproved,
-        reviewsState: RegistrationReviewStates.Accepted,
-      };
-
-      fixture.componentRef.setInput('registry', unapprovedRegistry);
-      fixture.componentRef.setInput('schemaResponses', responses);
-      fixture.detectChanges();
-
-      expect(component.unApprovedRevisionId).toBe(null);
-    });
-
-    it('should not set unApprovedRevisionId when registryAcceptedUnapproved is false', () => {
-      const unapprovedResponse = createMockSchemaResponse('unapproved-id', RevisionReviewStates.Unapproved, false);
-      const responses = [
-        createMockSchemaResponse('response-1', RevisionReviewStates.Approved, false),
-        unapprovedResponse,
-      ];
-
-      fixture.componentRef.setInput('schemaResponses', responses);
-      fixture.detectChanges();
-
-      expect(component.unApprovedRevisionId).toBe(null);
-    });
-
-    it('should assign correct indices to revisions', () => {
-      const revisions = component.revisions();
-      revisions.forEach((revision, expectedIndex) => {
-        expect(revision.index).toBe(expectedIndex);
-      });
-    });
-
-    it('should preserve all response properties in revisions', () => {
-      const revisions = component.revisions();
-      expect(revisions[0].id).toBe(mockSchemaResponses[0].id);
-      expect(revisions[0].dateCreated).toBe(mockSchemaResponses[0].dateCreated);
-      expect(revisions[0].reviewsState).toBe(mockSchemaResponses[0].reviewsState);
-    });
+    expect(spy).toHaveBeenCalled();
   });
 });

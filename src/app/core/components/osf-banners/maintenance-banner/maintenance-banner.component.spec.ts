@@ -1,15 +1,14 @@
 import { CookieService } from 'ngx-cookie-service';
 
-import { MessageModule } from 'primeng/message';
-
 import { of } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MaintenanceBannerComponent } from './maintenance-banner.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('Component: Maintenance Banner', () => {
   let fixture: ComponentFixture<MaintenanceBannerComponent>;
@@ -25,7 +24,7 @@ describe('Component: Maintenance Banner', () => {
     httpClient = { get: jest.fn() } as any;
 
     await TestBed.configureTestingModule({
-      imports: [MaintenanceBannerComponent, NoopAnimationsModule, MessageModule],
+      imports: [MaintenanceBannerComponent, OSFTestingModule],
       providers: [
         { provide: CookieService, useValue: cookieService },
         { provide: HttpClient, useValue: httpClient },

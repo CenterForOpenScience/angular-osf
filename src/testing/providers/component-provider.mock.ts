@@ -39,7 +39,6 @@ import { Component, EventEmitter, Input } from '@angular/core';
 export function MockComponentWithSignal<T>(selector: string, inputs: string[] = [], outputs: string[] = []): Type<T> {
   @Component({
     selector,
-    standalone: true,
     template: '',
   })
   class MockComponent {

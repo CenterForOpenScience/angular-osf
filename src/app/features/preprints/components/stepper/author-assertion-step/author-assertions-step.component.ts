@@ -40,89 +40,88 @@ import { ArrayInputComponent } from './array-input/array-input.component';
 @Component({
   selector: 'osf-author-assertions-step',
   imports: [
-    Card,
-    FormsModule,
-    RadioButton,
-    ReactiveFormsModule,
-    Textarea,
-    Message,
-    TranslatePipe,
-    NgClass,
     Button,
+    Card,
+    Message,
+    RadioButton,
+    Textarea,
     Tooltip,
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
     ArrayInputComponent,
     FormSelectComponent,
+    TranslatePipe,
   ],
   templateUrl: './author-assertions-step.component.html',
   styleUrl: './author-assertions-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthorAssertionsStepComponent {
-  private toastService = inject(ToastService);
-  private confirmationService = inject(CustomConfirmationService);
-  private actions = createDispatchMap({ updatePreprint: UpdatePreprint });
+  private readonly toastService = inject(ToastService);
+  private readonly confirmationService = inject(CustomConfirmationService);
+  private readonly actions = createDispatchMap({ updatePreprint: UpdatePreprint });
 
-  readonly CustomValidators = CustomValidators;
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly inputLimits = formInputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
   readonly preregLinkOptions = preregLinksOptions;
   readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
-  createdPreprint = select(PreprintStepperSelectors.getPreprint);
-  isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
+  readonly createdPreprint = select(PreprintStepperSelectors.getPreprint);
+  readonly isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   readonly authorAssertionsForm = new FormGroup({
-    hasCoi: new FormControl<boolean>(this.createdPreprint()!.hasCoi || false, {
+    hasCoi: new FormControl<boolean>(this.createdPreprint()?.hasCoi ?? false, {
       nonNullable: true,
       validators: [],
     }),
-    coiStatement: new FormControl<StringOrNull>(this.createdPreprint()!.coiStatement, {
+    coiStatement: new FormControl<StringOrNull>(this.createdPreprint()?.coiStatement ?? null, {
       nonNullable: false,
       validators: [],
     }),
     hasDataLinks: new FormControl<ApplicabilityStatus>(
-      this.createdPreprint()!.hasDataLinks || ApplicabilityStatus.NotApplicable,
+      this.createdPreprint()?.hasDataLinks ?? ApplicabilityStatus.NotApplicable,
       {
         nonNullable: true,
         validators: [],
       }
     ),
     dataLinks: new FormArray<FormControl>(
-      this.createdPreprint()!.dataLinks?.map((link) => new FormControl(link)) || []
+      this.createdPreprint()?.dataLinks?.map((link) => new FormControl(link)) || []
     ),
-    whyNoData: new FormControl<StringOrNull>(this.createdPreprint()!.whyNoData, {
+    whyNoData: new FormControl<StringOrNull>(this.createdPreprint()?.whyNoData ?? null, {
       nonNullable: false,
       validators: [],
     }),
     hasPreregLinks: new FormControl<ApplicabilityStatus>(
-      this.createdPreprint()!.hasPreregLinks || ApplicabilityStatus.NotApplicable,
+      this.createdPreprint()?.hasPreregLinks ?? ApplicabilityStatus.NotApplicable,
       {
         nonNullable: true,
         validators: [],
       }
     ),
     preregLinks: new FormArray<FormControl>(
-      this.createdPreprint()!.preregLinks?.map((link) => new FormControl(link)) || []
+      this.createdPreprint()?.preregLinks?.map((link) => new FormControl(link)) || []
     ),
-    whyNoPrereg: new FormControl<StringOrNull>(this.createdPreprint()!.whyNoPrereg, {
+    whyNoPrereg: new FormControl<StringOrNull>(this.createdPreprint()?.whyNoPrereg ?? null, {
       nonNullable: false,
       validators: [],
     }),
-    preregLinkInfo: new FormControl<PreregLinkInfo | null>(this.createdPreprint()!.preregLinkInfo, {
+    preregLinkInfo: new FormControl<PreregLinkInfo | null>(this.createdPreprint()?.preregLinkInfo ?? null, {
       nonNullable: false,
       validators: [],
     }),
   });
 
   hasCoiValue = toSignal(this.authorAssertionsForm.controls['hasCoi'].valueChanges, {
-    initialValue: this.createdPreprint()!.hasCoi || false,
+    initialValue: this.createdPreprint()?.hasCoi ?? false,
   });
   hasDataLinks = toSignal(this.authorAssertionsForm.controls['hasDataLinks'].valueChanges, {
-    initialValue: this.createdPreprint()!.hasDataLinks || ApplicabilityStatus.NotApplicable,
+    initialValue: this.createdPreprint()?.hasDataLinks ?? ApplicabilityStatus.NotApplicable,
   });
   hasPreregLinks = toSignal(this.authorAssertionsForm.controls['hasPreregLinks'].valueChanges, {
-    initialValue: this.createdPreprint()!.hasPreregLinks || ApplicabilityStatus.NotApplicable,
+    initialValue: this.createdPreprint()?.hasPreregLinks ?? ApplicabilityStatus.NotApplicable,
   });
 
   nextClicked = output<void>();
@@ -194,7 +193,13 @@ export class AuthorAssertionsStepComponent {
     });
   }
 
-  nextButtonClicked() {
+  nextButtonClicked(): void {
+    const preprintId = this.createdPreprint()?.id;
+
+    if (!preprintId) {
+      return;
+    }
+
     const formValue = this.authorAssertionsForm.getRawValue();
 
     const hasCoi = formValue.hasCoi;
@@ -210,7 +215,7 @@ export class AuthorAssertionsStepComponent {
     const preregLinkInfo = formValue.preregLinkInfo || undefined;
 
     this.actions
-      .updatePreprint(this.createdPreprint()!.id, {
+      .updatePreprint(preprintId, {
         hasCoi,
         coiStatement,
         hasDataLinks,
@@ -229,9 +234,15 @@ export class AuthorAssertionsStepComponent {
       });
   }
 
-  backButtonClicked() {
+  backButtonClicked(): void {
+    const preprint = this.createdPreprint();
+
+    if (!preprint) {
+      return;
+    }
+
     const formValue = this.authorAssertionsForm.getRawValue();
-    const changedFields = findChangedFields<PreprintModel>(formValue, this.createdPreprint()!);
+    const changedFields = findChangedFields<PreprintModel>(formValue, preprint);
 
     if (!Object.keys(changedFields).length) {
       this.backClicked.emit();
@@ -248,7 +259,7 @@ export class AuthorAssertionsStepComponent {
     });
   }
 
-  private disableAndClearValidators(control: AbstractControl) {
+  private disableAndClearValidators(control: AbstractControl): void {
     if (control instanceof FormArray) {
       while (control.length !== 0) {
         control.removeAt(0);
@@ -261,12 +272,12 @@ export class AuthorAssertionsStepComponent {
     control.disable();
   }
 
-  private enableAndSetValidators(control: AbstractControl, validators: ValidatorFn[]) {
+  private enableAndSetValidators(control: AbstractControl, validators: ValidatorFn[]): void {
     control.setValidators(validators);
     control.enable();
   }
 
-  private addAtLeastOneControl(formArray: FormArray) {
+  private addAtLeastOneControl(formArray: FormArray): void {
     if (formArray.controls.length > 0) return;
 
     formArray.push(

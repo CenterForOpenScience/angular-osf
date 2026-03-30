@@ -2,16 +2,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintsHelpDialogComponent } from './preprints-help-dialog.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 describe('PreprintsHelpDialogComponent', () => {
   let component: PreprintsHelpDialogComponent;
   let fixture: ComponentFixture<PreprintsHelpDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PreprintsHelpDialogComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [PreprintsHelpDialogComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(PreprintsHelpDialogComponent);
     component = fixture.componentInstance;

@@ -1,19 +1,21 @@
+@let provider = preprintProvider();
+
 <section class="preprints-hero-container py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4">
   <div class="flex flex-column align-items-start gap-4 md:flex-row">
     <div class="flex align-items-center gap-2">
       @if (isPreprintProviderLoading()) {
         <p-skeleton width="3rem" height="1.5rem" />
-      } @else {
-        <h1 class="preprint-provider-name">{{ preprintProvider()!.name }}</h1>
+      } @else if (provider) {
+        <h1 class="preprint-provider-name">{{ provider.name }}</h1>
       }
     </div>
     <div class="flex align-items-center gap-2 m-auto">
       @if (isPreprintProviderLoading()) {
         <p-skeleton width="12rem" height="1.5rem" />
-      } @else {
+      } @else if (provider) {
         <img
           height="80"
-          [src]="preprintProvider()!.brand.heroLogoImageUrl"
+          [src]="provider.brand.heroLogoImageUrl"
           [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
         />
       }
@@ -21,12 +23,12 @@
 
     @if (isPreprintProviderLoading()) {
       <p-skeleton class="ml-auto" width="8rem" height="2rem" />
-    } @else if (preprintProvider()!.allowSubmissions) {
+    } @else if (provider?.allowSubmissions) {
       <p-button
         class="ml-auto w-full md:w-auto preprints-branding-button"
         styleClass="w-full md:w-auto"
-        [label]="'preprints.addPreprint' | translate: { preprintWord: preprintProvider()!.preprintWord } | titlecase"
-        [routerLink]="['/preprints', preprintProvider()!.id, 'submit']"
+        [label]="'preprints.addPreprint' | translate: { preprintWord: provider?.preprintWord ?? '' } | titlecase"
+        [routerLink]="['/preprints', provider?.id ?? '', 'submit']"
       />
     }
   </div>
@@ -39,8 +41,8 @@
 
         <p-skeleton width="10%" height="1rem"></p-skeleton>
       </div>
-    } @else {
-      <div [innerHTML]="preprintProvider()!.descriptionHtml | safeHtml"></div>
+    } @else if (provider) {
+      <div [innerHTML]="provider.descriptionHtml | safeHtml"></div>
       <a class="font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
     }
   </div>
@@ -51,9 +53,7 @@
     <osf-search-input
       class="w-full"
       [showHelpIcon]="true"
-      [placeholder]="
-        'preprints.searchPlaceholder' | translate: { preprintWord: preprintProvider()!.preprintWord } | titlecase
-      "
+      [placeholder]="'preprints.searchPlaceholder' | translate: { preprintWord: provider?.preprintWord } | titlecase"
       [control]="searchControl()"
       (triggerSearch)="onTriggerSearch($event)"
       (helpClicked)="openHelpDialog()"
@@ -62,11 +62,9 @@
 
   @if (isPreprintProviderLoading()) {
     <p-skeleton width="10%" height="1rem" />
-  } @else if (preprintProvider()?.examplePreprintId) {
-    <p>
-      <a class="font-bold" [routerLink]="['/preprints', preprintProvider()!.id, preprintProvider()!.examplePreprintId]"
-        >{{ 'preprints.showExample' | translate }}
-      </a>
-    </p>
+  } @else if (provider?.examplePreprintId) {
+    <a class="font-bold" [routerLink]="['/preprints', provider?.id ?? '', provider?.examplePreprintId ?? '']">
+      {{ 'preprints.showExample' | translate }}
+    </a>
   }
 </section>

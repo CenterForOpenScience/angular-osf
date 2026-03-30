@@ -1,4 +1,4 @@
-import { Term } from '../models/addons/addon-utils.models';
+import { Term } from '../models/addons/addon-utils.model';
 
 export const ADDON_TERMS: Term[] = [
   {

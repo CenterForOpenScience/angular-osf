@@ -30,7 +30,7 @@ import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-l
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { replaceBadEncodedChars } from '@osf/shared/helpers/format-bad-encoding.helper';
 import { Primitive } from '@osf/shared/helpers/types.helper';
-import { DatasetInput } from '@osf/shared/models/charts/dataset-input';
+import { DatasetInput } from '@osf/shared/models/charts/dataset-input.model';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { AnalyticsKpiComponent } from './components';

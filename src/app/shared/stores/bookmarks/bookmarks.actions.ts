@@ -1,5 +1,5 @@
+import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.model';
 import { ResourceType } from '@shared/enums/resource-type.enum';
-import { MyResourcesSearchFilters } from '@shared/models/my-resources/my-resources-search-filters.models';
 
 export class GetBookmarksCollectionId {
   static readonly type = '[Bookmarks] Get Bookmarks Collection Id';

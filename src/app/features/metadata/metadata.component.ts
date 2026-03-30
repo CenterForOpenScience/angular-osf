@@ -11,6 +11,7 @@ import {
   DestroyRef,
   effect,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -24,6 +25,7 @@ import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 import {
@@ -37,6 +39,7 @@ import {
   InstitutionsSelectors,
   UpdateResourceInstitutions,
 } from '@osf/shared/stores/institutions';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import {
   FetchChildrenSubjects,
   FetchSelectedSubjects,
@@ -48,6 +51,7 @@ import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 import { SubjectModel } from '@shared/models/subject/subject.model';
 
 import { MetadataCollectionsComponent } from './components/metadata-collections/metadata-collections.component';
+import { MetadataRegistryInfoComponent } from './components/metadata-registry-info/metadata-registry-info.component';
 import { EditTitleDialogComponent } from './dialogs/edit-title-dialog/edit-title-dialog.component';
 import {
   MetadataAffiliatedInstitutionsComponent,
@@ -112,12 +116,13 @@ import {
     MetadataTitleComponent,
     MetadataRegistrationDoiComponent,
     MetadataCollectionsComponent,
+    MetadataRegistryInfoComponent,
   ],
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MetadataComponent implements OnInit {
+export class MetadataComponent implements OnInit, OnDestroy {
   private readonly activeRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -125,6 +130,7 @@ export class MetadataComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly signpostingService = inject(SignpostingService);
 
   private resourceId = '';
 
@@ -150,6 +156,7 @@ export class MetadataComponent implements OnInit {
   affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
   areInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
   areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
+  registryProvider = select(RegistrationProviderSelectors.getBrandedProvider);
 
   projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
   isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
@@ -264,10 +271,16 @@ export class MetadataComponent implements OnInit {
       this.actions.getCedarTemplates();
       this.actions.fetchSelectedSubjects(this.resourceId, this.resourceType());
 
+      this.signpostingService.addMetadataSignposting(this.resourceId);
+
       if (this.isProjectType()) {
         this.actions.getProjectSubmissions(this.resourceId);
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.signpostingService.removeSignpostingLinkTags();
   }
 
   onTabChange(tabId: string | number): void {

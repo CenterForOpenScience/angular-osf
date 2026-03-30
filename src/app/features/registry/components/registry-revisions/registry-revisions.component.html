@@ -19,15 +19,15 @@
           }
 
           @if (canEdit()) {
-            @if (registryAcceptedUnapproved) {
+            @if (registryAcceptedUnapproved()) {
               <p-button
                 class="w-full"
                 styleClass="w-full"
                 [label]="'registry.overview.reviewUpdate' | translate"
-                [routerLink]="['/registries/revisions/', unApprovedRevisionId, 'review']"
+                [routerLink]="['/registries/revisions/', unApprovedRevisionId(), 'review']"
               />
             }
-            @if (registryApproved) {
+            @if (registryApproved()) {
               <p-button
                 class="w-full"
                 styleClass="w-full"
@@ -36,7 +36,7 @@
                 [loading]="isSubmitting()"
               />
             }
-            @if (registryInProgress) {
+            @if (registryInProgress()) {
               <p-button
                 class="w-full"
                 styleClass="w-full"

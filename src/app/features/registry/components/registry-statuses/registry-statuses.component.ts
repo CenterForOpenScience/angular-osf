@@ -21,7 +21,7 @@ import { MakePublic } from '../../store/registry';
 
 @Component({
   selector: 'osf-registry-statuses',
-  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, TranslatePipe, Button, RouterLink],
+  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, Button, RouterLink, TranslatePipe],
   templateUrl: './registry-statuses.component.html',
   styleUrl: './registry-statuses.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +29,7 @@ import { MakePublic } from '../../store/registry';
 export class RegistryStatusesComponent {
   @HostBinding('class') classes = 'flex-1 flex';
   private readonly customDialogService = inject(CustomDialogService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly environment = inject(ENVIRONMENT);
 
   readonly supportEmail = this.environment.supportEmail;
@@ -39,8 +40,8 @@ export class RegistryStatusesComponent {
 
   readonly RegistryStatus = RegistryStatus;
   readonly RevisionReviewStates = RevisionReviewStates;
-  readonly customConfirmationService = inject(CustomConfirmationService);
-  readonly actions = createDispatchMap({ makePublic: MakePublic });
+
+  private readonly actions = createDispatchMap({ makePublic: MakePublic });
 
   canWithdraw = computed(
     () => this.registry()?.reviewsState === RegistrationReviewStates.Accepted && !this.isModeration()
@@ -49,13 +50,10 @@ export class RegistryStatusesComponent {
   isAccepted = computed(() => this.registry()?.status === RegistryStatus.Accepted);
   isEmbargo = computed(() => this.registry()?.status === RegistryStatus.Embargo);
 
-  get embargoEndDate() {
-    const embargoEndDate = this.registry()?.embargoEndDate;
-    if (embargoEndDate) {
-      return new Date(embargoEndDate).toDateString();
-    }
-    return null;
-  }
+  readonly embargoEndDate = computed(() => {
+    const date = this.registry()?.embargoEndDate;
+    return date ? new Date(date).toDateString() : null;
+  });
 
   openWithdrawDialog(): void {
     const registry = this.registry();
@@ -73,6 +71,7 @@ export class RegistryStatusesComponent {
 
   openEndEmbargoDialog(): void {
     const registry = this.registry();
+
     if (registry) {
       this.customConfirmationService.confirmDelete({
         headerKey: 'registry.overview.endEmbargo',

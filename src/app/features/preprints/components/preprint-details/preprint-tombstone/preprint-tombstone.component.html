@@ -1,6 +1,7 @@
+@let preprintValue = preprint();
+
 <p-card>
-  @if (preprint()) {
-    @let preprintValue = preprint()!;
+  @if (preprintValue) {
     <div class="flex flex-column gap-4">
       @if (preprintValue.withdrawalJustification) {
         <section class="flex flex-column gap-2">

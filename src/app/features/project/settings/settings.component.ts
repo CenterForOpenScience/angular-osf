@@ -15,7 +15,7 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
-import { Institution } from '@osf/shared/models/institutions/institutions.models';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { UpdateNodeRequestModel } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { ViewOnlyLinkModel } from '@osf/shared/models/view-only-links/view-only-link.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';

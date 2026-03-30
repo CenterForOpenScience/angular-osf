@@ -23,20 +23,16 @@ import { HandleSchemaResponse } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmContinueEditingDialogComponent {
-  readonly dialogRef = inject(DynamicDialogRef);
-  private readonly fb = inject(FormBuilder);
   readonly config = inject(DynamicDialogConfig);
-  private readonly destroyRef = inject(DestroyRef);
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly destroyRef = inject(DestroyRef);
+  readonly fb = inject(FormBuilder);
 
-  actions = createDispatchMap({
-    handleSchemaResponse: HandleSchemaResponse,
-  });
+  actions = createDispatchMap({ handleSchemaResponse: HandleSchemaResponse });
 
   isSubmitting = false;
 
-  form: FormGroup = this.fb.group({
-    comment: [''],
-  });
+  form: FormGroup = this.fb.group({ comment: [''] });
 
   submit(): void {
     const comment = this.form.value.comment;

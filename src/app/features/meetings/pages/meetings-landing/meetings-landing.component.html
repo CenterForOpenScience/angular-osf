@@ -16,26 +16,23 @@
   />
 
   <p-table
+    ngSkipHydration
     class="mt-4"
+    paginatorDropdownAppendTo="body"
     [value]="isMeetingsLoading() ? skeletonData : meetings()"
     [rows]="tableParams().rows"
     [first]="tableParams().firstRowIndex"
     [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
-    [paginator]="true"
     [totalRecords]="tableParams().totalRecords"
-    paginatorDropdownAppendTo="body"
-    [resizableColumns]="true"
-    [autoLayout]="true"
-    [scrollable]="true"
-    [sortMode]="'single'"
     [lazy]="true"
-    [lazyLoadOnInit]="true"
-    (onPage)="onPageChange($event)"
-    (onSort)="onSort($event)"
-    [sortField]="sortColumn()"
-    [sortOrder]="sortOrder()"
+    [scrollable]="true"
+    [paginator]="true"
     [customSort]="true"
     [resetPageOnSort]="false"
+    [sortField]="sortColumn()"
+    [sortOrder]="sortOrder()"
+    (onPage)="onPageChange($event)"
+    (onSort)="onSort($event)"
   >
     <ng-template #header>
       <tr>

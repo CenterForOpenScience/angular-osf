@@ -22,7 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
-import { ProjectModel } from '@shared/models/projects/projects.models';
+import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { CustomOption } from '@shared/models/select-option.model';
 import { GetProjects, ProjectsSelectors } from '@shared/stores/projects';
 

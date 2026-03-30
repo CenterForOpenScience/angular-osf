@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { UserModel } from '@osf/shared/models/user/user.models';
+import { UserModel } from '@osf/shared/models/user/user.model';
 
 import { ProfileStateModel } from './profile.model';
 import { ProfileState } from '.';

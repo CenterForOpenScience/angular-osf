@@ -60,6 +60,25 @@ export interface ProvideMockStoreOptions {
  * });
  * ```
  */
+export interface SignalOverride {
+  selector: unknown;
+  value: unknown;
+}
+
+export interface BaseSetupOverrides {
+  routeParams?: Record<string, string>;
+  hasParent?: boolean;
+  selectorOverrides?: SignalOverride[];
+}
+
+export function mergeSignalOverrides(defaults: SignalOverride[], overrides?: SignalOverride[]): SignalOverride[] {
+  if (!overrides) return defaults;
+  return defaults.map((s) => {
+    const override = overrides.find((o) => o.selector === s.selector);
+    return override ? { ...s, value: override.value } : s;
+  });
+}
+
 export function provideMockStore(options: ProvideMockStoreOptions = {}): { provide: typeof Store; useValue: Store } {
   /**
    * Stores mock selector values used by `select` and `selectSnapshot`.

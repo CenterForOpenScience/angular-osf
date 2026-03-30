@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Skeleton } from 'primeng/skeleton';
 
-import { map, Observable, of } from 'rxjs';
+import { map } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -15,14 +15,12 @@ import {
   HostListener,
   inject,
   OnDestroy,
-  OnInit,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
-import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
@@ -41,18 +39,13 @@ import {
 import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import {
-  FetchPreprintById,
-  PreprintStepperSelectors,
-  ResetPreprintStepperState,
-  SetSelectedPreprintProviderId,
-} from '../../store/preprint-stepper';
+import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-update-preprint-stepper',
   imports: [
-    AuthorAssertionsStepComponent,
     Skeleton,
+    AuthorAssertionsStepComponent,
     StepperComponent,
     TitleAndAbstractStepComponent,
     PreprintsMetadataStepComponent,
@@ -65,7 +58,7 @@ import {
   styleUrl: './update-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDeactivateComponent {
+export class UpdatePreprintStepperComponent implements OnDestroy, CanDeactivateComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -73,12 +66,11 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   private readonly headerStyleHelper = inject(HeaderStyleService);
   private readonly browserTabHelper = inject(BrowserTabService);
 
-  private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
-  private preprintId = toSignal(this.route.params.pipe(map((params) => params['preprintId'])) ?? of(undefined));
+  private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])));
+  private preprintId = toSignal(this.route.params.pipe(map((params) => params['preprintId'])));
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
-    setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
     resetState: ResetPreprintStepperState,
     fetchPreprint: FetchPreprintById,
   });
@@ -87,8 +79,13 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   preprint = select(PreprintStepperSelectors.getPreprint);
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
+  hasAdminAccess = select(PreprintStepperSelectors.hasAdminAccess);
 
-  currentUserIsAdmin = computed(() => this.preprint()?.currentUserPermissions.includes(UserPermissions.Admin) || false);
+  isWeb = toSignal(inject(IS_WEB));
+
+  currentStep = signal<StepOption>(submitPreprintSteps[0]);
+
+  readonly PreprintSteps = PreprintSteps;
 
   editAndResubmitMode = computed(() => {
     const providerIsPremod = this.preprintProvider()?.reviewsWorkflow === ProviderReviewsWorkflow.PreModeration;
@@ -106,44 +103,26 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
     }
 
     return submitPreprintSteps
-      .map((step) => {
-        if (step.value !== PreprintSteps.File) {
-          return step;
+      .filter((step) => {
+        if (step.value === PreprintSteps.File) {
+          return this.editAndResubmitMode();
         }
-
-        return this.editAndResubmitMode() ? step : null;
+        if (step.value === PreprintSteps.AuthorAssertions) {
+          return provider.assertionsEnabled && this.hasAdminAccess();
+        }
+        return true;
       })
-      .filter((step) => step !== null)
-      .map((step) => {
-        if (step.value !== PreprintSteps.AuthorAssertions) {
-          return step;
-        }
-
-        if (!provider.assertionsEnabled || !this.currentUserIsAdmin()) {
-          return null;
-        }
-
-        return step;
-      })
-      .filter((step) => step !== null)
-      .map((step, index) => ({
-        ...step,
-        index,
-      }));
+      .map((step, index) => ({ ...step, index }));
   });
 
-  currentStep = signal<StepOption>(submitPreprintSteps[0]);
-  isWeb = toSignal(inject(IS_WEB));
-
-  readonly SubmitStepsEnum = PreprintSteps;
-  readonly PreprintSteps = PreprintSteps;
-
   constructor() {
+    this.actions.getPreprintProviderById(this.providerId());
+    this.actions.fetchPreprint(this.preprintId());
+
     effect(() => {
       const provider = this.preprintProvider();
 
       if (provider) {
-        this.actions.setSelectedPreprintProviderId(provider.id);
         this.brandService.applyBranding(provider.brand);
         this.headerStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,
@@ -156,18 +135,14 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   }
 
   @HostListener('window:beforeunload', ['$event'])
-  onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
+  onBeforeUnload($event: BeforeUnloadEvent): void {
+    if (!this.canDeactivate()) {
+      $event.preventDefault();
+    }
   }
 
-  canDeactivate(): Observable<boolean> | boolean {
+  canDeactivate(): boolean {
     return this.hasBeenSubmitted() || this.preprint()?.reviewsState === ReviewsState.Accepted;
-  }
-
-  ngOnInit() {
-    this.actions.getPreprintProviderById(this.providerId());
-    this.actions.fetchPreprint(this.preprintId());
   }
 
   ngOnDestroy() {
@@ -178,19 +153,26 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   }
 
   stepChange(step: StepOption): void {
-    const currentStepIndex = this.currentStep()?.index ?? 0;
-    if (step.index >= currentStepIndex) {
+    if (step.index >= this.currentStep().index) {
       return;
     }
 
     this.currentStep.set(step);
   }
 
-  moveToNextStep() {
-    this.currentStep.set(this.updateSteps()[this.currentStep()?.index + 1]);
+  moveToNextStep(): void {
+    const nextStep = this.updateSteps()[this.currentStep().index + 1];
+
+    if (nextStep) {
+      this.currentStep.set(nextStep);
+    }
   }
 
-  moveToPreviousStep() {
-    this.currentStep.set(this.updateSteps()[this.currentStep()?.index - 1]);
+  moveToPreviousStep(): void {
+    const prevStep = this.updateSteps()[this.currentStep().index - 1];
+
+    if (prevStep) {
+      this.currentStep.set(prevStep);
+    }
   }
 }

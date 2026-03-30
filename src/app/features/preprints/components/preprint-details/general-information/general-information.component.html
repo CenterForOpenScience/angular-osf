@@ -1,7 +1,8 @@
-<p-card>
-  @if (preprint()) {
-    @let preprintValue = preprint()!;
+@let preprintValue = preprint();
+@let preprintProviderValue = preprintProvider();
 
+<p-card>
+  @if (preprintValue) {
     <div class="flex flex-column gap-4">
       <section class="flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.metadata.authors' | translate }}</h3>
@@ -29,65 +30,8 @@
         </section>
       }
 
-      @if (preprintProvider()?.assertionsEnabled) {
-        <section class="flex flex-column gap-2">
-          <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.publicData' | translate }}</h3>
-
-          @switch (preprintValue.hasDataLinks) {
-            @case (ApplicabilityStatus.NotApplicable) {
-              <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noData' | translate }}</p>
-            }
-            @case (ApplicabilityStatus.Unavailable) {
-              {{ preprintValue.whyNoData | fixSpecialChar }}
-            }
-            @case (ApplicabilityStatus.Applicable) {
-              @for (link of preprintValue.dataLinks; track $index) {
-                <p>{{ link }}</p>
-              }
-            }
-          }
-        </section>
-
-        <section class="flex flex-column gap-2">
-          <h3>
-            {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }}
-          </h3>
-
-          @switch (preprintValue.hasPreregLinks) {
-            @case (ApplicabilityStatus.NotApplicable) {
-              <p>
-                {{ 'preprints.preprintStepper.review.sections.authorAssertions.noPrereg' | translate }}
-              </p>
-            }
-            @case (ApplicabilityStatus.Unavailable) {
-              {{ preprintValue.whyNoPrereg | fixSpecialChar }}
-            }
-            @case (ApplicabilityStatus.Applicable) {
-              @switch (preprintValue.preregLinkInfo) {
-                @case (PreregLinkInfo.Analysis) {
-                  <p>
-                    {{ 'preprints.preprintStepper.common.labels.preregTypes.analysis' | translate }}
-                  </p>
-                }
-                @case (PreregLinkInfo.Designs) {
-                  <p>
-                    {{ 'preprints.preprintStepper.common.labels.preregTypes.designs' | translate }}
-                  </p>
-                }
-                @case (PreregLinkInfo.Both) {
-                  <p>
-                    {{ 'preprints.preprintStepper.common.labels.preregTypes.both' | translate }}
-                  </p>
-                }
-              }
-              @for (link of preprintValue.preregLinks; track $index) {
-                <p>
-                  <a [href]="link">{{ link }}</a>
-                </p>
-              }
-            }
-          }
-        </section>
+      @if (preprintProviderValue?.assertionsEnabled) {
+        <osf-preprint-author-assertions [preprint]="preprintValue" />
       }
 
       @if (preprintValue.nodeId) {
@@ -100,12 +44,12 @@
         </section>
       }
 
-      @if (preprintProvider()?.assertionsEnabled) {
+      @if (preprintProviderValue?.assertionsEnabled) {
         <section class="flex flex-column gap-2">
           <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
 
           @if (preprintValue.hasCoi) {
-            {{ preprintValue.coiStatement | fixSpecialChar }}
+            {{ preprintValue.coiStatement }}
           } @else {
             <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
           }
@@ -113,7 +57,7 @@
       }
 
       <osf-preprint-doi-section
-        [preprintProvider]="preprintProvider()"
+        [preprintProvider]="preprintProviderValue"
         (preprintVersionSelected)="preprintVersionSelected.emit($event)"
       />
     </div>

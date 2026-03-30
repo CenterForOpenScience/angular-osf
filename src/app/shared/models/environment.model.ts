@@ -5,6 +5,7 @@ export interface EnvironmentModel {
   shareTroveUrl: string;
   addonsApiUrl: string;
   funderApiUrl: string;
+  rorClientId: string;
   casUrl: string;
   recaptchaSiteKey: string;
   twitterHandle: string;
@@ -63,4 +64,5 @@ export interface EnvironmentModel {
    * @example 123456789012
    */
   googleFilePickerAppId: number;
+  throttleToken: string;
 }

@@ -13,7 +13,7 @@ import { ShortRegistrationInfoComponent } from '../short-registration-info/short
 
 @Component({
   selector: 'osf-archiving-message',
-  imports: [TranslatePipe, Card, IconComponent, Divider, ShortRegistrationInfoComponent],
+  imports: [Card, Divider, IconComponent, ShortRegistrationInfoComponent, TranslatePipe],
   templateUrl: './archiving-message.component.html',
   styleUrl: './archiving-message.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

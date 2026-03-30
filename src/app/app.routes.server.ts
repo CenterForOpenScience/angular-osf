@@ -22,10 +22,6 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
   {
-    path: '',
-    renderMode: RenderMode.Prerender,
-  },
-  {
     path: 'dashboard',
     renderMode: RenderMode.Client,
   },
@@ -135,6 +131,14 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: ':id/overview',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/metadata/:recordId',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: ':id/wiki',
     renderMode: RenderMode.Server,
   },
   {

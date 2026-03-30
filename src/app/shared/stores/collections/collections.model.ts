@@ -3,7 +3,7 @@ import {
   CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionWithGuid,
-} from '@osf/shared/models/collections/collections.models';
+} from '@osf/shared/models/collections/collections.model';
 import { CollectionsFilters } from '@osf/shared/models/collections/collections-filters.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 

@@ -35,7 +35,7 @@ import {
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
 } from './addons.actions';
-import { ADDONS_DEFAULTS, AddonsStateModel } from './addons.models';
+import { ADDONS_DEFAULTS, AddonsStateModel } from './addons.model';
 
 @State<AddonsStateModel>({
   name: 'addons',

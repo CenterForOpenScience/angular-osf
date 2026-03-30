@@ -12,13 +12,16 @@
   <label for="withdrawalJustification">
     {{ 'preprints.details.withdrawDialog.justificationInputLabel' | translate | titlecase }}
   </label>
+
   <textarea
     pTextarea
     id="withdrawalJustification"
     [rows]="4"
     [formControl]="withdrawalJustificationFormControl"
   ></textarea>
+
   @let control = withdrawalJustificationFormControl;
+
   @if (control.errors?.['required'] && (control.touched || control.dirty)) {
     <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
       {{ INPUT_VALIDATION_MESSAGES.required | translate }}
@@ -37,16 +40,16 @@
 <div class="flex justify-content-end gap-2 mt-6">
   <p-button
     class="w-12rem btn-full-width"
-    [label]="'common.buttons.cancel' | translate"
     severity="info"
+    [label]="'common.buttons.cancel' | translate"
     (onClick)="dialogRef.close()"
   />
   <p-button
     class="w-12rem btn-full-width"
+    severity="danger"
     [label]="'common.buttons.withdraw' | translate"
-    (onClick)="withdraw()"
     [loading]="withdrawRequestInProgress()"
     [disabled]="withdrawalJustificationFormControl.invalid"
-    severity="danger"
+    (onClick)="withdraw()"
   />
 </div>

@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'osf-preprint-warning-banner',
-  imports: [TranslatePipe, Message],
+  imports: [Message, TranslatePipe],
   templateUrl: './preprint-warning-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

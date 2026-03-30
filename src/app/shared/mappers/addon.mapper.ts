@@ -6,11 +6,11 @@ import {
   AuthorizedAddonGetResponseJsonApi,
   ConfiguredAddonGetResponseJsonApi,
   IncludedAddonData,
-} from '../models/addons/addon-json-api.models';
+} from '../models/addons/addon-json-api.model';
 import {
   OperationInvocationResponseJsonApi,
   StorageItemResponseJsonApi,
-} from '../models/addons/addon-operations-json-api.models';
+} from '../models/addons/addon-operations-json-api.model';
 import { AuthorizedAccountModel } from '../models/addons/authorized-account.model';
 import { ConfiguredAddonModel } from '../models/addons/configured-addon.model';
 import { OperationInvocation } from '../models/addons/operation-invocation.model';

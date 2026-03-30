@@ -5,11 +5,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { ButtonGroup } from 'primeng/buttongroup';
 
-import { filter, map, mergeMap, tap } from 'rxjs';
+import { filter, map, of, switchMap, tap } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, PLATFORM_ID } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -36,14 +36,14 @@ import {
 @Component({
   selector: 'osf-registry-wiki',
   imports: [
-    SubHeaderComponent,
     Button,
     ButtonGroup,
-    TranslatePipe,
+    SubHeaderComponent,
     WikiListComponent,
     ViewSectionComponent,
     CompareSectionComponent,
     ViewOnlyLinkMessageComponent,
+    TranslatePipe,
   ],
   templateUrl: './registry-wiki.component.html',
   styleUrl: './registry-wiki.component.scss',
@@ -62,7 +62,11 @@ export class RegistryWikiComponent {
   previewContent = select(WikiSelectors.getPreviewContent);
   versionContent = select(WikiSelectors.getWikiVersionContent);
   compareVersionContent = select(WikiSelectors.getCompareVersionContent);
-  isWikiListLoading = select(WikiSelectors.getWikiListLoading || WikiSelectors.getComponentsWikiListLoading);
+
+  private readonly wikiListLoading = select(WikiSelectors.getWikiListLoading);
+  private readonly componentsWikiListLoading = select(WikiSelectors.getComponentsWikiListLoading);
+  isWikiListLoading = computed(() => this.wikiListLoading() || this.componentsWikiListLoading());
+
   wikiList = select(WikiSelectors.getWikiList);
   currentWikiId = select(WikiSelectors.getCurrentWikiId);
   wikiVersions = select(WikiSelectors.getWikiVersions);
@@ -71,7 +75,9 @@ export class RegistryWikiComponent {
 
   hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
-  readonly resourceId = this.route.parent?.snapshot.params['id'];
+  readonly resourceId = toSignal<string | undefined>(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
 
   actions = createDispatchMap({
     toggleMode: ToggleMode,
@@ -85,32 +91,33 @@ export class RegistryWikiComponent {
     clearWiki: ClearWiki,
   });
 
-  wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
-
   constructor() {
-    this.actions
-      .getWikiList(ResourceType.Registration, this.resourceId)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap(() => {
-          if (!this.wikiIdFromQueryParams) {
-            this.navigateToWiki(this.wikiList()?.[0]?.id || '');
-          }
-        })
-      )
-      .subscribe();
+    const resourceId = this.resourceId();
+    const wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
 
-    this.actions.getComponentsWikiList(ResourceType.Registration, this.resourceId);
+    if (resourceId) {
+      this.actions
+        .getWikiList(ResourceType.Registration, resourceId)
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          tap(() => {
+            if (!wikiIdFromQueryParams) {
+              this.navigateToWiki(this.wikiList()?.[0]?.id || '');
+            }
+          })
+        )
+        .subscribe();
+
+      this.actions.getComponentsWikiList(ResourceType.Registration, resourceId);
+    }
 
     this.route.queryParams
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         map((params) => params['wiki']),
-        filter((wikiId) => wikiId),
-        tap((wikiId) => {
-          this.actions.setCurrentWiki(wikiId);
-        }),
-        mergeMap((wikiId) => this.actions.getWikiVersions(wikiId))
+        filter((wikiId) => !!wikiId),
+        tap((wikiId) => this.actions.setCurrentWiki(wikiId)),
+        switchMap((wikiId) => this.actions.getWikiVersions(wikiId))
       )
       .subscribe();
 
@@ -132,7 +139,9 @@ export class RegistryWikiComponent {
   }
 
   onSelectCompareVersion(versionId: string) {
-    this.actions.getCompareVersionContent(this.currentWikiId(), versionId);
+    if (versionId) {
+      this.actions.getCompareVersionContent(this.currentWikiId(), versionId);
+    }
   }
 
   private navigateToWiki(wiki: string) {

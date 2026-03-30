@@ -39,6 +39,7 @@ export interface DraftRegistrationAttributesJsonApi {
   datetime_updated: string;
   description: string;
   has_project: boolean;
+  default_license_id?: string;
   node_license: LicenseRecordJsonApi;
   registration_metadata: Record<string, unknown>;
   registration_responses: Record<string, unknown>;

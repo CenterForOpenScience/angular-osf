@@ -5,15 +5,21 @@
         <p-skeleton width="3rem" height="1.5rem" />
         <p-skeleton width="12rem" height="1.5rem" />
       } @else {
-        <img alt="Provider Logo" height="80" [src]="provider()!.brand?.heroLogoImageUrl" />
+        <img
+          [src]="provider()!.brand?.heroLogoImageUrl"
+          height="80"
+          [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
+        />
       }
     </div>
 
-    <p-button
-      [label]="'registries.addRegistration' | translate"
-      (onClick)="navigateToCreatePage()"
-      styleClass="w-max"
-    ></p-button>
+    @if (!isProviderLoading() && provider()!.allowSubmissions) {
+      <p-button
+        [label]="'registries.addRegistration' | translate"
+        (onClick)="navigateToCreatePage()"
+        styleClass="w-max"
+      ></p-button>
+    }
   </div>
 
   <div class="provider-description">

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
-import { Institution } from '@shared/models/institutions/institutions.models';
 
 import { SettingsProjectAffiliationComponent } from './settings-project-affiliation.component';
 

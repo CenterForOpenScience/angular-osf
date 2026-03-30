@@ -1,57 +1,67 @@
-import { MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
 
-import { of } from 'rxjs';
+import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RegistriesSelectors } from '@osf/features/registries/store';
+import {
+  ClearState,
+  DeleteSchemaResponse,
+  RegistriesSelectors,
+  UpdateSchemaResponse,
+  UpdateStepState,
+} from '@osf/features/registries/store';
+import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 import { JustificationStepComponent } from './justification-step.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomConfirmationServiceMock,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 describe('JustificationStepComponent', () => {
   let component: JustificationStepComponent;
   let fixture: ComponentFixture<JustificationStepComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let mockRouter: jest.Mocked<Router>;
-  let mockCustomConfirmationService: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
-  let mockToastService: ReturnType<ToastServiceMockBuilder['build']>;
+  let store: Store;
+  let mockRouter: RouterMockType;
+  let toastService: ToastServiceMockType;
+  let customConfirmationService: CustomConfirmationServiceMockType;
 
-  const MOCK_SCHEMA_RESPONSE = {
+  const MOCK_SCHEMA_RESPONSE: Partial<SchemaResponse> = {
     registrationId: 'reg-1',
     revisionJustification: 'reason',
-  } as any;
+  };
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'rev-1' }).build();
-    mockRouter = { navigate: jest.fn(), navigateByUrl: jest.fn(), url: '/x' } as any;
-    mockCustomConfirmationService = CustomConfirmationServiceMockBuilder.create().build();
-    mockToastService = ToastServiceMockBuilder.create().build();
+  beforeEach(() => {
+    const mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'rev-1' }).build();
+    mockRouter = RouterMockBuilder.create().withUrl('/x').build();
+    toastService = ToastServiceMock.simple();
+    customConfirmationService = CustomConfirmationServiceMock.simple();
 
-    await TestBed.configureTestingModule({
-      imports: [JustificationStepComponent, OSFTestingModule],
+    TestBed.configureTestingModule({
+      imports: [JustificationStepComponent],
       providers: [
+        provideOSFCore(),
+        MockProvider(ToastService, toastService),
         MockProvider(ActivatedRoute, mockActivatedRoute),
         MockProvider(Router, mockRouter),
-        MockProvider(CustomConfirmationService, mockCustomConfirmationService as any),
-        MockProvider(ToastService, mockToastService),
+        MockProvider(CustomConfirmationService, customConfirmationService),
         provideMockStore({
-          signals: [
-            { selector: RegistriesSelectors.getSchemaResponse, value: MOCK_SCHEMA_RESPONSE },
-            { selector: RegistriesSelectors.getStepsState, value: {} },
-          ],
+          signals: [{ selector: RegistriesSelectors.getSchemaResponse, value: MOCK_SCHEMA_RESPONSE }],
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(JustificationStepComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -66,16 +76,12 @@ describe('JustificationStepComponent', () => {
   });
 
   it('should submit justification and navigate to first step', () => {
-    const mockActions = {
-      updateRevision: jest.fn().mockReturnValue(of({})),
-      updateStepState: jest.fn(),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: mockActions });
-
     component.justificationForm.patchValue({ justification: 'new reason' });
+    (store.dispatch as jest.Mock).mockClear();
+
     component.submit();
 
-    expect(mockActions.updateRevision).toHaveBeenCalledWith('rev-1', 'new reason');
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateSchemaResponse('rev-1', 'new reason'));
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../1'], {
       relativeTo: expect.any(Object),
       onSameUrlNavigation: 'reload',
@@ -83,21 +89,36 @@ describe('JustificationStepComponent', () => {
   });
 
   it('should delete draft update after confirmation', () => {
-    const mockActions = {
-      deleteSchemaResponse: jest.fn().mockReturnValue(of({})),
-      clearState: jest.fn(),
-    } as any;
-    Object.defineProperty(component, 'actions', { value: mockActions });
+    (store.dispatch as jest.Mock).mockClear();
 
     component.deleteDraftUpdate();
 
-    expect(mockCustomConfirmationService.confirmDelete).toHaveBeenCalled();
-    const call = (mockCustomConfirmationService.confirmDelete as any).mock.calls[0][0];
+    expect(customConfirmationService.confirmDelete).toHaveBeenCalled();
+    const call = customConfirmationService.confirmDelete.mock.calls[0][0];
     call.onConfirm();
 
-    expect(mockActions.deleteSchemaResponse).toHaveBeenCalledWith('rev-1');
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith('registries.justification.successDeleteDraft');
-    expect(mockActions.clearState).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteSchemaResponse('rev-1'));
+    expect(toastService.showSuccess).toHaveBeenCalledWith('registries.justification.successDeleteDraft');
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearState());
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/reg-1/overview');
+  });
+
+  it('should dispatch updateStepState and updateRevision on destroy when form changed', () => {
+    component.justificationForm.patchValue({ justification: 'changed reason' });
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.ngOnDestroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateStepState('0', false, true));
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateSchemaResponse('rev-1', 'changed reason'));
+  });
+
+  it('should not dispatch updateRevision on destroy when form is unchanged', () => {
+    (store.dispatch as jest.Mock).mockClear();
+
+    component.ngOnDestroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateStepState('0', false, true));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateSchemaResponse));
   });
 });

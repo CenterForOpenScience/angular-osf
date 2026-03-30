@@ -36,6 +36,7 @@ export const projectRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('../project/overview/project-overview.component').then((mod) => mod.ProjectOverviewComponent),
+        data: { canonicalPath: 'overview' },
         providers: [
           provideStates([
             NodeLinksState,
@@ -52,13 +53,13 @@ export const projectRoutes: Routes = [
         path: 'metadata',
         loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
         providers: [provideStates([SubjectsState, CollectionsState])],
-        data: { resourceType: ResourceType.Project },
+        data: { resourceType: ResourceType.Project, canonicalPath: 'metadata/osf' },
         canActivate: [viewOnlyGuard],
       },
       {
         path: 'files',
         loadChildren: () => import('@osf/features/files/files.routes').then((mod) => mod.filesRoutes),
-        data: { resourceType: ResourceType.Project },
+        data: { resourceType: ResourceType.Project, canonicalPath: 'files/osfstorage' },
       },
       {
         path: 'registrations',
@@ -66,29 +67,31 @@ export const projectRoutes: Routes = [
         providers: [provideStates([RegistrationsState])],
         loadComponent: () =>
           import('../project/registrations/registrations.component').then((mod) => mod.RegistrationsComponent),
+        data: { canonicalPath: 'registrations' },
       },
       {
         path: 'settings',
         canActivate: [viewOnlyGuard],
         loadComponent: () => import('../project/settings/settings.component').then((mod) => mod.SettingsComponent),
+        data: { canonicalPath: 'settings' },
         providers: [provideStates([SettingsState, ViewOnlyLinkState])],
       },
       {
         path: 'contributors',
         canActivate: [viewOnlyGuard],
         loadComponent: () => import('../contributors/contributors.component').then((mod) => mod.ContributorsComponent),
-        data: { resourceType: ResourceType.Project },
+        data: { resourceType: ResourceType.Project, canonicalPath: 'contributors' },
         providers: [provideStates([ViewOnlyLinkState])],
       },
       {
         path: 'analytics',
         loadComponent: () => import('../analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
-        data: { resourceType: ResourceType.Project },
+        data: { resourceType: ResourceType.Project, canonicalPath: 'analytics' },
         providers: [provideStates([AnalyticsState])],
       },
       {
         path: 'analytics/linked-projects',
-        data: { resourceType: ResourceType.Project },
+        data: { resourceType: ResourceType.Project, canonicalPath: 'analytics/linked-projects' },
         loadComponent: () =>
           import('../analytics/components/view-linked-projects/view-linked-projects.component').then(
             (mod) => mod.ViewLinkedProjectsComponent
@@ -97,7 +100,7 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'analytics/duplicates',
-        data: { resourceType: ResourceType.Project },
+        data: { resourceType: ResourceType.Project, canonicalPath: 'analytics/duplicates' },
         loadComponent: () =>
           import('../analytics/components/view-duplicates/view-duplicates.component').then(
             (mod) => mod.ViewDuplicatesComponent
@@ -108,20 +111,24 @@ export const projectRoutes: Routes = [
         path: 'wiki/:wikiName',
         loadComponent: () =>
           import('../project/wiki/legacy-wiki-redirect.component').then((m) => m.LegacyWikiRedirectComponent),
+        data: { canonicalPath: 'wiki' },
       },
       {
         path: 'wiki',
         loadComponent: () => import('../project/wiki/wiki.component').then((mod) => mod.WikiComponent),
+        data: { canonicalPath: 'wiki' },
       },
       {
         path: 'addons',
         canActivate: [viewOnlyGuard],
+        data: { canonicalPath: 'addons' },
         loadChildren: () =>
           import('@osf/features/project/project-addons/project-addons.routes').then((mod) => mod.projectAddonsRoutes),
       },
       {
         path: 'links',
         canActivate: [viewOnlyGuard],
+        data: { canonicalPath: 'links' },
         loadComponent: () =>
           import('../project/linked-services/linked-services.component').then((mod) => mod.LinkedServicesComponent),
       },

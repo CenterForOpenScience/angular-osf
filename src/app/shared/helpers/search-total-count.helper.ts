@@ -1,4 +1,4 @@
-import { IndexCardSearchResponseJsonApi } from '../models/search/index-card-search-json-api.models';
+import { IndexCardSearchResponseJsonApi } from '../models/search/index-card-search-json-api.model';
 
 export function parseSearchTotalCount(response: IndexCardSearchResponseJsonApi): number {
   let totalCount = 0;

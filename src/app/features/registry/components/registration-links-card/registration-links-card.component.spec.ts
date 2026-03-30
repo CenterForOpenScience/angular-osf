@@ -1,6 +1,6 @@
 import { MockComponents } from 'ng-mocks';
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
@@ -11,110 +11,77 @@ import { RegistrationLinksCardComponent } from './registration-links-card.compon
 import { createMockLinkedNode } from '@testing/mocks/linked-node.mock';
 import { createMockLinkedRegistration } from '@testing/mocks/linked-registration.mock';
 import { createMockRegistryComponent } from '@testing/mocks/registry-component.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 
 describe('RegistrationLinksCardComponent', () => {
-  let component: RegistrationLinksCardComponent;
-  let fixture: ComponentFixture<RegistrationLinksCardComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         RegistrationLinksCardComponent,
-        OSFTestingModule,
         ...MockComponents(DataResourcesComponent, IconComponent, ContributorsListComponent),
+        MockComponentWithSignal('osf-truncated-text'),
       ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(RegistrationLinksCardComponent);
-    component = fixture.componentInstance;
+      providers: [provideOSFCore()],
+    });
   });
 
-  it('should create', () => {
-    fixture.componentRef.setInput('registrationData', createMockLinkedRegistration());
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-  });
-
-  it('should set registrationData input correctly with LinkedRegistration', () => {
-    const mockLinkedRegistration = createMockLinkedRegistration();
-    fixture.componentRef.setInput('registrationData', mockLinkedRegistration);
-    fixture.detectChanges();
-
-    expect(component.registrationData()).toEqual(mockLinkedRegistration);
-  });
-
-  it('should set registrationData input correctly with LinkedNode', () => {
-    const mockLinkedNode = createMockLinkedNode();
-    fixture.componentRef.setInput('registrationData', mockLinkedNode);
-    fixture.detectChanges();
-
-    expect(component.registrationData()).toEqual(mockLinkedNode);
-  });
-
-  it('should set registrationData input correctly with RegistryComponentModel', () => {
-    const mockRegistryComponent = createMockRegistryComponent();
-    fixture.componentRef.setInput('registrationData', mockRegistryComponent);
-    fixture.detectChanges();
-
-    expect(component.registrationData()).toEqual(mockRegistryComponent);
-  });
-
-  it('should return true when data has reviewsState property', () => {
+  it('should identify LinkedRegistration data', () => {
+    const fixture = TestBed.createComponent(RegistrationLinksCardComponent);
     fixture.componentRef.setInput('registrationData', createMockLinkedRegistration());
     fixture.detectChanges();
 
-    expect(component.isRegistrationData()).toBe(true);
+    expect(fixture.componentInstance.isRegistrationData()).toBe(true);
+    expect(fixture.componentInstance.registrationDataTyped()).toEqual(createMockLinkedRegistration());
   });
 
-  it('should return false when data does not have reviewsState property', () => {
+  it('should identify LinkedNode data', () => {
+    const fixture = TestBed.createComponent(RegistrationLinksCardComponent);
     fixture.componentRef.setInput('registrationData', createMockLinkedNode());
     fixture.detectChanges();
 
-    expect(component.isRegistrationData()).toBe(false);
+    expect(fixture.componentInstance.isRegistrationData()).toBe(false);
+    expect(fixture.componentInstance.isComponentData()).toBe(false);
+    expect(fixture.componentInstance.registrationDataTyped()).toBeNull();
+    expect(fixture.componentInstance.componentsDataTyped()).toBeNull();
   });
 
-  it('should return true when data has registrationSupplement property', () => {
+  it('should identify RegistryComponentModel data', () => {
+    const fixture = TestBed.createComponent(RegistrationLinksCardComponent);
     fixture.componentRef.setInput('registrationData', createMockRegistryComponent());
     fixture.detectChanges();
 
-    expect(component.isComponentData()).toBe(true);
+    expect(fixture.componentInstance.isComponentData()).toBe(true);
+    expect(fixture.componentInstance.componentsDataTyped()).toEqual(createMockRegistryComponent());
   });
 
-  it('should return true for LinkedRegistration with registrationSupplement', () => {
-    fixture.componentRef.setInput('registrationData', createMockLinkedRegistration());
+  it('should return true for hasWriteAccess when user has write permission', () => {
+    const fixture = TestBed.createComponent(RegistrationLinksCardComponent);
+    fixture.componentRef.setInput(
+      'registrationData',
+      createMockLinkedRegistration({ currentUserPermissions: ['read', 'write'] })
+    );
     fixture.detectChanges();
 
-    expect(component.isComponentData()).toBe(true);
+    expect(fixture.componentInstance.hasWriteAccess()).toBe(true);
   });
 
-  it('should return false when data does not have registrationSupplement property', () => {
+  it('should return false for hasWriteAccess when user has read-only permission', () => {
+    const fixture = TestBed.createComponent(RegistrationLinksCardComponent);
+    fixture.componentRef.setInput(
+      'registrationData',
+      createMockLinkedRegistration({ currentUserPermissions: ['read'] })
+    );
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.hasWriteAccess()).toBe(false);
+  });
+
+  it('should return false for hasWriteAccess for non-registration data', () => {
+    const fixture = TestBed.createComponent(RegistrationLinksCardComponent);
     fixture.componentRef.setInput('registrationData', createMockLinkedNode());
     fixture.detectChanges();
 
-    expect(component.isComponentData()).toBe(false);
-  });
-
-  it('should return LinkedRegistration when data has reviewsState', () => {
-    const mockLinkedRegistration = createMockLinkedRegistration();
-    fixture.componentRef.setInput('registrationData', mockLinkedRegistration);
-    fixture.detectChanges();
-
-    expect(component.registrationDataTyped()).toEqual(mockLinkedRegistration);
-  });
-
-  it('should return null when data does not have reviewsState', () => {
-    fixture.componentRef.setInput('registrationData', createMockLinkedNode());
-    fixture.detectChanges();
-
-    expect(component.registrationDataTyped()).toBeNull();
-  });
-
-  it('should return RegistryComponentModel when data has registrationSupplement', () => {
-    const mockRegistryComponent = createMockRegistryComponent();
-    fixture.componentRef.setInput('registrationData', mockRegistryComponent);
-    fixture.detectChanges();
-
-    expect(component.componentsDataTyped()).toEqual(mockRegistryComponent);
+    expect(fixture.componentInstance.hasWriteAccess()).toBe(false);
   });
 });

@@ -15,6 +15,7 @@ import { NodeStorageMapper } from '@osf/shared/mappers/nodes/node-storage.mapper
 import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
@@ -26,7 +27,6 @@ import { NodeResponseJsonApi, NodesResponseJsonApi } from '@osf/shared/models/no
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
-import { Institution } from '@shared/models/institutions/institutions.models';
 import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewMapper } from '../mappers';

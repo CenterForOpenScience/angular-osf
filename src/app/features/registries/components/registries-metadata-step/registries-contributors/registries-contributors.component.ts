@@ -4,9 +4,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { TableModule } from 'primeng/table';
 
-import { filter, map, of } from 'rxjs';
+import { EMPTY, filter, switchMap, tap } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -20,9 +19,8 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 
 import {
   AddContributorDialogComponent,
@@ -51,21 +49,19 @@ import { TableParameters } from '@shared/models/table-parameters.model';
 
 @Component({
   selector: 'osf-registries-contributors',
-  imports: [FormsModule, TableModule, ContributorsTableComponent, TranslatePipe, Card, Button],
+  imports: [ContributorsTableComponent, TranslatePipe, Card, Button],
   templateUrl: './registries-contributors.component.html',
   styleUrl: './registries-contributors.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesContributorsComponent implements OnInit, OnDestroy {
   control = input.required<FormControl>();
+  draftId = input.required<string>();
 
-  readonly destroyRef = inject(DestroyRef);
-  readonly customDialogService = inject(CustomDialogService);
-  readonly toastService = inject(ToastService);
-  readonly customConfirmationService = inject(CustomConfirmationService);
-
-  private readonly route = inject(ActivatedRoute);
-  private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly customDialogService = inject(CustomDialogService);
+  private readonly toastService = inject(ToastService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
 
   initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal<ContributorModel[]>([]);
@@ -112,11 +108,10 @@ export class RegistriesContributorsComponent implements OnInit, OnDestroy {
   }
 
   onFocusOut() {
-    if (this.control()) {
-      this.control().markAsTouched();
-      this.control().markAsDirty();
-      this.control().updateValueAndValidity();
-    }
+    const control = this.control();
+    control.markAsTouched();
+    control.markAsDirty();
+    control.updateValueAndValidity();
   }
 
   cancel() {
@@ -142,20 +137,21 @@ export class RegistriesContributorsComponent implements OnInit, OnDestroy {
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),
+        switchMap((res: ContributorDialogAddModel) => {
+          if (res.type === AddContributorType.Unregistered) {
+            this.openAddUnregisteredContributorDialog();
+            return EMPTY;
+          }
+
+          return this.actions
+            .bulkAddContributors(this.draftId(), ResourceType.DraftRegistration, res.data)
+            .pipe(
+              tap(() => this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage'))
+            );
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((res: ContributorDialogAddModel) => {
-        if (res.type === AddContributorType.Unregistered) {
-          this.openAddUnregisteredContributorDialog();
-        } else {
-          this.actions
-            .bulkAddContributors(this.draftId(), ResourceType.DraftRegistration, res.data)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() =>
-              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage')
-            );
-        }
-      });
+      .subscribe();
   }
 
   openAddUnregisteredContributorDialog() {
@@ -166,19 +162,22 @@ export class RegistriesContributorsComponent implements OnInit, OnDestroy {
       })
       .onClose.pipe(
         filter((res: ContributorDialogAddModel) => !!res),
+        switchMap((res) => {
+          if (res.type === AddContributorType.Registered) {
+            this.openAddContributorDialog();
+            return EMPTY;
+          }
+
+          const params = { name: res.data[0].fullName };
+          return this.actions
+            .bulkAddContributors(this.draftId(), ResourceType.DraftRegistration, res.data)
+            .pipe(
+              tap(() => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params))
+            );
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((res: ContributorDialogAddModel) => {
-        if (res.type === AddContributorType.Registered) {
-          this.openAddContributorDialog();
-        } else {
-          const params = { name: res.data[0].fullName };
-
-          this.actions.bulkAddContributors(this.draftId(), ResourceType.DraftRegistration, res.data).subscribe({
-            next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
-          });
-        }
-      });
+      .subscribe();
   }
 
   removeContributor(contributor: ContributorModel) {

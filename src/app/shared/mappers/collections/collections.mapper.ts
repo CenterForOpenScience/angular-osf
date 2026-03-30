@@ -11,13 +11,13 @@ import {
   CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionWithGuid,
-} from '@osf/shared/models/collections/collections.models';
+} from '@osf/shared/models/collections/collections.model';
 import {
   CollectionDetailsResponseJsonApi,
   CollectionProviderResponseJsonApi,
   CollectionSubmissionJsonApi,
   CollectionSubmissionWithGuidJsonApi,
-} from '@osf/shared/models/collections/collections-json-api.models';
+} from '@osf/shared/models/collections/collections-json-api.model';
 import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { ContributorModel } from '@osf/shared/models/contributors/contributor.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
@@ -58,6 +58,7 @@ export class CollectionsMapper {
         id: response.relationships.primary_collection.data.id,
         type: response.relationships.primary_collection.data.type,
       },
+      defaultLicenseId: response.attributes?.default_license_id,
       brand: response.embeds.brand.data
         ? {
             id: response.embeds.brand.data.id,
