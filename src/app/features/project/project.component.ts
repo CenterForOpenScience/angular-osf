@@ -31,6 +31,7 @@ import { AnalyticsService } from '@shared/services/analytics.service';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { GetProjectById, GetProjectIdentifiers, GetProjectLicense, ProjectOverviewSelectors } from './overview/store';
+import { UserSelectors } from '@core/store/user';
 
 @Component({
   selector: 'osf-project',
@@ -52,6 +53,7 @@ export class ProjectComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly analyticsService = inject(AnalyticsService);
 
+  readonly currentUser = select(UserSelectors.getCurrentUser);
   readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   readonly currentProject = select(ProjectOverviewSelectors.getProject);
   readonly isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
@@ -143,10 +145,15 @@ export class ProjectComponent implements OnDestroy {
       .subscribe((event: NavigationEnd) => {
         this.canonicalPath.set(this.getCanonicalPathFromSnapshot());
         this.isFileDetailRoute.set(this.isFileDetailRouteFromSnapshot());
-        this.analyticsService.sendCountedUsageForRegistrationAndProjects(
-          event.urlAfterRedirects,
-          this.currentResource()
-        );
+        const contributors = this.bibliographicContributors()
+        const user = this.currentUser()
+        // update project count metrics if user is not contributor or is not authentified
+        if (!user?.id || !contributors.some((contributor) => contributor.userId === user.id)) {
+          this.analyticsService.sendCountedUsageForRegistrationAndProjects(
+            event.urlAfterRedirects,
+            this.currentResource()
+          );
+        }
       });
   }
 
