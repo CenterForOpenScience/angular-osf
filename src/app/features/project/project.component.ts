@@ -18,7 +18,6 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
-import { UserSelectors } from '@core/store/user';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import {
   getDeepestCanonicalPathTemplateFromSnapshot,
