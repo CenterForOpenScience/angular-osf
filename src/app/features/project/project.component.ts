@@ -145,7 +145,7 @@ export class ProjectComponent implements OnDestroy {
       .subscribe((event: NavigationEnd) => {
         this.canonicalPath.set(this.getCanonicalPathFromSnapshot());
         this.isFileDetailRoute.set(this.isFileDetailRouteFromSnapshot());
-        if (this.hasNoPermissions()) {
+        if (this.currentResource()?.id && this.hasNoPermissions()) {
           this.analyticsService.sendCountedUsageForRegistrationAndProjects(
             event.urlAfterRedirects,
             this.currentResource()
