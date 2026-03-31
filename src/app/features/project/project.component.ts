@@ -18,6 +18,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
+import { UserSelectors } from '@core/store/user';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import {
   getDeepestCanonicalPathTemplateFromSnapshot,
@@ -31,7 +32,6 @@ import { AnalyticsService } from '@shared/services/analytics.service';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { GetProjectById, GetProjectIdentifiers, GetProjectLicense, ProjectOverviewSelectors } from './overview/store';
-import { UserSelectors } from '@core/store/user';
 
 @Component({
   selector: 'osf-project',
@@ -145,8 +145,8 @@ export class ProjectComponent implements OnDestroy {
       .subscribe((event: NavigationEnd) => {
         this.canonicalPath.set(this.getCanonicalPathFromSnapshot());
         this.isFileDetailRoute.set(this.isFileDetailRouteFromSnapshot());
-        const contributors = this.bibliographicContributors()
-        const user = this.currentUser()
+        const contributors = this.bibliographicContributors();
+        const user = this.currentUser();
         // update project count metrics if user is not contributor or is not authentified
         if (!user?.id || !contributors.some((contributor) => contributor.userId === user.id)) {
           this.analyticsService.sendCountedUsageForRegistrationAndProjects(
