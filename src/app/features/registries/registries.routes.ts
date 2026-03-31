@@ -49,10 +49,8 @@ export const registriesRoutes: Routes = [
       },
       {
         path: ':providerId',
-        loadComponent: () =>
-          import('@osf/features/registries/pages/registries-provider-search/registries-provider-search.component').then(
-            (c) => c.RegistriesProviderSearchComponent
-          ),
+        redirectTo: ':providerId/discover',
+        pathMatch: 'full',
       },
       {
         path: ':providerId/discover',
