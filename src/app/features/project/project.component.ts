@@ -53,7 +53,7 @@ export class ProjectComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly analyticsService = inject(AnalyticsService);
 
-  readonly currentUser = select(UserSelectors.getCurrentUser);
+ readonly hasNoPermissions = select(ProjectOverviewSelectors.hasNoPermissions);
   readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   readonly currentProject = select(ProjectOverviewSelectors.getProject);
   readonly isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
