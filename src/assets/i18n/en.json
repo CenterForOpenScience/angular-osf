@@ -1567,6 +1567,15 @@
       "titleZA": "Title: Z-A",
       "oldest": "Date: oldest to newest",
       "newest": "Date: newest to oldest"
+    },
+    "notificationPreferences": {
+      "title": "Configure reviews notification preferences",
+      "note": "To configure other notification preferences visit your",
+      "items": {
+        "provider_new_pending_submissions": "New pending submissions",
+        "provider_new_pending_withdraw_requests": "New pending withdraw requests"
+      },
+      "successUpdate": "Notification preference updated successfully"
     }
   },
   "settings": {

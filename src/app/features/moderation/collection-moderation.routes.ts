@@ -8,6 +8,7 @@ import { ActivityLogsState } from '@shared/stores/activity-logs';
 import { CollectionsState } from '@shared/stores/collections';
 
 import { ModeratorsState } from './store/moderators';
+import { ProviderSubscriptionsState } from './store/provider-subscriptions';
 import { CollectionModerationTab } from './enums';
 
 export const collectionModerationRoutes: Routes = [
@@ -46,7 +47,8 @@ export const collectionModerationRoutes: Routes = [
           import('./components/notification-settings/notification-settings.component').then(
             (m) => m.NotificationSettingsComponent
           ),
-        data: { tab: CollectionModerationTab.Settings },
+        data: { tab: CollectionModerationTab.Settings, resourceType: ResourceType.Collection },
+        providers: [provideStates([ProviderSubscriptionsState])],
       },
     ],
   },

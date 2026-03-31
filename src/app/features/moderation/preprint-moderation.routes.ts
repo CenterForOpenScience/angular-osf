@@ -6,6 +6,7 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { ModeratorsState } from './store/moderators';
 import { PreprintModerationState } from './store/preprint-moderation';
+import { ProviderSubscriptionsState } from './store/provider-subscriptions';
 import { PreprintModerationTab } from './enums';
 
 export const preprintModerationRoutes: Routes = [
@@ -51,7 +52,8 @@ export const preprintModerationRoutes: Routes = [
           import('./components/notification-settings/notification-settings.component').then(
             (m) => m.NotificationSettingsComponent
           ),
-        data: { tab: PreprintModerationTab.Notifications },
+        data: { tab: PreprintModerationTab.Notifications, resourceType: ResourceType.Preprint },
+        providers: [provideStates([ProviderSubscriptionsState])],
       },
       {
         path: 'settings',

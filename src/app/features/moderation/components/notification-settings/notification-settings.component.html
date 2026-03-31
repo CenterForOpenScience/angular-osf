@@ -1,6 +1,30 @@
+<h2>{{ 'moderation.notificationPreferences.title' | translate }}</h2>
 <p>
-  <span>{{ 'moderation.settingsMessage' | translate }}</span>
+  <span>{{ 'moderation.notificationPreferences.note' | translate }}</span>
   <a class="ml-1 font-bold cursor-pointer" routerLink="/settings/notifications">
     {{ 'moderation.userSettings' | translate }}
   </a>
 </p>
+
+@if (!isLoading()) {
+  <section class="notification-configuration" [formGroup]="form">
+    @for (sub of subscriptions(); track sub.id) {
+      <p>{{ labelKey(sub.event) | translate }}</p>
+      <p-select
+        [formControlName]="sub.id"
+        class="dropdown"
+        [options]="frequencyOptions"
+        optionLabel="label"
+        optionValue="value"
+        (onChange)="onFrequencyChange(sub, $event.value)"
+      />
+    }
+  </section>
+} @else {
+  <section class="notification-configuration">
+    @for (_ of [1, 2]; track $index) {
+      <p-skeleton width="20rem" height="2rem"></p-skeleton>
+      <p-skeleton class="dropdown" height="3rem"></p-skeleton>
+    }
+  </section>
+}
