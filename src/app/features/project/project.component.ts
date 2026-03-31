@@ -53,7 +53,7 @@ export class ProjectComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly analyticsService = inject(AnalyticsService);
 
- readonly hasNoPermissions = select(ProjectOverviewSelectors.hasNoPermissions);
+  readonly hasNoPermissions = select(ProjectOverviewSelectors.hasNoPermissions);
   readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   readonly currentProject = select(ProjectOverviewSelectors.getProject);
   readonly isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
@@ -145,7 +145,7 @@ export class ProjectComponent implements OnDestroy {
       .subscribe((event: NavigationEnd) => {
         this.canonicalPath.set(this.getCanonicalPathFromSnapshot());
         this.isFileDetailRoute.set(this.isFileDetailRouteFromSnapshot());
-if (this.hasNoPermissions()) {
+        if (this.hasNoPermissions()) {
           this.analyticsService.sendCountedUsageForRegistrationAndProjects(
             event.urlAfterRedirects,
             this.currentResource()
