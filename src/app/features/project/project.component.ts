@@ -145,10 +145,7 @@ export class ProjectComponent implements OnDestroy {
       .subscribe((event: NavigationEnd) => {
         this.canonicalPath.set(this.getCanonicalPathFromSnapshot());
         this.isFileDetailRoute.set(this.isFileDetailRouteFromSnapshot());
-        const contributors = this.bibliographicContributors();
-        const user = this.currentUser();
-        // update project count metrics if user is not contributor or is not authentified
-        if (!user?.id || !contributors.some((contributor) => contributor.userId === user.id)) {
+if (this.hasNoPermissions()) {
           this.analyticsService.sendCountedUsageForRegistrationAndProjects(
             event.urlAfterRedirects,
             this.currentResource()
