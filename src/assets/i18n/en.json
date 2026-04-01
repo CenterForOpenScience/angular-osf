@@ -1711,6 +1711,11 @@
           "preprints": "Preprint submissions updated"
         },
         "successUpdate": "Notification preferences successfully updated."
+      },
+      "frequency": {
+        "daily": "Daily",
+        "instant": "Instant",
+        "never": "Never"
       }
     },
     "addons": {

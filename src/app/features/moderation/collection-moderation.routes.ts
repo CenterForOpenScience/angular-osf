@@ -3,7 +3,7 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 import { CollectionsState } from '@shared/stores/collections';
 
@@ -47,7 +47,7 @@ export const collectionModerationRoutes: Routes = [
           import('./components/notification-settings/notification-settings.component').then(
             (m) => m.NotificationSettingsComponent
           ),
-        data: { tab: CollectionModerationTab.Settings, resourceType: ResourceType.Collection },
+        data: { tab: CollectionModerationTab.Settings, resourceType: CurrentResourceType.Collections },
         providers: [provideStates([ProviderSubscriptionsState])],
       },
     ],

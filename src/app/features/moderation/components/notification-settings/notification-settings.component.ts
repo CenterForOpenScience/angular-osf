@@ -8,22 +8,13 @@ import { Skeleton } from 'primeng/skeleton';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  OnInit,
-  Signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, Signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
+import { SUBSCRIPTION_FREQUENCY_OPTIONS } from '@osf/shared/constants/subscription-options.const';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
 import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -33,12 +24,6 @@ import {
   ProviderSubscriptionsSelectors,
   UpdateProviderSubscription,
 } from '../../store/provider-subscriptions';
-
-const PROVIDER_TYPE_MAP: Partial<Record<ResourceType, string>> = {
-  [ResourceType.Preprint]: 'preprints',
-  [ResourceType.Collection]: 'collections',
-  [ResourceType.Registration]: 'registrations',
-};
 
 @Component({
   selector: 'osf-notification-settings',
@@ -56,23 +41,16 @@ export class NotificationSettingsComponent implements OnInit {
   readonly providerId = toSignal(
     this.route.parent?.params.pipe(map((params) => params['providerId'])) ?? of(undefined)
   );
-  readonly resourceType: Signal<ResourceType | undefined> = toSignal(
-    this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
+  readonly resourceType: Signal<CurrentResourceType | undefined> = toSignal(
+    this.route.data.pipe(map((params) => params['resourceType']))
   );
-  readonly providerType = computed(() => {
-    const rt = this.resourceType();
-    return rt !== undefined ? PROVIDER_TYPE_MAP[rt] : undefined;
-  });
 
   subscriptions = select(ProviderSubscriptionsSelectors.getSubscriptions);
   isLoading = select(ProviderSubscriptionsSelectors.isLoading);
 
-  form = this.fb.group({} as Record<string, FormControl<SubscriptionFrequency>>);
+  readonly form = new FormRecord<FormControl<SubscriptionFrequency>>({});
 
-  frequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
-    label: key,
-    value,
-  }));
+  readonly frequencyOptions = SUBSCRIPTION_FREQUENCY_OPTIONS;
 
   private readonly actions = createDispatchMap({
     getProviderSubscriptions: GetProviderSubscriptions,
@@ -82,27 +60,32 @@ export class NotificationSettingsComponent implements OnInit {
   constructor() {
     effect(() => {
       const subs = this.subscriptions();
-      Object.keys(this.form.controls).forEach((k) => this.form.removeControl(k, { emitEvent: false }));
       subs.forEach((sub) => {
-        this.form.addControl(sub.id, this.fb.control(sub.frequency, { nonNullable: true }), { emitEvent: false });
+        const control = this.form.controls[sub.id];
+        if (!control) {
+          this.form.addControl(sub.id, this.fb.control(sub.frequency, { nonNullable: true }), { emitEvent: false });
+          return;
+        }
+
+        if (control.value !== sub.frequency) {
+          control.setValue(sub.frequency, { emitEvent: false });
+        }
       });
     });
   }
 
   ngOnInit(): void {
-    const providerType = this.providerType();
+    const providerType = this.resourceType();
     const providerId = this.providerId();
     if (providerType && providerId) {
       this.actions.getProviderSubscriptions(providerType, providerId);
     }
   }
 
-  labelKey(event: SubscriptionEvent): string {
-    return `moderation.notificationPreferences.items.${event}`;
-  }
-
   onFrequencyChange(sub: NotificationSubscription, frequency: SubscriptionFrequency): void {
-    const providerType = this.providerType();
+    if (sub.frequency === frequency) return;
+
+    const providerType = this.resourceType();
     const providerId = this.providerId();
     if (!providerType || !providerId) return;
 
@@ -114,8 +97,6 @@ export class NotificationSettingsComponent implements OnInit {
         frequency,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.toastService.showSuccess('moderation.notificationPreferences.successUpdate');
-      });
+      .subscribe(() => this.toastService.showSuccess('moderation.notificationPreferences.successUpdate'));
   }
 }

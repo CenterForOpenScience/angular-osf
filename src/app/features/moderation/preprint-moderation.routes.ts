@@ -2,7 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { ModeratorsState } from './store/moderators';
 import { PreprintModerationState } from './store/preprint-moderation';
@@ -52,7 +52,7 @@ export const preprintModerationRoutes: Routes = [
           import('./components/notification-settings/notification-settings.component').then(
             (m) => m.NotificationSettingsComponent
           ),
-        data: { tab: PreprintModerationTab.Notifications, resourceType: ResourceType.Preprint },
+        data: { tab: PreprintModerationTab.Notifications, resourceType: CurrentResourceType.Preprints },
         providers: [provideStates([ProviderSubscriptionsState])],
       },
       {

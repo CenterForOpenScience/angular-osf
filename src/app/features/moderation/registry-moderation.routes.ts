@@ -2,7 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { ModeratorsState } from './store/moderators';
 import { ProviderSubscriptionsState } from './store/provider-subscriptions';
@@ -52,7 +52,7 @@ export const registryModerationRoutes: Routes = [
           import('./components/notification-settings/notification-settings.component').then(
             (m) => m.NotificationSettingsComponent
           ),
-        data: { tab: RegistryModerationTab.Settings, resourceType: ResourceType.Registration },
+        data: { tab: RegistryModerationTab.Settings, resourceType: CurrentResourceType.Registrations },
         providers: [provideStates([ProviderSubscriptionsState])],
       },
     ],

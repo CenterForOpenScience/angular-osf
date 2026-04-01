@@ -1,17 +1,22 @@
-import { MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
 
-import { of } from 'rxjs';
+import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { SUBSCRIPTION_FREQUENCY_OPTIONS } from '@osf/shared/constants/subscription-options.const';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
 import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { ProviderSubscriptionsSelectors } from '../../store/provider-subscriptions';
+import {
+  GetProviderSubscriptions,
+  ProviderSubscriptionsSelectors,
+  UpdateProviderSubscription,
+} from '../../store/provider-subscriptions';
 
 import { NotificationSettingsComponent } from './notification-settings.component';
 
@@ -33,7 +38,7 @@ const MOCK_PROVIDER_SUBSCRIPTIONS: NotificationSubscription[] = [
   },
 ];
 
-async function createComponent(resourceType: ResourceType, providerId = 'test-provider-123') {
+async function createComponent(resourceType: CurrentResourceType, providerId = 'test-provider-123') {
   const mockActivatedRoute = ActivatedRouteMockBuilder.create()
     .withParams({ providerId })
     .withData({ resourceType })
@@ -56,19 +61,24 @@ async function createComponent(resourceType: ResourceType, providerId = 'test-pr
   const fixture = TestBed.createComponent(NotificationSettingsComponent);
   const component = fixture.componentInstance;
   const toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
+  const store = TestBed.inject(Store);
 
-  return { fixture, component, toastService };
+  return { fixture, component, toastService, store };
 }
 
 describe('NotificationSettingsComponent', () => {
   let component: NotificationSettingsComponent;
   let fixture: ComponentFixture<NotificationSettingsComponent>;
   let toastService: jest.Mocked<ToastService>;
+  let store: Store;
 
   const mockProviderId = 'test-provider-123';
 
   beforeEach(async () => {
-    ({ fixture, component, toastService } = await createComponent(ResourceType.Preprint, mockProviderId));
+    ({ fixture, component, toastService, store } = await createComponent(
+      CurrentResourceType.Preprints,
+      mockProviderId
+    ));
   });
 
   it('should create', () => {
@@ -79,49 +89,42 @@ describe('NotificationSettingsComponent', () => {
   it('should read providerId and resourceType from route', () => {
     fixture.detectChanges();
     expect(component.providerId()).toBe(mockProviderId);
-    expect(component.resourceType()).toBe(ResourceType.Preprint);
-  });
-
-  it('should compute providerType as preprints for ResourceType.Preprint', () => {
-    fixture.detectChanges();
-    expect(component.providerType()).toBe('preprints');
+    expect(component.resourceType()).toBe(CurrentResourceType.Preprints);
   });
 
   it('should dispatch GetProviderSubscriptions on init', () => {
-    const getProviderSubscriptionsSpy = jest.fn().mockReturnValue(of({}));
-    component.actions = { ...component.actions, getProviderSubscriptions: getProviderSubscriptionsSpy };
-
-    component.ngOnInit();
-
-    expect(getProviderSubscriptionsSpy).toHaveBeenCalledWith('preprints', mockProviderId);
-  });
-
-  it('should return correct labelKey for a subscription event', () => {
-    expect(component.labelKey(SubscriptionEvent.ProviderNewPendingSubmissions)).toBe(
-      'moderation.notificationPreferences.items.provider_new_pending_submissions'
+    fixture.detectChanges();
+    expect(store.dispatch as jest.Mock).toHaveBeenCalledWith(
+      new GetProviderSubscriptions(CurrentResourceType.Preprints, mockProviderId)
     );
   });
 
   it('should dispatch UpdateProviderSubscription and show toast on frequency change', () => {
     fixture.detectChanges();
-    const updateSpy = jest.fn().mockReturnValue(of({}));
-    component.actions = { ...component.actions, updateProviderSubscription: updateSpy };
 
     component.onFrequencyChange(MOCK_PROVIDER_SUBSCRIPTIONS[0], SubscriptionFrequency.Daily);
 
-    expect(updateSpy).toHaveBeenCalledWith({
-      providerType: 'preprints',
-      providerId: mockProviderId,
-      subscriptionId: 'sub-1',
-      frequency: SubscriptionFrequency.Daily,
-    });
+    expect(store.dispatch as jest.Mock).toHaveBeenCalledWith(
+      new UpdateProviderSubscription({
+        providerType: CurrentResourceType.Preprints,
+        providerId: mockProviderId,
+        subscriptionId: 'sub-1',
+        frequency: SubscriptionFrequency.Daily,
+      })
+    );
     expect(toastService.showSuccess).toHaveBeenCalledWith('moderation.notificationPreferences.successUpdate');
   });
 
-  it('should build frequencyOptions from SubscriptionFrequency enum', () => {
-    expect(component.frequencyOptions).toEqual(
-      Object.entries(SubscriptionFrequency).map(([key, value]) => ({ label: key, value }))
-    );
+  it('should not dispatch UpdateProviderSubscription if frequency is unchanged', () => {
+    fixture.detectChanges();
+
+    component.onFrequencyChange(MOCK_PROVIDER_SUBSCRIPTIONS[0], SubscriptionFrequency.Instant);
+
+    expect(store.dispatch as jest.Mock).not.toHaveBeenCalledWith(expect.any(UpdateProviderSubscription));
+  });
+
+  it('should expose frequencyOptions from SUBSCRIPTION_FREQUENCY_OPTIONS', () => {
+    expect(component.frequencyOptions).toEqual(SUBSCRIPTION_FREQUENCY_OPTIONS);
   });
 
   it('should populate form controls when subscriptions load', () => {
@@ -130,11 +133,5 @@ describe('NotificationSettingsComponent', () => {
     expect(component.form.contains('sub-2')).toBe(true);
     expect(component.form.get('sub-1')?.value).toBe(SubscriptionFrequency.Instant);
     expect(component.form.get('sub-2')?.value).toBe(SubscriptionFrequency.Never);
-  });
-
-  it('should have actions defined', () => {
-    expect(component.actions).toBeDefined();
-    expect(component.actions.getProviderSubscriptions).toBeDefined();
-    expect(component.actions.updateProviderSubscription).toBeDefined();
   });
 });

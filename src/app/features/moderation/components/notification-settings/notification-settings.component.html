@@ -1,23 +1,35 @@
 <h2>{{ 'moderation.notificationPreferences.title' | translate }}</h2>
-<p>
+<p class="mt-4">
   <span>{{ 'moderation.notificationPreferences.note' | translate }}</span>
-  <a class="ml-1 font-bold cursor-pointer" routerLink="/settings/notifications">
+  <a class="ml-1 font-bold" routerLink="/settings/notifications">
     {{ 'moderation.userSettings' | translate }}
   </a>
 </p>
 
 @if (!isLoading()) {
-  <section class="notification-configuration" [formGroup]="form">
+  <section class="notification-configuration mt-4" [formGroup]="form">
     @for (sub of subscriptions(); track sub.id) {
-      <p>{{ labelKey(sub.event) | translate }}</p>
+      <label [for]="'subscription-' + sub.id">
+        {{ 'moderation.notificationPreferences.items.' + sub.event | translate }}
+      </label>
+
       <p-select
+        [inputId]="'subscription-' + sub.id"
         [formControlName]="sub.id"
         class="dropdown"
         [options]="frequencyOptions"
         optionLabel="label"
         optionValue="value"
         (onChange)="onFrequencyChange(sub, $event.value)"
-      />
+      >
+        <ng-template #selectedItem let-selectedOption>
+          {{ selectedOption.label | translate }}
+        </ng-template>
+
+        <ng-template #item let-item>
+          {{ item.label | translate }}
+        </ng-template>
+      </p-select>
     }
   </section>
 } @else {
