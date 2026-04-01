@@ -2,7 +2,7 @@ import { Store } from '@ngxs/store';
 
 import { MockProvider } from 'ng-mocks';
 
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -95,6 +95,7 @@ function setup(overrides: SetupOverrides = {}) {
     { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
     { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
     { selector: CurrentResourceSelectors.getCurrentResource, value: null },
+    { selector: CurrentResourceSelectors.hasNoPermissions, value: false },
   ];
 
   const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
@@ -227,16 +228,20 @@ describe('Component: Project', () => {
     expect(metaTagsService.updateMetaTags).not.toHaveBeenCalled();
   });
 
-  it('should send analytics on NavigationEnd', () => {
-    const { routerBuilder, analyticsService } = setup();
-
+  it('should send analytics on NavigationEnd', fakeAsync(() => {
+    const mockResource = { id: 'project-1' };
+    const { routerBuilder, analyticsService } = setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.getCurrentResource, value: mockResource },
+        { selector: CurrentResourceSelectors.hasNoPermissions, value: true },
+      ],
+    });
     routerBuilder.emit(new NavigationEnd(1, '/project-1', '/project-1/overview'));
-
     expect(analyticsService.sendCountedUsageForRegistrationAndProjects).toHaveBeenCalledWith(
       '/project-1/overview',
-      null
+      mockResource
     );
-  });
+  }));
 
   it('should call unsetResourceType on destroy', () => {
     const { component, helpScoutService } = setup();
