@@ -8,7 +8,7 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { SignUpModel } from '@core/models/sign-up.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ClearCurrentUser } from '@osf/core/store/user';
-import { doubleEncodedUrlParam, urlParam } from '@osf/shared/helpers/url-param.helper';
+import { urlParam } from '@osf/shared/helpers/url-param.helper';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 
@@ -41,8 +41,14 @@ export class AuthService {
     }
 
     this.loaderService.show();
-    const loginUrl = `${this.casUrl}/login?${doubleEncodedUrlParam({ service: `${this.webUrl}/login`, next: window.location.href })}`;
-    window.location.href = loginUrl;
+
+    const serviceUrl = new URL(`${this.webUrl}/login`);
+    serviceUrl.searchParams.set('next', window.location.href);
+
+    const loginUrl = new URL(`${this.casUrl}/login`);
+    loginUrl.searchParams.set('service', serviceUrl.toString());
+
+    window.location.href = loginUrl.toString();
   }
 
   navigateToOrcidSignIn(): void {
