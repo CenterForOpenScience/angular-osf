@@ -11,6 +11,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { AuthService } from '@core/services/auth.service';
 import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
@@ -31,6 +32,7 @@ import { ProfileSettingsTabOption } from '../../enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthenticatedIdentityComponent implements OnInit {
+  private readonly authService = inject(AuthService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
@@ -85,8 +87,6 @@ export class AuthenticatedIdentityComponent implements OnInit {
       service: `${webUrl}/login`,
       next: encodeURIComponent(finalDestination.toString()),
     }).toString();
-    const logoutUrl = new URL(`${webUrl}/logout/`);
-    logoutUrl.searchParams.set('next', casLoginUrl.toString());
-    window.location.href = logoutUrl.toString();
+    this.authService.logout(casLoginUrl.toString());
   }
 }

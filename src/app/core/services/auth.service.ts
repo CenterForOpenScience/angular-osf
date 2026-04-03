@@ -73,13 +73,13 @@ export class AuthService {
     window.location.href = loginUrl;
   }
 
-  logout(): void {
+  logout(nextUrl?: string): void {
     this.loaderService.show();
     this.actions.clearCurrentUser();
 
     if (isPlatformBrowser(this.platformId)) {
       this.cookieService.deleteAll();
-      window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent('/')}`;
+      window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent(nextUrl || '/')}`;
     }
   }
 
