@@ -2,9 +2,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -36,14 +37,28 @@ import { ProfileSettingsTabOption } from './enums';
   styleUrl: './profile-settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileSettingsComponent {
+export class ProfileSettingsComponent implements OnInit {
   readonly isMedium = toSignal(inject(IS_MEDIUM));
   readonly tabOptions = PROFILE_SETTINGS_TAB_OPTIONS;
   readonly tabOption = ProfileSettingsTabOption;
 
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   selectedTab = this.tabOption.Name;
+
+  ngOnInit(): void {
+    const tabParam = Number(this.route.snapshot.queryParams['tab']);
+    const selectedTab = tabParam && Object.values(this.tabOption).includes(tabParam) ? tabParam : this.tabOption.Name;
+
+    this.selectedTab = selectedTab;
+  }
 
   onTabChange(index: number): void {
     this.selectedTab = index;
+    this.router.navigate([], {
+      queryParams: { tab: index },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 }

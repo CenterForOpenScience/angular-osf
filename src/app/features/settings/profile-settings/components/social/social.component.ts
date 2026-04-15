@@ -25,11 +25,12 @@ import { SocialModel } from '@shared/models/user/social.model';
 import { SocialLinksForm } from '@shared/models/user/social-links.model';
 
 import { hasSocialLinkChanges, mapSocialLinkToPayload } from '../../helpers';
+import { AuthenticatedIdentityComponent } from '../authenticated-identity/authenticated-identity.component';
 import { SocialFormComponent } from '../social-form/social-form.component';
 
 @Component({
   selector: 'osf-social',
-  imports: [Button, ReactiveFormsModule, SocialFormComponent, TranslatePipe],
+  imports: [Button, ReactiveFormsModule, SocialFormComponent, AuthenticatedIdentityComponent, TranslatePipe],
   templateUrl: './social.component.html',
   styleUrl: './social.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,7 +53,9 @@ export class SocialComponent {
   readonly socialLinksForm = this.fb.group({ links: this.fb.array<SocialLinksForm>([]) });
 
   constructor() {
-    effect(() => this.setInitialData());
+    effect(() => {
+      this.setInitialData();
+    });
   }
 
   get links(): FormArray<FormGroup> {
