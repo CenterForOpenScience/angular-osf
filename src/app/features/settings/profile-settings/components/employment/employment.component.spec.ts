@@ -1,53 +1,68 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpdateProfileSettingsEmployment, UserSelectors } from '@core/store/user';
+import { UpdateProfileSettingsEmployment, UserSelectors } from '@osf/core/store/user';
+import { Employment } from '@osf/shared/models/user/employment.model';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { EmploymentFormComponent } from '../employment-form/employment-form.component';
-
-import { EmploymentComponent } from './employment.component';
-
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
   CustomConfirmationServiceMock,
-  MockCustomConfirmationServiceProvider,
-} from '@testing/mocks/custom-confirmation.service.mock';
-import { MOCK_EMPLOYMENT } from '@testing/mocks/employment.mock';
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { EmploymentComponent } from './employment.component';
 
 describe('EmploymentComponent', () => {
   let component: EmploymentComponent;
   let fixture: ComponentFixture<EmploymentComponent>;
+  let store: Store;
+  let loaderService: LoaderServiceMock;
+  let confirmationService: CustomConfirmationServiceMockType;
+  let toastService: ToastServiceMockType;
 
-  const mockStore = {
-    selectSignal: jest.fn().mockImplementation((selector) => {
-      if (selector === UserSelectors.getEmployment) {
-        return () => MOCK_EMPLOYMENT;
-      }
-      return () => null;
-    }),
-    dispatch: jest.fn().mockReturnValue(of({})),
-  };
+  const initialEmployment: Employment[] = [
+    {
+      title: 'Engineer',
+      institution: 'OSF',
+      department: 'Platform',
+      startMonth: 1,
+      startYear: 2021,
+      endMonth: 12,
+      endYear: 2023,
+      ongoing: false,
+    },
+  ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [EmploymentComponent, MockPipe(TranslatePipe), MockComponent(EmploymentFormComponent)],
+  beforeEach(() => {
+    loaderService = new LoaderServiceMock();
+    confirmationService = CustomConfirmationServiceMock.simple();
+    toastService = ToastServiceMock.simple();
+
+    TestBed.configureTestingModule({
+      imports: [EmploymentComponent],
       providers: [
-        MockCustomConfirmationServiceProvider,
-        MockProvider(ToastService),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        MockProvider(Store, mockStore),
+        provideOSFCore(),
+        MockProvider(LoaderService, loaderService),
+        MockProvider(CustomConfirmationService, confirmationService),
+        MockProvider(ToastService, toastService),
+        provideMockStore({
+          signals: [{ selector: UserSelectors.getEmployment, value: initialEmployment }],
+        }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(EmploymentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -57,87 +72,110 @@ describe('EmploymentComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle invalid index in removePosition method', () => {
-    const initialLength = component.positions.length;
-
-    component.removePosition(100);
-
-    expect(component.positions.length).toBe(initialLength);
+  it('should initialize form from selector employment data', () => {
+    expect(component.positions.length).toBe(1);
+    expect(component.positions.at(0).get('title')?.value).toBe('Engineer');
+    expect(component.positions.at(0).get('institution')?.value).toBe('OSF');
   });
 
-  it('should not add position when form is invalid', () => {
-    component.positions.at(0).get('title')?.setValue('');
-    component.positions.at(0).get('title')?.updateValueAndValidity();
-    const initialLength = component.positions.length;
+  it('should remove position by index', () => {
+    component.removePosition(0);
 
-    expect(component.employmentForm.invalid).toBe(true);
+    expect(component.positions.length).toBe(0);
+  });
+
+  it('should mark form touched and not add when current form is invalid', () => {
+    const initialLength = component.positions.length;
+    component.positions.at(0).patchValue({
+      title: '',
+    });
 
     component.addPosition();
 
     expect(component.positions.length).toBe(initialLength);
+    expect(component.employmentForm.touched).toBe(true);
   });
 
-  it('should add new employment form when form is valid', () => {
+  it('should add new position form group when form is valid', () => {
     const initialLength = component.positions.length;
 
     component.addPosition();
 
     expect(component.positions.length).toBe(initialLength + 1);
-
-    const newEmployment = component.positions.at(initialLength);
-    expect(newEmployment).toBeDefined();
-    expect(newEmployment.get('title')?.value).toBe('');
-    expect(newEmployment.get('institution')?.value).toBe('');
-    expect(newEmployment.get('department')?.value).toBe('');
-    expect(newEmployment.get('startDate')?.value).toBe(null);
-    expect(newEmployment.get('endDate')?.value).toBe(null);
-    expect(newEmployment.get('ongoing')?.value).toBe(false);
   });
 
-  it('should detect changes when form field is modified', () => {
-    component.positions.at(0).get('institution')?.setValue('New Institution');
+  it('should return false for hasFormChanges when initial and current match', () => {
+    expect(component.hasFormChanges()).toBe(false);
+  });
+
+  it('should return true for hasFormChanges when item count differs', () => {
+    component.addPosition();
+
+    expect(component.hasFormChanges()).toBe(true);
+  });
+
+  it('should return true for hasFormChanges when values are changed', () => {
+    component.positions.at(0).patchValue({
+      title: 'Senior Engineer',
+    });
+
+    expect(component.hasFormChanges()).toBe(true);
+  });
+
+  it('should skip discard confirmation when there are no changes', () => {
+    component.discardChanges();
+
+    expect(confirmationService.confirmDelete).not.toHaveBeenCalled();
+  });
+
+  it('should show discard confirmation and reset values on confirm', () => {
+    component.positions.at(0).patchValue({
+      title: 'Changed',
+    });
 
     component.discardChanges();
 
-    expect(CustomConfirmationServiceMock.confirmDelete).toHaveBeenCalled();
+    expect(confirmationService.confirmDelete).toHaveBeenCalled();
+    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
+    onConfirm();
+
+    expect(component.positions.at(0).get('title')?.value).toBe('Engineer');
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.profileSettings.changesDiscarded');
   });
 
-  it('should mark all fields as touched when form is invalid', () => {
-    component.positions.at(0).get('institution')?.setValue('');
-    component.positions.at(1).get('title')?.setValue('');
+  it('should not save when form is invalid', () => {
+    component.positions.at(0).patchValue({
+      institution: '',
+    });
+    (store.dispatch as Mock).mockClear();
 
     component.saveEmployment();
 
-    expect(component.employmentForm.touched).toBe(true);
-    expect(component.positions.at(0).get('institution')?.touched).toBe(true);
-    expect(component.positions.at(1).get('title')?.touched).toBe(true);
+    expect(loaderService.show).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateProfileSettingsEmployment));
   });
 
-  it('should map form data to correct employment format', () => {
-    const employment = component.positions.at(0);
-    employment.get('title')?.setValue('Software Engineer Intern');
-    employment.get('institution')?.setValue('Test University');
-    employment.get('department')?.setValue('Engineering');
-    employment.get('startDate')?.setValue(new Date(2020, 0));
-    employment.get('endDate')?.setValue(new Date(2024, 5));
-    employment.get('ongoing')?.setValue(false);
+  it('should save employment and show success toast when form is valid', () => {
+    (store.dispatch as Mock).mockClear();
 
     component.saveEmployment();
 
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(
       new UpdateProfileSettingsEmployment([
         {
-          title: 'Software Engineer Intern',
-          institution: 'Test University',
-          department: 'Engineering',
-          startYear: 2020,
+          title: 'Engineer',
+          institution: 'OSF',
+          department: 'Platform',
           startMonth: 1,
-          endYear: 2024,
-          endMonth: 6,
+          startYear: 2021,
+          endMonth: 12,
+          endYear: 2023,
           ongoing: false,
         },
-        expect.any(Object),
       ])
     );
+    expect(loaderService.hide).toHaveBeenCalled();
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.profileSettings.employment.successUpdate');
   });
 });

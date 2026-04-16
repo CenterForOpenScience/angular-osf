@@ -13,7 +13,7 @@
             <p-button
               class="link-btn-no-padding"
               link
-              [label]="`${item.version }. ${ item.dateTime | date: 'MMM d, yyyy HH:mm' }`"
+              [label]="`${item.version}. ${(item.dateTime | date: 'MMM d, yyyy HH:mm')}`"
               (onClick)="onOpenRevision(item.version)"
               osfStopPropagation
             ></p-button>

@@ -1,33 +1,35 @@
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { Mock } from 'vitest';
+
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
+type OpenFn = (component: any, config?: Partial<DynamicDialogConfig>) => DynamicDialogRef;
+
 export type CustomDialogServiceMockType = Partial<CustomDialogService> & {
-  open: jest.Mock<DynamicDialogRef, [any, Partial<DynamicDialogConfig>?]>;
+  open: Mock<OpenFn>;
 };
 
 export class CustomDialogServiceMockBuilder {
-  private openMock: jest.Mock<DynamicDialogRef, [any, Partial<DynamicDialogConfig>?]> = jest.fn();
+  private openMock: Mock<OpenFn> = vi.fn();
 
   static create(): CustomDialogServiceMockBuilder {
     return new CustomDialogServiceMockBuilder();
   }
 
-  withOpen(
-    mockImpl: jest.Mock<DynamicDialogRef, [any, Partial<DynamicDialogConfig>?]>
-  ): CustomDialogServiceMockBuilder {
+  withOpen(mockImpl: Mock<OpenFn>): CustomDialogServiceMockBuilder {
     this.openMock = mockImpl;
     return this;
   }
 
   withDefaultOpen(): CustomDialogServiceMockBuilder {
-    this.openMock = jest.fn().mockReturnValue({
+    this.openMock = vi.fn().mockReturnValue({
       onClose: {
-        pipe: jest.fn().mockReturnValue({
-          subscribe: jest.fn(),
+        pipe: vi.fn().mockReturnValue({
+          subscribe: vi.fn(),
         }),
       },
-      close: jest.fn(),
+      close: vi.fn(),
     } as unknown as DynamicDialogRef);
     return this;
   }
@@ -45,13 +47,13 @@ export const CustomDialogServiceMock = {
   },
   simple() {
     return {
-      open: jest.fn().mockReturnValue({
+      open: vi.fn().mockReturnValue({
         onClose: {
-          pipe: jest.fn().mockReturnValue({
-            subscribe: jest.fn(),
+          pipe: vi.fn().mockReturnValue({
+            subscribe: vi.fn(),
           }),
         },
-        close: jest.fn(),
+        close: vi.fn(),
       } as unknown as DynamicDialogRef),
     } as CustomDialogServiceMockType;
   },

@@ -95,7 +95,7 @@
 
       @if (resource().context) {
         <div class="flex flex-row gap-1 line-height-3 flex-wrap">
-          <p [innerHTML]="`${'resourceCard.labels.context' | translate}: ${resource().context}`"></p>
+          <p [innerHTML]="`${('resourceCard.labels.context' | translate)}: ${resource().context}`"></p>
         </div>
       }
 

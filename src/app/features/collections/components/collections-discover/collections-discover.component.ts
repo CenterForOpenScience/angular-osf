@@ -21,7 +21,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { ClearCurrentProvider } from '@core/store/provider';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { CollectionsFilters } from '@osf/shared/models/collections/collections-filters.model';
@@ -41,17 +40,17 @@ import {
 
 import { CollectionsQuerySyncService } from '../../services';
 import { CollectionsHelpDialogComponent } from '../collections-help-dialog/collections-help-dialog.component';
-import { CollectionsMainContentComponent } from '../collections-main-content';
+import { CollectionsMainContentComponent } from '../collections-main-content/collections-main-content.component';
 
 @Component({
   selector: 'osf-collections-discover',
   imports: [
-    SearchInputComponent,
-    TranslatePipe,
     Button,
+    RouterLink,
+    SearchInputComponent,
     CollectionsMainContentComponent,
     LoadingSpinnerComponent,
-    RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './collections-discover.component.html',
   styleUrl: './collections-discover.component.scss',
@@ -79,6 +78,7 @@ export class CollectionsDiscoverComponent {
   searchText = select(CollectionsSelectors.getSearchText);
   pageNumber = select(CollectionsSelectors.getPageNumber);
   isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+
   primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
 
   actions = createDispatchMap({
@@ -89,7 +89,6 @@ export class CollectionsDiscoverComponent {
     setPageNumber: SetPageNumber,
     clearCollections: ClearCollections,
     clearCollectionsSubmissions: ClearCollectionSubmissions,
-    clearCurrentProvider: ClearCurrentProvider,
   });
 
   constructor() {

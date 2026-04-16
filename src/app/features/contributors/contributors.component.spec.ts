@@ -1,48 +1,105 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
 
-import { ConfirmationService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Mock } from 'vitest';
 
-import { ContributorsTableComponent, RequestAccessTableComponent } from '@osf/shared/components/contributors';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { UserSelectors } from '@core/store/user';
+import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
+import { RequestAccessTableComponent } from '@osf/shared/components/contributors/request-access-table/request-access-table.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { ViewOnlyTableComponent } from '@osf/shared/components/view-only-table/view-only-table.component';
 import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
-import { ContributorsSelectors } from '@osf/shared/stores/contributors';
-import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+import {
+  ContributorsSelectors,
+  GetAllContributors,
+  LoadMoreContributors,
+  ResetContributorsState,
+  UpdateBibliographyFilter,
+  UpdateContributorsSearchValue,
+  UpdatePermissionFilter,
+} from '@osf/shared/stores/contributors';
+import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
 import { ViewOnlyLinkSelectors } from '@osf/shared/stores/view-only-links';
-import { ContributorModel } from '@shared/models/contributors/contributor.model';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomConfirmationServiceMock,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import { CustomDialogServiceMock, CustomDialogServiceMockType } from '@testing/providers/custom-dialog-provider.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { ContributorsComponent } from './contributors.component';
 
-import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from '@testing/mocks/contributors.mock';
-import { MOCK_RESOURCE_INFO } from '@testing/mocks/resource.mock';
-import { MOCK_PAGINATED_VIEW_ONLY_LINKS } from '@testing/mocks/view-only-link.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
-describe('Component: Contributors', () => {
+describe('ContributorsComponent', () => {
   let component: ContributorsComponent;
   let fixture: ComponentFixture<ContributorsComponent>;
-  let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let store: Store;
+  let toastService: ToastServiceMockType;
+  let customDialogService: CustomDialogServiceMockType;
+  let customConfirmationService: CustomConfirmationServiceMockType;
+  let mockRouter: RouterMockType;
 
-  const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
+  const defaultSignals: SignalOverride[] = [
+    { selector: ViewOnlyLinkSelectors.getViewOnlyLinks, value: [] },
+    {
+      selector: CurrentResourceSelectors.getResourceDetails,
+      value: { id: 'resource-id', title: 'Resource title', rootParentId: null, parent: null },
+    },
+    { selector: CurrentResourceSelectors.getResourceWithChildren, value: [] },
+    { selector: ContributorsSelectors.getContributors, value: [] },
+    { selector: ContributorsSelectors.getRequestAccessList, value: [] },
+    { selector: ContributorsSelectors.areRequestAccessListLoading, value: false },
+    { selector: ContributorsSelectors.isContributorsLoading, value: false },
+    { selector: ContributorsSelectors.getContributorsTotalCount, value: 0 },
+    { selector: ViewOnlyLinkSelectors.isViewOnlyLinksLoading, value: false },
+    { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: false },
+    { selector: CurrentResourceSelectors.resourceAccessRequestEnabled, value: false },
+    { selector: UserSelectors.getCurrentUser, value: { id: 'user-1' } },
+    { selector: ContributorsSelectors.getContributorsPageSize, value: 10 },
+    { selector: ContributorsSelectors.isContributorsLoadingMore, value: false },
+  ];
 
-  beforeEach(async () => {
-    jest.useFakeTimers();
+  function setup(overrides: BaseSetupOverrides = {}) {
+    const routeBuilder = ActivatedRouteMockBuilder.create().withData({ resourceType: ResourceType.Project });
+    if (overrides.routeParams) {
+      routeBuilder.withParams(overrides.routeParams);
+    }
+    if (overrides.hasParent === false) {
+      routeBuilder.withNoParent();
+    }
+    const mockRoute = routeBuilder.build();
 
-    customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
+    mockRouter = RouterMockBuilder.create().build();
+    toastService = ToastServiceMock.simple();
+    customDialogService = CustomDialogServiceMock.simple();
+    customConfirmationService = CustomConfirmationServiceMock.simple();
+    const loaderService = new LoaderServiceMock();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         ContributorsComponent,
-        OSFTestingModule,
-        MockComponents(
+        ...MockComponents(
           SearchInputComponent,
           ContributorsTableComponent,
           RequestAccessTableComponent,
@@ -50,141 +107,140 @@ describe('Component: Contributors', () => {
         ),
       ],
       providers: [
-        MockProvider(DialogService, {
-          open: jest.fn().mockReturnValue({ onClose: of({}) }),
-        }),
-        MockProvider(CustomConfirmationService, customConfirmationServiceMock),
-        MockProvider(ConfirmationService, {}),
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, mockRoute),
+        MockProvider(Router, mockRouter),
+        MockProvider(ToastService, toastService),
+        MockProvider(CustomDialogService, customDialogService),
+        MockProvider(CustomConfirmationService, customConfirmationService),
+        MockProvider(LoaderService, loaderService),
         provideMockStore({
-          signals: [
-            { selector: ContributorsSelectors.getContributors, value: mockContributors },
-            { selector: ContributorsSelectors.isContributorsLoading, value: false },
-            { selector: ViewOnlyLinkSelectors.getViewOnlyLinks, value: MOCK_PAGINATED_VIEW_ONLY_LINKS },
-            { selector: ViewOnlyLinkSelectors.isViewOnlyLinksLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceDetails, value: MOCK_RESOURCE_INFO },
-          ],
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ContributorsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
+  }
 
   it('should create', () => {
+    setup({ routeParams: { id: 'resource-id' } });
     expect(component).toBeTruthy();
   });
 
-  it('should update search value with debounce', () => {
-    expect(() => component.searchControl.setValue('test search')).not.toThrow();
+  it('should dispatch resource and contributors actions on init', () => {
+    setup({ routeParams: { id: 'resource-id' } });
+    component.ngOnInit();
 
-    jest.advanceTimersByTime(600);
-
-    expect(component.searchControl.value).toBe('test search');
+    expect(store.dispatch).toHaveBeenCalledWith(new GetResourceDetails('resource-id', ResourceType.Project));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetAllContributors('resource-id', ResourceType.Project));
   });
 
-  it('should handle null search value', () => {
-    expect(() => component.searchControl.setValue(null)).not.toThrow();
+  it('should not dispatch init actions when resource id is missing', () => {
+    setup();
+    component.ngOnInit();
 
-    jest.advanceTimersByTime(600);
-
-    expect(component.searchControl.value).toBe(null);
+    expect(store.dispatch).not.toHaveBeenCalledWith(new GetResourceDetails('resource-id', ResourceType.Project));
+    expect(store.dispatch).not.toHaveBeenCalledWith(new GetAllContributors('resource-id', ResourceType.Project));
   });
 
-  it('should update permission filter', () => {
-    expect(() => component.onPermissionChange(ContributorPermission.Read)).not.toThrow();
+  it('should dispatch search update after debounce', () => {
+    vi.useFakeTimers();
+    setup({ routeParams: { id: 'resource-id' } });
+    component.ngOnInit();
+    (store.dispatch as Mock).mockClear();
+
+    component.searchControl.setValue('john');
+    vi.advanceTimersByTime(500);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateContributorsSearchValue('john'));
+    vi.useRealTimers();
   });
 
-  it('should update bibliography filter', () => {
-    expect(() => component.onBibliographyChange(true)).not.toThrow();
+  it('should dispatch permission and bibliography filter actions', () => {
+    setup({ routeParams: { id: 'resource-id' } });
+    (store.dispatch as Mock).mockClear();
+
+    component.onPermissionChange(ContributorPermission.Admin);
+    component.onBibliographyChange(true);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdatePermissionFilter(ContributorPermission.Admin));
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateBibliographyFilter(true));
   });
 
-  it('should create view link', () => {
-    const mockDialogRef = {
-      onClose: of({ name: 'Test Link', anonymous: false }),
-    };
-    jest.spyOn(component.customDialogService, 'open').mockReturnValue(mockDialogRef as any);
-    jest.spyOn(component.toastService, 'showSuccess');
-
-    expect(() => component.createViewLink()).not.toThrow();
-    expect(component.customDialogService.open).toHaveBeenCalled();
-  });
-
-  it('should delete view link with confirmation', () => {
-    jest.spyOn(component.customConfirmationService, 'confirmDelete');
-    jest.spyOn(component.toastService, 'showSuccess');
-
-    component.deleteLinkItem(MOCK_PAGINATED_VIEW_ONLY_LINKS.items[0]);
-
-    expect(component.customConfirmationService.confirmDelete).toHaveBeenCalledWith({
-      headerKey: 'myProjects.settings.delete.title',
-      headerParams: { name: MOCK_PAGINATED_VIEW_ONLY_LINKS.items[0].name },
-      messageKey: 'myProjects.settings.delete.message',
-      onConfirm: expect.any(Function),
+  it('should cancel edited contributors to initial state', () => {
+    setup({
+      routeParams: { id: 'resource-id' },
+      selectorOverrides: [
+        {
+          selector: ContributorsSelectors.getContributors,
+          value: [
+            {
+              id: 'c1',
+              userId: 'u1',
+              fullName: 'Jane Doe',
+            },
+          ],
+        },
+      ],
     });
-  });
 
-  it('should handle view link deletion confirmation', () => {
-    let confirmCallback: () => void;
-    jest.spyOn(component.customConfirmationService, 'confirmDelete').mockImplementation((options) => {
-      confirmCallback = options.onConfirm;
-    });
-    jest.spyOn(component.toastService, 'showSuccess');
-
-    component.deleteLinkItem(MOCK_PAGINATED_VIEW_ONLY_LINKS.items[0]);
-
-    expect(() => confirmCallback!()).not.toThrow();
-  });
-
-  it('should detect changes correctly', () => {
-    expect(component.hasChanges).toBe(false);
-
-    const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = ContributorPermission.Write;
-    (component.contributors as any).set(modifiedContributors);
-
-    expect((component.contributors as any)()).toEqual(modifiedContributors);
-  });
-
-  it('should cancel changes', () => {
-    const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = ContributorPermission.Write;
-    (component.contributors as any).set(modifiedContributors);
-
+    component.contributors.set([]);
     component.cancel();
 
-    expect((component.contributors as any)()).toEqual(mockContributors);
+    expect(component.contributors()).toEqual([
+      {
+        id: 'c1',
+        userId: 'u1',
+        fullName: 'Jane Doe',
+      },
+    ]);
   });
 
-  it('should save changes', () => {
-    jest.spyOn(component.toastService, 'showSuccess');
+  it('should dispatch load more contributors action', () => {
+    setup({ routeParams: { id: 'resource-id' } });
+    (store.dispatch as Mock).mockClear();
 
-    const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = ContributorPermission.Write;
-    (component.contributors as any).set(modifiedContributors);
+    component.loadMoreContributors();
 
-    expect(() => component.save()).not.toThrow();
+    expect(store.dispatch).toHaveBeenCalledWith(new LoadMoreContributors('resource-id', ResourceType.Project));
   });
 
-  it('should handle save errors', () => {
-    jest.spyOn(component.toastService, 'showError');
+  it('should dispatch bulk update and show success toast on save', () => {
+    setup({
+      routeParams: { id: 'resource-id' },
+      selectorOverrides: [
+        {
+          selector: ContributorsSelectors.getContributors,
+          value: [
+            {
+              id: 'c1',
+              userId: 'u1',
+              fullName: 'Jane Doe',
+            },
+          ],
+        },
+      ],
+    });
+    (store.dispatch as Mock).mockReturnValue(of(true));
+    (store.dispatch as Mock).mockClear();
 
-    const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = ContributorPermission.Write;
-    (component.contributors as any).set(modifiedContributors);
+    component.save();
 
-    expect(() => component.save()).not.toThrow();
+    expect(store.dispatch).toHaveBeenCalled();
+    expect(toastService.showSuccess).toHaveBeenCalledWith(
+      'project.contributors.toastMessages.multipleUpdateSuccessMessage'
+    );
   });
 
-  it('should update contributors when initialContributors changes', () => {
-    const newContributors = [...mockContributors, MOCK_CONTRIBUTOR];
+  it('should dispatch reset action on destroy', () => {
+    setup({ routeParams: { id: 'resource-id' } });
+    (store.dispatch as Mock).mockClear();
 
-    expect(() => (component.contributors as any).set(newContributors)).not.toThrow();
-    expect((component.contributors as any)()).toEqual(newContributors);
+    fixture.destroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new ResetContributorsState());
   });
 });

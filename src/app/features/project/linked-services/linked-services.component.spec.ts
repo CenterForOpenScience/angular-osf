@@ -1,4 +1,4 @@
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -9,14 +9,14 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { AddonsSelectors } from '@osf/shared/stores/addons';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
-import { LinkedServicesComponent } from './linked-services.component';
-
 import { getConfiguredAddonsMappedData } from '@testing/data/addons/addons.configured.data';
 import { getResourceReferencesData } from '@testing/data/files/resource-references.data';
 import { MOCK_USER } from '@testing/mocks/data.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { LinkedServicesComponent } from './linked-services.component';
 
 describe('Component: Linked Services', () => {
   let component: LinkedServicesComponent;
@@ -27,17 +27,14 @@ describe('Component: Linked Services', () => {
   const mockAddonsResourceReference = getResourceReferencesData();
   const mockConfiguredLinkAddons = getConfiguredAddonsMappedData();
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const activatedRouteMock = ActivatedRouteMockBuilder.create().withParams({ id: mockProjectId }).build();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        LinkedServicesComponent,
-        OSFTestingModule,
-        ...MockComponents(SubHeaderComponent, LoadingSpinnerComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [LinkedServicesComponent, ...MockComponents(SubHeaderComponent, LoadingSpinnerComponent)],
       providers: [
-        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, activatedRouteMock),
         provideMockStore({
           signals: [
             { selector: UserSelectors.getCurrentUser, value: mockCurrentUser },
@@ -51,7 +48,7 @@ describe('Component: Linked Services', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(LinkedServicesComponent);
     component = fixture.componentInstance;

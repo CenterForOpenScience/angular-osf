@@ -8,15 +8,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
 import { DraftRegistrationModel } from '@osf/shared/models/registration/draft-registration.model';
 
-import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
-
-import { DraftRegistrationCustomStepComponent } from './draft-registration-custom-step.component';
-
 import { MOCK_REGISTRIES_PAGE } from '@testing/mocks/registries.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { CustomStepComponent } from '../../components/custom-step/custom-step.component';
+
+import { DraftRegistrationCustomStepComponent } from './draft-registration-custom-step.component';
 
 const MOCK_DRAFT: Partial<DraftRegistrationModel> = {
   id: 'draft-1',

@@ -4,12 +4,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PaginatedViewOnlyLinksModel } from '@shared/models/view-only-links/view-only-link.model';
 
+import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK } from '@testing/mocks/view-only-link.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { CopyButtonComponent } from '../copy-button/copy-button.component';
 
 import { ViewOnlyTableComponent } from './view-only-table.component';
-
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
-import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK } from '@testing/mocks/view-only-link.mock';
 
 describe('ViewOnlyTableComponent', () => {
   let component: ViewOnlyTableComponent;
@@ -18,11 +18,11 @@ describe('ViewOnlyTableComponent', () => {
   const mockViewOnlyLink = MOCK_VIEW_ONLY_LINK;
   const mockPaginatedData = MOCK_PAGINATED_VIEW_ONLY_LINKS;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [ViewOnlyTableComponent, MockComponent(CopyButtonComponent)],
-      providers: [TranslateServiceMock],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ViewOnlyTableComponent);
     component = fixture.componentInstance;
@@ -38,7 +38,7 @@ describe('ViewOnlyTableComponent', () => {
   });
 
   it('should emit deleteLink event', () => {
-    const emitSpy = jest.spyOn(component.deleteLink, 'emit');
+    const emitSpy = vi.spyOn(component.deleteLink, 'emit');
 
     component.deleteLink.emit(mockViewOnlyLink);
 
@@ -73,7 +73,7 @@ describe('ViewOnlyTableComponent', () => {
   });
 
   it('should emit deleteLink with correct data', () => {
-    const emitSpy = jest.spyOn(component.deleteLink, 'emit');
+    const emitSpy = vi.spyOn(component.deleteLink, 'emit');
     const testLink = { ...mockViewOnlyLink, id: 'test-delete-link' };
 
     component.deleteLink.emit(testLink);

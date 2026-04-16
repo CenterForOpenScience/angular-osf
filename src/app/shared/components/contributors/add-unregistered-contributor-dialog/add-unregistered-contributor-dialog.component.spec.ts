@@ -9,28 +9,28 @@ import { AddContributorType } from '@osf/shared/enums/contributors/add-contribut
 import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
 import { ContributorAddModel } from '@shared/models/contributors/contributor-add.model';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { TextInputComponent } from '../../text-input/text-input.component';
 
 import { AddUnregisteredContributorDialogComponent } from './add-unregistered-contributor-dialog.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddUnregisteredContributorDialogComponent', () => {
   let component: AddUnregisteredContributorDialogComponent;
   let fixture: ComponentFixture<AddUnregisteredContributorDialogComponent>;
   let dialogRef: DynamicDialogRef;
-  let closeSpy: jest.SpyInstance;
+  let closeSpy: unknown;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AddUnregisteredContributorDialogComponent, OSFTestingModule, MockComponent(TextInputComponent)],
-      providers: [MockProviders(DynamicDialogRef)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [AddUnregisteredContributorDialogComponent, MockComponent(TextInputComponent)],
+      providers: [provideOSFCore(), MockProviders(DynamicDialogRef)],
+    });
 
     fixture = TestBed.createComponent(AddUnregisteredContributorDialogComponent);
     component = fixture.componentInstance;
     dialogRef = TestBed.inject(DynamicDialogRef);
-    closeSpy = jest.spyOn(dialogRef, 'close');
+    closeSpy = vi.spyOn(dialogRef, 'close');
 
     fixture.detectChanges();
   });

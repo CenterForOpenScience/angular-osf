@@ -55,10 +55,11 @@ import { ClearLinkedProjects, GetAllLinkedProjects, LinkedProjectsSelectors } fr
 export class ViewLinkedProjectsComponent {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
-  private project = select(ProjectOverviewSelectors.getProject);
-  private registration = select(RegistrySelectors.getRegistry);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+
+  private project = select(ProjectOverviewSelectors.getProject);
+  private registration = select(RegistrySelectors.getRegistry);
 
   linkedProjects = select(LinkedProjectsSelectors.getLinkedProjects);
   isLoading = select(LinkedProjectsSelectors.getLinkedProjectsLoading);

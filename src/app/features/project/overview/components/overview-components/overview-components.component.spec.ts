@@ -1,268 +1,166 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
-import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { GetResourceWithChildren } from '@osf/shared/stores/current-resource';
 
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
 import { LoadMoreComponents, ProjectOverviewSelectors, ReorderComponents } from '../../store';
 import { AddComponentDialogComponent } from '../add-component-dialog/add-component-dialog.component';
+import { ComponentCardComponent } from '../component-card/component-card.component';
+import { DeleteComponentDialogComponent } from '../delete-component-dialog/delete-component-dialog.component';
 
 import { OverviewComponentsComponent } from './overview-components.component';
 
-import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
-import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
-describe('ProjectComponentsComponent', () => {
+describe('OverviewComponentsComponent', () => {
   let component: OverviewComponentsComponent;
   let fixture: ComponentFixture<OverviewComponentsComponent>;
-  let store: jest.Mocked<any>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
-  let customDialogServiceMock: ReturnType<CustomDialogServiceMockBuilder['build']>;
-  let loaderServiceMock: LoaderServiceMock;
-  let toastService: jest.Mocked<ToastService>;
-  let createUrlTreeSpy: jest.Mock;
-  let serializeUrlSpy: jest.Mock;
-  let navigateSpy: jest.Mock;
+  let store: Store;
+  let routerMock: RouterMockType;
+  let customDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
+  let loaderService: LoaderServiceMock;
+  let toastService: ToastServiceMockType;
 
-  const mockComponents: NodeModel[] = [
-    { ...MOCK_NODE_WITH_ADMIN, id: 'comp-1', title: 'Component 1' },
-    { ...MOCK_NODE_WITH_ADMIN, id: 'comp-2', title: 'Component 2' },
-    { ...MOCK_NODE_WITH_ADMIN, id: 'comp-3', title: 'Component 3' },
-  ];
+  const componentA = { id: 'comp-a', title: 'Component A' } as NodeModel;
+  const componentB = { id: 'comp-b', title: 'Component B' } as NodeModel;
+  const components = [componentA, componentB];
+  const project = {
+    ...MOCK_PROJECT_OVERVIEW,
+    id: 'project-1',
+    rootParentId: 'root-1',
+  };
 
-  const mockProject = { ...MOCK_NODE_WITH_ADMIN, id: 'project-123', rootParentId: 'root-123' };
+  beforeEach(() => {
+    routerMock = RouterMockBuilder.create().build();
+    customDialogService = CustomDialogServiceMockBuilder.create().build();
+    loaderService = new LoaderServiceMock();
+    toastService = ToastServiceMock.simple();
 
-  beforeEach(async () => {
-    const mockUrlTree = {} as any;
-    createUrlTreeSpy = jest.fn().mockReturnValue(mockUrlTree);
-    serializeUrlSpy = jest.fn().mockReturnValue('/comp-1');
-    navigateSpy = jest.fn().mockResolvedValue(true);
-
-    routerMock = RouterMockBuilder.create().withCreateUrlTree(createUrlTreeSpy).build();
-    routerMock.serializeUrl = serializeUrlSpy;
-    routerMock.navigate = navigateSpy;
-
-    customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
-    loaderServiceMock = new LoaderServiceMock();
-    toastService = { showSuccess: jest.fn() } as unknown as jest.Mocked<ToastService>;
-
-    await TestBed.configureTestingModule({
-      imports: [
-        OverviewComponentsComponent,
-        OSFTestingModule,
-        ...MockComponents(IconComponent, ContributorsListComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [OverviewComponentsComponent, MockComponent(ComponentCardComponent)],
       providers: [
+        provideOSFCore(),
+        MockProvider(Router, routerMock),
+        MockProvider(CustomDialogService, customDialogService),
+        MockProvider(LoaderService, loaderService),
+        MockProvider(ToastService, toastService),
         provideMockStore({
           signals: [
-            { selector: ProjectOverviewSelectors.getComponents, value: mockComponents },
+            { selector: ProjectOverviewSelectors.getComponents, value: components },
             { selector: ProjectOverviewSelectors.getComponentsLoading, value: false },
             { selector: ProjectOverviewSelectors.getComponentsSubmitting, value: false },
             { selector: ProjectOverviewSelectors.hasMoreComponents, value: true },
-            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
+            { selector: ProjectOverviewSelectors.getProject, value: project },
           ],
         }),
-        MockProvider(Router, routerMock),
-        MockProvider(CustomDialogService, customDialogServiceMock),
-        { provide: LoaderService, useValue: loaderServiceMock },
-        MockProvider(ToastService, toastService),
       ],
-    }).compileComponents();
+    });
 
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    store.dispatch = jest.fn().mockReturnValue(of(true));
-
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(OverviewComponentsComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('canEdit', true);
     fixture.detectChanges();
   });
 
-  it('should sync reorderedComponents signal with components selector on init', () => {
-    expect(component.reorderedComponents()).toEqual(mockComponents);
-    expect(component.reorderedComponents().length).toBe(3);
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should be true when canEdit is false and reorderedComponents.length <= 1', () => {
-    component.reorderedComponents.set([mockComponents[0]]);
-    fixture.componentRef.setInput('canEdit', false);
-    fixture.detectChanges();
-
-    expect(component.isDragDisabled()).toBe(true);
+  it('should initialize reorderedComponents from components selector', () => {
+    expect(component.reorderedComponents()).toEqual(components);
   });
 
-  it('should be false when canEdit is true and isComponentsSubmitting is false and reorderedComponents.length > 1', () => {
-    fixture.componentRef.setInput('canEdit', true);
-    fixture.detectChanges();
-
-    expect(component.isDragDisabled()).toBe(false);
-  });
-
-  it('should navigate to contributors route when action is manageContributors', () => {
-    component.handleMenuAction('manageContributors', 'comp-1');
-
-    expect(navigateSpy).toHaveBeenCalledWith(['comp-1', 'contributors']);
-  });
-
-  it('should navigate to settings route when action is settings', () => {
-    component.handleMenuAction('settings', 'comp-1');
-
-    expect(navigateSpy).toHaveBeenCalledWith(['comp-1', 'settings']);
-  });
-
-  it('should call handleDeleteComponent when action is delete', () => {
-    store.dispatch = jest.fn().mockReturnValue(of(true));
-    component.handleMenuAction('delete', 'comp-1');
-
-    expect(loaderServiceMock.show).toHaveBeenCalled();
-    expect(store.dispatch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        constructor: GetResourceWithChildren,
-      })
-    );
-  });
-
-  it('should open AddComponentDialogComponent with correct config', () => {
+  it('should open add component dialog', () => {
     component.handleAddComponent();
 
-    expect(customDialogServiceMock.open).toHaveBeenCalledWith(AddComponentDialogComponent, {
+    expect(customDialogService.open).toHaveBeenCalledWith(AddComponentDialogComponent, {
       header: 'project.overview.dialog.addComponent.header',
       width: '850px',
     });
   });
 
-  it('should create URL tree with correct path and queryParamsHandling', () => {
-    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+  it('should navigate for manageContributors action', () => {
+    component.handleMenuAction('manageContributors', 'comp-a');
 
-    component.handleComponentNavigate('comp-1');
+    expect(routerMock.navigate).toHaveBeenCalledWith(['comp-a', 'contributors']);
+  });
 
-    expect(createUrlTreeSpy).toHaveBeenCalledWith(['/', 'comp-1'], {
-      queryParamsHandling: 'preserve',
+  it('should navigate for settings action', () => {
+    component.handleMenuAction('settings', 'comp-a');
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['comp-a', 'settings']);
+  });
+
+  it('should open delete component dialog through delete menu action', () => {
+    component.handleMenuAction('delete', 'comp-a');
+
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new GetResourceWithChildren('root-1', 'comp-a', ResourceType.Project));
+    expect(customDialogService.open).toHaveBeenCalledWith(DeleteComponentDialogComponent, {
+      header: 'project.overview.dialog.deleteComponent.header',
+      width: '650px',
+      data: { componentId: 'comp-a', resourceType: ResourceType.Project },
     });
-
-    windowOpenSpy.mockRestore();
+    expect(loaderService.hide).toHaveBeenCalled();
   });
 
-  it('should serialize URL and open in same window', () => {
-    const mockUrlTree = {} as any;
-    createUrlTreeSpy.mockReturnValue(mockUrlTree);
-    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+  it('should open component url in same tab on navigate', () => {
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    vi.spyOn(routerMock, 'createUrlTree').mockReturnValue({} as any);
+    vi.spyOn(routerMock, 'serializeUrl').mockReturnValue('/comp-a');
 
-    component.handleComponentNavigate('comp-1');
+    component.handleComponentNavigate('comp-a');
 
-    expect(serializeUrlSpy).toHaveBeenCalledWith(mockUrlTree);
-    expect(windowOpenSpy).toHaveBeenCalledWith('/comp-1', '_self');
-
-    windowOpenSpy.mockRestore();
+    expect(window.open).toHaveBeenCalledWith('/comp-a', '_self');
+    openSpy.mockRestore();
   });
 
-  it('should dispatch loadMoreComponents action with project id when project exists', () => {
+  it('should dispatch load more components when project exists', () => {
+    (store.dispatch as Mock).mockClear();
+
     component.loadMoreComponents();
 
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(LoadMoreComponents));
-    const dispatchedAction = (store.dispatch as jest.Mock).mock.calls[0][0];
-    expect(dispatchedAction.projectId).toBe(mockProject.id);
+    expect(store.dispatch).toHaveBeenCalledWith(new LoadMoreComponents('project-1'));
   });
 
-  it('should reorder components and dispatch reorderComponents action when project exists and canEdit is true', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 2,
-      container: { data: mockComponents },
-      previousContainer: { data: mockComponents },
-    } as any;
-
-    store.dispatch = jest.fn().mockReturnValue(of(true));
+  it('should reorder components and dispatch reorder action', () => {
+    (store.dispatch as Mock).mockClear();
+    const event = { previousIndex: 0, currentIndex: 1 } as CdkDragDrop<NodeModel[]>;
 
     component.onReorder(event);
 
-    expect(component.reorderedComponents()[0].id).toBe('comp-2');
-    expect(component.reorderedComponents()[2].id).toBe('comp-1');
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(ReorderComponents));
-    const dispatchedAction = (store.dispatch as jest.Mock).mock.calls[0][0];
-    expect(dispatchedAction.projectId).toBe(mockProject.id);
-    expect(dispatchedAction.componentIds).toEqual(['comp-2', 'comp-3', 'comp-1']);
-  });
-
-  it('should show success toast after successful reorder', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1,
-      container: { data: mockComponents },
-      previousContainer: { data: mockComponents },
-    } as any;
-
-    store.dispatch = jest.fn().mockReturnValue(of(true));
-
-    component.onReorder(event);
-
+    expect(component.reorderedComponents().map((c) => c.id)).toEqual(['comp-b', 'comp-a']);
+    expect(store.dispatch).toHaveBeenCalledWith(new ReorderComponents('project-1', ['comp-b', 'comp-a']));
     expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.reorderComponents.success');
   });
 
-  it('should return early when canEdit is false', () => {
+  it('should not reorder when canEdit is false', () => {
     fixture.componentRef.setInput('canEdit', false);
     fixture.detectChanges();
-
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1,
-      container: { data: mockComponents },
-      previousContainer: { data: mockComponents },
-    } as any;
-
-    store.dispatch.mockClear();
+    (store.dispatch as Mock).mockClear();
+    const event = { previousIndex: 0, currentIndex: 1 } as CdkDragDrop<NodeModel[]>;
 
     component.onReorder(event);
 
-    expect(store.dispatch).not.toHaveBeenCalled();
-  });
-
-  it('should show and hide loader on error', () => {
-    loaderServiceMock.hide.mockClear();
-
-    let subscribeError: ((error: any) => void) | undefined;
-    const mockObservable = {
-      subscribe: jest.fn((callbacks: any) => {
-        subscribeError = callbacks.error;
-        return { unsubscribe: jest.fn() };
-      }),
-    };
-
-    store.dispatch = jest.fn().mockReturnValue(mockObservable as any);
-
-    component.handleMenuAction('delete', 'comp-1');
-
-    expect(loaderServiceMock.show).toHaveBeenCalled();
-
-    if (subscribeError) {
-      subscribeError(new Error('Test error'));
-    }
-
-    expect(loaderServiceMock.hide).toHaveBeenCalled();
-  });
-
-  it('should use rootParentId if available, otherwise project id', () => {
-    store.dispatch = jest.fn().mockReturnValue(of(true));
-
-    component.handleMenuAction('delete', 'comp-1');
-
-    expect(store.dispatch).toHaveBeenCalled();
-    const dispatchedAction = (store.dispatch as jest.Mock).mock.calls[0][0];
-    expect(dispatchedAction.rootParentId).toBe(mockProject.rootParentId);
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(ReorderComponents));
   });
 });

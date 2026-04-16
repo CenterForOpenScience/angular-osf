@@ -49,7 +49,7 @@ import { JsonApiService } from './json-api.service';
   providedIn: 'root',
 })
 export class FilesService {
-  readonly jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
 
   get apiUrl() {

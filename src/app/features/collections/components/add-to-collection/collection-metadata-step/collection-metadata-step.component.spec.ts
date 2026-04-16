@@ -8,19 +8,20 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import { CollectionsSelectors } from '@shared/stores/collections';
 
-import { CollectionMetadataStepComponent } from './collection-metadata-step.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { CollectionMetadataStepComponent } from './collection-metadata-step.component';
 
 describe.skip('CollectionMetadataStepComponent', () => {
   let component: CollectionMetadataStepComponent;
   let fixture: ComponentFixture<CollectionMetadataStepComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CollectionMetadataStepComponent, OSFTestingModule, MockComponents(StepPanel, Step, StepItem)],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CollectionMetadataStepComponent, MockComponents(StepPanel, Step, StepItem)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: CollectionsSelectors.getCollectionProvider, value: null },
@@ -29,7 +30,7 @@ describe.skip('CollectionMetadataStepComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(CollectionMetadataStepComponent);
     component = fixture.componentInstance;
@@ -56,8 +57,8 @@ describe.skip('CollectionMetadataStepComponent', () => {
     const mockForm = new FormGroup({});
     component.collectionMetadataForm.set(mockForm);
 
-    const emitSpy = jest.spyOn(component.metadataSaved, 'emit');
-    const stepChangeSpy = jest.spyOn(component.stepChange, 'emit');
+    const emitSpy = vi.spyOn(component.metadataSaved, 'emit');
+    const stepChangeSpy = vi.spyOn(component.stepChange, 'emit');
 
     component.handleSaveMetadata();
 
@@ -79,7 +80,7 @@ describe.skip('CollectionMetadataStepComponent', () => {
   });
 
   it('should handle step navigation', () => {
-    const navigateSpy = jest.spyOn(component.stepChange, 'emit');
+    const navigateSpy = vi.spyOn(component.stepChange, 'emit');
 
     component.handleEditStep();
 

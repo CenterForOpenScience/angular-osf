@@ -1,5 +1,7 @@
 import { MockProvider } from 'ng-mocks';
 
+import { Mocked } from 'vitest';
+
 import { Clipboard } from '@angular/cdk/clipboard';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -9,17 +11,17 @@ import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CitationsSelectors } from '@shared/stores/citations';
 
-import { ResourceCitationsComponent } from './resource-citations.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
+import { ResourceCitationsComponent } from './resource-citations.component';
+
 describe('ResourceCitationsComponent', () => {
   let component: ResourceCitationsComponent;
   let fixture: ComponentFixture<ResourceCitationsComponent>;
-  let mockClipboard: jest.Mocked<Clipboard>;
+  let mockClipboard: Mocked<Clipboard>;
   let mockToastService: ReturnType<ToastServiceMockBuilder['build']>;
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
 
@@ -27,16 +29,15 @@ describe('ResourceCitationsComponent', () => {
   const mockResourceType = CurrentResourceType.Projects;
   const mockCustomCitation = 'Custom citation text';
 
-  beforeEach(async () => {
-    mockClipboard = {
-      copy: jest.fn(),
-    } as any;
+  beforeEach(() => {
+    mockClipboard = { copy: vi.fn() } as any;
     mockToastService = ToastServiceMockBuilder.create().build();
     mockRouter = RouterMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [ResourceCitationsComponent, OSFTestingModule],
+    TestBed.configureTestingModule({
+      imports: [ResourceCitationsComponent],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: CitationsSelectors.getDefaultCitations, value: signal([]) },
@@ -51,7 +52,7 @@ describe('ResourceCitationsComponent', () => {
         MockProvider(ToastService, mockToastService),
         MockProvider(Router, mockRouter),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ResourceCitationsComponent);
     component = fixture.componentInstance;
@@ -84,7 +85,7 @@ describe('ResourceCitationsComponent', () => {
 
   it('should prevent default event and not throw error', () => {
     const mockEvent = {
-      originalEvent: { preventDefault: jest.fn() },
+      originalEvent: { preventDefault: vi.fn() },
       filter: 'apa',
     } as any;
 
@@ -113,7 +114,7 @@ describe('ResourceCitationsComponent', () => {
     fixture.componentRef.setInput('resourceType', mockResourceType);
     component.customCitationInput.setValue('   ');
 
-    const emitSpy = jest.spyOn(component.customCitationChange, 'emit');
+    const emitSpy = vi.spyOn(component.customCitationChange, 'emit');
 
     component.handleUpdateCustomCitation();
 

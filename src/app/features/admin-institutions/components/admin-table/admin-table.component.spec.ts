@@ -1,4 +1,4 @@
-import { MockComponent, MockDirective, MockPipe } from 'ng-mocks';
+import { MockComponents, MockDirective, MockPipe } from 'ng-mocks';
 
 import { DatePipe } from '@angular/common';
 import { ComponentRef } from '@angular/core';
@@ -6,27 +6,28 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TableCellLink } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
+import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
 
-import { AdminTableComponent } from './admin-table.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { AdminTableComponent } from './admin-table.component';
 
 describe('AdminTableComponent', () => {
   let component: AdminTableComponent;
   let componentRef: ComponentRef<AdminTableComponent>;
   let fixture: ComponentFixture<AdminTableComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         AdminTableComponent,
-        OSFTestingModule,
-        MockComponent(CustomPaginatorComponent),
+        ...MockComponents(CustomPaginatorComponent, InfoIconComponent),
         MockPipe(DatePipe),
         MockDirective(StopPropagationDirective),
       ],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(AdminTableComponent);
     component = fixture.componentInstance;

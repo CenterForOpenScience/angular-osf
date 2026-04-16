@@ -1,30 +1,32 @@
 import { MockProviders } from 'ng-mocks';
 
+import { Mocked } from 'vitest';
+
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { CopyButtonComponent } from './copy-button.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CopyButtonComponent } from './copy-button.component';
 
 describe('CopyButtonComponent', () => {
   let component: CopyButtonComponent;
   let fixture: ComponentFixture<CopyButtonComponent>;
-  let clipboard: jest.Mocked<Clipboard>;
-  let toastService: jest.Mocked<ToastService>;
+  let clipboard: Mocked<Clipboard>;
+  let toastService: Mocked<ToastService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CopyButtonComponent, OSFTestingModule],
-      providers: [MockProviders(Clipboard, ToastService)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CopyButtonComponent],
+      providers: [provideOSFCore(), MockProviders(Clipboard, ToastService)],
+    });
 
     fixture = TestBed.createComponent(CopyButtonComponent);
     component = fixture.componentInstance;
-    clipboard = TestBed.inject(Clipboard) as jest.Mocked<Clipboard>;
-    toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
+    clipboard = TestBed.inject(Clipboard) as Mocked<Clipboard>;
+    toastService = TestBed.inject(ToastService) as Mocked<ToastService>;
 
     fixture.detectChanges();
   });
@@ -61,8 +63,8 @@ describe('CopyButtonComponent', () => {
     fixture.componentRef.setInput('copyItem', testText);
     fixture.detectChanges();
 
-    const copySpy = jest.spyOn(clipboard, 'copy');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const copySpy = vi.spyOn(clipboard, 'copy');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.copy();
 
@@ -75,8 +77,8 @@ describe('CopyButtonComponent', () => {
     fixture.componentRef.setInput('copyItem', longText);
     fixture.detectChanges();
 
-    const copySpy = jest.spyOn(clipboard, 'copy');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const copySpy = vi.spyOn(clipboard, 'copy');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.copy();
 
@@ -89,8 +91,8 @@ describe('CopyButtonComponent', () => {
     fixture.componentRef.setInput('copyItem', specialText);
     fixture.detectChanges();
 
-    const copySpy = jest.spyOn(clipboard, 'copy');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const copySpy = vi.spyOn(clipboard, 'copy');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.copy();
 

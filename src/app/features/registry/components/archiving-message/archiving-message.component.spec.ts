@@ -4,12 +4,12 @@ import { TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { ShortRegistrationInfoComponent } from '../short-registration-info/short-registration-info.component';
 
 import { ArchivingMessageComponent } from './archiving-message.component';
-
-import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
 
 describe('ArchivingMessageComponent', () => {
   beforeEach(() => {

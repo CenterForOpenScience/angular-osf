@@ -41,8 +41,7 @@
 
         <p-select
           id="project-select"
-          class="w-12 md:w-6"
-          styleClass="mt-4"
+          class="w-12 md:w-6 mt-4"
           appendTo="body"
           optionLabel="name"
           optionValue="id"
@@ -67,7 +66,7 @@
       <p-skeleton height="2rem" class="w-full" />
     } @else {
       <section class="selected-project">
-        <p>{{ preprintProject()?.name | fixSpecialChar }}</p>
+        <p>{{ preprintProject()?.name }}</p>
 
         <p-button
           class="danger-icon-btn"

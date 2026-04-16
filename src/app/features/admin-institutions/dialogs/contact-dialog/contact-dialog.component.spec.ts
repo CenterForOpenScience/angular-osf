@@ -1,9 +1,11 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
 import { ContactDialogComponent } from './contact-dialog.component';
 
@@ -11,18 +13,15 @@ describe('ContactDialogComponent', () => {
   let component: ContactDialogComponent;
   let fixture: ComponentFixture<ContactDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ContactDialogComponent, MockPipe(TranslatePipe)],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ContactDialogComponent],
       providers: [
-        MockProvider(DynamicDialogRef),
-        MockProvider(DynamicDialogConfig, {
-          data: {
-            defaultContactData: {},
-          },
-        }),
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, { data: { defaultContactData: {} } }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ContactDialogComponent);
     component = fixture.componentInstance;

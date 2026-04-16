@@ -1,21 +1,22 @@
-import { signal } from '@angular/core';
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { languageCodes } from '@osf/shared/constants/language.const';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMock } from '@testing/providers/custom-dialog-provider.mock';
+import { ActivatedRouteMock } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { FileMetadataFields } from '../../constants';
 import { PatchFileMetadata } from '../../models';
 import { FilesSelectors } from '../../store';
 
 import { FileMetadataComponent } from './file-metadata.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomDialogServiceMock } from '@testing/providers/custom-dialog-provider.mock';
-import { ActivatedRouteMock } from '@testing/providers/route-provider.mock';
-import { RouterMock } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('FileMetadataComponent', () => {
   let component: FileMetadataComponent;
@@ -30,24 +31,25 @@ describe('FileMetadataComponent', () => {
     language: 'en',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     customDialogService = CustomDialogServiceMock.simple();
 
-    await TestBed.configureTestingModule({
-      imports: [FileMetadataComponent, OSFTestingModule],
+    TestBed.configureTestingModule({
+      imports: [FileMetadataComponent],
       providers: [
-        { provide: CustomDialogService, useValue: customDialogService },
-        { provide: Router, useValue: RouterMock.withUrl('/test').build() },
-        { provide: ActivatedRoute, useValue: ActivatedRouteMock.withParams({ fileGuid: 'test-guid' }).build() },
+        provideOSFCore(),
+        MockProvider(CustomDialogService, customDialogService),
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
+        MockProvider(ActivatedRoute, ActivatedRouteMock.withParams({ fileGuid: 'test-guid' }).build()),
         provideMockStore({
           signals: [
-            { selector: FilesSelectors.getFileCustomMetadata, value: signal(mockFileMetadata) },
-            { selector: FilesSelectors.isFileMetadataLoading, value: signal(false) },
-            { selector: FilesSelectors.hasWriteAccess, value: signal(true) },
+            { selector: FilesSelectors.getFileCustomMetadata, value: mockFileMetadata },
+            { selector: FilesSelectors.isFileMetadataLoading, value: false },
+            { selector: FilesSelectors.hasWriteAccess, value: true },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(FileMetadataComponent);
     component = fixture.componentInstance;

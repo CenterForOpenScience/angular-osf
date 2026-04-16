@@ -6,10 +6,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 
-import { CollectionsSearchResultCardComponent } from './collections-search-result-card.component';
-
 import { MOCK_COLLECTION_SUBMISSION_WITH_GUID } from '@testing/mocks/submission.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { CollectionsSearchResultCardComponent } from './collections-search-result-card.component';
 
 describe('CollectionsSearchResultCardComponent', () => {
   let component: CollectionsSearchResultCardComponent;
@@ -18,10 +18,11 @@ describe('CollectionsSearchResultCardComponent', () => {
 
   const mockCardItem: CollectionSubmissionWithGuid = MOCK_COLLECTION_SUBMISSION_WITH_GUID;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CollectionsSearchResultCardComponent, OSFTestingModule, MockComponent(ContributorsListComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CollectionsSearchResultCardComponent, MockComponent(ContributorsListComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(CollectionsSearchResultCardComponent);
     component = fixture.componentInstance;

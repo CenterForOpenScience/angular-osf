@@ -52,15 +52,9 @@ export class ConnectedEmailsComponent {
     makePrimary: MakePrimary,
   });
 
-  readonly unconfirmedEmails = computed(() => {
-    return this.emails().filter((email) => !email.confirmed && !email.primary);
-  });
-  readonly confirmedEmails = computed(() => {
-    return this.emails().filter((email) => email.confirmed && !email.primary);
-  });
-  readonly primaryEmail = computed(() => {
-    return this.emails().find((email) => email.primary);
-  });
+  readonly unconfirmedEmails = computed(() => this.emails().filter((email) => !email.confirmed && !email.primary));
+  readonly confirmedEmails = computed(() => this.emails().filter((email) => email.confirmed && !email.primary));
+  readonly primaryEmail = computed(() => this.emails().find((email) => email.primary));
 
   addEmail() {
     this.customDialogService

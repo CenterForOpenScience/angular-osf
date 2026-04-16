@@ -4,6 +4,8 @@ import { SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 
 import { of } from 'rxjs';
 
+import { Mocked } from 'vitest';
+
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -13,33 +15,30 @@ import { CslStyleManagerService } from '@osf/shared/services/csl-style-manager.s
 import { AddonsSelectors } from '@osf/shared/stores/addons';
 import { CitationsSelectors } from '@osf/shared/stores/citations';
 
+import { MOCK_CONFIGURED_ADDON } from '@testing/mocks/configured-addon.mock';
+import { MOCK_DOCUMENT_STORAGE_ITEM } from '@testing/mocks/storage-item.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { AddonOperationInvocationServiceMockFactory } from '@testing/providers/addon-operation-invocation.service.mock';
+import { CslStyleManagerServiceMockFactory } from '@testing/providers/csl-style-manager.service.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { DEFAULT_CITATION_STYLE } from '../../constants';
 import { CitationCollectionItemComponent } from '../citation-collection-item/citation-collection-item.component';
 import { CitationItemComponent } from '../citation-item/citation-item.component';
 
 import { CitationAddonCardComponent } from './citation-addon-card.component';
 
-import { MOCK_CONFIGURED_ADDON } from '@testing/mocks/configured-addon.mock';
-import { MOCK_DOCUMENT_STORAGE_ITEM } from '@testing/mocks/storage-item.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { AddonOperationInvocationServiceMockFactory } from '@testing/providers/addon-operation-invocation.service.mock';
-import { CslStyleManagerServiceMockFactory } from '@testing/providers/csl-style-manager.service.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('CitationAddonCardComponent', () => {
   let component: CitationAddonCardComponent;
   let fixture: ComponentFixture<CitationAddonCardComponent>;
-  let operationInvocationService: jest.Mocked<AddonOperationInvocationService>;
-  let cslStyleManager: jest.Mocked<CslStyleManagerService>;
+  let operationInvocationService: Mocked<AddonOperationInvocationService>;
+  let cslStyleManager: Mocked<CslStyleManagerService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        CitationAddonCardComponent,
-        OSFTestingModule,
-        ...MockComponents(CitationItemComponent, CitationCollectionItemComponent),
-      ],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CitationAddonCardComponent, ...MockComponents(CitationItemComponent, CitationCollectionItemComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: AddonsSelectors.getAllCitationOperationInvocations, value: signal({}) },
@@ -56,15 +55,15 @@ describe('CitationAddonCardComponent', () => {
           useFactory: CslStyleManagerServiceMockFactory,
         },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(CitationAddonCardComponent);
     component = fixture.componentInstance;
 
     operationInvocationService = TestBed.inject(
       AddonOperationInvocationService
-    ) as jest.Mocked<AddonOperationInvocationService>;
-    cslStyleManager = TestBed.inject(CslStyleManagerService) as jest.Mocked<CslStyleManagerService>;
+    ) as Mocked<AddonOperationInvocationService>;
+    cslStyleManager = TestBed.inject(CslStyleManagerService) as Mocked<CslStyleManagerService>;
   });
 
   describe('Component initialization', () => {
@@ -133,7 +132,7 @@ describe('CitationAddonCardComponent', () => {
 
     it('should handle citation style filter search', () => {
       const mockEvent = {
-        originalEvent: { preventDefault: jest.fn() },
+        originalEvent: { preventDefault: vi.fn() },
         filter: 'test filter',
       } as unknown as SelectFilterEvent;
 

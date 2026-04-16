@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PreprintsHelpDialogComponent } from './preprints-help-dialog.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { PreprintsHelpDialogComponent } from './preprints-help-dialog.component';
 
 describe('PreprintsHelpDialogComponent', () => {
   let component: PreprintsHelpDialogComponent;

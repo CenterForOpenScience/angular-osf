@@ -1,34 +1,26 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe } from 'ng-mocks';
-
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RequestAccessErrorDialogComponent } from './request-access-error-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { RequestAccessErrorDialogComponent } from './request-access-error-dialog.component';
 
 describe('RequestAccessErrorDialogComponent', () => {
   let component: RequestAccessErrorDialogComponent;
   let fixture: ComponentFixture<RequestAccessErrorDialogComponent>;
-  let mockDialogRef: jest.Mocked<DynamicDialogRef>;
+  let dialogRef: DynamicDialogRef;
 
-  beforeEach(async () => {
-    mockDialogRef = {
-      close: jest.fn(),
-      destroy: jest.fn(),
-      onClose: jest.fn(),
-      onDestroy: jest.fn(),
-    } as any;
-
-    await TestBed.configureTestingModule({
-      imports: [RequestAccessErrorDialogComponent, OSFTestingModule, MockPipe(TranslatePipe)],
-      providers: [{ provide: DynamicDialogRef, useValue: mockDialogRef }],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RequestAccessErrorDialogComponent],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock()],
+    });
 
     fixture = TestBed.createComponent(RequestAccessErrorDialogComponent);
     component = fixture.componentInstance;
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture.detectChanges();
   });
 
@@ -36,25 +28,25 @@ describe('RequestAccessErrorDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have dialogRef injected', () => {
-    expect(component.dialogRef).toBeDefined();
-    expect(component.dialogRef).toBe(mockDialogRef);
+  it('should inject the dialog ref', () => {
+    expect(component.dialogRef).toBe(dialogRef);
   });
 
-  it('should close dialog when close method is called', () => {
+  it('should close the dialog with true', () => {
     component.dialogRef.close(true);
 
-    expect(mockDialogRef.close).toHaveBeenCalledWith(true);
+    expect(dialogRef.close).toHaveBeenCalledWith(true);
   });
 
-  it('should close dialog with different return values', () => {
+  it('should close the dialog with false', () => {
     component.dialogRef.close(false);
-    expect(mockDialogRef.close).toHaveBeenCalledWith(false);
 
-    component.dialogRef.close('test');
-    expect(mockDialogRef.close).toHaveBeenCalledWith('test');
+    expect(dialogRef.close).toHaveBeenCalledWith(false);
+  });
 
+  it('should close the dialog without a value', () => {
     component.dialogRef.close();
-    expect(mockDialogRef.close).toHaveBeenCalledWith();
+
+    expect(dialogRef.close).toHaveBeenCalledWith();
   });
 });

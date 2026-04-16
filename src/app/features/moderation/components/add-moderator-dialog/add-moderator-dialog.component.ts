@@ -46,6 +46,7 @@ export class AddModeratorDialogComponent implements OnInit, OnDestroy {
   totalUsersCount = select(ModeratorsSelectors.getUsersTotalCount);
   usersNextLink = select(ModeratorsSelectors.getUsersNextLink);
   usersPreviousLink = select(ModeratorsSelectors.getUsersPreviousLink);
+
   isInitialState = signal(true);
 
   currentPage = signal(1);

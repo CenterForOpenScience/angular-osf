@@ -5,19 +5,20 @@ import { By } from '@angular/platform-browser';
 
 import { MonthYearPipe } from '@osf/shared/pipes/month-year.pipe';
 
-import { EmploymentHistoryComponent } from './employment-history.component';
-
 import { MOCK_EMPLOYMENT } from '@testing/mocks/user-employment-education.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { EmploymentHistoryComponent } from './employment-history.component';
 
 describe('EmploymentHistoryComponent', () => {
   let component: EmploymentHistoryComponent;
   let fixture: ComponentFixture<EmploymentHistoryComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [EmploymentHistoryComponent, OSFTestingModule, MockPipe(MonthYearPipe)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [EmploymentHistoryComponent, MockPipe(MonthYearPipe)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(EmploymentHistoryComponent);
     component = fixture.componentInstance;

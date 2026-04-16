@@ -4,9 +4,10 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PublicationDoiDialogComponent } from './publication-doi-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { PublicationDoiDialogComponent } from './publication-doi-dialog.component';
 
 describe('PublicationDoiDialogComponent', () => {
   let component: PublicationDoiDialogComponent;
@@ -14,11 +15,11 @@ describe('PublicationDoiDialogComponent', () => {
   let dialogRef: DynamicDialogRef;
   let config: DynamicDialogConfig;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PublicationDoiDialogComponent, OSFTestingModule],
-      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [PublicationDoiDialogComponent],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig)],
+    });
 
     fixture = TestBed.createComponent(PublicationDoiDialogComponent);
     component = fixture.componentInstance;
@@ -45,30 +46,26 @@ describe('PublicationDoiDialogComponent', () => {
   });
 
   it('should close dialog with DOI value on save', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
     const testDoi = '10.1234/test.doi';
     component.publicationDoiControl.setValue(testDoi);
 
     component.save();
 
-    expect(closeSpy).toHaveBeenCalledWith({ value: testDoi });
+    expect(dialogRef.close).toHaveBeenCalledWith({ value: testDoi });
   });
 
   it('should close dialog with null when DOI is empty on save', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
     component.publicationDoiControl.setValue('');
 
     component.save();
 
-    expect(closeSpy).toHaveBeenCalledWith({ value: null });
+    expect(dialogRef.close).toHaveBeenCalledWith({ value: null });
   });
 
   it('should close dialog without data on cancel', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
     component.cancel();
 
-    expect(closeSpy).toHaveBeenCalledWith();
+    expect(dialogRef.close).toHaveBeenCalledWith();
   });
 
   it('should validate valid DOI format', () => {

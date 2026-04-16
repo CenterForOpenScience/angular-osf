@@ -1,11 +1,14 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WikiVersion } from '@shared/models/wiki/wiki.model';
 
-import { ViewSectionComponent } from './view-section.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { MarkdownComponent } from '../../markdown/markdown.component';
+
+import { ViewSectionComponent } from './view-section.component';
 
 describe('ViewSectionComponent', () => {
   let component: ViewSectionComponent;
@@ -27,11 +30,11 @@ describe('ViewSectionComponent', () => {
   const mockPreviewContent = 'Preview content';
   const mockVersionContent = 'Version content';
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ViewSectionComponent, OSFTestingModule],
-      providers: [TranslateServiceMock],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ViewSectionComponent, MockComponent(MarkdownComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ViewSectionComponent);
     component = fixture.componentInstance;
@@ -70,7 +73,7 @@ describe('ViewSectionComponent', () => {
   });
 
   it('should emit selectVersion when version changes', () => {
-    const emitSpy = jest.spyOn(component.selectVersion, 'emit');
+    const emitSpy = vi.spyOn(component.selectVersion, 'emit');
     const versionId = 'version-2';
 
     component.onVersionChange(versionId);
@@ -130,7 +133,7 @@ describe('ViewSectionComponent', () => {
   });
 
   it('should handle empty versions when viewOnly is true', () => {
-    const emitSpy = jest.spyOn(component.selectVersion, 'emit');
+    const emitSpy = vi.spyOn(component.selectVersion, 'emit');
 
     fixture.componentRef.setInput('versions', []);
     fixture.componentRef.setInput('viewOnly', true);

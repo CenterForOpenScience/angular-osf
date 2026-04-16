@@ -2,17 +2,17 @@ import { TestBed } from '@angular/core/testing';
 
 import { EnvironmentModel } from '@osf/shared/models/environment.model';
 
-import { ENVIRONMENT } from './environment.provider';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ENVIRONMENT } from './environment.provider';
 
 describe('Provider: Environment', () => {
   let environment: EnvironmentModel;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideOSFCore()],
+    });
 
     environment = TestBed.inject(ENVIRONMENT);
   });

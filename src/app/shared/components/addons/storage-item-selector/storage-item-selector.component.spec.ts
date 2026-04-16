@@ -1,40 +1,39 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { DialogService } from 'primeng/dynamicdialog';
-
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { OperationNames } from '@shared/enums/operation-names.enum';
 import { OperationInvocation } from '@shared/models/addons/operation-invocation.model';
 import { AddonsSelectors } from '@shared/stores/addons';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomDialogServiceMockBuilder,
+  CustomDialogServiceMockType,
+} from '@testing/providers/custom-dialog-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { GoogleFilePickerComponent } from '../../google-file-picker/google-file-picker.component';
 import { SelectComponent } from '../../select/select.component';
 
 import { StorageItemSelectorComponent } from './storage-item-selector.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('StorageItemSelectorComponent', () => {
   let component: StorageItemSelectorComponent;
   let fixture: ComponentFixture<StorageItemSelectorComponent>;
-  let mockDialogService: ReturnType<DialogServiceMockBuilder['build']>;
+  let mockCustomDialogService: CustomDialogServiceMockType;
   let mockOperationInvocation: WritableSignal<OperationInvocation | null>;
 
-  beforeEach(async () => {
-    mockDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
+  beforeEach(() => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
     mockOperationInvocation = signal<OperationInvocation | null>(null);
 
-    await TestBed.configureTestingModule({
-      imports: [
-        StorageItemSelectorComponent,
-        OSFTestingModule,
-        ...MockComponents(GoogleFilePickerComponent, SelectComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [StorageItemSelectorComponent, ...MockComponents(GoogleFilePickerComponent, SelectComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             {
@@ -55,9 +54,9 @@ describe('StorageItemSelectorComponent', () => {
             },
           ],
         }),
-        MockProvider(DialogService, mockDialogService),
+        MockProvider(CustomDialogService, mockCustomDialogService),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(StorageItemSelectorComponent);
     component = fixture.componentInstance;
@@ -74,9 +73,9 @@ describe('StorageItemSelectorComponent', () => {
   it('should emit operationInvoke with correct data', () => {
     const operationName = OperationNames.LIST_ROOT_ITEMS;
     const itemId = 'test-id';
-    const operationInvokeSpy = jest.spyOn(component.operationInvoke, 'emit');
+    const operationInvokeSpy = vi.spyOn(component.operationInvoke, 'emit');
 
-    (component as any).handleCreateOperationInvocation(operationName, itemId);
+    component.handleCreateOperationInvocation(operationName, itemId);
 
     expect(operationInvokeSpy).toHaveBeenCalledWith({
       operationName,
@@ -89,23 +88,23 @@ describe('StorageItemSelectorComponent', () => {
     const itemId = 'test-id';
     const itemName = 'Test Folder';
 
-    (component as any).handleCreateOperationInvocation(operationName, itemId, itemName, true);
+    component.handleCreateOperationInvocation(operationName, itemId, itemName, true);
 
-    expect((component as any).breadcrumbItems().length).toBeGreaterThan(0);
+    expect(component.breadcrumbItems().length).toBeGreaterThan(0);
   });
 
   it('should emit save event', () => {
-    const saveSpy = jest.spyOn(component.save, 'emit');
+    const saveSpy = vi.spyOn(component.save, 'emit');
 
-    (component as any).handleSave();
+    component.handleSave();
 
     expect(saveSpy).toHaveBeenCalled();
   });
 
   it('should emit cancelSelection event', () => {
-    const cancelSpy = jest.spyOn(component.cancelSelection, 'emit');
+    const cancelSpy = vi.spyOn(component.cancelSelection, 'emit');
 
-    (component as any).handleCancel();
+    component.handleCancel();
 
     expect(cancelSpy).toHaveBeenCalled();
   });
@@ -113,7 +112,7 @@ describe('StorageItemSelectorComponent', () => {
   it('should clear breadcrumbs for LIST_ROOT_ITEMS operation', () => {
     (component as any).updateBreadcrumbs(OperationNames.LIST_ROOT_ITEMS, 'test-id');
 
-    expect((component as any).breadcrumbItems()).toEqual([]);
+    expect(component.breadcrumbItems()).toEqual([]);
   });
 
   it('should add breadcrumb item for valid operation', () => {
@@ -122,7 +121,7 @@ describe('StorageItemSelectorComponent', () => {
 
     (component as any).updateBreadcrumbs(OperationNames.LIST_CHILD_ITEMS, itemId, itemName, true);
 
-    const breadcrumbs = (component as any).breadcrumbItems();
+    const breadcrumbs = component.breadcrumbItems();
     expect(breadcrumbs.length).toBe(1);
     expect(breadcrumbs[0].id).toBe(itemId);
     expect(breadcrumbs[0].label).toBe(itemName);
@@ -170,7 +169,6 @@ describe('StorageItemSelectorComponent', () => {
     });
 
     it('should return true for opaque/base64 cursors like GitLab uses', () => {
-      // GitLab uses base64-encoded cursors where lexicographic comparison doesn't work
       mockOperationInvocation.set({
         id: 'test-id',
         type: 'operation-invocation',

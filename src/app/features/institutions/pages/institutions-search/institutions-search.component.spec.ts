@@ -2,73 +2,86 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
+import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
+import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
+
+import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 
 import { InstitutionsSearchComponent } from './institutions-search.component';
 
-import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
-describe('Component: Institutions Search', () => {
+describe('InstitutionsSearchComponent', () => {
   let component: InstitutionsSearchComponent;
   let fixture: ComponentFixture<InstitutionsSearchComponent>;
-  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let store: jest.Mocked<Store>;
+  let store: Store;
 
-  beforeEach(async () => {
-    activatedRouteMock = ActivatedRouteMockBuilder.create().build();
+  const defaultSignals: SignalOverride[] = [
+    { selector: InstitutionsSearchSelectors.getInstitution, value: MOCK_INSTITUTION },
+    { selector: InstitutionsSearchSelectors.getInstitutionLoading, value: false },
+  ];
 
-    await TestBed.configureTestingModule({
-      imports: [
-        InstitutionsSearchComponent,
-        ...MockComponents(LoadingSpinnerComponent, GlobalSearchComponent),
-        OSFTestingModule,
-      ],
+  function setup(overrides: BaseSetupOverrides = {}) {
+    const routeBuilder = ActivatedRouteMockBuilder.create();
+    if (overrides.routeParams) {
+      routeBuilder.withParams(overrides.routeParams);
+    }
+    if (overrides.hasParent === false) {
+      routeBuilder.withNoParent();
+    }
+    const mockRoute = routeBuilder.build();
+
+    TestBed.configureTestingModule({
+      imports: [InstitutionsSearchComponent, ...MockComponents(GlobalSearchComponent, LoadingSpinnerComponent)],
       providers: [
-        MockProvider(ActivatedRoute, activatedRouteMock),
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, mockRoute),
         provideMockStore({
-          signals: [
-            { selector: InstitutionsSearchSelectors.getInstitution, value: MOCK_INSTITUTION },
-            { selector: InstitutionsSearchSelectors.getInstitutionLoading, value: false },
-          ],
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(InstitutionsSearchComponent);
     component = fixture.componentInstance;
-
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    store.dispatch = jest.fn().mockReturnValue(of(undefined));
-  });
+  }
 
   it('should create', () => {
-    fixture.detectChanges();
+    setup({ routeParams: { institutionId: 'inst-1' } });
     expect(component).toBeTruthy();
   });
 
-  it('should fetch institution and set default filter value on ngOnInit when institutionId is provided', () => {
-    activatedRouteMock.snapshot!.params = { institutionId: MOCK_INSTITUTION.id };
-
+  it('should dispatch fetch and initialize default filter on init', () => {
+    setup({ routeParams: { institutionId: 'inst-1' } });
     fixture.detectChanges();
 
-    expect(store.dispatch).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchInstitutionById('inst-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new SetDefaultFilterValue('affiliation,isContainedBy.affiliation', MOCK_INSTITUTION.iris.join(','))
+    );
+    expect(component.defaultSearchFiltersInitialized()).toBe(true);
   });
 
-  it('should not fetch institution on ngOnInit when institutionId is not provided', () => {
-    activatedRouteMock.snapshot!.params = {};
-
+  it('should not dispatch init actions when institution id is missing', () => {
+    setup();
     fixture.detectChanges();
 
-    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(new FetchInstitutionById('inst-1'));
+    expect(store.dispatch).not.toHaveBeenCalledWith(
+      new SetDefaultFilterValue('affiliation,isContainedBy.affiliation', MOCK_INSTITUTION.iris.join(','))
+    );
+    expect(component.defaultSearchFiltersInitialized()).toBe(false);
   });
 });

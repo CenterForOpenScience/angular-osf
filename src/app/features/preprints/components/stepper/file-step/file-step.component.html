@@ -62,7 +62,7 @@
 }
 
 @if (selectedFileSource() === PreprintFileSource.Project && !preprintFile() && !isPreprintFileLoading()) {
-  <p-card styleClass="mt-6" class="card">
+  <p-card class="card mt-6">
     <div>
       <p class="line-height-3">
         {{ 'preprints.preprintStepper.projectSelection.description' | translate }}
@@ -73,8 +73,7 @@
 
       <p-select
         id="project-select"
-        class="w-12 md:w-6"
-        styleClass="mt-4"
+        class="w-12 md:w-6 mt-4"
         appendTo="body"
         optionLabel="name"
         optionValue="id"

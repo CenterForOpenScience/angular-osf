@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { RegistryStatusMap } from '@osf/shared/constants/registration-statuses';
 import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
-import { SeverityType } from '@shared/models/severity.type';
+import { TagSeverityType } from '@osf/shared/models/severity.type';
 
 @Component({
   selector: 'osf-status-badge',
@@ -22,7 +22,7 @@ export class StatusBadgeComponent {
     return RegistryStatusMap[this.status()]?.label ?? 'Unknown';
   }
 
-  get severity(): SeverityType | null {
+  get severity(): TagSeverityType | null {
     return RegistryStatusMap[this.status()]?.severity ?? null;
   }
 }

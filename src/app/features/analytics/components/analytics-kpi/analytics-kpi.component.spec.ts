@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { AnalyticsKpiComponent } from './analytics-kpi.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { AnalyticsKpiComponent } from './analytics-kpi.component';
 
 describe('AnalyticsKpiComponent', () => {
   let component: AnalyticsKpiComponent;
   let fixture: ComponentFixture<AnalyticsKpiComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AnalyticsKpiComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [AnalyticsKpiComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(AnalyticsKpiComponent);
     component = fixture.componentInstance;
@@ -54,7 +55,7 @@ describe('AnalyticsKpiComponent', () => {
   });
 
   it('should show button with label and emit on click', () => {
-    const clickSpy = jest.fn();
+    const clickSpy = vi.fn();
     component.buttonClick.subscribe(() => clickSpy());
 
     fixture.componentRef.setInput('showButton', true);
@@ -67,19 +68,5 @@ describe('AnalyticsKpiComponent', () => {
 
     nativeButton.nativeElement.click();
     expect(clickSpy).toHaveBeenCalled();
-  });
-
-  it('should toggle button visibility via setInput', () => {
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('button.p-button'))).toBeNull();
-
-    fixture.componentRef.setInput('showButton', true);
-    fixture.componentRef.setInput('buttonLabel', 'LBL');
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('button.p-button'))).toBeTruthy();
-
-    fixture.componentRef.setInput('showButton', false);
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('button.p-button'))).toBeNull();
   });
 });

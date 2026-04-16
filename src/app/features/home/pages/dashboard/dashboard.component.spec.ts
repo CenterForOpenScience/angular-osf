@@ -1,44 +1,72 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockProviders } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { signal, WritableSignal } from '@angular/core';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { Subject } from 'rxjs';
+
+import { Mock } from 'vitest';
+
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
+import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { MyProjectsTableComponent } from '@osf/shared/components/my-projects-table/my-projects-table.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ProjectRedirectDialogService } from '@osf/shared/services/project-redirect-dialog.service';
-import { MyResourcesSelectors } from '@shared/stores/my-resources';
+import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores/my-resources';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMock, CustomDialogServiceMockType } from '@testing/providers/custom-dialog-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 
 import { DashboardComponent } from './dashboard.component';
-
-import { getProjectsMockForComponent } from '@testing/data/dashboard/dasboard.data';
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
+  let store: Store;
+  let routerMock: RouterMockType;
+  let customDialogService: CustomDialogServiceMockType;
+  let projectRedirectDialogService: { showProjectRedirectDialog: Mock };
 
-  let projectsSignal: WritableSignal<any[]>;
-  let totalProjectsSignal: WritableSignal<number>;
-  let areProjectsLoadingSignal: WritableSignal<boolean>;
+  const defaultSignals: SignalOverride[] = [
+    { selector: MyResourcesSelectors.getProjects, value: [] },
+    { selector: MyResourcesSelectors.getTotalProjects, value: 0 },
+    { selector: MyResourcesSelectors.getProjectsLoading, value: false },
+  ];
 
-  beforeEach(async () => {
-    projectsSignal = signal(getProjectsMockForComponent());
-    totalProjectsSignal = signal(getProjectsMockForComponent().length);
-    areProjectsLoadingSignal = signal(false);
+  interface SetupOverrides extends BaseSetupOverrides {
+    platformId?: 'browser' | 'server';
+    routeQueryParams?: Record<string, unknown>;
+  }
 
-    await TestBed.configureTestingModule({
+  function setup(options: SetupOverrides = {}) {
+    routerMock = RouterMockBuilder.create().build();
+    customDialogService = CustomDialogServiceMock.simple();
+    projectRedirectDialogService = { showProjectRedirectDialog: vi.fn() };
+    const routeMock = ActivatedRouteMockBuilder.create()
+      .withQueryParams(options.routeQueryParams ?? {})
+      .build();
+
+    TestBed.configureTestingModule({
       imports: [
         DashboardComponent,
-        OSFTestingStoreModule,
         ...MockComponents(
           SubHeaderComponent,
           MyProjectsTableComponent,
@@ -49,101 +77,148 @@ describe('DashboardComponent', () => {
         ),
       ],
       providers: [
-        {
-          provide: Store,
-          useValue: {
-            selectSignal: (selector: any) => {
-              if (selector === MyResourcesSelectors.getProjects) return projectsSignal;
-              if (selector === MyResourcesSelectors.getTotalProjects) return totalProjectsSignal;
-              if (selector === MyResourcesSelectors.getProjectsLoading) return areProjectsLoadingSignal;
-              return signal(null);
-            },
-            dispatch: jest.fn(),
-          },
-        },
-        MockProviders(CustomDialogService, CustomConfirmationService, ProjectRedirectDialogService),
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, routeMock),
+        MockProvider(Router, routerMock),
+        MockProvider(CustomDialogService, customDialogService),
+        MockProvider(ProjectRedirectDialogService, projectRedirectDialogService),
+        MockProvider(PLATFORM_ID, options?.platformId ?? 'browser'),
+        provideMockStore({ signals: mergeSignalOverrides(defaultSignals, options.selectorOverrides) }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+  }
+
+  it('should create', () => {
+    setup();
+    expect(component).toBeTruthy();
   });
 
-  it('should show loading spinner when projects are loading', () => {
-    areProjectsLoadingSignal.set(true);
-    fixture.detectChanges();
+  it('should read query params and fetch projects on init', () => {
+    setup({
+      routeQueryParams: {
+        page: '2',
+        rows: '25',
+        sortField: 'title',
+        sortOrder: '1',
+        search: 'abc',
+      },
+    });
 
-    const spinner = fixture.debugElement.query(By.directive(LoadingSpinnerComponent));
-    expect(spinner).toBeTruthy();
-  });
-
-  it('should render projects table when projects exist', () => {
-    projectsSignal.set(getProjectsMockForComponent());
-    totalProjectsSignal.set(getProjectsMockForComponent().length);
-    areProjectsLoadingSignal.set(false);
-    fixture.detectChanges();
-
-    const table = fixture.debugElement.query(By.directive(MyProjectsTableComponent));
-    expect(table).toBeTruthy();
-  });
-
-  it('should render welcome video when no projects exist', () => {
-    projectsSignal.set([]);
-    totalProjectsSignal.set(0);
-    areProjectsLoadingSignal.set(false);
-    fixture.detectChanges();
-    const iframe = fixture.debugElement.query(By.css('iframe'));
-    expect(iframe).toBeTruthy();
-    expect(iframe.nativeElement.src).toContain('youtube.com');
-  });
-
-  it('should render welcome screen when no projects exist', () => {
-    projectsSignal.set([]);
-    totalProjectsSignal.set(0);
-    areProjectsLoadingSignal.set(false);
-    fixture.detectChanges();
-
-    const welcomeText = fixture.debugElement.nativeElement.textContent;
-    expect(welcomeText).toContain('home.loggedIn.dashboard.noCreatedProject');
-  });
-
-  it('should open OSF help link in new tab when openInfoLink is called', () => {
-    const spy = jest.spyOn(window, 'open').mockImplementation(() => null);
-    component.openInfoLink();
-    expect(spy).toHaveBeenCalledWith('https://help.osf.io/', '_blank');
-  });
-
-  it('should render product images after loading spinner disappears', () => {
-    areProjectsLoadingSignal.set(true);
-    fixture.detectChanges();
-
-    let productImages = fixture.debugElement
-      .queryAll(By.css('img'))
-      .filter((img) => img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/'));
-
-    expect(productImages.length).toBe(0);
-
-    const spinner = fixture.debugElement.query(By.css('osf-loading-spinner'));
-    expect(spinner).toBeTruthy();
-
-    areProjectsLoadingSignal.set(false);
-    fixture.detectChanges();
-
-    productImages = fixture.debugElement
-      .queryAll(By.css('img'))
-      .filter((img) => img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/'));
-
-    expect(productImages.length).toBe(4);
-
-    const sources = productImages.map((img) => img.nativeElement.getAttribute('src'));
-
-    expect(sources).toEqual(
-      expect.arrayContaining([
-        'assets/images/dashboard/products/osf-collections.png',
-        'assets/images/dashboard/products/osf-institutions.png',
-        'assets/images/dashboard/products/osf-registries.png',
-        'assets/images/dashboard/products/osf-preprints.png',
-      ])
+    expect(component.tableParams().firstRowIndex).toBe(25);
+    expect(component.tableParams().rows).toBe(25);
+    expect(component.sortColumn()).toBe('title');
+    expect(component.sortOrder()).toBe(SortOrder.Asc);
+    expect(component.searchControl.value).toBe('abc');
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new GetMyProjects(2, 25, {
+        searchValue: 'abc',
+        searchFields: ['title'],
+        sortColumn: 'title',
+        sortOrder: SortOrder.Asc,
+      })
     );
+  });
+
+  it('should update query params on page change', () => {
+    setup();
+    (routerMock.navigate as Mock).mockClear();
+
+    component.onPageChange({ first: 20, rows: 10 } as never);
+
+    expect(routerMock.navigate).toHaveBeenCalledWith([], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+      queryParams: {
+        page: 3,
+        rows: 10,
+        search: undefined,
+        sortField: undefined,
+        sortOrder: 1,
+      },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('should update sort and reset page in query params on sort', () => {
+    setup();
+    (routerMock.navigate as Mock).mockClear();
+
+    component.onSort({ field: 'dateModified', order: -1 } as never);
+
+    expect(component.sortColumn()).toBe('dateModified');
+    expect(component.sortOrder()).toBe(-1);
+    expect(routerMock.navigate).toHaveBeenCalledWith([], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+      queryParams: {
+        page: 1,
+        rows: 10,
+        search: undefined,
+        sortField: 'dateModified',
+        sortOrder: -1,
+      },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('should create filters from current search and sort state', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: MyResourcesSelectors.getProjects,
+          value: [
+            { id: '1', title: 'Alpha project' },
+            { id: '2', title: 'Beta project' },
+          ],
+        },
+      ],
+    });
+
+    component.searchControl.setValue('alp');
+    component.sortColumn.set('title');
+    component.sortOrder.set(-1);
+
+    expect(component.createFilters()).toEqual({
+      searchValue: 'alp',
+      searchFields: ['title'],
+      sortColumn: 'title',
+      sortOrder: -1,
+    });
+  });
+
+  it('should open create project dialog and redirect on close result', () => {
+    setup();
+    const onClose$ = new Subject<{ project: { id: string } }>();
+    customDialogService.open.mockReturnValue({ onClose: onClose$.asObservable() } as unknown as DynamicDialogRef);
+
+    component.createProject();
+    onClose$.next({ project: { id: 'p1' } });
+
+    expect(customDialogService.open).toHaveBeenCalledWith(CreateProjectDialogComponent, {
+      header: 'myProjects.header.createProject',
+      width: '850px',
+    });
+    expect(projectRedirectDialogService.showProjectRedirectDialog).toHaveBeenCalledWith('p1');
+  });
+
+  it('should open help link in new tab', () => {
+    setup();
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+
+    component.openInfoLink();
+
+    expect(openSpy).toHaveBeenCalledWith('https://help.osf.io/', '_blank');
+  });
+
+  it('should clear my resources on destroy in browser', () => {
+    setup({ platformId: 'browser' });
+    (store.dispatch as Mock).mockClear();
+
+    fixture.destroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearMyResources());
   });
 });

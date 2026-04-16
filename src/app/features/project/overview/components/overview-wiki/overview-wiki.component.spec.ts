@@ -7,11 +7,11 @@ import { MarkdownComponent } from '@osf/shared/components/markdown/markdown.comp
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { WikiSelectors } from '@osf/shared/stores/wiki';
 
-import { OverviewWikiComponent } from './overview-wiki.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { OverviewWikiComponent } from './overview-wiki.component';
 
 describe('OverviewWikiComponent', () => {
   let component: OverviewWikiComponent;
@@ -20,12 +20,13 @@ describe('OverviewWikiComponent', () => {
 
   const mockResourceId = 'project-123';
 
-  beforeEach(async () => {
+  beforeEach(() => {
     routerMock = RouterMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [OverviewWikiComponent, OSFTestingModule, ...MockComponents(TruncatedTextComponent, MarkdownComponent)],
+    TestBed.configureTestingModule({
+      imports: [OverviewWikiComponent, ...MockComponents(TruncatedTextComponent, MarkdownComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: WikiSelectors.getHomeWikiLoading, value: false },
@@ -34,7 +35,7 @@ describe('OverviewWikiComponent', () => {
         }),
         MockProvider(Router, routerMock),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(OverviewWikiComponent);
     component = fixture.componentInstance;

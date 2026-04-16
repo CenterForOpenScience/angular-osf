@@ -10,6 +10,12 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 
+import { MOCK_PREPRINT_WITHDRAWAL_SUBMISSIONS } from '@testing/mocks/preprint-withdrawal-submission.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { PreprintSubmissionsSort, SubmissionReviewStatus } from '../../enums';
 import { PreprintWithdrawalSubmission } from '../../models';
 import {
@@ -21,12 +27,6 @@ import { PreprintSubmissionItemComponent } from '../preprint-submission-item/pre
 
 import { PreprintWithdrawalSubmissionsComponent } from './preprint-withdrawal-submissions.component';
 
-import { MOCK_PREPRINT_WITHDRAWAL_SUBMISSIONS } from '@testing/mocks/preprint-withdrawal-submission.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('PreprintWithdrawalSubmissionsComponent', () => {
   let component: PreprintWithdrawalSubmissionsComponent;
   let fixture: ComponentFixture<PreprintWithdrawalSubmissionsComponent>;
@@ -37,12 +37,12 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
   const mockProviderId = 'test-provider-id';
   const mockSubmissions: PreprintWithdrawalSubmission[] = MOCK_PREPRINT_WITHDRAWAL_SUBMISSIONS;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockRouter = RouterMockBuilder.create().build();
-    mockRouter.serializeUrl = jest.fn(
+    mockRouter.serializeUrl = vi.fn(
       (urlTree: any) => `/preprints/${mockProviderId}/${urlTree.segments?.[2] || 'test-id'}?mode=moderator`
     );
-    mockRouter.createUrlTree = jest.fn(
+    mockRouter.createUrlTree = vi.fn(
       (commands: any[], extras?: any) =>
         ({
           segments: commands,
@@ -55,10 +55,9 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
       .withQueryParams({ status: 'pending' })
       .build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         PreprintWithdrawalSubmissionsComponent,
-        OSFTestingModule,
         ...MockComponents(
           SelectComponent,
           IconComponent,
@@ -68,6 +67,7 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
         MockProvider(Router, mockRouter),
         MockProvider(ActivatedRoute, mockActivatedRoute),
         provideMockStore({
@@ -80,7 +80,7 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(PreprintWithdrawalSubmissionsComponent);
     component = fixture.componentInstance;
@@ -153,7 +153,7 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
 
   it('should navigate to preprint', () => {
     const mockItem = mockSubmissions[0];
-    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
     component.navigateToPreprint(mockItem);
 
@@ -178,7 +178,7 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
 
   it('should load contributors for a withdrawal submission', () => {
     const mockItem = mockSubmissions[0];
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     component.loadContributors(mockItem);
 
@@ -189,7 +189,7 @@ describe('PreprintWithdrawalSubmissionsComponent', () => {
 
   it('should load more contributors for a withdrawal submission', () => {
     const mockItem = mockSubmissions[0];
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     component.loadMoreContributors(mockItem);
 

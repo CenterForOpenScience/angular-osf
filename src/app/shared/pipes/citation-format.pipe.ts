@@ -16,14 +16,11 @@ export class CitationFormatPipe implements PipeTransform {
     const middleInitials = this.getInitials(user.middleNames);
     const suffix = user.suffix ? `, ${this.formatSuffix(user.suffix)}` : '';
 
-    let cite = '';
-
-    if (format === 'apa') {
-      const initials = [this.getInitials(givenName), middleInitials].filter(Boolean).join(' ');
-      cite = `${familyName}, ${initials}${suffix}`;
-    } else {
-      cite = `${familyName}, ${givenName} ${middleInitials}${suffix}`.trim();
-    }
+    const initials = [this.getInitials(givenName), middleInitials].filter(Boolean).join(' ');
+    const cite =
+      format === 'apa'
+        ? `${familyName}, ${initials}${suffix}`
+        : `${familyName}, ${givenName} ${middleInitials}${suffix}`.trim();
 
     return cite.endsWith('.') ? cite : `${cite}.`;
   }

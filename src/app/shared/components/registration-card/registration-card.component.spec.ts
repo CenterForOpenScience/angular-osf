@@ -1,13 +1,17 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { MockComponents } from 'ng-mocks';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { RegistriesSelectors } from '@osf/features/registries/store';
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { RegistrationCard } from '@shared/models/registration/registration-card.model';
+
+import { MOCK_REGISTRATION } from '@testing/mocks/registration.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { ContributorsListComponent } from '../contributors-list/contributors-list.component';
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
@@ -16,30 +20,26 @@ import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 
 import { RegistrationCardComponent } from './registration-card.component';
 
-import { MOCK_REGISTRATION } from '@testing/mocks/registration.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('RegistrationCardComponent', () => {
   let component: RegistrationCardComponent;
   let fixture: ComponentFixture<RegistrationCardComponent>;
 
   const mockRegistrationData: RegistrationCard = MOCK_REGISTRATION;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         RegistrationCardComponent,
-        OSFTestingModule,
         ...MockComponents(StatusBadgeComponent, DataResourcesComponent, IconComponent, ContributorsListComponent),
       ],
       providers: [
+        provideOSFCore(),
+        provideRouter([]),
         provideMockStore({
           signals: [{ selector: RegistriesSelectors.getSchemaResponse, value: signal(null) }],
         }),
-        MockProvider(ActivatedRoute),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RegistrationCardComponent);
     component = fixture.componentInstance;

@@ -4,6 +4,8 @@ import { MockComponents, MockDirective, MockProvider } from 'ng-mocks';
 
 import { Textarea } from 'primeng/textarea';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 
@@ -14,9 +16,6 @@ import { FormSelectComponent } from '@osf/shared/components/form-select/form-sel
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { ArrayInputComponent } from './array-input/array-input.component';
-import { AuthorAssertionsStepComponent } from './author-assertions-step.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
@@ -25,6 +24,9 @@ import {
 } from '@testing/providers/custom-confirmation-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { ArrayInputComponent } from './array-input/array-input.component';
+import { AuthorAssertionsStepComponent } from './author-assertions-step.component';
 
 describe('AuthorAssertionsStepComponent', () => {
   let component: AuthorAssertionsStepComponent;
@@ -200,8 +202,8 @@ describe('AuthorAssertionsStepComponent', () => {
     setup({
       selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: null }],
     });
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
-    (store.dispatch as jest.Mock).mockClear();
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
+    (store.dispatch as Mock).mockClear();
 
     component.nextButtonClicked();
 
@@ -211,7 +213,7 @@ describe('AuthorAssertionsStepComponent', () => {
 
   it('should dispatch UpdatePreprint, show success toast, and emit next on valid submission', () => {
     setup();
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
     component.authorAssertionsForm.patchValue({
       hasCoi: true,
       coiStatement: 'COI',
@@ -221,7 +223,7 @@ describe('AuthorAssertionsStepComponent', () => {
     });
     component.authorAssertionsForm.controls.dataLinks.push(new FormControl('https://data.example'));
     component.authorAssertionsForm.controls.preregLinks.push(new FormControl('https://prereg.example'));
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.nextButtonClicked();
 
@@ -251,7 +253,7 @@ describe('AuthorAssertionsStepComponent', () => {
       preregLinkInfo: null,
     });
     component.authorAssertionsForm.controls.preregLinks.push(new FormControl('https://prereg.example'));
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.nextButtonClicked();
 
@@ -264,7 +266,7 @@ describe('AuthorAssertionsStepComponent', () => {
     setup({
       selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: null }],
     });
-    const emitSpy = jest.spyOn(component.backClicked, 'emit');
+    const emitSpy = vi.spyOn(component.backClicked, 'emit');
 
     component.backButtonClicked();
 
@@ -276,7 +278,7 @@ describe('AuthorAssertionsStepComponent', () => {
     setup({
       selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: cleanPreprint }],
     });
-    const emitSpy = jest.spyOn(component.backClicked, 'emit');
+    const emitSpy = vi.spyOn(component.backClicked, 'emit');
 
     component.backButtonClicked();
 
@@ -286,7 +288,7 @@ describe('AuthorAssertionsStepComponent', () => {
 
   it('should handle discard confirmation callbacks when there are unsaved changes', () => {
     setup();
-    const emitSpy = jest.spyOn(component.backClicked, 'emit');
+    const emitSpy = vi.spyOn(component.backClicked, 'emit');
     component.authorAssertionsForm.patchValue({ hasCoi: true });
 
     component.backButtonClicked();

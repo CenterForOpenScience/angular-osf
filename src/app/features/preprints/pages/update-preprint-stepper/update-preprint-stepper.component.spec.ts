@@ -13,22 +13,6 @@ import { BrandService } from '@osf/shared/services/brand.service';
 import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
-import {
-  AuthorAssertionsStepComponent,
-  FileStepComponent,
-  PreprintsMetadataStepComponent,
-  ReviewStepComponent,
-  SupplementsStepComponent,
-  TitleAndAbstractStepComponent,
-} from '../../components';
-import { submitPreprintSteps } from '../../constants';
-import { PreprintSteps, ReviewsState } from '../../enums';
-import { PreprintProviderDetails } from '../../models';
-import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
-
-import { UpdatePreprintStepperComponent } from './update-preprint-stepper.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -37,6 +21,20 @@ import { BrowserTabServiceMock, BrowserTabServiceMockType } from '@testing/provi
 import { HeaderStyleServiceMock, HeaderStyleServiceMockType } from '@testing/providers/header-style-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+
+import { AuthorAssertionsStepComponent } from '../../components/stepper/author-assertion-step/author-assertions-step.component';
+import { FileStepComponent } from '../../components/stepper/file-step/file-step.component';
+import { PreprintsMetadataStepComponent } from '../../components/stepper/preprints-metadata-step/preprints-metadata-step.component';
+import { ReviewStepComponent } from '../../components/stepper/review-step/review-step.component';
+import { SupplementsStepComponent } from '../../components/stepper/supplements-step/supplements-step.component';
+import { TitleAndAbstractStepComponent } from '../../components/stepper/title-and-abstract-step/title-and-abstract-step.component';
+import { submitPreprintSteps } from '../../constants';
+import { PreprintSteps, ReviewsState } from '../../enums';
+import { PreprintProviderDetails } from '../../models';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
+
+import { UpdatePreprintStepperComponent } from './update-preprint-stepper.component';
 
 describe('UpdatePreprintStepperComponent', () => {
   let component: UpdatePreprintStepperComponent;
@@ -209,7 +207,7 @@ describe('UpdatePreprintStepperComponent', () => {
 
   it('should prevent beforeunload when not submitted', () => {
     setup();
-    const event = { preventDefault: jest.fn() } as unknown as BeforeUnloadEvent;
+    const event = { preventDefault: vi.fn() } as unknown as BeforeUnloadEvent;
 
     component.onBeforeUnload(event);
 
@@ -218,7 +216,7 @@ describe('UpdatePreprintStepperComponent', () => {
 
   it('should not prevent beforeunload when submitted', () => {
     setup({ selectorOverrides: [{ selector: PreprintStepperSelectors.hasBeenSubmitted, value: true }] });
-    const event = { preventDefault: jest.fn() } as unknown as BeforeUnloadEvent;
+    const event = { preventDefault: vi.fn() } as unknown as BeforeUnloadEvent;
 
     component.onBeforeUnload(event);
 
@@ -234,7 +232,7 @@ describe('UpdatePreprintStepperComponent', () => {
         },
       ],
     });
-    const event = { preventDefault: jest.fn() } as unknown as BeforeUnloadEvent;
+    const event = { preventDefault: vi.fn() } as unknown as BeforeUnloadEvent;
 
     component.onBeforeUnload(event);
 

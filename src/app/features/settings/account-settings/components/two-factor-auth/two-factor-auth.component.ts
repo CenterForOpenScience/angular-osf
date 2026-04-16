@@ -47,7 +47,7 @@ export class TwoFactorAuthComponent {
 
   qrCodeLink = computed(() => `otpauth://totp/OSF:${this.currentUser()?.id}?secret=${this.accountSettings()?.secret}`);
 
-  verificationCode = new FormControl(null, {
+  verificationCode = new FormControl<string | null>(null, {
     validators: [Validators.required],
   });
 

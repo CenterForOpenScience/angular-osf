@@ -1,146 +1,220 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
 
-import { UserSelectors } from '@osf/core/store/user';
+import { UserSelectors } from '@core/store/user';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
+import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { AccountSettings } from '../account-settings/models';
-import { AccountSettingsSelectors } from '../account-settings/store';
-
-import { NotificationsComponent } from './notifications.component';
-import { NotificationSubscriptionSelectors } from './store';
-
 import { MOCK_USER } from '@testing/mocks/data.mock';
-import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { AccountSettings } from '../account-settings/models';
+import { AccountSettingsSelectors, GetAccountSettings, UpdateAccountSettings } from '../account-settings/store';
+
+import { EmailPreferencesFormControls } from './models';
+import { NotificationsComponent } from './notifications.component';
+import {
+  GetAllGlobalNotificationSubscriptions,
+  NotificationSubscriptionSelectors,
+  UpdateNotificationSubscription,
+} from './store';
+
+interface SetupOverrides {
+  selectorOverrides?: SignalOverride[];
+  detectChanges?: boolean;
+}
 
 describe('NotificationsComponent', () => {
   let component: NotificationsComponent;
   let fixture: ComponentFixture<NotificationsComponent>;
-  let loaderService: LoaderService;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let store: Store;
+  let loaderService: LoaderServiceMock;
+  let toastService: ToastServiceMockType;
 
-  const mockUserSettings: Partial<AccountSettings> = {
+  const mockEmailPreferences: AccountSettings = {
+    twoFactorEnabled: false,
+    twoFactorConfirmed: false,
     subscribeOsfGeneralEmail: true,
     subscribeOsfHelpEmail: false,
+    deactivationRequested: false,
+    contactedDeactivation: false,
+    secret: '',
   };
 
-  const mockNotificationSubscriptions = [
-    { id: 'id1', event: SubscriptionEvent.GlobalFileUpdated, frequency: SubscriptionFrequency.Daily },
+  const mockNotificationSubscriptions: NotificationSubscription[] = [
     {
-      id: 'id2',
+      id: '1_global_file_updated',
       event: SubscriptionEvent.GlobalFileUpdated,
+      frequency: SubscriptionFrequency.Daily,
+    },
+    {
+      id: '1_global_reviews',
+      event: SubscriptionEvent.GlobalReviews,
       frequency: SubscriptionFrequency.Instant,
     },
   ];
 
-  beforeEach(async () => {
-    toastServiceMock = ToastServiceMockBuilder.create().build();
+  const defaultSignals: SignalOverride[] = [
+    { selector: UserSelectors.getCurrentUser, value: MOCK_USER },
+    { selector: AccountSettingsSelectors.getAccountSettings, value: mockEmailPreferences },
+    {
+      selector: NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions,
+      value: mockNotificationSubscriptions,
+    },
+    { selector: AccountSettingsSelectors.areAccountSettingsLoading, value: false },
+    { selector: NotificationSubscriptionSelectors.isLoading, value: false },
+  ];
 
-    const mockLoaderService = {
-      show: jest.fn(),
-      hide: jest.fn(),
-    };
+  function setup(overrides: SetupOverrides = {}) {
+    loaderService = new LoaderServiceMock();
+    toastService = ToastServiceMock.simple();
 
-    MOCK_STORE.selectSignal.mockImplementation((selector) => {
-      if (selector === UserSelectors.getCurrentUser) {
-        return signal(MOCK_USER);
-      }
-      if (selector === AccountSettingsSelectors.getAccountSettings) {
-        return signal(mockUserSettings);
-      }
-      if (selector === NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions) {
-        return signal(mockNotificationSubscriptions);
-      }
-      if (selector === AccountSettingsSelectors.areAccountSettingsLoading) {
-        return signal(false);
-      }
-      if (selector === NotificationSubscriptionSelectors.isLoading) {
-        return signal(false);
-      }
-      return signal(null);
+    TestBed.configureTestingModule({
+      imports: [NotificationsComponent, ...MockComponents(InfoIconComponent, SubHeaderComponent)],
+      providers: [
+        provideOSFCore(),
+        MockProvider(LoaderService, loaderService),
+        MockProvider(ToastService, toastService),
+        provideMockStore({
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
+      ],
     });
 
-    MOCK_STORE.dispatch.mockImplementation(() => of());
-
-    await TestBed.configureTestingModule({
-      imports: [
-        NotificationsComponent,
-        ...MockComponents(InfoIconComponent, SubHeaderComponent),
-        MockPipe(TranslatePipe),
-      ],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        TranslateServiceMock,
-        MockProvider(Store, MOCK_STORE),
-        MockProvider(LoaderService, mockLoaderService),
-        MockProvider(ToastService, toastServiceMock),
-        FormBuilder,
-      ],
-    }).compileComponents();
-
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(NotificationsComponent);
     component = fixture.componentInstance;
 
-    loaderService = TestBed.inject(LoaderService);
-
-    fixture.detectChanges();
-  });
+    if (overrides.detectChanges !== false) {
+      fixture.detectChanges();
+    }
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should not call loader hide when no user exists', () => {
-    MOCK_STORE.selectSignal.mockImplementation((selector) => {
-      if (selector === UserSelectors.getCurrentUser) {
-        return signal(null);
-      }
+  it('should patch email preferences form from selector data', () => {
+    setup();
 
-      return signal(null);
-    });
-    component.emailPreferencesFormSubmit();
-
-    expect(loaderService.hide).not.toHaveBeenCalled();
+    expect(component.emailPreferencesForm.get(EmailPreferencesFormControls.SubscribeOsfGeneralEmail)?.value).toBe(true);
+    expect(component.emailPreferencesForm.get(EmailPreferencesFormControls.SubscribeOsfHelpEmail)?.value).toBe(false);
   });
 
-  it('should handle subscription completion correctly', () => {
-    const mockDispatch = jest.fn().mockReturnValue(of({}));
-    MOCK_STORE.dispatch.mockImplementation(mockDispatch);
+  it('should patch notification subscriptions form from selector data', () => {
+    setup();
+
+    expect(component.notificationSubscriptionsForm.get(SubscriptionEvent.GlobalFileUpdated)?.value).toBe(
+      SubscriptionFrequency.Daily
+    );
+    expect(component.notificationSubscriptionsForm.get(SubscriptionEvent.GlobalReviews)?.value).toBe(
+      SubscriptionFrequency.Instant
+    );
+  });
+
+  it('should dispatch notification and account settings fetches on init when data is missing', () => {
+    setup({
+      selectorOverrides: [
+        { selector: AccountSettingsSelectors.getAccountSettings, value: null },
+        { selector: NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions, value: [] },
+      ],
+      detectChanges: false,
+    });
+
+    component.ngOnInit();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetAllGlobalNotificationSubscriptions());
+    expect(store.dispatch).toHaveBeenCalledWith(new GetAccountSettings());
+  });
+
+  it('should not dispatch initial fetches on init when data already exists', () => {
+    setup({ detectChanges: false });
+    (store.dispatch as Mock).mockClear();
+
+    component.ngOnInit();
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetAllGlobalNotificationSubscriptions));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetAccountSettings));
+  });
+
+  it('should not submit email preferences when current user is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.getCurrentUser, value: null }],
+    });
+    (store.dispatch as Mock).mockClear();
 
     component.emailPreferencesFormSubmit();
 
-    const subscription = mockDispatch.mock.results[0].value;
-    subscription.subscribe(() => {
-      expect(loaderService.hide).toHaveBeenCalledTimes(1);
-    });
+    expect(loaderService.show).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateAccountSettings));
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
   });
 
-  it('should call dispatch only once per subscription change', () => {
-    const mockDispatch = jest.fn().mockReturnValue(of({}));
-    MOCK_STORE.dispatch.mockImplementation(mockDispatch);
-    const event = SubscriptionEvent.GlobalFileUpdated;
-    const frequency = SubscriptionFrequency.Daily;
+  it('should submit email preferences and show success toast when current user exists', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+    component.emailPreferencesForm.patchValue({
+      subscribeOsfGeneralEmail: false,
+      subscribeOsfHelpEmail: true,
+    });
 
-    component.onSubscriptionChange(event, frequency);
+    component.emailPreferencesFormSubmit();
 
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateAccountSettings({
+        subscribeOsfGeneralEmail: false,
+        subscribeOsfHelpEmail: true,
+      })
+    );
+    expect(loaderService.hide).toHaveBeenCalled();
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.notifications.emailPreferences.successUpdate');
+  });
+
+  it('should not update subscription when current user is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.getCurrentUser, value: null }],
+    });
+    (store.dispatch as Mock).mockClear();
+
+    component.onSubscriptionChange(SubscriptionEvent.GlobalFileUpdated, SubscriptionFrequency.Instant);
+
+    expect(loaderService.show).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateNotificationSubscription));
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+  });
+
+  it('should update notification subscription and show success toast', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.onSubscriptionChange(SubscriptionEvent.GlobalFileUpdated, SubscriptionFrequency.Instant);
+
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateNotificationSubscription({
+        id: '1_global_file_updated',
+        frequency: SubscriptionFrequency.Instant,
+      })
+    );
+    expect(loaderService.hide).toHaveBeenCalled();
+    expect(toastService.showSuccess).toHaveBeenCalledWith(
+      'settings.notifications.notificationPreferences.successUpdate'
+    );
   });
 });

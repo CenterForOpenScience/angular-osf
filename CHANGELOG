@@ -2,6 +2,11 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.8.0 (2026-04-16)
+===================
+
+* Angular upgrade
+
 26.7.0 (2026-04-08)
 ===================
 

@@ -4,19 +4,19 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WikiSyntaxHelpDialogComponent } from './wiki-syntax-help-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { WikiSyntaxHelpDialogComponent } from './wiki-syntax-help-dialog.component';
 
 describe('WikiSyntaxHelpDialogComponent', () => {
   let component: WikiSyntaxHelpDialogComponent;
   let fixture: ComponentFixture<WikiSyntaxHelpDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [WikiSyntaxHelpDialogComponent],
-      providers: [TranslateServiceMock, MockProvider(DynamicDialogRef)],
-    }).compileComponents();
+      providers: [provideOSFCore(), MockProvider(DynamicDialogRef)],
+    });
 
     fixture = TestBed.createComponent(WikiSyntaxHelpDialogComponent);
     component = fixture.componentInstance;
@@ -29,7 +29,7 @@ describe('WikiSyntaxHelpDialogComponent', () => {
 
   it('should close dialog when close button is clicked', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     dialogRef.close();
 

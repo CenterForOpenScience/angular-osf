@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceIsSpammedComponent } from './resource-is-spammed.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { ResourceIsSpammedComponent } from './resource-is-spammed.component';
 
 describe('ResourceIsSpammedComponent', () => {
   let component: ResourceIsSpammedComponent;

@@ -1,467 +1,144 @@
+import { Store } from '@ngxs/store';
+
 import { MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
-import { PLATFORM_ID, runInInjectionContext } from '@angular/core';
+import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Route, Router, UrlSegment } from '@angular/router';
 
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CurrentResource } from '@osf/shared/models/current-resource.model';
 import { CurrentResourceSelectors, GetResource } from '@osf/shared/stores/current-resource';
 
-import { isFileGuard } from './is-file.guard';
-
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe('isFileGuard', () => {
-  let router: Router;
+import { isFileGuard } from './is-file.guard';
 
-  const createMockResource = (overrides?: Partial<CurrentResource>): CurrentResource => ({
+describe('isFileGuard', () => {
+  let router: RouterMockType;
+  let store: Store;
+
+  const createSegments = (...paths: string[]): UrlSegment[] => paths.map((path) => ({ path }) as UrlSegment);
+
+  const createResource = (overrides?: Partial<CurrentResource>): CurrentResource => ({
     id: 'file-id',
     type: CurrentResourceType.Files,
     permissions: [],
     ...overrides,
   });
 
-  const createMockSegments = (path: string, secondPath?: string) => {
-    const segments = [{ path }] as any[];
-    if (secondPath) {
-      segments.push({ path: secondPath });
-    }
-    return segments;
-  };
+  function setup(overrides?: {
+    resource?: CurrentResource | null;
+    platformId?: 'browser' | 'server';
+    routerUrl?: string;
+    browserSearch?: string;
+  }) {
+    const resource = overrides && 'resource' in overrides ? overrides.resource : createResource();
+    const platformId = overrides?.platformId ?? 'browser';
+    const routerUrl = overrides?.routerUrl ?? '/file-id';
+    const browserSearch = overrides?.browserSearch ?? '';
 
-  beforeEach(() => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        href: 'http://localhost/test',
-      },
-    });
+    if (platformId === 'browser') {
+      window.history.replaceState({}, '', `/guard-test${browserSearch}`);
+    }
+
+    router = RouterMockBuilder.create().withUrl(routerUrl).withNavigate(vi.fn().mockResolvedValue(true)).build();
 
     TestBed.configureTestingModule({
       providers: [
+        provideOSFCore(),
         provideMockStore({
-          selectors: [],
-          actions: [],
+          selectors: [{ selector: CurrentResourceSelectors.getCurrentResource, value: resource }],
         }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
+        MockProvider(Router, router),
+        MockProvider(PLATFORM_ID, platformId),
       ],
     });
 
-    router = TestBed.inject(Router);
-    jest.clearAllMocks();
-  });
+    store = TestBed.inject(Store);
+  }
 
-  it('should return false when id is missing', () => {
-    const result = runInInjectionContext(TestBed, () => {
-      return isFileGuard({} as any, []);
-    });
+  async function resolveGuard(segments: UrlSegment[]) {
+    const result = TestBed.runInInjectionContext(() => isFileGuard({} as Route, segments));
+    if (typeof result === 'boolean') {
+      return result;
+    }
+    return firstValueFrom(result as Observable<boolean>);
+  }
 
+  it('should return false when id is missing', async () => {
+    setup();
+    const result = await resolveGuard([]);
     expect(result).toBe(false);
   });
 
-  it('should return false when resource is not found', (done) => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: null,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('file-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
-      ],
+  it('should return false when current resource is missing', async () => {
+    setup({ resource: null });
+    const result = await resolveGuard(createSegments('file-id'));
+    expect(result).toBe(false);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should return false when current resource id does not match route id', async () => {
+    setup({ resource: createResource({ id: 'different-id' }) });
+    const result = await resolveGuard(createSegments('file-id'));
+    expect(result).toBe(false);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should return true for metadata path on file resource', async () => {
+    setup({ resource: createResource({ parentId: 'node-1' }) });
+    const result = await resolveGuard(createSegments('file-id', 'metadata'));
+    expect(result).toBe(true);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should navigate to parent files route with browser view_only query param', async () => {
+    setup({
+      resource: createResource({ parentId: 'node-1' }),
+      browserSearch: '?view_only=token-123',
     });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('file-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
+    const result = await resolveGuard(createSegments('file-id'));
+    expect(result).toBe(false);
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'node-1', 'files', 'file-id'], {
+      queryParams: { view_only: 'token-123' },
     });
   });
 
-  it('should return false when resource id does not match exactly', (done) => {
-    const resource = createMockResource({ id: 'different-id' });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('file-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
-      ],
+  it('should navigate to parent files route with server view_only query param', async () => {
+    setup({
+      platformId: 'server',
+      routerUrl: '/files/file-id?view_only=srv-token',
+      resource: createResource({ parentId: 'node-1' }),
     });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('file-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
+    const result = await resolveGuard(createSegments('file-id'));
+    expect(result).toBe(false);
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'node-1', 'files', 'file-id'], {
+      queryParams: { view_only: 'srv-token' },
     });
   });
 
-  it('should return true for Files with metadata path', (done) => {
-    const resource = createMockResource({
-      id: 'file-id',
-      type: CurrentResourceType.Files,
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('file-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('file-id', 'metadata'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(true);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(true);
-        done();
-      }
-    });
+  it('should return true for file resource without parentId', async () => {
+    setup({ resource: createResource({ parentId: undefined }) });
+    const result = await resolveGuard(createSegments('file-id'));
+    expect(result).toBe(true);
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should navigate and return false for Files with parentId', (done) => {
-    const resource = createMockResource({
-      id: 'file-id',
-      type: CurrentResourceType.Files,
-      parentId: 'parent-id',
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('file-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('file-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).toHaveBeenCalledWith(['/', 'parent-id', 'files', 'file-id'], {});
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
+  it('should return false for non-file resource', async () => {
+    setup({ resource: createResource({ type: CurrentResourceType.Projects }) });
+    const result = await resolveGuard(createSegments('file-id'));
+    expect(result).toBe(false);
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should return true for Files without parentId', (done) => {
-    const resource = createMockResource({
-      id: 'file-id',
-      type: CurrentResourceType.Files,
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('file-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('file-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(true);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(true);
-        done();
-      }
-    });
-  });
-
-  it('should return false for other resource types', (done) => {
-    const resource = createMockResource({
-      id: 'resource-id',
-      type: CurrentResourceType.Projects,
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('resource-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('resource-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
-  });
-
-  it('should include view_only param in navigation when present in router.url (server-side)', (done) => {
-    const resource = createMockResource({
-      id: 'file-id',
-      type: CurrentResourceType.Files,
-      parentId: 'parent-id',
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('file-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test?view_only=abc123').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'server',
-        },
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('file-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).toHaveBeenCalledWith(['/', 'parent-id', 'files', 'file-id'], {
-            queryParams: { view_only: 'abc123' },
-          });
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
-  });
-
-  it('should include view_only param in navigation when present in window.location (browser)', (done) => {
-    const resource = createMockResource({
-      id: 'file-id',
-      type: CurrentResourceType.Files,
-      parentId: 'parent-id',
-    });
-
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        href: 'http://localhost/test?view_only=xyz789',
-      },
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('file-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
-        {
-          provide: PLATFORM_ID,
-          useValue: 'browser',
-        },
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isFileGuard({} as any, createMockSegments('file-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).toHaveBeenCalledWith(['/', 'parent-id', 'files', 'file-id'], {
-            queryParams: { view_only: 'xyz789' },
-          });
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
+  it('should dispatch GetResource with route id', async () => {
+    setup();
+    await resolveGuard(createSegments('file-id'));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetResource('file-id'));
   });
 });

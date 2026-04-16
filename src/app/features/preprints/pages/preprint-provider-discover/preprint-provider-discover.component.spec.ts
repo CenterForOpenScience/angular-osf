@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -12,12 +14,6 @@ import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
 
-import { PreprintProviderHeroComponent } from '../../components';
-import { PreprintProviderDetails } from '../../models';
-import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-
-import { PreprintProviderDiscoverComponent } from './preprint-provider-discover.component';
-
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { BrandServiceMock, BrandServiceMockType } from '@testing/providers/brand-service.mock';
@@ -25,6 +21,12 @@ import { BrowserTabServiceMock, BrowserTabServiceMockType } from '@testing/provi
 import { HeaderStyleServiceMock, HeaderStyleServiceMockType } from '@testing/providers/header-style-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+
+import { PreprintProviderHeroComponent } from '../../components/preprint-provider-hero/preprint-provider-hero.component';
+import { PreprintProviderDetails } from '../../models';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+
+import { PreprintProviderDiscoverComponent } from './preprint-provider-discover.component';
 
 describe('PreprintProviderDiscoverComponent', () => {
   let component: PreprintProviderDiscoverComponent;
@@ -100,7 +102,7 @@ describe('PreprintProviderDiscoverComponent', () => {
       ],
     });
 
-    const dispatchedActions = (store.dispatch as jest.Mock).mock.calls.map(([action]) => action);
+    const dispatchedActions = (store.dispatch as Mock).mock.calls.map(([action]) => action);
 
     expect(dispatchedActions.some((action) => action instanceof SetDefaultFilterValue)).toBe(false);
     expect(dispatchedActions.some((action) => action instanceof SetResourceType)).toBe(false);

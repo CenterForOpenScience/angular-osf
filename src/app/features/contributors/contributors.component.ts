@@ -24,13 +24,11 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import {
-  AddContributorDialogComponent,
-  AddUnregisteredContributorDialogComponent,
-  ContributorsTableComponent,
-  RemoveContributorDialogComponent,
-  RequestAccessTableComponent,
-} from '@osf/shared/components/contributors';
+import { AddContributorDialogComponent } from '@osf/shared/components/contributors/add-contributor-dialog/add-contributor-dialog.component';
+import { AddUnregisteredContributorDialogComponent } from '@osf/shared/components/contributors/add-unregistered-contributor-dialog/add-unregistered-contributor-dialog.component';
+import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
+import { RemoveContributorDialogComponent } from '@osf/shared/components/contributors/remove-contributor-dialog/remove-contributor-dialog.component';
+import { RequestAccessTableComponent } from '@osf/shared/components/contributors/request-access-table/request-access-table.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { ViewOnlyTableComponent } from '@osf/shared/components/view-only-table/view-only-table.component';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants/contributors.constants';
@@ -88,14 +86,14 @@ import { ResourceInfoModel } from './models';
   selector: 'osf-contributors',
   imports: [
     Button,
-    SearchInputComponent,
     Select,
-    TranslatePipe,
-    FormsModule,
     TableModule,
+    FormsModule,
+    SearchInputComponent,
     ContributorsTableComponent,
     RequestAccessTableComponent,
     ViewOnlyTableComponent,
+    TranslatePipe,
   ],
   templateUrl: './contributors.component.html',
   styleUrl: './contributors.component.scss',

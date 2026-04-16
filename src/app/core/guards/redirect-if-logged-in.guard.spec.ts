@@ -1,120 +1,74 @@
-import { of } from 'rxjs';
+import { Store } from '@ngxs/store';
 
-import { runInInjectionContext } from '@angular/core';
+import { MockProvider } from 'ng-mocks';
+
+import { firstValueFrom, Observable } from 'rxjs';
+
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { GetCurrentUser, UserSelectors } from '@osf/core/store/user';
 
-import { redirectIfLoggedInGuard } from './redirect-if-logged-in.guard';
-
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
+import { redirectIfLoggedInGuard } from './redirect-if-logged-in.guard';
+
 describe('redirectIfLoggedInGuard', () => {
-  let router: Router;
+  let store: Store;
+  let router: RouterMockType;
 
-  beforeEach(() => {
+  function setup(isAuthenticated: boolean) {
+    router = RouterMockBuilder.create().withUrl('/login').withNavigate(vi.fn().mockResolvedValue(true)).build();
+
     TestBed.configureTestingModule({
       providers: [
+        provideOSFCore(),
         provideMockStore({
-          selectors: [],
-          actions: [],
+          selectors: [{ selector: UserSelectors.isAuthenticated, value: isAuthenticated }],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
+        MockProvider(Router, router),
       ],
     });
 
-    router = TestBed.inject(Router);
-    jest.clearAllMocks();
+    store = TestBed.inject(Store);
+  }
+
+  async function resolveGuard() {
+    const result = TestBed.runInInjectionContext(() => redirectIfLoggedInGuard({} as never, {} as never));
+    if (typeof result === 'boolean') {
+      return result;
+    }
+    return firstValueFrom(result as Observable<boolean>);
+  }
+
+  it('should redirect to dashboard and return false when user is authenticated', async () => {
+    setup(true);
+
+    const result = await resolveGuard();
+
+    expect(result).toBe(false);
+    expect(store.dispatch).toHaveBeenCalledWith(GetCurrentUser);
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
-  it('should navigate to dashboard and return false when user is authenticated', (done) => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: UserSelectors.isAuthenticated,
-              value: true,
-            },
-          ],
-          actions: [
-            {
-              action: GetCurrentUser,
-              value: of(true),
-            },
-          ],
-        }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
-      ],
-    });
+  it('should return true when user is not authenticated', async () => {
+    setup(false);
 
-    router = TestBed.inject(Router);
+    const result = await resolveGuard();
 
-    runInInjectionContext(TestBed, () => {
-      const result = redirectIfLoggedInGuard({} as any, {} as any);
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
+    expect(result).toBe(true);
+    expect(store.dispatch).toHaveBeenCalledWith(GetCurrentUser);
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should return true and not navigate when user is not authenticated', (done) => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: UserSelectors.isAuthenticated,
-              value: false,
-            },
-          ],
-          actions: [
-            {
-              action: GetCurrentUser,
-              value: of(true),
-            },
-          ],
-        }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().build(),
-        },
-      ],
-    });
+  it('should dispatch GetCurrentUser before checking authentication state', async () => {
+    setup(false);
 
-    router = TestBed.inject(Router);
+    await resolveGuard();
 
-    runInInjectionContext(TestBed, () => {
-      const result = redirectIfLoggedInGuard({} as any, {} as any);
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(true);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(true);
-        done();
-      }
-    });
+    expect(store.dispatch).toHaveBeenCalledTimes(1);
+    expect(store.dispatch).toHaveBeenCalledWith(GetCurrentUser);
   });
 });

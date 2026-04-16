@@ -1,29 +1,24 @@
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
 
-import { SettingsContainerComponent } from './settings-container.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { HelpScoutServiceMockFactory } from '@testing/providers/help-scout.service.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { SettingsContainerComponent } from './settings-container.component';
 
 describe('Component: Settings', () => {
   let fixture: ComponentFixture<SettingsContainerComponent>;
   let helpScoutService: HelpScoutService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SettingsContainerComponent, OSFTestingModule],
-      providers: [
-        {
-          provide: HelpScoutService,
-          useValue: {
-            setResourceType: jest.fn(),
-            unsetResourceType: jest.fn(),
-          },
-        },
-      ],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SettingsContainerComponent],
+      providers: [provideOSFCore(), MockProvider(HelpScoutService, HelpScoutServiceMockFactory())],
+    });
 
     helpScoutService = TestBed.inject(HelpScoutService);
     fixture = TestBed.createComponent(SettingsContainerComponent);

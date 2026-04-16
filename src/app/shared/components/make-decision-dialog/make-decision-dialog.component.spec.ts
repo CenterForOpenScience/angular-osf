@@ -2,7 +2,7 @@ import { MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ModerationType, SubmissionReviewStatus } from '@osf/features/moderation/enums';
@@ -11,15 +11,16 @@ import { ModerationDecisionFormControls } from '@osf/shared/enums/moderation-dec
 import { ModerationSubmitType } from '@osf/shared/enums/moderation-submit-type.enum';
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
 
-import { MakeDecisionDialogComponent } from './make-decision-dialog.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { MakeDecisionDialogComponent } from './make-decision-dialog.component';
 
 describe('MakeDecisionDialogComponent', () => {
   let component: MakeDecisionDialogComponent;
   let fixture: ComponentFixture<MakeDecisionDialogComponent>;
-  let mockDialogRef: Partial<DynamicDialogRef>;
+  let dialogRef: DynamicDialogRef;
   let mockConfig: Partial<DynamicDialogConfig>;
 
   const mockCollectionProvider = {
@@ -32,19 +33,13 @@ describe('MakeDecisionDialogComponent', () => {
     toState: SubmissionReviewStatus.Pending,
   };
 
-  beforeEach(async () => {
-    mockDialogRef = {
-      close: jest.fn(),
-    };
+  beforeEach(() => {
+    mockConfig = { data: {} };
 
-    mockConfig = {
-      data: {},
-    };
-
-    await TestBed.configureTestingModule({
-      imports: [MakeDecisionDialogComponent, OSFTestingModule],
-      schemas: [NO_ERRORS_SCHEMA],
+    TestBed.configureTestingModule({
+      imports: [MakeDecisionDialogComponent],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: CollectionsSelectors.getCollectionProvider, value: signal(mockCollectionProvider) },
@@ -52,13 +47,14 @@ describe('MakeDecisionDialogComponent', () => {
             { selector: CollectionsModerationSelectors.getCollectionSubmissionSubmitting, value: signal(false) },
           ],
         }),
-        MockProvider(DynamicDialogRef, mockDialogRef),
+        provideDynamicDialogRefMock(),
         MockProvider(DynamicDialogConfig, mockConfig),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(MakeDecisionDialogComponent);
     component = fixture.componentInstance;
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture.detectChanges();
   });
 
@@ -106,7 +102,7 @@ describe('MakeDecisionDialogComponent', () => {
   it('should not submit when form is invalid', () => {
     component.handleSubmission();
 
-    expect(mockDialogRef.close).not.toHaveBeenCalled();
+    expect(dialogRef.close).not.toHaveBeenCalled();
   });
 
   it('should handle submission when form is valid and targetId exists', () => {

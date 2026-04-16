@@ -1,5 +1,3 @@
-import { Store } from '@ngxs/store';
-
 import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -9,29 +7,25 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { WikiSelectors } from '@osf/shared/stores/wiki';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { TextInputComponent } from '../../text-input/text-input.component';
 
 import { AddWikiDialogComponent } from './add-wiki-dialog.component';
-
-import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('AddWikiDialogComponent', () => {
   let component: AddWikiDialogComponent;
   let fixture: ComponentFixture<AddWikiDialogComponent>;
 
-  beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === WikiSelectors.getWikiSubmitting) {
-        return () => false;
-      }
-      return () => null;
-    });
-
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [AddWikiDialogComponent, MockComponent(TextInputComponent)],
       providers: [
-        TranslateServiceMock,
+        provideOSFCore(),
+        provideMockStore({
+          signals: [{ selector: WikiSelectors.getWikiSubmitting, value: false }],
+        }),
         MockProvider(DynamicDialogRef),
         MockProvider(DynamicDialogConfig, {
           data: {
@@ -39,9 +33,8 @@ describe('AddWikiDialogComponent', () => {
           },
         }),
         MockProvider(ToastService),
-        MockProvider(Store, MOCK_STORE),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(AddWikiDialogComponent);
     component = fixture.componentInstance;
@@ -87,7 +80,7 @@ describe('AddWikiDialogComponent', () => {
 
   it('should close dialog on cancel', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     dialogRef.close();
 
@@ -98,8 +91,8 @@ describe('AddWikiDialogComponent', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     const toastService = TestBed.inject(ToastService);
 
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.addWikiForm.patchValue({ name: '' });
 
@@ -113,8 +106,8 @@ describe('AddWikiDialogComponent', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     const toastService = TestBed.inject(ToastService);
 
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.addWikiForm.patchValue({ name: '   ' });
 

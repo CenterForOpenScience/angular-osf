@@ -1,30 +1,26 @@
 import { CookieService } from 'ngx-cookie-service';
-import { MockComponent } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
-import { CookieConsentBannerComponent } from './cookie-consent-banner.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CookieServiceMock } from '@testing/providers/cookie-service.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CookieConsentBannerComponent } from './cookie-consent-banner.component';
 
 describe('Component: Cookie Consent Banner', () => {
   let fixture: ComponentFixture<CookieConsentBannerComponent>;
   let component: CookieConsentBannerComponent;
 
-  const cookieServiceMock = {
-    check: jest.fn(),
-    set: jest.fn(),
-  };
+  const cookieServiceMock = CookieServiceMock.simple();
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CookieConsentBannerComponent, OSFTestingModule, MockComponent(IconComponent)],
-      providers: [{ provide: CookieService, useValue: cookieServiceMock }],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CookieConsentBannerComponent, MockComponent(IconComponent)],
+      providers: [provideOSFCore(), MockProvider(CookieService, cookieServiceMock)],
     });
-
-    jest.clearAllMocks();
   });
 
   it('should show the banner if cookie is not set', () => {

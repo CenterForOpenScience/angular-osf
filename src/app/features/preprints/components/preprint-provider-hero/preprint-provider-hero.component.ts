@@ -36,6 +36,9 @@ export class PreprintProviderHeroComponent {
   }
 
   openHelpDialog(): void {
-    this.customDialogService.open(PreprintsHelpDialogComponent, { header: 'preprints.helpDialog.header' });
+    this.customDialogService.open(PreprintsHelpDialogComponent, {
+      header: 'preprints.helpDialog.header',
+      width: '560px',
+    });
   }
 }

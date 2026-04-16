@@ -9,34 +9,29 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
-import { CreateViewLinkDialogComponent } from './create-view-link-dialog.component';
-
 import { MOCK_RESOURCE_INFO, MOCK_RESOURCE_WITH_CHILDREN } from '@testing/mocks/resource.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { CreateViewLinkDialogComponent } from './create-view-link-dialog.component';
 
 describe('Component: Create View Link Dialog', () => {
   let component: CreateViewLinkDialogComponent;
   let fixture: ComponentFixture<CreateViewLinkDialogComponent>;
-  let dialogRef: jest.Mocked<DynamicDialogRef>;
+  let dialogRef: DynamicDialogRef;
   let dialogConfig: DynamicDialogConfig;
 
-  beforeEach(async () => {
-    dialogRef = {
-      close: jest.fn(),
-    } as any;
+  beforeEach(() => {
+    dialogConfig = { data: MOCK_RESOURCE_INFO } as DynamicDialogConfig;
 
-    dialogConfig = {
-      data: MOCK_RESOURCE_INFO,
-    } as DynamicDialogConfig;
-
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         CreateViewLinkDialogComponent,
-        OSFTestingModule,
         ...MockComponents(TextInputComponent, LoadingSpinnerComponent, ComponentCheckboxItemComponent),
       ],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             {
@@ -49,13 +44,14 @@ describe('Component: Create View Link Dialog', () => {
             },
           ],
         }),
-        MockProvider(DynamicDialogRef, dialogRef),
+        provideDynamicDialogRefMock(),
         MockProvider(DynamicDialogConfig, dialogConfig),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(CreateViewLinkDialogComponent);
     component = fixture.componentInstance;
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture.detectChanges();
   });
 

@@ -4,19 +4,19 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceTypeInfoDialogComponent } from './resource-type-info-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ResourceTypeInfoDialogComponent } from './resource-type-info-dialog.component';
 
 describe('ResourceTypeInfoDialogComponent', () => {
   let component: ResourceTypeInfoDialogComponent;
   let fixture: ComponentFixture<ResourceTypeInfoDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ResourceTypeInfoDialogComponent, OSFTestingModule],
-      providers: [MockProvider(DynamicDialogRef)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ResourceTypeInfoDialogComponent],
+      providers: [provideOSFCore(), MockProvider(DynamicDialogRef)],
+    });
 
     fixture = TestBed.createComponent(ResourceTypeInfoDialogComponent);
     component = fixture.componentInstance;

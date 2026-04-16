@@ -8,7 +8,7 @@
   </div>
 }
 
-<p-card class="w-full card" styleClass="mt-4">
+<p-card class="w-full card mt-4">
   <h2 class="mb-2">{{ 'shared.license.title' | translate }}</h2>
 
   <p class="mb-1">{{ 'shared.license.description' | translate }}</p>
@@ -43,7 +43,7 @@
   </div>
 }
 
-<p-card styleClass="mt-4" class="card">
+<p-card class="card mt-4">
   <div>
     <h2>{{ 'preprints.preprintStepper.metadata.tagsTitle' | translate }}</h2>
 
@@ -53,7 +53,7 @@
   </div>
 </p-card>
 
-<p-card styleClass="mt-4" class="card">
+<p-card class="card mt-4">
   <div>
     <h2>{{ 'preprints.preprintStepper.metadata.publicationDoi.title' | translate }}</h2>
 
@@ -69,13 +69,12 @@
   </div>
 </p-card>
 
-<p-card styleClass="mt-4" class="card">
+<p-card class="card mt-4">
   <h2>{{ 'preprints.preprintStepper.metadata.publicationDateTitle' | translate }}</h2>
 
   <p-datePicker
     inputId="publicationDate"
-    class="w-full"
-    styleClass="mt-4"
+    class="w-full mt-4"
     [formControl]="metadataForm.controls['originalPublicationDate']"
     [iconDisplay]="'input'"
     [showIcon]="true"
@@ -89,7 +88,7 @@
   </p-datePicker>
 </p-card>
 
-<p-card styleClass="mt-4" class="card">
+<p-card class="card mt-4">
   <h2 class="mb-4">{{ 'preprints.preprintStepper.metadata.publicationCitationTitle' | translate }}</h2>
 
   <osf-text-input

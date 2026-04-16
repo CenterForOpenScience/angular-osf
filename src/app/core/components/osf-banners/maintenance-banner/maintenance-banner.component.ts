@@ -1,8 +1,8 @@
 import { CookieService } from 'ngx-cookie-service';
 
-import { MessageModule } from 'primeng/message';
+import { Message } from 'primeng/message';
 
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 
 import { MaintenanceModel } from '../models/maintenance.model';
@@ -22,7 +22,7 @@ import { MaintenanceService } from '../services/maintenance.service';
  */
 @Component({
   selector: 'osf-maintenance-banner',
-  imports: [CommonModule, MessageModule],
+  imports: [Message],
   templateUrl: './maintenance-banner.component.html',
   styleUrls: ['./maintenance-banner.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

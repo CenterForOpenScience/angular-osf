@@ -2,20 +2,21 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { AddonCardComponent } from '../addon-card/addon-card.component';
 
 import { AddonCardListComponent } from './addon-card-list.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddonCardListComponent', () => {
   let component: AddonCardListComponent;
   let fixture: ComponentFixture<AddonCardListComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AddonCardListComponent, MockComponent(AddonCardComponent), OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [AddonCardListComponent, MockComponent(AddonCardComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(AddonCardListComponent);
     component = fixture.componentInstance;

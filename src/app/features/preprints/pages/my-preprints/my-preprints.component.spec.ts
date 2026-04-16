@@ -4,6 +4,8 @@ import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
 import { BehaviorSubject } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,15 +16,15 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 
-import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints';
-
-import { MyPreprintsComponent } from './my-preprints.component';
-
 import { PREPRINT_SHORT_INFO_ARRAY_MOCK } from '@testing/mocks/preprint-short-info.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints';
+
+import { MyPreprintsComponent } from './my-preprints.component';
 
 describe('MyPreprintsComponent', () => {
   let component: MyPreprintsComponent;
@@ -37,8 +39,8 @@ describe('MyPreprintsComponent', () => {
     queryParamsSubject = new BehaviorSubject<Record<string, string>>({});
 
     routerMock = RouterMockBuilder.create()
-      .withNavigate(jest.fn().mockResolvedValue(true))
-      .withNavigateByUrl(jest.fn().mockResolvedValue(true))
+      .withNavigate(vi.fn().mockResolvedValue(true))
+      .withNavigateByUrl(vi.fn().mockResolvedValue(true))
       .build();
 
     const activatedRouteMock = ActivatedRouteMockBuilder.create().build();
@@ -65,7 +67,7 @@ describe('MyPreprintsComponent', () => {
     });
 
     store = TestBed.inject(Store);
-    jest.spyOn(store, 'dispatch');
+    vi.spyOn(store, 'dispatch');
 
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(MyPreprintsComponent);
@@ -152,7 +154,7 @@ describe('MyPreprintsComponent', () => {
   });
 
   it('should update state and re-dispatch when query params change', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     queryParamsSubject.next({
       page: '2',

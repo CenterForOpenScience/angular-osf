@@ -4,6 +4,8 @@ import { MockComponents, MockModule, MockProvider, ngMocks } from 'ng-mocks';
 
 import { TextareaModule } from 'primeng/textarea';
 
+import { Mock } from 'vitest';
+
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,15 +14,6 @@ import { TextInputComponent } from '@osf/shared/components/text-input/text-input
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
-
-import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepState } from '../../store';
-
-import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
-import { RegistriesContributorsComponent } from './registries-contributors/registries-contributors.component';
-import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
-import { RegistriesSubjectsComponent } from './registries-subjects/registries-subjects.component';
-import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
-import { RegistriesMetadataStepComponent } from './registries-metadata-step.component';
 
 import { MOCK_DRAFT_REGISTRATION } from '@testing/mocks/draft-registration.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -31,6 +24,15 @@ import {
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepState } from '../../store';
+
+import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
+import { RegistriesContributorsComponent } from './registries-contributors/registries-contributors.component';
+import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
+import { RegistriesSubjectsComponent } from './registries-subjects/registries-subjects.component';
+import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
+import { RegistriesMetadataStepComponent } from './registries-metadata-step.component';
 
 describe('RegistriesMetadataStepComponent', () => {
   ngMocks.faster();
@@ -106,7 +108,7 @@ describe('RegistriesMetadataStepComponent', () => {
 
   it('should submit metadata and navigate to step 1', () => {
     component.metadataForm.patchValue({ title: 'New Title', description: 'New Desc' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.submitMetadata();
 
@@ -121,7 +123,7 @@ describe('RegistriesMetadataStepComponent', () => {
 
   it('should trim title and description on submit', () => {
     component.metadataForm.patchValue({ title: '  Padded Title  ', description: '  Padded Desc  ' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.submitMetadata();
 
@@ -142,7 +144,7 @@ describe('RegistriesMetadataStepComponent', () => {
 
   it('should set isDraftDeleted and navigate on deleteDraft confirm', () => {
     customConfirmationService.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.deleteDraft();
 
@@ -153,7 +155,7 @@ describe('RegistriesMetadataStepComponent', () => {
   });
 
   it('should skip updates on destroy when isDraftDeleted is true', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.isDraftDeleted = true;
     component.ngOnDestroy();
 
@@ -162,7 +164,7 @@ describe('RegistriesMetadataStepComponent', () => {
 
   it('should update step state on destroy when fields are unchanged', () => {
     component.metadataForm.patchValue({ title: 'Test Title', description: 'Test Description' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
 
     expect(store.dispatch).toHaveBeenCalledWith(new UpdateStepState('0', expect.any(Boolean), true));
@@ -171,7 +173,7 @@ describe('RegistriesMetadataStepComponent', () => {
 
   it('should dispatch updateDraft on destroy when fields have changed', () => {
     component.metadataForm.patchValue({ title: 'Changed Title', description: 'Test Description' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
 
     expect(store.dispatch).toHaveBeenCalledWith(new UpdateStepState('0', expect.any(Boolean), true));

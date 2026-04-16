@@ -8,12 +8,12 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { resourceTypeOptions } from '../../constants';
 import { RegistryResourceFormModel } from '../../models';
 
 import { ResourceFormComponent } from './resource-form.component';
-
-import { provideOSFCore } from '@testing/osf.testing.provider';
 
 const MOCK_FORM_GROUP = new FormGroup<RegistryResourceFormModel>({
   pid: new FormControl('10.1234/test'),
@@ -58,7 +58,7 @@ describe('ResourceFormComponent', () => {
     fixture.componentRef.setInput('formGroup', MOCK_FORM_GROUP);
     fixture.detectChanges();
 
-    const spy = jest.fn();
+    const spy = vi.fn();
     fixture.componentInstance.cancelClicked.subscribe(spy);
     fixture.componentInstance.handleCancel();
 
@@ -70,7 +70,7 @@ describe('ResourceFormComponent', () => {
     fixture.componentRef.setInput('formGroup', MOCK_FORM_GROUP);
     fixture.detectChanges();
 
-    const spy = jest.fn();
+    const spy = vi.fn();
     fixture.componentInstance.submitClicked.subscribe(spy);
     fixture.componentInstance.handleSubmit();
 

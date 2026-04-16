@@ -15,11 +15,11 @@ import {
   UpdateResourceSubjects,
 } from '@osf/shared/stores/subjects';
 
-import { PreprintsSubjectsComponent } from './preprints-subjects.component';
-
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { PreprintsSubjectsComponent } from './preprints-subjects.component';
 
 describe('PreprintsSubjectsComponent', () => {
   let component: PreprintsSubjectsComponent;

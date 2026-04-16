@@ -1,154 +1,93 @@
 import { provideStore, Store } from '@ngxs/store';
 
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { inject, TestBed } from '@angular/core/testing';
+import { MockProvider } from 'ng-mocks';
 
-import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
-import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
+import { firstValueFrom, Subject, throwError } from 'rxjs';
+
+import { TestBed } from '@angular/core/testing';
+
+import { CurrentResourceType } from '@shared/enums/resource-type.enum';
+import { PaginatedData } from '@shared/models/paginated-data.model';
+import { ActivityLogsService } from '@shared/services/activity-logs/activity-logs.service';
+
+import { MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log-with-display.mock';
 
 import { ClearActivityLogs, GetActivityLogs } from './activity-logs.actions';
+import { ACTIVITY_LOGS_STATE_DEFAULT } from './activity-logs.model';
+import { ActivityLogsSelectors } from './activity-logs.selectors';
 import { ActivityLogsState } from './activity-logs.state';
-
-import {
-  buildNodeLogsUrl,
-  buildRegistrationLogsUrl,
-  getActivityLogsResponse,
-} from '@testing/data/activity-logs/activity-logs.data';
-import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
 
 describe('State: ActivityLogs', () => {
   let store: Store;
-  const environment = EnvironmentTokenMock;
-  const apiBase = environment.useValue.apiDomainUrl;
+  let fetchLogsMock: ReturnType<typeof vi.fn<ActivityLogsService['fetchLogs']>>;
 
   beforeEach(() => {
+    fetchLogsMock = vi.fn();
+    const mockActivityLogsService: Pick<ActivityLogsService, 'fetchLogs'> = { fetchLogs: fetchLogsMock };
+
     TestBed.configureTestingModule({
-      providers: [
-        provideStore([ActivityLogsState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        {
-          provide: ActivityLogDisplayService,
-          useValue: { getActivityDisplay: jest.fn().mockReturnValue('<span>formatted</span>') },
-        },
-      ],
+      providers: [provideStore([ActivityLogsState]), MockProvider(ActivityLogsService, mockActivityLogsService)],
     });
 
     store = TestBed.inject(Store);
   });
 
-  it('loads registration logs and formats activities', inject(
-    [HttpTestingController],
-    (httpMock: HttpTestingController) => {
-      let snapshot: any;
+  it('should fetch activity logs and update state', async () => {
+    const response: PaginatedData<typeof MOCK_ACTIVITY_LOGS_WITH_DISPLAY> = {
+      data: MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
+      totalCount: 2,
+      pageSize: 10,
+    };
+    const subject = new Subject<PaginatedData<typeof MOCK_ACTIVITY_LOGS_WITH_DISPLAY>>();
+    fetchLogsMock.mockReturnValue(subject.asObservable());
 
-      store.dispatch(new GetActivityLogs('reg123', CurrentResourceType.Registrations, 1, 10)).subscribe(() => {
-        snapshot = store.snapshot().activityLogs.activityLogs;
-      });
+    const dispatchPromise = firstValueFrom(
+      store.dispatch(new GetActivityLogs('project-id', CurrentResourceType.Projects, 2, 10))
+    );
 
-      expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
+    expect(store.selectSnapshot(ActivityLogsSelectors.getActivityLogsLoading)).toBe(true);
+    expect(fetchLogsMock).toHaveBeenCalledWith(CurrentResourceType.Projects, 'project-id', 2, 10);
 
-      const fullUrl = buildRegistrationLogsUrl('reg123', 1, 10, apiBase);
-      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
-      const req = httpMock.expectOne((request) => {
-        return request.url.includes(urlPath) && request.method === 'GET';
-      });
-      expect(req.request.method).toBe('GET');
+    subject.next(response);
+    subject.complete();
+    await dispatchPromise;
 
-      req.flush(getActivityLogsResponse());
+    expect(store.selectSnapshot(ActivityLogsSelectors.getActivityLogs)).toEqual(MOCK_ACTIVITY_LOGS_WITH_DISPLAY);
+    expect(store.selectSnapshot(ActivityLogsSelectors.getActivityLogsTotalCount)).toBe(2);
+    expect(store.selectSnapshot(ActivityLogsSelectors.getActivityLogsLoading)).toBe(false);
+  });
 
-      expect(snapshot.isLoading).toBe(false);
-      expect(snapshot.totalCount).toBe(2);
-      expect(snapshot.data[0].formattedActivity).toContain('formatted');
+  it('should handle fetch activity logs error', async () => {
+    fetchLogsMock.mockReturnValue(throwError(() => new Error('Failed to fetch logs')));
 
-      httpMock.verify();
-    }
-  ));
+    await expect(
+      firstValueFrom(store.dispatch(new GetActivityLogs('project-id', CurrentResourceType.Projects, 1, 10)))
+    ).rejects.toThrow('Failed to fetch logs');
 
-  it('handles error when loading registration logs', inject(
-    [HttpTestingController],
-    (httpMock: HttpTestingController) => {
-      store.dispatch(new GetActivityLogs('reg500', CurrentResourceType.Registrations, 1, 10)).subscribe();
+    const snapshot = store.snapshot().activityLogs.activityLogs;
+    expect(snapshot.data).toEqual([]);
+    expect(snapshot.error).toBe('Failed to fetch logs');
+    expect(snapshot.isLoading).toBe(false);
+  });
 
-      expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
+  it('should reset state to defaults after ClearActivityLogs', async () => {
+    const response: PaginatedData<typeof MOCK_ACTIVITY_LOGS_WITH_DISPLAY> = {
+      data: MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
+      totalCount: 2,
+      pageSize: 10,
+    };
+    const subject = new Subject<PaginatedData<typeof MOCK_ACTIVITY_LOGS_WITH_DISPLAY>>();
+    fetchLogsMock.mockReturnValue(subject.asObservable());
 
-      const fullUrl = buildRegistrationLogsUrl('reg500', 1, 10, apiBase);
-      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
-      const req = httpMock.expectOne((request) => {
-        return request.url.includes(urlPath) && request.method === 'GET';
-      });
-      req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
+    const dispatchPromise = firstValueFrom(
+      store.dispatch(new GetActivityLogs('project-id', CurrentResourceType.Projects, 1, 10))
+    );
+    subject.next(response);
+    subject.complete();
+    await dispatchPromise;
 
-      const snap = store.snapshot().activityLogs.activityLogs;
-      expect(snap.isLoading).toBe(false);
-      expect(snap.error).toBeTruthy();
-      expect(snap.totalCount).toBe(0);
+    await firstValueFrom(store.dispatch(new ClearActivityLogs()));
 
-      httpMock.verify();
-    }
-  ));
-
-  it('loads project logs (nodes) and formats activities', inject(
-    [HttpTestingController],
-    (httpMock: HttpTestingController) => {
-      let snapshot: any;
-      store.dispatch(new GetActivityLogs('proj123', CurrentResourceType.Projects, 1, 10)).subscribe(() => {
-        snapshot = store.snapshot().activityLogs.activityLogs;
-      });
-
-      expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
-
-      const fullUrl = buildNodeLogsUrl('proj123', 1, 10, apiBase);
-      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
-      const req = httpMock.expectOne((request) => {
-        return request.url.includes(urlPath) && request.method === 'GET';
-      });
-      expect(req.request.method).toBe('GET');
-
-      req.flush(getActivityLogsResponse());
-
-      expect(snapshot.isLoading).toBe(false);
-      expect(snapshot.totalCount).toBe(2);
-      expect(snapshot.data[1].formattedActivity).toContain('formatted');
-
-      httpMock.verify();
-    }
-  ));
-
-  it('handles error when loading project logs (nodes)', inject(
-    [HttpTestingController],
-    (httpMock: HttpTestingController) => {
-      store.dispatch(new GetActivityLogs('proj500', CurrentResourceType.Projects, 1, 10)).subscribe();
-
-      expect(store.selectSnapshot((s: any) => s.activityLogs.activityLogs.isLoading)).toBe(true);
-
-      const fullUrl = buildNodeLogsUrl('proj500', 1, 10, apiBase);
-      const urlPath = fullUrl.split('?')[0].replace(apiBase, '');
-      const req = httpMock.expectOne((request) => {
-        return request.url.includes(urlPath) && request.method === 'GET';
-      });
-      req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
-
-      const snap = store.snapshot().activityLogs.activityLogs;
-      expect(snap.isLoading).toBe(false);
-      expect(snap.error).toBeTruthy();
-      expect(snap.totalCount).toBe(0);
-
-      httpMock.verify();
-    }
-  ));
-
-  it('clears store', () => {
-    store.reset({
-      activityLogs: {
-        activityLogs: { data: [{ id: 'x' }], isLoading: false, error: null, totalCount: 1 },
-      },
-    } as any);
-
-    store.dispatch(new ClearActivityLogs());
-    const snap = store.snapshot().activityLogs.activityLogs;
-    expect(snap.data).toEqual([]);
-    expect(snap.totalCount).toBe(0);
+    expect(store.snapshot().activityLogs).toEqual(ACTIVITY_LOGS_STATE_DEFAULT);
   });
 });

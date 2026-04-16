@@ -7,18 +7,15 @@
   [paginator]="tableParams().paginator"
   [totalRecords]="tableParams().totalRecords"
   paginatorDropdownAppendTo="body"
-  [resizableColumns]="true"
-  [autoLayout]="true"
   [scrollable]="true"
   [sortMode]="'single'"
   [lazy]="true"
-  [lazyLoadOnInit]="true"
-  (onPage)="onPageChange($event)"
-  (onSort)="onSort($event)"
   [sortField]="sortColumn()"
   [sortOrder]="sortOrder()"
   [customSort]="true"
   [resetPageOnSort]="false"
+  (onSort)="onSort($event)"
+  (onPage)="onPageChange($event)"
 >
   <ng-template #header>
     <tr>
@@ -26,13 +23,16 @@
         {{ 'myProjects.table.columns.title' | translate }}
         <p-sortIcon field="title" />
       </th>
+
       <th>{{ 'myProjects.table.columns.contributors' | translate }}</th>
+
       <th pSortableColumn="dateModified">
         {{ 'myProjects.table.columns.modified' | translate }}
         <p-sortIcon field="dateModified" />
       </th>
     </tr>
   </ng-template>
+
   <ng-template #body let-item>
     @if (item?.id) {
       <tr (click)="onItemClick(item)">
@@ -42,9 +42,11 @@
             <span class="overflow-ellipsis">{{ item.title }}</span>
           </p>
         </td>
+
         <td>
           <osf-contributors-list-shortener [data]="item.contributors" />
         </td>
+
         <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
       </tr>
     } @else {

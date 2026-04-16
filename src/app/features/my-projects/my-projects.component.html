@@ -8,7 +8,7 @@
   />
 
   <div class="flex-column flex flex-1 w-full">
-    <p-tabs [value]="selectedTab()" (valueChange)="onTabChange(+$event)" class="flex-1">
+    <p-tabs [value]="selectedTab()" (valueChange)="onTabChange($event)" class="flex-1">
       @if (isMedium()) {
         <p-tablist class="pr-5 pl-5">
           @for (tab of tabOptions; track $index) {
@@ -27,87 +27,95 @@
           ></osf-select>
         }
 
-        <p-tabpanel [value]="tabOption.Projects" class="flex flex-column gap-4 flex-1">
-          <div class="flex flex-column gap-4 md:flex-row md:align-items-center">
+        <p-tabpanel [value]="tabOption.Projects">
+          <section class="flex flex-column gap-4 flex-1">
+            <div class="flex flex-column gap-4 md:flex-row md:align-items-center">
+              <osf-search-input
+                class="flex-1"
+                [placeholder]="'myProjects.table.searchPlaceholder' | translate"
+                [control]="searchControl"
+              />
+
+              <osf-select
+                class="flex-1"
+                [options]="projectFilterOption"
+                [(selectedValue)]="selectedProjectFilterOption"
+                [fullWidth]="true"
+                (changeValue)="onProjectFilterChange()"
+              ></osf-select>
+            </div>
+
+            <osf-my-projects-table
+              [items]="projects()"
+              [tableParams]="tableParams()"
+              [sortColumn]="sortColumn()"
+              [sortOrder]="sortOrder()"
+              [isLoading]="isLoading()"
+              (pageChange)="onPageChange($event)"
+              (sort)="onSort($event)"
+              (itemClick)="navigateToProject($event)"
+            />
+          </section>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="tabOption.Registrations">
+          <section class="flex flex-column gap-4 flex-1">
             <osf-search-input
-              class="flex-1"
               [placeholder]="'myProjects.table.searchPlaceholder' | translate"
               [control]="searchControl"
             />
 
-            <osf-select
-              class="flex-1"
-              [options]="projectFilterOption"
-              [(selectedValue)]="selectedProjectFilterOption"
-              [fullWidth]="true"
-              (changeValue)="onProjectFilterChange()"
-            ></osf-select>
-          </div>
-
-          <osf-my-projects-table
-            [items]="projects()"
-            [tableParams]="tableParams()"
-            [sortColumn]="sortColumn()"
-            [sortOrder]="sortOrder()"
-            [isLoading]="isLoading()"
-            (pageChange)="onPageChange($event)"
-            (sort)="onSort($event)"
-            (itemClick)="navigateToProject($event)"
-          />
+            <osf-my-projects-table
+              [items]="registrations()"
+              [tableParams]="tableParams()"
+              [sortColumn]="sortColumn()"
+              [sortOrder]="sortOrder()"
+              [isLoading]="isLoading()"
+              (pageChange)="onPageChange($event)"
+              (sort)="onSort($event)"
+              (itemClick)="navigateToRegistry($event)"
+            />
+          </section>
         </p-tabpanel>
 
-        <p-tabpanel [value]="tabOption.Registrations" class="flex flex-column gap-4 flex-1">
-          <osf-search-input
-            [placeholder]="'myProjects.table.searchPlaceholder' | translate"
-            [control]="searchControl"
-          />
+        <p-tabpanel [value]="tabOption.Preprints">
+          <section class="flex flex-column gap-4 flex-1">
+            <osf-search-input
+              [placeholder]="'myProjects.table.searchPlaceholder' | translate"
+              [control]="searchControl"
+            />
 
-          <osf-my-projects-table
-            [items]="registrations()"
-            [tableParams]="tableParams()"
-            [sortColumn]="sortColumn()"
-            [sortOrder]="sortOrder()"
-            [isLoading]="isLoading()"
-            (pageChange)="onPageChange($event)"
-            (sort)="onSort($event)"
-            (itemClick)="navigateToRegistry($event)"
-          />
+            <osf-my-projects-table
+              [items]="preprints()"
+              [tableParams]="tableParams()"
+              [sortColumn]="sortColumn()"
+              [sortOrder]="sortOrder()"
+              [isLoading]="isLoading()"
+              (pageChange)="onPageChange($event)"
+              (sort)="onSort($event)"
+              (itemClick)="navigateToProject($event)"
+            />
+          </section>
         </p-tabpanel>
 
-        <p-tabpanel [value]="tabOption.Preprints" class="flex flex-column gap-4 flex-1">
-          <osf-search-input
-            [placeholder]="'myProjects.table.searchPlaceholder' | translate"
-            [control]="searchControl"
-          />
+        <p-tabpanel [value]="tabOption.Bookmarks">
+          <section class="flex flex-column gap-4 flex-1">
+            <osf-search-input
+              [placeholder]="'myProjects.table.searchPlaceholder' | translate"
+              [control]="searchControl"
+            />
 
-          <osf-my-projects-table
-            [items]="preprints()"
-            [tableParams]="tableParams()"
-            [sortColumn]="sortColumn()"
-            [sortOrder]="sortOrder()"
-            [isLoading]="isLoading()"
-            (pageChange)="onPageChange($event)"
-            (sort)="onSort($event)"
-            (itemClick)="navigateToProject($event)"
-          />
-        </p-tabpanel>
-
-        <p-tabpanel [value]="tabOption.Bookmarks" class="flex flex-column gap-4 flex-1">
-          <osf-search-input
-            [placeholder]="'myProjects.table.searchPlaceholder' | translate"
-            [control]="searchControl"
-          />
-
-          <osf-my-projects-table
-            [items]="bookmarks()"
-            [tableParams]="tableParams()"
-            [sortColumn]="sortColumn()"
-            [sortOrder]="sortOrder()"
-            [isLoading]="isLoading()"
-            (pageChange)="onPageChange($event)"
-            (sort)="onSort($event)"
-            (itemClick)="navigateToProject($event)"
-          />
+            <osf-my-projects-table
+              [items]="bookmarks()"
+              [tableParams]="tableParams()"
+              [sortColumn]="sortColumn()"
+              [sortOrder]="sortOrder()"
+              [isLoading]="isLoading()"
+              (pageChange)="onPageChange($event)"
+              (sort)="onSort($event)"
+              (itemClick)="navigateToProject($event)"
+            />
+          </section>
         </p-tabpanel>
       </p-tabpanels>
     </p-tabs>

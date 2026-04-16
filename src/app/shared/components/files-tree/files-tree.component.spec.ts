@@ -1,13 +1,14 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { TreeDragDropService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { FileKind } from '@osf/shared/enums/file-kind.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -15,20 +16,20 @@ import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 import { FileFolderModel } from '@shared/models/files/file-folder.model';
 import { FileLabelModel } from '@shared/models/files/file-label.model';
 
+import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { DataciteServiceMock, DataciteServiceMockType } from '@testing/providers/datacite.service.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { FileMenuComponent } from '../file-menu/file-menu.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { FilesTreeComponent } from './files-tree.component';
 
-import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
-import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('FilesTreeComponent', () => {
   let component: FilesTreeComponent;
   let fixture: ComponentFixture<FilesTreeComponent>;
-  let dataciteMock: jest.Mocked<DataciteService>;
+  let dataciteMock: DataciteServiceMockType;
 
   const mockFolderFile: FileFolderModel = {
     ...OSF_FILE_MOCK,
@@ -41,11 +42,14 @@ describe('FilesTreeComponent', () => {
     folder: mockFolderFile,
   };
 
-  beforeEach(async () => {
-    dataciteMock = DataciteMockFactory();
-    await TestBed.configureTestingModule({
-      imports: [FilesTreeComponent, OSFTestingModule, ...MockComponents(LoadingSpinnerComponent, FileMenuComponent)],
+  beforeEach(() => {
+    dataciteMock = DataciteServiceMock.simple();
+
+    TestBed.configureTestingModule({
+      imports: [FilesTreeComponent, ...MockComponents(LoadingSpinnerComponent, FileMenuComponent)],
       providers: [
+        provideOSFCore(),
+        provideRouter([]),
         provideMockStore({
           signals: [{ selector: CurrentResourceSelectors.getCurrentResource, value: signal(null) }],
         }),
@@ -53,10 +57,10 @@ describe('FilesTreeComponent', () => {
         MockProvider(FilesService),
         MockProvider(ToastService),
         MockProvider(CustomConfirmationService),
-        MockProvider(DialogService),
+        MockProvider(CustomDialogService),
         TreeDragDropService,
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(FilesTreeComponent);
     component = fixture.componentInstance;
@@ -79,7 +83,7 @@ describe('FilesTreeComponent', () => {
   });
 
   it('should log Download', () => {
-    const mockOpen = jest.fn().mockReturnValue({ focus: jest.fn() });
+    const mockOpen = vi.fn().mockReturnValue({ focus: vi.fn() });
     window.open = mockOpen;
 
     component.downloadFileOrFolder(OSF_FILE_MOCK as any);

@@ -15,37 +15,34 @@ import {
   FetchResources,
   GlobalSearchSelectors,
   LoadFilterOptions,
-  LoadFilterOptionsAndSetValues,
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
-  SetDefaultFilterValue,
   UpdateSelectedFilterOption,
 } from '@osf/shared/stores/global-search';
 
 @Component({
   selector: 'osf-institution-resource-table-filters',
-  imports: [Button, Card, FilterChipsComponent, TranslatePipe, SearchFiltersComponent],
+  imports: [Button, Card, FilterChipsComponent, SearchFiltersComponent, TranslatePipe],
   templateUrl: './filters-section.component.html',
   styleUrl: './filters-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FiltersSectionComponent {
-  private actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     loadFilterOptions: LoadFilterOptions,
-    loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
     loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
     loadMoreFilterOptions: LoadMoreFilterOptions,
     updateSelectedFilterOption: UpdateSelectedFilterOption,
     clearFilterSearchResults: ClearFilterSearchResults,
-    setDefaultFilterValue: SetDefaultFilterValue,
     fetchResources: FetchResources,
   });
 
-  filtersVisible = model<boolean>();
   filters = select(GlobalSearchSelectors.getFilters);
   selectedFilterOptions = select(GlobalSearchSelectors.getSelectedOptions);
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
+
+  filtersVisible = model<boolean>();
 
   onSelectedFilterOptionsChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption[] }): void {
     this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);

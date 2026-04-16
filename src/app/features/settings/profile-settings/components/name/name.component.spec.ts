@@ -1,114 +1,167 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpdateProfileSettingsUser, UserSelectors } from '@core/store/user';
+import { UpdateProfileSettingsUser, UserSelectors } from '@osf/core/store/user';
+import { UserModel } from '@osf/shared/models/user/user.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
+
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomConfirmationServiceMock,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { CitationPreviewComponent } from '../citation-preview/citation-preview.component';
 import { NameFormComponent } from '../name-form/name-form.component';
 
 import { NameComponent } from './name.component';
 
-import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
-import { MOCK_USER } from '@testing/mocks/data.mock';
-
 describe('NameComponent', () => {
   let component: NameComponent;
   let fixture: ComponentFixture<NameComponent>;
-  let customConfirmationService: CustomConfirmationService;
+  let store: Store;
+  let loaderService: LoaderServiceMock;
+  let confirmationService: CustomConfirmationServiceMockType;
+  let toastService: ToastServiceMockType;
 
-  const mockStore = {
-    selectSignal: jest.fn().mockImplementation((selector) => {
-      if (selector === UserSelectors.getUserNames) {
-        return () => MOCK_USER;
-      }
-      return () => null;
-    }),
-    dispatch: jest.fn().mockReturnValue(of({})),
-  };
+  const initialUser: Partial<UserModel> = MOCK_USER;
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
+  beforeEach(() => {
+    loaderService = new LoaderServiceMock();
+    confirmationService = CustomConfirmationServiceMock.simple();
+    toastService = ToastServiceMock.simple();
 
-    await TestBed.configureTestingModule({
-      imports: [NameComponent, MockPipe(TranslatePipe), ...MockComponents(CitationPreviewComponent, NameFormComponent)],
+    TestBed.configureTestingModule({
+      imports: [NameComponent, ...MockComponents(CitationPreviewComponent, NameFormComponent)],
       providers: [
-        MockCustomConfirmationServiceProvider,
-        MockProvider(ToastService),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        MockProvider(TranslatePipe),
-        MockProvider(Store, mockStore),
+        provideOSFCore(),
+        MockProvider(LoaderService, loaderService),
+        MockProvider(CustomConfirmationService, confirmationService),
+        MockProvider(ToastService, toastService),
+        provideMockStore({
+          signals: [{ selector: UserSelectors.getUserNames, value: initialUser }],
+        }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(NameComponent);
     component = fixture.componentInstance;
-    customConfirmationService = TestBed.inject(CustomConfirmationService);
     fixture.detectChanges();
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not proceed when form is invalid', () => {
-    component.form.get('fullName')?.setValue('');
-    component.form.get('fullName')?.setErrors({ required: true });
-
-    component.saveChanges();
-
-    expect(mockStore.dispatch).not.toHaveBeenCalled();
-  });
-
-  it('should dispatch updateProfileSettingsUser action with correct data', () => {
-    const formData = {
+  it('should initialize form from user selector', () => {
+    expect(component.form.getRawValue()).toEqual({
       fullName: 'John Doe',
       givenName: 'John',
-      middleNames: 'Alexander',
+      middleNames: '',
       familyName: 'Doe',
-      suffix: 'Jr.',
-    };
+      suffix: '',
+    });
+  });
 
-    component.form.patchValue(formData);
+  it('should update preview user when form values change', () => {
+    component.form.patchValue({
+      fullName: 'Jane Doe',
+      suffix: 'III',
+    });
+
+    expect(component.previewUser()).toEqual({
+      ...initialUser,
+      fullName: 'Jane Doe',
+      suffix: 'III',
+    });
+  });
+
+  it('should return false for hasFormChanges when form matches initial user', () => {
+    expect(component.hasFormChanges()).toBe(false);
+  });
+
+  it('should return true for hasFormChanges when form value changes', () => {
+    component.form.patchValue({
+      givenName: 'Johnny',
+    });
+
+    expect(component.hasFormChanges()).toBe(true);
+  });
+
+  it('should not save when form is invalid', () => {
+    (store.dispatch as Mock).mockClear();
+    component.form.patchValue({
+      fullName: '   ',
+    });
 
     component.saveChanges();
 
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new UpdateProfileSettingsUser(formData));
+    expect(loaderService.show).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateProfileSettingsUser));
   });
 
-  it('should reset form to current user data', () => {
+  it('should save changes and show success toast when form is valid', () => {
+    (store.dispatch as Mock).mockClear();
     component.form.patchValue({
-      fullName: 'Changed Name',
-      givenName: 'Changed',
-      middleNames: 'Changed',
-      familyName: 'Changed',
-      suffix: 'Changed',
+      fullName: 'Jane Doe',
+      givenName: 'Jane',
+      middleNames: 'M',
+      familyName: 'Doe',
+      suffix: 'Sr',
     });
 
-    jest.spyOn(customConfirmationService, 'confirmDelete').mockImplementation(({ onConfirm }) => {
-      onConfirm();
+    component.saveChanges();
+
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateProfileSettingsUser({
+        fullName: 'Jane Doe',
+        givenName: 'Jane',
+        middleNames: 'M',
+        familyName: 'Doe',
+        suffix: 'Sr',
+      })
+    );
+    expect(loaderService.hide).toHaveBeenCalled();
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.profileSettings.name.successUpdate');
+  });
+
+  it('should skip discard confirmation when there are no form changes', () => {
+    component.discardChanges();
+
+    expect(confirmationService.confirmDelete).not.toHaveBeenCalled();
+  });
+
+  it('should reset form and show success toast when discard is confirmed', () => {
+    component.form.patchValue({
+      fullName: 'Changed Name',
     });
 
     component.discardChanges();
 
-    expect(component.form.get('fullName')?.value).toBe(MOCK_USER.fullName);
-    expect(component.form.get('givenName')?.value).toBe(MOCK_USER.givenName);
-    expect(component.form.get('middleNames')?.value).toBe(MOCK_USER.middleNames);
-    expect(component.form.get('familyName')?.value).toBe(MOCK_USER.familyName);
-    expect(component.form.get('suffix')?.value).toBe(MOCK_USER.suffix);
+    expect(confirmationService.confirmDelete).toHaveBeenCalled();
+    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
+    onConfirm();
+
+    expect(component.form.getRawValue()).toEqual({
+      fullName: 'John Doe',
+      givenName: 'John',
+      middleNames: '',
+      familyName: 'Doe',
+      suffix: '',
+    });
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.profileSettings.changesDiscarded');
   });
 });

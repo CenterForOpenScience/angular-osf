@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { MockProvider } from 'ng-mocks';
+
 import { BehaviorSubject } from 'rxjs';
 
 import { signal, WritableSignal } from '@angular/core';
@@ -9,9 +11,10 @@ import { BannerModel } from '@core/components/osf-banners/models/banner.model';
 import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
 import { BannersSelector, GetCurrentScheduledBanner } from '@osf/shared/stores/banners';
 
-import { ScheduledBannerComponent } from './scheduled-banner.component';
-
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ScheduledBannerComponent } from './scheduled-banner.component';
 
 describe('Component: Scheduled Banner', () => {
   let fixture: ComponentFixture<ScheduledBannerComponent>;
@@ -27,16 +30,12 @@ describe('Component: Scheduled Banner', () => {
     TestBed.configureTestingModule({
       imports: [ScheduledBannerComponent],
       providers: [
-        {
-          provide: IS_XSMALL,
-          useValue: isMobile$,
-        },
+        provideOSFCore(),
+        MockProvider(IS_XSMALL, isMobile$),
+        provideMockStore({
+          signals: [{ selector: BannersSelector.getCurrentBanner, value: currentBannerSignal }],
+        }),
       ],
-    }).overrideProvider(Store, {
-      useValue: provideMockStore({
-        signals: [{ selector: BannersSelector.getCurrentBanner, value: currentBannerSignal }],
-        actions: [{ action: new GetCurrentScheduledBanner(), value: true }],
-      }).useValue,
     });
 
     fixture = TestBed.createComponent(ScheduledBannerComponent);
@@ -46,16 +45,12 @@ describe('Component: Scheduled Banner', () => {
     store = TestBed.inject(Store);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should create the component', () => {
     expect(component).toBeInstanceOf(ScheduledBannerComponent);
   });
 
   it('should dispatch FetchCurrentScheduledBanner on init', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
     component.ngOnInit();
     expect(dispatchSpy).toHaveBeenCalledWith(new GetCurrentScheduledBanner());
   });

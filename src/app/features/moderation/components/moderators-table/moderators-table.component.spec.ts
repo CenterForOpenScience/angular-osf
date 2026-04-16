@@ -1,18 +1,19 @@
 import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { TableParameters } from '@shared/models/table-parameters.model';
 
+import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+
 import { ModeratorModel } from '../../models';
 
 import { ModeratorsTableComponent } from './moderators-table.component';
-
-import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 
 describe('ModeratorsTableComponent', () => {
   let component: ModeratorsTableComponent;
@@ -31,13 +32,13 @@ describe('ModeratorsTableComponent', () => {
     defaultSortColumn: null,
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [ModeratorsTableComponent, OSFTestingModule, MockComponent(SelectComponent)],
-      providers: [MockProvider(CustomDialogService, mockCustomDialogService)],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [ModeratorsTableComponent, MockComponent(SelectComponent)],
+      providers: [provideOSFCore(), provideRouter([]), MockProvider(CustomDialogService, mockCustomDialogService)],
+    });
 
     fixture = TestBed.createComponent(ModeratorsTableComponent);
     component = fixture.componentInstance;
@@ -69,7 +70,7 @@ describe('ModeratorsTableComponent', () => {
   });
 
   it('should emit update event when updatePermission is called', () => {
-    jest.spyOn(component.update, 'emit');
+    vi.spyOn(component.update, 'emit');
     const moderator = mockModerators[0];
 
     component.updatePermission(moderator);
@@ -78,7 +79,7 @@ describe('ModeratorsTableComponent', () => {
   });
 
   it('should emit remove event when removeModerator is called', () => {
-    jest.spyOn(component.remove, 'emit');
+    vi.spyOn(component.remove, 'emit');
     const moderator = mockModerators[0];
 
     component.removeModerator(moderator);
@@ -98,7 +99,7 @@ describe('ModeratorsTableComponent', () => {
 
   it('should open education history dialog', () => {
     const moderator = mockModerators[0];
-    jest.spyOn(component.customDialogService, 'open');
+    vi.spyOn(component.customDialogService, 'open');
 
     component.openEducationHistory(moderator);
 
@@ -107,7 +108,7 @@ describe('ModeratorsTableComponent', () => {
 
   it('should open employment history dialog', () => {
     const moderator = mockModerators[0];
-    jest.spyOn(component.customDialogService, 'open');
+    vi.spyOn(component.customDialogService, 'open');
 
     component.openEmploymentHistory(moderator);
 

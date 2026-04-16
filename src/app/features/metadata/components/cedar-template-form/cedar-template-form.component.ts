@@ -6,7 +6,6 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { map, of } from 'rxjs';
 
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -36,7 +35,7 @@ import {
 
 @Component({
   selector: 'osf-cedar-template-form',
-  imports: [CommonModule, Button, TranslatePipe, Tooltip, Menu],
+  imports: [Button, TranslatePipe, Tooltip, Menu],
   templateUrl: './cedar-template-form.component.html',
   styleUrl: './cedar-template-form.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

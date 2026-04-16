@@ -1,16 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { TermsOfUseComponent } from './terms-of-use.component';
 
 describe('TermsOfUseComponent', () => {
   let component: TermsOfUseComponent;
   let fixture: ComponentFixture<TermsOfUseComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [TermsOfUseComponent],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(TermsOfUseComponent);
     component = fixture.componentInstance;

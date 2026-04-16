@@ -4,11 +4,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ComponentCheckboxItemModel } from '@osf/shared/models/component-checkbox-item.model';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { ComponentCheckboxItemComponent } from '../component-checkbox-item/component-checkbox-item.component';
 
 import { ComponentsSelectionListComponent } from './components-selection-list.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ComponentsSelectionListComponent', () => {
   let component: ComponentsSelectionListComponent;
@@ -20,10 +20,11 @@ describe('ComponentsSelectionListComponent', () => {
     { id: 'comp-3', title: 'Component 3', disabled: true, checked: true },
   ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ComponentsSelectionListComponent, OSFTestingModule, MockComponent(ComponentCheckboxItemComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ComponentsSelectionListComponent, MockComponent(ComponentCheckboxItemComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ComponentsSelectionListComponent);
     component = fixture.componentInstance;

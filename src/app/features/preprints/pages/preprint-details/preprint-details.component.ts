@@ -38,19 +38,17 @@ import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 
-import {
-  AdditionalInfoComponent,
-  GeneralInformationComponent,
-  ModerationStatusBannerComponent,
-  PreprintFileSectionComponent,
-  PreprintMakeDecisionComponent,
-  PreprintMetricsInfoComponent,
-  PreprintTombstoneComponent,
-  PreprintWarningBannerComponent,
-  PreprintWithdrawDialogComponent,
-  ShareAndDownloadComponent,
-  StatusBannerComponent,
-} from '../../components';
+import { AdditionalInfoComponent } from '../../components/preprint-details/additional-info/additional-info.component';
+import { GeneralInformationComponent } from '../../components/preprint-details/general-information/general-information.component';
+import { ModerationStatusBannerComponent } from '../../components/preprint-details/moderation-status-banner/moderation-status-banner.component';
+import { PreprintFileSectionComponent } from '../../components/preprint-details/preprint-file-section/preprint-file-section.component';
+import { PreprintMakeDecisionComponent } from '../../components/preprint-details/preprint-make-decision/preprint-make-decision.component';
+import { PreprintMetricsInfoComponent } from '../../components/preprint-details/preprint-metrics-info/preprint-metrics-info.component';
+import { PreprintTombstoneComponent } from '../../components/preprint-details/preprint-tombstone/preprint-tombstone.component';
+import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
+import { PreprintWithdrawDialogComponent } from '../../components/preprint-details/preprint-withdraw-dialog/preprint-withdraw-dialog.component';
+import { ShareAndDownloadComponent } from '../../components/preprint-details/share-and-download/share-and-download.component';
+import { StatusBannerComponent } from '../../components/preprint-details/status-banner/status-banner.component';
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import {
   FetchPreprintDetails,
@@ -385,7 +383,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       next: () => {
         this.checkAndSetVersionToTheUrl();
 
-        if (this.preprint()!.currentUserPermissions.length > 0 || this.moderationMode()) {
+        if ((this.preprint()?.currentUserPermissions?.length ?? 0) > 0 || this.moderationMode()) {
           this.actions.fetchPreprintReviewActions();
 
           if (this.preprintWithdrawableState() && (this.hasAdminAccess() || this.moderationMode())) {

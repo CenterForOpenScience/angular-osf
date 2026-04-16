@@ -17,13 +17,13 @@ import {
   UpdateResourceInstitutions,
 } from '@shared/stores/institutions';
 
-import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions.component';
-
 import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+
+import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions.component';
 
 describe('PreprintsAffiliatedInstitutionsComponent', () => {
   let component: PreprintsAffiliatedInstitutionsComponent;

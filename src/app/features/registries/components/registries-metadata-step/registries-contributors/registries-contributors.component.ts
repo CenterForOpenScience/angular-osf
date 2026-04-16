@@ -22,11 +22,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 
-import {
-  AddContributorDialogComponent,
-  AddUnregisteredContributorDialogComponent,
-  ContributorsTableComponent,
-} from '@osf/shared/components/contributors';
+import { AddContributorDialogComponent } from '@osf/shared/components/contributors/add-contributor-dialog/add-contributor-dialog.component';
+import { AddUnregisteredContributorDialogComponent } from '@osf/shared/components/contributors/add-unregistered-contributor-dialog/add-unregistered-contributor-dialog.component';
+import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';

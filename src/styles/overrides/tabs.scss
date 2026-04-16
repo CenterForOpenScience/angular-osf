@@ -1,5 +1,8 @@
-.p-tablist-tab-list {
+.p-tablist {
   --p-tabs-tablist-background: transparent;
+}
+
+.p-tablist-tab-list {
   --p-tabs-tablist-border-width: 0;
 
   .p-tablist-active-bar {

@@ -11,21 +11,21 @@ import { RegistrationCardComponent } from '@osf/shared/components/registration-c
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
-import { RegistrationsComponent } from './registrations.component';
-import { GetRegistrations, RegistrationsSelectors } from './store';
-
 import { MOCK_REGISTRATION } from '@testing/mocks/registration.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistrationsComponent } from './registrations.component';
+import { GetRegistrations, RegistrationsSelectors } from './store';
 
 describe('RegistrationsComponent', () => {
   let component: RegistrationsComponent;
   let fixture: ComponentFixture<RegistrationsComponent>;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let storeDispatchSpy: jest.SpyInstance;
+  let storeDispatchSpy: unknown;
 
   const mockProjectId = 'project-123';
   const mockRegistrations = [MOCK_REGISTRATION];
@@ -33,7 +33,7 @@ describe('RegistrationsComponent', () => {
     defaultProvider: 'test-provider',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     routerMock = RouterMockBuilder.create().build();
     activatedRouteMock = ActivatedRouteMockBuilder.create().withParams({ id: mockProjectId }).build();
 
@@ -46,12 +46,11 @@ describe('RegistrationsComponent', () => {
       ],
     });
 
-    storeDispatchSpy = jest.spyOn(mockStore.useValue, 'dispatch');
+    storeDispatchSpy = vi.spyOn(mockStore.useValue, 'dispatch');
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         RegistrationsComponent,
-        OSFTestingModule,
         ...MockComponents(
           RegistrationCardComponent,
           SubHeaderComponent,
@@ -60,12 +59,13 @@ describe('RegistrationsComponent', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
         MockProvider(ENVIRONMENT, mockEnvironment),
         mockStore,
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RegistrationsComponent);
     component = fixture.componentInstance;
@@ -94,7 +94,7 @@ describe('RegistrationsComponent', () => {
   });
 
   it('should navigate to registries route when addRegistration is called', () => {
-    const navigateSpy = jest.spyOn(routerMock, 'navigate');
+    const navigateSpy = vi.spyOn(routerMock, 'navigate');
 
     component.addRegistration();
 

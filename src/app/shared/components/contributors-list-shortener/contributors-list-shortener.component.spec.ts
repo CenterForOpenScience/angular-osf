@@ -2,6 +2,8 @@ import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { ContributorsListShortenerComponent } from './contributors-list-shortener.component';
 
 describe('ContributorsListShortenerComponent', () => {
@@ -9,10 +11,11 @@ describe('ContributorsListShortenerComponent', () => {
   let fixture: ComponentFixture<ContributorsListShortenerComponent>;
   let componentRef: ComponentRef<ContributorsListShortenerComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [ContributorsListShortenerComponent],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ContributorsListShortenerComponent);
     component = fixture.componentInstance;

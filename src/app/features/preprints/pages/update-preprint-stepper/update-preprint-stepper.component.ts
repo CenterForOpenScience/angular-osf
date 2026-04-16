@@ -28,14 +28,12 @@ import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { CanDeactivateComponent } from '@shared/models/can-deactivate.interface';
 import { StepOption } from '@shared/models/step-option.model';
 
-import {
-  AuthorAssertionsStepComponent,
-  FileStepComponent,
-  PreprintsMetadataStepComponent,
-  ReviewStepComponent,
-  SupplementsStepComponent,
-  TitleAndAbstractStepComponent,
-} from '../../components';
+import { AuthorAssertionsStepComponent } from '../../components/stepper/author-assertion-step/author-assertions-step.component';
+import { FileStepComponent } from '../../components/stepper/file-step/file-step.component';
+import { PreprintsMetadataStepComponent } from '../../components/stepper/preprints-metadata-step/preprints-metadata-step.component';
+import { ReviewStepComponent } from '../../components/stepper/review-step/review-step.component';
+import { SupplementsStepComponent } from '../../components/stepper/supplements-step/supplements-step.component';
+import { TitleAndAbstractStepComponent } from '../../components/stepper/title-and-abstract-step/title-and-abstract-step.component';
 import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';

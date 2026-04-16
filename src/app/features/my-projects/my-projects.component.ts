@@ -147,12 +147,16 @@ export class MyProjectsComponent implements OnInit {
     }
   }
 
-  onTabChange(tabIndex: number): void {
-    this.actions.clearMyProjects();
-    this.selectedTab.set(tabIndex);
-    this.selectedProjectFilterOption.set(PROJECT_FILTER_OPTIONS[0].value);
-    const current = this.queryService.getRawParams();
-    this.queryService.handleTabSwitch(current, this.selectedTab());
+  onTabChange(event: string | number | undefined): void {
+    const value = Number(event);
+
+    if (!isNaN(value)) {
+      this.actions.clearMyProjects();
+      this.selectedTab.set(value);
+      this.selectedProjectFilterOption.set(PROJECT_FILTER_OPTIONS[0].value);
+      const current = this.queryService.getRawParams();
+      this.queryService.handleTabSwitch(current, this.selectedTab());
+    }
   }
 
   onProjectFilterChange(): void {

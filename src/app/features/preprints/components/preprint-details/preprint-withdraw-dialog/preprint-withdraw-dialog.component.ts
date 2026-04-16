@@ -91,7 +91,7 @@ export class PreprintWithdrawDialogComponent implements OnInit {
       .withdrawPreprint(this.preprint.id, withdrawalJustification)
       .pipe(finalize(() => this.withdrawRequestInProgress.set(false)))
       .subscribe({
-        complete: () => this.dialogRef.close(true),
+        next: () => this.dialogRef.close(true),
       });
   }
 

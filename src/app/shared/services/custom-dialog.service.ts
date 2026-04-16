@@ -16,6 +16,7 @@ export class CustomDialogService {
     closeOnEscape: true,
     modal: true,
     closable: true,
+    draggable: false,
     breakpoints: { '768px': '95vw' },
   };
 
@@ -27,6 +28,13 @@ export class CustomDialogService {
       header: config?.header ? this.translateService.instant(config.header) : undefined,
     };
 
-    return this.dialogService.open(component, finalConfig);
+    const dialogRef = this.dialogService.open(component, finalConfig);
+
+    if (!dialogRef) {
+      const errorMessage = this.translateService.instant('common.errorMessages.dialogOpenError');
+      throw new Error(errorMessage);
+    }
+
+    return dialogRef;
   }
 }

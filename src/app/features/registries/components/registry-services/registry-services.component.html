@@ -16,11 +16,8 @@
   </section>
 
   <div class="flex justify-content-center">
-    <p-button
-      class="contact-us-button w-full sm:w-auto"
-      styleClass="w-full sm:w-auto"
-      (onClick)="openEmail()"
-      [label]="'registries.services.contactUs' | translate"
-    ></p-button>
+    <a class="contact-us-button p-button font-bold no-underline w-full sm:w-auto" href="mailto:contact@osf.io">
+      {{ 'registries.services.contactUs' | translate }}
+    </a>
   </div>
 </section>

@@ -1,312 +1,186 @@
 import { Store } from '@ngxs/store';
 
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeleteProject, SettingsSelectors } from '@osf/features/project/settings/store';
 import { RegistrySelectors } from '@osf/features/registry/store/registry';
-import { ScientistsNames } from '@osf/shared/constants/scientists.const';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
+import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { ProjectOverviewModel } from '../../models';
 import { GetComponents, ProjectOverviewSelectors } from '../../store';
 
 import { DeleteComponentDialogComponent } from './delete-component-dialog.component';
 
-import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
-const mockComponentsWithAdmin = [
-  { id: 'comp-1', title: 'Component 1', isPublic: true, permissions: [UserPermissions.Admin] },
-  { id: 'comp-2', title: 'Component 2', isPublic: false, permissions: [UserPermissions.Admin] },
-];
-
-const mockComponentsWithoutAdmin = [
-  { id: 'comp-1', title: 'Component 1', isPublic: true, permissions: [UserPermissions.Read] },
-];
+interface SetupOverrides extends BaseSetupOverrides {
+  resourceType?: ResourceType;
+  isForksContext?: boolean;
+}
 
 describe('DeleteComponentDialogComponent', () => {
   let component: DeleteComponentDialogComponent;
   let fixture: ComponentFixture<DeleteComponentDialogComponent>;
   let store: Store;
-  let dialogConfig: DynamicDialogConfig;
+  let dialogRef: DynamicDialogRef;
+  let toastService: ToastServiceMockType;
 
-  const mockProject = { ...MOCK_NODE_WITH_ADMIN, id: 'proj-1' };
+  const mockProject: ProjectOverviewModel = {
+    ...MOCK_PROJECT_OVERVIEW,
+    id: 'project-1',
+  };
 
-  beforeEach(async () => {
-    dialogConfig = { data: { resourceType: ResourceType.Project } };
+  const adminComponents: NodeShortInfoModel[] = [
+    {
+      id: 'c1',
+      title: 'Component 1',
+      isPublic: true,
+      permissions: [UserPermissions.Admin],
+    },
+    {
+      id: 'c2',
+      title: 'Component 2',
+      isPublic: true,
+      permissions: [UserPermissions.Admin, UserPermissions.Write],
+    },
+  ];
 
-    await TestBed.configureTestingModule({
-      imports: [DeleteComponentDialogComponent, OSFTestingModule],
+  const defaultSignals: SignalOverride[] = [
+    { selector: ProjectOverviewSelectors.getProject, value: mockProject },
+    { selector: RegistrySelectors.getRegistry, value: null },
+    { selector: SettingsSelectors.isSettingsSubmitting, value: false },
+    { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
+    { selector: CurrentResourceSelectors.getResourceWithChildren, value: adminComponents },
+  ];
+
+  function setup(overrides: SetupOverrides = {}) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
+    toastService = ToastServiceMock.simple();
+
+    TestBed.configureTestingModule({
+      imports: [DeleteComponentDialogComponent],
       providers: [
-        provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
-            { selector: RegistrySelectors.getRegistry, value: null },
-            { selector: SettingsSelectors.isSettingsSubmitting, value: false },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: mockComponentsWithAdmin },
-          ],
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, {
+          data: {
+            resourceType: overrides.resourceType ?? ResourceType.Project,
+            isForksContext: overrides.isForksContext ?? false,
+          },
         }),
-        { provide: DynamicDialogConfig, useValue: dialogConfig },
+        MockProvider(ToastService, toastService),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(DeleteComponentDialogComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(Store);
-    (store.dispatch as jest.Mock).mockReturnValue(of(void 0));
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should return store values from selectors', () => {
-    expect(component.project()).toEqual(mockProject);
-    expect(component.registration()).toBeNull();
-    expect(component.isSubmitting()).toBe(false);
-    expect(component.isLoading()).toBe(false);
-    expect(component.components()).toEqual(mockComponentsWithAdmin);
+  it('should compute current resource from project when resource type is project', () => {
+    setup({ resourceType: ResourceType.Project });
+
+    expect(component.currentResource()?.id).toBe('project-1');
   });
 
-  it('should have selectedScientist as one of ScientistsNames', () => {
-    expect(ScientistsNames).toContain(component.selectedScientist());
+  it('should return false for hasAdminAccessForAllComponents when components are empty', () => {
+    setup({
+      selectorOverrides: [{ selector: CurrentResourceSelectors.getResourceWithChildren, value: [] }],
+    });
+
+    expect(component.hasAdminAccessForAllComponents()).toBe(false);
   });
 
-  it('should compute currentResource as project when resourceType is Project', () => {
-    expect(component.currentResource()).toEqual(mockProject);
-  });
+  it('should return true for hasAdminAccessForAllComponents when all components have admin access', () => {
+    setup();
 
-  it('should compute hasAdminAccessForAllComponents true when all components have Admin', () => {
     expect(component.hasAdminAccessForAllComponents()).toBe(true);
   });
 
-  it('should compute hasSubComponents true when more than one component', () => {
+  it('should return true for hasSubComponents when there are multiple components', () => {
+    setup();
+
     expect(component.hasSubComponents()).toBe(true);
   });
 
-  it('should return isInputValid true when userInput matches selectedScientist', () => {
-    const scientist = component.selectedScientist();
-    component.onInputChange(scientist);
-    expect(component.isInputValid()).toBe(true);
-  });
+  it('should return false for hasSubComponents when there is one component', () => {
+    setup({
+      selectorOverrides: [{ selector: CurrentResourceSelectors.getResourceWithChildren, value: [adminComponents[0]] }],
+    });
 
-  it('should return isInputValid false when userInput does not match', () => {
-    component.onInputChange('wrong');
-    expect(component.isInputValid()).toBe(false);
-  });
-
-  it('should set userInput on onInputChange', () => {
-    component.onInputChange('test');
-    expect(component.userInput()).toBe('test');
-  });
-
-  it('should dispatch DeleteProject with components and on success close, getComponents, showSuccess', () => {
-    const scientist = component.selectedScientist();
-    component.onInputChange(scientist);
-    (store.dispatch as jest.Mock).mockClear();
-
-    component.handleDeleteComponent();
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(DeleteProject));
-    const deleteCall = (store.dispatch as jest.Mock).mock.calls.find((c) => c[0] instanceof DeleteProject);
-    expect(deleteCall[0].projects).toEqual(mockComponentsWithAdmin);
-    expect(component.dialogRef.close).toHaveBeenCalledWith({ success: true });
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetComponents));
-    expect(TestBed.inject(ToastService).showSuccess).toHaveBeenCalledWith(
-      'project.overview.dialog.toast.deleteComponent.success'
-    );
-  });
-});
-
-describe('DeleteComponentDialogComponent when not all components have Admin', () => {
-  let component: DeleteComponentDialogComponent;
-  let fixture: ComponentFixture<DeleteComponentDialogComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeleteComponentDialogComponent, OSFTestingModule],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: { ...MOCK_NODE_WITH_ADMIN, id: 'proj-1' } },
-            { selector: RegistrySelectors.getRegistry, value: null },
-            { selector: SettingsSelectors.isSettingsSubmitting, value: false },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: mockComponentsWithoutAdmin },
-          ],
-        }),
-        { provide: DynamicDialogConfig, useValue: { data: { resourceType: ResourceType.Project } } },
-      ],
-    }).compileComponents();
-    fixture = TestBed.createComponent(DeleteComponentDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should compute hasAdminAccessForAllComponents false', () => {
-    expect(component.hasAdminAccessForAllComponents()).toBe(false);
-  });
-});
-
-describe('DeleteComponentDialogComponent when single component', () => {
-  let component: DeleteComponentDialogComponent;
-  let fixture: ComponentFixture<DeleteComponentDialogComponent>;
-
-  const singleComponent = [
-    { id: 'comp-1', title: 'Component 1', isPublic: true, permissions: [UserPermissions.Admin] },
-  ];
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeleteComponentDialogComponent, OSFTestingModule],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: { ...MOCK_NODE_WITH_ADMIN, id: 'proj-1' } },
-            { selector: RegistrySelectors.getRegistry, value: null },
-            { selector: SettingsSelectors.isSettingsSubmitting, value: false },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: singleComponent },
-          ],
-        }),
-        { provide: DynamicDialogConfig, useValue: { data: { resourceType: ResourceType.Project } } },
-      ],
-    }).compileComponents();
-    fixture = TestBed.createComponent(DeleteComponentDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should compute hasSubComponents false', () => {
     expect(component.hasSubComponents()).toBe(false);
   });
-});
 
-describe('DeleteComponentDialogComponent when no components', () => {
-  let component: DeleteComponentDialogComponent;
-  let fixture: ComponentFixture<DeleteComponentDialogComponent>;
-  let store: Store;
+  it('should update userInput on input change and validate exact match', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    setup();
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeleteComponentDialogComponent, OSFTestingModule],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: { ...MOCK_NODE_WITH_ADMIN, id: 'proj-1' } },
-            { selector: RegistrySelectors.getRegistry, value: null },
-            { selector: SettingsSelectors.isSettingsSubmitting, value: false },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: [] },
-          ],
-        }),
-        { provide: DynamicDialogConfig, useValue: { data: { resourceType: ResourceType.Project } } },
-      ],
-    }).compileComponents();
-    fixture = TestBed.createComponent(DeleteComponentDialogComponent);
-    component = fixture.componentInstance;
-    store = TestBed.inject(Store);
-    (store.dispatch as jest.Mock).mockClear();
-    fixture.detectChanges();
+    component.onInputChange(component.selectedScientist());
+
+    expect(component.userInput()).toBe(component.selectedScientist());
+    expect(component.isInputValid()).toBe(true);
+    vi.restoreAllMocks();
   });
 
-  it('should not dispatch when handleDeleteComponent', () => {
-    component.handleDeleteComponent();
-    expect(store.dispatch).not.toHaveBeenCalled();
-  });
-});
-
-describe('DeleteComponentDialogComponent when resourceType is Registration', () => {
-  let component: DeleteComponentDialogComponent;
-  let fixture: ComponentFixture<DeleteComponentDialogComponent>;
-
-  const mockRegistration = { ...MOCK_NODE_WITH_ADMIN, id: 'reg-1' };
-  const mockComponentsWithAdmin = [
-    { id: 'comp-1', title: 'Component 1', isPublic: true, permissions: [UserPermissions.Admin] },
-  ];
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeleteComponentDialogComponent, OSFTestingModule],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: null },
-            { selector: RegistrySelectors.getRegistry, value: mockRegistration },
-            { selector: SettingsSelectors.isSettingsSubmitting, value: false },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: mockComponentsWithAdmin },
-          ],
-        }),
-        { provide: DynamicDialogConfig, useValue: { data: { resourceType: ResourceType.Registration } } },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(DeleteComponentDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should compute currentResource as registration', () => {
-    expect(component.currentResource()).toEqual(mockRegistration);
-  });
-});
-
-describe('DeleteComponentDialogComponent isForksContext', () => {
-  let component: DeleteComponentDialogComponent;
-  let fixture: ComponentFixture<DeleteComponentDialogComponent>;
-  let store: Store;
-
-  const mockProject = { ...MOCK_NODE_WITH_ADMIN, id: 'proj-1' };
-  const mockComponentsWithAdmin = [
-    { id: 'comp-1', title: 'Component 1', isPublic: true, permissions: [UserPermissions.Admin] },
-  ];
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeleteComponentDialogComponent, OSFTestingModule],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
-            { selector: RegistrySelectors.getRegistry, value: null },
-            { selector: SettingsSelectors.isSettingsSubmitting, value: false },
-            { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceWithChildren, value: mockComponentsWithAdmin },
-          ],
-        }),
-        {
-          provide: DynamicDialogConfig,
-          useValue: { data: { resourceType: ResourceType.Project, isForksContext: true } },
-        },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(DeleteComponentDialogComponent);
-    component = fixture.componentInstance;
-    store = TestBed.inject(Store);
-    (store.dispatch as jest.Mock).mockReturnValue(of(void 0));
-    fixture.detectChanges();
-  });
-
-  it('should not dispatch GetComponents when isForksContext', () => {
-    const scientist = component.selectedScientist();
-    component.onInputChange(scientist);
-    (store.dispatch as jest.Mock).mockClear();
+  it('should not dispatch delete action when there are no components', () => {
+    setup({
+      selectorOverrides: [{ selector: CurrentResourceSelectors.getResourceWithChildren, value: [] }],
+    });
+    (store.dispatch as Mock).mockClear();
 
     component.handleDeleteComponent();
 
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(DeleteProject));
-    const getComponentsCalls = (store.dispatch as jest.Mock).mock.calls.filter((c) => c[0] instanceof GetComponents);
-    expect(getComponentsCalls.length).toBe(0);
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(DeleteProject));
+  });
+
+  it('should delete components, refresh list, close dialog and show success when not forks context', () => {
+    setup({ isForksContext: false });
+    (store.dispatch as Mock).mockClear();
+
+    component.handleDeleteComponent();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteProject(adminComponents));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetComponents('project-1'));
+    expect(dialogRef.close).toHaveBeenCalledWith({ success: true });
+    expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.deleteComponent.success');
+  });
+
+  it('should skip components refresh after delete in forks context', () => {
+    setup({ isForksContext: true });
+    (store.dispatch as Mock).mockClear();
+
+    component.handleDeleteComponent();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteProject(adminComponents));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetComponents));
+    expect(dialogRef.close).toHaveBeenCalledWith({ success: true });
   });
 });

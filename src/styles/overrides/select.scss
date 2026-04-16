@@ -31,10 +31,10 @@
     --p-select-padding-y: 0;
     --p-select-padding-x: 0;
     --p-select-shadow: none;
-    font-size: 0.875rem;
     border: none;
 
     .p-select-label {
+      font-size: 0.875rem;
       white-space: nowrap;
     }
   }

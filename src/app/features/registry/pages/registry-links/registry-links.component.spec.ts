@@ -11,16 +11,16 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { LoaderService } from '@osf/shared/services/loader.service';
 
-import { RegistrationLinksCardComponent } from '../../components/registration-links-card/registration-links-card.component';
-import { RegistryLinksSelectors } from '../../store/registry-links';
-
-import { RegistryLinksComponent } from './registry-links.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistrationLinksCardComponent } from '../../components/registration-links-card/registration-links-card.component';
+import { RegistryLinksSelectors } from '../../store/registry-links';
+
+import { RegistryLinksComponent } from './registry-links.component';
 
 function setup(overrides: BaseSetupOverrides = {}) {
   const routeBuilder = ActivatedRouteMockBuilder.create().withParams(overrides.routeParams ?? { id: 'reg-1' });

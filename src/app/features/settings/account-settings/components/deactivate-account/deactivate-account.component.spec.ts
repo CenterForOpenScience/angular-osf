@@ -1,121 +1,167 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider, MockProviders } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { AccountSettingsSelectors } from '../../store';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMock, CustomDialogServiceMockType } from '@testing/providers/custom-dialog-provider.mock';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { AccountSettingsSelectors, CancelDeactivationRequest, DeactivateAccount } from '../../store';
 import { CancelDeactivationComponent } from '../cancel-deactivation/cancel-deactivation.component';
 import { DeactivationWarningComponent } from '../deactivation-warning/deactivation-warning.component';
 
 import { DeactivateAccountComponent } from './deactivate-account.component';
 
-import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
-
 describe('DeactivateAccountComponent', () => {
   let component: DeactivateAccountComponent;
   let fixture: ComponentFixture<DeactivateAccountComponent>;
-  let dialogService: DialogService;
-  let translateService: TranslateService;
+  let store: Store;
+  let customDialogService: CustomDialogServiceMockType;
+  let loaderService: LoaderServiceMock;
+  let toastService: ToastServiceMockType;
+  let dialogRef: DynamicDialogRef;
 
-  const MOCK_ACCOUNT_SETTINGS = {
-    twoFactorEnabled: false,
-    twoFactorConfirmed: false,
-    subscribeOsfGeneralEmail: false,
-    subscribeOsfHelpEmail: false,
-    deactivationRequested: false,
-    contactedDeactivation: false,
-    secret: '',
-  };
+  const defaultSignals: SignalOverride[] = [
+    {
+      selector: AccountSettingsSelectors.getAccountSettings,
+      value: {
+        twoFactorEnabled: false,
+        twoFactorConfirmed: false,
+        subscribeOsfGeneralEmail: true,
+        subscribeOsfHelpEmail: true,
+        deactivationRequested: false,
+        contactedDeactivation: false,
+        secret: '',
+      },
+    },
+  ];
 
-  beforeEach(async () => {
-    const store = MOCK_STORE;
+  function setup(overrides: BaseSetupOverrides = {}) {
+    customDialogService = CustomDialogServiceMock.simple();
+    loaderService = new LoaderServiceMock();
+    toastService = ToastServiceMock.simple();
 
-    store.selectSignal.mockImplementation((selector) => {
-      if (selector === AccountSettingsSelectors.getAccountSettings) {
-        return () => MOCK_ACCOUNT_SETTINGS;
-      }
-
-      return () => null;
-    });
-
-    store.dispatch.mockImplementation(() => {
-      return of();
-    });
-
-    await TestBed.configureTestingModule({
-      imports: [DeactivateAccountComponent, MockPipe(TranslatePipe)],
+    TestBed.configureTestingModule({
+      imports: [DeactivateAccountComponent],
       providers: [
-        provideNoopAnimations(),
-        MockProvider(Store, store),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        MockProviders(DynamicDialogRef, DialogService, TranslateService, ToastService),
+        provideOSFCore(),
+        MockProvider(CustomDialogService, customDialogService),
+        MockProvider(LoaderService, loaderService),
+        MockProvider(ToastService, toastService),
+        provideDynamicDialogRefMock(),
+        provideMockStore({
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
+    customDialogService.open.mockReturnValue(dialogRef);
     fixture = TestBed.createComponent(DeactivateAccountComponent);
     component = fixture.componentInstance;
-
-    dialogService = TestBed.inject(DialogService);
-    translateService = TestBed.inject(TranslateService);
-
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should open DeactivationWarning dialog and on confirm show toast', () => {
-    jest.spyOn(translateService, 'instant').mockReturnValue('Deactivate header');
-
-    const onCloseSubject = new Subject<boolean>();
-    const dialogRefMock: Partial<DynamicDialogRef> = { onClose: onCloseSubject };
-    const openSpy = jest.spyOn(dialogService, 'open').mockReturnValue(dialogRefMock as DynamicDialogRef);
+  it('should open deactivation warning dialog', () => {
+    setup();
 
     component.deactivateAccount();
 
-    expect(openSpy).toHaveBeenCalledWith(
-      DeactivationWarningComponent,
-      expect.objectContaining({
-        width: '552px',
-        header: 'Deactivate header',
-        modal: true,
-      })
-    );
-
-    onCloseSubject.next(true);
+    expect(customDialogService.open).toHaveBeenCalledWith(DeactivationWarningComponent, {
+      header: 'settings.accountSettings.deactivateAccount.dialog.deactivate.title',
+      width: '552px',
+    });
   });
 
-  it('should open CancelDeactivation dialog and on confirm dispatch action', () => {
-    jest.spyOn(translateService, 'instant').mockReturnValue('Cancel header');
+  it('should not dispatch deactivate action when dialog closes with false', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
 
-    const onCloseSubject = new Subject<boolean>();
-    const dialogRefMock: Partial<DynamicDialogRef> = { onClose: onCloseSubject };
-    const openSpy = jest.spyOn(dialogService, 'open').mockReturnValue(dialogRefMock as DynamicDialogRef);
+    component.deactivateAccount();
+    (dialogRef.onClose as Subject<boolean>).next(false);
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(DeactivateAccount));
+    expect(loaderService.show).not.toHaveBeenCalled();
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch deactivate action and show success when dialog closes with true', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.deactivateAccount();
+    (dialogRef.onClose as Subject<boolean>).next(true);
+
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new DeactivateAccount());
+    expect(toastService.showSuccess).toHaveBeenCalledWith(
+      'settings.accountSettings.deactivateAccount.successDeactivation'
+    );
+    expect(loaderService.hide).toHaveBeenCalled();
+  });
+
+  it('should open cancel deactivation dialog', () => {
+    setup();
 
     component.cancelDeactivation();
 
-    expect(openSpy).toHaveBeenCalledWith(
-      CancelDeactivationComponent,
-      expect.objectContaining({
-        width: '552px',
-        header: 'Cancel header',
-        modal: true,
-      })
-    );
+    expect(customDialogService.open).toHaveBeenCalledWith(CancelDeactivationComponent, {
+      header: 'settings.accountSettings.deactivateAccount.dialog.undo.title',
+      width: '552px',
+    });
+  });
 
-    onCloseSubject.next(true);
+  it('should not dispatch cancel action when dialog closes with false', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.cancelDeactivation();
+    (dialogRef.onClose as Subject<boolean>).next(false);
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(CancelDeactivationRequest));
+    expect(loaderService.show).not.toHaveBeenCalled();
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch cancel action and show success when dialog closes with true', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.cancelDeactivation();
+    (dialogRef.onClose as Subject<boolean>).next(true);
+
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new CancelDeactivationRequest());
+    expect(toastService.showSuccess).toHaveBeenCalledWith(
+      'settings.accountSettings.deactivateAccount.successCancelDeactivation'
+    );
+    expect(loaderService.hide).toHaveBeenCalled();
   });
 });

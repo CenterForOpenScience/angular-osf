@@ -1,136 +1,227 @@
-import { of } from 'rxjs';
-
-import { TestBed } from '@angular/core/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
-import { JsonApiService } from '@osf/shared/services/json-api.service';
 
-import { ScopeMapper, TokenMapper } from '../mappers';
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
+import { EnvironmentTokenMock } from '@testing/providers/environment.token.mock';
+
 import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '../models';
 
 import { TokensService } from './tokens.service';
 
-import { environment } from 'src/environments/environment';
-
-jest.mock('../mappers/scope.mapper');
-jest.mock('../mappers/token.mapper');
-
 describe('TokensService', () => {
   let service: TokensService;
-  let jsonApiServiceMock: jest.Mocked<JsonApiService>;
+  const apiBase = `${EnvironmentTokenMock.useValue.apiDomainUrl}/v2`;
 
   beforeEach(() => {
-    jsonApiServiceMock = {
-      get: jest.fn(),
-      post: jest.fn(),
-      patch: jest.fn(),
-      delete: jest.fn(),
-    } as unknown as jest.Mocked<JsonApiService>;
-
     TestBed.configureTestingModule({
-      providers: [TokensService, { provide: JsonApiService, useValue: jsonApiServiceMock }],
+      providers: [provideOSFCore(), provideOSFHttp(), TokensService],
     });
-
     service = TestBed.inject(TokensService);
   });
 
-  it('getScopes should map response using ScopeMapper', (done) => {
-    const mockResponse = { data: [{ type: 'scope' }] as ScopeJsonApi[] };
-    const mappedScopes: ScopeModel[] = [{ name: 'mock-scope' }] as any;
-
-    (ScopeMapper.fromResponse as jest.Mock).mockReturnValue(mappedScopes);
-    jsonApiServiceMock.get.mockReturnValue(of(mockResponse));
-
-    service.getScopes().subscribe((result) => {
-      expect(jsonApiServiceMock.get).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/scopes/`);
-      expect(result).toBe(mappedScopes);
-      done();
-    });
+  it('should expose apiUrl from environment', () => {
+    expect(service.apiUrl).toBe(`${apiBase}`);
   });
 
-  it('getTokens should map each response using TokenMapper.fromGetResponse', (done) => {
-    const mockData: TokenGetResponseJsonApi[] = [
-      { id: '1' } as TokenGetResponseJsonApi,
-      { id: '2' } as TokenGetResponseJsonApi,
-    ];
-    const mapped = [{ id: '1' }, { id: '2' }] as TokenModel[];
+  it('should getScopes and map response', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    const response: JsonApiResponse<ScopeJsonApi[], null> = {
+      data: [
+        {
+          id: 'osf.full_read',
+          type: 'scopes',
+          attributes: { description: 'Read access' },
+        },
+      ],
+    };
+    let result: ScopeModel[] = [];
 
-    (TokenMapper.fromGetResponse as jest.Mock).mockImplementation((item) => ({ id: item.id }));
+    service.getScopes().subscribe((value) => (result = value));
 
-    jsonApiServiceMock.get.mockReturnValue(of({ data: mockData }));
+    const req = httpMock.expectOne(`${apiBase}/scopes/`);
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
 
-    service.getTokens().subscribe((tokens) => {
-      expect(tokens).toEqual(mapped);
-      expect(TokenMapper.fromGetResponse).toHaveBeenCalledTimes(2);
-      done();
+    expect(result).toEqual([{ id: 'osf.full_read', description: 'Read access' }]);
+    httpMock.verify();
+  }));
+
+  it('should getTokens and map response', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    const response: JsonApiResponse<TokenGetResponseJsonApi[], null> = {
+      data: [
+        {
+          id: 'token-1',
+          attributes: { name: 'Token One', token_id: 'token-value-1' },
+          embeds: {
+            scopes: {
+              data: [{ id: 'osf.full_read' }, { id: 'osf.full_write' }],
+            },
+          },
+        },
+      ],
+    };
+    let result: TokenModel[] = [];
+
+    service.getTokens().subscribe((value) => (result = value));
+
+    const req = httpMock.expectOne(`${apiBase}/tokens/`);
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
+
+    expect(result).toEqual([
+      {
+        id: 'token-1',
+        tokenId: 'token-value-1',
+        name: 'Token One',
+        scopes: ['osf.full_read', 'osf.full_write'],
+      },
+    ]);
+    httpMock.verify();
+  }));
+
+  it('should getTokenById and map response', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    const response: JsonApiResponse<TokenGetResponseJsonApi, null> = {
+      data: {
+        id: 'token-2',
+        attributes: { name: 'Token Two', token_id: 'token-value-2' },
+        embeds: {
+          scopes: {
+            data: [{ id: 'osf.full_read' }],
+          },
+        },
+      },
+    };
+    let result: TokenModel | undefined;
+
+    service.getTokenById('token-2').subscribe((value) => (result = value));
+
+    const req = httpMock.expectOne(`${apiBase}/tokens/token-2/`);
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
+
+    expect(result).toEqual({
+      id: 'token-2',
+      tokenId: 'token-value-2',
+      name: 'Token Two',
+      scopes: ['osf.full_read'],
     });
-  });
+    httpMock.verify();
+  }));
 
-  it('getTokenById should map response using TokenMapper.fromGetResponse', (done) => {
-    const tokenId = 'abc';
-    const mockApiResponse = { data: { id: tokenId } as TokenGetResponseJsonApi };
-    const mappedToken = { id: tokenId } as TokenModel;
+  it('should createToken with mapped request and mapped response', inject(
+    [HttpTestingController],
+    (httpMock: HttpTestingController) => {
+      const response: JsonApiResponse<TokenGetResponseJsonApi, null> = {
+        data: {
+          id: 'token-3',
+          attributes: { name: 'Created Token', token_id: 'token-value-3' },
+          embeds: {
+            scopes: {
+              data: [{ id: 'osf.full_read' }, { id: 'osf.full_write' }],
+            },
+          },
+        },
+      };
+      let result: TokenModel | undefined;
 
-    (TokenMapper.fromGetResponse as jest.Mock).mockReturnValue(mappedToken);
-    jsonApiServiceMock.get.mockReturnValue(of(mockApiResponse));
+      service.createToken('Created Token', ['osf.full_read', 'osf.full_write']).subscribe((value) => (result = value));
 
-    service.getTokenById(tokenId).subscribe((token) => {
-      expect(jsonApiServiceMock.get).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/tokens/${tokenId}/`);
-      expect(token).toBe(mappedToken);
-      done();
+      const req = httpMock.expectOne(`${apiBase}/tokens/`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({
+        data: {
+          attributes: {
+            name: 'Created Token',
+            scopes: 'osf.full_read osf.full_write',
+          },
+          type: 'tokens',
+        },
+      });
+      req.flush(response);
+
+      expect(result).toEqual({
+        id: 'token-3',
+        tokenId: 'token-value-3',
+        name: 'Created Token',
+        scopes: ['osf.full_read', 'osf.full_write'],
+      });
+      httpMock.verify();
+    }
+  ));
+
+  it('should updateToken with mapped request and mapped response', inject(
+    [HttpTestingController],
+    (httpMock: HttpTestingController) => {
+      const response = {
+        data: {
+          id: 'token-4',
+          attributes: { name: 'Updated Token', token_id: 'token-value-4' },
+          embeds: {
+            scopes: {
+              data: [{ id: 'osf.full_write' }],
+            },
+          },
+        } as TokenGetResponseJsonApi,
+      };
+      let result: TokenModel | undefined;
+
+      service.updateToken('token-4', 'Updated Token', ['osf.full_write']).subscribe((value) => (result = value));
+
+      const req = httpMock.expectOne(`${apiBase}/tokens/token-4/`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({
+        data: {
+          attributes: {
+            name: 'Updated Token',
+            scopes: 'osf.full_write',
+          },
+          type: 'tokens',
+        },
+      });
+      req.flush(response);
+
+      expect(result).toEqual({
+        id: 'token-4',
+        tokenId: 'token-value-4',
+        name: 'Updated Token',
+        scopes: ['osf.full_write'],
+      });
+      httpMock.verify();
+    }
+  ));
+
+  it('should deleteToken with DELETE method', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    let completed = false;
+
+    service.deleteToken('token-5').subscribe({
+      complete: () => {
+        completed = true;
+      },
     });
-  });
 
-  it('createToken should map response using TokenMapper.fromCreateResponse', (done) => {
-    const name = 'new token';
-    const scopes = ['read'];
-    const requestBody = { name, scopes };
+    const req = httpMock.expectOne(`${apiBase}/tokens/token-5/`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null);
 
-    const apiResponse = { data: { id: 'xyz' } } as JsonApiResponse<TokenGetResponseJsonApi, null>;
-    const mapped = { id: 'xyz' } as TokenModel;
+    expect(completed).toBe(true);
+    httpMock.verify();
+  }));
 
-    (TokenMapper.toRequest as jest.Mock).mockReturnValue(requestBody);
-    (TokenMapper.fromGetResponse as jest.Mock).mockReturnValue(mapped);
-    jsonApiServiceMock.post.mockReturnValue(of(apiResponse));
+  it('should propagate errors from getTokenById', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    let errorStatus: number | undefined;
 
-    service.createToken(name, scopes).subscribe((token) => {
-      expect(jsonApiServiceMock.post).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/tokens/`, requestBody);
-      expect(token).toEqual(mapped);
-      done();
+    service.getTokenById('token-error').subscribe({
+      next: () => {},
+      error: (error) => {
+        errorStatus = error.status;
+      },
     });
-  });
 
-  it('updateToken should map response using TokenMapper.fromCreateResponse', (done) => {
-    const tokenId = '123';
-    const name = 'updated';
-    const scopes = ['write'];
-    const requestBody = { name, scopes };
+    const req = httpMock.expectOne(`${apiBase}/tokens/token-error/`);
+    req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
 
-    const apiResponse = { id: tokenId } as TokenGetResponseJsonApi;
-    const mapped = { id: tokenId } as TokenModel;
-
-    (TokenMapper.toRequest as jest.Mock).mockReturnValue(requestBody);
-    (TokenMapper.fromGetResponse as jest.Mock).mockReturnValue(mapped);
-    jsonApiServiceMock.patch.mockReturnValue(of(apiResponse));
-
-    service.updateToken(tokenId, name, scopes).subscribe((token) => {
-      expect(jsonApiServiceMock.patch).toHaveBeenCalledWith(
-        `${environment.apiDomainUrl}/v2/tokens/${tokenId}/`,
-        requestBody
-      );
-      expect(token).toEqual(mapped);
-      done();
-    });
-  });
-
-  it('deleteToken should call jsonApiService.delete with correct URL', (done) => {
-    const tokenId = 'delete-me';
-    jsonApiServiceMock.delete.mockReturnValue(of(void 0));
-
-    service.deleteToken(tokenId).subscribe((result) => {
-      expect(jsonApiServiceMock.delete).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/tokens/${tokenId}/`);
-      expect(result).toBeUndefined();
-      done();
-    });
-  });
+    expect(errorStatus).toBe(500);
+    httpMock.verify();
+  }));
 });

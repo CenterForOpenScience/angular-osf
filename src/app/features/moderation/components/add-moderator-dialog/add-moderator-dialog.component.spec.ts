@@ -1,183 +1,202 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 
-import { signal } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Mock } from 'vitest';
 
-import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
-import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
-import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddModeratorType } from '../../enums';
-import { ModeratorAddModel } from '../../models';
-import { ModeratorsSelectors } from '../../store/moderators';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+
+import { AddModeratorType, ModeratorPermission } from '../../enums';
+import { ModeratorAddModel, ModeratorDialogAddModel } from '../../models';
+import { ClearUsers, ModeratorsSelectors, SearchUsers, SearchUsersPageChange } from '../../store/moderators';
 
 import { AddModeratorDialogComponent } from './add-moderator-dialog.component';
-
-import { MOCK_USER } from '@testing/mocks/data.mock';
-import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AddModeratorDialogComponent', () => {
   let component: AddModeratorDialogComponent;
   let fixture: ComponentFixture<AddModeratorDialogComponent>;
-  let dialogRef: jest.Mocked<DynamicDialogRef>;
-  let dialogConfig: DynamicDialogConfig;
+  let dialogRef: DynamicDialogRef;
   let store: Store;
 
-  const mockUsers = [MOCK_USER];
+  const mockUsers: ModeratorAddModel[] = [
+    {
+      id: 'u1',
+      fullName: 'User One',
+      email: 'user.one@example.org',
+      permission: ModeratorPermission.Moderator,
+    },
+    {
+      id: 'u2',
+      fullName: 'User Two',
+      email: 'user.two@example.org',
+      permission: ModeratorPermission.Admin,
+    },
+  ];
 
-  beforeEach(async () => {
-    dialogRef = DynamicDialogRefMock.useValue as unknown as jest.Mocked<DynamicDialogRef>;
+  const defaultSignals: SignalOverride[] = [
+    { selector: ModeratorsSelectors.getUsers, value: mockUsers },
+    { selector: ModeratorsSelectors.isUsersLoading, value: false },
+    { selector: ModeratorsSelectors.getUsersTotalCount, value: 20 },
+    { selector: ModeratorsSelectors.getUsersNextLink, value: '/users?page=2' },
+    { selector: ModeratorsSelectors.getUsersPreviousLink, value: '/users?page=1' },
+  ];
 
-    dialogConfig = {
-      data: [],
-    } as DynamicDialogConfig;
+  function setup(overrides: BaseSetupOverrides = {}) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
 
-    await TestBed.configureTestingModule({
-      imports: [
-        AddModeratorDialogComponent,
-        OSFTestingModule,
-        ...MockComponents(SearchInputComponent, LoadingSpinnerComponent, CustomPaginatorComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [AddModeratorDialogComponent],
       providers: [
-        DynamicDialogRefMock,
-        MockProvider(DynamicDialogConfig, dialogConfig),
-        provideMockStore({
-          signals: [
-            { selector: ModeratorsSelectors.getUsers, value: signal(mockUsers) },
-            { selector: ModeratorsSelectors.isUsersLoading, value: false },
-            { selector: ModeratorsSelectors.getUsersTotalCount, value: 2 },
-            { selector: ModeratorsSelectors.getUsersNextLink, value: signal(null) },
-            { selector: ModeratorsSelectors.getUsersPreviousLink, value: signal(null) },
-          ],
-        }),
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, { data: {} }),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
     store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(AddModeratorDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default values', () => {
-    expect(component.isInitialState()).toBe(true);
-    expect(component.currentPage()).toBe(1);
-    expect(component.first()).toBe(0);
-    expect(component.rows()).toBe(10);
-    expect(component.selectedUsers()).toEqual([]);
-    expect(component.searchControl.value).toBe('');
-  });
-
-  it('should load users from store', () => {
-    expect(component.users()).toEqual(mockUsers);
-    expect(component.isLoading()).toBe(false);
-    expect(component.totalUsersCount()).toBe(2);
-  });
-
-  it('should close dialog with correct data for addModerator', () => {
-    const mockSelectedUsers: ModeratorAddModel[] = [
-      {
-        id: '1',
-        fullName: 'John Doe',
-        email: 'john@example.com',
-        permission: 'read' as any,
-      },
-    ];
-    component.selectedUsers.set(mockSelectedUsers);
+  it('should close with selected users on addModerator', () => {
+    setup();
+    component.selectedUsers.set([mockUsers[0]]);
 
     component.addModerator();
 
-    expect(dialogRef.close).toHaveBeenCalledWith({
-      data: mockSelectedUsers,
-      type: AddModeratorType.Search,
-    });
+    const expected: ModeratorDialogAddModel = { data: [mockUsers[0]], type: AddModeratorType.Search };
+    expect(dialogRef.close).toHaveBeenCalledWith(expected);
   });
 
-  it('should close dialog with correct data for inviteModerator', () => {
+  it('should close with invite type on inviteModerator', () => {
+    setup();
+
     component.inviteModerator();
 
-    expect(dialogRef.close).toHaveBeenCalledWith({
-      data: [],
-      type: AddModeratorType.Invite,
-    });
+    const expected: ModeratorDialogAddModel = { data: [], type: AddModeratorType.Invite };
+    expect(dialogRef.close).toHaveBeenCalledWith(expected);
   });
 
-  it('should handle pagination correctly', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+  it('should dispatch ClearUsers on destroy', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
 
-    component.pageChanged({ first: 0 } as PaginatorState);
-    expect(dispatchSpy).not.toHaveBeenCalled();
+    component.ngOnDestroy();
 
-    component.searchControl.setValue('test');
-    component.pageChanged({ page: 0, first: 0, rows: 10 } as PaginatorState);
-    expect(dispatchSpy).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearUsers());
+  });
+
+  it('should dispatch SearchUsers for first page when search term exists', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+    component.searchControl.setValue('alice');
+
+    const pageEvent: PaginatorState = { page: 0, first: 0, rows: 10, pageCount: 2 };
+    component.pageChanged(pageEvent);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsers('alice'));
     expect(component.currentPage()).toBe(1);
     expect(component.first()).toBe(0);
   });
 
-  it('should navigate to next page when link is available', () => {
-    const nextLink = 'http://api.example.com/users?page=3';
-    const originalSelect = store.select.bind(store);
-    (store.select as jest.Mock) = jest.fn((selector) => {
-      if (selector === ModeratorsSelectors.getUsersNextLink) {
-        return signal(nextLink);
-      }
-      return originalSelect(selector);
-    });
+  it('should not dispatch first-page search when search term is empty', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+    component.searchControl.setValue('   ');
 
-    Object.defineProperty(component, 'usersNextLink', {
-      get: () => signal(nextLink),
-      configurable: true,
-    });
+    const pageEvent: PaginatorState = { page: 0, first: 0, rows: 10, pageCount: 2 };
+    component.pageChanged(pageEvent);
 
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-    component.currentPage.set(2);
-    component.pageChanged({ page: 2, first: 20, rows: 10 } as PaginatorState);
-
-    expect(dispatchSpy).toHaveBeenCalled();
-    expect(component.currentPage()).toBe(3);
-    expect(component.first()).toBe(20);
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should debounce and filter search input', fakeAsync(() => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+  it('should dispatch SearchUsersPageChange with next link', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
 
-    component.searchControl.setValue('t');
-    tick(200);
-    component.searchControl.setValue('test');
-    tick(500);
+    const pageEvent: PaginatorState = { page: 1, first: 10, rows: 10, pageCount: 2 };
+    component.pageChanged(pageEvent);
 
-    expect(dispatchSpy).toHaveBeenCalledTimes(1);
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsersPageChange('/users?page=2'));
+    expect(component.currentPage()).toBe(2);
+    expect(component.first()).toBe(10);
+  });
+
+  it('should dispatch SearchUsersPageChange with previous link', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+    component.currentPage.set(3);
+
+    const pageEvent: PaginatorState = { page: 1, first: 10, rows: 10, pageCount: 3 };
+    component.pageChanged(pageEvent);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsersPageChange('/users?page=1'));
+    expect(component.currentPage()).toBe(2);
+    expect(component.first()).toBe(10);
+  });
+
+  it('should not dispatch page change when link is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: ModeratorsSelectors.getUsersNextLink, value: null }],
+    });
+    (store.dispatch as Mock).mockClear();
+
+    const pageEvent: PaginatorState = { page: 1, first: 10, rows: 10, pageCount: 2 };
+    component.pageChanged(pageEvent);
+
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should debounce search and clear selected users', () => {
+    vi.useFakeTimers();
+    setup();
+    (store.dispatch as Mock).mockClear();
+    component.selectedUsers.set([mockUsers[0]]);
+
+    component.searchControl.setValue('john');
+    vi.advanceTimersByTime(500);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsers('john'));
     expect(component.isInitialState()).toBe(false);
     expect(component.selectedUsers()).toEqual([]);
-  }));
 
-  it('should not search empty or whitespace values', fakeAsync(() => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    vi.useRealTimers();
+  });
 
-    component.searchControl.setValue('');
-    tick(500);
-    expect(dispatchSpy).not.toHaveBeenCalled();
+  it('should not dispatch duplicate consecutive search terms', () => {
+    vi.useFakeTimers();
+    setup();
+    (store.dispatch as Mock).mockClear();
 
-    component.searchControl.setValue('   ');
-    tick(500);
-    expect(dispatchSpy).not.toHaveBeenCalled();
-  }));
+    component.searchControl.setValue('same');
+    vi.advanceTimersByTime(500);
+    component.searchControl.setValue('same');
+    vi.advanceTimersByTime(500);
 
-  it('should clear users on destroy', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-    component.ngOnDestroy();
-    expect(dispatchSpy).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledTimes(1);
+    expect(store.dispatch).toHaveBeenCalledWith(new SearchUsers('same'));
+
+    vi.useRealTimers();
   });
 });

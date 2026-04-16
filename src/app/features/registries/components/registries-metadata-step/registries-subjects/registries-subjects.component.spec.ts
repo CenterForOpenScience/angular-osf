@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, Validators } from '@angular/forms';
 
@@ -17,11 +19,11 @@ import {
 } from '@osf/shared/stores/subjects';
 import { SubjectModel } from '@shared/models/subject/subject.model';
 
-import { RegistriesSubjectsComponent } from './registries-subjects.component';
-
 import { MOCK_DRAFT_REGISTRATION } from '@testing/mocks/draft-registration.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistriesSubjectsComponent } from './registries-subjects.component';
 
 describe('RegistriesSubjectsComponent', () => {
   let component: RegistriesSubjectsComponent;
@@ -68,13 +70,13 @@ describe('RegistriesSubjectsComponent', () => {
   });
 
   it('should dispatch fetchChildrenSubjects on getSubjectChildren', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.getSubjectChildren('parent-1');
     expect(store.dispatch).toHaveBeenCalledWith(new FetchChildrenSubjects('parent-1'));
   });
 
   it('should dispatch fetchSubjects with search term on searchSubjects', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.searchSubjects('biology');
     expect(store.dispatch).toHaveBeenCalledWith(
       new FetchSubjects(ResourceType.Registration, MOCK_DRAFT_REGISTRATION.providerId, 'biology')
@@ -82,7 +84,7 @@ describe('RegistriesSubjectsComponent', () => {
   });
 
   it('should dispatch updateResourceSubjects and update control on updateSelectedSubjects', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.updateSelectedSubjects(mockSubjects);
     expect(store.dispatch).toHaveBeenCalledWith(
       new UpdateResourceSubjects('draft-1', ResourceType.DraftRegistration, mockSubjects)

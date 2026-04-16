@@ -41,7 +41,6 @@ import { RemoveFromCollectionDialogResult } from '../../models/remove-from-colle
 import {
   AddToCollectionSelectors,
   ClearAddToCollectionState,
-  CreateCollectionSubmission,
   GetCurrentCollectionSubmission,
   RemoveCollectionSubmission,
   UpdateCollectionSubmission,
@@ -58,9 +57,9 @@ import { SelectProjectStepComponent } from './select-project-step/select-project
   selector: 'osf-add-to-collection-form',
   imports: [
     Button,
-    TranslatePipe,
-    RouterLink,
     Stepper,
+    RouterLink,
+    TranslatePipe,
     LoadingSpinnerComponent,
     SelectProjectStepComponent,
     ProjectMetadataStepComponent,
@@ -78,29 +77,32 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly loaderService = inject(LoaderService);
+  private readonly brandService = inject(BrandService);
+  private readonly headerStyleHelper = inject(HeaderStyleService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly selectedProjectId = toSignal<string | null>(
     this.route.params.pipe(map((params) => params['id'])) ?? of(null)
   );
-  private readonly brandService = inject(BrandService);
-  private readonly headerStyleHelper = inject(HeaderStyleService);
 
   readonly AddToCollectionSteps = AddToCollectionSteps;
 
   collectionMetadataForm = new FormGroup({});
+
   isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   selectedProject = select(ProjectsSelectors.getSelectedProject);
   currentUser = select(UserSelectors.getCurrentUser);
   currentCollectionSubmission = select(AddToCollectionSelectors.getCurrentCollectionSubmission);
+
   providerId = signal<string>('');
   allowNavigation = signal<boolean>(false);
   projectMetadataSaved = signal<boolean>(false);
   projectContributorsSaved = signal<boolean>(false);
   collectionMetadataSaved = signal<boolean>(false);
   stepperActiveValue = signal<number>(AddToCollectionSteps.SelectProject);
+
   primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
   isEditMode = computed(() => !!this.selectedProjectId());
   isProjectMetadataDisabled = computed(() => !this.selectedProject());
@@ -112,7 +114,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   actions = createDispatchMap({
     getCollectionProvider: GetCollectionProvider,
     clearAddToCollectionState: ClearAddToCollectionState,
-    createCollectionSubmission: CreateCollectionSubmission,
     updateCollectionSubmission: UpdateCollectionSubmission,
     deleteCollectionSubmission: RemoveCollectionSubmission,
     setSelectedProject: SetSelectedProject,

@@ -1,46 +1,53 @@
-import { provideStore, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProviders } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Mock } from 'vitest';
+
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserEmailsState } from '@core/store/user-emails';
+import { AddEmail, UserEmailsSelectors } from '@core/store/user-emails';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { AccountSettingsState } from '../../store';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { AddEmailComponent } from './add-email.component';
-
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('AddEmailComponent', () => {
   let component: AddEmailComponent;
   let fixture: ComponentFixture<AddEmailComponent>;
   let store: Store;
+  let toastService: ToastServiceMockType;
+  let dialogRef: DynamicDialogRef;
+  let isSubmittingSignal: WritableSignal<boolean | undefined>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AddEmailComponent, MockComponent(TextInputComponent), MockPipe(TranslatePipe)],
+  beforeEach(() => {
+    toastService = ToastServiceMock.simple();
+    isSubmittingSignal = signal(false);
+
+    TestBed.configureTestingModule({
+      imports: [AddEmailComponent, MockComponent(TextInputComponent)],
       providers: [
-        provideStore([AccountSettingsState, UserEmailsState]),
-        MockProviders(DynamicDialogRef, ToastService),
-        TranslateServiceMock,
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        provideOSFCore(),
+        MockProvider(ToastService, toastService),
+        provideDynamicDialogRefMock(),
+        provideMockStore({
+          signals: [{ selector: UserEmailsSelectors.isEmailsSubmitting, value: isSubmittingSignal }],
+        }),
       ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(AddEmailComponent);
-    component = fixture.componentInstance;
+    });
 
     store = TestBed.inject(Store);
-
+    dialogRef = TestBed.inject(DynamicDialogRef);
+    fixture = TestBed.createComponent(AddEmailComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -48,11 +55,36 @@ describe('AddEmailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not call action addEmail when email is invalid', () => {
-    const actionSpy = jest.spyOn(store, 'dispatch');
+  it('should keep email control enabled when not submitting', () => {
+    expect(component.emailControl.disabled).toBe(false);
+  });
+
+  it('should disable email control when submitting is true', () => {
+    isSubmittingSignal.set(true);
+    fixture.detectChanges();
+
+    expect(component.emailControl.disabled).toBe(true);
+  });
+
+  it('should not dispatch add email when email is invalid', () => {
+    (store.dispatch as Mock).mockClear();
+    component.emailControl.setValue('invalid-email');
 
     component.addEmail();
 
-    expect(actionSpy).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(AddEmail));
+    expect(dialogRef.close).not.toHaveBeenCalled();
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch add email, close dialog, and show success toast when email is valid', () => {
+    (store.dispatch as Mock).mockClear();
+    component.emailControl.setValue('user@test.com');
+
+    component.addEmail();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new AddEmail('user@test.com'));
+    expect(dialogRef.close).toHaveBeenCalledWith('user@test.com');
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.accountSettings.connectedEmails.successAdd');
   });
 });

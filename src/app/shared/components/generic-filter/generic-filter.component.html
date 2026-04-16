@@ -5,13 +5,13 @@
     </div>
   } @else {
     <p-multiSelect
+      class="w-full"
       [id]="filterOperator()"
       [options]="filterOptions()"
       optionLabel="label"
       optionValue="value"
       [ngModel]="selectedOptionValues()"
       [placeholder]="placeholder()"
-      styleClass="w-full"
       appendTo="body"
       filter
       resetFilterOnHide="false"

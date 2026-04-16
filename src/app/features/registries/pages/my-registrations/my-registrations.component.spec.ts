@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock, Mocked } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -15,10 +17,6 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { DeleteDraft, FetchDraftRegistrations, FetchSubmittedRegistrations } from '../../store';
-
-import { MyRegistrationsComponent } from './my-registrations.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomConfirmationServiceMock } from '@testing/providers/custom-confirmation-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
@@ -26,14 +24,18 @@ import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-pro
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
+import { DeleteDraft, FetchDraftRegistrations, FetchSubmittedRegistrations } from '../../store';
+
+import { MyRegistrationsComponent } from './my-registrations.component';
+
 describe('MyRegistrationsComponent', () => {
   let component: MyRegistrationsComponent;
   let fixture: ComponentFixture<MyRegistrationsComponent>;
   let store: Store;
   let mockRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockRouter: RouterMockType;
-  let customConfirmationService: jest.Mocked<CustomConfirmationService>;
-  let toastService: jest.Mocked<ToastService>;
+  let customConfirmationService: Mocked<CustomConfirmationService>;
+  let toastService: Mocked<ToastService>;
 
   function setup(queryParams: Record<string, string> = {}) {
     mockRouter = RouterMockBuilder.create().withUrl('/registries/me').build();
@@ -67,8 +69,8 @@ describe('MyRegistrationsComponent', () => {
     fixture = TestBed.createComponent(MyRegistrationsComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(Store);
-    customConfirmationService = TestBed.inject(CustomConfirmationService) as jest.Mocked<CustomConfirmationService>;
-    toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
+    customConfirmationService = TestBed.inject(CustomConfirmationService) as Mocked<CustomConfirmationService>;
+    toastService = TestBed.inject(ToastService) as Mocked<ToastService>;
     fixture.detectChanges();
   }
 
@@ -91,8 +93,8 @@ describe('MyRegistrationsComponent', () => {
 
   it('should change tab to drafts, reset pagination, fetch data, and update query params', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
-    (mockRouter.navigate as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
+    (mockRouter.navigate as Mock).mockClear();
 
     component.onTabChange(RegistrationTab.Drafts);
 
@@ -109,8 +111,8 @@ describe('MyRegistrationsComponent', () => {
   it('should change tab to submitted, reset pagination, fetch data, and update query params', () => {
     setup();
     component.onTabChange(RegistrationTab.Drafts);
-    (store.dispatch as jest.Mock).mockClear();
-    (mockRouter.navigate as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
+    (mockRouter.navigate as Mock).mockClear();
 
     component.onTabChange(RegistrationTab.Submitted);
 
@@ -126,7 +128,7 @@ describe('MyRegistrationsComponent', () => {
 
   it('should ignore invalid tab values', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     const initialTab = component.selectedTab();
 
     component.onTabChange('invalid');
@@ -144,7 +146,7 @@ describe('MyRegistrationsComponent', () => {
 
   it('should handle drafts pagination', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onDraftsPageChange({ page: 2, first: 20 });
 
@@ -154,7 +156,7 @@ describe('MyRegistrationsComponent', () => {
 
   it('should handle submitted pagination', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onSubmittedPageChange({ page: 1, first: 10 });
 
@@ -164,7 +166,7 @@ describe('MyRegistrationsComponent', () => {
 
   it('should delete draft after confirmation', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     customConfirmationService.confirmDelete.mockImplementation(({ onConfirm }) => {
       onConfirm();
     });
@@ -183,7 +185,7 @@ describe('MyRegistrationsComponent', () => {
 
   it('should not delete draft if confirmation is cancelled', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     toastService.showSuccess.mockClear();
     customConfirmationService.confirmDelete.mockImplementation(() => {});
 

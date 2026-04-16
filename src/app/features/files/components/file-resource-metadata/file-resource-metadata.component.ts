@@ -25,9 +25,11 @@ export class FileResourceMetadataComponent {
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   resourceType = input<string>('nodes');
+
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   contributors = select(FilesSelectors.getContributors);
   isResourceMetadataLoading = select(FilesSelectors.isResourceMetadataLoading);
   isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
+
   hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 }

@@ -1,5 +1,3 @@
-import structuredClone from 'structured-clone';
-
 const ExternalStorage = {
   links: {
     first: 'https://addons.staging4.osf.io/v1/external-storage-services?page%5Bnumber%5D=1',

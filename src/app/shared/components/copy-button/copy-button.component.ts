@@ -1,13 +1,12 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Button } from 'primeng/button';
+import { Button, ButtonSeverity } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
 import { ToastService } from '@osf/shared/services/toast.service';
-import { SeverityType } from '@shared/models/severity.type';
 
 @Component({
   selector: 'osf-copy-button',
@@ -20,7 +19,7 @@ export class CopyButtonComponent {
   copyItem = input<string>('');
   tooltip = input<string>('common.buttons.copy');
   label = input<string>('');
-  severity = input<SeverityType>('contrast');
+  severity = input<ButtonSeverity>('contrast');
   ariaLabel = input<string>('common.accessibility.copyButtonInfo');
 
   private readonly clipboard = inject(Clipboard);

@@ -4,6 +4,8 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -19,6 +21,12 @@ import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/s
 import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import {
   GetRegistryIdentifiers,
   GetRegistryInstitutions,
@@ -28,12 +36,6 @@ import {
 } from '../../store/registry';
 
 import { RegistryOverviewMetadataComponent } from './registry-overview-metadata.component';
-
-import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 const MOCK_REGISTRY = { ...MOCK_REGISTRATION_OVERVIEW_MODEL, id: 'registry-123', licenseId: 'license-123' };
 
@@ -113,14 +115,17 @@ describe('RegistryOverviewMetadataComponent', () => {
 
     component.onCustomCitationUpdated('Custom Citation');
 
-    const call = (store.dispatch as jest.Mock).mock.calls.find((c) => c[0] instanceof SetRegistryCustomCitation);
-    expect(call).toBeDefined();
-    expect(call[0].citation).toBe('Custom Citation');
+    const call = (store.dispatch as Mock).mock.calls.find((c) => c[0] instanceof SetRegistryCustomCitation);
+    expect(call?.[0]).toBeInstanceOf(SetRegistryCustomCitation);
+    if (!call) {
+      throw new Error('SetRegistryCustomCitation dispatch call was not found');
+    }
+    expect((call[0] as SetRegistryCustomCitation).citation).toBe('Custom Citation');
   });
 
   it('should dispatch LoadMoreBibliographicContributors on handleLoadMoreContributors', () => {
     const { component, store } = setup();
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.handleLoadMoreContributors();
 
@@ -131,7 +136,7 @@ describe('RegistryOverviewMetadataComponent', () => {
 
   it('should not dispatch on handleLoadMoreContributors when registry is null', () => {
     const { component, store } = setup({ registry: null });
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.handleLoadMoreContributors();
 

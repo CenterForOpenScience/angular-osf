@@ -1,149 +1,99 @@
-import { of } from 'rxjs';
+import { Store } from '@ngxs/store';
 
-import { runInInjectionContext } from '@angular/core';
+import { MockProvider } from 'ng-mocks';
+
+import { firstValueFrom, Observable } from 'rxjs';
+
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { GetRegistryProvider, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
-import { registrationModerationGuard } from './registration-moderation.guard';
-
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
+import { registrationModerationGuard } from './registration-moderation.guard';
+
 describe('registrationModerationGuard', () => {
-  let router: Router;
+  let store: Store;
+  let router: RouterMockType;
 
-  const createMockProvider = (overrides?: Partial<any>) => ({
-    id: 'provider-123',
-    name: 'Test Provider',
-    descriptionHtml: '<p>Test</p>',
-    permissions: [],
-    brand: null,
-    iri: 'http://example.com/provider',
-    reviewsWorkflow: 'enabled',
-    ...overrides,
-  });
+  function setup({
+    snapshotProvider,
+    selectedProvider,
+  }: {
+    snapshotProvider?: { reviewsWorkflow?: string | null } | null;
+    selectedProvider?: { reviewsWorkflow?: string | null } | null;
+  }) {
+    router = RouterMockBuilder.create()
+      .withUrl('/registries/provider')
+      .withNavigate(vi.fn().mockResolvedValue(true))
+      .build();
 
-  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideMockStore({
-          selectors: [],
-          actions: [],
-        }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
-      ],
-    });
-
-    router = TestBed.inject(Router);
-    jest.clearAllMocks();
-  });
-
-  it('should return true when provider already exists with reviewsWorkflow', () => {
-    const provider = createMockProvider({ reviewsWorkflow: 'enabled' });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
+        provideOSFCore(),
         provideMockStore({
           selectors: [
             {
               selector: RegistrationProviderSelectors.getBrandedProvider,
-              value: provider,
+              value: selectedProvider ?? snapshotProvider ?? null,
             },
           ],
         }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
+        MockProvider(Router, router),
       ],
     });
 
-    router = TestBed.inject(Router);
+    store = TestBed.inject(Store);
+    vi.spyOn(store, 'selectSnapshot').mockReturnValue(snapshotProvider ?? null);
+  }
 
-    const result = runInInjectionContext(TestBed, () =>
-      registrationModerationGuard({ params: { providerId: 'provider-123' } } as any, {} as any)
-    );
+  async function resolveGuard(providerId = 'osf') {
+    const route = { params: { providerId } } as never;
+    const result = TestBed.runInInjectionContext(() => registrationModerationGuard(route, {} as never));
+    if (typeof result === 'boolean') {
+      return result;
+    }
+    return firstValueFrom(result as Observable<boolean>);
+  }
+
+  it('should return true immediately when provider already has reviews workflow', async () => {
+    setup({
+      snapshotProvider: { reviewsWorkflow: 'pre-moderation' },
+    });
+
+    const result = await resolveGuard();
 
     expect(result).toBe(true);
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should navigate to not-found and return false when provider exists without reviewsWorkflow', (done) => {
-    const provider = createMockProvider({ reviewsWorkflow: '' });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: RegistrationProviderSelectors.getBrandedProvider,
-              value: provider,
-            },
-          ],
-        }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
-      ],
+  it('should return true after fetch when provider has reviews workflow', async () => {
+    setup({
+      snapshotProvider: { reviewsWorkflow: null },
+      selectedProvider: { reviewsWorkflow: 'post-moderation' },
     });
 
-    router = TestBed.inject(Router);
+    const result = await resolveGuard('osf');
 
-    const result = runInInjectionContext(TestBed, () =>
-      registrationModerationGuard({ params: { providerId: 'provider-123' } } as any, {} as any)
-    );
-
-    if (typeof result === 'object' && 'subscribe' in result) {
-      result.subscribe((value) => {
-        expect(value).toBe(false);
-        expect(router.navigate).toHaveBeenCalledWith(['/not-found']);
-        done();
-      });
-    } else {
-      expect(result).toBe(false);
-      done();
-    }
+    expect(result).toBe(true);
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistryProvider('osf'));
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should dispatch GetRegistryProvider and return observable when provider does not exist initially', (done) => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: RegistrationProviderSelectors.getBrandedProvider,
-              value: null,
-            },
-          ],
-          actions: [
-            {
-              action: new GetRegistryProvider('provider-123'),
-              value: of(true),
-            },
-          ],
-        }),
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
-      ],
+  it('should navigate to not found and return false when provider has no reviews workflow', async () => {
+    setup({
+      snapshotProvider: null,
+      selectedProvider: { reviewsWorkflow: null },
     });
 
-    router = TestBed.inject(Router);
+    const result = await resolveGuard('ecsar');
 
-    const result = runInInjectionContext(TestBed, () =>
-      registrationModerationGuard({ params: { providerId: 'provider-123' } } as any, {} as any)
-    );
-
-    expect(typeof result === 'object' && 'subscribe' in result).toBe(true);
-    done();
+    expect(result).toBe(false);
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistryProvider('ecsar'));
+    expect(router.navigate).toHaveBeenCalledWith(['/not-found']);
   });
 });

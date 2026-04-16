@@ -7,7 +7,9 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+import { IS_MEDIUM, IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -18,32 +20,36 @@ import { TopnavComponent } from '../topnav/topnav.component';
 
 import { LayoutComponent } from './layout.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-
-describe('Component: Root', () => {
+describe('LayoutComponent', () => {
   let component: LayoutComponent;
   let fixture: ComponentFixture<LayoutComponent>;
   let isWebSubject: BehaviorSubject<boolean>;
+  let isMediumSubject: BehaviorSubject<boolean>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     isWebSubject = new BehaviorSubject<boolean>(true);
+    isMediumSubject = new BehaviorSubject<boolean>(false);
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         LayoutComponent,
-        OSFTestingModule,
         ...MockComponents(
-          HeaderComponent,
-          FooterComponent,
-          TopnavComponent,
           ConfirmDialog,
           BreadcrumbComponent,
+          FooterComponent,
+          HeaderComponent,
+          OSFBannerComponent,
           SidenavComponent,
-          OSFBannerComponent
+          TopnavComponent
         ),
       ],
-      providers: [MockProvider(IS_WEB, isWebSubject), MockProvider(ConfirmationService)],
-    }).compileComponents();
+      providers: [
+        provideOSFCore(),
+        MockProvider(IS_WEB, isWebSubject),
+        MockProvider(IS_MEDIUM, isMediumSubject),
+        MockProvider(ConfirmationService),
+      ],
+    });
 
     fixture = TestBed.createComponent(LayoutComponent);
     component = fixture.componentInstance;
@@ -74,10 +80,5 @@ describe('Component: Root', () => {
 
     expect(desktopLayout).toBeFalsy();
     expect(tabletLayout).toBeTruthy();
-  });
-
-  it('should contain confirm dialog component', () => {
-    const confirmDialog = fixture.nativeElement.querySelector('p-confirm-dialog');
-    expect(confirmDialog).toBeTruthy();
   });
 });

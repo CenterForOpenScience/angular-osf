@@ -1,115 +1,98 @@
 import { Store } from '@ngxs/store';
 
-import { signal } from '@angular/core';
+import { MockProvider } from 'ng-mocks';
+
+import { ApplicationRef, PLATFORM_ID, signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { WINDOW } from '@core/provider/window.provider';
-import { UserSelectors } from '@core/store/user/user.selectors';
+import { UserSelectors } from '@core/store/user';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { HelpScoutService } from './help-scout.service';
 
+interface DataLayer {
+  loggedIn: boolean;
+  resourceType: string | undefined;
+}
+
 describe('HelpScoutService', () => {
-  const storeMock: Partial<Store> = {
-    selectSignal: jest.fn().mockImplementation((selector) => {
-      if (selector === UserSelectors.isAuthenticated) {
-        return authSignal;
-      }
-      return signal(null);
-    }),
-  };
   let service: HelpScoutService;
-  let mockWindow: any;
-  const authSignal = signal(false);
+  let store: Store;
+  let applicationRef: ApplicationRef;
+  let isAuthenticatedSignal: WritableSignal<boolean>;
+  let windowMock: Window & { dataLayer?: DataLayer };
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  function setup(overrides?: { isBrowser?: boolean; initialAuth?: boolean; initialDataLayer?: DataLayer }) {
+    isAuthenticatedSignal = signal(overrides?.initialAuth ?? false);
+    windowMock = { dataLayer: overrides?.initialDataLayer } as Window & { dataLayer?: DataLayer };
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideOSFCore(),
+        MockProvider(WINDOW, windowMock),
+        MockProvider(PLATFORM_ID, overrides?.isBrowser === false ? 'server' : 'browser'),
+        provideMockStore({
+          signals: [{ selector: UserSelectors.isAuthenticated, value: isAuthenticatedSignal }],
+        }),
+      ],
+    });
+
+    store = TestBed.inject(Store);
+    applicationRef = TestBed.inject(ApplicationRef);
+    service = TestBed.inject(HelpScoutService);
+  }
+
+  it('should create', () => {
+    setup();
+    expect(service).toBeTruthy();
+    expect(store).toBeTruthy();
   });
 
-  describe('initialization - no dataLayer', () => {
-    beforeEach(() => {
-      mockWindow = {};
-      TestBed.configureTestingModule({
-        providers: [
-          { provide: WINDOW, useValue: mockWindow },
-          HelpScoutService,
-          { provide: Store, useValue: storeMock },
-        ],
-      });
-
-      service = TestBed.inject(HelpScoutService);
+  it('should initialize existing dataLayer in browser', () => {
+    setup({
+      initialDataLayer: { loggedIn: true, resourceType: 'project' },
     });
-
-    it('should initialize dataLayer with default values', () => {
-      expect(mockWindow.dataLayer).toEqual({
-        loggedIn: false,
-        resourceType: undefined,
-      });
-    });
-
-    it('should set the resourceType', () => {
-      service.setResourceType('project');
-      expect(mockWindow.dataLayer.resourceType).toBe('project');
-    });
-
-    it('should unset the resourceType', () => {
-      service.setResourceType('node');
-      service.unsetResourceType();
-      expect(mockWindow.dataLayer.resourceType).toBeUndefined();
-    });
-
-    it('should set loggedIn to true or false', () => {
-      authSignal.set(true);
-      TestBed.flushEffects();
-      expect(mockWindow.dataLayer.loggedIn).toBeTruthy();
-
-      authSignal.set(false);
-      TestBed.flushEffects();
-      expect(mockWindow.dataLayer.loggedIn).toBeFalsy();
+    expect(windowMock.dataLayer).toEqual({
+      loggedIn: false,
+      resourceType: undefined,
     });
   });
 
-  describe('initialization - dataLayer', () => {
-    beforeEach(() => {
-      mockWindow = {
-        dataLayer: {},
-      };
-      TestBed.configureTestingModule({
-        providers: [
-          { provide: WINDOW, useValue: mockWindow },
-          HelpScoutService,
-          { provide: Store, useValue: storeMock },
-        ],
-      });
-
-      service = TestBed.inject(HelpScoutService);
+  it('should create dataLayer when missing in browser', () => {
+    setup();
+    expect(windowMock.dataLayer).toEqual({
+      loggedIn: false,
+      resourceType: undefined,
     });
+  });
 
-    it('should initialize dataLayer with default values', () => {
-      expect(mockWindow.dataLayer).toEqual({
-        loggedIn: false,
-        resourceType: undefined,
-      });
-    });
+  it('should update loggedIn when authentication signal changes in browser', async () => {
+    setup();
+    expect(windowMock.dataLayer?.loggedIn).toBe(false);
+    isAuthenticatedSignal.set(true);
+    await applicationRef.whenStable();
+    expect(windowMock.dataLayer?.loggedIn).toBe(true);
+  });
 
-    it('should set the resourceType', () => {
-      service.setResourceType('project');
-      expect(mockWindow.dataLayer.resourceType).toBe('project');
-    });
+  it('should set and unset resourceType in browser', () => {
+    setup();
+    service.setResourceType('preprint');
+    expect(windowMock.dataLayer?.resourceType).toBe('preprint');
+    service.unsetResourceType();
+    expect(windowMock.dataLayer?.resourceType).toBeUndefined();
+  });
 
-    it('should unset the resourceType', () => {
-      service.setResourceType('node');
-      service.unsetResourceType();
-      expect(mockWindow.dataLayer.resourceType).toBeUndefined();
-    });
+  it('should not initialize dataLayer on server', () => {
+    setup({ isBrowser: false });
+    expect(windowMock.dataLayer).toBeUndefined();
+  });
 
-    it('should set loggedIn to true or false', () => {
-      authSignal.set(true);
-      TestBed.flushEffects();
-      expect(mockWindow.dataLayer.loggedIn).toBeTruthy();
-
-      authSignal.set(false);
-      TestBed.flushEffects();
-      expect(mockWindow.dataLayer.loggedIn).toBeFalsy();
-    });
+  it('should not set resourceType on server', () => {
+    setup({ isBrowser: false });
+    service.setResourceType('preprint');
+    expect(windowMock.dataLayer).toBeUndefined();
   });
 });

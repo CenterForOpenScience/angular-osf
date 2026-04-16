@@ -1,15 +1,17 @@
+import { Mock } from 'vitest';
+
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
 export type HeaderStyleServiceMockType = Partial<HeaderStyleService> & {
-  applyHeaderStyles: jest.Mock;
-  resetToDefaults: jest.Mock;
+  applyHeaderStyles: Mock;
+  resetToDefaults: Mock;
 };
 
 export const HeaderStyleServiceMock = {
   simple(): HeaderStyleServiceMockType {
     return {
-      applyHeaderStyles: jest.fn(),
-      resetToDefaults: jest.fn(),
+      applyHeaderStyles: vi.fn(),
+      resetToDefaults: vi.fn(),
     };
   },
 };

@@ -11,12 +11,12 @@ import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { FileVersionModel } from '@shared/models/files/file-version.model';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
-import { PreprintFileSectionComponent } from './preprint-file-section.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { DataciteServiceMockBuilder, DataciteServiceMockType } from '@testing/providers/datacite.service.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { PreprintFileSectionComponent } from './preprint-file-section.component';
 
 describe('PreprintFileSectionComponent', () => {
   let component: PreprintFileSectionComponent;
@@ -127,14 +127,14 @@ describe('PreprintFileSectionComponent', () => {
 
   it('should return empty array when no file versions', () => {
     setup();
-    jest.spyOn(component, 'fileVersions').mockReturnValue([]);
+    vi.spyOn(component, 'fileVersions').mockReturnValue([]);
     const menuItems = component.versionMenuItems();
     expect(menuItems).toEqual([]);
   });
 
   it('should return empty array when file versions are undefined', () => {
     setup();
-    jest.spyOn(component, 'fileVersions').mockReturnValue(undefined as unknown as typeof mockFileVersions);
+    vi.spyOn(component, 'fileVersions').mockReturnValue(undefined as unknown as typeof mockFileVersions);
     const menuItems = component.versionMenuItems();
     expect(menuItems).toEqual([]);
   });
@@ -165,7 +165,7 @@ describe('PreprintFileSectionComponent', () => {
     expect(menuItems.length).toBeGreaterThan(0);
 
     const versionCommand = menuItems[0].command!;
-    jest.spyOn(component, 'logDownload');
+    vi.spyOn(component, 'logDownload');
 
     versionCommand();
 

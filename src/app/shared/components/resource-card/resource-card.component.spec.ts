@@ -9,6 +9,10 @@ import { ResourceCardService } from '@osf/shared/services/resource-card.service'
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import { ResourceModel } from '@shared/models/search/resource.model';
 
+import { MOCK_USER_RELATED_COUNTS } from '@testing/mocks/data.mock';
+import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE } from '@testing/mocks/resource.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
 
 import { FileSecondaryMetadataComponent } from './components/file-secondary-metadata/file-secondary-metadata.component';
@@ -17,10 +21,6 @@ import { ProjectSecondaryMetadataComponent } from './components/project-secondar
 import { RegistrationSecondaryMetadataComponent } from './components/registration-secondary-metadata/registration-secondary-metadata.component';
 import { UserSecondaryMetadataComponent } from './components/user-secondary-metadata/user-secondary-metadata.component';
 import { ResourceCardComponent } from './resource-card.component';
-
-import { MOCK_USER_RELATED_COUNTS } from '@testing/mocks/data.mock';
-import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE } from '@testing/mocks/resource.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('ResourceCardComponent', () => {
   let component: ResourceCardComponent;
@@ -31,11 +31,10 @@ describe('ResourceCardComponent', () => {
   const mockResource: ResourceModel = MOCK_RESOURCE;
   const mockAgentResource: ResourceModel = MOCK_AGENT_RESOURCE;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         ResourceCardComponent,
-        OSFTestingModule,
         ...MockComponents(
           DataResourcesComponent,
           UserSecondaryMetadataComponent,
@@ -46,12 +45,13 @@ describe('ResourceCardComponent', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
         MockProvider(ResourceCardService, {
-          getUserRelatedCounts: jest.fn().mockReturnValue(of(mockUserCounts)),
+          getUserRelatedCounts: vi.fn().mockReturnValue(of(mockUserCounts)),
         }),
         MockProvider(IS_XSMALL, of(false)),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ResourceCardComponent);
     component = fixture.componentInstance;
@@ -77,7 +77,7 @@ describe('ResourceCardComponent', () => {
   it('should return early when resource is null', () => {
     fixture.componentRef.setInput('resource', null);
 
-    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+    const getUserCountsSpy = vi.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
 
     component.onOpen();
 
@@ -88,7 +88,7 @@ describe('ResourceCardComponent', () => {
     fixture.componentRef.setInput('resource', mockAgentResource);
     component.dataIsLoaded = true;
 
-    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+    const getUserCountsSpy = vi.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
 
     component.onOpen();
 
@@ -98,7 +98,7 @@ describe('ResourceCardComponent', () => {
   it('should return early when resource type is not Agent', () => {
     fixture.componentRef.setInput('resource', mockResource);
 
-    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+    const getUserCountsSpy = vi.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
 
     component.onOpen();
 
@@ -109,7 +109,7 @@ describe('ResourceCardComponent', () => {
     fixture.componentRef.setInput('resource', mockAgentResource);
     component.dataIsLoaded = false;
 
-    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+    const getUserCountsSpy = vi.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
 
     component.onOpen();
 
@@ -124,7 +124,7 @@ describe('ResourceCardComponent', () => {
     fixture.componentRef.setInput('resource', mockResourceWithDifferentUrl);
     component.dataIsLoaded = false;
 
-    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+    const getUserCountsSpy = vi.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
 
     component.onOpen();
 

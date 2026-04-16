@@ -3,200 +3,125 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { EducationHistoryComponent } from '@osf/shared/components/education-history/education-history.component';
 import { EmploymentHistoryComponent } from '@osf/shared/components/employment-history/employment-history.component';
+import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { UserModel } from '@osf/shared/models/user/user.model';
-import { SocialModel } from '@shared/models/user/social.model';
-
-import { ProfileInformationComponent } from './profile-information.component';
 
 import { MOCK_USER } from '@testing/mocks/data.mock';
-import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
-import { MOCK_EDUCATION, MOCK_EMPLOYMENT } from '@testing/mocks/user-employment-education.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { ProfileInformationComponent } from './profile-information.component';
 
 describe('ProfileInformationComponent', () => {
   let component: ProfileInformationComponent;
   let fixture: ComponentFixture<ProfileInformationComponent>;
 
-  const mockUser: UserModel = MOCK_USER;
+  const institutions: Institution[] = [
+    {
+      id: 'inst-1',
+      type: 'institutions',
+      name: 'Institution One',
+      description: 'Test institution',
+      iri: 'https://api.test.osf.io/v2/institutions/inst-1/',
+      rorIri: null,
+      iris: ['https://api.test.osf.io/v2/institutions/inst-1/'],
+      assets: {
+        logo: 'logo.png',
+        logo_rounded: 'logo-rounded.png',
+        banner: 'banner.png',
+      },
+      institutionalRequestAccessEnabled: true,
+      logoPath: 'logo.png',
+    },
+  ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        ProfileInformationComponent,
-        OSFTestingModule,
-        ...MockComponents(EmploymentHistoryComponent, EducationHistoryComponent),
-      ],
-      providers: [MockProvider(IS_MEDIUM, of(false))],
-    }).compileComponents();
+  function setup(user: UserModel | null = MOCK_USER) {
+    TestBed.configureTestingModule({
+      imports: [ProfileInformationComponent, ...MockComponents(EmploymentHistoryComponent, EducationHistoryComponent)],
+      providers: [provideOSFCore(), provideRouter([]), MockProvider(IS_MEDIUM, of(true))],
+    });
 
     fixture = TestBed.createComponent(ProfileInformationComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('currentUser', user);
+    fixture.componentRef.setInput('currentUserInstitutions', institutions);
+    fixture.componentRef.setInput('showEdit', true);
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default inputs', () => {
-    expect(component.currentUser()).toBeUndefined();
-    expect(component.showEdit()).toBe(false);
-    expect(component.currentUserInstitutions()).toBeUndefined();
-  });
+  it('should show employment and education section when user has records', () => {
+    setup();
 
-  it('should accept user input', () => {
-    fixture.componentRef.setInput('currentUser', mockUser);
-    fixture.detectChanges();
-    expect(component.currentUser()).toEqual(mockUser);
-  });
-
-  it('should accept showEdit input', () => {
-    fixture.componentRef.setInput('showEdit', true);
-    fixture.detectChanges();
-    expect(component.showEdit()).toBe(true);
-  });
-
-  it('should return true when user has employment', () => {
-    fixture.componentRef.setInput('currentUser', {
-      ...mockUser,
-      employment: MOCK_EMPLOYMENT,
-      education: [],
-    });
-    fixture.detectChanges();
     expect(component.isEmploymentAndEducationVisible()).toBeTruthy();
   });
 
-  it('should return true when user has education', () => {
-    fixture.componentRef.setInput('currentUser', {
-      ...mockUser,
-      employment: [],
-      education: MOCK_EDUCATION,
-    });
-    fixture.detectChanges();
-    expect(component.isEmploymentAndEducationVisible()).toBeTruthy();
-  });
-
-  it('should return true when user has both employment and education', () => {
-    fixture.componentRef.setInput('currentUser', mockUser);
-    fixture.detectChanges();
-    expect(component.isEmploymentAndEducationVisible()).toBeTruthy();
-  });
-
-  it('should return falsy when user has neither employment nor education', () => {
-    fixture.componentRef.setInput('currentUser', {
-      ...mockUser,
+  it('should hide employment and education section when user has no records', () => {
+    setup({
+      ...MOCK_USER,
       employment: [],
       education: [],
     });
-    fixture.detectChanges();
+
     expect(component.isEmploymentAndEducationVisible()).toBeFalsy();
   });
 
-  it('should return falsy when currentUser is null', () => {
-    fixture.componentRef.setInput('currentUser', null);
-    fixture.detectChanges();
-    expect(component.isEmploymentAndEducationVisible()).toBeFalsy();
+  it('should map socials from current user', () => {
+    setup();
+
+    expect(component.userSocials().length).toBeGreaterThan(0);
   });
 
-  it('should map user social data to view models', () => {
-    fixture.componentRef.setInput('currentUser', mockUser);
-    fixture.detectChanges();
+  it('should return empty socials when current user is missing', () => {
+    setup(null);
 
-    const socials = component.userSocials();
-    expect(socials).toBeDefined();
-    expect(socials.length).toBeGreaterThan(0);
+    expect(component.userSocials()).toEqual([]);
   });
 
-  it('should include GitHub social link when present', () => {
-    fixture.componentRef.setInput('currentUser', mockUser);
-    fixture.detectChanges();
+  it('should expose ORCID id only when verified', () => {
+    setup({
+      ...MOCK_USER,
+      external_identity: {
+        ORCID: {
+          id: '0000-0002-1825-0097',
+          status: ExternalIdentityStatus.VERIFIED,
+        },
+      },
+    } as UserModel);
 
-    const socials = component.userSocials();
-    const github = socials.find((s) => s.icon.includes('github'));
-    expect(github).toBeDefined();
-    expect(github?.url).toContain('github.com');
+    expect(component.orcidId()).toBe('0000-0002-1825-0097');
   });
 
-  it('should include Twitter social link when present', () => {
-    fixture.componentRef.setInput('currentUser', mockUser);
-    fixture.detectChanges();
+  it('should return undefined ORCID when status is not verified', () => {
+    setup({
+      ...MOCK_USER,
+      external_identity: {
+        ORCID: {
+          id: '0000-0002-1825-0097',
+          status: ExternalIdentityStatus.LINK,
+        },
+      },
+    } as UserModel);
 
-    const socials = component.userSocials();
-    const twitter = socials.find((s) => s.icon.includes('x.svg'));
-    expect(twitter).toBeDefined();
-    expect(twitter?.url).toContain('x.com');
+    expect(component.orcidId()).toBeUndefined();
   });
 
-  it('should include LinkedIn social link when present', () => {
-    fixture.componentRef.setInput('currentUser', mockUser);
-    fixture.detectChanges();
-
-    const socials = component.userSocials();
-    const linkedin = socials.find((s) => s.icon.includes('linkedin'));
-    expect(linkedin).toBeDefined();
-    expect(linkedin?.url).toContain('linkedin.com');
-  });
-
-  it('should return empty array when user has no social data', () => {
-    fixture.componentRef.setInput('currentUser', {
-      ...mockUser,
-      social: {} as SocialModel,
-    });
-    fixture.detectChanges();
-
-    const socials = component.userSocials();
-    expect(socials).toEqual([]);
-  });
-
-  it('should return empty array when currentUser is null', () => {
-    fixture.componentRef.setInput('currentUser', null);
-    fixture.detectChanges();
-
-    const socials = component.userSocials();
-    expect(socials).toEqual([]);
-  });
-
-  it('should emit editProfile event when called', (done) => {
-    component.editProfile.subscribe(() => {
-      expect(true).toBe(true);
-      done();
-    });
+  it('should emit editProfile when navigating to profile settings', () => {
+    setup();
+    const emitSpy = vi.spyOn(component.editProfile, 'emit');
 
     component.toProfileSettings();
-  });
 
-  it('should emit editProfile event on button click', () => {
-    jest.spyOn(component.editProfile, 'emit');
-    component.toProfileSettings();
-    expect(component.editProfile.emit).toHaveBeenCalled();
-  });
-
-  it('should accept currentUserInstitutions input', () => {
-    const mockInstitutions: Institution[] = [MOCK_INSTITUTION];
-    fixture.componentRef.setInput('currentUserInstitutions', mockInstitutions);
-    fixture.detectChanges();
-    expect(component.currentUserInstitutions()).toEqual(mockInstitutions);
-  });
-
-  it('should not render institution logos when currentUserInstitutions is undefined', () => {
-    fixture.componentRef.setInput('currentUserInstitutions', undefined);
-    fixture.detectChanges();
-    const logos = fixture.nativeElement.querySelectorAll('img.fit-contain');
-    expect(logos.length).toBe(0);
-  });
-
-  it('should render institution logos when currentUserInstitutions is provided', () => {
-    const institutions: Institution[] = [MOCK_INSTITUTION];
-    fixture.componentRef.setInput('currentUserInstitutions', institutions);
-    fixture.detectChanges();
-
-    const logos = fixture.nativeElement.querySelectorAll('img.fit-contain');
-    expect(logos.length).toBe(institutions.length);
-    expect(logos[0].alt).toBe(institutions[0].name);
+    expect(emitSpy).toHaveBeenCalled();
   });
 });

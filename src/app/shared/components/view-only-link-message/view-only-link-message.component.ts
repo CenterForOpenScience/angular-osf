@@ -5,6 +5,7 @@ import { Message } from 'primeng/message';
 
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'osf-view-only-link-message',
@@ -14,17 +15,19 @@ import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID } from '@angula
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewOnlyLinkMessageComponent {
-  private platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly router = inject(Router);
 
   handleLeaveViewOnlyView(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.isBrowser) {
       return;
     }
 
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.delete('view_only');
-
-    window.history.pushState(null, '', currentUrl.toString());
-    window.location.reload();
+    this.router
+      .navigate([], {
+        queryParams: { view_only: null },
+        queryParamsHandling: 'merge',
+      })
+      .then(() => window.location.reload());
   }
 }

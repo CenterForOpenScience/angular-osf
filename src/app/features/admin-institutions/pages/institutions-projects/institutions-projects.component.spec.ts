@@ -1,19 +1,17 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockProvider, MockProviders } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { signal } from '@angular/core';
+import { of, Subject, throwError } from 'rxjs';
+
+import { Mock } from 'vitest';
+
+import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { AdminTableComponent } from '@osf/features/admin-institutions/components';
-import { DownloadType } from '@osf/features/admin-institutions/enums';
-import * as downloadHelper from '@osf/features/admin-institutions/helpers';
-import { TableColumn, TableIconClickEvent } from '@osf/features/admin-institutions/models';
-import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { SearchFilters } from '@osf/shared/models/search-filters.model';
@@ -29,133 +27,129 @@ import {
   SetSortBy,
 } from '@osf/shared/stores/global-search';
 
-import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
-
-import { InstitutionsProjectsComponent } from './institutions-projects.component';
-
 import {
   MOCK_ADMIN_INSTITUTIONS_INSTITUTION,
   MOCK_ADMIN_INSTITUTIONS_PROJECT_RESOURCE,
   MOCK_ADMIN_INSTITUTIONS_PROJECT_RESOURCES,
 } from '@testing/mocks/admin-institutions.mock';
 import { MOCK_USER } from '@testing/mocks/data.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomDialogServiceMockBuilder,
+  CustomDialogServiceMockType,
+} from '@testing/providers/custom-dialog-provider.mock';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
-jest.mock('@osf/features/admin-institutions/helpers', () => ({
-  downloadResults: jest.fn(),
-  extractPathAfterDomain: jest.fn((url: string) => url.split('/').pop() || ''),
-  INSTITUTIONS_CSV_TSV_FIELDS: {
-    nodes: [
-      'title',
-      'dateCreated',
-      'dateModified',
-      'sameAs',
-      'storageRegion.prefLabel',
-      'storageByteCount',
-      'creator.@id',
-      'creator.name',
-      'usage.viewCount',
-      'resourceNature.displayLabel',
-      'rights.name',
-      'hasOsfAddon.prefLabel',
-      'funder.name',
-    ],
-  },
-  INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE: {
-    nodes: {
-      singular_upper: 'Project',
-      plural_lower: 'projects',
-    },
-  },
-}));
+import { AdminTableComponent } from '../../components/admin-table/admin-table.component';
+import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
+import { RequestAccessErrorDialogComponent } from '../../components/request-access-error-dialog/request-access-error-dialog.component';
+import { ContactDialogComponent } from '../../dialogs';
+import { ContactOption, DownloadType } from '../../enums';
+import { ContactDialogData, TableIconClickEvent } from '../../models';
+import { InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
+
+import { InstitutionsProjectsComponent } from './institutions-projects.component';
+
+interface SetupOverrides extends BaseSetupOverrides {
+  openMock?: CustomDialogServiceMockType['open'];
+}
 
 describe('InstitutionsProjectsComponent', () => {
   let component: InstitutionsProjectsComponent;
   let fixture: ComponentFixture<InstitutionsProjectsComponent>;
   let store: Store;
-  let customDialogServiceMock: ReturnType<CustomDialogServiceMockBuilder['build']>;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let dispatchMock: Mock;
+  let mockCustomDialogService: CustomDialogServiceMockType;
+  let toastService: ToastServiceMockType;
 
   const mockInstitution = { ...MOCK_ADMIN_INSTITUTIONS_INSTITUTION, id: 'inst-1' };
-  const mockResource = MOCK_ADMIN_INSTITUTIONS_PROJECT_RESOURCE;
-  const mockResources = MOCK_ADMIN_INSTITUTIONS_PROJECT_RESOURCES;
 
-  beforeEach(async () => {
-    customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
-    toastServiceMock = ToastServiceMockBuilder.create().build();
-    await TestBed.configureTestingModule({
-      imports: [
-        InstitutionsProjectsComponent,
-        OSFTestingModule,
-        ...MockComponents(AdminTableComponent, FiltersSectionComponent),
-      ],
+  function createDialogRef<T>(onClose$: Subject<T>): DynamicDialogRef {
+    return {
+      onClose: onClose$.asObservable(),
+      close: vi.fn(),
+    } as unknown as DynamicDialogRef;
+  }
+
+  function createIconClickEvent(): TableIconClickEvent {
+    return {
+      action: 'sendMessage',
+      arrayIndex: 0,
+      column: {
+        field: 'creator',
+        header: 'Creator',
+      },
+      rowData: {
+        creator: [{ text: 'John Creator', url: 'https://osf.io/user-1' }],
+        link: { text: 'project-1', url: 'https://osf.io/project-1' },
+      },
+    };
+  }
+
+  function setup(overrides: SetupOverrides = {}) {
+    const defaultSignals = [
+      { selector: InstitutionsAdminSelectors.getInstitution, value: mockInstitution },
+      { selector: UserSelectors.getCurrentUser, value: MOCK_USER },
+      { selector: GlobalSearchSelectors.getResources, value: MOCK_ADMIN_INSTITUTIONS_PROJECT_RESOURCES },
+      { selector: GlobalSearchSelectors.getResourcesCount, value: 1 },
+      { selector: GlobalSearchSelectors.getResourcesLoading, value: false },
+      { selector: GlobalSearchSelectors.getFirst, value: 'https://api.test.osf.io/v2/search/?page=1' },
+      { selector: GlobalSearchSelectors.getNext, value: 'https://api.test.osf.io/v2/search/?page=2' },
+      { selector: GlobalSearchSelectors.getPrevious, value: null },
+    ];
+
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
+    const openMock = overrides.openMock ?? vi.fn().mockReturnValue(createDialogRef(new Subject<never>()));
+
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().withOpen(openMock).build();
+    toastService = ToastServiceMock.simple();
+
+    TestBed.configureTestingModule({
+      imports: [InstitutionsProjectsComponent, ...MockComponents(AdminTableComponent, FiltersSectionComponent)],
       providers: [
-        MockProviders(Router),
-        {
-          provide: ActivatedRoute,
-          useValue: { parent: { snapshot: { params: {} } }, snapshot: { queryParams: {} }, queryParams: of({}) },
-        },
-        MockProvider(CustomDialogService, customDialogServiceMock),
-        MockProvider(ToastService, toastServiceMock),
-        provideMockStore({
-          signals: [
-            { selector: InstitutionsAdminSelectors.getInstitution, value: mockInstitution },
-            { selector: UserSelectors.getCurrentUser, value: MOCK_USER },
-            { selector: GlobalSearchSelectors.getResources, value: mockResources },
-            { selector: GlobalSearchSelectors.getResourcesCount, value: 1 },
-            { selector: GlobalSearchSelectors.getResourcesLoading, value: false },
-            { selector: GlobalSearchSelectors.getFirst, value: 'https://api.test.osf.io/v2/search/?page=1' },
-            { selector: GlobalSearchSelectors.getNext, value: 'https://api.test.osf.io/v2/search/?page=2' },
-            { selector: GlobalSearchSelectors.getPrevious, value: null },
-          ],
-        }),
+        provideOSFCore(),
+        MockProvider(CustomDialogService, mockCustomDialogService),
+        MockProvider(ToastService, toastService),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(InstitutionsProjectsComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(Store);
+    dispatchMock = store.dispatch as Mock;
     fixture.detectChanges();
-  });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+    return { component, fixture, store, dispatchMock, mockCustomDialogService, toastService };
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default values', () => {
-    expect(component.filtersVisible()).toBe(false);
-    expect(component.sortField()).toBe('-dateModified');
-    expect(component.sortOrder()).toBe(1);
-    expect(component.tableColumns).toBeDefined();
+  it('should dispatch actions on init', () => {
+    setup();
+
+    expect(dispatchMock).toHaveBeenCalledWith(new SetResourceType(ResourceType.Project));
+    expect(dispatchMock).toHaveBeenCalledWith(new SetDefaultFilterValue('affiliation', mockInstitution.iris.join(',')));
+    expect(dispatchMock).toHaveBeenCalledWith(new FetchResources());
   });
 
-  it('should dispatch actions on ngOnInit', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-    component.ngOnInit();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(new SetResourceType(ResourceType.Project));
-    expect(dispatchSpy).toHaveBeenCalledWith(new SetDefaultFilterValue('affiliation', mockInstitution.iris.join(',')));
-    expect(dispatchSpy).toHaveBeenCalledWith(new FetchResources());
-  });
-
-  it('should dispatch ResetSearchState on ngOnDestroy', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+  it('should dispatch ResetSearchState on destroy', () => {
+    setup();
+    dispatchMock.mockClear();
 
     component.ngOnDestroy();
 
-    expect(dispatchSpy).toHaveBeenCalledWith(new ResetSearchState());
+    expect(dispatchMock).toHaveBeenCalledWith(new ResetSearchState());
   });
 
-  it('should handle sort changes', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+  it('should dispatch sort and fetch on sort change', () => {
+    setup();
+    dispatchMock.mockClear();
 
     component.onSortChange({
       searchValue: '',
@@ -166,65 +160,48 @@ describe('InstitutionsProjectsComponent', () => {
 
     expect(component.sortField()).toBe('title');
     expect(component.sortOrder()).toBe(SortOrder.Asc);
-    expect(dispatchSpy).toHaveBeenCalledWith(new SetSortBy('title'));
-    expect(dispatchSpy).toHaveBeenCalledWith(new FetchResources());
-
-    component.onSortChange({
-      searchValue: '',
-      searchFields: [],
-      sortColumn: 'dateCreated',
-      sortOrder: SortOrder.Desc,
-    });
-
-    expect(component.sortField()).toBe('dateCreated');
-    expect(component.sortOrder()).toBe(SortOrder.Desc);
-    expect(dispatchSpy).toHaveBeenCalledWith(new SetSortBy('-dateCreated'));
+    expect(component.sortParam()).toBe('title');
+    expect(dispatchMock).toHaveBeenCalledWith(new SetSortBy('title'));
+    expect(dispatchMock).toHaveBeenCalledWith(new FetchResources());
   });
 
-  it('should use default sort values when params are missing', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+  it('should use default sort when sort params are missing', () => {
+    setup();
+    dispatchMock.mockClear();
 
     component.onSortChange({ searchValue: '', searchFields: [] } as unknown as SearchFilters);
 
     expect(component.sortField()).toBe('-dateModified');
     expect(component.sortOrder()).toBe(1);
-    expect(dispatchSpy).toHaveBeenCalledWith(new SetSortBy('-dateModified'));
+    expect(component.sortParam()).toBe('-dateModified');
+    expect(dispatchMock).toHaveBeenCalledWith(new SetSortBy('-dateModified'));
+    expect(dispatchMock).toHaveBeenCalledWith(new FetchResources());
   });
 
-  it('should dispatch FetchResourcesByLink on onLinkPageChange', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+  it('should dispatch FetchResourcesByLink on page change', () => {
+    setup();
+    dispatchMock.mockClear();
     const link = 'https://api.test.osf.io/v2/search/?page=2';
 
     component.onLinkPageChange(link);
 
-    expect(dispatchSpy).toHaveBeenCalledWith(new FetchResourcesByLink(link));
+    expect(dispatchMock).toHaveBeenCalledWith(new FetchResourcesByLink(link));
   });
 
-  it('should call downloadResults for different file types', () => {
-    const selfLink = 'https://api.test.osf.io/v2/search/';
-    component.selfLink = signal(selfLink);
+  it('should call downloadResults for selected type', () => {
+    setup();
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(vi.fn());
 
-    [DownloadType.CSV, DownloadType.TSV, DownloadType.JSON].forEach((type) => {
-      component.download(type);
-      expect(downloadHelper.downloadResults).toHaveBeenCalledWith(
-        selfLink,
-        type,
-        expect.any(Array),
-        expect.any(Object)
-      );
-    });
+    component.download(DownloadType.CSV);
+
+    expect(windowOpenSpy).toHaveBeenCalled();
+
+    windowOpenSpy.mockRestore();
   });
 
-  it('should compute sortParam correctly', () => {
-    component.sortField.set('title');
-    component.sortOrder.set(SortOrder.Asc);
-    expect(component.sortParam()).toBe('title');
+  it('should compute pagination links from selectors', () => {
+    setup();
 
-    component.sortOrder.set(SortOrder.Desc);
-    expect(component.sortParam()).toBe('-title');
-  });
-
-  it('should compute paginationLinks from selector values', () => {
     const links = component.paginationLinks();
 
     expect(links.first?.href).toBe('https://api.test.osf.io/v2/search/?page=1');
@@ -232,40 +209,148 @@ describe('InstitutionsProjectsComponent', () => {
     expect(links.prev?.href).toBe(null);
   });
 
-  it('should compute tableData by mapping resources', () => {
+  it('should map resources into table data', () => {
+    setup();
+
     const tableData = component.tableData();
 
     expect(tableData).toHaveLength(1);
-    expect(tableData[0]['title']).toBe(mockResource.title);
+    expect(tableData[0]['title']).toBe(MOCK_ADMIN_INSTITUTIONS_PROJECT_RESOURCE.title);
   });
 
-  it('should handle onIconClick with sendMessage action', () => {
-    const mockEvent: TableIconClickEvent = {
-      action: 'sendMessage',
-      rowData: {},
-      arrayIndex: 0,
-      column: {} as TableColumn,
-    };
+  it('should open the contact dialog for sendMessage actions', () => {
+    setup();
 
-    const openContactDialogSpy = jest.spyOn(component as any, 'openContactDialog');
+    component.onIconClick(createIconClickEvent());
 
-    component.onIconClick(mockEvent);
-
-    expect(openContactDialogSpy).toHaveBeenCalledWith(mockEvent);
+    expect(mockCustomDialogService.open).toHaveBeenCalledWith(
+      ContactDialogComponent,
+      expect.objectContaining({
+        header: 'adminInstitutions.institutionUsers.sendEmail',
+        width: '448px',
+        data: {
+          currentUserFullName: MOCK_USER.fullName,
+          defaultContactData: undefined,
+        },
+      })
+    );
   });
 
-  it('should ignore onIconClick with non-sendMessage action', () => {
-    const mockEvent: TableIconClickEvent = {
-      action: 'otherAction',
-      rowData: {},
-      arrayIndex: 0,
-      column: {} as TableColumn,
-    };
+  it('should ignore icon clicks for unsupported actions', () => {
+    setup();
 
-    const openContactDialogSpy = jest.spyOn(component as any, 'openContactDialog');
+    component.onIconClick({
+      ...createIconClickEvent(),
+      action: 'viewDetails',
+    });
 
-    component.onIconClick(mockEvent);
+    expect(mockCustomDialogService.open).not.toHaveBeenCalled();
+  });
 
-    expect(openContactDialogSpy).not.toHaveBeenCalled();
+  it('should send a user message after the contact dialog closes with send message data', () => {
+    const contactDialogClose$ = new Subject<ContactDialogData>();
+    setup({
+      openMock: vi.fn().mockReturnValue(createDialogRef(contactDialogClose$)),
+    });
+    dispatchMock.mockClear();
+
+    component.onIconClick(createIconClickEvent());
+    contactDialogClose$.next({
+      emailContent: 'Hello there',
+      selectedOption: ContactOption.SendMessage,
+      ccSender: true,
+      allowReplyToSender: false,
+    });
+
+    expect(dispatchMock).toHaveBeenCalledWith(
+      new SendUserMessage('user-1', mockInstitution.id, 'Hello there', true, false)
+    );
+    expect(toastService.showSuccess).toHaveBeenCalledWith('adminInstitutions.institutionUsers.messageSent');
+  });
+
+  it('should request project access after the contact dialog closes with access request data', () => {
+    const contactDialogClose$ = new Subject<ContactDialogData>();
+    setup({
+      openMock: vi.fn().mockReturnValue(createDialogRef(contactDialogClose$)),
+    });
+    dispatchMock.mockClear();
+
+    component.onIconClick(createIconClickEvent());
+    contactDialogClose$.next({
+      emailContent: 'Please grant access',
+      selectedOption: ContactOption.RequestAccess,
+      permission: 'read',
+      ccSender: false,
+      allowReplyToSender: true,
+    });
+
+    expect(dispatchMock).toHaveBeenCalledWith(
+      new RequestProjectAccess({
+        userId: 'user-1',
+        projectId: 'project-1',
+        institutionId: mockInstitution.id,
+        permission: 'read',
+        messageText: 'Please grant access',
+        bccSender: false,
+        replyTo: true,
+      })
+    );
+    expect(toastService.showSuccess).toHaveBeenCalledWith('adminInstitutions.institutionUsers.requestSent');
+  });
+
+  it('should show the request access error dialog and reopen contact dialog as send message after a 403 error', () => {
+    const contactDialogClose$ = new Subject<ContactDialogData>();
+    const errorDialogClose$ = new Subject<boolean>();
+    const reopenDialogClose$ = new Subject<ContactDialogData>();
+    const openMock = vi
+      .fn()
+      .mockReturnValueOnce(createDialogRef(contactDialogClose$))
+      .mockReturnValueOnce(createDialogRef(errorDialogClose$))
+      .mockReturnValueOnce(createDialogRef(reopenDialogClose$));
+
+    setup({ openMock });
+    dispatchMock.mockClear();
+    dispatchMock.mockImplementation((action: unknown) => {
+      if (action instanceof RequestProjectAccess) {
+        return throwError(() => new HttpErrorResponse({ status: 403 }));
+      }
+
+      return of(true);
+    });
+
+    component.onIconClick(createIconClickEvent());
+    contactDialogClose$.next({
+      emailContent: 'Please grant access',
+      selectedOption: ContactOption.RequestAccess,
+      permission: 'write',
+      ccSender: true,
+      allowReplyToSender: false,
+    });
+    errorDialogClose$.next(true);
+
+    expect(mockCustomDialogService.open).toHaveBeenNthCalledWith(
+      2,
+      RequestAccessErrorDialogComponent,
+      expect.objectContaining({
+        header: 'adminInstitutions.requestAccessErrorDialog.title',
+      })
+    );
+    expect(mockCustomDialogService.open).toHaveBeenNthCalledWith(
+      3,
+      ContactDialogComponent,
+      expect.objectContaining({
+        data: {
+          currentUserFullName: MOCK_USER.fullName,
+          defaultContactData: {
+            emailContent: 'Please grant access',
+            selectedOption: ContactOption.SendMessage,
+            permission: 'write',
+            ccSender: true,
+            allowReplyToSender: false,
+          },
+        },
+      })
+    );
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
   });
 });

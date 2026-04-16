@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -16,8 +18,6 @@ import { SchemaResponse } from '@osf/shared/models/registration/schema-response.
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { JustificationStepComponent } from './justification-step.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
   CustomConfirmationServiceMock,
@@ -27,6 +27,8 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { JustificationStepComponent } from './justification-step.component';
 
 describe('JustificationStepComponent', () => {
   let component: JustificationStepComponent;
@@ -77,7 +79,7 @@ describe('JustificationStepComponent', () => {
 
   it('should submit justification and navigate to first step', () => {
     component.justificationForm.patchValue({ justification: 'new reason' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.submit();
 
@@ -89,7 +91,7 @@ describe('JustificationStepComponent', () => {
   });
 
   it('should delete draft update after confirmation', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.deleteDraftUpdate();
 
@@ -105,7 +107,7 @@ describe('JustificationStepComponent', () => {
 
   it('should dispatch updateStepState and updateRevision on destroy when form changed', () => {
     component.justificationForm.patchValue({ justification: 'changed reason' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.ngOnDestroy();
 
@@ -114,7 +116,7 @@ describe('JustificationStepComponent', () => {
   });
 
   it('should not dispatch updateRevision on destroy when form is unchanged', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.ngOnDestroy();
 

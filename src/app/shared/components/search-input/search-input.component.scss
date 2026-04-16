@@ -1,17 +1,15 @@
-@use "styles/mixins" as mix;
-
 .search-container {
   position: relative;
 
   .search-icon {
     position: absolute;
-    left: mix.rem(12px);
+    left: 0.75rem;
     color: var(--grey-1);
   }
 
   .search-input {
     color: var(--dark-blue-1);
-    padding-left: mix.rem(40px);
+    padding-left: 2.5rem;
     width: 100%;
 
     &::placeholder {
@@ -21,6 +19,6 @@
 
   .help-icon {
     position: absolute;
-    right: mix.rem(6px);
+    right: 0.375rem;
   }
 }

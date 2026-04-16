@@ -9,7 +9,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
-import { MyReviewingNavigationComponent, PreprintRecentActivityListComponent } from '../../components';
+import { MyReviewingNavigationComponent } from '../../components/my-reviewing-navigation/my-reviewing-navigation.component';
+import { PreprintRecentActivityListComponent } from '../../components/preprint-recent-activity-list/preprint-recent-activity-list.component';
 import {
   GetPreprintProviders,
   GetPreprintReviewActions,

@@ -1,154 +1,212 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpdateProfileSettingsEducation, UserSelectors } from '@core/store/user';
+import { UpdateProfileSettingsEducation, UserSelectors } from '@osf/core/store/user';
+import { Education } from '@osf/shared/models/user/education.model';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
+import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { EducationFormComponent } from '../education-form/education-form.component';
-
-import { EducationComponent } from './education.component';
-
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
   CustomConfirmationServiceMock,
-  MockCustomConfirmationServiceProvider,
-} from '@testing/mocks/custom-confirmation.service.mock';
-import { MOCK_EDUCATION } from '@testing/mocks/education.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { EducationComponent } from './education.component';
 
 describe('EducationComponent', () => {
   let component: EducationComponent;
   let fixture: ComponentFixture<EducationComponent>;
+  let store: Store;
+  let loaderService: LoaderServiceMock;
+  let confirmationService: CustomConfirmationServiceMockType;
+  let toastService: ToastServiceMockType;
 
-  const mockStore = {
-    selectSignal: jest.fn().mockImplementation((selector) => {
-      if (selector === UserSelectors.getEducation) {
-        return () => MOCK_EDUCATION;
-      }
-      return () => null;
-    }),
-    dispatch: jest.fn().mockReturnValue(of({})),
-  };
+  const initialEducation: Education[] = [
+    {
+      institution: 'Test University',
+      department: 'Computer Science',
+      degree: 'MSc',
+      startMonth: 9,
+      startYear: 2020,
+      endMonth: 6,
+      endYear: 2022,
+      ongoing: false,
+    },
+  ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [EducationComponent, MockComponent(EducationFormComponent)],
-      providers: [
-        TranslateServiceMock,
-        MockCustomConfirmationServiceProvider,
-        MockProvider(ToastService),
-        MockProvider(Store, mockStore),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
-    }).compileComponents();
+  describe('with default education data', () => {
+    beforeEach(() => {
+      loaderService = new LoaderServiceMock();
+      confirmationService = CustomConfirmationServiceMock.simple();
+      toastService = ToastServiceMock.simple();
 
-    fixture = TestBed.createComponent(EducationComponent);
-    component = fixture.componentInstance;
+      TestBed.configureTestingModule({
+        imports: [EducationComponent],
+        providers: [
+          provideOSFCore(),
+          MockProvider(LoaderService, loaderService),
+          MockProvider(CustomConfirmationService, confirmationService),
+          MockProvider(ToastService, toastService),
+          provideMockStore({
+            signals: [{ selector: UserSelectors.getEducation, value: initialEducation }],
+          }),
+        ],
+      });
 
-    fixture.detectChanges();
+      store = TestBed.inject(Store);
+      fixture = TestBed.createComponent(EducationComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should initialize form from selector education data', () => {
+      expect(component.educations.length).toBe(1);
+      expect(component.educations.at(0).get('institution')?.value).toBe('Test University');
+      expect(component.educations.at(0).get('degree')?.value).toBe('MSc');
+    });
+
+    it('should remove education by index', () => {
+      component.removeEducation(0);
+
+      expect(component.educations.length).toBe(0);
+    });
+
+    it('should mark form touched and not add when current form is invalid', () => {
+      const initialLength = component.educations.length;
+      component.educations.at(0).patchValue({
+        institution: '',
+      });
+
+      component.addEducation();
+
+      expect(component.educations.length).toBe(initialLength);
+      expect(component.educationForm.touched).toBe(true);
+    });
+
+    it('should add new education form group when form is valid', () => {
+      const initialLength = component.educations.length;
+
+      component.addEducation();
+
+      expect(component.educations.length).toBe(initialLength + 1);
+    });
+
+    it('should return true for hasFormChanges when item count differs', () => {
+      component.addEducation();
+
+      expect(component.hasFormChanges()).toBe(true);
+    });
+
+    it('should skip discard confirmation when there are no changes', () => {
+      component.discardChanges();
+
+      expect(confirmationService.confirmDelete).not.toHaveBeenCalled();
+    });
+
+    it('should show discard confirmation and reset values on confirm', () => {
+      component.educations.at(0).patchValue({
+        institution: 'Changed University',
+      });
+
+      component.discardChanges();
+
+      expect(confirmationService.confirmDelete).toHaveBeenCalled();
+      const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
+      onConfirm();
+
+      expect(component.educations.at(0).get('institution')?.value).toBe('Test University');
+      expect(toastService.showSuccess).toHaveBeenCalledWith('settings.profileSettings.changesDiscarded');
+    });
+
+    it('should not save when form is invalid', () => {
+      component.educations.at(0).patchValue({
+        institution: '',
+      });
+      (store.dispatch as Mock).mockClear();
+
+      component.saveEducation();
+
+      expect(loaderService.show).not.toHaveBeenCalled();
+      expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateProfileSettingsEducation));
+    });
+
+    it('should save education and show success toast when form is valid', () => {
+      (store.dispatch as Mock).mockClear();
+
+      component.saveEducation();
+
+      expect(loaderService.show).toHaveBeenCalled();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        new UpdateProfileSettingsEducation([
+          {
+            institution: 'Test University',
+            department: 'Computer Science',
+            degree: 'MSc',
+            startMonth: 9,
+            startYear: 2020,
+            endMonth: 6,
+            endYear: 2022,
+            ongoing: false,
+          },
+        ])
+      );
+      expect(loaderService.hide).toHaveBeenCalled();
+      expect(toastService.showSuccess).toHaveBeenCalledWith('settings.profileSettings.education.successUpdate');
+    });
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  describe('with empty education data', () => {
+    beforeEach(() => {
+      loaderService = new LoaderServiceMock();
+      confirmationService = CustomConfirmationServiceMock.simple();
+      toastService = ToastServiceMock.simple();
 
-  it('should handle invalid index in removeEducation method', () => {
-    const initialLength = component.educations.length;
+      TestBed.configureTestingModule({
+        imports: [EducationComponent],
+        providers: [
+          provideOSFCore(),
+          MockProvider(LoaderService, loaderService),
+          MockProvider(CustomConfirmationService, confirmationService),
+          MockProvider(ToastService, toastService),
+          provideMockStore({
+            signals: [{ selector: UserSelectors.getEducation, value: [] }],
+          }),
+        ],
+      });
 
-    component.removeEducation(100);
+      store = TestBed.inject(Store);
+      fixture = TestBed.createComponent(EducationComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
 
-    expect(component.educations.length).toBe(initialLength);
-  });
+    it('should return false for hasFormChanges when initial and current are empty', () => {
+      expect(component.hasFormChanges()).toBe(false);
+    });
 
-  it('should not add education when form is invalid', () => {
-    component.educations.at(0).get('institution')?.setValue('');
-    component.educations.at(0).get('institution')?.updateValueAndValidity();
-    const initialLength = component.educations.length;
+    it('should return true for hasFormChanges when user adds values and initial is empty', () => {
+      component.addEducation();
+      component.educations.at(0).patchValue({
+        institution: 'New University',
+        startDate: new Date(2022, 1, 1),
+        endDate: new Date(2023, 1, 1),
+      });
 
-    expect(component.educationForm.invalid).toBe(true);
-
-    component.addEducation();
-
-    expect(component.educations.length).toBe(initialLength);
-  });
-
-  it('should add new education form when form is valid', () => {
-    const initialLength = component.educations.length;
-
-    component.addEducation();
-
-    expect(component.educations.length).toBe(initialLength + 1);
-
-    const newEducation = component.educations.at(initialLength);
-    expect(newEducation).toBeDefined();
-    expect(newEducation.get('institution')?.value).toBe('');
-    expect(newEducation.get('department')?.value).toBe('');
-    expect(newEducation.get('degree')?.value).toBe('');
-    expect(newEducation.get('startDate')?.value).toBe(null);
-    expect(newEducation.get('endDate')?.value).toBe(null);
-    expect(newEducation.get('ongoing')?.value).toBe(false);
-  });
-
-  it('should detect changes when form field is modified', () => {
-    component.educations.at(0).get('institution')?.setValue('New Institution');
-
-    component.discardChanges();
-
-    expect(CustomConfirmationServiceMock.confirmDelete).toHaveBeenCalled();
-  });
-
-  it('should mark all fields as touched when form is invalid', () => {
-    component.educations.at(0).get('institution')?.setValue('');
-    component.educations.at(1).get('degree')?.setValue('');
-
-    component.saveEducation();
-
-    expect(component.educationForm.touched).toBe(true);
-    expect(component.educations.at(0).get('institution')?.touched).toBe(true);
-    expect(component.educations.at(1).get('degree')?.touched).toBe(true);
-  });
-
-  it('should map form data to correct education format', () => {
-    const education = component.educations.at(0);
-    education.get('institution')?.setValue('Test University');
-    education.get('department')?.setValue('Engineering');
-    education.get('degree')?.setValue('Bachelor');
-    education.get('startDate')?.setValue(new Date(2020, 0));
-    education.get('endDate')?.setValue(new Date(2024, 5));
-    education.get('ongoing')?.setValue(false);
-
-    component.saveEducation();
-
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      new UpdateProfileSettingsEducation([
-        {
-          institution: 'Test University',
-          department: 'Engineering',
-          degree: 'Bachelor',
-          startYear: 2020,
-          startMonth: 1,
-          endYear: 2024,
-          endMonth: 6,
-          ongoing: false,
-        },
-        {
-          institution: 'Advanced University',
-          department: 'Software Engineering',
-          degree: 'Master of Science',
-          startYear: 2020,
-          startMonth: 9,
-          endYear: 2025,
-          endMonth: 8,
-          ongoing: false,
-        },
-      ])
-    );
+      expect(component.hasFormChanges()).toBe(true);
+    });
   });
 });

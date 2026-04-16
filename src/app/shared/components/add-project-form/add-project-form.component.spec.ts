@@ -1,6 +1,4 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
-
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MockComponents } from 'ng-mocks';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -15,14 +13,15 @@ import { ProjectsSelectors } from '@osf/shared/stores/projects';
 import { RegionsSelectors } from '@osf/shared/stores/regions';
 import { ProjectForm } from '@shared/models/projects/create-project-form.model';
 
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { AffiliatedInstitutionSelectComponent } from '../affiliated-institution-select/affiliated-institution-select.component';
 import { ProjectSelectorComponent } from '../project-selector/project-selector.component';
 
 import { AddProjectFormComponent } from './add-project-form.component';
-
-import { MOCK_USER } from '@testing/mocks/data.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AddProjectFormComponent', () => {
   let component: AddProjectFormComponent;
@@ -50,14 +49,14 @@ describe('AddProjectFormComponent', () => {
     });
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         AddProjectFormComponent,
-        OSFTestingModule,
         ...MockComponents(AffiliatedInstitutionSelectComponent, ProjectSelectorComponent),
       ],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             {
@@ -90,9 +89,9 @@ describe('AddProjectFormComponent', () => {
             },
           ],
         }),
-        MockProvider(DynamicDialogRef, { close: jest.fn() }),
+        provideDynamicDialogRefMock(),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(AddProjectFormComponent);
     component = fixture.componentInstance;

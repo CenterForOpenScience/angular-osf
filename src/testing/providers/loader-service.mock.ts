@@ -6,8 +6,8 @@ export class LoaderServiceMock {
   private _isLoading = signal<boolean>(false);
   readonly isLoading = this._isLoading.asReadonly();
 
-  show = jest.fn(() => this._isLoading.set(true));
-  hide = jest.fn(() => this._isLoading.set(false));
+  show = vi.fn(() => this._isLoading.set(true));
+  hide = vi.fn(() => this._isLoading.set(false));
 }
 
 export function provideLoaderServiceMock(mock?: LoaderServiceMock) {

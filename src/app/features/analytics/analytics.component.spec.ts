@@ -17,7 +17,7 @@ import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-l
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 
 import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS } from '@testing/mocks/analytics.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -31,19 +31,15 @@ describe('Component: Analytics', () => {
   const resourceId = 'ex212';
   const metrics = { ...MOCK_ANALYTICS_METRICS, id: resourceId };
   const relatedCounts = { ...MOCK_RELATED_COUNTS, id: resourceId };
-  const metricsSelector = AnalyticsSelectors.getMetrics(resourceId);
-  const relatedCountsSelector = AnalyticsSelectors.getRelatedCounts(resourceId);
 
-  beforeEach(async () => {
+  beforeEach(() => {
     routerMock = RouterMockBuilder.create().build();
     activatedRouteMock = ActivatedRouteMockBuilder.create()
       .withParams({ id: resourceId })
       .withData({ resourceType: undefined })
       .build();
 
-    jest.clearAllMocks();
-
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         AnalyticsComponent,
         ...MockComponents(
@@ -55,23 +51,23 @@ describe('Component: Analytics', () => {
           ViewOnlyLinkMessageComponent,
           SelectComponent
         ),
-        OSFTestingModule,
       ],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
-            { selector: metricsSelector, value: metrics },
-            { selector: relatedCountsSelector, value: relatedCounts },
+            { selector: AnalyticsSelectors.getMetrics(resourceId), value: metrics },
+            { selector: AnalyticsSelectors.getRelatedCounts(resourceId), value: relatedCounts },
             { selector: AnalyticsSelectors.isMetricsLoading, value: false },
             { selector: AnalyticsSelectors.isRelatedCountsLoading, value: false },
             { selector: AnalyticsSelectors.isMetricsError, value: false },
           ],
         }),
-        { provide: IS_WEB, useValue: of(true) },
+        MockProvider(IS_WEB, of(true)),
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(AnalyticsComponent);
     component = fixture.componentInstance;
@@ -85,7 +81,7 @@ describe('Component: Analytics', () => {
 
   it('should navigate to duplicates with correct relative route', () => {
     const router = TestBed.inject(Router);
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate');
 
     fixture.detectChanges();
     component.navigateToDuplicates();

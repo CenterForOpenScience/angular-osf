@@ -1,207 +1,192 @@
-import { provideStore } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
-import { parseQueryFilterParams } from '@osf/shared/helpers/http.helper';
+import { DEFAULT_TABLE_PARAMS } from '@shared/constants/default-table-params.constants';
 import { SortOrder } from '@shared/enums/sort-order.enum';
 
+import { MOCK_MEETING } from '@testing/mocks/meeting.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+
 import { MeetingsFeatureCardComponent } from '../../components';
-import { MEETINGS_FEATURE_CARDS, PARTNER_ORGANIZATIONS } from '../../constants';
-import { MeetingsState } from '../../store';
+import { GetAllMeetings, MeetingsSelectors } from '../../store';
 
 import { MeetingsLandingComponent } from './meetings-landing.component';
 
-import { MOCK_MEETING } from '@testing/mocks/meeting.mock';
-
-const mockQueryParams = {
-  page: 1,
-  size: 10,
-  search: '',
-  sortColumn: 'name',
-  sortOrder: SortOrder.Asc,
-};
-
-const mockActivatedRoute = {
-  queryParams: of(mockQueryParams),
-};
-
-const mockRouter = {
-  navigate: jest.fn(),
-};
+interface SetupOverrides extends BaseSetupOverrides {
+  queryParams?: Record<string, string>;
+  selectorOverrides?: SignalOverride[];
+}
 
 describe('MeetingsLandingComponent', () => {
   let component: MeetingsLandingComponent;
   let fixture: ComponentFixture<MeetingsLandingComponent>;
-  let router: Router;
-  const mockMeeting = MOCK_MEETING;
+  let store: Store;
+  let mockRouter: RouterMockType;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  const defaultSignals: SignalOverride[] = [
+    { selector: MeetingsSelectors.getAllMeetings, value: [MOCK_MEETING] },
+    { selector: MeetingsSelectors.getMeetingsTotalCount, value: 10 },
+    { selector: MeetingsSelectors.isMeetingsLoading, value: false },
+  ];
+
+  function setup(overrides: SetupOverrides = {}, detectChanges = true) {
+    const routeBuilder = ActivatedRouteMockBuilder.create();
+    if (overrides.routeParams) {
+      routeBuilder.withParams(overrides.routeParams);
+    }
+    if (overrides.queryParams) {
+      routeBuilder.withQueryParams(overrides.queryParams);
+    }
+    if (overrides.hasParent === false) {
+      routeBuilder.withNoParent();
+    }
+    const mockRoute = routeBuilder.build();
+    mockRouter = RouterMockBuilder.create().build();
+
+    TestBed.configureTestingModule({
       imports: [
         MeetingsLandingComponent,
         ...MockComponents(SubHeaderComponent, SearchInputComponent, MeetingsFeatureCardComponent),
-        MockPipe(TranslatePipe),
       ],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, mockRoute),
         MockProvider(Router, mockRouter),
-        MockProvider(TranslateService),
-        provideStore([MeetingsState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        provideMockStore({
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(MeetingsLandingComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
+    if (detectChanges) {
+      fixture.detectChanges();
+    }
+  }
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it('should create and have correct initial signals', () => {
+  it('should create', () => {
+    setup({ queryParams: { page: '1', size: '10', search: '', sortColumn: 'name', sortOrder: 'asc' } });
     expect(component).toBeTruthy();
-    expect(component.searchControl).toBeInstanceOf(FormControl);
-    expect(component.partnerOrganizations).toEqual(PARTNER_ORGANIZATIONS);
-    expect(component.meetingsFeatureCards).toEqual(MEETINGS_FEATURE_CARDS);
-    expect(component.skeletonData).toHaveLength(10);
-    expect(component.tableParams().rows).toBe(DEFAULT_TABLE_PARAMS.rows);
-    expect(component.tableParams().firstRowIndex).toBe(0);
-    expect(component.currentPage()).toBe(1);
-    expect(component.currentPageSize()).toBe(DEFAULT_TABLE_PARAMS.rows);
-    expect(component.sortColumn()).toBe('');
+  });
+
+  it('should dispatch get meetings from query params effect', () => {
+    setup({ queryParams: { page: '2', size: '5', search: 'open', sortColumn: 'name', sortOrder: 'asc' } });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new GetAllMeetings(2, 5, {
+        searchValue: 'open',
+        searchFields: ['name'],
+        sortColumn: 'name',
+        sortOrder: SortOrder.Asc,
+      })
+    );
+  });
+
+  it('should update current state from query params', () => {
+    setup({ queryParams: { page: '3', size: '25', search: 'meeting', sortColumn: 'name', sortOrder: 'asc' } });
+
+    expect(component.currentPage()).toBe(3);
+    expect(component.currentPageSize()).toBe(25);
+    expect(component.searchControl.value).toBe('meeting');
+    expect(component.sortColumn()).toBe('name');
     expect(component.sortOrder()).toBe(SortOrder.Asc);
+    expect(component.tableParams().rows).toBe(25);
+    expect(component.tableParams().firstRowIndex).toBe(50);
   });
 
-  it('should navigate to meeting when navigateToMeeting is called', () => {
-    component.navigateToMeeting(mockMeeting);
-    expect(router.navigate).toHaveBeenCalledWith(['/meetings', '1']);
+  it('should update total records on table params effect', () => {
+    setup({
+      selectorOverrides: [{ selector: MeetingsSelectors.getMeetingsTotalCount, value: 42 }],
+    });
+
+    expect(component.tableParams().totalRecords).toBe(42);
   });
 
-  describe('router.navigate scenarios', () => {
-    const cases = [
-      {
-        name: 'onPageChange',
-        action: (c: MeetingsLandingComponent) => c.onPageChange({ first: 40, rows: 20 }),
-        expected: { page: '3', size: '20' },
-      },
-      {
-        name: 'onSort ascending',
-        action: (c: MeetingsLandingComponent) => c.onSort({ field: 'location', order: 1 }),
-        expected: { sortColumn: 'location', sortOrder: 'asc' },
-      },
-      {
-        name: 'onSort descending',
-        action: (c: MeetingsLandingComponent) => c.onSort({ field: 'location', order: -1 }),
-        expected: { sortColumn: 'location', sortOrder: 'desc' },
-      },
-      {
-        name: 'onSort with bad params (order=undefined)',
-        action: (c: MeetingsLandingComponent) => c.onSort({ field: 'location', order: undefined }),
-        expected: { sortColumn: 'location', sortOrder: 'asc' },
-      },
-    ];
-    cases.forEach(({ name, action, expected }) => {
-      it(`should call router.navigate with correct params: ${name}`, () => {
-        jest.clearAllMocks();
-        action(component);
-        if (expected) {
-          expect(router.navigate).toHaveBeenCalledWith(
-            [],
-            expect.objectContaining({
-              queryParams: expect.objectContaining(expected),
-              queryParamsHandling: 'merge',
-            })
-          );
-        } else {
-          expect(router.navigate).not.toHaveBeenCalled();
-        }
-      });
+  it('should navigate to meeting details page', () => {
+    setup({}, false);
+
+    component.navigateToMeeting(MOCK_MEETING);
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/meetings', MOCK_MEETING.id]);
+  });
+
+  it('should navigate with page and size on page change', () => {
+    setup({}, false);
+
+    component.onPageChange({ first: 20, rows: 10 } as { first: number; rows: number });
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: expect.anything(),
+      queryParams: { page: '3', size: '10' },
+      queryParamsHandling: 'merge',
     });
   });
 
-  it('should call router.navigate with correct params on search', () => {
-    jest.useFakeTimers();
-    jest.clearAllMocks();
+  it('should navigate with sort query params on sort change', () => {
+    setup({}, false);
 
-    component.searchControl.setValue('test search');
-    jest.advanceTimersByTime(450);
+    component.onSort({ field: 'name', order: SortOrder.Desc } as { field: string; order: SortOrder });
 
-    expect(router.navigate).toHaveBeenCalledWith(
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: expect.anything(),
+      queryParams: { sortColumn: 'name', sortOrder: 'desc' },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('should not navigate when sort field is missing', () => {
+    setup({}, false);
+
+    component.onSort({ field: undefined, order: SortOrder.Asc } as { field?: string; order: SortOrder });
+
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should update query params from search control after debounce', () => {
+    vi.useFakeTimers();
+    setup({}, false);
+    (mockRouter.navigate as Mock).mockClear();
+    vi.advanceTimersByTime(300);
+    (mockRouter.navigate as Mock).mockClear();
+
+    component.searchControl.setValue('science');
+    vi.advanceTimersByTime(300);
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
       [],
       expect.objectContaining({
-        queryParams: expect.objectContaining({ search: 'test search', page: '1' }),
+        queryParams: { search: 'science', page: '1' },
         queryParamsHandling: 'merge',
       })
     );
   });
 
-  it('should call router.navigate only once on second input', () => {
-    jest.useFakeTimers();
-    jest.clearAllMocks();
+  it('should initialize table params with defaults', () => {
+    setup({}, false);
 
-    component.searchControl.setValue('first');
-
-    jest.advanceTimersByTime(100);
-
-    component.searchControl.setValue('second');
-
-    jest.advanceTimersByTime(350);
-
-    expect(router.navigate).toHaveBeenCalledTimes(1);
-  });
-
-  it('should not call router.navigate if onSort called with field undefined', () => {
-    jest.clearAllMocks();
-    component.onSort({ field: undefined, order: 1 });
-    expect(router.navigate).not.toHaveBeenCalled();
-  });
-
-  it('should not update query params when sort field is undefined', () => {
-    jest.clearAllMocks();
-    component.onSort({ field: undefined, order: 1 });
-    expect(router.navigate).not.toHaveBeenCalled();
-  });
-
-  it('should call router.navigate with only provided queryParams', () => {
-    jest.clearAllMocks();
-    component.onPageChange({ first: 0, rows: 10 });
-    expect(router.navigate).toHaveBeenCalledWith(
-      [],
-      expect.objectContaining({
-        queryParams: expect.objectContaining({ page: '1', size: '10' }),
-        queryParamsHandling: 'merge',
-      })
-    );
-    jest.clearAllMocks();
-    component.onSort({ field: 'name', order: 1 });
-    expect(router.navigate).toHaveBeenCalledWith(
-      [],
-      expect.objectContaining({
-        queryParams: expect.objectContaining({ sortColumn: 'name', sortOrder: 'asc' }),
-        queryParamsHandling: 'merge',
-      })
-    );
-  });
-
-  it('should do nothing when queryParams is undefined', () => {
-    const parseQueryFilterParamsSpy = jest.spyOn({ parseQueryFilterParams }, 'parseQueryFilterParams');
-    jest.spyOn(component, 'queryParams').mockReturnValue(undefined);
-
-    fixture.detectChanges();
-
-    expect(parseQueryFilterParamsSpy).not.toHaveBeenCalled();
-
-    parseQueryFilterParamsSpy.mockRestore();
+    expect(component.tableParams().rows).toBe(DEFAULT_TABLE_PARAMS.rows);
+    expect(component.tableParams().firstRowIndex).toBe(0);
   });
 });

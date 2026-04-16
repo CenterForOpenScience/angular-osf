@@ -26,15 +26,16 @@
 
 ## 1. Test Stack
 
-| Tool                      | Purpose                                                                                       |
-| ------------------------- | --------------------------------------------------------------------------------------------- |
-| **Jest**                  | Test runner & assertion library                                                               |
-| **Angular TestBed**       | Component / service compilation                                                               |
-| **ng-mocks**              | `MockComponents`, `MockModule`, `MockProvider`                                                |
-| **NGXS**                  | State management — mocked via `provideMockStore()` for components, real store for state tests |
-| **RxJS**                  | Observable / Subject-based async testing                                                      |
-| **HttpTestingController** | HTTP interception for service and state integration tests                                     |
-| **Custom utilities**      | `src/testing/` — builders, factories, mock data                                               |
+| Tool                          | Purpose                                                                                       |
+| ----------------------------- | --------------------------------------------------------------------------------------------- |
+| **Vitest**                    | Test runner & assertion library                                                               |
+| **Angular unit-test builder** | Integrates Vitest with Angular compilation, test discovery, and coverage include/exclude      |
+| **Angular TestBed**           | Component / service compilation                                                               |
+| **ng-mocks**                  | `MockComponents`, `MockModule`, `MockProvider`                                                |
+| **NGXS**                      | State management — mocked via `provideMockStore()` for components, real store for state tests |
+| **RxJS**                      | Observable / Subject-based async testing                                                      |
+| **HttpTestingController**     | HTTP interception for service and state integration tests                                     |
+| **Custom utilities**          | `src/testing/` — builders, factories, mock data                                               |
 
 ---
 
@@ -45,7 +46,6 @@
 ```
 src/testing/
 ├── osf.testing.provider.ts       ← provideOSFCore(), provideOSFHttp()
-├── osf.testing.module.ts         ← OSFTestingModule (legacy — prefer providers)
 ├── providers/                    ← Builder-pattern mocks for services
 │   ├── store-provider.mock.ts
 │   ├── route-provider.mock.ts
@@ -68,20 +68,13 @@ src/testing/
 
 ### `provideOSFCore()` — mandatory base provider
 
-Every component test must include `provideOSFCore()`. It configures animations, translations, and environment tokens.
+Every component test must include `provideOSFCore()`. It configures translations and environment tokens.
 
 ```typescript
 export function provideOSFCore() {
-  return [
-    provideNoopAnimations(),
-    importProvidersFrom(TranslateModule.forRoot()),
-    TranslationServiceMock,
-    EnvironmentTokenMock,
-  ];
+  return [provideTranslation, TranslateServiceMock, EnvironmentTokenMock];
 }
 ```
-
-> **Never** import `OSFTestingModule` directly in new tests. It is retained for legacy compatibility only. Use `provideOSFCore()` instead.
 
 ---
 
@@ -198,36 +191,6 @@ TestBed.configureTestingModule({
 });
 ```
 
-### Components with signal-input children
-
-Use `overrideComponent` when a child uses Angular signal viewChild and `MockComponents` cannot stub it correctly.
-
-```typescript
-TestBed.configureTestingModule({ ... })
-  .overrideComponent(FilesControlComponent, {
-      remove: { imports: [FilesTreeComponent] },
-      add: {
-        imports: [
-          MockComponentWithSignal('osf-files-tree', [
-            'files',
-            'selectionMode',
-            'totalCount',
-            'storage',
-            'currentFolder',
-            'isLoading',
-            'scrollHeight',
-            'viewOnly',
-            'resourceId',
-            'provider',
-            'selectedFiles',
-          ]),
-        ],
-      },
-    });
-```
-
----
-
 ## 5. Mocking Strategies
 
 ### Priority order
@@ -237,24 +200,23 @@ Always check `@testing/` before writing inline mocks. Builders and factories alm
 1. Use existing builders/factories from `@testing/providers/`
 2. Use `MockProvider` with an explicit mock object
 3. Use `MockComponents` / `MockModule` from ng-mocks
-4. Use `MockComponentWithSignal` for signal-input children
-5. Inline `jest.fn()` mocks as a last resort
+4. Inline `vi.fn()` mocks as a last resort
 
 ### Quick reference
 
-| Need                       | Use                                                     |
-| -------------------------- | ------------------------------------------------------- |
-| Store selectors / dispatch | `provideMockStore()`                                    |
-| Router                     | `RouterMockBuilder`                                     |
-| ActivatedRoute             | `ActivatedRouteMockBuilder`                             |
-| ToastService               | `ToastServiceMock.simple()`                             |
-| CustomConfirmationService  | `CustomConfirmationServiceMock.simple()`                |
-| CustomDialogService        | `CustomDialogServiceMockBuilder`                        |
-| LoaderService              | `new LoaderServiceMock()`                               |
-| Child components           | `MockComponents(...)` or `MockComponentWithSignal(...)` |
-| PrimeNG modules            | `MockModule(...)`                                       |
+| Need                       | Use                                      |
+| -------------------------- | ---------------------------------------- |
+| Store selectors / dispatch | `provideMockStore()`                     |
+| Router                     | `RouterMockBuilder`                      |
+| ActivatedRoute             | `ActivatedRouteMockBuilder`              |
+| ToastService               | `ToastServiceMock.simple()`              |
+| CustomConfirmationService  | `CustomConfirmationServiceMock.simple()` |
+| CustomDialogService        | `CustomDialogServiceMockBuilder`         |
+| LoaderService              | `new LoaderServiceMock()`                |
+| Child components           | `MockComponents(...)`                    |
+| PrimeNG modules            | `MockModule(...)`                        |
 
-> **Rule:** Bare `MockProvider(Service)` creates ng-mocks stubs, not `jest.fn()`. When you need `.mockImplementation`, `.mockClear`, or assertion checking, always pass an explicit mock as the second argument.
+> **Rule:** Bare `MockProvider(Service)` creates ng-mocks stubs, not `vi.fn()`. When you need `.mockImplementation`, `.mockClear`, or assertion checking, always pass an explicit mock as the second argument.
 
 ---
 
@@ -301,7 +263,7 @@ expect(store.dispatch).toHaveBeenCalledWith(new MyAction('id'));
 expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(MyAction));
 
 // Filter by action type across multiple dispatches
-const calls = (store.dispatch as jest.Mock).mock.calls.filter(([a]: [any]) => a instanceof GetProjects);
+const calls = (store.dispatch as Mock).mock.calls.filter(([a]: [any]) => a instanceof GetProjects);
 expect(calls.length).toBe(1);
 ```
 
@@ -310,7 +272,7 @@ expect(calls.length).toBe(1);
 When `ngOnInit` dispatches and you need isolated per-test assertions:
 
 ```typescript
-(store.dispatch as jest.Mock).mockClear();
+(store.dispatch as Mock).mockClear();
 component.doSomething();
 expect(store.dispatch).toHaveBeenCalledWith(new SpecificAction());
 ```
@@ -319,7 +281,35 @@ expect(store.dispatch).toHaveBeenCalledWith(new SpecificAction());
 
 ## 7. Router & Route Mocking
 
-### ActivatedRoute
+Use this checklist:
+
+### `provideRouter([])`
+
+- Use when the template/component needs router infrastructure (`routerLink`, `routerLinkActive`, router directives/providers).
+- Keep it local to the spec.
+- Skip it for pure logic tests without router directive usage.
+
+### `ActivatedRouteMockBuilder`
+
+- Use when code reads route state (`snapshot.paramMap`, `params`, `queryParams`, `parent`, and similar route inputs).
+- Use it for deterministic route inputs in unit tests.
+- Works with or without `provideRouter([])` depending on template needs.
+
+### `RouterMockBuilder`
+
+- Use when you assert navigation calls (`navigate`, `navigateByUrl`, `url`/events usage).
+- Best for behavior assertions, not real router integration.
+- If you mock `Router`, you test whether navigation was requested, not real routing execution.
+- Do not mock `Router` in specs that validate real routing behavior via `provideRouter(...)`.
+
+### Typical combos
+
+- Params only: `ActivatedRouteMockBuilder`
+- Params + navigation assertions: `ActivatedRouteMockBuilder` + `RouterMockBuilder`
+- Template has `routerLink` + params + navigation assertions: `provideRouter([])` + `ActivatedRouteMockBuilder` + `RouterMockBuilder`
+- Need real router behavior: `provideRouter(...)` + `ActivatedRoute` setup, avoid mocking `Router`
+
+### `ActivatedRouteMockBuilder` examples
 
 ```typescript
 const mockRoute = ActivatedRouteMockBuilder.create()
@@ -338,7 +328,7 @@ const mockRoute = ActivatedRouteMockBuilder.create()
 const mockRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'reg-1' }).withNoParent().build();
 ```
 
-### Router
+### `RouterMockBuilder` examples
 
 ```typescript
 const mockRouter = RouterMockBuilder.create().withUrl('/registries/drafts/reg-1/metadata').build();
@@ -356,7 +346,7 @@ expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/registries/prov-1/new');
 ```typescript
 const toastService = ToastServiceMock.simple();
 const confirmationService = CustomConfirmationServiceMock.simple();
-// Returns plain objects with jest.fn() methods — safe to assert on directly
+// Returns plain objects with vi.fn() methods — safe to assert on directly
 ```
 
 ### Builder pattern
@@ -364,9 +354,9 @@ const confirmationService = CustomConfirmationServiceMock.simple();
 ```typescript
 const mockDialog = CustomDialogServiceMockBuilder.create()
   .withOpen(
-    jest.fn().mockReturnValue({
+    vi.fn().mockReturnValue({
       onClose: dialogClose$.pipe(),
-      close: jest.fn(),
+      close: vi.fn(),
     })
   )
   .build();
@@ -376,8 +366,8 @@ const mockDialog = CustomDialogServiceMockBuilder.create()
 
 ```typescript
 const mockFilesService = {
-  uploadFile: jest.fn(),
-  getFileGuid: jest.fn(),
+  uploadFile: vi.fn(),
+  getFileGuid: vi.fn(),
 };
 MockProvider(FilesService, mockFilesService);
 ```
@@ -421,37 +411,57 @@ fixture.detectChanges();
 
 ## 10. Async Operations
 
-### `fakeAsync` + `tick` for debounced operations
+### Zoneless change detection
+
+In a zoneless environment, `fixture.detectChanges()` is used for immediate synchronous rendering. For signal updates and other async logic, use `await fixture.whenStable()` before DOM assertions so the scheduler can finish.
 
 ```typescript
-it('should dispatch after debounce', fakeAsync(() => {
-  (store.dispatch as jest.Mock).mockClear();
-  component.onProjectFilter('abc');
-  tick(300);
-  expect(store.dispatch).toHaveBeenCalledWith(new GetProjects('user-1', 'abc'));
-}));
+it('should update UI after signal change', async () => {
+  mySignal.set(newVal);
+  await fixture.whenStable();
+  expect(fixture.nativeElement.textContent).toContain(newVal);
+});
+```
 
-// Deduplication — only the last value dispatches
-it('should debounce rapid calls', fakeAsync(() => {
-  (store.dispatch as jest.Mock).mockClear();
+### Debounced operations with Vitest timers
+
+```typescript
+it('should dispatch after debounce', () => {
+  vi.useFakeTimers();
+  (store.dispatch as Mock).mockClear();
+
+  component.onProjectFilter('abc');
+  vi.advanceTimersByTime(300);
+
+  expect(store.dispatch).toHaveBeenCalledWith(new GetProjects('user-1', 'abc'));
+  vi.useRealTimers();
+});
+
+it('should debounce rapid calls', () => {
+  vi.useFakeTimers();
+  (store.dispatch as Mock).mockClear();
+
   component.onProjectFilter('a');
   component.onProjectFilter('ab');
   component.onProjectFilter('abc');
-  tick(300);
-  const calls = (store.dispatch as jest.Mock).mock.calls.filter(([a]: [any]) => a instanceof GetProjects);
+  vi.advanceTimersByTime(300);
+
+  const calls = (store.dispatch as Mock).mock.calls.filter(([a]: [unknown]) => a instanceof GetProjects);
   expect(calls.length).toBe(1);
-}));
+  vi.useRealTimers();
+});
 ```
 
-### `done` callback for output emissions
+### Output emissions with explicit async flow
 
 ```typescript
-it('should emit attachFile', (done) => {
-  component.attachFile.subscribe((f) => {
-    expect(f).toEqual({ id: 'file-1' });
-    done();
+it('should emit attachFile', async () => {
+  const emitted = new Promise<FileModel>((resolve) => {
+    component.attachFile.subscribe((file) => resolve(file));
   });
+
   component.selectFile({ id: 'file-1' } as FileModel);
+  await expect(emitted).resolves.toEqual({ id: 'file-1' });
 });
 ```
 
@@ -472,7 +482,7 @@ it('should trim values on submit', () => {
     title: '  Padded Title  ',
     description: '  Padded Desc  ',
   });
-  (store.dispatch as jest.Mock).mockClear();
+  (store.dispatch as Mock).mockClear();
   component.submitMetadata();
   expect(store.dispatch).toHaveBeenCalledWith(
     new UpdateDraft('draft-1', expect.objectContaining({ title: 'Padded Title' }))
@@ -507,9 +517,9 @@ Always use a real `Subject` for `onClose` — `MockProvider` cannot auto-generat
 const dialogClose$ = new Subject<any>();
 const mockDialog = CustomDialogServiceMockBuilder.create()
   .withOpen(
-    jest.fn().mockReturnValue({
+    vi.fn().mockReturnValue({
       onClose: dialogClose$.pipe(),
-      close: jest.fn(),
+      close: vi.fn(),
     })
   )
   .build();
@@ -535,17 +545,17 @@ it('should pass data between dialogs', () => {
   const confirmClose$ = new Subject<any>();
   let callCount = 0;
 
-  (dialog.open as jest.Mock).mockImplementation(() => {
+  (dialog.open as Mock).mockImplementation(() => {
     callCount++;
     const subj = callCount === 1 ? selectClose$ : confirmClose$;
-    return { onClose: subj.pipe(), close: jest.fn() };
+    return { onClose: subj.pipe(), close: vi.fn() };
   });
 
   component.openSelectComponentsDialog();
   selectClose$.next(['comp-1']);
 
   expect(dialog.open).toHaveBeenCalledTimes(2);
-  const secondArgs = (dialog.open as jest.Mock).mock.calls[1];
+  const secondArgs = (dialog.open as Mock).mock.calls[1];
   expect(secondArgs[1].data.components).toEqual(['comp-1']);
 });
 ```
@@ -555,7 +565,7 @@ it('should pass data between dialogs', () => {
 ```typescript
 it('should dispatch on confirm', () => {
   mockConfirmation.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
-  (store.dispatch as jest.Mock).mockClear();
+  (store.dispatch as Mock).mockClear();
   component.deleteDraft();
   expect(store.dispatch).toHaveBeenCalledWith(new DeleteDraft('draft-1'));
 });
@@ -571,7 +581,7 @@ Components that auto-save on destroy must skip saves when the resource was alrea
 
 ```typescript
 it('should skip updates on destroy when draft was deleted', () => {
-  (store.dispatch as jest.Mock).mockClear();
+  (store.dispatch as Mock).mockClear();
   component.isDraftDeleted = true;
   component.ngOnDestroy();
   expect(store.dispatch).not.toHaveBeenCalled();
@@ -579,7 +589,7 @@ it('should skip updates on destroy when draft was deleted', () => {
 
 it('should dispatch update on destroy when fields changed', () => {
   component.metadataForm.patchValue({ title: 'Changed Title' });
-  (store.dispatch as jest.Mock).mockClear();
+  (store.dispatch as Mock).mockClear();
   component.ngOnDestroy();
   expect(store.dispatch).toHaveBeenCalledWith(
     new UpdateDraft('draft-1', expect.objectContaining({ title: 'Changed Title' }))
@@ -587,7 +597,7 @@ it('should dispatch update on destroy when fields changed', () => {
 });
 
 it('should not dispatch update on destroy when fields are unchanged', () => {
-  (store.dispatch as jest.Mock).mockClear();
+  (store.dispatch as Mock).mockClear();
   component.ngOnDestroy();
   expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateDraft));
 });
@@ -832,44 +842,49 @@ Centralised raw JSON API responses used for HTTP flush in service and state inte
 
 ## 17. Coverage Enforcement
 
-This project strictly enforces 90%+ test coverage through GitHub Actions CI.
+Coverage is configured in two layers:
+
+- `angular.json` (`test.options`) controls coverage file selection (`coverageInclude` / `coverageExclude`)
+- `vitest.config.ts` (`test.coverage`) controls provider, reporters, output location, and thresholds
+
+This split avoids path mismatches in Angular+Vitest runs and prevents `0%` coverage issues caused by filtering transformed module ids in Vitest config.
 
 ### Coverage requirements
 
-| File type     | Requirement        | Notes                                      |
-| ------------- | ------------------ | ------------------------------------------ |
-| `*.ts`        | 90%+ line & branch | Zero exceptions                            |
-| Services      | 90%+               | Must mock HTTP via `HttpTestingController` |
-| Components    | 90%+               | DOM + Input + Output event coverage        |
-| Pipes / utils | 90%+               | All edge cases tested                      |
-| NGXS state    | 90%+               | Integration test approach required         |
+Coverage for statements must be 90%+.
+
+Thresholds are defined in `vitest.config.ts` under `test.coverage.thresholds`. Use those values as the source of truth.
 
 ### Enforcement pipeline
 
-- **GitHub Actions CI:** runs on every PR and push — build fails if a single uncovered branch, line, or function exists
+- **GitHub Actions CI:** runs `ng test --no-watch --coverage` and validates thresholds
+- **Local command:** `npm run test:check-coverage-thresholds`
 
-> **Tip:** Use `npm run test:watch` during development to maintain coverage incrementally rather than discovering gaps at push time.
+### Command guidance
+
+- Use `npm run test:no-coverage` for the fastest feedback loop
+- Use `npm run test:one -- "src/path/to/file.spec.ts"` for targeted validation
+- Use `npm run test:coverage` when checking final coverage impact
 
 ---
 
 ## 18. Best Practices
 
-1. **Always use `provideOSFCore()`** — never import `OSFTestingModule` directly in new tests.
+1. **Always use `provideOSFCore()`**.
 2. **Always use `provideMockStore()`** — never mock `component.actions` via `Object.defineProperty`.
-3. **Always pass explicit mocks to `MockProvider`** when you need `jest.fn()` assertions. Bare `MockProvider(Service)` creates ng-mocks stubs.
+3. **Always pass explicit mocks to `MockProvider`** when you need `vi.fn()` assertions. Bare `MockProvider(Service)` creates ng-mocks stubs.
 4. **Check `@testing/` before creating inline mocks** — builders and factories almost certainly exist.
 5. **Prefer a single flat `describe` block** per file to keep tests searchable and prevent state leakage. Use nested `describe` blocks when it significantly simplifies setup or groups logically distinct behaviors. No `afterEach`.
 6. **No redundant tests** — merge tests that cover the same code path.
-7. **Use `(store.dispatch as jest.Mock).mockClear()`** when `ngOnInit` dispatches and you need isolated per-test assertions.
+7. **Use `(store.dispatch as Mock).mockClear()`** when `ngOnInit` dispatches and you need isolated per-test assertions.
 8. **Use `WritableSignal` for dynamic state** — pass `signal()` values to `provideMockStore` when tests need to mutate state mid-test.
 9. **Use `Subject` for dialog `onClose`** — gives explicit control over dialog result timing. Use `provideDynamicDialogRefMock()` where applicable.
-10. **Use `fakeAsync` + `tick`** for debounced operations — specify the exact debounce duration.
+10. **Use Vitest fake timers** for debounced operations — `vi.useFakeTimers()`, `vi.advanceTimersByTime(ms)`, and `vi.useRealTimers()`.
 11. **Use `fixture.componentRef.setInput()`** for signal inputs — never direct property assignment.
-12. **Use `ngMocks.faster()`** when all tests in a file share identical `TestBed` config — reuses the compiled module for speed. Do not use if any test requires a different config: shared state will cause subtle test pollution.
-13. **Use typed mock interfaces** (`ToastServiceMockType`, `RouterMockType`, etc.) — avoid `any`.
-14. **Test both positive and negative paths** — confirm an action fires AND confirm it does not fire when conditions are not met.
-15. **Only use `@testing/data` fixtures in HTTP flushes** — never hardcode response values inline in service or state tests.
-16. **Each test should highlight the most critical aspect of the code** — if a test fails during a refactor, it should clearly signal that a core feature was impacted.
+12. **Use typed mock interfaces** (`ToastServiceMockType`, `RouterMockType`, etc.) — avoid `any`.
+13. **Test both positive and negative paths** — confirm an action fires AND confirm it does not fire when conditions are not met.
+14. **Only use `@testing/data` fixtures in HTTP flushes** — never hardcode response values inline in service or state tests.
+15. **Each test should highlight the most critical aspect of the code** — if a test fails during a refactor, it should clearly signal that a core feature was impacted.
 
 ---
 
@@ -894,7 +909,7 @@ expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/target');
 
 ```typescript
 expect(mockDialog.open).toHaveBeenCalled();
-const callArgs = (mockDialog.open as jest.Mock).mock.calls[0];
+const callArgs = (mockDialog.open as Mock).mock.calls[0];
 expect(callArgs[1].header).toBe('expected.title');
 expect(callArgs[1].data.draftId).toBe('draft-1');
 ```
@@ -902,7 +917,7 @@ expect(callArgs[1].data.draftId).toBe('draft-1');
 ### Filtering dispatch calls by action type
 
 ```typescript
-const calls = (store.dispatch as jest.Mock).mock.calls.filter(([a]: [any]) => a instanceof GetProjects);
+const calls = (store.dispatch as Mock).mock.calls.filter(([a]: [unknown]) => a instanceof GetProjects);
 expect(calls.length).toBe(1);
 expect(calls[0][0]).toEqual(new GetProjects('user-1', 'abc'));
 ```

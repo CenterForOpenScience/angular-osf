@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { formInputLimits } from '@osf/features/preprints/constants';
@@ -20,11 +22,6 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { ToastService } from '@osf/shared/services/toast.service';
 import { LicenseModel } from '@shared/models/license/license.model';
 
-import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';
-import { PreprintsContributorsComponent } from './preprints-contributors/preprints-contributors.component';
-import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subjects.component';
-import { PreprintsMetadataStepComponent } from './preprints-metadata-step.component';
-
 import { MOCK_LICENSE } from '@testing/mocks/license.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
@@ -35,6 +32,11 @@ import {
 } from '@testing/providers/custom-confirmation-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';
+import { PreprintsContributorsComponent } from './preprints-contributors/preprints-contributors.component';
+import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subjects.component';
+import { PreprintsMetadataStepComponent } from './preprints-metadata-step.component';
 
 describe('PreprintsMetadataStepComponent', () => {
   let component: PreprintsMetadataStepComponent;
@@ -143,8 +145,8 @@ describe('PreprintsMetadataStepComponent', () => {
 
   it('should return early in nextButtonClicked when form is invalid', () => {
     setup();
-    const nextClickedSpy = jest.spyOn(component.nextClicked, 'emit');
-    (store.dispatch as jest.Mock).mockClear();
+    const nextClickedSpy = vi.spyOn(component.nextClicked, 'emit');
+    (store.dispatch as Mock).mockClear();
 
     component.metadataForm.patchValue({ subjects: [] });
     component.nextButtonClicked();
@@ -160,8 +162,8 @@ describe('PreprintsMetadataStepComponent', () => {
     });
     component.initForm();
     component.metadataForm.patchValue({ subjects: [{ id: 'subject-1', name: 'Subject 1' }] });
-    const nextClickedSpy = jest.spyOn(component.nextClicked, 'emit');
-    (store.dispatch as jest.Mock).mockClear();
+    const nextClickedSpy = vi.spyOn(component.nextClicked, 'emit');
+    (store.dispatch as Mock).mockClear();
 
     component.nextButtonClicked();
 
@@ -171,9 +173,9 @@ describe('PreprintsMetadataStepComponent', () => {
 
   it('should update preprint and emit success in nextButtonClicked', () => {
     setup();
-    const nextClickedSpy = jest.spyOn(component.nextClicked, 'emit');
+    const nextClickedSpy = vi.spyOn(component.nextClicked, 'emit');
     component.metadataForm.patchValue({ subjects: [{ id: 'subject-1', name: 'Subject 1' }] });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.nextButtonClicked();
 
@@ -195,12 +197,12 @@ describe('PreprintsMetadataStepComponent', () => {
   it('should dispatch save license in selectLicense only when required fields are absent', () => {
     setup({ detectChanges: false });
     const noFields = { ...MOCK_LICENSE, id: 'no-fields', requiredFields: [] };
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.selectLicense(noFields);
     expect(store.dispatch).toHaveBeenCalledWith(new SaveLicense('no-fields', undefined));
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.selectLicense(MOCK_LICENSE);
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(SaveLicense));
   });
@@ -217,7 +219,7 @@ describe('PreprintsMetadataStepComponent', () => {
       detectChanges: false,
     });
     component.initForm();
-    const backClickedSpy = jest.spyOn(component.backClicked, 'emit');
+    const backClickedSpy = vi.spyOn(component.backClicked, 'emit');
 
     component.backButtonClicked();
 
@@ -227,7 +229,7 @@ describe('PreprintsMetadataStepComponent', () => {
 
   it('should emit back when there are no changes in backButtonClicked', () => {
     setup();
-    const backClickedSpy = jest.spyOn(component.backClicked, 'emit');
+    const backClickedSpy = vi.spyOn(component.backClicked, 'emit');
     component.metadataForm.patchValue({ subjects: [{ id: 'subject-1', name: 'Subject 1' }] });
 
     component.backButtonClicked();
@@ -238,7 +240,7 @@ describe('PreprintsMetadataStepComponent', () => {
 
   it('should request confirmation and emit on confirm when there are changes in backButtonClicked', () => {
     setup();
-    const backClickedSpy = jest.spyOn(component.backClicked, 'emit');
+    const backClickedSpy = vi.spyOn(component.backClicked, 'emit');
     component.metadataForm.patchValue({ doi: '10.9999/changed', subjects: [{ id: 'subject-1', name: 'Subject 1' }] });
 
     component.backButtonClicked();
@@ -257,7 +259,7 @@ describe('PreprintsMetadataStepComponent', () => {
 
   it('should not emit on reject when there are changes in backButtonClicked', () => {
     setup();
-    const backClickedSpy = jest.spyOn(component.backClicked, 'emit');
+    const backClickedSpy = vi.spyOn(component.backClicked, 'emit');
     component.metadataForm.patchValue({ doi: '10.9999/changed', subjects: [{ id: 'subject-1', name: 'Subject 1' }] });
 
     component.backButtonClicked();

@@ -5,10 +5,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
 import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 
-import { MetadataSubjectsComponent } from './metadata-subjects.component';
-
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { MetadataSubjectsComponent } from './metadata-subjects.component';
 
 describe('MetadataSubjectsComponent', () => {
   let component: MetadataSubjectsComponent;
@@ -16,10 +16,11 @@ describe('MetadataSubjectsComponent', () => {
 
   const mockSubjects: SubjectModel[] = SUBJECTS_MOCK;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MetadataSubjectsComponent, MockComponent(SubjectsComponent), OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataSubjectsComponent, MockComponent(SubjectsComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MetadataSubjectsComponent);
     fixture.componentRef.setInput('selectedSubjects', mockSubjects);
@@ -54,7 +55,7 @@ describe('MetadataSubjectsComponent', () => {
   });
 
   it('should emit getSubjectChildren event', () => {
-    const emitSpy = jest.spyOn(component.getSubjectChildren, 'emit');
+    const emitSpy = vi.spyOn(component.getSubjectChildren, 'emit');
     const parentId = 'subject-1';
 
     component.getSubjectChildren.emit(parentId);
@@ -63,7 +64,7 @@ describe('MetadataSubjectsComponent', () => {
   });
 
   it('should emit searchSubjects event', () => {
-    const emitSpy = jest.spyOn(component.searchSubjects, 'emit');
+    const emitSpy = vi.spyOn(component.searchSubjects, 'emit');
     const searchTerm = 'computer science';
 
     component.searchSubjects.emit(searchTerm);
@@ -72,7 +73,7 @@ describe('MetadataSubjectsComponent', () => {
   });
 
   it('should emit updateSelectedSubjects event', () => {
-    const emitSpy = jest.spyOn(component.updateSelectedSubjects, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelectedSubjects, 'emit');
     const updatedSubjects: SubjectModel[] = [
       {
         id: 'subject-7',

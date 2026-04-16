@@ -51,9 +51,7 @@ export class AuthenticatedIdentityComponent implements OnInit {
 
   readonly externalIdentities = select(AccountSettingsSelectors.getExternalIdentities);
 
-  readonly orcidUrl = computed(() => {
-    return this.existingOrcid() ? `https://orcid.org/${this.existingOrcid()}` : null;
-  });
+  readonly orcidUrl = computed(() => (this.existingOrcid() ? `https://orcid.org/${this.existingOrcid()}` : null));
 
   readonly existingOrcid = computed(
     (): string | undefined =>

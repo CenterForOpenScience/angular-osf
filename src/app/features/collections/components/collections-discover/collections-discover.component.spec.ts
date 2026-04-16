@@ -3,46 +3,46 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import { CollectionsMainContentComponent } from '@osf/features/collections/components';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CollectionsSelectors } from '@shared/stores/collections';
 
-import { CollectionsDiscoverComponent } from './collections-discover.component';
-
 import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { CollectionsQuerySyncService } from '../../services';
+import { CollectionsMainContentComponent } from '../collections-main-content/collections-main-content.component';
+
+import { CollectionsDiscoverComponent } from './collections-discover.component';
 
 describe('CollectionsDiscoverComponent', () => {
   let component: CollectionsDiscoverComponent;
   let fixture: ComponentFixture<CollectionsDiscoverComponent>;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let toastServiceMock: ToastServiceMockType;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
   let mockRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
 
-  beforeEach(async () => {
-    toastServiceMock = ToastServiceMockBuilder.create().build();
+  beforeEach(() => {
+    toastServiceMock = ToastServiceMock.simple();
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
     mockRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: 'provider-1' }).build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         CollectionsDiscoverComponent,
         ...MockComponents(SearchInputComponent, CollectionsMainContentComponent, LoadingSpinnerComponent),
-        OSFTestingModule,
       ],
       providers: [
+        provideOSFCore(),
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(ActivatedRoute, mockRoute),
-        MockProvider(SENTRY_TOKEN, { captureException: jest.fn() }),
         provideMockStore({
           signals: [
             { selector: CollectionsSelectors.getCollectionProvider, value: MOCK_PROVIDER },
@@ -55,7 +55,11 @@ describe('CollectionsDiscoverComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    }).overrideComponent(CollectionsDiscoverComponent, {
+      set: {
+        providers: [MockProvider(CollectionsQuerySyncService)],
+      },
+    });
 
     fixture = TestBed.createComponent(CollectionsDiscoverComponent);
     component = fixture.componentInstance;

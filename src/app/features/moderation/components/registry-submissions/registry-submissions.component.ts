@@ -31,7 +31,7 @@ import {
   LoadMoreRegistrySubmissionContributors,
   RegistryModerationSelectors,
 } from '../../store/registry-moderation';
-import { RegistrySubmissionItemComponent } from '..';
+import { RegistrySubmissionItemComponent } from '../registry-submission-item/registry-submission-item.component';
 
 @Component({
   selector: 'osf-registry-submissions',

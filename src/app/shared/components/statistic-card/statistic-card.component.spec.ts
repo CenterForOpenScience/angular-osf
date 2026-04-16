@@ -1,15 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { StatisticCardComponent } from './statistic-card.component';
 
 describe('StatisticCardComponent', () => {
   let component: StatisticCardComponent;
   let fixture: ComponentFixture<StatisticCardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [StatisticCardComponent],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(StatisticCardComponent);
     component = fixture.componentInstance;

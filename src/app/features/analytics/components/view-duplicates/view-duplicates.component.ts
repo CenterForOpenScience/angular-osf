@@ -67,10 +67,11 @@ export class ViewDuplicatesComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-  private project = select(ProjectOverviewSelectors.getProject);
-  private registration = select(RegistrySelectors.getRegistry);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+
+  private project = select(ProjectOverviewSelectors.getProject);
+  private registration = select(RegistrySelectors.getRegistry);
 
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);

@@ -1,17 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TagsInputComponent } from './tags-input.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { TagsInputComponent } from './tags-input.component';
 
 describe('TagsInputComponent', () => {
   let component: TagsInputComponent;
   let fixture: ComponentFixture<TagsInputComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [TagsInputComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [TagsInputComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(TagsInputComponent);
     component = fixture.componentInstance;
@@ -38,7 +39,7 @@ describe('TagsInputComponent', () => {
   });
 
   it('should emit tagsChanged event', () => {
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     const mockTags = ['tag1', 'tag2'];
 
     component.tagsChanged.emit(mockTags);
@@ -78,7 +79,7 @@ describe('TagsInputComponent', () => {
 
   it('should handle removeTag method', () => {
     component.localTags.set(['tag1', 'tag2', 'tag3']);
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
 
     component.removeTag(1);
 
@@ -89,7 +90,7 @@ describe('TagsInputComponent', () => {
   it('should handle removeTag method in readonly mode', () => {
     fixture.componentRef.setInput('readonly', true);
     component.localTags.set(['tag1', 'tag2', 'tag3']);
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
 
     component.removeTag(1);
 
@@ -99,7 +100,7 @@ describe('TagsInputComponent', () => {
 
   it('should handle rapid tag removals', () => {
     component.localTags.set(['tag1', 'tag2', 'tag3', 'tag4']);
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
 
     component.removeTag(0);
     component.removeTag(1);
@@ -113,7 +114,7 @@ describe('TagsInputComponent', () => {
   it('should focus input element when called', () => {
     const mockInputElement = {
       nativeElement: {
-        focus: jest.fn(),
+        focus: vi.fn(),
       },
     };
 
@@ -137,13 +138,13 @@ describe('TagsInputComponent', () => {
   it('should add tag on Enter key with value', () => {
     const mockEvent = {
       key: 'Enter',
-      preventDefault: jest.fn(),
+      preventDefault: vi.fn(),
       target: {
         value: 'new tag',
       },
     } as unknown as KeyboardEvent;
 
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     component.localTags.set(['existing tag']);
 
     component.onInputKeydown(mockEvent);
@@ -158,13 +159,13 @@ describe('TagsInputComponent', () => {
   it('should add tag on Comma key with value', () => {
     const mockEvent = {
       key: ',',
-      preventDefault: jest.fn(),
+      preventDefault: vi.fn(),
       target: {
         value: 'new tag',
       },
     } as unknown as KeyboardEvent;
 
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     component.localTags.set(['existing tag']);
 
     component.onInputKeydown(mockEvent);
@@ -177,13 +178,13 @@ describe('TagsInputComponent', () => {
   it('should remove last tag on Backspace with empty value and existing tags', () => {
     const mockEvent = {
       key: 'Backspace',
-      preventDefault: jest.fn(),
+      preventDefault: vi.fn(),
       target: {
         value: '',
       },
     } as unknown as KeyboardEvent;
 
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     component.localTags.set(['tag1', 'tag2', 'tag3']);
 
     component.onInputKeydown(mockEvent);
@@ -195,13 +196,13 @@ describe('TagsInputComponent', () => {
   it('should not remove tag on Backspace when value is not empty', () => {
     const mockEvent = {
       key: 'Backspace',
-      preventDefault: jest.fn(),
+      preventDefault: vi.fn(),
       target: {
         value: 'some value',
       },
     } as unknown as KeyboardEvent;
 
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     component.localTags.set(['tag1', 'tag2']);
 
     component.onInputKeydown(mockEvent);
@@ -213,13 +214,13 @@ describe('TagsInputComponent', () => {
   it('should not remove tag on Backspace when no tags exist', () => {
     const mockEvent = {
       key: 'Backspace',
-      preventDefault: jest.fn(),
+      preventDefault: vi.fn(),
       target: {
         value: '',
       },
     } as unknown as KeyboardEvent;
 
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     component.localTags.set([]);
 
     component.onInputKeydown(mockEvent);
@@ -235,7 +236,7 @@ describe('TagsInputComponent', () => {
       },
     } as unknown as FocusEvent;
 
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     component.localTags.set(['existing tag']);
 
     component.onInputBlur(mockEvent);
@@ -253,7 +254,7 @@ describe('TagsInputComponent', () => {
       },
     } as unknown as FocusEvent;
 
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     component.localTags.set(['existing tag']);
 
     component.onInputBlur(mockEvent);

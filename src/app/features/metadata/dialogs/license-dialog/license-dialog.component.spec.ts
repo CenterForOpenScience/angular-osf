@@ -8,20 +8,21 @@ import { LicenseComponent } from '@osf/shared/components/license/license.compone
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { LicensesSelectors } from '@shared/stores/licenses';
 
-import { LicenseDialogComponent } from './license-dialog.component';
-
 import { MOCK_LICENSE } from '@testing/mocks/license.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { LicenseDialogComponent } from './license-dialog.component';
 
 describe('LicenseDialogComponent', () => {
   let component: LicenseDialogComponent;
   let fixture: ComponentFixture<LicenseDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LicenseDialogComponent, OSFTestingModule, ...MockComponents(LoadingSpinnerComponent, LicenseComponent)],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [LicenseDialogComponent, ...MockComponents(LoadingSpinnerComponent, LicenseComponent)],
       providers: [
+        provideOSFCore(),
         MockProvider(DynamicDialogRef),
         MockProvider(DynamicDialogConfig),
         provideMockStore({
@@ -31,7 +32,7 @@ describe('LicenseDialogComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(LicenseDialogComponent);
     component = fixture.componentInstance;
@@ -49,7 +50,7 @@ describe('LicenseDialogComponent', () => {
 
   it('should handle license creation with non-existent license', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     const createEvent = {
       id: 'non-existent-license',
@@ -68,7 +69,7 @@ describe('LicenseDialogComponent', () => {
     const mockLicenseComponent = {
       selectedLicense: () => MOCK_LICENSE,
       licenseForm: { invalid: false },
-      saveLicense: jest.fn(),
+      saveLicense: vi.fn(),
     };
 
     Object.defineProperty(component, 'licenseComponent', {
@@ -83,7 +84,7 @@ describe('LicenseDialogComponent', () => {
 
   it('should not save when no license is selected', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     component.selectedLicenseId.set(null);
 
@@ -94,7 +95,7 @@ describe('LicenseDialogComponent', () => {
 
   it('should not save when selected license is not found', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     component.selectedLicenseId.set('non-existent-license');
 
@@ -105,10 +106,10 @@ describe('LicenseDialogComponent', () => {
 
   it('should handle cancel', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     const mockLicenseComponent = {
-      cancel: jest.fn(),
+      cancel: vi.fn(),
     };
 
     Object.defineProperty(component, 'licenseComponent', {
@@ -123,7 +124,7 @@ describe('LicenseDialogComponent', () => {
 
   it('should handle cancel when license component is not available', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     Object.defineProperty(component, 'licenseComponent', {
       get: () => () => null,

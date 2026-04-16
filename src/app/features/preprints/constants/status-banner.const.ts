@@ -1,6 +1,6 @@
-import { ProviderReviewsWorkflow, ReviewsState } from '../enums';
+import { MessageSeverityType, TagSeverityType } from '@osf/shared/models/severity.type';
 
-export type StatusSeverity = 'warn' | 'secondary' | 'success' | 'error';
+import { ProviderReviewsWorkflow, ReviewsState } from '../enums';
 
 export const statusLabelKeyByState: Partial<Record<ReviewsState, string>> = {
   [ReviewsState.Pending]: 'preprints.details.statusBanner.pending',
@@ -33,16 +33,30 @@ export const statusMessageByState: Partial<Record<ReviewsState, string>> = {
   [ReviewsState.Withdrawn]: 'preprints.details.statusBanner.messages.withdrawn',
 };
 
-export const statusSeverityByWorkflow: Record<ProviderReviewsWorkflow, StatusSeverity> = {
+export const statusSeverityByWorkflow: Record<ProviderReviewsWorkflow, MessageSeverityType> = {
   [ProviderReviewsWorkflow.PreModeration]: 'warn',
   [ProviderReviewsWorkflow.PostModeration]: 'secondary',
 };
 
-export const statusSeverityByState: Partial<Record<ReviewsState, StatusSeverity>> = {
+export const statusSeverityByState: Partial<Record<ReviewsState, MessageSeverityType>> = {
   [ReviewsState.Accepted]: 'success',
   [ReviewsState.Rejected]: 'error',
   [ReviewsState.PendingWithdrawal]: 'error',
   [ReviewsState.WithdrawalRejected]: 'error',
+  [ReviewsState.Withdrawn]: 'warn',
+  [ReviewsState.Pending]: 'warn',
+};
+
+export const tagStatusSeverityByWorkflow: Record<ProviderReviewsWorkflow, TagSeverityType> = {
+  [ProviderReviewsWorkflow.PreModeration]: 'warn',
+  [ProviderReviewsWorkflow.PostModeration]: 'secondary',
+};
+
+export const tagStatusSeverityByState: Partial<Record<ReviewsState, TagSeverityType>> = {
+  [ReviewsState.Accepted]: 'success',
+  [ReviewsState.Rejected]: 'danger',
+  [ReviewsState.PendingWithdrawal]: 'danger',
+  [ReviewsState.WithdrawalRejected]: 'danger',
   [ReviewsState.Withdrawn]: 'warn',
   [ReviewsState.Pending]: 'warn',
 };

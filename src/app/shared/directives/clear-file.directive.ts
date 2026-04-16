@@ -1,10 +1,10 @@
-import { Directive, ElementRef, HostListener } from '@angular/core';
+import { Directive, ElementRef, HostListener, inject } from '@angular/core';
 
 @Directive({
   selector: '[osfClearFile]',
 })
 export class ClearFileDirective {
-  constructor(private el: ElementRef<HTMLInputElement>) {}
+  private readonly el = inject(ElementRef<HTMLInputElement>);
 
   @HostListener('click')
   onClick() {

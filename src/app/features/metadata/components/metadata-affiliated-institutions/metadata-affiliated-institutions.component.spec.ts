@@ -4,10 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 
-import { MetadataAffiliatedInstitutionsComponent } from './metadata-affiliated-institutions.component';
-
 import { MOCK_PROJECT_AFFILIATED_INSTITUTIONS } from '@testing/mocks/project-overview.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { MetadataAffiliatedInstitutionsComponent } from './metadata-affiliated-institutions.component';
 
 describe('MetadataAffiliatedInstitutionsComponent', () => {
   let component: MetadataAffiliatedInstitutionsComponent;
@@ -15,14 +15,11 @@ describe('MetadataAffiliatedInstitutionsComponent', () => {
 
   const mockAffiliatedInstitutions = MOCK_PROJECT_AFFILIATED_INSTITUTIONS;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        MetadataAffiliatedInstitutionsComponent,
-        MockComponent(AffiliatedInstitutionsViewComponent),
-        OSFTestingModule,
-      ],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataAffiliatedInstitutionsComponent, MockComponent(AffiliatedInstitutionsViewComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MetadataAffiliatedInstitutionsComponent);
     component = fixture.componentInstance;

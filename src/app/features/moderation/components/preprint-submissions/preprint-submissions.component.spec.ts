@@ -10,6 +10,12 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 
+import { MOCK_PREPRINT_SUBMISSIONS } from '@testing/mocks/preprint-submission.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { PreprintSubmissionsSort, SubmissionReviewStatus } from '../../enums';
 import { PreprintSubmissionModel } from '../../models';
 import {
@@ -18,13 +24,8 @@ import {
   PreprintModerationSelectors,
 } from '../../store/preprint-moderation';
 import { PreprintSubmissionItemComponent } from '../preprint-submission-item/preprint-submission-item.component';
-import { PreprintSubmissionsComponent } from '..';
 
-import { MOCK_PREPRINT_SUBMISSIONS } from '@testing/mocks/preprint-submission.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { PreprintSubmissionsComponent } from './preprint-submissions.component';
 
 describe('PreprintSubmissionsComponent', () => {
   let component: PreprintSubmissionsComponent;
@@ -36,17 +37,16 @@ describe('PreprintSubmissionsComponent', () => {
   const mockProviderId = 'test-provider-id';
   const mockSubmissions: PreprintSubmissionModel[] = MOCK_PREPRINT_SUBMISSIONS;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockRouter = RouterMockBuilder.create().build();
     mockActivatedRoute = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })
       .withQueryParams({ status: 'pending' })
       .build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         PreprintSubmissionsComponent,
-        OSFTestingModule,
         ...MockComponents(
           SelectComponent,
           IconComponent,
@@ -56,6 +56,7 @@ describe('PreprintSubmissionsComponent', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
         MockProvider(Router, mockRouter),
         MockProvider(ActivatedRoute, mockActivatedRoute),
         provideMockStore({
@@ -69,7 +70,7 @@ describe('PreprintSubmissionsComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(PreprintSubmissionsComponent);
     component = fixture.componentInstance;
@@ -156,7 +157,7 @@ describe('PreprintSubmissionsComponent', () => {
 
   it('should load contributors for a submission', () => {
     const mockItem = mockSubmissions[0];
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     component.loadContributors(mockItem);
 
@@ -165,7 +166,7 @@ describe('PreprintSubmissionsComponent', () => {
 
   it('should load more contributors for a submission', () => {
     const mockItem = mockSubmissions[0];
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     component.loadMoreContributors(mockItem);
 

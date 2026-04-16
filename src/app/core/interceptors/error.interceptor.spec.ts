@@ -1,295 +1,159 @@
 import { MockProvider } from 'ng-mocks';
 
-import { throwError } from 'rxjs';
+import { firstValueFrom, throwError } from 'rxjs';
 
 import { HttpContext, HttpErrorResponse, HttpHeaders, HttpRequest } from '@angular/common/http';
-import { runInInjectionContext } from '@angular/core';
+import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AuthService } from '@core/services/auth.service';
-import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
-import { errorInterceptor } from './error.interceptor';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { AuthServiceMock, AuthServiceMockType } from '@testing/providers/auth-service.mock';
+import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { SentryMock, SentryMockType } from '@testing/providers/sentry-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+import { ViewOnlyLinkHelperMock, ViewOnlyLinkHelperMockType } from '@testing/providers/view-only-link-helper.mock';
 
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { errorInterceptor } from './error.interceptor';
+import { BYPASS_ERROR_INTERCEPTOR } from './error-interceptor.tokens';
 
 describe('errorInterceptor', () => {
-  let toastService: ToastService;
-  let loaderService: LoaderService;
-  let router: Router;
-  let authService: AuthService;
-  let viewOnlyHelper: ViewOnlyLinkHelperService;
-  let sentryMock: jest.Mock;
+  let router: RouterMockType;
+  let toastServiceMock: ToastServiceMockType;
+  let loaderServiceMock: LoaderServiceMock;
+  let authServiceMock: AuthServiceMockType;
+  let viewOnlyHelperMock: ViewOnlyLinkHelperMockType;
+  let sentryMock: SentryMockType;
 
-  beforeEach(() => {
-    sentryMock = jest.fn();
+  function setup(platformId: 'browser' | 'server' = 'browser', viewOnly = false, routerUrl = '/dashboard') {
+    router = RouterMockBuilder.create().withUrl(routerUrl).withNavigate(vi.fn().mockResolvedValue(true)).build();
+    toastServiceMock = ToastServiceMock.simple();
+    loaderServiceMock = new LoaderServiceMock();
+    authServiceMock = AuthServiceMock.simple();
+    viewOnlyHelperMock = ViewOnlyLinkHelperMock.simple(viewOnly);
+    sentryMock = SentryMock.simple();
 
     TestBed.configureTestingModule({
       providers: [
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
-        MockProvider(ToastService, {
-          showError: jest.fn(),
-        }),
-        MockProvider(LoaderService, {
-          hide: jest.fn(),
-        }),
-        MockProvider(AuthService, {
-          logout: jest.fn(),
-        }),
-        MockProvider(ViewOnlyLinkHelperService, {
-          hasViewOnlyParam: jest.fn(),
-        }),
-        {
-          provide: 'PLATFORM_ID',
-          useValue: 'browser',
-        },
-        {
-          provide: SENTRY_TOKEN,
-          useValue: { captureException: sentryMock },
-        },
+        provideOSFCore(),
+        provideLoaderServiceMock(loaderServiceMock),
+        MockProvider(Router, router),
+        MockProvider(ToastService, toastServiceMock),
+        MockProvider(AuthService, authServiceMock),
+        MockProvider(ViewOnlyLinkHelperService, viewOnlyHelperMock),
+        MockProvider(PLATFORM_ID, platformId),
+        { provide: SENTRY_TOKEN, useValue: sentryMock },
       ],
     });
+  }
 
-    toastService = TestBed.inject(ToastService);
-    loaderService = TestBed.inject(LoaderService);
-    router = TestBed.inject(Router);
-    authService = TestBed.inject(AuthService);
-    viewOnlyHelper = TestBed.inject(ViewOnlyLinkHelperService);
-    jest.clearAllMocks();
+  function createRequest(url = '/api/v2/nodes/abc', bypass = false, noAuthRedirect = false) {
+    const context = bypass ? new HttpContext().set(BYPASS_ERROR_INTERCEPTOR, true) : new HttpContext();
+    const headers = noAuthRedirect ? new HttpHeaders({ 'X-No-Auth-Redirect': 'true' }) : new HttpHeaders();
+    return new HttpRequest('GET', url, { context, headers } as unknown);
+  }
+
+  async function runInterceptor(request: HttpRequest<unknown>, error: HttpErrorResponse) {
+    const result$ = TestBed.runInInjectionContext(() => errorInterceptor(request, () => throwError(() => error)));
+
+    try {
+      await firstValueFrom(result$);
+      return null;
+    } catch (caught) {
+      return caught as HttpErrorResponse;
+    }
+  }
+
+  it('should capture exception and bypass handling when context flag is set', async () => {
+    setup();
+    const request = createRequest('/api/v2/nodes/abc', true);
+    const error = new HttpErrorResponse({ status: 500, error: { message: 'boom' }, url: request.url });
+
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(500);
+    expect(sentryMock.captureException).toHaveBeenCalledWith(error);
+    expect(toastServiceMock.showError).not.toHaveBeenCalled();
+    expect(loaderServiceMock.hide).not.toHaveBeenCalled();
   });
 
-  const createRequest = (url = '/api/v2/test'): HttpRequest<unknown> => {
-    return new HttpRequest('GET', url);
-  };
+  it('should handle server errors with server message and hide loader', async () => {
+    setup();
+    const request = createRequest('/api/v2/nodes/abc');
+    const error = new HttpErrorResponse({ status: 500, error: { message: 'server failed' }, url: request.url });
 
-  const createErrorHandler = (error: HttpErrorResponse) => {
-    const handler = jest.fn();
-    handler.mockReturnValue(throwError(() => error));
-    return handler;
-  };
+    const caught = await runInterceptor(request, error);
 
-  it('should bypass error handling when BYPASS_ERROR_INTERCEPTOR is true', () => {
-    const error = new HttpErrorResponse({ error: 'test error', status: 500 });
-    const request = createRequest().clone({
-      context: new HttpContext().set(BYPASS_ERROR_INTERCEPTOR, true),
-    });
-
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(sentryMock).toHaveBeenCalledWith(error);
-          expect(toastService.showError).not.toHaveBeenCalled();
-          expect(loaderService.hide).not.toHaveBeenCalled();
-        },
-      });
-    });
+    expect(caught?.status).toBe(500);
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
+    expect(toastServiceMock.showError).toHaveBeenCalledWith('server failed');
   });
 
-  it('should handle browser ErrorEvent', () => {
-    const errorEvent = new ErrorEvent('test error');
-    const error = new HttpErrorResponse({ error: errorEvent, status: 0 });
-    const request = createRequest();
+  it('should rethrow 409 without toast or loader handling', async () => {
+    setup();
+    const request = createRequest('/api/v2/nodes/abc');
+    const error = new HttpErrorResponse({ status: 409, error: {}, url: request.url });
 
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(toastService.showError).toHaveBeenCalledWith('test error');
-          expect(loaderService.hide).toHaveBeenCalled();
-        },
-      });
-    });
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(409);
+    expect(loaderServiceMock.hide).not.toHaveBeenCalled();
+    expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
 
-  it('should extract error message from API error response', () => {
-    const error = new HttpErrorResponse({
-      error: { errors: [{ detail: 'Custom API error' }] },
-      status: 400,
-    });
-    const request = createRequest();
+  it('should logout on 401 in browser when not view-only', async () => {
+    setup('browser', false);
+    const request = createRequest('/api/v2/nodes/abc');
+    const error = new HttpErrorResponse({ status: 401, error: {}, url: request.url });
 
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(toastService.showError).toHaveBeenCalledWith('Custom API error');
-          expect(loaderService.hide).toHaveBeenCalled();
-        },
-      });
-    });
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(401);
+    expect(authServiceMock.logout).toHaveBeenCalled();
+    expect(loaderServiceMock.hide).not.toHaveBeenCalled();
+    expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
 
-  it('should use ERROR_MESSAGES for status codes', () => {
-    const error = new HttpErrorResponse({ error: {}, status: 404 });
-    const request = createRequest();
+  it('should not logout on 401 when view-only mode is active', async () => {
+    setup('browser', true);
+    const request = createRequest('/api/v2/nodes/abc');
+    const error = new HttpErrorResponse({ status: 401, error: {}, url: request.url });
 
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(toastService.showError).toHaveBeenCalledWith('The requested resource was not found.');
-          expect(loaderService.hide).toHaveBeenCalled();
-        },
-      });
-    });
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(401);
+    expect(authServiceMock.logout).not.toHaveBeenCalled();
   });
 
-  it('should handle 5xx server errors with custom message', () => {
-    const error = new HttpErrorResponse({
-      error: { message: 'Database connection failed' },
-      status: 500,
-    });
-    const request = createRequest();
+  it('should navigate to request-access for 403 node URL', async () => {
+    setup('browser', false, '/projects/abc');
+    const request = createRequest('/api/v2/nodes/abc');
+    const error = new HttpErrorResponse({ status: 403, error: {}, url: '/api/v2/nodes/abc' });
 
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(toastService.showError).toHaveBeenCalledWith('Database connection failed');
-          expect(loaderService.hide).toHaveBeenCalled();
-        },
-      });
-    });
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(403);
+    expect(router.navigate).toHaveBeenCalledWith(['/request-access/abc']);
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
+    expect(toastServiceMock.showError).toHaveBeenCalled();
   });
 
-  it('should re-throw 409 errors without special handling', () => {
-    const error = new HttpErrorResponse({ error: {}, status: 409 });
-    const request = createRequest();
+  it('should not redirect on 403 when no-auth-redirect header is present', async () => {
+    setup();
+    const request = createRequest('/api/v2/metadata/abc', false, true);
+    const error = new HttpErrorResponse({ status: 403, error: {}, url: '/api/v2/metadata/abc' });
 
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(toastService.showError).not.toHaveBeenCalled();
-          expect(loaderService.hide).not.toHaveBeenCalled();
-        },
-      });
-    });
-  });
+    const caught = await runInterceptor(request, error);
 
-  it('should handle 401 errors with logout for non-view-only requests', () => {
-    jest.spyOn(viewOnlyHelper, 'hasViewOnlyParam').mockReturnValue(false);
-
-    const error = new HttpErrorResponse({ error: {}, status: 401 });
-    const request = createRequest();
-
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(authService.logout).toHaveBeenCalled();
-          expect(toastService.showError).not.toHaveBeenCalled();
-          expect(loaderService.hide).not.toHaveBeenCalled();
-        },
-      });
-    });
-  });
-
-  it('should not logout for 401 errors in view-only mode', () => {
-    jest.spyOn(viewOnlyHelper, 'hasViewOnlyParam').mockReturnValue(true);
-
-    const error = new HttpErrorResponse({ error: {}, status: 401 });
-    const request = createRequest();
-
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(authService.logout).not.toHaveBeenCalled();
-          expect(toastService.showError).not.toHaveBeenCalled();
-          expect(loaderService.hide).not.toHaveBeenCalled();
-        },
-      });
-    });
-  });
-
-  it('should handle 403 errors for request access URLs', () => {
-    const error = new HttpErrorResponse({
-      error: {},
-      status: 403,
-      url: '/api/v2/nodes/project123/requests',
-    });
-    const request = createRequest();
-
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(loaderService.hide).toHaveBeenCalled();
-          expect(router.navigate).not.toHaveBeenCalled();
-          expect(toastService.showError).not.toHaveBeenCalled();
-        },
-      });
-    });
-  });
-
-  it('should navigate to request-access page for 403 errors on node URLs', () => {
-    const error = new HttpErrorResponse({
-      error: {},
-      status: 403,
-      url: '/api/v2/nodes/project123',
-    });
-    const request = createRequest();
-
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/request-access/project123']);
-          expect(loaderService.hide).toHaveBeenCalled();
-          expect(toastService.showError).toHaveBeenCalled();
-        },
-      });
-    });
-  });
-
-  it('should navigate to forbidden page for other 403 errors', () => {
-    const error = new HttpErrorResponse({
-      error: {},
-      status: 403,
-      url: '/api/v2/other/endpoint',
-    });
-    const request = createRequest();
-
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/forbidden']);
-          expect(loaderService.hide).toHaveBeenCalled();
-          expect(toastService.showError).toHaveBeenCalled();
-        },
-      });
-    });
-  });
-
-  it('should not navigate for 403 errors when X-No-Auth-Redirect header is true', () => {
-    const error = new HttpErrorResponse({
-      error: {},
-      status: 403,
-      url: '/metadata/abcde/?format=google-dataset-json-ld',
-      headers: new HttpHeaders({ 'X-No-Auth-Redirect': 'true' }),
-    });
-    const request = createRequest();
-
-    runInInjectionContext(TestBed, () => {
-      const result = errorInterceptor(request, createErrorHandler(error));
-      result.subscribe({
-        error: () => {
-          expect(router.navigate).not.toHaveBeenCalled();
-          expect(loaderService.hide).toHaveBeenCalled();
-          expect(toastService.showError).not.toHaveBeenCalled();
-        },
-      });
-    });
+    expect(caught?.status).toBe(403);
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
+    expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
 });

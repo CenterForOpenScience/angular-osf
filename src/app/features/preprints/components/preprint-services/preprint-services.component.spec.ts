@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
 
-import { PreprintServicesComponent } from './preprint-services.component';
-
 import { PREPRINT_PROVIDER_SHORT_INFO_MOCK } from '@testing/mocks/preprint-provider-short-info.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { PreprintServicesComponent } from './preprint-services.component';
 
 describe('PreprintServicesComponent', () => {
   let component: PreprintServicesComponent;
@@ -16,7 +17,7 @@ describe('PreprintServicesComponent', () => {
   function setup(providers: PreprintProviderShortInfo[]) {
     TestBed.configureTestingModule({
       imports: [PreprintServicesComponent],
-      providers: [provideOSFCore()],
+      providers: [provideOSFCore(), provideRouter([])],
     });
 
     fixture = TestBed.createComponent(PreprintServicesComponent);

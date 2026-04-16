@@ -18,9 +18,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
+    "types": ["vitest/globals", "node"],
     "paths": {
-      "@core/*": ["src/app/core/*"],
       "@osf/*": ["src/app/*"],
+      "@core/*": ["src/app/core/*"],
       "@shared/*": ["src/app/shared/*"],
       "@styles/*": ["src/styles/*"],
       "@testing/*": ["src/testing/*"]

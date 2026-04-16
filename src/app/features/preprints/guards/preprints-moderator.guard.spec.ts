@@ -1,15 +1,14 @@
 import { MockProvider } from 'ng-mocks';
 
-import { runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 
-import { preprintsModeratorGuard } from './preprints-moderator.guard';
-
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { preprintsModeratorGuard } from './preprints-moderator.guard';
 
 describe('preprintsModeratorGuard', () => {
   let routerMock: RouterMockType;
@@ -19,7 +18,7 @@ describe('preprintsModeratorGuard', () => {
   function setup(canViewReviews: boolean) {
     const urlTree = {} as UrlTree;
 
-    routerMock = RouterMockBuilder.create().withCreateUrlTree(jest.fn().mockReturnValue(urlTree)).build();
+    routerMock = RouterMockBuilder.create().withCreateUrlTree(vi.fn().mockReturnValue(urlTree)).build();
 
     TestBed.configureTestingModule({
       providers: [
@@ -36,7 +35,7 @@ describe('preprintsModeratorGuard', () => {
   it('should allow activation when user can view reviews', () => {
     setup(true);
 
-    const result = runInInjectionContext(TestBed, () => preprintsModeratorGuard(routeSnapshot, stateSnapshot));
+    const result = TestBed.runInInjectionContext(() => preprintsModeratorGuard(routeSnapshot, stateSnapshot));
 
     expect(result).toBe(true);
     expect(routerMock.createUrlTree).not.toHaveBeenCalled();
@@ -45,7 +44,7 @@ describe('preprintsModeratorGuard', () => {
   it('should return forbidden UrlTree when user cannot view reviews', () => {
     const { urlTree } = setup(false);
 
-    const result = runInInjectionContext(TestBed, () => preprintsModeratorGuard(routeSnapshot, stateSnapshot));
+    const result = TestBed.runInInjectionContext(() => preprintsModeratorGuard(routeSnapshot, stateSnapshot));
 
     expect(routerMock.createUrlTree).toHaveBeenCalledWith(['/forbidden']);
     expect(result).toBe(urlTree);

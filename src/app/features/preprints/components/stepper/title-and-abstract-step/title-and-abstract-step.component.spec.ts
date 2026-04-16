@@ -3,18 +3,18 @@ import { MockComponent, MockDirective, MockProvider } from 'ng-mocks';
 import { Textarea } from 'primeng/textarea';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
-import { TitleAndAbstractStepComponent } from '@osf/features/preprints/components';
 import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
+
+import { TitleAndAbstractStepComponent } from './title-and-abstract-step.component';
 
 describe('TitleAndAbstractStepComponent', () => {
   let component: TitleAndAbstractStepComponent;
@@ -29,7 +29,7 @@ describe('TitleAndAbstractStepComponent', () => {
       imports: [TitleAndAbstractStepComponent, MockComponent(TextInputComponent), MockDirective(Textarea)],
       providers: [
         provideOSFCore(),
-        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
+        provideRouter([]),
         MockProvider(ToastService, mockToastService),
         provideMockStore({
           signals: [
@@ -92,7 +92,7 @@ describe('TitleAndAbstractStepComponent', () => {
 
   it('should not dispatch or emit when form is invalid', () => {
     setup();
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
 
     component.nextButtonClicked();
 
@@ -102,7 +102,7 @@ describe('TitleAndAbstractStepComponent', () => {
   it('should create preprint and emit next when form is valid and no preprint exists', () => {
     setup({ createdPreprint: null, providerId: 'provider-1' });
     fillValidForm();
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
 
     component.nextButtonClicked();
 
@@ -112,7 +112,7 @@ describe('TitleAndAbstractStepComponent', () => {
   it('should update preprint and emit next when form is valid and preprint exists', () => {
     setup({ createdPreprint: mockPreprint });
     fillValidForm();
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
 
     component.nextButtonClicked();
 

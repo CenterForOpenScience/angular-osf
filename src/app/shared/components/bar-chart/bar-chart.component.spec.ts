@@ -2,20 +2,21 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { BarChartComponent } from './bar-chart.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
   let fixture: ComponentFixture<BarChartComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [BarChartComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [BarChartComponent, MockComponent(LoadingSpinnerComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;
@@ -52,7 +53,7 @@ describe('BarChartComponent', () => {
   });
 
   it('should initialize chart data and options on ngOnInit', () => {
-    const mockGetPropertyValue = jest.fn((prop: string) => {
+    const mockGetPropertyValue = vi.fn((prop: string) => {
       const colors: Record<string, string> = {
         '--dark-blue-1': '#1a365d',
         '--grey-2': '#e2e8f0',
@@ -61,7 +62,7 @@ describe('BarChartComponent', () => {
       return colors[prop] || '#000000';
     });
 
-    const mockGetComputedStyle = jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+    const mockGetComputedStyle = vi.spyOn(window, 'getComputedStyle').mockReturnValue({
       getPropertyValue: mockGetPropertyValue,
     } as any);
 

@@ -1,15 +1,12 @@
 import { provideStore } from '@ngxs/store';
 
-import { TranslateModule } from '@ngx-translate/core';
-
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, ErrorHandler } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { STATES } from '@core/constants/ngxs-states.constant';
@@ -33,10 +30,13 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     {
       provide: ErrorHandler,
-      useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
+      useValue: Sentry.createErrorHandler({ showDialog: false }),
     },
-    importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
-    provideAnimations(),
+    SENTRY_PROVIDER,
+    provideTranslation,
+    provideClientHydration(withEventReplay()),
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
+    provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor]), withFetch()),
     providePrimeNG({
       theme: {
         preset: CustomPreset,
@@ -49,11 +49,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
-    provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor]), withFetch()),
-    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
     provideStore(STATES),
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideClientHydration(withEventReplay()),
-    SENTRY_PROVIDER,
   ],
 };

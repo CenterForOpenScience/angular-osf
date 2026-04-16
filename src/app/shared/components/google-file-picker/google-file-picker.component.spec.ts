@@ -1,389 +1,166 @@
 import { Store } from '@ngxs/store';
 
-import { Observable, of, throwError } from 'rxjs';
+import { MockProvider } from 'ng-mocks';
+
+import { throwError } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
-import { GoogleFilePickerDownloadService } from '@osf/shared/services/google-file-picker.download.service';
+import { AddonType } from '@shared/enums/addon-type.enum';
+import { StorageItem } from '@shared/models/addons/storage-item.model';
+import { GoogleFileDataModel } from '@shared/models/files/google-file.data.model';
+import { GoogleFilePickerDownloadService } from '@shared/services/google-file-picker.download.service';
+import { GetAuthorizedStorageOauthToken } from '@shared/stores/addons';
+
+import { setupGooglePickerMock } from '@testing/mocks/google-picker.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  GoogleFilePickerDownloadServiceMockBuilder,
+  GoogleFilePickerDownloadServiceMockType,
+} from '@testing/providers/google-file-picker-download.service.mock';
+import { SentryMock, SentryMockType } from '@testing/providers/sentry-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { GoogleFilePickerComponent } from './google-file-picker.component';
 
-import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
-
-describe('Component: Google File Picker', () => {
-  let component: GoogleFilePickerComponent;
+describe('GoogleFilePickerComponent', () => {
   let fixture: ComponentFixture<GoogleFilePickerComponent>;
+  let component: GoogleFilePickerComponent;
+  let store: Store;
+  let sentryMock: SentryMockType;
+  let googlePickerDownloadServiceMock: GoogleFilePickerDownloadServiceMockType;
+  let pickerBuilderMock: ReturnType<typeof setupGooglePickerMock>['pickerBuilderMock'];
+  let pickerSetVisibleMock: ReturnType<typeof setupGooglePickerMock>['pickerSetVisibleMock'];
 
-  const googlePickerServiceSpy = {
-    loadScript: jest.fn((): Observable<void> => {
-      return throwLoadScriptError ? throwError(() => new Error('loadScript failed')) : of(void 0);
-    }),
-    loadGapiModules: jest.fn((): Observable<void> => {
-      return throwLoadGapiError ? throwError(() => new Error('loadGapiModules failed')) : of(void 0);
-    }),
+  const rootFolder: StorageItem = {
+    itemId: 'root-folder-id',
+    itemName: 'Root Folder',
   };
 
-  let sentrySpy: any;
+  const setup = (options?: { accountId?: string; isFolderPicker?: boolean; googleFilePickerApiKey?: string }) => {
+    sentryMock = SentryMock.simple();
+    googlePickerDownloadServiceMock = GoogleFilePickerDownloadServiceMockBuilder.create().build();
+    ({ pickerBuilderMock, pickerSetVisibleMock } = setupGooglePickerMock());
 
-  let throwLoadScriptError = false;
-  let throwLoadGapiError = false;
+    TestBed.configureTestingModule({
+      imports: [GoogleFilePickerComponent],
+      providers: [
+        provideOSFCore(),
+        provideMockStore(),
+        { provide: SENTRY_TOKEN, useValue: sentryMock },
+        MockProvider(GoogleFilePickerDownloadService, googlePickerDownloadServiceMock),
+        MockProvider(ENVIRONMENT, {
+          googleFilePickerApiKey: options?.googleFilePickerApiKey ?? 'test-api-key',
+          googleFilePickerAppId: 123456789,
+        }),
+      ],
+    });
 
-  const handleFolderSelection = jest.fn();
-  const setDeveloperKey = jest.fn().mockReturnThis();
-  const setAppId = jest.fn().mockReturnThis();
-  const addView = jest.fn().mockReturnThis();
-  const setTitle = jest.fn().mockReturnThis();
-  const setOAuthToken = jest.fn().mockReturnThis();
-  const setCallback = jest.fn().mockReturnThis();
-  const enableFeature = jest.fn().mockReturnThis();
-  const setVisible = jest.fn();
-  const build = jest.fn().mockReturnValue({
-    setVisible,
-  });
+    fixture = TestBed.createComponent(GoogleFilePickerComponent);
+    component = fixture.componentInstance;
+    store = TestBed.inject(Store);
 
-  const setSelectFolderEnabled = jest.fn();
-  const setMimeTypes = jest.fn();
-  const setIncludeFolders = jest.fn();
-  const setParent = jest.fn();
-
-  const storeMock = {
-    dispatch: jest.fn().mockReturnValue(of({})),
-    selectSnapshot: jest.fn().mockReturnValue('mock-token'),
+    fixture.componentRef.setInput('isFolderPicker', options?.isFolderPicker ?? false);
+    fixture.componentRef.setInput('rootFolder', rootFolder);
+    fixture.componentRef.setInput('accountId', options?.accountId ?? '');
+    fixture.componentRef.setInput('currentAddonType', AddonType.STORAGE);
+    fixture.detectChanges();
   };
 
-  beforeEach(() => {
-    throwLoadScriptError = false;
-    throwLoadGapiError = false;
-    jest.clearAllMocks();
+  it('should create', () => {
+    setup();
+
+    expect(component).toBeTruthy();
   });
 
-  beforeAll(() => {
-    throwLoadScriptError = false;
-    throwLoadGapiError = false;
+  it('should disable picker when configuration is missing', () => {
+    setup({ googleFilePickerApiKey: '' });
 
-    window.google = {
-      picker: {
-        Action: null,
-      },
+    component.ngOnInit();
+
+    expect(component.isGFPDisabled()).toBe(true);
+    expect(googlePickerDownloadServiceMock.loadScript).not.toHaveBeenCalled();
+  });
+
+  it('should initialize and set folder picker visible on init', () => {
+    setup({ isFolderPicker: true });
+
+    component.ngOnInit();
+
+    expect(googlePickerDownloadServiceMock.loadScript).toHaveBeenCalled();
+    expect(googlePickerDownloadServiceMock.loadGapiModules).toHaveBeenCalled();
+    expect(component.visible()).toBe(true);
+  });
+
+  it('should capture Sentry error when script loading fails', () => {
+    setup();
+    const error = new Error('script fail');
+    googlePickerDownloadServiceMock.loadScript.mockReturnValue(throwError(() => error));
+
+    component.ngOnInit();
+
+    expect(sentryMock.captureException).toHaveBeenCalledWith(error, { tags: { feature: 'google-picker load' } });
+  });
+
+  it('should capture Sentry error when gapi modules loading fails', () => {
+    setup();
+    const error = new Error('gapi fail');
+    googlePickerDownloadServiceMock.loadGapiModules.mockReturnValue(throwError(() => error));
+
+    component.ngOnInit();
+
+    expect(sentryMock.captureException).toHaveBeenCalledWith(error, { tags: { feature: 'google-picker auth' } });
+  });
+
+  it('should dispatch token action and open picker for account id', () => {
+    setup({ accountId: 'account-1' });
+    vi.spyOn(store, 'selectSnapshot').mockReturnValue('oauth-token');
+
+    component.ngOnInit();
+    component.createPicker();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetAuthorizedStorageOauthToken('account-1', AddonType.STORAGE));
+    expect(component.accessToken()).toBe('oauth-token');
+    expect(component.isGFPDisabled()).toBe(false);
+    expect(pickerBuilderMock.setOAuthToken).toHaveBeenCalledWith('oauth-token');
+    expect(pickerSetVisibleMock).toHaveBeenCalledWith(true);
+  });
+
+  it('should send selected item to handleFolderSelection on PICKED action', () => {
+    setup();
+    const handleFolderSelection = vi.fn();
+    fixture.componentRef.setInput('handleFolderSelection', handleFolderSelection);
+    fixture.detectChanges();
+
+    const selectedDoc: GoogleFileDataModel = {
+      name: 'Google Doc',
+      id: 42,
     };
-  });
 
-  afterAll(() => {
-    delete (window as any).google;
-  });
-
-  describe('isFolderPicker - true', () => {
-    beforeEach(async () => {
-      (window as any).google = {
-        picker: {
-          ViewId: {
-            DOCS: 'docs',
-          },
-          DocsView: jest.fn().mockImplementation(() => ({
-            setSelectFolderEnabled,
-            setMimeTypes,
-            setIncludeFolders,
-            setParent,
-          })),
-          PickerBuilder: jest.fn().mockImplementation(() => ({
-            setDeveloperKey,
-            setAppId,
-            addView,
-            setTitle,
-            setOAuthToken,
-            setCallback,
-            enableFeature,
-            build,
-          })),
-          Feature: {
-            MULTISELECT_ENABLED: 'multiselect',
-          },
-        },
-      };
-
-      await TestBed.configureTestingModule({
-        imports: [OSFTestingModule, GoogleFilePickerComponent],
-        providers: [
-          { provide: SENTRY_TOKEN, useValue: { captureException: jest.fn() } },
-          { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
-          {
-            provide: Store,
-            useValue: storeMock,
-          },
-        ],
-      }).compileComponents();
-
-      sentrySpy = TestBed.inject(SENTRY_TOKEN);
-      jest.spyOn(sentrySpy, 'captureException');
-
-      fixture = TestBed.createComponent(GoogleFilePickerComponent);
-      component = fixture.componentInstance;
-      fixture.componentRef.setInput('isFolderPicker', true);
-      fixture.componentRef.setInput('rootFolder', {
-        itemId: 'root-folder-id',
-      });
-      fixture.componentRef.setInput('handleFolderSelection', handleFolderSelection);
-      fixture.componentRef.setInput('accountId', 'account-id');
-      fixture.detectChanges();
+    component.pickerCallback({
+      action: 'picked',
+      docs: [selectedDoc],
     });
 
-    it('should load script and then GAPI modules and initialize picker', () => {
-      expect(googlePickerServiceSpy.loadScript).toHaveBeenCalled();
-      expect(googlePickerServiceSpy.loadGapiModules).toHaveBeenCalled();
-      expect(sentrySpy.captureException).not.toHaveBeenCalled();
-
-      expect(component.visible()).toBeTruthy();
-      expect(component.isGFPDisabled()).toBeFalsy();
-    });
-
-    it('should build the picker with correct configuration', () => {
-      component.createPicker();
-
-      expect(window.google.picker.DocsView).toHaveBeenCalledWith('docs');
-      expect(setSelectFolderEnabled).toHaveBeenCalledWith(true);
-      expect(setMimeTypes).toHaveBeenCalledWith('application/vnd.google-apps.folder');
-      expect(setIncludeFolders).toHaveBeenCalledWith(true);
-      expect(setParent).toHaveBeenCalledWith('');
-
-      expect(window.google.picker.PickerBuilder).toHaveBeenCalledWith();
-      expect(setDeveloperKey).toHaveBeenCalledWith('test-api-key');
-      expect(setAppId).toHaveBeenCalledWith('test-app-id');
-      expect(addView).toHaveBeenCalled();
-      expect(setTitle).toHaveBeenCalledWith('settings.addons.configureAddon.google-file-picker.root-folder-title');
-      expect(setOAuthToken).toHaveBeenCalledWith('mock-token');
-      expect(setCallback).toHaveBeenCalled();
-      expect(enableFeature).not.toHaveBeenCalled();
-      expect(build).toHaveBeenCalledWith();
-      expect(setVisible).toHaveBeenCalledWith(true);
-    });
-
-    describe('pickerCallback', () => {
-      it('should handle a folder selection `PICKED` action', () => {
-        window.google.picker.Action = {
-          PICKED: 'PICKED',
-        };
-        component.pickerCallback(
-          Object({
-            action: 'PICKED',
-            docs: [
-              Object({
-                itemId: 'item id',
-                itemName: 'item name',
-              }),
-            ],
-          })
-        );
-
-        expect(handleFolderSelection).toHaveBeenCalledWith(Object({}));
-      });
-
-      it('should handle a folder selection not `PICKED` action', () => {
-        window.google.picker.Action = {
-          PICKED: 'not picked',
-        };
-
-        component.pickerCallback(
-          Object({
-            action: 'Loading',
-          })
-        );
-
-        expect(handleFolderSelection).not.toHaveBeenCalled();
-      });
+    expect(handleFolderSelection).toHaveBeenCalledWith({
+      itemName: 'Google Doc',
+      itemId: 42,
     });
   });
 
-  describe('isFolderPicker - false', () => {
-    beforeEach(async () => {
-      (window as any).google = {
-        picker: {
-          ViewId: {
-            DOCS: 'docs',
-          },
-          DocsView: jest.fn().mockImplementation(() => ({
-            setSelectFolderEnabled,
-            setMimeTypes,
-            setIncludeFolders,
-            setParent,
-          })),
-          PickerBuilder: jest.fn().mockImplementation(() => ({
-            setDeveloperKey,
-            setAppId,
-            addView,
-            setTitle,
-            setOAuthToken,
-            setCallback,
-            enableFeature,
-            build,
-          })),
-          Feature: {
-            MULTISELECT_ENABLED: 'multiselect',
-          },
-        },
-      };
+  it('should ignore callback when action is not PICKED', () => {
+    setup();
+    const handleFolderSelection = vi.fn();
+    fixture.componentRef.setInput('handleFolderSelection', handleFolderSelection);
+    fixture.detectChanges();
 
-      await TestBed.configureTestingModule({
-        imports: [OSFTestingStoreModule, GoogleFilePickerComponent],
-        providers: [
-          { provide: SENTRY_TOKEN, useValue: { captureException: jest.fn() } },
-          { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
-          {
-            provide: Store,
-            useValue: storeMock,
-          },
-        ],
-      }).compileComponents();
-
-      sentrySpy = TestBed.inject(SENTRY_TOKEN);
-      jest.spyOn(sentrySpy, 'captureException');
-
-      fixture = TestBed.createComponent(GoogleFilePickerComponent);
-      component = fixture.componentInstance;
-      fixture.componentRef.setInput('isFolderPicker', false);
-      fixture.componentRef.setInput('rootFolder', {
-        itemId: 'root-folder-id',
-      });
-      fixture.componentRef.setInput('handleFolderSelection', jest.fn());
+    component.pickerCallback({
+      action: 'cancel',
+      docs: [{ name: 'Google Doc', id: 42 }],
     });
 
-    it('should fail to load script', () => {
-      throwLoadScriptError = true;
-      fixture.detectChanges();
-      expect(googlePickerServiceSpy.loadScript).toHaveBeenCalled();
-      expect(sentrySpy.captureException).toHaveBeenCalledWith(Error('loadScript failed'), {
-        tags: {
-          feature: 'google-picker load',
-        },
-      });
-
-      expect(component.visible()).toBeFalsy();
-      expect(component.isGFPDisabled()).toBeTruthy();
-    });
-
-    it('should load script and then failr GAPI modules', () => {
-      throwLoadGapiError = true;
-      fixture.detectChanges();
-      expect(googlePickerServiceSpy.loadScript).toHaveBeenCalled();
-      expect(googlePickerServiceSpy.loadGapiModules).toHaveBeenCalled();
-      expect(sentrySpy.captureException).toHaveBeenCalledWith(Error('loadGapiModules failed'), {
-        tags: {
-          feature: 'google-picker auth',
-        },
-      });
-      expect(component.visible()).toBeFalsy();
-      expect(component.isGFPDisabled()).toBeTruthy();
-    });
-
-    it('should build the picker with correct configuration', () => {
-      fixture.detectChanges();
-      component.createPicker();
-
-      expect(window.google.picker.DocsView).toHaveBeenCalledWith('docs');
-      expect(setSelectFolderEnabled).toHaveBeenCalledWith(true);
-      expect(setMimeTypes).not.toHaveBeenCalled();
-      expect(setIncludeFolders).toHaveBeenCalledWith(true);
-      expect(setParent).toHaveBeenCalledWith('root-folder-id');
-
-      expect(window.google.picker.PickerBuilder).toHaveBeenCalledWith();
-      expect(setDeveloperKey).toHaveBeenCalledWith('test-api-key');
-      expect(setAppId).toHaveBeenCalledWith('test-app-id');
-      expect(addView).toHaveBeenCalled();
-      expect(setTitle).toHaveBeenCalledWith('settings.addons.configureAddon.google-file-picker.file-folder-title');
-      expect(setOAuthToken).toHaveBeenCalledWith(null);
-      expect(setCallback).toHaveBeenCalled();
-      expect(enableFeature).toHaveBeenCalledWith('multiselect');
-      expect(build).toHaveBeenCalledWith();
-      expect(setVisible).toHaveBeenCalledWith(true);
-    });
-
-    it('should open picker with current token when oauth refresh fails', () => {
-      const errorStoreMock = {
-        dispatch: jest.fn().mockReturnValue(throwError(() => new Error('OAuth refresh failed'))),
-        selectSnapshot: jest.fn().mockReturnValue(null),
-      };
-
-      TestBed.resetTestingModule();
-      TestBed.configureTestingModule({
-        imports: [OSFTestingStoreModule, GoogleFilePickerComponent],
-        providers: [
-          { provide: SENTRY_TOKEN, useValue: { captureException: jest.fn() } },
-          { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
-          { provide: Store, useValue: errorStoreMock },
-        ],
-      }).compileComponents();
-
-      fixture = TestBed.createComponent(GoogleFilePickerComponent);
-      component = fixture.componentInstance;
-      fixture.componentRef.setInput('isFolderPicker', false);
-      fixture.componentRef.setInput('rootFolder', { itemId: 'root-folder-id' });
-      fixture.componentRef.setInput('handleFolderSelection', jest.fn());
-      fixture.componentRef.setInput('accountId', 'account-id');
-      fixture.detectChanges();
-
-      jest.clearAllMocks();
-      component.createPicker();
-
-      expect(errorStoreMock.dispatch).toHaveBeenCalled();
-      expect(setVisible).toHaveBeenCalledWith(true);
-    });
-  });
-
-  describe('picker not configured', () => {
-    it('should disable picker when apiKey or appId is missing', async () => {
-      await TestBed.configureTestingModule({
-        imports: [OSFTestingModule, GoogleFilePickerComponent],
-        providers: [
-          { provide: SENTRY_TOKEN, useValue: { captureException: jest.fn() } },
-          { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
-          { provide: Store, useValue: storeMock },
-        ],
-      })
-        .overrideProvider(ENVIRONMENT, {
-          useValue: {
-            googleFilePickerApiKey: '',
-            googleFilePickerAppId: '',
-          },
-        })
-        .compileComponents();
-
-      fixture = TestBed.createComponent(GoogleFilePickerComponent);
-      component = fixture.componentInstance;
-      fixture.componentRef.setInput('isFolderPicker', true);
-      fixture.detectChanges();
-
-      expect(component.isGFPDisabled()).toBeTruthy();
-      expect(googlePickerServiceSpy.loadScript).not.toHaveBeenCalled();
-    });
-
-    it('should not open picker when not configured', async () => {
-      await TestBed.configureTestingModule({
-        imports: [OSFTestingModule, GoogleFilePickerComponent],
-        providers: [
-          { provide: SENTRY_TOKEN, useValue: { captureException: jest.fn() } },
-          { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
-          { provide: Store, useValue: storeMock },
-        ],
-      })
-        .overrideProvider(ENVIRONMENT, {
-          useValue: {
-            googleFilePickerApiKey: '',
-            googleFilePickerAppId: '',
-          },
-        })
-        .compileComponents();
-
-      fixture = TestBed.createComponent(GoogleFilePickerComponent);
-      component = fixture.componentInstance;
-      fixture.componentRef.setInput('isFolderPicker', true);
-      fixture.detectChanges();
-
-      jest.clearAllMocks();
-      component.createPicker();
-
-      expect(build).not.toHaveBeenCalled();
-      expect(setVisible).not.toHaveBeenCalled();
-    });
+    expect(handleFolderSelection).not.toHaveBeenCalled();
   });
 });

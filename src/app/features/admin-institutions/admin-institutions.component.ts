@@ -30,9 +30,7 @@ export class AdminInstitutionsComponent implements OnInit {
   institution = select(InstitutionsAdminSelectors.getInstitution);
   isInstitutionLoading = select(InstitutionsAdminSelectors.getInstitutionLoading);
 
-  private readonly actions = createDispatchMap({
-    fetchInstitution: FetchInstitutionById,
-  });
+  private readonly actions = createDispatchMap({ fetchInstitution: FetchInstitutionById });
 
   resourceTabOptions = resourceTabOptions;
   selectedTab = AdminInstitutionResourceTab.Summary;

@@ -20,6 +20,8 @@ import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditSectionComponent {
+  private readonly customDialogService = inject(CustomDialogService);
+
   readonly currentContent = input.required<string>();
   readonly versionContent = input.required<string>();
   readonly isSaving = input<boolean>(false);
@@ -27,18 +29,15 @@ export class EditSectionComponent {
   readonly saveContent = output<string>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private editorInstance: any;
+
   content = '';
   initialContent = '';
 
-  private readonly customDialogService = inject(CustomDialogService);
-
-  public options: MdEditorOption = {
+  options: MdEditorOption = {
     showPreviewPanel: false,
     customRender: {},
     fontAwesomeVersion: '6',
-    markedjsOpt: {
-      sanitize: true,
-    },
+    markedjsOpt: { sanitize: true },
     hideIcons: [''],
   };
 

@@ -6,20 +6,19 @@ import { inject, TestBed } from '@angular/core/testing';
 import { BannerModel } from '@core/components/osf-banners/models/banner.model';
 import { BannersService } from '@osf/shared/services/banners.service';
 
+import { getScheduledBannerData } from '@testing/data/banners/scheduled.banner.data';
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
+
 import { GetCurrentScheduledBanner } from './banners.actions';
 import { BannersSelector } from './banners.selectors';
 import { BannersState } from './banners.state';
-
-import { getScheduledBannerData } from '@testing/data/banners/scheduled.banner.data';
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('State: Banners', () => {
   let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [OSFTestingModule],
-      providers: [provideStore([BannersState]), BannersService],
+      providers: [provideOSFCore(), provideOSFHttp(), provideStore([BannersState]), BannersService],
     });
 
     store = TestBed.inject(Store);

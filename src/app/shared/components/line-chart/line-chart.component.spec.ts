@@ -7,21 +7,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DatasetInput } from '@osf/shared/models/charts/dataset-input.model';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { LineChartComponent } from './line-chart.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('LineChartComponent', () => {
   let component: LineChartComponent;
   let fixture: ComponentFixture<LineChartComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LineChartComponent, OSFTestingModule, MockModule(ChartModule), MockComponent(LoadingSpinnerComponent)],
-      providers: [MockProvider(PLATFORM_ID, 'browser')],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [LineChartComponent, MockModule(ChartModule), MockComponent(LoadingSpinnerComponent)],
+      providers: [provideOSFCore(), MockProvider(PLATFORM_ID, 'browser')],
+    });
 
     fixture = TestBed.createComponent(LineChartComponent);
     component = fixture.componentInstance;
@@ -37,7 +37,7 @@ describe('LineChartComponent', () => {
   });
 
   it('should initialize data and options signals', () => {
-    const mockGetPropertyValue = jest.fn((prop: string) => {
+    const mockGetPropertyValue = vi.fn((prop: string) => {
       const colors: Record<string, string> = {
         '--dark-blue-1': '#1a365d',
         '--grey-2': '#e2e8f0',
@@ -46,7 +46,7 @@ describe('LineChartComponent', () => {
       return colors[prop] || '#000000';
     });
 
-    jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
       getPropertyValue: mockGetPropertyValue,
     } as any);
 
@@ -57,7 +57,7 @@ describe('LineChartComponent', () => {
   });
 
   it('should initialize chart on browser platform', () => {
-    const mockGetPropertyValue = jest.fn((prop: string) => {
+    const mockGetPropertyValue = vi.fn((prop: string) => {
       const colors: Record<string, string> = {
         '--dark-blue-1': '#1a365d',
         '--grey-2': '#e2e8f0',
@@ -66,11 +66,11 @@ describe('LineChartComponent', () => {
       return colors[prop] || '#000000';
     });
 
-    const mockGetComputedStyle = jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+    const mockGetComputedStyle = vi.spyOn(window, 'getComputedStyle').mockReturnValue({
       getPropertyValue: mockGetPropertyValue,
     } as any);
 
-    const markForCheckSpy = jest.spyOn(component['cd'], 'markForCheck');
+    const markForCheckSpy = vi.spyOn(component['cd'], 'markForCheck');
 
     component.ngOnInit();
 
@@ -83,7 +83,7 @@ describe('LineChartComponent', () => {
   });
 
   it('should call setChartData and setChartOptions on browser platform', () => {
-    const mockGetPropertyValue = jest.fn((prop: string) => {
+    const mockGetPropertyValue = vi.fn((prop: string) => {
       const colors: Record<string, string> = {
         '--dark-blue-1': '#1a365d',
         '--grey-2': '#e2e8f0',
@@ -92,12 +92,12 @@ describe('LineChartComponent', () => {
       return colors[prop] || '#000000';
     });
 
-    jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
       getPropertyValue: mockGetPropertyValue,
     } as any);
 
-    const setChartDataSpy = jest.spyOn(component as any, 'setChartData');
-    const setChartOptionsSpy = jest.spyOn(component as any, 'setChartOptions');
+    const setChartDataSpy = vi.spyOn(component as any, 'setChartData');
+    const setChartOptionsSpy = vi.spyOn(component as any, 'setChartOptions');
 
     component.initChart();
 
@@ -113,7 +113,7 @@ describe('LineChartComponent', () => {
     ];
 
     beforeEach(() => {
-      const mockGetPropertyValue = jest.fn((prop: string) => {
+      const mockGetPropertyValue = vi.fn((prop: string) => {
         const colors: Record<string, string> = {
           '--dark-blue-1': '#1a365d',
           '--grey-2': '#e2e8f0',
@@ -122,7 +122,7 @@ describe('LineChartComponent', () => {
         return colors[prop] || '#000000';
       });
 
-      jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue({
         getPropertyValue: mockGetPropertyValue,
       } as any);
 
@@ -170,7 +170,7 @@ describe('LineChartComponent', () => {
 
   describe('Input Updates', () => {
     beforeEach(() => {
-      const mockGetPropertyValue = jest.fn((prop: string) => {
+      const mockGetPropertyValue = vi.fn((prop: string) => {
         const colors: Record<string, string> = {
           '--dark-blue-1': '#1a365d',
           '--grey-2': '#e2e8f0',
@@ -179,7 +179,7 @@ describe('LineChartComponent', () => {
         return colors[prop] || '#000000';
       });
 
-      jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue({
         getPropertyValue: mockGetPropertyValue,
       } as any);
     });

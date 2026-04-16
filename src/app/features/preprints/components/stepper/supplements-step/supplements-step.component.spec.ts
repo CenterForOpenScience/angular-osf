@@ -2,7 +2,9 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Mock } from 'vitest';
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SupplementOptions } from '@osf/features/preprints/enums';
 import {
@@ -18,8 +20,6 @@ import { ProjectFormControls } from '@osf/shared/enums/create-project-form-contr
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { SupplementsStepComponent } from './supplements-step.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
@@ -28,6 +28,8 @@ import {
 } from '@testing/providers/custom-confirmation-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { SupplementsStepComponent } from './supplements-step.component';
 
 describe('SupplementsStepComponent', () => {
   let component: SupplementsStepComponent;
@@ -83,6 +85,10 @@ describe('SupplementsStepComponent', () => {
     }
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should create', () => {
     setup();
     expect(component).toBeTruthy();
@@ -120,38 +126,41 @@ describe('SupplementsStepComponent', () => {
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintProject));
   });
 
-  it('should dispatch available projects from debounced project search', fakeAsync(() => {
+  it('should dispatch available projects from debounced project search', () => {
+    vi.useFakeTimers();
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.projectNameControl.setValue('search-query');
-    tick(500);
+    vi.advanceTimersByTime(500);
 
     expect(store.dispatch).toHaveBeenCalledTimes(1);
     expect(store.dispatch).toHaveBeenCalledWith(new FetchAvailableProjects('search-query'));
-  }));
+  });
 
-  it('should not dispatch before the debounce window elapses', fakeAsync(() => {
+  it('should not dispatch before the debounce window elapses', () => {
+    vi.useFakeTimers();
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.projectNameControl.setValue('search-query');
-    tick(300);
+    vi.advanceTimersByTime(300);
 
     expect(store.dispatch).not.toHaveBeenCalledWith(new FetchAvailableProjects('search-query'));
-    tick(200);
-  }));
+    vi.advanceTimersByTime(200);
+  });
 
-  it('should skip available projects dispatch when value equals selected project id', fakeAsync(() => {
+  it('should skip available projects dispatch when value equals selected project id', () => {
+    vi.useFakeTimers();
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.selectedProjectId.set('project-1');
 
     component.projectNameControl.setValue('project-1');
-    tick(500);
+    vi.advanceTimersByTime(500);
 
     expect(store.dispatch).not.toHaveBeenCalledWith(new FetchAvailableProjects('project-1'));
-  }));
+  });
 
   it('should select supplement option and reset create form for create-new option', () => {
     setup({ detectChanges: false });
@@ -240,7 +249,7 @@ describe('SupplementsStepComponent', () => {
 
   it('should return early when create project form is invalid', () => {
     setup({ detectChanges: false });
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
 
     component.submitCreateProjectForm();
 
@@ -250,7 +259,7 @@ describe('SupplementsStepComponent', () => {
 
   it('should create project, show success and emit next when form is valid', () => {
     setup({ detectChanges: false });
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
     component.createProjectForm.patchValue({
       [ProjectFormControls.Title]: 'New Project',
       [ProjectFormControls.StorageLocation]: 'region-1',
@@ -272,7 +281,7 @@ describe('SupplementsStepComponent', () => {
 
   it('should submit create project form path in nextButtonClicked for create-new option', () => {
     setup({ detectChanges: false });
-    const createSpy = jest.spyOn(component, 'submitCreateProjectForm');
+    const createSpy = vi.spyOn(component, 'submitCreateProjectForm');
     component.selectedSupplementOption.set(SupplementOptions.CreateNewProject);
 
     component.nextButtonClicked();
@@ -282,7 +291,7 @@ describe('SupplementsStepComponent', () => {
 
   it('should emit next and show saved toast in nextButtonClicked for non-create option', () => {
     setup({ detectChanges: false });
-    const emitSpy = jest.spyOn(component.nextClicked, 'emit');
+    const emitSpy = vi.spyOn(component.nextClicked, 'emit');
     component.selectedSupplementOption.set(SupplementOptions.ConnectExistingProject);
 
     component.nextButtonClicked();
@@ -295,7 +304,7 @@ describe('SupplementsStepComponent', () => {
 
   it('should handle discard-changes confirmation callbacks in backButtonClicked', () => {
     setup({ detectChanges: false });
-    const emitSpy = jest.spyOn(component.backClicked, 'emit');
+    const emitSpy = vi.spyOn(component.backClicked, 'emit');
     component.selectedSupplementOption.set(SupplementOptions.CreateNewProject);
     component.createProjectForm.patchValue({ [ProjectFormControls.Title]: 'Has data' });
 
@@ -320,7 +329,7 @@ describe('SupplementsStepComponent', () => {
 
   it('should emit back immediately in backButtonClicked when no create form data', () => {
     setup({ detectChanges: false });
-    const emitSpy = jest.spyOn(component.backClicked, 'emit');
+    const emitSpy = vi.spyOn(component.backClicked, 'emit');
 
     component.backButtonClicked();
 

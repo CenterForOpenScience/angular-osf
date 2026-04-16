@@ -7,7 +7,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 
 import { DeleteEmail, UserEmailsSelectors, VerifyEmail } from '@core/store/user-emails';
 import { AccountEmailModel } from '@osf/shared/models/emails/account-email.model';
@@ -17,7 +16,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 
 @Component({
   selector: 'osf-confirm-email',
-  imports: [Button, FormsModule, TranslatePipe, LoadingSpinnerComponent],
+  imports: [Button, TranslatePipe, LoadingSpinnerComponent],
   templateUrl: './confirm-email.component.html',
   styleUrl: './confirm-email.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,38 +2,34 @@ import { MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { HttpRequest } from '@angular/common/http';
-import { runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
-import { viewOnlyInterceptor } from './view-only.interceptor';
-
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { ViewOnlyLinkHelperMock } from '@testing/providers/view-only-link-helper.mock';
+
+import { viewOnlyInterceptor } from './view-only.interceptor';
 
 describe('viewOnlyInterceptor', () => {
   let viewOnlyHelper: ViewOnlyLinkHelperService;
-  let mockHandler: jest.Mock;
+  let mockHandler: Mock;
 
   beforeEach(() => {
-    mockHandler = jest.fn();
+    mockHandler = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
-        {
-          provide: Router,
-          useValue: RouterMockBuilder.create().withUrl('/test').build(),
-        },
-        MockProvider(ViewOnlyLinkHelperService, {
-          getViewOnlyParam: jest.fn(),
-        }),
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
+        MockProvider(ViewOnlyLinkHelperService, ViewOnlyLinkHelperMock.simple()),
       ],
     });
 
     viewOnlyHelper = TestBed.inject(ViewOnlyLinkHelperService);
-    jest.clearAllMocks();
   });
 
   const createRequest = (url: string): HttpRequest<unknown> => {
@@ -46,12 +42,12 @@ describe('viewOnlyInterceptor', () => {
   };
 
   it('should add view_only parameter to non-funders API requests when view-only param exists', () => {
-    jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('abc123');
+    vi.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('abc123');
 
     const request = createRequest('/api/v2/projects/');
     const handler = createHandler();
 
-    runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
+    TestBed.runInInjectionContext(() => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];
@@ -59,12 +55,12 @@ describe('viewOnlyInterceptor', () => {
   });
 
   it('should add view_only parameter with & separator when URL already has query params', () => {
-    jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('xyz789');
+    vi.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('xyz789');
 
     const request = createRequest('/api/v2/projects/?page=1');
     const handler = createHandler();
 
-    runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
+    TestBed.runInInjectionContext(() => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];
@@ -72,12 +68,12 @@ describe('viewOnlyInterceptor', () => {
   });
 
   it('should encode view_only parameter value', () => {
-    jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('special chars & symbols');
+    vi.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('special chars & symbols');
 
     const request = createRequest('/api/v2/files/');
     const handler = createHandler();
 
-    runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
+    TestBed.runInInjectionContext(() => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];
@@ -85,12 +81,12 @@ describe('viewOnlyInterceptor', () => {
   });
 
   it('should not modify request when view_only parameter already exists in URL', () => {
-    jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('existing');
+    vi.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('existing');
 
     const request = createRequest('/api/v2/nodes/?view_only=existing');
     const handler = createHandler();
 
-    runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
+    TestBed.runInInjectionContext(() => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];
@@ -98,12 +94,12 @@ describe('viewOnlyInterceptor', () => {
   });
 
   it('should not modify request when no view-only param exists', () => {
-    jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue(null);
+    vi.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue(null);
 
     const request = createRequest('/api/v2/users/');
     const handler = createHandler();
 
-    runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
+    TestBed.runInInjectionContext(() => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];
@@ -111,12 +107,12 @@ describe('viewOnlyInterceptor', () => {
   });
 
   it('should not modify funders API requests even when view-only param exists', () => {
-    jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('funder123');
+    vi.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('funder123');
 
     const request = createRequest('https://api.ror.org/v2');
     const handler = createHandler();
 
-    runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
+    TestBed.runInInjectionContext(() => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];
@@ -124,12 +120,12 @@ describe('viewOnlyInterceptor', () => {
   });
 
   it('should handle requests to other external APIs normally', () => {
-    jest.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('external123');
+    vi.spyOn(viewOnlyHelper, 'getViewOnlyParam').mockReturnValue('external123');
 
     const request = createRequest('https://api.github.com/repos/user/repo');
     const handler = createHandler();
 
-    runInInjectionContext(TestBed, () => viewOnlyInterceptor(request, handler));
+    TestBed.runInInjectionContext(() => viewOnlyInterceptor(request, handler));
 
     expect(handler).toHaveBeenCalledTimes(1);
     const modifiedRequest = handler.mock.calls[0][0];

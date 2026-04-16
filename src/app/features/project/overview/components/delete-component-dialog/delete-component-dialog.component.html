@@ -2,7 +2,7 @@
   @if (hasSubComponents()) {
     <p>{{ 'project.overview.dialog.deleteComponent.listMessage' | translate }}</p>
     @if (isLoading()) {
-      <p-skeleton styleClass="mt-2" width="100%" height="4rem" />
+      <p-skeleton class="mt-2" width="100%" height="4rem" />
     } @else {
       <ul class="flex flex-column gap-1 mt-2 pl-4">
         @for (component of components(); track component.id) {

@@ -1,7 +1,6 @@
 import { MockProvider } from 'ng-mocks';
 
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
@@ -9,6 +8,8 @@ import { SSR_CONFIG } from '@core/constants/ssr-config.token';
 import { ConfigModel } from '@core/models/config.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { EnvironmentModel } from '@osf/shared/models/environment.model';
+
+import { provideOSFHttp } from '@testing/osf.testing.provider';
 
 import { OSFConfigService } from './osf-config.service';
 
@@ -26,7 +27,7 @@ describe('OSFConfigService', () => {
 
   const setupBrowser = () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), MockProvider(PLATFORM_ID, 'browser')],
+      providers: [provideOSFHttp(), MockProvider(PLATFORM_ID, 'browser')],
     });
 
     service = TestBed.inject(OSFConfigService);
@@ -36,8 +37,7 @@ describe('OSFConfigService', () => {
   const setupServer = (ssrConfig: ConfigModel | null = null) => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
+        provideOSFHttp(),
         MockProvider(PLATFORM_ID, 'server'),
         ...(ssrConfig ? [{ provide: SSR_CONFIG, useValue: ssrConfig }] : []),
       ],

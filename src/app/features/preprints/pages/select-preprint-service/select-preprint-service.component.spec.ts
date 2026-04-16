@@ -1,21 +1,20 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockProvider } from 'ng-mocks';
+import { MockComponents } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+
+import { PREPRINT_PROVIDER_SHORT_INFO_MOCK } from '@testing/mocks/preprint-provider-short-info.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 import { PreprintProviderShortInfo } from '../../models';
 import { GetPreprintProvidersAllowingSubmissions, PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 import { SelectPreprintServiceComponent } from './select-preprint-service.component';
-
-import { PREPRINT_PROVIDER_SHORT_INFO_MOCK } from '@testing/mocks/preprint-provider-short-info.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 describe('SelectPreprintServiceComponent', () => {
   let component: SelectPreprintServiceComponent;
@@ -35,11 +34,7 @@ describe('SelectPreprintServiceComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [SelectPreprintServiceComponent, ...MockComponents(SubHeaderComponent)],
-      providers: [
-        provideOSFCore(),
-        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
-        provideMockStore({ signals }),
-      ],
+      providers: [provideOSFCore(), provideRouter([]), provideMockStore({ signals })],
     });
 
     store = TestBed.inject(Store);

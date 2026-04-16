@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SEARCH_TUTORIAL_STEPS } from '@osf/shared/constants/search-tutorial-steps.const';
 import { TutorialStep } from '@shared/models/tutorial-step.model';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { SearchHelpTutorialComponent } from './search-help-tutorial.component';
 
 describe('SearchHelpTutorialComponent', () => {
@@ -16,10 +18,11 @@ describe('SearchHelpTutorialComponent', () => {
     mobilePosition: { top: '10px', left: '20px' },
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [SearchHelpTutorialComponent],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SearchHelpTutorialComponent);
     component = fixture.componentInstance;

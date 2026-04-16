@@ -4,7 +4,9 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Mock } from 'vitest';
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
@@ -12,10 +14,6 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
-
-import { ClearState, RegistriesSelectors } from '../../store';
-
-import { DraftsComponent } from './drafts.component';
 
 import {
   MOCK_DRAFT_REGISTRATION,
@@ -28,6 +26,10 @@ import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ClearState, RegistriesSelectors } from '../../store';
+
+import { DraftsComponent } from './drafts.component';
 
 interface SetupOverrides {
   routeParams?: Record<string, string>;
@@ -157,7 +159,7 @@ describe('DraftsComponent', () => {
   });
 
   it('should dispatch clearState on destroy', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.ngOnDestroy();
 
@@ -227,13 +229,13 @@ describe('DraftsComponent', () => {
     expect(c).toBeTruthy();
   });
 
-  it('should hide loader after schema blocks are fetched', fakeAsync(() => {
+  it('should hide loader after schema blocks are fetched', async () => {
     fixture.detectChanges();
-    tick();
+    await fixture.whenStable();
 
     const loaderService = TestBed.inject(LoaderService);
     expect(loaderService.hide).toHaveBeenCalled();
-  }));
+  });
 
   it('should not fetch schema blocks when draft has no registrationSchemaId', () => {
     const { fixture: f } = setup({

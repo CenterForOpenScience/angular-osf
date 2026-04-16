@@ -1,6 +1,6 @@
-import { SeverityType } from './severity.type';
+import { TagSeverityType } from './severity.type';
 
 export interface StatusInfo {
   label: string;
-  severity: SeverityType | null;
+  severity: TagSeverityType | null;
 }

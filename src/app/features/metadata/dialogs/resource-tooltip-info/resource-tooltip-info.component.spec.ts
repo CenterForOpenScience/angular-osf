@@ -4,9 +4,10 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceInfoTooltipComponent } from './resource-tooltip-info.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ResourceInfoTooltipComponent } from './resource-tooltip-info.component';
 
 describe('ResourceInfoTooltipComponent', () => {
   let component: ResourceInfoTooltipComponent;
@@ -14,11 +15,11 @@ describe('ResourceInfoTooltipComponent', () => {
   let dialogRef: DynamicDialogRef;
   let config: DynamicDialogConfig;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ResourceInfoTooltipComponent, OSFTestingModule],
-      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ResourceInfoTooltipComponent],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig)],
+    });
 
     fixture = TestBed.createComponent(ResourceInfoTooltipComponent);
     component = fixture.componentInstance;
@@ -42,7 +43,7 @@ describe('ResourceInfoTooltipComponent', () => {
   });
 
   it('should close dialog when close is called', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     dialogRef.close();
 

@@ -1,5 +1,3 @@
-import structuredClone from 'structured-clone';
-
 const AuthorizedStorage = {
   data: [
     {

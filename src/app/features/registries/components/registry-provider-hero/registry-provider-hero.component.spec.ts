@@ -9,22 +9,24 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { RegistryProviderDetails } from '@shared/models/provider/registry-provider.model';
 
-import { RegistryProviderHeroComponent } from './registry-provider-hero.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { BrandServiceMock, BrandServiceMockType } from '@testing/providers/brand-service.mock';
 import {
   CustomDialogServiceMockBuilder,
   CustomDialogServiceMockType,
 } from '@testing/providers/custom-dialog-provider.mock';
+import { HeaderStyleServiceMock, HeaderStyleServiceMockType } from '@testing/providers/header-style-service.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+
+import { RegistryProviderHeroComponent } from './registry-provider-hero.component';
 
 describe('RegistryProviderHeroComponent', () => {
   let component: RegistryProviderHeroComponent;
   let fixture: ComponentFixture<RegistryProviderHeroComponent>;
   let mockRouter: RouterMockType;
   let mockDialog: CustomDialogServiceMockType;
-  let mockBrandService: { applyBranding: jest.Mock; resetBranding: jest.Mock };
-  let mockHeaderStyleService: { applyHeaderStyles: jest.Mock; resetToDefaults: jest.Mock };
+  let mockBrandService: BrandServiceMockType;
+  let mockHeaderStyleService: HeaderStyleServiceMockType;
 
   const mockProvider: RegistryProviderDetails = {
     id: 'prov-1',
@@ -34,13 +36,14 @@ describe('RegistryProviderHeroComponent', () => {
     brand: null,
     iri: '',
     reviewsWorkflow: '',
+    allowSubmissions: false,
   };
 
   beforeEach(() => {
     mockRouter = RouterMockBuilder.create().withUrl('/x').build();
     mockDialog = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
-    mockBrandService = { applyBranding: jest.fn(), resetBranding: jest.fn() };
-    mockHeaderStyleService = { applyHeaderStyles: jest.fn(), resetToDefaults: jest.fn() };
+    mockBrandService = BrandServiceMock.simple();
+    mockHeaderStyleService = HeaderStyleServiceMock.simple();
 
     TestBed.configureTestingModule({
       imports: [RegistryProviderHeroComponent, MockComponent(SearchInputComponent)],
@@ -65,7 +68,7 @@ describe('RegistryProviderHeroComponent', () => {
   });
 
   it('should emit triggerSearch on onTriggerSearch', () => {
-    jest.spyOn(component.triggerSearch, 'emit');
+    vi.spyOn(component.triggerSearch, 'emit');
     component.onTriggerSearch('abc');
     expect(component.triggerSearch.emit).toHaveBeenCalledWith('abc');
   });

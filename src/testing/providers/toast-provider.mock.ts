@@ -1,31 +1,35 @@
+import { Mock } from 'vitest';
+
 import { ToastService } from '@osf/shared/services/toast.service';
 
+type ToastFn = (...args: any[]) => void;
+
 export type ToastServiceMockType = Partial<ToastService> & {
-  showSuccess: jest.Mock;
-  showWarn: jest.Mock;
-  showError: jest.Mock;
+  showSuccess: Mock<ToastFn>;
+  showWarn: Mock<ToastFn>;
+  showError: Mock<ToastFn>;
 };
 
 export class ToastServiceMockBuilder {
-  private showSuccessMock: jest.Mock = jest.fn();
-  private showWarnMock: jest.Mock = jest.fn();
-  private showErrorMock: jest.Mock = jest.fn();
+  private showSuccessMock: Mock<ToastFn> = vi.fn();
+  private showWarnMock: Mock<ToastFn> = vi.fn();
+  private showErrorMock: Mock<ToastFn> = vi.fn();
 
   static create(): ToastServiceMockBuilder {
     return new ToastServiceMockBuilder();
   }
 
-  withShowSuccess(mockImpl: jest.Mock): ToastServiceMockBuilder {
+  withShowSuccess(mockImpl: Mock<ToastFn>): ToastServiceMockBuilder {
     this.showSuccessMock = mockImpl;
     return this;
   }
 
-  withShowWarn(mockImpl: jest.Mock): ToastServiceMockBuilder {
+  withShowWarn(mockImpl: Mock<ToastFn>): ToastServiceMockBuilder {
     this.showWarnMock = mockImpl;
     return this;
   }
 
-  withShowError(mockImpl: jest.Mock): ToastServiceMockBuilder {
+  withShowError(mockImpl: Mock<ToastFn>): ToastServiceMockBuilder {
     this.showErrorMock = mockImpl;
     return this;
   }
@@ -45,9 +49,9 @@ export const ToastServiceMock = {
   },
   simple() {
     return {
-      showSuccess: jest.fn(),
-      showWarn: jest.fn(),
-      showError: jest.fn(),
+      showSuccess: vi.fn(),
+      showWarn: vi.fn(),
+      showError: vi.fn(),
     } as ToastServiceMockType;
   },
 };

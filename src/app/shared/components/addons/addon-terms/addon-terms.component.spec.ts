@@ -1,237 +1,127 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ADDON_TERMS } from '@osf/shared/constants/addon-terms.const';
-import { isCitationAddon, isRedirectAddon } from '@osf/shared/helpers/addon-type.helper';
-import { AddonModel } from '@osf/shared/models/addons/addon.model';
-import { AddonTerm } from '@osf/shared/models/addons/addon-utils.model';
+import { AddonCategory } from '@osf/shared/enums/addons-category.enum';
+import { AddonModel } from '@shared/models/addons/addon.model';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { AddonTermsComponent } from './addon-terms.component';
-
-import { MOCK_ADDON } from '@testing/mocks/addon.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-
-jest.mock('@shared/helpers/addon-type.helper.ts', () => ({
-  isCitationAddon: jest.fn(),
-  isRedirectAddon: jest.fn(),
-}));
 
 describe('AddonTermsComponent', () => {
   let component: AddonTermsComponent;
   let fixture: ComponentFixture<AddonTermsComponent>;
-  const mockIsCitationAddon = isCitationAddon as jest.MockedFunction<typeof isCitationAddon>;
-  const mockIsRedirectAddon = isRedirectAddon as jest.MockedFunction<typeof isRedirectAddon>;
-  const mockAddon: AddonModel = MOCK_ADDON;
+
+  const createAddon = (overrides: Partial<AddonModel> = {}): AddonModel => ({
+    id: 'addon-1',
+    type: AddonCategory.EXTERNAL_STORAGE_SERVICES,
+    displayName: 'Dropbox',
+    externalServiceName: 'dropbox',
+    providerName: 'Dropbox',
+    supportedFeatures: [],
+    ...overrides,
+  });
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AddonTermsComponent, OSFTestingModule],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [AddonTermsComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(AddonTermsComponent);
     component = fixture.componentInstance;
-
-    mockIsCitationAddon.mockReturnValue(false);
-    mockIsRedirectAddon.mockReturnValue(false);
+    await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return empty array when addon is null', () => {
+  it('should return empty terms when addon is null', () => {
     fixture.componentRef.setInput('addon', null);
+    fixture.detectChanges();
 
-    expect((component as any).terms()).toEqual([]);
+    expect(component.terms()).toEqual([]);
   });
 
-  it('should return terms for regular addon with unsupported features', () => {
-    const addonWithoutFeatures: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: [],
-    };
+  it('should mark redirect addons and return empty terms', () => {
+    fixture.componentRef.setInput(
+      'addon',
+      createAddon({
+        type: AddonCategory.EXTERNAL_REDIRECT_SERVICES,
+      })
+    );
+    fixture.detectChanges();
 
-    mockIsCitationAddon.mockReturnValue(false);
-    fixture.componentRef.setInput('addon', addonWithoutFeatures);
-
-    const terms = (component as any).terms();
-
-    expect(terms).toHaveLength(ADDON_TERMS.length);
-
-    const addUpdateTerm = terms.find((term: AddonTerm) => term.function === 'Add / update files');
-    expect(addUpdateTerm.type).toBe('danger');
-    expect(addUpdateTerm.status).toContain('cannot add or update');
+    expect(component.isRedirectService()).toBe(true);
+    expect(component.terms()).toEqual([]);
   });
 
-  it('should return terms for regular addon with partial features', () => {
-    const addonWithPartialFeatures: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: ['FORKING_PARTIAL'],
-    };
-
-    mockIsCitationAddon.mockReturnValue(false);
-    fixture.componentRef.setInput('addon', addonWithPartialFeatures);
-
-    const terms = (component as any).terms();
-
-    const forkingTerm = terms.find((term: AddonTerm) => term.function === 'Forking');
-    expect(forkingTerm.type).toBe('warning');
-    expect(forkingTerm.status).toContain(MOCK_ADDON.providerName);
-  });
-
-  it('should replace {provider} placeholder with actual provider name', () => {
-    const customProviderAddon: AddonModel = {
-      ...mockAddon,
-      providerName: 'CustomProvider',
-    };
-
-    mockIsCitationAddon.mockReturnValue(false);
-    fixture.componentRef.setInput('addon', customProviderAddon);
-
-    const terms = (component as any).terms();
-
-    terms.forEach((term: AddonTerm) => {
-      expect(term.status).toContain('CustomProvider');
-      expect(term.status).not.toContain('{provider}');
-    });
-  });
-
-  it('should show all terms when isCitationService is false', () => {
-    const regularAddon: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: ['STORAGE', 'FORKING'],
-    };
-
-    mockIsCitationAddon.mockReturnValue(false);
-    fixture.componentRef.setInput('addon', regularAddon);
-
-    const terms = (component as any).terms();
-
-    expect(terms.length).toBeGreaterThan(0);
-
-    const allTerms = (component as any).getAddonTerms(regularAddon);
-    expect(terms.length).toBe(allTerms.length);
-  });
-
-  it('should handle citation service without required features', () => {
-    const citationAddonWithoutFeatures: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: [],
-    };
-
-    mockIsCitationAddon.mockReturnValue(true);
-    fixture.componentRef.setInput('addon', citationAddonWithoutFeatures);
-
-    const terms = (component as any).terms();
-
-    expect(terms.length).toBeGreaterThan(0);
-
-    const hasDangerTerm = terms.some((term: AddonTerm) => term.type === 'danger');
-    expect(hasDangerTerm).toBe(true);
-  });
-
-  it('should handle citation service with full features', () => {
-    const citationAddonWithFullFeatures: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: ['STORAGE', 'FORKING'],
-    };
-
-    mockIsCitationAddon.mockReturnValue(true);
-    fixture.componentRef.setInput('addon', citationAddonWithFullFeatures);
-
-    const terms = (component as any).terms();
-
-    expect(terms.length).toBeGreaterThan(0);
-
-    const hasInfoTerm = terms.some((term: AddonTerm) => term.type === 'info');
-    expect(hasInfoTerm).toBe(true);
-  });
-
-  it('should handle null addon input', () => {
-    fixture.componentRef.setInput('addon', null);
-
-    const terms = (component as any).terms();
-
-    expect(terms).toEqual([]);
-  });
-
-  it('should handle undefined addon input', () => {
-    fixture.componentRef.setInput('addon', undefined);
-
-    const terms = (component as any).terms();
-
-    expect(terms).toEqual([]);
-  });
-
-  it('should handle addon with empty supportedFeatures', () => {
-    const addonWithEmptyFeatures: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: [],
-    };
-
-    mockIsCitationAddon.mockReturnValue(false);
-    fixture.componentRef.setInput('addon', addonWithEmptyFeatures);
-
-    const terms = (component as any).terms();
-
-    expect(terms.length).toBeGreaterThan(0);
-
-    terms.forEach((term: AddonTerm) => {
-      expect(term.type).toBe('danger');
-    });
-  });
-
-  it('should handle addon with partial features only', () => {
-    const addonWithPartialOnly: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: ['STORAGE_PARTIAL', 'FORKING_PARTIAL'],
-    };
-
-    mockIsCitationAddon.mockReturnValue(false);
-    fixture.componentRef.setInput('addon', addonWithPartialOnly);
-
-    const terms = (component as any).terms();
-
-    expect(terms.length).toBeGreaterThan(0);
-
-    const hasWarningTerm = terms.some((term: AddonTerm) => term.type === 'warning');
-    expect(hasWarningTerm).toBe(true);
-  });
-
-  it('should handle addon with mixed features (full, partial, none)', () => {
-    const addonWithMixedFeatures: AddonModel = {
-      ...mockAddon,
-      supportedFeatures: ['STORAGE', 'FORKING_PARTIAL'],
-    };
-    mockIsCitationAddon.mockReturnValue(false);
-    fixture.componentRef.setInput('addon', addonWithMixedFeatures);
-
-    const terms = (component as any).terms();
-
-    expect(terms.length).toBeGreaterThan(0);
-
-    const hasInfoTerm = terms.some((term: AddonTerm) => term.type === 'info');
-    const hasWarningTerm = terms.some((term: AddonTerm) => term.type === 'warning');
-    const hasDangerTerm = terms.some((term: AddonTerm) => term.type === 'danger');
-
-    expect(hasInfoTerm || hasWarningTerm || hasDangerTerm).toBe(true);
-  });
-
-  it('should handle redirect terms correctly', () => {
-    const redirectAddon: AddonModel = {
-      ...mockAddon,
-      type: 'redirect',
-    };
-
-    mockIsRedirectAddon.mockReturnValue(true);
-    fixture.componentRef.setInput('addon', redirectAddon);
+  it('should build storage terms with provider replacement and warning for partial support', () => {
+    fixture.componentRef.setInput(
+      'addon',
+      createAddon({
+        supportedFeatures: ['ADD_UPDATE_FILES', 'DELETE_FILES_PARTIAL'],
+      })
+    );
     fixture.detectChanges();
 
     const terms = component.terms();
-    expect(terms).toEqual([]);
+    const addUpdateTerm = terms.find((term) => term.function === 'Add / update files');
+    const deleteTerm = terms.find((term) => term.function === 'Delete files');
 
-    const termsElement: HTMLElement = fixture.nativeElement;
-    expect(termsElement.querySelectorAll('tr').length).toBe(0);
-    expect(termsElement.querySelectorAll('p').length).toBe(2);
-    expect(termsElement.textContent).toContain('settings.addons.connectAddon.redirectAddons.terms');
+    expect(addUpdateTerm).toEqual(
+      expect.objectContaining({
+        type: 'info',
+      })
+    );
+    expect(addUpdateTerm?.status).toContain('Dropbox');
+    expect(deleteTerm).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+      })
+    );
+  });
+
+  it('should build citation terms using citation partial message when partial feature exists', () => {
+    fixture.componentRef.setInput(
+      'addon',
+      createAddon({
+        type: AddonCategory.EXTERNAL_CITATION_SERVICES,
+        providerName: 'Mendeley',
+        supportedFeatures: ['FORKING_PARTIAL'],
+      })
+    );
+    fixture.detectChanges();
+
+    const forkingTerm = component.terms().find((term) => term.function === 'Forking');
+
+    expect(forkingTerm).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+      })
+    );
+    expect(forkingTerm?.status).toContain('Mendeley');
+    expect(forkingTerm?.status).toContain('does not copy');
+  });
+
+  it('should build citation terms using citation false message when feature is missing', () => {
+    fixture.componentRef.setInput(
+      'addon',
+      createAddon({
+        type: AddonCategory.EXTERNAL_CITATION_SERVICES,
+        providerName: 'Zotero',
+        supportedFeatures: [],
+      })
+    );
+    fixture.detectChanges();
+
+    const registeringTerm = component.terms().find((term) => term.function === 'Registering');
+
+    expect(registeringTerm).toEqual(
+      expect.objectContaining({
+        type: 'danger',
+      })
+    );
+    expect(registeringTerm?.status).toBe('Zotero content will not be registered.');
   });
 });

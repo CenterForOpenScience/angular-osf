@@ -1,227 +1,203 @@
-import { Observable, take } from 'rxjs';
+import { of } from 'rxjs';
 
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
+import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
+import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { DataciteEvent } from '@osf/shared/enums/datacite/datacite-event.enum';
-import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
+import { EnvironmentModel } from '@osf/shared/models/environment.model';
+import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
+import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
+
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
 
 import { DataciteService } from './datacite.service';
 
-function buildObservable(doi: string) {
-  return new Observable<{ identifiers?: IdentifierModel[] } | null>((subscriber) => {
-    subscriber.next({});
-    subscriber.next({ identifiers: [] });
-    subscriber.next({
-      identifiers: [
-        {
-          category: 'doi',
-          value: doi,
-          id: '',
-          type: 'identifier',
-        },
-      ],
-    });
-    subscriber.next({
-      identifiers: [
-        {
-          category: 'doi',
-          value: 'other doi',
-          id: '',
-          type: 'identifier',
-        },
-      ],
-    });
-    subscriber.complete();
-  });
-}
-
-function assertSuccess(
-  httpMock: HttpTestingController,
-  dataciteTrackerAddress: string,
-  dataciteTrackerRepoId: string,
-  doi: string,
-  event: DataciteEvent
-) {
-  assertSendBeacon(dataciteTrackerAddress, dataciteTrackerRepoId, doi, event);
-  const req = httpMock.expectOne(dataciteTrackerAddress);
-  expect(req.request.method).toBe('POST');
-  expect(req.request.body).toEqual({
-    n: event,
-    u: window.location.href,
-    i: dataciteTrackerRepoId,
-    p: doi,
-  });
-  expect(req.request.headers.get('Content-Type')).toBe('application/json');
-  req.flush({});
-}
-
-function assertSendBeacon(
-  dataciteTrackerAddress: string,
-  dataciteTrackerRepoId: string,
-  doi: string,
-  event: DataciteEvent
-) {
-  expect(navigator.sendBeacon).toBeCalledTimes(1);
-  expect(navigator.sendBeacon).toHaveBeenCalledWith(
-    dataciteTrackerAddress,
-    JSON.stringify({
-      n: event,
-      u: window.location.href,
-      i: dataciteTrackerRepoId,
-      p: doi,
-    })
-  );
-}
-
-describe('DataciteService', () => {
+describe('Service: Datacite', () => {
   let service: DataciteService;
-  let sentry: jest.Mocked<any>;
   let httpMock: HttpTestingController;
+  let environment: EnvironmentModel;
 
-  const dataciteTrackerAddress = 'https://tracker.test';
-  const apiDomainUrl = 'https://osf.io';
-  const dataciteTrackerRepoId = 'repo-123';
-  describe('with proper configuration', () => {
-    beforeEach(() => {
-      Object.defineProperty(navigator, 'sendBeacon', {
-        configurable: true,
-        value: jest.fn(() => false),
-      });
-      TestBed.configureTestingModule({
-        providers: [
-          DataciteService,
-          provideHttpClient(),
-          provideHttpClientTesting(),
-          { provide: SENTRY_TOKEN, useValue: sentry },
-          {
-            provide: ENVIRONMENT,
-            useValue: {
-              apiDomainUrl,
-              dataciteTrackerRepoId,
-              dataciteTrackerAddress,
-            },
-          },
-        ],
-      });
+  const trackerAddress = 'https://analytics.datacite.org/api/metric';
+  const trackerRepoId = 'repo-id';
+  const doi = '10.1234/example-doi';
 
-      service = TestBed.inject(DataciteService);
-      httpMock = TestBed.inject(HttpTestingController);
+  const trackable = (identifiers: IdentifierModel[]) => of<{ identifiers?: IdentifierModel[] } | null>({ identifiers });
+  const setSendBeacon = (value: boolean) => {
+    const mock = vi.fn().mockReturnValue(value);
+    Object.defineProperty(window.navigator, 'sendBeacon', {
+      value: mock,
+      configurable: true,
+      writable: true,
+    });
+    return mock;
+  };
+
+  const setup = (platformId: 'browser' | 'server' = 'browser') => {
+    TestBed.configureTestingModule({
+      providers: [provideOSFCore(), provideOSFHttp(), DataciteService, { provide: PLATFORM_ID, useValue: platformId }],
     });
 
-    afterEach(() => {
-      httpMock.verify();
-    });
+    service = TestBed.inject(DataciteService);
+    httpMock = TestBed.inject(HttpTestingController);
+    environment = TestBed.inject(ENVIRONMENT);
+    environment.dataciteTrackerAddress = trackerAddress;
+    environment.dataciteTrackerRepoId = trackerRepoId;
+  };
 
-    it('logIdentifiableView should POST with correct payload', () => {
-      const doi = '10.1234/abcd';
-      const observable = buildObservable(doi);
-      service.logIdentifiableView(observable).subscribe();
-      assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.VIEW);
-    });
-
-    it('logIdentifiableView should notPOST without correct payload', () => {
-      const doi = '10.1234/abcd';
-      const observable = buildObservable(doi).pipe(take(2));
-      service.logIdentifiableView(observable).subscribe();
-      httpMock.expectNone(dataciteTrackerAddress);
-    });
-
-    it('logIdentifiableDownload should POST with correct payload', () => {
-      const doi = '10.1234/abcd';
-      const observable = buildObservable(doi);
-      service.logIdentifiableDownload(observable).subscribe();
-      assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.DOWNLOAD);
-    });
-    it('logFileView should GET identifiers and POST with correct payload', () => {
-      const doi = '10.1234/fileview';
-      const targetId = 'file-1';
-      const targetType = 'files';
-
-      service.logFileView(targetId, targetType).subscribe();
-
-      const reqGet = httpMock.expectOne(`${apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`);
-      expect(reqGet.request.method).toBe('GET');
-      reqGet.flush({
-        data: [
-          {
-            id: 'id-1',
-            type: 'identifier',
-            attributes: { category: 'doi', value: doi },
-          },
-        ],
-      });
-
-      assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.VIEW);
-    });
-
-    it('logFileDownload should GET identifiers and POST with correct payload', () => {
-      const doi = '10.1234/filedownload';
-      const targetId = 'file-2';
-      const targetType = 'files';
-
-      service.logFileDownload(targetId, targetType).subscribe();
-
-      const reqGet = httpMock.expectOne(`${apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`);
-      expect(reqGet.request.method).toBe('GET');
-      reqGet.flush({
-        data: [
-          {
-            id: 'id-2',
-            type: 'identifier',
-            attributes: { category: 'doi', value: doi },
-          },
-        ],
-      });
-
-      assertSuccess(httpMock, dataciteTrackerAddress, dataciteTrackerRepoId, doi, DataciteEvent.DOWNLOAD);
-    });
-
-    it('navigator success', () => {
-      (navigator.sendBeacon as jest.Mock).mockReturnValueOnce(true);
-
-      const doi = 'qwerty';
-      const event = DataciteEvent.VIEW;
-      service.logIdentifiableView(buildObservable(doi)).subscribe();
-
-      httpMock.expectNone(dataciteTrackerAddress);
-      assertSendBeacon(dataciteTrackerAddress, dataciteTrackerRepoId, doi, event);
-    });
+  afterEach(() => {
+    httpMock.verify();
   });
 
-  describe('on local setup (without dataciteTrackerRepoId configured)', () => {
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        providers: [
-          DataciteService,
-          provideHttpClient(),
-          provideHttpClientTesting(),
-          {
-            provide: ENVIRONMENT,
-            useValue: {
-              dataciteTrackerRepoId: null,
-              dataciteTrackerAddress: dataciteTrackerAddress,
-            },
-          },
-        ],
+  it('should expose environment values', () => {
+    setup();
+
+    expect(service.apiDomainUrl).toBe(environment.apiDomainUrl);
+    expect(service.dataciteTrackerAddress).toBe(trackerAddress);
+    expect(service.dataciteTrackerRepoId).toBe(trackerRepoId);
+  });
+
+  it('should log identifiable view with sendBeacon when doi exists', () => {
+    setup();
+    const sendBeaconSpy = setSendBeacon(true);
+
+    let emitted = false;
+    service
+      .logIdentifiableView(
+        trackable([
+          { id: '1', type: 'identifiers', category: 'doi', value: doi },
+          { id: '2', type: 'identifiers', category: 'doi', value: '10.9999/second-doi' },
+        ])
+      )
+      .subscribe(() => {
+        emitted = true;
       });
 
-      service = TestBed.inject(DataciteService);
-      httpMock = TestBed.inject(HttpTestingController);
+    expect(emitted).toBe(true);
+    expect(sendBeaconSpy).toHaveBeenCalledTimes(1);
+    expect(sendBeaconSpy).toHaveBeenCalledWith(
+      trackerAddress,
+      JSON.stringify({
+        n: DataciteEvent.VIEW,
+        u: window.location.href,
+        i: trackerRepoId,
+        p: doi,
+      })
+    );
+  });
+
+  it('should fallback to http post when sendBeacon fails', () => {
+    setup();
+    const sendBeaconSpy = setSendBeacon(false);
+    let emitted = false;
+
+    service
+      .logIdentifiableDownload(trackable([{ id: '1', type: 'identifiers', category: 'doi', value: doi }]))
+      .subscribe(() => {
+        emitted = true;
+      });
+
+    const req = httpMock.expectOne(trackerAddress);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.headers.get('Content-Type')).toBe('application/json');
+    expect(req.request.context.get(BYPASS_ERROR_INTERCEPTOR)).toBe(true);
+    expect(req.request.body).toEqual({
+      n: DataciteEvent.DOWNLOAD,
+      u: window.location.href,
+      i: trackerRepoId,
+      p: doi,
+    });
+    req.flush({});
+
+    expect(sendBeaconSpy).toHaveBeenCalledTimes(1);
+    expect(emitted).toBe(true);
+  });
+
+  it('should not log when identifiable has no doi', () => {
+    setup();
+    const sendBeaconSpy = setSendBeacon(true);
+    let emitted = false;
+    let completed = false;
+
+    service
+      .logIdentifiableView(trackable([{ id: '1', type: 'identifiers', category: 'ark', value: 'ark:/99999/x' }]))
+      .subscribe({
+        next: () => {
+          emitted = true;
+        },
+        complete: () => {
+          completed = true;
+        },
+      });
+
+    expect(emitted).toBe(false);
+    expect(completed).toBe(true);
+    expect(sendBeaconSpy).not.toHaveBeenCalled();
+  });
+
+  it('should fetch file identifiers and log doi on download', () => {
+    setup();
+    const sendBeaconSpy = setSendBeacon(true);
+    let emitted = false;
+
+    service.logFileDownload('file-123', 'files').subscribe(() => {
+      emitted = true;
     });
 
-    it('logIdentifiableView should POST with correct payload', () => {
-      const doi = '10.1234/abcd';
-      const observable = buildObservable(doi);
-      service.logIdentifiableView(observable).subscribe();
-      httpMock.expectNone(dataciteTrackerAddress);
+    const req = httpMock.expectOne(`${environment.apiDomainUrl}/v2/files/file-123/identifiers`);
+    expect(req.request.method).toBe('GET');
+    const response: IdentifiersResponseJsonApi = {
+      data: [
+        {
+          id: 'id-1',
+          type: 'identifiers',
+          attributes: { category: 'doi', value: doi },
+          embeds: null,
+          relationships: null,
+          links: null,
+        },
+      ],
+      links: {},
+      meta: {
+        total: 1,
+        per_page: 10,
+        version: '2.0',
+      },
+    };
+    req.flush(response);
+
+    expect(emitted).toBe(true);
+    expect(sendBeaconSpy).toHaveBeenCalledWith(
+      trackerAddress,
+      JSON.stringify({
+        n: DataciteEvent.DOWNLOAD,
+        u: window.location.href,
+        i: trackerRepoId,
+        p: doi,
+      })
+    );
+  });
+
+  it('should not log when tracker repo id is missing', () => {
+    setup();
+    environment.dataciteTrackerRepoId = null;
+    const sendBeaconSpy = setSendBeacon(true);
+    let emitted = false;
+    let completed = false;
+
+    service.logIdentifiableView(trackable([{ id: '1', type: 'identifiers', category: 'doi', value: doi }])).subscribe({
+      next: () => {
+        emitted = true;
+      },
+      complete: () => {
+        completed = true;
+      },
     });
 
-    afterEach(() => {
-      httpMock.verify();
-    });
+    expect(emitted).toBe(false);
+    expect(completed).toBe(true);
+    expect(sendBeaconSpy).not.toHaveBeenCalled();
   });
 });

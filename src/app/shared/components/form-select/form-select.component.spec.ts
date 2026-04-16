@@ -4,9 +4,9 @@ import { FormControl } from '@angular/forms';
 
 import { SelectOption } from '@osf/shared/models/select-option.model';
 
-import { FormSelectComponent } from './form-select.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { FormSelectComponent } from './form-select.component';
 
 describe('FormSelectComponent', () => {
   let component: FormSelectComponent;
@@ -20,10 +20,11 @@ describe('FormSelectComponent', () => {
 
   const mockFormControl = new FormControl('');
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FormSelectComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [FormSelectComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(FormSelectComponent);
     component = fixture.componentInstance;

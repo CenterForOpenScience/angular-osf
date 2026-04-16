@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -10,6 +12,7 @@ import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
@@ -19,18 +22,17 @@ import {
 } from '@shared/stores/contributors';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 
-import { PreprintAuthorAssertionsComponent } from '../preprint-author-assertions/preprint-author-assertions.component';
-import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
-
-import { GeneralInformationComponent } from './general-information.component';
-
 import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { PreprintAuthorAssertionsComponent } from '../preprint-author-assertions/preprint-author-assertions.component';
+import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
+
+import { GeneralInformationComponent } from './general-information.component';
 
 describe('GeneralInformationComponent', () => {
   let component: GeneralInformationComponent;
@@ -54,9 +56,9 @@ describe('GeneralInformationComponent', () => {
           ContributorsListComponent,
           IconComponent,
           PreprintDoiSectionComponent,
-          PreprintAuthorAssertionsComponent
+          PreprintAuthorAssertionsComponent,
+          TruncatedTextComponent
         ),
-        MockComponentWithSignal('osf-truncated-text'),
       ],
       providers: [
         provideOSFCore(),
@@ -107,7 +109,6 @@ describe('GeneralInformationComponent', () => {
   it('should dispatch constructor effect actions when preprint id exists', () => {
     setup();
     fixture.detectChanges();
-    TestBed.flushEffects();
     expect(store.dispatch).toHaveBeenCalledWith(
       new GetBibliographicContributors(PREPRINT_MOCK.id, ResourceType.Preprint)
     );
@@ -118,15 +119,14 @@ describe('GeneralInformationComponent', () => {
     setup({
       selectorOverrides: [{ selector: PreprintSelectors.getPreprint, value: undefined }],
     });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     fixture.detectChanges();
-    TestBed.flushEffects();
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
   it('should dispatch load more contributors with preprint id', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.handleLoadMoreContributors();
     expect(store.dispatch).toHaveBeenCalledWith(
       new LoadMoreBibliographicContributors(PREPRINT_MOCK.id, ResourceType.Preprint)
@@ -137,7 +137,7 @@ describe('GeneralInformationComponent', () => {
     setup({
       selectorOverrides: [{ selector: PreprintSelectors.getPreprint, value: undefined }],
     });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.handleLoadMoreContributors();
     expect(store.dispatch).toHaveBeenCalledWith(
       new LoadMoreBibliographicContributors(undefined, ResourceType.Preprint)
@@ -146,14 +146,14 @@ describe('GeneralInformationComponent', () => {
 
   it('should reset contributors state on destroy in browser', () => {
     setup({ platformId: 'browser' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
     expect(store.dispatch).toHaveBeenCalledWith(new ResetContributorsState());
   });
 
   it('should not reset contributors state on destroy in server platform', () => {
     setup({ platformId: 'server' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
     expect(store.dispatch).not.toHaveBeenCalledWith(new ResetContributorsState());
   });

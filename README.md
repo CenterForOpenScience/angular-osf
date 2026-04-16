@@ -36,25 +36,22 @@ take up to 60 seconds once the docker build finishes.
 
 ## Testing the project
 
-The project uses jest for unit testing.
-A "counter" script executes before and after each test run to track how many times the unit
-tests are run locally. The output is displayed.
+The project uses Vitest through Angular's unit test builder (`ng test`).
+A "counter" script displays local run stats after coverage runs.
 
 ```bash
-npm run test (single test run)
-npm run test:watch (single run after file save)
-npm run test:coverage (code coverage results)
+npm run test               # single test run (no watch)
+npm run test:one "src/path/to/file.spec.ts"  # run one spec file
+npm run test:watch         # watch mode
+npm run test:coverage      # coverage reports
 ```
 
-- all commits must pass the local pipeline for test coverage
+Coverage thresholds are configured in `vitest.config.ts` (`test.coverage.thresholds`).
+To validate threshold updates after improving coverage:
 
 ```bash
 npm run test:check-coverage-thresholds
 ```
-
-- Verifies newly added tests match the thresholds
-- This is only used until we hit 100% test coverage
-- all commits must pass the local pipeline for test coverage
 
 ## Volta
 

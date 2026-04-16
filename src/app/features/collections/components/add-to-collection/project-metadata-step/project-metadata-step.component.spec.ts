@@ -10,29 +10,29 @@ import { ToastService } from '@osf/shared/services/toast.service';
 import { InterpolatePipe } from '@shared/pipes/interpolate.pipe';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
-import { ProjectMetadataStepComponent } from './project-metadata-step.component';
-
 import { MOCK_PROJECT } from '@testing/mocks/project.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+
+import { ProjectMetadataStepComponent } from './project-metadata-step.component';
 
 describe.skip('ProjectMetadataStepComponent', () => {
   let component: ProjectMetadataStepComponent;
   let fixture: ComponentFixture<ProjectMetadataStepComponent>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     toastServiceMock = ToastServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         ProjectMetadataStepComponent,
-        OSFTestingModule,
         ...MockComponents(TagsInputComponent, TextInputComponent, TruncatedTextComponent),
         MockPipe(InterpolatePipe),
       ],
       providers: [
+        provideOSFCore(),
         MockProvider(ToastService, toastServiceMock),
         provideMockStore({
           signals: [
@@ -42,7 +42,7 @@ describe.skip('ProjectMetadataStepComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ProjectMetadataStepComponent);
     component = fixture.componentInstance;
@@ -84,7 +84,7 @@ describe.skip('ProjectMetadataStepComponent', () => {
   });
 
   it('should handle edit step', () => {
-    const stepChangeSpy = jest.spyOn(component.stepChange, 'emit');
+    const stepChangeSpy = vi.spyOn(component.stepChange, 'emit');
 
     component.handleEditStep();
 

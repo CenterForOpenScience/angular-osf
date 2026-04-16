@@ -6,7 +6,6 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -25,7 +24,6 @@ import { ProjectSelectorComponent } from '../project-selector/project-selector.c
 @Component({
   selector: 'osf-add-project-form',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     InputText,
     Select,

@@ -9,12 +9,12 @@ import {
 } from '@osf/shared/models/search/discaverable-filter.model';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { SearchFiltersComponent } from './search-filters.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('SearchFiltersComponent', () => {
   let component: SearchFiltersComponent;
@@ -53,14 +53,11 @@ describe('SearchFiltersComponent', () => {
     subject: [{ label: 'Psychology', value: 'psychology', cardSearchResultCount: 10 }],
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        SearchFiltersComponent,
-        OSFTestingModule,
-        ...MockComponents(GenericFilterComponent, LoadingSpinnerComponent),
-      ],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SearchFiltersComponent, ...MockComponents(GenericFilterComponent, LoadingSpinnerComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SearchFiltersComponent);
     component = fixture.componentInstance;
@@ -146,7 +143,7 @@ describe('SearchFiltersComponent', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.loadFilterOptions, 'emit');
+    const emitSpy = vi.spyOn(component.loadFilterOptions, 'emit');
 
     component.onAccordionToggle('subject');
 
@@ -157,7 +154,7 @@ describe('SearchFiltersComponent', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.loadFilterOptions, 'emit');
+    const emitSpy = vi.spyOn(component.loadFilterOptions, 'emit');
 
     component.onAccordionToggle('nonexistent');
 
@@ -171,7 +168,7 @@ describe('SearchFiltersComponent', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.filterOptionSelected, 'emit');
+    const emitSpy = vi.spyOn(component.filterOptionSelected, 'emit');
 
     component.onSelectedFilterOptionsChanged(filter, options);
 
@@ -185,7 +182,7 @@ describe('SearchFiltersComponent', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.filterOptionsSearch, 'emit');
+    const emitSpy = vi.spyOn(component.filterOptionsSearch, 'emit');
 
     component.onSearchFilterOptions(filter, searchText);
 
@@ -198,7 +195,7 @@ describe('SearchFiltersComponent', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.loadMoreFilterOptions, 'emit');
+    const emitSpy = vi.spyOn(component.loadMoreFilterOptions, 'emit');
 
     component.onLoadMoreFilterOptions(filter);
 
@@ -212,7 +209,7 @@ describe('SearchFiltersComponent', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.filterOptionSelected, 'emit');
+    const emitSpy = vi.spyOn(component.filterOptionSelected, 'emit');
 
     component.onCheckboxChange(event, filter);
 
@@ -229,7 +226,7 @@ describe('SearchFiltersComponent', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.filterOptionSelected, 'emit');
+    const emitSpy = vi.spyOn(component.filterOptionSelected, 'emit');
 
     component.onCheckboxChange(event, filter);
 

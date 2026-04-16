@@ -3,29 +3,31 @@ import { By } from '@angular/platform-browser';
 
 import { LoaderService } from '@osf/shared/services/loader.service';
 
-import { FullScreenLoaderComponent } from './full-screen-loader.component';
-
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+
+import { FullScreenLoaderComponent } from './full-screen-loader.component';
 
 describe('FullScreenLoaderComponent', () => {
   let component: FullScreenLoaderComponent;
   let fixture: ComponentFixture<FullScreenLoaderComponent>;
-  let loaderService: LoaderServiceMock;
+  let loaderService: LoaderService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [FullScreenLoaderComponent],
       providers: [
+        provideOSFCore(),
         {
           provide: LoaderService,
           useClass: LoaderServiceMock,
         },
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(FullScreenLoaderComponent);
     component = fixture.componentInstance;
-    loaderService = TestBed.inject(LoaderService) as unknown as LoaderServiceMock;
+    loaderService = TestBed.inject(LoaderService);
   });
 
   it('should create', () => {

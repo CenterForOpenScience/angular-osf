@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 
-import { ResourceDoiComponent } from './resource-doi.component';
-
 import { MOCK_PROJECT_IDENTIFIERS } from '@testing/mocks/project-overview.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { ResourceDoiComponent } from './resource-doi.component';
 
 describe('ResourceDoiComponent', () => {
   let component: ResourceDoiComponent;
@@ -20,10 +21,11 @@ describe('ResourceDoiComponent', () => {
     },
   ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [ResourceDoiComponent],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ResourceDoiComponent);
     component = fixture.componentInstance;

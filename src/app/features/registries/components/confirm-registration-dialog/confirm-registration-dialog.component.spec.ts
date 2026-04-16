@@ -6,16 +6,18 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { throwError } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubmitType } from '@osf/features/registries/enums';
 import { RegisterDraft, RegistriesSelectors } from '@osf/features/registries/store';
 
-import { ConfirmRegistrationDialogComponent } from './confirm-registration-dialog.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ConfirmRegistrationDialogComponent } from './confirm-registration-dialog.component';
 
 describe('ConfirmRegistrationDialogComponent', () => {
   let component: ConfirmRegistrationDialogComponent;
@@ -129,7 +131,7 @@ describe('ConfirmRegistrationDialogComponent', () => {
   });
 
   it('should re-enable form on submit error', () => {
-    (store.dispatch as jest.Mock).mockReturnValueOnce(throwError(() => new Error('fail')));
+    (store.dispatch as Mock).mockReturnValueOnce(throwError(() => new Error('fail')));
 
     component.form.get('submitOption')?.setValue(SubmitType.Public);
     component.submit();

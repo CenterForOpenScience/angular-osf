@@ -14,7 +14,7 @@
 
       <p-select
         class="w-full"
-        styleClass="select-version"
+        [pt]="{ label: { class: 'text-sm' } }"
         [options]="mappedVersions()"
         [ngModel]="selectedVersion"
         (onChange)="onVersionChange($event.value)"
@@ -22,8 +22,8 @@
       />
     </div>
 
-    <p-panel styleClass="compare-view" showHeader="false">
-      <div lass="mt-3" [innerHTML]="content()"></div>
+    <p-panel class="compare-view" showHeader="false">
+      <div class="mt-3" [innerHTML]="content()"></div>
     </p-panel>
   </p-panel>
 }

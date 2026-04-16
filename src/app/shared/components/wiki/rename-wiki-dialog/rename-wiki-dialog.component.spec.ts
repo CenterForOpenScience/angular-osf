@@ -7,22 +7,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { WikiSelectors } from '@osf/shared/stores/wiki';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { TextInputComponent } from '../../text-input/text-input.component';
 
 import { RenameWikiDialogComponent } from './rename-wiki-dialog.component';
-
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RenameWikiDialogComponent', () => {
   let component: RenameWikiDialogComponent;
   let fixture: ComponentFixture<RenameWikiDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [RenameWikiDialogComponent, MockComponent(TextInputComponent)],
       providers: [
-        TranslateServiceMock,
+        provideOSFCore(),
         MockProvider(DynamicDialogRef),
         MockProvider(DynamicDialogConfig, {
           data: {
@@ -35,7 +35,7 @@ describe('RenameWikiDialogComponent', () => {
           selectors: [{ selector: WikiSelectors.getWikiSubmitting, value: false }],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RenameWikiDialogComponent);
     component = fixture.componentInstance;
@@ -82,7 +82,7 @@ describe('RenameWikiDialogComponent', () => {
 
   it('should close dialog on cancel', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     dialogRef.close();
 
@@ -93,8 +93,8 @@ describe('RenameWikiDialogComponent', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     const toastService = TestBed.inject(ToastService);
 
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.renameWikiForm.patchValue({ name: '' });
 
@@ -108,8 +108,8 @@ describe('RenameWikiDialogComponent', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     const toastService = TestBed.inject(ToastService);
 
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.renameWikiForm.patchValue({ name: '   ' });
 

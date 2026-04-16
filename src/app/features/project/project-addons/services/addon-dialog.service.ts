@@ -35,6 +35,11 @@ export class AddonDialogService {
       },
     });
 
+    if (!dialogRef) {
+      const errorMessage = this.translateService.instant('common.errorMessages.dialogOpenError');
+      throw new Error(errorMessage);
+    }
+
     return dialogRef.onClose;
   }
 
@@ -56,6 +61,11 @@ export class AddonDialogService {
         isGoogleDrive,
       },
     });
+
+    if (!dialogRef) {
+      const errorMessage = this.translateService.instant('common.errorMessages.dialogOpenError');
+      throw new Error(errorMessage);
+    }
 
     return dialogRef.onClose;
   }

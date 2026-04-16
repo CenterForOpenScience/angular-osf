@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
 
-import { MetadataPublicationDoiComponent } from './metadata-publication-doi.component';
-
 import { MOCK_PROJECT_IDENTIFIERS } from '@testing/mocks/project-overview.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { MetadataPublicationDoiComponent } from './metadata-publication-doi.component';
 
 describe('MetadataPublicationDoiComponent', () => {
   let component: MetadataPublicationDoiComponent;
@@ -13,10 +13,11 @@ describe('MetadataPublicationDoiComponent', () => {
 
   const mockIdentifiers: IdentifierModel = MOCK_PROJECT_IDENTIFIERS;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MetadataPublicationDoiComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataPublicationDoiComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MetadataPublicationDoiComponent);
     component = fixture.componentInstance;
@@ -46,7 +47,7 @@ describe('MetadataPublicationDoiComponent', () => {
   });
 
   it('should emit openEditPublicationDoiDialog event', () => {
-    const emitSpy = jest.spyOn(component.openEditPublicationDoiDialog, 'emit');
+    const emitSpy = vi.spyOn(component.openEditPublicationDoiDialog, 'emit');
 
     component.openEditPublicationDoiDialog.emit();
 

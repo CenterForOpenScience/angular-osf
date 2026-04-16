@@ -1,40 +1,36 @@
+import { MockProvider } from 'ng-mocks';
+
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { Mocked } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
-import { FileBrowserInfoComponent } from './file-browser-info.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { FileBrowserInfoComponent } from './file-browser-info.component';
 
 describe('FileBrowserInfoComponent', () => {
   let component: FileBrowserInfoComponent;
   let fixture: ComponentFixture<FileBrowserInfoComponent>;
-  let dialogRef: jest.Mocked<DynamicDialogRef>;
-  let dialogConfig: jest.Mocked<DynamicDialogConfig>;
+  let dialogRef: DynamicDialogRef;
+  let dialogConfig: Mocked<DynamicDialogConfig>;
 
-  beforeEach(async () => {
-    const dialogRefMock = {
-      close: jest.fn(),
-    };
+  beforeEach(() => {
+    const dialogConfigMock = { data: ResourceType.Project };
 
-    const dialogConfigMock = {
-      data: ResourceType.Project,
-    };
-
-    await TestBed.configureTestingModule({
-      imports: [FileBrowserInfoComponent, OSFTestingModule],
-      providers: [
-        { provide: DynamicDialogRef, useValue: dialogRefMock },
-        { provide: DynamicDialogConfig, useValue: dialogConfigMock },
-      ],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [FileBrowserInfoComponent],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig, dialogConfigMock)],
+    });
 
     fixture = TestBed.createComponent(FileBrowserInfoComponent);
     component = fixture.componentInstance;
-    dialogRef = TestBed.inject(DynamicDialogRef) as jest.Mocked<DynamicDialogRef>;
-    dialogConfig = TestBed.inject(DynamicDialogConfig) as jest.Mocked<DynamicDialogConfig>;
+    dialogRef = TestBed.inject(DynamicDialogRef);
+    dialogConfig = TestBed.inject(DynamicDialogConfig) as Mocked<DynamicDialogConfig>;
     fixture.detectChanges();
   });
 

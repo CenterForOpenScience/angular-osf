@@ -4,101 +4,120 @@ import { MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { DeleteNodeLink, NodeLinksSelectors } from '@osf/shared/stores/node-links';
 
+import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { ProjectOverviewModel } from '../../models';
 import { ProjectOverviewSelectors } from '../../store';
 
 import { DeleteNodeLinkDialogComponent } from './delete-node-link-dialog.component';
 
-import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
-import { ToastServiceMock } from '@testing/mocks/toast.service.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+interface SetupOverrides extends BaseSetupOverrides {
+  currentLink?: NodeModel | null;
+}
 
 describe('DeleteNodeLinkDialogComponent', () => {
   let component: DeleteNodeLinkDialogComponent;
   let fixture: ComponentFixture<DeleteNodeLinkDialogComponent>;
-  let store: jest.Mocked<Store>;
-  let dialogRef: jest.Mocked<DynamicDialogRef>;
-  let dialogConfig: jest.Mocked<DynamicDialogConfig>;
-  let toastService: jest.Mocked<ToastService>;
+  let store: Store;
+  let dialogRef: DynamicDialogRef;
+  let toastService: ToastServiceMockType;
 
-  const mockProject = { ...MOCK_NODE_WITH_ADMIN, id: 'test-project-id' };
-  const mockCurrentLink = { ...MOCK_NODE_WITH_ADMIN, id: 'linked-resource-id', title: 'Linked Resource' };
+  const mockProject: ProjectOverviewModel = {
+    ...MOCK_PROJECT_OVERVIEW,
+    id: 'project-1',
+  };
 
-  beforeEach(async () => {
-    dialogConfig = {
-      data: { currentLink: mockCurrentLink },
-    } as jest.Mocked<DynamicDialogConfig>;
+  const mockLink: NodeModel = {
+    ...MOCK_NODE_WITH_ADMIN,
+    id: 'linked-1',
+    title: 'Linked Resource',
+  };
 
-    await TestBed.configureTestingModule({
-      imports: [DeleteNodeLinkDialogComponent, OSFTestingModule],
+  const defaultSignals: SignalOverride[] = [
+    { selector: ProjectOverviewSelectors.getProject, value: mockProject },
+    { selector: NodeLinksSelectors.getNodeLinksSubmitting, value: false },
+  ];
+
+  function setup(overrides: SetupOverrides = {}) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
+    toastService = ToastServiceMock.simple();
+
+    TestBed.configureTestingModule({
+      imports: [DeleteNodeLinkDialogComponent],
       providers: [
-        DynamicDialogRefMock,
-        ToastServiceMock,
-        MockProvider(DynamicDialogConfig, dialogConfig),
-        provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
-            { selector: NodeLinksSelectors.getNodeLinksSubmitting, value: false },
-          ],
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, {
+          data: { currentLink: overrides.currentLink === undefined ? mockLink : overrides.currentLink },
         }),
+        MockProvider(ToastService, toastService),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    store.dispatch = jest.fn().mockReturnValue(of(true));
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(DeleteNodeLinkDialogComponent);
     component = fixture.componentInstance;
-    dialogRef = TestBed.inject(DynamicDialogRef) as jest.Mocked<DynamicDialogRef>;
-    toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
     fixture.detectChanges();
+  }
+
+  it('should create', () => {
+    setup();
+
+    expect(component).toBeTruthy();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  it('should not dispatch delete action when current link is missing', () => {
+    setup({ currentLink: null });
+    (store.dispatch as Mock).mockClear();
 
-  it('should initialize currentProject selector', () => {
-    expect(component.currentProject()).toEqual(mockProject);
-  });
-
-  it('should initialize isSubmitting selector', () => {
-    expect(component.isSubmitting()).toBe(false);
-  });
-
-  it('should initialize actions with deleteNodeLink mapping', () => {
-    expect(component.actions.deleteNodeLink).toBeDefined();
-  });
-
-  it('should dispatch DeleteNodeLink action with correct parameters on successful deletion', () => {
     component.handleDeleteNodeLink();
 
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(DeleteNodeLink));
-    const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof DeleteNodeLink);
-    expect(call).toBeDefined();
-    const action = call[0] as DeleteNodeLink;
-    expect(action.projectId).toBe('test-project-id');
-    expect(action.linkedResource).toEqual(mockCurrentLink);
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(DeleteNodeLink));
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+    expect(dialogRef.close).not.toHaveBeenCalled();
   });
 
-  it('should show success toast on successful deletion', fakeAsync(() => {
-    component.handleDeleteNodeLink();
-    tick();
+  it('should not dispatch delete action when current project is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: ProjectOverviewSelectors.getProject, value: null }],
+    });
+    (store.dispatch as Mock).mockClear();
 
+    component.handleDeleteNodeLink();
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(DeleteNodeLink));
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+    expect(dialogRef.close).not.toHaveBeenCalled();
+  });
+
+  it('should dispatch delete action, show success toast and close dialog with hasChanges', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.handleDeleteNodeLink();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteNodeLink('project-1', mockLink));
     expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.deleteNodeLink.success');
-  }));
-
-  it('should close dialog with hasChanges true on successful deletion', fakeAsync(() => {
-    component.handleDeleteNodeLink();
-    tick();
-
     expect(dialogRef.close).toHaveBeenCalledWith({ hasChanges: true });
-  }));
+  });
 });

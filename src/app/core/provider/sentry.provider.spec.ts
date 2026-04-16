@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { SENTRY_PROVIDER, SENTRY_TOKEN } from './sentry.provider';
 
 import * as Sentry from '@sentry/angular';
@@ -7,7 +9,7 @@ import * as Sentry from '@sentry/angular';
 describe('Provider: Sentry', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SENTRY_PROVIDER],
+      providers: [provideOSFCore(), SENTRY_PROVIDER],
     });
   });
 

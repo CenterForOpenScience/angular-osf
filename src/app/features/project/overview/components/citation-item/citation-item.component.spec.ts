@@ -1,31 +1,33 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mocked } from 'vitest';
+
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { CitationItemComponent } from './citation-item.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CitationItemComponent } from './citation-item.component';
 
 describe('CitationItemComponent', () => {
   let component: CitationItemComponent;
   let fixture: ComponentFixture<CitationItemComponent>;
-  let clipboard: jest.Mocked<Clipboard>;
-  let toastService: jest.Mocked<ToastService>;
+  let clipboard: Mocked<Clipboard>;
+  let toastService: Mocked<ToastService>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CitationItemComponent, OSFTestingModule, ...MockComponents(IconComponent)],
-      providers: [MockProvider(Clipboard), MockProvider(ToastService)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CitationItemComponent, ...MockComponents(IconComponent)],
+      providers: [provideOSFCore(), MockProvider(Clipboard), MockProvider(ToastService)],
+    });
 
     fixture = TestBed.createComponent(CitationItemComponent);
     component = fixture.componentInstance;
-    clipboard = TestBed.inject(Clipboard) as jest.Mocked<Clipboard>;
-    toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
+    clipboard = TestBed.inject(Clipboard) as Mocked<Clipboard>;
+    toastService = TestBed.inject(ToastService) as Mocked<ToastService>;
 
     fixture.componentRef.setInput('citation', 'Test Citation');
     fixture.detectChanges();
@@ -68,8 +70,8 @@ describe('CitationItemComponent', () => {
     fixture.componentRef.setInput('citation', citation);
     fixture.detectChanges();
 
-    const copySpy = jest.spyOn(clipboard, 'copy');
-    const showSuccessSpy = jest.spyOn(toastService, 'showSuccess');
+    const copySpy = vi.spyOn(clipboard, 'copy');
+    const showSuccessSpy = vi.spyOn(toastService, 'showSuccess');
 
     component.copyCitation();
 
@@ -82,7 +84,7 @@ describe('CitationItemComponent', () => {
     fixture.componentRef.setInput('citation', longCitation);
     fixture.detectChanges();
 
-    const copySpy = jest.spyOn(clipboard, 'copy');
+    const copySpy = vi.spyOn(clipboard, 'copy');
 
     component.copyCitation();
 
@@ -94,7 +96,7 @@ describe('CitationItemComponent', () => {
     fixture.componentRef.setInput('citation', specialCitation);
     fixture.detectChanges();
 
-    const copySpy = jest.spyOn(clipboard, 'copy');
+    const copySpy = vi.spyOn(clipboard, 'copy');
 
     component.copyCitation();
 

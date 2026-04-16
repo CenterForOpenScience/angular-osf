@@ -9,14 +9,14 @@ import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprint
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
-import { ModerationStatusBannerComponent } from './moderation-status-banner.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { PREPRINT_REQUEST_MOCK } from '@testing/mocks/preprint-request.mock';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ModerationStatusBannerComponent } from './moderation-status-banner.component';
 
 describe('ModerationStatusBannerComponent', () => {
   let component: ModerationStatusBannerComponent;

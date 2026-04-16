@@ -173,7 +173,8 @@
       "viewOnlyLinksBanner": "You are viewing OSF through a view-only link, which may limit the data you have permission to see."
     },
     "errorMessages": {
-      "serverError": "An unexpected error occurred. Please try again later."
+      "serverError": "An unexpected error occurred. Please try again later.",
+      "dialogOpenError": "Failed to open dialog."
     }
   },
   "navigation": {

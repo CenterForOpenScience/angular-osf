@@ -1,95 +1,145 @@
-import { provideStore } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { ConfirmationService } from 'primeng/api';
+import { Mock } from 'vitest';
 
-import { of } from 'rxjs';
-
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
+import { CopyButtonComponent } from '@osf/shared/components/copy-button/copy-button.component';
+import { IconComponent } from '@osf/shared/components/icon/icon.component';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { DeveloperAppsState } from '../../store';
+import { MOCK_DEVELOPER_APP } from '@testing/mocks/developer-app.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomConfirmationServiceMock,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { DeveloperAppAddEditFormComponent } from '../../components';
+import { DeveloperApp } from '../../models';
+import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, ResetClientSecret } from '../../store';
 
 import { DeveloperAppDetailsComponent } from './developer-app-details.component';
 
 describe('DeveloperAppDetailsComponent', () => {
   let component: DeveloperAppDetailsComponent;
   let fixture: ComponentFixture<DeveloperAppDetailsComponent>;
-  let router: Router;
-  let customConfirmationService: CustomConfirmationService;
+  let store: Store;
+  let routerMock: RouterMockType;
+  let confirmationService: CustomConfirmationServiceMockType;
+  let toastService: ToastServiceMockType;
 
-  const mockRouter = {
-    url: '/test/path',
-    events: of(new NavigationEnd(1, '/test/path', '/test/path')),
-  };
+  function setup(appInStore?: DeveloperApp) {
+    routerMock = RouterMockBuilder.create().build();
+    confirmationService = CustomConfirmationServiceMock.simple();
+    toastService = ToastServiceMock.simple();
+    const routeMock = ActivatedRouteMockBuilder.create().withParams({ id: MOCK_DEVELOPER_APP.clientId }).build();
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeveloperAppDetailsComponent, MockPipe(TranslatePipe)],
-      providers: [
-        ConfirmationService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideStore([DeveloperAppsState]),
-        MockProvider(TranslateService),
-        MockProvider(ActivatedRoute, { params: of({ id: 'test-client-id' }) }),
-        MockProvider(Router, mockRouter),
-        MockProvider(CustomConfirmationService),
-        MockProvider(ToastService),
+    const getDetailsById = (id: string): DeveloperApp | undefined =>
+      appInStore && id === MOCK_DEVELOPER_APP.clientId ? appInStore : undefined;
+
+    TestBed.configureTestingModule({
+      imports: [
+        DeveloperAppDetailsComponent,
+        ...MockComponents(
+          CopyButtonComponent,
+          IconComponent,
+          LoadingSpinnerComponent,
+          DeveloperAppAddEditFormComponent
+        ),
       ],
-    }).compileComponents();
+      providers: [
+        provideOSFCore(),
+        MockProvider(Router, routerMock),
+        MockProvider(ActivatedRoute, routeMock),
+        MockProvider(CustomConfirmationService, confirmationService),
+        MockProvider(ToastService, toastService),
+        provideMockStore({
+          selectors: [{ selector: DeveloperAppsSelectors.getDeveloperAppDetails, value: getDetailsById }],
+          signals: [{ selector: DeveloperAppsSelectors.getDeveloperAppDetails, value: getDetailsById }],
+        }),
+      ],
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(DeveloperAppDetailsComponent);
     component = fixture.componentInstance;
-
-    customConfirmationService = TestBed.inject(CustomConfirmationService);
-    router = TestBed.inject(Router);
-
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup(MOCK_DEVELOPER_APP);
+
     expect(component).toBeTruthy();
   });
 
-  it('should not dispatch delete when user cancels confirmation', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+  it('should dispatch GetDeveloperAppDetails when app is not in store', () => {
+    setup();
 
-    jest.spyOn(customConfirmationService, 'confirmDelete').mockImplementation(() => {
-      // Simulate cancelling the confirmation
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(new GetDeveloperAppDetails(MOCK_DEVELOPER_APP.clientId));
+  });
+
+  it('should not dispatch GetDeveloperAppDetails when app exists in store', () => {
+    setup(MOCK_DEVELOPER_APP);
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(new GetDeveloperAppDetails(MOCK_DEVELOPER_APP.clientId));
+  });
+
+  it('should compute client secret and hidden client secret', () => {
+    setup(MOCK_DEVELOPER_APP);
+
+    expect(component.clientSecret()).toBe(MOCK_DEVELOPER_APP.clientSecret);
+    expect(component.hiddenClientSecret()).toBe('*'.repeat(MOCK_DEVELOPER_APP.clientSecret.length));
+  });
+
+  it('should confirm delete and delete app on confirm', () => {
+    setup(MOCK_DEVELOPER_APP);
+    (store.dispatch as Mock).mockClear();
 
     component.deleteApp();
 
-    expect(customConfirmationService.confirmDelete).toHaveBeenCalledWith({
+    expect(confirmationService.confirmDelete).toHaveBeenCalledWith({
       headerKey: 'settings.developerApps.confirmation.delete.title',
-      headerParams: { name: undefined },
+      headerParams: { name: MOCK_DEVELOPER_APP.name },
       messageKey: 'settings.developerApps.confirmation.delete.message',
       onConfirm: expect.any(Function),
     });
-    expect(navigateSpy).not.toHaveBeenCalled();
+
+    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
+    onConfirm();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteDeveloperApp(MOCK_DEVELOPER_APP.clientId));
+    expect(routerMock.navigate).toHaveBeenCalledWith(['settings/developer-apps']);
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.developerApps.confirmation.delete.success');
   });
 
-  it('should not dispatch resetClientSecret when user cancels confirmation', () => {
-    jest.spyOn(customConfirmationService, 'confirmDelete').mockImplementation(() => {
-      // Simulate cancelling the confirmation
-    });
+  it('should confirm reset secret and dispatch reset action on confirm', () => {
+    setup(MOCK_DEVELOPER_APP);
+    (store.dispatch as Mock).mockClear();
 
     component.resetClientSecret();
 
-    expect(customConfirmationService.confirmDelete).toHaveBeenCalledWith({
+    expect(confirmationService.confirmDelete).toHaveBeenCalledWith({
       headerKey: 'settings.developerApps.confirmation.resetSecret.title',
-      headerParams: { name: undefined },
+      headerParams: { name: MOCK_DEVELOPER_APP.name },
       messageKey: 'settings.developerApps.confirmation.resetSecret.message',
       acceptLabelKey: 'settings.developerApps.details.clientSecret.reset',
       onConfirm: expect.any(Function),
     });
+
+    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
+    onConfirm();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new ResetClientSecret(MOCK_DEVELOPER_APP.clientId));
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.developerApps.confirmation.resetSecret.success');
   });
 });

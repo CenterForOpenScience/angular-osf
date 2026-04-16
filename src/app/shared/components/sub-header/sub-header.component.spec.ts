@@ -6,16 +6,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { SubHeaderComponent } from './sub-header.component';
 
 describe('SubHeaderComponent', () => {
   let component: SubHeaderComponent;
   let fixture: ComponentFixture<SubHeaderComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [SubHeaderComponent, ...MockPipes(SafeHtmlPipe, FixSpecialCharPipe)],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SubHeaderComponent);
     component = fixture.componentInstance;
@@ -126,7 +129,7 @@ describe('SubHeaderComponent', () => {
   });
 
   it('should emit buttonClick event', () => {
-    const emitSpy = jest.spyOn(component.buttonClick, 'emit');
+    const emitSpy = vi.spyOn(component.buttonClick, 'emit');
 
     component.buttonClick.emit();
 

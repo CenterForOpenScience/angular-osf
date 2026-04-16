@@ -1,30 +1,27 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
-
-import { of } from 'rxjs';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
-import { ResetPasswordComponent } from '@osf/features/auth/pages';
 import { PasswordInputHintComponent } from '@osf/shared/components/password-input-hint/password-input-hint.component';
 
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+
+import { ResetPasswordComponent } from './reset-password.component';
 
 describe('ResetPasswordComponent', () => {
   let component: ResetPasswordComponent;
   let fixture: ComponentFixture<ResetPasswordComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ResetPasswordComponent, MockComponent(PasswordInputHintComponent), MockPipe(TranslatePipe)],
-      providers: [
-        TranslateServiceMock,
-        MockProvider(AuthService),
-        MockProvider(ActivatedRoute, { queryParams: of({}) }),
-      ],
-    }).compileComponents();
+  beforeEach(() => {
+    const mockRoute = ActivatedRouteMockBuilder.create().withQueryParams({}) as Partial<ActivatedRoute>;
+
+    TestBed.configureTestingModule({
+      imports: [ResetPasswordComponent, MockComponent(PasswordInputHintComponent)],
+      providers: [provideOSFCore(), MockProvider(AuthService), MockProvider(ActivatedRoute, mockRoute)],
+    });
 
     fixture = TestBed.createComponent(ResetPasswordComponent);
     component = fixture.componentInstance;

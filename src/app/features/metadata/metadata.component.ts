@@ -50,33 +50,29 @@ import {
 import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 import { SubjectModel } from '@shared/models/subject/subject.model';
 
+import { MetadataAffiliatedInstitutionsComponent } from './components/metadata-affiliated-institutions/metadata-affiliated-institutions.component';
 import { MetadataCollectionsComponent } from './components/metadata-collections/metadata-collections.component';
+import { MetadataContributorsComponent } from './components/metadata-contributors/metadata-contributors.component';
+import { MetadataDateInfoComponent } from './components/metadata-date-info/metadata-date-info.component';
+import { MetadataDescriptionComponent } from './components/metadata-description/metadata-description.component';
+import { MetadataFundingComponent } from './components/metadata-funding/metadata-funding.component';
+import { MetadataLicenseComponent } from './components/metadata-license/metadata-license.component';
+import { MetadataPublicationDoiComponent } from './components/metadata-publication-doi/metadata-publication-doi.component';
+import { MetadataRegistrationDoiComponent } from './components/metadata-registration-doi/metadata-registration-doi.component';
 import { MetadataRegistryInfoComponent } from './components/metadata-registry-info/metadata-registry-info.component';
+import { MetadataResourceInformationComponent } from './components/metadata-resource-information/metadata-resource-information.component';
+import { MetadataSubjectsComponent } from './components/metadata-subjects/metadata-subjects.component';
+import { MetadataTagsComponent } from './components/metadata-tags/metadata-tags.component';
+import { MetadataTitleComponent } from './components/metadata-title/metadata-title.component';
+import { AffiliatedInstitutionsDialogComponent } from './dialogs/affiliated-institutions-dialog/affiliated-institutions-dialog.component';
+import { ContributorsDialogComponent } from './dialogs/contributors-dialog/contributors-dialog.component';
+import { DescriptionDialogComponent } from './dialogs/description-dialog/description-dialog.component';
 import { EditTitleDialogComponent } from './dialogs/edit-title-dialog/edit-title-dialog.component';
-import {
-  MetadataAffiliatedInstitutionsComponent,
-  MetadataContributorsComponent,
-  MetadataDateInfoComponent,
-  MetadataDescriptionComponent,
-  MetadataFundingComponent,
-  MetadataLicenseComponent,
-  MetadataPublicationDoiComponent,
-  MetadataRegistrationDoiComponent,
-  MetadataResourceInformationComponent,
-  MetadataSubjectsComponent,
-  MetadataTagsComponent,
-  MetadataTitleComponent,
-} from './components';
-import {
-  AffiliatedInstitutionsDialogComponent,
-  ContributorsDialogComponent,
-  DescriptionDialogComponent,
-  FundingDialogComponent,
-  LicenseDialogComponent,
-  PublicationDoiDialogComponent,
-  ResourceInformationDialogComponent,
-  ResourceInfoTooltipComponent,
-} from './dialogs';
+import { FundingDialogComponent } from './dialogs/funding-dialog/funding-dialog.component';
+import { LicenseDialogComponent } from './dialogs/license-dialog/license-dialog.component';
+import { PublicationDoiDialogComponent } from './dialogs/publication-doi-dialog/publication-doi-dialog.component';
+import { ResourceInformationDialogComponent } from './dialogs/resource-information-dialog/resource-information-dialog.component';
+import { ResourceInfoTooltipComponent } from './dialogs/resource-tooltip-info/resource-tooltip-info.component';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,

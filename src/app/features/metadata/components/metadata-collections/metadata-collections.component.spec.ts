@@ -1,19 +1,24 @@
+import { MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
-import { MetadataCollectionsComponent } from './metadata-collections.component';
+import { ActivatedRoute } from '@angular/router';
 
 import { MOCK_PROJECT_COLLECTION_SUBMISSIONS } from '@testing/data/collections/collection-submissions.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+
+import { MetadataCollectionsComponent } from './metadata-collections.component';
 
 describe('MetadataCollectionsComponent', () => {
   let component: MetadataCollectionsComponent;
   let fixture: ComponentFixture<MetadataCollectionsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MetadataCollectionsComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataCollectionsComponent],
+      providers: [provideOSFCore(), MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build())],
+    });
 
     fixture = TestBed.createComponent(MetadataCollectionsComponent);
     component = fixture.componentInstance;

@@ -7,21 +7,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DatasetInput } from '@osf/shared/models/charts/dataset-input.model';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { PieChartComponent } from './pie-chart.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('PieChartComponent', () => {
   let component: PieChartComponent;
   let fixture: ComponentFixture<PieChartComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PieChartComponent, OSFTestingModule, MockModule(ChartModule), MockComponent(LoadingSpinnerComponent)],
-      providers: [MockProvider(PLATFORM_ID, 'browser')],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [PieChartComponent, MockModule(ChartModule), MockComponent(LoadingSpinnerComponent)],
+      providers: [provideOSFCore(), MockProvider(PLATFORM_ID, 'browser')],
+    });
 
     fixture = TestBed.createComponent(PieChartComponent);
     component = fixture.componentInstance;
@@ -42,7 +42,7 @@ describe('PieChartComponent', () => {
   });
 
   it('should initialize chart on browser platform', () => {
-    const markForCheckSpy = jest.spyOn(component['cd'], 'markForCheck');
+    const markForCheckSpy = vi.spyOn(component['cd'], 'markForCheck');
 
     component.ngOnInit();
 

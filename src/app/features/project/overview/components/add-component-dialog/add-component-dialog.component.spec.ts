@@ -1,182 +1,241 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponent } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors } from '@core/store/user';
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/affiliated-institution-select/affiliated-institution-select.component';
 import { ComponentFormControls } from '@osf/shared/enums/create-component-form-controls.enum';
+import { IdNameModel } from '@osf/shared/models/common/id-name.model';
+import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { FetchRegions, RegionsSelectors } from '@osf/shared/stores/regions';
 
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { ProjectOverviewModel } from '../../models';
 import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
 
 import { AddComponentDialogComponent } from './add-component-dialog.component';
-
-import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
-import { MOCK_PROJECT } from '@testing/mocks/project.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AddComponentDialogComponent', () => {
   let component: AddComponentDialogComponent;
   let fixture: ComponentFixture<AddComponentDialogComponent>;
   let store: Store;
+  let dialogRef: DynamicDialogRef;
+  let toastService: ToastServiceMockType;
 
-  const mockRegions = [{ id: 'region-1', name: 'Region 1' }];
-  const mockUser = { id: 'user-1', defaultRegionId: 'user-region' } as any;
-  const mockProject = { ...MOCK_PROJECT, id: 'proj-1', title: 'Project', tags: ['tag1'] };
-  const mockInstitutions = [MOCK_INSTITUTION];
-  const mockUserInstitutions = [MOCK_INSTITUTION, { ...MOCK_INSTITUTION, id: 'inst-2', name: 'Inst 2' }];
+  const mockProject: ProjectOverviewModel = {
+    ...MOCK_PROJECT_OVERVIEW,
+    id: 'project-1',
+    title: 'Test Project',
+    tags: ['tag-1', 'tag-2'],
+  };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AddComponentDialogComponent, OSFTestingModule, MockComponent(AffiliatedInstitutionSelectComponent)],
+  const regions: IdNameModel[] = [
+    { id: 'us', name: 'US' },
+    { id: 'eu', name: 'EU' },
+  ];
+
+  const userInstitutions: Institution[] = [
+    {
+      id: 'inst-1',
+      type: 'institutions',
+      name: 'Institution 1',
+      description: '',
+      iri: '',
+      rorIri: null,
+      iris: [],
+      assets: { logo: '', logo_rounded: '', banner: '' },
+      institutionalRequestAccessEnabled: false,
+      logoPath: '',
+    },
+    {
+      id: 'inst-2',
+      type: 'institutions',
+      name: 'Institution 2',
+      description: '',
+      iri: '',
+      rorIri: null,
+      iris: [],
+      assets: { logo: '', logo_rounded: '', banner: '' },
+      institutionalRequestAccessEnabled: false,
+      logoPath: '',
+    },
+  ];
+
+  const projectInstitutions: Institution[] = [
+    {
+      id: 'inst-2',
+      type: 'institutions',
+      name: 'Institution 2',
+      description: '',
+      iri: '',
+      rorIri: null,
+      iris: [],
+      assets: { logo: '', logo_rounded: '', banner: '' },
+      institutionalRequestAccessEnabled: false,
+      logoPath: '',
+    },
+  ];
+
+  const defaultSignals: SignalOverride[] = [
+    { selector: RegionsSelectors.getRegions, value: regions },
+    { selector: RegionsSelectors.areRegionsLoading, value: false },
+    { selector: UserSelectors.getCurrentUser, value: { id: 'user-1', defaultRegionId: 'eu' } },
+    { selector: ProjectOverviewSelectors.getProject, value: mockProject },
+    { selector: ProjectOverviewSelectors.getInstitutions, value: [] },
+    { selector: ProjectOverviewSelectors.getComponentsSubmitting, value: false },
+    { selector: InstitutionsSelectors.getUserInstitutions, value: [] },
+    { selector: InstitutionsSelectors.areUserInstitutionsLoading, value: false },
+  ];
+
+  function setup(overrides: BaseSetupOverrides = {}) {
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
+    toastService = ToastServiceMock.simple();
+
+    TestBed.configureTestingModule({
+      imports: [AddComponentDialogComponent, ...MockComponents(AffiliatedInstitutionSelectComponent)],
       providers: [
-        provideMockStore({
-          signals: [
-            { selector: RegionsSelectors.getRegions, value: mockRegions },
-            { selector: UserSelectors.getCurrentUser, value: mockUser },
-            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
-            { selector: ProjectOverviewSelectors.getInstitutions, value: mockInstitutions },
-            { selector: RegionsSelectors.areRegionsLoading, value: false },
-            { selector: ProjectOverviewSelectors.getComponentsSubmitting, value: false },
-            { selector: InstitutionsSelectors.getUserInstitutions, value: mockUserInstitutions },
-            { selector: InstitutionsSelectors.areUserInstitutionsLoading, value: false },
-          ],
-        }),
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(ToastService, toastService),
+        provideMockStore({ signals }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(AddComponentDialogComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(Store);
-    (store.dispatch as jest.Mock).mockReturnValue(of(void 0));
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with default values', () => {
-    expect(component.componentForm.get(ComponentFormControls.Title)?.value).toBe('');
-    expect(Array.isArray(component.componentForm.get(ComponentFormControls.Affiliations)?.value)).toBe(true);
-    expect(component.componentForm.get(ComponentFormControls.Description)?.value).toBe('');
-    expect(component.componentForm.get(ComponentFormControls.AddContributors)?.value).toBe(false);
-    expect(component.componentForm.get(ComponentFormControls.AddTags)?.value).toBe(false);
-    expect(['', 'user-region']).toContain(component.componentForm.get(ComponentFormControls.StorageLocation)?.value);
+  it('should dispatch initial load actions on init', () => {
+    setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchRegions());
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchUserInstitutions());
   });
 
-  it('should dispatch FetchRegions and FetchUserInstitutions on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(FetchRegions));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(FetchUserInstitutions));
+  it('should set storage location from current user default region', () => {
+    setup();
+
+    expect(component.componentForm.controls[ComponentFormControls.StorageLocation].value).toBe('eu');
   });
 
-  it('should return store values from selectors', () => {
-    expect(component.storageLocations()).toEqual(mockRegions);
-    expect(component.currentUser()).toEqual(mockUser);
-    expect(component.currentProject()).toEqual(mockProject);
-    expect(component.institutions()).toEqual(mockInstitutions);
-    expect(component.areRegionsLoading()).toBe(false);
-    expect(component.isSubmitting()).toBe(false);
-    expect(component.userInstitutions()).toEqual(mockUserInstitutions);
-    expect(component.areUserInstitutionsLoading()).toBe(false);
+  it('should fallback to first region when current user has no default region', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.getCurrentUser, value: { id: 'user-1', defaultRegionId: null } }],
+    });
+
+    expect(component.componentForm.controls[ComponentFormControls.StorageLocation].value).toBe('us');
   });
 
-  it('should set affiliations form control from selected institutions', () => {
-    const institutions = [MOCK_INSTITUTION];
-    component.setSelectedInstitutions(institutions);
-    expect(component.componentForm.get(ComponentFormControls.Affiliations)?.value).toEqual([MOCK_INSTITUTION.id]);
-  });
-
-  it('should mark form as touched and not dispatch when submitForm with invalid form', () => {
-    (store.dispatch as jest.Mock).mockClear();
-    component.componentForm.get(ComponentFormControls.Title)?.setValue('');
-    component.submitForm();
-    expect(component.componentForm.touched).toBe(true);
-    const createCalls = (store.dispatch as jest.Mock).mock.calls.filter((c) => c[0] instanceof CreateComponent);
-    expect(createCalls.length).toBe(0);
-  });
-
-  it('should dispatch CreateComponent and on success close dialog, getComponents, showSuccess', () => {
-    component.componentForm.get(ComponentFormControls.Title)?.setValue('New Component');
-    component.componentForm.get(ComponentFormControls.StorageLocation)?.setValue('region-1');
-    component.componentForm.get(ComponentFormControls.Affiliations)?.setValue([MOCK_INSTITUTION.id]);
-    (store.dispatch as jest.Mock).mockClear();
-
-    component.submitForm();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      new CreateComponent(mockProject.id, 'New Component', '', [], 'region-1', [MOCK_INSTITUTION.id], false)
-    );
-    expect(component.dialogRef.close).toHaveBeenCalled();
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetComponents));
-    expect(TestBed.inject(ToastService).showSuccess).toHaveBeenCalledWith(
-      'project.overview.dialog.toast.addComponent.success'
-    );
-  });
-
-  it('should pass project tags when addTags is true', () => {
-    component.componentForm.get(ComponentFormControls.Title)?.setValue('With Tags');
-    component.componentForm.get(ComponentFormControls.StorageLocation)?.setValue('region-1');
-    component.componentForm.get(ComponentFormControls.Affiliations)?.setValue([]);
-    component.componentForm.get(ComponentFormControls.AddTags)?.setValue(true);
-    (store.dispatch as jest.Mock).mockClear();
-
-    component.submitForm();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      new CreateComponent(mockProject.id, 'With Tags', '', mockProject.tags, 'region-1', [], false)
-    );
-  });
-
-  it('should set storage location to user default region when control empty and regions loaded', () => {
-    fixture = TestBed.createComponent(AddComponentDialogComponent);
-    component = fixture.componentInstance;
-    component.componentForm.get(ComponentFormControls.StorageLocation)?.setValue('');
-    fixture.detectChanges();
-    expect(component.componentForm.get(ComponentFormControls.StorageLocation)?.value).toBe('user-region');
-  });
-});
-
-describe('AddComponentDialogComponent when user has no default region', () => {
-  let component: AddComponentDialogComponent;
-  let fixture: ComponentFixture<AddComponentDialogComponent>;
-
-  const mockRegions = [{ id: 'region-1', name: 'Region 1' }];
-  const mockProject = { ...MOCK_PROJECT, id: 'proj-1', title: 'Project', tags: ['tag1'] };
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AddComponentDialogComponent, OSFTestingModule, MockComponent(AffiliatedInstitutionSelectComponent)],
-      providers: [
-        provideMockStore({
-          signals: [
-            { selector: RegionsSelectors.getRegions, value: mockRegions },
-            { selector: UserSelectors.getCurrentUser, value: null },
-            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
-            { selector: ProjectOverviewSelectors.getInstitutions, value: [] },
-            { selector: RegionsSelectors.areRegionsLoading, value: false },
-            { selector: ProjectOverviewSelectors.getComponentsSubmitting, value: false },
-            { selector: InstitutionsSelectors.getUserInstitutions, value: [] },
-            { selector: InstitutionsSelectors.areUserInstitutionsLoading, value: false },
-          ],
-        }),
+  it('should preselect matching project and user institutions', () => {
+    setup({
+      selectorOverrides: [
+        { selector: ProjectOverviewSelectors.getInstitutions, value: projectInstitutions },
+        { selector: InstitutionsSelectors.getUserInstitutions, value: userInstitutions },
       ],
-    }).compileComponents();
+    });
 
-    fixture = TestBed.createComponent(AddComponentDialogComponent);
-    component = fixture.componentInstance;
-    component.componentForm.get(ComponentFormControls.StorageLocation)?.setValue('');
-    fixture.detectChanges();
+    expect(component.selectedInstitutions()).toEqual([userInstitutions[1]]);
+    expect(component.componentForm.controls[ComponentFormControls.Affiliations].value).toEqual(['inst-2']);
   });
 
-  it('should set storage location to first region when control empty', () => {
-    expect(component.componentForm.get(ComponentFormControls.StorageLocation)?.value).toBe('region-1');
+  it('should set affiliations ids when setSelectedInstitutions is called', () => {
+    setup();
+
+    component.setSelectedInstitutions(userInstitutions);
+
+    expect(component.componentForm.controls[ComponentFormControls.Affiliations].value).toEqual(['inst-1', 'inst-2']);
+  });
+
+  it('should mark all controls touched and not dispatch create action when form is invalid', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.submitForm();
+
+    expect(component.componentForm.touched).toBe(true);
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(CreateComponent));
+  });
+
+  it('should not dispatch create action when project is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: ProjectOverviewSelectors.getProject, value: null }],
+    });
+    (store.dispatch as Mock).mockClear();
+    component.componentForm.patchValue({
+      [ComponentFormControls.Title]: 'My Component',
+      [ComponentFormControls.StorageLocation]: 'us',
+    });
+
+    component.submitForm();
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(CreateComponent));
+  });
+
+  it('should dispatch create with empty tags when addTags is false', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+    component.componentForm.patchValue({
+      [ComponentFormControls.Title]: 'My Component',
+      [ComponentFormControls.Description]: 'Description',
+      [ComponentFormControls.StorageLocation]: 'us',
+      [ComponentFormControls.Affiliations]: ['inst-1'],
+      [ComponentFormControls.AddContributors]: true,
+      [ComponentFormControls.AddTags]: false,
+    });
+
+    component.submitForm();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new CreateComponent('project-1', 'My Component', 'Description', [], 'us', ['inst-1'], true)
+    );
+    expect(store.dispatch).toHaveBeenCalledWith(new GetComponents('project-1'));
+    expect(dialogRef.close).toHaveBeenCalledWith();
+    expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.addComponent.success');
+  });
+
+  it('should dispatch create with project tags when addTags is true', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+    component.componentForm.patchValue({
+      [ComponentFormControls.Title]: 'My Component',
+      [ComponentFormControls.Description]: '',
+      [ComponentFormControls.StorageLocation]: 'us',
+      [ComponentFormControls.Affiliations]: [],
+      [ComponentFormControls.AddContributors]: false,
+      [ComponentFormControls.AddTags]: true,
+    });
+
+    component.submitForm();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new CreateComponent('project-1', 'My Component', '', ['tag-1', 'tag-2'], 'us', [], false)
+    );
   });
 });

@@ -6,9 +6,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
-import { EditTitleDialogComponent } from './edit-title-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { EditTitleDialogComponent } from './edit-title-dialog.component';
 
 describe('EditTitleDialogComponent', () => {
   let component: EditTitleDialogComponent;
@@ -16,11 +17,11 @@ describe('EditTitleDialogComponent', () => {
   let dialogRef: DynamicDialogRef;
   let config: DynamicDialogConfig;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [EditTitleDialogComponent, MockComponent(TextInputComponent), OSFTestingModule],
-      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [EditTitleDialogComponent, MockComponent(TextInputComponent)],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig)],
+    });
 
     fixture = TestBed.createComponent(EditTitleDialogComponent);
     component = fixture.componentInstance;
@@ -47,21 +48,18 @@ describe('EditTitleDialogComponent', () => {
   });
 
   it('should close dialog with title value on save', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
     const testTitle = 'New Project Title';
     component.titleControl.setValue(testTitle);
 
     component.save();
 
-    expect(closeSpy).toHaveBeenCalledWith({ value: testTitle });
+    expect(dialogRef.close).toHaveBeenCalledWith({ value: testTitle });
   });
 
   it('should close dialog without data on cancel', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
     component.cancel();
 
-    expect(closeSpy).toHaveBeenCalledWith();
+    expect(dialogRef.close).toHaveBeenCalledWith();
   });
 
   it('should validate that title is required', () => {

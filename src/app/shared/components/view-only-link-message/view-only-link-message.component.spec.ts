@@ -1,136 +1,54 @@
+import { MockProvider } from 'ng-mocks';
+
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 
 import { ViewOnlyLinkMessageComponent } from './view-only-link-message.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-
 describe('ViewOnlyLinkMessageComponent', () => {
-  let component: ViewOnlyLinkMessageComponent;
   let fixture: ComponentFixture<ViewOnlyLinkMessageComponent>;
+  let component: ViewOnlyLinkMessageComponent;
+  let routerMock: RouterMockType;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ViewOnlyLinkMessageComponent, OSFTestingModule],
-    }).compileComponents();
+  function setup(platformId: 'browser' | 'server' = 'browser') {
+    routerMock = RouterMockBuilder.create().build();
+
+    TestBed.configureTestingModule({
+      imports: [ViewOnlyLinkMessageComponent],
+      providers: [provideOSFCore(), MockProvider(Router, routerMock), MockProvider(PLATFORM_ID, platformId)],
+    });
 
     fixture = TestBed.createComponent(ViewOnlyLinkMessageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  describe('handleLeaveViewOnlyView', () => {
-    let originalLocation: Location;
-    let mockPushState: jest.SpyInstance;
-    let mockReload: jest.SpyInstance;
+  it('should navigate with merged query params in browser', () => {
+    setup();
 
-    beforeEach(() => {
-      originalLocation = window.location;
+    component.handleLeaveViewOnlyView();
 
-      delete (window as any).location;
-      window.location = {
-        ...originalLocation,
-        href: 'https://example.com/project/abc123?view_only=test123&other=param',
-        reload: jest.fn(),
-      } as any;
-
-      mockPushState = jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
-      mockReload = window.location.reload as jest.Mock;
+    expect(routerMock.navigate).toHaveBeenCalledWith([], {
+      queryParams: { view_only: null },
+      queryParamsHandling: 'merge',
     });
+  });
 
-    afterEach(() => {
-      window.location = originalLocation;
-      mockPushState.mockRestore();
-    });
+  it('should not navigate on server platform', () => {
+    setup('server');
 
-    it('should remove view_only parameter from URL', () => {
-      component.handleLeaveViewOnlyView();
+    component.handleLeaveViewOnlyView();
 
-      expect(mockPushState).toHaveBeenCalled();
-      const [, , newUrl] = mockPushState.mock.calls[0];
-
-      expect(newUrl).not.toContain('view_only');
-      expect(newUrl).toContain('other=param');
-    });
-
-    it('should call window.history.pushState with correct parameters', () => {
-      component.handleLeaveViewOnlyView();
-
-      expect(mockPushState).toHaveBeenCalledWith(null, '', expect.any(String));
-    });
-
-    it('should call window.location.reload', () => {
-      component.handleLeaveViewOnlyView();
-
-      expect(mockReload).toHaveBeenCalled();
-    });
-
-    it('should handle URL without view_only parameter', () => {
-      window.location = {
-        ...originalLocation,
-        href: 'https://example.com/project/abc123?other=param',
-        reload: jest.fn(),
-      } as any;
-
-      mockReload = window.location.reload as jest.Mock;
-
-      expect(() => component.handleLeaveViewOnlyView()).not.toThrow();
-      expect(mockPushState).toHaveBeenCalled();
-      expect(mockReload).toHaveBeenCalled();
-    });
-
-    it('should handle URL with only view_only parameter', () => {
-      window.location = {
-        ...originalLocation,
-        href: 'https://example.com/project/abc123?view_only=test123',
-        reload: jest.fn(),
-      } as any;
-
-      mockReload = window.location.reload as jest.Mock;
-
-      component.handleLeaveViewOnlyView();
-
-      expect(mockPushState).toHaveBeenCalled();
-      const [, , newUrl] = mockPushState.mock.calls[0];
-
-      expect(newUrl).not.toContain('view_only');
-      expect(newUrl).not.toContain('?');
-      expect(mockReload).toHaveBeenCalled();
-    });
-
-    it('should preserve other query parameters', () => {
-      window.location = {
-        ...originalLocation,
-        href: 'https://example.com/project/abc123?view_only=test123&param1=value1&param2=value2',
-        reload: jest.fn(),
-      } as any;
-
-      mockReload = window.location.reload as jest.Mock;
-
-      component.handleLeaveViewOnlyView();
-
-      const [, , newUrl] = mockPushState.mock.calls[0];
-
-      expect(newUrl).toContain('param1=value1');
-      expect(newUrl).toContain('param2=value2');
-      expect(newUrl).not.toContain('view_only');
-    });
-
-    it('should handle URL without query parameters', () => {
-      window.location = {
-        ...originalLocation,
-        href: 'https://example.com/project/abc123',
-        reload: jest.fn(),
-      } as any;
-
-      mockReload = window.location.reload as jest.Mock;
-
-      expect(() => component.handleLeaveViewOnlyView()).not.toThrow();
-      expect(mockPushState).toHaveBeenCalled();
-      expect(mockReload).toHaveBeenCalled();
-    });
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 });

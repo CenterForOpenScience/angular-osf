@@ -1,419 +1,147 @@
+import { Store } from '@ngxs/store';
+
 import { MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
-import { runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Route, Router, UrlSegment } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CurrentResource } from '@osf/shared/models/current-resource.model';
+import { UserModel } from '@osf/shared/models/user/user.model';
 import { CurrentResourceSelectors, GetResource } from '@osf/shared/stores/current-resource';
+
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { isRegistryGuard } from './is-registry.guard';
 
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('isRegistryGuard', () => {
-  let router: Router;
+  let router: RouterMockType;
+  let store: Store;
 
-  const createMockResource = (overrides?: Partial<CurrentResource>): CurrentResource => ({
-    id: 'test-id',
+  const createSegments = (...paths: string[]): UrlSegment[] => paths.map((path) => ({ path }) as UrlSegment);
+
+  const createResource = (overrides?: Partial<CurrentResource>): CurrentResource => ({
+    id: 'resource-id',
     type: CurrentResourceType.Registrations,
     permissions: [],
     ...overrides,
   });
 
-  const createMockSegments = (path: string) => [{ path }] as any[];
+  const createUser = (overrides?: Partial<UserModel>): UserModel => ({
+    ...MOCK_USER,
+    ...overrides,
+  });
 
-  beforeEach(() => {
+  function setup(overrides?: { resource?: CurrentResource | null; currentUser?: UserModel | null; routeId?: string }) {
+    const resource = overrides && 'resource' in overrides ? overrides.resource : createResource({ id: 'registry-id' });
+    const currentUser = overrides?.currentUser ?? createUser();
+    const routeId = overrides?.routeId ?? 'registry-id';
+
+    router = RouterMockBuilder.create().withUrl(`/${routeId}`).withNavigate(vi.fn().mockResolvedValue(true)).build();
+
     TestBed.configureTestingModule({
       providers: [
+        provideOSFCore(),
         provideMockStore({
-          selectors: [],
-          actions: [],
+          selectors: [
+            { selector: CurrentResourceSelectors.getCurrentResource, value: resource },
+            { selector: UserSelectors.getCurrentUser, value: currentUser },
+          ],
         }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
+        MockProvider(Router, router),
       ],
     });
 
-    router = TestBed.inject(Router);
-    jest.clearAllMocks();
+    store = TestBed.inject(Store);
+  }
+
+  async function resolveGuard(segments: UrlSegment[]) {
+    const result = TestBed.runInInjectionContext(() => isRegistryGuard({} as Route, segments));
+    if (typeof result === 'boolean') {
+      return result;
+    }
+    return firstValueFrom(result as Observable<boolean>);
+  }
+
+  it('should return false when id is missing', async () => {
+    setup();
+    const result = await resolveGuard([]);
+    expect(result).toBe(false);
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should return false when id is missing', () => {
-    const result = runInInjectionContext(TestBed, () => {
-      return isRegistryGuard({} as any, []);
-    });
-
+  it('should return false when resource is missing', async () => {
+    setup({ resource: null });
+    const result = await resolveGuard(createSegments('registry-id'));
     expect(result).toBe(false);
   });
 
-  it('should return false when resource is not found', (done) => {
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: null,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('test-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
+  it('should return false when resource id does not start with route id', async () => {
+    setup({ resource: createResource({ id: 'different-id' }) });
+    const result = await resolveGuard(createSegments('registry-id'));
+    expect(result).toBe(false);
+  });
+
+  it('should return true for registration without parentId', async () => {
+    setup({
+      resource: createResource({ id: 'registry-id', type: CurrentResourceType.Registrations, parentId: undefined }),
     });
+    const result = await resolveGuard(createSegments('registry-id'));
+    expect(result).toBe(true);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
 
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('test-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
+  it('should navigate to parent files route for registration with parentId', async () => {
+    setup({
+      resource: createResource({ id: 'registry-id', type: CurrentResourceType.Registrations, parentId: 'parent-1' }),
+    });
+    const result = await resolveGuard(createSegments('registry-id'));
+    expect(result).toBe(true);
+    expect(router.navigate).toHaveBeenCalledWith(['/', 'parent-1', 'files', 'registry-id'], {
+      queryParamsHandling: 'preserve',
     });
   });
 
-  it('should return false when id does not start with resource.id', (done) => {
-    const resource = createMockResource({ id: 'different-id' });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('test-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
+  it('should navigate to preprint route for preprint resource with parentId', async () => {
+    setup({
+      resource: createResource({ id: 'registry-id', type: CurrentResourceType.Preprints, parentId: 'preprint-1' }),
     });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('test-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
+    const result = await resolveGuard(createSegments('registry-id'));
+    expect(result).toBe(true);
+    expect(router.navigate).toHaveBeenCalledWith(['/preprints', 'preprint-1', 'registry-id']);
   });
 
-  it('should navigate and return true for Registrations with parentId', (done) => {
-    const resource = createMockResource({
-      id: 'parent-id/child-id',
-      type: CurrentResourceType.Registrations,
-      parentId: 'parent-id',
+  it('should navigate to profile for current user resource and return false', async () => {
+    setup({
+      resource: createResource({ id: 'user-1', type: CurrentResourceType.Users }),
+      currentUser: createUser({ id: 'user-1' }),
+      routeId: 'user-1',
     });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('parent-id/child-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('parent-id/child-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(true);
-          expect(router.navigate).toHaveBeenCalledWith(['/', 'parent-id', 'files', 'parent-id/child-id'], {
-            queryParamsHandling: 'preserve',
-          });
-          done();
-        });
-      } else {
-        expect(result).toBe(true);
-        done();
-      }
-    });
+    const result = await resolveGuard(createSegments('user-1'));
+    expect(result).toBe(false);
+    expect(router.navigate).toHaveBeenCalledWith(['/profile']);
   });
 
-  it('should return true for Registrations without parentId', (done) => {
-    const resource = createMockResource({
-      id: 'registration-id',
-      type: CurrentResourceType.Registrations,
+  it('should navigate to user page for other user resource and return false', async () => {
+    setup({
+      resource: createResource({ id: 'user-2', type: CurrentResourceType.Users }),
+      currentUser: createUser({ id: 'user-1' }),
+      routeId: 'user-2',
     });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('registration-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('registration-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(true);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(true);
-        done();
-      }
-    });
+    const result = await resolveGuard(createSegments('user-2'));
+    expect(result).toBe(false);
+    expect(router.navigate).toHaveBeenCalledWith(['/user', 'user-2']);
   });
 
-  it('should navigate and return true for Preprints with parentId', (done) => {
-    const resource = createMockResource({
-      id: 'parent-id/child-id',
-      type: CurrentResourceType.Preprints,
-      parentId: 'parent-id',
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('parent-id/child-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('parent-id/child-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(true);
-          expect(router.navigate).toHaveBeenCalledWith(['/preprints', 'parent-id', 'parent-id/child-id']);
-          done();
-        });
-      } else {
-        expect(result).toBe(true);
-        done();
-      }
-    });
-  });
-
-  it('should navigate to profile and return false for Users when current user matches', (done) => {
-    const resource = createMockResource({
-      id: 'user-id',
-      type: CurrentResourceType.Users,
-    });
-    const currentUser = { id: 'user-id' };
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-            {
-              selector: UserSelectors.getCurrentUser,
-              value: currentUser,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('user-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('user-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).toHaveBeenCalledWith(['/profile']);
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
-  });
-
-  it('should navigate to user page and return false for Users when current user does not match', (done) => {
-    const resource = createMockResource({
-      id: 'user-id',
-      type: CurrentResourceType.Users,
-    });
-    const currentUser = { id: 'different-user-id' };
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-            {
-              selector: UserSelectors.getCurrentUser,
-              value: currentUser,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('user-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('user-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).toHaveBeenCalledWith(['/user', 'user-id']);
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
-  });
-
-  it('should return false for other resource types', (done) => {
-    const resource = createMockResource({
-      id: 'resource-id',
-      type: CurrentResourceType.Files,
-    });
-
-    TestBed.resetTestingModule();
-    TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: CurrentResourceSelectors.getCurrentResource,
-              value: resource,
-            },
-          ],
-          actions: [
-            {
-              action: new GetResource('resource-id'),
-              value: of(true),
-            },
-          ],
-        }),
-        MockProvider(Router, RouterMockBuilder.create().build()),
-      ],
-    });
-
-    router = TestBed.inject(Router);
-
-    runInInjectionContext(TestBed, () => {
-      const result = isRegistryGuard({} as any, createMockSegments('resource-id'));
-
-      if (typeof result === 'object' && 'subscribe' in result) {
-        result.subscribe((value) => {
-          expect(value).toBe(false);
-          expect(router.navigate).not.toHaveBeenCalled();
-          done();
-        });
-      } else {
-        expect(result).toBe(false);
-        done();
-      }
-    });
+  it('should dispatch GetResource with route id', async () => {
+    setup({ routeId: 'registry-id' });
+    await resolveGuard(createSegments('registry-id'));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetResource('registry-id'));
   });
 });

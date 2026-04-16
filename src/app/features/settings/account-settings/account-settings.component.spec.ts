@@ -1,17 +1,23 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents } from 'ng-mocks';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { By } from '@angular/platform-browser';
 
+import { GetEmails } from '@core/store/user-emails';
 import { UserSelectors } from '@osf/core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { ToastService } from '@osf/shared/services/toast.service';
-import { RegionsSelectors } from '@osf/shared/stores/regions';
+import { FetchRegions } from '@osf/shared/stores/regions';
+
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 
 import { AccountSettingsComponent } from './account-settings.component';
 import {
@@ -24,41 +30,17 @@ import {
   ShareIndexingComponent,
   TwoFactorAuthComponent,
 } from './components';
-import { AccountSettingsSelectors } from './store';
-
-import { MockCustomConfirmationServiceProvider } from '@testing/mocks/custom-confirmation.service.mock';
-import { MOCK_USER } from '@testing/mocks/data.mock';
-import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { GetAccountSettings, GetExternalIdentities, GetUserInstitutions } from './store';
 
 describe('AccountSettingsComponent', () => {
   let component: AccountSettingsComponent;
   let fixture: ComponentFixture<AccountSettingsComponent>;
-  const store = MOCK_STORE;
+  let store: Store;
 
-  beforeEach(async () => {
-    store.selectSignal.mockImplementation((selector) => {
-      switch (selector) {
-        case UserSelectors.getCurrentUser:
-          return () => MOCK_USER;
+  const defaultSignals: SignalOverride[] = [{ selector: UserSelectors.getCurrentUser, value: MOCK_USER }];
 
-        case AccountSettingsSelectors.getAccountSettings:
-          return () => null;
-
-        case AccountSettingsSelectors.getExternalIdentities:
-          return () => null;
-
-        case RegionsSelectors.getRegions:
-          return () => null;
-
-        case AccountSettingsSelectors.getUserInstitutions:
-          return () => null;
-
-        default:
-          return () => [];
-      }
-    });
-    await TestBed.configureTestingModule({
+  function setup(overrides: BaseSetupOverrides = {}) {
+    TestBed.configureTestingModule({
       imports: [
         AccountSettingsComponent,
         ...MockComponents(
@@ -72,35 +54,61 @@ describe('AccountSettingsComponent', () => {
           DeactivateAccountComponent,
           AffiliatedInstitutionsComponent
         ),
-        MockPipe(TranslatePipe),
       ],
       providers: [
-        MockCustomConfirmationServiceProvider,
-        TranslateServiceMock,
-        MockProvider(ToastService),
-        provideNoopAnimations(),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        MockProvider(Store, store),
+        provideOSFCore(),
+        provideMockStore({
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(AccountSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should not dispatch actions when currentUser is null', () => {
-    store.selectSignal.mockImplementation((selector) =>
-      selector === UserSelectors.getCurrentUser ? () => null : () => []
-    );
+  it('should dispatch initial account settings actions when user exists', () => {
+    setup();
 
-    store.dispatch.mockClear();
+    expect(store.dispatch).toHaveBeenCalledTimes(5);
+    expect(store.dispatch).toHaveBeenCalledWith(new GetAccountSettings());
+    expect(store.dispatch).toHaveBeenCalledWith(new GetEmails());
+    expect(store.dispatch).toHaveBeenCalledWith(new GetExternalIdentities());
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchRegions());
+    expect(store.dispatch).toHaveBeenCalledWith(new GetUserInstitutions());
+  });
+
+  it('should not dispatch initial actions when current user is null', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.getCurrentUser, value: null }],
+    });
 
     expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should render settings section when current user has id', () => {
+    setup();
+
+    const section = fixture.debugElement.query(By.css('section'));
+
+    expect(section).toBeTruthy();
+  });
+
+  it('should hide settings section when current user is null', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.getCurrentUser, value: null }],
+    });
+
+    const section = fixture.debugElement.query(By.css('section'));
+
+    expect(section).toBeNull();
   });
 });

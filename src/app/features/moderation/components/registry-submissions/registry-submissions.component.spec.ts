@@ -3,23 +3,23 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RegistrySubmissionItemComponent } from '@osf/features/moderation/components';
 import { RegistryModeration } from '@osf/features/moderation/models';
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 
-import { RegistrySort, SubmissionReviewStatus } from '../../enums';
-import { RegistryModerationSelectors } from '../../store/registry-moderation';
-
-import { RegistrySubmissionsComponent } from './registry-submissions.component';
-
 import { MOCK_REGISTRY_MODERATIONS } from '@testing/mocks/registry-moderation.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistrySort, SubmissionReviewStatus } from '../../enums';
+import { RegistryModerationSelectors } from '../../store/registry-moderation';
+import { RegistrySubmissionItemComponent } from '../registry-submission-item/registry-submission-item.component';
+
+import { RegistrySubmissionsComponent } from './registry-submissions.component';
 
 describe('RegistrySubmissionsComponent', () => {
   let component: RegistrySubmissionsComponent;
@@ -30,17 +30,16 @@ describe('RegistrySubmissionsComponent', () => {
   const mockProviderId = 'test-provider-id';
   const mockSubmissions: RegistryModeration[] = MOCK_REGISTRY_MODERATIONS;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockRouter = RouterMockBuilder.create().build();
     mockActivatedRoute = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })
       .withQueryParams({ status: 'pending' })
       .build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         RegistrySubmissionsComponent,
-        OSFTestingModule,
         ...MockComponents(
           SelectComponent,
           IconComponent,
@@ -50,6 +49,7 @@ describe('RegistrySubmissionsComponent', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
         MockProvider(Router, mockRouter),
         MockProvider(ActivatedRoute, mockActivatedRoute),
         provideMockStore({
@@ -60,7 +60,7 @@ describe('RegistrySubmissionsComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RegistrySubmissionsComponent);
     component = fixture.componentInstance;

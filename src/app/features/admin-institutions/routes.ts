@@ -1,13 +1,10 @@
 import { Routes } from '@angular/router';
 
-import {
-  InstitutionsPreprintsComponent,
-  InstitutionsProjectsComponent,
-  InstitutionsRegistrationsComponent,
-  InstitutionsSummaryComponent,
-  InstitutionsUsersComponent,
-} from '@osf/features/admin-institutions/pages';
-
+import { InstitutionsPreprintsComponent } from './pages/institutions-preprints/institutions-preprints.component';
+import { InstitutionsProjectsComponent } from './pages/institutions-projects/institutions-projects.component';
+import { InstitutionsRegistrationsComponent } from './pages/institutions-registrations/institutions-registrations.component';
+import { InstitutionsSummaryComponent } from './pages/institutions-summary/institutions-summary.component';
+import { InstitutionsUsersComponent } from './pages/institutions-users/institutions-users.component';
 import { AdminInstitutionsComponent } from './admin-institutions.component';
 
 export const routes: Routes = [
