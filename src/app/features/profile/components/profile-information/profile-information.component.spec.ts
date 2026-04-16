@@ -7,6 +7,7 @@ import { provideRouter } from '@angular/router';
 
 import { EducationHistoryComponent } from '@osf/shared/components/education-history/education-history.component';
 import { EmploymentHistoryComponent } from '@osf/shared/components/employment-history/employment-history.component';
+import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { UserModel } from '@osf/shared/models/user/user.model';
@@ -93,7 +94,7 @@ describe('ProfileInformationComponent', () => {
       external_identity: {
         ORCID: {
           id: '0000-0002-1825-0097',
-          status: 'verified',
+          status: ExternalIdentityStatus.VERIFIED,
         },
       },
     } as UserModel);
@@ -107,7 +108,7 @@ describe('ProfileInformationComponent', () => {
       external_identity: {
         ORCID: {
           id: '0000-0002-1825-0097',
-          status: 'pending',
+          status: ExternalIdentityStatus.LINK,
         },
       },
     } as UserModel);

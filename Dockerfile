@@ -15,7 +15,7 @@ WORKDIR /app
 RUN npm prune --omit=dev --no-audit --no-fund
 EXPOSE 4000
 ENV PORT=4000
-CMD ["node", "dist/osf/server/server.mjs"]
+CMD ["node", "--enable-source-maps", "dist/osf/server/server.mjs"]
 
 # Static dist artifact stage
 FROM node:22-alpine AS dist

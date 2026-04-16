@@ -100,7 +100,7 @@ export class PreprintsService {
       .pipe(
         map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)),
         catchError((error) => {
-          if (error.status === 410) {
+          if (error.error?.errors?.[0]?.meta?.flagged_content) {
             this.router.navigate(['/spam-content']);
           }
           return throwError(() => error);

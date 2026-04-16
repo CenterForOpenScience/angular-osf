@@ -2,6 +2,26 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.7.0 (2026-04-08)
+===================
+
+* ORCiD Integration Project - FE Part
+
+26.6.1 (2026-03-26)
+===================
+
+* Hotfix to prevent redirect on 403 error
+
+26.6.0 (2026-03-26)
+===================
+
+* Misc. improvements and bug fixes
+
+26.5.1 (2026-03-18)
+===================
+
+* Hotfix for Angular SSR
+
 26.5.0 (2026-02-26)
 ===================
 

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -18,6 +18,9 @@ export class MetadataRecordsService {
 
   getMetadataRecord(osfid: string, format: MetadataRecordFormat) {
     const url = `${this.webUrl}/metadata/${osfid}/?format=${format}`;
-    return this.http.get(url, { responseType: 'text' });
+    return this.http.get(url, {
+      responseType: 'text',
+      headers: new HttpHeaders({ 'X-No-Auth-Redirect': 'true' }),
+    });
   }
 }

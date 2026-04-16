@@ -4,12 +4,14 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 
 import { EducationComponent, EmploymentComponent, NameComponent, SocialComponent } from './components';
 import { ProfileSettingsComponent } from './profile-settings.component';
@@ -34,7 +36,11 @@ describe('ProfileSettingsComponent', () => {
           SelectComponent
         ),
       ],
-      providers: [provideOSFCore(), MockProvider(IS_MEDIUM, isMedium)],
+      providers: [
+        provideOSFCore(),
+        MockProvider(IS_MEDIUM, isMedium),
+        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().withQueryParams({}).build()),
+      ],
     });
 
     fixture = TestBed.createComponent(ProfileSettingsComponent);
@@ -44,6 +50,14 @@ describe('ProfileSettingsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update selected tab on init based on query param', () => {
+    const testTabValue = 2;
+    component['route'] = { snapshot: { queryParams: { tab: testTabValue } } } as any;
+
+    component.ngOnInit();
+    expect(component['selectedTab']).toBe(testTabValue);
   });
 
   it('should update selected tab when onTabChange is called', () => {

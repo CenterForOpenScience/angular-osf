@@ -98,6 +98,7 @@
               "ssr": {
                 "entry": "src/server.ts"
               },
+              "sourceMap": true,
               "budgets": [
                 {
                   "type": "initial",

@@ -63,7 +63,7 @@ export class ResourceGuidService {
       ),
       finalize(() => this.loaderService.hide()),
       catchError((error) => {
-        if (error.status === 410) {
+        if (error.error?.errors?.[0]?.meta?.flagged_content) {
           this.router.navigate(['/spam-content']);
         }
         return throwError(() => error);
