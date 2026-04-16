@@ -1,6 +1,8 @@
+import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
+
 export interface OrcidInfo {
   id: string;
-  status: string;
+  status: ExternalIdentityStatus;
 }
 
 export interface ExternalIdentityModel {

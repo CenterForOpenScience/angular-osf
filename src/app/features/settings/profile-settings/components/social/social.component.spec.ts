@@ -8,6 +8,7 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
+import { AuthenticatedIdentityComponent } from '../authenticated-identity/authenticated-identity.component';
 import { SocialFormComponent } from '../social-form/social-form.component';
 
 import { SocialComponent } from './social.component';
@@ -24,7 +25,12 @@ describe('SocialComponent', () => {
     jest.clearAllMocks();
 
     await TestBed.configureTestingModule({
-      imports: [SocialComponent, MockComponent(SocialFormComponent), MockPipe(TranslatePipe)],
+      imports: [
+        SocialComponent,
+        MockComponent(SocialFormComponent),
+        MockComponent(AuthenticatedIdentityComponent),
+        MockPipe(TranslatePipe),
+      ],
       providers: [
         provideMockStore({
           signals: [{ selector: UserSelectors.getSocialLinks, value: MOCK_USER.social }],

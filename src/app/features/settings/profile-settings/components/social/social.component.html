@@ -1,3 +1,5 @@
+<osf-authenticated-identity />
+
 <form [formGroup]="socialLinksForm">
   <div formArrayName="links" class="flex flex-column row-gap-4 social">
     @for (link of links.controls; track index; let index = $index) {

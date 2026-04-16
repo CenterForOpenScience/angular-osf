@@ -1849,9 +1849,14 @@
         "successUpdate": "Settings successfully updated."
       },
       "social": {
+        "connectOrcid": "Connect ORCID",
+        "disconnectOrcid": "Disconnect ORCID",
+        "orcidDescription": "Link your ORCID. ORCID is a free, unique, persistent identifier (PID) for individuals to use as they engage in research, scholarship, and innovation activities. Learn how ORCID can help you spend more time conducting your research and less time managing it. <a href='https://orcid.org/' target='_blank'>Learn more about ORCID.</a>",
+        "orcidWarning": "NOTE: This will log you out of your current OSF profile. Your OSF account email and ORCID email need to match to correctly link your ORCID to your OSF profile.",
         "title": "Social Link {{index}}",
         "successUpdate": "Social successfully updated.",
         "labels": {
+          "authenticatedIdentity": "Authenticated identity",
           "researcherId": "ResearcherID",
           "orcid": "ORCID",
           "linkedIn": "LinkedIn",
