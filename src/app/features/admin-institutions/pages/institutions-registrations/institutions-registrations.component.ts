@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { CommonModule } from '@angular/common';
+import { LowerCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -13,7 +13,6 @@ import { PaginationLinksModel } from '@osf/shared/models/pagination-links.model'
 import { ResourceModel } from '@osf/shared/models/search/resource.model';
 import { SearchFilters } from '@osf/shared/models/search-filters.model';
 import {
-  ClearFilterSearchResults,
   FetchResources,
   FetchResourcesByLink,
   GlobalSearchSelectors,
@@ -23,7 +22,7 @@ import {
   SetSortBy,
 } from '@osf/shared/stores/global-search';
 
-import { AdminTableComponent } from '../../components';
+import { AdminTableComponent } from '../../components/admin-table/admin-table.component';
 import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 import { registrationTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
@@ -34,14 +33,13 @@ import { InstitutionsAdminSelectors } from '../../store';
 
 @Component({
   selector: 'osf-institutions-registrations',
-  imports: [CommonModule, AdminTableComponent, TranslatePipe, Button, FiltersSectionComponent],
+  imports: [Button, AdminTableComponent, FiltersSectionComponent, LowerCasePipe, TranslatePipe],
   templateUrl: './institutions-registrations.component.html',
   styleUrl: './institutions-registrations.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
   private readonly actions = createDispatchMap({
-    clearFilterSearchResults: ClearFilterSearchResults,
     setDefaultFilterValue: SetDefaultFilterValue,
     resetSearchState: ResetSearchState,
     setSortBy: SetSortBy,
@@ -62,7 +60,6 @@ export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
   resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
 
-  selfLink = select(GlobalSearchSelectors.getFirst);
   firstLink = select(GlobalSearchSelectors.getFirst);
   nextLink = select(GlobalSearchSelectors.getNext);
   previousLink = select(GlobalSearchSelectors.getPrevious);
@@ -72,6 +69,7 @@ export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
       (resource: ResourceModel): TableCellData => mapRegistrationResourceToTableData(resource, this.institution().iri)
     )
   );
+
   sortParam = computed(() => {
     const sortField = this.sortField();
     const sortOrder = this.sortOrder();
@@ -110,7 +108,7 @@ export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
 
   download(type: DownloadType) {
     downloadResults(
-      this.selfLink(),
+      this.firstLink(),
       type,
       INSTITUTIONS_CSV_TSV_FIELDS[CurrentResourceType.Registrations],
       INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE[CurrentResourceType.Registrations]

@@ -5,22 +5,21 @@ import { TestBed } from '@angular/core/testing';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { DataResourcesComponent } from '@osf/shared/components/data-resources/data-resources.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
-
-import { RegistrationLinksCardComponent } from './registration-links-card.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 
 import { createMockLinkedNode } from '@testing/mocks/linked-node.mock';
 import { createMockLinkedRegistration } from '@testing/mocks/linked-registration.mock';
 import { createMockRegistryComponent } from '@testing/mocks/registry-component.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
+
+import { RegistrationLinksCardComponent } from './registration-links-card.component';
 
 describe('RegistrationLinksCardComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         RegistrationLinksCardComponent,
-        ...MockComponents(DataResourcesComponent, IconComponent, ContributorsListComponent),
-        MockComponentWithSignal('osf-truncated-text'),
+        ...MockComponents(DataResourcesComponent, IconComponent, ContributorsListComponent, TruncatedTextComponent),
       ],
       providers: [provideOSFCore()],
     });

@@ -1,11 +1,7 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -22,37 +18,37 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { StatisticCardComponent } from '@osf/shared/components/statistic-card/statistic-card.component';
 import { DoughnutChartComponent } from '@shared/components/doughnut-chart/doughnut-chart.component';
 
-import { InstitutionsSummaryComponent } from './institutions-summary.component';
-
 import {
   MOCK_ADMIN_INSTITUTIONS_DEPARTMENTS,
   MOCK_ADMIN_INSTITUTIONS_SEARCH_FILTERS,
   MOCK_ADMIN_INSTITUTIONS_STORAGE_FILTERS,
   MOCK_ADMIN_INSTITUTIONS_SUMMARY_METRICS,
 } from '@testing/mocks/admin-institutions.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { InstitutionsSummaryComponent } from './institutions-summary.component';
 
 describe('InstitutionsSummaryComponent', () => {
   let component: InstitutionsSummaryComponent;
   let fixture: ComponentFixture<InstitutionsSummaryComponent>;
   let store: Store;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    const mockRoute = ActivatedRouteMockBuilder.create()
+      .withParams({ institutionId: 'test-institution' })
+      .withQueryParams({})
+      .build();
+
+    TestBed.configureTestingModule({
       imports: [
         InstitutionsSummaryComponent,
-        OSFTestingModule,
         ...MockComponents(StatisticCardComponent, LoadingSpinnerComponent, DoughnutChartComponent, BarChartComponent),
       ],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: { snapshot: { params: { institutionId: 'test-institution' } } },
-            queryParams: of({}),
-          },
-        },
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, mockRoute),
         provideMockStore({
           signals: [
             {
@@ -89,10 +85,8 @@ describe('InstitutionsSummaryComponent', () => {
             },
           ],
         }),
-        provideHttpClient(),
-        provideHttpClientTesting(),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(InstitutionsSummaryComponent);
     component = fixture.componentInstance;
@@ -105,7 +99,7 @@ describe('InstitutionsSummaryComponent', () => {
   });
 
   it('should dispatch actions on ngOnInit when institutionId is present', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     component.ngOnInit();
 

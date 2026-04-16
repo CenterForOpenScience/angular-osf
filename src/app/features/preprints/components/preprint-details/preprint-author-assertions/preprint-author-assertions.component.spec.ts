@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 
-import { PreprintAuthorAssertionsComponent } from './preprint-author-assertions.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { PreprintAuthorAssertionsComponent } from './preprint-author-assertions.component';
 
 describe('PreprintAuthorAssertionsComponent', () => {
   let component: PreprintAuthorAssertionsComponent;

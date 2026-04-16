@@ -22,11 +22,9 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import {
-  AddContributorDialogComponent,
-  AddUnregisteredContributorDialogComponent,
-  ContributorsTableComponent,
-} from '@osf/shared/components/contributors';
+import { AddContributorDialogComponent } from '@osf/shared/components/contributors/add-contributor-dialog/add-contributor-dialog.component';
+import { AddUnregisteredContributorDialogComponent } from '@osf/shared/components/contributors/add-unregistered-contributor-dialog/add-unregistered-contributor-dialog.component';
+import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';

@@ -4,21 +4,22 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+
 import { EducationHistoryComponent } from '../education-history/education-history.component';
 
 import { EducationHistoryDialogComponent } from './education-history-dialog.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('EducationHistoryDialogComponent', () => {
   let component: EducationHistoryDialogComponent;
   let fixture: ComponentFixture<EducationHistoryDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [EducationHistoryDialogComponent, OSFTestingModule, MockComponent(EducationHistoryComponent)],
-      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [EducationHistoryDialogComponent, MockComponent(EducationHistoryComponent)],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig)],
+    });
 
     fixture = TestBed.createComponent(EducationHistoryDialogComponent);
     component = fixture.componentInstance;
@@ -31,7 +32,6 @@ describe('EducationHistoryDialogComponent', () => {
 
   it('should call close method successfully', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    jest.spyOn(dialogRef, 'close');
     component.close();
     expect(dialogRef.close).toHaveBeenCalledTimes(1);
   });

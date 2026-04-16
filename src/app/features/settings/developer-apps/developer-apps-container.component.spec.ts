@@ -1,65 +1,71 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
-
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-
-import { Subject } from 'rxjs';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
-import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/components';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { ToastService } from '@osf/shared/services/toast.service';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomDialogServiceMockBuilder,
+  CustomDialogServiceMockType,
+} from '@testing/providers/custom-dialog-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+
+import { DeveloperAppAddEditFormComponent } from './components';
 import { DeveloperAppsContainerComponent } from './developer-apps-container.component';
-
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('DeveloperAppsContainerComponent', () => {
   let component: DeveloperAppsContainerComponent;
   let fixture: ComponentFixture<DeveloperAppsContainerComponent>;
-  let translateService: TranslateService;
-  let dialogRefMock: Partial<DynamicDialogRef>;
-  let dialogService: DialogService;
-  let openSpy: jest.SpyInstance;
-  let translateSpy: jest.SpyInstance;
+  let routerMock: RouterMockType;
+  let customDialogServiceMock: CustomDialogServiceMockType;
 
-  beforeEach(async () => {
-    dialogRefMock = { onClose: new Subject<void>() };
+  function setup(url = '/settings/developer-apps') {
+    routerMock = RouterMockBuilder.create().withUrl(url).build();
+    customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
 
-    await TestBed.configureTestingModule({
-      imports: [DeveloperAppsContainerComponent, MockComponent(SubHeaderComponent), MockPipe(TranslatePipe)],
-      providers: [MockProvider(DialogService), MockProvider(ToastService), TranslateServiceMock],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [DeveloperAppsContainerComponent, MockComponent(SubHeaderComponent)],
+      providers: [
+        provideOSFCore(),
+        MockProvider(Router, routerMock),
+        MockProvider(CustomDialogService, customDialogServiceMock),
+      ],
+    });
 
     fixture = TestBed.createComponent(DeveloperAppsContainerComponent);
     component = fixture.componentInstance;
-
-    translateService = TestBed.inject(TranslateService);
-    dialogService = fixture.debugElement.injector.get(DialogService);
-
-    openSpy = jest.spyOn(dialogService, 'open').mockReturnValue(dialogRefMock as DynamicDialogRef);
-    translateSpy = jest.spyOn(translateService, 'instant').mockReturnValue('Create Developer App');
-
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should open dialog with 500px width', () => {
+  it('should set isBaseRoute to true when current url is base route', () => {
+    setup('/settings/developer-apps');
+
+    expect(component.isBaseRoute()).toBe(true);
+  });
+
+  it('should set isBaseRoute to false when current url is not base route', () => {
+    setup('/settings/developer-apps/create');
+
+    expect(component.isBaseRoute()).toBe(false);
+  });
+
+  it('should open create developer app dialog with expected config', () => {
+    setup();
+
     component.createDeveloperApp();
 
-    expect(openSpy).toHaveBeenCalledWith(DeveloperAppAddEditFormComponent, {
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(DeveloperAppAddEditFormComponent, {
+      header: 'settings.developerApps.form.createTitle',
       width: '500px',
-      focusOnShow: false,
-      header: 'Create Developer App',
-      breakpoints: { '768px': '95vw' },
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
-    expect(translateSpy).toHaveBeenCalledWith('settings.developerApps.form.createTitle');
   });
 });

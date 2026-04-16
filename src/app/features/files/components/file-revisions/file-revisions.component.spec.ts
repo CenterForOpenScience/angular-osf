@@ -1,4 +1,4 @@
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockDirective } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -6,19 +6,23 @@ import { CopyButtonComponent } from '@osf/shared/components/copy-button/copy-but
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
 
-import { FileRevisionsComponent } from './file-revisions.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { FileRevisionsComponent } from './file-revisions.component';
 
 describe('FileRevisionsComponent', () => {
   let component: FileRevisionsComponent;
   let fixture: ComponentFixture<FileRevisionsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FileRevisionsComponent, OSFTestingModule, ...MockComponents(CopyButtonComponent, InfoIconComponent)],
-      providers: [{ provide: StopPropagationDirective, useValue: {} }],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        FileRevisionsComponent,
+        ...MockComponents(CopyButtonComponent, InfoIconComponent),
+        MockDirective(StopPropagationDirective),
+      ],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(FileRevisionsComponent);
     component = fixture.componentInstance;
@@ -42,7 +46,7 @@ describe('FileRevisionsComponent', () => {
   });
 
   it('should emit openRevision event when onOpenRevision is called', () => {
-    const openRevisionSpy = jest.spyOn(component.openRevision, 'emit');
+    const openRevisionSpy = vi.spyOn(component.openRevision, 'emit');
 
     component.onOpenRevision('1');
 
@@ -50,7 +54,7 @@ describe('FileRevisionsComponent', () => {
   });
 
   it('should emit downloadRevision event when onDownloadRevision is called', () => {
-    const downloadRevisionSpy = jest.spyOn(component.downloadRevision, 'emit');
+    const downloadRevisionSpy = vi.spyOn(component.downloadRevision, 'emit');
 
     component.onDownloadRevision('2');
 
@@ -77,8 +81,8 @@ describe('FileRevisionsComponent', () => {
   });
 
   it('should handle multiple revision events', () => {
-    const openRevisionSpy = jest.spyOn(component.openRevision, 'emit');
-    const downloadRevisionSpy = jest.spyOn(component.downloadRevision, 'emit');
+    const openRevisionSpy = vi.spyOn(component.openRevision, 'emit');
+    const downloadRevisionSpy = vi.spyOn(component.downloadRevision, 'emit');
 
     component.onOpenRevision('1');
     component.onDownloadRevision('1');

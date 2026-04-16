@@ -16,7 +16,9 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { normalizeQuotes } from '@osf/shared/helpers/normalize-quotes';
 import { BrandService } from '@osf/shared/services/brand.service';
 
-import { AdvisoryBoardComponent, BrowseBySubjectsComponent, PreprintServicesComponent } from '../../components';
+import { AdvisoryBoardComponent } from '../../components/advisory-board/advisory-board.component';
+import { BrowseBySubjectsComponent } from '../../components/browse-by-subjects/browse-by-subjects.component';
+import { PreprintServicesComponent } from '../../components/preprint-services/preprint-services.component';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,

@@ -27,7 +27,7 @@ import { CollectionFilterType } from '../../enums';
 
 @Component({
   selector: 'osf-collections-filters',
-  imports: [FormsModule, MultiSelect, Accordion, AccordionContent, AccordionHeader, AccordionPanel, TranslatePipe],
+  imports: [FormsModule, Accordion, AccordionContent, AccordionHeader, AccordionPanel, MultiSelect, TranslatePipe],
   templateUrl: './collections-filters.component.html',
   styleUrl: './collections-filters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

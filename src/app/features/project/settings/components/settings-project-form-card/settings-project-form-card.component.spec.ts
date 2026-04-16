@@ -1,5 +1,4 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockDirective, MockPipe } from 'ng-mocks';
+import { MockComponent, MockDirective } from 'ng-mocks';
 
 import { Textarea } from 'primeng/textarea';
 
@@ -8,12 +7,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 
+import { MOCK_NODE_DETAILS } from '@testing/mocks/node-details.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { NodeDetailsModel } from '../../models';
 
 import { SettingsProjectFormCardComponent } from './settings-project-form-card.component';
-
-import { MOCK_NODE_DETAILS } from '@testing/mocks/node-details.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('SettingsProjectFormCardComponent', () => {
   let component: SettingsProjectFormCardComponent;
@@ -21,16 +20,11 @@ describe('SettingsProjectFormCardComponent', () => {
 
   const mockNodeDetails = MOCK_NODE_DETAILS;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        SettingsProjectFormCardComponent,
-        OSFTestingModule,
-        MockComponent(TextInputComponent),
-        MockPipe(TranslatePipe),
-        MockDirective(Textarea),
-      ],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SettingsProjectFormCardComponent, MockComponent(TextInputComponent), MockDirective(Textarea)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SettingsProjectFormCardComponent);
     component = fixture.componentInstance;
@@ -51,7 +45,7 @@ describe('SettingsProjectFormCardComponent', () => {
   });
 
   it('should emit submitForm when form is valid and submitted', () => {
-    jest.spyOn(component.submitForm, 'emit');
+    vi.spyOn(component.submitForm, 'emit');
     fixture.componentRef.setInput('projectDetails', mockNodeDetails);
     fixture.detectChanges();
 
@@ -69,7 +63,7 @@ describe('SettingsProjectFormCardComponent', () => {
   });
 
   it('should not emit submitForm when form is invalid', () => {
-    jest.spyOn(component.submitForm, 'emit');
+    vi.spyOn(component.submitForm, 'emit');
     fixture.componentRef.setInput('projectDetails', mockNodeDetails);
     fixture.detectChanges();
 
@@ -84,7 +78,7 @@ describe('SettingsProjectFormCardComponent', () => {
   });
 
   it('should emit deleteProject when delete button is clicked', () => {
-    jest.spyOn(component.deleteProject, 'emit');
+    vi.spyOn(component.deleteProject, 'emit');
     fixture.componentRef.setInput('projectDetails', mockNodeDetails);
     fixture.detectChanges();
 

@@ -14,7 +14,7 @@
 
       <p-select
         class="w-full"
-        styleClass="select-version"
+        [pt]="{ label: { class: 'text-sm' } }"
         [options]="mappedVersions()"
         [ngModel]="selectedVersion()"
         (onChange)="onVersionChange($event.value)"

@@ -1,31 +1,31 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
+import { NgxCaptchaModule } from 'ngx-captcha';
+import { MockComponents, MockModule, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
 import { PasswordInputHintComponent } from '@osf/shared/components/password-input-hint/password-input-hint.component';
+import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { SignUpComponent } from './sign-up.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { SignUpComponent } from './sign-up.component';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;
   let fixture: ComponentFixture<SignUpComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SignUpComponent, MockComponent(PasswordInputHintComponent), MockPipe(TranslatePipe)],
-      providers: [
-        TranslateServiceMock,
-        MockProvider(ActivatedRoute),
-        MockProvider(ToastService),
-        MockProvider(AuthService),
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        SignUpComponent,
+        ...MockComponents(TextInputComponent, PasswordInputHintComponent),
+        MockModule(NgxCaptchaModule),
       ],
-    }).compileComponents();
+      providers: [provideOSFCore(), provideRouter([]), MockProvider(ToastService), MockProvider(AuthService)],
+    });
 
     fixture = TestBed.createComponent(SignUpComponent);
     component = fixture.componentInstance;

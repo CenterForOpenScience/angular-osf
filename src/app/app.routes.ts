@@ -103,9 +103,9 @@ export const routes: Routes = [
       {
         path: 'preprints/:providerId/:id/pending-moderation',
         loadComponent: () =>
-          import(
-            '@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component'
-          ).then((mod) => mod.PreprintPendingModerationComponent),
+          import('@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component').then(
+            (mod) => mod.PreprintPendingModerationComponent
+          ),
       },
       {
         path: 'preprints/:providerId/:id/download',

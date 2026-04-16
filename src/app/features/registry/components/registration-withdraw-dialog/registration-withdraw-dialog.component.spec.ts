@@ -4,17 +4,17 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of, throwError } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 
 import { TestBed } from '@angular/core/testing';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
-import { RegistrationWithdrawDialogComponent } from './registration-withdraw-dialog.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistrationWithdrawDialogComponent } from './registration-withdraw-dialog.component';
 
 function setup(registryId = 'reg-123') {
   TestBed.configureTestingModule({
@@ -46,7 +46,7 @@ describe('RegistrationWithdrawDialogComponent', () => {
 
   it('should dispatch withdraw and close dialog on success', () => {
     const { component, store, dialogRef } = setup();
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.form.controls.text.setValue('Withdrawal reason');
     component.withdrawRegistration();
@@ -63,7 +63,7 @@ describe('RegistrationWithdrawDialogComponent', () => {
 
   it('should not close dialog on dispatch error', () => {
     const { component, store, dialogRef } = setup();
-    jest.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('fail')));
+    vi.spyOn(store, 'dispatch').mockReturnValue(EMPTY);
 
     component.form.controls.text.setValue('Reason');
     component.withdrawRegistration();

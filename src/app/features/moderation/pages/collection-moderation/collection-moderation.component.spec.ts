@@ -1,6 +1,10 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
+
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,189 +12,112 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { GetCollectionProvider } from '@osf/shared/stores/collections';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { CollectionModerationTab } from '../../enums';
 
 import { CollectionModerationComponent } from './collection-moderation.component';
 
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-
-describe('Component: Collection Moderation', () => {
+describe('CollectionModerationComponent', () => {
   let component: CollectionModerationComponent;
   let fixture: ComponentFixture<CollectionModerationComponent>;
-  let isMediumSubject: BehaviorSubject<boolean>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let store: Store;
+  let dispatchMock: Mock;
+  let mockRouter: RouterMockType;
 
-  beforeEach(async () => {
-    isMediumSubject = new BehaviorSubject<boolean>(true);
-    mockRouter = RouterMockBuilder.create().build();
-    mockActivatedRoute = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: 'test-provider-id' })
-      .withData({ tab: CollectionModerationTab.AllItems })
-      .build();
+  interface SetupOptions {
+    providerId?: string;
+    tab?: CollectionModerationTab;
+  }
 
-    await TestBed.configureTestingModule({
-      imports: [
-        CollectionModerationComponent,
-        OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, SelectComponent),
-      ],
+  function setup(options: SetupOptions = {}) {
+    const { providerId = 'provider-1', tab = CollectionModerationTab.AllItems } = options;
+    const routeBuilder = ActivatedRouteMockBuilder.create().withFirstChild((child) => child.withData({ tab }));
+
+    if (providerId) {
+      routeBuilder.withParams({ providerId });
+    }
+
+    const route = routeBuilder.build() as Partial<ActivatedRoute>;
+    mockRouter = RouterMockBuilder.create().withUrl('/collections/provider-1/moderation/all-items').build();
+
+    TestBed.configureTestingModule({
+      imports: [CollectionModerationComponent, ...MockComponents(SubHeaderComponent, SelectComponent)],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
+        provideOSFCore(),
+        provideMockStore(),
+        MockProvider(ActivatedRoute, route),
         MockProvider(Router, mockRouter),
-        MockProvider(IS_MEDIUM, isMediumSubject),
+        MockProvider(IS_MEDIUM, of(true)),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(CollectionModerationComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    store = TestBed.inject(Store);
+    dispatchMock = store.dispatch as Mock;
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default values', () => {
-    expect(component.selectedTab).toBeUndefined();
-    expect(component.tabOptions).toBeDefined();
-    expect(component.isMedium).toBeDefined();
-  });
-
-  it('should initialize selected tab from route data', async () => {
-    const mockFirstChild = {
-      data: { tab: CollectionModerationTab.Moderators },
-    };
-
-    const routeWithFirstChild = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: 'test-provider-id' })
-      .build();
-
-    Object.defineProperty(routeWithFirstChild.snapshot, 'firstChild', {
-      value: mockFirstChild,
-      writable: true,
-    });
-
-    await TestBed.configureTestingModule({
-      imports: [
-        CollectionModerationComponent,
-        OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, SelectComponent),
-      ],
-      providers: [
-        MockProvider(ActivatedRoute, routeWithFirstChild),
-        MockProvider(Router, mockRouter),
-        MockProvider(IS_MEDIUM, isMediumSubject),
-      ],
-    }).compileComponents();
-
-    const testFixture = TestBed.createComponent(CollectionModerationComponent);
-    const testComponent = testFixture.componentInstance;
-
-    testComponent.ngOnInit();
-
-    expect(testComponent.selectedTab).toBe(CollectionModerationTab.Moderators);
-  });
-
-  it('should navigate to not-found when providerId is missing', async () => {
-    const routeWithoutProviderId = ActivatedRouteMockBuilder.create().withParams({}).build();
-
-    await TestBed.configureTestingModule({
-      imports: [
-        CollectionModerationComponent,
-        OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, SelectComponent),
-      ],
-      providers: [
-        MockProvider(ActivatedRoute, routeWithoutProviderId),
-        MockProvider(Router, mockRouter),
-        MockProvider(IS_MEDIUM, isMediumSubject),
-      ],
-    }).compileComponents();
-
-    const testFixture = TestBed.createComponent(CollectionModerationComponent);
-    const testComponent = testFixture.componentInstance;
-
-    testComponent.ngOnInit();
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-found']);
-  });
-
-  it('should call getCollectionProvider action on init when providerId exists', () => {
-    const getCollectionProviderSpy = jest.fn();
-    component.actions = {
-      ...component.actions,
-      getCollectionProvider: getCollectionProviderSpy,
-    };
+  it('should initialize selectedTab from route child data', () => {
+    setup({ tab: CollectionModerationTab.Moderators });
 
     component.ngOnInit();
 
-    expect(getCollectionProviderSpy).toHaveBeenCalledWith('test-provider-id');
+    expect(component.selectedTab).toBe(CollectionModerationTab.Moderators);
   });
 
-  it('should handle tab change and navigate to new tab', () => {
-    const newTab = CollectionModerationTab.Moderators;
+  it('should navigate to not-found when providerId is missing', () => {
+    setup({ providerId: '' });
+    dispatchMock.mockClear();
 
-    component.onTabChange(newTab);
+    component.ngOnInit();
 
-    expect(component.selectedTab).toBe(newTab);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([newTab], { relativeTo: expect.any(Object) });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-found']);
+    expect(dispatchMock).not.toHaveBeenCalledWith(expect.any(GetCollectionProvider));
   });
 
-  it('should call clearCurrentProvider on destroy', () => {
-    const clearCurrentProviderSpy = jest.fn();
-    component.actions = {
-      ...component.actions,
-      clearCurrentProvider: clearCurrentProviderSpy,
-    };
+  it('should dispatch GetCollectionProvider on init when providerId exists', () => {
+    setup({ providerId: 'provider-1' });
+    dispatchMock.mockClear();
+
+    component.ngOnInit();
+
+    expect(dispatchMock).toHaveBeenCalledWith(new GetCollectionProvider('provider-1'));
+  });
+
+  it('should clear current provider on destroy', () => {
+    setup();
+    dispatchMock.mockClear();
 
     component.ngOnDestroy();
 
-    expect(clearCurrentProviderSpy).toHaveBeenCalled();
-  });
-
-  it('should have actions defined', () => {
-    expect(component.actions).toBeDefined();
-    expect(component.actions.getCollectionProvider).toBeDefined();
-    expect(component.actions.clearCurrentProvider).toBeDefined();
-  });
-
-  it('should have tab options defined', () => {
-    expect(component.tabOptions).toBeDefined();
-    expect(component.tabOptions.length).toBeGreaterThan(0);
-  });
-
-  it('should handle isMedium observable', () => {
-    expect(component.isMedium()).toBe(true);
-
-    isMediumSubject.next(false);
-    fixture.detectChanges();
-
-    expect(component.isMedium()).toBe(false);
-  });
-
-  it('should handle tab change with different tab values', () => {
-    const tabs = [
-      CollectionModerationTab.AllItems,
-      CollectionModerationTab.Moderators,
-      CollectionModerationTab.Settings,
-    ];
-
-    tabs.forEach((tab) => {
-      component.onTabChange(tab);
-      expect(component.selectedTab).toBe(tab);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([tab], { relativeTo: expect.any(Object) });
+    const actionTypes = dispatchMock.mock.calls.map((call) => {
+      const action = call[0] as { constructor: { name: string } };
+      return action.constructor.name;
     });
+
+    expect(actionTypes).toContain('ClearCurrentProvider');
   });
 
-  it('should not navigate when providerId is present', () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: 'valid-id' }).build();
+  it('should update selectedTab and navigate on tab change', () => {
+    setup();
 
-    component.ngOnInit();
+    component.onTabChange(CollectionModerationTab.Settings);
 
-    expect(mockRouter.navigate).not.toHaveBeenCalledWith(['/not-found']);
+    expect(component.selectedTab).toBe(CollectionModerationTab.Settings);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([CollectionModerationTab.Settings], {
+      relativeTo: component.route,
+    });
   });
 });

@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
-import { filter, map, of } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -30,21 +30,23 @@ import { EditFileMetadataDialogComponent } from '../edit-file-metadata-dialog/ed
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileMetadataComponent {
-  private readonly actions = createDispatchMap({ setFileMetadata: SetFileMetadata });
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
+  private readonly actions = createDispatchMap({ setFileMetadata: SetFileMetadata });
+
   fileMetadata = select(FilesSelectors.getFileCustomMetadata);
   isLoading = select(FilesSelectors.isFileMetadataLoading);
   hasWriteAccess = select(FilesSelectors.hasWriteAccess);
+
   hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   readonly languageCodes = languageCodes;
 
-  readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
+  readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])));
 
   metadataFields = FileMetadataFields;
 

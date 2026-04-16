@@ -2,7 +2,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ConfirmDialog } from 'primeng/confirmdialog';
 
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
@@ -20,16 +19,15 @@ import { TopnavComponent } from '../topnav/topnav.component';
 @Component({
   selector: 'osf-layout',
   imports: [
-    BreadcrumbComponent,
-    CommonModule,
     ConfirmDialog,
+    BreadcrumbComponent,
     FooterComponent,
     HeaderComponent,
     OSFBannerComponent,
-    RouterOutlet,
-    ScrollTopOnRouteChangeDirective,
     SidenavComponent,
     TopnavComponent,
+    RouterOutlet,
+    ScrollTopOnRouteChangeDirective,
     TranslatePipe,
   ],
   templateUrl: './layout.component.html',

@@ -1,37 +1,40 @@
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
+
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+
+import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 
 import { ComponentCardComponent } from '../component-card/component-card.component';
 
 import { OverviewParentProjectComponent } from './overview-parent-project.component';
 
-import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-
 describe('OverviewParentProjectComponent', () => {
   let component: OverviewParentProjectComponent;
   let fixture: ComponentFixture<OverviewParentProjectComponent>;
-  let createUrlTreeSpy: jest.Mock;
-  let serializeUrlSpy: jest.Mock;
-  let navigateSpy: jest.Mock;
+  let createUrlTreeSpy: Mock;
+  let serializeUrlSpy: Mock;
+  let navigateSpy: Mock;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const mockUrlTree = {} as any;
-    createUrlTreeSpy = jest.fn().mockReturnValue(mockUrlTree);
-    serializeUrlSpy = jest.fn().mockReturnValue('/test-id');
-    navigateSpy = jest.fn().mockResolvedValue(true);
+    createUrlTreeSpy = vi.fn().mockReturnValue(mockUrlTree);
+    serializeUrlSpy = vi.fn().mockReturnValue('/test-id');
+    navigateSpy = vi.fn().mockResolvedValue(true);
 
     const routerMock = RouterMockBuilder.create().withCreateUrlTree(createUrlTreeSpy).build();
 
     routerMock.serializeUrl = serializeUrlSpy;
     routerMock.navigate = navigateSpy;
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [OverviewParentProjectComponent, ...MockComponents(ComponentCardComponent)],
-      providers: [{ provide: Router, useValue: routerMock }],
-    }).compileComponents();
+      providers: [provideOSFCore(), MockProvider(Router, routerMock)],
+    });
 
     fixture = TestBed.createComponent(OverviewParentProjectComponent);
     component = fixture.componentInstance;
@@ -40,7 +43,7 @@ describe('OverviewParentProjectComponent', () => {
   });
 
   it('should create URL tree with correct path and queryParamsHandling', () => {
-    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
     component.navigateToParent();
 
@@ -54,7 +57,7 @@ describe('OverviewParentProjectComponent', () => {
   it('should serialize URL tree and open in same window', () => {
     const mockUrlTree = {} as any;
     createUrlTreeSpy.mockReturnValue(mockUrlTree);
-    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
     component.navigateToParent();
 

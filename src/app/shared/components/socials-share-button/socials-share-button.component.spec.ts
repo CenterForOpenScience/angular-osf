@@ -6,6 +6,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SocialShareService } from '@osf/shared/services/social-share.service';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { IconComponent } from '../icon/icon.component';
 
 import { SocialsShareButtonComponent } from './socials-share-button.component';
@@ -15,19 +17,19 @@ describe('SocialsShareButtonComponent', () => {
   let fixture: ComponentFixture<SocialsShareButtonComponent>;
   let service: SocialShareService;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [SocialsShareButtonComponent, MockComponent(IconComponent), MockPipe(TranslatePipe)],
-      providers: [MockProvider(SocialShareService)],
-    }).compileComponents();
+      providers: [provideOSFCore(), MockProvider(SocialShareService)],
+    });
 
     fixture = TestBed.createComponent(SocialsShareButtonComponent);
     component = fixture.componentInstance;
     service = TestBed.inject(SocialShareService);
 
-    jest.spyOn(service, 'createPreprintUrl').mockReturnValue('https://web/preprints/providerX/id123');
-    jest.spyOn(service, 'createGuidUrl').mockReturnValue('https://web/guid-id999');
-    jest.spyOn(service, 'generateSocialActionItems').mockReturnValue([]);
+    vi.spyOn(service, 'createPreprintUrl').mockReturnValue('https://web/preprints/providerX/id123');
+    vi.spyOn(service, 'createGuidUrl').mockReturnValue('https://web/guid-id999');
+    vi.spyOn(service, 'generateSocialActionItems').mockReturnValue([]);
   });
 
   it('should create', () => {

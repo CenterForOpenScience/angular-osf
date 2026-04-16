@@ -6,7 +6,7 @@ p-table {
   --p-datatable-row-color: var(--dark-blue-1);
   --p-datatable-column-title-font-weight: 700;
 
-  .p-datatable {
+  &.p-datatable {
     border: 1px solid var(--grey-2);
     border-radius: 0.5rem;
     padding: 1.5rem;
@@ -33,9 +33,9 @@ p-table {
       border: none;
     }
 
-    .p-sortable-column-icon {
+    .p-datatable-sort-icon {
       color: var(--grey-1);
-      margin-left: 0.6rem;
+      margin-left: 0.5rem;
     }
 
     td {
@@ -80,7 +80,7 @@ p-table {
 }
 
 .view-only-table {
-  .p-datatable {
+  &.p-datatable {
     padding: 0.125rem;
 
     td,
@@ -113,7 +113,7 @@ p-table {
 }
 
 .link-project-table {
-  .p-datatable {
+  &.p-datatable {
     padding: 0 0.5rem 0.5rem 0.5rem;
   }
 
@@ -139,14 +139,14 @@ p-table {
 @media (max-width: var.$breakpoint-xl) {
   .addon-table,
   .my-projects-table {
-    .p-datatable {
+    &.p-datatable {
       padding: 1rem;
       overflow-x: auto;
     }
   }
 
   .my-projects-table {
-    .p-datatable {
+    &.p-datatable {
       overflow-x: auto;
     }
 
@@ -162,7 +162,7 @@ p-table {
     overflow-x: auto;
     width: 100%;
 
-    .p-datatable {
+    &.p-datatable {
       padding: 1rem;
       width: 100%;
 
@@ -181,7 +181,7 @@ p-table {
   }
 
   .my-projects-table {
-    .p-datatable {
+    &.p-datatable {
       overflow-x: auto;
       width: 100%;
     }

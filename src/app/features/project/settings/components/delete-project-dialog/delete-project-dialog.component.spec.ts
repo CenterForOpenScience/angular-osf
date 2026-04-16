@@ -1,29 +1,29 @@
 import { MockProvider } from 'ng-mocks';
 
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { SettingsSelectors } from '../../store';
 
 import { DeleteProjectDialogComponent } from './delete-project-dialog.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('DeleteProjectDialogComponent', () => {
   let component: DeleteProjectDialogComponent;
   let fixture: ComponentFixture<DeleteProjectDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeleteProjectDialogComponent, OSFTestingModule],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [DeleteProjectDialogComponent],
       providers: [
+        provideOSFCore(),
         MockProvider(ToastService),
-        MockProvider(DynamicDialogRef),
+        provideDynamicDialogRefMock(),
         provideMockStore({
           signals: [
             { selector: CurrentResourceSelectors.isResourceWithChildrenLoading, value: false },
@@ -32,7 +32,7 @@ describe('DeleteProjectDialogComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(DeleteProjectDialogComponent);
     component = fixture.componentInstance;

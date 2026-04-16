@@ -2,14 +2,10 @@ import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
-
-import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints-help-dialog.component';
-
-import { PreprintProviderHeroComponent } from './preprint-provider-hero.component';
 
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -17,7 +13,10 @@ import {
   CustomDialogServiceMockBuilder,
   CustomDialogServiceMockType,
 } from '@testing/providers/custom-dialog-provider.mock';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+
+import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints-help-dialog.component';
+
+import { PreprintProviderHeroComponent } from './preprint-provider-hero.component';
 
 describe('PreprintProviderHeroComponent', () => {
   let component: PreprintProviderHeroComponent;
@@ -35,11 +34,7 @@ describe('PreprintProviderHeroComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [PreprintProviderHeroComponent],
-      providers: [
-        provideOSFCore(),
-        MockProvider(CustomDialogService, customDialogMock),
-        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
-      ],
+      providers: [provideOSFCore(), provideRouter([]), MockProvider(CustomDialogService, customDialogMock)],
     });
 
     fixture = TestBed.createComponent(PreprintProviderHeroComponent);
@@ -90,7 +85,7 @@ describe('PreprintProviderHeroComponent', () => {
 
   it('should emit normalized search value', () => {
     setup();
-    jest.spyOn(component.triggerSearch, 'emit');
+    vi.spyOn(component.triggerSearch, 'emit');
 
     component.onTriggerSearch('test “quoted” value');
 
@@ -99,7 +94,7 @@ describe('PreprintProviderHeroComponent', () => {
 
   it('should emit empty string when search value is missing', () => {
     setup();
-    jest.spyOn(component.triggerSearch, 'emit');
+    vi.spyOn(component.triggerSearch, 'emit');
 
     component.onTriggerSearch(undefined as unknown as string);
 
@@ -113,6 +108,7 @@ describe('PreprintProviderHeroComponent', () => {
 
     expect(customDialogMock.open).toHaveBeenCalledWith(PreprintsHelpDialogComponent, {
       header: 'preprints.helpDialog.header',
+      width: '560px',
     });
   });
 });

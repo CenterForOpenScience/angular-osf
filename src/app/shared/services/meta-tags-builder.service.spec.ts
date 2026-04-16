@@ -8,13 +8,13 @@ import { OsfFileCustomMetadata } from '@osf/features/files/models';
 import { FileKind } from '@osf/shared/enums/file-kind.enum';
 import { FileDetailsModel } from '@osf/shared/models/files/file.model';
 
-import { MetaTagsBuilderService } from './meta-tags-builder.service';
-
 import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { MetaTagsBuilderService } from './meta-tags-builder.service';
 
 function buildFile(overrides: Partial<FileDetailsModel> = {}): FileDetailsModel {
   return {

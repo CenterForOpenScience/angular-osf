@@ -92,8 +92,11 @@ export interface WikiJsonApiResponse extends JsonApiResponse<WikiGetResponse[], 
   data: WikiGetResponse[];
 }
 
-export interface WikiJsonApiResponseWithMeta
-  extends JsonApiResponseWithMeta<WikiGetResponse[], MetaAnonymousJsonApi, null> {
+export interface WikiJsonApiResponseWithMeta extends JsonApiResponseWithMeta<
+  WikiGetResponse[],
+  MetaAnonymousJsonApi,
+  null
+> {
   data: WikiGetResponse[];
 }
 

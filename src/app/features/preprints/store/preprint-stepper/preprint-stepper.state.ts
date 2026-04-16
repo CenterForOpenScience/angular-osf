@@ -8,16 +8,15 @@ import { HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { PreprintModel } from '@osf/features/preprints/models';
-import {
-  PreprintFilesService,
-  PreprintLicensesService,
-  PreprintsProjectsService,
-  PreprintsService,
-} from '@osf/features/preprints/services';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FilesService } from '@osf/shared/services/files.service';
+
+import { PreprintFilesService } from '../../services/preprint-files.service';
+import { PreprintLicensesService } from '../../services/preprint-licenses.service';
+import { PreprintsService } from '../../services/preprints.service';
+import { PreprintsProjectsService } from '../../services/preprints-projects.service';
 
 import {
   ConnectProject,

@@ -4,6 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StepOption } from '@shared/models/step-option.model';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { IconComponent } from '../icon/icon.component';
 
 import { StepperComponent } from './stepper.component';
@@ -20,10 +22,11 @@ describe('StepperComponent', () => {
 
   const mockCurrentStep: StepOption = { index: 0, label: 'Step 1', value: 1 };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [StepperComponent, MockComponent(IconComponent)],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(StepperComponent);
     component = fixture.componentInstance;

@@ -2,18 +2,21 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { NavMenuComponent } from '../nav-menu/nav-menu.component';
 
 import { SidenavComponent } from './sidenav.component';
 
-describe('SidenavDComponent', () => {
+describe('SidenavComponent', () => {
   let component: SidenavComponent;
   let fixture: ComponentFixture<SidenavComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [SidenavComponent, MockComponent(NavMenuComponent)],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SidenavComponent);
     component = fixture.componentInstance;

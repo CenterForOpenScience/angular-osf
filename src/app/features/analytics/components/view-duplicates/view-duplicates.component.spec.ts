@@ -19,14 +19,14 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DuplicatesSelectors } from '@osf/shared/stores/duplicates';
 
-import { ViewDuplicatesComponent } from './view-duplicates.component';
-
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ViewDuplicatesComponent } from './view-duplicates.component';
 
 describe('Component: View Duplicates', () => {
   let component: ViewDuplicatesComponent;
@@ -35,7 +35,7 @@ describe('Component: View Duplicates', () => {
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
     routerMock = RouterMockBuilder.create().build();
     activatedRouteMock = ActivatedRouteMockBuilder.create()
@@ -43,10 +43,9 @@ describe('Component: View Duplicates', () => {
       .withData({ resourceType: ResourceType.Project })
       .build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         ViewDuplicatesComponent,
-        OSFTestingModule,
         ...MockComponents(
           SubHeaderComponent,
           TruncatedTextComponent,
@@ -57,6 +56,7 @@ describe('Component: View Duplicates', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: DuplicatesSelectors.getDuplicates, value: [] },
@@ -72,7 +72,7 @@ describe('Component: View Duplicates', () => {
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ViewDuplicatesComponent);
     component = fixture.componentInstance;
@@ -85,9 +85,9 @@ describe('Component: View Duplicates', () => {
   });
 
   it('should open ForkDialog with width 450px when small and not refresh on failure', () => {
-    (component as any).actions = { ...component.actions, getDuplicates: jest.fn() };
+    (component as any).actions = { ...component.actions, getDuplicates: vi.fn() };
 
-    const openSpy = jest
+    const openSpy = vi
       .spyOn(mockCustomDialogService, 'open')
       .mockReturnValue({ onClose: of({ success: false }) } as any);
 

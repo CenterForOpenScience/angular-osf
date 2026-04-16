@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -9,6 +11,7 @@ import { Router } from '@angular/router';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
@@ -18,18 +21,17 @@ import {
 } from '@shared/stores/contributors';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subjects';
 
-import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
-
-import { PreprintTombstoneComponent } from './preprint-tombstone.component';
-
 import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
+
+import { PreprintTombstoneComponent } from './preprint-tombstone.component';
 
 describe('PreprintTombstoneComponent', () => {
   let component: PreprintTombstoneComponent;
@@ -52,8 +54,12 @@ describe('PreprintTombstoneComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         PreprintTombstoneComponent,
-        ...MockComponents(ContributorsListComponent, LicenseDisplayComponent, PreprintDoiSectionComponent),
-        MockComponentWithSignal('osf-truncated-text'),
+        ...MockComponents(
+          ContributorsListComponent,
+          LicenseDisplayComponent,
+          PreprintDoiSectionComponent,
+          TruncatedTextComponent
+        ),
       ],
       providers: [
         provideOSFCore(),
@@ -81,7 +87,7 @@ describe('PreprintTombstoneComponent', () => {
     store = TestBed.inject(Store);
 
     fixture.componentRef.setInput('preprintProvider', mockProvider);
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
   }
 
   it('should create', () => {
@@ -112,7 +118,7 @@ describe('PreprintTombstoneComponent', () => {
 
   it('should emit preprintVersionSelected when version is selected', () => {
     setup();
-    const emitSpy = jest.spyOn(component.preprintVersionSelected, 'emit');
+    const emitSpy = vi.spyOn(component.preprintVersionSelected, 'emit');
     component.preprintVersionSelected.emit('version-1');
     expect(emitSpy).toHaveBeenCalledWith('version-1');
   });
@@ -120,7 +126,6 @@ describe('PreprintTombstoneComponent', () => {
   it('should dispatch contributor and subject fetch actions when preprint id exists', () => {
     setup();
     fixture.detectChanges();
-    TestBed.flushEffects();
     expect(store.dispatch).toHaveBeenCalledWith(
       new GetBibliographicContributors(mockPreprint.id, ResourceType.Preprint)
     );
@@ -132,7 +137,6 @@ describe('PreprintTombstoneComponent', () => {
       selectorOverrides: [{ selector: PreprintSelectors.getPreprint, value: undefined }],
     });
     fixture.detectChanges();
-    TestBed.flushEffects();
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetBibliographicContributors));
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchSelectedSubjects));
   });

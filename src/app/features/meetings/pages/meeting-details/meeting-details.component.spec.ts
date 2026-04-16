@@ -1,134 +1,219 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { SortEvent } from 'primeng/api';
-import { TablePageEvent } from 'primeng/table';
+import { Mock } from 'vitest';
 
-import { of } from 'rxjs';
-
-import { DatePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
-import { MeetingsSelectors } from '@osf/features/meetings/store';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+
+import { MOCK_MEETING, MOCK_MEETING_SUBMISSIONS } from '@testing/mocks/meeting.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+
+import { MEETING_SUBMISSIONS_TABLE_PARAMS } from '../../constants';
+import { Meeting, MeetingSubmission } from '../../models';
+import { GetMeetingById, GetMeetingSubmissions, MeetingsSelectors } from '../../store';
 
 import { MeetingDetailsComponent } from './meeting-details.component';
 
-import { MOCK_MEETING, MOCK_MEETING_SUBMISSIONS } from '@testing/mocks/meeting.mock';
-import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
-
-const mockActivatedRoute = {
-  params: of({ id: 'test-meeting-id' }),
-  queryParams: of({}),
-  snapshot: {
-    params: { id: 'test-meeting-id' },
-    queryParams: {},
-  },
-};
-
-const mockRouter = {
-  navigate: jest.fn(),
-  url: '/',
-  createUrlTree: jest.fn(),
-  navigateByUrl: jest.fn(),
-  events: {
-    subscribe: jest.fn(),
-  },
-};
+interface SetupOverrides extends BaseSetupOverrides {
+  queryParams?: Record<string, string>;
+  selectorOverrides?: SignalOverride[];
+  selectorSnapshotOverrides?: {
+    selector: unknown;
+    value: unknown;
+  }[];
+}
 
 describe('MeetingDetailsComponent', () => {
   let component: MeetingDetailsComponent;
   let fixture: ComponentFixture<MeetingDetailsComponent>;
+  let store: Store;
+  let mockRouter: RouterMockType;
 
-  beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === MeetingsSelectors.getAllMeetingSubmissions) return () => MOCK_MEETING_SUBMISSIONS;
-      if (selector === MeetingsSelectors.getMeetingSubmissionsTotalCount) return () => MOCK_MEETING_SUBMISSIONS.length;
-      if (selector === MeetingsSelectors.isMeetingSubmissionsLoading) return () => false;
-      if (selector === MeetingsSelectors.getMeetingById) {
-        return () => (id: string) => (id === MOCK_MEETING.id ? MOCK_MEETING : null);
-      }
-      return () => null;
-    });
+  const meetingByIdFn = (meeting: Meeting | undefined) => (meetingId: string) =>
+    meeting && meeting.id === meetingId ? meeting : undefined;
 
-    (MOCK_STORE.selectSnapshot as jest.Mock).mockImplementation((selector) => {
-      if (selector === MeetingsSelectors.getMeetingById) {
-        return (id: string) => (id === MOCK_MEETING.id ? MOCK_MEETING : null);
-      }
-      return () => null;
-    });
+  const defaultSignals: SignalOverride[] = [
+    { selector: MeetingsSelectors.getMeetingById, value: meetingByIdFn(MOCK_MEETING) },
+    { selector: MeetingsSelectors.getAllMeetingSubmissions, value: MOCK_MEETING_SUBMISSIONS },
+    { selector: MeetingsSelectors.getMeetingSubmissionsTotalCount, value: 10 },
+    { selector: MeetingsSelectors.isMeetingSubmissionsLoading, value: false },
+  ];
 
-    await TestBed.configureTestingModule({
-      imports: [
-        MeetingDetailsComponent,
-        ...MockComponents(SubHeaderComponent, SearchInputComponent),
-        MockPipe(TranslatePipe),
-        MockPipe(DatePipe),
-      ],
+  const defaultSnapshotSelectors = [{ selector: MeetingsSelectors.getMeetingById, value: meetingByIdFn(MOCK_MEETING) }];
+
+  function setup(overrides: SetupOverrides = {}, detectChanges = true) {
+    const routeBuilder = ActivatedRouteMockBuilder.create();
+    if (overrides.routeParams) {
+      routeBuilder.withParams(overrides.routeParams);
+    }
+    if (overrides.queryParams) {
+      routeBuilder.withQueryParams(overrides.queryParams);
+    }
+    if (overrides.hasParent === false) {
+      routeBuilder.withNoParent();
+    }
+    const mockRoute = routeBuilder.build();
+    mockRouter = RouterMockBuilder.create().build();
+
+    TestBed.configureTestingModule({
+      imports: [MeetingDetailsComponent, ...MockComponents(SubHeaderComponent, SearchInputComponent)],
       providers: [
-        MockProvider(Store, MOCK_STORE),
-        { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: Router, useValue: mockRouter },
+        provideOSFCore(),
+        provideRouter([]),
+        MockProvider(ActivatedRoute, mockRoute),
+        MockProvider(Router, mockRouter),
+        provideMockStore({
+          selectors: [...defaultSnapshotSelectors, ...(overrides.selectorSnapshotOverrides ?? [])],
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(MeetingDetailsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    if (detectChanges) {
+      fixture.detectChanges();
+    }
+  }
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should create', () => {
+    setup({
+      routeParams: { id: MOCK_MEETING.id },
+      queryParams: { page: '1', size: '10', search: '', sortColumn: 'title', sortOrder: 'asc' },
+    });
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default table params', () => {
-    expect(component.tableParams().rows).toBeDefined();
+  it('should dispatch meeting submissions action from query params effect', () => {
+    setup({
+      routeParams: { id: MOCK_MEETING.id },
+      queryParams: { page: '2', size: '5', search: 'biology', sortColumn: 'title', sortOrder: 'asc' },
+    });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new GetMeetingSubmissions(MOCK_MEETING.id, 2, 5, {
+        searchValue: 'biology',
+        searchFields: ['title', 'author_name', 'meeting_category'],
+        sortColumn: 'title',
+        sortOrder: SortOrder.Asc,
+      })
+    );
+  });
+
+  it('should dispatch get meeting by id when meeting is not in store', () => {
+    setup({
+      routeParams: { id: MOCK_MEETING.id },
+      selectorOverrides: [{ selector: MeetingsSelectors.getMeetingById, value: meetingByIdFn(undefined) }],
+      selectorSnapshotOverrides: [{ selector: MeetingsSelectors.getMeetingById, value: meetingByIdFn(undefined) }],
+    });
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetMeetingById(MOCK_MEETING.id));
+  });
+
+  it('should navigate with page and size on page change', () => {
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
+
+    component.onPageChange({ first: 20, rows: 10 } as { first: number; rows: number });
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: expect.anything(),
+      queryParams: { page: '3', size: '10' },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('should navigate with sort query params on sort change', () => {
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
+
+    component.onSort({ field: 'title', order: SortOrder.Desc } as { field: string; order: SortOrder });
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith([], {
+      relativeTo: expect.anything(),
+      queryParams: { sortColumn: 'title', sortOrder: 'desc' },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('should not navigate on sort when field is missing', () => {
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
+
+    component.onSort({ field: undefined, order: SortOrder.Asc } as { field?: string; order: SortOrder });
+
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should update query params from search control after debounce', () => {
+    vi.useFakeTimers();
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
+    (mockRouter.navigate as Mock).mockClear();
+    vi.advanceTimersByTime(300);
+    (mockRouter.navigate as Mock).mockClear();
+
+    component.searchControl.setValue('open science');
+    vi.advanceTimersByTime(300);
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [],
+      expect.objectContaining({
+        queryParams: { search: 'open science', page: '1' },
+        queryParamsHandling: 'merge',
+      })
+    );
+  });
+
+  it('should open submission download link in new tab', () => {
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
+    const stopPropagation = vi.fn();
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+
+    component.downloadSubmission({ stopPropagation } as unknown as Event, MOCK_MEETING_SUBMISSIONS[0]);
+
+    expect(stopPropagation).toHaveBeenCalled();
+    expect(openSpy).toHaveBeenCalledWith(MOCK_MEETING_SUBMISSIONS[0].downloadLink, '_blank');
+  });
+
+  it('should not open new tab when submission has no download link', () => {
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
+    const stopPropagation = vi.fn();
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const meetingSubmission: MeetingSubmission = { ...MOCK_MEETING_SUBMISSIONS[1], downloadLink: null };
+
+    component.downloadSubmission({ stopPropagation } as unknown as Event, meetingSubmission);
+
+    expect(stopPropagation).toHaveBeenCalled();
+    expect(openSpy).not.toHaveBeenCalled();
+  });
+
+  it('should expose expected default table params', () => {
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
+
+    expect(component.tableParams().rows).toBe(MEETING_SUBMISSIONS_TABLE_PARAMS.rows);
     expect(component.tableParams().firstRowIndex).toBe(0);
   });
 
-  it('should open download link if present', () => {
-    const openSpy = jest.spyOn(window, 'open').mockImplementation();
-    const event = { stopPropagation: jest.fn() } as unknown as Event;
-    component.downloadSubmission(event, MOCK_MEETING_SUBMISSIONS[0]);
-    expect(openSpy).toHaveBeenCalledWith('https://example.com/file.pdf', '_blank');
-    openSpy.mockRestore();
-  });
+  it('should build page description from meeting dates and location', () => {
+    setup({ routeParams: { id: MOCK_MEETING.id } }, false);
 
-  it('should not open download link if not present', () => {
-    const openSpy = jest.spyOn(window, 'open').mockImplementation();
-    const event = { stopPropagation: jest.fn() } as unknown as Event;
-    component.downloadSubmission(event, MOCK_MEETING_SUBMISSIONS[1]);
-    expect(openSpy).not.toHaveBeenCalled();
-    openSpy.mockRestore();
-  });
-
-  it('should update query params in router on page change', () => {
-    const router = TestBed.inject(Router);
-    const navigateSpy = jest.spyOn(router, 'navigate');
-    component.onPageChange({ first: 10, rows: 10 } as TablePageEvent);
-    expect(navigateSpy).toHaveBeenCalledWith(
-      [],
-      expect.objectContaining({
-        queryParams: expect.objectContaining({ page: '2', size: '10' }),
-        queryParamsHandling: 'merge',
-      })
-    );
-  });
-
-  it('should update query params in router on sort', () => {
-    const router = TestBed.inject(Router);
-    const navigateSpy = jest.spyOn(router, 'navigate');
-    component.onSort({ field: 'title', order: 1 } as SortEvent);
-    expect(navigateSpy).toHaveBeenCalledWith(
-      [],
-      expect.objectContaining({
-        queryParams: expect.objectContaining({ sortColumn: 'title', sortOrder: 'asc' }),
-        queryParamsHandling: 'merge',
-      })
-    );
+    expect(component.pageDescription()).toContain('New York | Jan 15, 2024');
+    expect(component.pageDescription()).toContain('- Jan 16, 2024');
   });
 });

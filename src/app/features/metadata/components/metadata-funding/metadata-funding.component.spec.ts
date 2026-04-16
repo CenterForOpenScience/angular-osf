@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Funder } from '@osf/features/metadata/models';
 
-import { MetadataFundingComponent } from './metadata-funding.component';
-
 import { MOCK_FUNDERS } from '@testing/mocks/funder.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { MetadataFundingComponent } from './metadata-funding.component';
 
 describe('MetadataFundingComponent', () => {
   let component: MetadataFundingComponent;
@@ -13,10 +13,11 @@ describe('MetadataFundingComponent', () => {
 
   const mockFunders: Funder[] = MOCK_FUNDERS;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MetadataFundingComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataFundingComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MetadataFundingComponent);
     component = fixture.componentInstance;
@@ -41,7 +42,7 @@ describe('MetadataFundingComponent', () => {
   });
 
   it('should emit openEditFundingDialog event', () => {
-    const emitSpy = jest.spyOn(component.openEditFundingDialog, 'emit');
+    const emitSpy = vi.spyOn(component.openEditFundingDialog, 'emit');
 
     component.openEditFundingDialog.emit();
 

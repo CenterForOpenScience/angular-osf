@@ -6,12 +6,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubjectModel } from '@osf/shared/models/subject/subject.model';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { SearchInputComponent } from '../search-input/search-input.component';
 
 import { SubjectsComponent } from './subjects.component';
-
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('SubjectsComponent', () => {
   let component: SubjectsComponent;
@@ -41,10 +41,11 @@ describe('SubjectsComponent', () => {
   const mockSubjects: SubjectModel[] = [mockParentSubject, mockSubjectWithChildren];
   const mockSearchedSubjects: SubjectModel[] = [mockChildSubject];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SubjectsComponent, OSFTestingStoreModule, MockComponent(SearchInputComponent)],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SubjectsComponent, MockComponent(SearchInputComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: SubjectsSelectors.getSubjects, value: signal(mockSubjects) },
@@ -54,7 +55,7 @@ describe('SubjectsComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(SubjectsComponent);
     component = fixture.componentInstance;
@@ -131,7 +132,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should update expanded state and emit loadChildren when loadNode is called with empty children', () => {
-    const emitSpy = jest.spyOn(component.loadChildren, 'emit');
+    const emitSpy = vi.spyOn(component.loadChildren, 'emit');
     const mockTreeNode = {
       data: { id: 'parent-1', children: [] },
     } as any;
@@ -143,7 +144,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should not emit loadChildren when loadNode is called with non-empty children', () => {
-    const emitSpy = jest.spyOn(component.loadChildren, 'emit');
+    const emitSpy = vi.spyOn(component.loadChildren, 'emit');
     const mockTreeNode = {
       data: { id: 'parent-2', children: [mockChildSubject] },
     } as any;
@@ -166,7 +167,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should emit updateSelection when selectSubject is called and readonly is false', () => {
-    const emitSpy = jest.spyOn(component.updateSelection, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelection, 'emit');
     fixture.componentRef.setInput('readonly', false);
     fixture.detectChanges();
 
@@ -176,7 +177,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should not emit updateSelection when selectSubject is called and readonly is true', () => {
-    const emitSpy = jest.spyOn(component.updateSelection, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelection, 'emit');
     fixture.componentRef.setInput('readonly', true);
     fixture.detectChanges();
 
@@ -186,7 +187,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should emit updateSelection when removeSubject is called and readonly is false', () => {
-    const emitSpy = jest.spyOn(component.updateSelection, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelection, 'emit');
     fixture.componentRef.setInput('selected', [mockParentSubject]);
     fixture.componentRef.setInput('readonly', false);
     fixture.detectChanges();
@@ -197,7 +198,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should not emit updateSelection when removeSubject is called and readonly is true', () => {
-    const emitSpy = jest.spyOn(component.updateSelection, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelection, 'emit');
     fixture.componentRef.setInput('selected', [mockParentSubject]);
     fixture.componentRef.setInput('readonly', true);
     fixture.detectChanges();
@@ -208,7 +209,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should emit updateSelection when selectSearched is called with checked true', () => {
-    const emitSpy = jest.spyOn(component.updateSelection, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelection, 'emit');
     fixture.componentRef.setInput('readonly', false);
     fixture.detectChanges();
 
@@ -222,7 +223,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should emit updateSelection when selectSearched is called with checked false', () => {
-    const emitSpy = jest.spyOn(component.updateSelection, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelection, 'emit');
     fixture.componentRef.setInput('selected', [mockParentSubject]);
     fixture.componentRef.setInput('readonly', false);
     fixture.detectChanges();
@@ -237,7 +238,7 @@ describe('SubjectsComponent', () => {
   });
 
   it('should not emit updateSelection when selectSearched is called and readonly is true', () => {
-    const emitSpy = jest.spyOn(component.updateSelection, 'emit');
+    const emitSpy = vi.spyOn(component.updateSelection, 'emit');
     fixture.componentRef.setInput('readonly', true);
     fixture.detectChanges();
 
@@ -277,13 +278,13 @@ describe('SubjectsComponent', () => {
   });
 
   it('should emit searchChanged with debounce when searchControl value changes', () => {
-    jest.useFakeTimers();
-    const emitSpy = jest.spyOn(component.searchChanged, 'emit');
+    vi.useFakeTimers();
+    const emitSpy = vi.spyOn(component.searchChanged, 'emit');
 
     component.searchControl.setValue('test search');
-    jest.advanceTimersByTime(300);
+    vi.advanceTimersByTime(300);
 
     expect(emitSpy).toHaveBeenCalledWith('test search');
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 });

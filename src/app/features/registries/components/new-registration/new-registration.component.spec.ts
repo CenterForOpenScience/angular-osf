@@ -2,7 +2,9 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Mock } from 'vitest';
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
@@ -10,8 +12,6 @@ import { CreateDraft, GetProjects, GetProviderSchemas, RegistriesSelectors } fro
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { GetRegistryProvider, RegistrationProviderSelectors } from '@shared/stores/registration-provider';
-
-import { NewRegistrationComponent } from './new-registration.component';
 
 import { MOCK_PROVIDER_SCHEMAS } from '@testing/mocks/registries.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -24,6 +24,8 @@ import {
   SignalOverride,
 } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { NewRegistrationComponent } from './new-registration.component';
 
 describe('NewRegistrationComponent', () => {
   let component: NewRegistrationComponent;
@@ -73,6 +75,10 @@ describe('NewRegistrationComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   };
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   it('should create', () => {
     setup();
@@ -149,7 +155,7 @@ describe('NewRegistrationComponent', () => {
     setup();
     component.draftForm.patchValue({ providerSchema: 'schema-1', project: 'proj-1' });
     component.fromProject.set(true);
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.createDraft();
 
@@ -162,51 +168,58 @@ describe('NewRegistrationComponent', () => {
   it('should not dispatch createDraft when form is invalid', () => {
     setup();
     component.draftForm.patchValue({ providerSchema: '' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.createDraft();
 
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(CreateDraft));
   });
 
-  it('should dispatch getProjects after debounced filter', fakeAsync(() => {
+  it('should dispatch getProjects after debounced filter', () => {
+    vi.useFakeTimers();
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onProjectFilter('abc');
-    tick(300);
+    vi.advanceTimersByTime(300);
 
     expect(store.dispatch).toHaveBeenCalledWith(new GetProjects('user-1', 'abc'));
-  }));
+  });
 
-  it('should not dispatch duplicate getProjects for same filter value', fakeAsync(() => {
+  it('should not dispatch duplicate getProjects for same filter value', () => {
+    vi.useFakeTimers();
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onProjectFilter('abc');
-    tick(300);
+    vi.advanceTimersByTime(300);
     component.onProjectFilter('abc');
-    tick(300);
+    vi.advanceTimersByTime(300);
 
-    const getProjectsCalls = (store.dispatch as jest.Mock).mock.calls.filter(
-      ([action]: [unknown]) => action instanceof GetProjects
-    );
-    expect(getProjectsCalls.length).toBe(1);
-  }));
+    const getProjectsCalls = (store.dispatch as Mock).mock.calls
+      .map(([action]) => action)
+      .filter((action): action is GetProjects => action instanceof GetProjects);
 
-  it('should debounce rapid filter calls and dispatch only the last value', fakeAsync(() => {
+    expect(getProjectsCalls).toHaveLength(1);
+    expect(getProjectsCalls[0]).toEqual(new GetProjects('user-1', 'abc'));
+  });
+
+  it('should debounce rapid filter calls and dispatch only the last value', () => {
+    vi.useFakeTimers();
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onProjectFilter('a');
     component.onProjectFilter('ab');
     component.onProjectFilter('abc');
-    tick(300);
+    vi.advanceTimersByTime(300);
 
-    const getProjectsCalls = (store.dispatch as jest.Mock).mock.calls.filter(
-      ([action]: [unknown]) => action instanceof GetProjects
-    );
-    expect(getProjectsCalls.length).toBe(1);
-    expect(getProjectsCalls[0][0]).toEqual(new GetProjects('user-1', 'abc'));
-  }));
+    const getProjectsCalls = (store.dispatch as Mock).mock.calls
+      .map(([action]) => action)
+      .filter((action): action is GetProjects => action instanceof GetProjects);
+
+    expect(getProjectsCalls).toHaveLength(1);
+    expect(getProjectsCalls[0]).toEqual(new GetProjects('user-1', 'abc'));
+    expect(store.dispatch).not.toHaveBeenCalledWith(new GetProjects('user-1', 'a'));
+  });
 });

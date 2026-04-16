@@ -32,7 +32,11 @@ NREUM.info = {
           o = r(1910);
         const a = { beacon: 'bam.nr-data.net', errorBeacon: 'bam.nr-data.net' };
         function s() {
-          return n.gm.NREUM || (n.gm.NREUM = {}), void 0 === n.gm.newrelic && (n.gm.newrelic = n.gm.NREUM), n.gm.NREUM;
+          return (
+            n.gm.NREUM || (n.gm.NREUM = {}),
+            void 0 === n.gm.newrelic && (n.gm.newrelic = n.gm.NREUM),
+            n.gm.NREUM
+          );
         }
         function c() {
           let e = s();
@@ -56,9 +60,9 @@ NREUM.info = {
         }
         function u(e, t) {
           let r = s();
-          (r.initializedAgents ??= {}),
+          ((r.initializedAgents ??= {}),
             (t.initializedAt = { ms: (0, i.t)(), date: new Date() }),
-            (r.initializedAgents[e] = t);
+            (r.initializedAgents[e] = t));
         }
         function d(e, t) {
           s()[e] = t;
@@ -190,7 +194,7 @@ NREUM.info = {
         const c = {};
         function u(e, t) {
           const r = { staged: !1, priority: a.P3[t] || 0 };
-          l(e), c[e].get(t) || c[e].set(t, r);
+          (l(e), c[e].get(t) || c[e].set(t, r));
         }
         function d(e, t) {
           e && c[e] && (c[e].get(t) && c[e].delete(t), p(e, t, !1), c[e].size && h(e));
@@ -201,14 +205,14 @@ NREUM.info = {
         }
         function f(e = '', t = 'feature', r = !1) {
           if ((l(e), !e || !c[e].get(t) || r)) return p(e, t);
-          (c[e].get(t).staged = !0), h(e);
+          ((c[e].get(t).staged = !0), h(e));
         }
         function h(e) {
           const t = Array.from(c[e]);
           t.every(([e, t]) => t.staged) &&
             (t.sort((e, t) => e[1].priority - t[1].priority),
             t.forEach(([t]) => {
-              c[e].delete(t), p(e, t);
+              (c[e].delete(t), p(e, t));
             }));
         }
         function p(e, t, r = !0) {
@@ -227,7 +231,7 @@ NREUM.info = {
                 });
               }
             }
-            a.isolatedBacklog || delete c[t], (a.backlog[t] = null), a.emit('drain-' + t, []);
+            (a.isolatedBacklog || delete c[t], (a.backlog[t] = null), a.emit('drain-' + t, []));
           }
         }
         function g(e, t) {
@@ -331,7 +335,7 @@ NREUM.info = {
           return e.every((e) => {
             if (i.has(e)) return i.get(e);
             const t = 'function' == typeof e && e.toString().includes('[native code]');
-            return t || (0, n.R)(64, e?.name || e?.toString()), i.set(e, t), t;
+            return (t || (0, n.R)(64, e?.name || e?.toString()), i.set(e, t), t);
           });
         }
       },
@@ -506,7 +510,7 @@ NREUM.info = {
                               return e[r];
                             },
                             set: function (t) {
-                              return (e[r] = t), t;
+                              return ((e[r] = t), t);
                             },
                           });
                         }),
@@ -522,7 +526,7 @@ NREUM.info = {
               var o, s, l, f;
               let h;
               try {
-                (s = this), (o = [...arguments]), (l = 'function' == typeof n ? n(o, s) : n || {});
+                ((s = this), (o = [...arguments]), (l = 'function' == typeof n ? n(o, s) : n || {}));
               } catch (t) {
                 d([t, '', [o, s, c], l], e);
               }
@@ -530,13 +534,13 @@ NREUM.info = {
               const p = performance.now();
               let g;
               try {
-                return (f = t.apply(s, o)), (g = performance.now()), f;
+                return ((f = t.apply(s, o)), (g = performance.now()), f);
               } catch (e) {
                 throw ((g = performance.now()), i(r + 'err', [o, s, e], l, u), (h = e), h);
               } finally {
                 const e = g - p,
                   t = { start: p, end: g, duration: e, isLongTask: e >= a, methodName: c, thrownError: h };
-                t.isLongTask && i('long-task', [t, s], l, u), i(r + 'end', [o, s, f], l, u);
+                (t.isLongTask && i('long-task', [t, s], l, u), i(r + 'end', [o, s, f], l, u));
               }
             }
           }
@@ -583,7 +587,7 @@ NREUM.info = {
           a(o || n.d, i, e, t, r);
         }
         function a(e, t, r, i, o) {
-          o || (o = 'feature'), e || (e = n.d);
+          (o || (o = 'feature'), e || (e = n.d));
           var a = (t[o] = t[o] || {});
           (a[r] = a[r] || []).push([e, i]);
         }
@@ -622,8 +626,8 @@ NREUM.info = {
           a = r(8154),
           s = r(993);
         function c(e, t, r = {}, c = s.p_.INFO, u, d = (0, i.t)()) {
-          (0, n.p)(a.xV, ['API/logging/'.concat(c.toLowerCase(), '/called')], void 0, o.K7.metrics, e),
-            (0, n.p)(s.ET, [d, t, r, c, u], void 0, o.K7.logging, e);
+          ((0, n.p)(a.xV, ['API/logging/'.concat(c.toLowerCase(), '/called')], void 0, o.K7.metrics, e),
+            (0, n.p)(s.ET, [d, t, r, c, u], void 0, o.K7.logging, e));
         }
         function u(e) {
           return 'string' == typeof e && Object.values(s.p_).some((t) => t === e.toUpperCase().trim());
@@ -675,7 +679,7 @@ NREUM.info = {
           i = r(1687);
         class o {
           constructor(e, t) {
-            (this.agentIdentifier = e), (this.ee = n.ee.get(e)), (this.featureName = t), (this.blocked = !1);
+            ((this.agentIdentifier = e), (this.ee = n.ee.get(e)), (this.featureName = t), (this.blocked = !1));
           }
           deregisterDrain() {
             (0, i.x3)(this.agentIdentifier, this.featureName);
@@ -910,7 +914,7 @@ NREUM.info = {
         var y = r(5701);
         const w = (e) => {
           const t = e.startsWith('http');
-          (e += '/'), (r.p = t ? e : 'https://' + e);
+          ((e += '/'), (r.p = t ? e : 'https://' + e));
         };
         var R = r(7836),
           x = r(3241);
@@ -928,16 +932,16 @@ NREUM.info = {
           let { init: s, info: c, loader_config: u, runtime: d = {}, exposed: l = !0 } = t;
           if (!c) {
             const e = (0, n.pV)();
-            (s = e.init), (c = e.info), (u = e.loader_config);
+            ((s = e.init), (c = e.info), (u = e.loader_config));
           }
-          (e.init = f(s || {})),
+          ((e.init = f(s || {})),
             (e.loader_config = E(u || {})),
             (c.jsAttributes ??= {}),
             h.bv && (c.jsAttributes.isWorker = !0),
-            (e.info = (0, o.D)(c));
+            (e.info = (0, o.D)(c)));
           const p = e.init,
             g = [c.beacon, c.errorBeacon];
-          A.has(e.agentIdentifier) ||
+          (A.has(e.agentIdentifier) ||
             (p.proxy.assets && (w(p.proxy.assets), g.push(p.proxy.assets)),
             p.proxy.beacon && g.push(p.proxy.beacon),
             (e.beacons = [...g]),
@@ -973,7 +977,7 @@ NREUM.info = {
                 feature: void 0,
                 data: e.config,
               })),
-            A.add(e.agentIdentifier);
+            A.add(e.agentIdentifier));
         }
       },
       5270: (e, t, r) => {
@@ -1030,7 +1034,7 @@ NREUM.info = {
           o = {};
         function a(e, t) {
           const r = t.agentIdentifier;
-          (o[r] ??= {}),
+          ((o[r] ??= {}),
             e &&
               'object' == typeof e &&
               (i.has(r) ||
@@ -1045,7 +1049,7 @@ NREUM.info = {
                   name: 'load',
                   feature: void 0,
                   data: e,
-                })));
+                }))));
         }
       },
       6154: (e, t, r) => {
@@ -1129,7 +1133,7 @@ NREUM.info = {
           const n = r?.leading || !1;
           let i;
           return (...r) => {
-            n &&
+            (n &&
               void 0 === i &&
               (e.apply(this, r),
               (i = setTimeout(() => {
@@ -1139,7 +1143,7 @@ NREUM.info = {
                 (clearTimeout(i),
                 (i = setTimeout(() => {
                   e.apply(this, r);
-                }, t)));
+                }, t))));
           };
         }
         function i(e) {
@@ -1337,14 +1341,14 @@ NREUM.info = {
                 const r = v();
                 if (((t = t || 'feature'), f.aborted)) return;
                 Object.entries(e || {}).forEach(([e, n]) => {
-                  (a[n] = t), t in r || (r[t] = []);
+                  ((a[n] = t), t in r || (r[t] = []));
                 });
               },
               abort: function () {
-                (f._aborted = !0),
+                ((f._aborted = !0),
                   Object.keys(f.backlog).forEach((e) => {
                     delete f.backlog[e];
-                  });
+                  }));
               },
               isBuffering: function (e) {
                 return !!v()[a[e]];
@@ -1470,7 +1474,7 @@ NREUM.info = {
       8154: (e, t, r) => {
         'use strict';
         r.d(t, { z_: () => o, XG: () => s, TZ: () => n, rs: () => i, xV: () => a });
-        r(6154), r(9566), r(384);
+        (r(6154), r(9566), r(384));
         const n = r(860).K7.metrics,
           i = 'sm',
           o = 'cm',
@@ -1494,9 +1498,9 @@ NREUM.info = {
           var i = r();
           if (Object.defineProperty && Object.keys)
             try {
-              return Object.defineProperty(e, t, { value: i, writable: !0, enumerable: !1 }), i;
+              return (Object.defineProperty(e, t, { value: i, writable: !0, enumerable: !1 }), i);
             } catch (e) {}
-          return (e[t] = i), i;
+          return ((e[t] = i), i);
         }
       },
       9300: (e, t, r) => {
@@ -1563,9 +1567,9 @@ NREUM.info = {
     var t = n[e];
     if (void 0 !== t) return t.exports;
     var o = (n[e] = { exports: {} });
-    return r[e](o, o.exports, i), o.exports;
+    return (r[e](o, o.exports, i), o.exports);
   }
-  (i.m = r),
+  ((i.m = r),
     (i.d = (e, t) => {
       for (var r in t) i.o(t, r) && !i.o(e, r) && Object.defineProperty(e, r, { enumerable: !0, get: t[r] });
     }),
@@ -1594,28 +1598,28 @@ NREUM.info = {
             249: 'sha512-KuEP0gQ0mAldYT/AqNp3NW4kVb0kLtfIlXaPSFq4WQRFf8vKVNnSqiafso/bWR75halLwFsgmJtdLJEzntVZoQ==',
             212: 'sha512-fqWEILwVJyfYV9/SedvSjCZ6hDRNjOvwYfN73wxZtahaztcFZ2cr3Ns172tBGIDQeWO25QmSlihZm+awv8ma/w==',
           };
-          ((s = document.createElement('script')).charset = 'utf-8'),
+          (((s = document.createElement('script')).charset = 'utf-8'),
             i.nc && s.setAttribute('nonce', i.nc),
             s.setAttribute('data-webpack', t + o),
             (s.src = r),
             0 !== s.src.indexOf(window.location.origin + '/') && (s.crossOrigin = 'anonymous'),
-            f[a] && (s.integrity = f[a]);
+            f[a] && (s.integrity = f[a]));
         }
         e[r] = [n];
         var h = (t, n) => {
-            (s.onerror = s.onload = null), clearTimeout(p);
+            ((s.onerror = s.onload = null), clearTimeout(p));
             var i = e[r];
             if ((delete e[r], s.parentNode && s.parentNode.removeChild(s), i && i.forEach((e) => e(n)), t)) return t(n);
           },
           p = setTimeout(h.bind(null, void 0, { type: 'timeout', target: s }), 12e4);
-        (s.onerror = h.bind(null, s.onerror)), (s.onload = h.bind(null, s.onload)), c && document.head.appendChild(s);
+        ((s.onerror = h.bind(null, s.onerror)), (s.onload = h.bind(null, s.onload)), c && document.head.appendChild(s));
       }
     }),
     (i.r = (e) => {
-      'undefined' != typeof Symbol &&
+      ('undefined' != typeof Symbol &&
         Symbol.toStringTag &&
         Object.defineProperty(e, Symbol.toStringTag, { value: 'Module' }),
-        Object.defineProperty(e, '__esModule', { value: !0 });
+        Object.defineProperty(e, '__esModule', { value: !0 }));
     }),
     (i.p = 'https://js-agent.newrelic.com/'),
     (() => {
@@ -1635,11 +1639,11 @@ NREUM.info = {
                 if (i.o(e, t) && (0 !== (n = e[t]) && (e[t] = void 0), n)) {
                   var o = r && ('load' === r.type ? 'missing' : r.type),
                     a = r && r.target && r.target.src;
-                  (s.message = 'Loading chunk ' + t + ' failed.\n(' + o + ': ' + a + ')'),
+                  ((s.message = 'Loading chunk ' + t + ' failed.\n(' + o + ': ' + a + ')'),
                     (s.name = 'ChunkLoadError'),
                     (s.type = o),
                     (s.request = a),
-                    n[1](s);
+                    n[1](s));
                 }
               },
               'chunk-' + t,
@@ -1656,10 +1660,10 @@ NREUM.info = {
             for (n in s) i.o(s, n) && (i.m[n] = s[n]);
             if (c) c(i);
           }
-          for (t && t(r); u < a.length; u++) (o = a[u]), i.o(e, o) && e[o] && e[o][0](), (e[o] = 0);
+          for (t && t(r); u < a.length; u++) ((o = a[u]), i.o(e, o) && e[o] && e[o][0](), (e[o] = 0));
         },
         r = (self['webpackChunk:NRBA-1.301.0.PROD'] = self['webpackChunk:NRBA-1.301.0.PROD'] || []);
-      r.forEach(t.bind(null, 0)), (r.push = t.bind(null, r.push.bind(r)));
+      (r.forEach(t.bind(null, 0)), (r.push = t.bind(null, r.push.bind(r))));
     })(),
     (() => {
       'use strict';
@@ -1684,7 +1688,7 @@ NREUM.info = {
         !a ||
           (a[e] && a[e] !== r.prototype[e]) ||
           (a[e] = function () {
-            (0, s.p)(h.xV, ['API/' + e + '/called'], void 0, n.K7.metrics, i.ee),
+            ((0, s.p)(h.xV, ['API/' + e + '/called'], void 0, n.K7.metrics, i.ee),
               (0, d.W)({
                 agentIdentifier: i.agentIdentifier,
                 drained: !!f.B?.[i.agentIdentifier],
@@ -1692,7 +1696,7 @@ NREUM.info = {
                 name: 'api',
                 feature: u.Pl + e,
                 data: {},
-              });
+              }));
             try {
               return t.apply(this, arguments);
             } catch (e) {
@@ -1702,8 +1706,8 @@ NREUM.info = {
       }
       function g(e, t, r, n, i) {
         const o = e.info;
-        null === r ? delete o.jsAttributes[t] : (o.jsAttributes[t] = r),
-          (i || null === r) && (0, s.p)(u.Pl + n, [(0, c.t)(), t, r], void 0, 'session', e.ee);
+        (null === r ? delete o.jsAttributes[t] : (o.jsAttributes[t] = r),
+          (i || null === r) && (0, s.p)(u.Pl + n, [(0, c.t)(), t, r], void 0, 'session', e.ee));
       }
       var m = i(1687),
         v = i(4234),
@@ -1715,7 +1719,7 @@ NREUM.info = {
         T = i(7699);
       class E extends v.W {
         constructor(e, t) {
-          super(e.agentIdentifier, t),
+          (super(e.agentIdentifier, t),
             (this.agentRef = e),
             (this.abortHandler = void 0),
             (this.featAggregate = void 0),
@@ -1726,11 +1730,11 @@ NREUM.info = {
                   this.ee.on(
                     'manual-start-all',
                     (0, x.J)(() => {
-                      (0, m.Ak)(e.agentIdentifier, this.featureName), t();
+                      ((0, m.Ak)(e.agentIdentifier, this.featureName), t());
                     })
                   );
                 }))
-              : (0, m.Ak)(e.agentIdentifier, t);
+              : (0, m.Ak)(e.agentIdentifier, t));
         }
         importAggregator(e, t, r = {}) {
           if (this.featAggregate) return;
@@ -1747,23 +1751,23 @@ NREUM.info = {
                 o = t(e);
               }
             } catch (e) {
-              (0, l.R)(20, e),
+              ((0, l.R)(20, e),
                 this.ee.emit('internal-error', [e]),
-                (0, s.p)(T.qh, [e], void 0, this.featureName, this.ee);
+                (0, s.p)(T.qh, [e], void 0, this.featureName, this.ee));
             }
             try {
               if (!this.#t(this.featureName, o, e.init))
-                return (0, m.Ze)(this.agentIdentifier, this.featureName), void n(!1);
+                return ((0, m.Ze)(this.agentIdentifier, this.featureName), void n(!1));
               const { Aggregate: i } = await t();
-              (this.featAggregate = new i(e, r)),
+              ((this.featAggregate = new i(e, r)),
                 e.runtime.harvester.initializedAggregates.push(this.featAggregate),
-                n(!0);
+                n(!0));
             } catch (e) {
-              (0, l.R)(34, e),
+              ((0, l.R)(34, e),
                 this.abortHandler?.(),
                 (0, m.Ze)(this.agentIdentifier, this.featureName, !0),
                 n(!1),
-                this.ee && this.ee.abort();
+                this.ee && this.ee.abort());
             }
           };
           y.RI ? (0, b.GG)(() => o(), !0) : o();
@@ -1786,7 +1790,7 @@ NREUM.info = {
         static featureName = A.T;
         constructor(e) {
           var t;
-          super(e, A.T),
+          (super(e, A.T),
             this.setupInspectionEvents(e.agentIdentifier),
             (t = e),
             p(
@@ -1800,7 +1804,7 @@ NREUM.info = {
               t
             ),
             this.ee.on('api-send-rum', (e, t) => (0, s.p)('send-rum', [e, t], void 0, this.featureName, this.ee)),
-            this.importAggregator(e, () => i.e(478).then(i.bind(i, 1983)));
+            this.importAggregator(e, () => i.e(478).then(i.bind(i, 1983))));
         }
         setupInspectionEvents(e) {
           const t = (t, r) => {
@@ -1814,7 +1818,7 @@ NREUM.info = {
                 data: t.target.location + '',
               });
           };
-          (0, b.sB)((e) => {
+          ((0, b.sB)((e) => {
             t(e, 'DOMContentLoaded');
           }),
             (0, b.GG)((e) => {
@@ -1825,7 +1829,7 @@ NREUM.info = {
             }),
             this.ee.on(O.tS.UPDATE, (t, r) => {
               (0, d.W)({ agentIdentifier: e, type: 'lifecycle', name: 'session', data: r });
-            });
+            }));
         }
       }
       var N = i(384);
@@ -1835,34 +1839,34 @@ NREUM.info = {
       class j extends E {
         static featureName = P.T;
         constructor(e) {
-          super(e, P.T),
+          (super(e, P.T),
             y.RI &&
               ((0, _.u)(() => (0, s.p)('docHidden', [(0, c.t)()], void 0, P.T, this.ee), !0),
               (0, I.sp)('pagehide', () => (0, s.p)('winPagehide', [(0, c.t)()], void 0, P.T, this.ee)),
-              this.importAggregator(e, () => i.e(478).then(i.bind(i, 9917))));
+              this.importAggregator(e, () => i.e(478).then(i.bind(i, 9917)))));
         }
       }
       class C extends E {
         static featureName = h.TZ;
         constructor(e) {
-          super(e, h.TZ),
+          (super(e, h.TZ),
             y.RI &&
               document.addEventListener('securitypolicyviolation', (e) => {
                 (0, s.p)(h.xV, ['Generic/CSPViolation/Detected'], void 0, this.featureName, this.ee);
               }),
-            this.importAggregator(e, () => i.e(478).then(i.bind(i, 6555)));
+            this.importAggregator(e, () => i.e(478).then(i.bind(i, 6555))));
         }
       }
       var k = i(6774),
         L = i(3304);
       class H {
         constructor(e, t, r, n, i) {
-          (this.name = 'UncaughtError'),
+          ((this.name = 'UncaughtError'),
             (this.message = 'string' == typeof e ? e : (0, L.A)(e)),
             (this.sourceURL = t),
             (this.line = r),
             (this.column = n),
-            (this.__newrelic = i);
+            (this.__newrelic = i));
         }
       }
       function M(e) {
@@ -1887,12 +1891,12 @@ NREUM.info = {
           return M(e.reason);
         }
         const r = M(e.reason);
-        return (r.message || '').startsWith(t) || (r.message = t + r.message), r;
+        return ((r.message || '').startsWith(t) || (r.message = t + r.message), r);
       }
       function K(e) {
         if (e.error instanceof SyntaxError && !/:\d+$/.test(e.error.stack?.trim())) {
           const t = new H(e.message, e.filename, e.lineno, e.colno, e.error.__newrelic, e.cause);
-          return (t.name = SyntaxError.name), t;
+          return ((t.name = SyntaxError.name), t);
         }
         return U(e.error) ? e.error : M(e);
       }
@@ -1900,9 +1904,9 @@ NREUM.info = {
         return e instanceof Error && !!e.stack;
       }
       function F(e, t, r, i, o = (0, c.t)()) {
-        'string' == typeof e && (e = new Error(e)),
+        ('string' == typeof e && (e = new Error(e)),
           (0, s.p)('err', [e, o, !1, t, r.runtime.isRecording, void 0, i], void 0, n.K7.jserrors, r.ee),
-          (0, s.p)('uaErr', [], void 0, n.K7.genericEvents, r.ee);
+          (0, s.p)('uaErr', [], void 0, n.K7.genericEvents, r.ee));
       }
       var W = i(3496),
         B = i(993),
@@ -1920,7 +1924,7 @@ NREUM.info = {
             return (function (e, t) {
               const r = {};
               let i, o;
-              (0, l.R)(54, 'newrelic.register'), e.init.api.allow_registered_children || (i = () => (0, l.R)(55));
+              ((0, l.R)(54, 'newrelic.register'), e.init.api.allow_registered_children || (i = () => (0, l.R)(55)));
               (t && (0, W.I)(t)) || (i = () => (0, l.R)(48, t));
               const a = {
                 addPageAction: (n, i = {}) => {
@@ -1957,18 +1961,18 @@ NREUM.info = {
                       let s = !!o?.get().entityGuid,
                         c = o?.getEntityGuidFor(t.licenseKey, t.applicationID),
                         u = !!c;
-                      if (s && u) (t.entityGuid = c), n(a);
+                      if (s && u) ((t.entityGuid = c), n(a));
                       else {
                         const d = setTimeout(() => i(new Error('Failed to connect - Timeout')), 15e3);
                         function l(r) {
-                          (0, W.A)(r, e)
+                          ((0, W.A)(r, e)
                             ? (s ||= !0)
                             : t.licenseKey === r.licenseKey &&
                               t.applicationID === r.applicationID &&
                               ((u = !0), (t.entityGuid = r.entityGuid)),
-                            s && u && (clearTimeout(d), e.ee.removeEventListener('entity-added', l), n(a));
+                            s && u && (clearTimeout(d), e.ee.removeEventListener('entity-added', l), n(a)));
                         }
-                        e.ee.emit('api-send-rum', [r, t]), e.ee.on('entity-added', l);
+                        (e.ee.emit('api-send-rum', [r, t]), e.ee.on('entity-added', l));
                       }
                     } catch (f) {
                       i(f);
@@ -1981,8 +1985,8 @@ NREUM.info = {
                 try {
                   await o;
                   const n = e.init.api.duplicate_registered_data;
-                  (!0 === n || (Array.isArray(n) && n.includes(a.entityGuid))) && t(...r, void 0, u),
-                    t(...r, a.entityGuid, u);
+                  ((!0 === n || (Array.isArray(n) && n.includes(a.entityGuid))) && t(...r, void 0, u),
+                    t(...r, a.entityGuid, u));
                 } catch (e) {
                   (0, l.R)(50, e);
                 }
@@ -1997,7 +2001,7 @@ NREUM.info = {
         static featureName = k.T;
         constructor(e) {
           var t;
-          super(e, k.T),
+          (super(e, k.T),
             (t = e),
             p(u.o5, (e, r) => F(e, r, t), t),
             (function (e) {
@@ -2019,11 +2023,11 @@ NREUM.info = {
                 e
               );
             })(e),
-            Z(e);
+            Z(e));
           try {
             this.removeOnAbort = new AbortController();
           } catch (e) {}
-          this.ee.on('internal-error', (t, r) => {
+          (this.ee.on('internal-error', (t, r) => {
             this.abortHandler &&
               (0, s.p)('ierr', [M(t), (0, c.t)(), !0, {}, e.runtime.isRecording, r], void 0, this.featureName, this.ee);
           }),
@@ -2050,10 +2054,10 @@ NREUM.info = {
               (0, I.jT)(!1, this.removeOnAbort?.signal)
             ),
             (this.abortHandler = this.#r),
-            this.importAggregator(e, () => i.e(478).then(i.bind(i, 2176)));
+            this.importAggregator(e, () => i.e(478).then(i.bind(i, 2176))));
         }
         #r() {
-          this.removeOnAbort?.abort(), (this.abortHandler = void 0);
+          (this.removeOnAbort?.abort(), (this.abortHandler = void 0));
         }
       }
       var X = i(8990);
@@ -2093,7 +2097,7 @@ NREUM.info = {
         })(t);
         if (void 0 === y.gm.XMLHttpRequest) return r;
         if (ne[r.debugId]++) return r;
-        (ne[r.debugId] = 1), (0, ee.u)(t);
+        ((ne[r.debugId] = 1), (0, ee.u)(t));
         var n = (0, re.YM)(r),
           i = y.gm.XMLHttpRequest,
           o = y.gm.MutationObserver,
@@ -2106,17 +2110,17 @@ NREUM.info = {
             const t = new i(e),
               o = r.context(t);
             try {
-              r.emit('new-xhr', [t], o),
+              (r.emit('new-xhr', [t], o),
                 t.addEventListener(
                   c,
                   ((a = o),
                   function () {
                     var e = this;
-                    e.readyState > 3 && !a.resolved && ((a.resolved = !0), r.emit('xhr-resolved', [], e)),
-                      n.inPlace(e, u, 'fn-', b);
+                    (e.readyState > 3 && !a.resolved && ((a.resolved = !0), r.emit('xhr-resolved', [], e)),
+                      n.inPlace(e, u, 'fn-', b));
                   }),
                   (0, I.jT)(!1)
-                );
+                ));
             } catch (e) {
               (0, l.R)(15, e);
               try {
@@ -2136,10 +2140,10 @@ NREUM.info = {
           (f.prototype = i.prototype),
           n.inPlace(f.prototype, ie, '-xhr-', b),
           r.on('send-xhr-start', function (e, t) {
-            h(e, t),
+            (h(e, t),
               (function (e) {
-                d.push(e), o && (p ? p.then(v) : s ? s(v) : ((g = -g), (m.data = g)));
-              })(t);
+                (d.push(e), o && (p ? p.then(v) : s ? s(v) : ((g = -g), (m.data = g))));
+              })(t));
           }),
           r.on('open-xhr-start', h),
           o)
@@ -2183,13 +2187,13 @@ NREUM.info = {
               var e,
                 r = [...arguments],
                 o = {};
-              t.emit(n + 'before-start', [r], o), o[te.P] && o[te.P].dt && (e = o[te.P].dt);
+              (t.emit(n + 'before-start', [r], o), o[te.P] && o[te.P].dt && (e = o[te.P].dt));
               var a = i.apply(this, r);
               return (
                 t.emit(n + 'start', [r, e], a),
                 a.then(
                   function (e) {
-                    return t.emit(n + 'end', [null, e], a), e;
+                    return (t.emit(n + 'end', [null, e], a), e);
                   },
                   function (e) {
                     throw (t.emit(n + 'end', [e], a), e);
@@ -2201,14 +2205,14 @@ NREUM.info = {
         return (
           (fe[t.debugId] = 1),
           ce.forEach((e) => {
-            r(ue[le], e, se), r(de[le], e, se);
+            (r(ue[le], e, se), r(de[le], e, se));
           }),
           r(y.gm, 'fetch', ae),
           t.on(ae + 'end', function (e, r) {
             var n = this;
             if (r) {
               var i = r.headers.get('content-length');
-              null !== i && (n.rxSize = i), t.emit(ae + 'done', [null, r], n);
+              (null !== i && (n.rxSize = i), t.emit(ae + 'done', [null, r], n));
             } else t.emit(ae + 'done', [e], n);
           }),
           t
@@ -2249,7 +2253,7 @@ NREUM.info = {
         generateTraceHeader(e, t, r, n, i, o) {
           if (!('function' == typeof y.gm?.btoa)) return null;
           var a = { v: [0, 1], d: { ty: 'Browser', ac: n, ap: i, id: e, tr: t, ti: r } };
-          return o && n !== o && (a.d.tk = o), btoa((0, L.A)(a));
+          return (o && n !== o && (a.d.tk = o), btoa((0, L.A)(a)));
         }
         shouldGenerateTrace(e) {
           return this.agentRef.init?.distributed_tracing?.enabled && this.isAllowedOrigin(e);
@@ -2300,24 +2304,24 @@ NREUM.info = {
       class Ee extends E {
         static featureName = me.T;
         constructor(e) {
-          super(e, me.T), (this.dt = new ge(e)), (this.handler = (e, t, r, n) => (0, s.p)(e, t, r, n, this.ee));
+          (super(e, me.T), (this.dt = new ge(e)), (this.handler = (e, t, r, n) => (0, s.p)(e, t, r, n, this.ee)));
           try {
             const e = { xmlhttprequest: 'xhr', fetch: 'fetch', beacon: 'beacon' };
             y.gm?.performance?.getEntriesByType('resource').forEach((t) => {
               if (t.initiatorType in e && 0 !== t.responseStatus) {
                 const r = { status: t.responseStatus },
                   i = { rxSize: t.transferSize, duration: Math.floor(t.duration), cbTime: 0 };
-                Ae(r, t.name),
-                  this.handler('xhr', [r, i, t.startTime, t.responseEnd, e[t.initiatorType]], void 0, n.K7.ajax);
+                (Ae(r, t.name),
+                  this.handler('xhr', [r, i, t.startTime, t.responseEnd, e[t.initiatorType]], void 0, n.K7.ajax));
               }
             });
           } catch (e) {}
-          he(this.ee),
+          (he(this.ee),
             oe(this.ee),
             (function (e, t, r, i) {
               function o(e) {
                 var t = this;
-                (t.totalCbs = 0),
+                ((t.totalCbs = 0),
                   (t.called = 0),
                   (t.cbTime = 0),
                   (t.end = E),
@@ -2342,22 +2346,22 @@ NREUM.info = {
                         t.lastSize = e.loaded;
                       },
                       (0, I.jT)(!1)
-                    );
+                    ));
               }
               function a(e) {
-                (this.params = { method: e[0] }), Ae(this, e[1]), (this.metrics = {});
+                ((this.params = { method: e[0] }), Ae(this, e[1]), (this.metrics = {}));
               }
               function u(t, r) {
                 e.loader_config.xpid && this.sameOrigin && r.setRequestHeader('X-NewRelic-ID', e.loader_config.xpid);
                 var n = i.generateTracePayload(this.parsedOrigin);
                 if (n) {
                   var o = !1;
-                  n.newrelicHeader && (r.setRequestHeader('newrelic', n.newrelicHeader), (o = !0)),
+                  (n.newrelicHeader && (r.setRequestHeader('newrelic', n.newrelicHeader), (o = !0)),
                     n.traceContextParentHeader &&
                       (r.setRequestHeader('traceparent', n.traceContextParentHeader),
                       n.traceContextStateHeader && r.setRequestHeader('tracestate', n.traceContextStateHeader),
                       (o = !0)),
-                    o && (this.dt = n);
+                    o && (this.dt = n));
                 }
               }
               function d(e, r) {
@@ -2368,31 +2372,31 @@ NREUM.info = {
                   var a = J(i);
                   a && (n.txSize = a);
                 }
-                (this.startTime = (0, c.t)()),
+                ((this.startTime = (0, c.t)()),
                   (this.body = i),
                   (this.listener = function (e) {
                     try {
-                      'abort' !== e.type || o.loadCaptureCalled || (o.params.aborted = !0),
+                      ('abort' !== e.type || o.loadCaptureCalled || (o.params.aborted = !0),
                         ('load' !== e.type ||
                           (o.called === o.totalCbs &&
                             (o.onloadCalled || 'function' != typeof r.onload) &&
                             'function' == typeof o.end)) &&
-                          o.end(r);
+                          o.end(r));
                     } catch (e) {
                       try {
                         t.emit('internal-error', [e]);
                       } catch (e) {}
                     }
-                  });
+                  }));
                 for (var s = 0; s < we; s++) r.addEventListener(ye[s], this.listener, (0, I.jT)(!1));
               }
               function l(e, t, r) {
-                (this.cbTime += e),
+                ((this.cbTime += e),
                   t ? (this.onloadCalled = !0) : (this.called += 1),
                   this.called !== this.totalCbs ||
                     (!this.onloadCalled && 'function' == typeof r.onload) ||
                     'function' != typeof this.end ||
-                    this.end(r);
+                    this.end(r));
               }
               function f(e, t) {
                 var r = '' + Q(e) + !!t;
@@ -2439,9 +2443,9 @@ NREUM.info = {
                     else {
                       var o = {};
                       for (var a in r) o[a] = r[a];
-                      (o.headers = new Headers(r.headers || {})),
+                      ((o.headers = new Headers(r.headers || {})),
                         s(o.headers, n) && (this.dt = n),
-                        e.length > 1 ? (e[1] = o) : e.push(o);
+                        e.length > 1 ? (e[1] = o) : e.push(o));
                     }
                 }
                 function s(e, t) {
@@ -2457,23 +2461,23 @@ NREUM.info = {
                 }
               }
               function x(e, t) {
-                (this.params = {}),
+                ((this.params = {}),
                   (this.metrics = {}),
                   (this.startTime = (0, c.t)()),
                   (this.dt = t),
                   e.length >= 1 && (this.target = e[0]),
-                  e.length >= 2 && (this.opts = e[1]);
+                  e.length >= 2 && (this.opts = e[1]));
                 var r = this.opts || {},
                   n = this.target;
                 Ae(this, be(n));
                 var i = ('' + ((n && n instanceof Re && n.method) || r.method || 'GET')).toUpperCase();
-                (this.params.method = i), (this.body = r.body), (this.txSize = J(r.body) || 0);
+                ((this.params.method = i), (this.body = r.body), (this.txSize = J(r.body) || 0));
               }
               function T(e, t) {
                 if (((this.endTime = (0, c.t)()), this.params || (this.params = {}), (0, ve.iW)(this.params))) return;
                 let i;
-                (this.params.status = t ? t.status : 0),
-                  'string' == typeof this.rxSize && this.rxSize.length > 0 && (i = +this.rxSize);
+                ((this.params.status = t ? t.status : 0),
+                  'string' == typeof this.rxSize && this.rxSize.length > 0 && (i = +this.rxSize));
                 const o = { txSize: this.txSize, rxSize: i, duration: (0, c.t)() - this.startTime };
                 r('xhr', [this.params, o, this.startTime, this.endTime, 'fetch'], this, n.K7.ajax);
               }
@@ -2511,7 +2515,7 @@ NREUM.info = {
                 }
                 e.loadCaptureCalled = !0;
               }
-              t.on('new-xhr', o),
+              (t.on('new-xhr', o),
                 t.on('open-xhr-start', a),
                 t.on('open-xhr-end', u),
                 t.on('send-xhr-start', d),
@@ -2525,21 +2529,21 @@ NREUM.info = {
                 t.on('fetch-before-start', R),
                 t.on('fetch-start', x),
                 t.on('fn-start', b),
-                t.on('fetch-done', T);
+                t.on('fetch-done', T));
             })(e, this.ee, this.handler, this.dt),
-            this.importAggregator(e, () => i.e(478).then(i.bind(i, 3845)));
+            this.importAggregator(e, () => i.e(478).then(i.bind(i, 3845))));
         }
       }
       function Ae(e, t) {
         var r = (0, pe.D)(t),
           n = e.params || e;
-        (n.hostname = r.hostname),
+        ((n.hostname = r.hostname),
           (n.port = r.port),
           (n.protocol = r.protocol),
           (n.host = r.hostname + ':' + r.port),
           (n.pathname = r.pathname),
           (e.parsedOrigin = r),
-          (e.sameOrigin = r.sameOrigin);
+          (e.sameOrigin = r.sameOrigin));
       }
       const Oe = {},
         Se = ['pushState', 'replaceState'];
@@ -2547,7 +2551,7 @@ NREUM.info = {
         const t = (function (e) {
           return (e || te.ee).get('history');
         })(e);
-        return !y.RI || Oe[t.debugId]++ || ((Oe[t.debugId] = 1), (0, re.YM)(t).inPlace(window.history, Se, '-')), t;
+        return (!y.RI || Oe[t.debugId]++ || ((Oe[t.debugId] = 1), (0, re.YM)(t).inPlace(window.history, Se, '-')), t);
       }
       var _e = i(3738);
       function Ie(e) {
@@ -2555,10 +2559,10 @@ NREUM.info = {
           u.BL,
           function (t = Date.now()) {
             const r = t - y.WN;
-            r < 0 && (0, l.R)(62, t),
+            (r < 0 && (0, l.R)(62, t),
               (0, s.p)(h.XG, [u.BL, { time: r }], void 0, n.K7.metrics, e.ee),
               e.addToTrace({ name: u.BL, start: t, origin: 'nr' }),
-              (0, s.p)(u.Pl + u.hG, [r, u.BL], void 0, n.K7.genericEvents, e.ee);
+              (0, s.p)(u.Pl + u.hG, [r, u.BL], void 0, n.K7.genericEvents, e.ee));
           },
           e
         );
@@ -2568,7 +2572,7 @@ NREUM.info = {
         static featureName = Le;
         constructor(e) {
           var t;
-          super(e, Le),
+          (super(e, Le),
             (t = e),
             p(
               u.U2,
@@ -2581,11 +2585,11 @@ NREUM.info = {
               },
               t
             ),
-            Ie(e);
+            Ie(e));
           if (!(0, R.V)(e.init)) return void this.deregisterDrain();
           const r = this.ee;
           let o;
-          Ne(r),
+          (Ne(r),
             (this.eventsEE = (0, ee.u)(r)),
             this.eventsEE.on(Me, function (e, t) {
               this.bstStart = (0, c.t)();
@@ -2594,7 +2598,7 @@ NREUM.info = {
               (0, s.p)('bst', [e[0], t, this.bstStart, (0, c.t)()], void 0, n.K7.sessionTrace, r);
             }),
             r.on(De + Ce, function (e) {
-              (this.time = (0, c.t)()), (this.startPath = location.pathname + location.hash);
+              ((this.time = (0, c.t)()), (this.startPath = location.pathname + location.hash));
             }),
             r.on(De + ke, function (e) {
               (0, s.p)(
@@ -2604,13 +2608,13 @@ NREUM.info = {
                 n.K7.sessionTrace,
                 r
               );
-            });
+            }));
           try {
-            (o = new PerformanceObserver((e) => {
+            ((o = new PerformanceObserver((e) => {
               const t = e.getEntries();
               (0, s.p)(Pe, [t], void 0, n.K7.sessionTrace, r);
             })),
-              o.observe({ type: je, buffered: !0 });
+              o.observe({ type: je, buffered: !0 }));
           } catch (e) {}
           this.importAggregator(e, () => i.e(478).then(i.bind(i, 6974)), { resourceObserver: o });
         }
@@ -2623,7 +2627,7 @@ NREUM.info = {
         constructor(e) {
           var t;
           let r;
-          super(e, Ue.TZ),
+          (super(e, Ue.TZ),
             (t = e),
             p(
               u.CH,
@@ -2640,11 +2644,11 @@ NREUM.info = {
                 },
                 e
               );
-            })(e);
+            })(e));
           try {
             r = JSON.parse(localStorage.getItem(''.concat(O.H3, '_').concat(O.uh)));
           } catch (e) {}
-          (0, w.SR)(e.init) && this.ee.on(Ue.G4.RECORD, () => this.#i()),
+          ((0, w.SR)(e.init) && this.ee.on(Ue.G4.RECORD, () => this.#i()),
             this.#o(r) &&
               this.importRecorder().then((e) => {
                 e.startRecording(Ue.Qb.PRELOAD, r?.sessionReplayMode);
@@ -2655,7 +2659,7 @@ NREUM.info = {
                 (this.agentRef.runtime.isRecording &&
                   ((this.errorNoticed = !0),
                   (0, s.p)(Ue.G4.ERROR_DURING_REPLAY, [e], void 0, this.featureName, this.ee)));
-            });
+            }));
         }
         #o(e) {
           return (
@@ -2716,7 +2720,7 @@ NREUM.info = {
             );
           },
         });
-        ['actionText', 'setName', 'setAttribute', 'save', 'ignore', 'onEnd', 'getContext', 'end', 'get'].forEach(
+        (['actionText', 'setName', 'setAttribute', 'save', 'ignore', 'onEnd', 'getContext', 'end', 'get'].forEach(
           (t) => {
             p.apply(this, [
               t,
@@ -2745,7 +2749,7 @@ NREUM.info = {
                 : (0, s.p)(u.Pl + 'routeName', [(0, c.t)(), ...arguments], this, n.K7.spa, e.ee);
             },
             e
-          );
+          ));
       }
       class Ge extends E {
         static featureName = We.TZ;
@@ -2766,36 +2770,36 @@ NREUM.info = {
             );
           });
           const r = () => (0, s.p)('newURL', [(0, c.t)(), '' + window.location], void 0, this.featureName, this.ee);
-          t.on('pushState-end', r),
+          (t.on('pushState-end', r),
             t.on('replaceState-end', r),
             (0, I.sp)(
               We.OV,
               (e) => {
-                a(e), (0, s.p)('newURL', [e.timeStamp, '' + window.location], void 0, this.featureName, this.ee);
+                (a(e), (0, s.p)('newURL', [e.timeStamp, '' + window.location], void 0, this.featureName, this.ee));
               },
               !0,
               this.removeOnAbort?.signal
-            );
+            ));
           let n = !1;
           const o = new ((0, N.dV)().o.MO)((e, t) => {
               n ||
                 ((n = !0),
                 requestAnimationFrame(() => {
-                  (0, s.p)('newDom', [(0, c.t)()], void 0, this.featureName, this.ee), (n = !1);
+                  ((0, s.p)('newDom', [(0, c.t)()], void 0, this.featureName, this.ee), (n = !1));
                 }));
             }),
             a = (0, x.s)(
               (e) => {
-                (0, s.p)('newUIEvent', [e], void 0, this.featureName, this.ee),
-                  o.observe(document.body, { attributes: !0, childList: !0, subtree: !0, characterData: !0 });
+                ((0, s.p)('newUIEvent', [e], void 0, this.featureName, this.ee),
+                  o.observe(document.body, { attributes: !0, childList: !0, subtree: !0, characterData: !0 }));
               },
               100,
               { leading: !0 }
             );
-          (this.abortHandler = function () {
-            this.removeOnAbort?.abort(), o.disconnect(), (this.abortHandler = void 0);
+          ((this.abortHandler = function () {
+            (this.removeOnAbort?.abort(), o.disconnect(), (this.abortHandler = void 0));
           }),
-            this.importAggregator(e, () => i.e(478).then(i.bind(i, 4393)), { domObserver: o });
+            this.importAggregator(e, () => i.e(478).then(i.bind(i, 4393)), { domObserver: o }));
         }
       }
       var Ve = i(7378);
@@ -2834,20 +2838,20 @@ NREUM.info = {
               if ('function' != typeof u.parent[u.key]) return;
               var d = {};
               function l() {
-                t.emit('jsonp-end', [], d),
+                (t.emit('jsonp-end', [], d),
                   e.removeEventListener('load', l, (0, I.jT)(!1)),
-                  e.removeEventListener('error', f, (0, I.jT)(!1));
+                  e.removeEventListener('error', f, (0, I.jT)(!1)));
               }
               function f() {
-                t.emit('jsonp-error', [], d),
+                (t.emit('jsonp-error', [], d),
                   t.emit('jsonp-end', [], d),
                   e.removeEventListener('load', l, (0, I.jT)(!1)),
-                  e.removeEventListener('error', f, (0, I.jT)(!1));
+                  e.removeEventListener('error', f, (0, I.jT)(!1)));
               }
-              r.inPlace(u.parent, [u.key], 'cb-', d),
+              (r.inPlace(u.parent, [u.key], 'cb-', d),
                 e.addEventListener('load', l, (0, I.jT)(!1)),
                 e.addEventListener('error', f, (0, I.jT)(!1)),
-                t.emit('new-jsonp', [e.src], d);
+                t.emit('new-jsonp', [e.src], d));
             })(e[0]);
           }),
           t
@@ -2877,7 +2881,7 @@ NREUM.info = {
                   s
                 );
               }
-              (y.gm.Promise = e),
+              ((y.gm.Promise = e),
                 Object.defineProperty(e, 'name', { value: 'Promise' }),
                 (e.toString = function () {
                   return i.toString();
@@ -2894,7 +2898,7 @@ NREUM.info = {
                     return o;
                     function a(e) {
                       return function () {
-                        t.emit('propagate', [null, !i], o, !1, !1), (i = i || !e);
+                        (t.emit('propagate', [null, !i], o, !1, !1), (i = i || !e));
                       };
                     }
                   };
@@ -2903,21 +2907,21 @@ NREUM.info = {
                   const n = i[r];
                   e[r] = function (e) {
                     const r = n.apply(this, arguments);
-                    return e !== r && t.emit('propagate', [e, !0], r, !1, !1), r;
+                    return (e !== r && t.emit('propagate', [e, !0], r, !1, !1), r);
                   };
                 }),
-                (e.prototype = i.prototype);
+                (e.prototype = i.prototype));
               const o = i.prototype.then;
-              (i.prototype.then = function (...e) {
+              ((i.prototype.then = function (...e) {
                 var i = this,
                   a = r(i);
-                (a.promise = i), (e[0] = n(e[0], 'cb-', a, null, !1)), (e[1] = n(e[1], 'cb-', a, null, !1));
+                ((a.promise = i), (e[0] = n(e[0], 'cb-', a, null, !1)), (e[1] = n(e[1], 'cb-', a, null, !1)));
                 const s = o.apply(this, e);
-                return (a.nextPromise = s), t.emit('propagate', [i, !0], s, !1, !1), s;
+                return ((a.nextPromise = s), t.emit('propagate', [i, !0], s, !1, !1), s);
               }),
                 (i.prototype.then[re.Jt] = o),
                 t.on('executor-start', function (e) {
-                  (e[0] = n(e[0], 'resolve-', this, null, !1)), (e[1] = n(e[1], 'resolve-', this, null, !1));
+                  ((e[0] = n(e[0], 'resolve-', this, null, !1)), (e[1] = n(e[1], 'resolve-', this, null, !1)));
                 }),
                 t.on('executor-err', function (e, t, r) {
                   e[1](r);
@@ -2931,7 +2935,7 @@ NREUM.info = {
                       if (e instanceof Promise) var r = t.context(e);
                       return r && r.getCtx ? r.getCtx() : this;
                     });
-                });
+                }));
             })(),
           t
         );
@@ -2957,7 +2961,7 @@ NREUM.info = {
             e[0] = r(e[0], 'fn-', null, n);
           }),
           t.on($e + tt, function (e, t, n) {
-            (this.method = n), (this.timerDuration = isNaN(e[1]) ? 0 : +e[1]), (e[0] = r(e[0], 'fn-', this, n));
+            ((this.method = n), (this.timerDuration = isNaN(e[1]) ? 0 : +e[1]), (e[0] = r(e[0], 'fn-', this, n)));
           }),
           t
         );
@@ -3003,19 +3007,19 @@ NREUM.info = {
             h.emit('newURL', ['' + window.location, t]);
           }
           function m() {
-            r++, (t = window.location.hash), (this[ht] = (0, c.t)());
+            (r++, (t = window.location.hash), (this[ht] = (0, c.t)()));
           }
           function v() {
-            r--, window.location.hash !== t && g(0, !0);
+            (r--, window.location.hash !== t && g(0, !0));
             var e = (0, c.t)();
-            (this[lt] = ~~this[lt] + e - this[ht]), (this[gt] = e);
+            ((this[lt] = ~~this[lt] + e - this[ht]), (this[gt] = e));
           }
           function b(e, t) {
             e.on(t, function () {
               this[t] = (0, c.t)();
             });
           }
-          this.ee.on(ht, m),
+          (this.ee.on(ht, m),
             a.on(pt, m),
             o.on(pt, m),
             this.ee.on(gt, v),
@@ -3052,10 +3056,10 @@ NREUM.info = {
               (0, I.jT)(!0, this.removeOnAbort?.signal)
             ),
             (this.abortHandler = this.#r),
-            this.importAggregator(e, () => i.e(478).then(i.bind(i, 5592)));
+            this.importAggregator(e, () => i.e(478).then(i.bind(i, 5592))));
         }
         #r() {
-          this.removeOnAbort?.abort(), (this.abortHandler = void 0);
+          (this.removeOnAbort?.abort(), (this.abortHandler = void 0));
         }
       }
       var vt = i(3333);
@@ -3100,7 +3104,7 @@ NREUM.info = {
                     (0, l.R)(57);
                   else {
                     if (((f.duration = f.end - f.start), !(f.duration < 0)))
-                      return (0, s.p)(u.Pl + u.V1, [f, t], void 0, n.K7.genericEvents, e.ee), f;
+                      return ((0, s.p)(u.Pl + u.V1, [f, t], void 0, n.K7.genericEvents, e.ee), f);
                     (0, l.R)(58);
                   }
                 },
@@ -3135,10 +3139,10 @@ NREUM.info = {
             function d() {
               a.emit('navChange');
             }
-            a.on('pushState-end', d),
+            (a.on('pushState-end', d),
               a.on('replaceState-end', d),
               window.addEventListener('hashchange', d, (0, I.jT)(!0, this.removeOnAbort?.signal)),
-              window.addEventListener('popstate', d, (0, I.jT)(!0, this.removeOnAbort?.signal));
+              window.addEventListener('popstate', d, (0, I.jT)(!0, this.removeOnAbort?.signal)));
           }
           try {
             this.removeOnAbort = new AbortController();
@@ -3147,8 +3151,8 @@ NREUM.info = {
             const r = (0, pe.D)(t);
             return e.beacons.includes(r.hostname + ':' + r.port);
           }
-          (this.abortHandler = () => {
-            this.removeOnAbort?.abort(), (this.abortHandler = void 0);
+          ((this.abortHandler = () => {
+            (this.removeOnAbort?.abort(), (this.abortHandler = void 0));
           }),
             y.gm.addEventListener(
               'error',
@@ -3168,7 +3172,7 @@ NREUM.info = {
             this.ee.on('fetch-start', (e) => {
               e.length >= 1 && !o(be(e[0])) && (0, s.p)('uaXhr', [], void 0, n.K7.genericEvents, this.ee);
             }),
-            t.some((e) => e) ? this.importAggregator(e, () => i.e(478).then(i.bind(i, 8019))) : this.deregisterDrain();
+            t.some((e) => e) ? this.importAggregator(e, () => i.e(478).then(i.bind(i, 8019))) : this.deregisterDrain());
         }
       }
       var yt = i(2646);
@@ -3180,16 +3184,16 @@ NREUM.info = {
           })(e),
           o = (0, re.YM)(i),
           a = new yt.y(te.P);
-        (a.level = n.level), (a.customAttributes = n.customAttributes);
+        ((a.level = n.level), (a.customAttributes = n.customAttributes));
         const s = t[r]?.[re.Jt] || t[r];
-        return wt.set(s, a), o.inPlace(t, [r], 'wrap-logger-', () => wt.get(s)), i;
+        return (wt.set(s, a), o.inPlace(t, [r], 'wrap-logger-', () => wt.get(s)), i);
       }
       var xt = i(1910);
       class Tt extends E {
         static featureName = B.TZ;
         constructor(e) {
           var t;
-          super(e, B.TZ),
+          (super(e, B.TZ),
             (t = e),
             p(u.$9, (e, r) => V(e, r, t), t),
             (function (e) {
@@ -3201,16 +3205,16 @@ NREUM.info = {
                 e
               );
             })(e),
-            Z(e);
+            Z(e));
           const r = this.ee;
-          ['log', 'error', 'warn', 'info', 'debug', 'trace'].forEach((e) => {
-            (0, xt.i)(y.gm.console[e]), Rt(r, y.gm.console, e, { level: 'log' === e ? 'info' : e });
+          (['log', 'error', 'warn', 'info', 'debug', 'trace'].forEach((e) => {
+            ((0, xt.i)(y.gm.console[e]), Rt(r, y.gm.console, e, { level: 'log' === e ? 'info' : e }));
           }),
             this.ee.on('wrap-logger-end', function ([e]) {
               const { level: t, customAttributes: n } = this;
               (0, G.R)(r, e, n, t);
             }),
-            this.importAggregator(e, () => i.e(478).then(i.bind(i, 5288)));
+            this.importAggregator(e, () => i.e(478).then(i.bind(i, 5288))));
         }
       }
       new (class extends r {
@@ -3284,7 +3288,7 @@ NREUM.info = {
                 );
               })(this.init),
               t = [...this.desiredFeatures];
-            t.sort((e, t) => n.P3[e.featureName] - n.P3[t.featureName]),
+            (t.sort((e, t) => n.P3[e.featureName] - n.P3[t.featureName]),
               t.forEach((t) => {
                 if (!e[t.featureName] && t.featureName !== n.K7.pageViewEvent) return;
                 if (this.runSoftNavOverSpa && t.featureName === n.K7.spa) return;
@@ -3303,17 +3307,17 @@ NREUM.info = {
                       return [];
                   }
                 })(t.featureName).filter((e) => !(e in this.features));
-                r.length > 0 && (0, l.R)(36, { targetFeature: t.featureName, missingDependencies: r }),
-                  (this.features[t.featureName] = new t(this));
-              });
+                (r.length > 0 && (0, l.R)(36, { targetFeature: t.featureName, missingDependencies: r }),
+                  (this.features[t.featureName] = new t(this)));
+              }));
           } catch (e) {
             (0, l.R)(22, e);
             for (const e in this.features) this.features[e].abortHandler?.();
             const t = (0, N.Zm)();
-            delete t.initializedAgents[this.agentIdentifier]?.features, delete this.sharedAggregator;
-            return t.ee.get(this.agentIdentifier).abort(), !1;
+            (delete t.initializedAgents[this.agentIdentifier]?.features, delete this.sharedAggregator);
+            return (t.ee.get(this.agentIdentifier).abort(), !1);
           }
         }
       })({ features: [Ee, S, j, Ke, Fe, C, q, bt, Tt, Ge, mt], loaderType: 'spa' });
-    })();
+    })());
 })();

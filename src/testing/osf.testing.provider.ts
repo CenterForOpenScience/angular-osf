@@ -1,20 +1,13 @@
-import { TranslateModule } from '@ngx-translate/core';
-
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { importProvidersFrom } from '@angular/core';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { EnvironmentTokenMock } from './mocks/environment.token.mock';
-import { TranslationServiceMock } from './mocks/translation.service.mock';
+import { provideTranslation } from '@core/helpers/i18n.helper';
+
+import { EnvironmentTokenMock } from './providers/environment.token.mock';
+import { TranslateServiceMock } from './providers/translate.service.mock';
 
 export function provideOSFCore() {
-  return [
-    provideNoopAnimations(),
-    importProvidersFrom(TranslateModule.forRoot()),
-    TranslationServiceMock,
-    EnvironmentTokenMock,
-  ];
+  return [provideTranslation, TranslateServiceMock, EnvironmentTokenMock];
 }
 
 export function provideOSFHttp() {

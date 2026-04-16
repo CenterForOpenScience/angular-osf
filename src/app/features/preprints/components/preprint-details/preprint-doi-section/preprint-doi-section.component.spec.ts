@@ -3,12 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PreprintModel } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 
-import { PreprintDoiSectionComponent } from './preprint-doi-section.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { PreprintDoiSectionComponent } from './preprint-doi-section.component';
 
 describe('PreprintDoiSectionComponent', () => {
   let component: PreprintDoiSectionComponent;
@@ -48,32 +48,32 @@ describe('PreprintDoiSectionComponent', () => {
   });
 
   it('should return empty array when no version IDs', () => {
-    jest.spyOn(component, 'preprintVersionIds').mockReturnValue([]);
+    vi.spyOn(component, 'preprintVersionIds').mockReturnValue([]);
     const options = component.versionsDropdownOptions();
     expect(options).toEqual([]);
   });
 
   it('should return empty array when version IDs are undefined', () => {
-    jest.spyOn(component, 'preprintVersionIds').mockReturnValue(undefined as unknown as string[]);
+    vi.spyOn(component, 'preprintVersionIds').mockReturnValue(undefined as unknown as string[]);
     const options = component.versionsDropdownOptions();
     expect(options).toEqual([]);
   });
 
   it('should emit preprintVersionSelected when selecting different version', () => {
-    const emitSpy = jest.spyOn(component.preprintVersionSelected, 'emit');
+    const emitSpy = vi.spyOn(component.preprintVersionSelected, 'emit');
     component.selectPreprintVersion('version-2');
     expect(emitSpy).toHaveBeenCalledWith('version-2');
   });
 
   it('should not emit when selecting current preprint version', () => {
-    const emitSpy = jest.spyOn(component.preprintVersionSelected, 'emit');
+    const emitSpy = vi.spyOn(component.preprintVersionSelected, 'emit');
     component.selectPreprintVersion('preprint-1');
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
   it('should not emit when current preprint is unavailable', () => {
-    jest.spyOn(component, 'preprint').mockReturnValue(undefined as unknown as PreprintModel);
-    const emitSpy = jest.spyOn(component.preprintVersionSelected, 'emit');
+    vi.spyOn(component, 'preprint').mockReturnValue(undefined as unknown as PreprintModel);
+    const emitSpy = vi.spyOn(component.preprintVersionSelected, 'emit');
     component.selectPreprintVersion('version-2');
     expect(emitSpy).not.toHaveBeenCalled();
   });

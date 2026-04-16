@@ -1,32 +1,32 @@
+import { MockProvider } from 'ng-mocks';
+
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RemoveContributorDialogComponent } from './remove-contributor-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { RemoveContributorDialogComponent } from './remove-contributor-dialog.component';
 
 describe('RemoveContributorDialogComponent', () => {
   let component: RemoveContributorDialogComponent;
   let fixture: ComponentFixture<RemoveContributorDialogComponent>;
   let dialogRef: DynamicDialogRef;
 
-  beforeEach(async () => {
-    dialogRef = { close: jest.fn() } as any;
-
-    await TestBed.configureTestingModule({
-      imports: [RemoveContributorDialogComponent, OSFTestingModule],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RemoveContributorDialogComponent],
       providers: [
-        { provide: DynamicDialogRef, useValue: dialogRef },
-        {
-          provide: DynamicDialogConfig,
-          useValue: { data: { name: 'John Doe', hasChildren: true } },
-        },
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, { data: { name: 'John Doe', hasChildren: true } }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RemoveContributorDialogComponent);
     component = fixture.componentInstance;
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture.detectChanges();
   });
 

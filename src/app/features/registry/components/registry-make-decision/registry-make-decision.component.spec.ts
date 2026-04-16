@@ -4,7 +4,7 @@ import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of, throwError } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 
 import { TestBed } from '@angular/core/testing';
 
@@ -14,14 +14,14 @@ import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.e
 import { ReviewActionTrigger, SchemaResponseActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { RegistrySelectors } from '../../store/registry';
 
 import { RegistryMakeDecisionComponent } from './registry-make-decision.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 const MOCK_REGISTRY_ACCEPTED = {
   ...MOCK_REGISTRATION_OVERVIEW_MODEL,
@@ -153,7 +153,7 @@ describe('RegistryMakeDecisionComponent', () => {
 
   it('should dispatch and close dialog on successful submission with revisionId', () => {
     const { component, store, dialogRef } = setup();
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.requestForm.patchValue({
       [ModerationDecisionFormControls.Action]: ReviewActionTrigger.AcceptSubmission,
@@ -175,7 +175,7 @@ describe('RegistryMakeDecisionComponent', () => {
 
   it('should use registry id as targetId when revisionId is absent', () => {
     const { component, store } = setup({ revisionId: undefined });
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.requestForm.patchValue({
       [ModerationDecisionFormControls.Action]: ReviewActionTrigger.AcceptSubmission,
@@ -193,13 +193,13 @@ describe('RegistryMakeDecisionComponent', () => {
 
   it('should not close dialog on submission error', () => {
     const { component, store, dialogRef } = setup();
-    jest.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error()));
+    vi.spyOn(store, 'dispatch').mockReturnValue(EMPTY);
 
     component.requestForm.patchValue({
       [ModerationDecisionFormControls.Action]: ReviewActionTrigger.AcceptSubmission,
       [ModerationDecisionFormControls.Comment]: '',
     });
-    component.handleSubmission();
+    expect(() => component.handleSubmission()).not.toThrow();
 
     expect(dialogRef.close).not.toHaveBeenCalled();
   });

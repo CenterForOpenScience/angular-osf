@@ -4,7 +4,9 @@ import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of, throwError } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
+
+import { Mock } from 'vitest';
 
 import { TitleCasePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -14,18 +16,18 @@ import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/e
 import { PreprintModel, PreprintProviderDetails } from '@osf/features/preprints/models';
 import { WithdrawPreprint } from '@osf/features/preprints/store/preprint';
 
-import { PreprintWithdrawDialogComponent } from './preprint-withdraw-dialog.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { PreprintWithdrawDialogComponent } from './preprint-withdraw-dialog.component';
 
 describe('PreprintWithdrawDialogComponent', () => {
   let component: PreprintWithdrawDialogComponent;
   let fixture: ComponentFixture<PreprintWithdrawDialogComponent>;
-  let dialogRefMock: { close: jest.Mock };
+  let dialogRefMock: DynamicDialogRef;
   let store: Store;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
@@ -57,9 +59,9 @@ describe('PreprintWithdrawDialogComponent', () => {
     fixture = TestBed.createComponent(PreprintWithdrawDialogComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(Store);
-    dialogRefMock = TestBed.inject(DynamicDialogRef) as unknown as { close: jest.Mock };
+    dialogRefMock = TestBed.inject(DynamicDialogRef);
     fixture.detectChanges();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
   }
 
   it('should create', () => {
@@ -132,7 +134,7 @@ describe('PreprintWithdrawDialogComponent', () => {
   it('should dispatch withdraw and close dialog on success', () => {
     setup();
     component.withdrawalJustificationFormControl.setValue('Valid withdrawal justification');
-    (store.dispatch as jest.Mock).mockReturnValue(of(true));
+    (store.dispatch as Mock).mockReturnValue(of(true));
     component.withdraw();
     expect(store.dispatch).toHaveBeenCalledWith(
       new WithdrawPreprint(mockPreprint.id, 'Valid withdrawal justification')
@@ -144,7 +146,7 @@ describe('PreprintWithdrawDialogComponent', () => {
   it('should reset loading and not close dialog on withdraw error', () => {
     setup();
     component.withdrawalJustificationFormControl.setValue('Valid withdrawal justification');
-    (store.dispatch as jest.Mock).mockReturnValue(throwError(() => new Error('withdraw failed')));
+    (store.dispatch as Mock).mockReturnValue(EMPTY);
     component.withdraw();
     expect(component.withdrawRequestInProgress()).toBe(false);
     expect(dialogRefMock.close).not.toHaveBeenCalled();

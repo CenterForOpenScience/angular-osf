@@ -6,22 +6,23 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 
-import { RecentActivityListComponent } from './recent-activity-list.component';
-
 import {
   makeActivityLogWithDisplay,
   MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
 } from '@testing/mocks/activity-log-with-display.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { RecentActivityListComponent } from './recent-activity-list.component';
 
 describe('RecentActivityListComponent', () => {
   let component: RecentActivityListComponent;
   let fixture: ComponentFixture<RecentActivityListComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RecentActivityListComponent, OSFTestingModule, MockComponent(CustomPaginatorComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [RecentActivityListComponent, MockComponent(CustomPaginatorComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(RecentActivityListComponent);
     component = fixture.componentInstance;
@@ -42,7 +43,7 @@ describe('RecentActivityListComponent', () => {
   });
 
   it('should emit pageChange event when onPageChange is called', () => {
-    jest.spyOn(component.pageChange, 'emit');
+    vi.spyOn(component.pageChange, 'emit');
     const mockEvent: PaginatorState = { page: 1, first: 5, rows: 5 };
 
     component.onPageChange(mockEvent);
@@ -84,7 +85,7 @@ describe('RecentActivityListComponent', () => {
   });
 
   it('should handle PaginatorState with undefined or null values', () => {
-    jest.spyOn(component.pageChange, 'emit');
+    vi.spyOn(component.pageChange, 'emit');
     const undefinedEvent: PaginatorState = { page: undefined, first: 0, rows: 5 };
     const nullEvent: PaginatorState = { page: null as any, first: null as any, rows: 5 };
 
@@ -123,7 +124,7 @@ describe('RecentActivityListComponent', () => {
   });
 
   it('should handle multiple consecutive page changes', () => {
-    jest.spyOn(component.pageChange, 'emit');
+    vi.spyOn(component.pageChange, 'emit');
     const event1: PaginatorState = { page: 0, first: 0, rows: 5 };
     const event2: PaginatorState = { page: 1, first: 5, rows: 5 };
     const event3: PaginatorState = { page: 2, first: 10, rows: 5 };

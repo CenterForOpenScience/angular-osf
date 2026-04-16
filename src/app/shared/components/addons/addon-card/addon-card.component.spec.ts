@@ -7,12 +7,12 @@ import { CredentialsFormat } from '@osf/shared/enums/addons-credentials-format.e
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { AddonModel } from '@shared/models/addons/addon.model';
 
-import { AddonCardComponent } from './addon-card.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { AddonCardComponent } from './addon-card.component';
 
 describe('AddonCardComponent', () => {
   let component: AddonCardComponent;
@@ -31,18 +31,19 @@ describe('AddonCardComponent', () => {
     externalServiceName: 'test-service',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockRouter = RouterMockBuilder.create().withUrl('/settings/addons').build();
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [AddonCardComponent, OSFTestingModule],
+    TestBed.configureTestingModule({
+      imports: [AddonCardComponent],
       providers: [
-        provideMockStore({}),
+        provideOSFCore(),
+        provideMockStore(),
         MockProvider(Router, mockRouter),
         MockProvider(CustomConfirmationService, customConfirmationServiceMock),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(AddonCardComponent);
     component = fixture.componentInstance;

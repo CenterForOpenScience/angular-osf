@@ -195,7 +195,7 @@ export function provideMockStore(options: ProvideMockStoreOptions = {}): { provi
      * @param action - The action to dispatch.
      * @returns Observable of the associated mock result or `true` by default.
      */
-    dispatch: jest.fn((action: any) => {
+    dispatch: vi.fn((action: any) => {
       const actionKey = JSON.stringify(action);
       return of(actionMap.has(actionKey) ? actionMap.get(actionKey) : true);
     }),

@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
 
-import { MetadataResourceInformationComponent } from './metadata-resource-information.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { MetadataResourceInformationComponent } from './metadata-resource-information.component';
 
 describe('MetadataResourceInformationComponent', () => {
   let component: MetadataResourceInformationComponent;
@@ -16,10 +16,11 @@ describe('MetadataResourceInformationComponent', () => {
     funders: [],
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MetadataResourceInformationComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataResourceInformationComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MetadataResourceInformationComponent);
     fixture.componentRef.setInput('customItemMetadata', mockCustomItemMetadata);
@@ -51,7 +52,7 @@ describe('MetadataResourceInformationComponent', () => {
   });
 
   it('should emit openEditResourceInformationDialog event', () => {
-    const emitSpy = jest.spyOn(component.openEditResourceInformationDialog, 'emit');
+    const emitSpy = vi.spyOn(component.openEditResourceInformationDialog, 'emit');
 
     component.openEditResourceInformationDialog.emit();
 

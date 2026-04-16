@@ -4,6 +4,8 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of, Subject } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -19,6 +21,17 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
+import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMock } from '@testing/providers/custom-dialog-provider.mock';
+import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
+import { ViewOnlyLinkHelperMock } from '@testing/providers/view-only-link-helper.mock';
+
 import { ArchivingMessageComponent } from '../../components/archiving-message/archiving-message.component';
 import { RegistrationOverviewToolbarComponent } from '../../components/registration-overview-toolbar/registration-overview-toolbar.component';
 import { RegistryBlocksSectionComponent } from '../../components/registry-blocks-section/registry-blocks-section.component';
@@ -30,17 +43,6 @@ import { WithdrawnMessageComponent } from '../../components/withdrawn-message/wi
 import { RegistrySelectors } from '../../store/registry';
 
 import { RegistryOverviewComponent } from './registry-overview.component';
-
-import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
-import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
-import { CustomDialogServiceMock } from '@testing/providers/custom-dialog-provider.mock';
-import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
-import { ViewOnlyLinkHelperMock } from '@testing/providers/view-only-link-helper.mock';
 
 interface SetupOverrides {
   registry?: RegistrationOverviewModel | null;
@@ -242,7 +244,7 @@ describe('RegistryOverviewComponent', () => {
   it('should dispatch schema actions when registry exists and is not withdrawn', () => {
     const { store } = setup({ registry: MOCK_REGISTRATION_OVERVIEW_MODEL });
 
-    const calls = (store.dispatch as jest.Mock).mock.calls.map((c) => c[0]);
+    const calls = (store.dispatch as Mock).mock.calls.map((c) => c[0]);
     const hasSchemaResponses = calls.some((a) => a.constructor?.name === 'GetRegistrySchemaResponses');
 
     expect(hasSchemaResponses).toBe(true);
@@ -251,7 +253,7 @@ describe('RegistryOverviewComponent', () => {
   it('should not dispatch schema actions when registry is withdrawn', () => {
     const { store } = setup({ registry: { ...MOCK_REGISTRATION_OVERVIEW_MODEL, withdrawn: true } });
 
-    const calls = (store.dispatch as jest.Mock).mock.calls.map((c) => c[0]);
+    const calls = (store.dispatch as Mock).mock.calls.map((c) => c[0]);
     const hasSchemaResponses = calls.some((a) => a.constructor?.name === 'GetRegistrySchemaResponses');
 
     expect(hasSchemaResponses).toBe(false);
@@ -263,7 +265,7 @@ describe('RegistryOverviewComponent', () => {
       registry: MOCK_REGISTRATION_OVERVIEW_MODEL,
       schemaResponses: [currentRevision],
     });
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.onUpdateRegistration('registry-1');
 
@@ -285,7 +287,7 @@ describe('RegistryOverviewComponent', () => {
 
   it('should not navigate on onContinueUpdateRegistration when no revisionInProgress', () => {
     const { component, mockRouter } = setup({ registry: MOCK_REGISTRATION_OVERVIEW_MODEL });
-    (mockRouter.navigate as jest.Mock).mockClear();
+    (mockRouter.navigate as Mock).mockClear();
 
     component.onContinueUpdateRegistration();
 
@@ -296,7 +298,7 @@ describe('RegistryOverviewComponent', () => {
     const { component, store, mockDialogService } = setup({
       registry: { ...MOCK_REGISTRATION_OVERVIEW_MODEL, id: '' },
     });
-    jest.spyOn(store, 'dispatch').mockClear();
+    vi.spyOn(store, 'dispatch').mockClear();
 
     component.handleOpenMakeDecisionDialog();
 
@@ -310,7 +312,7 @@ describe('RegistryOverviewComponent', () => {
       registry: { ...MOCK_REGISTRATION_OVERVIEW_MODEL, id: 'reg-1' },
       queryParams: { revisionId: 'rev-1' },
     });
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
     mockDialogService.open.mockReturnValue({ onClose: onCloseSubject.asObservable() } as any);
 
     component.handleOpenMakeDecisionDialog();

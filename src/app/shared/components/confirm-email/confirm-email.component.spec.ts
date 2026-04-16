@@ -1,128 +1,184 @@
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { Store } from '@ngxs/store';
+
+import { MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { signal } from '@angular/core';
+import { throwError } from 'rxjs';
+
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserEmailsSelectors } from '@core/store/user-emails';
+import { DeleteEmail, UserEmailsSelectors, VerifyEmail } from '@core/store/user-emails';
+import { AccountEmailModel } from '@osf/shared/models/emails/account-email.model';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { AccountEmailModel } from '@shared/models/emails/account-email.model';
+import { ConfirmEmailComponent } from '@shared/components/confirm-email/confirm-email.component';
 
-import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-
-import { ConfirmEmailComponent } from './confirm-email.component';
-
-import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 describe('ConfirmEmailComponent', () => {
   let component: ConfirmEmailComponent;
   let fixture: ComponentFixture<ConfirmEmailComponent>;
-  let mockToastService: ReturnType<ToastServiceMockBuilder['build']>;
+  let store: Store;
+  let dialogRef: DynamicDialogRef;
+  let toastService: ToastServiceMockType;
 
-  const mockEmail: AccountEmailModel = {
-    id: 'email-123',
-    emailAddress: 'test@example.com',
-    confirmed: false,
-    verified: false,
-    primary: false,
-    isMerge: false,
-  };
+  interface SetupOverrides {
+    email?: AccountEmailModel;
+  }
 
-  beforeEach(async () => {
-    jest.useFakeTimers();
+  function buildEmail(overrides: Partial<AccountEmailModel> = {}): AccountEmailModel {
+    return {
+      id: 'email-1',
+      emailAddress: 'user@example.com',
+      confirmed: false,
+      verified: false,
+      primary: false,
+      isMerge: false,
+      ...overrides,
+    };
+  }
 
-    mockToastService = ToastServiceMockBuilder.create().build();
+  function setup(overrides: SetupOverrides = {}) {
+    toastService = ToastServiceMock.simple();
+    const email = overrides.email ?? buildEmail();
 
-    await TestBed.configureTestingModule({
-      imports: [ConfirmEmailComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
+    TestBed.configureTestingModule({
+      imports: [ConfirmEmailComponent],
       providers: [
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, { data: [email] }),
+        MockProvider(ToastService, toastService),
         provideMockStore({
-          signals: [{ selector: UserEmailsSelectors.isEmailsSubmitting, value: signal(false) }],
+          signals: [{ selector: UserEmailsSelectors.isEmailsSubmitting, value: false }],
         }),
-        DynamicDialogRefMock,
-        MockProvider(DynamicDialogConfig, {
-          data: [mockEmail],
-        }),
-        MockProvider(ToastService, mockToastService),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(ConfirmEmailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
-  });
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
-  it('should return email from config data', () => {
-    expect(component.email).toEqual(mockEmail);
-    expect(component.email.id).toBe('email-123');
-    expect(component.email.emailAddress).toBe('test@example.com');
+  it('should expose email from dialog config data', () => {
+    const email = buildEmail({ id: 'email-2' });
+    setup({ email });
+    expect(component.email).toEqual(email);
   });
 
-  it('should have isSubmitting signal from store', () => {
-    expect(component.isSubmitting()).toBe(false);
-  });
-
-  it('should show success toast with email address', () => {
-    component.closeDialog();
-    jest.runAllTimers();
-
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.add.emailNotAdded', {
-      name: mockEmail.emailAddress,
-    });
-  });
-
-  it('should close dialog after successful deletion', () => {
-    const mockDialogRef = TestBed.inject(DynamicDialogRef);
+  it('should dispatch delete email and show success for add flow', () => {
+    const email = buildEmail({ isMerge: false });
+    setup({ email });
 
     component.closeDialog();
-    jest.runAllTimers();
 
-    expect(mockDialogRef.close).toHaveBeenCalled();
-  });
-
-  it('should call verifyEmail action without errors', () => {
-    expect(() => component.verifyEmail()).not.toThrow();
-  });
-
-  it('should show success toast on successful verification', () => {
-    component.verifyEmail();
-    jest.runAllTimers();
-
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.add.emailVerified', {
-      name: mockEmail.emailAddress,
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteEmail(email.id));
+    expect(toastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.add.emailNotAdded', {
+      name: email.emailAddress,
     });
+    expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('should close dialog after successful verification', () => {
-    const mockDialogRef = TestBed.inject(DynamicDialogRef);
+  it('should show error for delete email failure in add flow', () => {
+    const email = buildEmail({ isMerge: false });
+    setup({ email });
+    (store.dispatch as Mock).mockReturnValueOnce(throwError(() => new Error('delete failed')));
 
-    component.verifyEmail();
-    jest.runAllTimers();
+    component.closeDialog();
 
-    expect(mockDialogRef.close).toHaveBeenCalled();
+    expect(toastService.showError).toHaveBeenCalledWith('home.confirmEmail.add.denyError', {
+      name: email.emailAddress,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('should close dialog on error without showing success toast', () => {
-    const mockDialogRef = TestBed.inject(DynamicDialogRef);
+  it('should dispatch delete email and show success for merge flow', () => {
+    const email = buildEmail({ isMerge: true });
+    setup({ email });
 
-    mockToastService.showSuccess.mockClear();
-    (mockDialogRef.close as jest.Mock).mockClear();
+    component.closeDialog();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteEmail(email.id));
+    expect(toastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.merge.emailNotAdded', {
+      name: email.emailAddress,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should show error for delete email failure in merge flow', () => {
+    const email = buildEmail({ isMerge: true });
+    setup({ email });
+    (store.dispatch as Mock).mockReturnValueOnce(throwError(() => new Error('delete failed')));
+
+    component.closeDialog();
+
+    expect(toastService.showError).toHaveBeenCalledWith('home.confirmEmail.merge.denyError', {
+      name: email.emailAddress,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should dispatch verify email and show success for add flow', () => {
+    const email = buildEmail({ isMerge: false });
+    setup({ email });
 
     component.verifyEmail();
-    jest.runAllTimers();
 
-    expect(mockDialogRef.close).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new VerifyEmail(email.id));
+    expect(toastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.add.emailVerified', {
+      name: email.emailAddress,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should show error for verify email failure in add flow', () => {
+    const email = buildEmail({ isMerge: false });
+    setup({ email });
+    (store.dispatch as Mock).mockReturnValueOnce(throwError(() => new Error('verify failed')));
+
+    component.verifyEmail();
+
+    expect(toastService.showError).toHaveBeenCalledWith('home.confirmEmail.add.verifyError', {
+      name: email.emailAddress,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should dispatch verify email and show success for merge flow', () => {
+    const email = buildEmail({ isMerge: true });
+    setup({ email });
+
+    component.verifyEmail();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new VerifyEmail(email.id));
+    expect(toastService.showSuccess).toHaveBeenCalledWith('home.confirmEmail.merge.emailVerified', {
+      name: email.emailAddress,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should show error for verify email failure in merge flow', () => {
+    const email = buildEmail({ isMerge: true });
+    setup({ email });
+    (store.dispatch as Mock).mockReturnValueOnce(throwError(() => new Error('verify failed')));
+
+    component.verifyEmail();
+
+    expect(toastService.showError).toHaveBeenCalledWith('home.confirmEmail.merge.verifyError', {
+      name: email.emailAddress,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
   });
 });

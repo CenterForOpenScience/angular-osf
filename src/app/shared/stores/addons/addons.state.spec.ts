@@ -5,6 +5,11 @@ import { inject, TestBed } from '@angular/core/testing';
 
 import { AddonsService } from '@osf/shared/services/addons/addons.service';
 
+import { getAddonsAuthorizedStorageData } from '@testing/data/addons/addons.authorized-storage.data';
+import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
+import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
+
 import {
   GetAuthorizedStorageAddons,
   GetAuthorizedStorageOauthToken,
@@ -14,18 +19,12 @@ import {
 import { AddonsSelectors } from './addons.selectors';
 import { AddonsState } from './addons.state';
 
-import { getAddonsAuthorizedStorageData } from '@testing/data/addons/addons.authorized-storage.data';
-import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
-import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-
 describe('State: Addons', () => {
   let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [OSFTestingModule],
-      providers: [provideStore([AddonsState]), AddonsService],
+      providers: [provideOSFCore(), provideOSFHttp(), provideStore([AddonsState]), AddonsService],
     });
 
     store = TestBed.inject(Store);

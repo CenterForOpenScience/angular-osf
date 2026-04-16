@@ -228,18 +228,17 @@ export class PreprintMakeDecisionComponent {
   }
 
   submit() {
-    // Don't remove comments
     const preprint = this.preprint();
     if (!preprint) return;
 
-    let trigger = '';
+    let trigger;
     if (preprint.reviewsState !== ReviewsState.Pending && this.commentEdited() && !this.decisionChanged()) {
       // If the submission is not pending,
       // the decision has not changed and the comment is edited.
       // the trigger would be 'edit_comment'
       trigger = 'edit_comment';
     } else {
-      let actionType = '';
+      let actionType;
       if (preprint.isPublished && this.isPendingWithdrawal()) {
         // if the submission is published and is pending withdrawal.
         // actionType would be 'reject'
@@ -262,7 +261,7 @@ export class PreprintMakeDecisionComponent {
       trigger = this.decision() === ReviewsState.Accepted ? 'accept' : actionType;
     }
 
-    let comment: StringOrNull = '';
+    let comment: StringOrNull;
 
     if (this.isPendingWithdrawal()) {
       if (trigger === 'reject') {

@@ -1,4 +1,5 @@
 import { PreprintSubmissionModel } from '@osf/features/moderation/models';
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 
 import { MOCK_CONTRIBUTOR } from './contributors.mock';
@@ -37,7 +38,7 @@ export const MOCK_COLLECTION_SUBMISSION_WITH_GUID: CollectionSubmissionWithGuid 
   dateCreated: '2024-01-01T00:00:00Z',
   dateModified: '2024-01-02T00:00:00Z',
   public: false,
-  reviewsState: 'pending',
+  reviewsState: CollectionSubmissionReviewState.Pending,
   collectedType: 'preprint',
   status: 'pending',
   volume: '1',

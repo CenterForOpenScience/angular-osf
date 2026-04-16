@@ -1,38 +1,41 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { firstValueFrom } from 'rxjs';
+
+import { HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
 
 import { MaintenanceModel } from '../models/maintenance.model';
 
 import { MaintenanceService } from './maintenance.service';
 
-import { environment } from 'src/environments/environment';
-
 describe('MaintenanceService', () => {
   let service: MaintenanceService;
   let httpMock: HttpTestingController;
 
-  const apiUrl = `${environment.apiDomainUrl}/v2/status/`;
+  const apiUrl = 'http://localhost:8000/v2/status/';
 
-  const futureDate = (offsetMinutes: number) => new Date(Date.now() + offsetMinutes * 60000).toISOString();
+  const now = Date.now();
+  const activeWindow = {
+    start: new Date(now - 10 * 60 * 1000).toISOString(),
+    end: new Date(now + 10 * 60 * 1000).toISOString(),
+  };
+  const expiredWindow = {
+    start: new Date(now - 60 * 60 * 1000).toISOString(),
+    end: new Date(now - 30 * 60 * 1000).toISOString(),
+  };
 
-  const validMaintenance: MaintenanceModel = {
-    start: futureDate(-10),
-    end: futureDate(10),
-    level: 2,
+  const createMaintenance = (level: number, overrides?: Partial<MaintenanceModel>): MaintenanceModel => ({
+    level,
     message: 'Scheduled maintenance',
-  };
-
-  const expiredMaintenance: MaintenanceModel = {
-    start: futureDate(-60),
-    end: futureDate(-30),
-    level: 1,
-    message: 'Old maintenance',
-  };
+    start: activeWindow.start,
+    end: activeWindow.end,
+    ...overrides,
+  });
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [MaintenanceService],
+      providers: [provideOSFCore(), provideOSFHttp()],
     });
     service = TestBed.inject(MaintenanceService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -42,61 +45,79 @@ describe('MaintenanceService', () => {
     httpMock.verify();
   });
 
-  it('should return maintenance when within window and map severity correctly', (done) => {
-    service.fetchMaintenanceStatus().subscribe((result) => {
-      expect(result).toEqual({
-        ...validMaintenance,
-        severity: 'warn',
-      });
-      done();
-    });
+  it('should create', () => {
+    expect(service).toBeTruthy();
+  });
 
+  it('should return active maintenance with info severity for level 1', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
-    req.flush({ maintenance: validMaintenance });
-    httpMock.verify();
+    req.flush({ maintenance: createMaintenance(1) });
+    const result = await resultPromise;
+    expect(result).toEqual(expect.objectContaining({ severity: 'info' }));
   });
 
-  it('should return null when maintenance is outside window', (done) => {
-    service.fetchMaintenanceStatus().subscribe((result) => {
-      expect(result).toBeNull();
-      done();
-    });
-
+  it('should return active maintenance with warn severity for level 2', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
     const req = httpMock.expectOne(apiUrl);
-    req.flush({ maintenance: expiredMaintenance });
-    httpMock.verify();
+    req.flush({ maintenance: createMaintenance(2) });
+    const result = await resultPromise;
+    expect(result).toEqual(expect.objectContaining({ severity: 'warn' }));
   });
 
-  it('should return null when maintenance is not present', (done) => {
-    service.fetchMaintenanceStatus().subscribe((result) => {
-      expect(result).toBeNull();
-      done();
-    });
+  it('should return active maintenance with error severity for level 3', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
+    const req = httpMock.expectOne(apiUrl);
+    req.flush({ maintenance: createMaintenance(3) });
+    const result = await resultPromise;
+    expect(result).toEqual(expect.objectContaining({ severity: 'error' }));
+  });
 
+  it('should return info severity for unknown level', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
+    const req = httpMock.expectOne(apiUrl);
+    req.flush({ maintenance: createMaintenance(99) });
+    const result = await resultPromise;
+    expect(result).toEqual(expect.objectContaining({ severity: 'info' }));
+  });
+
+  it('should return null when maintenance is outside window', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
+    const req = httpMock.expectOne(apiUrl);
+    req.flush({ maintenance: createMaintenance(2, expiredWindow) });
+    const result = await resultPromise;
+    expect(result).toBeNull();
+  });
+
+  it('should return null when maintenance dates are missing', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
+    const req = httpMock.expectOne(apiUrl);
+    req.flush({
+      maintenance: {
+        level: 2,
+        message: 'Scheduled maintenance',
+        start: '',
+        end: '',
+      },
+    });
+    const result = await resultPromise;
+    expect(result).toBeNull();
+  });
+
+  it('should return null when maintenance is absent', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
     const req = httpMock.expectOne(apiUrl);
     req.flush({});
-    httpMock.verify();
+    const result = await resultPromise;
+    expect(result).toBeNull();
   });
 
-  it('should handle errors and return null', (done) => {
-    service.fetchMaintenanceStatus().subscribe((result) => {
-      expect(result).toBeNull();
-      done();
-    });
-
+  it('should return null when request fails', async () => {
+    const resultPromise = firstValueFrom(service.fetchMaintenanceStatus());
     const req = httpMock.expectOne(apiUrl);
     req.error(new ProgressEvent('error'));
-  });
-
-  it('should map unknown severity level to "info"', () => {
-    const result = (service as any).getSeverity(99);
-    expect(result).toBe('info');
-  });
-
-  it('should return false if start or end is missing', () => {
-    const partial: Partial<MaintenanceModel> = { level: 1, message: 'Missing dates' };
-    const result = (service as any).isWithinMaintenanceWindow(partial);
-    expect(result).toBe(false);
+    const result = await resultPromise;
+    expect(result).toBeNull();
   });
 });

@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -17,13 +19,13 @@ import {
   RegistrationProviderSelectors,
 } from '@osf/shared/stores/registration-provider';
 
-import { RegistryProviderHeroComponent } from '../../components/registry-provider-hero/registry-provider-hero.component';
-
-import { RegistriesProviderSearchComponent } from './registries-provider-search.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistryProviderHeroComponent } from '../../components/registry-provider-hero/registry-provider-hero.component';
+
+import { RegistriesProviderSearchComponent } from './registries-provider-search.component';
 
 const MOCK_PROVIDER: RegistryProviderDetails = {
   id: 'provider-1',
@@ -33,6 +35,7 @@ const MOCK_PROVIDER: RegistryProviderDetails = {
   brand: null,
   iri: 'http://iri.example.com',
   reviewsWorkflow: 'pre-moderation',
+  allowSubmissions: true,
 };
 
 describe('RegistriesProviderSearchComponent', () => {
@@ -95,7 +98,7 @@ describe('RegistriesProviderSearchComponent', () => {
 
   it('should dispatch clear actions on destroy in browser', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
     expect(store.dispatch).toHaveBeenCalledWith(new ClearCurrentProvider());
     expect(store.dispatch).toHaveBeenCalledWith(new ClearRegistryProvider());
@@ -109,7 +112,7 @@ describe('RegistriesProviderSearchComponent', () => {
 
   it('should not dispatch clear actions on destroy on server', () => {
     setup({}, 'server');
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
     expect(store.dispatch).not.toHaveBeenCalled();
   });

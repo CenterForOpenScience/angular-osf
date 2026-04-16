@@ -16,26 +16,27 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { ToastService } from '@osf/shared/services/toast.service';
 import { BookmarksSelectors, GetResourceBookmark } from '@osf/shared/stores/bookmarks';
 
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
 import { ProjectOverviewModel } from '../../models';
 import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggle-publicity-dialog.component';
 
 import { ProjectOverviewToolbarComponent } from './project-overview-toolbar.component';
 
-import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('ProjectOverviewToolbarComponent', () => {
   let component: ProjectOverviewToolbarComponent;
   let fixture: ComponentFixture<ProjectOverviewToolbarComponent>;
-  let store: jest.Mocked<any>;
+  let store: Store;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   let customDialogServiceMock: ReturnType<CustomDialogServiceMockBuilder['build']>;
-  let toastService: jest.Mocked<ToastService>;
+  let toastService: ToastServiceMockType;
 
   const mockResource: ProjectOverviewModel = {
     ...MOCK_PROJECT_OVERVIEW,
@@ -50,15 +51,16 @@ describe('ProjectOverviewToolbarComponent', () => {
     storageUsage: '500MB',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     routerMock = RouterMockBuilder.create().build();
     activatedRouteMock = ActivatedRouteMockBuilder.create().build();
     customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
-    toastService = { showSuccess: jest.fn() } as unknown as jest.Mocked<ToastService>;
+    toastService = ToastServiceMock.simple();
 
-    await TestBed.configureTestingModule({
-      imports: [ProjectOverviewToolbarComponent, OSFTestingModule, ...MockComponents(SocialsShareButtonComponent)],
+    TestBed.configureTestingModule({
+      imports: [ProjectOverviewToolbarComponent, ...MockComponents(SocialsShareButtonComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: BookmarksSelectors.getBookmarksCollectionId, value: 'bookmarks-123' },
@@ -74,10 +76,10 @@ describe('ProjectOverviewToolbarComponent', () => {
         MockProvider(CustomDialogService, customDialogServiceMock),
         MockProvider(ToastService, toastService),
       ],
-    }).compileComponents();
+    });
 
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    store.dispatch = jest.fn().mockReturnValue(of(true));
+    store = TestBed.inject(Store);
+    store.dispatch = vi.fn().mockReturnValue(of(true));
     fixture = TestBed.createComponent(ProjectOverviewToolbarComponent);
     component = fixture.componentInstance;
 

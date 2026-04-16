@@ -1,151 +1,98 @@
 import { CookieService } from 'ngx-cookie-service';
+import { MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { PLATFORM_ID } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CookieServiceMock, CookieServiceMockType } from '@testing/providers/cookie-service.mock';
+import { MaintenanceServiceMock, MaintenanceServiceMockType } from '@testing/providers/maintenance.service.mock';
+
+import { MaintenanceModel } from '../models/maintenance.model';
+import { MaintenanceService } from '../services/maintenance.service';
 
 import { MaintenanceBannerComponent } from './maintenance-banner.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-
-describe('Component: Maintenance Banner', () => {
+describe('MaintenanceBannerComponent', () => {
   let fixture: ComponentFixture<MaintenanceBannerComponent>;
-  let httpClient: { get: jest.Mock };
-  let cookieService: jest.Mocked<CookieService>;
+  let component: MaintenanceBannerComponent;
+  let maintenanceServiceMock: MaintenanceServiceMockType;
+  let cookieServiceMock: CookieServiceMockType;
 
-  beforeEach(async () => {
-    cookieService = {
-      check: jest.fn(),
-      set: jest.fn(),
-    } as any;
+  const activeMaintenance: MaintenanceModel = {
+    level: 2,
+    severity: 'warn',
+    message: 'Scheduled maintenance',
+    start: '2026-03-17T10:00:00.000Z',
+    end: '2026-03-17T12:00:00.000Z',
+  };
 
-    httpClient = { get: jest.fn() } as any;
+  function setup(overrides?: {
+    isBrowser?: boolean;
+    cookieDismissed?: boolean;
+    maintenance?: MaintenanceModel | null;
+  }) {
+    maintenanceServiceMock = MaintenanceServiceMock.simple();
+    cookieServiceMock = CookieServiceMock.simple();
+    cookieServiceMock.check.mockReturnValue(overrides?.cookieDismissed ?? false);
+    maintenanceServiceMock.fetchMaintenanceStatus.mockReturnValue(of(overrides?.maintenance ?? null));
 
-    await TestBed.configureTestingModule({
-      imports: [MaintenanceBannerComponent, OSFTestingModule],
+    TestBed.configureTestingModule({
+      imports: [MaintenanceBannerComponent],
       providers: [
-        { provide: CookieService, useValue: cookieService },
-        { provide: HttpClient, useValue: httpClient },
+        provideOSFCore(),
+        MockProvider(MaintenanceService, maintenanceServiceMock),
+        MockProvider(CookieService, cookieServiceMock),
+        MockProvider(PLATFORM_ID, overrides?.isBrowser === false ? 'server' : 'browser'),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(MaintenanceBannerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }
+
+  it('should create', () => {
+    setup();
+    expect(component).toBeTruthy();
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('should check dismissal cookie and skip fetch when dismissed in browser', () => {
+    setup({ cookieDismissed: true });
+    expect(cookieServiceMock.check).toHaveBeenCalledWith('osf-maintenance-dismissed');
+    expect(component.dismissed()).toBe(true);
+    expect(maintenanceServiceMock.fetchMaintenanceStatus).not.toHaveBeenCalled();
   });
 
-  it('should render info banner when maintenance data is present', fakeAsync(() => {
-    cookieService.check.mockReturnValue(false);
-    const now = new Date();
-    const start = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-    const end = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
-    httpClient.get.mockReturnValueOnce(
-      of({
-        maintenance: { level: 1, message: 'Info message', start, end },
-      })
-    );
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-    const banner = fixture.debugElement.query(By.css('p-message'));
-    expect(banner).toBeTruthy();
-    expect(banner.componentInstance.severity).toBe('info');
-    expect(banner.nativeElement.textContent).toContain('Info message');
-  }));
+  it('should fetch maintenance when not dismissed in browser', () => {
+    setup({ cookieDismissed: false, maintenance: activeMaintenance });
+    expect(cookieServiceMock.check).toHaveBeenCalledWith('osf-maintenance-dismissed');
+    expect(maintenanceServiceMock.fetchMaintenanceStatus).toHaveBeenCalledTimes(1);
+    expect(component.maintenance()).toEqual(activeMaintenance);
+  });
 
-  it('should render warning banner when level is 2', fakeAsync(() => {
-    cookieService.check.mockReturnValue(false);
-    const now = new Date();
-    const start = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-    const end = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
-    httpClient.get.mockReturnValueOnce(
-      of({
-        maintenance: {
-          level: 2,
-          message: 'Warning message',
-          start,
-          end,
-        },
-      })
-    );
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-    const banner = fixture.debugElement.query(By.css('p-message'));
-    expect(banner).toBeTruthy();
-    expect(banner.componentInstance.severity).toBe('warn');
-    expect(banner.nativeElement.textContent).toContain('Warning message');
-  }));
+  it('should fetch maintenance on server without cookie check', () => {
+    setup({ isBrowser: false, maintenance: activeMaintenance });
+    expect(cookieServiceMock.check).not.toHaveBeenCalled();
+    expect(maintenanceServiceMock.fetchMaintenanceStatus).toHaveBeenCalledTimes(1);
+    expect(component.maintenance()).toEqual(activeMaintenance);
+  });
 
-  it('should render danger banner when level is 3', fakeAsync(() => {
-    cookieService.check.mockReturnValue(false);
-    const now = new Date();
-    const start = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-    const end = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
-    httpClient.get.mockReturnValueOnce(
-      of({
-        maintenance: {
-          level: 3,
-          message: 'Danger message',
-          start,
-          end,
-        },
-      })
-    );
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-    const banner = fixture.debugElement.query(By.css('p-message'));
-    expect(banner).toBeTruthy();
-    expect(banner.componentInstance.severity).toBe('error');
-    expect(banner.nativeElement.textContent).toContain('Danger message');
-  }));
+  it('should dismiss and persist cookie in browser', () => {
+    setup({ maintenance: activeMaintenance });
+    component.dismiss();
+    expect(cookieServiceMock.set).toHaveBeenCalledWith('osf-maintenance-dismissed', '1', 24, '/');
+    expect(component.dismissed()).toBe(true);
+    expect(component.maintenance()).toBeNull();
+  });
 
-  it('should not render banner if cookie is set', fakeAsync(() => {
-    cookieService.check.mockReturnValue(true);
-    fixture.detectChanges();
-    expect(httpClient.get).not.toHaveBeenCalled();
-    fixture.detectChanges();
-    const banner = fixture.debugElement.query(By.css('p-message'));
-    expect(banner).toBeFalsy();
-  }));
-
-  it('should not render banner if outside maintenance window', fakeAsync(() => {
-    cookieService.check.mockReturnValue(false);
-    httpClient.get.mockReturnValueOnce(
-      of({
-        maintenance: { level: 1, message: 'Old message', start: '2020-01-01T00:00:00Z', end: '2020-01-02T00:00:00Z' },
-      })
-    );
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-    const banner = fixture.debugElement.query(By.css('p-message'));
-    expect(banner).toBeFalsy();
-  }));
-
-  it('should dismiss banner when close button is clicked', fakeAsync(() => {
-    cookieService.check.mockReturnValue(false);
-    const now = new Date();
-    const start = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-    const end = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
-    httpClient.get.mockReturnValueOnce(
-      of({
-        maintenance: { level: 1, message: 'Dismiss me', start, end },
-      })
-    );
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-    const banner = fixture.debugElement.query(By.css('p-message'));
-    expect(banner).toBeTruthy();
-    banner.triggerEventHandler('onClose', {});
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('p-message'))).toBeFalsy();
-    expect(cookieService.set).toHaveBeenCalled();
-  }));
+  it('should dismiss without setting cookie on server', () => {
+    setup({ isBrowser: false, maintenance: activeMaintenance });
+    component.dismiss();
+    expect(cookieServiceMock.set).not.toHaveBeenCalled();
+    expect(component.dismissed()).toBe(true);
+    expect(component.maintenance()).toBeNull();
+  });
 });

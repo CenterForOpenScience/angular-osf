@@ -35,6 +35,7 @@ export class TokenAddEditFormComponent implements OnInit {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly store = inject(Store);
+  readonly dialogRef = inject(DynamicDialogRef);
 
   private readonly actions = createDispatchMap({
     createToken: CreateToken,
@@ -48,7 +49,6 @@ export class TokenAddEditFormComponent implements OnInit {
   readonly inputLimits = InputLimits.fullName;
 
   readonly tokenId = toSignal(this.route.params.pipe(map((params) => params['id'])));
-  readonly dialogRef = inject(DynamicDialogRef);
   readonly TokenFormControls = TokenFormControls;
   readonly tokenScopes = select(TokensSelectors.getScopes);
   readonly isLoading = select(TokensSelectors.isTokensLoading);

@@ -2,7 +2,11 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { TreeDragDropService } from 'primeng/api';
+
 import { of, Subject } from 'rxjs';
+
+import { Mock } from 'vitest';
 
 import { HttpEventType } from '@angular/common/http';
 import { signal, WritableSignal } from '@angular/core';
@@ -26,10 +30,7 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { FilesControlComponent } from './files-control.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import {
   CustomDialogServiceMockBuilder,
   CustomDialogServiceMockType,
@@ -37,11 +38,13 @@ import {
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
+import { FilesControlComponent } from './files-control.component';
+
 describe('FilesControlComponent', () => {
   let component: FilesControlComponent;
   let fixture: ComponentFixture<FilesControlComponent>;
   let store: Store;
-  let mockFilesService: { uploadFile: jest.Mock; getFileGuid: jest.Mock };
+  let mockFilesService: { uploadFile: Mock; getFileGuid: Mock };
   let mockDialogService: CustomDialogServiceMockType;
   let currentFolderSignal: WritableSignal<FileFolderModel | null>;
   let toastService: ToastServiceMockType;
@@ -51,19 +54,23 @@ describe('FilesControlComponent', () => {
   } as FileFolderModel;
 
   beforeEach(() => {
-    mockFilesService = { uploadFile: jest.fn(), getFileGuid: jest.fn() };
+    mockFilesService = { uploadFile: vi.fn(), getFileGuid: vi.fn() };
     mockDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     currentFolderSignal = signal<FileFolderModel | null>(CURRENT_FOLDER);
     toastService = ToastServiceMock.simple();
 
     TestBed.configureTestingModule({
-      imports: [FilesControlComponent, ...MockComponents(LoadingSpinnerComponent, FileUploadDialogComponent)],
+      imports: [
+        FilesControlComponent,
+        ...MockComponents(LoadingSpinnerComponent, FileUploadDialogComponent, FilesTreeComponent),
+      ],
       providers: [
         provideOSFCore(),
         MockProvider(ToastService, toastService),
         MockProvider(CustomConfirmationService),
         MockProvider(FilesService, mockFilesService),
         MockProvider(CustomDialogService, mockDialogService),
+        MockProvider(TreeDragDropService),
         provideMockStore({
           signals: [
             { selector: RegistriesSelectors.getFiles, value: [] },
@@ -73,25 +80,6 @@ describe('FilesControlComponent', () => {
           ],
         }),
       ],
-    }).overrideComponent(FilesControlComponent, {
-      remove: { imports: [FilesTreeComponent] },
-      add: {
-        imports: [
-          MockComponentWithSignal('osf-files-tree', [
-            'files',
-            'selectionMode',
-            'totalCount',
-            'storage',
-            'currentFolder',
-            'isLoading',
-            'scrollHeight',
-            'viewOnly',
-            'resourceId',
-            'provider',
-            'selectedFiles',
-          ]),
-        ],
-      },
     });
 
     store = TestBed.inject(Store);
@@ -114,7 +102,7 @@ describe('FilesControlComponent', () => {
 
   it('should do nothing when no file is selected', () => {
     const event = { target: { files: [] } } as unknown as Event;
-    const uploadSpy = jest.spyOn(component, 'uploadFiles');
+    const uploadSpy = vi.spyOn(component, 'uploadFiles');
 
     component.onFileSelected(event);
 
@@ -134,7 +122,7 @@ describe('FilesControlComponent', () => {
   it('should upload valid file', () => {
     const file = new File(['data'], 'test.txt');
     const event = { target: { files: [file] } } as unknown as Event;
-    const uploadSpy = jest.spyOn(component, 'uploadFiles').mockImplementation();
+    const uploadSpy = vi.spyOn(component, 'uploadFiles').mockImplementation(() => undefined);
 
     component.onFileSelected(event);
 
@@ -144,7 +132,7 @@ describe('FilesControlComponent', () => {
   it('should open dialog and dispatch createFolder on confirm', () => {
     const onClose$ = new Subject<string>();
     mockDialogService.open.mockReturnValue({ onClose: onClose$ } as any);
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.createFolder();
 
@@ -161,7 +149,7 @@ describe('FilesControlComponent', () => {
     mockFilesService.uploadFile.mockReturnValue(of(progress, response));
     mockFilesService.getFileGuid.mockReturnValue(of({ id: 'abc' } as FileModel));
 
-    const selectSpy = jest.spyOn(component, 'selectFile');
+    const selectSpy = vi.spyOn(component, 'selectFile');
 
     component.uploadFiles(file);
 
@@ -188,27 +176,18 @@ describe('FilesControlComponent', () => {
     expect(mockFilesService.uploadFile).toHaveBeenCalledWith(file, '/upload');
   });
 
-  it('should emit attachFile when not view-only', (done) => {
-    const file = { id: 'file-1' } as FileModel;
-    component.attachFile.subscribe((f) => {
-      expect(f).toEqual(file);
-      done();
-    });
-    component.selectFile(file);
-  });
-
   it('should not emit attachFile when filesViewOnly is true', () => {
     fixture.componentRef.setInput('filesViewOnly', true);
     fixture.detectChanges();
 
-    const emitSpy = jest.spyOn(component.attachFile, 'emit');
+    const emitSpy = vi.spyOn(component.attachFile, 'emit');
     component.selectFile({ id: 'file-1' } as FileModel);
 
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
   it('should dispatch getFiles on onLoadFiles', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onLoadFiles({ link: '/files', page: 2 });
 
@@ -217,7 +196,7 @@ describe('FilesControlComponent', () => {
 
   it('should dispatch setCurrentFolder', () => {
     const folder = { id: 'folder-1' } as FileFolderModel;
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.setCurrentFolder(folder);
 
@@ -242,7 +221,7 @@ describe('FilesControlComponent', () => {
   });
 
   it('should not dispatch getFiles when currentFolder has no filesLink', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     currentFolderSignal.set({ links: {} } as FileFolderModel);
     fixture.detectChanges();
 

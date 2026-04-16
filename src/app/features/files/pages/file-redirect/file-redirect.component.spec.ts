@@ -1,20 +1,25 @@
+import { MockProvider } from 'ng-mocks';
+
 import { of } from 'rxjs';
+
+import { Mocked } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FilesService } from '@osf/shared/services/files.service';
 
-import { FileRedirectComponent } from './file-redirect.component';
-
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMock } from '@testing/providers/route-provider.mock';
-import { RouterMock } from '@testing/providers/router-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+
+import { FileRedirectComponent } from './file-redirect.component';
 
 describe('FileRedirectComponent', () => {
   let component: FileRedirectComponent;
   let fixture: ComponentFixture<FileRedirectComponent>;
-  let filesService: jest.Mocked<FilesService>;
-  let router: jest.Mocked<Router>;
+  let filesService: Mocked<FilesService>;
+  let router: Mocked<Router>;
 
   const mockFile = {
     guid: 'test-file-guid',
@@ -22,24 +27,25 @@ describe('FileRedirectComponent', () => {
     kind: 'file',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const mockFilesService = {
-      getFileGuid: jest.fn().mockReturnValue(of(mockFile)),
+      getFileGuid: vi.fn().mockReturnValue(of(mockFile)),
     };
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [FileRedirectComponent],
       providers: [
-        { provide: FilesService, useValue: mockFilesService },
-        { provide: Router, useValue: RouterMock.withUrl('/test').build() },
-        { provide: ActivatedRoute, useValue: ActivatedRouteMock.withParams({ fileId: 'test-file-id' }).build() },
+        provideOSFCore(),
+        MockProvider(FilesService, mockFilesService),
+        MockProvider(Router, RouterMockBuilder.create().withUrl('/test').build()),
+        MockProvider(ActivatedRoute, ActivatedRouteMock.withParams({ fileId: 'test-file-id' }).build()),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(FileRedirectComponent);
     component = fixture.componentInstance;
-    filesService = TestBed.inject(FilesService) as jest.Mocked<FilesService>;
-    router = TestBed.inject(Router) as jest.Mocked<Router>;
+    filesService = TestBed.inject(FilesService) as Mocked<FilesService>;
+    router = TestBed.inject(Router) as Mocked<Router>;
     fixture.detectChanges();
   });
 
@@ -70,7 +76,7 @@ describe('FileRedirectComponent', () => {
     const mockRouteWithoutFileId = {
       snapshot: {
         paramMap: {
-          get: jest.fn().mockReturnValue(null),
+          get: vi.fn().mockReturnValue(null),
         },
       },
     };

@@ -1,7 +1,6 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe } from 'ng-mocks';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { CollectionsHelpDialogComponent } from './collections-help-dialog.component';
 
@@ -9,10 +8,11 @@ describe('CollectionsHelpDialogComponent', () => {
   let component: CollectionsHelpDialogComponent;
   let fixture: ComponentFixture<CollectionsHelpDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CollectionsHelpDialogComponent, MockPipe(TranslatePipe)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [CollectionsHelpDialogComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(CollectionsHelpDialogComponent);
     component = fixture.componentInstance;

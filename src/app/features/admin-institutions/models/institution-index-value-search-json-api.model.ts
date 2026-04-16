@@ -33,8 +33,10 @@ export type InstitutionIndexValueSearchIncludedJsonApi =
   | InstitutionSearchResultCountJsonApi
   | InstitutionIndexCardFilterJsonApi;
 
-export interface InstitutionIndexValueSearchJsonApi
-  extends JsonApiResponse<null, InstitutionIndexValueSearchIncludedJsonApi[]> {
+export interface InstitutionIndexValueSearchJsonApi extends JsonApiResponse<
+  null,
+  InstitutionIndexValueSearchIncludedJsonApi[]
+> {
   data: null;
   included: InstitutionIndexValueSearchIncludedJsonApi[];
 }

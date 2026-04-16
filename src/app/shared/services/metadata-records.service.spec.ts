@@ -3,11 +3,11 @@ import { TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
+
 import { MetadataRecordFormat } from '../enums/metadata-record-format.enum';
 
 import { MetadataRecordsService } from './metadata-records.service';
-
-import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
 
 describe('MetadataRecordsService', () => {
   let service: MetadataRecordsService;

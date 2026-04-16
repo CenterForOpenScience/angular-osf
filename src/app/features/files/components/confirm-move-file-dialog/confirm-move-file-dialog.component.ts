@@ -28,6 +28,7 @@ import { FileModel } from '@shared/models/files/file.model';
 export class ConfirmMoveFileDialogComponent {
   readonly config = inject(DynamicDialogConfig);
   readonly dialogRef = inject(DynamicDialogRef);
+
   private readonly filesService = inject(FilesService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
@@ -35,6 +36,7 @@ export class ConfirmMoveFileDialogComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   readonly files = select(FilesSelectors.getMoveDialogFiles);
+
   readonly provider = this.config.data.storageProvider;
 
   private fileProjectId = this.config.data.resourceId;

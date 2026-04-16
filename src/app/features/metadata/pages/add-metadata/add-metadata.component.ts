@@ -24,7 +24,7 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { CedarTemplateFormComponent } from '../../components';
+import { CedarTemplateFormComponent } from '../../components/cedar-template-form/cedar-template-form.component';
 import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from '../../models';
 import {
   CreateCedarMetadataRecord,

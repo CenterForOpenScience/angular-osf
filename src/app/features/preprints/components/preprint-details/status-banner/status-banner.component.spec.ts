@@ -9,13 +9,13 @@ import { PreprintModel, PreprintProviderDetails, PreprintRequestAction } from '@
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
-import { StatusBannerComponent } from './status-banner.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { StatusBannerComponent } from './status-banner.component';
 
 describe('StatusBannerComponent', () => {
   let component: StatusBannerComponent;
@@ -71,21 +71,21 @@ describe('StatusBannerComponent', () => {
 
   it('should compute pending state severity, status and icon', () => {
     setup();
-    expect(component.severity()).toBe('warn');
+    expect(component.messageSeverity()).toBe('warn');
     expect(component.status()).toBe('preprints.details.statusBanner.pending');
     expect(component.iconClass()).toBe('hourglass');
   });
 
   it('should compute pending withdrawal state severity, status and icon', () => {
     setup({ isPendingWithdrawal: true });
-    expect(component.severity()).toBe('error');
+    expect(component.messageSeverity()).toBe('error');
     expect(component.status()).toBe('preprints.details.statusBanner.pendingWithdrawal');
     expect(component.iconClass()).toBe('hourglass');
   });
 
   it('should compute withdrawal rejected state severity, status and icon', () => {
     setup({ isWithdrawalRejected: true });
-    expect(component.severity()).toBe('error');
+    expect(component.messageSeverity()).toBe('error');
     expect(component.status()).toBe('preprints.details.statusBanner.withdrawalRejected');
     expect(component.iconClass()).toBe('times-circle');
   });
@@ -113,7 +113,7 @@ describe('StatusBannerComponent', () => {
       ],
     });
     expect(component.isWithdrawn()).toBe(true);
-    expect(component.severity()).toBe('warn');
+    expect(component.messageSeverity()).toBe('warn');
     expect(component.status()).toBe('preprints.details.statusBanner.withdrawn');
     expect(component.iconClass()).toBe('circle-minus');
   });

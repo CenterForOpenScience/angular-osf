@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+
+import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { PreprintModerationTab } from '../../enums';
 
 import { MyReviewingNavigationComponent } from './my-reviewing-navigation.component';
-
-import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MyReviewingNavigationComponent', () => {
   let component: MyReviewingNavigationComponent;
@@ -13,10 +14,11 @@ describe('MyReviewingNavigationComponent', () => {
 
   const mockProvider = MOCK_PROVIDER;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MyReviewingNavigationComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MyReviewingNavigationComponent],
+      providers: [provideOSFCore(), provideRouter([])],
+    });
 
     fixture = TestBed.createComponent(MyReviewingNavigationComponent);
     component = fixture.componentInstance;

@@ -70,18 +70,17 @@
 
 <div class="relative">
   <p-table
+    class="institution-admin-table"
     [columns]="selectedColumnsComputed()"
     [value]="isLoading() ? skeletonData : tableData()"
-    [autoLayout]="true"
     [scrollable]="true"
     [sortMode]="'single'"
-    (onSort)="onSort($event)"
     [lazy]="true"
     [sortField]="sortField()"
     [sortOrder]="sortOrder()"
     [customSort]="true"
     [resetPageOnSort]="false"
-    class="institution-admin-table"
+    (onSort)="onSort($event)"
   >
     <ng-template #header let-columns>
       <tr>

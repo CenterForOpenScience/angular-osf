@@ -1,15 +1,17 @@
+import { Mock } from 'vitest';
+
 import { BrandService } from '@osf/shared/services/brand.service';
 
 export type BrandServiceMockType = Partial<BrandService> & {
-  applyBranding: jest.Mock;
-  resetBranding: jest.Mock;
+  applyBranding: Mock;
+  resetBranding: Mock;
 };
 
 export const BrandServiceMock = {
   simple(): BrandServiceMockType {
     return {
-      applyBranding: jest.fn(),
-      resetBranding: jest.fn(),
+      applyBranding: vi.fn(),
+      resetBranding: vi.fn(),
     };
   },
 };

@@ -4,6 +4,8 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -20,8 +22,6 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { JustificationReviewComponent } from './justification-review.component';
-
 import { MOCK_PAGES_SCHEMA } from '@testing/mocks/registries.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
@@ -36,6 +36,8 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { JustificationReviewComponent } from './justification-review.component';
 
 describe('JustificationReviewComponent', () => {
   let component: JustificationReviewComponent;
@@ -99,7 +101,7 @@ describe('JustificationReviewComponent', () => {
   });
 
   it('should dispatch handleSchemaResponse on submit', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.submit();
 
@@ -108,7 +110,7 @@ describe('JustificationReviewComponent', () => {
   });
 
   it('should dispatch handleSchemaResponse on acceptChanges', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.acceptChanges();
 
@@ -127,7 +129,7 @@ describe('JustificationReviewComponent', () => {
   });
 
   it('should dispatch deleteSchemaResponse and clearState after confirmation', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.deleteDraftUpdate();
 

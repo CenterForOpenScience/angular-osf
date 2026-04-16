@@ -53,12 +53,17 @@ export class ProfileSettingsComponent implements OnInit {
     this.selectedTab = selectedTab;
   }
 
-  onTabChange(index: number): void {
-    this.selectedTab = index;
-    this.router.navigate([], {
-      queryParams: { tab: index },
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
+  onTabChange(event: string | number | undefined): void {
+    const value = Number(event);
+
+    if (!isNaN(value)) {
+      this.selectedTab = value;
+
+      this.router.navigate([], {
+        queryParams: { tab: value },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    }
   }
 }

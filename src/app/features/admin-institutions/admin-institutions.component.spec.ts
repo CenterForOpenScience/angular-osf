@@ -2,71 +2,121 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
+import { Primitive } from '@osf/shared/helpers/types.helper';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { AdminInstitutionsComponent } from './admin-institutions.component';
 import { AdminInstitutionResourceTab } from './enums';
-import { InstitutionsAdminSelectors } from './store';
-
-import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { FetchInstitutionById, InstitutionsAdminSelectors } from './store';
 
 describe('AdminInstitutionsComponent', () => {
   let component: AdminInstitutionsComponent;
   let fixture: ComponentFixture<AdminInstitutionsComponent>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let store: jest.Mocked<Store>;
+  let store: Store;
+  let route: Partial<ActivatedRoute>;
+  let router: RouterMockType;
 
-  beforeEach(async () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().build();
-    mockRouter = RouterMockBuilder.create().build();
+  function setup({
+    institutionId = 'inst-1',
+    selectedRouteTab,
+  }: {
+    institutionId?: string;
+    selectedRouteTab?: AdminInstitutionResourceTab;
+  } = {}) {
+    route = ActivatedRouteMockBuilder.create().withParams({ institutionId }).build();
+    (route.snapshot as { firstChild?: { routeConfig?: { path?: string } } }).firstChild = selectedRouteTab
+      ? { routeConfig: { path: selectedRouteTab } }
+      : undefined;
+    router = RouterMockBuilder.create().withUrl('/admin-institutions/inst-1/summary').build();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        AdminInstitutionsComponent,
-        OSFTestingModule,
-        ...MockComponents(LoadingSpinnerComponent, SelectComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [AdminInstitutionsComponent, ...MockComponents(LoadingSpinnerComponent, SelectComponent)],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
-        MockProvider(Router, mockRouter),
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, route),
+        MockProvider(Router, router),
         provideMockStore({
           signals: [
-            { selector: InstitutionsAdminSelectors.getInstitution, value: MOCK_INSTITUTION },
+            { selector: InstitutionsAdminSelectors.getInstitution, value: null },
             { selector: InstitutionsAdminSelectors.getInstitutionLoading, value: false },
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(AdminInstitutionsComponent);
     component = fixture.componentInstance;
-
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    store.dispatch = jest.fn().mockReturnValue(of(undefined));
-  });
+  }
 
   it('should create', () => {
-    fixture.detectChanges();
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize resourceTabOptions', () => {
-    expect(component.resourceTabOptions).toBeDefined();
-    expect(component.resourceTabOptions.length).toBeGreaterThan(0);
+  it('should dispatch fetchInstitution on init when institutionId exists', () => {
+    setup({ institutionId: 'inst-123' });
+    (store.dispatch as Mock).mockClear();
+
+    component.ngOnInit();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchInstitutionById('inst-123'));
   });
 
-  it('should initialize selectedTab to Summary by default', () => {
+  it('should not dispatch fetchInstitution on init when institutionId missing', () => {
+    setup({ institutionId: '' });
+    (store.dispatch as Mock).mockClear();
+
+    component.ngOnInit();
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchInstitutionById));
+  });
+
+  it('should set selectedTab from first child route path', () => {
+    setup({ selectedRouteTab: AdminInstitutionResourceTab.Users });
+
+    component.ngOnInit();
+
+    expect(component.selectedTab).toBe(AdminInstitutionResourceTab.Users);
+  });
+
+  it('should default selectedTab to summary when first child path missing', () => {
+    setup({ selectedRouteTab: undefined });
+
+    component.ngOnInit();
+
     expect(component.selectedTab).toBe(AdminInstitutionResourceTab.Summary);
+  });
+
+  it('should update selectedTab and navigate on tab change', () => {
+    setup();
+
+    component.onTabChange(AdminInstitutionResourceTab.Projects as Primitive);
+
+    expect(component.selectedTab).toBe(AdminInstitutionResourceTab.Projects);
+    expect(router.navigate).toHaveBeenCalledWith(
+      [AdminInstitutionResourceTab.Projects],
+      expect.objectContaining({ relativeTo: expect.anything() })
+    );
+  });
+
+  it('should not navigate when selected tab is falsy', () => {
+    setup();
+
+    component.onTabChange('' as Primitive);
+
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 });

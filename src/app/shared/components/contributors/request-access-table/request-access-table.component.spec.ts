@@ -1,25 +1,27 @@
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { DialogService } from 'primeng/dynamicdialog';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { RequestAccessModel } from '@shared/models/request-access/request-access.model';
+
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomDialogServiceMockBuilder,
+  CustomDialogServiceMockType,
+} from '@testing/providers/custom-dialog-provider.mock';
 
 import { SelectComponent } from '../../select/select.component';
 
 import { RequestAccessTableComponent } from './request-access-table.component';
 
-import { MOCK_USER } from '@testing/mocks/data.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
-
 describe('RequestAccessTableComponent', () => {
   let component: RequestAccessTableComponent;
   let fixture: ComponentFixture<RequestAccessTableComponent>;
-  let mockDialogService: ReturnType<DialogServiceMockBuilder['build']>;
+  let mockDialogService: CustomDialogServiceMockType;
 
   const mockRequestAccessItem: RequestAccessModel = {
     id: 'request-1',
@@ -49,13 +51,13 @@ describe('RequestAccessTableComponent', () => {
     isCurator: true,
   };
 
-  beforeEach(async () => {
-    mockDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
+  beforeEach(() => {
+    mockDialogService = CustomDialogServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [RequestAccessTableComponent, OSFTestingModule, MockComponent(SelectComponent)],
-      providers: [MockProvider(DialogService, mockDialogService)],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [RequestAccessTableComponent, MockComponent(SelectComponent)],
+      providers: [provideOSFCore(), MockProvider(CustomDialogService, mockDialogService)],
+    });
 
     fixture = TestBed.createComponent(RequestAccessTableComponent);
     component = fixture.componentInstance;
@@ -162,7 +164,7 @@ describe('RequestAccessTableComponent', () => {
   });
 
   it('should emit accept event when acceptContributor is called', () => {
-    const acceptSpy = jest.fn();
+    const acceptSpy = vi.fn();
     component.accept.subscribe(acceptSpy);
 
     component.acceptContributor(mockRequestAccessItem);
@@ -171,7 +173,7 @@ describe('RequestAccessTableComponent', () => {
   });
 
   it('should emit reject event when rejectContributor is called', () => {
-    const rejectSpy = jest.fn();
+    const rejectSpy = vi.fn();
     component.reject.subscribe(rejectSpy);
 
     component.rejectContributor(mockRequestAccessItem);

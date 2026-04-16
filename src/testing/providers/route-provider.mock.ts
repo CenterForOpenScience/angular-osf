@@ -7,6 +7,7 @@ export class ActivatedRouteMockBuilder {
   private queryParamsObj: Record<string, any> = {};
   private dataObj: Record<string, any> = {};
   private firstChildBuilder: ActivatedRouteMockBuilder | null = null;
+  private parentRoute: Partial<ActivatedRoute> | null = null;
   private hasParent = true;
 
   private params$ = new BehaviorSubject<Record<string, any>>({});
@@ -43,6 +44,13 @@ export class ActivatedRouteMockBuilder {
 
   withNoParent(): ActivatedRouteMockBuilder {
     this.hasParent = false;
+    this.parentRoute = null;
+    return this;
+  }
+
+  withParentRoute(parentRoute: Partial<ActivatedRoute>): ActivatedRouteMockBuilder {
+    this.hasParent = true;
+    this.parentRoute = parentRoute;
     return this;
   }
 
@@ -54,21 +62,22 @@ export class ActivatedRouteMockBuilder {
 
   build(): Partial<ActivatedRoute> {
     const paramMap = {
-      get: jest.fn((key: string) => this.paramsObj[key]),
-      has: jest.fn((key: string) => key in this.paramsObj),
-      getAll: jest.fn((key: string) => (this.paramsObj[key] ? [this.paramsObj[key]] : [])),
+      get: vi.fn((key: string) => this.paramsObj[key]),
+      has: vi.fn((key: string) => key in this.paramsObj),
+      getAll: vi.fn((key: string) => (this.paramsObj[key] ? [this.paramsObj[key]] : [])),
       keys: Object.keys(this.paramsObj),
     };
 
     const firstChild = this.firstChildBuilder ? this.firstChildBuilder.build() : null;
 
     const parent = this.hasParent
-      ? ({
+      ? (this.parentRoute ??
+        ({
           params: this.params$.asObservable(),
           snapshot: {
             params: this.paramsObj,
           },
-        } as any)
+        } as any))
       : null;
 
     const route: Partial<ActivatedRoute> = {

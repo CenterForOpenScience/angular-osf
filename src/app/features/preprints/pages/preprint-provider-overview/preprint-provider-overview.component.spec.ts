@@ -9,21 +9,6 @@ import { BrandService } from '@osf/shared/services/brand.service';
 import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
-import {
-  AdvisoryBoardComponent,
-  BrowseBySubjectsComponent,
-  PreprintProviderFooterComponent,
-  PreprintProviderHeroComponent,
-} from '../../components';
-import { PreprintProviderDetails } from '../../models';
-import {
-  GetHighlightedSubjectsByProviderId,
-  GetPreprintProviderById,
-  PreprintProvidersSelectors,
-} from '../../store/preprint-providers';
-
-import { PreprintProviderOverviewComponent } from './preprint-provider-overview.component';
-
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -33,6 +18,19 @@ import { HeaderStyleServiceMock, HeaderStyleServiceMockType } from '@testing/pro
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { AdvisoryBoardComponent } from '../../components/advisory-board/advisory-board.component';
+import { BrowseBySubjectsComponent } from '../../components/browse-by-subjects/browse-by-subjects.component';
+import { PreprintProviderFooterComponent } from '../../components/preprint-provider-footer/preprint-provider-footer.component';
+import { PreprintProviderHeroComponent } from '../../components/preprint-provider-hero/preprint-provider-hero.component';
+import { PreprintProviderDetails } from '../../models';
+import {
+  GetHighlightedSubjectsByProviderId,
+  GetPreprintProviderById,
+  PreprintProvidersSelectors,
+} from '../../store/preprint-providers';
+
+import { PreprintProviderOverviewComponent } from './preprint-provider-overview.component';
 
 describe('PreprintProviderOverviewComponent', () => {
   let component: PreprintProviderOverviewComponent;
@@ -49,7 +47,7 @@ describe('PreprintProviderOverviewComponent', () => {
   const mockProviderId = 'osf';
 
   beforeEach(() => {
-    routerMock = RouterMockBuilder.create().withNavigate(jest.fn().mockResolvedValue(true)).build();
+    routerMock = RouterMockBuilder.create().withNavigate(vi.fn().mockResolvedValue(true)).build();
     routeMock = ActivatedRouteMockBuilder.create().withParams({ providerId: mockProviderId }).build();
     brandServiceMock = BrandServiceMock.simple();
     headerStyleMock = HeaderStyleServiceMock.simple();

@@ -1,11 +1,2 @@
-export type SeverityType =
-  | 'success'
-  | 'info'
-  | 'warn'
-  | 'danger'
-  | 'help'
-  | 'primary'
-  | 'secondary'
-  | 'contrast'
-  | null
-  | undefined;
+export type TagSeverityType = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' | undefined | null;
+export type MessageSeverityType = 'success' | 'info' | 'warn' | 'error' | 'secondary' | 'contrast' | undefined | null;

@@ -1,13 +1,12 @@
-import { MockComponents } from 'ng-mocks';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
 
-import { MetadataCollectionItemComponent } from './metadata-collection-item.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { MetadataCollectionItemComponent } from './metadata-collection-item.component';
 
 describe('MetadataCollectionItemComponent', () => {
   let component: MetadataCollectionItemComponent;
@@ -31,10 +30,11 @@ describe('MetadataCollectionItemComponent', () => {
     gradeLevels: 'Graduate',
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MetadataCollectionItemComponent, OSFTestingModule, ...MockComponents()],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataCollectionItemComponent],
+      providers: [provideOSFCore(), provideRouter([])],
+    });
 
     fixture = TestBed.createComponent(MetadataCollectionItemComponent);
     component = fixture.componentInstance;

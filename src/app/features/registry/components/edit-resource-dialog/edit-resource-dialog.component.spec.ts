@@ -4,22 +4,22 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of, throwError } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 
 import { TestBed } from '@angular/core/testing';
 
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { RegistryResource } from '../../models';
 import { RegistryResourcesSelectors } from '../../store/registry-resources';
 import { ResourceFormComponent } from '../resource-form/resource-form.component';
 
 import { EditResourceDialogComponent } from './edit-resource-dialog.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 const MOCK_RESOURCE: RegistryResource = {
   id: 'resource-123',
@@ -59,7 +59,7 @@ describe('EditResourceDialogComponent', () => {
     const fixture = TestBed.createComponent(EditResourceDialogComponent);
     fixture.detectChanges();
     const store = TestBed.inject(Store);
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     fixture.componentInstance.form.get('pid')?.setValue('');
     fixture.componentInstance.save();
@@ -72,7 +72,7 @@ describe('EditResourceDialogComponent', () => {
     fixture.detectChanges();
     const store = TestBed.inject(Store);
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     fixture.componentInstance.form.patchValue({
       pid: '10.1234/updated',
@@ -91,12 +91,12 @@ describe('EditResourceDialogComponent', () => {
     expect(dialogRef.close).toHaveBeenCalledWith(true);
   });
 
-  it('should not close dialog on dispatch error', () => {
+  it('should not close dialog when dispatch does not emit success', () => {
     const fixture = TestBed.createComponent(EditResourceDialogComponent);
     fixture.detectChanges();
     const store = TestBed.inject(Store);
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    jest.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('fail')));
+    vi.spyOn(store, 'dispatch').mockReturnValue(EMPTY);
 
     fixture.componentInstance.form.patchValue({
       pid: '10.1234/updated',

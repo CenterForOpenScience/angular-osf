@@ -30,11 +30,7 @@ import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import {
-  CurrentResourceSelectors,
-  GetResourceDetails,
-  GetResourceWithChildren,
-} from '@osf/shared/stores/current-resource';
+import { CurrentResourceSelectors, GetResourceWithChildren } from '@osf/shared/stores/current-resource';
 import { FileModel } from '@shared/models/files/file.model';
 import { FileFolderModel } from '@shared/models/files/file-folder.model';
 
@@ -45,8 +41,8 @@ import { FileProvider } from '../../constants';
   imports: [
     Button,
     Tooltip,
-    TranslatePipe,
     ScrollerModule,
+    TranslatePipe,
     IconComponent,
     LoadingSpinnerComponent,
     FileSelectDestinationComponent,
@@ -58,6 +54,7 @@ import { FileProvider } from '../../constants';
 export class MoveFileDialogComponent {
   readonly config = inject(DynamicDialogConfig);
   readonly dialogRef = inject(DynamicDialogRef);
+
   private readonly filesService = inject(FilesService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
@@ -68,7 +65,6 @@ export class MoveFileDialogComponent {
   readonly filesTotalCount = select(FilesSelectors.getMoveDialogFilesTotalCount);
   readonly isLoading = select(FilesSelectors.isMoveDialogFilesLoading);
   readonly currentFolder = select(FilesSelectors.getMoveDialogCurrentFolder);
-  readonly isFilesUpdating = signal(false);
   readonly currentProject = select(CurrentResourceSelectors.getCurrentResource);
   readonly components = select(CurrentResourceSelectors.getResourceWithChildren);
   readonly areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
@@ -81,9 +77,10 @@ export class MoveFileDialogComponent {
     getMoveDialogFiles: GetMoveDialogFiles,
     setMoveDialogCurrentFolder: SetMoveDialogCurrentFolder,
     setCurrentFolder: SetFilesCurrentFolder,
-    getResourceDetails: GetResourceDetails,
     getComponentsTree: GetResourceWithChildren,
   });
+
+  readonly isFilesUpdating = signal(false);
 
   foldersStack = signal<FileFolderModel[]>(this.config.data.foldersStack ?? []);
   storageProvider = signal<string>(this.config.data.storageProvider ?? FileProvider.OsfStorage);

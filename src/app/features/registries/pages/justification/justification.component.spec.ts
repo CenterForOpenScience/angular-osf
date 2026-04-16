@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
@@ -12,16 +14,16 @@ import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { LoaderService } from '@osf/shared/services/loader.service';
 
-import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors } from '../../store';
-
-import { JustificationComponent } from './justification.component';
-
 import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ClearState, FetchSchemaBlocks, FetchSchemaResponse, RegistriesSelectors } from '../../store';
+
+import { JustificationComponent } from './justification.component';
 
 const MOCK_SCHEMA_RESPONSE = createMockSchemaResponse('resp-1', RevisionReviewStates.RevisionInProgress);
 
@@ -210,7 +212,7 @@ describe('JustificationComponent', () => {
 
   it('should dispatch clearState on destroy', () => {
     setup();
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
     expect(store.dispatch).toHaveBeenCalledWith(new ClearState());
   });

@@ -5,18 +5,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
-import { ComponentCardComponent } from './component-card.component';
-
 import { MOCK_NODE_WITH_ADMIN, MOCK_NODE_WITHOUT_ADMIN } from '@testing/mocks/node.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { ComponentCardComponent } from './component-card.component';
 
 describe('ComponentCardComponent', () => {
   let component: ComponentCardComponent;
   let fixture: ComponentFixture<ComponentCardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [ComponentCardComponent, ...MockComponents(IconComponent, ContributorsListComponent)],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ComponentCardComponent);
     component = fixture.componentInstance;
@@ -26,13 +28,13 @@ describe('ComponentCardComponent', () => {
   });
 
   it('should emit navigate when handleNavigate is called', () => {
-    const emitSpy = jest.spyOn(component.navigate, 'emit');
+    const emitSpy = vi.spyOn(component.navigate, 'emit');
     component.handleNavigate('test-id');
     expect(emitSpy).toHaveBeenCalledWith('test-id');
   });
 
   it('should emit menuAction when handleMenuAction is called', () => {
-    const emitSpy = jest.spyOn(component.menuAction, 'emit');
+    const emitSpy = vi.spyOn(component.menuAction, 'emit');
     component.handleMenuAction('settings');
     expect(emitSpy).toHaveBeenCalledWith('settings');
   });

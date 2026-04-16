@@ -1,17 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SettingsAccessRequestsCardComponent } from './settings-access-requests-card.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { SettingsAccessRequestsCardComponent } from './settings-access-requests-card.component';
 
 describe('SettingsAccessRequestsCardComponent', () => {
   let component: SettingsAccessRequestsCardComponent;
   let fixture: ComponentFixture<SettingsAccessRequestsCardComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SettingsAccessRequestsCardComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SettingsAccessRequestsCardComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SettingsAccessRequestsCardComponent);
     component = fixture.componentInstance;
@@ -32,7 +33,7 @@ describe('SettingsAccessRequestsCardComponent', () => {
   });
 
   it('should emit accessRequestChange when checkbox value changes', () => {
-    jest.spyOn(component.accessRequestChange, 'emit');
+    vi.spyOn(component.accessRequestChange, 'emit');
     fixture.componentRef.setInput('accessRequest', false);
     fixture.detectChanges();
 

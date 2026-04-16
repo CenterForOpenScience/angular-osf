@@ -6,13 +6,13 @@ import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
 
+import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { ContributorsListShortenerComponent } from '../contributors-list-shortener/contributors-list-shortener.component';
 import { IconComponent } from '../icon/icon.component';
 
 import { MyProjectsTableComponent } from './my-projects-table.component';
-
-import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
 
 describe('MyProjectsTableComponent', () => {
   let component: MyProjectsTableComponent;
@@ -41,11 +41,11 @@ describe('MyProjectsTableComponent', () => {
     },
   ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [MyProjectsTableComponent, ...MockComponents(IconComponent, ContributorsListShortenerComponent)],
-      providers: [TranslateServiceMock],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MyProjectsTableComponent);
     component = fixture.componentInstance;

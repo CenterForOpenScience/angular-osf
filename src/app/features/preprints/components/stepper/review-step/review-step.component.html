@@ -20,7 +20,7 @@
   {{ 'preprints.preprintStepper.review.supportCenter' | translate }}
 </p>
 
-<p-card styleClass="mt-4" class="card">
+<p-card class="card mt-4">
   <div class="flex flex-column gap-4">
     <h2>{{ 'preprints.preprintStepper.review.sections.titleAndAbstract.title' | translate }}</h2>
 
@@ -57,7 +57,7 @@
   </div>
 </p-card>
 
-<p-card styleClass="mt-4" class="card">
+<p-card class="card mt-4">
   <div class="flex flex-column gap-4">
     <h2>{{ 'preprints.preprintStepper.review.sections.metadata.title' | translate }}</h2>
 
@@ -146,7 +146,7 @@
 </p-card>
 
 @if (provider().assertionsEnabled) {
-  <p-card styleClass="mt-4" class="card">
+  <p-card class="card mt-4">
     <div class="flex flex-column gap-4">
       <h2>{{ 'preprints.preprintStepper.review.sections.authorAssertions.title' | translate }}</h2>
 
@@ -220,7 +220,7 @@
   </p-card>
 }
 
-<p-card styleClass="mt-4" class="card">
+<p-card class="card mt-4">
   <div class="flex flex-column gap-4">
     <h2>{{ 'preprints.preprintStepper.review.sections.supplements.title' | translate }}</h2>
     @if (preprintProject()) {

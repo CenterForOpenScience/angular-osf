@@ -1,20 +1,21 @@
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockModule } from 'ng-mocks';
 
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { TabsModule } from 'primeng/tabs';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CedarTemplateFormComponent } from '@osf/features/metadata/components';
+import { CedarTemplateFormComponent } from '@osf/features/metadata/components/cedar-template-form/cedar-template-form.component';
 import { CedarMetadataDataTemplateJsonApi, CedarRecordDataBinding } from '@osf/features/metadata/models';
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 
+import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks/cedar-metadata-data-template-json-api.mock';
+import { MOCK_CEDAR_METADATA_RECORD_DATA } from '@testing/mocks/cedar-metadata-record.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { MetadataTabsComponent } from './metadata-tabs.component';
-
-import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks/cedar-metadata-data-template-json-api.mock';
-import { MOCK_CEDAR_METADATA_RECORD_DATA } from '@testing/mocks/cedar-metadata-record.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataTabsComponent', () => {
   let component: MetadataTabsComponent;
@@ -30,15 +31,15 @@ describe('MetadataTabsComponent', () => {
 
   const mockCedarRecord = MOCK_CEDAR_METADATA_RECORD_DATA;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         MetadataTabsComponent,
-        OSFTestingModule,
         ...MockComponents(LoadingSpinnerComponent, CedarTemplateFormComponent),
+        MockModule(TabsModule),
       ],
-      schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MetadataTabsComponent);
     component = fixture.componentInstance;
@@ -99,7 +100,7 @@ describe('MetadataTabsComponent', () => {
   });
 
   it('should emit changeTab event', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     component.changeTab.subscribe(spy);
 
     component.changeTab.emit('tab2');
@@ -108,7 +109,7 @@ describe('MetadataTabsComponent', () => {
   });
 
   it('should emit formSubmit on cedar form submit', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     component.formSubmit.subscribe(spy);
     const mockData: CedarRecordDataBinding = { data: {} } as any;
 
@@ -118,7 +119,7 @@ describe('MetadataTabsComponent', () => {
   });
 
   it('should emit toggleFormEdit when toggleEditMode is called', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     component.toggleFormEdit.subscribe(spy);
 
     component.toggleEditMode();
@@ -127,7 +128,7 @@ describe('MetadataTabsComponent', () => {
   });
 
   it('should emit cedarFormChangeTemplate when onCedarFormChangeTemplate is called', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     component.cedarFormChangeTemplate.subscribe(spy);
 
     component.onCedarFormChangeTemplate();
@@ -157,7 +158,7 @@ describe('MetadataTabsComponent', () => {
   });
 
   it('should handle tab change with string value', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     component.changeTab.subscribe(spy);
 
     component.changeTab.emit('tab3');
@@ -166,7 +167,7 @@ describe('MetadataTabsComponent', () => {
   });
 
   it('should handle tab change with number value', () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     component.changeTab.subscribe(spy);
 
     component.changeTab.emit(2);

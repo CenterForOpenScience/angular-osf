@@ -4,6 +4,8 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { PaginatorState } from 'primeng/paginator';
 
+import { Mock } from 'vitest';
+
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -11,12 +13,12 @@ import { RecentActivityListComponent } from '@osf/shared/components/recent-activ
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogsSelectors, ClearActivityLogs } from '@osf/shared/stores/activity-logs';
 
-import { RegistrationRecentActivityComponent } from './registration-recent-activity.component';
-
 import { MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log-with-display.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistrationRecentActivityComponent } from './registration-recent-activity.component';
 
 function setup(overrides: BaseSetupOverrides = {}) {
   const routeBuilder = ActivatedRouteMockBuilder.create().withParams(overrides.routeParams ?? { id: 'reg123' });
@@ -75,7 +77,7 @@ describe('RegistrationRecentActivityComponent', () => {
   it('should dispatch GetActivityLogs when currentPage changes', () => {
     const { fixture, component, store } = setup();
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.currentPage.set(2);
     fixture.detectChanges();
@@ -93,7 +95,7 @@ describe('RegistrationRecentActivityComponent', () => {
   it('should update currentPage and dispatch on page change', () => {
     const { fixture, component, store } = setup();
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onPageChange({ page: 1 } as PaginatorState);
     fixture.detectChanges();
@@ -127,7 +129,7 @@ describe('RegistrationRecentActivityComponent', () => {
   it('should clear store on destroy', () => {
     const { fixture, store } = setup();
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     fixture.destroy();
 

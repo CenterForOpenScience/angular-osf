@@ -28,10 +28,6 @@ import {
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
-import { ReviewsState } from '../../../enums';
-
-import { ReviewStepComponent } from './review-step.component';
-
 import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { MOCK_LICENSE } from '@testing/mocks/license.mock';
@@ -40,9 +36,13 @@ import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { RouterMock, RouterMockType } from '@testing/providers/router-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { ReviewsState } from '../../../enums';
+
+import { ReviewStepComponent } from './review-step.component';
 
 describe('ReviewStepComponent', () => {
   let component: ReviewStepComponent;
@@ -74,7 +74,7 @@ describe('ReviewStepComponent', () => {
     detectChanges?: boolean;
   }) {
     const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
-    routerMock = RouterMock.create().build();
+    routerMock = RouterMockBuilder.create().build();
     toastMock = ToastServiceMock.simple();
 
     TestBed.configureTestingModule({

@@ -1,4 +1,4 @@
-import { MockComponent, MockProviders } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -8,12 +8,12 @@ import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components/aff
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
-import { AffiliatedInstitutionsDialogComponent } from './affiliated-institutions-dialog.component';
-
 import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { AffiliatedInstitutionsDialogComponent } from './affiliated-institutions-dialog.component';
 
 describe('AffiliatedInstitutionsDialogComponent', () => {
   let component: AffiliatedInstitutionsDialogComponent;
@@ -22,16 +22,13 @@ describe('AffiliatedInstitutionsDialogComponent', () => {
   let config: DynamicDialogConfig;
 
   const mockInstitutions: Institution[] = [MOCK_INSTITUTION];
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        AffiliatedInstitutionsDialogComponent,
-        OSFTestingModule,
-        MockComponent(AffiliatedInstitutionSelectComponent),
-      ],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [AffiliatedInstitutionsDialogComponent, MockComponent(AffiliatedInstitutionSelectComponent)],
       providers: [
-        TranslateServiceMock,
-        MockProviders(DynamicDialogRef, DynamicDialogConfig),
+        provideOSFCore(),
+        MockProvider(DynamicDialogConfig),
+        provideDynamicDialogRefMock(),
         provideMockStore({
           signals: [
             { selector: InstitutionsSelectors.getUserInstitutions, value: mockInstitutions },
@@ -39,7 +36,7 @@ describe('AffiliatedInstitutionsDialogComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(AffiliatedInstitutionsDialogComponent);
     component = fixture.componentInstance;
@@ -66,21 +63,18 @@ describe('AffiliatedInstitutionsDialogComponent', () => {
   });
 
   it('should close dialog with selected institutions on save', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
     const selectedInstitutions = [mockInstitutions[0]];
     component.selectedInstitutions.set(selectedInstitutions);
 
     component.save();
 
-    expect(closeSpy).toHaveBeenCalledWith(selectedInstitutions);
+    expect(dialogRef.close).toHaveBeenCalledWith(selectedInstitutions);
   });
 
   it('should close dialog without data on cancel', () => {
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
     component.cancel();
 
-    expect(closeSpy).toHaveBeenCalled();
+    expect(dialogRef.close).toHaveBeenCalled();
   });
 
   it('should update selected institutions', () => {

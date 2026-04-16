@@ -6,7 +6,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { Divider } from 'primeng/divider';
 import { Password } from 'primeng/password';
 
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -27,18 +27,17 @@ import { SignUpForm } from '../../models';
 @Component({
   selector: 'osf-sign-up',
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
     Button,
-    Password,
     Checkbox,
     Divider,
+    Password,
     NgOptimizedImage,
+    ReactiveFormsModule,
     RouterLink,
-    PasswordInputHintComponent,
-    TranslatePipe,
     NgxCaptchaModule,
     TextInputComponent,
+    PasswordInputHintComponent,
+    TranslatePipe,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',

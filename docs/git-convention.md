@@ -37,7 +37,6 @@ The local pipeline is managed via husky
 To contribute to this repository, follow these steps:
 
 1. **Fork the Repository**
-
    - Go to the main repository page on GitHub [OSF Angular Project](https://github.com/CenterForOpenScience/angular-osf).
    - Click the **Fork** button (top-right corner).
    - This creates a copy of the repository under your GitHub account.
@@ -56,7 +55,6 @@ To contribute to this repository, follow these steps:
    ```
 
 4. **Make Your Changes**
-
    - Follow the commit conventions outlined below.
    - Ensure all tests pass before committing.
 

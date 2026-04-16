@@ -1,5 +1,4 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockComponents, MockPipes } from 'ng-mocks';
+import { MockComponents, MockPipe } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -7,13 +6,13 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 
+import { MOCK_PREPRINT_SUBMISSION } from '@testing/mocks/submission.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { SubmissionReviewStatus } from '../../enums';
 import { PreprintSubmissionModel } from '../../models';
 
 import { PreprintSubmissionItemComponent } from './preprint-submission-item.component';
-
-import { MOCK_PREPRINT_SUBMISSION } from '@testing/mocks/submission.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('PreprintSubmissionItemComponent', () => {
   let component: PreprintSubmissionItemComponent;
@@ -21,15 +20,15 @@ describe('PreprintSubmissionItemComponent', () => {
 
   const mockSubmission: PreprintSubmissionModel = MOCK_PREPRINT_SUBMISSION;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         PreprintSubmissionItemComponent,
-        OSFTestingModule,
         ...MockComponents(IconComponent, ContributorsListComponent),
-        MockPipes(DateAgoPipe, TranslatePipe),
+        MockPipe(DateAgoPipe),
       ],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(PreprintSubmissionItemComponent);
     component = fixture.componentInstance;
@@ -69,7 +68,7 @@ describe('PreprintSubmissionItemComponent', () => {
   });
 
   it('should emit selected event', () => {
-    jest.spyOn(component.selected, 'emit');
+    vi.spyOn(component.selected, 'emit');
     component.selected.emit();
     expect(component.selected.emit).toHaveBeenCalled();
   });

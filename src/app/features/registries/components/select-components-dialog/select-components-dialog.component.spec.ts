@@ -3,14 +3,16 @@ import { MockProvider } from 'ng-mocks';
 import { TreeNode } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
 import { ProjectShortInfoModel } from '../../models/project-short-info.model';
 
 import { SelectComponentsDialogComponent } from './select-components-dialog.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
 
 describe('SelectComponentsDialogComponent', () => {
   let component: SelectComponentsDialogComponent;
@@ -52,7 +54,7 @@ describe('SelectComponentsDialogComponent', () => {
   it('should close with unique selected component ids including parent on continue', () => {
     component.continue();
     expect(dialogRef.close).toHaveBeenCalledWith(expect.arrayContaining(['p1', 'c1', 'c1a', 'c2']));
-    const passed = (dialogRef.close as jest.Mock).mock.calls[0][0] as string[];
+    const passed = (dialogRef.close as Mock).mock.calls[0][0] as string[];
     expect(new Set(passed).size).toBe(passed.length);
   });
 });

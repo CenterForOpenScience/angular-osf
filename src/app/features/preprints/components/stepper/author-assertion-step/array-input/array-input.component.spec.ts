@@ -5,9 +5,9 @@ import { FormArray, FormControl, Validators } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 
-import { ArrayInputComponent } from './array-input.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { ArrayInputComponent } from './array-input.component';
 
 describe('ArrayInputComponent', () => {
   let component: ArrayInputComponent;

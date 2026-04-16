@@ -1,20 +1,16 @@
-import { Store } from '@ngxs/store';
-
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
-
-import { of } from 'rxjs';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Navigation, Router, UrlTree } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AddonSetupAccountFormComponent } from '@osf/shared/components/addons/addon-setup-account-form/addon-setup-account-form.component';
 import { StorageItemSelectorComponent } from '@osf/shared/components/addons/storage-item-selector/storage-item-selector.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { CredentialsFormat } from '@osf/shared/enums/addons-credentials-format.enum';
 import { AddonModel } from '@osf/shared/models/addons/addon.model';
-import { AddonsSelectors } from '@osf/shared/stores/addons';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { ConnectConfiguredAddonComponent } from './connect-configured-addon.component';
 
@@ -33,46 +29,14 @@ describe.skip('ConnectAddonComponent', () => {
     externalServiceName: 'test-service',
   };
 
-  beforeEach(async () => {
-    const mockNavigation: Partial<Navigation> = {
-      id: 1,
-      initialUrl: new UrlTree(),
-      extractedUrl: new UrlTree(),
-      trigger: 'imperative',
-      previousNavigation: null,
-      extras: {
-        state: { addon: mockAddon },
-      },
-    };
-
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         ConnectConfiguredAddonComponent,
         ...MockComponents(SubHeaderComponent, AddonSetupAccountFormComponent, StorageItemSelectorComponent),
-        MockPipe(TranslatePipe),
       ],
-      providers: [
-        provideNoopAnimations(),
-        MockProvider(Store, {
-          selectSignal: jest.fn().mockImplementation((selector) => {
-            if (selector === AddonsSelectors.getAddonsUserReference) {
-              return () => [{ id: 'test-user-id' }];
-            }
-            if (selector === AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon) {
-              return () => null;
-            }
-            return () => null;
-          }),
-          dispatch: jest.fn().mockReturnValue(of({})),
-        }),
-        MockProvider(Router, {
-          getCurrentNavigation: () => mockNavigation as Navigation,
-          navigate: jest.fn(),
-        }),
-        MockProvider(TranslateService),
-        MockProvider(ActivatedRoute),
-      ],
-    }).compileComponents();
+      providers: [provideOSFCore(), provideMockStore(), MockProvider(Router), MockProvider(ActivatedRoute)],
+    });
 
     fixture = TestBed.createComponent(ConnectConfiguredAddonComponent);
     component = fixture.componentInstance;

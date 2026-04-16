@@ -1,5 +1,7 @@
 import { MockComponent, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -8,19 +10,19 @@ import { SocialsShareButtonComponent } from '@osf/shared/components/socials-shar
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { SocialShareService } from '@osf/shared/services/social-share.service';
 
-import { ShareAndDownloadComponent } from './share-and-download.component';
-
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { DataciteServiceMockBuilder, DataciteServiceMockType } from '@testing/providers/datacite.service.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 
+import { ShareAndDownloadComponent } from './share-and-download.component';
+
 describe('ShareAndDownloadComponent', () => {
   let component: ShareAndDownloadComponent;
   let fixture: ComponentFixture<ShareAndDownloadComponent>;
   let dataciteService: DataciteServiceMockType;
-  let socialShareService: { createDownloadUrl: jest.Mock };
+  let socialShareService: { createDownloadUrl: Mock };
 
   const mockPreprint = PREPRINT_MOCK;
   const mockProvider = PREPRINT_PROVIDER_DETAILS_MOCK;
@@ -31,7 +33,7 @@ describe('ShareAndDownloadComponent', () => {
 
   function setup(overrides: SetupOverrides = {}) {
     dataciteService = DataciteServiceMockBuilder.create().build();
-    socialShareService = { createDownloadUrl: jest.fn().mockReturnValue('https://example.com/download') };
+    socialShareService = { createDownloadUrl: vi.fn().mockReturnValue('https://example.com/download') };
 
     TestBed.configureTestingModule({
       imports: [ShareAndDownloadComponent, MockComponent(SocialsShareButtonComponent)],
@@ -74,8 +76,8 @@ describe('ShareAndDownloadComponent', () => {
 
   it('should open download link and log identifiable download', () => {
     setup();
-    const focus = jest.fn();
-    const openSpy = jest.spyOn(window, 'open').mockReturnValue({ focus } as unknown as Window);
+    const focus = vi.fn();
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue({ focus } as unknown as Window);
 
     component.download();
 
@@ -90,7 +92,7 @@ describe('ShareAndDownloadComponent', () => {
     setup({
       selectorOverrides: [{ selector: PreprintSelectors.getPreprint, value: null }],
     });
-    const openSpy = jest.spyOn(window, 'open');
+    const openSpy = vi.spyOn(window, 'open');
 
     component.download();
 
@@ -102,7 +104,7 @@ describe('ShareAndDownloadComponent', () => {
 
   it('should not open or log when not running in browser', () => {
     setup({ platformId: 'server' });
-    const openSpy = jest.spyOn(window, 'open');
+    const openSpy = vi.spyOn(window, 'open');
 
     component.download();
 
@@ -114,7 +116,7 @@ describe('ShareAndDownloadComponent', () => {
 
   it('should not log when window.open fails', () => {
     setup();
-    const openSpy = jest.spyOn(window, 'open').mockReturnValue(null);
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
 
     component.download();
 

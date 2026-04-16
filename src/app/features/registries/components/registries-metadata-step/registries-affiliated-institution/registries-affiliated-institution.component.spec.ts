@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -15,11 +17,11 @@ import {
   UpdateResourceInstitutions,
 } from '@osf/shared/stores/institutions';
 
-import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution.component';
-
 import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution.component';
 
 describe('RegistriesAffiliatedInstitutionComponent', () => {
   let component: RegistriesAffiliatedInstitutionComponent;
@@ -72,7 +74,7 @@ describe('RegistriesAffiliatedInstitutionComponent', () => {
   });
 
   it('should dispatch updateResourceInstitutions on selection', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     const selected: Institution[] = [MOCK_INSTITUTION as Institution];
     component.institutionsSelected(selected);
     expect(store.dispatch).toHaveBeenCalledWith(

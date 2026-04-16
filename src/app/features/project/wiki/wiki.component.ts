@@ -43,15 +43,15 @@ import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-
 @Component({
   selector: 'osf-wiki',
   imports: [
-    SubHeaderComponent,
-    TranslatePipe,
-    ButtonGroupModule,
     Button,
+    ButtonGroupModule,
+    SubHeaderComponent,
     WikiListComponent,
     ViewSectionComponent,
     EditSectionComponent,
     CompareSectionComponent,
     ViewOnlyLinkMessageComponent,
+    TranslatePipe,
   ],
   templateUrl: './wiki.component.html',
   styleUrl: './wiki.component.scss',
@@ -69,7 +69,6 @@ export class WikiComponent {
   WikiModes = WikiModes;
   homeWikiName = 'Home';
 
-  readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   wikiModes = select(WikiSelectors.getWikiModes);
   previewContent = select(WikiSelectors.getPreviewContent);
   versionContent = select(WikiSelectors.getWikiVersionContent);
@@ -83,8 +82,6 @@ export class WikiComponent {
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
   isCompareVersionLoading = select(WikiSelectors.getCompareVersionsLoading);
   isAnonymous = select(WikiSelectors.isWikiAnonymous);
-  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
-
   hasWriteAccess = select(CurrentResourceSelectors.hasWriteAccess);
 
   actions = createDispatchMap({
@@ -104,6 +101,9 @@ export class WikiComponent {
   });
 
   wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
+  readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+
+  readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   constructor() {
     this.actions

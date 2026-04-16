@@ -1,7 +1,5 @@
 import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
 
-import structuredClone from 'structured-clone';
-
 const ProjectsMock = {
   data: [
     {

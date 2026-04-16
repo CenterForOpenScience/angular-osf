@@ -2,7 +2,7 @@ import { select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { PrimeTemplate } from 'primeng/api';
+import { PrimeTemplate, TreeNode } from 'primeng/api';
 import { Tree, TreeLazyLoadEvent, TreeNodeDropEvent, TreeNodeSelectEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -51,6 +51,9 @@ import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { FileMenuComponent } from '../file-menu/file-menu.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
+
+// [NS] Temporary fix
+type FileTreeNode = FileModel & TreeNode;
 
 @Component({
   selector: 'osf-files-tree',
@@ -148,6 +151,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       return [...files];
     }
   });
+
+  // [NS] Temporary fix
+  readonly selectedNodes = computed(() => this.selectedFiles() as FileTreeNode[]);
 
   constructor() {
     effect(() => {

@@ -1,6 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { WINDOW } from './window.provider';
 
@@ -8,8 +9,7 @@ describe('Provider: WINDOW', () => {
   describe('when running in the browser', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [CommonModule],
-        providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
+        providers: [provideOSFCore(), { provide: PLATFORM_ID, useValue: 'browser' }],
       });
     });
 
@@ -22,8 +22,7 @@ describe('Provider: WINDOW', () => {
   describe('when running on the server', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [CommonModule],
-        providers: [{ provide: PLATFORM_ID, useValue: 'server' }],
+        providers: [provideOSFCore(), { provide: PLATFORM_ID, useValue: 'server' }],
       });
     });
 

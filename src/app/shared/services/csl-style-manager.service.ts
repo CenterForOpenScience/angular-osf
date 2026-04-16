@@ -95,7 +95,7 @@ export class CslStyleManagerService {
           const config = Cite.plugins.config.get('@csl');
           config.templates.add(styleId, cslXml);
         } catch (error) {
-          throw new Error(`Failed to register CSL style ${styleId}: ${error?.toString()}`);
+          throw new Error(`Failed to register CSL style ${styleId}: ${String(error)}`, { cause: error });
         }
       })
     );

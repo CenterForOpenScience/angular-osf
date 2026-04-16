@@ -2,24 +2,25 @@ import { Store } from '@ngxs/store';
 
 import { MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
-import { MakePublic } from '../../store/registry';
-
-import { RegistryStatusesComponent } from './registry-statuses.component';
-
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomConfirmationServiceMock } from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMock } from '@testing/providers/custom-dialog-provider.mock';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { MakePublic } from '../../store/registry';
+
+import { RegistryStatusesComponent } from './registry-statuses.component';
 
 const MOCK_REGISTRY = { ...MOCK_REGISTRATION_OVERVIEW_MODEL, embargoEndDate: '2024-01-01T00:00:00Z' };
 
@@ -37,10 +38,10 @@ function setup(overrides: SetupOverrides = {}) {
     imports: [RegistryStatusesComponent],
     providers: [
       provideOSFCore(),
-      MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
+      provideRouter([]),
+      provideMockStore(),
       MockProvider(CustomDialogService, mockDialogService),
       MockProvider(CustomConfirmationService, mockConfirmationService),
-      provideMockStore(),
     ],
   });
 
@@ -138,9 +139,9 @@ describe('RegistryStatusesComponent', () => {
 
   it('should call confirmDelete and dispatch MakePublic on confirm', () => {
     const { component, store, mockConfirmationService } = setup();
-    jest.spyOn(store, 'dispatch');
+    vi.spyOn(store, 'dispatch');
 
-    (mockConfirmationService.confirmDelete as jest.Mock).mockImplementation((opts) => opts.onConfirm());
+    (mockConfirmationService.confirmDelete as Mock).mockImplementation((opts) => opts.onConfirm());
     component.openEndEmbargoDialog();
 
     expect(mockConfirmationService.confirmDelete).toHaveBeenCalledWith(

@@ -2,11 +2,11 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { ProjectDetailSettingAccordionComponent } from '../project-detail-setting-accordion/project-detail-setting-accordion.component';
 
 import { SettingsWikiCardComponent } from './settings-wiki-card.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('SettingsWikiCardComponent', () => {
   let component: SettingsWikiCardComponent;
@@ -17,10 +17,11 @@ describe('SettingsWikiCardComponent', () => {
   const mockAnyoneCanEditWiki = false;
   const mockIsPublic = true;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SettingsWikiCardComponent, OSFTestingModule, MockComponent(ProjectDetailSettingAccordionComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SettingsWikiCardComponent, MockComponent(ProjectDetailSettingAccordionComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SettingsWikiCardComponent);
     component = fixture.componentInstance;
@@ -58,7 +59,7 @@ describe('SettingsWikiCardComponent', () => {
   });
 
   it('should emit wikiChangeEmit when wiki checkbox changes', () => {
-    jest.spyOn(component.wikiChangeEmit, 'emit');
+    vi.spyOn(component.wikiChangeEmit, 'emit');
     fixture.componentRef.setInput('wikiEnabled', mockWikiEnabled);
     fixture.componentRef.setInput('anyoneCanEditWiki', mockAnyoneCanEditWiki);
     fixture.componentRef.setInput('title', mockTitle);
@@ -70,7 +71,7 @@ describe('SettingsWikiCardComponent', () => {
   });
 
   it('should emit anyoneCanEditWikiEmitValue when changeEmittedValue is called with boolean', () => {
-    jest.spyOn(component.anyoneCanEditWikiEmitValue, 'emit');
+    vi.spyOn(component.anyoneCanEditWikiEmitValue, 'emit');
     fixture.componentRef.setInput('wikiEnabled', mockWikiEnabled);
     fixture.componentRef.setInput('anyoneCanEditWiki', mockAnyoneCanEditWiki);
     fixture.componentRef.setInput('title', mockTitle);
@@ -83,7 +84,7 @@ describe('SettingsWikiCardComponent', () => {
   });
 
   it('should not emit anyoneCanEditWikiEmitValue when changeEmittedValue is called with string', () => {
-    jest.spyOn(component.anyoneCanEditWikiEmitValue, 'emit');
+    vi.spyOn(component.anyoneCanEditWikiEmitValue, 'emit');
     fixture.componentRef.setInput('wikiEnabled', mockWikiEnabled);
     fixture.componentRef.setInput('anyoneCanEditWiki', mockAnyoneCanEditWiki);
     fixture.componentRef.setInput('title', mockTitle);

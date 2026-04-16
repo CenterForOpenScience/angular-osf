@@ -2,7 +2,9 @@ import { Store } from '@ngxs/store';
 
 import { SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Mock } from 'vitest';
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import {
@@ -12,11 +14,11 @@ import {
   GetStyledCitation,
 } from '@shared/stores/citations';
 
-import { CitationSectionComponent } from './citation-section.component';
-
 import { CITATION_STYLES_MOCK } from '@testing/mocks/citation-style.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { CitationSectionComponent } from './citation-section.component';
 
 describe('CitationSectionComponent', () => {
   let component: CitationSectionComponent;
@@ -62,9 +64,13 @@ describe('CitationSectionComponent', () => {
 
     if (overrides.detectChanges ?? true) {
       fixture.detectChanges();
-      (store.dispatch as jest.Mock).mockClear();
+      (store.dispatch as Mock).mockClear();
     }
   }
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   it('should create', () => {
     setup();
@@ -123,9 +129,10 @@ describe('CitationSectionComponent', () => {
     );
   });
 
-  it('should debounce and deduplicate citation style filter dispatches', fakeAsync(() => {
+  it('should debounce and deduplicate citation style filter dispatches', () => {
+    vi.useFakeTimers();
     setup();
-    const preventDefault = jest.fn();
+    const preventDefault = vi.fn();
     const eventApa: SelectFilterEvent = {
       originalEvent: { preventDefault } as unknown as Event,
       filter: 'apa',
@@ -136,25 +143,25 @@ describe('CitationSectionComponent', () => {
     expect(preventDefault).toHaveBeenCalled();
     expect(store.dispatch).not.toHaveBeenCalled();
 
-    tick(299);
+    vi.advanceTimersByTime(299);
     expect(store.dispatch).not.toHaveBeenCalled();
 
-    tick(1);
+    vi.advanceTimersByTime(1);
     expect(store.dispatch).toHaveBeenCalledWith(new GetCitationStyles('apa'));
     expect(store.dispatch).toHaveBeenCalledTimes(1);
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.handleCitationStyleFilterSearch(eventApa);
-    tick(300);
+    vi.advanceTimersByTime(300);
     expect(store.dispatch).not.toHaveBeenCalled();
 
     const eventMla: SelectFilterEvent = {
-      originalEvent: { preventDefault: jest.fn() } as unknown as Event,
+      originalEvent: { preventDefault: vi.fn() } as unknown as Event,
       filter: 'mla',
     };
     component.handleCitationStyleFilterSearch(eventMla);
-    tick(300);
+    vi.advanceTimersByTime(300);
 
     expect(store.dispatch).toHaveBeenCalledWith(new GetCitationStyles('mla'));
-  }));
+  });
 });

@@ -1,11 +1,11 @@
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProviders } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
 import { ConfirmationSentDialogComponent } from './confirmation-sent-dialog.component';
 
@@ -13,15 +13,11 @@ describe('ConfirmationSentDialogComponent', () => {
   let component: ConfirmationSentDialogComponent;
   let fixture: ComponentFixture<ConfirmationSentDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ConfirmationSentDialogComponent, MockPipe(TranslatePipe)],
-      providers: [
-        MockProviders(DynamicDialogRef, DynamicDialogConfig),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ConfirmationSentDialogComponent],
+      providers: [provideOSFCore(), MockProvider(DynamicDialogConfig), provideDynamicDialogRefMock()],
+    });
 
     fixture = TestBed.createComponent(ConfirmationSentDialogComponent);
     component = fixture.componentInstance;

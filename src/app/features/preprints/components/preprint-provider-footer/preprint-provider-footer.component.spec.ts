@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { PreprintProviderFooterComponent } from './preprint-provider-footer.component';
 
 describe('PreprintProviderFooterComponent', () => {
@@ -8,6 +10,7 @@ describe('PreprintProviderFooterComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [PreprintProviderFooterComponent],
+      providers: [provideOSFCore()],
     });
 
     fixture = TestBed.createComponent(PreprintProviderFooterComponent);

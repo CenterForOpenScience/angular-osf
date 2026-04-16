@@ -1,19 +1,18 @@
 import { HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
-import { FilesService } from './files.service';
-
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getResourceReferencesData } from '@testing/data/files/resource-references.data';
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
+
+import { FilesService } from './files.service';
 
 describe.skip('Service: Files', () => {
   let service: FilesService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [OSFTestingStoreModule],
-      providers: [FilesService],
+      providers: [provideOSFCore(), provideOSFHttp(), FilesService],
     });
 
     service = TestBed.inject(FilesService);

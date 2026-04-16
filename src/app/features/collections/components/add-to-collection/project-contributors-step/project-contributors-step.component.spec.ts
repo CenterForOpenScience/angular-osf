@@ -2,41 +2,41 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { ContributorsTableComponent } from '@shared/components/contributors';
 import { CustomConfirmationService } from '@shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@shared/stores/contributors';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
-import { ProjectContributorsStepComponent } from './project-contributors-step.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomConfirmationServiceMockBuilder,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+
+import { ProjectContributorsStepComponent } from './project-contributors-step.component';
 
 describe.skip('ProjectContributorsStepComponent', () => {
   let component: ProjectContributorsStepComponent;
   let fixture: ComponentFixture<ProjectContributorsStepComponent>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
-  let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
+  let customConfirmationServiceMock: CustomConfirmationServiceMockType;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     toastServiceMock = ToastServiceMockBuilder.create().build();
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        ProjectContributorsStepComponent,
-        OSFTestingModule,
-        ...MockComponents(ContributorsTableComponent, InfoIconComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [ProjectContributorsStepComponent, ...MockComponents(ContributorsTableComponent, InfoIconComponent)],
       providers: [
+        provideOSFCore(),
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, customConfirmationServiceMock),
         MockProvider(CustomDialogService, mockCustomDialogService),
@@ -48,7 +48,7 @@ describe.skip('ProjectContributorsStepComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ProjectContributorsStepComponent);
     component = fixture.componentInstance;
@@ -71,7 +71,7 @@ describe.skip('ProjectContributorsStepComponent', () => {
   });
 
   it('should handle step navigation', () => {
-    const navigateSpy = jest.spyOn(component.stepChange, 'emit');
+    const navigateSpy = vi.spyOn(component.stepChange, 'emit');
 
     component.handleEditStep();
 

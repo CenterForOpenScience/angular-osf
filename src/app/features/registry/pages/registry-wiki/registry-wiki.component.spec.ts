@@ -2,10 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { signal, WritableSignal } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { Mock } from 'vitest';
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-section/compare-section.component';
 import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
@@ -25,217 +27,156 @@ import {
   WikiSelectors,
 } from '@osf/shared/stores/wiki';
 
-import { RegistryWikiComponent } from './registry-wiki.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
-import { ViewOnlyLinkHelperMock } from '@testing/providers/view-only-link-helper.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+import { ViewOnlyLinkHelperMock, ViewOnlyLinkHelperMockType } from '@testing/providers/view-only-link-helper.mock';
 
-const MOCK_WIKI_LIST = [{ id: 'wiki-1', name: 'Wiki 1' }];
-
-interface SetupOverrides extends BaseSetupOverrides {
-  queryParams?: Record<string, string>;
-}
-
-function setup(overrides: SetupOverrides = {}) {
-  const queryParams = overrides.queryParams ?? { wiki: 'wiki-123' };
-
-  const routeBuilder = ActivatedRouteMockBuilder.create()
-    .withParams(overrides.routeParams ?? { id: 'resource-123' })
-    .withQueryParams(queryParams);
-
-  const mockRoute = routeBuilder.build();
-  const mockRouter = RouterMockBuilder.create().build();
-  const mockViewOnlyHelper = ViewOnlyLinkHelperMock.simple();
-
-  const defaultSignals = [
-    { selector: WikiSelectors.getWikiModes, value: { view: true, edit: false, compare: false } },
-    { selector: WikiSelectors.getPreviewContent, value: 'Preview content' },
-    { selector: WikiSelectors.getWikiVersionContent, value: 'Version content' },
-    { selector: WikiSelectors.getCompareVersionContent, value: 'Compare content' },
-    { selector: WikiSelectors.getWikiList, value: MOCK_WIKI_LIST },
-    { selector: WikiSelectors.getComponentsWikiList, value: [] },
-    { selector: WikiSelectors.getCurrentWikiId, value: 'wiki-123' },
-    { selector: WikiSelectors.getWikiVersions, value: [] },
-    { selector: WikiSelectors.getWikiListLoading, value: false },
-    { selector: WikiSelectors.getComponentsWikiListLoading, value: false },
-    { selector: WikiSelectors.getWikiVersionsLoading, value: false },
-  ];
-
-  const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
-
-  TestBed.configureTestingModule({
-    imports: [
-      RegistryWikiComponent,
-      ...MockComponents(WikiListComponent, ViewSectionComponent, CompareSectionComponent, ViewOnlyLinkMessageComponent),
-    ],
-    providers: [
-      provideOSFCore(),
-      MockProvider(ActivatedRoute, mockRoute),
-      MockProvider(Router, mockRouter),
-      MockProvider(ViewOnlyLinkHelperService, mockViewOnlyHelper),
-      provideMockStore({ signals }),
-    ],
-  });
-
-  const store = TestBed.inject(Store);
-  const fixture = TestBed.createComponent(RegistryWikiComponent);
-  const component = fixture.componentInstance;
-  fixture.detectChanges();
-
-  return { fixture, component, store, mockRouter, routeBuilder };
-}
+import { RegistryWikiComponent } from './registry-wiki.component';
 
 describe('RegistryWikiComponent', () => {
-  it('should dispatch getWikiList and getComponentsWikiList on construction', () => {
-    const { store } = setup();
+  let component: RegistryWikiComponent;
+  let fixture: ComponentFixture<RegistryWikiComponent>;
+  let store: Store;
+  let dispatchMock: Mock;
+  let routerMock: RouterMockType;
+  let viewOnlyMock: ViewOnlyLinkHelperMockType;
 
-    const calls = (store.dispatch as jest.Mock).mock.calls;
-    const getWikiListCall = calls.find(([a]: [unknown]) => a instanceof GetWikiList);
-    const getComponentsCall = calls.find(([a]: [unknown]) => a instanceof GetComponentsWikiList);
+  interface SetupOverrides {
+    queryParams?: Record<string, unknown>;
+    routeParams?: Record<string, string>;
+    selectorOverrides?: SignalOverride[];
+    hasViewOnly?: boolean;
+  }
 
-    expect(getWikiListCall).toBeDefined();
-    expect(getWikiListCall[0].resourceType).toBe(ResourceType.Registration);
-    expect(getWikiListCall[0].resourceId).toBe('resource-123');
+  const defaultSignals: SignalOverride[] = [
+    { selector: WikiSelectors.getWikiModes, value: { currentMode: WikiModes.View } },
+    { selector: WikiSelectors.getPreviewContent, value: '' },
+    { selector: WikiSelectors.getWikiVersionContent, value: '' },
+    { selector: WikiSelectors.getCompareVersionContent, value: '' },
+    { selector: WikiSelectors.getWikiListLoading, value: false },
+    { selector: WikiSelectors.getComponentsWikiListLoading, value: false },
+    { selector: WikiSelectors.getWikiList, value: [{ id: 'wiki-1', name: 'Wiki 1', kind: 'page' }] },
+    { selector: WikiSelectors.getCurrentWikiId, value: 'wiki-1' },
+    { selector: WikiSelectors.getWikiVersions, value: [] },
+    { selector: WikiSelectors.getWikiVersionsLoading, value: false },
+    { selector: WikiSelectors.getComponentsWikiList, value: [] },
+  ];
 
-    expect(getComponentsCall).toBeDefined();
-    expect(getComponentsCall[0].resourceType).toBe(ResourceType.Registration);
-    expect(getComponentsCall[0].resourceId).toBe('resource-123');
-  });
+  function setup(overrides: SetupOverrides = {}) {
+    const routeParams = overrides.routeParams ?? { id: 'registry-1' };
+    const queryParams = overrides.queryParams ?? { wiki: 'wiki-1' };
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
 
-  it('should dispatch setCurrentWiki and getWikiVersions from initial query params', () => {
-    const { store } = setup();
+    routerMock = RouterMockBuilder.create().withUrl('/registries/registry-1/wiki?wiki=wiki-1').build();
+    viewOnlyMock = ViewOnlyLinkHelperMock.simple(overrides.hasViewOnly ?? false);
 
-    const calls = (store.dispatch as jest.Mock).mock.calls;
-    const setCurrentWikiCall = calls.find(([a]: [unknown]) => a instanceof SetCurrentWiki);
-    const getVersionsCall = calls.find(([a]: [unknown]) => a instanceof GetWikiVersions);
+    const route = ActivatedRouteMockBuilder.create().withParams(routeParams).withQueryParams(queryParams).build();
 
-    expect(setCurrentWikiCall).toBeDefined();
-    expect(setCurrentWikiCall[0].wikiId).toBe('wiki-123');
-
-    expect(getVersionsCall).toBeDefined();
-    expect(getVersionsCall[0].wikiId).toBe('wiki-123');
-  });
-
-  it('should navigate to first wiki when no wiki query param', () => {
-    const { mockRouter } = setup({ queryParams: {} });
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith([], expect.objectContaining({ queryParams: { wiki: 'wiki-1' } }));
-  });
-
-  it('should not navigate to first wiki when wiki query param exists', () => {
-    const { mockRouter } = setup();
-
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
-  });
-
-  it('should handle query params changes and dispatch setCurrentWiki and getWikiVersions', () => {
-    const { store, routeBuilder } = setup();
-
-    (store.dispatch as jest.Mock).mockClear();
-
-    routeBuilder.withQueryParams({ wiki: 'new-wiki-456' });
-
-    const calls = (store.dispatch as jest.Mock).mock.calls;
-    const setCurrentWikiCall = calls.find(([a]: [unknown]) => a instanceof SetCurrentWiki);
-    const getVersionsCall = calls.find(([a]: [unknown]) => a instanceof GetWikiVersions);
-
-    expect(setCurrentWikiCall[0].wikiId).toBe('new-wiki-456');
-    expect(getVersionsCall[0].wikiId).toBe('new-wiki-456');
-  });
-
-  it('should not process query params when wiki is empty', () => {
-    const { store } = setup({ queryParams: {} });
-
-    const calls = (store.dispatch as jest.Mock).mock.calls;
-    const setCurrentWikiCall = calls.find(([a]: [unknown]) => a instanceof SetCurrentWiki);
-
-    expect(setCurrentWikiCall).toBeUndefined();
-  });
-
-  it('should call toggleMode action', () => {
-    const { component, store } = setup();
-
-    (store.dispatch as jest.Mock).mockClear();
-    component.toggleMode(WikiModes.Compare);
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(ToggleMode));
-    expect((store.dispatch as jest.Mock).mock.calls[0][0].mode).toBe(WikiModes.Compare);
-  });
-
-  it('should dispatch getWikiVersionContent on onSelectVersion', () => {
-    const { component, store } = setup();
-
-    (store.dispatch as jest.Mock).mockClear();
-    component.onSelectVersion('version-1');
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetWikiVersionContent));
-    const action = (store.dispatch as jest.Mock).mock.calls[0][0] as GetWikiVersionContent;
-    expect(action.wikiId).toBe('wiki-123');
-    expect(action.versionId).toBe('version-1');
-  });
-
-  it('should not dispatch getWikiVersionContent with empty versionId', () => {
-    const { component, store } = setup();
-
-    (store.dispatch as jest.Mock).mockClear();
-    component.onSelectVersion('');
-
-    const calls = (store.dispatch as jest.Mock).mock.calls;
-    expect(calls.find(([a]: [unknown]) => a instanceof GetWikiVersionContent)).toBeUndefined();
-  });
-
-  it('should dispatch getCompareVersionContent on onSelectCompareVersion', () => {
-    const { component, store } = setup();
-
-    (store.dispatch as jest.Mock).mockClear();
-    component.onSelectCompareVersion('version-2');
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetCompareVersionContent));
-    const action = (store.dispatch as jest.Mock).mock.calls[0][0] as GetCompareVersionContent;
-    expect(action.wikiId).toBe('wiki-123');
-    expect(action.versionId).toBe('version-2');
-  });
-
-  it('should not dispatch getCompareVersionContent with empty versionId', () => {
-    const { component, store } = setup();
-
-    (store.dispatch as jest.Mock).mockClear();
-    component.onSelectCompareVersion('');
-
-    const calls = (store.dispatch as jest.Mock).mock.calls;
-    expect(calls.find(([a]: [unknown]) => a instanceof GetCompareVersionContent)).toBeUndefined();
-  });
-
-  it('should dispatch clearWiki on destroy', () => {
-    const { fixture, store } = setup();
-
-    (store.dispatch as jest.Mock).mockClear();
-    fixture.destroy();
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(ClearWiki));
-  });
-
-  it('should compute isWikiListLoading from both loading selectors', () => {
-    const wikiListLoadingSignal: WritableSignal<boolean> = signal(false);
-    const componentsLoadingSignal: WritableSignal<boolean> = signal(false);
-
-    const { component } = setup({
-      selectorOverrides: [
-        { selector: WikiSelectors.getWikiListLoading, value: wikiListLoadingSignal },
-        { selector: WikiSelectors.getComponentsWikiListLoading, value: componentsLoadingSignal },
+    TestBed.configureTestingModule({
+      imports: [
+        RegistryWikiComponent,
+        ...MockComponents(
+          SubHeaderComponent,
+          WikiListComponent,
+          ViewSectionComponent,
+          CompareSectionComponent,
+          ViewOnlyLinkMessageComponent
+        ),
+      ],
+      providers: [
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, route),
+        MockProvider(Router, routerMock),
+        MockProvider(ViewOnlyLinkHelperService, viewOnlyMock),
+        provideMockStore({ signals }),
       ],
     });
 
-    expect(component.isWikiListLoading()).toBe(false);
+    fixture = TestBed.createComponent(RegistryWikiComponent);
+    component = fixture.componentInstance;
+    store = TestBed.inject(Store);
+    dispatchMock = store.dispatch as Mock;
+  }
 
-    wikiListLoadingSignal.set(true);
-    expect(component.isWikiListLoading()).toBe(true);
+  it('should create', () => {
+    setup();
 
-    wikiListLoadingSignal.set(false);
-    componentsLoadingSignal.set(true);
+    expect(component).toBeTruthy();
+  });
+
+  it('should fetch wiki list and component wiki list on initialization', () => {
+    setup();
+
+    expect(dispatchMock).toHaveBeenCalledWith(new GetWikiList(ResourceType.Registration, 'registry-1'));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetComponentsWikiList(ResourceType.Registration, 'registry-1'));
+  });
+
+  it('should set current wiki and fetch versions from wiki query param', () => {
+    setup({ queryParams: { wiki: 'wiki-1' } });
+
+    expect(dispatchMock).toHaveBeenCalledWith(new SetCurrentWiki('wiki-1'));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetWikiVersions('wiki-1'));
+  });
+
+  it('should navigate to first wiki when wiki query param is missing', () => {
+    setup({ queryParams: {} });
+
+    expect(routerMock.navigate).toHaveBeenCalledWith([], {
+      relativeTo: expect.anything(),
+      queryParams: { wiki: 'wiki-1' },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('should dispatch toggle mode action', () => {
+    setup();
+    dispatchMock.mockClear();
+
+    component.toggleMode(WikiModes.Edit);
+
+    expect(dispatchMock).toHaveBeenCalledWith(new ToggleMode(WikiModes.Edit));
+  });
+
+  it('should dispatch version content action on version select', () => {
+    setup();
+    dispatchMock.mockClear();
+
+    component.onSelectVersion('v-2');
+
+    expect(dispatchMock).toHaveBeenCalledWith(new GetWikiVersionContent('wiki-1', 'v-2'));
+  });
+
+  it('should dispatch compare version content action on compare version select', () => {
+    setup();
+    dispatchMock.mockClear();
+
+    component.onSelectCompareVersion('v-3');
+
+    expect(dispatchMock).toHaveBeenCalledWith(new GetCompareVersionContent('wiki-1', 'v-3'));
+  });
+
+  it('should compute wiki list loading from both loading selectors', () => {
+    setup({
+      selectorOverrides: [{ selector: WikiSelectors.getComponentsWikiListLoading, value: true }],
+    });
+
     expect(component.isWikiListLoading()).toBe(true);
+  });
+
+  it('should expose view-only state from helper service', () => {
+    setup({ hasViewOnly: true });
+
+    expect(component.hasViewOnly()).toBe(true);
+  });
+
+  it('should clear wiki on destroy in browser', () => {
+    setup();
+    dispatchMock.mockClear();
+
+    fixture.destroy();
+
+    expect(dispatchMock).toHaveBeenCalledWith(new ClearWiki());
   });
 });

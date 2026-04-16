@@ -73,9 +73,9 @@ export const collectionsRoutes: Routes = [
         path: ':collectionId/moderation/:id',
         canActivate: [authGuard],
         loadComponent: () =>
-          import(
-            '@osf/features/moderation/components/collection-submission-overview/collection-submission-overview.component'
-          ).then((mod) => mod.CollectionSubmissionOverviewComponent),
+          import('@osf/features/moderation/components/collection-submission-overview/collection-submission-overview.component').then(
+            (mod) => mod.CollectionSubmissionOverviewComponent
+          ),
         providers: [
           provideStates([
             ProjectOverviewState,

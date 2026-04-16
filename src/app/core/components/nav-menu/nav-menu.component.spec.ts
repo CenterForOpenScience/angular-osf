@@ -1,6 +1,6 @@
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -11,32 +11,31 @@ import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
-import { NavMenuComponent } from './nav-menu.component';
-
 import { MOCK_USER } from '@testing/mocks/data.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { AuthServiceMock, AuthServiceMockType } from '@testing/providers/auth-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
+import { NavMenuComponent } from './nav-menu.component';
+
 describe('NavMenuComponent', () => {
   let component: NavMenuComponent;
   let fixture: ComponentFixture<NavMenuComponent>;
-  let mockAuthService: any;
+  let mockAuthService: AuthServiceMockType;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     Object.defineProperty(window, 'open', {
       writable: true,
-      value: jest.fn(),
+      value: vi.fn(),
     });
-    mockAuthService = {
-      navigateToSignIn: jest.fn(),
-      logout: jest.fn(),
-    };
+    mockAuthService = AuthServiceMock.simple();
 
-    await TestBed.configureTestingModule({
-      imports: [NavMenuComponent, OSFTestingModule, MockComponent(IconComponent)],
+    TestBed.configureTestingModule({
+      imports: [NavMenuComponent, MockComponent(IconComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: UserSelectors.isAuthenticated, value: signal(false) },
@@ -50,9 +49,9 @@ describe('NavMenuComponent', () => {
           provide: Router,
           useValue: {
             ...RouterMockBuilder.create().withUrl('/test').build(),
-            serializeUrl: jest.fn(() => '/test'),
-            parseUrl: jest.fn(() => ({})),
-            isActive: jest.fn(() => false),
+            serializeUrl: vi.fn(() => '/test'),
+            parseUrl: vi.fn(() => ({})),
+            isActive: vi.fn(() => false),
           },
         },
         {
@@ -61,8 +60,7 @@ describe('NavMenuComponent', () => {
         },
         MockProvider(AuthService, mockAuthService),
       ],
-      schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(NavMenuComponent);
     component = fixture.componentInstance;
@@ -74,7 +72,7 @@ describe('NavMenuComponent', () => {
   });
 
   it('should open external links in new tab for support and donate items', () => {
-    const openSpy = jest.spyOn(window, 'open');
+    const openSpy = vi.spyOn(window, 'open');
     const supportItem: CustomMenuItem = { id: 'support', url: 'https://support.example.com' };
     const donateItem: CustomMenuItem = { id: 'donate', url: 'https://donate.example.com' };
 
@@ -100,7 +98,7 @@ describe('NavMenuComponent', () => {
   });
 
   it('should emit closeMenu for items without children', () => {
-    const emitSpy = jest.spyOn(component.closeMenu, 'emit');
+    const emitSpy = vi.spyOn(component.closeMenu, 'emit');
     const menuItem: CustomMenuItem = { id: 'test-item' };
 
     component.goToLink(menuItem);
@@ -108,7 +106,7 @@ describe('NavMenuComponent', () => {
   });
 
   it('should not emit closeMenu for items with children', () => {
-    const emitSpy = jest.spyOn(component.closeMenu, 'emit');
+    const emitSpy = vi.spyOn(component.closeMenu, 'emit');
     const menuItemWithChildren: CustomMenuItem = {
       id: 'test-item',
       items: [{ id: 'child-item' }],
@@ -183,7 +181,7 @@ describe('NavMenuComponent', () => {
   });
 
   it('should emit closeMenu event', () => {
-    const emitSpy = jest.spyOn(component.closeMenu, 'emit');
+    const emitSpy = vi.spyOn(component.closeMenu, 'emit');
 
     component.closeMenu.emit();
 

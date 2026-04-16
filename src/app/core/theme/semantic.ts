@@ -1,4 +1,4 @@
-import { palette } from '@primeng/themes';
+import { palette } from '@primeuix/themes';
 
 import { primitives } from './primitives';
 

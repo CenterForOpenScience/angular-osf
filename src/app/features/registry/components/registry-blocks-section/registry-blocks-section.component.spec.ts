@@ -5,11 +5,11 @@ import { TestBed } from '@angular/core/testing';
 import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 
-import { RegistryBlocksSectionComponent } from './registry-blocks-section.component';
-
 import { createMockPageSchema } from '@testing/mocks/page-schema.mock';
 import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { RegistryBlocksSectionComponent } from './registry-blocks-section.component';
 
 describe('RegistryBlocksSectionComponent', () => {
   beforeEach(() => {

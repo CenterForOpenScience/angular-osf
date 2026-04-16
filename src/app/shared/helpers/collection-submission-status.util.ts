@@ -1,11 +1,11 @@
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 
 import { CustomOption } from '../models/select-option.model';
-import { SeverityType } from '../models/severity.type';
+import { TagSeverityType } from '../models/severity.type';
 
 export const COLLECTION_SUBMISSION_STATUS_SEVERITY: Record<
   CollectionSubmissionReviewState,
-  CustomOption<SeverityType>
+  CustomOption<TagSeverityType>
 > = {
   [CollectionSubmissionReviewState.Accepted]: { label: 'moderation.submissionReviewStatus.approved', value: 'success' },
   [CollectionSubmissionReviewState.Rejected]: { label: 'moderation.submissionReviewStatus.rejected', value: 'danger' },

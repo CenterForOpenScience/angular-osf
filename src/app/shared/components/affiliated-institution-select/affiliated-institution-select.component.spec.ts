@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
 
-import { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select.component';
-
 import { MOCK_INSTITUTION } from '@testing/mocks/institution.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select.component';
 
 describe('AffiliatedInstitutionSelectComponent', () => {
   let component: AffiliatedInstitutionSelectComponent;
@@ -13,10 +13,11 @@ describe('AffiliatedInstitutionSelectComponent', () => {
 
   const mockInstitutions: Institution[] = [MOCK_INSTITUTION];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [AffiliatedInstitutionSelectComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [AffiliatedInstitutionSelectComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(AffiliatedInstitutionSelectComponent);
     component = fixture.componentInstance;
@@ -67,6 +68,7 @@ describe('AffiliatedInstitutionSelectComponent', () => {
       },
       institutionalRequestAccessEnabled: false,
       logoPath: '/logos/unavailable.png',
+      sso_availability: 'Unavailable',
     };
 
     fixture.componentRef.setInput('institutions', mockInstitutions);
@@ -133,6 +135,7 @@ describe('AffiliatedInstitutionSelectComponent', () => {
       },
       institutionalRequestAccessEnabled: false,
       logoPath: '/logos/unavailable.png',
+      sso_availability: 'Unavailable',
     };
 
     fixture.componentRef.setInput('institutions', mockInstitutions);
@@ -180,6 +183,7 @@ describe('AffiliatedInstitutionSelectComponent', () => {
       },
       institutionalRequestAccessEnabled: false,
       logoPath: '/logos/unavailable.png',
+      sso_availability: 'Unavailable',
     };
 
     fixture.componentRef.setInput('institutions', mockInstitutions);

@@ -5,8 +5,8 @@
   --p-chip-padding-y: 0.25rem;
   --p-chip-padding-x: 0.75rem;
   --p-chip-remove-icon-color: var(--dark-blue-1);
-  --p-chip-remove-icon-font-size: 0.875rem;
-  --p-chip-remove-icon-size: 0.875rem;
+  --p-chip-remove-icon-font-size: 0.7rem;
+  --p-chip-remove-icon-size: 0.7rem;
 
   &:has(.p-chip-remove-icon) {
     padding-inline-end: var(--p-chip-padding-x);

@@ -5,16 +5,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.const';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { SearchComponent } from './search.component';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [SearchComponent, MockComponent(GlobalSearchComponent)],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;

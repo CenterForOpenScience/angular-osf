@@ -345,8 +345,12 @@ export class FileDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  onTabChange(index: FileDetailTab): void {
-    this.selectedTab = index;
+  onTabChange(event: string | number | undefined): void {
+    const value = Number(event);
+
+    if (!isNaN(value)) {
+      this.selectedTab = value;
+    }
   }
 
   handleEmailShare(): void {

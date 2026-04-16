@@ -8,7 +8,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 
-import { PreprintsService } from '../../services';
+import { PreprintsService } from '../../services/preprints.service';
 
 import { FetchMyPreprints } from './my-preprints.actions';
 import { DEFAULT_MY_PREPRINTS_STATE, MyPreprintsStateModel } from './my-preprints.model';

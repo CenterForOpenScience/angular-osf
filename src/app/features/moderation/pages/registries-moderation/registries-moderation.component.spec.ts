@@ -1,141 +1,112 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { RegistryModerationTab } from '../../enums';
 
 import { RegistriesModerationComponent } from './registries-moderation.component';
 
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-
 describe('RegistriesModerationComponent', () => {
   let component: RegistriesModerationComponent;
   let fixture: ComponentFixture<RegistriesModerationComponent>;
-  let isMediumSubject: BehaviorSubject<boolean>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let mockRouter: RouterMockType;
 
-  beforeEach(async () => {
-    isMediumSubject = new BehaviorSubject<boolean>(true);
-    mockRouter = RouterMockBuilder.create().build();
-    mockActivatedRoute = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: 'test-provider-id' })
-      .withData({ tab: RegistryModerationTab.Submitted })
-      .build();
+  interface SetupOptions {
+    providerId?: string;
+    tab?: RegistryModerationTab;
+  }
 
-    await TestBed.configureTestingModule({
-      imports: [
-        RegistriesModerationComponent,
-        OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, SelectComponent),
-      ],
+  function setup(options: SetupOptions = {}) {
+    const { providerId = 'provider-1', tab = RegistryModerationTab.Pending } = options;
+    const routeBuilder = ActivatedRouteMockBuilder.create().withFirstChild((child) => child.withData({ tab }));
+    if (providerId) {
+      routeBuilder.withParams({ providerId });
+    }
+    const route = routeBuilder.build() as Partial<ActivatedRoute>;
+
+    mockRouter = RouterMockBuilder.create().withUrl('/registries/moderation/pending').build();
+    TestBed.configureTestingModule({
+      imports: [RegistriesModerationComponent, ...MockComponents(SubHeaderComponent, SelectComponent)],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
+        provideOSFCore(),
+        provideMockStore(),
+        MockProvider(ActivatedRoute, route),
         MockProvider(Router, mockRouter),
-        MockProvider(IS_MEDIUM, isMediumSubject),
+        MockProvider(IS_MEDIUM, of(true)),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(RegistriesModerationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default values', () => {
-    expect(component.resourceType).toBe(3);
-    expect(component.selectedTab).toBeUndefined();
-    expect(component.tabOptions).toBeDefined();
-    expect(component.isMedium).toBeDefined();
+  it('should initialize selectedTab from first child route data', () => {
+    setup({ tab: RegistryModerationTab.Submitted });
+
+    expect(component.selectedTab).toBe(RegistryModerationTab.Submitted);
   });
 
-  it('should call getProvider action on init when providerId exists', () => {
-    const getProviderSpy = jest.fn();
-    component.actions = {
-      ...component.actions,
-      getProvider: getProviderSpy,
-    };
+  it('should navigate to not-found when providerId is missing', () => {
+    setup({ providerId: '' });
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-found']);
+  });
+
+  it('should call getProvider action when providerId exists', () => {
+    setup({ providerId: 'provider-1' });
+    const getProviderSpy = vi.fn();
+    component.actions = { ...component.actions, getProvider: getProviderSpy };
 
     component.ngOnInit();
 
-    expect(getProviderSpy).toHaveBeenCalledWith('test-provider-id');
-  });
-
-  it('should handle tab change and navigate to new tab', () => {
-    const newTab = RegistryModerationTab.Settings;
-
-    component.onTabChange(newTab);
-
-    expect(component.selectedTab).toBe(newTab);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([newTab], { relativeTo: expect.any(Object) });
+    expect(getProviderSpy).toHaveBeenCalledWith('provider-1');
   });
 
   it('should call clearCurrentProvider on destroy', () => {
-    const clearCurrentProviderSpy = jest.fn();
-    component.actions = {
-      ...component.actions,
-      clearCurrentProvider: clearCurrentProviderSpy,
-    };
+    setup();
+    const clearCurrentProviderSpy = vi.fn();
+    component.actions = { ...component.actions, clearCurrentProvider: clearCurrentProviderSpy };
 
     component.ngOnDestroy();
 
     expect(clearCurrentProviderSpy).toHaveBeenCalled();
   });
 
-  it('should handle isMedium observable', () => {
-    expect(component.isMedium()).toBe(true);
+  it('should handle tab change and navigate relative to current route', () => {
+    setup();
 
-    isMediumSubject.next(false);
-    fixture.detectChanges();
+    component.onTabChange(RegistryModerationTab.Moderators);
 
-    expect(component.isMedium()).toBe(false);
-  });
-
-  it('should handle tab change with different tab values', () => {
-    const tabs = [RegistryModerationTab.Submitted, RegistryModerationTab.Settings];
-
-    tabs.forEach((tab) => {
-      component.onTabChange(tab);
-      expect(component.selectedTab).toBe(tab);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([tab], { relativeTo: expect.any(Object) });
+    expect(component.selectedTab).toBe(RegistryModerationTab.Moderators);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([RegistryModerationTab.Moderators], {
+      relativeTo: component.route,
     });
   });
 
-  it('should not navigate when providerId is present', () => {
-    mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: 'valid-id' }).build();
+  it('should expose static defaults', () => {
+    setup();
 
-    component.ngOnInit();
-
-    expect(mockRouter.navigate).not.toHaveBeenCalledWith(['/not-found']);
-  });
-
-  it('should handle tab change with string values', () => {
-    const stringTab = 'submitted' as any;
-
-    component.onTabChange(stringTab);
-
-    expect(component.selectedTab).toBe(stringTab);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([stringTab], { relativeTo: expect.any(Object) });
-  });
-
-  it('should handle tab change with numeric values', () => {
-    const numericTab = 1 as any;
-
-    component.onTabChange(numericTab);
-
-    expect(component.selectedTab).toBe(numericTab);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([numericTab], { relativeTo: expect.any(Object) });
+    expect(component.resourceType).toBe(ResourceType.Registration);
+    expect(component.tabOptions.length).toBeGreaterThan(0);
   });
 });

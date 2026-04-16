@@ -12,11 +12,11 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { BookmarksSelectors } from '@osf/shared/stores/bookmarks';
 
-import { RegistrationOverviewToolbarComponent } from './registration-overview-toolbar.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
+
+import { RegistrationOverviewToolbarComponent } from './registration-overview-toolbar.component';
 
 const MOCK_RESOURCE_ID = 'registration-123';
 const MOCK_BOOKMARKS_COLLECTION_ID = 'bookmarks-123';
@@ -92,7 +92,7 @@ describe('RegistrationOverviewToolbarComponent', () => {
 
   it('should dispatch add bookmark when not bookmarked', () => {
     const { component, store, mockToastService } = setup();
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.toggleBookmark();
 
@@ -108,7 +108,7 @@ describe('RegistrationOverviewToolbarComponent', () => {
 
   it('should dispatch remove bookmark when already bookmarked', () => {
     const { component, store, mockToastService } = setup({ bookmarks: [{ id: MOCK_RESOURCE_ID }] });
-    jest.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
 
     component.toggleBookmark();
 
@@ -126,7 +126,7 @@ describe('RegistrationOverviewToolbarComponent', () => {
     const { fixture, store, mockToastService } = setup();
     fixture.componentRef.setInput('resourceId', '');
     fixture.detectChanges();
-    jest.spyOn(store, 'dispatch').mockClear().mockReturnValue(of(undefined));
+    vi.spyOn(store, 'dispatch').mockClear().mockReturnValue(of(undefined));
 
     fixture.componentInstance.toggleBookmark();
 

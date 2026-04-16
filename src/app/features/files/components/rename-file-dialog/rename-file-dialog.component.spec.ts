@@ -1,44 +1,39 @@
-import { MockComponent } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { Mocked } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 
-import { RenameFileDialogComponent } from './rename-file-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { RenameFileDialogComponent } from './rename-file-dialog.component';
 
 describe('RenameFileDialogComponent', () => {
   let component: RenameFileDialogComponent;
   let fixture: ComponentFixture<RenameFileDialogComponent>;
-  let dialogRef: jest.Mocked<DynamicDialogRef>;
-  let dialogConfig: jest.Mocked<DynamicDialogConfig>;
+  let dialogRef: DynamicDialogRef;
+  let dialogConfig: Mocked<DynamicDialogConfig>;
 
-  beforeEach(async () => {
-    const dialogRefMock = {
-      close: jest.fn(),
-    };
-
+  beforeEach(() => {
     const dialogConfigMock = {
       data: { currentName: 'test-file.txt' },
     };
 
-    await TestBed.configureTestingModule({
-      imports: [RenameFileDialogComponent, ReactiveFormsModule, OSFTestingModule, MockComponent(TextInputComponent)],
-      providers: [
-        { provide: DynamicDialogRef, useValue: dialogRefMock },
-        { provide: DynamicDialogConfig, useValue: dialogConfigMock },
-      ],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [RenameFileDialogComponent, MockComponent(TextInputComponent)],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig, dialogConfigMock)],
+    });
 
     fixture = TestBed.createComponent(RenameFileDialogComponent);
     component = fixture.componentInstance;
-    dialogRef = TestBed.inject(DynamicDialogRef) as jest.Mocked<DynamicDialogRef>;
-    dialogConfig = TestBed.inject(DynamicDialogConfig) as jest.Mocked<DynamicDialogConfig>;
+    dialogRef = TestBed.inject(DynamicDialogRef);
+    dialogConfig = TestBed.inject(DynamicDialogConfig) as Mocked<DynamicDialogConfig>;
     fixture.detectChanges();
   });
 

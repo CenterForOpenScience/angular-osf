@@ -4,13 +4,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
 
+import { MOCK_LICENSE } from '@testing/mocks/license.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { TextInputComponent } from '../text-input/text-input.component';
 import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
 
 import { LicenseComponent } from './license.component';
-
-import { MOCK_LICENSE } from '@testing/mocks/license.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('LicenseComponent', () => {
   let component: LicenseComponent;
@@ -32,10 +32,11 @@ describe('LicenseComponent', () => {
     copyrightHolders: 'John Doe',
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LicenseComponent, ...MockComponents(TextInputComponent, TruncatedTextComponent), OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [LicenseComponent, ...MockComponents(TextInputComponent, TruncatedTextComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(LicenseComponent);
     component = fixture.componentInstance;
@@ -88,7 +89,7 @@ describe('LicenseComponent', () => {
   });
 
   it('should emit selectLicense when license without required fields is selected', () => {
-    const emitSpy = jest.spyOn(component.selectLicense, 'emit');
+    const emitSpy = vi.spyOn(component.selectLicense, 'emit');
     const license = mockLicenses[0];
 
     component.onSelectLicense(license);
@@ -97,7 +98,7 @@ describe('LicenseComponent', () => {
   });
 
   it('should emit createLicense when save is called with valid form', () => {
-    const emitSpy = jest.spyOn(component.createLicense, 'emit');
+    const emitSpy = vi.spyOn(component.createLicense, 'emit');
 
     component.selectedLicense.set(mockLicenses[1]);
 
@@ -118,7 +119,7 @@ describe('LicenseComponent', () => {
   });
 
   it('should not emit createLicense when form is invalid', () => {
-    const emitSpy = jest.spyOn(component.createLicense, 'emit');
+    const emitSpy = vi.spyOn(component.createLicense, 'emit');
 
     component.selectedLicense.set(mockLicenses[1]);
     component.licenseForm.patchValue({

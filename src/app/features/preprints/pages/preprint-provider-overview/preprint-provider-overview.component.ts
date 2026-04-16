@@ -10,12 +10,10 @@ import { BrandService } from '@osf/shared/services/brand.service';
 import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 
-import {
-  AdvisoryBoardComponent,
-  BrowseBySubjectsComponent,
-  PreprintProviderFooterComponent,
-  PreprintProviderHeroComponent,
-} from '../../components';
+import { AdvisoryBoardComponent } from '../../components/advisory-board/advisory-board.component';
+import { BrowseBySubjectsComponent } from '../../components/browse-by-subjects/browse-by-subjects.component';
+import { PreprintProviderFooterComponent } from '../../components/preprint-provider-footer/preprint-provider-footer.component';
+import { PreprintProviderHeroComponent } from '../../components/preprint-provider-hero/preprint-provider-hero.component';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,

@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Password } from 'primeng/password';
 
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -32,7 +32,7 @@ import { UpdatePassword } from '../../store';
 
 @Component({
   selector: 'osf-change-password',
-  imports: [Card, ReactiveFormsModule, Password, CommonModule, Button, TranslatePipe, PasswordInputHintComponent],
+  imports: [Card, ReactiveFormsModule, Password, Button, NgClass, TranslatePipe, PasswordInputHintComponent],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

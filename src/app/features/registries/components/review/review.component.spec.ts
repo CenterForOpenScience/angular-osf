@@ -4,6 +4,8 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { Subject } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -29,8 +31,6 @@ import {
 } from '@osf/shared/stores/contributors';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
-import { ReviewComponent } from './review.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
   CustomConfirmationServiceMock,
@@ -44,6 +44,8 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { ReviewComponent } from './review.component';
 
 const DEFAULT_DRAFT = {
   id: 'draft-1',
@@ -92,9 +94,9 @@ function setup(
   const dialogClose$ = opts.dialogCloseSubject ?? new Subject<any>();
   const mockDialog = CustomDialogServiceMockBuilder.create()
     .withOpen(
-      jest.fn().mockReturnValue({
+      vi.fn().mockReturnValue({
         onClose: dialogClose$.pipe(),
-        close: jest.fn(),
+        close: vi.fn(),
       })
     )
     .build();
@@ -180,7 +182,7 @@ describe('ReviewComponent', () => {
 
   it('should dispatch deleteDraft and navigate on confirm', () => {
     mockConfirmation.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.deleteDraft();
 
@@ -197,7 +199,7 @@ describe('ReviewComponent', () => {
     c.confirmRegistration();
 
     expect(dialog.open).toHaveBeenCalled();
-    const firstCallArgs = (dialog.open as jest.Mock).mock.calls[0];
+    const firstCallArgs = (dialog.open as Mock).mock.calls[0];
     expect(firstCallArgs[1].header).toBe('registries.review.selectComponents.title');
   });
 
@@ -205,7 +207,7 @@ describe('ReviewComponent', () => {
     component.confirmRegistration();
 
     expect(mockDialog.open).toHaveBeenCalled();
-    const firstCallArgs = (mockDialog.open as jest.Mock).mock.calls[0];
+    const firstCallArgs = (mockDialog.open as Mock).mock.calls[0];
     expect(firstCallArgs[1].header).toBe('registries.review.confirmation.title');
   });
 
@@ -248,17 +250,17 @@ describe('ReviewComponent', () => {
       selectorOverrides: [{ selector: RegistriesSelectors.getRegistrationComponents, value: [{ id: 'comp-1' }] }],
     });
 
-    (dialog.open as jest.Mock).mockImplementation(() => {
+    (dialog.open as Mock).mockImplementation(() => {
       callCount++;
       const subj = callCount === 1 ? selectClose$ : confirmClose$;
-      return { onClose: subj.pipe(), close: jest.fn() };
+      return { onClose: subj.pipe(), close: vi.fn() };
     });
 
     c.openSelectComponentsForRegistrationDialog();
     selectClose$.next(['comp-1']);
 
     expect(dialog.open).toHaveBeenCalledTimes(2);
-    const secondCallArgs = (dialog.open as jest.Mock).mock.calls[1];
+    const secondCallArgs = (dialog.open as Mock).mock.calls[1];
     expect(secondCallArgs[1].data.components).toEqual(['comp-1']);
   });
 
@@ -269,9 +271,9 @@ describe('ReviewComponent', () => {
       selectorOverrides: [{ selector: RegistriesSelectors.getRegistrationComponents, value: [{ id: 'comp-1' }] }],
     });
 
-    (dialog.open as jest.Mock).mockReturnValue({
+    (dialog.open as Mock).mockReturnValue({
       onClose: selectClose$.pipe(),
-      close: jest.fn(),
+      close: vi.fn(),
     });
 
     c.openSelectComponentsForRegistrationDialog();
@@ -281,13 +283,13 @@ describe('ReviewComponent', () => {
   });
 
   it('should dispatch loadMoreContributors', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.loadMoreContributors();
     expect(store.dispatch).toHaveBeenCalledWith(new LoadMoreContributors('draft-1', ResourceType.DraftRegistration));
   });
 
   it('should dispatch resetContributorsState on destroy', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
     expect(store.dispatch).toHaveBeenCalledWith(new ResetContributorsState());
   });
@@ -347,7 +349,7 @@ describe('ReviewComponent', () => {
   it('should pass draftId and providerId to confirm registration dialog data', () => {
     component.openConfirmRegistrationDialog();
 
-    const callArgs = (mockDialog.open as jest.Mock).mock.calls[0];
+    const callArgs = (mockDialog.open as Mock).mock.calls[0];
     expect(callArgs[1].data.draftId).toBe('draft-1');
     expect(callArgs[1].data.providerId).toBe('prov-1');
     expect(callArgs[1].data.projectId).toBe('proj-1');
@@ -365,14 +367,14 @@ describe('ReviewComponent', () => {
 
     c.openConfirmRegistrationDialog();
 
-    const callArgs = (dialog.open as jest.Mock).mock.calls[0];
+    const callArgs = (dialog.open as Mock).mock.calls[0];
     expect(callArgs[1].data.projectId).toBeNull();
   });
 
   it('should pass components array to confirm registration dialog', () => {
     component.openConfirmRegistrationDialog(['comp-1', 'comp-2']);
 
-    const callArgs = (mockDialog.open as jest.Mock).mock.calls[0];
+    const callArgs = (mockDialog.open as Mock).mock.calls[0];
     expect(callArgs[1].data.components).toEqual(['comp-1', 'comp-2']);
   });
 

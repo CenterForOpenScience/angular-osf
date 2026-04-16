@@ -3,10 +3,10 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { MetadataTagsComponent } from './metadata-tags.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+
+import { MetadataTagsComponent } from './metadata-tags.component';
 
 describe('MetadataTagsComponent', () => {
   let component: MetadataTagsComponent;
@@ -14,13 +14,13 @@ describe('MetadataTagsComponent', () => {
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   const mockTags = ['tag1', 'tag2', 'tag3'];
 
-  beforeEach(async () => {
+  beforeEach(() => {
     routerMock = RouterMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [MetadataTagsComponent, OSFTestingModule],
-      providers: [MockProvider(Router, routerMock)],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [MetadataTagsComponent],
+      providers: [provideOSFCore(), MockProvider(Router, routerMock)],
+    });
 
     fixture = TestBed.createComponent(MetadataTagsComponent);
     component = fixture.componentInstance;
@@ -50,7 +50,7 @@ describe('MetadataTagsComponent', () => {
   });
 
   it('should emit tagsChanged event', () => {
-    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    const emitSpy = vi.spyOn(component.tagsChanged, 'emit');
     const newTags = ['new-tag1', 'new-tag2'];
 
     component.tagsChanged.emit(newTags);

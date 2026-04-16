@@ -4,10 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
 
-import { RegistriesTagsComponent } from './registries-tags.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { RegistriesTagsComponent } from './registries-tags.component';
 
 describe('RegistriesTagsComponent', () => {
   let component: RegistriesTagsComponent;

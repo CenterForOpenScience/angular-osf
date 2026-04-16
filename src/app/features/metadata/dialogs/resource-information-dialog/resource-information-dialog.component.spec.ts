@@ -4,19 +4,20 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceInformationDialogComponent } from './resource-information-dialog.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ResourceInformationDialogComponent } from './resource-information-dialog.component';
 
 describe('ResourceInformationDialogComponent', () => {
   let component: ResourceInformationDialogComponent;
   let fixture: ComponentFixture<ResourceInformationDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ResourceInformationDialogComponent, OSFTestingModule],
-      providers: [MockProvider(DynamicDialogRef), MockProvider(DynamicDialogConfig)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ResourceInformationDialogComponent],
+      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig)],
+    });
 
     fixture = TestBed.createComponent(ResourceInformationDialogComponent);
     component = fixture.componentInstance;
@@ -38,7 +39,7 @@ describe('ResourceInformationDialogComponent', () => {
 
   it('should not save when form is invalid', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     component.resourceForm.patchValue({
       resourceType: 'dataset',
@@ -55,7 +56,7 @@ describe('ResourceInformationDialogComponent', () => {
 
   it('should not save when resource type is missing', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     component.resourceForm.patchValue({
       resourceType: '',
@@ -72,7 +73,7 @@ describe('ResourceInformationDialogComponent', () => {
 
   it('should cancel dialog', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
+    const closeSpy = vi.spyOn(dialogRef, 'close');
 
     component.cancel();
 

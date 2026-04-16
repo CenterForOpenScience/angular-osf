@@ -3,174 +3,104 @@ import { MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
-import { HttpRequest } from '@angular/common/http';
-import { PLATFORM_ID, runInInjectionContext } from '@angular/core';
+import { Mock } from 'vitest';
+
+import { HttpHandlerFn, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { EnvironmentModel } from '@osf/shared/models/environment.model';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CookieServiceMock, CookieServiceMockType } from '@testing/providers/cookie-service.mock';
 
 import { authInterceptor } from './auth.interceptor';
 
-describe('authInterceptor', () => {
-  let cookieService: CookieService;
-  let cookieServiceMock: { get: jest.Mock };
+import { environment } from 'src/environments/environment';
 
-  const setup = (platformId = 'browser', environmentOverrides: Partial<EnvironmentModel> = {}) => {
-    cookieServiceMock = { get: jest.fn() };
+describe('authInterceptor', () => {
+  let cookieServiceMock: CookieServiceMockType;
+  let next: Mock<HttpHandlerFn>;
+  let capturedRequest: HttpRequest<unknown> | undefined;
+
+  function setup(platformId: 'browser' | 'server' = 'browser', throttleToken?: string) {
+    cookieServiceMock = CookieServiceMock.simple();
+    capturedRequest = undefined;
+    next = vi.fn((request: HttpRequest<unknown>) => {
+      capturedRequest = request;
+      return of(new HttpResponse({ status: 200 })) as unknown as ReturnType<HttpHandlerFn>;
+    }) as unknown as Mock<HttpHandlerFn>;
 
     TestBed.configureTestingModule({
       providers: [
+        provideOSFCore(),
         MockProvider(CookieService, cookieServiceMock),
         MockProvider(PLATFORM_ID, platformId),
-        MockProvider(ENVIRONMENT, { throttleToken: '', ...environmentOverrides } as EnvironmentModel),
+        MockProvider(ENVIRONMENT, { throttleToken }),
       ],
     });
+  }
 
-    cookieService = TestBed.inject(CookieService);
-  };
+  function runInterceptor(request: HttpRequest<unknown>) {
+    return TestBed.runInInjectionContext(() => authInterceptor(request, next as unknown as HttpHandlerFn));
+  }
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  const createRequest = (url: string, options?: Partial<HttpRequest<unknown>>): HttpRequest<unknown> => {
-    return new HttpRequest('GET', url, options?.body, {
-      responseType: options?.responseType || 'json',
-      ...options,
-    });
-  };
-
-  const createHandler = () => {
-    const handler = jest.fn().mockReturnValue(of({}));
-    return handler;
-  };
-
-  it('should skip ROR funders API requests', () => {
+  it('should bypass header modifications for funder API requests', () => {
     setup();
-    const request = createRequest('https://api.ror.org/v2');
-    const handler = createHandler();
+    const request = new HttpRequest('GET', `${environment.funderApiUrl}/organizations`);
 
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
+    runInterceptor(request).subscribe();
 
-    expect(handler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest).toBe(request);
+    expect(next).toHaveBeenCalledWith(request);
+    expect(cookieServiceMock.get).not.toHaveBeenCalled();
+    expect(capturedRequest).toBe(request);
   });
 
-  it('should set Accept header to */* for text response type', () => {
+  it('should set default JSON:API headers and withCredentials for regular requests', () => {
     setup();
-    const request = createRequest('/api/v2/projects/', { responseType: 'text' });
-    const handler = createHandler();
+    const request = new HttpRequest('GET', '/api/v2/nodes');
 
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
+    runInterceptor(request).subscribe();
 
-    expect(handler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.get('Accept')).toBe('*/*');
+    expect(capturedRequest).toBeDefined();
+    expect(capturedRequest?.headers.get('Accept')).toBe('application/vnd.api+json;version=2.20');
+    expect(capturedRequest?.headers.get('Content-Type')).toBe('application/vnd.api+json');
+    expect(capturedRequest?.withCredentials).toBe(true);
   });
 
-  it('should set Accept header to API version for json response type', () => {
+  it('should preserve existing Content-Type header', () => {
     setup();
-    const request = createRequest('/api/v2/projects/', { responseType: 'json' });
-    const handler = createHandler();
+    const request = new HttpRequest(
+      'POST',
+      '/api/v2/nodes',
+      {},
+      { headers: new HttpHeaders({ 'Content-Type': 'text/plain' }) }
+    );
 
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
+    runInterceptor(request).subscribe();
 
-    expect(handler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.get('Accept')).toBe('application/vnd.api+json;version=2.20');
+    expect(capturedRequest?.headers.get('Content-Type')).toBe('text/plain');
   });
 
-  it('should set Content-Type header when not present', () => {
+  it('should set Accept to */* for text responseType and include csrf token', () => {
     setup();
-    const request = createRequest('/api/v2/projects/');
-    const handler = createHandler();
+    cookieServiceMock.get.mockReturnValue('csrf-token');
+    const request = new HttpRequest('GET', '/api/v2/raw', { responseType: 'text' } as unknown);
+    const textRequest = request.clone({ responseType: 'text' });
 
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
+    runInterceptor(textRequest).subscribe();
 
-    expect(handler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.get('Content-Type')).toBe('application/vnd.api+json');
+    expect(cookieServiceMock.get).toHaveBeenCalledWith('api-csrf');
+    expect(capturedRequest?.headers.get('Accept')).toBe('*/*');
+    expect(capturedRequest?.headers.get('X-CSRFToken')).toBe('csrf-token');
   });
 
-  it('should not override existing Content-Type header', () => {
-    setup();
-    const request = createRequest('/api/v2/projects/');
-    const requestWithHeaders = request.clone({
-      setHeaders: { 'Content-Type': 'application/json' },
-    });
-    const handler = createHandler();
+  it('should append throttle token on server when provided', () => {
+    setup('server', 'throttle-token');
+    const request = new HttpRequest('GET', '/api/v2/nodes');
 
-    runInInjectionContext(TestBed, () => authInterceptor(requestWithHeaders, handler));
+    runInterceptor(request).subscribe();
 
-    expect(handler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.get('Content-Type')).toBe('application/json');
-  });
-
-  it('should add CSRF token and withCredentials in browser platform', () => {
-    setup();
-    cookieServiceMock.get.mockReturnValue('csrf-token-123');
-
-    const request = createRequest('/api/v2/projects/');
-    const handler = createHandler();
-
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
-
-    expect(cookieService.get).toHaveBeenCalledWith('api-csrf');
-    expect(handler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.get('X-CSRFToken')).toBe('csrf-token-123');
-    expect(modifiedRequest.withCredentials).toBe(true);
-  });
-
-  it('should not add CSRF token when not available in browser platform', () => {
-    setup();
-    cookieServiceMock.get.mockReturnValue('');
-
-    const request = createRequest('/api/v2/projects/');
-    const handler = createHandler();
-
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
-
-    expect(cookieService.get).toHaveBeenCalledWith('api-csrf');
-    expect(handler).toHaveBeenCalledTimes(1);
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.has('X-CSRFToken')).toBe(false);
-    expect(modifiedRequest.withCredentials).toBe(true);
-  });
-
-  it('should not add X-Throttle-Token on browser platform', () => {
-    setup('browser', { throttleToken: 'test-token' });
-    const request = createRequest('/api/v2/projects/');
-    const handler = createHandler();
-
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
-
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.has('X-Throttle-Token')).toBe(false);
-  });
-
-  it('should add X-Throttle-Token on server platform when token is present', () => {
-    setup('server', { throttleToken: 'test-token' });
-    const request = createRequest('/api/v2/projects/');
-    const handler = createHandler();
-
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
-
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.get('X-Throttle-Token')).toBe('test-token');
-  });
-
-  it('should not add X-Throttle-Token on server platform when token is empty', () => {
-    setup('server', { throttleToken: '' });
-    const request = createRequest('/api/v2/projects/');
-    const handler = createHandler();
-
-    runInInjectionContext(TestBed, () => authInterceptor(request, handler));
-
-    const modifiedRequest = handler.mock.calls[0][0];
-    expect(modifiedRequest.headers.has('X-Throttle-Token')).toBe(false);
+    expect(capturedRequest?.headers.get('X-Throttle-Token')).toBe('throttle-token');
   });
 });

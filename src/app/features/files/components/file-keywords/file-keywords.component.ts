@@ -26,15 +26,17 @@ import { FilesSelectors, UpdateTags } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileKeywordsComponent {
-  private readonly actions = createDispatchMap({ updateTags: UpdateTags });
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+
+  private readonly actions = createDispatchMap({ updateTags: UpdateTags });
 
   readonly tags = select(FilesSelectors.getFileTags);
   readonly isTagsLoading = select(FilesSelectors.isFileTagsLoading);
   readonly file = select(FilesSelectors.getOpenedFile);
   readonly hasWriteAccess = select(FilesSelectors.hasWriteAccess);
+
   readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   keywordControl = new FormControl('', {

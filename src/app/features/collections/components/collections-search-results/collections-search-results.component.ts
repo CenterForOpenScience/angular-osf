@@ -15,7 +15,7 @@ import { CollectionsSearchResultCardComponent } from '../collections-search-resu
 
 @Component({
   selector: 'osf-collections-search-results',
-  imports: [DataView, CustomPaginatorComponent, CollectionsSearchResultCardComponent, TranslatePipe, Skeleton],
+  imports: [DataView, Skeleton, CustomPaginatorComponent, CollectionsSearchResultCardComponent, TranslatePipe],
   templateUrl: './collections-search-results.component.html',
   styleUrl: './collections-search-results.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -4,18 +4,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 
-import { ProjectDetailSettingAccordionComponent } from './project-detail-setting-accordion.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ProjectDetailSettingAccordionComponent } from './project-detail-setting-accordion.component';
 
 describe('ProjectDetailSettingAccordionComponent', () => {
   let component: ProjectDetailSettingAccordionComponent;
   let fixture: ComponentFixture<ProjectDetailSettingAccordionComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ProjectDetailSettingAccordionComponent, OSFTestingModule, MockComponent(SelectComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ProjectDetailSettingAccordionComponent, MockComponent(SelectComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ProjectDetailSettingAccordionComponent);
     component = fixture.componentInstance;

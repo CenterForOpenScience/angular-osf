@@ -1,184 +1,118 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
+
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { PreprintModerationTab } from '../../enums';
+import { GetPreprintProvider } from '../../store/preprint-moderation';
 
 import { PreprintModerationComponent } from './preprint-moderation.component';
-
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 
 describe('PreprintModerationComponent', () => {
   let component: PreprintModerationComponent;
   let fixture: ComponentFixture<PreprintModerationComponent>;
-  let isMediumSubject: BehaviorSubject<boolean>;
-  let mockRouter: ReturnType<RouterMockBuilder['build']>;
-  let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let store: Store;
+  let dispatchMock: Mock;
+  let mockRouter: RouterMockType;
 
-  beforeEach(async () => {
-    isMediumSubject = new BehaviorSubject<boolean>(true);
-    mockRouter = RouterMockBuilder.create().build();
-    mockActivatedRoute = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: 'test-provider-id' })
-      .withData({ tab: PreprintModerationTab.Submissions })
-      .build();
+  interface SetupOptions {
+    providerId?: string;
+    tab?: PreprintModerationTab;
+  }
 
-    await TestBed.configureTestingModule({
-      imports: [
-        PreprintModerationComponent,
-        OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, SelectComponent),
-      ],
+  function setup(options: SetupOptions = {}) {
+    const { providerId = 'provider-1', tab = PreprintModerationTab.Submissions } = options;
+    const routeBuilder = ActivatedRouteMockBuilder.create().withFirstChild((child) => child.withData({ tab }));
+
+    if (providerId) {
+      routeBuilder.withParams({ providerId });
+    }
+
+    const route = routeBuilder.build() as Partial<ActivatedRoute>;
+    mockRouter = RouterMockBuilder.create().withUrl('/preprints/provider-1/moderation/submissions').build();
+
+    TestBed.configureTestingModule({
+      imports: [PreprintModerationComponent, ...MockComponents(SubHeaderComponent, SelectComponent)],
       providers: [
-        MockProvider(ActivatedRoute, mockActivatedRoute),
+        provideOSFCore(),
+        provideMockStore(),
+        MockProvider(ActivatedRoute, route),
         MockProvider(Router, mockRouter),
-        MockProvider(IS_MEDIUM, isMediumSubject),
+        MockProvider(IS_MEDIUM, of(true)),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(PreprintModerationComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    store = TestBed.inject(Store);
+    dispatchMock = store.dispatch as Mock;
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default values', () => {
-    expect(component.resourceType).toBe(5);
-    expect(component.selectedTab).toBeUndefined();
-    expect(component.tabOptions).toBeDefined();
-    expect(component.isMedium).toBeDefined();
-  });
+  it('should expose static defaults', () => {
+    setup();
 
-  it('should initialize selected tab from route data', async () => {
-    const mockFirstChild = {
-      data: { tab: PreprintModerationTab.Settings },
-    };
-
-    const routeWithFirstChild = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: 'test-provider-id' })
-      .build();
-
-    Object.defineProperty(routeWithFirstChild.snapshot, 'firstChild', {
-      value: mockFirstChild,
-      writable: true,
-    });
-
-    await TestBed.configureTestingModule({
-      imports: [
-        PreprintModerationComponent,
-        OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, SelectComponent),
-      ],
-      providers: [
-        MockProvider(ActivatedRoute, routeWithFirstChild),
-        MockProvider(Router, mockRouter),
-        MockProvider(IS_MEDIUM, isMediumSubject),
-      ],
-    }).compileComponents();
-
-    const testFixture = TestBed.createComponent(PreprintModerationComponent);
-    const testComponent = testFixture.componentInstance;
-
-    testComponent.ngOnInit();
-
-    expect(testComponent.selectedTab).toBe(PreprintModerationTab.Settings);
-  });
-
-  it('should handle tab change and navigate to new tab', () => {
-    const newTab = PreprintModerationTab.Settings;
-
-    component.onTabChange(newTab);
-
-    expect(component.selectedTab).toBe(newTab);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([newTab], { relativeTo: expect.any(Object) });
-  });
-
-  it('should handle tab change with different tab values', () => {
-    const tabs = [PreprintModerationTab.Submissions, PreprintModerationTab.Settings];
-
-    tabs.forEach((tab) => {
-      component.onTabChange(tab);
-      expect(component.selectedTab).toBe(tab);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([tab], { relativeTo: expect.any(Object) });
-    });
-  });
-
-  it('should have tab options defined', () => {
-    expect(component.tabOptions).toBeDefined();
+    expect(component.resourceType).toBe(ResourceType.Preprint);
+    expect(component.selectedTab).toBe(PreprintModerationTab.Submissions);
     expect(component.tabOptions.length).toBeGreaterThan(0);
   });
 
-  it('should handle isMedium observable', () => {
-    expect(component.isMedium()).toBe(true);
+  it('should initialize selectedTab from first child route data', () => {
+    setup({ tab: PreprintModerationTab.WithdrawalRequests });
 
-    isMediumSubject.next(false);
-    fixture.detectChanges();
+    component.ngOnInit();
 
-    expect(component.isMedium()).toBe(false);
+    expect(component.selectedTab).toBe(PreprintModerationTab.WithdrawalRequests);
   });
 
-  it('should have resourceType set to preprint', () => {
-    expect(component.resourceType).toBe(5);
+  it('should navigate to not-found when providerId is missing', () => {
+    setup({ providerId: '' });
+    dispatchMock.mockClear();
+
+    component.ngOnInit();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-found']);
+    expect(dispatchMock).not.toHaveBeenCalledWith(expect.any(GetPreprintProvider));
   });
 
-  it('should handle tab change with string values', () => {
-    const stringTab = 'submissions' as any;
+  it('should dispatch GetPreprintProvider on init when providerId exists', () => {
+    setup({ providerId: 'provider-1' });
+    dispatchMock.mockClear();
 
-    component.onTabChange(stringTab);
+    component.ngOnInit();
 
-    expect(component.selectedTab).toBe(stringTab);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([stringTab], { relativeTo: expect.any(Object) });
+    expect(dispatchMock).toHaveBeenCalledWith(new GetPreprintProvider('provider-1'));
   });
 
-  it('should handle tab change with numeric values', () => {
-    const numericTab = 1 as any;
+  it('should update selected tab and navigate relative to route on tab change', () => {
+    setup();
 
-    component.onTabChange(numericTab);
+    component.onTabChange(PreprintModerationTab.Moderators);
 
-    expect(component.selectedTab).toBe(numericTab);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([numericTab], { relativeTo: expect.any(Object) });
-  });
-
-  it('should handle undefined firstChild in route data', async () => {
-    const routeWithoutFirstChild = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: 'test-provider-id' })
-      .build();
-
-    Object.defineProperty(routeWithoutFirstChild.snapshot, 'firstChild', {
-      value: undefined,
-      writable: true,
+    expect(component.selectedTab).toBe(PreprintModerationTab.Moderators);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([PreprintModerationTab.Moderators], {
+      relativeTo: component.route,
     });
-
-    await TestBed.configureTestingModule({
-      imports: [
-        PreprintModerationComponent,
-        OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, SelectComponent),
-      ],
-      providers: [
-        MockProvider(ActivatedRoute, routeWithoutFirstChild),
-        MockProvider(Router, mockRouter),
-        MockProvider(IS_MEDIUM, isMediumSubject),
-      ],
-    }).compileComponents();
-
-    const testFixture = TestBed.createComponent(PreprintModerationComponent);
-    const testComponent = testFixture.componentInstance;
-
-    testComponent.ngOnInit();
-
-    expect(testComponent.selectedTab).toBeUndefined();
   });
 });

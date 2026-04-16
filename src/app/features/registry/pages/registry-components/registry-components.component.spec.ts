@@ -10,16 +10,16 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
-import { RegistrationLinksCardComponent } from '../../components/registration-links-card/registration-links-card.component';
-import { RegistryComponentsSelectors } from '../../store/registry-components';
-
-import { RegistryComponentsComponent } from './registry-components.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ViewOnlyLinkHelperMock } from '@testing/providers/view-only-link-helper.mock';
+
+import { RegistrationLinksCardComponent } from '../../components/registration-links-card/registration-links-card.component';
+import { RegistryComponentsSelectors } from '../../store/registry-components';
+
+import { RegistryComponentsComponent } from './registry-components.component';
 
 interface SetupOverrides extends BaseSetupOverrides {
   hasViewOnly?: boolean;

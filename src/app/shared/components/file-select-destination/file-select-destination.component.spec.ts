@@ -2,6 +2,8 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { SelectComponent } from '../select/select.component';
 
 import { FileSelectDestinationComponent } from './file-select-destination.component';
@@ -10,10 +12,11 @@ describe.skip('FileSelectDestinationComponent', () => {
   let component: FileSelectDestinationComponent;
   let fixture: ComponentFixture<FileSelectDestinationComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [FileSelectDestinationComponent, MockComponent(SelectComponent)],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(FileSelectDestinationComponent);
     component = fixture.componentInstance;

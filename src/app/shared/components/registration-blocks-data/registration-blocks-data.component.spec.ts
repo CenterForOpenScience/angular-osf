@@ -3,10 +3,10 @@ import { TestBed } from '@angular/core/testing';
 import { FieldType } from '@osf/shared/enums/field-type.enum';
 import { Question } from '@osf/shared/models/registration/page-schema.model';
 
-import { RegistrationBlocksDataComponent } from './registration-blocks-data.component';
-
 import { MOCK_REVIEW } from '@testing/mocks/review.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { RegistrationBlocksDataComponent } from './registration-blocks-data.component';
 
 const MOCK_QUESTIONS: Question[] = [
   { id: '1', displayText: 'Q1', required: true, responseKey: 'question1', fieldType: FieldType.Text },

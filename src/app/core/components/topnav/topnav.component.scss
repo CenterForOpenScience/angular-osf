@@ -9,11 +9,16 @@
   padding: mix.rem(28px) mix.rem(24px);
   color: var(--white);
 
+  .logo-img {
+    z-index: 1105;
+  }
+
   .topnav-btn {
     height: mix.rem(36px);
     width: mix.rem(36px);
 
     --p-button-contrast-background: transparent;
     --p-button-contrast-border-color: transparent;
+    z-index: 1105;
   }
 }

@@ -1,12 +1,9 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { DownloadType } from '@osf/features/admin-institutions/enums';
 import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
@@ -15,32 +12,33 @@ import { ToastService } from '@osf/shared/services/toast.service';
 import { SortOrder } from '@shared/enums/sort-order.enum';
 import { SearchFilters } from '@shared/models/search-filters.model';
 
-import { InstitutionsUsersComponent } from './institutions-users.component';
-
 import {
   MOCK_ADMIN_INSTITUTIONS_INSTITUTION_WITH_METRICS,
   MOCK_ADMIN_INSTITUTIONS_USERS,
 } from '@testing/mocks/admin-institutions.mock';
 import { MOCK_USER } from '@testing/mocks/data.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { AdminTableComponent } from '../../components/admin-table/admin-table.component';
+
+import { InstitutionsUsersComponent } from './institutions-users.component';
 
 describe('InstitutionsUsersComponent', () => {
   let component: InstitutionsUsersComponent;
   let fixture: ComponentFixture<InstitutionsUsersComponent>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
 
-    await TestBed.configureTestingModule({
-      imports: [InstitutionsUsersComponent, ...MockComponents(AdminTableComponent, SelectComponent), OSFTestingModule],
+    TestBed.configureTestingModule({
+      imports: [InstitutionsUsersComponent, ...MockComponents(AdminTableComponent, SelectComponent)],
       providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: { queryParams: of({}) },
-        },
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().withQueryParams({}).build()),
         MockProvider(Router),
         MockProvider(ToastService),
         provideMockStore({
@@ -69,7 +67,7 @@ describe('InstitutionsUsersComponent', () => {
         }),
         MockProvider(CustomDialogService, mockCustomDialogService),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(InstitutionsUsersComponent);
     component = fixture.componentInstance;
@@ -160,7 +158,7 @@ describe('InstitutionsUsersComponent', () => {
       column: {} as any,
     };
 
-    const openSpy = jest.spyOn(mockCustomDialogService, 'open');
+    const openSpy = vi.spyOn(mockCustomDialogService, 'open');
 
     component.onIconClick(mockEvent);
 
@@ -182,7 +180,7 @@ describe('InstitutionsUsersComponent', () => {
       column: {} as any,
     };
 
-    const openSpy = jest.spyOn(mockCustomDialogService, 'open');
+    const openSpy = vi.spyOn(mockCustomDialogService, 'open');
 
     component.onIconClick(mockEvent);
 
@@ -190,7 +188,7 @@ describe('InstitutionsUsersComponent', () => {
   });
 
   it('should download data with correct URL', () => {
-    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation();
+    const windowOpenSpy = vi.spyOn(window, 'open');
 
     component.download(DownloadType.CSV);
 
@@ -208,7 +206,7 @@ describe('InstitutionsUsersComponent', () => {
     const originalInstitution = component.institution();
     (component as any).institution = () => ({ ...originalInstitution, userMetricsUrl: undefined });
 
-    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation();
+    const windowOpenSpy = vi.spyOn(window, 'open');
 
     component.download(DownloadType.CSV);
 

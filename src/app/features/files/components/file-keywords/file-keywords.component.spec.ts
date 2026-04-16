@@ -1,12 +1,12 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { FilesSelectors } from '../../store';
 
 import { FileKeywordsComponent } from './file-keywords.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('FileKeywordsComponent', () => {
   let component: FileKeywordsComponent;
@@ -19,10 +19,11 @@ describe('FileKeywordsComponent', () => {
 
   const mockTags = ['tag1', 'tag2', 'tag3'];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FileKeywordsComponent, OSFTestingModule],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [FileKeywordsComponent],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: FilesSelectors.getFileTags, value: signal(mockTags) },
@@ -32,7 +33,7 @@ describe('FileKeywordsComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(FileKeywordsComponent);
     component = fixture.componentInstance;

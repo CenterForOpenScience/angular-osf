@@ -7,11 +7,14 @@
   --p-accordion-content-padding: 0;
 
   .p-accordionheader {
-    .p-iconwrapper {
-      transform: rotate(180deg);
+    .p-icon {
       color: var(--grey-1);
     }
   }
+}
+
+.p-accordionpanel:not(.p-accordionpanel-active) .p-accordioncontent-content {
+  display: none;
 }
 
 .resource,
@@ -21,15 +24,13 @@
     --p-accordion-panel-border-width: 0;
 
     .p-accordionheader {
-      .p-iconwrapper {
+      .p-icon {
         background: var(--bg-blue-3);
-        height: 2rem;
-        min-width: 2rem;
         border-radius: 50%;
-
-        svg {
-          color: var(--pr-blue-1);
-        }
+        color: var(--pr-blue-1);
+        padding: 0.5rem;
+        height: 2rem;
+        width: 2rem;
       }
     }
   }
@@ -65,15 +66,13 @@
     border: none;
   }
 
-  .p-iconwrapper {
+  .p-icon {
     background: var(--bg-blue-3);
-    height: 2rem;
-    min-width: 2rem;
     border-radius: 50%;
-
-    svg {
-      color: var(--pr-blue-1);
-    }
+    color: var(--pr-blue-1);
+    padding: 0.5rem;
+    height: 2rem;
+    width: 2rem;
   }
 }
 

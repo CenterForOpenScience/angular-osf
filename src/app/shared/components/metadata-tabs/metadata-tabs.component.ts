@@ -4,7 +4,7 @@ import { TabsModule } from 'primeng/tabs';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { CedarTemplateFormComponent } from '@osf/features/metadata/components';
+import { CedarTemplateFormComponent } from '@osf/features/metadata/components/cedar-template-form/cedar-template-form.component';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
@@ -16,7 +16,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 
 @Component({
   selector: 'osf-metadata-tabs',
-  imports: [LoadingSpinnerComponent, TabsModule, TranslatePipe, CedarTemplateFormComponent],
+  imports: [LoadingSpinnerComponent, CedarTemplateFormComponent, TabsModule, TranslatePipe],
   templateUrl: './metadata-tabs.component.html',
   styleUrl: './metadata-tabs.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +40,14 @@ export class MetadataTabsComponent {
 
   onCedarFormChangeTemplate() {
     this.cedarFormChangeTemplate.emit();
+  }
+
+  onTabChange(event: string | number | undefined): void {
+    const value = event;
+
+    if (value !== undefined) {
+      this.changeTab.emit(value);
+    }
   }
 
   toggleEditMode() {

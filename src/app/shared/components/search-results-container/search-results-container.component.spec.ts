@@ -5,27 +5,27 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceType } from '@shared/enums/resource-type.enum';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '../resource-card/resource-card.component';
 import { SelectComponent } from '../select/select.component';
 
 import { SearchResultsContainerComponent } from './search-results-container.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-
 describe('SearchResultsContainerComponent', () => {
   let component: SearchResultsContainerComponent;
   let fixture: ComponentFixture<SearchResultsContainerComponent>;
   let componentRef: ComponentRef<SearchResultsContainerComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         SearchResultsContainerComponent,
-        OSFTestingModule,
         ...MockComponents(ResourceCardComponent, SelectComponent, LoadingSpinnerComponent),
       ],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SearchResultsContainerComponent);
     component = fixture.componentInstance;
@@ -79,7 +79,7 @@ describe('SearchResultsContainerComponent', () => {
 
   describe('Method Testing', () => {
     it('should emit sortChanged when selectSort is called', () => {
-      jest.spyOn(component.sortChanged, 'emit');
+      vi.spyOn(component.sortChanged, 'emit');
 
       component.selectSort('relevance');
 
@@ -87,7 +87,7 @@ describe('SearchResultsContainerComponent', () => {
     });
 
     it('should emit tabChanged when selectTab is called', () => {
-      jest.spyOn(component.tabChanged, 'emit');
+      vi.spyOn(component.tabChanged, 'emit');
 
       component.selectTab(ResourceType.Project);
 
@@ -95,7 +95,7 @@ describe('SearchResultsContainerComponent', () => {
     });
 
     it('should emit pageChanged when switchPage is called with valid link', () => {
-      jest.spyOn(component.pageChanged, 'emit');
+      vi.spyOn(component.pageChanged, 'emit');
 
       component.switchPage('http://example.com/page2');
 
@@ -103,7 +103,7 @@ describe('SearchResultsContainerComponent', () => {
     });
 
     it('should not emit pageChanged when switchPage is called with null', () => {
-      jest.spyOn(component.pageChanged, 'emit');
+      vi.spyOn(component.pageChanged, 'emit');
 
       component.switchPage(null);
 

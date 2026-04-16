@@ -4,21 +4,23 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { Mock } from 'vitest';
+
 import { TestBed } from '@angular/core/testing';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+
 import { RegistryResource } from '../../models';
 import { RegistryResourcesSelectors } from '../../store/registry-resources';
 import { ResourceFormComponent } from '../resource-form/resource-form.component';
 
 import { AddResourceDialogComponent } from './add-resource-dialog.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
-import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 const MOCK_RESOURCE: RegistryResource = {
   id: 'res-1',
@@ -106,7 +108,7 @@ describe('AddResourceDialogComponent', () => {
   it('should not preview resource when form is invalid', () => {
     const { component, store } = setup();
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.previewResource();
 
     expect(store.dispatch).not.toHaveBeenCalled();
@@ -117,7 +119,7 @@ describe('AddResourceDialogComponent', () => {
     const { component, store } = setup();
 
     component.form.patchValue({ pid: '10.1234/test', resourceType: 'data' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.previewResource();
 
     expect(store.dispatch).not.toHaveBeenCalled();
@@ -130,7 +132,7 @@ describe('AddResourceDialogComponent', () => {
     });
 
     component.form.patchValue({ pid: '10.1234/test', resourceType: 'data', description: 'desc' });
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.previewResource();
 
     expect(store.dispatch).toHaveBeenCalled();
@@ -149,7 +151,7 @@ describe('AddResourceDialogComponent', () => {
   it('should not add resource when currentResource is null', () => {
     const { component, store, dialogRef } = setup();
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.onAddResource();
 
     expect(store.dispatch).not.toHaveBeenCalled();
@@ -161,7 +163,7 @@ describe('AddResourceDialogComponent', () => {
       selectorOverrides: [{ selector: RegistryResourcesSelectors.getCurrentResource, value: MOCK_RESOURCE }],
     });
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.onAddResource();
 
     expect(component.isResourceConfirming()).toBe(false);
@@ -172,7 +174,7 @@ describe('AddResourceDialogComponent', () => {
   it('should close dialog without deleting when currentResource is null', () => {
     const { component, store, dialogRef } = setup();
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.closeDialog();
 
     expect(dialogRef.close).toHaveBeenCalled();
@@ -184,7 +186,7 @@ describe('AddResourceDialogComponent', () => {
       selectorOverrides: [{ selector: RegistryResourcesSelectors.getCurrentResource, value: MOCK_RESOURCE }],
     });
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.closeDialog();
 
     expect(store.dispatch).toHaveBeenCalled();

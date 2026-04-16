@@ -3,21 +3,21 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { DoughnutChartComponent } from './doughnut-chart.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('DoughnutChartComponent', () => {
   let component: DoughnutChartComponent;
   let fixture: ComponentFixture<DoughnutChartComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DoughnutChartComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
-      providers: [MockProvider(PLATFORM_ID, 'server')],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [DoughnutChartComponent, MockComponent(LoadingSpinnerComponent)],
+      providers: [provideOSFCore(), MockProvider(PLATFORM_ID, 'server')],
+    });
 
     fixture = TestBed.createComponent(DoughnutChartComponent);
     component = fixture.componentInstance;

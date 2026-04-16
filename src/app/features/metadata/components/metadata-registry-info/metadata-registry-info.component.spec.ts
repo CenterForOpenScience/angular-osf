@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistryProviderDetails } from '@osf/shared/models/provider/registry-provider.model';
 
-import { MetadataRegistryInfoComponent } from './metadata-registry-info.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { MetadataRegistryInfoComponent } from './metadata-registry-info.component';
 
 describe('MetadataRegistryInfoComponent', () => {
   let component: MetadataRegistryInfoComponent;
@@ -18,12 +18,14 @@ describe('MetadataRegistryInfoComponent', () => {
     brand: null,
     iri: 'https://example.com/registry',
     reviewsWorkflow: 'standard',
+    allowSubmissions: true,
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MetadataRegistryInfoComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MetadataRegistryInfoComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(MetadataRegistryInfoComponent);
     component = fixture.componentInstance;

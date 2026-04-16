@@ -7,16 +7,16 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { NodeLinksSelectors } from '@osf/shared/stores/node-links';
 
+import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { ProjectOverviewSelectors } from '../../store';
 import { DeleteNodeLinkDialogComponent } from '../delete-node-link-dialog/delete-node-link-dialog.component';
 import { LinkResourceDialogComponent } from '../link-resource-dialog/link-resource-dialog.component';
 
 import { LinkedResourcesComponent } from './linked-resources.component';
-
-import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('LinkedProjectsComponent', () => {
   let component: LinkedResourcesComponent;
@@ -29,16 +29,13 @@ describe('LinkedProjectsComponent', () => {
     { ...MOCK_NODE_WITH_ADMIN, id: 'resource-3', title: 'Linked Resource 3' },
   ];
 
-  beforeEach(async () => {
+  beforeEach(() => {
     customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        LinkedResourcesComponent,
-        OSFTestingModule,
-        ...MockComponents(IconComponent, ContributorsListComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [LinkedResourcesComponent, ...MockComponents(IconComponent, ContributorsListComponent)],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: NodeLinksSelectors.getLinkedResources, value: mockLinkedResources },
@@ -50,7 +47,7 @@ describe('LinkedProjectsComponent', () => {
         }),
         MockProvider(CustomDialogService, customDialogServiceMock),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(LinkedResourcesComponent);
     component = fixture.componentInstance;

@@ -6,11 +6,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
-import { HomeComponent } from './home.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+
+import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -18,14 +18,14 @@ describe('HomeComponent', () => {
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     routerMock = RouterMockBuilder.create().build();
     activatedRouteMock = ActivatedRouteMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [HomeComponent, OSFTestingModule, ...MockComponents(SearchInputComponent, IconComponent)],
-      providers: [MockProvider(Router, routerMock), MockProvider(ActivatedRoute, activatedRouteMock)],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [HomeComponent, ...MockComponents(SearchInputComponent, IconComponent)],
+      providers: [provideOSFCore(), MockProvider(Router, routerMock), MockProvider(ActivatedRoute, activatedRouteMock)],
+    });
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;

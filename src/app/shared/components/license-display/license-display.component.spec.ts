@@ -5,10 +5,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 
-import { LicenseDisplayComponent } from './license-display.component';
-
 import { MOCK_LICENSE } from '@testing/mocks/license.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { LicenseDisplayComponent } from './license-display.component';
 
 describe('LicenseDisplayComponent', () => {
   let component: LicenseDisplayComponent;
@@ -25,10 +25,11 @@ describe('LicenseDisplayComponent', () => {
     copyrightHolders: 'John Doe',
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LicenseDisplayComponent, MockPipe(InterpolatePipe), OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [LicenseDisplayComponent, MockPipe(InterpolatePipe)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(LicenseDisplayComponent);
     component = fixture.componentInstance;

@@ -1,8 +1,8 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -23,6 +23,11 @@ import {
 } from '@osf/shared/stores/contributors';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
+import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import {
   GetProjectIdentifiers,
   GetProjectInstitutions,
@@ -36,30 +41,24 @@ import { OverviewSupplementsComponent } from '../overview-supplements/overview-s
 
 import { ProjectOverviewMetadataComponent } from './project-overview-metadata.component';
 
-import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
-
 describe('ProjectOverviewMetadataComponent', () => {
   let component: ProjectOverviewMetadataComponent;
   let fixture: ComponentFixture<ProjectOverviewMetadataComponent>;
-  let store: jest.Mocked<Store>;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
+  let store: Store;
+  let dispatchMock: Mock;
+  let mockRouter: RouterMockType;
 
-  const mockProject = {
-    ...MOCK_PROJECT_OVERVIEW,
-    id: 'project-123',
-    licenseId: 'license-123',
-  };
+  interface SetupOverrides {
+    project?: typeof MOCK_PROJECT_OVERVIEW | null;
+  }
 
-  beforeEach(async () => {
-    routerMock = RouterMockBuilder.create().build();
+  function setup(overrides: SetupOverrides = {}) {
+    const project = 'project' in overrides ? overrides.project : MOCK_PROJECT_OVERVIEW;
+    mockRouter = RouterMockBuilder.create().withUrl('/project/project-1/overview').build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         ProjectOverviewMetadataComponent,
-        OSFTestingModule,
         ...MockComponents(
           ResourceCitationsComponent,
           OverviewCollectionsComponent,
@@ -73,9 +72,11 @@ describe('ProjectOverviewMetadataComponent', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
+        MockProvider(Router, mockRouter),
         provideMockStore({
           signals: [
-            { selector: ProjectOverviewSelectors.getProject, value: mockProject },
+            { selector: ProjectOverviewSelectors.getProject, value: project },
             { selector: ProjectOverviewSelectors.isProjectAnonymous, value: false },
             { selector: ProjectOverviewSelectors.hasWriteAccess, value: true },
             { selector: ProjectOverviewSelectors.getInstitutions, value: [] },
@@ -95,99 +96,81 @@ describe('ProjectOverviewMetadataComponent', () => {
             { selector: CollectionsSelectors.getCurrentProjectSubmissionsLoading, value: false },
           ],
         }),
-        { provide: Router, useValue: routerMock },
       ],
-    }).compileComponents();
+    });
 
-    store = TestBed.inject(Store) as jest.Mocked<Store>;
-    store.dispatch = jest.fn().mockReturnValue(of(true));
+    store = TestBed.inject(Store);
+    dispatchMock = store.dispatch as Mock;
     fixture = TestBed.createComponent(ProjectOverviewMetadataComponent);
     component = fixture.componentInstance;
-  });
+    fixture.detectChanges();
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
-  describe('Properties', () => {
-    it('should have resourceType set to Projects', () => {
-      expect(component.resourceType).toBe(CurrentResourceType.Projects);
-    });
+  it('should dispatch init actions when project exists', () => {
+    setup();
 
-    it('should have correct dateFormat', () => {
-      expect(component.dateFormat).toBe('MMM d, y, h:mm a');
-    });
+    expect(dispatchMock).toHaveBeenCalledWith(new GetBibliographicContributors('project-1', ResourceType.Project));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectInstitutions('project-1'));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectIdentifiers('project-1'));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectPreprints('project-1'));
+    expect(dispatchMock).toHaveBeenCalledWith(new FetchSelectedSubjects('project-1', ResourceType.Project));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectSubmissions('project-1'));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectLicense(MOCK_PROJECT_OVERVIEW.licenseId));
   });
 
-  describe('Effects', () => {
-    it('should dispatch actions when project exists', () => {
-      fixture.detectChanges();
+  it('should not dispatch init actions when project is null', () => {
+    setup({ project: null });
 
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetBibliographicContributors));
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectInstitutions));
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectIdentifiers));
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectPreprints));
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(FetchSelectedSubjects));
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectSubmissions));
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetProjectLicense));
-    });
-
-    it('should dispatch GetBibliographicContributors with correct parameters', () => {
-      fixture.detectChanges();
-
-      const call = (store.dispatch as jest.Mock).mock.calls.find(
-        (call) => call[0] instanceof GetBibliographicContributors
-      );
-      expect(call).toBeDefined();
-      const action = call[0] as GetBibliographicContributors;
-      expect(action.resourceId).toBe('project-123');
-      expect(action.resourceType).toBe(ResourceType.Project);
-    });
-
-    it('should dispatch GetProjectLicense with licenseId from project', () => {
-      fixture.detectChanges();
-
-      const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof GetProjectLicense);
-      expect(call).toBeDefined();
-      const action = call[0] as GetProjectLicense;
-      expect(action.licenseId).toBe('license-123');
-    });
+    expect(dispatchMock).not.toHaveBeenCalled();
   });
 
-  describe('onCustomCitationUpdated', () => {
-    it('should dispatch SetProjectCustomCitation with citation', () => {
-      const citation = 'Custom Citation Text';
-      component.onCustomCitationUpdated(citation);
+  it('should dispatch custom citation update', () => {
+    setup();
+    dispatchMock.mockClear();
 
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(SetProjectCustomCitation));
-      const call = (store.dispatch as jest.Mock).mock.calls.find((call) => call[0] instanceof SetProjectCustomCitation);
-      expect(call).toBeDefined();
-      const action = call[0] as SetProjectCustomCitation;
-      expect(action.citation).toBe(citation);
-    });
+    component.onCustomCitationUpdated('My custom citation');
+
+    expect(dispatchMock).toHaveBeenCalledWith(new SetProjectCustomCitation('My custom citation'));
   });
 
-  describe('handleLoadMoreContributors', () => {
-    it('should dispatch LoadMoreBibliographicContributors with project id', () => {
-      component.handleLoadMoreContributors();
+  it('should dispatch load more contributors with current project id', () => {
+    setup();
+    dispatchMock.mockClear();
 
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(LoadMoreBibliographicContributors));
-      const call = (store.dispatch as jest.Mock).mock.calls.find(
-        (call) => call[0] instanceof LoadMoreBibliographicContributors
-      );
-      expect(call).toBeDefined();
-      const action = call[0] as LoadMoreBibliographicContributors;
-      expect(action.resourceId).toBe('project-123');
-      expect(action.resourceType).toBe(ResourceType.Project);
-    });
+    component.handleLoadMoreContributors();
+
+    expect(dispatchMock).toHaveBeenCalledWith(new LoadMoreBibliographicContributors('project-1', ResourceType.Project));
   });
 
-  describe('tagClicked', () => {
-    it('should navigate to search page with tag as query param', () => {
-      const tag = 'test-tag';
-      component.tagClicked(tag);
+  it('should dispatch load more contributors with undefined project id when project is missing', () => {
+    setup({ project: null });
+    dispatchMock.mockClear();
 
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { search: tag } });
-    });
+    component.handleLoadMoreContributors();
+
+    expect(dispatchMock).toHaveBeenCalledWith(
+      new LoadMoreBibliographicContributors(undefined as unknown as string, ResourceType.Project)
+    );
+  });
+
+  it('should navigate to search when clicking a tag', () => {
+    setup();
+
+    component.tagClicked('open-science');
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { search: 'open-science' } });
+  });
+
+  it('should expose static view config values', () => {
+    setup();
+
+    expect(component.resourceType).toBe(CurrentResourceType.Projects);
+    expect(component.dateFormat).toBe('MMM d, y, h:mm a');
   });
 });

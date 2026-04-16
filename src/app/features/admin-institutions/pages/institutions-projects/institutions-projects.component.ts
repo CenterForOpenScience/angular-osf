@@ -37,7 +37,7 @@ import {
   SetSortBy,
 } from '@osf/shared/stores/global-search';
 
-import { AdminTableComponent } from '../../components';
+import { AdminTableComponent } from '../../components/admin-table/admin-table.component';
 import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 import { RequestAccessErrorDialogComponent } from '../../components/request-access-error-dialog/request-access-error-dialog.component';
 import { projectTableColumns } from '../../constants';
@@ -81,7 +81,6 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
   resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
 
-  selfLink = select(GlobalSearchSelectors.getFirst);
   firstLink = select(GlobalSearchSelectors.getFirst);
   nextLink = select(GlobalSearchSelectors.getNext);
   previousLink = select(GlobalSearchSelectors.getPrevious);
@@ -133,7 +132,7 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
 
   download(type: DownloadType) {
     downloadResults(
-      this.selfLink(),
+      this.firstLink(),
       type,
       INSTITUTIONS_CSV_TSV_FIELDS[CurrentResourceType.Projects],
       INSTITUTIONS_DOWNLOAD_CSV_TSV_RESOURCE[CurrentResourceType.Projects]

@@ -1,45 +1,53 @@
-import { provideStore } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { ConfirmationService } from 'primeng/api';
+import { Mock } from 'vitest';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { DeveloperAppsState } from '../../store';
+import { MOCK_DEVELOPER_APP } from '@testing/mocks/developer-app.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import {
+  CustomConfirmationServiceMock,
+  CustomConfirmationServiceMockType,
+} from '@testing/providers/custom-confirmation-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { DeleteDeveloperApp, GetDeveloperApps } from '../../store';
 
 import { DeveloperAppsListComponent } from './developer-apps-list.component';
 
-import { MOCK_DEVELOPER_APP } from '@testing/mocks/developer-app.mock';
-
-describe('DeveloperApplicationsListComponent', () => {
+describe('DeveloperAppsListComponent', () => {
   let component: DeveloperAppsListComponent;
   let fixture: ComponentFixture<DeveloperAppsListComponent>;
-  let customConfirmationService: CustomConfirmationService;
+  let store: Store;
+  let confirmationService: CustomConfirmationServiceMockType;
+  let toastService: ToastServiceMockType;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DeveloperAppsListComponent, MockPipe(TranslatePipe)],
+  beforeEach(() => {
+    confirmationService = CustomConfirmationServiceMock.simple();
+    toastService = ToastServiceMock.simple();
+
+    TestBed.configureTestingModule({
+      imports: [DeveloperAppsListComponent],
       providers: [
-        provideStore([DeveloperAppsState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        MockProvider(ConfirmationService),
-        MockProvider(TranslateService),
-        MockProvider(CustomConfirmationService),
-        MockProvider(ToastService),
+        provideOSFCore(),
+        provideRouter([]),
+        MockProvider(CustomConfirmationService, confirmationService),
+        MockProvider(ToastService, toastService),
+        provideMockStore(),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(DeveloperAppsListComponent);
     component = fixture.componentInstance;
-    customConfirmationService = TestBed.inject(CustomConfirmationService);
     fixture.detectChanges();
   });
 
@@ -47,18 +55,29 @@ describe('DeveloperApplicationsListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not dispatch delete when user cancels confirmation', () => {
-    jest.spyOn(customConfirmationService, 'confirmDelete').mockImplementation(() => {
-      // Simulate cancelling the confirmation
-    });
+  it('should dispatch GetDeveloperApps on init', () => {
+    expect(store.dispatch).toHaveBeenCalledWith(new GetDeveloperApps());
+  });
 
+  it('should open delete confirmation when deleteApp is called', () => {
     component.deleteApp(MOCK_DEVELOPER_APP);
 
-    expect(customConfirmationService.confirmDelete).toHaveBeenCalledWith({
+    expect(confirmationService.confirmDelete).toHaveBeenCalledWith({
       headerKey: 'settings.developerApps.confirmation.delete.title',
-      headerParams: { name: 'Test App' },
+      headerParams: { name: MOCK_DEVELOPER_APP.name },
       messageKey: 'settings.developerApps.confirmation.delete.message',
       onConfirm: expect.any(Function),
     });
+  });
+
+  it('should dispatch DeleteDeveloperApp and show success toast on confirm', () => {
+    (store.dispatch as Mock).mockClear();
+    component.deleteApp(MOCK_DEVELOPER_APP);
+
+    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
+    onConfirm();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteDeveloperApp(MOCK_DEVELOPER_APP.clientId));
+    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.developerApps.confirmation.delete.success');
   });
 });

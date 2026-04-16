@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintMetrics } from '@osf/features/preprints/models';
 
-import { PreprintMetricsInfoComponent } from './preprint-metrics-info.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { PreprintMetricsInfoComponent } from './preprint-metrics-info.component';
 
 describe('PreprintMetricsInfoComponent', () => {
   let component: PreprintMetricsInfoComponent;

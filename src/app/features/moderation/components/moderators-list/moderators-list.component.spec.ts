@@ -11,6 +11,15 @@ import { SearchInputComponent } from '@osf/shared/components/search-input/search
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ToastService } from '@osf/shared/services/toast.service';
+
+import { MOCK_USER } from '@testing/mocks/data.mock';
+import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { ModeratorPermission } from '../../enums';
 import { ModeratorModel } from '../../models';
@@ -18,15 +27,6 @@ import { ModeratorsSelectors } from '../../store/moderators';
 import { ModeratorsTableComponent } from '../moderators-table/moderators-table.component';
 
 import { ModeratorsListComponent } from './moderators-list.component';
-
-import { MOCK_USER } from '@testing/mocks/data.mock';
-import { MOCK_MODERATORS } from '@testing/mocks/moderator.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('ModeratorsListComponent', () => {
   let component: ModeratorsListComponent;
@@ -41,7 +41,7 @@ describe('ModeratorsListComponent', () => {
 
   const mockModerators: ModeratorModel[] = MOCK_MODERATORS;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockActivatedRoute = ActivatedRouteMockBuilder.create()
       .withParams({ providerId: mockProviderId })
       .withData({ resourceType: mockResourceType })
@@ -49,17 +49,14 @@ describe('ModeratorsListComponent', () => {
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        ModeratorsListComponent,
-        OSFTestingModule,
-        ...MockComponents(ModeratorsTableComponent, SearchInputComponent),
-      ],
+    TestBed.configureTestingModule({
+      imports: [ModeratorsListComponent, ...MockComponents(ModeratorsTableComponent, SearchInputComponent)],
       providers: [
+        provideOSFCore(),
         MockProvider(ActivatedRoute, mockActivatedRoute),
         MockProvider(CustomConfirmationService, customConfirmationServiceMock),
         MockProvider(CustomDialogService, mockCustomDialogService),
-        TranslateServiceMock,
+        MockProvider(ToastService),
         provideMockStore({
           signals: [
             { selector: UserSelectors.getCurrentUser, value: mockCurrentUser },
@@ -69,7 +66,7 @@ describe('ModeratorsListComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ModeratorsListComponent);
     component = fixture.componentInstance;
@@ -119,7 +116,7 @@ describe('ModeratorsListComponent', () => {
   });
 
   it('should load moderators on initialization', () => {
-    const loadModeratorsSpy = jest.fn();
+    const loadModeratorsSpy = vi.fn();
     component.actions = {
       ...component.actions,
       loadModerators: loadModeratorsSpy,
@@ -131,7 +128,7 @@ describe('ModeratorsListComponent', () => {
   });
 
   it('should set search subscription on initialization', () => {
-    const setSearchSubscriptionSpy = jest.fn();
+    const setSearchSubscriptionSpy = vi.fn();
     (component as any).setSearchSubscription = setSearchSubscriptionSpy;
 
     component.ngOnInit();
@@ -140,10 +137,10 @@ describe('ModeratorsListComponent', () => {
   });
 
   it('should handle search control value changes', () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     fixture.detectChanges();
-    const updateSearchValueSpy = jest.fn();
-    const loadModeratorsSpy = jest.fn().mockReturnValue(of({}));
+    const updateSearchValueSpy = vi.fn();
+    const loadModeratorsSpy = vi.fn().mockReturnValue(of({}));
     component.actions = {
       ...component.actions,
       updateSearchValue: updateSearchValueSpy,
@@ -152,19 +149,19 @@ describe('ModeratorsListComponent', () => {
 
     component.searchControl.setValue('test search');
 
-    jest.advanceTimersByTime(600);
+    vi.advanceTimersByTime(600);
 
     expect(updateSearchValueSpy).toHaveBeenCalledWith('test search');
     expect(loadModeratorsSpy).toHaveBeenCalledWith(mockProviderId, mockResourceType);
 
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('should handle empty search value', () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     fixture.detectChanges();
-    const updateSearchValueSpy = jest.fn();
-    const loadModeratorsSpy = jest.fn().mockReturnValue(of({}));
+    const updateSearchValueSpy = vi.fn();
+    const loadModeratorsSpy = vi.fn().mockReturnValue(of({}));
     component.actions = {
       ...component.actions,
       updateSearchValue: updateSearchValueSpy,
@@ -173,12 +170,12 @@ describe('ModeratorsListComponent', () => {
 
     component.searchControl.setValue('');
 
-    jest.advanceTimersByTime(600);
+    vi.advanceTimersByTime(600);
 
     expect(updateSearchValueSpy).toHaveBeenCalledWith(null);
     expect(loadModeratorsSpy).toHaveBeenCalledWith(mockProviderId, mockResourceType);
 
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('should have actions defined', () => {

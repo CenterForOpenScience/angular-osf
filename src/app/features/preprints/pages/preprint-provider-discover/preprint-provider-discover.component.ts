@@ -11,7 +11,7 @@ import { BrowserTabService } from '@osf/shared/services/browser-tab.service';
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
 
-import { PreprintProviderHeroComponent } from '../../components';
+import { PreprintProviderHeroComponent } from '../../components/preprint-provider-hero/preprint-provider-hero.component';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 @Component({

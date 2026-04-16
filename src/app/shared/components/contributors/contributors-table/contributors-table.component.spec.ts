@@ -1,56 +1,48 @@
-import { MockComponents, MockProvider } from 'ng-mocks';
-
-import { DialogService } from 'primeng/dynamicdialog';
+import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
 import { TableParameters } from '@shared/models/table-parameters.model';
-
-import { IconComponent } from '../../icon/icon.component';
-import { InfoIconComponent } from '../../info-icon/info-icon.component';
-import { SelectComponent } from '../../select/select.component';
-
-import { ContributorsTableComponent } from './contributors-table.component';
+import { CustomDialogService } from '@shared/services/custom-dialog.service';
 
 import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from '@testing/mocks/contributors.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { DialogServiceMockBuilder } from '@testing/providers/dialog-provider.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+
+import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
+import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';
+
+import { ContributorsTableComponent } from './contributors-table.component';
 
 describe('ContributorsTableComponent', () => {
   let component: ContributorsTableComponent;
   let fixture: ComponentFixture<ContributorsTableComponent>;
-  let mockDialogService: ReturnType<DialogServiceMockBuilder['build']>;
+  let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
-  const mockTableParams: TableParameters = {
+  const tableParams: TableParameters = {
     rows: 10,
     paginator: true,
     scrollable: false,
     rowsPerPageOptions: [10, 25, 50],
-    totalRecords: 0,
-    firstRowIndex: 0,
+    totalRecords: 4,
+    firstRowIndex: 10,
     defaultSortOrder: null,
     defaultSortColumn: null,
   };
 
-  beforeEach(async () => {
-    mockDialogService = DialogServiceMockBuilder.create().withOpenMock().build();
+  beforeEach(() => {
+    mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        ContributorsTableComponent,
-        OSFTestingModule,
-        ...MockComponents(SelectComponent, IconComponent, InfoIconComponent),
-      ],
-      providers: [MockProvider(DialogService, mockDialogService)],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [ContributorsTableComponent],
+      providers: [provideOSFCore(), MockProvider(CustomDialogService, mockCustomDialogService)],
+    });
 
     fixture = TestBed.createComponent(ContributorsTableComponent);
     component = fixture.componentInstance;
-
-    fixture.componentRef.setInput('tableParams', mockTableParams);
-
+    fixture.componentRef.setInput('tableParams', tableParams);
     fixture.detectChanges();
   });
 
@@ -58,122 +50,126 @@ describe('ContributorsTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have default values', () => {
-    expect(component.contributors()).toEqual([]);
-    expect(component.isLoading()).toBe(false);
-    expect(component.showCurator()).toBe(false);
-  });
-
-  it('should accept contributors input', () => {
-    const contributors = [MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
-    fixture.componentRef.setInput('contributors', contributors);
+  it('should compute isProject based on resourceType', () => {
+    fixture.componentRef.setInput('resourceType', ResourceType.Project);
     fixture.detectChanges();
+    expect(component.isProject()).toBe(true);
 
-    expect(component.contributors()).toEqual(contributors);
-  });
-
-  it('should accept isLoading input', () => {
-    fixture.componentRef.setInput('isLoading', true);
+    fixture.componentRef.setInput('resourceType', ResourceType.Registration);
     fixture.detectChanges();
-
-    expect(component.isLoading()).toBe(true);
+    expect(component.isProject()).toBe(false);
   });
 
-  it('should accept showCurator input', () => {
-    fixture.componentRef.setInput('showCurator', true);
-    fixture.detectChanges();
+  it('should compute deactivatedContributors when list contains deactivated contributor', () => {
+    const contributors: ContributorModel[] = [
+      { ...MOCK_CONTRIBUTOR, id: '1', deactivated: false },
+      { ...MOCK_CONTRIBUTOR_WITHOUT_HISTORY, id: '2', deactivated: true },
+    ];
 
-    expect(component.showCurator()).toBe(true);
+    component.contributors.set(contributors);
+
+    expect(component.deactivatedContributors()).toBe(true);
   });
 
-  it('should have permissionsOptions defined', () => {
-    expect(component['permissionsOptions']).toBeDefined();
-    expect(Array.isArray(component['permissionsOptions'])).toBe(true);
+  it('should compute showLoadMore when loaded contributors are below total records', () => {
+    component.contributors.set([{ ...MOCK_CONTRIBUTOR, id: '1' }]);
+
+    expect(component.showLoadMore()).toBe(true);
   });
 
-  it('should have skeletonData defined', () => {
-    expect(component.skeletonData).toBeDefined();
-    expect(Array.isArray(component.skeletonData)).toBe(true);
-    expect(component.skeletonData.length).toBe(3);
+  it('should compute showLoadMore as false when contributors length matches total records', () => {
+    const contributors: ContributorModel[] = [
+      { ...MOCK_CONTRIBUTOR, id: '1' },
+      { ...MOCK_CONTRIBUTOR_WITHOUT_HISTORY, id: '2' },
+      { ...MOCK_CONTRIBUTOR, id: '3' },
+      { ...MOCK_CONTRIBUTOR_WITHOUT_HISTORY, id: '4' },
+    ];
+    component.contributors.set(contributors);
+
+    expect(component.showLoadMore()).toBe(false);
   });
 
-  it('should handle multiple contributors', () => {
-    const contributors = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
-    fixture.componentRef.setInput('contributors', contributors);
-    fixture.detectChanges();
+  it('should emit remove event when removeContributor is called', () => {
+    const contributor = { ...MOCK_CONTRIBUTOR, id: 'remove-id' };
+    vi.spyOn(component.remove, 'emit');
 
-    expect(component.contributors()).toEqual(contributors);
-    expect(component.contributors().length).toBe(2);
+    component.removeContributor(contributor);
+
+    expect(component.remove.emit).toHaveBeenCalledWith(contributor);
   });
 
-  it('should handle loading state', () => {
-    fixture.componentRef.setInput('isLoading', true);
-    fixture.detectChanges();
+  it('should emit loadMore event when loadMoreItems is called', () => {
+    vi.spyOn(component.loadMore, 'emit');
 
-    expect(component.isLoading()).toBe(true);
-    expect(component.skeletonData).toBeDefined();
+    component.loadMoreItems();
+
+    expect(component.loadMore.emit).toHaveBeenCalled();
   });
 
-  it('should handle curator column visibility', () => {
-    fixture.componentRef.setInput('showCurator', true);
-    fixture.detectChanges();
-
-    expect(component.showCurator()).toBe(true);
-  });
-
-  it('should handle all inputs together', () => {
-    const contributors = [MOCK_CONTRIBUTOR];
-
-    fixture.componentRef.setInput('contributors', contributors);
-    fixture.componentRef.setInput('isLoading', false);
-    fixture.componentRef.setInput('showCurator', true);
-    fixture.detectChanges();
-
-    expect(component.contributors()).toEqual(contributors);
-    expect(component.isLoading()).toBe(false);
-    expect(component.showCurator()).toBe(true);
-  });
-
-  it('should handle empty contributors list', () => {
-    fixture.componentRef.setInput('contributors', []);
-    fixture.detectChanges();
-
-    expect(component.contributors()).toEqual([]);
-  });
-
-  it('should handle contributor with minimal data', () => {
-    const minimalContributor: ContributorModel = {
-      id: 'minimal-id',
-      userId: 'minimal-user-id',
-      type: 'user',
-      isBibliographic: true,
-      isCurator: true,
-      index: 0,
-      isUnregisteredContributor: false,
-      fullName: 'Minimal User',
-      givenName: 'Minimal User',
-      familyName: 'Minimal User',
-      permission: ContributorPermission.Read,
-      education: [],
-      employment: [],
-      deactivated: false,
+  it('should open education history dialog with contributor education data', () => {
+    const contributor: ContributorModel = {
+      ...MOCK_CONTRIBUTOR,
+      id: 'education-id',
+      education: [
+        {
+          institution: 'University',
+          department: 'Physics',
+          degree: 'MSc',
+          startMonth: 9,
+          startYear: 2018,
+          endMonth: 6,
+          endYear: 2020,
+          ongoing: false,
+        },
+      ],
     };
 
-    fixture.componentRef.setInput('contributors', [minimalContributor]);
-    fixture.detectChanges();
+    component.openEducationHistory(contributor);
 
-    expect(component.contributors()[0]).toEqual(minimalContributor);
+    expect(mockCustomDialogService.open).toHaveBeenCalledWith(EducationHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.education',
+      width: '552px',
+      data: contributor.education,
+    });
   });
 
-  it('should handle contributor data updates', () => {
-    const initialContributors = [MOCK_CONTRIBUTOR];
-    fixture.componentRef.setInput('contributors', initialContributors);
-    fixture.detectChanges();
+  it('should open employment history dialog with contributor employment data', () => {
+    const contributor: ContributorModel = {
+      ...MOCK_CONTRIBUTOR,
+      id: 'employment-id',
+      employment: [
+        {
+          institution: 'Company',
+          department: 'Engineering',
+          title: 'Developer',
+          startMonth: 1,
+          startYear: 2021,
+          endMonth: null,
+          endYear: null,
+          ongoing: true,
+        },
+      ],
+    };
 
-    const updatedContributors = [{ ...MOCK_CONTRIBUTOR, fullName: 'Updated Name' }];
-    fixture.componentRef.setInput('contributors', updatedContributors);
-    fixture.detectChanges();
+    component.openEmploymentHistory(contributor);
 
-    expect(component.contributors()[0].fullName).toBe('Updated Name');
+    expect(mockCustomDialogService.open).toHaveBeenCalledWith(EmploymentHistoryDialogComponent, {
+      header: 'project.contributors.table.headers.employment',
+      width: '552px',
+      data: contributor.employment,
+    });
+  });
+
+  it('should reorder contributors indices using table firstRowIndex', () => {
+    const contributors: ContributorModel[] = [
+      { ...MOCK_CONTRIBUTOR, id: '1', index: 0 },
+      { ...MOCK_CONTRIBUTOR_WITHOUT_HISTORY, id: '2', index: 1 },
+      { ...MOCK_CONTRIBUTOR, id: '3', index: 2 },
+    ];
+    component.contributors.set(contributors);
+
+    component.onRowReorder();
+
+    expect(component.contributors().map((item) => item.index)).toEqual([10, 11, 12]);
   });
 });

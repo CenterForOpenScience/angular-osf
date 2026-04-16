@@ -161,7 +161,6 @@ If the application does not open in your browser at [http://localhost:4200](http
    This should return something like `0.0.0.0:4200` or `127.0.0.1:4200`.
 
 6. **Bypass browser caching issues**
-
    - Open the site in an incognito/private window.
    - Or test with:
      ```bash

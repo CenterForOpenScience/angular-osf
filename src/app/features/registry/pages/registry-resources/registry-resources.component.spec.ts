@@ -4,6 +4,8 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { Subject, throwError } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -15,12 +17,6 @@ import { CustomConfirmationService } from '@osf/shared/services/custom-confirmat
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { RegistryResource } from '../../models';
-import { RegistrySelectors } from '../../store/registry';
-import { RegistryResourcesSelectors } from '../../store/registry-resources';
-
-import { RegistryResourcesComponent } from './registry-resources.component';
-
 import { MOCK_PROJECT_IDENTIFIERS } from '@testing/mocks/project-overview.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomConfirmationServiceMock } from '@testing/providers/custom-confirmation-provider.mock';
@@ -28,6 +24,12 @@ import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
+
+import { RegistryResource } from '../../models';
+import { RegistrySelectors } from '../../store/registry';
+import { RegistryResourcesSelectors } from '../../store/registry-resources';
+
+import { RegistryResourcesComponent } from './registry-resources.component';
 
 const MOCK_RESOURCE: RegistryResource = {
   id: 'res-1',
@@ -45,9 +47,9 @@ function setup(overrides: BaseSetupOverrides = {}) {
   const dialogClose$ = new Subject<unknown>();
   const mockDialogService = CustomDialogServiceMockBuilder.create()
     .withOpen(
-      jest.fn().mockReturnValue({
+      vi.fn().mockReturnValue({
         onClose: dialogClose$.pipe(),
-        close: jest.fn(),
+        close: vi.fn(),
       })
     )
     .build();
@@ -143,7 +145,7 @@ describe('RegistryResourcesComponent', () => {
   it('should add resource and show success toast on dialog confirm', () => {
     const { component, dialogClose$, mockDialogService, mockToastService, store } = setup();
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.addResource();
 
     expect(component.isAddingResource()).toBe(true);
@@ -173,7 +175,7 @@ describe('RegistryResourcesComponent', () => {
   it('should show error toast when addResource dispatch errors', () => {
     const { component, store, mockToastService } = setup();
 
-    jest.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('fail')));
+    vi.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('fail')));
     component.addResource();
 
     expect(mockToastService.showError).toHaveBeenCalledWith('resources.toastMessages.addResourceError');
@@ -182,7 +184,7 @@ describe('RegistryResourcesComponent', () => {
   it('should not add resource when registryId is not available', () => {
     const { component, store, mockDialogService } = setup({ hasParent: false });
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.addResource();
 
     expect(component.isAddingResource()).toBe(false);
@@ -253,7 +255,7 @@ describe('RegistryResourcesComponent', () => {
 
     mockConfirmationService.confirmDelete.mockImplementation(({ onConfirm }: { onConfirm: () => void }) => onConfirm());
 
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.deleteResource('res-1');
 
     expect(store.dispatch).toHaveBeenCalled();

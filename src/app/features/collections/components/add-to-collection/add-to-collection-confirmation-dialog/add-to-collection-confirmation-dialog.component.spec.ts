@@ -1,57 +1,56 @@
+import { Store } from '@ngxs/store';
+
+import { MockProvider } from 'ng-mocks';
+
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { of, throwError } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { CreateCollectionSubmission } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
+import { UpdateProjectPublicStatus } from '@osf/features/project/overview/store';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-confirmation-dialog.component';
-
-import { MOCK_PROJECT } from '@testing/mocks/project.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-confirmation-dialog.component';
 
 describe('AddToCollectionConfirmationDialogComponent', () => {
   let component: AddToCollectionConfirmationDialogComponent;
   let fixture: ComponentFixture<AddToCollectionConfirmationDialogComponent>;
+  let store: Store;
   let dialogRef: DynamicDialogRef;
-  let toastService: jest.Mocked<ToastService>;
-  let configData: { payload?: any; project?: any };
-  let updateProjectPublicStatus: jest.Mock;
-  let createCollectionSubmission: jest.Mock;
+  let toastService: ToastServiceMockType;
+  let dialogConfig: { data: { payload?: unknown; project?: { id: string; isPublic: boolean } } };
 
-  beforeEach(async () => {
-    dialogRef = { close: jest.fn() } as any;
-    toastService = { showSuccess: jest.fn() } as any;
-    configData = {
-      payload: {
-        collectionId: 'collection-1',
-        projectId: 'project-1',
-        collectionMetadata: { title: 'Test Collection' },
-        userId: 'user-1',
+  beforeEach(() => {
+    toastService = ToastServiceMock.simple();
+    dialogConfig = {
+      data: {
+        payload: { title: 'Submission' },
+        project: { id: 'project-1', isPublic: false },
       },
-      project: { ...MOCK_PROJECT, isPublic: false, id: 'project-1' },
     };
-    updateProjectPublicStatus = jest.fn().mockReturnValue(of(null));
-    createCollectionSubmission = jest.fn().mockReturnValue(of(null));
 
-    await TestBed.configureTestingModule({
-      imports: [AddToCollectionConfirmationDialogComponent, OSFTestingModule],
+    TestBed.configureTestingModule({
+      imports: [AddToCollectionConfirmationDialogComponent],
       providers: [
-        { provide: DynamicDialogRef, useValue: dialogRef },
-        { provide: ToastService, useValue: toastService },
-        { provide: DynamicDialogConfig, useValue: { data: configData } },
-        provideMockStore({ signals: [] }),
+        provideOSFCore(),
+        provideMockStore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, dialogConfig),
+        MockProvider(ToastService, toastService),
       ],
-    }).compileComponents();
+    });
 
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
     fixture = TestBed.createComponent(AddToCollectionConfirmationDialogComponent);
     component = fixture.componentInstance;
-    component.actions = {
-      updateProjectPublicStatus,
-      createCollectionSubmission,
-    } as any;
     fixture.detectChanges();
   });
 
@@ -59,38 +58,47 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch updates and close on confirm when project is private', () => {
+  it('should return early when payload or project is missing', () => {
+    vi.spyOn(store, 'dispatch');
+    dialogConfig.data.payload = undefined;
+
     component.handleAddToCollectionConfirm();
 
-    expect(updateProjectPublicStatus).toHaveBeenCalledWith([{ id: 'project-1', public: true }]);
-    expect(createCollectionSubmission).toHaveBeenCalledWith(configData.payload);
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(dialogRef.close).not.toHaveBeenCalled();
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+  });
+
+  it('should update project public status and create submission when project is private', () => {
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(void 0));
+
+    component.handleAddToCollectionConfirm();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateProjectPublicStatus([{ id: 'project-1', public: true }]));
+    expect(store.dispatch).toHaveBeenCalledWith(new CreateCollectionSubmission({ title: 'Submission' } as any));
     expect(dialogRef.close).toHaveBeenCalledWith(true);
     expect(toastService.showSuccess).toHaveBeenCalledWith('collections.addToCollection.confirmationDialogToastMessage');
     expect(component.isSubmitting()).toBe(false);
   });
 
-  it('should skip public status update when project already public', () => {
-    configData.project.isPublic = true;
-    updateProjectPublicStatus.mockClear();
+  it('should skip public status update when project is already public', () => {
+    dialogConfig.data.project = { id: 'project-1', isPublic: true };
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(void 0));
 
     component.handleAddToCollectionConfirm();
 
-    expect(updateProjectPublicStatus).not.toHaveBeenCalled();
-    expect(createCollectionSubmission).toHaveBeenCalledWith(configData.payload);
+    expect(store.dispatch).toHaveBeenCalledWith(new CreateCollectionSubmission({ title: 'Submission' } as any));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateProjectPublicStatus));
     expect(dialogRef.close).toHaveBeenCalledWith(true);
   });
 
-  it('should do nothing when payload or project is missing', () => {
-    configData.payload = undefined;
-    component.handleAddToCollectionConfirm();
-
-    expect(updateProjectPublicStatus).not.toHaveBeenCalled();
-    expect(createCollectionSubmission).not.toHaveBeenCalled();
-    expect(dialogRef.close).not.toHaveBeenCalled();
-  });
-
-  it('should reset submitting state and not close on error', () => {
-    createCollectionSubmission.mockReturnValue(throwError(() => new Error('fail')));
+  it('should reset submitting state on error', () => {
+    vi.spyOn(store, 'dispatch').mockImplementation((action) => {
+      if (action instanceof CreateCollectionSubmission) {
+        return throwError(() => new Error('fail'));
+      }
+      return of(void 0);
+    });
 
     component.handleAddToCollectionConfirm();
 

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PreprintPendingModerationComponent } from './preprint-pending-moderation.component';
-
 import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { PreprintPendingModerationComponent } from './preprint-pending-moderation.component';
 
 describe('PreprintPendingModerationComponent', () => {
   let component: PreprintPendingModerationComponent;

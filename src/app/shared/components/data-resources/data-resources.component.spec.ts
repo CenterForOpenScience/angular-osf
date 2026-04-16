@@ -1,27 +1,22 @@
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { IconComponent } from '../icon/icon.component';
 
 import { DataResourcesComponent } from './data-resources.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
-import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-
 describe('DataResourcesComponent', () => {
   let component: DataResourcesComponent;
   let fixture: ComponentFixture<DataResourcesComponent>;
-  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
-  beforeEach(async () => {
-    activatedRouteMock = ActivatedRouteMockBuilder.create().build();
-
-    await TestBed.configureTestingModule({
-      imports: [DataResourcesComponent, OSFTestingModule, MockComponent(IconComponent)],
-      providers: [MockProvider(ActivatedRoute, activatedRouteMock)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [DataResourcesComponent, MockComponent(IconComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(DataResourcesComponent);
     component = fixture.componentInstance;

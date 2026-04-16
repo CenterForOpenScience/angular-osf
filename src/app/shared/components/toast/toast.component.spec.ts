@@ -6,19 +6,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { ToastComponent } from './toast.component';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
+import { ToastComponent } from './toast.component';
 
 describe('ToastComponent', () => {
   let component: ToastComponent;
   let fixture: ComponentFixture<ToastComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [ToastComponent, MockModule(ToastModule)],
-      providers: [TranslateServiceMock, MockProvider(ToastService)],
-    }).compileComponents();
+      providers: [provideOSFCore(), MockProvider(ToastService)],
+    });
 
     fixture = TestBed.createComponent(ToastComponent);
     component = fixture.componentInstance;

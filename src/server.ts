@@ -25,7 +25,7 @@ app.use(
   })
 );
 
-app.use('/**', (req, res, next) => {
+app.use((req, res, next) => {
   const startTime = performance.now();
   const userAgent = req.headers['user-agent'] || '';
   const isSearchBot = isBot(userAgent);

@@ -4,6 +4,8 @@ import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { Subject } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 
@@ -26,8 +28,6 @@ import { ContributorsTableComponent } from '@shared/components/contributors/cont
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
 import { ContributorDialogAddModel } from '@shared/models/contributors/contributor-dialog-add.model';
 
-import { RegistriesContributorsComponent } from './registries-contributors.component';
-
 import {
   MOCK_CONTRIBUTOR,
   MOCK_CONTRIBUTOR_ADD,
@@ -44,6 +44,8 @@ import {
 } from '@testing/providers/custom-dialog-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { RegistriesContributorsComponent } from './registries-contributors.component';
 
 describe('RegistriesContributorsComponent', () => {
   let component: RegistriesContributorsComponent;
@@ -105,7 +107,7 @@ describe('RegistriesContributorsComponent', () => {
   it('should save changed contributors and show success toast', () => {
     const changedContributor = { ...MOCK_CONTRIBUTOR_WITHOUT_HISTORY, permission: MOCK_CONTRIBUTOR.permission };
     component.contributors.set([{ ...MOCK_CONTRIBUTOR }, changedContributor]);
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.save();
     expect(store.dispatch).toHaveBeenCalledWith(
       new BulkUpdateContributors('draft-1', ResourceType.DraftRegistration, [changedContributor])
@@ -117,8 +119,8 @@ describe('RegistriesContributorsComponent', () => {
 
   it('should bulk add registered contributors and show toast when add dialog closes', () => {
     const dialogClose$ = new Subject<ContributorDialogAddModel>();
-    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
-    (store.dispatch as jest.Mock).mockClear();
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: vi.fn() } as any);
+    (store.dispatch as Mock).mockClear();
 
     component.openAddContributorDialog();
     dialogClose$.next({ type: AddContributorType.Registered, data: [MOCK_CONTRIBUTOR_ADD] });
@@ -131,8 +133,8 @@ describe('RegistriesContributorsComponent', () => {
 
   it('should switch to unregistered dialog when add dialog closes with unregistered type', () => {
     const dialogClose$ = new Subject<ContributorDialogAddModel>();
-    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
-    const spy = jest.spyOn(component, 'openAddUnregisteredContributorDialog').mockImplementation(() => {});
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: vi.fn() } as any);
+    const spy = vi.spyOn(component, 'openAddUnregisteredContributorDialog').mockImplementation(() => {});
 
     component.openAddContributorDialog();
     dialogClose$.next({ type: AddContributorType.Unregistered, data: [] });
@@ -143,8 +145,8 @@ describe('RegistriesContributorsComponent', () => {
   it('should bulk add unregistered contributor and show toast with name param', () => {
     const dialogClose$ = new Subject<ContributorDialogAddModel>();
     const unregisteredAdd = { ...MOCK_CONTRIBUTOR_ADD, fullName: 'Test User' };
-    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
-    (store.dispatch as jest.Mock).mockClear();
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: vi.fn() } as any);
+    (store.dispatch as Mock).mockClear();
 
     component.openAddUnregisteredContributorDialog();
     dialogClose$.next({ type: AddContributorType.Unregistered, data: [unregisteredAdd] });
@@ -159,8 +161,8 @@ describe('RegistriesContributorsComponent', () => {
 
   it('should switch to registered dialog when unregistered dialog closes with registered type', () => {
     const dialogClose$ = new Subject<ContributorDialogAddModel>();
-    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: jest.fn() } as any);
-    const spy = jest.spyOn(component, 'openAddContributorDialog').mockImplementation(() => {});
+    mockCustomDialogService.open.mockReturnValue({ onClose: dialogClose$, close: vi.fn() } as any);
+    const spy = vi.spyOn(component, 'openAddContributorDialog').mockImplementation(() => {});
 
     component.openAddUnregisteredContributorDialog();
     dialogClose$.next({ type: AddContributorType.Registered, data: [] });
@@ -169,10 +171,10 @@ describe('RegistriesContributorsComponent', () => {
   });
 
   it('should remove contributor after confirmation and show success toast', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.removeContributor(MOCK_CONTRIBUTOR_WITHOUT_HISTORY);
     expect(mockCustomConfirmationService.confirmDelete).toHaveBeenCalled();
-    const call = (mockCustomConfirmationService.confirmDelete as jest.Mock).mock.calls[0][0];
+    const call = (mockCustomConfirmationService.confirmDelete as Mock).mock.calls[0][0];
     call.onConfirm();
     expect(store.dispatch).toHaveBeenCalledWith(
       new DeleteContributor('draft-1', ResourceType.DraftRegistration, MOCK_CONTRIBUTOR_WITHOUT_HISTORY.userId)
@@ -192,13 +194,13 @@ describe('RegistriesContributorsComponent', () => {
   });
 
   it('should dispatch resetContributorsState on destroy', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.ngOnDestroy();
     expect(store.dispatch).toHaveBeenCalledWith(new ResetContributorsState());
   });
 
   it('should dispatch loadMoreContributors', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     component.loadMoreContributors();
     expect(store.dispatch).toHaveBeenCalledWith(new LoadMoreContributors('draft-1', ResourceType.DraftRegistration));
   });

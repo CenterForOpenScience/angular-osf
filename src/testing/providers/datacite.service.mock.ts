@@ -1,40 +1,42 @@
 import { of } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 export type DataciteServiceMockType = Partial<DataciteService> & {
-  logIdentifiableView: jest.Mock;
-  logIdentifiableDownload: jest.Mock;
-  logFileDownload: jest.Mock;
-  logFileView: jest.Mock;
+  logIdentifiableView: Mock;
+  logIdentifiableDownload: Mock;
+  logFileDownload: Mock;
+  logFileView: Mock;
 };
 
 export class DataciteServiceMockBuilder {
-  private logIdentifiableViewMock: jest.Mock = jest.fn().mockReturnValue(of(void 0));
-  private logIdentifiableDownloadMock: jest.Mock = jest.fn().mockReturnValue(of(void 0));
-  private logFileDownloadMock: jest.Mock = jest.fn().mockReturnValue(of(void 0));
-  private logFileViewMock: jest.Mock = jest.fn().mockReturnValue(of(void 0));
+  private logIdentifiableViewMock: Mock = vi.fn().mockReturnValue(of(void 0));
+  private logIdentifiableDownloadMock: Mock = vi.fn().mockReturnValue(of(void 0));
+  private logFileDownloadMock: Mock = vi.fn().mockReturnValue(of(void 0));
+  private logFileViewMock: Mock = vi.fn().mockReturnValue(of(void 0));
 
   static create(): DataciteServiceMockBuilder {
     return new DataciteServiceMockBuilder();
   }
 
-  withLogIdentifiableView(mockImpl: jest.Mock): DataciteServiceMockBuilder {
+  withLogIdentifiableView(mockImpl: Mock): DataciteServiceMockBuilder {
     this.logIdentifiableViewMock = mockImpl;
     return this;
   }
 
-  withLogIdentifiableDownload(mockImpl: jest.Mock): DataciteServiceMockBuilder {
+  withLogIdentifiableDownload(mockImpl: Mock): DataciteServiceMockBuilder {
     this.logIdentifiableDownloadMock = mockImpl;
     return this;
   }
 
-  withLogFileDownload(mockImpl: jest.Mock): DataciteServiceMockBuilder {
+  withLogFileDownload(mockImpl: Mock): DataciteServiceMockBuilder {
     this.logFileDownloadMock = mockImpl;
     return this;
   }
 
-  withLogFileView(mockImpl: jest.Mock): DataciteServiceMockBuilder {
+  withLogFileView(mockImpl: Mock): DataciteServiceMockBuilder {
     this.logFileViewMock = mockImpl;
     return this;
   }

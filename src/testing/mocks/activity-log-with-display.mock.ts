@@ -1,7 +1,5 @@
 import { ActivityLogWithDisplay } from '@osf/shared/models/activity-logs/activity-log-with-display.model';
 
-import structuredClone from 'structured-clone';
-
 export function makeActivityLogWithDisplay(overrides: Partial<ActivityLogWithDisplay> = {}): ActivityLogWithDisplay {
   return structuredClone({
     id: 'log1',

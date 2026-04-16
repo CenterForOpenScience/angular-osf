@@ -1,48 +1,52 @@
 import { provideStore, Store } from '@ngxs/store';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { MockProvider } from 'ng-mocks';
+
 import { TestBed } from '@angular/core/testing';
 
 import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
-
-import { ActivityLogsSelectors } from './activity-logs.selectors';
-import { ActivityLogsState } from './activity-logs.state';
 
 import {
   makeActivityLogWithDisplay,
   MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
 } from '@testing/mocks/activity-log-with-display.mock';
+import { provideOSFHttp } from '@testing/osf.testing.provider';
+import { ActivityLogDisplayServiceMock } from '@testing/providers/activity-log-display.service.mock';
+
+import { ActivityLogsStateModel } from './activity-logs.model';
+import { ActivityLogsSelectors } from './activity-logs.selectors';
+import { ActivityLogsState } from './activity-logs.state';
 
 describe('ActivityLogsSelectors', () => {
   let store: Store;
+
+  const setActivityLogsState = (activityLogsState: ActivityLogsStateModel) => {
+    store.reset({
+      ...store.snapshot(),
+      activityLogs: activityLogsState,
+    });
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideStore([ActivityLogsState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        {
-          provide: ActivityLogDisplayService,
-          useValue: { getActivityDisplay: jest.fn().mockReturnValue('<span>formatted</span>') },
-        },
+        provideOSFHttp(),
+        MockProvider(ActivityLogDisplayService, ActivityLogDisplayServiceMock.simple()),
       ],
     });
     store = TestBed.inject(Store);
   });
 
   it('selects activity logs', () => {
-    store.reset({
+    setActivityLogsState({
       activityLogs: {
-        activityLogs: {
-          data: MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
-          isLoading: false,
-          error: null,
-          totalCount: 2,
-        },
+        data: MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
+        isLoading: false,
+        error: null,
+        totalCount: 2,
       },
-    } as any);
+    });
 
     const logs = store.selectSnapshot(ActivityLogsSelectors.getActivityLogs);
     expect(logs.length).toBe(2);
@@ -52,46 +56,40 @@ describe('ActivityLogsSelectors', () => {
   });
 
   it('selects total count', () => {
-    store.reset({
+    setActivityLogsState({
       activityLogs: {
-        activityLogs: {
-          data: MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
-          isLoading: false,
-          error: null,
-          totalCount: 10,
-        },
+        data: MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
+        isLoading: false,
+        error: null,
+        totalCount: 10,
       },
-    } as any);
+    });
 
     expect(store.selectSnapshot(ActivityLogsSelectors.getActivityLogsTotalCount)).toBe(10);
   });
 
   it('selects loading state', () => {
-    store.reset({
+    setActivityLogsState({
       activityLogs: {
-        activityLogs: {
-          data: [],
-          isLoading: true,
-          error: null,
-          totalCount: 0,
-        },
+        data: [],
+        isLoading: true,
+        error: null,
+        totalCount: 0,
       },
-    } as any);
+    });
 
     expect(store.selectSnapshot(ActivityLogsSelectors.getActivityLogsLoading)).toBe(true);
   });
 
   it('selects empty activity logs', () => {
-    store.reset({
+    setActivityLogsState({
       activityLogs: {
-        activityLogs: {
-          data: [],
-          isLoading: false,
-          error: null,
-          totalCount: 0,
-        },
+        data: [],
+        isLoading: false,
+        error: null,
+        totalCount: 0,
       },
-    } as any);
+    });
 
     const logs = store.selectSnapshot(ActivityLogsSelectors.getActivityLogs);
     expect(logs.length).toBe(0);
@@ -102,16 +100,14 @@ describe('ActivityLogsSelectors', () => {
 
   it('selects activity logs with different states', () => {
     const customLog = makeActivityLogWithDisplay({ id: 'custom-log', action: 'delete' });
-    store.reset({
+    setActivityLogsState({
       activityLogs: {
-        activityLogs: {
-          data: [customLog],
-          isLoading: false,
-          error: null,
-          totalCount: 1,
-        },
+        data: [customLog],
+        isLoading: false,
+        error: null,
+        totalCount: 1,
       },
-    } as any);
+    });
 
     const logs = store.selectSnapshot(ActivityLogsSelectors.getActivityLogs);
     expect(logs.length).toBe(1);

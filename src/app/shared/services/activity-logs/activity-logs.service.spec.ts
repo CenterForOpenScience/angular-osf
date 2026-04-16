@@ -1,30 +1,35 @@
+import { MockProvider } from 'ng-mocks';
+
 import { HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
-
-import { ActivityLogDisplayService } from './activity-log-display.service';
-import { ActivityLogsService } from './activity-logs.service';
 
 import {
   buildNodeLogsUrl,
   buildRegistrationLogsUrl,
   getActivityLogsResponse,
 } from '@testing/data/activity-logs/activity-logs.data';
-import { EnvironmentTokenMock } from '@testing/mocks/environment.token.mock';
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
+import { ActivityLogDisplayServiceMock } from '@testing/providers/activity-log-display.service.mock';
+import { EnvironmentTokenMock } from '@testing/providers/environment.token.mock';
+
+import { ActivityLogDisplayService } from './activity-log-display.service';
+import { ActivityLogsService } from './activity-logs.service';
 
 describe('Service: ActivityLogs', () => {
   let service: ActivityLogsService;
   const environment = EnvironmentTokenMock;
   const apiBase = environment.useValue.apiDomainUrl;
+  const activityLogDisplayServiceMock = ActivityLogDisplayServiceMock.simple('FMT');
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [OSFTestingStoreModule],
       providers: [
+        provideOSFCore(),
+        provideOSFHttp(),
         ActivityLogsService,
-        { provide: ActivityLogDisplayService, useValue: { getActivityDisplay: jest.fn().mockReturnValue('FMT') } },
+        MockProvider(ActivityLogDisplayService, activityLogDisplayServiceMock),
       ],
     });
     service = TestBed.inject(ActivityLogsService);

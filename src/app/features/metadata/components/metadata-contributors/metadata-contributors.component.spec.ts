@@ -6,11 +6,11 @@ import { ActivatedRoute } from '@angular/router';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
 
-import { MetadataContributorsComponent } from './metadata-contributors.component';
-
 import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+
+import { MetadataContributorsComponent } from './metadata-contributors.component';
 
 describe('MetadataContributorsComponent', () => {
   let component: MetadataContributorsComponent;
@@ -18,13 +18,13 @@ describe('MetadataContributorsComponent', () => {
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR];
 
-  beforeEach(async () => {
+  beforeEach(() => {
     activatedRouteMock = ActivatedRouteMockBuilder.create().build();
 
-    await TestBed.configureTestingModule({
-      imports: [MetadataContributorsComponent, MockComponent(ContributorsListComponent), OSFTestingModule],
-      providers: [MockProvider(ActivatedRoute, activatedRouteMock)],
-    }).compileComponents();
+    TestBed.configureTestingModule({
+      imports: [MetadataContributorsComponent, MockComponent(ContributorsListComponent)],
+      providers: [provideOSFCore(), MockProvider(ActivatedRoute, activatedRouteMock)],
+    });
 
     fixture = TestBed.createComponent(MetadataContributorsComponent);
     component = fixture.componentInstance;
@@ -54,7 +54,7 @@ describe('MetadataContributorsComponent', () => {
   });
 
   it('should emit openEditContributorDialog event', () => {
-    const emitSpy = jest.spyOn(component.openEditContributorDialog, 'emit');
+    const emitSpy = vi.spyOn(component.openEditContributorDialog, 'emit');
 
     component.openEditContributorDialog.emit();
 

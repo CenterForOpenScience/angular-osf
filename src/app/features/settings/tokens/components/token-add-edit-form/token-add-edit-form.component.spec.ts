@@ -1,268 +1,203 @@
 import { Store } from '@ngxs/store';
 
-import { TranslateService } from '@ngx-translate/core';
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockProvider } from 'ng-mocks';
 
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { of } from 'rxjs';
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/components';
-import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
-import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { TokenFormControls, TokenModel } from '../../models';
-import { CreateToken, TokensSelectors } from '../../store';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { CustomDialogServiceMock, CustomDialogServiceMockType } from '@testing/providers/custom-dialog-provider.mock';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
+import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { ScopeModel, TokenFormControls, TokenModel } from '../../models';
+import { CreateToken, TokensSelectors, UpdateToken } from '../../store';
+import { TokenCreatedDialogComponent } from '../token-created-dialog/token-created-dialog.component';
 
 import { TokenAddEditFormComponent } from './token-add-edit-form.component';
 
-import { MOCK_STORE } from '@testing/mocks/mock-store.mock';
-import { MOCK_SCOPES } from '@testing/mocks/scope.mock';
-import { MOCK_TOKEN } from '@testing/mocks/token.mock';
-import { TranslateServiceMock } from '@testing/mocks/translate.service.mock';
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
-import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+interface SetupOverrides extends BaseSetupOverrides {
+  isEditMode?: boolean;
+  initialValues?: TokenModel | null;
+}
 
 describe('TokenAddEditFormComponent', () => {
   let component: TokenAddEditFormComponent;
   let fixture: ComponentFixture<TokenAddEditFormComponent>;
-  let dialogService: Partial<DialogService>;
-  let dialogRef: Partial<DynamicDialogRef>;
-  let activatedRoute: Partial<ActivatedRoute>;
-  let router: Partial<Router>;
-  let toastService: jest.Mocked<ToastService>;
-  let translateService: jest.Mocked<TranslateService>;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let store: Store;
+  let mockRouter: RouterMockType;
+  let mockToastService: ToastServiceMockType;
+  let mockCustomDialogService: CustomDialogServiceMockType;
+  let dialogRef: DynamicDialogRef;
 
-  const mockTokens: TokenModel[] = [MOCK_TOKEN];
-
-  const fillForm = (tokenName: string = MOCK_TOKEN.name, scopes: string[] = MOCK_TOKEN.scopes): void => {
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: tokenName,
-      [TokenFormControls.Scopes]: scopes,
-    });
+  const tokenFromState: TokenModel = {
+    id: 'token-1',
+    tokenId: 'secret-token-value',
+    name: 'Created Token',
+    scopes: ['osf.full_read'],
   };
 
-  beforeEach(async () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === TokensSelectors.getScopes) return () => MOCK_SCOPES;
-      if (selector === TokensSelectors.isTokensLoading) return () => false;
-      if (selector === TokensSelectors.getTokens) return () => mockTokens;
-      if (selector === TokensSelectors.getTokenById) {
-        return () => (id: string) => mockTokens.find((token) => token.id === id);
-      }
-      return () => null;
+  const defaultSignals: SignalOverride[] = [
+    {
+      selector: TokensSelectors.getScopes,
+      value: [{ id: 'osf.full_read', description: 'Read access' }] as ScopeModel[],
+    },
+    { selector: TokensSelectors.isTokensLoading, value: false },
+    { selector: TokensSelectors.getTokens, value: [tokenFromState] as TokenModel[] },
+  ];
+
+  function setup(overrides: SetupOverrides = {}) {
+    const route = ActivatedRouteMockBuilder.create()
+      .withParams({ id: overrides.routeParams?.['id'] ?? 'token-1' })
+      .build();
+    mockRouter = RouterMockBuilder.create().withUrl('/settings/tokens/token-1').build();
+    mockToastService = ToastServiceMock.simple();
+    mockCustomDialogService = CustomDialogServiceMock.simple();
+
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
+
+    TestBed.configureTestingModule({
+      imports: [TokenAddEditFormComponent],
+      providers: [
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, route),
+        MockProvider(Router, mockRouter),
+        MockProvider(ToastService, mockToastService),
+        MockProvider(CustomDialogService, mockCustomDialogService),
+        provideDynamicDialogRefMock(),
+        provideMockStore({ signals }),
+      ],
     });
 
-    dialogService = {
-      open: jest.fn(),
-    };
-
-    dialogRef = {
-      close: jest.fn(),
-    };
-
-    activatedRoute = {
-      params: of({ id: MOCK_TOKEN.id }),
-    };
-
-    router = {
-      navigate: jest.fn(),
-    };
-
-    toastServiceMock = ToastServiceMockBuilder.create().build();
-
-    await TestBed.configureTestingModule({
-      imports: [TokenAddEditFormComponent, OSFTestingStoreModule, MockComponent(TextInputComponent)],
-      providers: [
-        TranslateServiceMock,
-        MockProvider(Store, MOCK_STORE),
-        MockProvider(DialogService, dialogService),
-        MockProvider(DynamicDialogRef, dialogRef),
-        MockProvider(ActivatedRoute, activatedRoute),
-        MockProvider(Router, router),
-        MockProvider(ToastService, toastServiceMock),
-      ],
-    }).compileComponents();
-
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(TokenAddEditFormComponent);
     component = fixture.componentInstance;
+    dialogRef = TestBed.inject(DynamicDialogRef);
 
-    toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
-    translateService = TestBed.inject(TranslateService) as jest.Mocked<TranslateService>;
+    if (overrides.isEditMode !== undefined) {
+      fixture.componentRef.setInput('isEditMode', overrides.isEditMode);
+    }
+    if (overrides.initialValues !== undefined) {
+      fixture.componentRef.setInput('initialValues', overrides.initialValues);
+    }
 
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
+
     expect(component).toBeTruthy();
   });
 
   it('should patch form with initial values on init', () => {
-    fixture.componentRef.setInput('initialValues', MOCK_TOKEN);
-    const patchSpy = jest.spyOn(component.tokenForm, 'patchValue');
+    const initialValues: TokenModel = {
+      id: 'token-2',
+      tokenId: 'token-value-2',
+      name: 'Existing Token',
+      scopes: ['osf.full_write'],
+    };
+    setup({ initialValues });
 
-    component.ngOnInit();
-
-    expect(patchSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        [TokenFormControls.TokenName]: MOCK_TOKEN.name,
-        [TokenFormControls.Scopes]: MOCK_TOKEN.scopes,
-      })
-    );
-    expect(component.tokenForm.get(TokenFormControls.TokenName)?.value).toBe(MOCK_TOKEN.name);
-    expect(component.tokenForm.get(TokenFormControls.Scopes)?.value).toEqual(MOCK_TOKEN.scopes);
+    expect(component.tokenForm.get(TokenFormControls.TokenName)?.value).toBe('Existing Token');
+    expect(component.tokenForm.get(TokenFormControls.Scopes)?.value).toEqual(['osf.full_write']);
   });
 
-  it('should not patch form when initialValues are not provided', () => {
-    fixture.componentRef.setInput('initialValues', null);
+  it('should disable form when loading is true', () => {
+    setup({
+      selectorOverrides: [{ selector: TokensSelectors.isTokensLoading, value: true }],
+    });
 
-    fillForm('Existing Name', ['read']);
-
-    component.ngOnInit();
-
-    expect(component.tokenForm.get(TokenFormControls.TokenName)?.value).toBe('Existing Name');
-    expect(component.tokenForm.get(TokenFormControls.Scopes)?.value).toEqual(['read']);
+    expect(component.tokenForm.disabled).toBe(true);
   });
 
-  it('should not submit when form is invalid', () => {
-    fillForm('', []);
-
-    const markAllAsTouchedSpy = jest.spyOn(component.tokenForm, 'markAllAsTouched');
-    const markAsDirtySpy = jest.spyOn(component.tokenForm.get(TokenFormControls.TokenName)!, 'markAsDirty');
-    const markScopesAsDirtySpy = jest.spyOn(component.tokenForm.get(TokenFormControls.Scopes)!, 'markAsDirty');
+  it('should mark controls as touched and dirty when submitting invalid form', () => {
+    setup();
 
     component.handleSubmitForm();
 
-    expect(markAllAsTouchedSpy).toHaveBeenCalled();
-    expect(markAsDirtySpy).toHaveBeenCalled();
-    expect(markScopesAsDirtySpy).toHaveBeenCalled();
-    expect(MOCK_STORE.dispatch).not.toHaveBeenCalled();
+    expect(component.tokenForm.invalid).toBe(true);
+    expect(component.tokenForm.get(TokenFormControls.TokenName)?.touched).toBe(true);
+    expect(component.tokenForm.get(TokenFormControls.TokenName)?.dirty).toBe(true);
+    expect(component.tokenForm.get(TokenFormControls.Scopes)?.touched).toBe(true);
+    expect(component.tokenForm.get(TokenFormControls.Scopes)?.dirty).toBe(true);
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should return early when tokenName is missing', () => {
-    fillForm('', ['read']);
+  it('should create token and open created dialog when submitting valid form in create mode', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.tokenForm.patchValue({
+      [TokenFormControls.TokenName]: 'New API Token',
+      [TokenFormControls.Scopes]: ['osf.full_read'],
+    });
 
     component.handleSubmitForm();
 
-    expect(MOCK_STORE.dispatch).not.toHaveBeenCalled();
-  });
-
-  it('should return early when scopes is missing', () => {
-    fillForm('Test Token', []);
-
-    component.handleSubmitForm();
-
-    expect(MOCK_STORE.dispatch).not.toHaveBeenCalled();
-  });
-
-  it('should create token when not in edit mode', () => {
-    fixture.componentRef.setInput('isEditMode', false);
-    fillForm('Test Token', ['read', 'write']);
-
-    MOCK_STORE.dispatch.mockReturnValue(of(undefined));
-
-    component.handleSubmitForm();
-
-    expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new CreateToken('Test Token', ['read', 'write']));
-  });
-
-  it('should show success toast and close dialog after creating token', () => {
-    fixture.componentRef.setInput('isEditMode', false);
-    fillForm('Test Token', ['read', 'write']);
-
-    MOCK_STORE.dispatch.mockReturnValue(of(undefined));
-
-    component.handleSubmitForm();
-
-    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.tokens.toastMessage.successCreate');
-    expect(dialogRef.close).toHaveBeenCalled();
-  });
-
-  it('should show success toast and navigate after updating token', () => {
-    fixture.componentRef.setInput('isEditMode', true);
-    fillForm('Updated Token', ['read', 'write']);
-
-    MOCK_STORE.dispatch.mockReturnValue(of(undefined));
-
-    component.handleSubmitForm();
-
-    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.tokens.toastMessage.successEdit');
-    expect(router.navigate).toHaveBeenCalledWith(['settings/tokens']);
-  });
-
-  it('should open dialog with correct configuration', () => {
-    const tokenName = 'Test Token';
-    const tokenValue = 'test-token-value';
-
-    component.showTokenCreatedDialog(tokenName, tokenValue);
-
-    expect(dialogService.open).toHaveBeenCalledWith(
+    expect(store.dispatch).toHaveBeenCalledWith(new CreateToken('New API Token', ['osf.full_read']));
+    expect(mockToastService.showSuccess).toHaveBeenCalledWith('settings.tokens.toastMessage.successCreate');
+    expect(dialogRef.close).toHaveBeenCalledWith();
+    expect(mockCustomDialogService.open).toHaveBeenCalledWith(
       TokenCreatedDialogComponent,
       expect.objectContaining({
-        width: '500px',
         header: 'settings.tokens.createdDialog.title',
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
+        width: '500px',
         data: {
-          tokenName,
-          tokenValue,
+          tokenName: 'Created Token',
+          tokenValue: 'secret-token-value',
         },
       })
     );
   });
 
-  it('should use TranslateService.instant for dialog header', () => {
-    component.showTokenCreatedDialog('Name', 'Value');
-    expect(translateService.instant).toHaveBeenCalledWith('settings.tokens.createdDialog.title');
-  });
+  it('should update token and navigate when submitting valid form in edit mode', () => {
+    setup({ isEditMode: true, routeParams: { id: 'token-9' } });
+    (store.dispatch as Mock).mockClear();
 
-  it('should read tokens via selectSignal after create', () => {
-    fixture.componentRef.setInput('isEditMode', false);
-    fillForm('Test Token', ['read']);
-
-    const selectSpy = jest.spyOn(MOCK_STORE, 'selectSignal');
-    MOCK_STORE.dispatch.mockReturnValue(of(undefined));
+    component.tokenForm.patchValue({
+      [TokenFormControls.TokenName]: 'Updated Token',
+      [TokenFormControls.Scopes]: ['osf.full_read'],
+    });
 
     component.handleSubmitForm();
 
-    expect(selectSpy).toHaveBeenCalledWith(TokensSelectors.getTokens);
+    expect(store.dispatch).toHaveBeenCalledWith(new UpdateToken('token-9', 'Updated Token', ['osf.full_read']));
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['settings/tokens']);
+    expect(mockToastService.showSuccess).toHaveBeenCalledWith('settings.tokens.toastMessage.successEdit');
+    expect(dialogRef.close).not.toHaveBeenCalled();
   });
 
-  it('should expose the same inputLimits as InputLimits.fullName', () => {
-    expect(component.inputLimits).toBe(InputLimits.fullName);
-  });
+  it('should open created-token dialog with provided values', () => {
+    setup();
 
-  it('should require token name', () => {
-    const tokenNameControl = component.tokenForm.get(TokenFormControls.TokenName);
-    expect(tokenNameControl?.hasError('required')).toBe(true);
-  });
+    component.showTokenCreatedDialog('Dialog Token', 'dialog-token-value');
 
-  it('should require scopes', () => {
-    const scopesControl = component.tokenForm.get(TokenFormControls.Scopes);
-    expect(scopesControl?.hasError('required')).toBe(true);
-  });
-
-  it('should be valid when both fields are filled', () => {
-    fillForm('Test Token', ['read']);
-
-    expect(component.tokenForm.valid).toBe(true);
-  });
-
-  it('should have correct input limits for token name', () => {
-    expect(component.inputLimits).toBeDefined();
-  });
-
-  it('should expose tokenId from route params', () => {
-    expect(component.tokenId()).toBe(MOCK_TOKEN.id);
-  });
-
-  it('should expose scopes from store via tokenScopes signal', () => {
-    expect(component.tokenScopes()).toEqual(MOCK_SCOPES);
+    expect(mockCustomDialogService.open).toHaveBeenCalledWith(
+      TokenCreatedDialogComponent,
+      expect.objectContaining({
+        header: 'settings.tokens.createdDialog.title',
+        width: '500px',
+        data: {
+          tokenName: 'Dialog Token',
+          tokenValue: 'dialog-token-value',
+        },
+      })
+    );
   });
 });

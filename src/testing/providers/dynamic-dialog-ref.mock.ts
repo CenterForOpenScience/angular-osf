@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 export const DynamicDialogRefMock = {
   provide: DynamicDialogRef,
   useValue: {
-    close: jest.fn(),
+    close: vi.fn(),
   },
 };
 
@@ -13,8 +13,8 @@ export function provideDynamicDialogRefMock() {
   return {
     provide: DynamicDialogRef,
     useFactory: () => ({
-      close: jest.fn(),
-      destroy: jest.fn(),
+      close: vi.fn(),
+      destroy: vi.fn(),
       onClose: new Subject<any>(),
     }),
   };

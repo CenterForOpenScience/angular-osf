@@ -19,7 +19,7 @@ export class LegacyWikiRedirectComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly loaderService = inject(LoaderService);
 
-  readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   wikiList = select(WikiSelectors.getWikiList);
 
   actions = createDispatchMap({ getWikiList: GetWikiList });

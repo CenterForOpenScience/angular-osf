@@ -6,11 +6,11 @@ import { By } from '@angular/platform-browser';
 
 import { FilterOperatorOption, FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { GenericFilterComponent } from './generic-filter.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('GenericFilterComponent', () => {
   let component: GenericFilterComponent;
@@ -23,10 +23,11 @@ describe('GenericFilterComponent', () => {
     { label: 'Option 3', value: 'value3', cardSearchResultCount: 30 },
   ];
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [GenericFilterComponent, OSFTestingModule, MockComponent(LoadingSpinnerComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [GenericFilterComponent, MockComponent(LoadingSpinnerComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(GenericFilterComponent);
     component = fixture.componentInstance;
@@ -161,7 +162,7 @@ describe('GenericFilterComponent', () => {
 
   describe('Event Handlers', () => {
     it('should emit selectedOptionsChanged on multi select change', () => {
-      const spy = jest.fn();
+      const spy = vi.fn();
       component.selectedOptionsChanged.subscribe(spy);
       componentRef.setInput('options', mockOptions);
       fixture.detectChanges();
@@ -172,7 +173,7 @@ describe('GenericFilterComponent', () => {
     });
 
     it('should handle empty value in onMultiChange', () => {
-      const spy = jest.fn();
+      const spy = vi.fn();
       component.selectedOptionsChanged.subscribe(spy);
 
       component.onMultiChange({ value: [] } as any);

@@ -8,15 +8,15 @@ import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/col
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
 import { DateAgoPipe } from '@shared/pipes/date-ago.pipe';
 
-import { SubmissionReviewStatus } from '../../enums';
-
-import { CollectionSubmissionItemComponent } from './collection-submission-item.component';
-
 import { MOCK_COLLECTION_SUBMISSION_WITH_GUID } from '@testing/mocks/submission.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { SubmissionReviewStatus } from '../../enums';
+
+import { CollectionSubmissionItemComponent } from './collection-submission-item.component';
 
 describe('CollectionSubmissionItemComponent', () => {
   let component: CollectionSubmissionItemComponent;
@@ -31,25 +31,21 @@ describe('CollectionSubmissionItemComponent', () => {
     name: 'Test Provider',
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockRouter = RouterMockBuilder.create().build();
     mockActivatedRoute = ActivatedRouteMockBuilder.create().withQueryParams({ status: 'pending' }).build();
 
-    await TestBed.configureTestingModule({
-      imports: [
-        CollectionSubmissionItemComponent,
-        OSFTestingModule,
-        ...MockComponents(IconComponent),
-        MockPipe(DateAgoPipe),
-      ],
+    TestBed.configureTestingModule({
+      imports: [CollectionSubmissionItemComponent, ...MockComponents(IconComponent), MockPipe(DateAgoPipe)],
       providers: [
+        provideOSFCore(),
         MockProvider(Router, mockRouter),
         MockProvider(ActivatedRoute, mockActivatedRoute),
         provideMockStore({
           signals: [{ selector: CollectionsSelectors.getCollectionProvider, value: mockCollectionProvider }],
         }),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(CollectionSubmissionItemComponent);
     component = fixture.componentInstance;

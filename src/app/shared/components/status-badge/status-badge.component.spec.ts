@@ -2,16 +2,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RegistryStatus } from '@osf/shared/enums/registry-status.enum';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { StatusBadgeComponent } from './status-badge.component';
 
 describe('StatusBadgeComponent', () => {
   let component: StatusBadgeComponent;
   let fixture: ComponentFixture<StatusBadgeComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [StatusBadgeComponent],
-    }).compileComponents();
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(StatusBadgeComponent);
     component = fixture.componentInstance;

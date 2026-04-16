@@ -9,11 +9,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchemaActionTrigger } from '@osf/features/registries/enums';
 import { HandleSchemaResponse } from '@osf/features/registries/store';
 
-import { ConfirmContinueEditingDialogComponent } from './confirm-continue-editing-dialog.component';
-
-import { provideDynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ConfirmContinueEditingDialogComponent } from './confirm-continue-editing-dialog.component';
 
 describe('ConfirmContinueEditingDialogComponent', () => {
   let component: ConfirmContinueEditingDialogComponent;

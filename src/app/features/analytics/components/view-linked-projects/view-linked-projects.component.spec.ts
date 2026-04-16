@@ -16,28 +16,27 @@ import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/tr
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LinkedProjectsSelectors } from '@osf/shared/stores/linked-projects';
 
-import { ViewLinkedProjectsComponent } from './view-linked-projects.component';
-
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+
+import { ViewLinkedProjectsComponent } from './view-linked-projects.component';
 
 describe('Component: View Duplicates', () => {
   let component: ViewLinkedProjectsComponent;
   let fixture: ComponentFixture<ViewLinkedProjectsComponent>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     activatedRouteMock = ActivatedRouteMockBuilder.create()
       .withParams({ id: 'rid' })
       .withData({ resourceType: ResourceType.Project })
       .build();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [
         ViewLinkedProjectsComponent,
-        OSFTestingModule,
         ...MockComponents(
           SubHeaderComponent,
           TruncatedTextComponent,
@@ -48,6 +47,7 @@ describe('Component: View Duplicates', () => {
         ),
       ],
       providers: [
+        provideOSFCore(),
         provideMockStore({
           signals: [
             { selector: LinkedProjectsSelectors.getLinkedProjects, value: [] },
@@ -59,7 +59,7 @@ describe('Component: View Duplicates', () => {
         }),
         MockProvider(ActivatedRoute, activatedRouteMock),
       ],
-    }).compileComponents();
+    });
 
     fixture = TestBed.createComponent(ViewLinkedProjectsComponent);
     component = fixture.componentInstance;

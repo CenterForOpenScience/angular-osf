@@ -1,5 +1,3 @@
-import structuredClone from 'structured-clone';
-
 const OperationInvocation = {
   data: {
     type: 'addon-operation-invocations',

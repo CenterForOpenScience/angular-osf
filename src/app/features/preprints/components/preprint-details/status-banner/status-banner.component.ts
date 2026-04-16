@@ -18,6 +18,8 @@ import {
   statusMessageByWorkflow,
   statusSeverityByState,
   statusSeverityByWorkflow,
+  tagStatusSeverityByState,
+  tagStatusSeverityByWorkflow,
 } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails, PreprintRequestAction } from '@osf/features/preprints/models';
@@ -57,7 +59,7 @@ export class StatusBannerComponent {
     return this.preprint()?.reviewsState ?? ReviewsState.Pending;
   });
 
-  severity = computed(() => {
+  messageSeverity = computed(() => {
     const currentState = this.currentState();
     const workflow = this.provider()?.reviewsWorkflow;
 
@@ -70,6 +72,21 @@ export class StatusBannerComponent {
     }
 
     return statusSeverityByState[currentState];
+  });
+
+  tagSeverity = computed(() => {
+    const currentState = this.currentState();
+    const workflow = this.provider()?.reviewsWorkflow;
+
+    if (this.isWithdrawn()) {
+      return tagStatusSeverityByState[ReviewsState.Withdrawn];
+    }
+
+    if (currentState === ReviewsState.Pending && workflow) {
+      return tagStatusSeverityByWorkflow[workflow];
+    }
+
+    return tagStatusSeverityByState[currentState];
   });
 
   status = computed(() => statusLabelKeyByState[this.currentState()]!);

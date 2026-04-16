@@ -4,7 +4,7 @@
       {{ question.displayText }}
 
       @if (!isOriginalRevision() && updatedKeysMap()[question.responseKey!]) {
-        <p-tag styleClass="font-bold" [value]="'common.labels.updated' | translate" severity="warn"></p-tag>
+        <p-tag class="font-bold" [value]="'common.labels.updated' | translate" severity="warn"></p-tag>
       }
     </h4>
 

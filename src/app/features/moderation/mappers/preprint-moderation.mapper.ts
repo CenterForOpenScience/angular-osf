@@ -28,8 +28,8 @@ export class PreprintModerationMapper {
         name: creator?.fullName || '',
       },
       preprint: {
-        id: response.embeds.target.data.id,
-        name: response.embeds.target.data.attributes.title,
+        id: response.embeds.target?.data?.id || '',
+        name: response.embeds.target?.data?.attributes?.title || '',
       },
       provider: {
         id: response.embeds.provider.data.id,

@@ -31,7 +31,7 @@
         severity="secondary"
         icon="fas fa-sliders"
         class="btn-icon-only"
-        (click)="openFilters()"
+        (onClick)="openFilters()"
         [ariaLabel]="'common.buttons.filter' | translate"
       ></p-button>
 
@@ -39,7 +39,7 @@
         severity="secondary"
         icon="fas fa-filter"
         class="btn-icon-only"
-        (click)="openSorting()"
+        (onClick)="openSorting()"
         [ariaLabel]="'common.buttons.sort' | translate"
       ></p-button>
     }
@@ -73,11 +73,13 @@
 
 <div class="flex column-gap-4 filters-resources-web">
   @if (isWeb()) {
-    @if (!isCollectionLoading()) {
-      <osf-collections-filters />
-    } @else {
-      <p-skeleton width="22rem" height="30rem" />
-    }
+    <div class="filters-column">
+      @if (!isCollectionLoading()) {
+        <osf-collections-filters />
+      } @else {
+        <p-skeleton width="22rem" height="30rem" />
+      }
+    </div>
   }
 
   <osf-collections-search-results />

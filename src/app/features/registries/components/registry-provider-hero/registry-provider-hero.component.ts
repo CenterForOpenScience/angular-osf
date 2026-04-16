@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, OnDestroy, o
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { PreprintsHelpDialogComponent } from '@osf/features/preprints/components';
+import { PreprintsHelpDialogComponent } from '@osf/features/preprints/components/preprints-help-dialog/preprints-help-dialog.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';

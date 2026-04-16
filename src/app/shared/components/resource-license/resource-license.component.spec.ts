@@ -1,19 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { ResourceLicenseComponent } from './resource-license.component';
-
 import { MOCK_LICENSE } from '@testing/mocks/license.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { ResourceLicenseComponent } from './resource-license.component';
 
 describe('ResourceLicenseComponent', () => {
   let component: ResourceLicenseComponent;
   let fixture: ComponentFixture<ResourceLicenseComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ResourceLicenseComponent, OSFTestingModule],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ResourceLicenseComponent],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(ResourceLicenseComponent);
     component = fixture.componentInstance;

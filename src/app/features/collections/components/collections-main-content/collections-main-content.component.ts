@@ -10,11 +10,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { CollectionsFilterChipsComponent } from '@osf/features/collections/components';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { CollectionsSelectors, SetSortBy } from '@shared/stores/collections';
 
+import { CollectionsFilterChipsComponent } from '../collections-filter-chips/collections-filter-chips.component';
 import { CollectionsFiltersComponent } from '../collections-filters/collections-filters.component';
 import { CollectionsSearchResultsComponent } from '../collections-search-results/collections-search-results.component';
 
@@ -23,12 +23,12 @@ import { CollectionsSearchResultsComponent } from '../collections-search-results
   imports: [
     Button,
     Select,
+    Skeleton,
     FormsModule,
     TranslatePipe,
     CollectionsFilterChipsComponent,
     CollectionsFiltersComponent,
     CollectionsSearchResultsComponent,
-    Skeleton,
   ],
   templateUrl: './collections-main-content.component.html',
   styleUrl: './collections-main-content.component.scss',
@@ -36,18 +36,19 @@ import { CollectionsSearchResultsComponent } from '../collections-search-results
 })
 export class CollectionsMainContentComponent {
   readonly sortOptions = collectionsSortOptions;
+
   isWeb = toSignal(inject(IS_WEB));
+
+  actions = createDispatchMap({ setSortBy: SetSortBy });
+
   selectedSort = select(CollectionsSelectors.getSortBy);
-  collectionSubmissions = select(CollectionsSelectors.getCollectionSubmissionsSearchResult);
   totalSubmissions = select(CollectionsSelectors.getTotalSubmissions);
-  isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
-
-  isFiltersOpen = signal(false);
-  isSortingOpen = signal(false);
-
   selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
+
+  isFiltersOpen = signal(false);
+  isSortingOpen = signal(false);
 
   isCollectionLoading = computed(() => this.isCollectionProviderLoading() || this.isCollectionDetailsLoading());
 
@@ -57,8 +58,6 @@ export class CollectionsMainContentComponent {
 
     return hasSelectedFiltersOptions;
   });
-
-  actions = createDispatchMap({ setSortBy: SetSortBy });
 
   openFilters(): void {
     this.isFiltersOpen.set(!this.isFiltersOpen());

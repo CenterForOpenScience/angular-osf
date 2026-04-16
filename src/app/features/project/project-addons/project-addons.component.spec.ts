@@ -1,31 +1,26 @@
-import { provideStore } from '@ngxs/store';
-
 import { MockComponents } from 'ng-mocks';
 
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserSelectors, UserState } from '@core/store/user';
 import { AddonCardListComponent } from '@osf/shared/components/addons/addon-card-list/addon-card-list.component';
 import { AddonsToolbarComponent } from '@osf/shared/components/addons/addons-toolbar/addons-toolbar.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { AddonsState } from '@osf/shared/stores/addons';
+
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { ProjectAddonsComponent } from './project-addons.component';
-
-import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe.skip('Component: Addons', () => {
   let component: ProjectAddonsComponent;
   let fixture: ComponentFixture<ProjectAddonsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [
         ProjectAddonsComponent,
-        OSFTestingModule,
         ...MockComponents(
           AddonCardListComponent,
           AddonsToolbarComponent,
@@ -34,16 +29,8 @@ describe.skip('Component: Addons', () => {
           SelectComponent
         ),
       ],
-      providers: [
-        provideStore([UserState, AddonsState]),
-        {
-          provide: UserSelectors,
-          useValue: {
-            getCurrentUser: () => signal({ id: 'mock-user' }),
-          },
-        },
-      ],
-    }).compileComponents();
+      providers: [provideOSFCore(), provideMockStore()],
+    });
 
     fixture = TestBed.createComponent(ProjectAddonsComponent);
     component = fixture.componentInstance;

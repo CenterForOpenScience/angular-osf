@@ -49,13 +49,13 @@
       styleClass="w-full"
       severity="info"
       [label]="'common.buttons.cancel' | translate"
-      (click)="onCancel()"
+      (onClick)="onCancel()"
     />
     <p-button
       class="w-full"
       styleClass="w-full"
       [label]="'common.buttons.send' | translate"
-      (click)="onSend()"
+      (onClick)="onSend()"
       [disabled]="!emailContent().trim()"
     />
   </div>

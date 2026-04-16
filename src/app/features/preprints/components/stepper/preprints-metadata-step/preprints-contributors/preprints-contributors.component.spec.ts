@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContributorsTableComponent } from '@osf/shared/components/contributors';
+import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
 import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
@@ -21,8 +21,6 @@ import {
   LoadMoreContributors,
 } from '@shared/stores/contributors';
 
-import { PreprintsContributorsComponent } from './preprints-contributors.component';
-
 import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_ADD } from '@testing/mocks/contributors.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
@@ -32,6 +30,8 @@ import {
 import { CustomDialogServiceMock, CustomDialogServiceMockType } from '@testing/providers/custom-dialog-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
+
+import { PreprintsContributorsComponent } from './preprints-contributors.component';
 
 describe('PreprintsContributorsComponent', () => {
   let component: PreprintsContributorsComponent;
@@ -63,7 +63,7 @@ describe('PreprintsContributorsComponent', () => {
 
     dialogMock = CustomDialogServiceMock.create()
       .withOpen(
-        jest.fn((component: unknown) => {
+        vi.fn((component: unknown) => {
           const isUnregisteredDialog =
             typeof component === 'function' && `${component}`.includes('AddUnregisteredContributorDialogComponent');
           return {
@@ -172,7 +172,7 @@ describe('PreprintsContributorsComponent', () => {
     setup({
       addDialogCloseValue: { type: AddContributorType.Unregistered, data: [MOCK_CONTRIBUTOR_ADD] },
     });
-    const openUnregisteredSpy = jest.spyOn(component, 'openAddUnregisteredContributorDialog');
+    const openUnregisteredSpy = vi.spyOn(component, 'openAddUnregisteredContributorDialog');
 
     component.openAddContributorDialog();
 
@@ -196,7 +196,7 @@ describe('PreprintsContributorsComponent', () => {
     setup({
       addUnregisteredDialogCloseValue: { type: AddContributorType.Registered, data: [MOCK_CONTRIBUTOR_ADD] },
     });
-    const openRegisteredSpy = jest.spyOn(component, 'openAddContributorDialog');
+    const openRegisteredSpy = vi.spyOn(component, 'openAddContributorDialog');
 
     component.openAddUnregisteredContributorDialog();
 

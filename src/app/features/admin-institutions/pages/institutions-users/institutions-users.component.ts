@@ -21,7 +21,7 @@ import { SearchFilters } from '@osf/shared/models/search-filters.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
-import { AdminTableComponent } from '../../components';
+import { AdminTableComponent } from '../../components/admin-table/admin-table.component';
 import { departmentOptions, userTableColumns } from '../../constants';
 import { SendEmailDialogComponent } from '../../dialogs';
 import { DownloadType } from '../../enums';

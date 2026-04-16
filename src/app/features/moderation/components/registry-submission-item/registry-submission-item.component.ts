@@ -7,10 +7,10 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { FunderAwardsListComponent } from '@osf/shared/components/funder-awards-list/funder-awards-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
-import { FunderAwardsListComponent } from '@shared/funder-awards-list/funder-awards-list.component';
 
 import { REGISTRY_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
 import { ActionStatus, SubmissionReviewStatus } from '../../enums';

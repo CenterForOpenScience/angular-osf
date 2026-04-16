@@ -1,7 +1,7 @@
 <osf-sub-header [title]="'settings.profileSettings.title' | translate" [icon]="'fas fa-gear'" />
 
 <div class="flex-column flex flex-1 w-full">
-  <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1">
+  <p-tabs [value]="selectedTab" (valueChange)="onTabChange($event)" class="flex-1">
     @if (isMedium()) {
       <p-tablist class="pr-5 pl-5">
         @for (item of tabOptions; track $index) {

@@ -3,17 +3,17 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { MyRegistrationsRedirectComponent } from './my-registrations-redirect.component';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 
-import { RouterMock } from '@testing/providers/router-provider.mock';
+import { MyRegistrationsRedirectComponent } from './my-registrations-redirect.component';
 
 describe('MyRegistrationsRedirectComponent', () => {
   let component: MyRegistrationsRedirectComponent;
   let fixture: ComponentFixture<MyRegistrationsRedirectComponent>;
-  let router: jest.Mocked<Router>;
+  let router: Router;
 
   beforeEach(() => {
-    const routerMock = RouterMock.create().build();
+    const routerMock = RouterMockBuilder.create().build();
 
     TestBed.configureTestingModule({
       imports: [MyRegistrationsRedirectComponent],
@@ -22,7 +22,7 @@ describe('MyRegistrationsRedirectComponent', () => {
 
     fixture = TestBed.createComponent(MyRegistrationsRedirectComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router) as jest.Mocked<Router>;
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 

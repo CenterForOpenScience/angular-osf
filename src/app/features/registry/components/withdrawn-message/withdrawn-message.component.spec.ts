@@ -4,12 +4,12 @@ import { TestBed } from '@angular/core/testing';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
+import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
 import { ShortRegistrationInfoComponent } from '../short-registration-info/short-registration-info.component';
 
 import { WithdrawnMessageComponent } from './withdrawn-message.component';
-
-import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
-import { provideOSFCore } from '@testing/osf.testing.provider';
 
 describe('WithdrawnMessageComponent', () => {
   beforeEach(() => {

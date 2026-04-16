@@ -5,10 +5,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ViewOnlyTableComponent } from '@osf/shared/components/view-only-table/view-only-table.component';
 import { PaginatedViewOnlyLinksModel } from '@shared/models/view-only-links/view-only-link.model';
 
-import { SettingsViewOnlyLinksCardComponent } from './settings-view-only-links-card.component';
-
 import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK } from '@testing/mocks/view-only-link.mock';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideOSFCore } from '@testing/osf.testing.provider';
+
+import { SettingsViewOnlyLinksCardComponent } from './settings-view-only-links-card.component';
 
 describe('SettingsViewOnlyLinksCardComponent', () => {
   let component: SettingsViewOnlyLinksCardComponent;
@@ -17,10 +17,11 @@ describe('SettingsViewOnlyLinksCardComponent', () => {
   const mockViewOnlyLink = MOCK_VIEW_ONLY_LINK;
   const mockTableData = MOCK_PAGINATED_VIEW_ONLY_LINKS;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SettingsViewOnlyLinksCardComponent, OSFTestingModule, MockComponent(ViewOnlyTableComponent)],
-    }).compileComponents();
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SettingsViewOnlyLinksCardComponent, MockComponent(ViewOnlyTableComponent)],
+      providers: [provideOSFCore()],
+    });
 
     fixture = TestBed.createComponent(SettingsViewOnlyLinksCardComponent);
     component = fixture.componentInstance;
@@ -48,7 +49,7 @@ describe('SettingsViewOnlyLinksCardComponent', () => {
   });
 
   it('should emit deleteTableItem when deleteLink event is triggered', () => {
-    jest.spyOn(component.deleteTableItem, 'emit');
+    vi.spyOn(component.deleteTableItem, 'emit');
     fixture.componentRef.setInput('tableData', mockTableData);
     fixture.detectChanges();
 

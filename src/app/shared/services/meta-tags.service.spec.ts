@@ -2,33 +2,31 @@ import { MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { DestroyRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { PrerenderReadyServiceMockFactory } from '@testing/providers/prerender-ready.service.mock';
+
 import { MetaTagsService } from './meta-tags.service';
 import { MetadataRecordsService } from './metadata-records.service';
 
-import { provideOSFCore } from '@testing/osf.testing.provider';
-
 describe('MetaTagsService', () => {
   let service: MetaTagsService;
-  let metadataRecordsMock: { getMetadataRecord: jest.Mock };
+  let metadataRecordsMock: { getMetadataRecord: Mock };
 
   beforeEach(() => {
-    metadataRecordsMock = {
-      getMetadataRecord: jest.fn().mockReturnValue(of('')),
-    };
+    metadataRecordsMock = { getMetadataRecord: vi.fn().mockReturnValue(of('')) };
 
     TestBed.configureTestingModule({
       providers: [
         provideOSFCore(),
         MockProvider(MetadataRecordsService, metadataRecordsMock),
-        MockProvider(PrerenderReadyService, {
-          setReady: jest.fn(),
-          setNotReady: jest.fn(),
-        }),
+        MockProvider(PrerenderReadyService, PrerenderReadyServiceMockFactory()),
       ],
     });
 
@@ -41,7 +39,7 @@ describe('MetaTagsService', () => {
 
   it('adds canonical link from url', () => {
     const destroyRef = {
-      onDestroy: jest.fn(),
+      onDestroy: vi.fn(),
     } as unknown as DestroyRef;
 
     service.updateMetaTags(
@@ -58,7 +56,7 @@ describe('MetaTagsService', () => {
 
   it('uses canonicalUrl when it differs from url', () => {
     const destroyRef = {
-      onDestroy: jest.fn(),
+      onDestroy: vi.fn(),
     } as unknown as DestroyRef;
 
     service.updateMetaTags(
@@ -76,7 +74,7 @@ describe('MetaTagsService', () => {
 
   it('replaces canonical link when updated again', () => {
     const destroyRef = {
-      onDestroy: jest.fn(),
+      onDestroy: vi.fn(),
     } as unknown as DestroyRef;
 
     service.updateMetaTags(
@@ -103,7 +101,7 @@ describe('MetaTagsService', () => {
   it('removes canonical link on destroy callback', () => {
     let destroyCallback: (() => void) | undefined;
     const destroyRef = {
-      onDestroy: jest.fn((cb: () => void) => {
+      onDestroy: vi.fn((cb: () => void) => {
         destroyCallback = cb;
       }),
     } as unknown as DestroyRef;

@@ -2,6 +2,8 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Mock } from 'vitest';
+
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -14,14 +16,14 @@ import { SearchInputComponent } from '@osf/shared/components/search-input/search
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ClearRegistryProvider, GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
+import { provideOSFCore } from '@testing/osf.testing.provider';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 import { RegistryServicesComponent } from '../../components/registry-services/registry-services.component';
 import { GetRegistries, RegistriesSelectors } from '../../store';
 
 import { RegistriesLandingComponent } from './registries-landing.component';
-
-import { provideOSFCore } from '@testing/osf.testing.provider';
-import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('RegistriesLandingComponent', () => {
   let component: RegistriesLandingComponent;
@@ -73,7 +75,7 @@ describe('RegistriesLandingComponent', () => {
   });
 
   it('should dispatch clear actions on destroy', () => {
-    (store.dispatch as jest.Mock).mockClear();
+    (store.dispatch as Mock).mockClear();
     fixture.destroy();
     expect(store.dispatch).toHaveBeenCalledWith(new ClearCurrentProvider());
     expect(store.dispatch).toHaveBeenCalledWith(new ClearRegistryProvider());

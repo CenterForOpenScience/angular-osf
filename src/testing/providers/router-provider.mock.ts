@@ -1,16 +1,25 @@
 import { Observable, Subject } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { Router, UrlTree } from '@angular/router';
 
-export type RouterMockType = Partial<Router> & { events: Observable<any> };
+export type RouterMockType = Partial<Router> & {
+  events: Observable<any>;
+  navigate: Mock<(...args: any[]) => Promise<boolean>>;
+  navigateByUrl: Mock<(...args: any[]) => Promise<boolean>>;
+  createUrlTree: Mock<(...args: any[]) => UrlTree>;
+  serializeUrl: Mock<(...args: any[]) => string>;
+};
 
 export class RouterMockBuilder {
   private currentUrl = '/';
   private events$ = new Subject<any>();
 
-  private navigateMock: jest.Mock<Promise<boolean>, any[]> = jest.fn().mockResolvedValue(true);
-  private navigateByUrlMock: jest.Mock<Promise<boolean>, any[]> = jest.fn().mockResolvedValue(true);
-  private createUrlTreeMock: jest.Mock<UrlTree, any[]> = jest.fn(() => ({}) as UrlTree);
+  private navigateMock: Mock<(...args: any[]) => Promise<boolean>> = vi.fn().mockResolvedValue(true);
+  private navigateByUrlMock: Mock<(...args: any[]) => Promise<boolean>> = vi.fn().mockResolvedValue(true);
+  private createUrlTreeMock: Mock<(...args: any[]) => UrlTree> = vi.fn(() => ({}) as UrlTree);
+  private serializeUrlMock: Mock<(...args: any[]) => string> = vi.fn(() => '/');
 
   static create(): RouterMockBuilder {
     return new RouterMockBuilder();
@@ -21,18 +30,23 @@ export class RouterMockBuilder {
     return this;
   }
 
-  withNavigate(mockImpl: jest.Mock<Promise<boolean>, any[]>): RouterMockBuilder {
+  withNavigate(mockImpl: Mock<(...args: any[]) => Promise<boolean>>): RouterMockBuilder {
     this.navigateMock = mockImpl;
     return this;
   }
 
-  withNavigateByUrl(mockImpl: jest.Mock<Promise<boolean>, any[]>): RouterMockBuilder {
+  withNavigateByUrl(mockImpl: Mock<(...args: any[]) => Promise<boolean>>): RouterMockBuilder {
     this.navigateByUrlMock = mockImpl;
     return this;
   }
 
-  withCreateUrlTree(mockImpl: jest.Mock<UrlTree, any[]>): RouterMockBuilder {
+  withCreateUrlTree(mockImpl: Mock<(...args: any[]) => UrlTree>): RouterMockBuilder {
     this.createUrlTreeMock = mockImpl;
+    return this;
+  }
+
+  withSerializeUrl(mockImpl: Mock<(...args: any[]) => string>): RouterMockBuilder {
+    this.serializeUrlMock = mockImpl;
     return this;
   }
 
@@ -48,18 +62,10 @@ export class RouterMockBuilder {
       navigate: this.navigateMock,
       navigateByUrl: this.navigateByUrlMock,
       createUrlTree: this.createUrlTreeMock,
+      serializeUrl: this.serializeUrlMock,
     } as RouterMockType;
   }
 }
-
-export const RouterMock = {
-  withUrl(url: string) {
-    return RouterMockBuilder.create().withUrl(url);
-  },
-  create() {
-    return RouterMockBuilder.create();
-  },
-};
 
 export function provideRouterMock(mock?: RouterMockType) {
   return {
