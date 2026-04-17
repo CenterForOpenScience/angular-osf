@@ -1,0 +1,25 @@
+<osf-sub-header [isLoading]="isFileLoading()" title="{{ file()?.name }}" />
+
+<div class="flex gap-4 bg-white flex-column h-full flex-1 p-4 h-full">
+  <div class="flex flex-column lg:flex-row gap-4 flex-1 h-full">
+    <div class="w-full h-full lg:w-6">
+      @if (safeLink) {
+        <iframe
+          [src]="safeLink"
+          (load)="isIframeLoading = false"
+          [hidden]="isIframeLoading"
+          title="Rendering of document"
+          marginheight="0"
+          frameborder="0"
+          allowfullscreen=""
+          class="full-image"
+          height="100%"
+          width="100%"
+        ></iframe>
+      }
+      @if (isIframeLoading) {
+        <osf-loading-spinner></osf-loading-spinner>
+      }
+    </div>
+  </div>
+</div>

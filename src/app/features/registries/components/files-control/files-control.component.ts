@@ -54,7 +54,7 @@ export class FilesControlComponent {
   projectId = input.required<string>();
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
-  draftId = input.required<string>();
+  draftId = input<string>('');
   attachFile = output<FileModel>();
 
   private readonly filesService = inject(FilesService);
@@ -161,7 +161,9 @@ export class FilesControlComponent {
     if (this.filesViewOnly()) return;
     this.attachFile.emit(file);
     if (this.draftId() && file.guid) {
-      const url = this.router.serializeUrl(this.router.createUrlTree([this.draftId(), '/', 'files', file.guid]));
+      const url = this.router.serializeUrl(
+        this.router.createUrlTree(['registries', 'drafts', this.draftId(), 'files', file.guid])
+      );
       window.open(url, '_blank');
     }
   }

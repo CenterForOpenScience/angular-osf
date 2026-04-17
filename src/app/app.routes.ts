@@ -206,6 +206,13 @@ export const routes: Routes = [
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
       },
       {
+        path: 'registries/drafts/:id/files/:fileGuid',
+        loadComponent: () =>
+          import('./features/files/pages/draft-file-detail/draft-file-detail.component').then(
+            (m) => m.DraftFileDetailComponent
+          ),
+      },
+      {
         path: ':id',
         canMatch: [isFileGuard],
         loadChildren: () => import('./features/files/files.routes').then((m) => m.filesRoutes),
