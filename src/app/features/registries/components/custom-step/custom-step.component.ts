@@ -98,6 +98,7 @@ export class CustomStepComponent implements OnDestroy {
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   step = signal(this.route.snapshot.params['step']);
+  draftId = signal(this.route.snapshot.params['id']);
   currentPage = computed(() => this.pages()[this.step() - 1]);
 
   stepForm: FormGroup = this.fb.group({});
