@@ -19,6 +19,7 @@ describe('MetadataRegistryInfoComponent', () => {
     iri: 'https://example.com/registry',
     reviewsWorkflow: 'standard',
     allowSubmissions: true,
+    allowUpdates: true,
   };
 
   beforeEach(() => {

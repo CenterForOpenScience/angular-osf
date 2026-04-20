@@ -20,6 +20,7 @@ import { SchemaResponse } from '@osf/shared/models/registration/schema-response.
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { createMockSchemaResponse } from '@testing/mocks/schema-response.mock';
@@ -28,7 +29,7 @@ import { CustomDialogServiceMock } from '@testing/providers/custom-dialog-provid
 import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 import { ViewOnlyLinkHelperMock } from '@testing/providers/view-only-link-helper.mock';
 
@@ -44,7 +45,7 @@ import { RegistrySelectors } from '../../store/registry';
 
 import { RegistryOverviewComponent } from './registry-overview.component';
 
-interface SetupOverrides {
+interface SetupOverrides extends BaseSetupOverrides {
   registry?: RegistrationOverviewModel | null;
   schemaResponses?: SchemaResponse[];
   queryParams?: Record<string, string>;
@@ -67,6 +68,19 @@ function setup(overrides: SetupOverrides = {}) {
   const mockLoaderService = new LoaderServiceMock();
   const mockToastService = ToastServiceMock.simple();
   const mockViewOnlyHelper = ViewOnlyLinkHelperMock.simple(overrides.hasViewOnly);
+  const signalDefaults = [
+    { selector: RegistrySelectors.getRegistry, value: registry },
+    { selector: RegistrySelectors.isRegistryLoading, value: false },
+    { selector: RegistrySelectors.isRegistryAnonymous, value: false },
+    { selector: RegistrySelectors.getSchemaResponses, value: schemaResponses },
+    { selector: RegistrySelectors.isSchemaResponsesLoading, value: false },
+    { selector: RegistrySelectors.getSchemaBlocks, value: [] },
+    { selector: RegistrySelectors.isSchemaBlocksLoading, value: false },
+    { selector: RegistrySelectors.areReviewActionsLoading, value: false },
+    { selector: RegistrySelectors.getSchemaResponse, value: schemaResponses[0] ?? null },
+    { selector: RegistrySelectors.hasAdminAccess, value: false },
+    { selector: RegistrationProviderSelectors.allowUpdates, value: false },
+  ];
 
   TestBed.configureTestingModule({
     imports: [
@@ -94,18 +108,7 @@ function setup(overrides: SetupOverrides = {}) {
       MockProvider(ToastService, mockToastService),
       MockProvider(ViewOnlyLinkHelperService, mockViewOnlyHelper),
       provideMockStore({
-        signals: [
-          { selector: RegistrySelectors.getRegistry, value: registry },
-          { selector: RegistrySelectors.isRegistryLoading, value: false },
-          { selector: RegistrySelectors.isRegistryAnonymous, value: false },
-          { selector: RegistrySelectors.getSchemaResponses, value: schemaResponses },
-          { selector: RegistrySelectors.isSchemaResponsesLoading, value: false },
-          { selector: RegistrySelectors.getSchemaBlocks, value: [] },
-          { selector: RegistrySelectors.isSchemaBlocksLoading, value: false },
-          { selector: RegistrySelectors.areReviewActionsLoading, value: false },
-          { selector: RegistrySelectors.getSchemaResponse, value: schemaResponses[0] ?? null },
-          { selector: RegistrySelectors.hasAdminAccess, value: false },
-        ],
+        signals: mergeSignalOverrides(signalDefaults, overrides.selectorOverrides),
       }),
     ],
   });
@@ -179,6 +182,30 @@ describe('RegistryOverviewComponent', () => {
     });
 
     expect(component.canMakeDecision()).toBe(false);
+  });
+
+  it('should compute canUpdate as true when admin access and provider updates are allowed', () => {
+    const { component } = setup({
+      registry: MOCK_REGISTRATION_OVERVIEW_MODEL,
+      selectorOverrides: [
+        { selector: RegistrySelectors.hasAdminAccess, value: true },
+        { selector: RegistrationProviderSelectors.allowUpdates, value: true },
+      ],
+    });
+
+    expect(component.canUpdate()).toBe(true);
+  });
+
+  it('should compute canUpdate as false when provider updates are not allowed', () => {
+    const { component } = setup({
+      registry: MOCK_REGISTRATION_OVERVIEW_MODEL,
+      selectorOverrides: [
+        { selector: RegistrySelectors.hasAdminAccess, value: true },
+        { selector: RegistrationProviderSelectors.allowUpdates, value: false },
+      ],
+    });
+
+    expect(component.canUpdate()).toBe(false);
   });
 
   it('should compute isInitialState from reviewsState', () => {
