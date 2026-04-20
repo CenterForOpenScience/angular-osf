@@ -136,6 +136,15 @@ export class CustomStepComponent implements OnDestroy {
     });
   }
 
+  onOpenFile(file: FileModel): void {
+    if (this.draftId() && file.guid) {
+      const url = this.router.serializeUrl(
+        this.router.createUrlTree(['registries', 'drafts', this.draftId(), 'files', file.guid])
+      );
+      window.open(url, '_blank');
+    }
+  }
+
   removeFromAttachedFiles(file: AttachedFile, questionKey: string): void {
     if (!this.attachedFiles[questionKey]) {
       return;

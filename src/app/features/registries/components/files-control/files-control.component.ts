@@ -10,7 +10,6 @@ import { filter, finalize, switchMap, take } from 'rxjs';
 import { HttpEventType } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
@@ -54,8 +53,8 @@ export class FilesControlComponent {
   projectId = input.required<string>();
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
-  draftId = input<string>('');
   attachFile = output<FileModel>();
+  openFile = output<FileModel>();
 
   private readonly filesService = inject(FilesService);
   private readonly customDialogService = inject(CustomDialogService);
@@ -155,17 +154,14 @@ export class FilesControlComponent {
       });
   }
 
-  private readonly router = inject(Router);
+  onEntryFileClicked(file: FileModel): void {
+    this.selectFile(file);
+    this.openFile.emit(file);
+  }
 
   selectFile(file: FileModel): void {
     if (this.filesViewOnly()) return;
     this.attachFile.emit(file);
-    if (this.draftId() && file.guid) {
-      const url = this.router.serializeUrl(
-        this.router.createUrlTree(['registries', 'drafts', this.draftId(), 'files', file.guid])
-      );
-      window.open(url, '_blank');
-    }
   }
 
   onFileTreeSelected(file: FileModel): void {

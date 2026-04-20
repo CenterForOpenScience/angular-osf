@@ -44,7 +44,7 @@ describe('DraftFileDetailComponent', () => {
           ],
         }),
       ],
-    }).compileComponents();
+    });
     fixture = TestBed.createComponent(DraftFileDetailComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();

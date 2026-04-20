@@ -52,7 +52,7 @@
       [provider]="provider()"
       [selectedFiles]="filesSelection"
       (selectFile)="onFileTreeSelected($event)"
-      (entryFileClicked)="selectFile($event)"
+      (entryFileClicked)="onEntryFileClicked($event)"
       (uploadFilesConfirmed)="uploadFiles($event)"
       (loadFiles)="onLoadFiles($event)"
       (setCurrentFolder)="setCurrentFolder($event)"
