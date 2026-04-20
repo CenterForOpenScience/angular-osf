@@ -138,9 +138,7 @@ export class CustomStepComponent implements OnDestroy {
 
   onOpenFile(file: FileModel): void {
     if (this.draftId() && file.guid) {
-      const url = this.router.serializeUrl(
-        this.router.createUrlTree(['registries', 'drafts', this.draftId(), 'files', file.guid])
-      );
+      const url = this.router.serializeUrl(this.router.createUrlTree([this.draftId(), 'files', file.guid, 'preview']));
       window.open(url, '_blank');
     }
   }

@@ -183,6 +183,11 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: ':id/files/:fileGuid/preview',
+        loadComponent: () =>
+          import('./features/files/pages/file-preview/file-preview.component').then((m) => m.FilePreviewComponent),
+      },
+      {
         path: 'spam-content',
         loadComponent: () =>
           import('./core/components/resource-is-spammed/resource-is-spammed.component').then(
@@ -204,13 +209,6 @@ export const routes: Routes = [
         path: ':id/files/:provider/:fileId',
         loadComponent: () =>
           import('./features/files/pages/file-redirect/file-redirect.component').then((m) => m.FileRedirectComponent),
-      },
-      {
-        path: 'registries/drafts/:id/files/:fileGuid',
-        loadComponent: () =>
-          import('./features/files/pages/draft-file-detail/draft-file-detail.component').then(
-            (m) => m.DraftFileDetailComponent
-          ),
       },
       {
         path: ':id',

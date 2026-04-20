@@ -1,5 +1,4 @@
 <osf-sub-header [isLoading]="isFileLoading()" title="{{ file()?.name }}" />
-
 <div class="flex gap-4 bg-white flex-column h-full flex-1 p-4 h-full">
   <div class="flex flex-column lg:flex-row gap-4 flex-1 h-full">
     <div class="w-full h-full lg:w-6">
@@ -20,6 +19,13 @@
       @if (isIframeLoading) {
         <osf-loading-spinner></osf-loading-spinner>
       }
+    </div>
+
+    <div class="w-full flex flex-column gap-4 lg:w-6">
+      <div class="metadata p-4 flex flex-column gap-2">
+        <h2 class="m-0 text-xl font-semibold">{{ 'files.detail.fileMetadata.title' | translate }}</h2>
+        <p class="m-0 text-color-secondary">{{ 'files.detail.fileMetadata.previewNotAvailable' | translate }}</p>
+      </div>
     </div>
   </div>
 </div>

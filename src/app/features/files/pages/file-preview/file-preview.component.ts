@@ -1,8 +1,10 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,12 +16,14 @@ import { ViewOnlyLinkHelperService } from '@shared/services/view-only-link-helpe
 
 @Component({
   selector: 'osf-draft-file-detail.component',
-  imports: [SubHeaderComponent, LoadingSpinnerComponent],
-  templateUrl: './draft-file-detail.component.html',
-  styleUrl: './draft-file-detail.component.scss',
+  imports: [SubHeaderComponent, LoadingSpinnerComponent, TranslatePipe],
+  templateUrl: './file-preview.component.html',
+  styleUrl: './file-preview..component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DraftFileDetailComponent {
+export class FilePreviewComponent {
+  @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
+
   isFileLoading = select(FilesSelectors.isOpenedFileLoading);
   file = select(FilesSelectors.getOpenedFile);
   readonly router = inject(Router);

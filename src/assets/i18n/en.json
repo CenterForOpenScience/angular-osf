@@ -615,7 +615,8 @@
           "resourceLanguage": "Resource Language",
           "resourceType": "Resource Type"
         },
-        "title": "File Metadata"
+        "title": "File Metadata",
+        "previewNotAvailable": "File or Registration metadata not available in preview mode."
       },
       "keywords": {
         "title": "Keywords"
