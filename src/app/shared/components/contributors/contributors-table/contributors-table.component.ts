@@ -50,6 +50,7 @@ export class ContributorsTableComponent {
   showEducation = input(true);
   showEmployment = input(true);
   showInfo = input(false);
+  showLoadMore = input(false);
   resourceType = input(ResourceType.Project);
 
   currentUserId = input<string | undefined>(undefined);
@@ -68,12 +69,6 @@ export class ContributorsTableComponent {
   isProject = computed(() => this.resourceType() === ResourceType.Project);
 
   deactivatedContributors = computed(() => this.contributors().some((contributor) => contributor.deactivated));
-
-  showLoadMore = computed(() => {
-    const currentLoadedItems = this.contributors().length;
-    const totalRecords = this.tableParams().totalRecords;
-    return currentLoadedItems > 0 && currentLoadedItems < totalRecords;
-  });
 
   removeContributor(contributor: ContributorModel) {
     this.remove.emit(contributor);

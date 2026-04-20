@@ -12,6 +12,7 @@
     [(contributors)]="contributors"
     [tableParams]="tableParams()"
     [isLoading]="isContributorsLoading()"
+    [showLoadMore]="hasMoreContributors()"
     [isLoadingMore]="isLoadingMore()"
     (remove)="removeContributor($event)"
     (loadMore)="loadMoreContributors()"
