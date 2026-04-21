@@ -4,11 +4,83 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
+import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
+import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
+
 import { MOCK_PROJECT_COLLECTION_SUBMISSIONS } from '@testing/data/collections/collection-submissions.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 
 import { MetadataCollectionsComponent } from './metadata-collections.component';
+
+const mockTemplateId = 'template-1';
+
+const mockCedarTemplate: CedarMetadataDataTemplateJsonApi = {
+  id: mockTemplateId,
+  type: 'cedar-metadata-templates',
+  attributes: {
+    schema_name: 'Test',
+    cedar_id: 'cedar-1',
+    template: {
+      '@id': '',
+      '@type': '',
+      type: 'object',
+      title: 'Test',
+      description: '',
+      $schema: '',
+      '@context': {
+        pav: '',
+        xsd: '',
+        bibo: '',
+        oslc: '',
+        schema: '',
+        'schema:name': { '@type': 'xsd:string' },
+        'pav:createdBy': { '@type': '@id' },
+        'pav:createdOn': { '@type': 'xsd:dateTime' },
+        'oslc:modifiedBy': { '@type': '@id' },
+        'pav:lastUpdatedOn': { '@type': 'xsd:dateTime' },
+        'schema:description': { '@type': 'xsd:string' },
+      },
+      required: [],
+      properties: {},
+      _ui: { order: [], propertyLabels: {}, propertyDescriptions: {} },
+    },
+  },
+};
+
+const mockCedarRecord: CedarMetadataRecordData = {
+  id: 'record-1',
+  attributes: {
+    metadata: {} as CedarMetadataRecordData['attributes']['metadata'],
+    is_published: false,
+  },
+  relationships: {
+    template: { data: { type: 'cedar-metadata-templates', id: mockTemplateId } },
+    target: { data: { type: 'nodes', id: 'node-1' } },
+  },
+};
+
+const mockSubmissionsWithTemplate: CollectionSubmission[] = [
+  {
+    id: '1',
+    type: 'collection-submissions',
+    collectionTitle: 'Collection A',
+    collectionId: 'col1',
+    reviewsState: CollectionSubmissionReviewState.Accepted,
+    collectedType: '',
+    status: 'accepted',
+    volume: '',
+    issue: '',
+    programArea: '',
+    schoolType: '',
+    studyDesign: '',
+    dataType: '',
+    disease: '',
+    gradeLevels: '',
+    requiredMetadataTemplateId: mockTemplateId,
+  },
+];
 
 describe('MetadataCollectionsComponent', () => {
   let component: MetadataCollectionsComponent;
@@ -52,5 +124,50 @@ describe('MetadataCollectionsComponent', () => {
 
     const content = fixture.nativeElement.textContent;
     expect(content).toContain('project.overview.metadata.noCollections');
+  });
+
+  it('should default isCedarMode to false', () => {
+    expect(component.isCedarMode()).toBe(false);
+  });
+
+  it('should build cedarRecordByTemplateId map from records', () => {
+    fixture.componentRef.setInput('cedarRecords', [mockCedarRecord]);
+    fixture.detectChanges();
+
+    const map = component.cedarRecordByTemplateId();
+    expect(map.get(mockTemplateId)).toEqual(mockCedarRecord);
+  });
+
+  it('should build empty cedarRecordByTemplateId map when no records', () => {
+    fixture.componentRef.setInput('cedarRecords', null);
+    fixture.detectChanges();
+
+    expect(component.cedarRecordByTemplateId().size).toBe(0);
+  });
+
+  it('should build cedarTemplateById map from templates', () => {
+    fixture.componentRef.setInput('cedarTemplates', [mockCedarTemplate]);
+    fixture.detectChanges();
+
+    const map = component.cedarTemplateById();
+    expect(map.get(mockTemplateId)).toEqual(mockCedarTemplate);
+  });
+
+  it('should build empty cedarTemplateById map when no templates', () => {
+    fixture.componentRef.setInput('cedarTemplates', null);
+    fixture.detectChanges();
+
+    expect(component.cedarTemplateById().size).toBe(0);
+  });
+
+  it('should pass matching cedarRecord to items in cedar mode', () => {
+    fixture.componentRef.setInput('isCedarMode', true);
+    fixture.componentRef.setInput('projectSubmissions', mockSubmissionsWithTemplate);
+    fixture.componentRef.setInput('cedarRecords', [mockCedarRecord]);
+    fixture.componentRef.setInput('cedarTemplates', [mockCedarTemplate]);
+    fixture.detectChanges();
+
+    const items = fixture.debugElement.queryAll(By.css('osf-metadata-collection-item'));
+    expect(items.length).toBe(1);
   });
 });
