@@ -10,48 +10,43 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FilesSelectors, GetFile } from '@osf/features/files/store';
-import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { ViewOnlyLinkHelperService } from '@shared/services/view-only-link-helper.service';
+import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 @Component({
-  selector: 'osf-draft-file-detail.component',
+  selector: 'osf-draft-file-detail',
   imports: [SubHeaderComponent, LoadingSpinnerComponent, TranslatePipe],
   templateUrl: './file-preview.component.html',
-  styleUrl: './file-preview..component.scss',
+  styleUrl: './file-preview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilePreviewComponent {
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
-  isFileLoading = select(FilesSelectors.isOpenedFileLoading);
-  file = select(FilesSelectors.getOpenedFile);
-  readonly router = inject(Router);
-  readonly route = inject(ActivatedRoute);
-  readonly sanitizer = inject(DomSanitizer);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+
+  private readonly actions = createDispatchMap({ getFile: GetFile });
+
+  file = select(FilesSelectors.getOpenedFile);
+  isFileLoading = select(FilesSelectors.isOpenedFileLoading);
+
   isIframeLoading = true;
   safeLink: SafeResourceUrl | null = null;
-  readonly destroyRef = inject(DestroyRef);
-  fileGuid = '';
-  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
-  private readonly actions = createDispatchMap({
-    getFile: GetFile,
-  });
+  hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
   constructor() {
     this.route.params
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        switchMap((params) => {
-          this.fileGuid = params['fileGuid'];
-          return this.actions.getFile(this.fileGuid);
-        })
+        switchMap((params) => this.actions.getFile(params['fileGuid']))
       )
-      .subscribe(() => {
-        this.getIframeLink('');
-      });
+      .subscribe(() => this.getIframeLink(''));
   }
 
   getIframeLink(version: string) {
