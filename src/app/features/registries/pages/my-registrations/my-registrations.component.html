@@ -58,7 +58,7 @@
           </section>
         </p-tabpanel>
 
-        <p-tabpanel [value]="RegistrationTab.Submitted" class="flex flex-column gap-4 flex-1">
+        <p-tabpanel [value]="RegistrationTab.Submitted">
           <section class="flex flex-column gap-4 flex-1">
             @if (isSubmittedRegistrationsLoading()) {
               @for (item of skeletons; track $index) {
