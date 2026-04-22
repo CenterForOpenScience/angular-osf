@@ -85,7 +85,7 @@ export class AuthService {
 
     if (isPlatformBrowser(this.platformId)) {
       this.cookieService.deleteAll();
-      window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent(nextUrl || window.location.origin)}`;
+      window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent(nextUrl || `${window.location.origin}/`)}`;
     }
   }
 
