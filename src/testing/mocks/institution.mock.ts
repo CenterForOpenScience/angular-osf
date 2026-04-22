@@ -13,4 +13,5 @@ export const MOCK_INSTITUTION = {
   },
   institutionalRequestAccessEnabled: true,
   logoPath: 'https://mockinstitution.org/logo.png',
+  sso_availability: 'Public',
 };

@@ -41,8 +41,14 @@ export class AuthService {
     }
 
     this.loaderService.show();
-    const loginUrl = `${this.casUrl}/login?${urlParam({ service: `${this.webUrl}/login`, next: window.location.href })}`;
-    window.location.href = loginUrl;
+
+    const serviceUrl = new URL(`${this.webUrl}/login`);
+    serviceUrl.searchParams.set('next', window.location.href);
+
+    const loginUrl = new URL(`${this.casUrl}/login`);
+    loginUrl.searchParams.set('service', serviceUrl.toString());
+
+    window.location.href = loginUrl.toString();
   }
 
   navigateToOrcidSignIn(): void {
@@ -79,7 +85,7 @@ export class AuthService {
 
     if (isPlatformBrowser(this.platformId)) {
       this.cookieService.deleteAll();
-      window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent(nextUrl || '/')}`;
+      window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent(nextUrl || `${window.location.origin}/`)}`;
     }
   }
 

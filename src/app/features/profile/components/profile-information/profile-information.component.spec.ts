@@ -37,6 +37,7 @@ describe('ProfileInformationComponent', () => {
       },
       institutionalRequestAccessEnabled: true,
       logoPath: 'logo.png',
+      sso_availability: 'Public',
     },
   ];
 

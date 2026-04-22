@@ -64,6 +64,7 @@ describe('AddComponentDialogComponent', () => {
       assets: { logo: '', logo_rounded: '', banner: '' },
       institutionalRequestAccessEnabled: false,
       logoPath: '',
+      sso_availability: 'Public',
     },
     {
       id: 'inst-2',
@@ -76,6 +77,7 @@ describe('AddComponentDialogComponent', () => {
       assets: { logo: '', logo_rounded: '', banner: '' },
       institutionalRequestAccessEnabled: false,
       logoPath: '',
+      sso_availability: 'Public',
     },
   ];
 
@@ -91,6 +93,7 @@ describe('AddComponentDialogComponent', () => {
       assets: { logo: '', logo_rounded: '', banner: '' },
       institutionalRequestAccessEnabled: false,
       logoPath: '',
+      sso_availability: 'Public',
     },
   ];
 
