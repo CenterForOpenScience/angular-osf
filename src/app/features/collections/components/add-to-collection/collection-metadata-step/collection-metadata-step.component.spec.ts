@@ -10,43 +10,11 @@ import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to
 import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
 import { CollectionsSelectors } from '@shared/stores/collections';
 
+import { MOCK_CEDAR_TEMPLATE } from '@testing/data/collections/cedar-metadata.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { CollectionMetadataStepComponent } from './collection-metadata-step.component';
-
-const MOCK_CEDAR_TEMPLATE: CedarMetadataDataTemplateJsonApi = {
-  id: 'template-1',
-  type: 'cedar-metadata-templates',
-  attributes: {
-    schema_name: 'Test Template',
-    cedar_id: 'cedar-1',
-    template: {
-      '@id': 'https://repo.metadatacenter.org/templates/1',
-      '@type': 'https://schema.metadatacenter.org/core/Template',
-      type: 'object',
-      title: 'Test',
-      description: 'Test template',
-      $schema: 'http://json-schema.org/draft-04/schema#',
-      '@context': {
-        pav: 'http://purl.org/pav/',
-        xsd: 'http://www.w3.org/2001/XMLSchema#',
-        bibo: 'http://purl.org/ontology/bibo/',
-        oslc: 'http://open-services.net/ns/core#',
-        schema: 'http://schema.org/',
-        'schema:name': { '@type': 'xsd:string' },
-        'pav:createdBy': { '@type': '@id' },
-        'pav:createdOn': { '@type': 'xsd:dateTime' },
-        'oslc:modifiedBy': { '@type': '@id' },
-        'pav:lastUpdatedOn': { '@type': 'xsd:dateTime' },
-        'schema:description': { '@type': 'xsd:string' },
-      },
-      required: [],
-      properties: {},
-      _ui: { order: [], propertyLabels: {}, propertyDescriptions: {} },
-    },
-  },
-};
 
 describe('CollectionMetadataStepComponent', () => {
   let component: CollectionMetadataStepComponent;
@@ -181,7 +149,7 @@ describe('CollectionMetadataStepComponent', () => {
     it('should handle discard changes with existing record in CEDAR mode', () => {
       const existingRecord: CedarMetadataRecordData = {
         attributes: {
-          metadata: { field: 'original' } as CedarMetadataRecordData['attributes']['metadata'],
+          metadata: { field: 'original' } as unknown as CedarMetadataRecordData['attributes']['metadata'],
           is_published: false,
         },
         relationships: {
@@ -201,7 +169,7 @@ describe('CollectionMetadataStepComponent', () => {
     it('should populate cedarFormData from existingCedarRecord', () => {
       const existingRecord: CedarMetadataRecordData = {
         attributes: {
-          metadata: { field: 'existing' } as CedarMetadataRecordData['attributes']['metadata'],
+          metadata: { field: 'existing' } as unknown as CedarMetadataRecordData['attributes']['metadata'],
           is_published: true,
         },
         relationships: {
@@ -216,8 +184,8 @@ describe('CollectionMetadataStepComponent', () => {
     });
 
     it('should emit cedarDataSaved when handleSaveCedarMetadata is called without editor', () => {
-      const cedarDataSavedSpy = jest.spyOn(component.cedarDataSaved, 'emit');
-      const stepChangeSpy = jest.spyOn(component.stepChange, 'emit');
+      const cedarDataSavedSpy = vi.spyOn(component.cedarDataSaved, 'emit');
+      const stepChangeSpy = vi.spyOn(component.stepChange, 'emit');
 
       component.handleSaveCedarMetadata();
 
@@ -240,7 +208,7 @@ describe('CollectionMetadataStepComponent', () => {
       fixture.componentRef.setInput('cedarTemplate', null);
       fixture.detectChanges();
 
-      const cedarDataSavedSpy = jest.spyOn(component.cedarDataSaved, 'emit');
+      const cedarDataSavedSpy = vi.spyOn(component.cedarDataSaved, 'emit');
 
       component.handleSaveCedarMetadata();
 

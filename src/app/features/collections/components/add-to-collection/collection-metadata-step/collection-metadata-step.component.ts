@@ -17,7 +17,7 @@ import {
   input,
   output,
   signal,
-  ViewChild,
+  viewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -83,8 +83,8 @@ export class CollectionMetadataStepComponent {
   cedarConfig = CEDAR_CONFIG;
   cedarViewerConfig = CEDAR_VIEWER_CONFIG;
 
-  @ViewChild('cedarEditor') cedarEditor?: ElementRef<CedarEditorElement>;
-  @ViewChild('cedarViewer') cedarViewer?: ElementRef<CedarEditorElement>;
+  cedarEditor = viewChild<ElementRef<CedarEditorElement>>('cedarEditor');
+  cedarViewer = viewChild<ElementRef<CedarEditorElement>>('cedarViewer');
 
   private readonly actions = createDispatchMap({ getCollectionDetails: GetCollectionDetails });
 
@@ -102,7 +102,7 @@ export class CollectionMetadataStepComponent {
       this.cedarFormData.set(
         record?.attributes?.metadata ? (record.attributes.metadata as Record<string, unknown>) : {}
       );
-      const editor = this.cedarEditor?.nativeElement;
+      const editor = this.cedarEditor()?.nativeElement;
       if (editor) {
         editor.instanceObject = this.cedarFormData();
       }
@@ -131,7 +131,7 @@ export class CollectionMetadataStepComponent {
   }
 
   handleSaveCedarMetadata() {
-    const editor = this.cedarEditor?.nativeElement;
+    const editor = this.cedarEditor()?.nativeElement;
     const template = this.cedarTemplate();
     if (!editor || !template) return;
 
@@ -198,9 +198,9 @@ export class CollectionMetadataStepComponent {
       if (record?.attributes?.metadata) {
         const metadata = record.attributes.metadata as Record<string, unknown>;
         this.cedarFormData.set(metadata);
-        const editor = this.cedarEditor?.nativeElement;
+        const editor = this.cedarEditor()?.nativeElement;
         if (editor) editor.instanceObject = metadata;
-        const viewer = this.cedarViewer?.nativeElement;
+        const viewer = this.cedarViewer()?.nativeElement;
         if (viewer) viewer.instanceObject = metadata;
       }
     });

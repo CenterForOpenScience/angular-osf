@@ -26,24 +26,16 @@ export class MetadataCollectionsComponent {
 
   cedarRecordByTemplateId = computed(() => {
     const records = this.cedarRecords();
-    if (!records?.length) return new Map<string, CedarMetadataRecordData>();
-    const map = new Map<string, CedarMetadataRecordData>();
-    for (const record of records) {
-      const templateId = record.relationships?.template?.data?.id;
-      if (templateId) {
-        map.set(templateId, record);
-      }
-    }
-    return map;
+    return new Map(
+      records?.flatMap((record) => {
+        const templateId = record.relationships?.template?.data?.id;
+        return templateId ? [[templateId, record] as const] : [];
+      }) ?? []
+    );
   });
 
   cedarTemplateById = computed(() => {
     const templates = this.cedarTemplates();
-    if (!templates?.length) return new Map<string, CedarMetadataDataTemplateJsonApi>();
-    const map = new Map<string, CedarMetadataDataTemplateJsonApi>();
-    for (const template of templates) {
-      map.set(template.id, template);
-    }
-    return map;
+    return new Map(templates?.map((t) => [t.id, t] as const) ?? []);
   });
 }

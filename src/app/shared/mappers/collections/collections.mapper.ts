@@ -153,8 +153,8 @@ export class CollectionsMapper {
           gradeLevels: submission.attributes.grade_levels,
           creator: creator
             ? {
-                id: creator.id,
-                fullName: creator.fullName,
+                id: creator?.id,
+                fullName: creator?.fullName,
               }
             : undefined,
         } as CollectionSubmissionWithGuid;

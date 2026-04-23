@@ -294,18 +294,17 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   }
 
   private saveCedarRecordIfNeeded(): Observable<unknown> {
+    if (!this.isCedarMode()) return of(null);
+
     const cedarData = this.pendingCedarData();
     const projectId = this.selectedProject()?.id;
     const templateId = this.requiredMetadataTemplate()?.id;
-    if (!this.isCedarMode() || !cedarData || !projectId || !templateId) {
-      return of(null);
-    }
+    if (!cedarData || !projectId || !templateId) return of(null);
 
-    const existing = this.existingCedarRecord();
-    if (existing?.id) {
-      return this.actions.updateCedarRecord(cedarData, existing.id, projectId, ResourceType.Project);
-    }
-    return this.actions.createCedarRecord(cedarData, projectId, ResourceType.Project);
+    const existingId = this.existingCedarRecord()?.id;
+    return existingId
+      ? this.actions.updateCedarRecord(cedarData, existingId, projectId, ResourceType.Project)
+      : this.actions.createCedarRecord(cedarData, projectId, ResourceType.Project);
   }
 
   private initializeProvider(): void {
