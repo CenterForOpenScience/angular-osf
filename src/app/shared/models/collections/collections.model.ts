@@ -1,3 +1,4 @@
+import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models';
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 
@@ -19,6 +20,7 @@ export interface CollectionProvider extends BaseProviderModel {
   };
   brand: BrandModel | null;
   defaultLicenseId?: string | null;
+  requiredMetadataTemplate?: CedarMetadataDataTemplateJsonApi | null;
 }
 
 export interface CollectionFilters {
@@ -62,6 +64,7 @@ export interface CollectionSubmission {
   dataType: string;
   disease: string;
   gradeLevels: string;
+  requiredMetadataTemplateId?: string | null;
 }
 
 export interface CollectionSubmissionWithGuid {

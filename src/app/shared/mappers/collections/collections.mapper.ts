@@ -71,6 +71,7 @@ export class CollectionsMapper {
             backgroundColor: response.embeds.brand.data.attributes.background_color,
           }
         : null,
+      requiredMetadataTemplate: response.embeds.required_metadata_template?.data ?? null,
     };
   }
 
@@ -116,6 +117,8 @@ export class CollectionsMapper {
       gradeLevels: submission.attributes.grade_levels,
       collectionTitle: replaceBadEncodedChars(submission.embeds.collection.data.attributes.title),
       collectionId: submission.embeds.collection.data.relationships.provider.data.id,
+      requiredMetadataTemplateId:
+        submission.embeds.collection.data.relationships.required_metadata_template?.data?.id ?? null,
     };
   }
 
@@ -268,11 +271,15 @@ export class CollectionsMapper {
   }
 
   static collectionSubmissionUpdateRequest(payload: CollectionSubmissionPayload) {
+    const collectionsMetadata = convertToSnakeCase(payload.collectionMetadata);
+
     return {
       data: {
         id: `${payload.projectId}-${payload.collectionId}`,
         type: 'collection-submissions',
-        attributes: {},
+        attributes: {
+          ...collectionsMetadata,
+        },
         relationships: {},
       },
     };

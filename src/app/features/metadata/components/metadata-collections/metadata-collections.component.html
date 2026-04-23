@@ -9,7 +9,12 @@
     <div class="flex flex-column gap-6">
       @if (submissions?.length) {
         @for (submission of submissions; track submission.id) {
-          <osf-metadata-collection-item [submission]="submission" />
+          <osf-metadata-collection-item
+            [submission]="submission"
+            [isCedarMode]="isCedarMode()"
+            [cedarRecord]="cedarRecordByTemplateId().get(submission.requiredMetadataTemplateId ?? '') ?? null"
+            [cedarTemplate]="cedarTemplateById().get(submission.requiredMetadataTemplateId ?? '') ?? null"
+          />
         }
       } @else {
         <p>{{ 'project.overview.metadata.noCollections' | translate }}</p>

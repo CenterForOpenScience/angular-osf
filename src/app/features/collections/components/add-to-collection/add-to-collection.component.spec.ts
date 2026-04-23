@@ -10,6 +10,8 @@ import { ProjectContributorsStepComponent } from '@osf/features/collections/comp
 import { ProjectMetadataStepComponent } from '@osf/features/collections/components/add-to-collection/project-metadata-step/project-metadata-step.component';
 import { SelectProjectStepComponent } from '@osf/features/collections/components/add-to-collection/select-project-step/select-project-step.component';
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
+import { CedarRecordDataBinding } from '@osf/features/metadata/models';
+import { MetadataSelectors } from '@osf/features/metadata/store';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -62,8 +64,10 @@ describe('AddToCollectionComponent', () => {
           signals: [
             { selector: CollectionsSelectors.getCollectionProviderLoading, value: false },
             { selector: CollectionsSelectors.getCollectionProvider, value: mockCollectionProvider },
+            { selector: CollectionsSelectors.getRequiredMetadataTemplate, value: null },
             { selector: ProjectsSelectors.getSelectedProject, value: MOCK_PROJECT },
             { selector: UserSelectors.getCurrentUser, value: MOCK_USER },
+            { selector: MetadataSelectors.getCedarRecords, value: [] },
           ],
         }),
       ],
@@ -119,6 +123,19 @@ describe('AddToCollectionComponent', () => {
     component.handleCollectionMetadataSaved(mockForm);
 
     expect(component.collectionMetadataForm).toBe(mockForm);
+    expect(component.collectionMetadataSaved()).toBe(true);
+    expect(component.stepperActiveValue()).toBe(AddToCollectionSteps.Complete);
+  });
+
+  it('should handle cedar data saved', () => {
+    const mockCedarData: CedarRecordDataBinding = {
+      data: {} as CedarRecordDataBinding['data'],
+      id: 'template-123',
+      isPublished: false,
+    };
+    component.handleCedarDataSaved(mockCedarData);
+
+    expect(component.pendingCedarData()).toEqual(mockCedarData);
     expect(component.collectionMetadataSaved()).toBe(true);
     expect(component.stepperActiveValue()).toBe(AddToCollectionSteps.Complete);
   });
