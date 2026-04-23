@@ -179,6 +179,7 @@
                   [projectId]="projectId()"
                   [provider]="provider()"
                   (attachFile)="onAttachFile($event, q.responseKey!)"
+                  (openFile)="onOpenFile($event)"
                   [filesViewOnly]="filesViewOnly()"
                 ></osf-files-control>
               </div>

@@ -98,6 +98,7 @@ export class CustomStepComponent implements OnDestroy {
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   step = signal(this.route.snapshot.params['step']);
+  draftId = signal(this.route.snapshot.params['id']);
   currentPage = computed(() => this.pages()[this.step() - 1]);
 
   stepForm: FormGroup = this.fb.group({});
@@ -133,6 +134,13 @@ export class CustomStepComponent implements OnDestroy {
       [questionKey]: this.mapFilesToPayload(this.attachedFiles[questionKey]),
       ...otherFormValues,
     });
+  }
+
+  onOpenFile(file: FileModel): void {
+    if (this.draftId() && file.guid) {
+      const url = this.router.serializeUrl(this.router.createUrlTree([this.draftId(), 'files', file.guid, 'preview']));
+      window.open(url, '_blank');
+    }
   }
 
   removeFromAttachedFiles(file: AttachedFile, questionKey: string): void {

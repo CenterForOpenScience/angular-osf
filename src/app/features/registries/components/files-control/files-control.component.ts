@@ -54,6 +54,7 @@ export class FilesControlComponent {
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
   attachFile = output<FileModel>();
+  openFile = output<FileModel>();
 
   private readonly filesService = inject(FilesService);
   private readonly customDialogService = inject(CustomDialogService);
@@ -151,6 +152,11 @@ export class FilesControlComponent {
           }
         }
       });
+  }
+
+  onEntryFileClicked(file: FileModel): void {
+    this.selectFile(file);
+    this.openFile.emit(file);
   }
 
   selectFile(file: FileModel): void {
