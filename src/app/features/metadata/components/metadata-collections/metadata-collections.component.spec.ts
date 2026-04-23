@@ -4,83 +4,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
-import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
-
+import {
+  MOCK_CEDAR_RECORD,
+  MOCK_CEDAR_SUBMISSION,
+  MOCK_CEDAR_TEMPLATE,
+} from '@testing/data/collections/cedar-metadata.mock';
 import { MOCK_PROJECT_COLLECTION_SUBMISSIONS } from '@testing/data/collections/collection-submissions.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 
 import { MetadataCollectionsComponent } from './metadata-collections.component';
 
-const mockTemplateId = 'template-1';
-
-const mockCedarTemplate: CedarMetadataDataTemplateJsonApi = {
-  id: mockTemplateId,
-  type: 'cedar-metadata-templates',
-  attributes: {
-    schema_name: 'Test',
-    cedar_id: 'cedar-1',
-    template: {
-      '@id': '',
-      '@type': '',
-      type: 'object',
-      title: 'Test',
-      description: '',
-      $schema: '',
-      '@context': {
-        pav: '',
-        xsd: '',
-        bibo: '',
-        oslc: '',
-        schema: '',
-        'schema:name': { '@type': 'xsd:string' },
-        'pav:createdBy': { '@type': '@id' },
-        'pav:createdOn': { '@type': 'xsd:dateTime' },
-        'oslc:modifiedBy': { '@type': '@id' },
-        'pav:lastUpdatedOn': { '@type': 'xsd:dateTime' },
-        'schema:description': { '@type': 'xsd:string' },
-      },
-      required: [],
-      properties: {},
-      _ui: { order: [], propertyLabels: {}, propertyDescriptions: {} },
-    },
-  },
-};
-
-const mockCedarRecord: CedarMetadataRecordData = {
-  id: 'record-1',
-  attributes: {
-    metadata: {} as CedarMetadataRecordData['attributes']['metadata'],
-    is_published: false,
-  },
-  relationships: {
-    template: { data: { type: 'cedar-metadata-templates', id: mockTemplateId } },
-    target: { data: { type: 'nodes', id: 'node-1' } },
-  },
-};
-
-const mockSubmissionsWithTemplate: CollectionSubmission[] = [
-  {
-    id: '1',
-    type: 'collection-submissions',
-    collectionTitle: 'Collection A',
-    collectionId: 'col1',
-    reviewsState: CollectionSubmissionReviewState.Accepted,
-    collectedType: '',
-    status: 'accepted',
-    volume: '',
-    issue: '',
-    programArea: '',
-    schoolType: '',
-    studyDesign: '',
-    dataType: '',
-    disease: '',
-    gradeLevels: '',
-    requiredMetadataTemplateId: mockTemplateId,
-  },
-];
+const mockTemplateId = MOCK_CEDAR_TEMPLATE.id;
+const mockCedarTemplate = MOCK_CEDAR_TEMPLATE;
+const mockCedarRecord = MOCK_CEDAR_RECORD;
+const mockSubmissionsWithTemplate = [MOCK_CEDAR_SUBMISSION];
 
 describe('MetadataCollectionsComponent', () => {
   let component: MetadataCollectionsComponent;
