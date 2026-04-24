@@ -25,6 +25,11 @@
     border: 1px solid var(--grey-2);
     border-radius: 0.5rem;
 
+    .p-steppanel,
+    .p-steppanel .p-motion {
+      grid-template-columns: 100%;
+    }
+
     .p-steppanel-content {
       margin-inline-start: 0;
     }
