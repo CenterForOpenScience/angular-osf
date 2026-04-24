@@ -1,15 +1,16 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 
 import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MaintenanceModeService } from '@core/services/maintenance-mode.service';
 import { IS_MEDIUM, IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { MaintenanceModeServiceMock } from '@testing/providers/maintenance-mode.service.mock';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -47,7 +48,7 @@ describe('LayoutComponent', () => {
         provideOSFCore(),
         MockProvider(IS_WEB, isWebSubject),
         MockProvider(IS_MEDIUM, isMediumSubject),
-        MockProvider(ConfirmationService),
+        MockProvider(MaintenanceModeService, MaintenanceModeServiceMock.simple()),
       ],
     });
 

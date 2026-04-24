@@ -7,8 +7,10 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ERROR_MESSAGES } from '@core/constants/error-messages';
+import { MaintenanceResponse } from '@core/models/maintenance-response.model';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AuthService } from '@core/services/auth.service';
+import { MaintenanceModeService } from '@core/services/maintenance-mode.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
@@ -20,6 +22,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const loaderService = inject(LoaderService);
   const router = inject(Router);
   const authService = inject(AuthService);
+  const maintenanceModeService = inject(MaintenanceModeService);
   const sentry = inject(SENTRY_TOKEN);
   const platformId = inject(PLATFORM_ID);
   const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
@@ -43,6 +46,17 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       const serverErrorRegex = /5\d{2}/;
+      const maintenanceResponse = error.error as MaintenanceResponse | null;
+
+      const maintenanceMode = error.status === 503 && maintenanceResponse?.meta?.maintenance_mode === true;
+
+      if (maintenanceMode) {
+        loaderService.hide();
+        if (isPlatformBrowser(platformId)) {
+          maintenanceModeService.activate();
+        }
+        return throwError(() => error);
+      }
 
       if (serverErrorRegex.test(error.status.toString())) {
         errorMessage = error.error.message || 'common.errorMessages.serverError';

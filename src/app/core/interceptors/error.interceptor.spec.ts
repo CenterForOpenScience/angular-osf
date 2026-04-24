@@ -9,12 +9,17 @@ import { Router } from '@angular/router';
 
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AuthService } from '@core/services/auth.service';
+import { MaintenanceModeService } from '@core/services/maintenance-mode.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { AuthServiceMock, AuthServiceMockType } from '@testing/providers/auth-service.mock';
 import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
+import {
+  MaintenanceModeServiceMock,
+  MaintenanceModeServiceMockType,
+} from '@testing/providers/maintenance-mode.service.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { SentryMock, SentryMockType } from '@testing/providers/sentry-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
@@ -28,6 +33,7 @@ describe('errorInterceptor', () => {
   let toastServiceMock: ToastServiceMockType;
   let loaderServiceMock: LoaderServiceMock;
   let authServiceMock: AuthServiceMockType;
+  let maintenanceModeServiceMock: MaintenanceModeServiceMockType;
   let viewOnlyHelperMock: ViewOnlyLinkHelperMockType;
   let sentryMock: SentryMockType;
 
@@ -36,6 +42,7 @@ describe('errorInterceptor', () => {
     toastServiceMock = ToastServiceMock.simple();
     loaderServiceMock = new LoaderServiceMock();
     authServiceMock = AuthServiceMock.simple();
+    maintenanceModeServiceMock = MaintenanceModeServiceMock.simple();
     viewOnlyHelperMock = ViewOnlyLinkHelperMock.simple(viewOnly);
     sentryMock = SentryMock.simple();
 
@@ -46,6 +53,7 @@ describe('errorInterceptor', () => {
         MockProvider(Router, router),
         MockProvider(ToastService, toastServiceMock),
         MockProvider(AuthService, authServiceMock),
+        MockProvider(MaintenanceModeService, maintenanceModeServiceMock),
         MockProvider(ViewOnlyLinkHelperService, viewOnlyHelperMock),
         MockProvider(PLATFORM_ID, platformId),
         { provide: SENTRY_TOKEN, useValue: sentryMock },
@@ -153,6 +161,23 @@ describe('errorInterceptor', () => {
 
     expect(caught?.status).toBe(403);
     expect(router.navigate).not.toHaveBeenCalled();
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
+    expect(toastServiceMock.showError).not.toHaveBeenCalled();
+  });
+
+  it('should activate maintenance mode on 503 maintenance response', async () => {
+    setup('browser', false);
+    const request = createRequest('/api/v2/');
+    const error = new HttpErrorResponse({
+      status: 503,
+      error: { meta: { maintenance_mode: true } },
+      url: request.url,
+    });
+
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(503);
+    expect(maintenanceModeServiceMock.activate).toHaveBeenCalled();
     expect(loaderServiceMock.hide).toHaveBeenCalled();
     expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
