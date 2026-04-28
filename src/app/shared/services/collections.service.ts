@@ -56,7 +56,7 @@ export class CollectionsService {
   private actions = createDispatchMap({ setTotalSubmissions: SetTotalSubmissions });
 
   getCollectionProvider(collectionName: string): Observable<CollectionProvider> {
-    const url = `${this.apiUrl}/providers/collections/${collectionName}/?embed=brand`;
+    const url = `${this.apiUrl}/providers/collections/${collectionName}/?embed=brand,required_metadata_template`;
 
     return this.jsonApiService
       .get<JsonApiResponse<CollectionProviderResponseJsonApi, null>>(url)

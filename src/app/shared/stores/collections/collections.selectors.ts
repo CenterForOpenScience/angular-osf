@@ -22,6 +22,11 @@ export class CollectionsSelectors {
   }
 
   @Selector([CollectionsState])
+  static getRequiredMetadataTemplate(state: CollectionsStateModel) {
+    return state.collectionProvider.data?.requiredMetadataTemplate ?? null;
+  }
+
+  @Selector([CollectionsState])
   static getCollectionDetails(state: CollectionsStateModel) {
     return state.collectionDetails.data;
   }

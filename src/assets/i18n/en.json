@@ -1403,6 +1403,7 @@
       "projectMetadataMessage": "Updates made in this section will update the project.",
       "projectContributors": "Project Contributors",
       "collectionMetadata": "Collection Metadata",
+      "cedarFormNotAvailable": "CEDAR metadata form is not available for this collection.",
       "tooltipMessage": "Complete previous step to edit this section",
       "contributorsTooltip": "Projects must have at least one registered administrator and one author showing in the citation at all times. A registered administrator is a user who has both confirmed their account and has administrator privileges.",
       "noDescription": "No description",
@@ -1411,6 +1412,7 @@
       "projectMetadataUpdateSuccess": "Project Metadata successfully updated.",
       "confirmationDialogMessage": "Once submitted to the collection, the project will be made public. It can later be made private again. A moderator will review your submission before it is included in the collection.",
       "confirmationDialogToastMessage": "Project has been successfully submitted to the collection",
+      "updateError": "Failed to submit to the collection. Please try again.",
       "form": {
         "title": "Title",
         "description": "Description",

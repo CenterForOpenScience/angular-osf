@@ -128,6 +128,8 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private readonly environment = inject(ENVIRONMENT);
   private readonly signpostingService = inject(SignpostingService);
 
+  readonly collectionSubmissionWithCedar = this.environment.collectionSubmissionWithCedar;
+
   private resourceId = '';
 
   tabs = signal<MetadataTabsModel[]>([]);

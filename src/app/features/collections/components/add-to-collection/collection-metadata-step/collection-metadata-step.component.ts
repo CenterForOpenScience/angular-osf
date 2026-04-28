@@ -7,13 +7,32 @@ import { Select } from 'primeng/select';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  CUSTOM_ELEMENTS_SCHEMA,
+  effect,
+  ElementRef,
+  input,
+  output,
+  signal,
+  viewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { collectionFilterTypes } from '@osf/features/collections/constants';
 import { AddToCollectionSteps, CollectionFilterType } from '@osf/features/collections/enums';
 import { CollectionFilterEntry } from '@osf/features/collections/models/collection-filter-entry.model';
 import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection';
+import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
+import {
+  CedarEditorElement,
+  CedarMetadataDataTemplateJsonApi,
+  CedarMetadataRecordData,
+  CedarRecordDataBinding,
+} from '@osf/features/metadata/models';
 import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 import { CollectionsSelectors, GetCollectionDetails } from '@osf/shared/stores/collections';
 
@@ -23,6 +42,8 @@ import { CollectionsSelectors, GetCollectionDetails } from '@osf/shared/stores/c
   templateUrl: './collection-metadata-step.component.html',
   styleUrl: './collection-metadata-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CollectionMetadataStepComponent {
   private readonly filterTypes = collectionFilterTypes;
@@ -45,16 +66,27 @@ export class CollectionMetadataStepComponent {
   targetStepValue = input.required<number>();
   isDisabled = input.required<boolean>();
   primaryCollectionId = input<string | undefined>();
+  isCedarMode = input<boolean>(false);
+  cedarTemplate = input<CedarMetadataDataTemplateJsonApi | null>(null);
+  existingCedarRecord = input<CedarMetadataRecordData | null>(null);
 
   stepChange = output<number>();
   metadataSaved = output<FormGroup>();
+  cedarDataSaved = output<CedarRecordDataBinding>();
 
   collectionMetadataForm = signal<FormGroup>(new FormGroup({}));
   collectionMetadataSaved = signal<boolean>(false);
   originalFormValues = signal<Record<string, unknown>>({});
   formPopulatedFromSubmission = signal<boolean>(false);
+  cedarFormData = signal<Record<string, unknown>>({});
 
-  actions = createDispatchMap({ getCollectionDetails: GetCollectionDetails });
+  cedarConfig = CEDAR_CONFIG;
+  cedarViewerConfig = CEDAR_VIEWER_CONFIG;
+
+  cedarEditor = viewChild<ElementRef<CedarEditorElement>>('cedarEditor');
+  cedarViewer = viewChild<ElementRef<CedarEditorElement>>('cedarViewer');
+
+  private readonly actions = createDispatchMap({ getCollectionDetails: GetCollectionDetails });
 
   constructor() {
     this.setupEffects();
@@ -65,6 +97,19 @@ export class CollectionMetadataStepComponent {
   }
 
   handleDiscardChanges() {
+    if (this.isCedarMode()) {
+      const record = this.existingCedarRecord();
+      this.cedarFormData.set(
+        record?.attributes?.metadata ? (record.attributes.metadata as Record<string, unknown>) : {}
+      );
+      const editor = this.cedarEditor()?.nativeElement;
+      if (editor) {
+        editor.instanceObject = this.cedarFormData();
+      }
+      this.collectionMetadataSaved.set(false);
+      return;
+    }
+
     const form = this.collectionMetadataForm();
     const originalValues = this.originalFormValues();
 
@@ -83,6 +128,39 @@ export class CollectionMetadataStepComponent {
     this.collectionMetadataSaved.set(true);
     this.metadataSaved.emit(form);
     this.stepChange.emit(AddToCollectionSteps.Complete);
+  }
+
+  handleSaveCedarMetadata() {
+    const editor = this.cedarEditor()?.nativeElement;
+    const template = this.cedarTemplate();
+    if (!editor || !template) return;
+
+    const currentMetadata = editor.currentMetadata;
+    const isValid = !!editor.dataQualityReport?.isValid;
+
+    if (currentMetadata) {
+      this.cedarFormData.set(currentMetadata as Record<string, unknown>);
+    }
+
+    const cedarData: CedarRecordDataBinding = {
+      data: currentMetadata as CedarRecordDataBinding['data'],
+      id: template.id,
+      isPublished: isValid,
+    };
+
+    this.collectionMetadataSaved.set(true);
+    this.cedarDataSaved.emit(cedarData);
+    this.stepChange.emit(AddToCollectionSteps.Complete);
+  }
+
+  onCedarChange(event: Event): void {
+    const customEvent = event as CustomEvent;
+    if (customEvent?.target) {
+      const editor = customEvent.target as CedarEditorElement;
+      if (editor && typeof editor.currentMetadata !== 'undefined') {
+        this.cedarFormData.set(editor.currentMetadata as Record<string, unknown>);
+      }
+    }
   }
 
   private buildCollectionMetadataForm() {
@@ -116,8 +194,20 @@ export class CollectionMetadataStepComponent {
     });
 
     effect(() => {
+      const record = this.existingCedarRecord();
+      if (record?.attributes?.metadata) {
+        const metadata = record.attributes.metadata as Record<string, unknown>;
+        this.cedarFormData.set(metadata);
+        const editor = this.cedarEditor()?.nativeElement;
+        if (editor) editor.instanceObject = metadata;
+        const viewer = this.cedarViewer()?.nativeElement;
+        if (viewer) viewer.instanceObject = metadata;
+      }
+    });
+
+    effect(() => {
       const filterEntries = this.availableFilterEntries();
-      if (filterEntries.length) {
+      if (filterEntries.length && !this.isCedarMode()) {
         this.buildCollectionMetadataForm();
       }
     });
@@ -133,7 +223,8 @@ export class CollectionMetadataStepComponent {
         form.controls &&
         Object.keys(form.controls).length > 0 &&
         filterEntries.length > 0 &&
-        !alreadyPopulated
+        !alreadyPopulated &&
+        !this.isCedarMode()
       ) {
         this.populateFormFromSubmission(submission.submission);
         this.formPopulatedFromSubmission.set(true);
@@ -142,8 +233,10 @@ export class CollectionMetadataStepComponent {
 
     effect(() => {
       if (!this.collectionMetadataSaved() && this.stepperActiveValue() !== AddToCollectionSteps.CollectionMetadata) {
-        this.collectionMetadataForm().reset();
-        this.formPopulatedFromSubmission.set(false);
+        if (!this.isCedarMode()) {
+          this.collectionMetadataForm().reset();
+          this.formPopulatedFromSubmission.set(false);
+        }
       }
     });
   }
