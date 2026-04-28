@@ -1,6 +1,6 @@
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import { ResourceType } from '@shared/enums/resource-type.enum';
-import { FilterOption } from '@shared/models/search/discaverable-filter.model';
+import { DiscoverableFilter, FilterOption } from '@shared/models/search/discaverable-filter.model';
 
 export class FetchResources {
   static readonly type = '[GlobalSearch] Fetch Resources';
@@ -79,6 +79,12 @@ export class LoadMoreFilterOptions {
   static readonly type = '[GlobalSearch] Load More Filter Options';
 
   constructor(public filterKey: string) {}
+}
+
+export class SetExtraFilters {
+  static readonly type = '[GlobalSearch] Set Extra Filters';
+
+  constructor(public filters: DiscoverableFilter[]) {}
 }
 
 export class ResetSearchState {

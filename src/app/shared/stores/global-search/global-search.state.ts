@@ -20,6 +20,7 @@ import {
   LoadMoreFilterOptions,
   ResetSearchState,
   SetDefaultFilterValue,
+  SetExtraFilters,
   SetResourceType,
   SetSearchText,
   SetSortBy,
@@ -238,6 +239,11 @@ export class GlobalSearchState {
     ctx.patchState({ defaultFilterOptions: updatedFilterValues });
   }
 
+  @Action(SetExtraFilters)
+  setExtraFilters(ctx: StateContext<GlobalSearchStateModel>, action: SetExtraFilters) {
+    ctx.patchState({ extraFilters: action.filters });
+  }
+
   @Action(UpdateSelectedFilterOption)
   updateSelectedFilterOption(ctx: StateContext<GlobalSearchStateModel>, action: UpdateSelectedFilterOption) {
     const updatedFilterValues = { ...ctx.getState().selectedFilterOptions, [action.filterKey]: action.filterOption };
@@ -268,12 +274,16 @@ export class GlobalSearchState {
   }
 
   private updateResourcesState(ctx: StateContext<GlobalSearchStateModel>, response: ResourcesData) {
+    const { extraFilters } = ctx.getState();
+    const apiFilterKeys = new Set(response.filters.map((f) => f.key));
+    const merged = [...response.filters, ...extraFilters.filter((f) => !apiFilterKeys.has(f.key))];
+
     ctx.patchState({
       resources: { data: response.resources, isLoading: false, error: null },
       filterOptionsCache: {},
       filterSearchCache: {},
       filterPaginationCache: {},
-      filters: response.filters,
+      filters: merged,
       resourcesCount: response.count,
       first: response.first,
       next: response.next,

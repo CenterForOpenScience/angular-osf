@@ -7,6 +7,7 @@ import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 export interface GlobalSearchStateModel {
   resources: AsyncStateModel<ResourceModel[]>;
   filters: DiscoverableFilter[];
+  extraFilters: DiscoverableFilter[];
   defaultFilterOptions: Record<string, string>;
   selectedFilterOptions: Record<string, FilterOption[]>;
   filterOptionsCache: Record<string, FilterOption[]>;
@@ -28,6 +29,7 @@ export const GLOBAL_SEARCH_STATE_DEFAULTS = {
     error: null,
   },
   filters: [],
+  extraFilters: [],
   defaultFilterOptions: {},
   selectedFilterOptions: {},
   filterOptionsCache: {},
