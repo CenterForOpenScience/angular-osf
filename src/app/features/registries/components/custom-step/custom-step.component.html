@@ -181,6 +181,8 @@
                   (attachFile)="onAttachFile($event, q.responseKey!)"
                   (openFile)="onOpenFile($event)"
                   [filesViewOnly]="filesViewOnly()"
+                  [isDraftResource]="true"
+                  (removeFromAttachedFiles)="removeFromAttachedFiles($event, 'uploader')"
                 ></osf-files-control>
               </div>
             }

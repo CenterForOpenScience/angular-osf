@@ -619,8 +619,8 @@ export class FilesComponent {
     this.actions.setMoveDialogCurrentFolder(folder);
   }
 
-  deleteEntry(link: string) {
-    this.actions.deleteEntry(link).subscribe(() => {
+  deleteEntry(file: FileModel): void {
+    this.actions.deleteEntry(file?.links.delete).subscribe(() => {
       this.toastService.showSuccess('files.dialogs.deleteFile.success');
       this.updateFilesList();
     });

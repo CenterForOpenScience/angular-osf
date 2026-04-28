@@ -8,10 +8,11 @@ import { Button } from 'primeng/button';
 import { filter, finalize, switchMap, take } from 'rxjs';
 
 import { HttpEventType } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
+import { DeleteEntry } from '@osf/features/files/store';
 import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
@@ -53,7 +54,9 @@ export class FilesControlComponent {
   projectId = input.required<string>();
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
+  isDraftResource = input<boolean>(false);
   attachFile = output<FileModel>();
+  removeFromAttachedFiles = output<FileModel>();
   openFile = output<FileModel>();
 
   private readonly filesService = inject(FilesService);
@@ -69,6 +72,7 @@ export class FilesControlComponent {
   readonly progress = signal(0);
   readonly fileName = signal('');
   readonly dataLoaded = signal(false);
+  pageNumber = signal(1);
 
   fileIsUploading = signal(false);
   filesSelection: FileModel[] = [];
@@ -79,11 +83,38 @@ export class FilesControlComponent {
     setFilesIsLoading: SetFilesIsLoading,
     setCurrentFolder: SetRegistriesCurrentFolder,
     getRootFolders: GetRootFolders,
+    deleteEntry: DeleteEntry,
   });
 
   constructor() {
     this.setupRootFoldersLoader();
     this.setupCurrentFolderWatcher();
+
+    effect(() => {
+      const currentFolder = this.currentFolder();
+      if (currentFolder) {
+        this.pageNumber.set(1);
+        this.updateFilesList();
+      }
+    });
+  }
+
+  updateFilesList = (): void => {
+    const currentFolder = this.currentFolder();
+    const filesLink = currentFolder?.links.filesLink;
+    if (filesLink) {
+      this.actions.getFiles(filesLink, this.pageNumber());
+    }
+  };
+
+  deleteEntry(file: FileModel): void {
+    this.actions.deleteEntry(file?.links.delete).subscribe(() => {
+      this.toastService.showSuccess('files.dialogs.deleteFile.success');
+      this.updateFilesList();
+      if (this.isDraftResource()) {
+        this.removeFromAttachedFiles.emit(file);
+      }
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -167,6 +198,10 @@ export class FilesControlComponent {
   onFileTreeSelected(file: FileModel): void {
     this.filesSelection.push(file);
     this.filesSelection = [...new Set(this.filesSelection)];
+  }
+
+  onRemoveFromAttachedFiles(file: FileModel) {
+    this.removeFromAttachedFiles.emit(file);
   }
 
   onLoadFiles(event: { link: string; page: number }) {
