@@ -78,7 +78,7 @@ export class CollectionsDiscoverComponent {
   providerId = signal<string>('');
   defaultSearchFiltersInitialized = signal(false);
 
-  readonly useShtrovSearch: boolean = this.environment.collectionSubmissionWithCedar;
+  readonly useShareTroveSearch = this.environment.collectionSubmissionWithCedar;
 
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   collectionDetails = select(CollectionsSelectors.getCollectionDetails);
@@ -107,8 +107,8 @@ export class CollectionsDiscoverComponent {
     this.initializeProvider();
     this.setupBrandingEffect();
 
-    if (this.useShtrovSearch) {
-      this.setupShtrovSearchEffect();
+    if (this.useShareTroveSearch) {
+      this.setupShareTroveSearchEffect();
     } else {
       this.setupCollectionDetailsEffect();
       this.setupUrlSyncEffect();
@@ -119,7 +119,7 @@ export class CollectionsDiscoverComponent {
     this.destroyRef.onDestroy(() => {
       if (this.isBrowser) {
         this.actions.clearCollections();
-        if (this.useShtrovSearch) {
+        if (this.useShareTroveSearch) {
           this.actions.resetSearchState();
         }
         this.headerStyleHelper.resetToDefaults();
@@ -133,7 +133,7 @@ export class CollectionsDiscoverComponent {
   }
 
   onSearchTriggered(searchValue: string): void {
-    if (!this.useShtrovSearch) {
+    if (!this.useShareTroveSearch) {
       this.actions.setSearchValue(searchValue);
       this.actions.setPageNumber('1');
     }
@@ -161,7 +161,7 @@ export class CollectionsDiscoverComponent {
     });
   }
 
-  private setupShtrovSearchEffect(): void {
+  private setupShareTroveSearchEffect(): void {
     effect(() => {
       const provider = this.collectionProvider();
       const collectionId = this.primaryCollectionId();
@@ -169,7 +169,6 @@ export class CollectionsDiscoverComponent {
       if (!provider || !collectionId || this.defaultSearchFiltersInitialized()) return;
 
       const collectionIri = `${this.environment.apiDomainUrl}/v2/collections/${collectionId}/`;
-      // TODO(ENG-9818): verify 'isContainedBy' property path against shtrove API before shipping
       this.actions.setDefaultFilterValue('isContainedBy', collectionIri);
 
       if (provider.requiredMetadataTemplate?.attributes?.template) {

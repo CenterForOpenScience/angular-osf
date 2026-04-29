@@ -129,8 +129,8 @@ describe('CollectionsDiscoverComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should set useShtrovSearch to false', () => {
-      expect(component.useShtrovSearch).toBe(false);
+    it('should set useShareTroveSearch to false', () => {
+      expect(component.useShareTroveSearch).toBe(false);
     });
 
     it('should initialize with default values', () => {
@@ -197,9 +197,9 @@ describe('CollectionsDiscoverComponent', () => {
   });
 
   describe('shtrove mode (collectionSubmissionWithCedar = true)', () => {
-    it('should set useShtrovSearch to true', () => {
+    it('should set useShareTroveSearch to true', () => {
       const { component } = setup({ collectionSubmissionWithCedar: true });
-      expect(component.useShtrovSearch).toBe(true);
+      expect(component.useShareTroveSearch).toBe(true);
     });
 
     it('should initialize default search filters', () => {
