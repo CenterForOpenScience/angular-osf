@@ -213,7 +213,7 @@ describe('CustomStepComponent', () => {
       { file_id: 'f2', name: 'b' },
     ];
 
-    component.removeFromAttachedFiles({ file_id: 'f1', name: 'a' }, 'field1');
+    component.removeFromAttachedFiles('f1', 'field1');
 
     expect(component.attachedFiles['field1'].length).toBe(1);
     expect(component.attachedFiles['field1'][0].file_id).toBe('f2');
@@ -223,7 +223,7 @@ describe('CustomStepComponent', () => {
   it('should skip non-existent questionKey', () => {
     const { component } = setup();
     const emitSpy = vi.spyOn(component.updateAction, 'emit');
-    component.removeFromAttachedFiles({ file_id: 'f1' }, 'nonexistent');
+    component.removeFromAttachedFiles('f1', 'nonexistent');
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
