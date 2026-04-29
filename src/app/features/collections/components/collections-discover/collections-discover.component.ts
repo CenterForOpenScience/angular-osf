@@ -21,8 +21,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
+import { CedarTemplateFilterMapper } from '@osf/shared/mappers/filters/cedar-template-filter.mapper';
 import { CollectionsFilters } from '@osf/shared/models/collections/collections-filters.model';
 import { BrandService } from '@osf/shared/services/brand.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -37,6 +40,7 @@ import {
   SetPageNumber,
   SetSearchValue,
 } from '@osf/shared/stores/collections';
+import { ResetSearchState, SetDefaultFilterValue, SetExtraFilters } from '@osf/shared/stores/global-search';
 
 import { CollectionsQuerySyncService } from '../../services';
 import { CollectionsHelpDialogComponent } from '../collections-help-dialog/collections-help-dialog.component';
@@ -49,6 +53,7 @@ import { CollectionsMainContentComponent } from '../collections-main-content/col
     RouterLink,
     SearchInputComponent,
     CollectionsMainContentComponent,
+    GlobalSearchComponent,
     LoadingSpinnerComponent,
     TranslatePipe,
   ],
@@ -66,10 +71,14 @@ export class CollectionsDiscoverComponent {
   private brandService = inject(BrandService);
   private headerStyleHelper = inject(HeaderStyleService);
   private platformId = inject(PLATFORM_ID);
+  private environment = inject(ENVIRONMENT);
   private isBrowser = isPlatformBrowser(this.platformId);
 
   searchControl = new FormControl('');
   providerId = signal<string>('');
+  defaultSearchFiltersInitialized = signal(false);
+
+  readonly useShareTroveSearch = this.environment.collectionSubmissionWithCedar;
 
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   collectionDetails = select(CollectionsSelectors.getCollectionDetails);
@@ -89,12 +98,34 @@ export class CollectionsDiscoverComponent {
     setPageNumber: SetPageNumber,
     clearCollections: ClearCollections,
     clearCollectionsSubmissions: ClearCollectionSubmissions,
+    setDefaultFilterValue: SetDefaultFilterValue,
+    setExtraFilters: SetExtraFilters,
+    resetSearchState: ResetSearchState,
   });
 
   constructor() {
     this.initializeProvider();
-    this.setupEffects();
-    this.setupSearchBinding();
+    this.setupBrandingEffect();
+
+    if (this.useShareTroveSearch) {
+      this.setupShareTroveSearchEffect();
+    } else {
+      this.setupCollectionDetailsEffect();
+      this.setupUrlSyncEffect();
+      this.setupLegacySearchEffect();
+      this.setupSearchBinding();
+    }
+
+    this.destroyRef.onDestroy(() => {
+      if (this.isBrowser) {
+        this.actions.clearCollections();
+        if (this.useShareTroveSearch) {
+          this.actions.resetSearchState();
+        }
+        this.headerStyleHelper.resetToDefaults();
+        this.brandService.resetBranding();
+      }
+    });
   }
 
   openHelpDialog(): void {
@@ -102,8 +133,10 @@ export class CollectionsDiscoverComponent {
   }
 
   onSearchTriggered(searchValue: string): void {
-    this.actions.setSearchValue(searchValue);
-    this.actions.setPageNumber('1');
+    if (!this.useShareTroveSearch) {
+      this.actions.setSearchValue(searchValue);
+      this.actions.setPageNumber('1');
+    }
   }
 
   private initializeProvider(): void {
@@ -117,24 +150,49 @@ export class CollectionsDiscoverComponent {
     this.actions.getCollectionProvider(id);
   }
 
-  private setupEffects(): void {
-    this.querySyncService.initializeFromUrl();
+  private setupBrandingEffect(): void {
+    effect(() => {
+      const provider = this.collectionProvider();
 
+      if (provider?.brand) {
+        this.brandService.applyBranding(provider.brand);
+        this.headerStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
+      }
+    });
+  }
+
+  private setupShareTroveSearchEffect(): void {
+    effect(() => {
+      const provider = this.collectionProvider();
+      const collectionId = this.primaryCollectionId();
+
+      if (!provider || !collectionId || this.defaultSearchFiltersInitialized()) return;
+
+      const collectionIri = `${this.environment.apiDomainUrl}/v2/collections/${collectionId}/`;
+      this.actions.setDefaultFilterValue('isContainedBy', collectionIri);
+
+      if (provider.requiredMetadataTemplate?.attributes?.template) {
+        const extraFilters = CedarTemplateFilterMapper.fromTemplate(
+          provider.requiredMetadataTemplate.attributes.template
+        );
+        this.actions.setExtraFilters(extraFilters);
+      }
+
+      this.defaultSearchFiltersInitialized.set(true);
+    });
+  }
+
+  private setupCollectionDetailsEffect(): void {
     effect(() => {
       const collectionId = this.primaryCollectionId();
       if (collectionId) {
         this.actions.getCollectionDetails(collectionId);
       }
     });
+  }
 
-    effect(() => {
-      const provider = this.collectionProvider();
-
-      if (provider && provider.brand) {
-        this.brandService.applyBranding(provider.brand);
-        this.headerStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
-      }
-    });
+  private setupUrlSyncEffect(): void {
+    this.querySyncService.initializeFromUrl();
 
     effect(() => {
       const searchText = this.searchText();
@@ -146,7 +204,9 @@ export class CollectionsDiscoverComponent {
         this.querySyncService.syncStoreToUrl(searchText, sortBy, selectedFilters, pageNumber);
       }
     });
+  }
 
+  private setupLegacySearchEffect(): void {
     effect(() => {
       const searchText = this.searchText();
       const sortBy = this.sortBy();
@@ -161,19 +221,11 @@ export class CollectionsDiscoverComponent {
         this.actions.searchCollectionSubmissions(providerId, searchText, activeFilters, pageNumber, sortBy);
       }
     });
-
-    this.destroyRef.onDestroy(() => {
-      if (this.isBrowser) {
-        this.actions.clearCollections();
-        this.headerStyleHelper.resetToDefaults();
-        this.brandService.resetBranding();
-      }
-    });
   }
 
   private getActiveFilters(filters: CollectionsFilters): Record<string, string[]> {
     return Object.entries(filters)
-      .filter(([_, value]) => value.length)
+      .filter(([, value]) => value.length)
       .reduce(
         (acc, [key, value]) => {
           acc[key] = value;

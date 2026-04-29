@@ -37,7 +37,13 @@
     </div>
 
     <div class="content-container flex-1">
-      <osf-collections-main-content />
+      @if (useShareTroveSearch) {
+        @if (defaultSearchFiltersInitialized()) {
+          <osf-global-search [searchControlInput]="searchControl" />
+        }
+      } @else {
+        <osf-collections-main-content />
+      }
     </div>
   </section>
 } @else {
