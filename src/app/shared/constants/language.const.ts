@@ -1,4 +1,4 @@
-export const languageCodes = [
+export const LANGUAGE_CODES = [
   {
     code: 'abk',
     name: 'Abkhazian',

@@ -8,7 +8,7 @@ import { Select } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { languageCodes } from '@osf/shared/constants/language.const';
+import { LANGUAGE_CODES } from '@osf/shared/constants/language.const';
 import { resourceTypes } from '@osf/shared/constants/resource-types.const';
 
 import { OsfFileCustomMetadata, PatchFileMetadata } from '../../models';
@@ -22,7 +22,7 @@ import { OsfFileCustomMetadata, PatchFileMetadata } from '../../models';
 })
 export class EditFileMetadataDialogComponent {
   readonly resourceTypes = resourceTypes;
-  readonly languages = languageCodes;
+  readonly languages = LANGUAGE_CODES;
 
   private readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);

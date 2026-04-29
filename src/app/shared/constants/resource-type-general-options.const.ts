@@ -1,6 +1,6 @@
 // `value` must be from resourceTypeGeneral controlled vocab in https://schema.datacite.org/meta/kernel-4/
 // see https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/
-export const RESOURCE_TYPE_OPTIONS = [
+export const RESOURCE_TYPE_GENERAL_OPTIONS = [
   { label: 'Audiovisual', value: 'Audiovisual' },
   { label: 'Book', value: 'Book' },
   { label: 'Book Chapter', value: 'BookChapter' },

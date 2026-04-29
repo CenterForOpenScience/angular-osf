@@ -12,7 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { languageCodes } from '@osf/shared/constants/language.const';
+import { LANGUAGE_CODES } from '@osf/shared/constants/language.const';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { LanguageCodeModel } from '@shared/models/language-code.model';
@@ -44,7 +44,7 @@ export class FileMetadataComponent {
 
   hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
 
-  readonly languageCodes = languageCodes;
+  readonly languageCodes = LANGUAGE_CODES;
 
   readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])));
 

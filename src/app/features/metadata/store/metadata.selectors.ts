@@ -17,6 +17,11 @@ export class MetadataSelectors {
   }
 
   @Selector([MetadataState])
+  static isCustomItemMetadataLoading(state: MetadataStateModel) {
+    return state.customMetadata?.isLoading ?? false;
+  }
+
+  @Selector([MetadataState])
   static getLoading(state: MetadataStateModel) {
     return state.metadata?.isLoading || state.customMetadata?.isLoading || false;
   }

@@ -44,18 +44,6 @@
         </section>
       }
 
-      @if (preprintProviderValue?.assertionsEnabled) {
-        <section class="flex flex-column gap-2">
-          <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
-
-          @if (preprintValue.hasCoi) {
-            {{ preprintValue.coiStatement }}
-          } @else {
-            <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
-          }
-        </section>
-      }
-
       <osf-preprint-doi-section
         [preprintProvider]="preprintProviderValue"
         (preprintVersionSelected)="preprintVersionSelected.emit($event)"

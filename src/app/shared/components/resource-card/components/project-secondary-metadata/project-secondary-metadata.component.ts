@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { languageCodes } from '@osf/shared/constants/language.const';
+import { LANGUAGE_CODES } from '@osf/shared/constants/language.const';
 import { ResourceModel } from '@shared/models/search/resource.model';
 
 @Component({
@@ -19,6 +19,6 @@ export class ProjectSecondaryMetadataComponent {
     const resourceLanguage = this.resource().language;
     if (!resourceLanguage) return null;
 
-    return languageCodes.find((lang) => lang.code === resourceLanguage)?.name;
+    return LANGUAGE_CODES.find((lang) => lang.code === resourceLanguage)?.name;
   });
 }

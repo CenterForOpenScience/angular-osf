@@ -12,6 +12,8 @@ import { ResourceInformationDialogComponent } from './resource-information-dialo
 describe('ResourceInformationDialogComponent', () => {
   let component: ResourceInformationDialogComponent;
   let fixture: ComponentFixture<ResourceInformationDialogComponent>;
+  let dialogRef: DynamicDialogRef;
+  let config: DynamicDialogConfig;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,83 +23,66 @@ describe('ResourceInformationDialogComponent', () => {
 
     fixture = TestBed.createComponent(ResourceInformationDialogComponent);
     component = fixture.componentInstance;
+    dialogRef = TestBed.inject(DynamicDialogRef);
+    config = TestBed.inject(DynamicDialogConfig);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have resource type options', () => {
-    expect(component.resourceTypeOptions).toBeDefined();
-    expect(component.resourceTypeOptions.length).toBeGreaterThan(0);
-  });
+  it('should patch form values on init when metadata is provided', () => {
+    config.data = {
+      customItemMetadata: {
+        resourceTypeGeneral: 'Dataset',
+        language: 'eng',
+      },
+    };
 
-  it('should have language options', () => {
-    expect(component.languageOptions).toBeDefined();
-    expect(component.languageOptions.length).toBeGreaterThan(0);
-  });
+    component.ngOnInit();
 
-  it('should not save when form is invalid', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = vi.spyOn(dialogRef, 'close');
-
-    component.resourceForm.patchValue({
-      resourceType: 'dataset',
-      resourceLanguage: 'en',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      resourceTypeGeneral: 'dataset',
-      language: 'en',
+    expect(component.resourceForm.getRawValue()).toEqual({
+      resourceType: 'Dataset',
+      resourceLanguage: 'eng',
     });
   });
 
-  it('should not save when resource type is missing', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = vi.spyOn(dialogRef, 'close');
+  it('should keep default empty values on init when metadata is not provided', () => {
+    config.data = {};
 
-    component.resourceForm.patchValue({
+    component.ngOnInit();
+
+    expect(component.resourceForm.getRawValue()).toEqual({
       resourceType: '',
-      resourceLanguage: 'en',
+      resourceLanguage: '',
+    });
+  });
+
+  it('should close dialog with mapped payload on save when form is valid', () => {
+    component.resourceForm.setValue({
+      resourceType: 'JournalArticle',
+      resourceLanguage: 'deu',
     });
 
     component.save();
 
-    expect(closeSpy).toHaveBeenCalledWith({
-      resourceTypeGeneral: '',
-      language: 'en',
+    expect(dialogRef.close).toHaveBeenCalledWith({
+      resourceTypeGeneral: 'JournalArticle',
+      language: 'deu',
     });
   });
 
-  it('should cancel dialog', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = vi.spyOn(dialogRef, 'close');
+  it('should not close dialog on save when form is invalid', () => {
+    component.resourceForm.setErrors({ invalid: true });
 
+    component.save();
+
+    expect(dialogRef.close).not.toHaveBeenCalled();
+  });
+
+  it('should close dialog without payload on cancel', () => {
     component.cancel();
 
-    expect(closeSpy).toHaveBeenCalled();
-  });
-
-  it('should validate required fields', () => {
-    const resourceTypeControl = component.resourceForm.get('resourceType');
-
-    expect(resourceTypeControl?.hasError('required')).toBe(false);
-
-    resourceTypeControl?.setValue('dataset');
-
-    expect(resourceTypeControl?.hasError('required')).toBe(false);
-  });
-
-  it('should handle form validation state', () => {
-    expect(component.resourceForm.valid).toBe(true);
-
-    component.resourceForm.patchValue({
-      resourceType: 'dataset',
-      resourceLanguage: 'en',
-    });
-
-    expect(component.resourceForm.valid).toBe(true);
+    expect(dialogRef.close).toHaveBeenCalledWith();
   });
 });

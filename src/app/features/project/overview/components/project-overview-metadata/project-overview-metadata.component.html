@@ -29,21 +29,24 @@
     </div>
 
     <div class="flex flex-column gap-2">
+      <h3>{{ 'project.overview.metadata.resourceType' | translate }}</h3>
+
+      <p data-test-project-overview-metadata-resource-type>
+        {{
+          customItemMetadata()?.resourceTypeGeneral
+            ? (customItemMetadata()?.resourceTypeGeneral | resourceTypeGeneralLabel)
+            : ('project.overview.metadata.noResourceType' | translate)
+        }}
+      </p>
+    </div>
+
+    <div class="flex flex-column gap-2">
       <h3>{{ 'common.labels.description' | translate }}</h3>
 
       <osf-truncated-text
         [maxVisibleLines]="3"
         [text]="resource.description ? resource.description : ('common.labels.noDescription' | translate)"
       />
-    </div>
-
-    <div class="flex flex-column gap-2">
-      <h3>{{ 'project.overview.metadata.supplements' | translate }}</h3>
-
-      <osf-overview-supplements
-        [supplements]="preprints()"
-        [isLoading]="isPreprintsLoading()"
-      ></osf-overview-supplements>
     </div>
 
     <div class="flex gap-5 lg:gap-2 lg:justify-content-between">
@@ -59,18 +62,16 @@
     </div>
 
     <div class="flex flex-column gap-2">
-      <h3>{{ 'common.labels.license' | translate }}</h3>
+      <h3>{{ 'common.labels.subjects' | translate }}</h3>
 
-      <osf-resource-license [license]="license()" [isLoading]="isLicenseLoading()"></osf-resource-license>
+      <osf-subjects-list [subjects]="subjects()" [isLoading]="areSelectedSubjectsLoading()"></osf-subjects-list>
     </div>
 
-    @if (!isAnonymous()) {
-      <div class="flex flex-column gap-2">
-        <h3>{{ 'project.overview.metadata.projectDOI' | translate }}</h3>
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'shared.tags.title' | translate }}</h3>
 
-        <osf-resource-doi [identifiers]="identifiers()" [isLoading]="isIdentifiersLoading()"></osf-resource-doi>
-      </div>
-    }
+      <osf-tags-list [tags]="resource.tags" (tagClick)="tagClicked($event)"></osf-tags-list>
+    </div>
 
     @if (!isAnonymous()) {
       <div class="flex flex-column gap-2">
@@ -86,16 +87,45 @@
     ></osf-overview-collections>
 
     <div class="flex flex-column gap-2">
-      <h3>{{ 'common.labels.subjects' | translate }}</h3>
+      <h3>{{ 'project.overview.metadata.supplements' | translate }}</h3>
 
-      <osf-subjects-list [subjects]="subjects()" [isLoading]="areSelectedSubjectsLoading()"></osf-subjects-list>
+      <osf-overview-supplements
+        [supplements]="preprints()"
+        [isLoading]="isPreprintsLoading()"
+      ></osf-overview-supplements>
     </div>
 
     <div class="flex flex-column gap-2">
-      <h3>{{ 'shared.tags.title' | translate }}</h3>
+      <h3>{{ 'project.overview.metadata.funderNames' | translate }}</h3>
 
-      <osf-tags-list [tags]="resource.tags" (tagClick)="tagClicked($event)"></osf-tags-list>
+      <osf-funders-list [funders]="customItemMetadata()?.funders" [isLoading]="isCustomItemMetadataLoading()" />
     </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'common.labels.language' | translate }}</h3>
+
+      <p data-test-project-overview-metadata-resource-language>
+        {{
+          customItemMetadata()?.language
+            ? (customItemMetadata()?.language | languageLabel)
+            : ('project.overview.metadata.noLanguage' | translate)
+        }}
+      </p>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'common.labels.license' | translate }}</h3>
+
+      <osf-resource-license [license]="license()" [isLoading]="isLicenseLoading()"></osf-resource-license>
+    </div>
+
+    @if (!isAnonymous()) {
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'project.overview.metadata.projectDOI' | translate }}</h3>
+
+        <osf-resource-doi [identifiers]="identifiers()" [isLoading]="isIdentifiersLoading()"></osf-resource-doi>
+      </div>
+    }
 
     @if (!isAnonymous()) {
       <osf-resource-citations

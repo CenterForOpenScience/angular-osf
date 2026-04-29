@@ -26,12 +26,12 @@
       <div class="flex-column flex gap-2">
         <p class="inline-block font-bold" data-test-display-resource-type-general>
           <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>
-          <span>{{ getResourceTypeName(customItemMetadata()?.resourceTypeGeneral!) }}</span>
+          <span>{{ customItemMetadata()?.resourceTypeGeneral | resourceTypeGeneralLabel }}</span>
         </p>
 
         <p class="inline-block font-bold" data-test-display-resource-language>
           <span> {{ 'project.overview.metadata.resourceLanguage' | translate }}: </span>
-          <span>{{ getLanguageName(customItemMetadata()?.language || '') }}</span>
+          <span>{{ customItemMetadata()?.language | languageLabel }}</span>
         </p>
       </div>
     } @else {

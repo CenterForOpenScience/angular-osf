@@ -9,8 +9,10 @@ import { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { GetCustomItemMetadata, MetadataSelectors } from '@osf/features/metadata/store';
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
+import { FundersListComponent } from '@osf/shared/components/funders-list/funders-list.component';
 import { ResourceCitationsComponent } from '@osf/shared/components/resource-citations/resource-citations.component';
 import { ResourceDoiComponent } from '@osf/shared/components/resource-doi/resource-doi.component';
 import { ResourceLicenseComponent } from '@osf/shared/components/resource-license/resource-license.component';
@@ -57,7 +59,8 @@ function setup(overrides: SetupOverrides = {}) {
         ResourceDoiComponent,
         ResourceLicenseComponent,
         SubjectsListComponent,
-        TagsListComponent
+        TagsListComponent,
+        FundersListComponent
       ),
     ],
     providers: [
@@ -81,6 +84,8 @@ function setup(overrides: SetupOverrides = {}) {
           { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
           { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
           { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
+          { selector: MetadataSelectors.getCustomItemMetadata, value: null },
+          { selector: MetadataSelectors.isCustomItemMetadataLoading, value: false },
         ],
       }),
     ],
@@ -102,6 +107,7 @@ describe('RegistryOverviewMetadataComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(FetchSelectedSubjects));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryLicense));
     expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryIdentifiers));
+    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetCustomItemMetadata));
   });
 
   it('should not dispatch init actions when registry is null', () => {

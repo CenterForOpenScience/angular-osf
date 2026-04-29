@@ -3,7 +3,7 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { languageCodes } from '@osf/shared/constants/language.const';
+import { LANGUAGE_CODES } from '@osf/shared/constants/language.const';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -64,7 +64,7 @@ describe('FileMetadataComponent', () => {
     expect(component.fileMetadata).toBeDefined();
     expect(component.isLoading).toBeDefined();
     expect(component.hasWriteAccess).toBeDefined();
-    expect(component.languageCodes).toBe(languageCodes);
+    expect(component.languageCodes).toBe(LANGUAGE_CODES);
     expect(component.metadataFields).toBe(FileMetadataFields);
   });
 

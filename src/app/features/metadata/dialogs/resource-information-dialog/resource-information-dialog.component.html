@@ -6,14 +6,14 @@
 
     <p-select
       id="resourceType"
+      class="w-full"
+      appendTo="body"
+      data-test-select-resource-type
       [formControl]="resourceForm.controls.resourceType"
       [options]="resourceTypeOptions"
       optionLabel="label"
       optionValue="value"
       [placeholder]="'common.buttons.select' | translate"
-      appendTo="body"
-      class="w-full"
-      data-test-select-resource-type
     />
   </div>
 
@@ -24,22 +24,19 @@
 
     <p-select
       id="resourceLanguage"
+      class="w-full"
+      data-test-select-resource-language
+      appendTo="body"
       [filter]="true"
       filterBy="label"
       [formControl]="resourceForm.controls.resourceLanguage"
       [options]="languageOptions"
-      optionLabel="label"
-      optionValue="value"
+      optionLabel="name"
+      optionValue="code"
       [placeholder]="'common.buttons.select' | translate"
-      appendTo="body"
       [virtualScroll]="true"
       [virtualScrollItemSize]="35"
-      class="w-full"
-      data-test-select-resource-language
     >
-      <ng-template #item let-option>
-        <span>{{ option.label }}</span>
-      </ng-template>
     </p-select>
   </div>
 
