@@ -168,7 +168,7 @@
                     [label]="file.name"
                     severity="info"
                     removable="true"
-                    (onRemove)="removeFromAttachedFiles(file, q.responseKey!)"
+                    (onRemove)="removeFromAttachedFiles(file.file_id, q.responseKey!)"
                   />
                 }
               </div>
@@ -181,8 +181,7 @@
                   (attachFile)="onAttachFile($event, q.responseKey!)"
                   (openFile)="onOpenFile($event)"
                   [filesViewOnly]="filesViewOnly()"
-                  [isDraftResource]="true"
-                  (removeFromAttachedFiles)="removeFromAttachedFiles($event, 'uploader')"
+                  (removeFromAttachedFiles)="removeFromAttachedFiles($event, q.responseKey!)"
                 ></osf-files-control>
               </div>
             }

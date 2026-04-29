@@ -143,12 +143,12 @@ export class CustomStepComponent implements OnDestroy {
     }
   }
 
-  removeFromAttachedFiles(file: AttachedFile, questionKey: string): void {
+  removeFromAttachedFiles(fileId: string | undefined, questionKey: string): void {
     if (!this.attachedFiles[questionKey]) {
       return;
     }
 
-    this.attachedFiles[questionKey] = this.attachedFiles[questionKey].filter((f) => f.file_id !== file.file_id);
+    this.attachedFiles[questionKey] = this.attachedFiles[questionKey].filter((f) => f.file_id !== fileId);
     this.stepForm.patchValue({ [questionKey]: this.attachedFiles[questionKey] });
     this.updateAction.emit({
       [questionKey]: this.mapFilesToPayload(this.attachedFiles[questionKey]),

@@ -8,7 +8,7 @@ import { Button } from 'primeng/button';
 import { filter, finalize, switchMap, take } from 'rxjs';
 
 import { HttpEventType } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
@@ -54,9 +54,8 @@ export class FilesControlComponent {
   projectId = input.required<string>();
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
-  isDraftResource = input<boolean>(false);
   attachFile = output<FileModel>();
-  removeFromAttachedFiles = output<FileModel>();
+  removeFromAttachedFiles = output<string>();
   openFile = output<FileModel>();
 
   private readonly filesService = inject(FilesService);
@@ -72,7 +71,6 @@ export class FilesControlComponent {
   readonly progress = signal(0);
   readonly fileName = signal('');
   readonly dataLoaded = signal(false);
-  pageNumber = signal(1);
 
   fileIsUploading = signal(false);
   filesSelection: FileModel[] = [];
@@ -89,31 +87,13 @@ export class FilesControlComponent {
   constructor() {
     this.setupRootFoldersLoader();
     this.setupCurrentFolderWatcher();
-
-    effect(() => {
-      const currentFolder = this.currentFolder();
-      if (currentFolder) {
-        this.pageNumber.set(1);
-        this.updateFilesList();
-      }
-    });
   }
-
-  updateFilesList = (): void => {
-    const currentFolder = this.currentFolder();
-    const filesLink = currentFolder?.links.filesLink;
-    if (filesLink) {
-      this.actions.getFiles(filesLink, this.pageNumber());
-    }
-  };
 
   deleteEntry(file: FileModel): void {
     this.actions.deleteEntry(file?.links.delete).subscribe(() => {
       this.toastService.showSuccess('files.dialogs.deleteFile.success');
-      this.updateFilesList();
-      if (this.isDraftResource()) {
-        this.removeFromAttachedFiles.emit(file);
-      }
+      this.refreshFilesList();
+      this.removeFromAttachedFiles.emit(file.id);
     });
   }
 
@@ -198,10 +178,6 @@ export class FilesControlComponent {
   onFileTreeSelected(file: FileModel): void {
     this.filesSelection.push(file);
     this.filesSelection = [...new Set(this.filesSelection)];
-  }
-
-  onRemoveFromAttachedFiles(file: FileModel) {
-    this.removeFromAttachedFiles.emit(file);
   }
 
   onLoadFiles(event: { link: string; page: number }) {

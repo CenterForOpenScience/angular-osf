@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate, TreeNode } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
+import { Tooltip } from 'primeng/tooltip';
 import { Tree, TreeLazyLoadEvent, TreeNodeDropEvent, TreeNodeSelectEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -69,7 +69,7 @@ type FileTreeNode = FileModel & TreeNode;
     FileMenuComponent,
     StopPropagationDirective,
     Button,
-    TooltipModule,
+    Tooltip,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -268,10 +268,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       this.setCurrentFolder.emit(previous);
     }
     this.clearSelection.emit();
-  }
-
-  deleteFile(file: FileModel) {
-    this.deleteEntry(file);
   }
 
   onFileMenuAction(action: FileMenuAction, file: FileModel): void {
