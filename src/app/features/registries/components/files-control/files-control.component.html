@@ -51,6 +51,8 @@
       [resourceId]="projectId()"
       [provider]="provider()"
       [selectedFiles]="filesSelection"
+      [isDraftResource]="isDraftResource()"
+      (deleteEntryAction)="deleteEntry($event)"
       (selectFile)="onFileTreeSelected($event)"
       (entryFileClicked)="onEntryFileClicked($event)"
       (uploadFilesConfirmed)="uploadFiles($event)"

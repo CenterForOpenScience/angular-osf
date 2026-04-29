@@ -54,6 +54,7 @@ export class FilesControlComponent {
   projectId = input.required<string>();
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
+  isDraftResource = input<boolean>(false);
   attachFile = output<FileModel>();
   removeFromAttachedFiles = output<string>();
   openFile = output<FileModel>();
