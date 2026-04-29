@@ -12,7 +12,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, output, 
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
-import { DeleteEntry } from '@osf/features/files/store';
 import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
@@ -26,6 +25,7 @@ import { FileFolderModel } from '@shared/models/files/file-folder.model';
 
 import {
   CreateFolder,
+  DeleteDraftRegistrationFiles,
   GetFiles,
   GetRootFolders,
   RegistriesSelectors,
@@ -54,7 +54,6 @@ export class FilesControlComponent {
   projectId = input.required<string>();
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
-  isDraftResource = input<boolean>(false);
   attachFile = output<FileModel>();
   removeFromAttachedFiles = output<string>();
   openFile = output<FileModel>();
@@ -82,7 +81,7 @@ export class FilesControlComponent {
     setFilesIsLoading: SetFilesIsLoading,
     setCurrentFolder: SetRegistriesCurrentFolder,
     getRootFolders: GetRootFolders,
-    deleteEntry: DeleteEntry,
+    deleteDraftRegistrationFiles: DeleteDraftRegistrationFiles,
   });
 
   constructor() {
@@ -91,7 +90,7 @@ export class FilesControlComponent {
   }
 
   deleteEntry(file: FileModel): void {
-    this.actions.deleteEntry(file?.links.delete).subscribe(() => {
+    this.actions.deleteDraftRegistrationFiles(file?.links.delete).subscribe(() => {
       this.toastService.showSuccess('files.dialogs.deleteFile.success');
       this.refreshFilesList();
       this.removeFromAttachedFiles.emit(file.id);

@@ -135,6 +135,12 @@ export class GetFiles {
   ) {}
 }
 
+export class DeleteDraftRegistrationFiles {
+  static readonly type = '[Registries] Delete Draft Registration Files';
+
+  constructor(public link: string) {}
+}
+
 export class SetFilesIsLoading {
   static readonly type = '[Registries] Set Files Loading';
 
