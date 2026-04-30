@@ -75,6 +75,16 @@ export class RegistryRevisionsComponent {
     });
   });
 
+  startUpdateRegistration() {
+    const registryId = this.registry()?.id;
+
+    if (!registryId) {
+      return;
+    }
+
+    this.updateRegistration.emit(registryId);
+  }
+
   emitOpenRevision(index: number) {
     this.openRevision.emit(index);
   }

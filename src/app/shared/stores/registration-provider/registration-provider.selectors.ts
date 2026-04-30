@@ -13,4 +13,9 @@ export class RegistrationProviderSelectors {
   static isBrandedProviderLoading(state: RegistrationProviderStateModel) {
     return state.currentBrandedProvider.isLoading;
   }
+
+  @Selector([RegistrationProviderState])
+  static allowUpdates(state: RegistrationProviderStateModel) {
+    return state.currentBrandedProvider.data?.allowUpdates ?? false;
+  }
 }

@@ -2,6 +2,31 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.9.1 (2026-04-28)
+===================
+
+* Hotfix to add alias for ip addresses, redux
+
+26.9.0 (2026-04-28)
+===================
+
+* Misc. improvements and bug fixes
+
+26.8.2 (2026-04-20)
+===================
+
+* Hotfix to add alias for ip addresses, again
+
+26.8.1 (2026-04-20)
+===================
+
+* Hotfix to add alias for ip addresses
+
+26.8.0 (2026-04-16)
+===================
+
+* Angular upgrade
+
 26.7.0 (2026-04-08)
 ===================
 

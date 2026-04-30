@@ -62,6 +62,7 @@ export class PreprintsContributorsComponent implements OnInit {
   readonly contributors = signal<ContributorModel[]>([]);
   readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly hasMoreContributors = select(ContributorsSelectors.hasMoreContributors);
   readonly isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
   readonly pageSize = select(ContributorsSelectors.getContributorsPageSize);
 

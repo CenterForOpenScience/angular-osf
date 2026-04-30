@@ -37,6 +37,7 @@ import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
 import { GetBibliographicContributors } from '@osf/shared/stores/contributors';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { ArchivingMessageComponent } from '../../components/archiving-message/archiving-message.component';
 import { RegistrationOverviewToolbarComponent } from '../../components/registration-overview-toolbar/registration-overview-toolbar.component';
@@ -98,6 +99,7 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
   readonly areReviewActionsLoading = select(RegistrySelectors.areReviewActionsLoading);
   readonly currentRevision = select(RegistrySelectors.getSchemaResponse);
   readonly hasAdminAccess = select(RegistrySelectors.hasAdminAccess);
+  readonly allowUpdates = select(RegistrationProviderSelectors.allowUpdates);
 
   readonly selectedRevisionIndex = signal(0);
 
@@ -111,6 +113,8 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
   readonly canMakeDecision = computed(
     () => !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration()
   );
+
+  readonly canUpdate = computed(() => this.hasAdminAccess() && this.allowUpdates());
 
   isRootRegistration = computed(() => {
     const rootId = this.registry()?.rootParentId;

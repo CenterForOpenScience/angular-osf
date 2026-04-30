@@ -165,23 +165,20 @@ export class JustificationComponent implements OnDestroy {
 
   private initStepValidation(): void {
     effect(() => {
-      const currentIndex = this.currentStepIndex();
-      const pages = this.pages();
-      const revisionData = this.schemaResponseRevisionData();
       const stepState = untracked(() => this.stepsState());
 
-      if (currentIndex > 0) {
+      if (this.currentStepIndex() > 0) {
         this.actions.updateStepState('0', true, stepState?.[0]?.touched || false);
       }
 
-      if (pages.length && currentIndex > 0 && revisionData) {
-        for (let i = 1; i < currentIndex; i++) {
-          const pageStep = pages[i - 1];
+      if (this.pages().length && this.currentStepIndex() > 0 && this.schemaResponseRevisionData()) {
+        for (let i = 1; i < this.currentStepIndex(); i++) {
+          const pageStep = this.pages()[i - 1];
           const isStepInvalid =
             pageStep?.questions?.some((question) => {
-              const questionData = revisionData[question.responseKey!];
+              const questionData = this.schemaResponseRevisionData()[question.responseKey!];
               return question.required && (Array.isArray(questionData) ? !questionData.length : !questionData);
-            }) || false;
+            }) ?? false;
           this.actions.updateStepState(i.toString(), isStepInvalid, stepState?.[i]?.touched || false);
         }
       }

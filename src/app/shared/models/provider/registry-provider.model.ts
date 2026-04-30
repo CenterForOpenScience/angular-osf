@@ -11,4 +11,5 @@ export interface RegistryProviderDetails {
   iri: string;
   reviewsWorkflow: string;
   allowSubmissions: boolean;
+  allowUpdates: boolean;
 }
