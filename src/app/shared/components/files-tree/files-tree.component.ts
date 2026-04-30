@@ -112,7 +112,6 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   setCurrentFolder = output<FileFolderModel>();
   setMoveDialogCurrentFolder = output<FileFolderModel>();
   deleteEntryAction = output<FileModel>();
-  removeFromAttachedFiles = output<FileModel>();
   renameEntryAction = output<{ newName: string; link: string }>();
   loadFiles = output<{ link: string; page: number }>();
   selectFile = output<FileModel>();
