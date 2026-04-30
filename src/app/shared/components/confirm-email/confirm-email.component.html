@@ -3,14 +3,14 @@
     <p class="font-normal">
       {{
         email.isMerge
-          ? ('home.confirmEmail.merge.description' | translate)
-          : ('home.confirmEmail.add.description' | translate)
+          ? ('home.confirmEmail.merge.descriptionPrefix' | translate)
+          : ('home.confirmEmail.add.descriptionPrefix' | translate)
       }}
       <span class="inline font-bold">{{ email.emailAddress }}</span>
       {{
         email.isMerge
-          ? ('home.confirmEmail.merge.description2' | translate)
-          : ('home.confirmEmail.add.description2' | translate)
+          ? ('home.confirmEmail.merge.descriptionSuffix' | translate)
+          : ('home.confirmEmail.add.descriptionSuffix' | translate)
       }}
     </p>
 

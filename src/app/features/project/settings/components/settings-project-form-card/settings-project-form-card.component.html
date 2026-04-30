@@ -1,25 +1,25 @@
 <p-card>
-  <h2 class="pb-4">{{ 'myProjects.settings.project' | translate }}</h2>
+  <h2 class="pb-4">{{ 'common.labels.project' | translate }}</h2>
 
   <form [formGroup]="projectForm" (ngSubmit)="submit()" class="flex flex-column gap-4">
     <div class="flex flex-column">
       <osf-text-input
         [control]="projectForm.controls[ProjectFormControls.Title]"
-        [label]="'myProjects.createProject.title'"
+        [label]="'common.labels.title'"
         [maxLength]="inputLimits.fullName.maxLength"
       ></osf-text-input>
     </div>
 
     <div class="flex flex-column">
       <label class="mb-0" for="description">
-        {{ 'myProjects.createProject.description.label' | translate }}
+        {{ 'common.labels.descriptionOptional' | translate }}
       </label>
       <textarea pTextarea id="description" [formControlName]="ProjectFormControls.Description" [rows]="5"></textarea>
     </div>
 
     <div class="flex flex-0 gap-2 justify-content-between sm:justify-content-end">
       <p-button
-        [label]="'settings.accountSettings.common.buttons.cancel' | translate"
+        [label]="'common.buttons.cancel' | translate"
         (onClick)="resetForm()"
         severity="info"
         class="w-10rem btn-full-width"

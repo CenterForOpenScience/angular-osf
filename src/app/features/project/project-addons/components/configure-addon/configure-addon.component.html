@@ -8,7 +8,7 @@
           {{ 'settings.addons.connectAddon.configure' | translate }} {{ addonServiceName() }}
         </h2>
         <p-button
-          [label]="'settings.addons.form.buttons.back' | translate"
+          [label]="'common.buttons.back' | translate"
           severity="info"
           [routerLink]="[baseUrl() + '/addons']"
         ></p-button>
@@ -61,7 +61,7 @@
           {{ 'settings.addons.connectAddon.configure' | translate }} {{ addonServiceName() }}
         </h2>
         <p-button
-          [label]="'settings.addons.form.buttons.back' | translate"
+          [label]="'common.buttons.back' | translate"
           severity="info"
           (click)="toggleEditMode()"
           (keydown.enter)="toggleEditMode()"

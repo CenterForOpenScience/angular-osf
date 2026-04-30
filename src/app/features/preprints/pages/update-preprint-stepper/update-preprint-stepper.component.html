@@ -36,26 +36,53 @@
   <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
     @switch (currentStep().value) {
       @case (PreprintSteps.TitleAndAbstract) {
-        <osf-title-and-abstract-step [providerId]="provider.id" (nextClicked)="moveToNextStep()" />
+        <osf-title-and-abstract-step
+          [providerId]="provider.id"
+          [showDeleteButton]="isPreprintRejected()"
+          (nextClicked)="moveToNextStep()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
       @case (PreprintSteps.File) {
-        <osf-file-step [provider]="provider" (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+        <osf-file-step
+          [provider]="provider"
+          [showDeleteButton]="isPreprintRejected()"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
       @case (PreprintSteps.Metadata) {
         <osf-preprints-metadata
           [provider]="provider"
+          [showDeleteButton]="isPreprintRejected()"
           (nextClicked)="moveToNextStep()"
           (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
         />
       }
       @case (PreprintSteps.AuthorAssertions) {
-        <osf-author-assertions-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+        <osf-author-assertions-step
+          [showDeleteButton]="isPreprintRejected()"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
       @case (PreprintSteps.Supplements) {
-        <osf-supplements-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+        <osf-supplements-step
+          [showDeleteButton]="isPreprintRejected()"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
       @case (PreprintSteps.Review) {
-        <osf-review-step [provider]="provider" />
+        <osf-review-step
+          [provider]="provider"
+          [showDeleteButton]="isPreprintRejected()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
     }
   </section>

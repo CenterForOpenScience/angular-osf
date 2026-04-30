@@ -104,7 +104,7 @@ describe('CitationSectionComponent', () => {
 
   it('should return empty-state filter message when citation styles are not loading', () => {
     setup();
-    expect(component.filterMessage()).toBe('project.overview.metadata.noCitationStylesFound');
+    expect(component.filterMessage()).toBe('common.search.noResultsFound');
   });
 
   it('should dispatch FetchDefaultProviderCitationStyles on init with correct inputs', () => {

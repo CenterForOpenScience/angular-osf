@@ -50,7 +50,7 @@
     </div>
 
     <div class="mb-4">
-      <h4 class="mb-2">{{ 'shared.subjects.title' | translate }}</h4>
+      <h4 class="mb-2">{{ 'common.labels.subjects' | translate }}</h4>
       <div class="flex flex-wrap gap-2">
         @for (subject of subjects(); track subject.id) {
           <p-tag data-test-selected-subject [value]="subject.name" severity="info" />

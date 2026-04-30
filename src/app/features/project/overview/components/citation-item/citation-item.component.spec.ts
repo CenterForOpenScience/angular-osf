@@ -76,7 +76,7 @@ describe('CitationItemComponent', () => {
     component.copyCitation();
 
     expect(copySpy).toHaveBeenCalledWith(citation);
-    expect(showSuccessSpy).toHaveBeenCalledWith('settings.developerApps.messages.copied');
+    expect(showSuccessSpy).toHaveBeenCalledWith('common.labels.copied');
   });
 
   it('should copy long citation text', () => {

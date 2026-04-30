@@ -42,7 +42,7 @@ export class ComponentCardComponent {
 
     if (!this.hideDeleteAction() && component.currentUserPermissions.includes(UserPermissions.Admin)) {
       baseItems.push({
-        label: 'project.overview.actions.delete',
+        label: 'common.labels.delete',
         action: 'delete',
       });
     }

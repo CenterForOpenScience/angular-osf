@@ -1,35 +1,50 @@
 <div class="flex flex-column gap-2">
   @let resourceValue = resource();
   @if (resourceValue.description) {
-    <p>{{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}</p>
+    <p data-test-search-result-card-preprint-description>
+      {{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}
+    </p>
   }
 
   @if (resourceValue.provider) {
-    <p>
+    <p data-test-search-result-card-preprint-provider>
       {{ 'resourceCard.labels.provider' | translate }}
-      <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl" target="_blank" rel="noopener noreferrer">
+      <a
+        class="font-bold"
+        [href]="resourceValue.provider!.absoluteUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-search-result-card-preprint-provider-link
+      >
         {{ resourceValue.provider!.name }}
       </a>
     </p>
   }
 
   @if (resourceValue.hasDataResource) {
-    <p>
+    <p data-test-search-result-card-preprint-associated-data>
       {{ 'resourceCard.labels.associatedData' | translate }}
-      <a class="font-bold" [href]="resourceValue.hasDataResource" target="_blank" rel="noopener noreferrer">
+      <a
+        class="font-bold"
+        [href]="resourceValue.hasDataResource"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-search-result-card-preprint-associated-data-link
+      >
         {{ resourceValue.hasDataResource }}
       </a>
     </p>
   }
 
   @if (resourceValue.hasPreregisteredAnalysisPlan) {
-    <p>
+    <p data-test-search-result-card-preprint-associated-analysis-plan>
       {{ 'resourceCard.labels.associatedAnalysisPlan' | translate }}
       <a
         class="font-bold"
         [href]="resourceValue.hasPreregisteredAnalysisPlan"
         target="_blank"
         rel="noopener noreferrer"
+        data-test-search-result-card-preprint-associated-analysis-plan-link
       >
         {{ resourceValue.hasPreregisteredAnalysisPlan }}
       </a>
@@ -37,34 +52,41 @@
   }
 
   @if (resourceValue.hasPreregisteredStudyDesign) {
-    <p>
+    <p data-test-search-result-card-preprint-associated-study-design>
       {{ 'resourceCard.labels.associatedStudyDesign' | translate }}
-      <a class="font-bold" [href]="resourceValue.hasPreregisteredStudyDesign" target="_blank" rel="noopener noreferrer">
+      <a
+        class="font-bold"
+        [href]="resourceValue.hasPreregisteredStudyDesign"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-search-result-card-preprint-associated-study-design-link
+      >
         {{ resourceValue.hasPreregisteredStudyDesign }}
       </a>
     </p>
   }
 
   @if (resourceValue.statedConflictOfInterest) {
-    <p>
+    <p data-test-search-result-card-preprint-conflict-of-interest>
       {{ 'resourceCard.labels.conflictOfInterestResponse' | translate }}
       {{ resourceValue.statedConflictOfInterest }}
     </p>
   } @else {
-    <p>
+    <p data-test-search-result-card-preprint-conflict-of-interest-none>
       {{ 'resourceCard.labels.conflictOfInterestResponse' | translate }}
       {{ 'resourceCard.labels.noCoi' | translate }}
     </p>
   }
 
   @if (resourceValue.license?.absoluteUrl) {
-    <p>
+    <p data-test-search-result-card-preprint-license>
       {{ 'common.labels.license' | translate }}:
       <a
         class="font-bold"
         [attr.href]="resourceValue.license!.absoluteUrl || null"
         target="_blank"
         rel="noopener noreferrer"
+        data-test-search-result-card-preprint-license-link
       >
         {{ resourceValue.license!.name }}
       </a>
@@ -72,9 +94,15 @@
   }
 
   @if (resourceValue.absoluteUrl) {
-    <p>
+    <p data-test-search-result-card-preprint-url>
       {{ 'resourceCard.labels.url' | translate }}
-      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">
+      <a
+        class="font-bold"
+        [href]="resourceValue.absoluteUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-search-result-card-preprint-resource-url-link
+      >
         {{ resourceValue.absoluteUrl }}
       </a>
     </p>
@@ -82,13 +110,23 @@
 
   @let limit = 4;
   @if (resourceValue.doi.length > 0) {
-    <p>
+    <p data-test-search-result-card-preprint-doi>
       {{ 'resourceCard.labels.doi' | translate }}
       @for (doi of resourceValue.doi.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="doi" target="_blank" rel="noopener noreferrer">{{ doi }}{{ $last ? '' : ', ' }}</a>
+        <a
+          class="font-bold"
+          [href]="doi"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-test-search-result-card-preprint-doi-link
+        >
+          {{ doi }}{{ $last ? '' : ', ' }}
+        </a>
       }
       @if (resourceValue.doi.length > limit) {
-        <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }} </span>
+        <span data-test-search-result-card-preprint-doi-more>
+          {{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }}
+        </span>
       }
     </p>
   }

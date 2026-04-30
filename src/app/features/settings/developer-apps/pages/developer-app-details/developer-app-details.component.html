@@ -3,7 +3,7 @@
     <osf-icon iconClass="fas fa-chevron-left fa-sm"></osf-icon>
 
     <a routerLink="/settings/developer-apps" class="font-semibold">
-      {{ 'settings.developerApps.details.navigation.back' | translate }}
+      {{ 'settings.developerApps.details.back' | translate }}
     </a>
   </nav>
 
@@ -14,11 +14,7 @@
       <section class="flex align-items-center justify-content-between mt-5">
         <h1>{{ developerApp()?.name }}</h1>
 
-        <p-button
-          [label]="'settings.developerApps.list.deleteButton' | translate"
-          severity="danger"
-          (click)="deleteApp()"
-        />
+        <p-button [label]="'common.buttons.delete' | translate" severity="danger" (click)="deleteApp()" />
       </section>
 
       <section class="flex flex-column gap-4 mt-4 md:mt-6">

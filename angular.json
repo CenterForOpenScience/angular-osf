@@ -69,7 +69,7 @@
               "entry": "src/server.ts"
             },
             "security": {
-              "allowedHosts": ["localhost", "127.0.0.1", "10.*", "*.osf.io"]
+              "allowedHosts": ["localhost", "127.0.0.1", "10.*", "*.osf.io", "osf.io"]
             }
           },
           "configurations": {

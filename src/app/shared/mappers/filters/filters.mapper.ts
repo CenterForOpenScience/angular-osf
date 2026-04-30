@@ -1,4 +1,4 @@
-import { DiscoverableFilter, FilterOperatorOption } from '@osf/shared/models/search/discaverable-filter.model';
+import { DiscoverableFilter, FilterOperatorOption } from '@osf/shared/models/search/discoverable-filter.model';
 import {
   IndexCardSearchResponseJsonApi,
   RelatedPropertyPathDataJsonApi,

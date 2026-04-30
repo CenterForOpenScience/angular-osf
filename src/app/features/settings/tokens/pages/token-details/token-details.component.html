@@ -3,7 +3,7 @@
     <osf-icon iconClass="fas fa-chevron-left fa-sm"></osf-icon>
 
     <a routerLink="/settings/tokens" class="font-semibold">
-      {{ 'settings.tokens.details.navigation.back' | translate }}
+      {{ 'settings.tokens.details.back' | translate }}
     </a>
   </nav>
 
@@ -17,7 +17,7 @@
         <div class="md:w-auto">
           <p-button
             class="btn-full-width"
-            [label]="'settings.tokens.details.deleteButton' | translate"
+            [label]="'common.buttons.delete' | translate"
             severity="danger"
             (onClick)="deleteToken()"
           />
@@ -25,7 +25,7 @@
       </div>
 
       <p-card class="mb-5">
-        <h2 class="mb-4">{{ 'settings.tokens.details.title' | translate }}</h2>
+        <h2 class="mb-4">{{ 'settings.tokens.form.editTitle' | translate }}</h2>
         <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()!" />
       </p-card>
     }

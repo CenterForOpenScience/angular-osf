@@ -1,7 +1,7 @@
 <form [formGroup]="componentForm" (ngSubmit)="submitForm()" class="flex flex-column gap-4">
   <div class="flex flex-column">
     <label for="component-title">
-      {{ 'project.overview.dialog.addComponent.title' | translate }}
+      {{ 'common.labels.title' | translate }}
     </label>
     <input pInputText id="component-title" type="text" [formControlName]="ComponentFormControls.Title" />
   </div>
@@ -59,20 +59,20 @@
   </div>
 
   <div class="flex flex-column">
-    <p>{{ 'project.overview.dialog.addComponent.license.title' | translate }}</p>
+    <p>{{ 'common.labels.license' | translate }}</p>
     <p class="pt-1" id="license">
       {{
         ('project.overview.dialog.addComponent.license.description' | translate) + ' ' + currentProject()?.title + '.'
       }}
       <a class="font-bold" href="https://help.osf.io/article/288-license-your-project" target="_blank">
-        {{ 'project.overview.dialog.addComponent.license.learnMore' | translate }}
+        {{ 'common.labels.learnMore' | translate }}
       </a>
     </p>
   </div>
 
   <div class="flex flex-column">
     <label for="description">
-      {{ 'project.overview.dialog.addComponent.description' | translate }}
+      {{ 'common.labels.descriptionOptional' | translate }}
     </label>
     <textarea pTextarea id="description" [formControlName]="ComponentFormControls.Description" [rows]="5"></textarea>
   </div>
@@ -80,14 +80,14 @@
   <div class="flex justify-content-end gap-3">
     <p-button
       class="w-12rem btn-full-width"
-      [label]="'project.overview.dialog.addComponent.cancelButton' | translate"
+      [label]="'common.buttons.cancel' | translate"
       severity="info"
       (onClick)="dialogRef.close()"
       [disabled]="isSubmitting()"
     />
     <p-button
       class="w-12rem btn-full-width"
-      [label]="'project.overview.dialog.addComponent.confirmButton' | translate"
+      [label]="'common.buttons.create' | translate"
       type="submit"
       [disabled]="!componentForm.valid || isSubmitting()"
       [loading]="isSubmitting()"

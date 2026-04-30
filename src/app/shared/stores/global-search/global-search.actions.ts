@@ -1,6 +1,6 @@
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
 import { ResourceType } from '@shared/enums/resource-type.enum';
-import { FilterOption } from '@shared/models/search/discaverable-filter.model';
 
 export class FetchResources {
   static readonly type = '[GlobalSearch] Fetch Resources';

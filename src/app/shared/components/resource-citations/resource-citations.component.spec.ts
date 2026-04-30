@@ -161,7 +161,7 @@ describe('ResourceCitationsComponent', () => {
     component.copyCitation();
 
     expect(mockClipboard.copy).toHaveBeenCalledWith('Citation to copy');
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith('settings.developerApps.messages.copied');
+    expect(mockToastService.showSuccess).toHaveBeenCalledWith('common.labels.copied');
   });
 
   it('should not copy when customCitations is empty', () => {

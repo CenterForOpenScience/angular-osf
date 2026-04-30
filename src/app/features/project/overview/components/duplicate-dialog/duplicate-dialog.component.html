@@ -1,20 +1,20 @@
 <div class="dialog-container">
   <p>
-    {{ 'project.overview.dialog.duplicate.message1' | translate }}
+    {{ 'project.overview.dialog.duplicate.templateConfirmation' | translate }}
   </p>
   <p>
-    {{ 'project.overview.dialog.duplicate.message2' | translate }}
+    {{ 'project.overview.dialog.duplicate.templateAddonsWarning' | translate }}
   </p>
 
   <div class="flex mt-6 gap-3 justify-content-between">
     <p-button
-      [label]="'project.overview.dialog.duplicate.cancelButton' | translate"
+      [label]="'common.buttons.cancel' | translate"
       severity="info"
       (onClick)="dialogRef.close(false)"
       [disabled]="isSubmitting()"
     />
     <p-button
-      [label]="'project.overview.dialog.duplicate.confirmButton' | translate"
+      [label]="'common.buttons.create' | translate"
       (onClick)="handleDuplicateConfirm()"
       [loading]="isSubmitting()"
     />

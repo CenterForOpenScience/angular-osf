@@ -129,15 +129,6 @@
           <osf-icon [iconClass]="'fas fa-file'" />
           <p data-test-file-name>{{ preprintFile()!.name }}</p>
         </div>
-
-        <p-button
-          class="danger-icon-btn"
-          icon="fas fa-trash"
-          severity="danger"
-          text
-          [ariaLabel]="'common.buttons.delete' | translate"
-          (onClick)="versionFile()"
-        />
       </section>
     }
   </section>
@@ -151,6 +142,15 @@
     severity="info"
     (onClick)="backButtonClicked()"
   />
+  @if (showDeleteButton()) {
+    <p-button
+      class="w-6 md:w-6rem"
+      styleClass="w-full"
+      [label]="'common.buttons.delete' | translate"
+      severity="danger"
+      (onClick)="deletePreprint()"
+    />
+  }
   <p-button
     class="w-6 md:w-9rem"
     styleClass="w-full"

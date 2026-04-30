@@ -8,7 +8,7 @@ import { parseSearchTotalCount } from '../helpers/search-total-count.helper';
 import { mapFilterOptions } from '../mappers/filters/filter-option.mapper';
 import { MapFilters } from '../mappers/filters/filters.mapper';
 import { MapResources } from '../mappers/search';
-import { FilterOption } from '../models/search/discaverable-filter.model';
+import { FilterOption } from '../models/search/discoverable-filter.model';
 import { FilterOptionItem, FilterOptionsResponseJsonApi } from '../models/search/filter-options-json-api.model';
 import {
   IndexCardSearchResponseJsonApi,

@@ -337,6 +337,15 @@ describe('SupplementsStepComponent', () => {
     expect(confirmationMock.confirmContinue).not.toHaveBeenCalled();
   });
 
+  it('should emit deleteClicked when deletePreprint is called', () => {
+    setup({ detectChanges: false });
+    const emitSpy = vi.spyOn(component.deleteClicked, 'emit');
+
+    component.deletePreprint();
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
   it('should compute next button disabled state for create and connect options', () => {
     setup({ detectChanges: false });
     component.selectedSupplementOption.set(SupplementOptions.CreateNewProject);

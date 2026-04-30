@@ -90,6 +90,21 @@ describe('TitleAndAbstractStepComponent', () => {
     expect(component.titleAndAbstractForm.controls.description.value).toBe(mockPreprint.description);
   });
 
+  it('should default showDeleteButton to false', () => {
+    setup();
+
+    expect(component.showDeleteButton()).toBe(false);
+  });
+
+  it('should update showDeleteButton when input changes', () => {
+    setup();
+
+    fixture.componentRef.setInput('showDeleteButton', true);
+    fixture.detectChanges();
+
+    expect(component.showDeleteButton()).toBe(true);
+  });
+
   it('should not dispatch or emit when form is invalid', () => {
     setup();
     const emitSpy = vi.spyOn(component.nextClicked, 'emit');
@@ -115,6 +130,15 @@ describe('TitleAndAbstractStepComponent', () => {
     const emitSpy = vi.spyOn(component.nextClicked, 'emit');
 
     component.nextButtonClicked();
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
+  it('should emit deleteClicked when deletePreprint is called', () => {
+    setup();
+    const emitSpy = vi.spyOn(component.deleteClicked, 'emit');
+
+    component.deletePreprint();
 
     expect(emitSpy).toHaveBeenCalled();
   });

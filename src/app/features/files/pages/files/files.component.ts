@@ -669,7 +669,6 @@ export class FilesComponent {
       [FileMenuType.Rename]: supportedFeatures.includes(SupportedFeature.AddUpdateFiles),
       [FileMenuType.Delete]: supportedFeatures.includes(SupportedFeature.DeleteFiles),
       [FileMenuType.Move]:
-        supportedFeatures.includes(SupportedFeature.CopyInto) &&
         supportedFeatures.includes(SupportedFeature.DeleteFiles) &&
         supportedFeatures.includes(SupportedFeature.AddUpdateFiles),
       [FileMenuType.Embed]: true,

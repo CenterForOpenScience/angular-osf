@@ -68,8 +68,8 @@ export class GoogleFilePickerComponent implements OnInit {
 
     this.parentId = this.isFolderPicker() ? '' : this.rootFolder()?.itemId || '';
     this.title = this.isFolderPicker()
-      ? this.translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
-      : this.translateService.instant('settings.addons.configureAddon.google-file-picker.file-folder-title');
+      ? this.translateService.instant('settings.addons.configureAddon.googleFilePicker.rootFolderTitle')
+      : this.translateService.instant('settings.addons.configureAddon.googleFilePicker.fileFolderTitle');
     this.isMultipleSelect = !this.isFolderPicker();
 
     this.googlePicker.loadScript().subscribe({

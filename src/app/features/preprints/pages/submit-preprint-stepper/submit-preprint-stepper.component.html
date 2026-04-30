@@ -39,23 +39,41 @@
         <osf-title-and-abstract-step [providerId]="provider.id" (nextClicked)="moveToNextStep()" />
       }
       @case (PreprintSteps.File) {
-        <osf-file-step [provider]="provider" (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+        <osf-file-step
+          [provider]="provider"
+          [showDeleteButton]="true"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
       @case (PreprintSteps.Metadata) {
         <osf-preprints-metadata
           [provider]="provider"
+          [showDeleteButton]="true"
           (nextClicked)="moveToNextStep()"
           (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
         />
       }
       @case (PreprintSteps.AuthorAssertions) {
-        <osf-author-assertions-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+        <osf-author-assertions-step
+          [showDeleteButton]="true"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
       @case (PreprintSteps.Supplements) {
-        <osf-supplements-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+        <osf-supplements-step
+          [showDeleteButton]="true"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+          (deleteClicked)="requestDeletePreprint()"
+        />
       }
       @case (PreprintSteps.Review) {
-        <osf-review-step [provider]="provider" />
+        <osf-review-step [provider]="provider" [showDeleteButton]="true" (deleteClicked)="requestDeletePreprint()" />
       }
     }
   </section>

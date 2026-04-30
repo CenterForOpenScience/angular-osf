@@ -22,7 +22,6 @@ take up to 60 seconds once the docker build finishes.
 
 ### Recommended
 
-- [Compodoc Conventions](docs/compodoc.md).
 - [Docker Commands](docs/docker.md).
 - [ESLint Strategy](docs/eslint.md).
 - [Git Conventions](docs/git-convention.md).

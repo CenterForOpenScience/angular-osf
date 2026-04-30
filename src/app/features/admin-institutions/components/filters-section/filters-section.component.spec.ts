@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilterChipsComponent } from '@osf/shared/components/filter-chips/filter-chips.component';
 import { SearchFiltersComponent } from '@osf/shared/components/search-filters/search-filters.component';
-import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
 import {
   ClearFilterSearchResults,
   FetchResources,

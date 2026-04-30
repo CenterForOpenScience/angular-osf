@@ -100,12 +100,12 @@ export class CollectionsService {
 
     return this.jsonApiService.post<ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>>(url, payload, params).pipe(
       switchMap((response) => {
+        const totalCount = response.meta?.total ?? 0;
+        this.actions.setTotalSubmissions(totalCount);
+
         if (!response.data.length) {
           return of([]);
         }
-
-        const totalCount = response.meta?.total ?? 0;
-        this.actions.setTotalSubmissions(totalCount);
 
         const contributorRequests = response.data.map((submission) =>
           this.getCollectionContributors(

@@ -38,7 +38,7 @@ describe('RegistriesTagsComponent', () => {
 
   it('should render with label', () => {
     const labelElement = fixture.nativeElement.querySelector('label');
-    expect(labelElement.textContent).toEqual('project.overview.metadata.tags (common.labels.optional)');
+    expect(labelElement.textContent).toEqual('shared.tags.title (common.labels.optional)');
   });
 
   it('should update tags on change', () => {

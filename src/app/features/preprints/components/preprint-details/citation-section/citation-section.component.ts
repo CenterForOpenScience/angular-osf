@@ -63,7 +63,7 @@ export class CitationSectionComponent implements OnInit {
   filterMessage = computed(() =>
     this.areCitationStylesLoading()
       ? 'project.overview.metadata.citationLoadingPlaceholder'
-      : 'project.overview.metadata.noCitationStylesFound'
+      : 'common.search.noResultsFound'
   );
 
   constructor() {

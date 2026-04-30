@@ -39,7 +39,7 @@
       <div class="w-6 md:w-auto">
         <p-button
           class="btn-full-width"
-          [label]="'settings.tokens.form.buttons.save' | translate"
+          [label]="'common.buttons.save' | translate"
           type="submit"
           [disabled]="!tokenForm.valid"
         />
@@ -47,13 +47,13 @@
     } @else {
       <p-button
         class="w-12rem btn-full-width"
-        [label]="'settings.tokens.form.buttons.cancel' | translate"
+        [label]="'common.buttons.cancel' | translate"
         severity="info"
         (onClick)="dialogRef.close()"
       />
       <p-button
         class="w-12rem btn-full-width"
-        [label]="'settings.tokens.form.buttons.create' | translate"
+        [label]="'settings.tokens.buttons.create' | translate"
         type="submit"
         [disabled]="!tokenForm.valid || isLoading()"
         [loading]="isLoading()"

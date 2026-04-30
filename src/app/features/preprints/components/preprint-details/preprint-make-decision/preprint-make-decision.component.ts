@@ -172,7 +172,7 @@ export class PreprintMakeDecisionComponent {
     () => decisionSettings.moderation[this.provider().reviewsWorkflow || ProviderReviewsWorkflow.PreModeration]
   );
 
-  commentEdited = computed(() => this.reviewerComment()?.trim() !== this.initialReviewerComment());
+  commentEdited = computed(() => this.reviewerComment()?.trim() !== this.initialReviewerComment()?.trim());
 
   commentExceedsLimit = computed(() => {
     const comment = this.reviewerComment();

@@ -5,14 +5,14 @@
     <div class="flex gap-4">
       <p-button
         severity="secondary"
-        [label]="'myProjects.createProject.affiliation.selectAll' | translate"
+        [label]="'common.buttons.selectAll' | translate"
         [disabled]="isSelectAllDisabled()"
         (onClick)="selectAll()"
         (keydown.enter)="selectAll()"
       />
       <p-button
         severity="secondary"
-        [label]="'myProjects.createProject.affiliation.removeAll' | translate"
+        [label]="'common.buttons.removeAll' | translate"
         [disabled]="isRemoveAllDisabled()"
         (onClick)="removeAll()"
         (keydown.enter)="removeAll()"

@@ -3,11 +3,11 @@
 } @else {
   @for (supplement of supplements(); track supplement.id) {
     <p>
-      {{ 'project.overview.metadata.supplementsText1' | translate }}
+      {{ 'project.overview.metadata.supplementalMaterialsPrefix' | translate }}
       <a class="font-bold" target="_blank" [href]="supplement.url">
         {{ supplement.title + ', ' + (supplement.dateCreated | date: dateFormat) }}
       </a>
-      {{ 'project.overview.metadata.supplementsText2' | translate }}
+      {{ 'project.overview.metadata.supplementalMaterialsSuffix' | translate }}
     </p>
   } @empty {
     <p>{{ 'project.overview.metadata.noSupplements' | translate }}</p>

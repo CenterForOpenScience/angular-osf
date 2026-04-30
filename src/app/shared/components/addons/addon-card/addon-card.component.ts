@@ -79,7 +79,7 @@ export class AddonCardComponent {
     const isConnected = this.isConnected();
 
     if (isConfigured) {
-      return 'settings.addons.form.buttons.configure';
+      return 'common.buttons.configure';
     }
 
     return isConnected ? 'settings.addons.form.buttons.reconnect' : 'settings.addons.form.buttons.connect';
@@ -122,7 +122,7 @@ export class AddonCardComponent {
     this.customConfirmationService.confirmDelete({
       headerKey: 'settings.addons.messages.deleteConfirmation.title',
       messageKey: 'settings.addons.messages.deleteConfirmation.message',
-      acceptLabelKey: 'settings.addons.form.buttons.disable',
+      acceptLabelKey: 'common.buttons.disable',
       onConfirm: () => this.onDisableAddon(),
     });
   }

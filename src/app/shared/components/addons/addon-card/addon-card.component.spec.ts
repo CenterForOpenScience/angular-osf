@@ -78,7 +78,7 @@ describe('AddonCardComponent', () => {
     expect(customConfirmationServiceMock.confirmDelete).toHaveBeenCalledWith({
       headerKey: 'settings.addons.messages.deleteConfirmation.title',
       messageKey: 'settings.addons.messages.deleteConfirmation.message',
-      acceptLabelKey: 'settings.addons.form.buttons.disable',
+      acceptLabelKey: 'common.buttons.disable',
       onConfirm: expect.any(Function),
     });
   });

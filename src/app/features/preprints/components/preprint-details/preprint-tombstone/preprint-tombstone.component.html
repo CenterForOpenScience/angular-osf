@@ -25,7 +25,7 @@
 
       <section class="flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.common.labels.abstract' | translate }}</h3>
-        <osf-truncated-text [maxVisibleLines]="2" [text]="preprintValue.description" />
+        <osf-truncated-text [expanded]="!isBrowser" [maxVisibleLines]="2" [text]="preprintValue.description" />
       </section>
 
       <osf-preprint-doi-section
@@ -52,7 +52,7 @@
       </section>
 
       <section class="flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.subjects' | translate }}</h3>
+        <h3>{{ 'common.labels.subjects' | translate }}</h3>
 
         <div class="flex flex-wrap gap-2">
           @for (subject of subjects(); track subject.id) {
@@ -66,7 +66,7 @@
       </section>
 
       <section class="flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.tags' | translate }}</h3>
+        <h3>{{ 'shared.tags.title' | translate }}</h3>
 
         <div class="flex flex-wrap gap-2">
           @for (tag of preprintValue.tags; track tag) {

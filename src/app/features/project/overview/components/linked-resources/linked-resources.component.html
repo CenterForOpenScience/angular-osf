@@ -50,7 +50,7 @@
           </div>
         }
       } @else {
-        <div [innerHtml]="'project.overview.linkedProjects.noLinkedProjectsMessage' | translate"></div>
+        <p class="font-italic">{{ 'project.overview.linkedProjects.noLinkedProjectsMessage' | translate }}</p>
       }
     }
   </div>

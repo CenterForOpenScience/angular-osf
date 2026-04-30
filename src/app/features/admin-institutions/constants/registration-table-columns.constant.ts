@@ -5,7 +5,7 @@ const defaultDateFormat = 'MMM d, y';
 export const registrationTableColumns: TableColumn[] = [
   {
     field: 'title',
-    header: 'adminInstitutions.projects.title',
+    header: 'common.labels.title',
     isLink: true,
     linkTarget: '_blank',
   },
@@ -17,13 +17,13 @@ export const registrationTableColumns: TableColumn[] = [
   },
   {
     field: 'dateCreated',
-    header: 'adminInstitutions.projects.dateCreated',
+    header: 'common.labels.dateCreated',
     sortable: true,
     dateFormat: defaultDateFormat,
   },
   {
     field: 'dateModified',
-    header: 'adminInstitutions.projects.dateModified',
+    header: 'common.labels.dateModified',
     sortable: true,
     dateFormat: defaultDateFormat,
   },
@@ -62,7 +62,7 @@ export const registrationTableColumns: TableColumn[] = [
   },
   {
     field: 'license',
-    header: 'adminInstitutions.projects.license',
+    header: 'common.labels.license',
   },
   {
     field: 'funderName',

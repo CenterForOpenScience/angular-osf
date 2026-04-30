@@ -1,0 +1,8 @@
+.message-list {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+
+  & > li {
+    list-style-type: disc;
+  }
+}

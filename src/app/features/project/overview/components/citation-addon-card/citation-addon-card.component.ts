@@ -82,7 +82,7 @@ export class CitationAddonCardComponent implements OnInit {
   readonly filterMessage = computed(() =>
     this.isCitationStylesLoading()
       ? 'project.overview.metadata.citationLoadingPlaceholder'
-      : 'project.overview.metadata.noCitationStylesFound'
+      : 'common.search.noResultsFound'
   );
 
   readonly actions = createDispatchMap({

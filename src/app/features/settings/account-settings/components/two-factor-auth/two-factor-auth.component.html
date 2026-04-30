@@ -59,7 +59,7 @@
 
       <div class="flex justify-content-end mt-4">
         <p-button
-          [label]="'settings.accountSettings.common.buttons.disable' | translate"
+          [label]="'common.buttons.disable' | translate"
           severity="danger"
           (click)="openDisableDialog()"
         ></p-button>
@@ -70,11 +70,7 @@
       </p>
 
       <div class="flex justify-content-end mt-4">
-        <p-button
-          [label]="'settings.accountSettings.common.buttons.configure' | translate"
-          (click)="configureTwoFactorAuth()"
-        >
-        </p-button>
+        <p-button [label]="'common.buttons.configure' | translate" (click)="configureTwoFactorAuth()"> </p-button>
       </div>
     }
   </p-card>

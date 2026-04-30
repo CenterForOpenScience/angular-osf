@@ -29,14 +29,14 @@
 <div class="flex pt-5 justify-content-end gap-3">
   <p-button
     class="w-12rem btn-full-width"
-    [label]="'project.overview.dialog.deleteComponent.cancelButton' | translate"
+    [label]="'common.buttons.cancel' | translate"
     severity="info"
     (onClick)="dialogRef.close()"
     [disabled]="isSubmitting()"
   />
   <p-button
     class="w-12rem btn-full-width"
-    [label]="'project.overview.dialog.deleteComponent.confirmButton' | translate"
+    [label]="'common.buttons.delete' | translate"
     (onClick)="handleDeleteComponent()"
     severity="danger"
     [disabled]="isSubmitting() || isLoading() || !isInputValid()"

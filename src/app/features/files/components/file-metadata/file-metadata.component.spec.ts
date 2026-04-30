@@ -101,7 +101,7 @@ describe('FileMetadataComponent', () => {
     component.openEditFileMetadataDialog();
 
     expect(customDialogService.open).toHaveBeenCalledWith(expect.any(Function), {
-      header: 'files.detail.fileMetadata.edit',
+      header: 'common.labels.edit',
       width: '448px',
       data: mockFileMetadata,
     });

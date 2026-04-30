@@ -3,7 +3,7 @@ import { SocialLinksModel } from '../models/user/social-links.model';
 export const SOCIAL_LINKS: SocialLinksModel[] = [
   {
     id: 1,
-    label: 'settings.profileSettings.social.labels.researcherId',
+    label: 'common.socials.researcherId',
     address: 'http://researchers.com/rid/',
     placeholder: 'x-xxxx-xxxx',
     key: 'researcherId',
@@ -11,7 +11,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 2,
-    label: 'settings.profileSettings.social.labels.linkedIn',
+    label: 'common.socials.linkedIn',
     address: 'https://linkedin.com/in/',
     placeholder: 'in/userID, profie/view?profileID, or pub/pubID',
     key: 'linkedIn',
@@ -19,7 +19,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 3,
-    label: 'settings.profileSettings.social.labels.twitter',
+    label: 'common.socials.x',
     address: 'https://x.com/',
     placeholder: 'twitterhandle',
     key: 'twitter',
@@ -27,7 +27,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 4,
-    label: 'settings.profileSettings.social.labels.github',
+    label: 'common.socials.github',
     address: 'https://github.com/',
     placeholder: 'username',
     key: 'github',
@@ -35,15 +35,15 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 5,
-    label: 'settings.profileSettings.social.labels.impactStory',
+    label: 'common.socials.impactStory',
     address: 'https://impactstory.org/u/',
     placeholder: 'profileID',
     key: 'impactStory',
-    icon: 'impactStory.png',
+    icon: 'impactstory.png',
   },
   {
     id: 6,
-    label: 'settings.profileSettings.social.labels.scholar',
+    label: 'common.socials.scholar',
     address: 'http://scholar.google.com/citations?user=',
     placeholder: 'profileID',
     key: 'scholar',
@@ -51,7 +51,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 7,
-    label: 'settings.profileSettings.social.labels.researchGate',
+    label: 'common.socials.researchGate',
     address: 'https://researchgate.net/profile/',
     placeholder: 'profileID',
     key: 'researchGate',
@@ -59,7 +59,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 8,
-    label: 'settings.profileSettings.social.labels.baiduScholar',
+    label: 'common.socials.baiduScholar',
     address: 'http://xueshu.baidu.com/scholarID/',
     placeholder: 'profileID',
     key: 'baiduScholar',
@@ -67,7 +67,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 9,
-    label: 'settings.profileSettings.social.labels.ssrn',
+    label: 'common.socials.ssrn',
     address: 'http://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=',
     placeholder: 'profileID',
     key: 'ssrn',
@@ -75,7 +75,7 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 10,
-    label: 'settings.profileSettings.social.labels.profileWebsites',
+    label: 'common.socials.profileWebsites',
     address: '',
     placeholder: 'https://yourwebsite.com',
     key: 'profileWebsites',
@@ -83,14 +83,14 @@ export const SOCIAL_LINKS: SocialLinksModel[] = [
   },
   {
     id: 11,
-    label: 'settings.profileSettings.social.labels.academia',
+    label: 'common.socials.academia',
     address: 'https://',
     placeholder: 'institution',
     key: 'academiaInstitution',
     icon: 'academia.svg',
     linkedField: {
       key: 'academiaProfileID',
-      label: 'settings.profileSettings.social.labels.academiaProfileId',
+      label: 'common.socials.academiaProfileId',
       placeholder: 'profileId',
       address: '.academia.edu/',
     },

@@ -3,6 +3,7 @@ import { ResourceType } from '@shared/enums/resource-type.enum';
 import { ResourceModel } from '@shared/models/search/resource.model';
 
 export const MOCK_RESOURCE: ResourceModel = {
+  id: 'resource-123',
   absoluteUrl: 'https://api.osf.io/v2/resources/resource-123',
   resourceType: ResourceType.Registration,
   title: 'Test Resource',
@@ -44,6 +45,7 @@ export const MOCK_RESOURCE: ResourceModel = {
 };
 
 export const MOCK_AGENT_RESOURCE: ResourceModel = {
+  id: 'user-123',
   absoluteUrl: 'https://api.osf.io/v2/users/user-123',
   resourceType: ResourceType.Agent,
   title: 'Test User',

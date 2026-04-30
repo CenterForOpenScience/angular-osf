@@ -1,7 +1,7 @@
 <form [formGroup]="projectForm()" class="flex flex-column gap-4">
   <div class="flex flex-column">
     <label for="project-title">
-      {{ 'myProjects.createProject.title' | translate }}
+      {{ 'common.labels.title' | translate }}
     </label>
     <input pInputText id="project-title" type="text" [formControlName]="ProjectFormControls.Title" />
   </div>
@@ -35,7 +35,7 @@
 
   <div class="flex flex-column">
     <label for="description">
-      {{ 'myProjects.createProject.description.label' | translate }}
+      {{ 'common.labels.descriptionOptional' | translate }}
     </label>
     <textarea pTextarea id="description" [formControlName]="ProjectFormControls.Description" [rows]="5"></textarea>
   </div>

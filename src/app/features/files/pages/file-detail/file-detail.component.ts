@@ -172,15 +172,15 @@ export class FileDetailComponent implements OnInit, OnDestroy {
 
   shareItems = [
     {
-      label: 'files.detail.actions.share.email',
+      label: 'common.labels.email',
       command: () => this.handleEmailShare(),
     },
     {
-      label: 'files.detail.actions.share.x',
+      label: 'common.socials.x',
       command: () => this.handleXShare(),
     },
     {
-      label: 'files.detail.actions.share.facebook',
+      label: 'common.socials.facebook',
       command: () => this.handleFacebookShare(),
     },
   ];

@@ -2,32 +2,32 @@ import { SocialPlatformConfig } from '../models/socials/social-platform-config.m
 
 export const SOCIAL_PLATFORMS: SocialPlatformConfig[] = [
   {
-    label: 'project.overview.actions.socials.email',
+    label: 'common.labels.email',
     icon: 'fas fa-envelope',
     urlKey: 'email',
   },
   {
-    label: 'project.overview.actions.socials.x',
+    label: 'common.socials.x',
     icon: 'fab fa-x-twitter',
     urlKey: 'twitter',
   },
   {
-    label: 'project.overview.actions.socials.linkedIn',
+    label: 'common.socials.linkedIn',
     icon: 'fab fa-linkedin',
     urlKey: 'linkedIn',
   },
   {
-    label: 'project.overview.actions.socials.facebook',
+    label: 'common.socials.facebook',
     icon: 'fab fa-facebook-f',
     urlKey: 'facebook',
   },
   {
-    label: 'project.overview.actions.socials.mastodon',
+    label: 'common.socials.mastodon',
     icon: 'fab fa-mastodon',
     urlKey: 'mastodon',
   },
   {
-    label: 'project.overview.actions.socials.bluesky',
+    label: 'common.socials.bluesky',
     icon: 'fab fa-bluesky',
     urlKey: 'bluesky',
   },

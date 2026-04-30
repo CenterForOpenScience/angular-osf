@@ -1,11 +1,11 @@
 <form [formGroup]="fileMetadataForm" (ngSubmit)="setFileMetadata()" class="flex flex-column gap-3">
   <div class="flex flex-column gap-1">
-    <p>{{ 'files.detail.fileMetadata.fields.title' | translate }}</p>
+    <p>{{ 'common.labels.title' | translate }}</p>
     <input pInputText id="title" [formControl]="titleControl" />
   </div>
 
   <div class="flex flex-column gap-1">
-    <p>{{ 'files.detail.fileMetadata.fields.description' | translate }}</p>
+    <p>{{ 'common.labels.description' | translate }}</p>
     <input pInputText id="description" [formControl]="descriptionControl" />
   </div>
 

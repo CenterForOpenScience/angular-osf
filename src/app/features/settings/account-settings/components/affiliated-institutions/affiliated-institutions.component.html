@@ -1,5 +1,5 @@
 <p-card>
-  <h2>{{ 'settings.accountSettings.affiliatedInstitutions.title' | translate }}</h2>
+  <h2>{{ 'common.labels.affiliatedInstitutions' | translate }}</h2>
 
   <p class="mt-4">
     {{ 'settings.accountSettings.affiliatedInstitutions.description' | translate }}
@@ -15,7 +15,7 @@
     <div class="flex mt-3">
       <osf-readonly-input
         [value]="institution.name"
-        [ariaLabelKey]="'settings.accountSettings.affiliatedInstitutions.title'"
+        [ariaLabelKey]="'common.labels.affiliatedInstitution' | translate"
         (deleteItem)="deleteInstitution(institution)"
       ></osf-readonly-input>
     </div>
