@@ -25,6 +25,6 @@ export class CitationItemComponent {
 
   copyCitation(): void {
     this.clipboard.copy(this.citation());
-    this.toastService.showSuccess('settings.developerApps.messages.copied');
+    this.toastService.showSuccess('common.labels.copied');
   }
 }

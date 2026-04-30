@@ -10,7 +10,7 @@ import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -124,8 +124,10 @@ export class AuthorAssertionsStepComponent {
     initialValue: this.createdPreprint()?.hasPreregLinks ?? ApplicabilityStatus.NotApplicable,
   });
 
+  showDeleteButton = input(false);
   nextClicked = output<void>();
   backClicked = output<void>();
+  deleteClicked = output<void>();
 
   constructor() {
     effect(() => {
@@ -257,6 +259,10 @@ export class AuthorAssertionsStepComponent {
       },
       onReject: () => null,
     });
+  }
+
+  deletePreprint() {
+    this.deleteClicked.emit();
   }
 
   private disableAndClearValidators(control: AbstractControl): void {

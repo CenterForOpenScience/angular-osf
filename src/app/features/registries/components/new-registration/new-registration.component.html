@@ -4,16 +4,16 @@
 
     <section class="flex flex-column lg:flex-row flex-1 p-5 gap-4 bg-white w-full">
       <p>
-        {{ 'registries.new.infoText1' | translate }}
+        {{ 'registries.new.registrySubmissionInfo' | translate }}
         <a class="font-bold" href="https://help.osf.io/"> {{ 'common.links.clickHere' | translate }}</a>
-        {{ 'registries.new.infoText2' | translate }}
+        {{ 'registries.new.hostedRegistriesLink' | translate }}
       </p>
     </section>
 
     <section class="flex flex-column flex-1 p-5 gap-4 w-full bg-white">
       <p-card class="w-full">
         <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} 1</h2>
-        <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.step1' | translate }}</p>
+        <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.existingProjectQuestion' | translate }}</p>
         <div class="flex gap-2">
           <p-button
             class="btn-full-width w-2 font-bold"
@@ -38,8 +38,8 @@
         @if (fromProject()) {
           <p-card class="w-full">
             <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} 2</h2>
-            <p class="mb-3 text-lg font-bold">{{ 'registries.new.steps.step2' | translate }}</p>
-            <p class="mb-4">{{ 'registries.new.steps.step2InfoText' | translate }}</p>
+            <p class="mb-3 text-lg font-bold">{{ 'registries.new.steps.selectProjectQuestion' | translate }}</p>
+            <p class="mb-4">{{ 'registries.new.steps.selectProjectHint' | translate }}</p>
             <div class="flex">
               <p-select
                 data-test-project-select
@@ -59,7 +59,7 @@
 
         <p-card class="w-full">
           <h2 class="mb-4">{{ 'registries.new.steps.title' | translate }} {{ fromProject() ? '3' : '2' }}</h2>
-          <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.step3' | translate }}</p>
+          <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.registrationTypeQuestion' | translate }}</p>
           <div class="flex">
             <p-select
               data-test-schema-select

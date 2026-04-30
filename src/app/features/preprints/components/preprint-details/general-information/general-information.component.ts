@@ -57,7 +57,7 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
 export class GeneralInformationComponent implements OnDestroy {
   private readonly environment = inject(ENVIRONMENT);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly preprintProvider = input.required<PreprintProviderDetails | undefined>();
   readonly preprintVersionSelected = output<string>();

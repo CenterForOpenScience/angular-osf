@@ -27,7 +27,7 @@
 
             <div class="flex gap-4 align-self-center md:align-self-end mt-3">
               <p-button
-                [label]="'settings.addons.form.buttons.cancel' | translate"
+                [label]="'common.buttons.cancel' | translate"
                 severity="info"
                 class="w-10rem btn-full-width"
                 [routerLink]="[baseUrl() + '/addons']"
@@ -47,7 +47,7 @@
                 <p-button
                   [label]="
                     !isAuthorizedAddonsLoading()
-                      ? ('settings.addons.form.buttons.next' | translate)
+                      ? ('common.buttons.next' | translate)
                       : ('settings.addons.form.buttons.acceptingTerms' | translate)
                   "
                   class="w-10rem btn-full-width"
@@ -67,7 +67,7 @@
             <div class="flex justify-content-between">
               <h2 class="align-self-center inline-block">{{ loginOrChooseAccountText() }}</h2>
               <p-button
-                [label]="'settings.addons.form.buttons.back' | translate"
+                [label]="'common.buttons.back' | translate"
                 severity="info"
                 class="w-7rem btn-full-width"
                 (click)="activateCallback(AddonStepperValue.TERMS)"
@@ -113,7 +113,7 @@
             <div class="flex gap-4 align-self-end">
               <p-button
                 class="w-10rem btn-full-width"
-                [label]="'settings.addons.form.buttons.back' | translate"
+                [label]="'common.buttons.back' | translate"
                 severity="info"
                 (onClick)="activateCallback(AddonStepperValue.CHOOSE_CONNECTION)"
                 data-test-addon-back-button
@@ -121,7 +121,7 @@
               <p-button
                 class="w-10rem btn-full-width"
                 [disabled]="!chosenAccountId()"
-                [label]="'settings.addons.form.buttons.next' | translate"
+                [label]="'common.buttons.next' | translate"
                 (onClick)="handleConfirmAccountConnection()"
                 data-test-addon-authenticate-button
               ></p-button>
@@ -184,7 +184,7 @@
                 {{ 'settings.addons.connectAddon.setupNewAccount' | translate }}
               </h2>
               <p-button
-                [label]="'settings.addons.form.buttons.back' | translate"
+                [label]="'common.buttons.back' | translate"
                 severity="info"
                 class="w-7rem btn-full-width"
                 [routerLink]="[baseUrl() + '/addons']"

@@ -87,7 +87,7 @@ export class ResourceCitationsComponent {
   filterMessage = computed(() =>
     this.isCitationStylesLoading()
       ? 'project.overview.metadata.citationLoadingPlaceholder'
-      : 'project.overview.metadata.noCitationStylesFound'
+      : 'common.search.noResultsFound'
   );
 
   customCitationInput = new FormControl('');
@@ -191,7 +191,7 @@ export class ResourceCitationsComponent {
 
     if (customCitations) {
       this.clipboard.copy(customCitations);
-      this.toastService.showSuccess('settings.developerApps.messages.copied');
+      this.toastService.showSuccess('common.labels.copied');
     }
   }
 

@@ -6,7 +6,7 @@ import {
   DiscoverableFilter,
   FilterOperatorOption,
   FilterOption,
-} from '@osf/shared/models/search/discaverable-filter.model';
+} from '@osf/shared/models/search/discoverable-filter.model';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';

@@ -123,22 +123,22 @@ export class ResourceCardComponent {
       case ResourceType.RegistrationComponent:
         return [
           {
-            label: 'resourceCard.labels.dateRegistered',
+            label: 'common.labels.dateRegistered',
             date: resource.dateCreated,
           },
           {
-            label: 'resourceCard.labels.dateModified',
+            label: 'common.labels.dateModified',
             date: resource.dateModified,
           },
         ];
       default:
         return [
           {
-            label: 'resourceCard.labels.dateCreated',
+            label: 'common.labels.dateCreated',
             date: resource.dateCreated,
           },
           {
-            label: 'resourceCard.labels.dateModified',
+            label: 'common.labels.dateModified',
             date: resource.dateModified,
           },
         ];

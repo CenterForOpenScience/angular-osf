@@ -1,56 +1,90 @@
 <div class="flex flex-column gap-2">
   @let resourceValue = resource();
   @if (resourceValue.description) {
-    <p>{{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}</p>
+    <p data-test-search-result-card-file-description>
+      {{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}
+    </p>
   }
 
   @let limit = 4;
   @let nodeFunders = resourceValue.isContainedBy?.funders;
   @if (nodeFunders && nodeFunders.length > 0) {
-    <p>
+    <p data-test-search-result-card-file-funders>
       {{ 'resourceCard.labels.funder' | translate }}
       @for (funder of nodeFunders.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="funder.absoluteUrl" target="_blank" rel="noopener noreferrer">
+        <a
+          class="font-bold"
+          [href]="funder.absoluteUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-test-search-result-card-file-funder-link
+        >
           {{ funder.name }}{{ $last ? '' : ', ' }}
         </a>
       }
       @if (nodeFunders.length > limit) {
-        <span>{{ 'resourceCard.andCountMore' | translate: { count: nodeFunders.length - limit } }} </span>
+        <span data-test-search-result-card-file-funders-more>
+          {{ 'resourceCard.andCountMore' | translate: { count: nodeFunders.length - limit } }}
+        </span>
       }
     </p>
   }
 
   @if (resourceValue.resourceNature) {
-    <p>{{ 'resourceCard.labels.resourceNature' | translate }} {{ resourceValue.resourceNature }}</p>
+    <p data-test-search-result-card-file-resource-nature>
+      {{ 'resourceCard.labels.resourceNature' | translate }} {{ resourceValue.resourceNature }}
+    </p>
   }
 
   @let nodeLicense = resourceValue.isContainedBy?.license;
   @if (nodeLicense) {
-    <p>
+    <p data-test-search-result-card-file-license>
       {{ 'common.labels.license' | translate }}:
-      <a class="font-bold" [attr.href]="nodeLicense!.absoluteUrl || null" target="_blank" rel="noopener noreferrer">
+      <a
+        class="font-bold"
+        [attr.href]="nodeLicense!.absoluteUrl || null"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-search-result-card-file-license-link
+      >
         {{ nodeLicense!.name }}
       </a>
     </p>
   }
 
   @if (resourceValue.absoluteUrl) {
-    <p>
+    <p data-test-search-result-card-file-url>
       {{ 'resourceCard.labels.url' | translate }}
-      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">
+      <a
+        class="font-bold"
+        [href]="resourceValue.absoluteUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-search-result-card-file-resource-url-link
+      >
         {{ resourceValue.absoluteUrl }}
       </a>
     </p>
   }
 
   @if (resourceValue.doi.length > 0) {
-    <p>
+    <p data-test-search-result-card-file-doi>
       {{ 'resourceCard.labels.doi' | translate }}
       @for (doi of resourceValue.doi.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="doi" target="_blank" rel="noopener noreferrer">{{ doi }}{{ $last ? '' : ', ' }}</a>
+        <a
+          class="font-bold"
+          [href]="doi"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-test-search-result-card-file-doi-link
+        >
+          {{ doi }}{{ $last ? '' : ', ' }}
+        </a>
       }
       @if (resourceValue.doi.length > limit) {
-        <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }} </span>
+        <span data-test-search-result-card-file-doi-more>
+          {{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }}
+        </span>
       }
     </p>
   }

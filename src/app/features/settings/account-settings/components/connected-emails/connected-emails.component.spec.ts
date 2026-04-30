@@ -123,7 +123,7 @@ describe('ConnectedEmailsComponent', () => {
     onClose.next('new@test.com');
 
     expect(customDialogService.open).toHaveBeenCalledWith(AddEmailComponent, {
-      header: 'settings.accountSettings.connectedEmails.dialog.title',
+      header: 'settings.accountSettings.addEmail.title',
       width: '448px',
     });
     expect(showConfirmationSpy).toHaveBeenCalledWith('new@test.com');

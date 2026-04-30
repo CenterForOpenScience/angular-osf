@@ -1,13 +1,13 @@
 <osf-sub-header [title]="'navigation.wiki' | translate">
   <p-buttonGroup class="ml-auto">
     <p-button
-      [label]="'project.wiki.view' | translate"
+      [label]="'common.buttons.view' | translate"
       [variant]="wikiModes().view ? undefined : 'outlined'"
       (onClick)="toggleMode(WikiModes.View)"
     />
     @if (hasWriteAccess()) {
       <p-button
-        [label]="'project.wiki.edit' | translate"
+        [label]="'common.buttons.edit' | translate"
         [variant]="wikiModes().edit ? undefined : 'outlined'"
         (onClick)="toggleMode(WikiModes.Edit)"
       />

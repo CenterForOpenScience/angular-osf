@@ -1,4 +1,4 @@
-<p-accordion class="card-accordion">
+<p-accordion class="card-accordion flex flex-column gap-4" [multiple]="true">
   @for (employment of employment(); track $index) {
     <p-accordion-panel [value]="$index">
       <p-accordion-header>

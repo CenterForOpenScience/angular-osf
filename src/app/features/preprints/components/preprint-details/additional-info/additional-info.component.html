@@ -41,7 +41,7 @@
       </section>
 
       <section class="flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.subjects' | translate }}</h3>
+        <h3>{{ 'common.labels.subjects' | translate }}</h3>
 
         <div class="flex flex-wrap gap-2">
           @for (subject of subjects(); track subject.id) {
@@ -55,7 +55,7 @@
       </section>
 
       <section class="flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.tags' | translate }}</h3>
+        <h3>{{ 'shared.tags.title' | translate }}</h3>
 
         <div class="flex flex-wrap gap-2">
           @for (tag of preprintValue.tags; track tag) {

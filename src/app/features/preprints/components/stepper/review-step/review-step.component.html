@@ -45,7 +45,7 @@
 
     @if (preprint(); as preprint) {
       <section class="flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.common.labels.title' | translate }}</h3>
+        <h3>{{ 'common.labels.title' | translate }}</h3>
         <p>{{ preprint.title }}</p>
       </section>
 
@@ -59,7 +59,7 @@
 
 <p-card class="card mt-4">
   <div class="flex flex-column gap-4">
-    <h2>{{ 'preprints.preprintStepper.review.sections.metadata.title' | translate }}</h2>
+    <h2>{{ 'common.labels.metadata' | translate }}</h2>
 
     <section class="flex flex-column gap-2">
       <h3>{{ 'common.labels.contributors' | translate }}</h3>
@@ -102,7 +102,7 @@
     }
 
     <section class="flex flex-column gap-2">
-      <h3>{{ 'preprints.preprintStepper.review.sections.metadata.subjects' | translate }}</h3>
+      <h3>{{ 'common.labels.subjects' | translate }}</h3>
 
       <div class="flex flex-wrap gap-2">
         @for (subject of subjects(); track subject.id) {
@@ -112,7 +112,7 @@
     </section>
 
     <section class="flex flex-column gap-2">
-      <h3>{{ 'preprints.preprintStepper.review.sections.metadata.tags' | translate }}</h3>
+      <h3>{{ 'shared.tags.title' | translate }}</h3>
 
       <div class="flex flex-wrap gap-2">
         @for (tag of preprint()?.tags; track tag) {
@@ -240,6 +240,16 @@
     [disabled]="isPreprintSubmitting()"
     (onClick)="cancelSubmission()"
   />
+  @if (showDeleteButton()) {
+    <p-button
+      class="w-6 md:w-6rem"
+      styleClass="w-full"
+      [label]="'common.buttons.delete' | translate"
+      severity="danger"
+      [disabled]="isPreprintSubmitting()"
+      (onClick)="deletePreprint()"
+    />
+  }
   <p-button
     data-test-submit-button
     class="w-6 md:w-9rem"

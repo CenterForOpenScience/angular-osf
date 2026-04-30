@@ -31,7 +31,7 @@
     <ng-template #header>
       <tr>
         <th pSortableColumn="title">
-          {{ 'meetings.details.table.columns.title' | translate }}
+          {{ 'common.labels.title' | translate }}
           <p-sortIcon field="title" />
         </th>
         <th pSortableColumn="authorName">
@@ -47,7 +47,7 @@
           <p-sortIcon field="dateCreated" />
         </th>
         <th pSortableColumn="downloadCount">
-          {{ 'meetings.details.table.columns.downloads' | translate }}
+          {{ 'common.labels.downloads' | translate }}
           <p-sortIcon field="downloadCount" />
         </th>
       </tr>
@@ -62,12 +62,12 @@
           <td class="text-center" [class.w-9rem]="!item.downloadCount">
             @if (item.downloadLink) {
               <p-button
-                [label]="'meetings.details.downloadButton' | translate"
+                [label]="'common.buttons.download' | translate"
                 icon="fas fa-download"
                 class="mr-1"
                 severity="secondary"
                 [raised]="true"
-                (click)="downloadSubmission($event, item)"
+                (onClick)="downloadSubmission($event, item)"
               />
               <span class="ml-2">{{ item.downloadCount }}</span>
             } @else {

@@ -31,8 +31,12 @@ export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResp
     const searchResultItem = searchResultItems.find(
       (searchResult) => searchResult.relationships.indexCard.data.id === indexCard.id
     )!;
+
+    const absoluteUrl = resourceMetadata['@id'];
+
     resources.push({
-      absoluteUrl: resourceMetadata['@id'],
+      id: absoluteUrl.split('/').filter(Boolean).pop() ?? '',
+      absoluteUrl,
       resourceType: ResourceType[resourceMetadata.resourceType[0]['@id'] as keyof typeof ResourceType],
       name: resourceMetadata.name?.[0]?.['@value'],
       title: replaceBadEncodedChars(resourceMetadata.title?.[0]?.['@value']),

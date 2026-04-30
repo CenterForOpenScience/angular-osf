@@ -30,7 +30,7 @@ import { MetaTagsBuilderServiceMockFactory } from '@testing/providers/meta-tags-
 import { PrerenderReadyServiceMockFactory } from '@testing/providers/prerender-ready.service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 import { RegistrySelectors } from './store/registry';
 import { RegistrationOverviewModel } from './models';
@@ -42,6 +42,7 @@ interface SetupOverrides {
   identifiers?: IdentifierModel[];
   canonicalPath?: string;
   platform?: string;
+  selectorOverrides?: SignalOverride[];
 }
 
 function setup(overrides: SetupOverrides = {}) {
@@ -74,6 +75,20 @@ function setup(overrides: SetupOverrides = {}) {
       }) as MetaTagsData
   );
 
+  const defaultSignals: SignalOverride[] = [
+    { selector: RegistrySelectors.getRegistry, value: registry },
+    { selector: RegistrySelectors.isRegistryLoading, value: false },
+    { selector: RegistrySelectors.getIdentifiers, value: identifiers },
+    { selector: RegistrySelectors.getLicense, value: { name: 'MIT' } },
+    { selector: RegistrySelectors.isLicenseLoading, value: false },
+    { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
+    { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
+    { selector: CurrentResourceSelectors.getCurrentResource, value: null },
+    { selector: CurrentResourceSelectors.hasNoPermissions, value: false },
+  ];
+
+  const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
+
   const providers: Provider[] = [
     provideOSFCore(),
     MockProvider(HelpScoutService, helpScoutService),
@@ -84,18 +99,7 @@ function setup(overrides: SetupOverrides = {}) {
     MockProvider(AnalyticsService, analyticsService),
     MockProvider(ActivatedRoute, routeBuilder.build()),
     MockProvider(Router, mockRouter),
-    provideMockStore({
-      signals: [
-        { selector: RegistrySelectors.getRegistry, value: registry },
-        { selector: RegistrySelectors.isRegistryLoading, value: false },
-        { selector: RegistrySelectors.getIdentifiers, value: identifiers },
-        { selector: RegistrySelectors.getLicense, value: { name: 'MIT' } },
-        { selector: RegistrySelectors.isLicenseLoading, value: false },
-        { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
-        { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
-        { selector: CurrentResourceSelectors.getCurrentResource, value: null },
-      ],
-    }),
+    provideMockStore({ signals }),
   ];
 
   if (overrides.platform) {
@@ -228,13 +232,17 @@ describe('RegistryComponent', () => {
   });
 
   it('should send analytics on NavigationEnd event', () => {
-    const { routerBuilder, analyticsService } = setup();
-
+    const mockResource = { id: 'registry-1' };
+    const { routerBuilder, analyticsService } = setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.getCurrentResource, value: mockResource },
+        { selector: CurrentResourceSelectors.hasNoPermissions, value: true },
+      ],
+    });
     routerBuilder.emit(new NavigationEnd(1, '/registries/registry-1', '/registries/registry-1'));
-
     expect(analyticsService.sendCountedUsageForRegistrationAndProjects).toHaveBeenCalledWith(
       '/registries/registry-1',
-      null
+      mockResource
     );
   });
 

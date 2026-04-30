@@ -50,12 +50,6 @@ export class TogglePublicityDialogComponent {
   projectId = signal(this.dialogConfig.data.projectId);
   isCurrentlyPublic = signal(this.dialogConfig.data.isCurrentlyPublic);
 
-  messageKey = computed(() =>
-    this.isCurrentlyPublic()
-      ? 'project.overview.dialog.makePrivate.message'
-      : 'project.overview.dialog.makePublic.message'
-  );
-
   step = signal(TogglePublicityStep.Information);
   componentsList: WritableSignal<ComponentCheckboxItemModel[]> = signal([]);
 

@@ -1,35 +1,48 @@
 <div class="flex flex-column gap-2">
   @let resourceValue = resource();
   @if (resourceValue.description) {
-    <p>{{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}</p>
+    <p data-test-search-result-card-project-description>
+      {{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}
+    </p>
   }
   @let limit = 4;
   @if (resourceValue.funders.length > 0) {
-    <p>
+    <p data-test-search-result-card-project-funders>
       {{ 'resourceCard.labels.funder' | translate }}
       @for (funder of resourceValue.funders.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="funder.absoluteUrl" target="_blank" rel="noopener noreferrer">
+        <a
+          class="font-bold"
+          [href]="funder.absoluteUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-test-search-result-card-project-funder-link
+        >
           {{ funder.name }}{{ $last ? '' : ', ' }}
         </a>
       }
       @if (resourceValue.funders.length > limit) {
-        <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.funders.length - limit } }} </span>
+        <span data-test-search-result-card-project-funders-more>
+          {{ 'resourceCard.andCountMore' | translate: { count: resourceValue.funders.length - limit } }}
+        </span>
       }
     </p>
   }
 
   @if (resourceValue.resourceNature) {
-    <p>{{ 'resourceCard.labels.resourceNature' | translate }} {{ resourceValue.resourceNature }}</p>
+    <p data-test-search-result-card-project-resource-nature>
+      {{ 'resourceCard.labels.resourceNature' | translate }} {{ resourceValue.resourceNature }}
+    </p>
   }
 
   @if (resourceValue.isPartOfCollection) {
-    <p>
+    <p data-test-search-result-card-project-collection>
       {{ 'resourceCard.labels.collection' | translate }}
       <a
         class="font-bold"
         [attr.href]="resourceValue.isPartOfCollection!.absoluteUrl || null"
         target="_blank"
         rel="noopener noreferrer"
+        data-test-search-result-card-project-collection-link
       >
         {{ resourceValue.isPartOfCollection!.name }}
       </a>
@@ -37,39 +50,59 @@
   }
 
   @if (languageFromCode()) {
-    <p>{{ 'resourceCard.labels.language' | translate }} {{ languageFromCode() }}</p>
+    <p data-test-search-result-card-project-language>
+      {{ 'resourceCard.labels.language' | translate }} {{ languageFromCode() }}
+    </p>
   }
 
   @if (resourceValue.license) {
-    <p>
+    <p data-test-search-result-card-project-license>
       {{ 'common.labels.license' | translate }}:
       <a
         class="font-bold"
         [attr.href]="resourceValue.license!.absoluteUrl || null"
         target="_blank"
         rel="noopener noreferrer"
-        >{{ resourceValue.license!.name }}</a
+        data-test-search-result-card-project-license-link
       >
+        {{ resourceValue.license!.name }}
+      </a>
     </p>
   }
 
   @if (resourceValue.absoluteUrl) {
-    <p>
+    <p data-test-search-result-card-project-url>
       {{ 'resourceCard.labels.url' | translate }}
-      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">
+      <a
+        class="font-bold"
+        [href]="resourceValue.absoluteUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-search-result-card-project-resource-url-link
+      >
         {{ resourceValue.absoluteUrl }}
       </a>
     </p>
   }
 
   @if (resourceValue.doi.length > 0) {
-    <p>
+    <p data-test-search-result-card-project-doi>
       {{ 'resourceCard.labels.doi' | translate }}
       @for (doi of resourceValue.doi.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="doi" target="_blank" rel="noopener noreferrer">{{ doi }}{{ $last ? '' : ', ' }}</a>
+        <a
+          class="font-bold"
+          [href]="doi"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-test-search-result-card-project-doi-link
+        >
+          {{ doi }}{{ $last ? '' : ', ' }}
+        </a>
       }
       @if (resourceValue.doi.length > limit) {
-        <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }} </span>
+        <span data-test-search-result-card-project-doi-more>
+          {{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }}
+        </span>
       }
     </p>
   }

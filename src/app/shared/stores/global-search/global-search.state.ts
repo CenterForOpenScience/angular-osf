@@ -6,8 +6,8 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { getResourceTypeStringFromEnum } from '@osf/shared/helpers/get-resource-types.helper';
+import { FilterOperatorOption } from '@osf/shared/models/search/discoverable-filter.model';
 import { GlobalSearchService } from '@osf/shared/services/global-search.service';
-import { FilterOperatorOption } from '@shared/models/search/discaverable-filter.model';
 import { ResourcesData } from '@shared/models/search/resource.model';
 
 import {
@@ -192,6 +192,7 @@ export class GlobalSearchState {
   loadFilterOptionsAndSetValues(ctx: StateContext<GlobalSearchStateModel>, action: LoadFilterOptionsAndSetValues) {
     const filterValues = action.filterValues;
     const filterKeys = Object.keys(filterValues).filter((key) => filterValues[key]);
+
     if (!filterKeys.length) return;
 
     const loadingFilters = ctx

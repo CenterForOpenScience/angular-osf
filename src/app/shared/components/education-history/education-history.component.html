@@ -1,4 +1,4 @@
-<p-accordion class="card-accordion">
+<p-accordion class="card-accordion flex flex-column gap-4" [multiple]="true">
   @for (education of education(); track $index) {
     <p-accordion-panel value="{{ $index }}" class="accordion-panel">
       <p-accordion-header>

@@ -6,15 +6,27 @@
   } @else {
     @let userCounts = userRelatedCounts();
     @if (userCounts?.employment) {
-      <p>{{ 'resourceCard.labels.employment' | translate }} {{ userCounts!.employment }}</p>
+      <p data-test-search-result-card-user-employment>
+        {{ 'resourceCard.labels.employment' | translate }} {{ userCounts!.employment }}
+      </p>
     }
 
     @if (userCounts?.education) {
-      <p>{{ 'resourceCard.labels.education' | translate }} {{ userCounts!.education }}</p>
+      <p data-test-search-result-card-user-education>
+        {{ 'resourceCard.labels.education' | translate }} {{ userCounts!.education }}
+      </p>
     }
 
-    <p>{{ 'resourceCard.labels.publicProjects' | translate }} {{ userCounts?.projects }}</p>
-    <p>{{ 'resourceCard.labels.publicRegistrations' | translate }} {{ userCounts?.registrations }}</p>
-    <p>{{ 'resourceCard.labels.publicPreprints' | translate }} {{ userCounts?.preprints }}</p>
+    <p data-test-search-result-card-user-public-projects>
+      {{ 'resourceCard.labels.publicProjects' | translate }} {{ userCounts?.projects }}
+    </p>
+
+    <p data-test-search-result-card-user-public-registrations>
+      {{ 'resourceCard.labels.publicRegistrations' | translate }} {{ userCounts?.registrations }}
+    </p>
+
+    <p data-test-search-result-card-user-public-preprints>
+      {{ 'resourceCard.labels.publicPreprints' | translate }} {{ userCounts?.preprints }}
+    </p>
   }
 </div>

@@ -123,6 +123,21 @@ describe('AuthorAssertionsStepComponent', () => {
     expect(controls.preregLinkInfo.value).toBe(PreregLinkInfo.Both);
   });
 
+  it('should default showDeleteButton to false', () => {
+    setup();
+
+    expect(component.showDeleteButton()).toBe(false);
+  });
+
+  it('should update showDeleteButton when input changes', () => {
+    setup();
+
+    fixture.componentRef.setInput('showDeleteButton', true);
+    fixture.detectChanges();
+
+    expect(component.showDeleteButton()).toBe(true);
+  });
+
   it('should enable coiStatement control when hasCoi becomes true', () => {
     setup({ detectChanges: true });
     component.authorAssertionsForm.controls.hasCoi.setValue(true);
@@ -283,6 +298,15 @@ describe('AuthorAssertionsStepComponent', () => {
     component.backButtonClicked();
 
     expect(customConfirmationServiceMock.confirmContinue).not.toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
+  it('should emit deleteClicked when deletePreprint is called', () => {
+    setup({ detectChanges: false });
+    const emitSpy = vi.spyOn(component.deleteClicked, 'emit');
+
+    component.deletePreprint();
+
     expect(emitSpy).toHaveBeenCalled();
   });
 

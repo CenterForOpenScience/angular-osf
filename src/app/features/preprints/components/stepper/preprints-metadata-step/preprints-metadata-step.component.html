@@ -1,6 +1,6 @@
 @let preprint = createdPreprint();
 
-<h2>{{ 'preprints.preprintStepper.metadata.title' | translate }}</h2>
+<h2>{{ 'common.labels.metadata' | translate }}</h2>
 
 @if (preprint) {
   <div class="mt-4">
@@ -9,7 +9,7 @@
 }
 
 <p-card class="w-full card mt-4">
-  <h2 class="mb-2">{{ 'shared.license.title' | translate }}</h2>
+  <h2 class="mb-2">{{ 'common.labels.license' | translate }}</h2>
 
   <p class="mb-1">{{ 'shared.license.description' | translate }}</p>
   <p>
@@ -45,7 +45,7 @@
 
 <p-card class="card mt-4">
   <div>
-    <h2>{{ 'preprints.preprintStepper.metadata.tagsTitle' | translate }}</h2>
+    <h2>{{ 'shared.tags.title' | translate }}</h2>
 
     <div class="mt-4">
       <osf-tags-input [tags]="createdPreprint()?.tags || []" (tagsChanged)="updateTags($event)" />
@@ -105,6 +105,15 @@
     severity="info"
     (onClick)="backButtonClicked()"
   />
+  @if (showDeleteButton()) {
+    <p-button
+      class="w-6 md:w-6rem"
+      styleClass="w-full"
+      [label]="'common.buttons.delete' | translate"
+      severity="danger"
+      (onClick)="deletePreprint()"
+    />
+  }
   <p-button
     class="w-6 md:w-9rem"
     styleClass="w-full"

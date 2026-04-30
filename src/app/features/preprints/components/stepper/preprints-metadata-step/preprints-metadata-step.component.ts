@@ -63,8 +63,10 @@ export class PreprintsMetadataStepComponent implements OnInit {
   private toastService = inject(ToastService);
 
   provider = input.required<PreprintProviderDetails>();
+  showDeleteButton = input(false);
   nextClicked = output<void>();
   backClicked = output<void>();
+  deleteClicked = output<void>();
 
   private actions = createDispatchMap({
     updatePreprint: UpdatePreprint,
@@ -152,6 +154,10 @@ export class PreprintsMetadataStepComponent implements OnInit {
         this.nextClicked.emit();
       },
     });
+  }
+
+  deletePreprint() {
+    this.deleteClicked.emit();
   }
 
   createLicense(licenseDetails: { id: string; licenseOptions: LicenseOptions }) {

@@ -37,7 +37,7 @@
     <ng-template #header>
       <tr>
         <th pSortableColumn="name">
-          {{ 'meetings.landing.table.columns.title' | translate }}
+          {{ 'common.labels.title' | translate }}
           <p-sortIcon field="name" />
         </th>
         <th pSortableColumn="submissionsCount">
@@ -90,7 +90,7 @@
     }
   </section>
 
-  <section class="mt-6 flex flex-column gap-5 justify-content-center align-items-center">
+  <section class="flex flex-column gap-5 justify-content-center align-items-center my-6">
     <h2 class="text-2xl text-center">{{ 'meetings.landing.users.title' | translate }}</h2>
 
     <section class="flex flex-row justify-content-center align-items-start gap-7 flex-wrap">

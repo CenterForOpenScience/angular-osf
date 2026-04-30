@@ -5,14 +5,7 @@ import { switchMap, timer } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  NavigationCancel,
-  NavigationEnd,
-  NavigationError,
-  NavigationStart,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { NavigationCancel, NavigationEnd, NavigationError, ResolveStart, Router, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
@@ -65,7 +58,7 @@ export class AppComponent implements OnInit {
 
     if (this.isBrowser) {
       this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event) => {
-        if (event instanceof NavigationStart) {
+        if (event instanceof ResolveStart) {
           this.loaderService.show();
         } else if (
           event instanceof NavigationEnd ||

@@ -9,7 +9,7 @@ import { Tag } from 'primeng/tag';
 import { of, switchMap, tap } from 'rxjs';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
@@ -59,6 +59,8 @@ export class ReviewStepComponent implements OnInit {
   private readonly toastService = inject(ToastService);
 
   readonly provider = input.required<PreprintProviderDetails>();
+  readonly showDeleteButton = input(false);
+  readonly deleteClicked = output<void>();
 
   private readonly actions = createDispatchMap({
     getBibliographicContributors: GetBibliographicContributors,
@@ -143,5 +145,9 @@ export class ReviewStepComponent implements OnInit {
 
   loadMoreContributors(): void {
     this.actions.loadMoreBibliographicContributors(this.preprint()?.id, ResourceType.Preprint);
+  }
+
+  deletePreprint(): void {
+    this.deleteClicked.emit();
   }
 }

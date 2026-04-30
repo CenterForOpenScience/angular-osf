@@ -1,6 +1,42 @@
-<p>
-  <span>{{ 'moderation.settingsMessage' | translate }}</span>
-  <a class="ml-1 font-bold cursor-pointer" routerLink="/settings/notifications">
+<h2>{{ 'moderation.notificationPreferences.title' | translate }}</h2>
+<p class="mt-4">
+  <span>{{ 'moderation.notificationPreferences.note' | translate }}</span>
+  <a class="ml-1 font-bold" routerLink="/settings/notifications">
     {{ 'moderation.userSettings' | translate }}
   </a>
 </p>
+
+@if (!isLoading()) {
+  <section class="notification-configuration mt-4" [formGroup]="form">
+    @for (sub of subscriptions(); track sub.id) {
+      <label [for]="'subscription-' + sub.id">
+        {{ 'moderation.notificationPreferences.items.' + sub.event | translate }}
+      </label>
+
+      <p-select
+        [inputId]="'subscription-' + sub.id"
+        [formControlName]="sub.id"
+        class="dropdown"
+        [options]="frequencyOptions"
+        optionLabel="label"
+        optionValue="value"
+        (onChange)="onFrequencyChange(sub, $event.value)"
+      >
+        <ng-template #selectedItem let-selectedOption>
+          {{ selectedOption.label | translate }}
+        </ng-template>
+
+        <ng-template #item let-item>
+          {{ item.label | translate }}
+        </ng-template>
+      </p-select>
+    }
+  </section>
+} @else {
+  <section class="notification-configuration">
+    @for (_ of [1, 2]; track $index) {
+      <p-skeleton width="20rem" height="2rem"></p-skeleton>
+      <p-skeleton class="dropdown" height="3rem"></p-skeleton>
+    }
+  </section>
+}

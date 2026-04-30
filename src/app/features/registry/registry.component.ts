@@ -65,6 +65,7 @@ export class RegistryComponent implements OnDestroy {
   });
 
   private readonly registryId = toSignal(this.route.params.pipe(map((params) => params['id'])));
+  readonly hasNoPermissions = select(CurrentResourceSelectors.hasNoPermissions);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
   private readonly registry = select(RegistrySelectors.getRegistry);
   private readonly isRegistryLoading = select(RegistrySelectors.isRegistryLoading);
@@ -141,10 +142,12 @@ export class RegistryComponent implements OnDestroy {
       .subscribe((event) => {
         this.canonicalPath.set(this.getCanonicalPathFromSnapshot());
         this.isFileDetailRoute.set(this.isFileDetailRouteFromSnapshot());
-        this.analyticsService.sendCountedUsageForRegistrationAndProjects(
-          event.urlAfterRedirects,
-          this.currentResource()
-        );
+        if (this.currentResource()?.id && this.hasNoPermissions()) {
+          this.analyticsService.sendCountedUsageForRegistrationAndProjects(
+            event.urlAfterRedirects,
+            this.currentResource()
+          );
+        }
       });
   }
 

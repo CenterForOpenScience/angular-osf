@@ -44,19 +44,19 @@ export class FileMenuComponent {
       items: [
         {
           id: `${FileMenuType.Share}-email`,
-          label: 'files.detail.actions.share.email',
+          label: 'common.labels.email',
           icon: 'fas fa-envelope',
           command: () => this.emitAction(FileMenuType.Share, { type: 'email' }),
         },
         {
           id: `${FileMenuType.Share}-twitter`,
-          label: 'files.detail.actions.share.x',
+          label: 'common.socials.x',
           icon: 'fab fa-square-x-twitter',
           command: () => this.emitAction(FileMenuType.Share, { type: 'twitter' }),
         },
         {
           id: `${FileMenuType.Share}-facebook`,
-          label: 'files.detail.actions.share.facebook',
+          label: 'common.socials.facebook',
           icon: 'fab fa-facebook',
           command: () => this.emitAction(FileMenuType.Share, { type: 'facebook' }),
         },

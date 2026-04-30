@@ -46,7 +46,9 @@ export class TitleAndAbstractStepComponent {
   private readonly toastService = inject(ToastService);
 
   readonly providerId = input.required<string>();
+  readonly showDeleteButton = input(false);
   readonly nextClicked = output<void>();
+  readonly deleteClicked = output<void>();
 
   private readonly actions = createDispatchMap({
     createPreprint: CreatePreprint,
@@ -84,6 +86,10 @@ export class TitleAndAbstractStepComponent {
         description: createdPreprint.description,
       });
     });
+  }
+
+  deletePreprint() {
+    this.deleteClicked.emit();
   }
 
   nextButtonClicked(): void {

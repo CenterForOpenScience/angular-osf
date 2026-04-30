@@ -38,7 +38,7 @@
       <div class="w-6 md:w-auto">
         <p-button
           class="btn-full-width"
-          [label]="'settings.developerApps.form.buttons.save' | translate"
+          [label]="'common.buttons.save' | translate"
           type="submit"
           [disabled]="!appForm.dirty || !appForm.valid"
         />
@@ -46,12 +46,12 @@
     } @else {
       <p-button
         class="w-12rem btn-full-width"
-        [label]="'settings.developerApps.form.buttons.cancel' | translate"
+        [label]="'common.buttons.cancel' | translate"
         severity="info"
         (onClick)="dialogRef.close()"
       />
       <p-button
-        [label]="'settings.developerApps.form.buttons.create' | translate"
+        [label]="'settings.developerApps.buttons.create' | translate"
         type="submit"
         [disabled]="!appForm.valid || isLoading()"
         [loading]="isLoading()"

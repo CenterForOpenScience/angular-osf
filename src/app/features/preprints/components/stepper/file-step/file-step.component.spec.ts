@@ -27,17 +27,12 @@ import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
-import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import {
-  CustomConfirmationServiceMock,
-  CustomConfirmationServiceMockType,
-} from '@testing/providers/custom-confirmation-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
@@ -48,7 +43,6 @@ describe('FileStepComponent', () => {
   let fixture: ComponentFixture<FileStepComponent>;
   let store: Store;
   let toastServiceMock: ToastServiceMockType;
-  let confirmationServiceMock: CustomConfirmationServiceMockType;
   const originalPointerEvent = (globalThis as unknown as { PointerEvent?: typeof Event }).PointerEvent;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
@@ -83,16 +77,10 @@ describe('FileStepComponent', () => {
   }) {
     const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
     toastServiceMock = ToastServiceMock.simple();
-    confirmationServiceMock = CustomConfirmationServiceMock.simple();
 
     TestBed.configureTestingModule({
       imports: [FileStepComponent, ...MockComponents(IconComponent, FilesTreeComponent)],
-      providers: [
-        provideOSFCore(),
-        MockProvider(ToastService, toastServiceMock),
-        MockProvider(CustomConfirmationService, confirmationServiceMock),
-        provideMockStore({ signals }),
-      ],
+      providers: [provideOSFCore(), MockProvider(ToastService, toastServiceMock), provideMockStore({ signals })],
     });
 
     store = TestBed.inject(Store);
@@ -207,6 +195,15 @@ describe('FileStepComponent', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
+  it('should emit deleteClicked when deletePreprint is called', () => {
+    setup({ detectChanges: false });
+    const emitSpy = vi.spyOn(component.deleteClicked, 'emit');
+
+    component.deletePreprint();
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
   it('should handle nextButtonClicked for allowed and blocked states', () => {
     setup({ detectChanges: false });
     const emitSpy = vi.spyOn(component.nextClicked, 'emit');
@@ -311,29 +308,6 @@ describe('FileStepComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintPrimaryFile());
   });
 
-  it('should set version mode and reset selected source on version file confirmation', () => {
-    setup({ detectChanges: false });
-
-    component.versionFile();
-    const options = confirmationServiceMock.confirmContinue.mock.calls[0][0];
-    options.onConfirm();
-
-    expect(component.versionFileMode()).toBe(true);
-    expect(store.dispatch).toHaveBeenCalledWith(new SetSelectedPreprintFileSource(PreprintFileSource.None));
-  });
-
-  it('should not change mode or selected source on version file reject', () => {
-    setup({ detectChanges: false });
-
-    component.versionFile();
-    const options = confirmationServiceMock.confirmContinue.mock.calls[0][0];
-    (store.dispatch as Mock).mockClear();
-    options.onReject();
-
-    expect(component.versionFileMode()).toBe(false);
-    expect(store.dispatch).not.toHaveBeenCalledWith(new SetSelectedPreprintFileSource(PreprintFileSource.None));
-  });
-
   it('should handle cancelButtonClicked for file present and file missing states', () => {
     setup({ detectChanges: false });
 
@@ -369,5 +343,20 @@ describe('FileStepComponent', () => {
     component.onLoadFiles({ link: '/v2/nodes/node-456/files/', page: 3 });
 
     expect(store.dispatch).toHaveBeenCalledWith(new FetchProjectFilesByLink('/v2/nodes/node-456/files/', 3));
+  });
+
+  it('should default showDeleteButton to false', () => {
+    setup();
+
+    expect(component.showDeleteButton()).toBe(false);
+  });
+
+  it('should update showDeleteButton when input changes', () => {
+    setup();
+
+    fixture.componentRef.setInput('showDeleteButton', true);
+    fixture.detectChanges();
+
+    expect(component.showDeleteButton()).toBe(true);
   });
 });

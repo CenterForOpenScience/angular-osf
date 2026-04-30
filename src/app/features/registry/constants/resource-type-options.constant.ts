@@ -3,23 +3,23 @@ import { SelectOption } from '@shared/models/select-option.model';
 
 export const resourceTypeOptions: SelectOption[] = [
   {
-    label: 'resources.typeOptions.data',
+    label: 'resourceCard.resources.data',
     value: RegistryResourceType.Data,
   },
   {
-    label: 'resources.typeOptions.code',
+    label: 'resourceCard.resources.code',
     value: RegistryResourceType.Code,
   },
   {
-    label: 'resources.typeOptions.materials',
+    label: 'resourceCard.resources.materials',
     value: RegistryResourceType.Materials,
   },
   {
-    label: 'resources.typeOptions.papers',
+    label: 'resourceCard.resources.papers',
     value: RegistryResourceType.Papers,
   },
   {
-    label: 'resources.typeOptions.supplements',
+    label: 'resourceCard.resources.supplements',
     value: RegistryResourceType.Supplements,
   },
 ];

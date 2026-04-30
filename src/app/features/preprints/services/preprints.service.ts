@@ -156,7 +156,7 @@ export class PreprintsService {
           ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
           null
         >
-      >(`${this.apiUrl}/preprints/${prevVersionPreprintId}/versions/?version=2.20`)
+      >(`${this.apiUrl}/preprints/${prevVersionPreprintId}/versions/`)
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 

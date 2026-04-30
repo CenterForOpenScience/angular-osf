@@ -56,7 +56,7 @@ import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-do
 })
 export class PreprintTombstoneComponent implements OnDestroy {
   private readonly router = inject(Router);
-  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly preprintProvider = input.required<PreprintProviderDetails | undefined>();
   readonly preprintVersionSelected = output<string>();

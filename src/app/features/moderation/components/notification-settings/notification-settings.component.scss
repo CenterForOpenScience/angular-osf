@@ -1,0 +1,21 @@
+@use "styles/variables" as var;
+
+.notification-configuration {
+  display: grid;
+  gap: 12px;
+  align-items: center;
+  grid-template-columns: 0.5fr 2fr;
+
+  .dropdown {
+    width: 50%;
+  }
+
+  @media (max-width: var.$breakpoint-sm) {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+
+    .dropdown {
+      width: 100%;
+    }
+  }
+}

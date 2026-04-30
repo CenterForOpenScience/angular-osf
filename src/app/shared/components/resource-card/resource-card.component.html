@@ -3,7 +3,9 @@
     <p-accordion-panel value="0" class="gap-2">
       <p-accordion-header class="flex flex-row align-items-start gap-3 p-0">
         <div osfStopPropagation class="flex flex-column align-items-start gap-2">
-          <p class="type py-1 px-3 font-bold">{{ cardTypeLabel() | translate }}</p>
+          <p class="type py-1 px-3 font-bold" data-test-search-result-card-type>
+            {{ cardTypeLabel() | translate }}
+          </p>
         </div>
       </p-accordion-header>
 
@@ -14,37 +16,47 @@
             [href]="resource().absoluteUrl"
             target="_blank"
             rel="noopener noreferrer"
+            data-test-search-result-card-title-link
           >
             {{ displayTitle() | fixSpecialChar }}
           </a>
         </h2>
 
         @if (isWithdrawn()) {
-          <p-tag severity="secondary">{{ 'resourceCard.labels.withdrawn' | translate }}</p-tag>
+          <p-tag severity="secondary" data-test-search-result-card-withdrawn>{{
+            'resourceCard.labels.withdrawn' | translate
+          }}</p-tag>
         }
 
         @let orcidValues = orcids();
         @if (orcidValues.length && orcidValues[0]) {
-          <a [href]="orcidValues[0]" class="h-1rem" target="_blank" rel="noopener noreferrer">
+          <a
+            [href]="orcidValues[0]"
+            class="h-1rem"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-test-search-result-card-orcid-link
+          >
             <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
           </a>
         }
       </div>
 
       @if (affiliatedEntities().length > 0) {
-        <div class="line-height-3">
+        <div class="line-height-3" data-test-search-result-card-affiliated-entity>
           @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
             <a
               class="word-break-word line-height-4"
               [href]="affiliatedEntity.absoluteUrl"
               target="_blank"
               rel="noopener noreferrer"
+              data-test-search-result-card-affiliated-entity-link
             >
               {{ affiliatedEntity.name }}{{ $last ? '' : ', ' }}
             </a>
           }
           @if (resource().creators.length > limit) {
-            <p class="inline">
+            <p class="inline" data-test-search-result-card-affiliated-entities-more>
               &nbsp;{{ 'resourceCard.andCountMore' | translate: { count: resource().creators.length - limit } }}
             </p>
           }
@@ -52,13 +64,14 @@
       }
 
       @if (resource().isPartOf) {
-        <div class="flex flex-row gap-1 line-height-3">
+        <div class="flex flex-row gap-1 line-height-3" data-test-search-result-card-is-part-of>
           <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
           <a
             class="block white-space-normal word-break-word"
             [href]="resource().isPartOf!.absoluteUrl"
             target="_blank"
             rel="noopener noreferrer"
+            data-test-search-result-card-is-part-of-link
           >
             {{ resource().isPartOf!.name }}
           </a>
@@ -66,13 +79,14 @@
       }
 
       @if (resource().isContainedBy) {
-        <div class="flex flex-row gap-1 line-height-3">
+        <div class="flex flex-row gap-1 line-height-3" data-test-search-result-card-is-contained-by>
           <p class="white-space-nowrap">{{ 'resourceCard.labels.from' | translate }}</p>
           <a
             class="block white-space-normal"
             [href]="resource().isContainedBy!.absoluteUrl"
             target="_blank"
             rel="noopener noreferrer"
+            data-test-search-result-card-is-contained-by-link
           >
             {{ resource().isContainedBy!.name }}
           </a>
@@ -80,9 +94,11 @@
       }
 
       @if (dateFields().length > 0) {
-        <div class="flex flex-column md:flex-row line-height-3">
+        <div data-test-search-result-card-date-fields class="flex flex-column md:flex-row line-height-3">
           @for (dateField of dateFields(); track $index) {
-            <p>{{ dateField.label | translate }}: {{ dateField.date | date: 'MMMM d, y' : 'UTC' }}</p>
+            <p data-test-search-result-card-date-field>
+              {{ dateField.label | translate }}: {{ dateField.date | date: 'MMMM d, y' : 'UTC' }}
+            </p>
 
             @if (!$last && !isSmall()) {
               <p class="mx-1">
@@ -95,7 +111,10 @@
 
       @if (resource().context) {
         <div class="flex flex-row gap-1 line-height-3 flex-wrap">
-          <p [innerHTML]="`${('resourceCard.labels.context' | translate)}: ${resource().context}`"></p>
+          <p
+            data-test-search-result-card-context
+            [innerHTML]="`${('resourceCard.labels.context' | translate)}: ${resource().context}`"
+          ></p>
         </div>
       }
 

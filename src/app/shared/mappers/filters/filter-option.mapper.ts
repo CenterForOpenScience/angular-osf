@@ -1,4 +1,4 @@
-import { FilterOption } from '@osf/shared/models/search/discaverable-filter.model';
+import { FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
 import { FilterOptionItem } from '@osf/shared/models/search/filter-options-json-api.model';
 import { SearchResultDataJsonApi } from '@osf/shared/models/search/index-card-search-json-api.model';
 

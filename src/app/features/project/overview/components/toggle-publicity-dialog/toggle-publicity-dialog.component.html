@@ -3,7 +3,15 @@
     <osf-loading-spinner></osf-loading-spinner>
   } @else {
     @if (isInformationStep()) {
-      <div [innerHTML]="messageKey() | translate"></div>
+      @if (isCurrentlyPublic()) {
+        <ul class="message-list">
+          <li>{{ 'project.overview.dialog.makePrivate.messageItems.publicDuplicatesRemainPublic' | translate }}</li>
+          <li>{{ 'project.overview.dialog.makePrivate.messageItems.searchEnginesMayHaveAccessed' | translate }}</li>
+          <li>{{ 'project.overview.dialog.makePrivate.messageItems.removedFromCollections' | translate }}</li>
+        </ul>
+      } @else {
+        <p [innerHTML]="'project.overview.dialog.makePublic.message' | translate"></p>
+      }
     } @else {
       <div>
         <p>{{ 'project.overview.dialog.adjustPrivacySetting' | translate }}</p>

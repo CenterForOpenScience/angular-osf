@@ -19,7 +19,7 @@
 
       <section class="flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.common.labels.abstract' | translate }}</h3>
-        <osf-truncated-text [maxVisibleLines]="2" [text]="preprintValue.description" />
+        <osf-truncated-text [expanded]="!isBrowser" [maxVisibleLines]="2" [text]="preprintValue.description" />
       </section>
 
       @if (affiliatedInstitutions().length) {

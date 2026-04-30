@@ -6,7 +6,7 @@ import { Mock } from 'vitest';
 
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, ResolveStart, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { GetCurrentUser } from '@core/store/user';
@@ -117,9 +117,9 @@ describe('AppComponent', () => {
     );
   });
 
-  it('should show loader on navigation start in browser', () => {
+  it('should show loader on resolve start in browser', () => {
     setup();
-    routerBuilder.emit(new NavigationStart(1, '/project/1'));
+    routerBuilder.emit(new ResolveStart(1, '/project/1', '/project/1', {} as any));
     fixture.detectChanges();
     expect(loaderServiceMock.show).toHaveBeenCalled();
   });
@@ -151,7 +151,7 @@ describe('AppComponent', () => {
 
   it('should not subscribe to router events on server', () => {
     setup({ isBrowser: false });
-    routerBuilder.emit(new NavigationStart(4, '/x'));
+    routerBuilder.emit(new ResolveStart(1, '/next', '/next', {} as any));
     routerBuilder.emit(new NavigationEnd(5, '/x', '/x'));
     fixture.detectChanges();
     expect(loaderServiceMock.show).not.toHaveBeenCalled();

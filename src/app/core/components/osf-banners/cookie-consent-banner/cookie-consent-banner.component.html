@@ -5,13 +5,13 @@
         <div class="grid flex-column w-full">
           <div class="flex items-center align-items-start gap-2 font-medium">
             <osf-icon iconClass="fas fa-triangle-exclamation"></osf-icon>
-            {{ 'toast.cookie-consent.message' | translate }}
+            {{ 'toast.cookieConsent.message' | translate }}
           </div>
           <div class="row-fixed flex justify-content-end">
             <p-button
               class="btn-link-dark-blue"
               link
-              [label]="'toast.cookie-consent.accept' | translate"
+              [label]="'toast.cookieConsent.accept' | translate"
               (onClick)="acceptCookies()"
             />
           </div>

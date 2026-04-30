@@ -91,7 +91,7 @@
   <div class="flex gap-4 justify-content-end align-self-center md:align-self-end mt-3">
     @if (!isAuthorized()) {
       <p-button
-        [label]="'settings.addons.form.buttons.back' | translate"
+        [label]="'common.buttons.back' | translate"
         severity="info"
         class="w-10rem btn-full-width"
         (onClick)="handleBack()"
@@ -109,7 +109,7 @@
       ></p-button>
     } @else {
       <p-button
-        [label]="'settings.addons.form.buttons.cancel' | translate"
+        [label]="'common.buttons.cancel' | translate"
         severity="info"
         class="w-10rem btn-full-width"
         routerLink="/settings/addons"

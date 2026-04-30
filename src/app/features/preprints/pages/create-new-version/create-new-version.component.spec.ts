@@ -18,6 +18,10 @@ import { provideOSFCore } from '@testing/osf.testing.provider';
 import { BrandServiceMock, BrandServiceMockType } from '@testing/providers/brand-service.mock';
 import { BrowserTabServiceMock, BrowserTabServiceMockType } from '@testing/providers/browser-tab-service.mock';
 import { HeaderStyleServiceMock, HeaderStyleServiceMockType } from '@testing/providers/header-style-service.mock';
+import {
+  PreprintDraftDeletionServiceMock,
+  PreprintDraftDeletionServiceMockType,
+} from '@testing/providers/preprint-draft-deletion-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
@@ -27,8 +31,14 @@ import { ReviewStepComponent } from '../../components/stepper/review-step/review
 import { createNewVersionStepsConst } from '../../constants';
 import { PreprintSteps } from '../../enums';
 import { PreprintProviderDetails } from '../../models';
+import { PreprintDraftDeletionService } from '../../services/preprint-draft-deletion.service';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
+import {
+  DeletePreprint,
+  FetchPreprintById,
+  PreprintStepperSelectors,
+  ResetPreprintStepperState,
+} from '../../store/preprint-stepper';
 
 import { CreateNewVersionComponent } from './create-new-version.component';
 
@@ -40,6 +50,7 @@ describe('CreateNewVersionComponent', () => {
   let brandServiceMock: BrandServiceMockType;
   let headerStyleMock: HeaderStyleServiceMockType;
   let browserTabMock: BrowserTabServiceMockType;
+  let draftDeletionMock: PreprintDraftDeletionServiceMockType;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
   const mockProviderId = 'osf';
@@ -63,6 +74,7 @@ describe('CreateNewVersionComponent', () => {
     brandServiceMock = BrandServiceMock.simple();
     headerStyleMock = HeaderStyleServiceMock.simple();
     browserTabMock = BrowserTabServiceMock.simple();
+    draftDeletionMock = PreprintDraftDeletionServiceMock.simple();
 
     TestBed.configureTestingModule({
       imports: [CreateNewVersionComponent, ...MockComponents(StepperComponent, FileStepComponent, ReviewStepComponent)],
@@ -76,6 +88,12 @@ describe('CreateNewVersionComponent', () => {
         MockProvider(IS_WEB, of(true)),
         provideMockStore({ signals }),
       ],
+    });
+
+    TestBed.overrideComponent(CreateNewVersionComponent, {
+      set: {
+        providers: [{ provide: PreprintDraftDeletionService, useValue: draftDeletionMock }],
+      },
     });
 
     store = TestBed.inject(Store);
@@ -112,7 +130,7 @@ describe('CreateNewVersionComponent', () => {
     expect(browserTabMock.updateTabStyles).toHaveBeenCalledWith(mockProvider.faviconUrl, mockProvider.name);
   });
 
-  it('should reset services on destroy', () => {
+  it('should reset services, delegate destroy delete, and reset stepper state', () => {
     setup();
 
     component.ngOnDestroy();
@@ -120,6 +138,8 @@ describe('CreateNewVersionComponent', () => {
     expect(headerStyleMock.resetToDefaults).toHaveBeenCalled();
     expect(brandServiceMock.resetBranding).toHaveBeenCalled();
     expect(browserTabMock.resetToDefaults).toHaveBeenCalled();
+    expect(draftDeletionMock.deleteOnDestroyIfNeeded).toHaveBeenCalledWith(expect.any(Function));
+    expect(store.dispatch).toHaveBeenCalledWith(new DeletePreprint());
     expect(store.dispatch).toHaveBeenCalledWith(new ResetPreprintStepperState());
   });
 
@@ -141,16 +161,20 @@ describe('CreateNewVersionComponent', () => {
     expect(event.preventDefault).not.toHaveBeenCalled();
   });
 
-  it('should prevent deactivation when not submitted', () => {
+  it('should delegate canDeactivate to PreprintDraftDeletionService', () => {
     setup();
 
-    expect(component.canDeactivate()).toBe(false);
+    component.canDeactivate();
+
+    expect(draftDeletionMock.canDeactivate).toHaveBeenCalledWith(false);
   });
 
-  it('should allow deactivation when submitted', () => {
+  it('should pass submitted state to canDeactivate on PreprintDraftDeletionService', () => {
     setup({ selectorOverrides: [{ selector: PreprintStepperSelectors.hasBeenSubmitted, value: true }] });
 
-    expect(component.canDeactivate()).toBe(true);
+    component.canDeactivate();
+
+    expect(draftDeletionMock.canDeactivate).toHaveBeenCalledWith(true);
   });
 
   it('should ignore stepping forward via stepper', () => {
@@ -193,5 +217,26 @@ describe('CreateNewVersionComponent', () => {
     component.navigateBack();
 
     expect(routerMock.navigate).toHaveBeenCalledWith([mockPreprintId.split('_')[0]]);
+  });
+
+  it('should call confirmDeleteDraft on PreprintDraftDeletionService with my-preprints redirect', () => {
+    setup();
+
+    component.requestDeletePreprint();
+
+    expect(draftDeletionMock.confirmDeleteDraft).toHaveBeenCalledWith(
+      expect.objectContaining({
+        redirectUrl: '/my-preprints',
+        onDelete: expect.any(Function),
+        onReset: expect.any(Function),
+      })
+    );
+  });
+
+  it('should allow deactivation when draft deletion service reports deleted', () => {
+    setup();
+    draftDeletionMock.deleted = true;
+
+    expect(component.canDeactivate()).toBe(true);
   });
 });

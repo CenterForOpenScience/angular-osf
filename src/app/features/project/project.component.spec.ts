@@ -97,6 +97,7 @@ function setup(overrides: SetupOverrides = {}) {
     { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
     { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
     { selector: CurrentResourceSelectors.getCurrentResource, value: null },
+    { selector: CurrentResourceSelectors.hasNoPermissions, value: false },
   ];
 
   const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
@@ -230,13 +231,17 @@ describe('Component: Project', () => {
   });
 
   it('should send analytics on NavigationEnd', () => {
-    const { routerBuilder, analyticsService } = setup();
-
+    const mockResource = { id: 'project-1' };
+    const { routerBuilder, analyticsService } = setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.getCurrentResource, value: mockResource },
+        { selector: CurrentResourceSelectors.hasNoPermissions, value: true },
+      ],
+    });
     routerBuilder.emit(new NavigationEnd(1, '/project-1', '/project-1/overview'));
-
     expect(analyticsService.sendCountedUsageForRegistrationAndProjects).toHaveBeenCalledWith(
       '/project-1/overview',
-      null
+      mockResource
     );
   });
 

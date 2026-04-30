@@ -39,14 +39,14 @@
     }
 
     <div class="flex flex-column gap-2">
-      <h4>{{ 'files.detail.resourceMetadata.fields.title' | translate }}</h4>
+      <h4>{{ 'common.labels.title' | translate }}</h4>
 
       <span>{{ resourceMetadata()?.title }}</span>
     </div>
 
     @if (resourceMetadata()?.description) {
       <div class="flex flex-column gap-2">
-        <h4>{{ 'files.detail.resourceMetadata.fields.description' | translate }}</h4>
+        <h4>{{ 'common.labels.description' | translate }}</h4>
 
         <div>
           {{ resourceMetadata()?.description }}
@@ -76,7 +76,7 @@
 
     @if (resourceMetadata()?.dateCreated) {
       <div class="flex flex-column gap-2">
-        <h4>{{ 'files.detail.resourceMetadata.fields.dateCreated' | translate }}</h4>
+        <h4>{{ 'common.labels.dateCreated' | translate }}</h4>
 
         <div>
           {{ resourceMetadata()?.dateCreated | date: 'MMMM d, y' }}
@@ -86,7 +86,7 @@
 
     @if (resourceMetadata()?.dateModified) {
       <div class="flex flex-column gap-2">
-        <h4>{{ 'files.detail.resourceMetadata.fields.dateModified' | translate }}</h4>
+        <h4>{{ 'common.labels.dateModified' | translate }}</h4>
 
         <div>
           {{ resourceMetadata()?.dateModified | date: 'MMMM d, y' }}

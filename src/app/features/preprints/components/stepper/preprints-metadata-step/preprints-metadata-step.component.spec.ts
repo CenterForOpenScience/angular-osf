@@ -186,6 +186,21 @@ describe('PreprintsMetadataStepComponent', () => {
     expect(nextClickedSpy).toHaveBeenCalled();
   });
 
+  it('should default showDeleteButton to false', () => {
+    setup();
+
+    expect(component.showDeleteButton()).toBe(false);
+  });
+
+  it('should update showDeleteButton when input changes', () => {
+    setup();
+
+    fixture.componentRef.setInput('showDeleteButton', true);
+    fixture.detectChanges();
+
+    expect(component.showDeleteButton()).toBe(true);
+  });
+
   it('should dispatch save license from createLicense', () => {
     setup({ detectChanges: false });
     component.createLicense({ id: MOCK_LICENSE.id, licenseOptions: { year: '2024', copyrightHolders: 'A' } });
@@ -236,6 +251,15 @@ describe('PreprintsMetadataStepComponent', () => {
 
     expect(backClickedSpy).toHaveBeenCalled();
     expect(customConfirmationServiceMock.confirmContinue).not.toHaveBeenCalled();
+  });
+
+  it('should emit deleteClicked when deletePreprint is called', () => {
+    setup({ detectChanges: false });
+    const emitSpy = vi.spyOn(component.deleteClicked, 'emit');
+
+    component.deletePreprint();
+
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should request confirmation and emit on confirm when there are changes in backButtonClicked', () => {

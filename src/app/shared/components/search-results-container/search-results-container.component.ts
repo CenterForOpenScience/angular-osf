@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { searchSortingOptions } from '@osf/shared/constants/search-sort-options.const';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { DiscoverableFilter, FilterOption } from '@shared/models/search/discaverable-filter.model';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
 import { ResourceModel } from '@shared/models/search/resource.model';
 import { TabOption } from '@shared/models/tab-option.model';
 
@@ -69,9 +69,7 @@ export class SearchResultsContainerComponent {
   readonly searchSortingOptions = searchSortingOptions;
   readonly ResourceType = ResourceType;
 
-  readonly hasSelectedOptions = computed(() => {
-    return Object.values(this.selectedOptions()).length > 0;
-  });
+  readonly hasSelectedOptions = computed(() => Object.values(this.selectedOptions()).length > 0);
 
   readonly hasFilters = computed(() => this.filters().length > 0);
   filtersComponent = contentChild<TemplateRef<unknown>>('filtersComponent');

@@ -1,9 +1,10 @@
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
 
-import { DiscoverableFilter } from './discaverable-filter.model';
+import { DiscoverableFilter } from './discoverable-filter.model';
 
 export interface ResourceModel {
+  id?: string;
   absoluteUrl: string;
   resourceType: ResourceType;
   name?: string;
