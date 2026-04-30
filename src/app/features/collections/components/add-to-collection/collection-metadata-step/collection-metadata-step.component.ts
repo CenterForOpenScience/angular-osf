@@ -149,6 +149,7 @@ export class CollectionMetadataStepComponent {
     };
 
     this.collectionMetadataSaved.set(true);
+    this.metadataSaved.emit(this.collectionMetadataForm());
     this.cedarDataSaved.emit(cedarData);
     this.stepChange.emit(AddToCollectionSteps.Complete);
   }
@@ -207,7 +208,7 @@ export class CollectionMetadataStepComponent {
 
     effect(() => {
       const filterEntries = this.availableFilterEntries();
-      if (filterEntries.length && !this.isCedarMode()) {
+      if (filterEntries.length) {
         this.buildCollectionMetadataForm();
       }
     });
@@ -223,8 +224,7 @@ export class CollectionMetadataStepComponent {
         form.controls &&
         Object.keys(form.controls).length > 0 &&
         filterEntries.length > 0 &&
-        !alreadyPopulated &&
-        !this.isCedarMode()
+        !alreadyPopulated
       ) {
         this.populateFormFromSubmission(submission.submission);
         this.formPopulatedFromSubmission.set(true);
@@ -233,10 +233,8 @@ export class CollectionMetadataStepComponent {
 
     effect(() => {
       if (!this.collectionMetadataSaved() && this.stepperActiveValue() !== AddToCollectionSteps.CollectionMetadata) {
-        if (!this.isCedarMode()) {
-          this.collectionMetadataForm().reset();
-          this.formPopulatedFromSubmission.set(false);
-        }
+        this.collectionMetadataForm().reset();
+        this.formPopulatedFromSubmission.set(false);
       }
     });
   }
