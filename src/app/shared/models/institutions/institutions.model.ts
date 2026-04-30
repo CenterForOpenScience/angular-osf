@@ -16,6 +16,7 @@ export interface Institution {
   logoPath: string;
   userMetricsUrl?: string;
   linkToExternalReportsArchive?: string;
+  sso_availability: string;
 }
 
 export interface InstitutionAssets {

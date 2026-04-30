@@ -68,6 +68,7 @@ describe('AffiliatedInstitutionSelectComponent', () => {
       },
       institutionalRequestAccessEnabled: false,
       logoPath: '/logos/unavailable.png',
+      sso_availability: 'Unavailable',
     };
 
     fixture.componentRef.setInput('institutions', mockInstitutions);
@@ -134,6 +135,7 @@ describe('AffiliatedInstitutionSelectComponent', () => {
       },
       institutionalRequestAccessEnabled: false,
       logoPath: '/logos/unavailable.png',
+      sso_availability: 'Unavailable',
     };
 
     fixture.componentRef.setInput('institutions', mockInstitutions);
@@ -181,6 +183,7 @@ describe('AffiliatedInstitutionSelectComponent', () => {
       },
       institutionalRequestAccessEnabled: false,
       logoPath: '/logos/unavailable.png',
+      sso_availability: 'Unavailable',
     };
 
     fixture.componentRef.setInput('institutions', mockInstitutions);
