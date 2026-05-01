@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { FilesService } from '@osf/shared/services/files.service';
 
-import { CreateFolder, GetFiles, GetRootFolders } from '../registries.actions';
+import { CreateFolder, DeleteDraftRegistrationFiles, GetFiles, GetRootFolders } from '../registries.actions';
 import { RegistriesStateModel } from '../registries.model';
 
 @Injectable()
@@ -68,6 +68,15 @@ export class FilesHandlers {
 
     return this.filesService
       .createFolder(action.newFolderLink, action.folderName)
+      .pipe(finalize(() => ctx.patchState({ files: { ...state.files, isLoading: false, error: null } })));
+  }
+
+  deleteDraftRegistrationFiles(ctx: StateContext<RegistriesStateModel>, action: DeleteDraftRegistrationFiles) {
+    const state = ctx.getState();
+    ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
+
+    return this.filesService
+      .deleteEntry(action.link)
       .pipe(finalize(() => ctx.patchState({ files: { ...state.files, isLoading: false, error: null } })));
   }
 }

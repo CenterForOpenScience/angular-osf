@@ -132,11 +132,12 @@ export class ContributorsComponent implements OnInit, OnDestroy {
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  readonly isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
+  readonly pageSize = select(ContributorsSelectors.getContributorsPageSize);
+  readonly hasMoreContributors = select(ContributorsSelectors.hasMoreContributors);
   readonly hasAdminAccess = select(CurrentResourceSelectors.hasResourceAdminAccess);
   readonly resourceAccessRequestEnabled = select(CurrentResourceSelectors.resourceAccessRequestEnabled);
   readonly currentUser = select(UserSelectors.getCurrentUser);
-  pageSize = select(ContributorsSelectors.getContributorsPageSize);
-  isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,

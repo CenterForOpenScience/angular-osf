@@ -174,19 +174,19 @@
         </td>
       </tr>
     }
+  </ng-template>
 
-    @if (showLoadMore() && index === contributors().length - 1) {
+  <ng-template #footer>
+    @if (showLoadMore()) {
       <tr>
-        <td colspan="8" class="text-center">
-          <div class="flex justify-content-center">
-            <p-button
-              class="w-full"
-              styleClass="w-full"
-              (onClick)="loadMoreItems()"
-              [label]="'common.buttons.seeMore' | translate"
-              [loading]="isLoadingMore()"
-            />
-          </div>
+        <td colspan="8">
+          <p-button
+            class="w-full"
+            styleClass="w-full"
+            (onClick)="loadMoreItems()"
+            [label]="'common.buttons.seeMore' | translate"
+            [loading]="isLoadingMore()"
+          />
         </td>
       </tr>
     }

@@ -31,7 +31,7 @@
               <p-button
                 class="w-full"
                 styleClass="w-full"
-                (onClick)="updateRegistration.emit(registry()?.id!)"
+                (onClick)="startUpdateRegistration()"
                 [label]="'common.buttons.update' | translate"
                 [loading]="isSubmitting()"
               />

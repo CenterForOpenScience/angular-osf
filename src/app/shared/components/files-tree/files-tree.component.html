@@ -95,6 +95,18 @@
                     </osf-file-menu>
                   </div>
                 }
+                @if (isDraftResource()) {
+                  <p-button
+                    icon="fas fa-trash"
+                    severity="danger"
+                    text
+                    rounded
+                    [pTooltip]="'common.buttons.delete' | translate"
+                    tooltipPosition="top"
+                    (onClick)="deleteEntry(file)"
+                    osfStopPropagation
+                  />
+                }
               </div>
             }
           </ng-template>

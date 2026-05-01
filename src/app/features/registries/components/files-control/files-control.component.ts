@@ -25,6 +25,7 @@ import { FileFolderModel } from '@shared/models/files/file-folder.model';
 
 import {
   CreateFolder,
+  DeleteDraftRegistrationFiles,
   GetFiles,
   GetRootFolders,
   RegistriesSelectors,
@@ -54,6 +55,8 @@ export class FilesControlComponent {
   provider = input.required<string>();
   filesViewOnly = input<boolean>(false);
   attachFile = output<FileModel>();
+  removeFromAttachedFiles = output<string>();
+  openFile = output<FileModel>();
 
   private readonly filesService = inject(FilesService);
   private readonly customDialogService = inject(CustomDialogService);
@@ -78,11 +81,20 @@ export class FilesControlComponent {
     setFilesIsLoading: SetFilesIsLoading,
     setCurrentFolder: SetRegistriesCurrentFolder,
     getRootFolders: GetRootFolders,
+    deleteDraftRegistrationFiles: DeleteDraftRegistrationFiles,
   });
 
   constructor() {
     this.setupRootFoldersLoader();
     this.setupCurrentFolderWatcher();
+  }
+
+  deleteEntry(file: FileModel): void {
+    this.actions.deleteDraftRegistrationFiles(file?.links.delete).subscribe(() => {
+      this.toastService.showSuccess('files.dialogs.deleteFile.success');
+      this.refreshFilesList();
+      this.removeFromAttachedFiles.emit(file.id);
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -151,6 +163,11 @@ export class FilesControlComponent {
           }
         }
       });
+  }
+
+  onEntryFileClicked(file: FileModel): void {
+    this.selectFile(file);
+    this.openFile.emit(file);
   }
 
   selectFile(file: FileModel): void {

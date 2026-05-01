@@ -3,6 +3,8 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PrimeTemplate, TreeNode } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 import { Tree, TreeLazyLoadEvent, TreeNodeDropEvent, TreeNodeSelectEvent } from 'primeng/tree';
 
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -66,6 +68,8 @@ type FileTreeNode = FileModel & TreeNode;
     LoadingSpinnerComponent,
     FileMenuComponent,
     StopPropagationDirective,
+    Button,
+    Tooltip,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -101,12 +105,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   selectedFiles = input<FileModel[]>([]);
   scrollHeight = input<string>('300px');
   selectionMode = input<'multiple' | null>('multiple');
+  isDraftResource = input<boolean>(false);
 
   entryFileClicked = output<FileModel>();
   uploadFilesConfirmed = output<File[] | File>();
   setCurrentFolder = output<FileFolderModel>();
   setMoveDialogCurrentFolder = output<FileFolderModel>();
-  deleteEntryAction = output<string>();
+  deleteEntryAction = output<FileModel>();
   renameEntryAction = output<{ newName: string; link: string }>();
   loadFiles = output<{ link: string; page: number }>();
   selectFile = output<FileModel>();
@@ -344,12 +349,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       messageKey:
         file.kind === FileKind.Folder ? 'files.dialogs.deleteFolder.message' : 'files.dialogs.deleteFile.message',
       acceptLabelKey: 'common.buttons.remove',
-      onConfirm: () => this.confirmDeleteEntry(file.links.delete),
+      onConfirm: () => this.confirmDeleteEntry(file),
     });
   }
 
-  confirmDeleteEntry(link: string): void {
-    this.deleteEntryAction.emit(link);
+  confirmDeleteEntry(file: FileModel): void {
+    this.deleteEntryAction.emit(file);
   }
 
   confirmRename(file: FileModel): void {

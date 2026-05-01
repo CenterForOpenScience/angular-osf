@@ -228,4 +228,19 @@ describe('FilesControlComponent', () => {
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(SetFilesIsLoading));
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetFiles));
   });
+
+  it('should delete entry, show success toast, refresh files, and emit removal', () => {
+    const file = { id: 'file-1', links: { delete: '/delete-link' } } as FileModel;
+    const deleteSpy = vi.spyOn(component['actions'], 'deleteDraftRegistrationFiles').mockReturnValue(of(void 0));
+    const refreshSpy = vi.spyOn(component as any, 'refreshFilesList');
+    const emitSpy = vi.spyOn(component.removeFromAttachedFiles, 'emit');
+    const toastSpy = vi.spyOn(toastService, 'showSuccess');
+
+    component.deleteEntry(file);
+
+    expect(deleteSpy).toHaveBeenCalledWith('/delete-link');
+    expect(toastSpy).toHaveBeenCalledWith('files.dialogs.deleteFile.success');
+    expect(refreshSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith('file-1');
+  });
 });

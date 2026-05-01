@@ -66,6 +66,7 @@ export class RegistriesContributorsComponent implements OnInit, OnDestroy {
 
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
+  hasMoreContributors = select(ContributorsSelectors.hasMoreContributors);
   isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
   pageSize = select(ContributorsSelectors.getContributorsPageSize);
 

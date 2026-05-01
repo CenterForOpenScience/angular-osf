@@ -23,6 +23,7 @@ import {
   CreateFolder,
   CreateSchemaResponse,
   DeleteDraft,
+  DeleteDraftRegistrationFiles,
   DeleteSchemaResponse,
   FetchAllSchemaResponses,
   FetchDraft,
@@ -349,6 +350,11 @@ export class RegistriesState {
   @Action(GetFiles)
   getFiles(ctx: StateContext<RegistriesStateModel>, { filesLink, page }: GetFiles) {
     return this.filesHandlers.getProjectFiles(ctx, { filesLink, page });
+  }
+
+  @Action(DeleteDraftRegistrationFiles)
+  deleteDraftRegistrationFiles(ctx: StateContext<RegistriesStateModel>, action: DeleteDraftRegistrationFiles) {
+    return this.filesHandlers.deleteDraftRegistrationFiles(ctx, action);
   }
 
   @Action(GetRootFolders)

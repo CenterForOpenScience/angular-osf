@@ -36,6 +36,7 @@ const MOCK_PROVIDER: RegistryProviderDetails = {
   iri: 'http://iri.example.com',
   reviewsWorkflow: 'pre-moderation',
   allowSubmissions: true,
+  allowUpdates: true,
 };
 
 describe('RegistriesProviderSearchComponent', () => {

@@ -42,6 +42,7 @@
           [(contributors)]="projectContributors"
           [tableParams]="tableParams()"
           [isLoading]="isContributorsLoading()"
+          [showLoadMore]="hasMoreContributors()"
           [isLoadingMore]="isLoadingMore()"
           (remove)="handleRemoveContributor($event)"
           (loadMore)="loadMoreContributors()"

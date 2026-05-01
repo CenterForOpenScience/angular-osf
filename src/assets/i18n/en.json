@@ -615,7 +615,8 @@
           "resourceLanguage": "Resource Language",
           "resourceType": "Resource Type"
         },
-        "title": "File Metadata"
+        "title": "File Metadata",
+        "previewNotAvailable": "File or Registration metadata not available in preview mode."
       },
       "keywords": {
         "title": "Keywords"
@@ -2822,6 +2823,10 @@
         "successEdit": "Token successfully updated."
       }
     }
+  },
+  "maintenance": {
+    "message": "Please come back later.",
+    "title": "The OSF is currently down for scheduled maintenance."
   },
   "shared": {
     "affiliatedInstitutions": {

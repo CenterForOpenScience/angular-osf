@@ -183,6 +183,11 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: ':id/files/:fileGuid/preview',
+        loadComponent: () =>
+          import('./features/files/pages/file-preview/file-preview.component').then((m) => m.FilePreviewComponent),
+      },
+      {
         path: 'spam-content',
         loadComponent: () =>
           import('./core/components/resource-is-spammed/resource-is-spammed.component').then(

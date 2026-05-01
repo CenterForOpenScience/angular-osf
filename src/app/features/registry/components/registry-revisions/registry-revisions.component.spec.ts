@@ -168,6 +168,28 @@ describe('RegistryRevisionsComponent', () => {
     expect(spy).toHaveBeenCalledWith(1);
   });
 
+  it('should emit updateRegistration with registry id on startUpdateRegistration', () => {
+    const { component } = setup();
+    const spy = vi.fn();
+    component.updateRegistration.subscribe(spy);
+
+    component.startUpdateRegistration();
+
+    expect(spy).toHaveBeenCalledWith(MOCK_REGISTRY.id);
+  });
+
+  it('should not emit updateRegistration when registry id is missing on startUpdateRegistration', () => {
+    const { fixture, component } = setup();
+    const spy = vi.fn();
+    component.updateRegistration.subscribe(spy);
+    fixture.componentRef.setInput('registry', { ...MOCK_REGISTRY, id: '' });
+    fixture.detectChanges();
+
+    component.startUpdateRegistration();
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+
   it('should emit continueUpdate on continueUpdateHandler', () => {
     const { component } = setup();
     const spy = vi.fn();

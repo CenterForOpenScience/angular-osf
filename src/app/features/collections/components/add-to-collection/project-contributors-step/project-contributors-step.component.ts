@@ -60,15 +60,16 @@ export class ProjectContributorsStepComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly router = inject(Router);
 
+  readonly currentUser = select(UserSelectors.getCurrentUser);
   readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   readonly contributorsTotalCount = select(ContributorsSelectors.getContributorsTotalCount);
   readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
-  readonly currentUser = select(UserSelectors.getCurrentUser);
-  isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
+  readonly isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
+  readonly hasMoreContributors = select(ContributorsSelectors.hasMoreContributors);
+  readonly pageSize = select(ContributorsSelectors.getContributorsPageSize);
 
   private initialContributors = select(ContributorsSelectors.getContributors);
   readonly projectContributors = signal<ContributorModel[]>([]);
-  pageSize = select(ContributorsSelectors.getContributorsPageSize);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,

@@ -35,6 +35,7 @@ export class RegistrationProviderMapper {
       iri: response.links.iri,
       reviewsWorkflow: response.attributes.reviews_workflow,
       allowSubmissions: response.attributes.allow_submissions,
+      allowUpdates: response.attributes.allow_updates,
     };
   }
 }
