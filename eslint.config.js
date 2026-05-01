@@ -41,6 +41,14 @@ module.exports = defineConfig(
           style: 'kebab-case',
         },
       ],
+      '@angular-eslint/prefer-signals': [
+        'error',
+        {
+          preferQuerySignals: true,
+          preferReadonlySignalProperties: false,
+        },
+      ],
+      '@angular-eslint/prefer-output-emitter-ref': 'error',
       'no-duplicate-imports': 'error',
       'simple-import-sort/imports': [
         'error',
