@@ -15,7 +15,6 @@ import { ContributorPermission } from '@osf/shared/enums/contributors/contributo
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
-import { SelectOption } from '@shared/models/select-option.model';
 import { TableParameters } from '@shared/models/table-parameters.model';
 
 import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
@@ -61,10 +60,10 @@ export class ContributorsTableComponent {
 
   customDialogService = inject(CustomDialogService);
 
-  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
+  readonly permissionsOptions = PERMISSION_OPTIONS;
   readonly ContributorPermission = ContributorPermission;
 
-  skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);
+  skeletonData = Array.from({ length: 3 }, () => ({}) as ContributorModel);
 
   isProject = computed(() => this.resourceType() === ResourceType.Project);
 
