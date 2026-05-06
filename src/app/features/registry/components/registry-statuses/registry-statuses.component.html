@@ -9,9 +9,7 @@
         <h3 class="font-normal">{{ statusTranslations().short | translate }}</h3>
         <p>
           <span>
-            {{
-              statusTranslations().long | translate: { embargoEndDate: embargoEndDate(), email: supportEmail }
-            }}
+            {{ statusTranslations().long | translate: { embargoEndDate: embargoEndDate(), email: supportEmail } }}
           </span>
 
           @if (isAccepted()) {
