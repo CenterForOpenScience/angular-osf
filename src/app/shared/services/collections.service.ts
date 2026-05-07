@@ -41,6 +41,7 @@ import { ReviewActionPayloadJsonApi } from '../models/review-action/review-actio
 import { SetTotalSubmissions } from '../stores/collections/collections.actions';
 
 import { JsonApiService } from './json-api.service';
+import { MetadataService } from './metadata.service';
 
 @Injectable({
   providedIn: 'root',
@@ -48,6 +49,7 @@ import { JsonApiService } from './json-api.service';
 export class CollectionsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly environment = inject(ENVIRONMENT);
+  private readonly metadataService = inject(MetadataService);
 
   get apiUrl() {
     return `${this.environment.apiDomainUrl}/v2`;
@@ -56,11 +58,22 @@ export class CollectionsService {
   private actions = createDispatchMap({ setTotalSubmissions: SetTotalSubmissions });
 
   getCollectionProvider(collectionName: string): Observable<CollectionProvider> {
-    const url = `${this.apiUrl}/providers/collections/${collectionName}/?embed=brand,required_metadata_template`;
+    const url = `${this.apiUrl}/providers/collections/${collectionName}/?embed=brand`;
 
-    return this.jsonApiService
-      .get<JsonApiResponse<CollectionProviderResponseJsonApi, null>>(url)
-      .pipe(map((response) => CollectionsMapper.fromGetCollectionProviderResponse(response.data)));
+    return this.jsonApiService.get<JsonApiResponse<CollectionProviderResponseJsonApi, null>>(url).pipe(
+      switchMap((response) => {
+        const provider = CollectionsMapper.fromGetCollectionProviderResponse(response.data);
+        const templateId = response.data.relationships.required_metadata_template?.data?.id;
+
+        if (!templateId) {
+          return of(provider);
+        }
+
+        return this.metadataService
+          .getCedarMetadataTemplateDetail(templateId)
+          .pipe(map((template) => ({ ...provider, requiredMetadataTemplate: template })));
+      })
+    );
   }
 
   getCollectionDetails(collectionId: string): Observable<CollectionDetails> {

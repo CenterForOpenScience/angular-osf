@@ -207,7 +207,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
     const payload = {
       collectionId: this.primaryCollectionId() || '',
       projectId: this.selectedProject()?.id || '',
-      collectionMetadata: this.isCedarMode() ? {} : this.collectionMetadataForm.value || {},
+      collectionMetadata: this.collectionMetadataForm.value || {},
       userId: this.currentUser()?.id || '',
     };
 
@@ -234,15 +234,17 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
           },
         });
     } else {
-      this.customDialogService
-        .open(AddToCollectionConfirmationDialogComponent, {
-          header: 'collections.addToCollection.confirmationDialogHeader',
-          width: '500px',
-          data: { payload, project: this.selectedProject() },
-        })
-        .onClose.pipe(
-          filter((res) => !!res),
-          switchMap(() => this.saveCedarRecordIfNeeded()),
+      this.saveCedarRecordIfNeeded()
+        .pipe(
+          switchMap(() =>
+            this.customDialogService
+              .open(AddToCollectionConfirmationDialogComponent, {
+                header: 'collections.addToCollection.confirmationDialogHeader',
+                width: '500px',
+                data: { payload, project: this.selectedProject() },
+              })
+              .onClose.pipe(filter((res) => !!res))
+          ),
           takeUntilDestroyed(this.destroyRef)
         )
         .subscribe({

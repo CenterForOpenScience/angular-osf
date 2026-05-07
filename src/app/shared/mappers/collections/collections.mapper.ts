@@ -71,7 +71,7 @@ export class CollectionsMapper {
             backgroundColor: response.embeds.brand.data.attributes.background_color,
           }
         : null,
-      requiredMetadataTemplate: response.embeds.required_metadata_template?.data ?? null,
+      requiredMetadataTemplate: null,
     };
   }
 
