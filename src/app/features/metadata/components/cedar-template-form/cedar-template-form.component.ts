@@ -129,7 +129,10 @@ export class CedarTemplateFormComponent {
       const structuredMetadata = CedarMetadataHelper.buildStructuredMetadata(metadata);
       this.formData.set(structuredMetadata);
     } else {
-      this.formData.set(CedarMetadataHelper.buildEmptyMetadata());
+      this.formData.set({
+        ...CedarMetadataHelper.buildCedarSystemMetadata(template),
+        ...CedarMetadataHelper.buildEmptyMetadata(),
+      });
     }
   }
 

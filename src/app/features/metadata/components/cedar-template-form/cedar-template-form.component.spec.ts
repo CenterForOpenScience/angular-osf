@@ -3,8 +3,6 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
-
 import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks/cedar-metadata-data-template-json-api.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
@@ -79,12 +77,19 @@ describe('CedarTemplateFormComponent', () => {
     expect(emitSpy).toHaveBeenCalled();
   });
 
-  it('should initialize form data with empty metadata when no existing record', () => {
+  it('should initialize form data with system fields and empty metadata when no existing record', () => {
     fixture.componentRef.setInput('existingRecord', null);
     fixture.detectChanges();
 
-    const expectedEmptyMetadata = CedarMetadataHelper.buildEmptyMetadata();
-    expect(component.formData()).toEqual(expectedEmptyMetadata);
+    const formData = component.formData();
+    expect(formData['@id']).toBe('');
+    expect(formData['schema:isBasedOn']).toBe(mockTemplate.attributes.template['@id']);
+    expect(formData['schema:name']).toBe('');
+    expect(formData['schema:description']).toBe('');
+    expect(formData['pav:createdBy']).toBe('');
+    expect(formData['oslc:modifiedBy']).toBe('');
+    expect(formData['pav:createdOn']).toBeDefined();
+    expect(formData['pav:lastUpdatedOn']).toBeDefined();
   });
 
   it('should handle cedar change event with undefined currentMetadata', () => {

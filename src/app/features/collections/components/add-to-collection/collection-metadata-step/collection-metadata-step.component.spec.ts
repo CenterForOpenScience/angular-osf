@@ -136,14 +136,28 @@ describe('CollectionMetadataStepComponent', () => {
       expect(component.cedarTemplate()).toEqual(MOCK_CEDAR_TEMPLATE);
     });
 
-    it('should handle discard changes in CEDAR mode', () => {
+    it('should initialize cedarFormData with CEDAR system fields when template is available and no existing record', () => {
+      const formData = component.cedarFormData();
+      expect(formData['@id']).toBe('');
+      expect(formData['schema:isBasedOn']).toBe(MOCK_CEDAR_TEMPLATE.attributes.template['@id']);
+      expect(formData['schema:name']).toBe('');
+      expect(formData['schema:description']).toBe('');
+      expect(formData['pav:createdBy']).toBe('');
+      expect(formData['oslc:modifiedBy']).toBe('');
+      expect(typeof formData['pav:createdOn']).toBe('string');
+      expect(typeof formData['pav:lastUpdatedOn']).toBe('string');
+    });
+
+    it('should handle discard changes in CEDAR mode with no existing record', () => {
       component.cedarFormData.set({ field: 'value' });
       component.collectionMetadataSaved.set(true);
 
       component.handleDiscardChanges();
 
       expect(component.collectionMetadataSaved()).toBe(false);
-      expect(component.cedarFormData()).toEqual({});
+      const formData = component.cedarFormData();
+      expect(formData['@id']).toBe('');
+      expect(formData['schema:isBasedOn']).toBe(MOCK_CEDAR_TEMPLATE.attributes.template['@id']);
     });
 
     it('should handle discard changes with existing record in CEDAR mode', () => {

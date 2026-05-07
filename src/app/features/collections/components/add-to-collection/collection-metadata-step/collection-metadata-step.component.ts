@@ -27,6 +27,7 @@ import { AddToCollectionSteps, CollectionFilterType } from '@osf/features/collec
 import { CollectionFilterEntry } from '@osf/features/collections/models/collection-filter-entry.model';
 import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection';
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
+import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
 import {
   CedarEditorElement,
   CedarMetadataDataTemplateJsonApi,
@@ -99,9 +100,14 @@ export class CollectionMetadataStepComponent {
   handleDiscardChanges() {
     if (this.isCedarMode()) {
       const record = this.existingCedarRecord();
-      this.cedarFormData.set(
-        record?.attributes?.metadata ? (record.attributes.metadata as Record<string, unknown>) : {}
-      );
+      const template = this.cedarTemplate();
+      if (record?.attributes?.metadata) {
+        this.cedarFormData.set(record.attributes.metadata as Record<string, unknown>);
+      } else if (template?.attributes?.template) {
+        this.cedarFormData.set(CedarMetadataHelper.buildCedarSystemMetadata(template.attributes.template));
+      } else {
+        this.cedarFormData.set({});
+      }
       const editor = this.cedarEditor()?.nativeElement;
       if (editor) {
         editor.instanceObject = this.cedarFormData();
@@ -135,15 +141,16 @@ export class CollectionMetadataStepComponent {
     const template = this.cedarTemplate();
     if (!editor || !template) return;
 
-    const currentMetadata = editor.currentMetadata;
+    const currentMetadata = editor.currentMetadata as Record<string, unknown>;
     const isValid = !!editor.dataQualityReport?.isValid;
 
-    if (currentMetadata) {
-      this.cedarFormData.set(currentMetadata as Record<string, unknown>);
-    }
+    const systemFields = CedarMetadataHelper.buildCedarSystemMetadata(template.attributes.template);
+    const enrichedMetadata = { ...systemFields, ...(currentMetadata ?? {}) };
+
+    this.cedarFormData.set(enrichedMetadata);
 
     const cedarData: CedarRecordDataBinding = {
-      data: currentMetadata as CedarRecordDataBinding['data'],
+      data: enrichedMetadata as CedarRecordDataBinding['data'],
       id: template.id,
       isPublished: isValid,
     };
@@ -196,6 +203,7 @@ export class CollectionMetadataStepComponent {
 
     effect(() => {
       const record = this.existingCedarRecord();
+      const template = this.cedarTemplate();
       if (record?.attributes?.metadata) {
         const metadata = record.attributes.metadata as Record<string, unknown>;
         this.cedarFormData.set(metadata);
@@ -203,6 +211,8 @@ export class CollectionMetadataStepComponent {
         if (editor) editor.instanceObject = metadata;
         const viewer = this.cedarViewer()?.nativeElement;
         if (viewer) viewer.instanceObject = metadata;
+      } else if (template?.attributes?.template) {
+        this.cedarFormData.set(CedarMetadataHelper.buildCedarSystemMetadata(template.attributes.template));
       }
     });
 

@@ -1,3 +1,5 @@
+import { CedarTemplate } from '../models';
+
 export class CedarMetadataHelper {
   static ensureProperStructure(items: unknown): Record<string, unknown>[] {
     if (!Array.isArray(items)) return [];
@@ -36,6 +38,21 @@ export class CedarMetadataHelper {
     }
 
     return fixedMetadata;
+  }
+
+  static buildCedarSystemMetadata(template: CedarTemplate): Record<string, unknown> {
+    const now = new Date().toISOString();
+    return {
+      '@context': template['@context'] ?? {},
+      '@id': '',
+      'schema:isBasedOn': template['@id'] ?? '',
+      'schema:name': '',
+      'schema:description': '',
+      'pav:createdOn': now,
+      'pav:createdBy': '',
+      'pav:lastUpdatedOn': now,
+      'oslc:modifiedBy': '',
+    };
   }
 
   static buildEmptyMetadata(): Record<string, unknown> {
