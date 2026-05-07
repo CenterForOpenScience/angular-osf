@@ -2,6 +2,11 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.9.2 (2026-05-06)
+===================
+
+* Hotfix to avoid errors on creating preprint versions
+
 26.9.1 (2026-04-28)
 ===================
 

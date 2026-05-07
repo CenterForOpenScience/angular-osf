@@ -186,7 +186,9 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     const preprint = this.preprint();
     if (!preprint) return false;
 
-    return this.hasAdminAccess() && preprint.datePublished && preprint.isLatestVersion;
+    const preprintIsRejected = preprint.reviewsState === ReviewsState.Rejected;
+
+    return this.hasAdminAccess() && (preprint.datePublished || preprintIsRejected) && preprint.isLatestVersion;
   });
 
   editButtonVisible = computed(() => {
