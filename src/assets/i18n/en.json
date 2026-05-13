@@ -2431,6 +2431,7 @@
       "common": {
         "buttons": {
           "deactivate": "Deactivate",
+          "configure": "Configure",
           "enable": "Enable",
           "request": "Request",
           "undo": "Undo"
