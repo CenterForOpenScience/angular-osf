@@ -55,7 +55,7 @@ export class TwoFactorAuthComponent {
     this.customConfirmationService.confirmAccept({
       headerKey: 'settings.accountSettings.twoFactorAuth.configure.title',
       messageKey: 'settings.accountSettings.twoFactorAuth.configure.description',
-      acceptLabelKey: 'settings.accountSettings.common.buttons.configure',
+      acceptLabelKey: 'common.buttons.configure',
       onConfirm: () => {
         this.loaderService.show();
         this.actions.enableTwoFactorAuth().subscribe(() => this.loaderService.hide());

@@ -89,7 +89,7 @@ describe('TwoFactorAuthComponent', () => {
     expect(confirmationService.confirmAccept).toHaveBeenCalledWith({
       headerKey: 'settings.accountSettings.twoFactorAuth.configure.title',
       messageKey: 'settings.accountSettings.twoFactorAuth.configure.description',
-      acceptLabelKey: 'settings.accountSettings.common.buttons.configure',
+      acceptLabelKey: 'common.buttons.configure',
       onConfirm: expect.any(Function),
     });
 
