@@ -1,3 +1,4 @@
+import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 
 import { BrandDataJsonApi } from '../brand/brand.json-api.model';
@@ -9,14 +10,13 @@ import { UserDataErrorResponseJsonApi } from '../user/user-json-api.model';
 export interface CollectionProviderResponseJsonApi {
   id: string;
   type: string;
-  links: {
-    iri: string;
-    self: string;
-  };
   attributes: CollectionsProviderAttributesJsonApi;
   embeds: {
     brand: {
       data?: BrandDataJsonApi;
+    };
+    required_metadata_template?: {
+      data?: CedarMetadataDataTemplateJsonApi | null;
     };
   };
   relationships: {
@@ -25,12 +25,6 @@ export interface CollectionProviderResponseJsonApi {
         id: string;
         type: string;
       };
-    };
-    required_metadata_template?: {
-      data?: {
-        id: string;
-        type: string;
-      } | null;
     };
   };
 }

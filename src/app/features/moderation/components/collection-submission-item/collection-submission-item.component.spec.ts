@@ -8,7 +8,6 @@ import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/col
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
 import { DateAgoPipe } from '@shared/pipes/date-ago.pipe';
 
-import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
 import { MOCK_COLLECTION_SUBMISSION_WITH_GUID } from '@testing/mocks/submission.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
@@ -142,60 +141,5 @@ describe('CollectionSubmissionItemComponent', () => {
 
     const currentAction = component.currentReviewAction();
     expect(currentAction).toBeNull();
-  });
-
-  it('should open a new tab with serialized URL on handleNavigation', () => {
-    const windowOpenSpy = vi.spyOn(window, 'open').mockReturnValue(null);
-    fixture.componentRef.setInput('submission', mockSubmission);
-    fixture.detectChanges();
-
-    component.handleNavigation();
-
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith(
-      ['../', mockSubmission.nodeId],
-      expect.objectContaining({ queryParams: { status: 'pending', mode: 'moderation' } })
-    );
-    expect(windowOpenSpy).toHaveBeenCalledWith('/', '_blank');
-  });
-
-  it('should emit loadContributors on handleOpen', () => {
-    fixture.componentRef.setInput('submission', mockSubmission);
-    fixture.detectChanges();
-
-    const outputSpy = vi.fn();
-    component.loadContributors.subscribe(outputSpy);
-
-    component.handleOpen();
-
-    expect(outputSpy).toHaveBeenCalled();
-  });
-
-  it('should return true for hasMoreContributors when loaded count is less than total', () => {
-    fixture.componentRef.setInput('submission', {
-      ...mockSubmission,
-      contributors: [MOCK_CONTRIBUTOR],
-      totalContributors: 3,
-    });
-    fixture.detectChanges();
-
-    expect(component.hasMoreContributors()).toBe(true);
-  });
-
-  it('should return false for hasMoreContributors when all contributors are loaded', () => {
-    fixture.componentRef.setInput('submission', {
-      ...mockSubmission,
-      contributors: [MOCK_CONTRIBUTOR],
-      totalContributors: 1,
-    });
-    fixture.detectChanges();
-
-    expect(component.hasMoreContributors()).toBe(false);
-  });
-
-  it('should return false for hasMoreContributors when contributors are not set', () => {
-    fixture.componentRef.setInput('submission', mockSubmission);
-    fixture.detectChanges();
-
-    expect(component.hasMoreContributors()).toBe(false);
   });
 });

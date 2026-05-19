@@ -6,7 +6,6 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { CedarRecordsMapper, MetadataMapper, RorMapper } from '@osf/features/metadata/mappers';
 import {
-  CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
   CedarMetadataTemplateJsonApi,
@@ -22,7 +21,6 @@ import {
 } from '@osf/features/metadata/models';
 
 import { ResourceType } from '../enums/resource-type.enum';
-import { JsonApiResponse } from '../models/common/json-api.model';
 import { IdentifierModel } from '../models/identifiers/identifier.model';
 import { LicenseOptions } from '../models/license/license.model';
 import { BaseNodeAttributesJsonApi } from '../models/nodes/base-node-attributes-json-api.model';
@@ -102,14 +100,6 @@ export class MetadataService {
     return this.jsonApiService.get<CedarMetadataTemplateJsonApi>(
       url || `${this.apiDomainUrl}/_/cedar_metadata_templates/`
     );
-  }
-
-  getCedarMetadataTemplateDetail(templateId: string): Observable<CedarMetadataDataTemplateJsonApi> {
-    return this.jsonApiService
-      .get<
-        JsonApiResponse<CedarMetadataDataTemplateJsonApi, null>
-      >(`${this.apiDomainUrl}/_/cedar_metadata_templates/${templateId}/`)
-      .pipe(map((response) => response.data));
   }
 
   getMetadataCedarRecords(

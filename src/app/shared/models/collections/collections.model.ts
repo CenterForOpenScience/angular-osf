@@ -8,7 +8,6 @@ import { ProjectModel } from '../projects/projects.model';
 import { BaseProviderModel } from '../provider/provider.model';
 
 export interface CollectionProvider extends BaseProviderModel {
-  iri?: string;
   assets: {
     style?: string;
     squareColorTransparent?: string;

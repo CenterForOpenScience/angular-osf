@@ -176,10 +176,7 @@ export class CedarTemplateFormComponent {
   onSubmit() {
     const editor = this.cedarEditor()?.nativeElement;
     if (editor && typeof editor.currentMetadata !== 'undefined') {
-      const cleanedData = CedarMetadataHelper.cleanMetadataForSubmission(
-        editor.currentMetadata as Record<string, unknown>
-      );
-      const finalData = { data: cleanedData, id: this.template().id, isPublished: this.isValid };
+      const finalData = { data: editor.currentMetadata, id: this.template().id, isPublished: this.isValid };
       this.formData.set(finalData);
       this.emitData.emit(finalData as CedarRecordDataBinding);
     }
