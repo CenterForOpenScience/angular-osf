@@ -94,6 +94,16 @@ describe('GlobalSearchState', () => {
       expect(mockGetFilterOptions).not.toHaveBeenCalled();
     });
 
+    it('should skip the API call for a CEDAR filter found only in extraFilters (before first fetch)', () => {
+      const { store, mockGetFilterOptions } = setup();
+      store.dispatch(new SetExtraFilters([CEDAR_FILTER]));
+      // Intentionally no FetchResources — state.filters is still empty
+
+      store.dispatch(new LoadFilterOptions(CEDAR_FILTER.key));
+
+      expect(mockGetFilterOptions).not.toHaveBeenCalled();
+    });
+
     it('should set isLoaded to true for a CEDAR filter when short-circuiting', () => {
       const { store } = setup();
 
@@ -262,6 +272,61 @@ describe('GlobalSearchState', () => {
 
       const params = mockGetResources.mock.calls[0][0];
       expect(params['cardSearchFilter[defaultKey][]']).toBe('default-value');
+    });
+  });
+
+  describe('updateResourcesState (CEDAR filter key collision)', () => {
+    const COLLIDING_API_FILTER: DiscoverableFilter = {
+      key: CEDAR_FILTER.key,
+      label: 'School Type (from API)',
+      operator: FilterOperatorOption.AnyOf,
+      resultCount: 5,
+    };
+
+    const MOCK_RESOURCES_WITH_COLLIDING_FILTER: ResourcesData = {
+      resources: [],
+      filters: [COLLIDING_API_FILTER],
+      count: 5,
+      self: '',
+      first: null,
+      next: null,
+      previous: null,
+    };
+
+    it('should preserve cedarPropertyIri when API returns a filter with the same key as an extra filter', () => {
+      const { store, mockGetResources } = setup();
+      mockGetResources.mockReturnValue(of(MOCK_RESOURCES_WITH_COLLIDING_FILTER));
+
+      store.dispatch(new SetExtraFilters([CEDAR_FILTER]));
+      store.dispatch(new FetchResources());
+
+      const filters = store.selectSnapshot(GlobalSearchSelectors.getFilters);
+      const filter = filters.find((f) => f.key === CEDAR_FILTER.key);
+      expect(filter?.cedarPropertyIri).toBe(CEDAR_FILTER.cedarPropertyIri);
+      expect(filter?.options).toEqual(CEDAR_FILTER.options);
+    });
+
+    it('should use cardSearchText even when the API returns a filter with the same key', () => {
+      const { store, mockGetResources } = setup();
+      mockGetResources.mockReturnValue(of(MOCK_RESOURCES_WITH_COLLIDING_FILTER));
+
+      store.dispatch(new SetExtraFilters([CEDAR_FILTER]));
+      store.dispatch(new FetchResources());
+      mockGetResources.mockClear();
+      mockGetResources.mockReturnValue(of(MOCK_RESOURCES_DATA));
+
+      store.dispatch(
+        new LoadFilterOptionsAndSetValues({
+          [CEDAR_FILTER.key]: [{ label: 'High School', value: 'High School', cardSearchResultCount: null }],
+        })
+      );
+      store.dispatch(new FetchResources());
+
+      const params = mockGetResources.mock.calls[0][0];
+      expect(params[`cardSearchText[osf:hasCedarRecord.cedar:${CEDAR_FILTER.cedarPropertyIri}][]`]).toEqual([
+        '"High School"',
+      ]);
+      expect(params[`cardSearchFilter[${CEDAR_FILTER.key}][]`]).toBeUndefined();
     });
   });
 });

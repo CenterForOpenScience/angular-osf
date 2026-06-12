@@ -63,7 +63,8 @@ export class GlobalSearchState {
     const state = ctx.getState();
     const filterKey = action.filterKey;
 
-    const filter = state.filters.find((f) => f.key === filterKey);
+    const filter =
+      state.filters.find((f) => f.key === filterKey) ?? state.extraFilters.find((f) => f.key === filterKey);
     if (filter?.cedarPropertyIri) {
       ctx.patchState({
         filters: state.filters.map((f) => (f.key === filterKey ? { ...f, isLoaded: true } : f)),
@@ -291,14 +292,21 @@ export class GlobalSearchState {
   private updateResourcesState(ctx: StateContext<GlobalSearchStateModel>, response: ResourcesData) {
     const { extraFilters } = ctx.getState();
     const apiFilterKeys = new Set(response.filters.map((f) => f.key));
-    const merged = [...response.filters, ...extraFilters.filter((f) => !apiFilterKeys.has(f.key))];
+
+    const merged = response.filters.map((apiFilter) => {
+      const cedarExtra = extraFilters.find((ef) => ef.key === apiFilter.key);
+      return cedarExtra?.cedarPropertyIri
+        ? { ...apiFilter, cedarPropertyIri: cedarExtra.cedarPropertyIri, options: cedarExtra.options }
+        : apiFilter;
+    });
+    const extraFiltersNotInApi = extraFilters.filter((ef) => !apiFilterKeys.has(ef.key));
 
     ctx.patchState({
       resources: { data: response.resources, isLoading: false, error: null },
       filterOptionsCache: {},
       filterSearchCache: {},
       filterPaginationCache: {},
-      filters: merged,
+      filters: [...merged, ...extraFiltersNotInApi],
       resourcesCount: response.count,
       first: response.first,
       next: response.next,
