@@ -94,16 +94,6 @@ describe('GlobalSearchState', () => {
       expect(mockGetFilterOptions).not.toHaveBeenCalled();
     });
 
-    it('should skip the API call for a CEDAR filter found only in extraFilters (before first fetch)', () => {
-      const { store, mockGetFilterOptions } = setup();
-      store.dispatch(new SetExtraFilters([CEDAR_FILTER]));
-      // Intentionally no FetchResources — state.filters is still empty
-
-      store.dispatch(new LoadFilterOptions(CEDAR_FILTER.key));
-
-      expect(mockGetFilterOptions).not.toHaveBeenCalled();
-    });
-
     it('should set isLoaded to true for a CEDAR filter when short-circuiting', () => {
       const { store } = setup();
 

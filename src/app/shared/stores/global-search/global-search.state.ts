@@ -293,11 +293,17 @@ export class GlobalSearchState {
     const { extraFilters } = ctx.getState();
     const apiFilterKeys = new Set(response.filters.map((f) => f.key));
 
+    const extraByKey = new Map(extraFilters.map((ef) => [ef.key, ef]));
+
     const merged = response.filters.map((apiFilter) => {
-      const cedarExtra = extraFilters.find((ef) => ef.key === apiFilter.key);
-      return cedarExtra?.cedarPropertyIri
-        ? { ...apiFilter, cedarPropertyIri: cedarExtra.cedarPropertyIri, options: cedarExtra.options }
-        : apiFilter;
+      const cedarExtra = extraByKey.get(apiFilter.key);
+      if (!cedarExtra) return apiFilter;
+
+      return {
+        ...apiFilter,
+        cedarPropertyIri: cedarExtra.cedarPropertyIri,
+        ...(cedarExtra.options !== undefined && { options: cedarExtra.options }),
+      };
     });
     const extraFiltersNotInApi = extraFilters.filter((ef) => !apiFilterKeys.has(ef.key));
 
