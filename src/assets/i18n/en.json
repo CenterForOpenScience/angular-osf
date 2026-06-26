@@ -1121,7 +1121,6 @@
       "deleteProject": "Delete Project",
       "descriptions": {
         "file_updated": {
-          "instant": "You'll be notified immediately when files are updated.",
           "daily": "You'll receive a daily summary of file updates.",
           "instant": "You'll be notified immediately when files are updated.",
           "none": "You won't receive file update notifications."
@@ -1179,7 +1178,12 @@
           "public": "You don't have any public projects."
         }
       },
-      "searchPlaceholder": "Filter by title, description, and tags"
+      "searchPlaceholder": "Filter by title, description, and tags",
+      "download": {
+        "addonFiles": "Download {{addonName}} files",
+        "files": "Download OSF Storage files",
+        "metadata": "Download metadata"
+      }
     },
     "tabOptions": {
       "all": "Projects and Components",

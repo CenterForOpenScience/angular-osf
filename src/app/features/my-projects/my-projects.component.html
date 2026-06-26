@@ -53,12 +53,17 @@
               ></osf-select>
             </div>
 
+            <ng-template #projectDownloadCell let-item>
+              <osf-project-download-menu [projectId]="item.id" />
+            </ng-template>
+
             <osf-my-projects-table
               [items]="projects()"
               [tableParams]="tableParams()"
               [sortColumn]="sortColumn()"
               [sortOrder]="sortOrder()"
               [isLoading]="isLoading()"
+              [downloadCellTemplate]="projectDownloadCell"
               [emptyMessageKey]="projectsEmptyMessageKey()"
               (pageChange)="onPageChange($event)"
               (sort)="onSort($event)"

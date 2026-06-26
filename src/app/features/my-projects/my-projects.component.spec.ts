@@ -38,11 +38,11 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
+import { CreateProjectDialogComponent } from './components/create-project-dialog/create-project-dialog.component';
 import { PROJECT_FILTER_OPTIONS } from './constants/project-filter-options.const';
 import { VISIBILITY_FILTER_OPTIONS } from './constants/visibility-filter-options.const';
 import { MyProjectsQueryService } from './services/my-projects-query.service';
 import { MyProjectsTableParamsService } from './services/my-projects-table-params.service';
-import { CreateProjectDialogComponent } from './components';
 import { MyProjectsTab } from './enums';
 import { MyProjectsComponent } from './my-projects.component';
 
@@ -114,9 +114,7 @@ describe('MyProjectsComponent', () => {
         MockProvider(MyProjectsQueryService, queryServiceMock),
         MockProvider(MyProjectsTableParamsService, tableParamsServiceMock),
         MockProvider(IS_MEDIUM, of(false)),
-        provideMockStore({
-          signals: mergeSignalOverrides(defaultSignals, selectorOverrides),
-        }),
+        provideMockStore({ signals: mergeSignalOverrides(defaultSignals, selectorOverrides) }),
       ],
     });
 

@@ -4,6 +4,7 @@ import { Mock, vi } from 'vitest';
 
 import { HttpEvent } from '@angular/common/http';
 
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
 import { MetaJsonApi } from '@osf/shared/models/common/json-api.model';
 import { FileDetailsModel, FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
@@ -14,6 +15,7 @@ import { FilesService } from '@osf/shared/services/files.service';
 import { FileModelMock } from '@testing/mocks/file.model.mock';
 import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
 
+type GetConfiguredStorageAddonsFn = (resourceId: string) => Observable<ConfiguredAddonModel[]>;
 type GetFilesFn = (
   filesLink: string,
   search: string,
@@ -49,6 +51,7 @@ export type FilesServiceMockType = Pick<
   | 'getFiles'
   | 'getFolders'
   | 'getRootFolders'
+  | 'getConfiguredStorageAddons'
   | 'getFilesWithoutFiltering'
   | 'uploadFile'
   | 'getFolder'
@@ -64,6 +67,7 @@ export type FilesServiceMockType = Pick<
   getFiles: Mock<GetFilesFn>;
   getFolders: Mock<GetFoldersFn>;
   getRootFolders: Mock<GetRootFoldersFn>;
+  getConfiguredStorageAddons: Mock<GetConfiguredStorageAddonsFn>;
   getFilesWithoutFiltering: Mock<GetFilesWithoutFilteringFn>;
   uploadFile: Mock<UploadFileFn>;
   getFolder: Mock<GetFolderFn>;
@@ -104,6 +108,7 @@ export const FilesServiceMock = {
       getFiles: vi.fn().mockReturnValue(of({ files: [file], meta: { total: 1, per_page: 10 } as MetaJsonApi })),
       getFolders: vi.fn().mockReturnValue(of({ files: [folder], meta: { total: 1, per_page: 10 } as MetaJsonApi })),
       getRootFolders: vi.fn().mockReturnValue(of({ files: [folder], meta: { total: 1, per_page: 10 } as MetaJsonApi })),
+      getConfiguredStorageAddons: vi.fn().mockReturnValue(of([])),
       getFilesWithoutFiltering: vi
         .fn()
         .mockReturnValue(of({ data: [file], totalCount: 1, pageSize: 10 } as PaginatedData<FileModel[]>)),
