@@ -6,6 +6,7 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { CedarRecordsMapper, MetadataMapper, RorMapper } from '@osf/features/metadata/mappers';
 import {
+  CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
   CedarMetadataTemplateJsonApi,
@@ -100,6 +101,12 @@ export class MetadataService {
     return this.jsonApiService.get<CedarMetadataTemplateJsonApi>(
       url || `${this.apiDomainUrl}/_/cedar_metadata_templates/`,
       { 'page[size]': 100 }
+    );
+  }
+
+  getMetadataCedarTemplate(id: string): Observable<{ data: CedarMetadataDataTemplateJsonApi }> {
+    return this.jsonApiService.get<{ data: CedarMetadataDataTemplateJsonApi }>(
+      `${this.apiDomainUrl}/_/cedar_metadata_templates/${id}/`
     );
   }
 

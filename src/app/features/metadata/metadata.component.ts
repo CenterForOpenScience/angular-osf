@@ -26,6 +26,7 @@ import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { MetadataService } from '@osf/shared/services/metadata.service';
 import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
@@ -129,6 +130,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly signpostingService = inject(SignpostingService);
+  private readonly metadataService = inject(MetadataService);
 
   private readonly activeFlags = select(UserSelectors.getActiveFlags);
   readonly collectionSubmissionWithCedar = computed(() =>
@@ -232,23 +234,6 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
       this.tabs.set([...baseTabs, ...cedarTabs]);
       this.handleRouteBasedTabSelection();
-    });
-
-    effect(() => {
-      const templates = this.cedarTemplates();
-      const selectedRecord = this.selectedCedarRecord();
-
-      if (selectedRecord && templates?.data && !this.selectedCedarTemplate()) {
-        const templateId = selectedRecord.relationships?.template?.data?.id;
-        if (templateId) {
-          const template = templates.data.find((t) => t.id === templateId);
-          if (template) {
-            this.selectedCedarTemplate.set(template);
-          } else if (templates.links?.next) {
-            this.actions.getCedarTemplates(templates.links.next);
-          }
-        }
-      }
     });
 
     effect(() => {
@@ -567,13 +552,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private loadCedarRecord(recordId: string): void {
     const records = this.cedarRecords();
-    const templates = this.cedarTemplates();
     if (!records) {
       return;
     }
 
     const record = records.find((r) => r.id === recordId);
-
     if (!record) {
       return;
     }
@@ -582,19 +565,18 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.cedarFormReadonly.set(true);
 
     const templateId = record.relationships?.template?.data?.id;
-
-    if (templateId && templates?.data) {
-      const template = templates.data.find((t) => t.id === templateId);
-      if (template) {
-        this.selectedCedarTemplate.set(template);
-      } else {
-        this.selectedCedarTemplate.set(null);
-        this.actions.getCedarTemplates();
-      }
-    } else {
-      this.selectedCedarTemplate.set(null);
-      this.actions.getCedarTemplates();
+    if (templateId) {
+      this.loadCedarTemplateById(templateId);
     }
+  }
+
+  private loadCedarTemplateById(templateId: string): void {
+    this.metadataService
+      .getMetadataCedarTemplate(templateId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((response) => {
+        this.selectedCedarTemplate.set(response.data);
+      });
   }
 
   private handleRouteBasedTabSelection(): void {
