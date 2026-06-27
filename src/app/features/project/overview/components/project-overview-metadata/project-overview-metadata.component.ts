@@ -5,16 +5,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import {
-  GetCedarMetadataRecords,
-  GetCedarMetadataTemplates,
-  GetCustomItemMetadata,
-  MetadataSelectors,
-} from '@osf/features/metadata/store';
+import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models';
+import { GetCedarMetadataRecords, GetCustomItemMetadata, MetadataSelectors } from '@osf/features/metadata/store';
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { FundersListComponent } from '@osf/shared/components/funders-list/funders-list.component';
@@ -27,6 +24,7 @@ import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/tr
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LanguageLabelPipe } from '@osf/shared/pipes/language-label.pipe';
 import { ResourceTypeGeneralLabelPipe } from '@osf/shared/pipes/resource-type-general-label.pipe';
+import { MetadataService } from '@osf/shared/services/metadata.service';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 import {
   ContributorsSelectors,
@@ -74,6 +72,8 @@ import { OverviewSupplementsComponent } from '../overview-supplements/overview-s
 })
 export class ProjectOverviewMetadataComponent {
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly metadataService = inject(MetadataService);
 
   readonly currentProject = select(ProjectOverviewSelectors.getProject);
   readonly isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
@@ -97,9 +97,10 @@ export class ProjectOverviewMetadataComponent {
   readonly isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
   readonly activeFlags = select(UserSelectors.getActiveFlags);
   readonly cedarRecords = select(MetadataSelectors.getCedarRecords);
-  private readonly cedarTemplatesResponse = select(MetadataSelectors.getCedarTemplates);
-  readonly cedarTemplates = computed(() => this.cedarTemplatesResponse()?.data ?? null);
   readonly isCedarMode = computed(() => this.activeFlags().includes(COLLECTION_SUBMISSION_WITH_CEDAR));
+
+  private readonly cedarTemplatesMap = signal<Map<string, CedarMetadataDataTemplateJsonApi>>(new Map());
+  readonly cedarTemplates = computed(() => [...this.cedarTemplatesMap().values()]);
 
   readonly resourceType = CurrentResourceType.Projects;
   readonly dateFormat = 'MMM d, y, h:mm a';
@@ -116,7 +117,6 @@ export class ProjectOverviewMetadataComponent {
     getBibliographicContributors: GetBibliographicContributors,
     loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
     getCedarRecords: GetCedarMetadataRecords,
-    getCedarTemplates: GetCedarMetadataTemplates,
   });
 
   constructor() {
@@ -124,6 +124,7 @@ export class ProjectOverviewMetadataComponent {
       const project = this.currentProject();
 
       if (project?.id) {
+        this.cedarTemplatesMap.set(new Map());
         this.actions.getBibliographicContributors(project.id, ResourceType.Project);
         this.actions.getInstitutions(project.id);
         this.actions.getIdentifiers(project.id);
@@ -132,9 +133,27 @@ export class ProjectOverviewMetadataComponent {
         this.actions.getProjectSubmissions(project.id);
         this.actions.getLicense(project.licenseId);
         this.actions.getCedarRecords(project.id, ResourceType.Project);
-        this.actions.getCedarTemplates();
         this.actions.getCustomItemMetadata(project.id);
       }
+    });
+
+    effect(() => {
+      const records = this.cedarRecords();
+      if (!records?.length) return;
+
+      const currentMap = this.cedarTemplatesMap();
+      const missingIds = [
+        ...new Set(records.map((r) => r.relationships?.template?.data?.id).filter((id): id is string => !!id)),
+      ].filter((id) => !currentMap.has(id));
+
+      missingIds.forEach((id) => {
+        this.metadataService
+          .getMetadataCedarTemplate(id)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((response) => {
+            this.cedarTemplatesMap.update((map) => new Map(map).set(id, response.data));
+          });
+      });
     });
   }
 
