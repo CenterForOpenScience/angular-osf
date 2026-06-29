@@ -1,6 +1,6 @@
 @for (step of steps(); track $index) {
   @if (currentStep() === $index + 1) {
-    <div class="stepper" [ngStyle]="getStepPosition(step)">
+    <div class="stepper" [ngStyle]="isTablet() ? step.position : step.mobilePosition">
       <h3 class="stepper-title">{{ step.title | translate }}</h3>
 
       <p>{{ step.description | translate }}</p>

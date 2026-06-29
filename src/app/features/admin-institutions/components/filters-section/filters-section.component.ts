@@ -9,7 +9,10 @@ import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 
 import { FilterChipsComponent } from '@osf/shared/components/filter-chips/filter-chips.component';
 import { SearchFiltersComponent } from '@osf/shared/components/search-filters/search-filters.component';
-import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
+import { DiscoverableFilter } from '@osf/shared/models/search/discoverable-filter.model';
+import { FilterOptionRemoved } from '@osf/shared/models/search/filter-option-removed';
+import { FilterOptionSelected } from '@osf/shared/models/search/filter-option-selected.model';
+import { FilterOptionsSearchText } from '@osf/shared/models/search/filter-options-search-text.model';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -44,7 +47,7 @@ export class FiltersSectionComponent {
 
   filtersVisible = model<boolean>();
 
-  onSelectedFilterOptionsChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption[] }): void {
+  onSelectedFilterOptionsChanged(event: FilterOptionSelected): void {
     this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);
     this.actions.fetchResources();
   }
@@ -57,7 +60,7 @@ export class FiltersSectionComponent {
     this.actions.loadMoreFilterOptions(filter.key);
   }
 
-  onSearchFilterOptions(event: { searchText: string; filter: DiscoverableFilter }): void {
+  onSearchFilterOptions(event: FilterOptionsSearchText): void {
     if (event.searchText.trim()) {
       this.actions.loadFilterOptionsWithSearch(event.filter.key, event.searchText);
     } else {
@@ -65,7 +68,7 @@ export class FiltersSectionComponent {
     }
   }
 
-  onFilterChipRemoved(event: { filterKey: string; optionRemoved: FilterOption }): void {
+  onFilterChipRemoved(event: FilterOptionRemoved): void {
     const updatedOptions = this.selectedFilterOptions()[event.filterKey].filter(
       (option) => option.value !== event.optionRemoved.value
     );
