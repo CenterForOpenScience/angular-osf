@@ -206,7 +206,10 @@ export class CollectionMetadataStepComponent {
     effect(() => {
       if (!this.isStepActive()) return;
 
-      this.existingCedarRecord();
+      const record = this.existingCedarRecord();
+      const saved = this.collectionMetadataSaved();
+
+      if (!record?.attributes?.metadata && !saved) return;
 
       this.syncCedarInstance(this.cedarEditor()?.nativeElement);
     });
