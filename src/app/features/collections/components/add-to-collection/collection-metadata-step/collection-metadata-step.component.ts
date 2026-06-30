@@ -17,6 +17,7 @@ import {
   input,
   output,
   signal,
+  untracked,
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -88,6 +89,8 @@ export class CollectionMetadataStepComponent {
 
   private readonly actions = createDispatchMap({ getCollectionDetails: GetCollectionDetails });
 
+  readonly isStepActive = computed(() => this.stepperActiveValue() === this.targetStepValue());
+
   constructor() {
     this.setupEffects();
   }
@@ -102,10 +105,7 @@ export class CollectionMetadataStepComponent {
       this.cedarFormData.set(
         record?.attributes?.metadata ? (record.attributes.metadata as Record<string, unknown>) : {}
       );
-      const editor = this.cedarEditor()?.nativeElement;
-      if (editor) {
-        editor.instanceObject = this.cedarFormData();
-      }
+      this.syncCedarInstance(this.cedarEditor()?.nativeElement);
       this.collectionMetadataSaved.set(false);
       return;
     }
@@ -195,15 +195,25 @@ export class CollectionMetadataStepComponent {
     });
 
     effect(() => {
+      if (this.collectionMetadataSaved()) return;
+
       const record = this.existingCedarRecord();
       if (record?.attributes?.metadata) {
-        const metadata = record.attributes.metadata as Record<string, unknown>;
-        this.cedarFormData.set(metadata);
-        const editor = this.cedarEditor()?.nativeElement;
-        if (editor) editor.instanceObject = metadata;
-        const viewer = this.cedarViewer()?.nativeElement;
-        if (viewer) viewer.instanceObject = metadata;
+        this.cedarFormData.set(record.attributes.metadata as Record<string, unknown>);
       }
+    });
+
+    effect(() => {
+      if (!this.isStepActive()) return;
+
+      this.existingCedarRecord();
+
+      this.syncCedarInstance(this.cedarEditor()?.nativeElement);
+    });
+
+    effect(() => {
+      if (this.isStepActive() || !this.collectionMetadataSaved()) return;
+      this.syncCedarInstance(this.cedarViewer()?.nativeElement);
     });
 
     effect(() => {
@@ -233,13 +243,19 @@ export class CollectionMetadataStepComponent {
     });
 
     effect(() => {
-      if (!this.collectionMetadataSaved() && this.stepperActiveValue() !== AddToCollectionSteps.CollectionMetadata) {
+      if (!this.collectionMetadataSaved() && !this.isStepActive()) {
         if (!this.isCedarMode()) {
           this.collectionMetadataForm().reset();
           this.formPopulatedFromSubmission.set(false);
         }
       }
     });
+  }
+
+  private syncCedarInstance(element: CedarEditorElement | undefined): void {
+    if (element) {
+      element.instanceObject = untracked(() => this.cedarFormData());
+    }
   }
 
   private hasFormChanges(form: FormGroup, originalValues: Record<string, unknown>): boolean {
