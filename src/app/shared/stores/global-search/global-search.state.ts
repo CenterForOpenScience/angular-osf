@@ -346,7 +346,8 @@ export class GlobalSearchState {
         } else {
           const selectedValues = options.map((option) => option.value);
           if (selectedValues.length) {
-            filtersParams[`cardSearchFilter[${key}][any-of]`] = selectedValues.join(',');
+            const filterSuffix = key === 'dateCreated' ? '' : '[any-of]';
+            filtersParams[`cardSearchFilter[${key}]${filterSuffix}`] = selectedValues.join(',');
           }
         }
       }

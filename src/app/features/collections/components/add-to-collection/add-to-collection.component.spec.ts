@@ -270,13 +270,16 @@ describe('AddToCollectionComponent', () => {
     expect(result).toBeUndefined();
   });
 
-  it('should open confirmation dialog in new submission mode', () => {
+  it('should open confirmation dialog in new submission mode with existingCedarRecord in data', () => {
     const { component, dialogService } = setup();
     component.handleAddToCollection();
 
     expect(dialogService.open).toHaveBeenCalledWith(
       expect.any(Function),
-      expect.objectContaining({ header: 'collections.addToCollection.confirmationDialogHeader' })
+      expect.objectContaining({
+        header: 'collections.addToCollection.confirmationDialogHeader',
+        data: expect.objectContaining({ existingCedarRecord: null }),
+      })
     );
   });
 

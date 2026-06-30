@@ -9,8 +9,12 @@ import { of, throwError } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateCollectionSubmission } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
-import { CedarMetadataAttributes, CedarRecordDataBinding } from '@osf/features/metadata/models';
-import { CreateCedarMetadataRecord } from '@osf/features/metadata/store';
+import {
+  CedarMetadataAttributes,
+  CedarMetadataRecordData,
+  CedarRecordDataBinding,
+} from '@osf/features/metadata/models';
+import { CreateCedarMetadataRecord, UpdateCedarMetadataRecord } from '@osf/features/metadata/store';
 import { UpdateProjectPublicStatus } from '@osf/features/project/overview/store';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CollectionSubmissionPayload } from '@osf/shared/models/collections/collection-submission-payload.model';
@@ -29,6 +33,15 @@ const MOCK_CEDAR_DATA: CedarRecordDataBinding = {
   isPublished: true,
 };
 
+const MOCK_EXISTING_CEDAR_RECORD: CedarMetadataRecordData = {
+  id: 'cedar-record-1',
+  attributes: { metadata: {} as CedarMetadataAttributes, is_published: true },
+  relationships: {
+    template: { data: { type: 'cedar-metadata-templates', id: 'template-1' } },
+    target: { data: { type: 'nodes', id: 'project-1' } },
+  },
+};
+
 describe('AddToCollectionConfirmationDialogComponent', () => {
   let component: AddToCollectionConfirmationDialogComponent;
   let fixture: ComponentFixture<AddToCollectionConfirmationDialogComponent>;
@@ -40,6 +53,7 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
       payload?: CollectionSubmissionPayload;
       project?: { id: string; isPublic: boolean };
       cedarData?: CedarRecordDataBinding | null;
+      existingCedarRecord?: CedarMetadataRecordData | null;
     };
   };
 
@@ -116,7 +130,7 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
     expect(dialogRef.close).toHaveBeenCalledWith(true);
   });
 
-  it('should create Cedar record before submission when cedarData is present', () => {
+  it('should create Cedar record before submission when cedarData is present and no existing record', () => {
     dialogConfig.data.cedarData = MOCK_CEDAR_DATA;
     vi.spyOn(store, 'dispatch').mockReturnValue(of(void 0));
 
@@ -125,6 +139,22 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(
       new CreateCedarMetadataRecord(MOCK_CEDAR_DATA, 'project-1', ResourceType.Project)
     );
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(UpdateCedarMetadataRecord));
+    expect(store.dispatch).toHaveBeenCalledWith(new CreateCollectionSubmission(MOCK_PAYLOAD));
+    expect(dialogRef.close).toHaveBeenCalledWith(true);
+  });
+
+  it('should update existing Cedar record instead of creating when existingCedarRecord is provided', () => {
+    dialogConfig.data.cedarData = MOCK_CEDAR_DATA;
+    dialogConfig.data.existingCedarRecord = MOCK_EXISTING_CEDAR_RECORD;
+    vi.spyOn(store, 'dispatch').mockReturnValue(of(void 0));
+
+    component.handleAddToCollectionConfirm();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new UpdateCedarMetadataRecord(MOCK_CEDAR_DATA, 'cedar-record-1', 'project-1', ResourceType.Project)
+    );
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(CreateCedarMetadataRecord));
     expect(store.dispatch).toHaveBeenCalledWith(new CreateCollectionSubmission(MOCK_PAYLOAD));
     expect(dialogRef.close).toHaveBeenCalledWith(true);
   });

@@ -244,6 +244,8 @@ export class MetadataComponent implements OnInit, OnDestroy {
           const template = templates.data.find((t) => t.id === templateId);
           if (template) {
             this.selectedCedarTemplate.set(template);
+          } else if (templates.links?.next) {
+            this.actions.getCedarTemplates(templates.links.next);
           }
         }
       }

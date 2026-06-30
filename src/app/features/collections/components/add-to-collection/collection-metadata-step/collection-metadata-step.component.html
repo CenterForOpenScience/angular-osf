@@ -9,14 +9,16 @@
       <div class="flex flex-column gap-4 w-full">
         <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>
 
-        @if (!isDisabled() && stepperActiveValue() !== targetStepValue()) {
+        @if (!isDisabled() && !isStepActive()) {
           @if (collectionMetadataSaved()) {
             @if (isCedarMode()) {
-              @if (cedarTemplate()) {
+              @let cedarTpl = cedarTemplate();
+
+              @if (cedarTpl) {
                 <cedar-artifact-viewer
                   #cedarViewer
                   [config]="cedarViewerConfig"
-                  [templateObject]="cedarTemplate()!.attributes.template"
+                  [templateObject]="cedarTpl.attributes.template"
                   [instanceObject]="cedarFormData()"
                 ></cedar-artifact-viewer>
               }
@@ -45,19 +47,23 @@
   </p-step>
 
   <p-step-panel [value]="targetStepValue()" class="p-0">
-    <ng-template class="m-0" #content let-activateCallback="activateCallback">
+    <ng-template #content>
       @if (isCedarMode()) {
-        @if (cedarTemplate()) {
-          <div class="cedar-editor-container mt-3">
-            <cedar-embeddable-editor
-              #cedarEditor
-              [config]="cedarConfig"
-              [templateObject]="cedarTemplate()!.attributes.template"
-              [metadata]="cedarFormData()"
-              (change)="onCedarChange($event)"
-              (keyup)="onCedarChange($event)"
-            ></cedar-embeddable-editor>
-          </div>
+        @let cedarTpl = cedarTemplate();
+
+        @if (cedarTpl) {
+          @if (isStepActive()) {
+            <div class="cedar-editor-container mt-3">
+              <cedar-embeddable-editor
+                #cedarEditor
+                [config]="cedarConfig"
+                [templateObject]="cedarTpl.attributes.template"
+                [metadata]="cedarFormData()"
+                (change)="onCedarChange($event)"
+                (keyup)="onCedarChange($event)"
+              ></cedar-embeddable-editor>
+            </div>
+          }
 
           <div class="flex justify-content-end gap-3 mt-4">
             <p-button
