@@ -557,6 +557,7 @@
         "creator": "Creator name",
         "dateCreated": "Select date",
         "funder": "Select funder",
+        "generic": "",
         "isPartOfCollection": "Select collection",
         "publisher": "Select provider",
         "resourceType": "Select resource type",

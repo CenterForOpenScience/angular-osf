@@ -245,20 +245,17 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
             payload,
             project: this.selectedProject(),
             cedarData: this.pendingCedarData(),
+            existingCedarRecord: this.existingCedarRecord(),
           },
         })
         .onClose.pipe(
           filter((res) => !!res),
-          switchMap(() => this.saveCedarRecordIfNeeded()),
           takeUntilDestroyed(this.destroyRef)
         )
         .subscribe({
           next: () => {
             this.allowNavigation.set(true);
             this.router.navigate([this.selectedProject()?.id, 'overview']);
-          },
-          error: () => {
-            this.toastService.showError('collections.addToCollection.updateError');
           },
         });
     }
