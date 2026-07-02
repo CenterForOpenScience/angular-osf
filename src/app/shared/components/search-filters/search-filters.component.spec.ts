@@ -118,6 +118,40 @@ describe('SearchFiltersComponent', () => {
     expect(visibleFilters.length).toBe(3);
   });
 
+  it('should show CEDAR filters that have options but no resultCount', () => {
+    const cedarFilter: DiscoverableFilter = {
+      key: 'School Type',
+      label: 'School Type',
+      operator: FilterOperatorOption.AnyOf,
+      cedarPropertyIri: 'uuid-school-type',
+      options: [
+        { label: 'High School', value: 'High School', cardSearchResultCount: null },
+        { label: 'Middle School', value: 'Middle School', cardSearchResultCount: null },
+      ],
+    };
+
+    fixture.componentRef.setInput('filters', [cedarFilter]);
+    fixture.detectChanges();
+
+    expect(component.visibleFilters()).toHaveLength(1);
+    expect(component.visibleFilters()[0].key).toBe('School Type');
+  });
+
+  it('should still hide a filter with resultCount 0 and no options', () => {
+    const zeroCountFilter: DiscoverableFilter = {
+      key: 'emptyFilter',
+      label: 'Empty',
+      operator: FilterOperatorOption.AnyOf,
+      resultCount: 0,
+      options: [],
+    };
+
+    fixture.componentRef.setInput('filters', [zeroCountFilter]);
+    fixture.detectChanges();
+
+    expect(component.visibleFilters()).toHaveLength(0);
+  });
+
   it('should compute splitFilters correctly', () => {
     fixture.componentRef.setInput('filters', mockFilters);
     fixture.detectChanges();
@@ -248,5 +282,19 @@ describe('SearchFiltersComponent', () => {
     fixture.detectChanges();
 
     expect(component.selectedOptionValues()).toEqual({});
+  });
+
+  it('should return specific placeholder key for known filter keys', () => {
+    fixture.detectChanges();
+
+    const filter = { key: 'subject', label: 'Subject' } as DiscoverableFilter;
+    expect(component.getPlaceholderKey(filter)).toBe('common.search.filterPlaceholders.subject');
+  });
+
+  it('should return generic placeholder key for CEDAR-derived filters not in FILTER_PLACEHOLDERS', () => {
+    fixture.detectChanges();
+
+    const cedarFilter = { key: 'Collected Type Choices', label: 'Collected Type Choices' } as DiscoverableFilter;
+    expect(component.getPlaceholderKey(cedarFilter)).toBe('common.search.filterPlaceholders.generic');
   });
 });

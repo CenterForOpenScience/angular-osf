@@ -78,7 +78,7 @@ describe('AddMetadataComponent', () => {
         MockProvider(ToastService, toastService),
         provideMockStore({
           signals: [
-            { selector: MetadataSelectors.getCedarTemplates, value: mockCedarTemplates },
+            { selector: MetadataSelectors.getCedarTemplatesExcludingCollections, value: mockCedarTemplates },
             { selector: MetadataSelectors.getCedarRecords, value: mockCedarRecords },
             { selector: MetadataSelectors.getCedarTemplatesLoading, value: false },
             { selector: MetadataSelectors.getCedarRecord, value: { data: mockRecord } },

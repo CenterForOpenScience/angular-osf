@@ -65,4 +65,5 @@ export interface EnvironmentModel {
    */
   googleFilePickerAppId: number;
   throttleToken: string;
+  collectionSubmissionWithCedar: boolean;
 }

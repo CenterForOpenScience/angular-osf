@@ -1,5 +1,5 @@
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
-import { FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
 import { ResourceType } from '@shared/enums/resource-type.enum';
 
 export class FetchResources {
@@ -79,6 +79,12 @@ export class LoadMoreFilterOptions {
   static readonly type = '[GlobalSearch] Load More Filter Options';
 
   constructor(public filterKey: string) {}
+}
+
+export class SetExtraFilters {
+  static readonly type = '[GlobalSearch] Set Extra Filters';
+
+  constructor(public filters: DiscoverableFilter[]) {}
 }
 
 export class ResetSearchState {

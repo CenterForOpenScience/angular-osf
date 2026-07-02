@@ -44,6 +44,7 @@ export class ProjectSelectorComponent {
   placeholder = input<string>('common.buttons.select');
   showClear = input<boolean>(true);
   excludeProjectIds = input<string[]>([]);
+  publicOnly = input<boolean>(false);
   selectedProject = model<ProjectModel | null>(null);
 
   projectChange = output<ProjectModel | null>();
@@ -105,7 +106,9 @@ export class ProjectSelectorComponent {
       }
 
       const excludeSet = new Set(excludeIds);
-      const availableProjects = projects.filter((project) => !excludeSet.has(project.id));
+      const availableProjects = projects.filter(
+        (project) => !excludeSet.has(project.id) && (!this.publicOnly() || project.isPublic)
+      );
 
       const options = availableProjects.map((project) => ({
         label: project.title,
@@ -131,6 +134,10 @@ export class ProjectSelectorComponent {
     const params: Record<string, string> = {
       'filter[current_user_permissions]': 'admin',
     };
+
+    if (this.publicOnly()) {
+      params['filter[public]'] = 'true';
+    }
 
     if (filterTitle && filterTitle.trim()) {
       params['filter[title]'] = filterTitle;
