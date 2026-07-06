@@ -98,7 +98,8 @@ export class MetadataService {
 
   getMetadataCedarTemplates(url?: string): Observable<CedarMetadataTemplateJsonApi> {
     return this.jsonApiService.get<CedarMetadataTemplateJsonApi>(
-      url || `${this.apiDomainUrl}/_/cedar_metadata_templates/`
+      url || `${this.apiDomainUrl}/_/cedar_metadata_templates/`,
+      { 'page[size]': 100 }
     );
   }
 

@@ -39,7 +39,7 @@ import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps } from '../../enums';
 import { PreprintDraftDeletionService } from '../../services/preprint-draft-deletion.service';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import { DeletePreprint, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
+import { PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
@@ -74,7 +74,6 @@ export class SubmitPreprintStepperComponent implements OnDestroy, CanDeactivateC
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     resetState: ResetPreprintStepperState,
-    deletePreprint: DeletePreprint,
   });
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
@@ -133,14 +132,11 @@ export class SubmitPreprintStepperComponent implements OnDestroy, CanDeactivateC
     this.brandService.resetBranding();
     this.browserTabHelper.resetToDefaults();
 
-    this.draftDeletionService.deleteOnDestroyIfNeeded(() => this.actions.deletePreprint());
-
     this.actions.resetState();
   }
 
   requestDeletePreprint(): void {
     this.draftDeletionService.confirmDeleteDraft({
-      onDelete: () => this.actions.deletePreprint(),
       onReset: () => this.actions.resetState(),
       redirectUrl: '/preprints',
     });

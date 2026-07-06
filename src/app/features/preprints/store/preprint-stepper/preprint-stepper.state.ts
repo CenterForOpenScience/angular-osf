@@ -24,7 +24,6 @@ import {
   CreateNewProject,
   CreateNewVersion,
   CreatePreprint,
-  DeletePreprint,
   DisconnectProject,
   FetchAvailableProjects,
   FetchLicenses,
@@ -476,16 +475,6 @@ export class PreprintStepperState {
   @Action(ResetPreprintStepperState)
   resetState(ctx: StateContext<PreprintStepperStateModel>) {
     ctx.setState({ ...DEFAULT_PREPRINT_STEPPER_STATE });
-    return EMPTY;
-  }
-
-  @Action(DeletePreprint)
-  deletePreprint(ctx: StateContext<PreprintStepperStateModel>) {
-    const state = ctx.getState();
-    const createdPreprintId = state.preprint.data?.id;
-    if (createdPreprintId && !state.hasBeenSubmitted) {
-      return this.preprintsService.deletePreprint(createdPreprintId);
-    }
     return EMPTY;
   }
 

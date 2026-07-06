@@ -145,10 +145,6 @@ export class ResetPreprintStepperState {
   static readonly type = '[Preprint Stepper] Reset State';
 }
 
-export class DeletePreprint {
-  static readonly type = '[Preprint Stepper]  Delete Preprint';
-}
-
 export class SetPreprintStepperCurrentFolder {
   static readonly type = '[Preprint Stepper] Set Preprint Stepper Current Folder';
 

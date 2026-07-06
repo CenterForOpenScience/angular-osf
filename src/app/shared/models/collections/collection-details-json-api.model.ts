@@ -1,3 +1,4 @@
+import { ResourceDataLinksJsonApi } from '../common/json-api/links.model';
 import { JsonApiResource } from '../common/json-api/resource.model';
 import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
 
@@ -5,7 +6,12 @@ export type CollectionDetailsItemResponseJsonApi = ItemResponse<CollectionDetail
 export type CollectionDetailsListResponseJsonApi = ListResponse<CollectionDetailsDataJsonApi>;
 export type SparseCollectionsResponseJsonApi = ListResponse<SparseCollectionDataJsonApi>;
 
-export type CollectionDetailsDataJsonApi = JsonApiResource<'collections', CollectionDetailsAttributesJsonApi>;
+export interface CollectionDetailsDataJsonApi extends JsonApiResource<
+  'collections',
+  CollectionDetailsAttributesJsonApi
+> {
+  links?: Pick<ResourceDataLinksJsonApi, 'iri'>;
+}
 export type SparseCollectionDataJsonApi = JsonApiResource<'collections', SparseCollectionAttributesJsonApi>;
 
 interface CollectionDetailsAttributesJsonApi {

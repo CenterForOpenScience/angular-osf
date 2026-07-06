@@ -44,5 +44,6 @@ export const CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK: CedarMetadataDataTempla
         },
       },
     },
+    is_for_collections: false,
   },
 };

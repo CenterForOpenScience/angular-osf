@@ -21,4 +21,5 @@ export interface CollectionDetails {
   isPromoted: boolean;
   isPublic: boolean;
   filters: CollectionFilters;
+  iri?: string;
 }

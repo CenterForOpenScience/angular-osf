@@ -11,6 +11,7 @@ export interface DiscoverableFilter {
   isLoaded?: boolean;
   isPaginationLoading?: boolean;
   isSearchLoading?: boolean;
+  cedarPropertyIri?: string;
 }
 
 export enum FilterOperatorOption {
@@ -22,5 +23,5 @@ export enum FilterOperatorOption {
 export interface FilterOption {
   label: string;
   value: string;
-  cardSearchResultCount: number;
+  cardSearchResultCount: number | null;
 }

@@ -47,6 +47,16 @@ export class MetadataSelectors {
   }
 
   @Selector([MetadataState])
+  static getCedarTemplatesExcludingCollections(state: MetadataStateModel) {
+    const templates = state.cedarTemplates.data;
+    if (!templates) return null;
+    return {
+      ...templates,
+      data: templates.data.filter((t) => !t.attributes.is_for_collections),
+    };
+  }
+
+  @Selector([MetadataState])
   static getCedarTemplatesLoading(state: MetadataStateModel) {
     return state.cedarTemplates.isLoading;
   }

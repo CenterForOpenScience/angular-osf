@@ -33,12 +33,7 @@ import { createNewVersionStepsConst } from '../../constants';
 import { PreprintSteps } from '../../enums';
 import { PreprintDraftDeletionService } from '../../services/preprint-draft-deletion.service';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import {
-  DeletePreprint,
-  FetchPreprintById,
-  PreprintStepperSelectors,
-  ResetPreprintStepperState,
-} from '../../store/preprint-stepper';
+import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-create-new-version',
@@ -65,7 +60,6 @@ export class CreateNewVersionComponent implements OnDestroy, CanDeactivateCompon
     getPreprintProviderById: GetPreprintProviderById,
     fetchPreprint: FetchPreprintById,
     resetState: ResetPreprintStepperState,
-    deletePreprint: DeletePreprint,
   });
 
   readonly preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
@@ -109,8 +103,6 @@ export class CreateNewVersionComponent implements OnDestroy, CanDeactivateCompon
     this.brandService.resetBranding();
     this.browserTabHelper.resetToDefaults();
 
-    this.draftDeletionService.deleteOnDestroyIfNeeded(() => this.actions.deletePreprint());
-
     this.actions.resetState();
   }
 
@@ -144,7 +136,6 @@ export class CreateNewVersionComponent implements OnDestroy, CanDeactivateCompon
 
   requestDeletePreprint(): void {
     this.draftDeletionService.confirmDeleteDraft({
-      onDelete: () => this.actions.deletePreprint(),
       onReset: () => this.actions.resetState(),
       redirectUrl: '/my-preprints',
     });

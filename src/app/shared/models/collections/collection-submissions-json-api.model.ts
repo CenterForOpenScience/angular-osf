@@ -77,5 +77,6 @@ interface CollectionSubmissionCollectionEmbedDataJsonApi {
   };
   relationships: {
     provider: ToOneRelData;
+    required_metadata_template?: ToOneRelData;
   };
 }

@@ -24,6 +24,7 @@ export interface CollectionSubmission {
   dataType: string;
   disease: string;
   gradeLevels: string;
+  requiredMetadataTemplateId?: string | null;
 }
 
 export interface CollectionSubmissionWithGuid {

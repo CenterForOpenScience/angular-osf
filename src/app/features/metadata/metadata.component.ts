@@ -19,6 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { UserSelectors } from '@core/store/user';
 import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
@@ -47,6 +48,7 @@ import {
   SubjectsSelectors,
   UpdateResourceSubjects,
 } from '@osf/shared/stores/subjects';
+import { COLLECTION_SUBMISSION_WITH_CEDAR } from '@shared/constants/feature-flags.const';
 import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 import { SubjectModel } from '@shared/models/subject/subject.model';
 
@@ -127,6 +129,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly signpostingService = inject(SignpostingService);
+
+  private readonly activeFlags = select(UserSelectors.getActiveFlags);
+  readonly collectionSubmissionWithCedar = computed(() =>
+    this.activeFlags().includes(COLLECTION_SUBMISSION_WITH_CEDAR)
+  );
 
   private resourceId = '';
 
@@ -237,6 +244,8 @@ export class MetadataComponent implements OnInit, OnDestroy {
           const template = templates.data.find((t) => t.id === templateId);
           if (template) {
             this.selectedCedarTemplate.set(template);
+          } else if (templates.links?.next) {
+            this.actions.getCedarTemplates(templates.links.next);
           }
         }
       }

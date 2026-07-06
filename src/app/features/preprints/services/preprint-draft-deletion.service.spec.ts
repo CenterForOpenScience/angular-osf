@@ -44,12 +44,10 @@ describe('PreprintDraftDeletionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should open confirm delete and run delete, reset, toast, navigate on confirm', () => {
-    const onDelete = vi.fn();
+  it('should open confirm delete and run reset, toast, navigate on confirm', () => {
     const onReset = vi.fn();
 
     service.confirmDeleteDraft({
-      onDelete,
       onReset,
       redirectUrl: '/preprints',
     });
@@ -63,34 +61,22 @@ describe('PreprintDraftDeletionService', () => {
     const { onConfirm } = confirmationMock.confirmDelete.mock.calls[0][0];
     onConfirm();
 
-    expect(onDelete).toHaveBeenCalled();
     expect(onReset).toHaveBeenCalled();
     expect(toastMock.showSuccess).toHaveBeenCalledWith('preprints.preprintStepper.deleteDraft.success');
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/preprints');
   });
 
-  it('should allow canDeactivate and skip deleteOnDestroy after confirmed delete', () => {
-    const onDelete = vi.fn();
+  it('should allow canDeactivate after confirmed delete', () => {
     const onReset = vi.fn();
 
-    service.confirmDeleteDraft({ onDelete, onReset, redirectUrl: '/x' });
+    service.confirmDeleteDraft({ onReset, redirectUrl: '/x' });
     const { onConfirm } = confirmationMock.confirmDelete.mock.calls[0][0];
     onConfirm();
 
     expect(service.canDeactivate(false)).toBe(true);
-
-    const destroyDelete = vi.fn();
-    service.deleteOnDestroyIfNeeded(destroyDelete);
-    expect(destroyDelete).not.toHaveBeenCalled();
   });
 
   it('should return canDeactivate true when submitted', () => {
     expect(service.canDeactivate(true)).toBe(true);
-  });
-
-  it('should call deleteOnDestroy when not yet deleted', () => {
-    const destroyDelete = vi.fn();
-    service.deleteOnDestroyIfNeeded(destroyDelete);
-    expect(destroyDelete).toHaveBeenCalled();
   });
 });

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SEARCH_TUTORIAL_STEPS } from '@osf/shared/constants/search-tutorial-steps.const';
-import { TutorialStep } from '@shared/models/tutorial-step.model';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
 
@@ -10,13 +9,6 @@ import { SearchHelpTutorialComponent } from './search-help-tutorial.component';
 describe('SearchHelpTutorialComponent', () => {
   let component: SearchHelpTutorialComponent;
   let fixture: ComponentFixture<SearchHelpTutorialComponent>;
-
-  const mockTutorialStep: TutorialStep = {
-    title: 'Test Step',
-    description: 'This is a test step',
-    position: { top: '10px', left: '20px' },
-    mobilePosition: { top: '10px', left: '20px' },
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -100,21 +92,6 @@ describe('SearchHelpTutorialComponent', () => {
     component.nextStep();
 
     expect(component.currentStep()).toBe(0);
-  });
-
-  it('should return position object when step has position', () => {
-    const position = component.getStepPosition(mockTutorialStep);
-    expect(position).toEqual({ top: '10px', left: '20px' });
-  });
-
-  it('should return empty object when step has no position', () => {
-    const stepWithoutPosition: TutorialStep = {
-      title: 'Test Step',
-      description: 'This is a test step',
-    };
-
-    const position = component.getStepPosition(stepWithoutPosition);
-    expect(position).toEqual({});
   });
 
   it('should maintain currentStep state across method calls', () => {

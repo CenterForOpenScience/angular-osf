@@ -23,6 +23,23 @@ interface CedarMetadataTemplateAttributesJsonApi {
   cedar_id: string;
   schema_name: string;
   template: CedarTemplate;
+  is_for_collections: boolean;
+}
+
+export const CEDAR_TEMPLATE_FIELD_TYPE = 'https://schema.metadatacenter.org/core/TemplateField';
+export const CEDAR_PROPERTIES_BASE_IRI = 'https://schema.metadatacenter.org/properties/';
+
+export interface CedarTemplateField {
+  '@type': string;
+  _valueConstraints?: {
+    literals?: { label: string }[];
+    multipleChoice?: boolean;
+    requiredValue?: boolean;
+  };
+}
+
+export interface CedarTemplateContextSchema {
+  properties: Record<string, { enum?: string[] }>;
 }
 
 export interface CedarTemplate {
