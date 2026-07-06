@@ -6,6 +6,7 @@ export const MOCK_CEDAR_TEMPLATE: CedarMetadataDataTemplateJsonApi = {
   id: 'template-1',
   type: 'cedar-metadata-templates',
   attributes: {
+    active: true,
     schema_name: 'Test Template',
     cedar_id: 'cedar-1',
     template: {

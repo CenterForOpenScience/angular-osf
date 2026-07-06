@@ -14,7 +14,7 @@ import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-su
 import {
   CollectionProjectSubmission,
   CollectionSubmissionWithGuid,
-} from '@osf/shared/models/collections/collections.model';
+} from '@osf/shared/models/collections/collection-submissions.model';
 import { CollectionsSelectors, GetCollectionDetails } from '@osf/shared/stores/collections';
 
 import {

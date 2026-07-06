@@ -1,11 +1,3 @@
-export interface ResourceDataLinksJsonApi {
-  html?: string;
-  self: string;
-  iri?: string;
-  download?: string;
-  delete?: string;
-}
-
 export interface ResourceLinksJsonApi {
   html: string;
   self: string;

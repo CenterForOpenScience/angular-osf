@@ -4,6 +4,6 @@ export interface PaginationLinksModel {
   prev?: LinkModel;
 }
 
-export interface LinkModel {
+interface LinkModel {
   href: string;
 }
