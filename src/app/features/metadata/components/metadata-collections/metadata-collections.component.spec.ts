@@ -64,10 +64,6 @@ describe('MetadataCollectionsComponent', () => {
     expect(content).toContain('project.overview.metadata.noCollections');
   });
 
-  it('should default isCedarMode to false', () => {
-    expect(component.isCedarMode()).toBe(false);
-  });
-
   it('should build cedarRecordByTemplateId map from records', () => {
     fixture.componentRef.setInput('cedarRecords', [mockCedarRecord]);
     fixture.detectChanges();
@@ -98,8 +94,7 @@ describe('MetadataCollectionsComponent', () => {
     expect(component.cedarTemplateById().size).toBe(0);
   });
 
-  it('should pass matching cedarRecord to items in cedar mode', () => {
-    fixture.componentRef.setInput('isCedarMode', true);
+  it('should pass matching cedarRecord to items', () => {
     fixture.componentRef.setInput('projectSubmissions', mockSubmissionsWithTemplate);
     fixture.componentRef.setInput('cedarRecords', [mockCedarRecord]);
     fixture.componentRef.setInput('cedarTemplates', [mockCedarTemplate]);

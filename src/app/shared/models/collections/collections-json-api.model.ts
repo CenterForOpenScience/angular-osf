@@ -45,16 +45,6 @@ export interface CollectionDetailsResponseJsonApi {
     bookmarks: boolean;
     is_promoted: boolean;
     is_public: boolean;
-    status_choices: string[];
-    collected_type_choices: string[];
-    volume_choices: string[];
-    issue_choices: string[];
-    program_area_choices: string[];
-    school_type_choices: string[];
-    study_design_choices: string[];
-    data_type_choices: string[];
-    disease_choices: string[];
-    grade_levels_choices: string[];
   };
 }
 
@@ -63,16 +53,6 @@ export interface CollectionSubmissionJsonApi {
   type: string;
   attributes: {
     reviews_state: CollectionSubmissionReviewState;
-    collected_type: string;
-    status: string;
-    volume: string;
-    issue: string;
-    program_area: string;
-    school_type: string;
-    study_design: string;
-    data_type: string;
-    disease: string;
-    grade_levels: string;
   };
   embeds: {
     collection: {
@@ -103,16 +83,6 @@ export interface CollectionSubmissionWithGuidJsonApi {
   type: string;
   attributes: {
     reviews_state: CollectionSubmissionReviewState;
-    collected_type: string;
-    status: string;
-    volume: string;
-    issue: string;
-    program_area: string;
-    school_type: string;
-    study_design: string;
-    data_type: string;
-    disease: string;
-    grade_levels: string;
   };
   embeds: {
     guid: {
@@ -138,24 +108,4 @@ export interface SparseCollectionsResponseJsonApi {
 
 export interface CollectionDetailsGetResponseJsonApi extends JsonApiResponse<CollectionDetailsResponseJsonApi, null> {
   data: CollectionDetailsResponseJsonApi;
-}
-
-export interface CollectionSubmissionsSearchPayloadJsonApi {
-  data: {
-    attributes: {
-      provider: string[];
-      studyDesign?: string[];
-      schoolType?: string[];
-      status?: string[];
-      collectedType?: string[];
-      volume?: string[];
-      issue?: string[];
-      programArea?: string[];
-      dataType?: string[];
-      disease?: string[];
-      gradeLevels?: string[];
-      q?: string;
-    };
-  };
-  type: string;
 }

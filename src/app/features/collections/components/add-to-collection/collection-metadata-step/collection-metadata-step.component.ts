@@ -1,9 +1,6 @@
-import { createDispatchMap, select } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -21,12 +18,8 @@ import {
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { collectionFilterTypes } from '@osf/features/collections/constants';
-import { AddToCollectionSteps, CollectionFilterType } from '@osf/features/collections/enums';
-import { CollectionFilterEntry } from '@osf/features/collections/models/collection-filter-entry.model';
-import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection';
+import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
 import {
   CedarEditorElement,
@@ -34,12 +27,10 @@ import {
   CedarMetadataRecordData,
   CedarRecordDataBinding,
 } from '@osf/features/metadata/models';
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
-import { CollectionsSelectors, GetCollectionDetails } from '@osf/shared/stores/collections';
 
 @Component({
   selector: 'osf-collection-metadata-step',
-  imports: [Button, TranslatePipe, Select, ReactiveFormsModule, Step, StepItem, StepPanel, Tooltip],
+  imports: [Button, TranslatePipe, Step, StepItem, StepPanel, Tooltip],
   templateUrl: './collection-metadata-step.component.html',
   styleUrl: './collection-metadata-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,38 +38,16 @@ import { CollectionsSelectors, GetCollectionDetails } from '@osf/shared/stores/c
   encapsulation: ViewEncapsulation.None,
 })
 export class CollectionMetadataStepComponent {
-  private readonly filterTypes = collectionFilterTypes;
-  readonly collectionFilterOptions = select(CollectionsSelectors.getAllFiltersOptions);
-  readonly currentCollectionSubmission = select(AddToCollectionSelectors.getCurrentCollectionSubmission);
-  readonly availableFilterEntries = computed(() => {
-    const options = this.collectionFilterOptions();
-
-    return this.filterTypes
-      .map((key: string, index: number) => ({
-        key,
-        value: index.toString(),
-        options: options[key as keyof typeof options] || [],
-        labelKey: `collections.filters.${key}.label`,
-      }))
-      .filter((entry: CollectionFilterEntry) => entry.options.length);
-  });
-
   stepperActiveValue = input.required<number>();
   targetStepValue = input.required<number>();
   isDisabled = input.required<boolean>();
-  primaryCollectionId = input<string | undefined>();
-  isCedarMode = input<boolean>(false);
   cedarTemplate = input<CedarMetadataDataTemplateJsonApi | null>(null);
   existingCedarRecord = input<CedarMetadataRecordData | null>(null);
 
   stepChange = output<number>();
-  metadataSaved = output<FormGroup>();
   cedarDataSaved = output<CedarRecordDataBinding>();
 
-  collectionMetadataForm = signal<FormGroup>(new FormGroup({}));
   collectionMetadataSaved = signal<boolean>(false);
-  originalFormValues = signal<Record<string, unknown>>({});
-  formPopulatedFromSubmission = signal<boolean>(false);
   cedarFormData = signal<Record<string, unknown>>({});
 
   cedarConfig = CEDAR_CONFIG;
@@ -86,8 +55,6 @@ export class CollectionMetadataStepComponent {
 
   cedarEditor = viewChild<ElementRef<CedarEditorElement>>('cedarEditor');
   cedarViewer = viewChild<ElementRef<CedarEditorElement>>('cedarViewer');
-
-  private readonly actions = createDispatchMap({ getCollectionDetails: GetCollectionDetails });
 
   readonly isStepActive = computed(() => this.stepperActiveValue() === this.targetStepValue());
 
@@ -100,34 +67,10 @@ export class CollectionMetadataStepComponent {
   }
 
   handleDiscardChanges() {
-    if (this.isCedarMode()) {
-      const record = this.existingCedarRecord();
-      this.cedarFormData.set(
-        record?.attributes?.metadata ? (record.attributes.metadata as Record<string, unknown>) : {}
-      );
-      this.syncCedarInstance(this.cedarEditor()?.nativeElement);
-      this.collectionMetadataSaved.set(false);
-      return;
-    }
-
-    const form = this.collectionMetadataForm();
-    const originalValues = this.originalFormValues();
-
-    if (this.hasFormChanges(form, originalValues)) {
-      this.restoreFormValues(form, originalValues);
-    }
-
+    const record = this.existingCedarRecord();
+    this.cedarFormData.set(record?.attributes?.metadata ? (record.attributes.metadata as Record<string, unknown>) : {});
+    this.syncCedarInstance(this.cedarEditor()?.nativeElement);
     this.collectionMetadataSaved.set(false);
-  }
-
-  handleSaveMetadata() {
-    const form = this.collectionMetadataForm();
-
-    this.updateOriginalValues(form);
-
-    this.collectionMetadataSaved.set(true);
-    this.metadataSaved.emit(form);
-    this.stepChange.emit(AddToCollectionSteps.Complete);
   }
 
   handleSaveCedarMetadata() {
@@ -149,7 +92,6 @@ export class CollectionMetadataStepComponent {
     };
 
     this.collectionMetadataSaved.set(true);
-    this.metadataSaved.emit(this.collectionMetadataForm());
     this.cedarDataSaved.emit(cedarData);
     this.stepChange.emit(AddToCollectionSteps.Complete);
   }
@@ -164,36 +106,7 @@ export class CollectionMetadataStepComponent {
     }
   }
 
-  private buildCollectionMetadataForm() {
-    const filterEntries = this.availableFilterEntries();
-    const formControls: Record<string, FormControl> = {};
-
-    filterEntries.forEach((entry: CollectionFilterEntry) => {
-      formControls[entry.key] = new FormControl('', [Validators.required]);
-    });
-
-    const newForm = new FormGroup(formControls);
-    this.collectionMetadataForm.set(newForm);
-    this.formPopulatedFromSubmission.set(false);
-
-    const submission = this.currentCollectionSubmission();
-
-    if (submission) {
-      this.populateFormFromSubmission(submission.submission);
-      this.formPopulatedFromSubmission.set(true);
-    } else {
-      this.updateOriginalValues(newForm);
-    }
-  }
-
   private setupEffects(): void {
-    effect(() => {
-      const collectionId = this.primaryCollectionId();
-      if (collectionId) {
-        this.actions.getCollectionDetails(collectionId);
-      }
-    });
-
     effect(() => {
       if (this.collectionMetadataSaved()) return;
 
@@ -218,85 +131,11 @@ export class CollectionMetadataStepComponent {
       if (this.isStepActive() || !this.collectionMetadataSaved()) return;
       this.syncCedarInstance(this.cedarViewer()?.nativeElement);
     });
-
-    effect(() => {
-      const filterEntries = this.availableFilterEntries();
-      if (filterEntries.length && !this.isCedarMode()) {
-        this.buildCollectionMetadataForm();
-      }
-    });
-
-    effect(() => {
-      const submission = this.currentCollectionSubmission();
-      const form = this.collectionMetadataForm();
-      const filterEntries = this.availableFilterEntries();
-      const alreadyPopulated = this.formPopulatedFromSubmission();
-
-      if (
-        submission &&
-        form.controls &&
-        Object.keys(form.controls).length > 0 &&
-        filterEntries.length > 0 &&
-        !alreadyPopulated &&
-        !this.isCedarMode()
-      ) {
-        this.populateFormFromSubmission(submission.submission);
-        this.formPopulatedFromSubmission.set(true);
-      }
-    });
-
-    effect(() => {
-      if (!this.collectionMetadataSaved() && !this.isStepActive()) {
-        if (!this.isCedarMode()) {
-          this.collectionMetadataForm().reset();
-          this.formPopulatedFromSubmission.set(false);
-        }
-      }
-    });
   }
 
   private syncCedarInstance(element: CedarEditorElement | undefined): void {
     if (element) {
       element.instanceObject = untracked(() => this.cedarFormData());
     }
-  }
-
-  private hasFormChanges(form: FormGroup, originalValues: Record<string, unknown>): boolean {
-    return Object.keys(originalValues).some((key) => {
-      const currentValue = form.get(key)?.value;
-      const originalValue = originalValues[key];
-      return currentValue !== originalValue;
-    });
-  }
-
-  private restoreFormValues(form: FormGroup, originalValues: Record<string, unknown>): void {
-    Object.keys(originalValues).forEach((key) => {
-      form.get(key)?.setValue(originalValues[key]);
-    });
-  }
-
-  private updateOriginalValues(form: FormGroup): void {
-    const currentValues: Record<string, unknown> = {};
-    Object.keys(form.controls).forEach((key) => {
-      currentValues[key] = form.get(key)?.value;
-    });
-    this.originalFormValues.set(currentValues);
-  }
-
-  private populateFormFromSubmission(submission: CollectionSubmissionWithGuid): void {
-    const form = this.collectionMetadataForm();
-    if (!form || !form.controls) return;
-
-    Object.values(CollectionFilterType).forEach((filterType) => {
-      const control = form.get(filterType);
-      if (control) {
-        const value = submission[filterType as keyof CollectionSubmissionWithGuid] as string;
-        if (value) {
-          control.setValue(value, { emitEvent: false });
-        }
-      }
-    });
-
-    this.updateOriginalValues(form);
   }
 }

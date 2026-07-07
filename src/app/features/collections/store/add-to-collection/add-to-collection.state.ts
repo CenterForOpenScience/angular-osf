@@ -15,7 +15,6 @@ import {
   GetCollectionLicenses,
   GetCurrentCollectionSubmission,
   RemoveCollectionSubmission,
-  UpdateCollectionSubmission,
 } from './add-to-collection.actions';
 import { ADD_TO_COLLECTION_DEFAULTS, AddToCollectionStateModel } from './add-to-collection.model';
 
@@ -79,11 +78,6 @@ export class AddToCollectionState {
   @Action(CreateCollectionSubmission)
   createCollectionSubmission(ctx: StateContext<AddToCollectionStateModel>, action: CreateCollectionSubmission) {
     return this.addToCollectionService.createCollectionSubmission(action.metadata);
-  }
-
-  @Action(UpdateCollectionSubmission)
-  updateCollectionSubmission(ctx: StateContext<AddToCollectionStateModel>, action: UpdateCollectionSubmission) {
-    return this.addToCollectionService.updateCollectionSubmission(action.metadata);
   }
 
   @Action(RemoveCollectionSubmission)

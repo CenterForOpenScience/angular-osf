@@ -285,6 +285,7 @@
   },
   "collections": {
     "addToCollection": {
+      "cedarFormNotAvailable": "CEDAR metadata form is not available for this collection.",
       "collectionMetadata": "Collection Metadata",
       "confirmationDialogHeader": "Add to Collection",
       "confirmationDialogMessage": "Once submitted to the collection, the project will be made public. It can later be made private again. A moderator will review your submission before it is included in the collection.",
@@ -303,7 +304,8 @@
       "projectMetadataUpdateSuccess": "Project Metadata successfully updated.",
       "resourceMetadata": "Project Metadata",
       "selectProject": "Select a project",
-      "tooltipMessage": "Complete previous step to edit this section"
+      "tooltipMessage": "Complete previous step to edit this section",
+      "updateError": "Failed to submit to the collection. Please try again."
     },
     "common": {
       "by": "by",
@@ -312,68 +314,13 @@
     },
     "filters": {
       "additionalFilters": "Additional Filters",
-      "collectedType": {
-        "description": "Please select the collected type from the dropdown below or start typing to find it",
-        "label": "Type",
-        "placeholder": "Select collected types"
-      },
-      "dataType": {
-        "description": "Please select the data type from the dropdown below or start typing to find it",
-        "label": "Data Type",
-        "placeholder": "Select data types"
-      },
-      "disease": {
-        "description": "Please select the disease from the dropdown below or start typing to find it",
-        "label": "Disease",
-        "placeholder": "Select diseases"
-      },
-      "gradeLevels": {
-        "description": "Please select the grade level from the dropdown below or start typing to find it",
-        "label": "Grade Levels",
-        "placeholder": "Select grade levels"
-      },
-      "issue": {
-        "description": "Please select the issue from the dropdown below or start typing to find it",
-        "label": "Issue",
-        "placeholder": "Select issues"
-      },
       "noFiltersAvailable": "No filters available",
       "noOptionsAvailable": "No options available",
-      "programArea": {
-        "description": "Please select the program area from the dropdown below or start typing to find it",
-        "label": "Program Area",
-        "placeholder": "Select program areas"
-      },
-      "reviewsState": {
-        "description": "Please select the reviews state from the dropdown below or start typing to find it",
-        "label": "Reviews State",
-        "placeholder": "Select reviews states"
-      },
-      "schoolType": {
-        "description": "Please select the school type from the dropdown below or start typing to find it",
-        "label": "School Type",
-        "placeholder": "Select school types"
-      },
       "searchCreators": "Search for creators",
       "sort": {
         "label": "Sort by:"
       },
-      "sortBy": "Sort by",
-      "status": {
-        "description": "Please select the status from the dropdown below or start typing to find it",
-        "label": "Status",
-        "placeholder": "Select status"
-      },
-      "studyDesign": {
-        "description": "Please select the study design from the dropdown below or start typing to find it",
-        "label": "Study Design",
-        "placeholder": "Select study designs"
-      },
-      "volume": {
-        "description": "Please select the volume from the dropdown below or start typing to find it",
-        "label": "Volume",
-        "placeholder": "Select volumes"
-      }
+      "sortBy": "Sort by"
     },
     "helpDialog": {
       "header": "Search help",

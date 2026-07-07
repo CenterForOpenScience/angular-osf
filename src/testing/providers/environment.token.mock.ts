@@ -47,6 +47,5 @@ export const EnvironmentTokenMock = {
     newRelicLoaderConfigAgentID: '',
     newRelicLoaderConfigLicenseKey: '',
     newRelicLoaderConfigApplicationID: '',
-    collectionSubmissionWithCedar: false,
   },
 };
