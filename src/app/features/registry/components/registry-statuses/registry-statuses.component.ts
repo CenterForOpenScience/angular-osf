@@ -55,16 +55,13 @@ export class RegistryStatusesComponent {
     return date ? new Date(date).toDateString() : null;
   });
 
-  statusTranslations = computed(() => {
+statusTranslationKeys = computed(() => {
+    const defaultStatusKey = 'registry.overview.endEmbargo';
+
     const status = this.registry()?.status;
-    if (!status || status === 'None') {
-      return {
-        text: 'registry.overview.endEmbargo',
-        short: 'registry.overview.endEmbargo',
-        long: 'registry.overview.endEmbargo',
-      };
-    }
-    const basePath = `registry.overview.statuses.${status}`;
+    const basePath =
+      !status || status === RegistryStatus.None ? defaultStatusKey : `registry.overview.statuses.${status}`;
+
     return {
       text: `${basePath}.text`,
       short: `${basePath}.short`,
