@@ -55,7 +55,7 @@ export class RegistryStatusesComponent {
     return date ? new Date(date).toDateString() : null;
   });
 
-  statusTranslationKeys = computed(() => {
+  statusTranslations = computed(() => {
     const defaultStatusKey = 'registry.overview.endEmbargo';
 
     const status = this.registry()?.status;
