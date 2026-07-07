@@ -57,7 +57,7 @@ export class RegistryStatusesComponent {
 
   statusTranslations = computed(() => {
     const status = this.registry()?.status;
-    if (!status || (status === 'None')) {
+    if (!status || status === 'None') {
       return {
         text: 'registry.overview.endEmbargo',
         short: 'registry.overview.endEmbargo',
