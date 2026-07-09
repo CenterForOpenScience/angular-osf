@@ -6,10 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 
-import {
-  makeActivityLogWithDisplay,
-  MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
-} from '@testing/mocks/activity-log-with-display.mock';
+import { makeActivityLogWithDisplay, MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { RecentActivityListComponent } from './recent-activity-list.component';
