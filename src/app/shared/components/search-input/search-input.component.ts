@@ -29,7 +29,6 @@ export class SearchInputComponent {
     if (!searchValue || !searchValue?.trim()?.length) {
       return;
     }
-
     this.triggerSearch.emit(searchValue);
   }
 }

@@ -95,23 +95,27 @@
             <p-divider class="my-3" />
             @if (license.requiredFields.length) {
               <div class="flex flex-column gap-3 mb-3 w-full md:flex-row">
-                <div class="w-full md:w-6">
-                  <label for="licenseYear"> {{ 'common.labels.year' | translate }} </label>
-                  <p-datePicker
-                    inputId="licenseYear"
-                    [formControlName]="ProjectMetadataFormControls.LicenseYear"
-                    [maxDate]="currentYear"
-                    dataType="string"
-                    view="year"
-                    dateFormat="yy"
+                @if (license.requiredFields.includes('year')) {
+                  <div class="w-full md:w-6">
+                    <label for="licenseYear"> {{ 'common.labels.year' | translate }} </label>
+                    <p-datePicker
+                      inputId="licenseYear"
+                      [formControlName]="ProjectMetadataFormControls.LicenseYear"
+                      [maxDate]="currentYear"
+                      dataType="string"
+                      view="year"
+                      dateFormat="yy"
+                    />
+                  </div>
+                }
+                @if (license.requiredFields.includes('copyrightHolders')) {
+                  <osf-text-input
+                    class="w-full md:w-6"
+                    label="shared.license.copyrightHolders"
+                    [control]="projectMetadataForm.controls[ProjectMetadataFormControls.CopyrightHolders]"
+                    [maxLength]="inputLimits.fullName.maxLength"
                   />
-                </div>
-                <osf-text-input
-                  class="w-full md:w-6"
-                  label="shared.license.copyrightHolders"
-                  [control]="projectMetadataForm.controls[ProjectMetadataFormControls.CopyrightHolders]"
-                  [maxLength]="inputLimits.fullName.maxLength"
-                />
+                }
               </div>
             }
 

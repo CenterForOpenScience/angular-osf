@@ -24,7 +24,7 @@
 
             <osf-generic-filter
               [filterOperator]="filter.operator"
-              [placeholder]="FILTER_PLACEHOLDERS[filter.key] || '' | translate"
+              [placeholder]="getPlaceholderKey(filter) | translate: { label: filter.label }"
               [options]="filter.options || []"
               [selectedOptions]="selectedOptions()[filter.key] || []"
               [searchResults]="filterSearchResults()[filter.key] || []"

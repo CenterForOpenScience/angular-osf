@@ -26,6 +26,7 @@
       <div class="mt-4 w-full lg:w-6">
         <osf-project-selector
           [excludeProjectIds]="excludedProjectIds()"
+          [publicOnly]="true"
           [(selectedProject)]="currentSelectedProject"
           (projectChange)="handleProjectChange($event)"
           (projectsLoaded)="handleProjectsLoaded($event)"

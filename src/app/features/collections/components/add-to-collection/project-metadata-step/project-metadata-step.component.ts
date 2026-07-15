@@ -238,7 +238,7 @@ export class ProjectMetadataStepComponent {
           this.formService.updateLicenseValidators(this.projectMetadataForm, license);
         });
       }
-      this.populateFormFromProject();
+      untracked(() => this.populateFormFromProject());
     });
 
     effect(() => {

@@ -15,14 +15,7 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { SelectComponent } from '@osf/shared/components/select/select.component';
 import { COLLECTION_SUBMISSIONS_SORT_OPTIONS } from '@osf/shared/constants/sort-options.const';
 import { Primitive } from '@osf/shared/helpers/types.helper';
-import {
-  ClearCollections,
-  ClearCollectionSubmissions,
-  CollectionsSelectors,
-  GetCollectionDetails,
-  SearchCollectionSubmissions,
-  SetPageNumber,
-} from '@osf/shared/stores/collections';
+import { CollectionsSelectors } from '@osf/shared/stores/collections';
 
 import { COLLECTIONS_SUBMISSIONS_REVIEW_OPTIONS } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
@@ -72,23 +65,11 @@ export class CollectionModerationSubmissionsComponent {
   firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * 10);
 
   actions = createDispatchMap({
-    getCollectionDetails: GetCollectionDetails,
-    searchCollectionSubmissions: SearchCollectionSubmissions,
     getCollectionSubmissions: GetCollectionSubmissions,
-    setPageNumber: SetPageNumber,
-    clearCollections: ClearCollections,
-    clearCollectionsSubmissions: ClearCollectionSubmissions,
     getSubmissionsReviewActions: GetSubmissionsReviewActions,
   });
 
   private setupEffects(): void {
-    effect(() => {
-      const collectionId = this.primaryCollectionId();
-      if (collectionId) {
-        this.actions.getCollectionDetails(collectionId);
-      }
-    });
-
     effect(() => {
       const provider = this.collectionProvider();
       const status = this.reviewStatus();

@@ -75,19 +75,6 @@
       <osf-tags-list [tags]="resource.tags" (tagClick)="tagClicked($event)"></osf-tags-list>
     </div>
 
-    @if (!isAnonymous()) {
-      <div class="flex flex-column gap-2">
-        <h3>{{ 'common.labels.affiliatedInstitutions' | translate }}</h3>
-
-        <osf-affiliated-institutions-view [institutions]="institutions()" [isLoading]="isInstitutionsLoading()" />
-      </div>
-    }
-
-    <osf-overview-collections
-      [projectSubmissions]="projectSubmissions()"
-      [isProjectSubmissionsLoading]="isProjectSubmissionsLoading()"
-    ></osf-overview-collections>
-
     <div class="flex flex-column gap-2">
       <h3>{{ 'project.overview.metadata.supplements' | translate }}</h3>
 
@@ -128,6 +115,33 @@
         <osf-resource-doi [identifiers]="identifiers()" [isLoading]="isIdentifiersLoading()"></osf-resource-doi>
       </div>
     }
+
+    @if (!isAnonymous()) {
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'common.labels.affiliatedInstitutions' | translate }}</h3>
+
+        <osf-affiliated-institutions-view [institutions]="institutions()" [isLoading]="isInstitutionsLoading()" />
+      </div>
+    }
+
+    <osf-overview-collections
+      [projectSubmissions]="projectSubmissions()"
+      [isProjectSubmissionsLoading]="isProjectSubmissionsLoading()"
+      [cedarRecords]="cedarRecords()"
+      [cedarTemplates]="cedarTemplates()"
+    ></osf-overview-collections>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'common.labels.subjects' | translate }}</h3>
+
+      <osf-subjects-list [subjects]="subjects()" [isLoading]="areSelectedSubjectsLoading()"></osf-subjects-list>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'shared.tags.title' | translate }}</h3>
+
+      <osf-tags-list [tags]="resource.tags" (tagClick)="tagClicked($event)"></osf-tags-list>
+    </div>
 
     @if (!isAnonymous()) {
       <osf-resource-citations

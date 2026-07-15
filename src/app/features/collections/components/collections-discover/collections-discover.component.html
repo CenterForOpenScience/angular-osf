@@ -29,7 +29,6 @@
         [showHelpIcon]="true"
         [placeholder]="'collections.searchInput.placeholder' | translate"
         (helpClicked)="openHelpDialog()"
-        (triggerSearch)="onSearchTriggered($event)"
       />
       @if (collectionProvider()?.description) {
         <div class="mt-6" [innerHTML]="collectionProvider()?.description"></div>
@@ -37,7 +36,9 @@
     </div>
 
     <div class="content-container flex-1">
-      <osf-collections-main-content />
+      @if (defaultSearchFiltersInitialized()) {
+        <osf-global-search [searchControlInput]="searchControl" />
+      }
     </div>
   </section>
 } @else {
