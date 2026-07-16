@@ -55,6 +55,20 @@ export class RegistryStatusesComponent {
     return date ? new Date(date).toDateString() : null;
   });
 
+  statusTranslations = computed(() => {
+    const defaultStatusKey = 'registry.overview.endEmbargo';
+
+    const status = this.registry()?.status;
+    const basePath =
+      !status || status === RegistryStatus.None ? defaultStatusKey : `registry.overview.statuses.${status}`;
+
+    return {
+      text: `${basePath}.text`,
+      short: `${basePath}.short`,
+      long: `${basePath}.long`,
+    };
+  });
+
   openWithdrawDialog(): void {
     const registry = this.registry();
 
