@@ -2,6 +2,11 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.13.0 (2026-06-23)
+====================
+
+* PB&S and ES2 code cleanup
+
 26.12.0 (2026-06-23)
 ====================
 
