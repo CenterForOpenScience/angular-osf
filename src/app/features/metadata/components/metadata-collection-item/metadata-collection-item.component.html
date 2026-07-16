@@ -31,13 +31,3 @@
     ></cedar-artifact-viewer>
   </div>
 }
-
-@if (showAttributes()) {
-  <div class="flex flex-column gap-2 mt-2">
-    @for (attribute of attributes(); track attribute.key) {
-      <p class="font-normal">
-        <span class="font-bold">{{ attribute.label }}:</span> {{ attribute.value }}
-      </p>
-    }
-  </div>
-}

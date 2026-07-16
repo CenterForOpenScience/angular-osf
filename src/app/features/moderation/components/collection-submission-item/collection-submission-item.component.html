@@ -1,7 +1,6 @@
 @let action = currentReviewAction();
-@let attributes = currentSubmissionAttributes();
 
-@if (action && attributes) {
+@if (action) {
   <div class="resource">
     <p-accordion (onOpen)="handleOpen()">
       <p-accordion-panel value="0">
@@ -45,17 +44,6 @@
                 <span>{{ 'moderation.submissionReview.by' | translate }}</span>
                 <span>{{ action.createdBy }}</span>
               </p>
-
-              <div class="flex mt-2 flex-wrap">
-                @for (attribute of attributes; track attribute.key) {
-                  @if (!$first) {
-                    <span class="mx-1 flex align-items-start">|</span>
-                  }
-                  <p class="font-normal">
-                    <span class="font-bold">{{ attribute.label }}:</span> {{ attribute.value }}
-                  </p>
-                }
-              </div>
 
               @if (action.comment) {
                 <osf-truncated-text class="block font-italic mt-2" [text]="action.comment" />

@@ -41,16 +41,6 @@ export class AddToCollectionService {
     return this.jsonApiService.post(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, metadata);
   }
 
-  updateCollectionSubmission(payload: CollectionSubmissionPayload): Observable<void> {
-    const collectionId = payload.collectionId;
-    const metadata = CollectionsMapper.collectionSubmissionUpdateRequest(payload);
-
-    return this.jsonApiService.patch(
-      `${this.apiUrl}/collections/${collectionId}/collection_submissions/${payload.projectId}/`,
-      metadata
-    );
-  }
-
   removeCollectionSubmission(payload: RemoveCollectionSubmissionPayload): Observable<void> {
     const reviewActionPayload: ReviewActionPayload = {
       action: 'remove',
