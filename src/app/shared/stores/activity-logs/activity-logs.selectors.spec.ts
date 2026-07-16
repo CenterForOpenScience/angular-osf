@@ -6,10 +6,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
 
-import {
-  makeActivityLogWithDisplay,
-  MOCK_ACTIVITY_LOGS_WITH_DISPLAY,
-} from '@testing/mocks/activity-log-with-display.mock';
+import { makeActivityLogWithDisplay, MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log.mock';
 import { provideOSFHttp } from '@testing/osf.testing.provider';
 import { ActivityLogDisplayServiceMock } from '@testing/providers/activity-log-display.service.mock';
 

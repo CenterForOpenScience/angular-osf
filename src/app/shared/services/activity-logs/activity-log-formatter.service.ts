@@ -222,7 +222,16 @@ export class ActivityLogFormatterService {
 
   buildUser(log: ActivityLog): string {
     const userUrl = this.urlBuilder.buildUserUrl(log);
-    return userUrl || this.translateService.instant('activityLog.defaults.aUser');
+
+    if (userUrl) {
+      return userUrl;
+    }
+
+    if (log.foreignUser) {
+      return this.capitalizeFirst(log.foreignUser);
+    }
+
+    return this.translateService.instant('activityLog.defaults.aUser');
   }
 
   buildNode(log: ActivityLog): string {
@@ -277,5 +286,9 @@ export class ActivityLogFormatterService {
 
   private replaceSlash(path: string): string {
     return path.replace(/^\/|\/$/g, '');
+  }
+
+  private capitalizeFirst(value: string): string {
+    return value.charAt(0).toUpperCase() + value.slice(1);
   }
 }

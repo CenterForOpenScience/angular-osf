@@ -24,19 +24,6 @@ export interface CollectionProvider extends BaseProviderModel {
   requiredMetadataTemplate?: CedarMetadataDataTemplateJsonApi | null;
 }
 
-export interface CollectionFilters {
-  collectedType: string[];
-  disease: string[];
-  dataType: string[];
-  gradeLevels: string[];
-  issue: string[];
-  programArea: string[];
-  schoolType: string[];
-  status: string[];
-  studyDesign: string[];
-  volume: string[];
-}
-
 export interface CollectionDetails {
   id: string;
   type: string;
@@ -47,7 +34,6 @@ export interface CollectionDetails {
   bookmarks: boolean;
   isPromoted: boolean;
   isPublic: boolean;
-  filters: CollectionFilters;
 }
 
 export interface CollectionSubmission {
@@ -56,16 +42,6 @@ export interface CollectionSubmission {
   collectionTitle: string;
   collectionId: string;
   reviewsState: CollectionSubmissionReviewState;
-  collectedType: string;
-  status: string;
-  volume: string;
-  issue: string;
-  programArea: string;
-  schoolType: string;
-  studyDesign: string;
-  dataType: string;
-  disease: string;
-  gradeLevels: string;
   requiredMetadataTemplateId?: string | null;
 }
 
@@ -81,16 +57,6 @@ export interface CollectionSubmissionWithGuid {
   dateModified: string;
   public: boolean;
   reviewsState: CollectionSubmissionReviewState;
-  collectedType: string;
-  status: string;
-  volume: string;
-  issue: string;
-  programArea: string;
-  schoolType: string;
-  studyDesign: string;
-  dataType: string;
-  disease: string;
-  gradeLevels: string;
   contributors?: ContributorModel[];
   creator?: {
     id: string;

@@ -20,10 +20,8 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@core/store/user';
 import { CedarMetadataRecordData, CedarRecordDataBinding } from '@osf/features/metadata/models';
 import {
@@ -43,7 +41,6 @@ import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { CollectionsSelectors, GetCollectionProvider } from '@osf/shared/stores/collections';
 import { ProjectsSelectors, SetSelectedProject } from '@osf/shared/stores/projects';
-import { COLLECTION_SUBMISSION_WITH_CEDAR } from '@shared/constants/feature-flags.const';
 
 import { AddToCollectionSteps } from '../../enums';
 import { RemoveCollectionSubmissionPayload } from '../../models/remove-collection-submission-payload.model';
@@ -53,7 +50,6 @@ import {
   ClearAddToCollectionState,
   GetCurrentCollectionSubmission,
   RemoveCollectionSubmission,
-  UpdateCollectionSubmission,
 } from '../../store/add-to-collection';
 
 import { AddToCollectionConfirmationDialogComponent } from './add-to-collection-confirmation-dialog/add-to-collection-confirmation-dialog.component';
@@ -91,7 +87,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   private readonly headerStyleHelper = inject(HeaderStyleService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
-  private readonly environment = inject(ENVIRONMENT);
 
   readonly selectedProjectId = toSignal<string | null>(
     this.route.params.pipe(map((params) => params['id'])) ?? of(null)
@@ -99,14 +94,11 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
 
   readonly AddToCollectionSteps = AddToCollectionSteps;
 
-  collectionMetadataForm = new FormGroup({});
-
   isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   requiredMetadataTemplate = select(CollectionsSelectors.getRequiredMetadataTemplate);
   selectedProject = select(ProjectsSelectors.getSelectedProject);
   currentUser = select(UserSelectors.getCurrentUser);
-  activeFlags = select(UserSelectors.getActiveFlags);
   currentCollectionSubmission = select(AddToCollectionSelectors.getCurrentCollectionSubmission);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
 
@@ -125,9 +117,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   isCollectionMetadataDisabled = computed(
     () => !this.selectedProject() || !this.projectMetadataSaved() || !this.projectContributorsSaved()
   );
-  isCedarMode = computed(
-    () => this.activeFlags().includes(COLLECTION_SUBMISSION_WITH_CEDAR) && !!this.requiredMetadataTemplate()
-  );
   existingCedarRecord = computed<CedarMetadataRecordData | null>(() => {
     const records = this.cedarRecords();
     const templateId = this.requiredMetadataTemplate()?.id;
@@ -138,7 +127,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   readonly actions = createDispatchMap({
     getCollectionProvider: GetCollectionProvider,
     clearAddToCollectionState: ClearAddToCollectionState,
-    updateCollectionSubmission: UpdateCollectionSubmission,
     deleteCollectionSubmission: RemoveCollectionSubmission,
     setSelectedProject: SetSelectedProject,
     getCurrentCollectionSubmission: GetCurrentCollectionSubmission,
@@ -195,12 +183,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
     this.projectContributorsSaved.set(true);
   }
 
-  handleCollectionMetadataSaved(form: FormGroup): void {
-    this.collectionMetadataForm = form;
-    this.collectionMetadataSaved.set(true);
-    this.stepperActiveValue.set(AddToCollectionSteps.Complete);
-  }
-
   handleCedarDataSaved(data: CedarRecordDataBinding): void {
     this.pendingCedarData.set(data);
     this.collectionMetadataSaved.set(true);
@@ -212,17 +194,13 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       collectionId: this.primaryCollectionId() || '',
       projectId: this.selectedProject()?.id || '',
       userId: this.currentUser()?.id || '',
-      collectionMetadata: this.isCedarMode() ? {} : this.collectionMetadataForm.value || {},
     };
 
-    const isEditMode = this.isEditMode();
-
-    if (isEditMode) {
+    if (this.isEditMode()) {
       this.loaderService.show();
 
       this.saveCedarRecordIfNeeded()
         .pipe(
-          switchMap(() => this.actions.updateCollectionSubmission(payload)),
           finalize(() => this.loaderService.hide()),
           takeUntilDestroyed(this.destroyRef)
         )
@@ -298,8 +276,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   }
 
   private saveCedarRecordIfNeeded(): Observable<unknown> {
-    if (!this.isCedarMode()) return of(null);
-
     const cedarData = this.pendingCedarData();
     const projectId = this.selectedProject()?.id;
     const templateId = this.requiredMetadataTemplate()?.id;
@@ -352,8 +328,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
 
     effect(() => {
       const projectId = this.selectedProjectId();
-      const isCedar = this.isCedarMode();
-      if (isCedar && projectId) {
+      if (projectId) {
         this.actions.getCedarRecords(projectId, ResourceType.Project);
       }
     });
