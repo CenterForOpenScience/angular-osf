@@ -27,6 +27,7 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { FileKind } from '@osf/shared/enums/file-kind.enum';
 import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
+import { appendDownloadTrackingParams } from '@osf/shared/helpers/download-link.helper';
 import { FileTreeMapper } from '@osf/shared/mappers/files/file-tree.mapper';
 import { FilesMapper } from '@osf/shared/mappers/files/files.mapper';
 import { FileModel } from '@osf/shared/models/files/file.model';
@@ -203,13 +204,13 @@ export class FilesTreeExplorerComponent {
 
   downloadFile(link: string): void {
     if (this.isBrowser) {
-      window.open(link)?.focus();
+      window.open(appendDownloadTrackingParams(link, 'files'))?.focus();
     }
   }
 
   downloadFolder(downloadLink: string): void {
     if (downloadLink) {
-      const link = this.filesService.getFolderDownloadLink(downloadLink);
+      const link = this.filesService.getFolderDownloadLink(downloadLink, 'zip');
       window.open(link, '_blank')?.focus();
     }
   }

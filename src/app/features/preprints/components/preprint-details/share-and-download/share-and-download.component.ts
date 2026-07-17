@@ -43,7 +43,7 @@ export class ShareAndDownloadComponent {
       return;
     }
 
-    const downloadLink = this.socialShareService.createDownloadUrl(preprint.id);
+    const downloadLink = this.socialShareService.createDownloadUrl(preprint.id, 'preprint');
     const downloadWindow = window.open(downloadLink);
 
     if (!downloadWindow) {

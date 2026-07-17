@@ -40,6 +40,7 @@ import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/meta
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { appendDownloadTrackingParams } from '@osf/shared/helpers/download-link.helper';
 import { getMfrUrlWithVersion } from '@osf/shared/helpers/mfr-url.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
@@ -250,7 +251,8 @@ export class FileDetailComponent implements OnDestroy {
     const storageLink = this.file()?.links.upload || '';
 
     if (downloadUrl) {
-      window.open(`${downloadUrl}/?revision=${version}`)?.focus();
+      const link = appendDownloadTrackingParams(`${downloadUrl}/?revision=${version}`, 'files');
+      window.open(link)?.focus();
       this.actions.getFileRevisions(storageLink);
     }
   }
@@ -266,7 +268,7 @@ export class FileDetailComponent implements OnDestroy {
       .logIdentifiableDownload(this.fileMetadata$)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
-    window.open(link)?.focus();
+    window.open(appendDownloadTrackingParams(link, 'files'))?.focus();
   }
 
   deleteEntry(link: string): void {

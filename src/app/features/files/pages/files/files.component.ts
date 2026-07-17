@@ -514,7 +514,7 @@ export class FilesComponent {
         .logFileDownload(resourceId, resourcePath)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe();
-      const link = this.filesService.getFolderDownloadLink(downloadLink);
+      const link = this.filesService.getFolderDownloadLink(downloadLink, 'zip');
       window.open(link, '_blank')?.focus();
     }
   }
