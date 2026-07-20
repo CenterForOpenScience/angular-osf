@@ -251,7 +251,7 @@ export class FileDetailComponent implements OnDestroy {
     const storageLink = this.file()?.links.upload || '';
 
     if (downloadUrl) {
-      const link = appendDownloadTrackingParams(`${downloadUrl}/?revision=${version}`, 'files');
+      const link = appendDownloadTrackingParams(`${downloadUrl}/?revision=${version}`, 'file-detail');
       window.open(link)?.focus();
       this.actions.getFileRevisions(storageLink);
     }
@@ -268,7 +268,7 @@ export class FileDetailComponent implements OnDestroy {
       .logIdentifiableDownload(this.fileMetadata$)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
-    window.open(appendDownloadTrackingParams(link, 'files'))?.focus();
+    window.open(appendDownloadTrackingParams(link, 'file-detail'))?.focus();
   }
 
   deleteEntry(link: string): void {

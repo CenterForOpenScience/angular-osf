@@ -79,9 +79,13 @@ describe('SocialShareService', () => {
   it('should create web urls', () => {
     setup();
 
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     expect(service.createPreprintUrl('pp-1', 'osf')).toBe('https://osf.test/preprints/osf/pp-1');
     expect(service.createGuidUrl('abc12')).toBe('https://osf.test/abc12');
-    expect(service.createDownloadUrl('res-1')).toBe('https://osf.test/download/res-1');
+    expect(service.createDownloadUrl('res-1')).toBe(
+      `https://osf.test/download/res-1?source=&tz=${encodeURIComponent(timeZone)}`
+    );
   });
 
   it('should generate social action items from platform config', () => {

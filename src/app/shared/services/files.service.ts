@@ -174,7 +174,7 @@ export class FilesService {
     return this.jsonApiService.post<FileResponseJsonApi>(link, body);
   }
 
-  getFolderDownloadLink(link: string, source: string): string {
+  getFolderDownloadLink(link: string, source = ''): string {
     const separator = link.includes('?') ? '&' : '?';
     return appendDownloadTrackingParams(`${link}${separator}zip=`, source);
   }

@@ -118,8 +118,11 @@ describe('FilesService', () => {
 
   it('should build folder download link with correct separator', () => {
     setup();
-    expect(service.getFolderDownloadLink('/files/1')).toBe('/files/1?zip=');
-    expect(service.getFolderDownloadLink('/files/1?foo=bar')).toBe('/files/1?foo=bar&zip=');
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    expect(service.getFolderDownloadLink('/files/1')).toBe(`/files/1?zip=&source=&tz=${encodeURIComponent(timeZone)}`);
+    expect(service.getFolderDownloadLink('/files/1?foo=bar')).toBe(
+      `/files/1?foo=bar&zip=&source=&tz=${encodeURIComponent(timeZone)}`
+    );
   });
 
   it('should return empty reference when addons api response has no data', async () => {

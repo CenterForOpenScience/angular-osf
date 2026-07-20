@@ -57,7 +57,7 @@ export class SocialShareService {
     return `${this.webUrl}/${guid}`;
   }
 
-  createDownloadUrl(resourceId: string, source: string): string {
+  createDownloadUrl(resourceId: string, source = ''): string {
     return appendDownloadTrackingParams(`${this.webUrl}/download/${resourceId}`, source);
   }
 

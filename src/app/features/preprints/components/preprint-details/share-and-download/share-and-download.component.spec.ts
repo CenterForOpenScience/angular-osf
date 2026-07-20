@@ -85,7 +85,7 @@ describe('ShareAndDownloadComponent', () => {
 
     component.download();
 
-    expect(socialShareService.createDownloadUrl).toHaveBeenCalledWith(mockPreprint.id);
+    expect(socialShareService.createDownloadUrl).toHaveBeenCalledWith(mockPreprint.id, 'preprint');
     expect(openSpy).toHaveBeenCalledWith('https://example.com/download');
     expect(focus).toHaveBeenCalled();
     expect(dataciteService.logIdentifiableDownload).toHaveBeenCalledWith(component.preprint$);
@@ -124,7 +124,7 @@ describe('ShareAndDownloadComponent', () => {
 
     component.download();
 
-    expect(socialShareService.createDownloadUrl).toHaveBeenCalledWith(mockPreprint.id);
+    expect(socialShareService.createDownloadUrl).toHaveBeenCalledWith(mockPreprint.id, 'preprint');
     expect(dataciteService.logIdentifiableDownload).not.toHaveBeenCalled();
     openSpy.mockRestore();
   });

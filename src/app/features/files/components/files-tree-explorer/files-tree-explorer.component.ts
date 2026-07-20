@@ -210,7 +210,7 @@ export class FilesTreeExplorerComponent {
 
   downloadFolder(downloadLink: string): void {
     if (downloadLink) {
-      const link = this.filesService.getFolderDownloadLink(downloadLink, 'zip');
+      const link = this.filesService.getFolderDownloadLink(downloadLink, 'files');
       window.open(link, '_blank')?.focus();
     }
   }

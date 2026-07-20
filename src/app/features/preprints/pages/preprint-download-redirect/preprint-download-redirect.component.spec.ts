@@ -58,7 +58,7 @@ describe('PreprintDownloadRedirectComponent', () => {
   it('should redirect to download URL when id is present in browser', () => {
     const redirectSpy = vi.spyOn(PreprintDownloadRedirectComponent.prototype, 'redirect').mockImplementation(vi.fn());
     const { mockSocialShareService } = setup({ id: MOCK_ID });
-    expect(mockSocialShareService.createDownloadUrl).toHaveBeenCalledWith(MOCK_ID);
+    expect(mockSocialShareService.createDownloadUrl).toHaveBeenCalledWith(MOCK_ID, 'preprint');
     expect(redirectSpy).toHaveBeenCalledWith(MOCK_DOWNLOAD_URL);
     redirectSpy.mockRestore();
   });
