@@ -11,9 +11,9 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { LanguageLabelPipe } from '@osf/shared/pipes/language-label.pipe';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { MetadataRecordsService } from '@osf/shared/services/metadata-records.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { FileMetadataFields } from '../../constants';
@@ -33,7 +33,7 @@ export class FileMetadataComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customDialogService = inject(CustomDialogService);
-  private readonly environment = inject(ENVIRONMENT);
+  private readonly metadataRecordsService = inject(MetadataRecordsService);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
 
   private readonly actions = createDispatchMap({ setFileMetadata: SetFileMetadata });
@@ -49,8 +49,10 @@ export class FileMetadataComponent {
   readonly metadataFields = FileMetadataFields;
 
   downloadFileMetadata(): void {
-    if (this.fileGuid()) {
-      window.open(`${this.environment.webUrl}/metadata/${this.fileGuid()}`)?.focus();
+    const fileGuid = this.fileGuid();
+
+    if (fileGuid) {
+      this.metadataRecordsService.downloadMetadata(fileGuid);
     }
   }
 

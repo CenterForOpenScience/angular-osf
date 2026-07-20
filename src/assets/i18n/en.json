@@ -1073,7 +1073,6 @@
       "deleteProject": "Delete Project",
       "descriptions": {
         "file_updated": {
-          "instant": "You'll be notified immediately when files are updated.",
           "daily": "You'll receive a daily summary of file updates.",
           "none": "You won't receive file update notifications."
         }
@@ -1113,12 +1112,39 @@
       "wikiText": "Enable the wiki in {{projectName}}"
     },
     "table": {
-      "searchPlaceholder": "Filter by title, description, and tags"
+      "emptyState": {
+        "all": {
+          "both": "You don't have any projects or components.",
+          "private": "You don't have any private projects or components.",
+          "public": "You don't have any public projects or components."
+        },
+        "components": {
+          "both": "You don't have any components.",
+          "private": "You don't have any private components.",
+          "public": "You don't have any public components."
+        },
+        "projects": {
+          "both": "You don't have any projects.",
+          "private": "You don't have any private projects.",
+          "public": "You don't have any public projects."
+        }
+      },
+      "searchPlaceholder": "Filter by title, description, and tags",
+      "download": {
+        "addonFiles": "Download {{addonName}} files",
+        "files": "Download OSF Storage files",
+        "metadata": "Download metadata"
+      }
     },
     "tabOptions": {
-      "all": "All",
+      "all": "Projects and Components",
       "component": "Components",
       "root": "Projects"
+    },
+    "visibilityFilterOptions": {
+      "all": "Public and Private",
+      "private": "Private",
+      "public": "Public"
     },
     "tabs": {
       "bookmarks": "Bookmarks",

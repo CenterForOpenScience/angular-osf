@@ -8,7 +8,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
   effect,
   inject,
   input,
@@ -17,7 +16,6 @@ import {
   PLATFORM_ID,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 import { FileMenuComponent } from '@osf/shared/components/file-menu/file-menu.component';
@@ -34,8 +32,7 @@ import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
 import { FileMenuAction, FileMenuFlags } from '@osf/shared/models/files/file-menu-action.model';
 import { FilePageLinkModel } from '@osf/shared/models/files/file-page-link.model';
-import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
-import { FilesService } from '@osf/shared/services/files.service';
+import { FileDownloadService } from '@osf/shared/services/file-download.service';
 import { FilesShareEmbedService } from '@osf/shared/services/files-share-embed.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
@@ -60,10 +57,8 @@ import { MenuMoveCopyPayload } from '../../models/menu-move-copy.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilesTreeExplorerComponent {
-  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private readonly filesService = inject(FilesService);
-  private readonly dataciteService = inject(DataciteService);
+  private readonly fileDownloadService = inject(FileDownloadService);
   private readonly filesShareEmbedService = inject(FilesShareEmbedService);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -189,29 +184,11 @@ export class FilesTreeExplorerComponent {
   }
 
   downloadFileOrFolder(file: FileModel) {
-    this.dataciteService
-      .logFileDownload(this.resourceId(), this.resourceType())
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
-
-    if (file.kind === FileKind.File) {
-      this.downloadFile(file.links.download);
-    } else {
-      this.downloadFolder(file.links.upload);
-    }
-  }
-
-  downloadFile(link: string): void {
-    if (this.isBrowser) {
-      window.open(link)?.focus();
-    }
-  }
-
-  downloadFolder(downloadLink: string): void {
-    if (downloadLink) {
-      const link = this.filesService.getFolderDownloadLink(downloadLink);
-      window.open(link, '_blank')?.focus();
-    }
+    this.fileDownloadService.downloadFileOrFolder({
+      resourceId: this.resourceId(),
+      resourceType: this.resourceType(),
+      file,
+    });
   }
 
   onLazyLoad(event: TreeLazyLoadEvent) {

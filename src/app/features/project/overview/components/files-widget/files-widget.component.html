@@ -15,7 +15,7 @@
       <p-skeleton width="6rem" height="2.5rem" />
     </div>
   } @else {
-    <p-tabs [value]="currentRootFolder()?.folder?.id || ''" (valueChange)="onStorageChange($event)" scrollable>
+    <p-tabs [value]="currentRootFolder()?.folder?.id" (valueChange)="onStorageChange($event)" scrollable>
       <p-tablist>
         @for (option of storageAddons(); track option.folder.id) {
           <p-tab class="addon-tab p-2" [value]="option.folder.id" [disabled]="isFilesLoading()">
@@ -30,6 +30,17 @@
         }
       </p-tablist>
     </p-tabs>
+
+    <div class="flex">
+      <p-button
+        raised
+        outlined
+        [icon]="'fas fa-download'"
+        [label]="'files.actions.downloadAsZip' | translate"
+        [disabled]="isButtonDisabled()"
+        (onClick)="downloadFolder()"
+      />
+    </div>
   }
 
   <osf-files-tree
