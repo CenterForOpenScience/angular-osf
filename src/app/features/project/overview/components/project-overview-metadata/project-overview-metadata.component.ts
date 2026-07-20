@@ -26,6 +26,7 @@ import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/tr
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LanguageLabelPipe } from '@osf/shared/pipes/language-label.pipe';
 import { ResourceTypeGeneralLabelPipe } from '@osf/shared/pipes/resource-type-general-label.pipe';
+import { MetadataRecordsService } from '@osf/shared/services/metadata-records.service';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 import {
   ContributorsSelectors,
@@ -72,6 +73,7 @@ import { OverviewSupplementsComponent } from '../overview-supplements/overview-s
 })
 export class ProjectOverviewMetadataComponent {
   private readonly router = inject(Router);
+  private readonly metadataRecordsService = inject(MetadataRecordsService);
 
   readonly currentProject = select(ProjectOverviewSelectors.getProject);
   readonly isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
@@ -132,6 +134,14 @@ export class ProjectOverviewMetadataComponent {
         this.actions.getCustomItemMetadata(project.id);
       }
     });
+  }
+
+  downloadMetadata(): void {
+    const projectId = this.currentProject()?.id;
+
+    if (projectId) {
+      this.metadataRecordsService.downloadMetadata(projectId);
+    }
   }
 
   onCustomCitationUpdated(citation: string): void {

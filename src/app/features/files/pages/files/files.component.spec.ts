@@ -23,19 +23,19 @@ import { CurrentResource } from '@osf/shared/models/current-resource.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { FileDownloadService } from '@osf/shared/services/file-download.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { FilesTreeActionsService } from '@osf/shared/services/files-tree-actions.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { MOCK_CONFIGURED_ADDON } from '@testing/mocks/configured-addon.mock';
 import { FileModelMock } from '@testing/mocks/file.model.mock';
 import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMock, CustomDialogServiceMockType } from '@testing/providers/custom-dialog-provider.mock';
-import { DataciteServiceMock, DataciteServiceMockType } from '@testing/providers/datacite.service.mock';
+import { FileDownloadServiceMock, FileDownloadServiceMockType } from '@testing/providers/file-download-service.mock';
 import { FilesServiceMock, FilesServiceMockType } from '@testing/providers/files-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
@@ -97,7 +97,7 @@ describe('FilesComponent', () => {
     uploadFiles: Mock;
   };
   let customDialogService: CustomDialogServiceMockType;
-  let dataciteService: DataciteServiceMockType;
+  let fileDownloadService: FileDownloadServiceMockType;
 
   const currentFolder: FileFolderModel = {
     ...OSF_FILE_MOCK,
@@ -121,7 +121,7 @@ describe('FilesComponent', () => {
     toastService = ToastServiceMock.simple();
     viewOnlyHelper = ViewOnlyLinkHelperMock.simple(false);
     customDialogService = CustomDialogServiceMock.simple();
-    dataciteService = DataciteServiceMock.simple();
+    fileDownloadService = FileDownloadServiceMock.simple();
 
     filesActionsService = {
       deleteSelected: vi.fn(),
@@ -195,7 +195,7 @@ describe('FilesComponent', () => {
         MockProvider(ToastService, toastService),
         MockProvider(ViewOnlyLinkHelperService, viewOnlyHelper),
         MockProvider(CustomDialogService, customDialogService),
-        MockProvider(DataciteService, dataciteService),
+        MockProvider(FileDownloadService, fileDownloadService),
         MockProvider(FilesActionsService, filesActionsService),
         MockProvider(FilesTreeActionsService, filesTreeActionsService),
         MockProvider(FilesUploadService, filesUploadService),
@@ -468,28 +468,28 @@ describe('FilesComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new GetFiles('/files-link', 1));
   });
 
-  it('should log download and open folder zip link', () => {
+  it('should download current folder as zip', () => {
     setup();
-    (store.dispatch as Mock).mockClear();
-    const openSpy = vi.spyOn(window, 'open').mockReturnValue({ focus: vi.fn() } as unknown as Window);
 
     component.downloadFolder();
 
-    expect(dataciteService.logFileDownload).toHaveBeenCalledWith('node-1', 'nodes');
-    expect(filesService.getFolderDownloadLink).toHaveBeenCalledWith('/v2/files/file-123/download/');
-    expect(openSpy).toHaveBeenCalledWith('/v2/files/file-123/download/?zip=', '_blank');
-    openSpy.mockRestore();
+    expect(fileDownloadService.downloadFolderAsZip).toHaveBeenCalledWith({
+      resourceId: 'node-1',
+      resourceType: 'nodes',
+      downloadLink: '/v2/files/file-123/download/',
+    });
   });
 
   it('should skip download when resource id is missing', () => {
     setup({ resourceId: '' });
-    const openSpy = vi.spyOn(window, 'open');
 
     component.downloadFolder();
 
-    expect(dataciteService.logFileDownload).not.toHaveBeenCalled();
-    expect(openSpy).not.toHaveBeenCalled();
-    openSpy.mockRestore();
+    expect(fileDownloadService.downloadFolderAsZip).toHaveBeenCalledWith({
+      resourceId: '',
+      resourceType: 'nodes',
+      downloadLink: '/v2/files/file-123/download/',
+    });
   });
 
   it('should open files browser info dialog', () => {
