@@ -7,7 +7,6 @@ import { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
 import {
   GetCedarMetadataRecords,
   GetCedarMetadataTemplates,
@@ -107,7 +106,6 @@ describe('ProjectOverviewMetadataComponent', () => {
             { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
             { selector: CollectionsSelectors.getCurrentProjectSubmissions, value: [] },
             { selector: CollectionsSelectors.getCurrentProjectSubmissionsLoading, value: false },
-            { selector: UserSelectors.getActiveFlags, value: [] },
             { selector: MetadataSelectors.getCedarRecords, value: [] },
             { selector: MetadataSelectors.getCedarTemplates, value: null },
             { selector: MetadataSelectors.getCustomItemMetadata, value: null },

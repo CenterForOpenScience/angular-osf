@@ -6,6 +6,7 @@ export interface ActivityLog {
   type: string;
   action: string;
   date: string;
+  foreignUser: string | null;
   params: {
     contributors: LogContributor[];
     license?: string;

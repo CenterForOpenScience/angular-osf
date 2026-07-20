@@ -3,6 +3,7 @@ import { Chip } from 'primeng/chip';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
+import { FilterOptionRemoved } from '@osf/shared/models/search/filter-option-removed';
 
 @Component({
   selector: 'osf-filter-chips',
@@ -14,7 +15,7 @@ export class FilterChipsComponent {
   filterOptions = input<Record<string, FilterOption[]>>({});
   filters = input.required<DiscoverableFilter[]>();
 
-  selectedOptionRemoved = output<{ filterKey: string; optionRemoved: FilterOption }>();
+  selectedOptionRemoved = output<FilterOptionRemoved>();
 
   filterLabels = computed(() =>
     this.filters()
