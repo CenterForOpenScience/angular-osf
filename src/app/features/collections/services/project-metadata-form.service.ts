@@ -45,10 +45,10 @@ export class ProjectMetadataFormService {
     const yearControl = form.get(ProjectMetadataFormControls.LicenseYear);
     const copyrightHoldersControl = form.get(ProjectMetadataFormControls.CopyrightHolders);
 
-    const validators = license.requiredFields.length ? [CustomValidators.requiredTrimmed()] : [];
-
-    yearControl?.setValidators(validators);
-    copyrightHoldersControl?.setValidators(validators);
+    yearControl?.setValidators(license.requiredFields.includes('year') ? [CustomValidators.requiredTrimmed()] : []);
+    copyrightHoldersControl?.setValidators(
+      license.requiredFields.includes('copyrightHolders') ? [CustomValidators.requiredTrimmed()] : []
+    );
 
     yearControl?.updateValueAndValidity();
     copyrightHoldersControl?.updateValueAndValidity();

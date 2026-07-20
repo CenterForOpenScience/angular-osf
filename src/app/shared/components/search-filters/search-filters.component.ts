@@ -75,7 +75,7 @@ export class SearchFiltersComponent {
     return this.filters().filter((filter) => {
       if (!filter || !filter.key) return false;
 
-      return Boolean((filter.resultCount && filter.resultCount > 0) || (filter.options && filter.options.length > 0));
+      return filter.resultCount === undefined || filter.resultCount > 0 || (filter.options?.length ?? 0) > 0;
     });
   });
 
@@ -126,6 +126,10 @@ export class SearchFiltersComponent {
       cardSearchResultCount: NaN,
     };
     this.filterOptionSelected.emit({ filter, filterOption: isChecked ? [option] : [] });
+  }
+
+  getPlaceholderKey(filter: DiscoverableFilter): string {
+    return FILTER_PLACEHOLDERS[filter.key] ?? 'common.search.filterPlaceholders.generic';
   }
 
   private scrollPanelIntoView(key: string) {

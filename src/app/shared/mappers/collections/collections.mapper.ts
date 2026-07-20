@@ -50,6 +50,7 @@ export class CollectionsMapper {
             favicon: response.attributes.assets.favicon,
           }
         : {},
+      iri: response.links?.iri,
       shareSource: response.attributes.share_source,
       sharePublishType: response.attributes.share_publish_type,
       permissions: response.attributes.permissions,
@@ -71,6 +72,7 @@ export class CollectionsMapper {
             backgroundColor: response.embeds.brand.data.attributes.background_color,
           }
         : null,
+      requiredMetadataTemplate: response.embeds.required_metadata_template?.data ?? null,
     };
   }
 
@@ -78,6 +80,7 @@ export class CollectionsMapper {
     return {
       id: response.id,
       type: response.type,
+      iri: response.links?.iri,
       title: replaceBadEncodedChars(response.attributes.title),
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
@@ -116,6 +119,8 @@ export class CollectionsMapper {
       gradeLevels: submission.attributes.grade_levels,
       collectionTitle: replaceBadEncodedChars(submission.embeds.collection.data.attributes.title),
       collectionId: submission.embeds.collection.data.relationships.provider.data.id,
+      requiredMetadataTemplateId:
+        submission.embeds.collection.data.relationships.required_metadata_template?.data?.id ?? null,
     };
   }
 
@@ -240,7 +245,7 @@ export class CollectionsMapper {
 
   static toCollectionSubmissionRequest(payload: CollectionSubmissionPayload): CollectionSubmissionPayloadJsonApi {
     const collectionId = payload.collectionId;
-    const collectionsMetadata = convertToSnakeCase(payload.collectionMetadata);
+    const collectionsMetadata = payload.collectionMetadata ? convertToSnakeCase(payload.collectionMetadata) : {};
 
     return {
       data: {
@@ -268,11 +273,15 @@ export class CollectionsMapper {
   }
 
   static collectionSubmissionUpdateRequest(payload: CollectionSubmissionPayload) {
+    const collectionsMetadata = payload.collectionMetadata ? convertToSnakeCase(payload.collectionMetadata) : {};
+
     return {
       data: {
         id: `${payload.projectId}-${payload.collectionId}`,
         type: 'collection-submissions',
-        attributes: {},
+        attributes: {
+          ...collectionsMetadata,
+        },
         relationships: {},
       },
     };

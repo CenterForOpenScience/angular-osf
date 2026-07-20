@@ -20,6 +20,7 @@ import {
   LoadMoreFilterOptions,
   ResetSearchState,
   SetDefaultFilterValue,
+  SetExtraFilters,
   SetResourceType,
   SetSearchText,
   SetSortBy,
@@ -61,6 +62,15 @@ export class GlobalSearchState {
   loadFilterOptions(ctx: StateContext<GlobalSearchStateModel>, action: LoadFilterOptions) {
     const state = ctx.getState();
     const filterKey = action.filterKey;
+
+    const filter = state.filters.find((f) => f.key === filterKey);
+    if (filter?.cedarPropertyIri) {
+      ctx.patchState({
+        filters: state.filters.map((f) => (f.key === filterKey ? { ...f, isLoaded: true } : f)),
+      });
+      return EMPTY;
+    }
+
     const cachedOptions = state.filterOptionsCache[filterKey];
     if (cachedOptions?.length) {
       const updatedFilters = state.filters.map((f) =>
@@ -203,7 +213,12 @@ export class GlobalSearchState {
     ctx.patchState({ filters: loadingFilters });
     ctx.patchState({ selectedFilterOptions: filterValues });
 
-    const observables = filterKeys.map((key) =>
+    const cedarKeys = new Set(ctx.getState().extraFilters.map((f) => f.key));
+    const nonCedarKeys = filterKeys.filter((key) => !cedarKeys.has(key));
+
+    if (!nonCedarKeys.length) return;
+
+    const observables = nonCedarKeys.map((key) =>
       this.searchService.getFilterOptions(this.buildParamsForIndexValueSearch(ctx.getState(), key)).pipe(
         tap((response) => {
           const options = response.options;
@@ -239,6 +254,11 @@ export class GlobalSearchState {
     ctx.patchState({ defaultFilterOptions: updatedFilterValues });
   }
 
+  @Action(SetExtraFilters)
+  setExtraFilters(ctx: StateContext<GlobalSearchStateModel>, action: SetExtraFilters) {
+    ctx.patchState({ extraFilters: action.filters });
+  }
+
   @Action(UpdateSelectedFilterOption)
   updateSelectedFilterOption(ctx: StateContext<GlobalSearchStateModel>, action: UpdateSelectedFilterOption) {
     const updatedFilterValues = { ...ctx.getState().selectedFilterOptions, [action.filterKey]: action.filterOption };
@@ -269,12 +289,16 @@ export class GlobalSearchState {
   }
 
   private updateResourcesState(ctx: StateContext<GlobalSearchStateModel>, response: ResourcesData) {
+    const { extraFilters } = ctx.getState();
+    const apiFilterKeys = new Set(response.filters.map((f) => f.key));
+    const merged = [...response.filters, ...extraFilters.filter((f) => !apiFilterKeys.has(f.key))];
+
     ctx.patchState({
       resources: { data: response.resources, isLoading: false, error: null },
       filterOptionsCache: {},
       filterSearchCache: {},
       filterPaginationCache: {},
-      filters: response.filters,
+      filters: merged,
       resourcesCount: response.count,
       first: response.first,
       next: response.next,
@@ -300,19 +324,38 @@ export class GlobalSearchState {
     Object.entries(state.defaultFilterOptions).forEach(([key, value]) => {
       filtersParams[`cardSearchFilter[${key}][]`] = value;
     });
-    Object.entries(state.selectedFilterOptions).forEach(([key, options]) => {
-      const filter = state.filters.find((f) => f.key === key);
+    let hasCedarFilters = state.extraFilters.length > 0;
 
-      const firstOptionValue = options[0]?.value;
-      const isOptionValueBoolean = firstOptionValue === 'true' || firstOptionValue === 'false';
-      if (filter?.operator === FilterOperatorOption.IsPresent || isOptionValueBoolean) {
-        if (firstOptionValue) {
-          filtersParams[`cardSearchFilter[${key}][is-present]`] = firstOptionValue;
+    Object.entries(state.selectedFilterOptions).forEach(([key, options]) => {
+      if (key in state.defaultFilterOptions && options.length === 0) return;
+      const filter = state.filters.find((f) => f.key === key) ?? state.extraFilters.find((f) => f.key === key);
+
+      if (filter?.cedarPropertyIri) {
+        hasCedarFilters = true;
+        const values = options.map((o) => `"${o.value}"`);
+        if (values.length) {
+          filtersParams[`cardSearchText[osf:hasCedarRecord.cedar:${filter.cedarPropertyIri}][]`] = values;
         }
       } else {
-        filtersParams[`cardSearchFilter[${key}][]`] = options.map((option) => option.value);
+        const firstOptionValue = options[0]?.value;
+        const isOptionValueBoolean = firstOptionValue === 'true' || firstOptionValue === 'false';
+        if (filter?.operator === FilterOperatorOption.IsPresent || isOptionValueBoolean) {
+          if (firstOptionValue) {
+            filtersParams[`cardSearchFilter[${key}][is-present]`] = firstOptionValue;
+          }
+        } else {
+          const selectedValues = options.map((option) => option.value);
+          if (selectedValues.length) {
+            const filterSuffix = key === 'dateCreated' ? '' : '[any-of]';
+            filtersParams[`cardSearchFilter[${key}]${filterSuffix}`] = selectedValues.join(',');
+          }
+        }
       }
     });
+
+    if (hasCedarFilters) {
+      filtersParams['iriShorthand[cedar]'] = 'https://schema.metadatacenter.org/properties/';
+    }
 
     filtersParams['cardSearchFilter[resourceType]'] = getResourceTypeStringFromEnum(state.resourceType);
     filtersParams['cardSearchFilter[accessService]'] = `${this.environment.webUrl}/`;

@@ -22,6 +22,16 @@
   <p-tag class="capitalize" [value]="status.label | translate" [severity]="status.value"></p-tag>
 </div>
 
+@if (showCedarViewer()) {
+  <div class="mt-2">
+    <cedar-artifact-viewer
+      [config]="cedarViewerConfig"
+      [templateObject]="cedarTemplate()!.attributes.template"
+      [instanceObject]="cedarMetadata()"
+    ></cedar-artifact-viewer>
+  </div>
+}
+
 @if (showAttributes()) {
   <div class="flex flex-column gap-2 mt-2">
     @for (attribute of attributes(); track attribute.key) {

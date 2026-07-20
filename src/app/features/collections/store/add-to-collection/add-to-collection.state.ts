@@ -56,8 +56,8 @@ export class AddToCollectionState {
   getCurrentCollectionSubmission(ctx: StateContext<AddToCollectionStateModel>, action: GetCurrentCollectionSubmission) {
     const state = ctx.getState();
     ctx.patchState({
-      collectionLicenses: {
-        ...state.collectionLicenses,
+      currentProjectSubmission: {
+        ...state.currentProjectSubmission,
         isLoading: true,
       },
     });

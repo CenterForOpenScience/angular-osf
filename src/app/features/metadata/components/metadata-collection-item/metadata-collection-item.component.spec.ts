@@ -4,31 +4,22 @@ import { provideRouter } from '@angular/router';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
 
+import {
+  MOCK_CEDAR_RECORD,
+  MOCK_CEDAR_SUBMISSION,
+  MOCK_CEDAR_TEMPLATE,
+} from '@testing/data/collections/cedar-metadata.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { MetadataCollectionItemComponent } from './metadata-collection-item.component';
 
+const mockSubmission: CollectionSubmission = MOCK_CEDAR_SUBMISSION;
+const mockCedarTemplate = MOCK_CEDAR_TEMPLATE;
+const mockCedarRecord = MOCK_CEDAR_RECORD;
+
 describe('MetadataCollectionItemComponent', () => {
   let component: MetadataCollectionItemComponent;
   let fixture: ComponentFixture<MetadataCollectionItemComponent>;
-
-  const mockSubmission: CollectionSubmission = {
-    id: '1',
-    type: 'collection-submission',
-    collectionTitle: 'Test Collection',
-    collectionId: 'collection-123',
-    reviewsState: CollectionSubmissionReviewState.Pending,
-    collectedType: 'preprint',
-    status: 'pending',
-    volume: '1',
-    issue: '1',
-    programArea: 'Science',
-    schoolType: 'University',
-    studyDesign: 'Experimental',
-    dataType: 'Quantitative',
-    disease: 'Cancer',
-    gradeLevels: 'Graduate',
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -148,5 +139,77 @@ describe('MetadataCollectionItemComponent', () => {
     expect(component.attributes().length).toBeGreaterThan(0);
     const attributesSection = fixture.nativeElement.querySelector('.flex.flex-column.gap-2.mt-2');
     expect(attributesSection).toBeFalsy();
+  });
+
+  describe('CEDAR mode', () => {
+    it('should not show cedar viewer when isCedarMode is false', () => {
+      fixture.componentRef.setInput('isCedarMode', false);
+      fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
+      fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
+      fixture.detectChanges();
+
+      expect(component.showCedarViewer()).toBe(false);
+    });
+
+    it('should not show cedar viewer when cedarRecord is null', () => {
+      fixture.componentRef.setInput('isCedarMode', true);
+      fixture.componentRef.setInput('cedarRecord', null);
+      fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
+      fixture.detectChanges();
+
+      expect(component.showCedarViewer()).toBe(false);
+    });
+
+    it('should not show cedar viewer when cedarTemplate is null', () => {
+      fixture.componentRef.setInput('isCedarMode', true);
+      fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
+      fixture.componentRef.setInput('cedarTemplate', null);
+      fixture.detectChanges();
+
+      expect(component.showCedarViewer()).toBe(false);
+    });
+
+    it('should show cedar viewer when isCedarMode, record, and template are provided', () => {
+      fixture.componentRef.setInput('isCedarMode', true);
+      fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
+      fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
+      fixture.detectChanges();
+
+      expect(component.showCedarViewer()).toBe(true);
+    });
+
+    it('should not show cedar viewer when submission is removed', () => {
+      fixture.componentRef.setInput('isCedarMode', true);
+      fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
+      fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
+      fixture.componentRef.setInput('submission', {
+        ...mockSubmission,
+        reviewsState: CollectionSubmissionReviewState.Removed,
+      });
+      fixture.detectChanges();
+
+      expect(component.showCedarViewer()).toBe(false);
+    });
+
+    it('should not show attributes in cedar mode', () => {
+      fixture.componentRef.setInput('isCedarMode', true);
+      fixture.detectChanges();
+
+      expect(component.showAttributes()).toBe(false);
+    });
+
+    it('should compute cedarMetadata from record', () => {
+      fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
+      fixture.detectChanges();
+
+      expect(component.cedarMetadata()).toEqual({ field: 'value' });
+    });
+
+    it('should return empty object for cedarMetadata when no record', () => {
+      fixture.componentRef.setInput('cedarRecord', null);
+      fixture.detectChanges();
+
+      expect(component.cedarMetadata()).toEqual({});
+    });
   });
 });

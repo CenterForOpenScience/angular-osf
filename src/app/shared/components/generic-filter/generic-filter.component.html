@@ -27,7 +27,12 @@
       (onLazyLoad)="loadMoreItems($event)"
     >
       <ng-template #item let-item>
-        <p class="text-base">{{ item.label }} ({{ item.cardSearchResultCount }})</p>
+        <p class="text-base">
+          {{ item.label }}
+          @if (item.cardSearchResultCount !== null) {
+            ({{ item.cardSearchResultCount }})
+          }
+        </p>
       </ng-template>
     </p-multiSelect>
   }

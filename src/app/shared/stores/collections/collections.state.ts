@@ -1,6 +1,6 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -116,7 +116,17 @@ export class CollectionsState {
         }
 
         const submissionRequests = collections.map((collection) =>
-          this.collectionsService.fetchCurrentSubmission(action.projectId, collection.id)
+          this.collectionsService.fetchCurrentSubmission(action.projectId, collection.id).pipe(
+            switchMap((submission) =>
+              this.collectionsService.getCollectionProvider(submission.collectionId).pipe(
+                map((provider) => ({
+                  ...submission,
+                  requiredMetadataTemplateId: provider.requiredMetadataTemplate?.id ?? null,
+                })),
+                catchError(() => of(submission))
+              )
+            )
+          )
         );
 
         return forkJoin(submissionRequests);

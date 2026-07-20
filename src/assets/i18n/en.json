@@ -1,5 +1,35 @@
 {
+  "truncatedText": {
+    "readMore": "Read more",
+    "hide": "Hide"
+  },
   "activityLog": {
+    "defaults": {
+      "preprint": "Preprint",
+      "preprintPlural": "Preprints",
+      "anonymousA": "a",
+      "anonymousAn": "an anonymous",
+      "someUsers": "some users",
+      "contributorsAnd": ", and ",
+      "contributorsOthers": " others",
+      "aNewNameLocation": "a new name/location",
+      "materialized": "{{materialized}} in {{addon}}",
+      "aTitle": "a title",
+      "aNameLocation": "a name/location",
+      "pageTitle": "a title",
+      "aFile": "a file",
+      "folder": "folder",
+      "file": "file",
+      "aUser": "A user",
+      "aProject": "a project",
+      "fileOn": "on {{file}}",
+      "wikiOn": "on wiki page {{wiki}}",
+      "field": "field",
+      "updatedFields": "{{old}} to {{new}}",
+      "uncategorized": "Uncategorized",
+      "fallbackWithNode": "{{user}} performed action \"{{action}}\" on {{node}}",
+      "fallbackWithoutNode": "{{user}} performed action \"{{action}}\""
+    },
     "activities": {
       "addon_added": "{{user}} enabled {{addon}} to {{node}}",
       "addon_file_copied": "{{user}} copied {{source}} to {{destination}} in {{node}}",
@@ -88,8 +118,8 @@
       "registration_approved": "{{user}} approved a registration of {{node}}",
       "registration_approved_no_user": "Registration of {{node}} was approved",
       "registration_cancelled": "{{user}} cancelled a registration of {{node}}",
-      "registration_date_updated": "An OSF Support Team member updated the registration date of {{node}}",
       "registration_initiated": "{{user}} initiated a registration of {{node}}",
+      "registration_date_updated": "An OSF Support Team member updated the registration date of {{node}}",
       "resource_identifier_added": "{{user}} has added a Resource to Registration {{node}}",
       "resource_identifier_removed": "{{user}} has removed a Resource to Registration {{node}}",
       "resource_identifier_updated": "{{user}} has updated a Resource to Registration {{node}}",
@@ -109,32 +139,6 @@
       "wiki_deleted": "{{user}} deleted wiki page {{page}} of {{node}}",
       "wiki_renamed": "{{user}} renamed wiki page {{oldPage}} to {{page}} of {{node}}",
       "wiki_updated": "{{user}} updated wiki page {{page}} to version {{version}} of {{node}}"
-    },
-    "defaults": {
-      "aFile": "a file",
-      "aNameLocation": "a name/location",
-      "aNewNameLocation": "a new name/location",
-      "anonymousA": "a",
-      "anonymousAn": "an anonymous",
-      "aProject": "a project",
-      "aTitle": "a title",
-      "aUser": "A user",
-      "contributorsAnd": ", and ",
-      "contributorsOthers": " others",
-      "fallbackWithNode": "{{user}} performed action \"{{action}}\" on {{node}}",
-      "fallbackWithoutNode": "{{user}} performed action \"{{action}}\"",
-      "field": "field",
-      "file": "file",
-      "fileOn": "on {{file}}",
-      "folder": "folder",
-      "materialized": "{{materialized}} in {{addon}}",
-      "pageTitle": "a title",
-      "preprint": "Preprint",
-      "preprintPlural": "Preprints",
-      "someUsers": "some users",
-      "uncategorized": "Uncategorized",
-      "updatedFields": "{{old}} to {{new}}",
-      "wikiOn": "on wiki page {{wiki}}"
     }
   },
   "adminInstitutions": {
@@ -553,6 +557,7 @@
         "creator": "Creator name",
         "dateCreated": "Select date",
         "funder": "Select funder",
+        "generic": "",
         "isPartOfCollection": "Select collection",
         "publisher": "Select provider",
         "resourceType": "Select resource type",
@@ -1122,7 +1127,6 @@
       "descriptions": {
         "file_updated": {
           "daily": "You'll receive a daily summary of file updates.",
-          "instant": "You'll be notified immediately when files are updated.",
           "none": "You won't receive file update notifications."
         }
       },
@@ -1260,10 +1264,10 @@
     "hypothesis": "Hypothesis",
     "instrumentation": "Instrumentation",
     "methods and measures": "Methods and Measures",
-    "other": "Other",
     "procedure": "Procedure",
     "project": "Project",
-    "software": "Software"
+    "software": "Software",
+    "other": "Other"
   },
   "pageNotFound": {
     "message": "The page you were looking for is either doesn't exist, was deleted, or the URL may be incorrect. If this should not have occurred and the issue persists, please report it to",
