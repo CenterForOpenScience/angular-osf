@@ -476,7 +476,7 @@ describe('FilesComponent', () => {
     component.downloadFolder();
 
     expect(dataciteService.logFileDownload).toHaveBeenCalledWith('node-1', 'nodes');
-    expect(filesService.getFolderDownloadLink).toHaveBeenCalledWith('/v2/files/file-123/download/');
+    expect(filesService.getFolderDownloadLink).toHaveBeenCalledWith('/v2/files/file-123/download/', 'files');
     expect(openSpy).toHaveBeenCalledWith('/v2/files/file-123/download/?zip=', '_blank');
     openSpy.mockRestore();
   });

@@ -250,7 +250,7 @@ describe('FilesTreeExplorerComponent', () => {
 
     component.downloadFolder('/upload-folder');
 
-    expect(filesService.getFolderDownloadLink).toHaveBeenCalledWith('/upload-folder');
+    expect(filesService.getFolderDownloadLink).toHaveBeenCalledWith('/upload-folder', 'files');
     expect(openSpy).toHaveBeenCalledWith('/upload-folder?zip=', '_blank');
   });
 

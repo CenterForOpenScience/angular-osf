@@ -24,7 +24,7 @@ export class PreprintDownloadRedirectComponent {
       return;
     }
 
-    const url = this.socialShareService.createDownloadUrl(id);
+    const url = this.socialShareService.createDownloadUrl(id, 'preprint');
     this.redirect(url);
   }
 

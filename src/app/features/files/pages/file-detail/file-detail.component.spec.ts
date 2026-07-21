@@ -169,11 +169,14 @@ describe('FileDetailComponent', () => {
     setup();
     (store.dispatch as Mock).mockClear();
     const openSpy = vi.spyOn(window, 'open').mockReturnValue({ focus: vi.fn() } as unknown as Window);
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     component.downloadRevision('3');
 
     expect(dataciteService.logIdentifiableDownload).toHaveBeenCalledWith(component.fileMetadata$);
-    expect(openSpy).toHaveBeenCalledWith('https://osf.test/download/?revision=3');
+    expect(openSpy).toHaveBeenCalledWith(
+      `https://osf.test/download/?revision=3&source=file-detail&tz=${encodeURIComponent(timeZone)}`
+    );
     expect(store.dispatch).toHaveBeenCalledWith(new GetFileRevisions('https://osf.test/upload'));
   });
 
@@ -223,11 +226,14 @@ describe('FileDetailComponent', () => {
     setup();
     (store.dispatch as Mock).mockClear();
     const openSpy = vi.spyOn(window, 'open').mockReturnValue({ focus: vi.fn() } as unknown as Window);
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     component.downloadFile();
 
     expect(dataciteService.logIdentifiableDownload).toHaveBeenCalledWith(component.fileMetadata$);
-    expect(openSpy).toHaveBeenCalledWith('https://osf.test/download');
+    expect(openSpy).toHaveBeenCalledWith(
+      `https://osf.test/download?source=file-detail&tz=${encodeURIComponent(timeZone)}`
+    );
     openSpy.mockRestore();
   });
 
