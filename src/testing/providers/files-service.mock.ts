@@ -4,8 +4,9 @@ import { Mock, vi } from 'vitest';
 
 import { HttpEvent } from '@angular/common/http';
 
+import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
 import { ListMetaJsonApi } from '@osf/shared/models/common/json-api/meta.model';
-import { FileDetailsModel, FileModel } from '@osf/shared/models/files/file.model';
+import { FileDetailsModel, FileDetailsWithMeta, FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FileVersionModel } from '@osf/shared/models/files/file-version.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
@@ -14,6 +15,7 @@ import { FilesService } from '@osf/shared/services/files.service';
 import { FileModelMock } from '@testing/mocks/file.model.mock';
 import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
 
+type GetConfiguredStorageAddonsFn = (resourceId: string) => Observable<ConfiguredAddonModel[]>;
 type GetFilesFn = (
   filesLink: string,
   search: string,
@@ -36,7 +38,7 @@ type MoveFileFn = (
   replace?: boolean
 ) => Observable<unknown>;
 type GetFolderDownloadLinkFn = (link: string) => string;
-type GetFileTargetFn = (fileGuid: string) => Observable<FileDetailsModel>;
+type GetFileTargetFn = (fileGuid: string) => Observable<FileDetailsWithMeta>;
 type GetFileGuidFn = (id: string) => Observable<FileModel>;
 type GetFileByIdFn = (fileGuid: string) => Observable<FileModel>;
 type GetFileVersionsFn = (fileGuid: string) => Observable<FileVersionModel[]>;
@@ -46,6 +48,7 @@ export type FilesServiceMockType = Pick<
   | 'getFiles'
   | 'getFolders'
   | 'getRootFolders'
+  | 'getConfiguredStorageAddons'
   | 'getFilesWithoutFiltering'
   | 'uploadFile'
   | 'getFolder'
@@ -61,6 +64,7 @@ export type FilesServiceMockType = Pick<
   getFiles: Mock<GetFilesFn>;
   getFolders: Mock<GetFoldersFn>;
   getRootFolders: Mock<GetRootFoldersFn>;
+  getConfiguredStorageAddons: Mock<GetConfiguredStorageAddonsFn>;
   getFilesWithoutFiltering: Mock<GetFilesWithoutFilteringFn>;
   uploadFile: Mock<UploadFileFn>;
   getFolder: Mock<GetFolderFn>;
@@ -105,6 +109,7 @@ export const FilesServiceMock = {
       getRootFolders: vi
         .fn()
         .mockReturnValue(of({ data: [folder], totalCount: 1, pageSize: 10 } as PaginatedData<FileFolderModel[]>)),
+      getConfiguredStorageAddons: vi.fn().mockReturnValue(of([])),
       getFilesWithoutFiltering: vi
         .fn()
         .mockReturnValue(of({ data: [file], totalCount: 1, pageSize: 10 } as PaginatedData<FileModel[]>)),
@@ -114,7 +119,7 @@ export const FilesServiceMock = {
       renameEntry: vi.fn().mockReturnValue(of(file)),
       moveFile: vi.fn().mockReturnValue(of({})),
       getFolderDownloadLink: vi.fn().mockImplementation((link: string) => `${link}?zip=`),
-      getFileTarget: vi.fn().mockReturnValue(of(fileDetails)),
+      getFileTarget: vi.fn().mockReturnValue(of({ file: fileDetails })),
       getFileGuid: vi.fn().mockReturnValue(of(file)),
       getFileById: vi.fn().mockReturnValue(of(file)),
       getFileVersions: vi.fn().mockReturnValue(of([])),

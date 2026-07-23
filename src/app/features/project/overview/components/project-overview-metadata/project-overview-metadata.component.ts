@@ -8,7 +8,6 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
 import {
   GetCedarMetadataRecords,
   GetCedarMetadataTemplates,
@@ -27,6 +26,7 @@ import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/tr
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LanguageLabelPipe } from '@osf/shared/pipes/language-label.pipe';
 import { ResourceTypeGeneralLabelPipe } from '@osf/shared/pipes/resource-type-general-label.pipe';
+import { MetadataRecordsService } from '@osf/shared/services/metadata-records.service';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 import {
   ContributorsSelectors,
@@ -34,7 +34,6 @@ import {
   LoadMoreBibliographicContributors,
 } from '@osf/shared/stores/contributors';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
-import { COLLECTION_SUBMISSION_WITH_CEDAR } from '@shared/constants/feature-flags.const';
 
 import {
   GetProjectIdentifiers,
@@ -74,6 +73,7 @@ import { OverviewSupplementsComponent } from '../overview-supplements/overview-s
 })
 export class ProjectOverviewMetadataComponent {
   private readonly router = inject(Router);
+  private readonly metadataRecordsService = inject(MetadataRecordsService);
 
   readonly currentProject = select(ProjectOverviewSelectors.getProject);
   readonly isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
@@ -95,11 +95,9 @@ export class ProjectOverviewMetadataComponent {
   readonly hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
   readonly projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
   readonly isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
-  readonly activeFlags = select(UserSelectors.getActiveFlags);
   readonly cedarRecords = select(MetadataSelectors.getCedarRecords);
   private readonly cedarTemplatesResponse = select(MetadataSelectors.getCedarTemplates);
   readonly cedarTemplates = computed(() => this.cedarTemplatesResponse()?.data ?? null);
-  readonly isCedarMode = computed(() => this.activeFlags().includes(COLLECTION_SUBMISSION_WITH_CEDAR));
 
   readonly resourceType = CurrentResourceType.Projects;
   readonly dateFormat = 'MMM d, y, h:mm a';
@@ -136,6 +134,14 @@ export class ProjectOverviewMetadataComponent {
         this.actions.getCustomItemMetadata(project.id);
       }
     });
+  }
+
+  downloadMetadata(): void {
+    const projectId = this.currentProject()?.id;
+
+    if (projectId) {
+      this.metadataRecordsService.downloadMetadata(projectId);
+    }
   }
 
   onCustomCitationUpdated(citation: string): void {

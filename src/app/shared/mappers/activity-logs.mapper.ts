@@ -22,6 +22,7 @@ export class ActivityLogsMapper {
       type: log.type,
       action: log.attributes.action,
       date: log.attributes.date,
+      foreignUser: log.attributes.foreign_user,
       params: {
         addon: params.addon,
         anonymousLink: params.anonymous_link,

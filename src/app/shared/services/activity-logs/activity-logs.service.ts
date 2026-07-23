@@ -16,10 +16,13 @@ import { ActivityLogDisplayService } from './activity-log-display.service';
 
 @Injectable({ providedIn: 'root' })
 export class ActivityLogsService {
-  private jsonApiService = inject(JsonApiService);
-  private activityDisplayService = inject(ActivityLogDisplayService);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly activityDisplayService = inject(ActivityLogDisplayService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly apiUrl = `${this.environment.apiDomainUrl}/v2`;
+
+  get apiUrl() {
+    return `${this.environment.apiDomainUrl}/v2`;
+  }
 
   fetchLogs(
     resourceType: CurrentResourceType.Projects | CurrentResourceType.Registrations,

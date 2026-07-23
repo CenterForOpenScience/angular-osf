@@ -22,7 +22,6 @@ export class MetadataCollectionsComponent {
   isProjectSubmissionsLoading = input<boolean>(false);
   cedarRecords = input<CedarMetadataRecordDataJsonApi[] | null>(null);
   cedarTemplates = input<CedarMetadataDataTemplateJsonApi[] | null>(null);
-  isCedarMode = input<boolean>(false);
 
   cedarRecordByTemplateId = computed(() => {
     const records = this.cedarRecords();

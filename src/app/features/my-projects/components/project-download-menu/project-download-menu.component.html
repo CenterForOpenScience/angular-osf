@@ -1,0 +1,24 @@
+<div #menuTrigger osfStopPropagation>
+  <p-button
+    class="btn-icon-only"
+    severity="secondary"
+    icon="fas fa-download text-xl"
+    raised
+    [loading]="isLoading()"
+    [ariaLabel]="'common.buttons.download' | translate"
+    (onClick)="onDownloadClick()"
+  />
+
+  <p-menu #menu [model]="menuItems()" appendTo="body" popup>
+    <ng-template #item let-item>
+      <a
+        class="p-menu-item-link"
+        (click)="onMenuItemSelect(item, $event)"
+        (keydown.enter)="onMenuItemSelect(item, $event)"
+        tabindex="0"
+      >
+        {{ item.label | translate: item.labelParams }}
+      </a>
+    </ng-template>
+  </p-menu>
+</div>

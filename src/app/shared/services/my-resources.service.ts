@@ -7,6 +7,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { DEFAULT_TABLE_PARAMS } from '../constants/default-table-params.constants';
 import { ResourceSearchMode } from '../enums/resource-search-mode.enum';
+import { ResourceVisibilityFilter } from '../enums/resource-visibility-filter.enum';
 import { SortOrder } from '../enums/sort-order.enum';
 import { MyResourcesMapper } from '../mappers/my-resources.mapper';
 import { EndpointType } from '../models/my-resources/my-resources-endpoint.type';
@@ -74,7 +75,8 @@ export class MyResourcesService {
     pageSize?: number,
     resourceType?: string,
     searchMode?: ResourceSearchMode,
-    rootProjectId?: string
+    rootProjectId?: string,
+    visibilityFilter?: ResourceVisibilityFilter
   ): Observable<PaginatedData<MyResourcesItem[]>> {
     const params = this.buildCommonParams(filters, pageNumber, pageSize, resourceType);
 
@@ -103,6 +105,12 @@ export class MyResourcesService {
       params['filter[parent]'] = null;
     }
 
+    if (visibilityFilter === ResourceVisibilityFilter.Public) {
+      params['filter[public]'] = true;
+    } else if (visibilityFilter === ResourceVisibilityFilter.Private) {
+      params['filter[public]'] = false;
+    }
+
     return this.jsonApiService.get<MyResourcesResponseJsonApi>(url, params).pipe(
       map((response: MyResourcesResponseJsonApi) => ({
         data: response.data.map((item) => MyResourcesMapper.fromResponse(item)),
@@ -117,9 +125,19 @@ export class MyResourcesService {
     pageNumber?: number,
     pageSize?: number,
     searchMode?: ResourceSearchMode,
-    rootProjectId?: string
+    rootProjectId?: string,
+    visibilityFilter?: ResourceVisibilityFilter
   ): Observable<PaginatedData<MyResourcesItem[]>> {
-    return this.getResources('nodes/', filters, pageNumber, pageSize, 'nodes', searchMode, rootProjectId);
+    return this.getResources(
+      'nodes/',
+      filters,
+      pageNumber,
+      pageSize,
+      'nodes',
+      searchMode,
+      rootProjectId,
+      visibilityFilter
+    );
   }
 
   getMyRegistrations(

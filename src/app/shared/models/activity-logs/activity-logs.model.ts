@@ -7,9 +7,10 @@ export interface ActivityLogModel {
   type: string;
   action: string;
   date: string;
+  foreignUser: string | null;
+  params: ActivityLogParamsModel;
   embeds?: ActivityLogEmbedsModel;
   isAnonymous?: boolean;
-  params: ActivityLogParamsModel;
 }
 
 interface ActivityLogEmbedsModel {

@@ -13,13 +13,12 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { collectionFilterNames } from '@osf/features/collections/constants';
-import { CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi } from '@osf/features/metadata/models';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
 import { CollectionSubmission } from '@osf/shared/models/collections/collection-submissions.model';
-import { KeyValueModel } from '@osf/shared/models/common/key-value.model';
 import { CollectionStatusSeverityPipe } from '@osf/shared/pipes/collection-status-severity.pipe';
+
+import { CEDAR_VIEWER_CONFIG } from '../../constants';
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi } from '../../models';
 
 @Component({
   selector: 'osf-metadata-collection-item',
@@ -34,7 +33,6 @@ export class MetadataCollectionItemComponent {
   readonly CollectionSubmissionReviewState = CollectionSubmissionReviewState;
 
   submission = input.required<CollectionSubmission>();
-  isCedarMode = input<boolean>(false);
   cedarRecord = input<CedarMetadataRecordDataJsonApi | null>(null);
   cedarTemplate = input<CedarMetadataDataTemplateJsonApi | null>(null);
 
@@ -42,21 +40,14 @@ export class MetadataCollectionItemComponent {
 
   showSubmissionButton = computed(() => this.submission().reviewsState === CollectionSubmissionReviewState.Accepted);
 
-  submissionButtonLabel = computed(() => {
-    const status = this.submission().status;
-    return status === CollectionSubmissionReviewState.Removed ? 'common.buttons.resubmit' : 'common.buttons.edit';
-  });
-
-  showAttributes = computed(
-    () =>
-      !this.isCedarMode() &&
-      this.submission().reviewsState !== CollectionSubmissionReviewState.Removed &&
-      !!this.attributes().length
+  submissionButtonLabel = computed(() =>
+    this.submission().reviewsState === CollectionSubmissionReviewState.Removed
+      ? 'common.buttons.resubmit'
+      : 'common.buttons.edit'
   );
 
   showCedarViewer = computed(
     () =>
-      this.isCedarMode() &&
       !!this.cedarRecord() &&
       !!this.cedarTemplate()?.attributes?.template &&
       this.submission().reviewsState !== CollectionSubmissionReviewState.Removed
@@ -65,24 +56,5 @@ export class MetadataCollectionItemComponent {
   cedarMetadata = computed(() => {
     const record = this.cedarRecord();
     return record?.attributes?.metadata ? (record.attributes.metadata as Record<string, unknown>) : {};
-  });
-
-  attributes = computed(() => {
-    const submission = this.submission();
-    const attributes: KeyValueModel[] = [];
-
-    for (const filter of collectionFilterNames) {
-      const value = submission[filter.key as keyof CollectionSubmission];
-
-      if (value) {
-        attributes.push({
-          key: filter.key,
-          label: filter.label,
-          value: String(value),
-        });
-      }
-    }
-
-    return attributes;
   });
 }

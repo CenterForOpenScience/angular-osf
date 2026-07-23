@@ -10,7 +10,7 @@ import { CurrentResourceType } from '@shared/enums/resource-type.enum';
 import { PaginatedData } from '@shared/models/paginated-data.model';
 import { ActivityLogsService } from '@shared/services/activity-logs/activity-logs.service';
 
-import { MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log-with-display.mock';
+import { MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log.mock';
 
 import { ClearActivityLogs, GetActivityLogs } from './activity-logs.actions';
 import { ACTIVITY_LOGS_STATE_DEFAULT } from './activity-logs.model';

@@ -14,16 +14,6 @@ export interface CollectionSubmission {
   collectionTitle: string;
   collectionId: string;
   reviewsState: CollectionSubmissionReviewState;
-  collectedType: string;
-  status: string;
-  volume: string;
-  issue: string;
-  programArea: string;
-  schoolType: string;
-  studyDesign: string;
-  dataType: string;
-  disease: string;
-  gradeLevels: string;
   requiredMetadataTemplateId?: string | null;
 }
 
@@ -39,16 +29,6 @@ export interface CollectionSubmissionWithGuid {
   dateModified: string;
   public: boolean;
   reviewsState: CollectionSubmissionReviewState;
-  collectedType: string;
-  status: string;
-  volume: string;
-  issue: string;
-  programArea: string;
-  schoolType: string;
-  studyDesign: string;
-  dataType: string;
-  disease: string;
-  gradeLevels: string;
   contributors?: ContributorModel[];
   creator?: CreatorModel;
   actions?: CollectionSubmissionReviewAction[];

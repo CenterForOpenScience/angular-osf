@@ -1,25 +1,17 @@
-import { createDispatchMap } from '@ngxs/store';
+import { forkJoin, map, Observable } from 'rxjs';
 
-import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
-
-import { HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
-import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ENVIRONMENT } from '@osf/core/provider/environment.provider';
 import {
   CollectionSubmissionReviewAction,
   CollectionSubmissionReviewActionsListResponseJsonApi,
 } from '@osf/features/moderation/models';
 
 import { CollectionsMapper } from '../mappers/collections';
-import { ContributorsMapper } from '../mappers/contributors';
 import { ReviewActionsMapper } from '../mappers/review-actions.mapper';
 import { CollectionDetails } from '../models/collections/collection-details.model';
-import {
-  CollectionDetailsItemResponseJsonApi,
-  CollectionDetailsListResponseJsonApi,
-} from '../models/collections/collection-details-json-api.model';
+import { CollectionDetailsListResponseJsonApi } from '../models/collections/collection-details-json-api.model';
 import { CollectionProvider } from '../models/collections/collection-provider.model';
 import { CollectionProviderGetResponseJsonApi } from '../models/collections/collection-provider-json-api.model';
 import {
@@ -31,16 +23,12 @@ import {
 } from '../models/collections/collection-submissions.model';
 import {
   CollectionSubmissionJsonApi,
-  CollectionSubmissionsSearchPayloadJsonApi,
   CollectionSubmissionWithGuidListResponseJsonApi,
   CollectionSubmissionWithGuidResponseJsonApi,
 } from '../models/collections/collection-submissions-json-api.model';
-import { ContributorModel } from '../models/contributors/contributor.model';
-import { ContributorsResponseJsonApi } from '../models/contributors/contributor-response-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
 import { ReviewActionPayload } from '../models/review-action/review-action-payload.model';
 import { ReviewActionPayloadJsonApi } from '../models/review-action/review-action-payload-json-api.model';
-import { SetTotalSubmissions } from '../stores/collections/collections.actions';
 
 import { JsonApiService } from './json-api.service';
 
@@ -55,80 +43,12 @@ export class CollectionsService {
     return `${this.environment.apiDomainUrl}/v2`;
   }
 
-  private actions = createDispatchMap({ setTotalSubmissions: SetTotalSubmissions });
-
   getCollectionProvider(collectionName: string): Observable<CollectionProvider> {
     const url = `${this.apiUrl}/providers/collections/${collectionName}/?embed=brand&embed=required_metadata_template`;
 
     return this.jsonApiService
       .get<CollectionProviderGetResponseJsonApi>(url)
       .pipe(map((response) => CollectionsMapper.fromGetCollectionProviderResponse(response.data)));
-  }
-
-  getCollectionDetails(collectionId: string): Observable<CollectionDetails> {
-    const url = `${this.apiUrl}/collections/${collectionId}/`;
-
-    return this.jsonApiService
-      .get<CollectionDetailsItemResponseJsonApi>(url)
-      .pipe(map((response) => CollectionsMapper.fromGetCollectionDetailsResponse(response.data)));
-  }
-
-  searchCollectionSubmissions(
-    providerId: string,
-    searchText: string,
-    activeFilters: Record<string, string[]>,
-    page = '1',
-    sortBy: string
-  ): Observable<CollectionSubmissionWithGuid[]> {
-    const url = `${this.apiUrl}/search/collections/`;
-    const params: Record<string, string> = {
-      page,
-    };
-
-    if (sortBy) {
-      params['sort'] = sortBy;
-    }
-
-    const payload: CollectionSubmissionsSearchPayloadJsonApi = {
-      data: {
-        attributes: {
-          provider: [providerId],
-          ...activeFilters,
-          q: searchText ? searchText : '*',
-        },
-      },
-      type: 'search',
-    };
-
-    return this.jsonApiService.post<CollectionSubmissionWithGuidListResponseJsonApi>(url, payload, params).pipe(
-      switchMap((response) => {
-        const totalCount = response.meta?.total ?? 0;
-        this.actions.setTotalSubmissions(totalCount);
-
-        if (!response.data.length) {
-          return of([]);
-        }
-
-        const contributorRequests = response.data.map((submission) =>
-          this.getCollectionContributors(
-            submission.embeds.guid.data.relationships!.bibliographic_contributors!.links.related.href
-          ).pipe(catchError(() => of([])))
-        );
-
-        if (!contributorRequests.length) {
-          return of([]);
-        }
-
-        return forkJoin(contributorRequests).pipe(
-          map((contributorsArrays) =>
-            response.data.map((submission, index) => ({
-              ...CollectionsMapper.fromPostCollectionSubmissionsResponse([submission])[0],
-              contributors: contributorsArrays[index],
-            }))
-          )
-        );
-      })
-    );
   }
 
   fetchCollectionSubmissionsByStatus(
@@ -227,19 +147,6 @@ export class CollectionsService {
     return this.jsonApiService.post<
       ReviewActionPayloadJsonApi<CollectionSubmissionActionType, CollectionSubmissionTargetType>
     >(`${this.apiUrl}/collection_submission_actions/`, params);
-  }
-
-  private getCollectionContributors(contributorsUrl: string): Observable<ContributorModel[]> {
-    const params: Record<string, unknown> = {
-      'fields[users]': 'full_name',
-    };
-
-    const context = new HttpContext();
-    context.set(BYPASS_ERROR_INTERCEPTOR, true);
-
-    return this.jsonApiService
-      .get<ContributorsResponseJsonApi>(contributorsUrl, params, context)
-      .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
   private fetchUserCollectionSubmissionsByStatus(

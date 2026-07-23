@@ -13,6 +13,7 @@ export interface ActivityLogDataJsonApi extends JsonApiResource<'activity-logs',
 interface ActivityLogAttributesJsonApi {
   action: string;
   date: string;
+  foreign_user: string | null;
   params: ActivityLogParamsJsonApi;
 }
 

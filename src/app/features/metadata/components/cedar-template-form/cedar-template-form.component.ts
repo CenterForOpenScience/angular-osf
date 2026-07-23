@@ -23,6 +23,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { MetadataRecordsService } from '@osf/shared/services/metadata-records.service';
 import { SocialShareService } from '@osf/shared/services/social-share.service';
 
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '../../constants';
@@ -63,6 +64,7 @@ export class CedarTemplateFormComponent {
 
   private route = inject(ActivatedRoute);
   readonly environment = inject(ENVIRONMENT);
+  private readonly metadataRecordsService = inject(MetadataRecordsService);
   private readonly socialShareService = inject(SocialShareService);
 
   readonly recordId = signal<string>('');
@@ -136,8 +138,10 @@ export class CedarTemplateFormComponent {
   }
 
   downloadMetadadaRecord() {
-    if (this.fileGuid()) {
-      window.open(`${this.environment.webUrl}/metadata/${this.fileGuid()}`)?.focus();
+    const fileGuid = this.fileGuid();
+
+    if (fileGuid) {
+      this.metadataRecordsService.downloadMetadata(fileGuid);
     } else {
       window.open(this.downloadUrl(), '_blank');
     }

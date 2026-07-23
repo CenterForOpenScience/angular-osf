@@ -16,16 +16,6 @@ export const MOCK_COLLECTION_SUBMISSION_1: CollectionSubmissionWithGuid = {
   dateModified: '2024-01-02T00:00:00Z',
   public: false,
   reviewsState: CollectionSubmissionReviewState.Pending,
-  collectedType: 'preprint',
-  status: 'pending',
-  volume: '1',
-  issue: '1',
-  programArea: 'Science',
-  schoolType: 'University',
-  studyDesign: 'Experimental',
-  dataType: 'Quantitative',
-  disease: 'Cancer',
-  gradeLevels: 'Graduate',
   creator: {
     id: 'user-123',
     fullName: 'John Doe',
@@ -59,16 +49,6 @@ export const MOCK_COLLECTION_SUBMISSION_2: CollectionSubmissionWithGuid = {
   dateModified: '2024-01-03T00:00:00Z',
   public: true,
   reviewsState: CollectionSubmissionReviewState.Accepted,
-  collectedType: 'preprint',
-  status: 'approved',
-  volume: '2',
-  issue: '2',
-  programArea: 'Technology',
-  schoolType: 'College',
-  studyDesign: 'Observational',
-  dataType: 'Qualitative',
-  disease: 'Diabetes',
-  gradeLevels: 'Undergraduate',
   creator: {
     id: 'user-456',
     fullName: 'Jane Smith',
@@ -92,39 +72,15 @@ export const MOCK_COLLECTION_SUBMISSION_2: CollectionSubmissionWithGuid = {
 
 export const MOCK_COLLECTION_SUBMISSIONS = [MOCK_COLLECTION_SUBMISSION_1, MOCK_COLLECTION_SUBMISSION_2];
 
-export const MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS: CollectionSubmission = {
+export const MOCK_COLLECTION_SUBMISSION_BASE: CollectionSubmission = {
   id: 'sub-1',
   type: 'collection-submissions',
   collectionTitle: 'Collection',
   collectionId: 'col-1',
   reviewsState: CollectionSubmissionReviewState.Pending,
-  collectedType: '',
-  status: '',
-  volume: '',
-  issue: '',
-  programArea: '',
-  schoolType: '',
-  studyDesign: '',
-  dataType: '',
-  disease: '',
-  gradeLevels: '',
 };
 
-export const MOCK_COLLECTION_SUBMISSION_WITH_FILTERS: CollectionSubmission = {
-  ...MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS,
+export const MOCK_COLLECTION_SUBMISSION_ACCEPTED: CollectionSubmission = {
+  ...MOCK_COLLECTION_SUBMISSION_BASE,
   reviewsState: CollectionSubmissionReviewState.Accepted,
-  collectedType: 'Article',
-  status: 'Published',
-  programArea: 'Health',
-};
-
-export const MOCK_COLLECTION_SUBMISSION_SINGLE_FILTER: CollectionSubmission = {
-  ...MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS,
-  collectedType: 'Article',
-};
-
-export const MOCK_COLLECTION_SUBMISSION_STRINGIFY: CollectionSubmission = {
-  ...MOCK_COLLECTION_SUBMISSION_EMPTY_FILTERS,
-  collectedType: 'Article',
-  status: '1',
 };
