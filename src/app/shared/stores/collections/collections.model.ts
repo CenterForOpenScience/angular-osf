@@ -1,8 +1,8 @@
+import { CollectionProvider } from '@osf/shared/models/collections/collection-provider.model';
 import {
-  CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionWithGuid,
-} from '@osf/shared/models/collections/collections.model';
+} from '@osf/shared/models/collections/collection-submissions.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
 export interface CollectionsStateModel {

@@ -1,10 +1,11 @@
 import { ContributorsMapper } from '@osf/shared/mappers/contributors';
+import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
-import { LinkedNode, LinkedNodeJsonApi } from '../models';
+import { LinkedNode } from '../models';
 
 export class LinkedNodesMapper {
-  static fromApiResponse(apiNode: LinkedNodeJsonApi): LinkedNode {
+  static fromApiResponse(apiNode: BaseNodeDataJsonApi): LinkedNode {
     return {
       id: apiNode.id,
       title: replaceBadEncodedChars(apiNode.attributes.title),
@@ -14,9 +15,7 @@ export class LinkedNodesMapper {
       dateModified: apiNode.attributes.date_modified,
       tags: apiNode.attributes.tags || [],
       isPublic: apiNode.attributes.public,
-      htmlUrl: apiNode.links.html,
-      apiUrl: apiNode.links.self,
-      contributors: ContributorsMapper.getContributors(apiNode.embeds.bibliographic_contributors.data) || [],
+      contributors: ContributorsMapper.getContributors(apiNode.embeds?.bibliographic_contributors?.data) || [],
     };
   }
 }

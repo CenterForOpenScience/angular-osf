@@ -1,14 +1,25 @@
 import { HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
-
 import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
 import { EnvironmentTokenMock } from '@testing/providers/environment.token.mock';
 
-import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '../models';
+import {
+  ScopeDataJsonApi,
+  ScopeJsonApiResponse,
+  ScopeModel,
+  TokenModel,
+  TokenResponseJsonApi,
+  TokensListResponseJsonApi,
+} from '../models';
 
 import { TokensService } from './tokens.service';
+
+const scopeFixture = (id: string): ScopeDataJsonApi => ({
+  id,
+  type: 'scopes',
+  attributes: { description: '' },
+});
 
 describe('TokensService', () => {
   let service: TokensService;
@@ -26,7 +37,7 @@ describe('TokensService', () => {
   });
 
   it('should getScopes and map response', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-    const response: JsonApiResponse<ScopeJsonApi[], null> = {
+    const response: ScopeJsonApiResponse = {
       data: [
         {
           id: 'osf.full_read',
@@ -34,6 +45,7 @@ describe('TokensService', () => {
           attributes: { description: 'Read access' },
         },
       ],
+      meta: { total: 1 },
     };
     let result: ScopeModel[] = [];
 
@@ -48,18 +60,21 @@ describe('TokensService', () => {
   }));
 
   it('should getTokens and map response', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-    const response: JsonApiResponse<TokenGetResponseJsonApi[], null> = {
+    const response: TokensListResponseJsonApi = {
       data: [
         {
           id: 'token-1',
+          type: 'tokens',
           attributes: { name: 'Token One', token_id: 'token-value-1' },
           embeds: {
             scopes: {
-              data: [{ id: 'osf.full_read' }, { id: 'osf.full_write' }],
+              data: [scopeFixture('osf.full_read'), scopeFixture('osf.full_write')],
+              meta: { total: 2 },
             },
           },
         },
       ],
+      meta: { total: 1 },
     };
     let result: TokenModel[] = [];
 
@@ -81,13 +96,15 @@ describe('TokensService', () => {
   }));
 
   it('should getTokenById and map response', inject([HttpTestingController], (httpMock: HttpTestingController) => {
-    const response: JsonApiResponse<TokenGetResponseJsonApi, null> = {
+    const response: TokenResponseJsonApi = {
       data: {
         id: 'token-2',
+        type: 'tokens',
         attributes: { name: 'Token Two', token_id: 'token-value-2' },
         embeds: {
           scopes: {
-            data: [{ id: 'osf.full_read' }],
+            data: [scopeFixture('osf.full_read')],
+            meta: { total: 1 },
           },
         },
       },
@@ -112,13 +129,15 @@ describe('TokensService', () => {
   it('should createToken with mapped request and mapped response', inject(
     [HttpTestingController],
     (httpMock: HttpTestingController) => {
-      const response: JsonApiResponse<TokenGetResponseJsonApi, null> = {
+      const response: TokenResponseJsonApi = {
         data: {
           id: 'token-3',
+          type: 'tokens',
           attributes: { name: 'Created Token', token_id: 'token-value-3' },
           embeds: {
             scopes: {
-              data: [{ id: 'osf.full_read' }, { id: 'osf.full_write' }],
+              data: [scopeFixture('osf.full_read'), scopeFixture('osf.full_write')],
+              meta: { total: 2 },
             },
           },
         },
@@ -153,16 +172,18 @@ describe('TokensService', () => {
   it('should updateToken with mapped request and mapped response', inject(
     [HttpTestingController],
     (httpMock: HttpTestingController) => {
-      const response = {
+      const response: TokenResponseJsonApi = {
         data: {
           id: 'token-4',
+          type: 'tokens',
           attributes: { name: 'Updated Token', token_id: 'token-value-4' },
           embeds: {
             scopes: {
-              data: [{ id: 'osf.full_write' }],
+              data: [scopeFixture('osf.full_write')],
+              meta: { total: 1 },
             },
           },
-        } as TokenGetResponseJsonApi,
+        },
       };
       let result: TokenModel | undefined;
 

@@ -1,4 +1,4 @@
-import { TokenCreateRequestJsonApi, TokenGetResponseJsonApi, TokenModel } from '../models';
+import { TokenCreateRequestJsonApi, TokenDataJsonApi, TokenModel } from '../models';
 
 export class TokenMapper {
   static toRequest(name: string, scopes: string[]): TokenCreateRequestJsonApi {
@@ -13,7 +13,7 @@ export class TokenMapper {
     };
   }
 
-  static fromGetResponse(response: TokenGetResponseJsonApi): TokenModel {
+  static fromGetResponse(response: TokenDataJsonApi): TokenModel {
     return {
       id: response.id,
       tokenId: response.attributes.token_id,

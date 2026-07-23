@@ -1,4 +1,4 @@
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources-item.model';
 
 import { MOCK_CONTRIBUTOR } from './contributors.mock';
 

@@ -1,18 +1,15 @@
-import { ResponseDataJsonApi, ResponseJsonApi } from '../common/json-api.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
 
-export type EmailsResponseJsonApi = ResponseJsonApi<EmailsDataJsonApi[]>;
+export type EmailsResponseJsonApi = ListResponse<EmailsDataJsonApi>;
+export type EmailResponseJsonApi = ItemResponse<EmailsDataJsonApi>;
 
-export type EmailResponseJsonApi = ResponseDataJsonApi<EmailsDataJsonApi>;
-
-export interface EmailsDataJsonApi {
-  id: string;
-  attributes: EmailsAttributesJsonApi;
-}
+export type EmailsDataJsonApi = JsonApiResource<'user_emails', EmailsAttributesJsonApi>;
 
 interface EmailsAttributesJsonApi {
-  email_address: string;
   confirmed: boolean;
-  verified: boolean;
-  primary: boolean;
+  email_address: string;
   is_merge: boolean;
+  primary: boolean;
+  verified: boolean;
 }

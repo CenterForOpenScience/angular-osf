@@ -1,27 +1,25 @@
 import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
 
-import { ResponseJsonApi } from '../common/json-api.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ListResponse } from '../common/json-api/responses.model';
 import { UserDataErrorResponseJsonApi } from '../user/user-json-api.model';
 
-export type RequestAccessResponseJsonApi = ResponseJsonApi<RequestAccessDataJsonApi[]>;
+export type RequestAccessResponseJsonApi = ListResponse<RequestAccessDataJsonApi>;
 
-export interface RequestAccessDataJsonApi {
-  id: string;
-  type: 'node-requests';
-  attributes: RequestAccessAttributesJsonApi;
+export interface RequestAccessDataJsonApi extends JsonApiResource<'node-requests', RequestAccessAttributesJsonApi> {
   embeds: RequestAccessEmbedsJsonApi;
 }
 
-export interface RequestAccessAttributesJsonApi {
-  request_type: string;
-  machine_state: string;
+interface RequestAccessAttributesJsonApi {
   comment: string;
   created: string;
-  modified: string;
   date_last_transitioned: string;
+  machine_state: string;
+  modified: string;
+  request_type: string;
   requested_permissions: ContributorPermission | null;
 }
 
-export interface RequestAccessEmbedsJsonApi {
+interface RequestAccessEmbedsJsonApi {
   creator: UserDataErrorResponseJsonApi;
 }

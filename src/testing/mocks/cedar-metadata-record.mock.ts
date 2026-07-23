@@ -1,4 +1,6 @@
-import { CedarMetadataAttributes, CedarMetadataRecordData } from '@osf/features/metadata/models';
+import { CedarMetadataAttributes, CedarMetadataRecordDataJsonApi } from '@osf/features/metadata/models';
+
+import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from './cedar-metadata-data-template-json-api.mock';
 
 export const MOCK_CEDAR_METADATA_ATTRIBUTES: CedarMetadataAttributes = {
   '@context': {
@@ -108,7 +110,7 @@ export const MOCK_CEDAR_METADATA_ATTRIBUTES: CedarMetadataAttributes = {
   ],
 };
 
-export const MOCK_CEDAR_METADATA_RECORD_DATA: CedarMetadataRecordData = {
+export const MOCK_CEDAR_METADATA_RECORD_DATA: CedarMetadataRecordDataJsonApi = {
   id: 'record-1',
   type: 'cedar-metadata-records',
   attributes: {
@@ -117,14 +119,7 @@ export const MOCK_CEDAR_METADATA_RECORD_DATA: CedarMetadataRecordData = {
   },
   embeds: {
     template: {
-      data: {
-        attributes: {
-          active: true,
-          cedar_id: 'cedar-template-123',
-          schema_name: 'LDbase Project Metadata Schema',
-        },
-        id: 'template-1',
-      },
+      data: CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK,
     },
   },
   relationships: {

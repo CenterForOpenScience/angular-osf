@@ -11,7 +11,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateCollectionSubmission } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
 import {
   CedarMetadataAttributes,
-  CedarMetadataRecordData,
+  CedarMetadataRecordDataJsonApi,
   CedarRecordDataBinding,
 } from '@osf/features/metadata/models';
 import { CreateCedarMetadataRecord, UpdateCedarMetadataRecord } from '@osf/features/metadata/store';
@@ -33,7 +33,7 @@ const MOCK_CEDAR_DATA: CedarRecordDataBinding = {
   isPublished: true,
 };
 
-const MOCK_EXISTING_CEDAR_RECORD: CedarMetadataRecordData = {
+const MOCK_EXISTING_CEDAR_RECORD: CedarMetadataRecordDataJsonApi = {
   id: 'cedar-record-1',
   attributes: { metadata: {} as CedarMetadataAttributes, is_published: true },
   relationships: {
@@ -53,7 +53,7 @@ describe('AddToCollectionConfirmationDialogComponent', () => {
       payload?: CollectionSubmissionPayload;
       project?: { id: string; isPublic: boolean };
       cedarData?: CedarRecordDataBinding | null;
-      existingCedarRecord?: CedarMetadataRecordData | null;
+      existingCedarRecord?: CedarMetadataRecordDataJsonApi | null;
     };
   };
 

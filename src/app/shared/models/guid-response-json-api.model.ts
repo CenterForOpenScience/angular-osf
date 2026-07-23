@@ -1,32 +1,24 @@
 import { UserPermissions } from '../enums/user-permissions.enum';
 
-import { JsonApiResponse } from './common/json-api.model';
+import { ToOneRel } from './common/json-api/relationships.model';
+import { JsonApiResource } from './common/json-api/resource.model';
+import { ItemResponse } from './common/json-api/responses.model';
 
-export type GuidedResponseJsonApi = JsonApiResponse<GuidDataJsonApi, null>;
+export type GuidedResponseJsonApi = ItemResponse<GuidDataJsonApi>;
 
-interface GuidDataJsonApi {
-  id: string;
-  type: string;
-  attributes: {
-    guid: string;
-    wiki_enabled: boolean;
-    current_user_permissions: UserPermissions[];
-    title?: string;
-  };
-  relationships: {
-    target?: {
-      data: IdType;
-    };
-    provider?: {
-      data: IdType;
-    };
-    root?: {
-      data: IdType;
-    };
-  };
+export interface GuidDataJsonApi extends JsonApiResource<string, GuidAttributesJsonApi> {
+  relationships: GuidRelationshipsJsonApi;
 }
 
-interface IdType {
-  id: string;
-  type: string;
+interface GuidAttributesJsonApi {
+  current_user_permissions: UserPermissions[];
+  guid: string;
+  title?: string;
+  wiki_enabled: boolean;
+}
+
+interface GuidRelationshipsJsonApi {
+  provider?: ToOneRel;
+  root?: ToOneRel;
+  target?: ToOneRel;
 }

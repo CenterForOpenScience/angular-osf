@@ -12,7 +12,6 @@ import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { BaseNodeMapper } from '@osf/shared/mappers/nodes';
 import { NodePreprintMapper } from '@osf/shared/mappers/nodes/node-preprint.mapper';
 import { NodeStorageMapper } from '@osf/shared/mappers/nodes/node-storage.mapper';
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
@@ -30,7 +29,7 @@ import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
 import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewMapper } from '../mappers';
-import { PrivacyStatusModel, ProjectOverviewWithMeta } from '../models';
+import { PrivacyStatusModel, ProjectOverviewModel } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -43,13 +42,15 @@ export class ProjectOverviewService {
     return `${this.environment.apiDomainUrl}/v2`;
   }
 
-  getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
+  getProjectById(projectId: string): Observable<PaginatedData<ProjectOverviewModel>> {
     const params: Record<string, unknown> = { related_counts: 'forks,view_only_links' };
 
     return this.jsonApiService.get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params).pipe(
       map((response) => ({
-        project: ProjectOverviewMapper.getProjectOverview(response.data),
-        meta: response.meta,
+        data: ProjectOverviewMapper.getProjectOverview(response.data),
+        totalCount: 1,
+        pageSize: 1,
+        isAnonymous: response.meta?.anonymous ?? false,
       }))
     );
   }
@@ -123,7 +124,7 @@ export class ProjectOverviewService {
     };
 
     return this.jsonApiService
-      .post<JsonApiResponse<BaseNodeDataJsonApi, null>>(`${this.apiUrl}/nodes/`, payload)
+      .post<NodeResponseJsonApi>(`${this.apiUrl}/nodes/`, payload)
       .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
   }
 
@@ -157,7 +158,7 @@ export class ProjectOverviewService {
     }
 
     return this.jsonApiService
-      .post<JsonApiResponse<BaseNodeDataJsonApi, null>>(`${this.apiUrl}/nodes/${projectId}/children/`, payload, params)
+      .post<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/children/`, payload, params)
       .pipe(
         switchMap((response) => {
           const componentId = response.data.id;

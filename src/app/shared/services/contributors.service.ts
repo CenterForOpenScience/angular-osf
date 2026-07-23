@@ -3,6 +3,7 @@ import { forkJoin, map, Observable, of } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 
 import { AddContributorType } from '../enums/contributors/add-contributor-type.enum';
 import { ContributorPermission } from '../enums/contributors/contributor-permission.enum';
@@ -74,7 +75,7 @@ export class ContributorsService {
       map((response) => ({
         data: ContributorsMapper.getContributors(response.data),
         totalCount: response.meta.total,
-        pageSize: response.meta.per_page,
+        pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
       }))
     );
   }
@@ -96,7 +97,7 @@ export class ContributorsService {
       map((response) => ({
         data: ContributorsMapper.getContributors(response.data),
         totalCount: response.meta.total,
-        pageSize: response.meta.per_page,
+        pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
       }))
     );
   }

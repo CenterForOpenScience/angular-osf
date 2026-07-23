@@ -1,11 +1,11 @@
 import { AddonModel } from '@osf/shared/models/addons/addon.model';
 import {
-  ConfiguredAddonResponseJsonApi,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
-} from '@osf/shared/models/addons/addon-json-api.model';
+} from '@osf/shared/models/addons/addon-reference-json-api.model';
 import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
 import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { ConfiguredAddonDataJsonApi } from '@osf/shared/models/addons/configured-addon-json-api.model';
 import { OperationInvocation } from '@osf/shared/models/addons/operation-invocation.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 
@@ -23,7 +23,7 @@ export interface AddonsStateModel {
   addonsUserReference: AsyncStateModel<UserReferenceJsonApi[]>;
   addonsResourceReference: AsyncStateModel<ResourceReferenceJsonApi[]>;
   createdUpdatedAuthorizedAddon: AsyncStateModel<AuthorizedAccountModel | null>;
-  createdUpdatedConfiguredAddon: AsyncStateModel<ConfiguredAddonResponseJsonApi | null>;
+  createdUpdatedConfiguredAddon: AsyncStateModel<ConfiguredAddonDataJsonApi | null>;
   operationInvocation: AsyncStateModel<OperationInvocation | null>;
   selectedItemOperationInvocation: AsyncStateModel<OperationInvocation | null>;
   citationOperationInvocations: Record<string, AsyncStateModel<OperationInvocation | null>>;

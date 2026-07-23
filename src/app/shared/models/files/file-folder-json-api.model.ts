@@ -1,14 +1,13 @@
 import { FileKind } from '@osf/shared/enums/file-kind.enum';
 
-import { ResponseJsonApi } from '../common/json-api.model';
+import { ToManyRel, ToOneRel } from '../common/json-api/relationships.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
 
-export type FileFolderResponseJsonApi = ResponseJsonApi<FileFolderDataJsonApi>;
-export type FileFoldersResponseJsonApi = ResponseJsonApi<FileFolderDataJsonApi[]>;
+export type FileFolderResponseJsonApi = ItemResponse<FileFolderDataJsonApi>;
+export type FileFoldersResponseJsonApi = ListResponse<FileFolderDataJsonApi>;
 
-export interface FileFolderDataJsonApi {
-  id: string;
-  type: 'files';
-  attributes: FileFolderAttributesJsonApi;
+export interface FileFolderDataJsonApi extends JsonApiResource<'files', FileFolderAttributesJsonApi> {
   relationships: FileFolderRelationshipsJsonApi;
   links: FileFolderLinksJsonApi;
 }
@@ -16,41 +15,20 @@ export interface FileFolderDataJsonApi {
 export interface FileFolderAttributesJsonApi {
   kind: FileKind.Folder;
   name: string;
-  path: string;
   node: string;
+  path: string;
   provider: string;
 }
 
 interface FileFolderRelationshipsJsonApi {
-  files: RelationshipLinksOnlyJsonApi;
-  root_folder: RelationshipWithDataJsonApi<'files'>;
-  target: RelationshipWithDataJsonApi<'nodes'>;
-}
-
-interface RelationshipLinksOnlyJsonApi {
-  links: {
-    related: RelatedLinkJsonApi;
-  };
-}
-
-interface RelationshipWithDataJsonApi<T extends string> {
-  links: {
-    related: RelatedLinkJsonApi;
-  };
-  data: {
-    id: string;
-    type: T;
-  };
-}
-
-interface RelatedLinkJsonApi {
-  href: string;
-  meta: Record<string, unknown>;
+  files: ToManyRel<'files'>;
+  root_folder: ToOneRel<'files'>;
+  target: ToOneRel<'nodes'>;
 }
 
 interface FileFolderLinksJsonApi {
-  upload: string;
+  download?: string;
   new_folder: string;
   storage_addons: string;
-  download?: string;
+  upload: string;
 }

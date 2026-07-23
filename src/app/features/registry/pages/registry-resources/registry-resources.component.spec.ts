@@ -274,7 +274,9 @@ describe('RegistryResourcesComponent', () => {
     const { component } = setup();
 
     expect(component.getResourceTypeTranslationKey(RegistryResourceType.Data)).toBe('resourceCard.resources.data');
-    expect(component.getResourceTypeTranslationKey(RegistryResourceType.Code)).toBe('resourceCard.resources.code');
+    expect(component.getResourceTypeTranslationKey(RegistryResourceType.Code)).toBe(
+      'resourceCard.resources.analyticCode'
+    );
   });
 
   it('should return empty string for unknown resource type', () => {

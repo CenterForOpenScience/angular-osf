@@ -1,10 +1,12 @@
 export interface ProjectSettingsModel {
   id: string;
-  attributes: {
-    accessRequestsEnabled: boolean;
-    anyoneCanComment: boolean;
-    anyoneCanEditWiki: boolean;
-    wikiEnabled: boolean;
-  };
+  attributes: ProjectSettingsAttributes;
   lastFetched?: number;
+}
+
+interface ProjectSettingsAttributes {
+  accessRequestsEnabled: boolean;
+  anyoneCanComment: boolean;
+  anyoneCanEditWiki: boolean;
+  wikiEnabled: boolean;
 }

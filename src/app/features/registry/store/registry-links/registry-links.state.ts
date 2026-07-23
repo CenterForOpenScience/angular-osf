@@ -33,7 +33,7 @@ export class RegistryLinksState {
             data: response.data,
             isLoading: false,
             error: null,
-            meta: response.meta,
+            totalCount: response.totalCount,
           },
         });
       }),
@@ -55,7 +55,7 @@ export class RegistryLinksState {
             data: response.data,
             isLoading: false,
             error: null,
-            meta: response.meta,
+            totalCount: response.totalCount,
           },
         });
       }),

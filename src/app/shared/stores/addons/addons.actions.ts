@@ -1,8 +1,6 @@
-import {
-  AuthorizedAddonRequestJsonApi,
-  ConfiguredAddonRequestJsonApi,
-} from '@osf/shared/models/addons/addon-json-api.model';
 import { OperationInvocationRequestJsonApi } from '@osf/shared/models/addons/addon-operations-json-api.model';
+import { AuthorizedAddonRequestJsonApi } from '@osf/shared/models/addons/authorized-addon-json-api.model';
+import { ConfiguredAddonRequestJsonApi } from '@osf/shared/models/addons/configured-addon-json-api.model';
 
 export class GetStorageAddons {
   static readonly type = '[Addons] Get Storage Addons';

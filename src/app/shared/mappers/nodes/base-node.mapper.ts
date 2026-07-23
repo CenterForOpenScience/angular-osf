@@ -1,7 +1,8 @@
-import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
+import { NodesResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
@@ -12,11 +13,11 @@ export class BaseNodeMapper {
     return data.map((item) => this.getNodeData(item));
   }
 
-  static getNodesWithEmbedsAndTotalData(response: ResponseJsonApi<BaseNodeDataJsonApi[]>): PaginatedData<NodeModel[]> {
+  static getNodesWithEmbedsAndTotalData(response: NodesResponseJsonApi): PaginatedData<NodeModel[]> {
     return {
       data: BaseNodeMapper.getNodesWithEmbedContributors(response.data),
       totalCount: response.meta.total,
-      pageSize: response.meta.per_page,
+      pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
     };
   }
 
@@ -34,7 +35,7 @@ export class BaseNodeMapper {
       title: replaceBadEncodedChars(item.attributes.title),
       isPublic: item.attributes.public,
       permissions: item.attributes.current_user_permissions,
-      parentId: item.relationships.parent?.data?.id,
+      parentId: item.relationships?.parent?.data?.id,
     }));
   }
 
@@ -62,7 +63,7 @@ export class BaseNodeMapper {
       currentUserIsContributor: data.attributes.current_user_is_contributor,
       wikiEnabled: data.attributes.wiki_enabled,
       customCitation: data.attributes.custom_citation || undefined,
-      rootParentId: data.relationships.root?.data?.id,
+      rootParentId: data.relationships?.root?.data?.id,
       parent: data.embeds?.parent?.data ? this.getNodeData(data.embeds?.parent.data) : undefined,
     };
   }
@@ -84,7 +85,7 @@ export class BaseNodeMapper {
     const parent = allNodes.find((n) => n.id === parentId);
     if (!parent) return [];
 
-    const directChildren = allNodes.filter((node) => node.relationships.parent?.data?.id === parentId);
+    const directChildren = allNodes.filter((node) => node.relationships?.parent?.data?.id === parentId);
 
     const descendants = directChildren.flatMap((child) => this.getAllDescendants(allNodes, child.id));
 
@@ -95,7 +96,7 @@ export class BaseNodeMapper {
     const node = allNodes.find((n) => n.id === nodeId);
     if (!node) return [];
 
-    const parentId = node.relationships.parent?.data?.id;
+    const parentId = node.relationships?.parent?.data?.id;
     if (!parentId) return [node];
 
     const ancestors = this.getAllAncestors(allNodes, parentId);

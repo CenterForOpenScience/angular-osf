@@ -1,5 +1,7 @@
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
+import { LicenseRecordJsonApi } from '../license/licenses-json-api.model';
+
 export interface BaseNodeAttributesJsonApi {
   access_requests_enabled: boolean;
   analytics_key: string;
@@ -14,16 +16,11 @@ export interface BaseNodeAttributesJsonApi {
   date_modified: string;
   description: string;
   fork: boolean;
-  node_license: NodeLicenseJsonApi | null;
+  node_license: LicenseRecordJsonApi | null;
   preprint: boolean;
   public: boolean;
   registration: boolean;
   tags: string[];
   title: string;
   wiki_enabled: boolean;
-}
-
-export interface NodeLicenseJsonApi {
-  copyright_holders: string[];
-  year: string;
 }

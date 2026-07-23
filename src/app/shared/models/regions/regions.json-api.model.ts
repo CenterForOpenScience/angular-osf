@@ -1,18 +1,10 @@
-import { ResponseJsonApi } from '../common/json-api.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ListResponse } from '../common/json-api/responses.model';
 
-export type RegionsResponseJsonApi = ResponseJsonApi<RegionDataJsonApi[]>;
+export type RegionsResponseJsonApi = ListResponse<RegionDataJsonApi>;
 
-export interface RegionDataJsonApi {
-  id: string;
-  type: 'regions';
-  attributes: RegionAttributesJsonApi;
-  links: RegionLinksJsonApi;
-}
+export type RegionDataJsonApi = JsonApiResource<'regions', RegionAttributesJsonApi>;
 
-export interface RegionAttributesJsonApi {
+interface RegionAttributesJsonApi {
   name: string;
-}
-
-export interface RegionLinksJsonApi {
-  self: string;
 }

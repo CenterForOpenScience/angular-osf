@@ -1,54 +1,27 @@
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common/json-api.model';
+import { Embed } from '../common/json-api/embeds.model';
+import { ResourceLinksJsonApi } from '../common/json-api/links.model';
+import { RelatedCountRel, ToOneRel } from '../common/json-api/relationships.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ListResponse } from '../common/json-api/responses.model';
 
-export interface SubjectsResponseJsonApi {
-  data: SubjectDataJsonApi[];
-  meta: MetaJsonApi;
-  links: PaginationLinksJsonApi;
+export type SubjectsResponseJsonApi = ListResponse<SubjectDataJsonApi>;
+
+export interface SubjectDataJsonApi extends JsonApiResource<string, SubjectAttributesJsonApi> {
+  relationships: SubjectRelationshipsJsonApi;
+  embeds?: SubjectEmbedsJsonApi;
+  links: ResourceLinksJsonApi;
 }
-
-export type SubjectDataJsonApi = ApiData<
-  SubjectAttributesJsonApi,
-  SubjectEmbedsJsonApi,
-  SubjectRelationshipsJsonApi,
-  SubjectLinksJsonApi
->;
 
 interface SubjectAttributesJsonApi {
-  text: string;
   taxonomy_name: string;
-}
-
-interface SubjectLinksJsonApi {
-  iri: string;
+  text: string;
 }
 
 interface SubjectRelationshipsJsonApi {
-  parent?: {
-    links: {
-      related: {
-        href: string;
-        meta: Record<string, unknown>;
-      };
-    };
-    data?: {
-      id: string;
-      type: 'subjects';
-    };
-  };
-  children: {
-    links: {
-      related: {
-        href: string;
-        meta: {
-          count: number;
-        };
-      };
-    };
-  };
+  children: RelatedCountRel;
+  parent?: ToOneRel<'subjects'>;
 }
 
 interface SubjectEmbedsJsonApi {
-  parent?: {
-    data: SubjectDataJsonApi;
-  };
+  parent?: Embed<SubjectDataJsonApi>;
 }

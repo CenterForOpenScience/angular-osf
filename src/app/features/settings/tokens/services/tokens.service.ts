@@ -4,11 +4,17 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { ScopeMapper, TokenMapper } from '../mappers';
-import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '../models';
+import {
+  ScopeJsonApiResponse,
+  ScopeModel,
+  TokenDataJsonApi,
+  TokenModel,
+  TokenResponseJsonApi,
+  TokensListResponseJsonApi,
+} from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -23,19 +29,19 @@ export class TokensService {
 
   getScopes(): Observable<ScopeModel[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<ScopeJsonApi[], null>>(`${this.apiUrl}/scopes/`)
+      .get<ScopeJsonApiResponse>(`${this.apiUrl}/scopes/`)
       .pipe(map((responses) => ScopeMapper.fromResponse(responses.data)));
   }
 
   getTokens(): Observable<TokenModel[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<TokenGetResponseJsonApi[], null>>(`${this.apiUrl}/tokens/`)
+      .get<TokensListResponseJsonApi>(`${this.apiUrl}/tokens/`)
       .pipe(map((responses) => responses.data.map((response) => TokenMapper.fromGetResponse(response))));
   }
 
   getTokenById(tokenId: string): Observable<TokenModel> {
     return this.jsonApiService
-      .get<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${this.apiUrl}/tokens/${tokenId}/`)
+      .get<TokenResponseJsonApi>(`${this.apiUrl}/tokens/${tokenId}/`)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
@@ -43,7 +49,7 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .post<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${this.apiUrl}/tokens/`, request)
+      .post<TokenResponseJsonApi>(`${this.apiUrl}/tokens/`, request)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
@@ -51,7 +57,7 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .patch<TokenGetResponseJsonApi>(`${this.apiUrl}/tokens/${tokenId}/`, request)
+      .patch<TokenDataJsonApi>(`${this.apiUrl}/tokens/${tokenId}/`, request)
       .pipe(map((response) => TokenMapper.fromGetResponse(response)));
   }
 

@@ -1,123 +1,115 @@
 import { IdNameModel } from '../common/id-name.model';
-import { LicensesOption } from '../license/license.model';
+import { BaseNodeModel } from '../nodes/base-node.model';
+import { UserModel } from '../user/user.model';
 
-export interface ActivityLog {
+export interface ActivityLogModel {
   id: string;
   type: string;
   action: string;
   date: string;
   foreignUser: string | null;
-  params: {
-    contributors: LogContributor[];
-    license?: string;
-    tag?: string;
-    institution?: IdNameModel;
-    paramsNode: { id: string; title: string };
-    paramsProject: null;
-    pointer: Pointer | null;
-    template_node?: { id: string; url: string; title: string } | null;
-    preprintProvider?: string | { url: string; name: string } | null;
-    addon?: string;
-    anonymousLink?: boolean;
-    file?: { name: string; url: string };
-    wiki?: { name: string; url: string };
-    destination?: { materialized: string; addon: string; url: string };
-    identifiers?: { doi?: string; ark?: string };
-    kind?: string;
-    oldPage?: string;
-    page?: string;
-    pageId?: string;
-    path?: string;
-    urls?: { view: string };
-    preprint?: string;
-    source?: { materialized: string; addon: string };
-    titleNew?: string;
-    titleOriginal?: string;
-    updatedFields?: Record<string, { new: string; old: string }>;
-    value?: string;
-    version?: string;
-    githubUser?: string;
-  };
-  embeds?: {
-    originalNode?: OriginalNode;
-    user?: User;
-    linkedNode?: LinkedNode;
-  };
+  params: ActivityLogParamsModel;
+  embeds?: ActivityLogEmbedsModel;
   isAnonymous?: boolean;
 }
 
-interface Pointer {
+interface ActivityLogEmbedsModel {
+  linkedNode?: BaseNodeModel;
+  originalNode?: BaseNodeModel;
+  user?: UserModel;
+}
+
+interface ActivityLogParamsModel {
+  addon?: string;
+  anonymousLink?: boolean;
+  contributors: LogContributorModel[];
+  destination?: ActivityLogDestinationModel;
+  file?: ActivityLogFileModel;
+  githubUser?: string;
+  identifiers?: ActivityLogIdentifiersModel;
+  institution?: IdNameModel;
+  kind?: string;
+  license?: string;
+  oldPage?: string;
+  page?: string;
+  pageId?: string;
+  paramsNode: ActivityLogParamsNodeModel;
+  paramsProject: null;
+  path?: string;
+  pointer: ActivityLogPointerModel | null;
+  preprint?: string;
+  preprintProvider?: string | ActivityLogPreprintProviderModel | null;
+  source?: ActivityLogSourceModel;
+  tag?: string;
+  templateNode?: ActivityLogTemplateNodeModel | null;
+  titleNew?: string;
+  titleOriginal?: string;
+  updatedFields?: Record<string, ActivityLogUpdatedFieldModel>;
+  urls?: ActivityLogUrlsModel;
+  value?: string;
+  version?: string;
+  wiki?: ActivityLogWikiModel;
+}
+
+interface ActivityLogDestinationModel {
+  addon: string;
+  materialized: string;
+  url: string;
+}
+
+interface ActivityLogFileModel {
+  name: string;
+  url: string;
+}
+
+interface ActivityLogIdentifiersModel {
+  ark?: string;
+  doi?: string;
+}
+
+interface ActivityLogParamsNodeModel {
+  id: string;
+  title: string;
+}
+
+interface ActivityLogPointerModel {
   category: string;
   id: string;
   title: string;
   url: string;
 }
 
-interface OriginalNode {
+interface ActivityLogPreprintProviderModel {
+  name: string;
+  url: string;
+}
+
+interface ActivityLogSourceModel {
+  addon: string;
+  materialized: string;
+}
+
+interface ActivityLogTemplateNodeModel {
   id: string;
-  type: string;
   title: string;
-  description: string;
-  category: string;
-  customCitation: string | null;
-  dateCreated: string;
-  dateModified: string;
-  registration: boolean;
-  preprint: boolean;
-  fork: boolean;
-  collection: boolean;
-  tags: string[];
-  accessRequestsEnabled: boolean;
-  nodeLicense: LicensesOption;
-  currentUserCanComment: boolean;
-  currentUserPermissions: string[];
-  currentUserIsContributor: boolean;
-  currentUserIsContributorOrGroupMember: boolean;
-  wikiEnabled: boolean;
-  public: boolean;
-  subjects: { id: string; text: string }[][];
+  url: string;
 }
 
-interface User {
-  id: string;
-  type: string;
-  fullName: string;
-  givenName: string;
-  middleNames: string;
-  familyName: string;
-  suffix: string;
-  dateRegistered: string;
-  active: boolean;
-  timezone: string;
-  locale: string;
+interface ActivityLogUpdatedFieldModel {
+  new: string;
+  old: string;
 }
 
-interface LinkedNode {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  category: string;
-  customCitation: string | null;
-  dateCreated: string;
-  dateModified: string;
-  registration: boolean;
-  preprint: boolean;
-  fork: boolean;
-  collection: boolean;
-  tags: string[];
-  accessRequestsEnabled: boolean;
-  nodeLicense: LicensesOption;
-  currentUserCanComment: boolean;
-  currentUserPermissions: string[];
-  currentUserIsContributor: boolean;
-  currentUserIsContributorOrGroupMember: boolean;
-  wikiEnabled: boolean;
-  public: boolean;
-  subjects: { id: string; text: string }[][];
+interface ActivityLogUrlsModel {
+  view: string;
 }
 
-export interface LogContributor {
+interface ActivityLogWikiModel {
+  name: string;
+  url: string;
+}
+
+export interface LogContributorModel {
   id: string;
   fullName: string;
   givenName: string;

@@ -1,49 +1,28 @@
-import { UserAttributesJsonApi, UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
+import { Embed } from '@osf/shared/models/common/json-api/embeds.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ListResponse } from '@osf/shared/models/common/json-api/responses.model';
+import { PreprintDataJsonApi } from '@osf/shared/models/preprints/preprint-json-api.model';
+import { PreprintProviderAttributesJsonApi } from '@osf/shared/models/provider/preprints-provider-json-api.model';
+import { UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
-export interface ReviewActionJsonApi {
-  id: string;
-  type: 'review-actions';
-  attributes: ReviewActionAttributesJsonApi;
-  embeds: {
-    creator: UserDataErrorResponseJsonApi;
-    target: {
-      data: PreprintModelJsonApi;
-    };
-    provider: {
-      data: ProviderModelJsonApi;
-    };
-  };
+export type PreprintReviewActionListResponseJsonApi = ListResponse<ReviewActionJsonApi>;
+
+export interface ReviewActionJsonApi extends JsonApiResource<'review-actions', ReviewActionAttributesJsonApi> {
+  embeds: ReviewActionEmbedsJsonApi;
 }
 
-export interface ReviewActionAttributesJsonApi {
-  trigger: string;
+interface ReviewActionAttributesJsonApi {
+  auto: boolean;
   comment: string;
-  from_state: string;
-  to_state: string;
   date_created: string;
   date_modified: string;
-  auto: boolean;
+  from_state: string;
+  to_state: string;
+  trigger: string;
 }
 
-export interface UserModelJsonApi {
-  id: string;
-  type: 'users';
-  attributes: UserAttributesJsonApi;
-}
-
-export interface PreprintModelJsonApi {
-  id: string;
-  type: 'preprints';
-  attributes: PreprintAttributesJsonApi;
-}
-
-export interface PreprintAttributesJsonApi {
-  title: string;
-}
-
-export interface ProviderModelJsonApi {
-  id: string;
-  attributes: {
-    name: string;
-  };
+interface ReviewActionEmbedsJsonApi {
+  creator: UserDataErrorResponseJsonApi;
+  provider: Embed<JsonApiResource<'preprint-providers', PreprintProviderAttributesJsonApi>>;
+  target: Embed<PreprintDataJsonApi>;
 }

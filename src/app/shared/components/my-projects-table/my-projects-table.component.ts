@@ -8,7 +8,7 @@ import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output, TemplateRef } from '@angular/core';
 
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources-item.model';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
 
 import { ContributorsListShortenerComponent } from '../contributors-list-shortener/contributors-list-shortener.component';

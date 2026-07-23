@@ -3,16 +3,17 @@ import { forkJoin, map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 
 import { ResourceType } from '../enums/resource-type.enum';
 import { SortOrder } from '../enums/sort-order.enum';
 import { MyResourcesMapper } from '../mappers/my-resources.mapper';
-import { SparseCollectionsResponseJsonApi } from '../models/collections/collections-json-api.model';
+import { SparseCollectionsResponseJsonApi } from '../models/collections/collection-details-json-api.model';
+import { MyResourcesItem } from '../models/my-resources/my-resources-item.model';
 import {
-  MyResourcesItem,
   MyResourcesItemGetResponseJsonApi,
   MyResourcesResponseJsonApi,
-} from '../models/my-resources/my-resources.model';
+} from '../models/my-resources/my-resources-json-api.model';
 import { MyResourcesSearchFilters } from '../models/my-resources/my-resources-search-filters.model';
 import { PaginatedData } from '../models/paginated-data.model';
 
@@ -71,7 +72,11 @@ export class BookmarksService {
         const data = this.sortBookmarks(items, filters?.sortColumn, filters?.sortOrder);
         const totalCount = projects.meta.total + registrations.meta.total;
 
-        return { data, totalCount, pageSize: projects.meta.per_page } as PaginatedData<MyResourcesItem[]>;
+        return {
+          data,
+          totalCount,
+          pageSize: projects.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
+        } as PaginatedData<MyResourcesItem[]>;
       })
     );
   }

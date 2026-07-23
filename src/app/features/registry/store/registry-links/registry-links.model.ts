@@ -1,17 +1,13 @@
-import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 
 import { LinkedNode, LinkedRegistration } from '../../models';
 
 export interface RegistryLinksStateModel {
-  linkedNodes: AsyncStateModel<LinkedNode[]> & {
-    meta?: { total: number; per_page: number };
-  };
-  linkedRegistrations: AsyncStateModel<LinkedRegistration[]> & {
-    meta?: { total: number; per_page: number };
-  };
+  linkedNodes: AsyncStateWithTotalCount<LinkedNode[]>;
+  linkedRegistrations: AsyncStateWithTotalCount<LinkedRegistration[]>;
 }
 
 export const REGISTRY_LINKS_STATE_DEFAULTS: RegistryLinksStateModel = {
-  linkedNodes: { data: [], isLoading: false, error: null },
-  linkedRegistrations: { data: [], isLoading: false, error: null },
+  linkedNodes: { data: [], isLoading: false, error: null, totalCount: 0 },
+  linkedRegistrations: { data: [], isLoading: false, error: null, totalCount: 0 },
 };

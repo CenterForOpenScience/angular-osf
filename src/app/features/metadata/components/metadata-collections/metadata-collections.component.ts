@@ -5,9 +5,9 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmission } from '@osf/shared/models/collections/collection-submissions.model';
 
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi } from '../../models';
 import { MetadataCollectionItemComponent } from '../metadata-collection-item/metadata-collection-item.component';
 
 @Component({
@@ -20,7 +20,7 @@ import { MetadataCollectionItemComponent } from '../metadata-collection-item/met
 export class MetadataCollectionsComponent {
   projectSubmissions = input<CollectionSubmission[] | null>(null);
   isProjectSubmissionsLoading = input<boolean>(false);
-  cedarRecords = input<CedarMetadataRecordData[] | null>(null);
+  cedarRecords = input<CedarMetadataRecordDataJsonApi[] | null>(null);
   cedarTemplates = input<CedarMetadataDataTemplateJsonApi[] | null>(null);
 
   cedarRecordByTemplateId = computed(() => {

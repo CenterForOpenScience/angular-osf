@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmission } from '@osf/shared/models/collections/collection-submissions.model';
 
 import {
   MOCK_CEDAR_RECORD,

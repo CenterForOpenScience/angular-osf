@@ -1,42 +1,37 @@
-import { JsonApiResponse } from '@shared/models/common/json-api.model';
-
-export interface InstitutionSearchResultCountJsonApi {
-  attributes: {
-    cardSearchResultCount: number;
-  };
-  id: string;
-  type: string;
-  relationships: {
-    indexCard: {
-      data: {
-        id: string;
-        type: string;
-      };
-    };
-  };
-}
-
-export interface InstitutionIndexCardFilterJsonApi {
-  attributes: {
-    resourceIdentifier: string[];
-    resourceMetadata: {
-      displayLabel: { '@value': string }[];
-      '@id': string;
-      name: { '@value': string }[];
-    };
-  };
-  id: string;
-  type: string;
-}
+import { ToOneRelData } from '@osf/shared/models/common/json-api/relationships.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { JsonApiResponse } from '@osf/shared/models/common/json-api/responses.model';
 
 export type InstitutionIndexValueSearchIncludedJsonApi =
   | InstitutionSearchResultCountJsonApi
   | InstitutionIndexCardFilterJsonApi;
 
-export interface InstitutionIndexValueSearchJsonApi extends JsonApiResponse<
-  null,
-  InstitutionIndexValueSearchIncludedJsonApi[]
+export type InstitutionIndexValueSearchJsonApi = JsonApiResponse<null, InstitutionIndexValueSearchIncludedJsonApi[]>;
+export type InstitutionIndexCardFilterJsonApi = JsonApiResource<'index-card', InstitutionIndexCardAttributesJsonApi>;
+
+interface InstitutionIndexCardResourceMetadataJsonApi {
+  '@id': string;
+  displayLabel?: { '@value': string }[];
+  name: { '@value': string }[];
+}
+
+interface InstitutionIndexCardAttributesJsonApi {
+  resourceIdentifier: string[];
+  resourceMetadata: InstitutionIndexCardResourceMetadataJsonApi;
+}
+
+interface InstitutionSearchResultAttributesJsonApi {
+  cardSearchResultCount: number;
+}
+
+interface InstitutionSearchResultRelationshipsJsonApi {
+  indexCard: ToOneRelData;
+}
+
+export interface InstitutionSearchResultCountJsonApi extends Omit<
+  JsonApiResource<string, InstitutionSearchResultAttributesJsonApi>,
+  'attributes'
 > {
-  data: null;
-  included: InstitutionIndexValueSearchIncludedJsonApi[];
+  attributes?: InstitutionSearchResultAttributesJsonApi;
+  relationships: InstitutionSearchResultRelationshipsJsonApi;
 }

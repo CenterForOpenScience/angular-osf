@@ -1,42 +1,18 @@
-import { ApiData, JsonApiResponse } from '../common/json-api.model';
+import { RelatedCountRel } from '../common/json-api/relationships.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ItemResponse } from '../common/json-api/responses.model';
+import { UserAttributesJsonApi } from '../user/user-json-api.model';
 
-export type UserRelatedCountsResponseJsonApi = JsonApiResponse<
-  ApiData<
-    {
-      employment: { institution: string }[];
-      education: { institution: string }[];
-    },
-    null,
-    {
-      registrations: {
-        links: {
-          related: {
-            meta: {
-              count: number;
-            };
-          };
-        };
-      };
-      preprints: {
-        links: {
-          related: {
-            meta: {
-              count: number;
-            };
-          };
-        };
-      };
-      nodes: {
-        links: {
-          related: {
-            meta: {
-              count: number;
-            };
-          };
-        };
-      };
-    },
-    null
-  >,
-  null
->;
+export type UserRelatedCountsResponseJsonApi = ItemResponse<UserRelatedCountsDataJsonApi>;
+
+export interface UserRelatedCountsDataJsonApi extends JsonApiResource<'users', UserAttributesJsonApi> {
+  relationships: UserRelatedCountsRelationshipsJsonApi;
+}
+
+interface UserRelatedCountsRelationshipsJsonApi {
+  draft_preprints: RelatedCountRel;
+  institutions: RelatedCountRel;
+  nodes: RelatedCountRel;
+  preprints: RelatedCountRel;
+  registrations: RelatedCountRel;
+}

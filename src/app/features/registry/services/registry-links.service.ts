@@ -4,15 +4,13 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { NodesResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { LinkedNodesMapper, LinkedRegistrationsMapper } from '../mappers';
-import {
-  LinkedNodesJsonApiResponse,
-  LinkedNodesResponseJsonApi,
-  LinkedRegistrationsJsonApiResponse,
-  LinkedRegistrationsResponseJsonApi,
-} from '../models';
+import { LinkedNode, LinkedRegistration, LinkedRegistrationsJsonApiResponse } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +23,11 @@ export class RegistryLinksService {
     return `${this.environment.apiDomainUrl}/v2`;
   }
 
-  getLinkedNodes(registryId: string, page = 1, pageSize = 10): Observable<LinkedNodesResponseJsonApi> {
+  getLinkedNodes(
+    registryId: string,
+    page = 1,
+    pageSize = DEFAULT_TABLE_PARAMS.rows
+  ): Observable<PaginatedData<LinkedNode[]>> {
     const params: Record<string, unknown> = {
       'embed[]': 'bibliographic_contributors',
       page: page,
@@ -33,17 +35,21 @@ export class RegistryLinksService {
     };
 
     return this.jsonApiService
-      .get<LinkedNodesJsonApiResponse>(`${this.apiUrl}/registrations/${registryId}/linked_nodes/`, params)
+      .get<NodesResponseJsonApi>(`${this.apiUrl}/registrations/${registryId}/linked_nodes/`, params)
       .pipe(
         map((response) => ({
           data: response.data.map(LinkedNodesMapper.fromApiResponse),
-          meta: response.meta,
-          links: response.links,
+          totalCount: response.meta.total,
+          pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
         }))
       );
   }
 
-  getLinkedRegistrations(registryId: string, page = 1, pageSize = 10): Observable<LinkedRegistrationsResponseJsonApi> {
+  getLinkedRegistrations(
+    registryId: string,
+    page = 1,
+    pageSize = DEFAULT_TABLE_PARAMS.rows
+  ): Observable<PaginatedData<LinkedRegistration[]>> {
     const params: Record<string, unknown> = {
       'embed[]': 'bibliographic_contributors',
       page: page,
@@ -58,8 +64,8 @@ export class RegistryLinksService {
       .pipe(
         map((response) => ({
           data: response.data.map(LinkedRegistrationsMapper.fromApiResponse),
-          meta: response.meta,
-          links: response.links,
+          totalCount: response.meta.total,
+          pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
         }))
       );
   }

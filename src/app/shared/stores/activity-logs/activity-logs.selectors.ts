@@ -1,13 +1,13 @@
 import { Selector } from '@ngxs/store';
 
-import { ActivityLogWithDisplay } from '@osf/shared/models/activity-logs/activity-log-with-display.model';
+import { ActivityLogWithDisplayModel } from '@osf/shared/models/activity-logs/activity-log-with-display.model';
 
 import { ActivityLogsStateModel } from './activity-logs.model';
 import { ActivityLogsState } from './activity-logs.state';
 
 export class ActivityLogsSelectors {
   @Selector([ActivityLogsState])
-  static getActivityLogs(state: ActivityLogsStateModel): ActivityLogWithDisplay[] {
+  static getActivityLogs(state: ActivityLogsStateModel): ActivityLogWithDisplayModel[] {
     return state.activityLogs.data;
   }
 

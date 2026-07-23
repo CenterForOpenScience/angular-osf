@@ -47,12 +47,3 @@ export interface RegisteredMeta {
   summary: { extra: string[]; value: string };
   uploader: RegisteredMetaField;
 }
-
-export interface FileUrls {
-  html: string;
-  download: string;
-}
-
-export interface FileHashes {
-  sha256: string;
-}

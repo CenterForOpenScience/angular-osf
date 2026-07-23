@@ -2,7 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
+import { ActivityLogModel } from '@osf/shared/models/activity-logs/activity-logs.model';
 
 import { ActivityLogUrlBuilderService } from './activity-log-url-builder.service';
 
@@ -26,13 +26,13 @@ export class ActivityLogFormatterService {
     'other',
   ];
 
-  buildAnonymous(log: ActivityLog): string {
+  buildAnonymous(log: ActivityLogModel): string {
     return log.params.anonymousLink
       ? this.translateService.instant('activityLog.defaults.anonymousAn')
       : this.translateService.instant('activityLog.defaults.anonymousA');
   }
 
-  buildCommentLocation(log: ActivityLog): string {
+  buildCommentLocation(log: ActivityLogModel): string {
     const file = log.params.file;
     const wiki = log.params.wiki;
 
@@ -51,7 +51,7 @@ export class ActivityLogFormatterService {
     return '';
   }
 
-  buildContributorsList(log: ActivityLog): string {
+  buildContributorsList(log: ActivityLogModel): string {
     if (!log.params.contributors || log.params.contributors.length === 0) {
       return this.translateService.instant('activityLog.defaults.someUsers');
     }
@@ -89,7 +89,7 @@ export class ActivityLogFormatterService {
     return contribList.join(' ');
   }
 
-  buildDestination(log: ActivityLog): string {
+  buildDestination(log: ActivityLogModel): string {
     if (!log.params.destination) {
       return this.translateService.instant('activityLog.defaults.aNewNameLocation');
     }
@@ -111,7 +111,7 @@ export class ActivityLogFormatterService {
     }
   }
 
-  buildIdentifiers(log: ActivityLog): string {
+  buildIdentifiers(log: ActivityLogModel): string {
     if (!log.params.identifiers) {
       return '';
     }
@@ -130,11 +130,11 @@ export class ActivityLogFormatterService {
     return '';
   }
 
-  buildOldPage(log: ActivityLog): string {
+  buildOldPage(log: ActivityLogModel): string {
     return log.params.oldPage ? log.params.oldPage : this.translateService.instant('activityLog.defaults.pageTitle');
   }
 
-  buildPage(log: ActivityLog): string {
+  buildPage(log: ActivityLogModel): string {
     if (!log.params.page) {
       return this.translateService.instant('activityLog.defaults.pageTitle');
     }
@@ -142,7 +142,7 @@ export class ActivityLogFormatterService {
     return this.urlBuilder.buildPageUrl(log, log.params.page);
   }
 
-  buildPath(log: ActivityLog): string {
+  buildPath(log: ActivityLogModel): string {
     if (!log.params.path) {
       return this.translateService.instant('activityLog.defaults.aFile');
     }
@@ -151,7 +151,7 @@ export class ActivityLogFormatterService {
     return this.urlBuilder.buildFileUrl(log, path);
   }
 
-  buildPathType(log: ActivityLog): string {
+  buildPathType(log: ActivityLogModel): string {
     if (!log.params.path) {
       return '';
     }
@@ -161,7 +161,7 @@ export class ActivityLogFormatterService {
       : this.translateService.instant('activityLog.defaults.file');
   }
 
-  buildSource(log: ActivityLog): string {
+  buildSource(log: ActivityLogModel): string {
     if (!log.params.source) {
       return this.translateService.instant('activityLog.defaults.aNameLocation');
     }
@@ -175,17 +175,17 @@ export class ActivityLogFormatterService {
     });
   }
 
-  buildTitleNew(log: ActivityLog): string {
+  buildTitleNew(log: ActivityLogModel): string {
     const url = this.urlBuilder.buildTitleUrl(log, log.params.titleNew);
     return url || this.translateService.instant('activityLog.defaults.aTitle');
   }
 
-  buildTitleOriginal(log: ActivityLog): string {
+  buildTitleOriginal(log: ActivityLogModel): string {
     const url = this.urlBuilder.buildTitleUrl(log, log.params.titleOriginal);
     return url || this.translateService.instant('activityLog.defaults.aTitle');
   }
 
-  buildUpdatedFields(log: ActivityLog): string {
+  buildUpdatedFields(log: ActivityLogModel): string {
     if (!log.params.updatedFields) {
       return this.translateService.instant('activityLog.defaults.field');
     }
@@ -211,16 +211,16 @@ export class ActivityLogFormatterService {
     });
   }
 
-  buildVersion(log: ActivityLog): string {
+  buildVersion(log: ActivityLogModel): string {
     return log.params.version || '#';
   }
 
-  getPointerCategory(log: ActivityLog): string {
+  getPointerCategory(log: ActivityLogModel): string {
     const linkedNode = log.embeds?.linkedNode;
     return linkedNode?.category || '';
   }
 
-  buildUser(log: ActivityLog): string {
+  buildUser(log: ActivityLogModel): string {
     const userUrl = this.urlBuilder.buildUserUrl(log);
 
     if (userUrl) {
@@ -234,39 +234,39 @@ export class ActivityLogFormatterService {
     return this.translateService.instant('activityLog.defaults.aUser');
   }
 
-  buildNode(log: ActivityLog): string {
+  buildNode(log: ActivityLogModel): string {
     const nodeUrl = this.urlBuilder.buildNodeUrl(log);
     return nodeUrl || this.translateService.instant('activityLog.defaults.aProject');
   }
 
-  buildEmbeddedNode(log: ActivityLog): string {
+  buildEmbeddedNode(log: ActivityLogModel): string {
     const url = this.urlBuilder.buildEmbeddedUrl(log);
     return url || this.translateService.instant('activityLog.defaults.aTitle');
   }
 
-  buildTemplate(log: ActivityLog): string {
+  buildTemplate(log: ActivityLogModel): string {
     const url = this.urlBuilder.buildTemplateUrl(log);
     return url || this.translateService.instant('activityLog.defaults.aTitle');
   }
 
-  buildInstitution(log: ActivityLog): string {
+  buildInstitution(log: ActivityLogModel): string {
     return this.urlBuilder.buildInstitutionUrl(log);
   }
 
-  buildTag(log: ActivityLog): string {
+  buildTag(log: ActivityLogModel): string {
     return this.urlBuilder.buildTagUrl(log);
   }
 
-  buildPreprint(log: ActivityLog): string {
+  buildPreprint(log: ActivityLogModel): string {
     const preprintWord = this.translateService.instant('activityLog.defaults.preprint');
     return this.urlBuilder.buildPreprintUrl(log, preprintWord);
   }
 
-  buildPreprintProvider(log: ActivityLog): string {
+  buildPreprintProvider(log: ActivityLogModel): string {
     return this.urlBuilder.buildPreprintProviderUrl(log);
   }
 
-  buildFallbackMessage(log: ActivityLog): string {
+  buildFallbackMessage(log: ActivityLogModel): string {
     const user = this.buildUser(log);
     const node = this.buildNode(log);
     const action = log.action.replace(/_/g, ' ');

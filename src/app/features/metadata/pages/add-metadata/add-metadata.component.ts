@@ -25,7 +25,7 @@ import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 import { CedarTemplateFormComponent } from '../../components/cedar-template-form/cedar-template-form.component';
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from '../../models';
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi, CedarRecordDataBinding } from '../../models';
 import {
   CreateCedarMetadataRecord,
   GetCedarMetadataRecords,
@@ -54,7 +54,7 @@ export class AddMetadataComponent implements OnInit {
   private resourceId = '';
   isEditMode = true;
   selectedTemplate: CedarMetadataDataTemplateJsonApi | null = null;
-  existingRecord: CedarMetadataRecordData | null = null;
+  existingRecord: CedarMetadataRecordDataJsonApi | null = null;
 
   readonly cedarTemplates = select(MetadataSelectors.getCedarTemplatesExcludingCollections);
   readonly cedarRecords = select(MetadataSelectors.getCedarRecords);

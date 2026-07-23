@@ -1,11 +1,10 @@
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ListResponse } from '@osf/shared/models/common/json-api/responses.model';
 import { UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
-export type ReviewActionsResponseJsonApi = JsonApiResponse<ReviewActionsDataJsonApi[], null>;
+export type ReviewActionsResponseJsonApi = ListResponse<ReviewActionDataJsonApi>;
 
-export interface ReviewActionsDataJsonApi {
-  id: string;
-  attributes: ReviewActionAttributesJsonApi;
+export interface ReviewActionDataJsonApi extends JsonApiResource<'review-actions', ReviewActionAttributesJsonApi> {
   embeds: ReviewActionEmbedsJsonApi;
 }
 

@@ -11,11 +11,11 @@ import {
   CedarMetadataTemplateJsonApi,
   CedarRecordDataBinding,
   CustomItemMetadataRecord,
-  CustomMetadataJsonApi,
-  CustomMetadataJsonApiResponse,
-  MetadataJsonApi,
-  MetadataJsonApiResponse,
+  CustomMetadataDataJsonApi,
+  CustomMetadataResponseJsonApi,
+  MetadataDataJsonApi,
   MetadataModel,
+  MetadataResponseJsonApi,
   RorFunderOption,
   RorSearchResponse,
 } from '@osf/features/metadata/models';
@@ -54,7 +54,7 @@ export class MetadataService {
 
   getCustomItemMetadata(guid: string): Observable<CustomItemMetadataRecord> {
     return this.jsonApiService
-      .get<CustomMetadataJsonApiResponse>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`)
+      .get<CustomMetadataResponseJsonApi>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`)
       .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response.data)));
   }
 
@@ -62,7 +62,7 @@ export class MetadataService {
     const payload = MetadataMapper.toCustomMetadataApiRequest(guid, metadata);
 
     return this.jsonApiService
-      .put<CustomMetadataJsonApi>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`, payload)
+      .put<CustomMetadataDataJsonApi>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`, payload)
       .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response)));
   }
 
@@ -113,7 +113,6 @@ export class MetadataService {
       'page[size]': 20,
     };
 
-    // [NS] TODO: Check if it can be simplified
     let cedarUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/cedar_metadata_records/`;
 
     if (url) {
@@ -152,7 +151,7 @@ export class MetadataService {
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
 
     return this.jsonApiService
-      .get<MetadataJsonApiResponse>(baseUrl, params)
+      .get<MetadataResponseJsonApi>(baseUrl, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response.data)));
   }
 
@@ -173,7 +172,7 @@ export class MetadataService {
     const params = this.getMetadataParams(resourceType);
 
     return this.jsonApiService
-      .patch<MetadataJsonApi>(baseUrl, payload, params)
+      .patch<MetadataDataJsonApi>(baseUrl, payload, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));
   }
 
@@ -210,7 +209,7 @@ export class MetadataService {
     const params = this.getMetadataParams(resourceType);
 
     return this.jsonApiService
-      .patch<MetadataJsonApi>(baseUrl, payload, params)
+      .patch<MetadataDataJsonApi>(baseUrl, payload, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));
   }
 

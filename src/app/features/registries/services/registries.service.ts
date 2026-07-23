@@ -3,8 +3,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { PageSchemaMapper, RegistrationMapper } from '@osf/shared/mappers/registration';
-import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { DraftRegistrationModel } from '@osf/shared/models/registration/draft-registration.model';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
@@ -12,17 +12,21 @@ import { RegistrationModel } from '@osf/shared/models/registration/registration.
 import { RegistrationCard } from '@osf/shared/models/registration/registration-card.model';
 import {
   DraftRegistrationDataJsonApi,
-  DraftRegistrationRelationshipsJsonApi,
+  DraftRegistrationListResponseJsonApi,
+  DraftRegistrationRelationshipPayloadJsonApi,
   DraftRegistrationResponseJsonApi,
   RegistrationAttributesJsonApi,
   RegistrationDataJsonApi,
+  RegistrationListResponseJsonApi,
   RegistrationResponseJsonApi,
-  SchemaResponseDataJsonApi,
-  SchemaResponseJsonApi,
-  SchemaResponsesJsonApi,
 } from '@osf/shared/models/registration/registration-json-api.model';
 import { SchemaBlocksResponseJsonApi } from '@osf/shared/models/registration/schema-blocks-json-api.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
+import {
+  SchemaResponseDataJsonApi,
+  SchemaResponseJsonApi,
+  SchemaResponsesJsonApi,
+} from '@osf/shared/models/registration/schema-response-json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { SchemaActionTrigger } from '../enums';
@@ -76,9 +80,8 @@ export class RegistriesService {
   }
 
   getDraft(draftId: string): Observable<DraftRegistrationModel> {
-    const params = {
-      embed: ['branched_from'],
-    };
+    const params = { embed: ['branched_from'] };
+
     return this.jsonApiService
       .get<DraftRegistrationResponseJsonApi>(`${this.apiUrl}/draft_registrations/${draftId}/`, params)
       .pipe(map((response) => RegistrationMapper.fromDraftRegistrationResponse(response.data)));
@@ -87,7 +90,7 @@ export class RegistriesService {
   updateDraft(
     id: string,
     attributes: Partial<RegistrationAttributesJsonApi>,
-    relationships?: Partial<DraftRegistrationRelationshipsJsonApi>
+    relationships?: DraftRegistrationRelationshipPayloadJsonApi
   ): Observable<DraftRegistrationModel> {
     const payload = {
       data: {
@@ -97,9 +100,7 @@ export class RegistriesService {
         type: 'draft_registrations',
       },
     };
-    const params = {
-      embed: ['branched_from'],
-    };
+    const params = { embed: ['branched_from'] };
 
     return this.jsonApiService
       .patch<DraftRegistrationDataJsonApi>(`${this.apiUrl}/draft_registrations/${id}/`, payload, params)
@@ -136,7 +137,7 @@ export class RegistriesService {
       embed: ['bibliographic_contributors', 'registration_schema', 'provider'],
     };
     return this.jsonApiService
-      .get<ResponseJsonApi<DraftRegistrationDataJsonApi[]>>(`${this.apiUrl}/draft_registrations/`, params)
+      .get<DraftRegistrationListResponseJsonApi>(`${this.apiUrl}/draft_registrations/`, params)
       .pipe(
         map((response) => {
           const data = response.data.map((registration: DraftRegistrationDataJsonApi) =>
@@ -145,7 +146,7 @@ export class RegistriesService {
           return {
             data,
             totalCount: response.meta?.total,
-            pageSize: response.meta.per_page,
+            pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
           };
         })
       );
@@ -164,7 +165,7 @@ export class RegistriesService {
     };
 
     return this.jsonApiService
-      .get<ResponseJsonApi<RegistrationDataJsonApi[]>>(`${this.apiUrl}/users/${userId}/registrations/`, params)
+      .get<RegistrationListResponseJsonApi>(`${this.apiUrl}/users/${userId}/registrations/`, params)
       .pipe(
         map((response) => {
           const data = response.data.map((registration: RegistrationDataJsonApi) =>
@@ -173,25 +174,23 @@ export class RegistriesService {
           return {
             data,
             totalCount: response.meta?.total,
-            pageSize: response.meta.per_page,
+            pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
           };
         })
       );
   }
 
   getAllSchemaResponse(registrationId: string): Observable<SchemaResponse[]> {
-    const params = {
-      embed: ['registration'],
-    };
+    const params = { embed: ['registration'] };
+
     return this.jsonApiService
       .get<SchemaResponsesJsonApi>(`${this.apiUrl}/registrations/${registrationId}/schema_responses/`, params)
       .pipe(map((response) => response.data.map((item) => RegistrationMapper.fromSchemaResponse(item))));
   }
 
   getSchemaResponse(schemaResponseId: string): Observable<SchemaResponse> {
-    const params = {
-      embed: ['registration'],
-    };
+    const params = { embed: ['registration'] };
+
     return this.jsonApiService
       .get<SchemaResponseJsonApi>(`${this.apiUrl}/schema_responses/${schemaResponseId}/`, params)
       .pipe(map((response) => RegistrationMapper.fromSchemaResponse(response.data)));
@@ -211,9 +210,8 @@ export class RegistriesService {
         },
       },
     };
-    const params = {
-      embed: ['registration'],
-    };
+    const params = { embed: ['registration'] };
+
     return this.jsonApiService
       .post<SchemaResponseJsonApi>(`${this.apiUrl}/schema_responses/`, payload, params)
       .pipe(map((response) => RegistrationMapper.fromSchemaResponse(response.data)));
@@ -235,9 +233,8 @@ export class RegistriesService {
         },
       },
     };
-    const params = {
-      embed: ['registration'],
-    };
+    const params = { embed: ['registration'] };
+
     return this.jsonApiService
       .patch<SchemaResponseDataJsonApi>(`${this.apiUrl}/schema_responses/${schemaResponseId}/`, payload, params)
       .pipe(map((response) => RegistrationMapper.fromSchemaResponse(response)));

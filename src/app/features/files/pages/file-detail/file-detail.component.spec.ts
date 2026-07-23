@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   CedarMetadataDataTemplateJsonApi,
-  CedarMetadataRecordData,
+  CedarMetadataRecordDataJsonApi,
   CedarRecordDataBinding,
   CedarTemplate,
 } from '@osf/features/metadata/models';
@@ -359,7 +359,7 @@ describe('FileDetailComponent', () => {
         template: { data: { type: 'cedar-metadata-templates', id: 'tpl-1' } },
         target: { data: { type: 'files', id: 'file-1' } },
       },
-    } as CedarMetadataRecordData;
+    } as CedarMetadataRecordDataJsonApi;
     const cedarTemplate = {
       id: 'tpl-1',
       type: 'cedar-metadata-templates',
@@ -393,7 +393,7 @@ describe('FileDetailComponent', () => {
         template: { data: { type: 'cedar-metadata-templates', id: 'tpl-1' } },
         target: { data: { type: 'files', id: 'file-1' } },
       },
-    } as CedarMetadataRecordData;
+    } as CedarMetadataRecordDataJsonApi;
     const cedarTemplate = {
       id: 'tpl-1',
       type: 'cedar-metadata-templates',

@@ -1,39 +1,35 @@
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { DataResponse, ItemResponse, ListResponse } from '@osf/shared/models/common/json-api/responses.model';
 
-export interface DeveloperAppCreateRequestJsonApi {
-  data: {
-    type: 'applications';
-    attributes: {
-      name: string;
-      description: StringOrNull;
-      home_url: string;
-      callback_url: string;
-    };
-  };
-}
+export type DeveloperAppsListResponseJsonApi = ListResponse<DeveloperAppDataJsonApi>;
+export type DeveloperAppResponseJsonApi = ItemResponse<DeveloperAppDataJsonApi>;
+
+export type DeveloperAppDataJsonApi = JsonApiResource<'applications', DeveloperAppAttributesJsonApi>;
+
+export type DeveloperAppCreateRequestJsonApi = DataResponse<DeveloperAppCreateDataJsonApi>;
 
 export interface DeveloperAppUpdateRequestJsonApi {
-  data: {
-    id: string;
-    type: 'applications';
-    attributes: {
-      name: string;
-      description: StringOrNull;
-      home_url: string;
-      callback_url: string;
-    };
-  };
+  data: DeveloperAppCreateRequestJsonApi['data'] & { id: string };
 }
 
-export interface DeveloperAppGetResponseJsonApi {
-  id: string;
+interface DeveloperAppCreateDataJsonApi {
+  attributes: DeveloperAppChangeAttributesJsonApi;
   type: 'applications';
-  attributes: {
-    name: string;
-    description: string;
-    home_url: string;
-    callback_url: string;
-    client_id: string;
-    client_secret: string;
-  };
+}
+
+interface DeveloperAppChangeAttributesJsonApi {
+  callback_url: string;
+  description: StringOrNull;
+  home_url: string;
+  name: string;
+}
+
+interface DeveloperAppAttributesJsonApi {
+  callback_url: string;
+  client_id: string;
+  client_secret: string;
+  description: string;
+  home_url: string;
+  name: string;
 }

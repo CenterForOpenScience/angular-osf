@@ -8,9 +8,9 @@ import { Tag } from 'primeng/tag';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi } from '@osf/features/metadata/models';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmission } from '@osf/shared/models/collections/collection-submissions.model';
 import { KeyValueModel } from '@osf/shared/models/common/key-value.model';
 import { CollectionStatusSeverityPipe } from '@osf/shared/pipes/collection-status-severity.pipe';
 
@@ -36,7 +36,7 @@ import { CollectionStatusSeverityPipe } from '@osf/shared/pipes/collection-statu
 export class OverviewCollectionsComponent {
   projectSubmissions = input<CollectionSubmission[] | null>(null);
   isProjectSubmissionsLoading = input<boolean>(false);
-  cedarRecords = input<CedarMetadataRecordData[] | null>(null);
+  cedarRecords = input<CedarMetadataRecordDataJsonApi[] | null>(null);
   cedarTemplates = input<CedarMetadataDataTemplateJsonApi[] | null>(null);
 
   cedarRecordByTemplateId = computed(() => {
@@ -54,7 +54,10 @@ export class OverviewCollectionsComponent {
     return new Map(templates?.map((t) => [t.id, t] as const) ?? []);
   });
 
-  getCedarAttributes(record: CedarMetadataRecordData, template: CedarMetadataDataTemplateJsonApi): KeyValueModel[] {
+  getCedarAttributes(
+    record: CedarMetadataRecordDataJsonApi,
+    template: CedarMetadataDataTemplateJsonApi
+  ): KeyValueModel[] {
     const { order, propertyLabels } = template.attributes.template._ui;
     const metadata = record.attributes.metadata as Record<string, unknown>;
     const attributes: KeyValueModel[] = [];

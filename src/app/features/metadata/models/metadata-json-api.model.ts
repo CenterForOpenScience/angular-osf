@@ -1,58 +1,59 @@
+import { ToOneRel } from '@osf/shared/models/common/json-api/relationships.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
 import { UserPermissions } from '@shared/enums/user-permissions.enum';
-import { ApiData } from '@shared/models/common/json-api.model';
+import { Embed } from '@shared/models/common/json-api/embeds.model';
+import { ItemResponse } from '@shared/models/common/json-api/responses.model';
 import { IdentifiersResponseJsonApi } from '@shared/models/identifiers/identifier-json-api.model';
-import { InstitutionsJsonApiResponse } from '@shared/models/institutions/institution-json-api.model';
 import { LicenseDataJsonApi, LicenseRecordJsonApi } from '@shared/models/license/licenses-json-api.model';
 
-export interface MetadataJsonApiResponse {
-  data: MetadataJsonApi;
+export type MetadataResponseJsonApi = ItemResponse<MetadataDataJsonApi>;
+export type CustomMetadataResponseJsonApi = ItemResponse<CustomMetadataDataJsonApi>;
+
+export interface MetadataDataJsonApi extends JsonApiResource<'metadata', MetadataAttributesJsonApi> {
+  relationships: MetadataRelationshipsJsonApi;
+  embeds?: MetadataEmbedsJsonApi;
 }
 
-export type MetadataJsonApi = ApiData<MetadataAttributesJsonApi, MetadataEmbedsJsonApi, null, null>;
+export type CustomMetadataDataJsonApi = JsonApiResource<
+  'custom-item-metadata-records',
+  CustomMetadataAttributesJsonApi
+>;
 
 export interface MetadataAttributesJsonApi {
-  title: string;
-  description: string;
-  tags: string[];
+  article_doi?: string;
+  category?: string;
+  current_user_permissions: UserPermissions[];
   date_created: string;
   date_modified: string;
-  article_doi?: string;
+  description: string;
   doi?: boolean;
-  category?: string;
   node_license?: LicenseRecordJsonApi;
   public?: boolean;
   registration_supplement?: string;
-  current_user_permissions: UserPermissions[];
+  tags: string[];
+  title: string;
+}
+
+interface CustomMetadataAttributesJsonApi {
+  funders?: FunderJsonApi[];
+  language?: string;
+  resource_type_general?: string;
+}
+
+interface FunderJsonApi {
+  award_number: string;
+  award_title: string;
+  award_uri: string;
+  funder_identifier: string;
+  funder_identifier_type: string;
+  funder_name: string;
 }
 
 interface MetadataEmbedsJsonApi {
-  affiliated_institutions: InstitutionsJsonApiResponse;
   identifiers: IdentifiersResponseJsonApi;
-  license: {
-    data: LicenseDataJsonApi;
-  };
-  provider?: {
-    data: { id: string; type: string; attributes: { name: string } };
-  };
+  license: Embed<LicenseDataJsonApi>;
 }
 
-export interface CustomMetadataJsonApiResponse {
-  data: CustomMetadataJsonApi;
-}
-
-export type CustomMetadataJsonApi = ApiData<CustomMetadataAttributesJsonApi, MetadataEmbedsJsonApi, null, null>;
-
-export interface CustomMetadataAttributesJsonApi {
-  language?: string;
-  resource_type_general?: string;
-  funders?: FunderJsonApi[];
-}
-
-export interface FunderJsonApi {
-  funder_name: string;
-  funder_identifier: string;
-  funder_identifier_type: string;
-  award_number: string;
-  award_uri: string;
-  award_title: string;
+interface MetadataRelationshipsJsonApi {
+  provider: ToOneRel;
 }

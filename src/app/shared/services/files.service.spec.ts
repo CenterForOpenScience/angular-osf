@@ -67,7 +67,9 @@ describe('FilesService', () => {
 
   it('should map resource type to root folders url', () => {
     setup();
-    const getFoldersSpy = vi.spyOn(service, 'getFolders').mockReturnValue(of({ files: [] }));
+    const getFoldersSpy = vi
+      .spyOn(service, 'getFolders')
+      .mockReturnValue(of({ data: [], totalCount: 0, pageSize: 10 }));
 
     service.getRootFolders('abc', ResourceType.Project).subscribe();
     service.getRootFolders('abc', ResourceType.Registration).subscribe();

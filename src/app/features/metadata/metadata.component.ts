@@ -75,7 +75,7 @@ import { ResourceInformationDialogComponent } from './dialogs/resource-informati
 import { ResourceInfoTooltipComponent } from './dialogs/resource-tooltip-info/resource-tooltip-info.component';
 import {
   CedarMetadataDataTemplateJsonApi,
-  CedarMetadataRecordData,
+  CedarMetadataRecordDataJsonApi,
   CedarRecordDataBinding,
   DialogValueModel,
 } from './models';
@@ -133,7 +133,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   tabs = signal<MetadataTabsModel[]>([]);
   selectedTab = signal('osf');
 
-  selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
+  selectedCedarRecord = signal<CedarMetadataRecordDataJsonApi | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
   resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);

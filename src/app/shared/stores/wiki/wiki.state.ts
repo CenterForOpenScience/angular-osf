@@ -167,7 +167,7 @@ export class WikiState {
 
     return this.wikiService.getWikiList(action.resourceType, action.resourceId).pipe(
       tap((response) => {
-        const wiki = response.wikis.sort((a, b) => {
+        const wiki = response.data.sort((a, b) => {
           if (a.name === 'Home') return -1;
           if (b.name === 'Home') return 1;
           return a.name.localeCompare(b.name);
@@ -179,7 +179,7 @@ export class WikiState {
             isLoading: false,
             error: null,
           },
-          isAnonymous: response.meta?.anonymous ?? false,
+          isAnonymous: response.isAnonymous,
         });
       }),
       map((wiki) => wiki),

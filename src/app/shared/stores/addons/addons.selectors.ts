@@ -2,12 +2,12 @@ import { createSelector, Selector } from '@ngxs/store';
 
 import { AddonModel } from '@osf/shared/models/addons/addon.model';
 import {
-  ConfiguredAddonResponseJsonApi,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
-} from '@osf/shared/models/addons/addon-json-api.model';
+} from '@osf/shared/models/addons/addon-reference-json-api.model';
 import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
 import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import { ConfiguredAddonDataJsonApi } from '@osf/shared/models/addons/configured-addon-json-api.model';
 import { OperationInvocation } from '@osf/shared/models/addons/operation-invocation.model';
 import { StorageItem } from '@osf/shared/models/addons/storage-item.model';
 
@@ -160,7 +160,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCreatedOrUpdatedConfiguredAddon(state: AddonsStateModel): ConfiguredAddonResponseJsonApi | null {
+  static getCreatedOrUpdatedConfiguredAddon(state: AddonsStateModel): ConfiguredAddonDataJsonApi | null {
     return state.createdUpdatedConfiguredAddon.data;
   }
 

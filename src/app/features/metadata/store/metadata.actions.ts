@@ -2,7 +2,7 @@ import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LicenseOptions } from '@shared/models/license/license.model';
 
 import {
-  CedarMetadataRecordData,
+  CedarMetadataRecordDataJsonApi,
   CedarRecordDataBinding,
   CustomItemMetadataRecord,
   MetadataAttributesJsonApi,
@@ -98,5 +98,5 @@ export class UpdateCedarMetadataRecord {
 
 export class AddCedarMetadataRecordToState {
   static readonly type = '[Metadata] Add Cedar Metadata Record To State';
-  constructor(public record: CedarMetadataRecordData) {}
+  constructor(public record: CedarMetadataRecordDataJsonApi) {}
 }

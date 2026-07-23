@@ -102,8 +102,8 @@ export const MOCK_ADMIN_INSTITUTIONS_SUMMARY_METRICS: InstitutionSummaryMetrics 
 };
 
 export const MOCK_ADMIN_INSTITUTIONS_DEPARTMENTS: InstitutionDepartment[] = [
-  { id: 'dept-1', name: 'Computer Science', numberOfUsers: 45, selfLink: '/departments/cs' },
-  { id: 'dept-2', name: 'Biology', numberOfUsers: 30, selfLink: '/departments/bio' },
+  { id: 'dept-1', name: 'Computer Science', numberOfUsers: 45 },
+  { id: 'dept-2', name: 'Biology', numberOfUsers: 30 },
 ];
 
 export const MOCK_ADMIN_INSTITUTIONS_SEARCH_FILTERS: InstitutionSearchFilter[] = [

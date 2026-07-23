@@ -1,36 +1,12 @@
-export interface ProjectSettingsResponseJsonApi {
-  data: ProjectSettingsDataJsonApi;
-  meta: {
-    version: string;
-  };
-}
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ItemResponse } from '@osf/shared/models/common/json-api/responses.model';
 
-export interface ProjectSettingsDataJsonApi {
-  id: string;
-  type: 'node-settings';
-  attributes: ProjectSettingsAttributesJsonApi;
-  relationships: ProjectSettingsRelationshipsJsonApi;
-  links: {
-    self: string;
-    iri: string;
-  };
-}
+export type ProjectSettingsResponseJsonApi = ItemResponse<ProjectSettingsDataJsonApi>;
+
+export type ProjectSettingsDataJsonApi = JsonApiResource<'node-settings', ProjectSettingsAttributesJsonApi>;
 
 export interface ProjectSettingsAttributesJsonApi {
   access_requests_enabled: boolean;
   anyone_can_edit_wiki: boolean;
   wiki_enabled: boolean;
-}
-
-interface ProjectSettingsRelationshipsJsonApi {
-  view_only_links: {
-    links: {
-      related: RelatedLinkJsonApi;
-    };
-  };
-}
-
-interface RelatedLinkJsonApi {
-  href: string;
-  meta: Record<string, unknown>;
 }

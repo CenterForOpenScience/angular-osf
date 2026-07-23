@@ -192,9 +192,7 @@ export class ProjectAddonsComponent implements OnInit {
     clearConfiguredAddons: ClearConfiguredAddons,
   });
 
-  readonly userReferenceId = computed(() => {
-    return this.addonsUserReference()[0]?.id;
-  });
+  readonly userReferenceId = computed(() => this.addonsUserReference()[0]?.id);
 
   allConfiguredAddons = computed(() => {
     let authorizedAddons;

@@ -10,7 +10,7 @@ export interface PreprintProviderAttributesJsonApi extends BaseProviderAttribute
   reviews_comments_private: boolean;
 }
 
-export interface PreprintProviderAssetsJsonApi {
+interface PreprintProviderAssetsJsonApi {
   favicon: string;
   square_color_no_transparent: string;
   wide_white: string;

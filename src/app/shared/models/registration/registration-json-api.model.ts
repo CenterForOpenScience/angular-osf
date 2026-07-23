@@ -2,240 +2,134 @@ import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common/json-api.model';
+import { EmbedList } from '../common/json-api/embeds.model';
+import { RelatedCountRel, ToOneRel, ToOneRelData } from '../common/json-api/relationships.model';
+import { JsonApiResource, JsonApiResourceRef } from '../common/json-api/resource.model';
+import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
 import { ContributorDataJsonApi } from '../contributors/contributor-response-json-api.model';
 import { LicenseRecordJsonApi } from '../license/licenses-json-api.model';
-import { RegistrationProviderAttributesJsonApi } from '../provider/registration-provider-json-api.model';
+import { RegistryProviderDetailsJsonApi } from '../provider/registration-provider-json-api.model';
 
-export interface DraftRegistrationResponseJsonApi {
-  data: DraftRegistrationDataJsonApi;
-  meta: MetaJsonApi;
-  links: PaginationLinksJsonApi;
+import { RegistrationNodeAttributesJsonApi } from './registration-node-json-api.model';
+
+export type DraftRegistrationResponseJsonApi = ItemResponse<DraftRegistrationDataJsonApi>;
+export type DraftRegistrationListResponseJsonApi = ListResponse<DraftRegistrationDataJsonApi>;
+export type RegistrationResponseJsonApi = ItemResponse<RegistrationDataJsonApi>;
+export type RegistrationListResponseJsonApi = ListResponse<RegistrationDataJsonApi>;
+
+export interface DraftRegistrationDataJsonApi extends JsonApiResource<
+  'draft_registrations',
+  DraftRegistrationAttributesJsonApi
+> {
+  relationships: DraftRegistrationRelationshipsJsonApi;
+  embeds?: DraftRegistrationEmbedsJsonApi;
 }
 
-export interface RegistrationResponseJsonApi {
-  data: RegistrationDataJsonApi;
-  meta: MetaJsonApi;
-  links: PaginationLinksJsonApi;
+export interface RegistrationDataJsonApi extends JsonApiResource<'registrations', RegistrationNodeAttributesJsonApi> {
+  relationships: RegistrationRelationshipsJsonApi;
+  embeds?: RegistrationEmbedsJsonApi;
 }
 
-export type DraftRegistrationDataJsonApi = ApiData<
-  DraftRegistrationAttributesJsonApi,
-  DraftRegistrationEmbedsJsonApi,
-  DraftRegistrationRelationshipsJsonApi,
-  null
->;
+export interface CreateRegistrationPayloadJsonApi {
+  data: {
+    id: string;
+    type: 'draft_registrations';
+    relationships?: DraftRegistrationRelationshipPayloadJsonApi;
+    attributes?: Partial<DraftRegistrationAttributesJsonApi>;
+  };
+}
 
-export type RegistrationDataJsonApi = ApiData<
-  RegistrationAttributesJsonApi,
-  RegistrationEmbedsJsonApi,
-  RegistrationRelationshipsJsonApi,
-  null
->;
+export interface DraftRegistrationRelationshipPayloadJsonApi {
+  branched_from?: { data: JsonApiResourceRef<'nodes'> | null };
+  license?: { data: JsonApiResourceRef<'licenses'> | null };
+  provider?: { data: JsonApiResourceRef<'providers'> | null };
+  registration_schema?: { data: JsonApiResourceRef<'registration-schemas'> | null };
+}
 
 export interface DraftRegistrationAttributesJsonApi {
   category: string;
+  current_user_permissions: UserPermissions[];
   date_created: string;
   datetime_initiated: string;
   datetime_updated: string;
+  default_license_id?: string;
   description: string;
   has_project: boolean;
-  default_license_id?: string;
   node_license: LicenseRecordJsonApi;
+  public?: boolean;
   registration_metadata: Record<string, unknown>;
   registration_responses: Record<string, unknown>;
   tags: string[];
   title: string;
-  public?: boolean;
-  current_user_permissions: UserPermissions[];
+}
+
+export interface DraftRegistrationRelationshipsJsonApi {
+  branched_from?: ToOneRel<'nodes'>;
+  license?: ToOneRel<'licenses'>;
+  provider?: ToOneRel<'providers'>;
+  registration_schema?: ToOneRel<'registration-schemas'>;
 }
 
 export interface RegistrationAttributesJsonApi {
   access_requests_enabled: boolean;
+  archiving: boolean;
+  current_user_permissions: UserPermissions[];
   date_created: string;
   date_modified: string;
   description: string;
   embargoed: boolean;
-  archiving: boolean;
-  public: boolean;
-  title: string;
   has_analytic_code: boolean;
   has_data: boolean;
   has_materials: boolean;
   has_papers: boolean;
   has_project: boolean;
   has_supplements: boolean;
-  revision_state: RevisionReviewStates;
-  reviews_state: RegistrationReviewStates;
-  pending_registration_approval: boolean;
   pending_embargo_approval: boolean;
   pending_embargo_termination_approval: boolean;
-  current_user_permissions: UserPermissions[];
+  pending_registration_approval: boolean;
+  public: boolean;
+  revision_state: RevisionReviewStates;
+  reviews_state: RegistrationReviewStates;
+  title: string;
 }
 
-export interface DraftRegistrationRelationshipsJsonApi {
-  registration_schema?: {
-    data: {
-      id: string;
-      type: 'registration-schemas';
-    };
-  };
-  provider?: {
-    data: {
-      id: string;
-      type: 'providers';
-    };
-  };
-  license?: {
-    data: {
-      id: string;
-      type: 'licenses';
-    };
-  };
-  branched_from?: {
-    data: {
-      id: string;
-      type: 'nodes';
-    };
-    links?: {
-      related: {
-        href: string;
-      };
-    };
-  };
+interface RegistrationRelationshipsJsonApi {
+  license?: ToOneRel<'licenses'>;
+  registration_schema?: ToOneRel<'registration-schemas'>;
+  root: ToOneRelData;
 }
 
-export interface RegistrationRelationshipsJsonApi {
-  registration_schema?: {
-    data: {
-      id: string;
-      type: 'registration-schemas';
-    };
-  };
-  license?: {
-    data: {
-      id: string;
-      type: 'licenses';
-    };
-  };
-  root: {
-    data: {
-      id: string;
-      type: string;
-    };
-  };
+interface RegistrationEmbedsJsonApi {
+  bibliographic_contributors?: EmbedList<ContributorDataJsonApi>;
+  provider?: RegistrationProviderEmbedJsonApi;
+  registration_schema?: RegistrationSchemaNameEmbedJsonApi;
 }
 
-export interface RegistrationEmbedsJsonApi {
-  registration_schema?: {
-    data: {
-      attributes: {
-        name: string;
-      };
-    };
-  };
-  bibliographic_contributors?: {
-    data: ContributorDataJsonApi[];
-  };
-  provider?: {
-    data: {
-      attributes: RegistrationProviderAttributesJsonApi;
-    };
-  };
+interface DraftRegistrationEmbedsJsonApi extends RegistrationEmbedsJsonApi {
+  branched_from?: BranchedFromEmbedJsonApi;
 }
 
-export interface DraftRegistrationEmbedsJsonApi extends RegistrationEmbedsJsonApi {
-  branched_from?: {
-    data: {
-      id: string;
-      type: 'nodes';
-      attributes: {
-        title: string;
-      };
-      relationships?: {
-        files?: {
-          links: {
-            related: {
-              href: string;
-            };
-          };
-        };
-      };
-    };
-  };
-}
-
-export interface CreateRegistrationPayloadJsonApi {
+interface RegistrationSchemaNameEmbedJsonApi {
   data: {
-    type: 'draft_registrations';
+    attributes: {
+      name: string;
+    };
+  };
+}
+
+interface RegistrationProviderEmbedJsonApi {
+  data: RegistryProviderDetailsJsonApi;
+}
+
+interface BranchedFromEmbedJsonApi {
+  data: {
     id: string;
-    relationships?: DraftRegistrationRelationshipsJsonApi;
-    attributes?: Partial<DraftRegistrationAttributesJsonApi>;
-  };
-}
-
-export interface SchemaResponsesJsonApi {
-  data: SchemaResponseDataJsonApi[];
-  meta: MetaJsonApi;
-  links: PaginationLinksJsonApi;
-}
-
-export interface SchemaResponseJsonApi {
-  data: SchemaResponseDataJsonApi;
-}
-
-export type SchemaResponseDataJsonApi = ApiData<
-  SchemaResponseAttributesJsonApi,
-  SchemaResponseEmbedsJsonApi,
-  SchemaResponseRelationshipsJsonApi,
-  null
->;
-
-export interface SchemaResponseAttributesJsonApi {
-  id: string;
-  date_created: string;
-  date_submitted: string | null;
-  date_modified: string;
-  revision_justification: string;
-  revision_responses: Record<string, unknown>;
-  updated_response_keys: string[];
-  reviews_state: RevisionReviewStates;
-  is_pending_current_user_approval: boolean;
-  is_original_response: boolean;
-}
-
-export interface SchemaResponseRelationshipsJsonApi {
-  registration_schema: {
-    data: {
-      id: string;
-      type: 'registration-schemas';
+    type: string;
+    attributes: {
+      title: string;
     };
-  };
-  registration: {
-    data: {
-      id: string;
-      type: 'registrations';
-    };
-  };
-}
-
-export interface SchemaResponseEmbedsJsonApi {
-  registration: {
-    data: {
-      id: string;
-      type: 'registrations';
-      attributes: {
-        title: string;
-      };
-      relationships: {
-        files: {
-          links: {
-            related: {
-              href: string;
-            };
-          };
-        };
-      };
+    relationships?: {
+      files?: RelatedCountRel;
     };
   };
 }

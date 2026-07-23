@@ -1,6 +1,6 @@
 import { PreprintSubmissionModel } from '@osf/features/moderation/models';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collection-submissions.model';
 
 import { MOCK_CONTRIBUTOR } from './contributors.mock';
 

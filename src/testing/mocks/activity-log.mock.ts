@@ -1,5 +1,5 @@
-import { ActivityLogWithDisplay } from '@osf/shared/models/activity-logs/activity-log-with-display.model';
-import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
+import { ActivityLogWithDisplayModel } from '@osf/shared/models/activity-logs/activity-log-with-display.model';
+import { ActivityLogModel } from '@osf/shared/models/activity-logs/activity-logs.model';
 
 export const ACTIVITY_LOGS_EMBEDS_QS =
   'embed%5B%5D=original_node&embed%5B%5D=user&embed%5B%5D=linked_node&embed%5B%5D=linked_registration&embed%5B%5D=template_node';
@@ -53,11 +53,11 @@ export function getActivityLogsResponse() {
   return makeActivityLogsResponse();
 }
 
-export type ActivityLogOverrides = Partial<Omit<ActivityLog, 'params'>> & {
-  params?: Partial<ActivityLog['params']>;
+export type ActivityLogOverrides = Partial<Omit<ActivityLogModel, 'params'>> & {
+  params?: Partial<ActivityLogModel['params']>;
 };
 
-export function makeActivityLog(overrides: ActivityLogOverrides = {}): ActivityLog {
+export function makeActivityLog(overrides: ActivityLogOverrides = {}): ActivityLogModel {
   const { params: paramsOverrides, ...restOverrides } = overrides;
 
   return structuredClone({
@@ -78,10 +78,12 @@ export function makeActivityLog(overrides: ActivityLogOverrides = {}): ActivityL
 }
 
 export type ActivityLogWithDisplayOverrides = ActivityLogOverrides & {
-  formattedActivity?: ActivityLogWithDisplay['formattedActivity'];
+  formattedActivity?: ActivityLogWithDisplayModel['formattedActivity'];
 };
 
-export function makeActivityLogWithDisplay(overrides: ActivityLogWithDisplayOverrides = {}): ActivityLogWithDisplay {
+export function makeActivityLogWithDisplay(
+  overrides: ActivityLogWithDisplayOverrides = {}
+): ActivityLogWithDisplayModel {
   const { params: paramsOverrides, ...restOverrides } = overrides;
   const formattedActivity = 'formattedActivity' in overrides ? overrides.formattedActivity : 'Test activity';
 
@@ -99,7 +101,7 @@ export function makeActivityLogWithDisplay(overrides: ActivityLogWithDisplayOver
   };
 }
 
-export const MOCK_ACTIVITY_LOGS_WITH_DISPLAY: ActivityLogWithDisplay[] = [
+export const MOCK_ACTIVITY_LOGS_WITH_DISPLAY: ActivityLogWithDisplayModel[] = [
   makeActivityLogWithDisplay({
     id: 'log1',
     action: 'update',

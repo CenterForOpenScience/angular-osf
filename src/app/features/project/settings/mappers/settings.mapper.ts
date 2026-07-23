@@ -39,8 +39,8 @@ export class SettingsMapper {
         ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
         : [],
       currentUserPermissions: data.attributes.current_user_permissions as UserPermissions[],
-      rootId: data.relationships.root?.data?.id,
-      parentId: data.relationships.parent?.data?.id,
+      rootId: data.relationships?.root?.data?.id,
+      parentId: data.relationships?.parent?.data?.id,
       lastFetched: Date.now(),
     };
   }

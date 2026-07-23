@@ -7,13 +7,11 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { CurrentResourceType, ResourceType } from '../enums/resource-type.enum';
 import { BaseNodeMapper } from '../mappers/nodes';
-import { ResponseDataJsonApi } from '../models/common/json-api.model';
 import { CurrentResource } from '../models/current-resource.model';
 import { GuidedResponseJsonApi } from '../models/guid-response-json-api.model';
 import { BaseNodeModel } from '../models/nodes/base-node.model';
-import { BaseNodeDataJsonApi } from '../models/nodes/base-node-data-json-api.model';
 import { NodeShortInfoModel } from '../models/nodes/node-with-children.model';
-import { NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
+import { NodeResponseJsonApi, NodesResponseJsonApi } from '../models/nodes/nodes-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';
@@ -49,12 +47,12 @@ export class ResourceGuidService {
             type: res.data.type,
             parentId:
               res.data.type === CurrentResourceType.Preprints
-                ? res.data.relationships.provider?.data.id
-                : res.data.relationships.target?.data.id,
+                ? res.data.relationships.provider?.data?.id
+                : res.data.relationships.target?.data?.id,
             parentType:
               res.data.type === CurrentResourceType.Preprints
-                ? res.data.relationships.provider?.data.type
-                : res.data.relationships.target?.data.type,
+                ? res.data.relationships.provider?.data?.type
+                : res.data.relationships.target?.data?.type,
             wikiEnabled: res.data.attributes.wiki_enabled,
             permissions: res.data.attributes.current_user_permissions,
             rootResourceId: res.data.relationships.root?.data?.id,
@@ -73,11 +71,10 @@ export class ResourceGuidService {
 
   getResourceDetails(resourceId: string, resourceType: ResourceType): Observable<BaseNodeModel> {
     const resourcePath = this.urlMap.get(resourceType);
-    const params: Record<string, unknown> = {
-      embed: 'parent',
-    };
+    const params: Record<string, unknown> = { embed: 'parent' };
+
     return this.jsonApiService
-      .get<ResponseDataJsonApi<BaseNodeDataJsonApi>>(`${this.apiUrl}/${resourcePath}/${resourceId}/`, params)
+      .get<NodeResponseJsonApi>(`${this.apiUrl}/${resourcePath}/${resourceId}/`, params)
       .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
   }
 

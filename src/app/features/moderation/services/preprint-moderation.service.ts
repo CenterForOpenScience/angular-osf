@@ -3,7 +3,6 @@ import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
@@ -11,13 +10,14 @@ import { PreprintSubmissionsSort } from '../enums';
 import { PreprintModerationMapper, RegistryModerationMapper } from '../mappers';
 import {
   PreprintProviderModerationInfo,
-  PreprintRelatedCountJsonApi,
+  PreprintRelatedCountItemResponseJsonApi,
+  PreprintRelatedCountListResponseJsonApi,
+  PreprintReviewActionListResponseJsonApi,
   PreprintReviewActionModel,
   PreprintSubmissionResponseJsonApi,
   PreprintSubmissionWithdrawalResponseJsonApi,
   PreprintWithdrawalPaginatedData,
   ReviewAction,
-  ReviewActionJsonApi,
   ReviewActionsResponseJsonApi,
 } from '../models';
 import { PreprintSubmissionPaginatedData } from '../models/preprint-submission.model';
@@ -37,7 +37,7 @@ export class PreprintModerationService {
     const baseUrl = `${this.apiUrl}/providers/preprints/?filter[permissions]=view_actions,set_up_moderation`;
 
     return this.jsonApiService
-      .get<ResponseJsonApi<PreprintRelatedCountJsonApi[]>>(baseUrl)
+      .get<PreprintRelatedCountListResponseJsonApi>(baseUrl)
       .pipe(map((response) => response.data.map((x) => PreprintModerationMapper.fromPreprintRelatedCounts(x))));
   }
 
@@ -45,7 +45,7 @@ export class PreprintModerationService {
     const baseUrl = `${this.apiUrl}/providers/preprints/${id}/?related_counts=true`;
 
     return this.jsonApiService
-      .get<ResponseJsonApi<PreprintRelatedCountJsonApi>>(baseUrl)
+      .get<PreprintRelatedCountItemResponseJsonApi>(baseUrl)
       .pipe(map((response) => PreprintModerationMapper.fromPreprintRelatedCounts(response.data)));
   }
 
@@ -53,7 +53,7 @@ export class PreprintModerationService {
     const baseUrl = `${this.apiUrl}/actions/reviews/?embed=provider&embed=target&page=${page}`;
 
     return this.jsonApiService
-      .get<ResponseJsonApi<ReviewActionJsonApi[]>>(baseUrl)
+      .get<PreprintReviewActionListResponseJsonApi>(baseUrl)
       .pipe(map((response) => PreprintModerationMapper.fromResponseWithPagination(response)));
   }
 

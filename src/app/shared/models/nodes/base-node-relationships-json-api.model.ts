@@ -1,50 +1,34 @@
+import { ToManyRel, ToOneRel } from '../common/json-api/relationships.model';
+
 export interface BaseNodeRelationships {
-  affiliated_institutions?: RelationshipWithLinks<'institutions'>;
-  bibliographic_contributors?: RelationshipWithLinks<'contributors'>;
-  cedar_metadata_records?: RelationshipWithLinks<'cedar-metadata-records'>;
-  children?: RelationshipWithLinks<'nodes'>;
-  citation?: RelationshipWithLinks<'citations'>;
-  comments?: RelationshipWithLinks<'comments'>;
-  contributors?: RelationshipWithLinks<'contributors'>;
-  draft_registrations?: RelationshipWithLinks<'draft-registrations'>;
-  files?: RelationshipWithLinks<'files'>;
-  forks?: RelationshipWithLinks<'nodes'>;
-  groups?: RelationshipWithLinks<'groups'>;
-  identifiers?: RelationshipWithLinks<'identifiers'>;
-  implicit_contributors?: RelationshipWithLinks<'contributors'>;
-  license?: RelationshipWithLinks<'licenses'>;
-  linked_by_nodes?: RelationshipWithLinks<'nodes'>;
-  linked_by_registrations?: RelationshipWithLinks<'registrations'>;
-  linked_nodes?: RelationshipWithLinks<'nodes'>;
-  linked_registrations?: RelationshipWithLinks<'registrations'>;
-  logs?: RelationshipWithLinks<'logs'>;
-  node_links?: RelationshipWithLinks<'node-links'>;
-  parent?: RelationshipWithLinks<'nodes'>;
-  preprints?: RelationshipWithLinks<'preprints'>;
-  region?: RelationshipWithLinks<'regions'>;
-  registrations?: RelationshipWithLinks<'registrations'>;
-  root?: RelationshipWithLinks<'nodes'>;
-  settings?: RelationshipWithLinks<'node-settings'>;
-  storage?: RelationshipWithLinks<'node-storage'>;
-  subjects_acceptable?: RelationshipWithLinks<'subjects'>;
-  view_only_links?: RelationshipWithLinks<'view-only-links'>;
-  wikis?: RelationshipWithLinks<'wikis'>;
-}
-
-export interface RelationshipData<T = string> {
-  id: string;
-  type: T;
-}
-
-export interface RelationshipLink {
-  href: string;
-  meta?: Record<string, unknown>;
-}
-
-export interface RelationshipWithLinks<T = string> {
-  links: {
-    related: RelationshipLink;
-    self?: RelationshipLink;
-  };
-  data?: RelationshipData<T>;
+  affiliated_institutions?: ToManyRel<'institutions'>;
+  bibliographic_contributors?: ToManyRel<'contributors'>;
+  cedar_metadata_records?: ToManyRel<'cedar-metadata-records'>;
+  children?: ToManyRel<'nodes'>;
+  citation?: ToManyRel<'citations'>;
+  comments?: ToManyRel<'comments'>;
+  contributors?: ToManyRel<'contributors'>;
+  draft_registrations?: ToManyRel<'draft-registrations'>;
+  files?: ToManyRel<'files'>;
+  forks?: ToManyRel<'nodes'>;
+  groups?: ToManyRel<'groups'>;
+  identifiers?: ToManyRel<'identifiers'>;
+  implicit_contributors?: ToManyRel<'contributors'>;
+  license?: ToOneRel<'licenses'>;
+  linked_by_nodes?: ToManyRel<'nodes'>;
+  linked_by_registrations?: ToManyRel<'registrations'>;
+  linked_nodes?: ToManyRel<'nodes'>;
+  linked_registrations?: ToManyRel<'registrations'>;
+  logs?: ToManyRel<'logs'>;
+  node_links?: ToManyRel<'node-links'>;
+  parent?: ToOneRel<'nodes'>;
+  preprints?: ToManyRel<'preprints'>;
+  region?: ToOneRel<'regions'>;
+  registrations?: ToManyRel<'registrations'>;
+  root?: ToOneRel<'nodes'>;
+  settings?: ToOneRel<'node-settings'>;
+  storage?: ToOneRel<'node-storage'>;
+  subjects_acceptable?: ToManyRel<'subjects'>;
+  view_only_links?: ToManyRel<'view-only-links'>;
+  wikis?: ToManyRel<'wikis'>;
 }

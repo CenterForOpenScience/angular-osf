@@ -72,7 +72,6 @@ export interface ResourcesData {
   resources: ResourceModel[];
   filters: DiscoverableFilter[];
   count: number;
-  self: string;
   first: StringOrNull;
   next: StringOrNull;
   previous: StringOrNull;

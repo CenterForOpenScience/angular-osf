@@ -10,7 +10,5 @@ export const createMockLinkedNode = (overrides?: Partial<LinkedNode>): LinkedNod
   tags: ['tag1'],
   isPublic: false,
   contributors: [],
-  htmlUrl: 'https://example.com/node',
-  apiUrl: 'https://api.example.com/node',
   ...overrides,
 });

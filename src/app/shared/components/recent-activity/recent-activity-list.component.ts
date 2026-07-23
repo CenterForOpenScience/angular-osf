@@ -7,7 +7,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
-import { ActivityLogWithDisplay } from '@osf/shared/models/activity-logs/activity-log-with-display.model';
+import { ActivityLogWithDisplayModel } from '@osf/shared/models/activity-logs/activity-log-with-display.model';
 
 @Component({
   selector: 'osf-recent-activity-list',
@@ -17,7 +17,7 @@ import { ActivityLogWithDisplay } from '@osf/shared/models/activity-logs/activit
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecentActivityListComponent {
-  activityLogs = input.required<ActivityLogWithDisplay[]>();
+  activityLogs = input.required<ActivityLogWithDisplayModel[]>();
   isLoading = input.required<boolean>();
   totalCount = input.required<number>();
   pageSize = input.required<number>();

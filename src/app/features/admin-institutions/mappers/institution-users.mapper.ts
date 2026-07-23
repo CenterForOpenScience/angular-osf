@@ -3,7 +3,7 @@ import { InstitutionUser, InstitutionUserDataJsonApi, InstitutionUsersJsonApi } 
 export function mapInstitutionUsers(jsonApiData: InstitutionUsersJsonApi): InstitutionUser[] {
   return jsonApiData.data.map((user: InstitutionUserDataJsonApi) => ({
     id: user.id,
-    userId: user.relationships.user.data.id,
+    userId: user.relationships?.user?.data?.id ?? '',
     userName: user.attributes.user_name,
     department: user.attributes.department,
     orcidId: user.attributes.orcid_id,

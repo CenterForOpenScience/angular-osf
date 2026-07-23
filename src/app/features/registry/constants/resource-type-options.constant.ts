@@ -7,7 +7,7 @@ export const resourceTypeOptions: SelectOption[] = [
     value: RegistryResourceType.Data,
   },
   {
-    label: 'resourceCard.resources.code',
+    label: 'resourceCard.resources.analyticCode',
     value: RegistryResourceType.Code,
   },
   {

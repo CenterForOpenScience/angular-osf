@@ -29,7 +29,7 @@ import { SearchInputComponent } from '@osf/shared/components/search-input/search
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources-item.model';
 import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.model';
 import { GetMyProjects, GetMyRegistrations, MyResourcesSelectors } from '@osf/shared/stores/my-resources';
 import { CreateNodeLink, DeleteNodeLink, NodeLinksSelectors } from '@osf/shared/stores/node-links';

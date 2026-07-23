@@ -1,7 +1,4 @@
-export interface ViewOnlyLinkCreatorModel {
-  id: string;
-  fullName: string;
-}
+import { CreatorModel } from '../user/creator.model';
 
 export interface ViewOnlyLinkNodeModel {
   id: string;
@@ -15,7 +12,7 @@ export interface ViewOnlyLinkModel {
   key: string;
   name: string;
   link: string;
-  creator: ViewOnlyLinkCreatorModel;
+  creator: CreatorModel;
   nodes: ViewOnlyLinkNodeModel[];
   anonymous: boolean;
 }

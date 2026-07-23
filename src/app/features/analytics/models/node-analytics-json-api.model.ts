@@ -1,33 +1,30 @@
-import { ResponseDataJsonApi } from '@osf/shared/models/common/json-api.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ItemResponse } from '@osf/shared/models/common/json-api/responses.model';
 
-export type NodeAnalyticsResponseJsonApi = ResponseDataJsonApi<NodeAnalyticsDataJsonApi>;
+export type NodeAnalyticsResponseJsonApi = ItemResponse<NodeAnalyticsDataJsonApi>;
 
-export interface NodeAnalyticsDataJsonApi {
-  id: string;
-  type: 'node-analytics';
-  attributes: NodeAnalyticsAttributesJsonApi;
-}
+export type NodeAnalyticsDataJsonApi = JsonApiResource<'node-analytics', NodeAnalyticsAttributesJsonApi>;
 
-export interface NodeAnalyticsAttributesJsonApi {
+interface NodeAnalyticsAttributesJsonApi {
   popular_pages: PopularPageJsonApi[];
   unique_visits: UniqueVisitJsonApi[];
   time_of_day: TimeOfDayJsonApi[];
   referer_domain: RefererDomainJsonApi[];
 }
 
-export interface PopularPageJsonApi {
+interface PopularPageJsonApi {
   path: string;
   route: string;
   title: string;
   count: number;
 }
 
-export interface UniqueVisitJsonApi {
+interface UniqueVisitJsonApi {
   date: string;
   count: number;
 }
 
-export interface TimeOfDayJsonApi {
+interface TimeOfDayJsonApi {
   hour: number;
   count: number;
 }

@@ -1,6 +1,17 @@
-import { MetaJsonApi } from '@osf/shared/models/common/json-api.model';
+import { ToOneRel } from '@osf/shared/models/common/json-api/relationships.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ListResponse } from '@osf/shared/models/common/json-api/responses.model';
 
-export interface InstitutionUserAttributesJsonApi {
+export type InstitutionUsersJsonApi = ListResponse<InstitutionUserDataJsonApi>;
+
+export interface InstitutionUserDataJsonApi extends JsonApiResource<
+  'institution-users',
+  InstitutionUserAttributesJsonApi
+> {
+  relationships: InstitutionUserRelationshipsJsonApi;
+}
+
+interface InstitutionUserAttributesJsonApi {
   user_name: string;
   department: string | null;
   orcid_id: string | null;
@@ -18,29 +29,7 @@ export interface InstitutionUserAttributesJsonApi {
   storage_byte_count: number;
 }
 
-export interface InstitutionUserRelationshipDataJsonApi {
-  id: string;
-  type: string;
-}
-
-export interface InstitutionUserRelationshipJsonApi {
-  data: InstitutionUserRelationshipDataJsonApi;
-}
-
-export interface InstitutionUserRelationshipsJsonApi {
-  user: InstitutionUserRelationshipJsonApi;
-  institution: InstitutionUserRelationshipJsonApi;
-}
-
-export interface InstitutionUserDataJsonApi {
-  id: string;
-  type: 'institution-users';
-  attributes: InstitutionUserAttributesJsonApi;
-  relationships: InstitutionUserRelationshipsJsonApi;
-  links: Record<string, unknown>;
-}
-
-export interface InstitutionUsersJsonApi {
-  data: InstitutionUserDataJsonApi[];
-  meta: MetaJsonApi;
+interface InstitutionUserRelationshipsJsonApi {
+  user: ToOneRel<'user'>;
+  institution: ToOneRel<'institution'>;
 }

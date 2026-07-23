@@ -6,8 +6,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { BannerModel } from '../../core/components/osf-banners/models/banner.model';
 import { BannerMapper } from '../mappers/banner.mapper';
-import { BannerJsonApi } from '../models/banner.json-api.model';
-import { JsonApiResponse } from '../models/common/json-api.model';
+import { BannerCurrentResponseJsonApi } from '../models/banner.json-api.model';
 
 import { JsonApiService } from './json-api.service';
 
@@ -37,7 +36,7 @@ export class BannersService {
    */
   getCurrentBanner(): Observable<BannerModel> {
     return this.jsonApiService
-      .get<JsonApiResponse<BannerJsonApi, null>>(`${this.apiDomainUrl}/_/banners/current/`)
+      .get<BannerCurrentResponseJsonApi>(`${this.apiDomainUrl}/_/banners/current/`)
       .pipe(map((response) => BannerMapper.fromResponse(response.data)));
   }
 }

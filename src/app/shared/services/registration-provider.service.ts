@@ -5,9 +5,8 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { RegistrationProviderMapper } from '../mappers/registration-provider.mapper';
-import { JsonApiResponse } from '../models/common/json-api.model';
 import { ProvidersResponseJsonApi } from '../models/provider/providers-json-api.model';
-import { RegistryProviderDetailsJsonApi } from '../models/provider/registration-provider-json-api.model';
+import { RegistrationProviderResponseJsonApi } from '../models/provider/registration-provider-json-api.model';
 import { RegistryProviderDetails } from '../models/provider/registry-provider.model';
 import { ProviderSchema } from '../models/registration/provider-schema.model';
 
@@ -35,9 +34,7 @@ export class RegistrationProviderService {
 
   getProviderBrand(providerName: string): Observable<RegistryProviderDetails> {
     return this.jsonApiService
-      .get<
-        JsonApiResponse<RegistryProviderDetailsJsonApi, null>
-      >(`${this.apiUrl}/providers/registrations/${providerName}/?embed=brand`)
+      .get<RegistrationProviderResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerName}/?embed=brand`)
       .pipe(map((response) => RegistrationProviderMapper.fromRegistryProvider(response.data)));
   }
 }

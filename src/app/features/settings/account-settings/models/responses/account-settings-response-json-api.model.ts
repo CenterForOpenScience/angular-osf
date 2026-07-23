@@ -1,14 +1,11 @@
-import { ResponseDataJsonApi } from '@osf/shared/models/common/json-api.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ItemResponse } from '@osf/shared/models/common/json-api/responses.model';
 
-export type AccountSettingsResponseJsonApi = ResponseDataJsonApi<AccountSettingsDataJsonApi>;
+export type AccountSettingsResponseJsonApi = ItemResponse<AccountSettingsDataJsonApi>;
 
-export interface AccountSettingsDataJsonApi {
-  id: string;
-  type: 'user-settings';
-  attributes: AccountSettingsAttributesJsonApi;
-}
+export type AccountSettingsDataJsonApi = JsonApiResource<'user-settings', AccountSettingsAttributesJsonApi>;
 
-export interface AccountSettingsAttributesJsonApi {
+interface AccountSettingsAttributesJsonApi {
   contacted_deactivation: boolean;
   deactivation_requested: boolean;
   secret: string;

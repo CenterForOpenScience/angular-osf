@@ -17,12 +17,12 @@ import { Institution } from '@osf/shared/models/institutions/institutions.model'
 import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
+import { SchemaBlocksResponseJsonApi } from '@osf/shared/models/registration/schema-blocks-json-api.model';
+import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import {
   SchemaResponseJsonApi,
   SchemaResponsesJsonApi,
-} from '@osf/shared/models/registration/registration-json-api.model';
-import { SchemaBlocksResponseJsonApi } from '@osf/shared/models/registration/schema-blocks-json-api.model';
-import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
+} from '@osf/shared/models/registration/schema-response-json-api.model';
 import { ReviewActionPayload } from '@osf/shared/models/review-action/review-action-payload.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 

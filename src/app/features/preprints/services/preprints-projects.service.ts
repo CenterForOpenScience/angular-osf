@@ -5,22 +5,17 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { Primitive, StringOrNull } from '@osf/shared/helpers/types.helper';
 import { IdNameModel } from '@osf/shared/models/common/id-name.model';
-import { ApiData } from '@osf/shared/models/common/json-api.model';
 import {
   CreateProjectPayloadJsoApi,
   NodeResponseJsonApi,
   NodesResponseJsonApi,
 } from '@osf/shared/models/nodes/nodes-json-api.model';
+import { PreprintDataJsonApi } from '@osf/shared/models/preprints/preprint-json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { PreprintsMapper } from '../mappers';
-import {
-  PreprintAttributesJsonApi,
-  PreprintLinksJsonApi,
-  PreprintModel,
-  PreprintRelationshipsJsonApi,
-} from '../models';
+import { PreprintModel } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -70,24 +65,21 @@ export class PreprintsProjectsService {
 
   updatePreprintProjectRelationship(preprintId: string, projectId: string): Observable<PreprintModel> {
     return this.jsonApiService
-      .patch<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>>(
-        `${this.apiUrl}/preprints/${preprintId}/`,
-        {
-          data: {
-            type: 'preprints',
-            id: preprintId,
-            attributes: {},
-            relationships: {
-              node: {
-                data: {
-                  type: 'nodes',
-                  id: projectId,
-                },
+      .patch<PreprintDataJsonApi>(`${this.apiUrl}/preprints/${preprintId}/`, {
+        data: {
+          type: 'preprints',
+          id: preprintId,
+          attributes: {},
+          relationships: {
+            node: {
+              data: {
+                type: 'nodes',
+                id: projectId,
               },
             },
           },
-        }
-      )
+        },
+      })
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response)));
   }
 

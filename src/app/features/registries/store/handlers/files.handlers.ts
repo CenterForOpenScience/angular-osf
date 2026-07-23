@@ -23,11 +23,11 @@ export class FilesHandlers {
         next: (response) =>
           ctx.patchState({
             rootFolders: {
-              data: response.files,
+              data: response.data,
               isLoading: false,
               error: null,
             },
-            currentFolder: response.files.length > 0 ? response.files[0] : null,
+            currentFolder: response.data.length > 0 ? response.data[0] : null,
           }),
       }),
       catchError((error) => handleSectionError(ctx, 'rootFolders', error))

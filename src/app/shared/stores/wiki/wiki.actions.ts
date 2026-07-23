@@ -1,5 +1,5 @@
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { WikiModes } from '@shared/models/wiki/wiki.model';
+import { WikiModes } from '@osf/shared/enums/wiki-modes.enum';
 
 export class CreateWiki {
   static readonly type = '[Wiki] Create Wiki';

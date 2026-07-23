@@ -1,15 +1,15 @@
-import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import {
-  MeetingGetResponseJsonApi,
-  MeetingSubmissionGetResponseJsonApi,
+  MeetingDataJsonApi,
+  MeetingsListResponseJsonApi,
+  MeetingSubmissionsListResponseJsonApi,
   MeetingSubmissionsWithPaging,
   MeetingsWithPaging,
 } from '../models';
 
 export class MeetingsMapper {
-  static fromMeetingsGetResponse(response: ResponseJsonApi<MeetingGetResponseJsonApi[]>): MeetingsWithPaging {
+  static fromMeetingsGetResponse(response: MeetingsListResponseJsonApi): MeetingsWithPaging {
     return {
       data: response.data.map((item) => ({
         id: item.id,
@@ -24,7 +24,7 @@ export class MeetingsMapper {
   }
 
   static fromMeetingSubmissionGetResponse(
-    response: ResponseJsonApi<MeetingSubmissionGetResponseJsonApi[]>
+    response: MeetingSubmissionsListResponseJsonApi
   ): MeetingSubmissionsWithPaging {
     return {
       data: response.data.map((item) => ({
@@ -40,7 +40,7 @@ export class MeetingsMapper {
     };
   }
 
-  static fromMeetingGetResponse(response: MeetingGetResponseJsonApi) {
+  static fromMeetingGetResponse(response: MeetingDataJsonApi) {
     return {
       id: response.id,
       name: response.attributes.name,

@@ -3,9 +3,15 @@ import {
   InstitutionIndexValueSearchIncludedJsonApi,
   InstitutionSearchFilter,
   InstitutionSearchResultCountJsonApi,
-} from '@osf/features/admin-institutions/models';
+} from '../models';
 
-export function mapIndexCardResults(included: InstitutionIndexValueSearchIncludedJsonApi[]): InstitutionSearchFilter[] {
+export function mapIndexCardResults(
+  included: InstitutionIndexValueSearchIncludedJsonApi[] | undefined
+): InstitutionSearchFilter[] {
+  if (!included) {
+    return [];
+  }
+
   const indexCardMap = included.reduce(
     (acc, item) => {
       if (item.type === 'index-card') {

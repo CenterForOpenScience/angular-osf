@@ -2,30 +2,30 @@ import { forkJoin, map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ENVIRONMENT } from '@osf/core/provider/environment.provider';
 import {
   CollectionSubmissionReviewAction,
-  CollectionSubmissionReviewActionJsonApi,
+  CollectionSubmissionReviewActionsListResponseJsonApi,
 } from '@osf/features/moderation/models';
 
 import { CollectionsMapper } from '../mappers/collections';
 import { ReviewActionsMapper } from '../mappers/review-actions.mapper';
+import { CollectionDetails } from '../models/collections/collection-details.model';
+import { CollectionDetailsListResponseJsonApi } from '../models/collections/collection-details-json-api.model';
+import { CollectionProvider } from '../models/collections/collection-provider.model';
+import { CollectionProviderGetResponseJsonApi } from '../models/collections/collection-provider-json-api.model';
 import {
-  CollectionDetails,
   CollectionProjectSubmission,
-  CollectionProvider,
   CollectionSubmission,
   CollectionSubmissionActionType,
   CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
-} from '../models/collections/collections.model';
+} from '../models/collections/collection-submissions.model';
 import {
-  CollectionDetailsResponseJsonApi,
-  CollectionProviderResponseJsonApi,
   CollectionSubmissionJsonApi,
-  CollectionSubmissionWithGuidJsonApi,
-} from '../models/collections/collections-json-api.model';
-import { JsonApiResponse, ResponseJsonApi } from '../models/common/json-api.model';
+  CollectionSubmissionWithGuidListResponseJsonApi,
+  CollectionSubmissionWithGuidResponseJsonApi,
+} from '../models/collections/collection-submissions-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
 import { ReviewActionPayload } from '../models/review-action/review-action-payload.model';
 import { ReviewActionPayloadJsonApi } from '../models/review-action/review-action-payload-json-api.model';
@@ -47,7 +47,7 @@ export class CollectionsService {
     const url = `${this.apiUrl}/providers/collections/${collectionName}/?embed=brand&embed=required_metadata_template`;
 
     return this.jsonApiService
-      .get<JsonApiResponse<CollectionProviderResponseJsonApi, null>>(url)
+      .get<CollectionProviderGetResponseJsonApi>(url)
       .pipe(map((response) => CollectionsMapper.fromGetCollectionProviderResponse(response.data)));
   }
 
@@ -66,9 +66,10 @@ export class CollectionsService {
     };
 
     return this.jsonApiService
-      .get<
-        ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
-      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
+      .get<CollectionSubmissionWithGuidListResponseJsonApi>(
+        `${this.apiUrl}/collections/${collectionId}/collection_submissions/`,
+        params
+      )
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsResponse(response)));
   }
 
@@ -79,9 +80,7 @@ export class CollectionsService {
     };
 
     return this.jsonApiService
-      .get<
-        ResponseJsonApi<CollectionDetailsResponseJsonApi[]>
-      >(`${this.apiUrl}/nodes/${projectId}/collections/`, params)
+      .get<CollectionDetailsListResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/collections/`, params)
       .pipe(
         map((response) =>
           response.data.map((collection) => CollectionsMapper.fromGetCollectionDetailsResponse(collection))
@@ -93,17 +92,18 @@ export class CollectionsService {
     const params: Record<string, string> = { embed: 'collection' };
 
     return this.jsonApiService
-      .get<
-        ResponseJsonApi<CollectionSubmissionJsonApi>
-      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`, params)
+      .get<CollectionSubmissionJsonApi>(
+        `${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`,
+        params
+      )
       .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data)));
   }
 
   fetchProjectSubmission(collectionId: string, projectId: string): Observable<CollectionProjectSubmission> {
     return this.jsonApiService
-      .get<
-        ResponseJsonApi<CollectionSubmissionWithGuidJsonApi>
-      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`)
+      .get<CollectionSubmissionWithGuidResponseJsonApi>(
+        `${this.apiUrl}/collections/${collectionId}/collection_submissions/${projectId}/`
+      )
       .pipe(map((response) => CollectionsMapper.getProjectSubmission(response.data)));
   }
 
@@ -116,9 +116,10 @@ export class CollectionsService {
     };
 
     return this.jsonApiService
-      .get<
-        JsonApiResponse<CollectionSubmissionReviewActionJsonApi[], null>
-      >(`${this.apiUrl}/collection_submissions/${projectId}-${collectionId}/actions/?sort=-date_modified`, params)
+      .get<CollectionSubmissionReviewActionsListResponseJsonApi>(
+        `${this.apiUrl}/collection_submissions/${projectId}-${collectionId}/actions/?sort=-date_modified`,
+        params
+      )
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsActionsResponse(response.data)));
   }
 
@@ -159,9 +160,10 @@ export class CollectionsService {
     };
 
     return this.jsonApiService
-      .get<
-        ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
-      >(`${this.apiUrl}/collections/${providerId}/collection_submissions/`, params)
+      .get<CollectionSubmissionWithGuidListResponseJsonApi>(
+        `${this.apiUrl}/collections/${providerId}/collection_submissions/`,
+        params
+      )
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsResponse(response)));
   }
 }

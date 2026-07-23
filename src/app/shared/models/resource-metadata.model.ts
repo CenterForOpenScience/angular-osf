@@ -8,12 +8,14 @@ export interface ResourceMetadata {
   language: string;
   resourceTypeGeneral: string;
   identifiers: IdentifierModel[];
-  funders: {
-    funderName: string;
-    funderIdentifier: string;
-    funderIdentifierType: string;
-    awardNumber: string;
-    awardUri: string;
-    awardTitle: string;
-  }[];
+  funders: ResourceFunderModel[];
+}
+
+interface ResourceFunderModel {
+  funderName: string;
+  funderIdentifier: string;
+  funderIdentifierType: string;
+  awardNumber: string;
+  awardUri: string;
+  awardTitle: string;
 }

@@ -3,6 +3,7 @@ import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.e
 
 import { IdTypeModel } from '../common/id-type.model';
 import { ContributorModel } from '../contributors/contributor.model';
+import { IdentifierModel } from '../identifiers/identifier.model';
 import { LicensesOption } from '../license/license.model';
 import { SubjectModel } from '../subject/subject.model';
 
@@ -32,12 +33,7 @@ export interface RegistrationModel {
     text: string;
     url: string;
   };
-  identifiers?: {
-    id: string;
-    type: string;
-    category: string;
-    value: string;
-  }[];
+  identifiers?: IdentifierModel[];
   analyticsKey: string;
   currentUserCanComment: boolean;
   currentUserPermissions: string[];

@@ -5,12 +5,14 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
 import { NotificationSubscriptionMapper } from '@osf/shared/mappers/notification-subscription.mapper';
-import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
 import { NodeResponseJsonApi, UpdateNodeRequestModel } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
-import { NotificationSubscriptionGetResponseJsonApi } from '@osf/shared/models/notifications/notification-subscription-json-api.model';
+import {
+  NotificationSubscriptionDataJsonApi,
+  NotificationSubscriptionsListResponseJsonApi,
+} from '@osf/shared/models/notifications/notification-subscription-json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { SettingsMapper } from '../mappers';
@@ -40,7 +42,7 @@ export class SettingsService {
 
   updateProjectSettings(model: ProjectSettingsDataJsonApi): Observable<ProjectSettingsModel> {
     return this.jsonApiService
-      .patch<ProjectSettingsResponseJsonApi>(`${this.apiUrl}/nodes/${model.id}/settings/`, { data: model })
+      .patch<ProjectSettingsDataJsonApi>(`${this.apiUrl}/nodes/${model.id}/settings/`, { data: model })
       .pipe(map((response) => SettingsMapper.fromResponse(response, model.id)));
   }
 
@@ -50,7 +52,7 @@ export class SettingsService {
     };
 
     return this.jsonApiService
-      .get<ResponseJsonApi<NotificationSubscriptionGetResponseJsonApi[]>>(`${this.apiUrl}/subscriptions/`, params)
+      .get<NotificationSubscriptionsListResponseJsonApi>(`${this.apiUrl}/subscriptions/`, params)
       .pipe(
         map((responses) => responses.data.map((response) => NotificationSubscriptionMapper.fromGetResponse(response)))
       );
@@ -60,7 +62,7 @@ export class SettingsService {
     const request = NotificationSubscriptionMapper.toUpdateRequest(id, frequency, false);
 
     return this.jsonApiService
-      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.apiUrl}/subscriptions/${id}/`, request)
+      .patch<NotificationSubscriptionDataJsonApi>(`${this.apiUrl}/subscriptions/${id}/`, request)
       .pipe(map((response) => NotificationSubscriptionMapper.fromGetResponse(response)));
   }
 

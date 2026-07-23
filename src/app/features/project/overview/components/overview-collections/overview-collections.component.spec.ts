@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
 import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmission } from '@osf/shared/models/collections/collection-submissions.model';
 
 import { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from '@testing/mocks/cedar-metadata-data-template-json-api.mock';
 import { MOCK_CEDAR_METADATA_RECORD_DATA } from '@testing/mocks/cedar-metadata-record.mock';
@@ -43,7 +43,7 @@ describe('OverviewCollectionsComponent', () => {
       ...s,
       collectionTitle: s.title,
       collectionId: `col-${s.id}`,
-    })) as CollectionSubmission[];
+    }));
     fixture.componentRef.setInput('projectSubmissions', submissions);
     fixture.componentRef.setInput('isProjectSubmissionsLoading', true);
     fixture.detectChanges();

@@ -2,12 +2,12 @@ import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { ResourceMetadata } from '@osf/shared/models/resource-metadata.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
-import { GetResourceCustomMetadataResponse } from '../models/get-resource-custom-metadata-response.model';
-import { GetResourceShortInfoResponse } from '../models/get-resource-short-info-response.model';
+import { NodeShortInfoResponse } from '../models/node-short-info-response.model';
+import { ResourceCustomMetadataResponse } from '../models/resource-custom-metadata-response.model';
 
 export function MapResourceMetadata(
-  shortInfo: GetResourceShortInfoResponse,
-  customMetadata: GetResourceCustomMetadataResponse
+  shortInfo: NodeShortInfoResponse,
+  customMetadata: ResourceCustomMetadataResponse
 ): ResourceMetadata {
   return {
     title: replaceBadEncodedChars(shortInfo.data.attributes.title),

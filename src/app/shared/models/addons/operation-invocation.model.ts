@@ -5,13 +5,15 @@ export interface OperationInvocation {
   type: string;
   invocationStatus: string;
   operationName: string;
-  operationKwargs: {
-    itemId?: string;
-    itemType?: string;
-  };
+  operationKwargs: OperationKwargs;
   operationResult: StorageItem[];
   itemCount: number;
   thisSampleCursor?: string;
   firstSampleCursor?: string;
   nextSampleCursor?: string;
+}
+
+interface OperationKwargs {
+  itemId?: string;
+  itemType?: string;
 }

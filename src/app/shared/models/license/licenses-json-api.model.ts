@@ -1,22 +1,16 @@
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common/json-api.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
 
-export interface LicensesResponseJsonApi {
-  data: LicenseDataJsonApi[];
-  meta: MetaJsonApi;
-  links: PaginationLinksJsonApi;
-}
+export type LicensesResponseJsonApi = ListResponse<LicenseDataJsonApi>;
+export type LicenseResponseJsonApi = ItemResponse<LicenseDataJsonApi>;
 
-export interface LicenseResponseJsonApi {
-  data: LicenseDataJsonApi;
-}
+export type LicenseDataJsonApi = JsonApiResource<'licenses', LicenseAttributesJsonApi>;
 
-export type LicenseDataJsonApi = ApiData<LicenseAttributesJsonApi, null, null, null>;
-
-export interface LicenseAttributesJsonApi {
+interface LicenseAttributesJsonApi {
   name: string;
   required_fields: string[];
-  url: string;
   text: string;
+  url: string;
 }
 
 export interface LicenseRecordJsonApi {

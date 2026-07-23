@@ -1,12 +1,11 @@
-export interface NodeLinkJsonApi {
-  relationships: {
-    target_node: {
-      data: {
-        id: string;
-        type: string;
-      };
-    };
-  };
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ItemResponse } from '../common/json-api/responses.model';
+
+export type NodeLinkResponseJsonApi = ItemResponse<NodeLinkDataJsonApi>;
+
+type NodeLinkDataJsonApi = JsonApiResource<'node-links', NodeLinkAttributesJsonApi>;
+
+interface NodeLinkAttributesJsonApi {
   id: string;
-  type: string;
+  type: 'nodes';
 }

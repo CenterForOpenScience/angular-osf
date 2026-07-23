@@ -8,7 +8,7 @@ import { PreprintProviderDetails, PreprintProviderDetailsJsonApi, PreprintProvid
 
 export class PreprintProvidersMapper {
   static fromPreprintProviderDetailsGetResponse(response: PreprintProviderDetailsJsonApi): PreprintProviderDetails {
-    const brandRaw = response.embeds!.brand?.data;
+    const brandRaw = response.embeds?.brand?.data;
     return {
       id: response.id,
       name: replaceBadEncodedChars(response.attributes.name),
@@ -32,7 +32,7 @@ export class PreprintProvidersMapper {
     };
   }
 
-  static parseBrand(brandRaw: BrandDataJsonApi): BrandModel {
+  static parseBrand(brandRaw: BrandDataJsonApi | undefined): BrandModel {
     if (!brandRaw) {
       return {
         primaryColor: 'var(--osf-provider-primary-color)',

@@ -1,7 +1,5 @@
 export * from './linked-nodes.model';
-export * from './linked-nodes-json-api.model';
 export * from './linked-registrations-json-api.model';
-export * from './linked-response.model';
 export * from './registration-overview-json-api.model';
 export * from './registry-components.model';
 export * from './registry-components-json-api.model';

@@ -1,9 +1,11 @@
-import { ApiData, ResponseJsonApi } from '../common/json-api.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ListResponse } from '../common/json-api/responses.model';
 
-export type IdentifiersResponseJsonApi = ResponseJsonApi<IdentifiersJsonApiData[]>;
-export type IdentifiersJsonApiData = ApiData<IdentifierAttributes, null, null, null>;
+export type IdentifiersResponseJsonApi = ListResponse<IdentifiersJsonApiData>;
 
-export interface IdentifierAttributes {
+export type IdentifiersJsonApiData = JsonApiResource<'identifiers', IdentifierAttributesJsonApi>;
+
+interface IdentifierAttributesJsonApi {
   category: string;
   value: string;
 }

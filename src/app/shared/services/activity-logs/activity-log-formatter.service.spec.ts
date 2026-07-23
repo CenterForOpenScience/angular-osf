@@ -3,6 +3,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { TestBed } from '@angular/core/testing';
 
 import { makeActivityLog } from '@testing/mocks/activity-log.mock';
+import { testNode } from '@testing/mocks/base-node.mock';
+import { MOCK_USER } from '@testing/mocks/data.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 
 import { ActivityLogFormatterService } from './activity-log-formatter.service';
@@ -41,17 +43,9 @@ describe('ActivityLogFormatterService', () => {
     const log = makeActivityLog({
       embeds: {
         user: {
+          ...MOCK_USER,
           id: 'user-1',
-          type: 'users',
           fullName: 'Jane Doe',
-          givenName: 'Jane',
-          middleNames: '',
-          familyName: 'Doe',
-          suffix: '',
-          dateRegistered: '2024-01-01T00:00:00Z',
-          active: true,
-          timezone: 'UTC',
-          locale: 'en',
         },
       },
     });
@@ -252,28 +246,10 @@ describe('ActivityLogFormatterService', () => {
     const log = makeActivityLog({
       embeds: {
         linkedNode: {
+          ...testNode,
           id: 'node-1',
-          type: 'nodes',
           title: 'Linked',
-          description: '',
           category: 'project',
-          customCitation: null,
-          dateCreated: '2024-01-01T00:00:00Z',
-          dateModified: '2024-01-01T00:00:00Z',
-          registration: false,
-          preprint: false,
-          fork: false,
-          collection: false,
-          tags: [],
-          accessRequestsEnabled: false,
-          nodeLicense: { copyrightHolders: [], year: null },
-          currentUserCanComment: false,
-          currentUserPermissions: [],
-          currentUserIsContributor: false,
-          currentUserIsContributorOrGroupMember: false,
-          wikiEnabled: false,
-          public: true,
-          subjects: [],
         },
       },
     });

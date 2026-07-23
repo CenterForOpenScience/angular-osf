@@ -1,30 +1,12 @@
-import { TranslateService } from '@ngx-translate/core';
-
 import { UserMapper } from '@osf/shared/mappers/user/user.mapper';
-import {
-  ComponentsWikiGetResponse,
-  HomeWiki,
-  HomeWikiGetResponse,
-  WikiGetResponse,
-  WikiModel,
-  WikiVersion,
-  WikiVersionJsonApi,
-} from '@osf/shared/models/wiki/wiki.model';
+import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
+import { HomeWiki, WikiModel, WikiVersion } from '@osf/shared/models/wiki/wiki.model';
+import { WikiDataJsonApi, WikiVersionJsonApi } from '@osf/shared/models/wiki/wiki-json-api.model';
 import { ComponentWiki } from '@osf/shared/stores/wiki';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 export class WikiMapper {
-  private static translate: TranslateService;
-
-  static fromCreateWikiResponse(response: WikiGetResponse): WikiModel {
-    return {
-      id: response.id,
-      name: response.attributes.name,
-      kind: response.attributes.kind,
-    };
-  }
-
-  static fromGetHomeWikiResponse(response: HomeWikiGetResponse): HomeWiki {
+  static fromGetHomeWikiResponse(response: WikiDataJsonApi): HomeWiki {
     return {
       id: response.id,
       name: response.attributes.name,
@@ -33,7 +15,7 @@ export class WikiMapper {
     };
   }
 
-  static fromGetWikiResponse(response: WikiGetResponse): WikiModel {
+  static fromGetWikiResponse(response: WikiDataJsonApi): WikiModel {
     return {
       id: response.id,
       name: response.attributes.name,
@@ -41,7 +23,7 @@ export class WikiMapper {
     };
   }
 
-  static fromGetComponentsWikiResponse(response: ComponentsWikiGetResponse): ComponentWiki {
+  static fromGetComponentsWikiResponse(response: BaseNodeDataJsonApi): ComponentWiki {
     return {
       id: response.id,
       title: replaceBadEncodedChars(response.attributes.title),
@@ -57,7 +39,7 @@ export class WikiMapper {
     };
   }
 
-  static fromCreateWikiVersionResponse(response: WikiGetResponse): WikiModel {
+  static fromCreateWikiVersionResponse(response: WikiDataJsonApi): WikiModel {
     return {
       id: response.id,
       name: response.attributes.name,

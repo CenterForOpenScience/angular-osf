@@ -1,5 +1,8 @@
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { CollectionSubmission, CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
+import {
+  CollectionSubmission,
+  CollectionSubmissionWithGuid,
+} from '@osf/shared/models/collections/collection-submissions.model';
 
 export const MOCK_COLLECTION_SUBMISSION_1: CollectionSubmissionWithGuid = {
   id: '1',

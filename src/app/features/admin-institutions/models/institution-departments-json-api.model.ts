@@ -1,19 +1,14 @@
-export interface InstitutionDepartmentAttributesJsonApi {
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ListResponse } from '@osf/shared/models/common/json-api/responses.model';
+
+export type InstitutionDepartmentsJsonApi = ListResponse<InstitutionDepartmentDataJsonApi>;
+
+export type InstitutionDepartmentDataJsonApi = JsonApiResource<
+  'institution-departments',
+  InstitutionDepartmentAttributesJsonApi
+>;
+
+interface InstitutionDepartmentAttributesJsonApi {
   name: string;
   number_of_users: number;
-}
-
-export interface InstitutionDepartmentLinksJsonApi {
-  self: string;
-}
-
-export interface InstitutionDepartmentDataJsonApi {
-  id: string;
-  type: 'institution-departments';
-  attributes: InstitutionDepartmentAttributesJsonApi;
-  links: InstitutionDepartmentLinksJsonApi;
-}
-
-export interface InstitutionDepartmentsJsonApi {
-  data: InstitutionDepartmentDataJsonApi[];
 }

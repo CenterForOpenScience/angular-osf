@@ -1,17 +1,21 @@
-import { ApiData, JsonApiResponse } from '../common/json-api.model';
+import { ListResponse } from '../common/json-api/responses.model';
 
-export type FileVersionsResponseJsonApi = JsonApiResponse<
-  ApiData<FileVersionAttributesJsonApi, null, null, FileVersionLinksJsonApi>[],
-  null
->;
+export type FileVersionsResponseJsonApi = ListResponse<FileVersionDataJsonApi>;
 
-export interface FileVersionAttributesJsonApi {
-  size: number;
+export interface FileVersionDataJsonApi {
+  id: string;
+  type: string;
+  attributes: FileVersionAttributesJsonApi;
+  links: FileVersionLinksJsonApi;
+}
+
+interface FileVersionAttributesJsonApi {
   content_type: string;
   date_created: Date;
   name: string;
+  size: number;
 }
 
-export interface FileVersionLinksJsonApi {
+interface FileVersionLinksJsonApi {
   download: string;
 }

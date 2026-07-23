@@ -1,97 +1,123 @@
-export interface ActivityLogJsonApi {
+import { Embed } from '../common/json-api/embeds.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ListResponse } from '../common/json-api/responses.model';
+import { BaseNodeDataJsonApi } from '../nodes/base-node-data-json-api.model';
+import { UserDataJsonApi } from '../user/user-json-api.model';
+
+export type ActivityLogsResponseJsonApi = ListResponse<ActivityLogDataJsonApi>;
+
+export interface ActivityLogDataJsonApi extends JsonApiResource<'activity-logs', ActivityLogAttributesJsonApi> {
+  embeds?: ActivityLogEmbedsJsonApi;
+}
+
+interface ActivityLogAttributesJsonApi {
+  action: string;
+  date: string;
+  foreign_user: string | null;
+  params: ActivityLogParamsJsonApi;
+}
+
+interface ActivityLogParamsJsonApi {
+  addon?: string;
+  anonymous_link?: boolean;
+  contributors?: LogContributorJsonApi[];
+  destination?: ActivityLogDestinationJsonApi;
+  file?: ActivityLogFileJsonApi;
+  github_user?: string;
+  identifiers?: ActivityLogIdentifiersJsonApi;
+  institution?: ActivityLogInstitutionJsonApi;
+  kind?: string;
+  license?: string;
+  old_page?: string;
+  page?: string;
+  page_id?: string;
+  params_node: ActivityLogParamsNodeJsonApi;
+  params_project: null;
+  pointer: PointerJsonApi | null;
+  preprint?: string;
+  preprint_provider?: string | ActivityLogPreprintProviderJsonApi | null;
+  source?: ActivityLogSourceJsonApi;
+  tag?: string;
+  template_node?: ActivityLogTemplateNodeJsonApi;
+  title_new?: string;
+  title_original?: string;
+  updated_fields?: Record<string, ActivityLogUpdatedFieldJsonApi>;
+  urls?: ActivityLogUrlsJsonApi;
+  value?: string;
+  version?: string;
+  wiki?: ActivityLogWikiJsonApi;
+}
+
+interface ActivityLogEmbedsJsonApi {
+  linked_node?: Embed<BaseNodeDataJsonApi>;
+  original_node?: Embed<BaseNodeDataJsonApi>;
+  user?: Embed<UserDataJsonApi>;
+}
+
+interface ActivityLogDestinationJsonApi {
+  addon: string;
+  materialized: string;
+  url: string;
+}
+
+interface ActivityLogFileJsonApi {
+  name: string;
+  url: string;
+}
+
+interface ActivityLogIdentifiersJsonApi {
+  ark?: string;
+  doi?: string;
+}
+
+interface ActivityLogInstitutionJsonApi {
   id: string;
-  type: string;
-  attributes: {
-    action: string;
-    date: string;
-    foreign_user: string | null;
-    params: {
-      contributors?: LogContributorJsonApi[];
-      license?: string;
-      tag?: string;
-      institution?: {
-        id: string;
-        name: string;
-      };
-      params_node: {
-        id: string;
-        title: string;
-      };
-      params_project: null;
-      pointer: PointerJsonApi | null;
-      template_node?: {
-        id: string;
-        url: string;
-        title: string;
-      };
-      preprint_provider?:
-        | string
-        | {
-            url: string;
-            name: string;
-          }
-        | null;
-      addon?: string;
-      anonymous_link?: boolean;
-      file?: {
-        name: string;
-        url: string;
-      };
-      wiki?: {
-        name: string;
-        url: string;
-      };
-      destination?: {
-        materialized: string;
-        addon: string;
-        url: string;
-      };
-      identifiers?: {
-        doi?: string;
-        ark?: string;
-      };
-      kind?: string;
-      old_page?: string;
-      page?: string;
-      page_id?: string;
-      path?: string;
-      urls?: {
-        view: string;
-      };
-      preprint?: string;
-      source?: {
-        materialized: string;
-        addon: string;
-      };
-      title_new?: string;
-      title_original?: string;
-      updated_fields?: Record<
-        string,
-        {
-          new: string;
-          old: string;
-        }
-      >;
-      value?: string;
-      version?: string;
-      github_user?: string;
-    };
-  };
-  embeds?: {
-    original_node?: {
-      data: OriginalNodeEmbedsData;
-    };
-    user?: {
-      data: UserEmbedsData;
-    };
-    linked_node?: {
-      data: LinkedNodeEmbedsData;
-    };
-  };
-  meta: {
-    total: number;
-    anonymous: boolean;
-  };
+  name: string;
+}
+
+interface ActivityLogParamsNodeJsonApi {
+  id: string;
+  title: string;
+}
+
+interface ActivityLogPreprintProviderJsonApi {
+  name: string;
+  url: string;
+}
+
+interface ActivityLogSourceJsonApi {
+  addon: string;
+  materialized: string;
+}
+
+interface ActivityLogTemplateNodeJsonApi {
+  id: string;
+  title: string;
+  url: string;
+}
+
+interface ActivityLogUpdatedFieldJsonApi {
+  new: string;
+  old: string;
+}
+
+interface ActivityLogUrlsJsonApi {
+  view: string;
+}
+
+interface ActivityLogWikiJsonApi {
+  name: string;
+  url: string;
+}
+
+export interface LogContributorJsonApi {
+  active: boolean;
+  family_name: string;
+  full_name: string;
+  given_name: string;
+  id: string;
+  middle_names: string;
+  unregistered_name: string | null;
 }
 
 interface PointerJsonApi {
@@ -99,93 +125,4 @@ interface PointerJsonApi {
   id: string;
   title: string;
   url: string;
-}
-
-interface OriginalNodeEmbedsData {
-  id: string;
-  type: string;
-  attributes: {
-    title: string;
-    description: string;
-    category: string;
-    custom_citation: string | null;
-    date_created: string;
-    date_modified: string;
-    registration: boolean;
-    preprint: boolean;
-    fork: boolean;
-    collection: boolean;
-    tags: string[];
-    access_requests_enabled: boolean;
-    node_license: {
-      copyright_holders: string[];
-      year: string | null;
-    } | null;
-    current_user_can_comment: boolean;
-    current_user_permissions: string[];
-    current_user_is_contributor: boolean;
-    current_user_is_contributor_or_group_member: boolean;
-    wiki_enabled: boolean;
-    public: boolean;
-    subjects: { id: string; text: string }[][];
-  };
-}
-
-interface UserEmbedsData {
-  id: string;
-  type: string;
-  attributes: {
-    full_name: string;
-    given_name: string;
-    middle_names: string;
-    family_name: string;
-    suffix: string;
-    date_registered: string;
-    active: boolean;
-    timezone: string;
-    locale: string;
-  };
-}
-
-interface LinkedNodeEmbedsData {
-  id: string;
-  type: string;
-  attributes: {
-    title: string;
-    description: string;
-    category: string;
-    custom_citation: string | null;
-    date_created: string;
-    date_modified: string;
-    registration: boolean;
-    preprint: boolean;
-    fork: boolean;
-    collection: boolean;
-    tags: string[];
-    access_requests_enabled: boolean;
-    node_license: {
-      copyright_holders: string[];
-      year: string | null;
-    } | null;
-    current_user_can_comment: boolean;
-    current_user_permissions: string[];
-    current_user_is_contributor: boolean;
-    current_user_is_contributor_or_group_member: boolean;
-    wiki_enabled: boolean;
-    public: boolean;
-    subjects: {
-      id: string;
-      text: string;
-    }[][];
-  };
-}
-
-export interface LogContributorJsonApi {
-  id: string;
-  full_name: string;
-  given_name: string;
-  middle_names: string;
-  family_name: string;
-  unregistered_name: string | null;
-  active: boolean;
 }

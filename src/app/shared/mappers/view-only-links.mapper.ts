@@ -1,3 +1,4 @@
+import { DEFAULT_TABLE_PARAMS } from '../constants/default-table-params.constants';
 import { replaceBadEncodedChars } from '../helpers/format-bad-encoding.helper';
 import {
   PaginatedViewOnlyLinksModel,
@@ -45,9 +46,9 @@ export class ViewOnlyLinksMapper {
     return {
       items,
       total: response.meta.total,
-      perPage: response.meta.per_page,
-      next: response.links.next,
-      prev: response.links.prev,
+      perPage: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
+      next: response?.links?.next,
+      prev: response?.links?.prev,
     };
   }
 

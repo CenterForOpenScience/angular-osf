@@ -2,18 +2,14 @@ import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import { ContributorsMapper } from '@osf/shared/mappers/contributors';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
-import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
+import {
+  PreprintDataJsonApi,
+  PreprintResponseJsonApi,
+  PreprintsListResponseJsonApi,
+} from '@osf/shared/models/preprints/preprint-json-api.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
-import {
-  PreprintAttributesJsonApi,
-  PreprintEmbedsJsonApi,
-  PreprintLinksJsonApi,
-  PreprintMetaJsonApi,
-  PreprintModel,
-  PreprintRelationshipsJsonApi,
-  PreprintShortInfoWithTotalCount,
-} from '../models';
+import { PreprintModel, PreprintShortInfoWithTotalCount } from '../models';
 
 export class PreprintsMapper {
   static toCreatePayload(title: string, abstract: string, providerId: string) {
@@ -36,9 +32,7 @@ export class PreprintsMapper {
     };
   }
 
-  static fromPreprintJsonApi(
-    response: ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>
-  ): PreprintModel {
+  static fromPreprintJsonApi(response: PreprintDataJsonApi): PreprintModel {
     return {
       id: response.id,
       dateCreated: response.attributes.date_created,
@@ -81,21 +75,15 @@ export class PreprintsMapper {
       whyNoPrereg: response.attributes.why_no_prereg ? replaceBadEncodedChars(response.attributes.why_no_prereg) : null,
       preregLinks: response.attributes.prereg_links,
       preregLinkInfo: response.attributes.prereg_link_info,
-      preprintDoiLink: response.links.preprint_doi,
-      articleDoiLink: response.links.doi,
+      preprintDoiLink: response.links?.preprint_doi ?? '',
+      articleDoiLink: response.links?.doi ?? '',
       embeddedLicense: null,
       providerId: response.relationships?.provider?.data?.id,
       defaultLicenseId: response.attributes.default_license_id,
     };
   }
 
-  static fromPreprintWithEmbedsJsonApi(
-    response: JsonApiResponseWithMeta<
-      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
-      PreprintMetaJsonApi,
-      null
-    >
-  ): PreprintModel {
+  static fromPreprintWithEmbedsJsonApi(response: PreprintResponseJsonApi): PreprintModel {
     const data = response.data;
     const links = response.data.links;
     const relationships = response?.data?.relationships;
@@ -142,10 +130,12 @@ export class PreprintsMapper {
       whyNoPrereg: data.attributes.why_no_prereg ? replaceBadEncodedChars(data.attributes.why_no_prereg) : null,
       preregLinks: data.attributes.prereg_links,
       preregLinkInfo: data.attributes.prereg_link_info,
-      embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds?.license?.data),
+      embeddedLicense: data.embeds?.license?.data
+        ? LicensesMapper.fromLicenseDataJsonApi(data.embeds?.license?.data)
+        : null,
       identifiers: IdentifiersMapper.fromJsonApi(data.embeds?.identifiers),
-      preprintDoiLink: links.preprint_doi,
-      articleDoiLink: links.doi,
+      preprintDoiLink: links?.preprint_doi ?? '',
+      articleDoiLink: links?.doi ?? '',
       providerId: relationships?.provider?.data?.id,
     };
   }
@@ -170,11 +160,7 @@ export class PreprintsMapper {
     };
   }
 
-  static fromMyPreprintJsonApi(
-    response: ResponseJsonApi<
-      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[]
-    >
-  ): PreprintShortInfoWithTotalCount {
+  static fromMyPreprintJsonApi(response: PreprintsListResponseJsonApi): PreprintShortInfoWithTotalCount {
     return {
       data: response.data.map((preprintData) => ({
         id: preprintData.id,

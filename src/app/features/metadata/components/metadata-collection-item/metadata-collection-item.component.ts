@@ -13,11 +13,12 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmission } from '@osf/shared/models/collections/collection-submissions.model';
 import { CollectionStatusSeverityPipe } from '@osf/shared/pipes/collection-status-severity.pipe';
+
+import { CEDAR_VIEWER_CONFIG } from '../../constants';
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi } from '../../models';
 
 @Component({
   selector: 'osf-metadata-collection-item',
@@ -32,7 +33,7 @@ export class MetadataCollectionItemComponent {
   readonly CollectionSubmissionReviewState = CollectionSubmissionReviewState;
 
   submission = input.required<CollectionSubmission>();
-  cedarRecord = input<CedarMetadataRecordData | null>(null);
+  cedarRecord = input<CedarMetadataRecordDataJsonApi | null>(null);
   cedarTemplate = input<CedarMetadataDataTemplateJsonApi | null>(null);
 
   cedarViewerConfig = CEDAR_VIEWER_CONFIG;

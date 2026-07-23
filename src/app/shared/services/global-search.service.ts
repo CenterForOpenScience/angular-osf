@@ -82,7 +82,6 @@ export class GlobalSearchService {
       resources: MapResources(response),
       filters: MapFilters(response),
       count: parseSearchTotalCount(response),
-      self: response.data.links.self,
       first: response.data?.relationships?.searchResultPage.links?.first?.href ?? null,
       next: response.data?.relationships?.searchResultPage.links?.next?.href ?? null,
       previous: response.data?.relationships?.searchResultPage.links?.prev?.href ?? null,

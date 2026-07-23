@@ -33,7 +33,7 @@ export class RegistryComponentsState {
             data: response.data,
             isLoading: false,
             error: null,
-            totalCount: response.meta.total,
+            totalCount: response.totalCount,
           },
         });
       }),

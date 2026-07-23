@@ -3,11 +3,16 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { DeveloperAppMapper } from '../mappers';
-import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppGetResponseJsonApi } from '../models';
+import {
+  DeveloperApp,
+  DeveloperAppCreateUpdate,
+  DeveloperAppDataJsonApi,
+  DeveloperAppResponseJsonApi,
+  DeveloperAppsListResponseJsonApi,
+} from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -22,13 +27,13 @@ export class DeveloperApplicationsService {
 
   getApplications(): Observable<DeveloperApp[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<DeveloperAppGetResponseJsonApi[], null>>(this.apiUrl)
+      .get<DeveloperAppsListResponseJsonApi>(this.apiUrl)
       .pipe(map((responses) => responses.data.map((response) => DeveloperAppMapper.fromGetResponse(response))));
   }
 
   getApplicationDetails(clientId: string): Observable<DeveloperApp> {
     return this.jsonApiService
-      .get<JsonApiResponse<DeveloperAppGetResponseJsonApi, null>>(`${this.apiUrl}${clientId}/`)
+      .get<DeveloperAppResponseJsonApi>(`${this.apiUrl}${clientId}/`)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response.data)));
   }
 
@@ -36,7 +41,7 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toCreateRequest(developerAppCreate);
 
     return this.jsonApiService
-      .post<JsonApiResponse<DeveloperAppGetResponseJsonApi, null>>(this.apiUrl, request)
+      .post<DeveloperAppResponseJsonApi>(this.apiUrl, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response.data)));
   }
 
@@ -44,7 +49,7 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toUpdateRequest(developerAppUpdate);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponseJsonApi>(`${this.apiUrl}${clientId}/`, request)
+      .patch<DeveloperAppDataJsonApi>(`${this.apiUrl}${clientId}/`, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 
@@ -52,7 +57,7 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toResetSecretRequest(clientId);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponseJsonApi>(`${this.apiUrl}${clientId}/`, request)
+      .patch<DeveloperAppDataJsonApi>(`${this.apiUrl}${clientId}/`, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 

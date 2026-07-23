@@ -1,14 +1,14 @@
 import { CITATION_TITLES } from '../constants/default-citation-titles.const';
 import { CitationTypes } from '../enums/citation-types.enum';
 import { CitationStyle } from '../models/citations/citation-style.model';
-import { CitationStyleJsonApi } from '../models/citations/citation-style-json-api.model';
+import { CitationStyleDataJsonApi } from '../models/citations/citation-style-json-api.model';
 import { CustomCitationPayload } from '../models/citations/custom-citation-payload.model';
 import { CustomCitationPayloadJsonApi } from '../models/citations/custom-citation-payload-json-api.model';
 import { StyledCitation } from '../models/citations/styled-citation.model';
-import { StyledCitationJsonApi } from '../models/citations/styled-citation-json-api.model';
+import { StyledCitationDataJsonApi } from '../models/citations/styled-citation-json-api.model';
 
 export class CitationsMapper {
-  static fromGetCitationStylesResponse(response: CitationStyleJsonApi[]): CitationStyle[] {
+  static fromGetCitationStylesResponse(response: CitationStyleDataJsonApi[]): CitationStyle[] {
     return response.map((style) => ({
       id: style.id,
       type: style.type,
@@ -19,7 +19,7 @@ export class CitationsMapper {
     }));
   }
 
-  static fromGetStyledCitationResponse(response: StyledCitationJsonApi): StyledCitation {
+  static fromGetStyledCitationResponse(response: StyledCitationDataJsonApi): StyledCitation {
     return {
       id: response.id,
       type: response.type,

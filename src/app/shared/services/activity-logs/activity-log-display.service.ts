@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { inject, Injectable } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
+import { ActivityLogModel } from '@osf/shared/models/activity-logs/activity-logs.model';
 
 import { ActivityLogFormatterService } from './activity-log-formatter.service';
 
@@ -15,7 +15,7 @@ export class ActivityLogDisplayService {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly formatter = inject(ActivityLogFormatterService);
 
-  getActivityDisplay(log: ActivityLog): SafeHtml {
+  getActivityDisplay(log: ActivityLogModel): SafeHtml {
     const translationKey = `activityLog.activities.${log.action}`;
     const translationParams = this.buildTranslationParams(log);
 
@@ -26,7 +26,7 @@ export class ActivityLogDisplayService {
     return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
   }
 
-  private buildTranslationParams(log: ActivityLog): Record<string, unknown> {
+  private buildTranslationParams(log: ActivityLogModel): Record<string, unknown> {
     return {
       addon: log.params.addon || '',
       anonymousLink: this.formatter.buildAnonymous(log),

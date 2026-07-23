@@ -1,5 +1,4 @@
 export * from './preprint.model';
-export * from './preprint-json-api.model';
 export * from './preprint-licenses-json-api.model';
 export * from './preprint-provider.model';
 export * from './preprint-provider-json-api.model';

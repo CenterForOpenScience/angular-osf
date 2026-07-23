@@ -50,7 +50,7 @@ export class MyResourcesState {
               data: res.data,
               isLoading: false,
               error: null,
-              totalCount: res.meta.total,
+              totalCount: res.totalCount,
             },
           });
         }),
@@ -83,7 +83,7 @@ export class MyResourcesState {
               data: res.data,
               isLoading: false,
               error: null,
-              totalCount: res.meta.total,
+              totalCount: res.totalCount,
             },
           });
         }),
@@ -108,7 +108,7 @@ export class MyResourcesState {
             data: res.data,
             isLoading: false,
             error: null,
-            totalCount: res.meta.total,
+            totalCount: res.totalCount,
           },
         });
       }),

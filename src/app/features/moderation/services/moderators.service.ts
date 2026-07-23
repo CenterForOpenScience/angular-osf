@@ -3,10 +3,10 @@ import { forkJoin, map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { parseSearchTotalCount } from '@osf/shared/helpers/search-total-count.helper';
 import { MapResources } from '@osf/shared/mappers/search';
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { IndexCardSearchResponseJsonApi } from '@osf/shared/models/search/index-card-search-json-api.model';
 import { SearchUserDataModel } from '@osf/shared/models/user/search-user-data.model';
@@ -15,7 +15,13 @@ import { StringOrNull } from '@shared/helpers/types.helper';
 
 import { AddModeratorType, ModeratorPermission } from '../enums';
 import { ModerationMapper } from '../mappers';
-import { ModeratorAddModel, ModeratorDataJsonApi, ModeratorModel, ModeratorResponseJsonApi } from '../models';
+import {
+  ModeratorAddModel,
+  ModeratorDataJsonApi,
+  ModeratorItemResponseJsonApi,
+  ModeratorModel,
+  ModeratorResponseJsonApi,
+} from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +70,7 @@ export class ModeratorsService {
       map((response) => ({
         data: ModerationMapper.getModerators(response.data),
         totalCount: response.meta.total,
-        pageSize: response.meta.per_page,
+        pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
       }))
     );
   }
@@ -76,7 +82,7 @@ export class ModeratorsService {
     const moderatorData = { data: ModerationMapper.toModeratorAddRequest(data, type) };
 
     return this.jsonApiService
-      .post<JsonApiResponse<ModeratorDataJsonApi, null>>(baseUrl, moderatorData)
+      .post<ModeratorItemResponseJsonApi>(baseUrl, moderatorData)
       .pipe(map((moderator) => ModerationMapper.fromModeratorResponse(moderator.data)));
   }
 

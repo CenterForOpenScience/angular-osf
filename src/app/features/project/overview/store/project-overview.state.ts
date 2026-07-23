@@ -58,11 +58,11 @@ export class ProjectOverviewState {
       tap((response) => {
         ctx.patchState({
           project: {
-            data: response.project,
+            data: response.data,
             isLoading: false,
             error: null,
           },
-          isAnonymous: response.meta?.anonymous ?? false,
+          isAnonymous: response.isAnonymous,
         });
       }),
       catchError((error) => handleSectionError(ctx, 'project', error))

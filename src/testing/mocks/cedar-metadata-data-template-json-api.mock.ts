@@ -1,9 +1,10 @@
-import { CedarMetadataTemplate } from '@osf/features/metadata/models';
+import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models/cedar-metadata-template.model';
 
-export const CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK: CedarMetadataTemplate = {
+export const CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK: CedarMetadataDataTemplateJsonApi = {
   id: 'template-1',
   type: 'cedar-metadata-templates',
   attributes: {
+    active: true,
     schema_name: 'Test Schema',
     cedar_id: 'test-cedar-id',
     template: {

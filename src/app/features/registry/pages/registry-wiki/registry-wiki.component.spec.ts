@@ -13,7 +13,7 @@ import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-sec
 import { ViewSectionComponent } from '@osf/shared/components/wiki/view-section/view-section.component';
 import { WikiListComponent } from '@osf/shared/components/wiki/wiki-list/wiki-list.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { WikiModes } from '@osf/shared/models/wiki/wiki.model';
+import { WikiModes } from '@osf/shared/enums/wiki-modes.enum';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 import {
   ClearWiki,

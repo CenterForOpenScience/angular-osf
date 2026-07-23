@@ -267,11 +267,11 @@ export class FilesState {
       tap((response) =>
         ctx.patchState({
           rootFolders: {
-            data: response.files,
+            data: response.data,
             isLoading: false,
             error: null,
           },
-          isAnonymous: response.meta?.anonymous ?? false,
+          isAnonymous: response.isAnonymous,
         })
       ),
       catchError((error) => handleSectionError(ctx, 'rootFolders', error))
@@ -287,11 +287,11 @@ export class FilesState {
       tap((response) =>
         ctx.patchState({
           moveDialogRootFolders: {
-            data: response.files,
+            data: response.data,
             isLoading: false,
             error: null,
           },
-          isAnonymous: response.meta?.anonymous ?? false,
+          isAnonymous: response.isAnonymous,
         })
       ),
       catchError((error) => handleSectionError(ctx, 'moveDialogRootFolders', error))

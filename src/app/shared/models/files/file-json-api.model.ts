@@ -1,55 +1,52 @@
 import { FileKind } from '@osf/shared/enums/file-kind.enum';
 
-import { ResponseJsonApi } from '../common/json-api.model';
+import { Embed } from '../common/json-api/embeds.model';
+import { RelatedCountRel, ToOneRel } from '../common/json-api/relationships.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
 import { BaseNodeDataJsonApi } from '../nodes/base-node-data-json-api.model';
 
-export type FileResponseJsonApi = ResponseJsonApi<FileDataJsonApi>;
-export type FilesResponseJsonApi = ResponseJsonApi<FileDataJsonApi[]>;
-export type FileDetailsResponseJsonApi = ResponseJsonApi<FileDetailsDataJsonApi>;
+export type FileResponseJsonApi = ItemResponse<FileDataJsonApi>;
+export type FilesResponseJsonApi = ListResponse<FileDataJsonApi>;
+export type FileDetailsResponseJsonApi = ItemResponse<FileDetailsDataJsonApi>;
 
-export interface FileDataJsonApi {
-  id: string;
-  type: 'files';
-  attributes: BaseFileAttributesJsonApi;
+export interface FileDataJsonApi extends JsonApiResource<'files', BaseFileAttributesJsonApi> {
   relationships: FileRelationshipsJsonApi;
   links: FileLinksJsonApi;
   embeds?: FileEmbedsJsonApi;
 }
 
-export interface FileDetailsDataJsonApi {
-  id: string;
-  type: 'files';
-  attributes: FileDetailsAttributesJsonApi;
+export interface FileDetailsDataJsonApi extends JsonApiResource<'files', FileDetailsAttributesJsonApi> {
   relationships: FileRelationshipsJsonApi;
   links: FileLinksJsonApi;
   embeds?: FileEmbedsJsonApi;
 }
 
 export interface BaseFileAttributesJsonApi {
-  guid: string | null;
-  name: string;
-  kind: FileKind;
-  path: string;
-  size: number;
-  materialized_path: string;
   date_modified: string;
   extra: FileExtraJsonApi;
+  guid: string | null;
+  kind: FileKind;
+  materialized_path: string;
+  name: string;
+  path: string;
   provider: string;
+  size: number;
 }
 
 export interface FileDetailsAttributesJsonApi extends BaseFileAttributesJsonApi {
   checkout: string | null;
-  last_touched: string | null;
-  date_created: string;
-  tags: string[];
   current_user_can_comment: boolean;
   current_version: number;
+  date_created: string;
+  last_touched: string | null;
   show_as_unviewed: boolean;
+  tags: string[];
 }
 
 export interface FileExtraJsonApi {
-  hashes: FileHashesJsonApi;
   downloads: number;
+  hashes: FileHashesJsonApi;
 }
 
 interface FileHashesJsonApi {
@@ -58,44 +55,21 @@ interface FileHashesJsonApi {
 }
 
 interface FileRelationshipsJsonApi {
-  parent_folder: ParentFolderJsonApi;
-  files?: FilesRelationshipsJsonApi;
-}
-
-interface ParentFolderJsonApi {
-  links: {
-    related: RelatedLinkJsonApi;
-  };
-  data: {
-    id: string;
-    type: 'files';
-  };
-}
-
-interface FilesRelationshipsJsonApi {
-  links: {
-    related: RelatedLinkJsonApi;
-  };
-}
-
-interface RelatedLinkJsonApi {
-  href: string;
-  meta: Record<string, unknown>;
+  files?: RelatedCountRel;
+  parent_folder: ToOneRel<'files'>;
 }
 
 export interface FileLinksJsonApi {
-  info: string;
-  move: string;
-  upload: string;
   delete: string;
   download: string;
-  render: string;
   html: string;
+  info: string;
+  move: string;
+  render: string;
   self: string;
+  upload: string;
 }
 
 interface FileEmbedsJsonApi {
-  target: {
-    data: BaseNodeDataJsonApi;
-  };
+  target: Embed<BaseNodeDataJsonApi>;
 }

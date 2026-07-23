@@ -53,7 +53,9 @@ describe('ProjectDownloadOptionsService', () => {
 
   beforeEach(() => {
     filesService = FilesServiceMock.simple();
-    filesService.getRootFolders.mockReturnValue(of({ files: [osfFolder, googleDriveFolder] }));
+    filesService.getRootFolders.mockReturnValue(
+      of({ data: [osfFolder, googleDriveFolder], totalCount: 2, pageSize: 10 })
+    );
     filesService.getConfiguredStorageAddons.mockReturnValue(of([googleDriveAddon]));
     filesService.getFilesWithoutFiltering.mockReturnValue(of({ data: [], totalCount: 2, pageSize: 10 }));
 
@@ -111,7 +113,9 @@ describe('ProjectDownloadOptionsService', () => {
       ...osfFolder,
       links: osfLinksWithoutFilesLink,
     } as FileFolderModel;
-    filesService.getRootFolders.mockReturnValue(of({ files: [osfFolderWithoutFilesLink, googleDriveFolder] }));
+    filesService.getRootFolders.mockReturnValue(
+      of({ data: [osfFolderWithoutFilesLink, googleDriveFolder], totalCount: 2, pageSize: 10 })
+    );
 
     await firstValueFrom(service.loadOptions('project-1'));
 

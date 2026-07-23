@@ -6,11 +6,11 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { PreprintProvidersMapper } from '@osf/features/preprints/mappers';
 import {
   PreprintProviderDetails,
-  PreprintProviderDetailsJsonApi,
+  PreprintProviderResponseJsonApi,
   PreprintProviderShortInfo,
+  PreprintProvidersListResponseJsonApi,
 } from '@osf/features/preprints/models';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
-import { JsonApiResponse } from '@shared/models/common/json-api.model';
 import { SubjectModel } from '@shared/models/subject/subject.model';
 import { SubjectsResponseJsonApi } from '@shared/models/subject/subjects-json-api.model';
 
@@ -27,15 +27,13 @@ export class PreprintProvidersService {
 
   getPreprintProviderById(id: string): Observable<PreprintProviderDetails> {
     return this.jsonApiService
-      .get<JsonApiResponse<PreprintProviderDetailsJsonApi, null>>(`${this.apiUrl}${id}/?embed=brand`)
+      .get<PreprintProviderResponseJsonApi>(`${this.apiUrl}${id}/?embed=brand`)
       .pipe(map((response) => PreprintProvidersMapper.fromPreprintProviderDetailsGetResponse(response.data)));
   }
 
   getPreprintProvidersToAdvertise(): Observable<PreprintProviderShortInfo[]> {
     return this.jsonApiService
-      .get<
-        JsonApiResponse<PreprintProviderDetailsJsonApi[], null>
-      >(`${this.apiUrl}?filter[advertise_on_discover_page]=true&reload=true`)
+      .get<PreprintProvidersListResponseJsonApi>(`${this.apiUrl}?filter[advertise_on_discover_page]=true&reload=true`)
       .pipe(
         map((response) =>
           PreprintProvidersMapper.toPreprintProviderShortInfoFromGetResponse(
@@ -47,7 +45,7 @@ export class PreprintProvidersService {
 
   getPreprintProvidersAllowingSubmissions(): Observable<PreprintProviderShortInfo[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<PreprintProviderDetailsJsonApi[], null>>(`${this.apiUrl}?filter[allow_submissions]=true`)
+      .get<PreprintProvidersListResponseJsonApi>(`${this.apiUrl}?filter[allow_submissions]=true`)
       .pipe(map((response) => PreprintProvidersMapper.toPreprintProviderShortInfoFromGetResponse(response.data)));
   }
 

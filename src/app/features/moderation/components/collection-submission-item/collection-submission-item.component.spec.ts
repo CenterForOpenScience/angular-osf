@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
-import { CollectionSubmissionWithGuid } from '@osf/shared/models/collections/collections.model';
 import { CollectionsSelectors } from '@osf/shared/stores/collections';
 import { DateAgoPipe } from '@shared/pipes/date-ago.pipe';
 
@@ -24,7 +23,7 @@ describe('CollectionSubmissionItemComponent', () => {
   let mockRouter: ReturnType<RouterMockBuilder['build']>;
   let mockActivatedRoute: ReturnType<ActivatedRouteMockBuilder['build']>;
 
-  const mockSubmission: CollectionSubmissionWithGuid = MOCK_COLLECTION_SUBMISSION_WITH_GUID;
+  const mockSubmission = MOCK_COLLECTION_SUBMISSION_WITH_GUID;
 
   const mockCollectionProvider = {
     id: 'provider-123',

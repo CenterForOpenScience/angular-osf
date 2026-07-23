@@ -1,14 +1,29 @@
-import { MetaJsonApi, PaginationLinksJsonApi } from '@osf/shared/models/common/json-api.model';
+import { Embed } from '@osf/shared/models/common/json-api/embeds.model';
+import { ToOneRelData } from '@osf/shared/models/common/json-api/relationships.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { DataResponse, ListResponse } from '@osf/shared/models/common/json-api/responses.model';
 
-export interface CedarMetadataDataTemplateJsonApi {
+export type CedarMetadataTemplateJsonApi = ListResponse<CedarMetadataDataTemplateJsonApi>;
+export type CedarMetadataRecordJsonApi = ListResponse<CedarMetadataRecordDataJsonApi>;
+export type CedarMetadataRecord = DataResponse<CedarMetadataRecordDataJsonApi>;
+
+export interface CedarRecordDataBinding {
   id: string;
-  type: 'cedar-metadata-templates';
-  attributes: {
-    schema_name: string;
-    cedar_id: string;
-    template: CedarTemplate;
-    is_for_collections: boolean;
-  };
+  data: CedarMetadataAttributes;
+  isPublished: boolean;
+}
+
+export type CedarMetadataDataTemplateJsonApi = JsonApiResource<
+  'cedar-metadata-templates',
+  CedarMetadataTemplateAttributesJsonApi
+>;
+
+interface CedarMetadataTemplateAttributesJsonApi {
+  active: boolean;
+  cedar_id: string;
+  schema_name: string;
+  template: CedarTemplate;
+  is_for_collections: boolean;
 }
 
 export const CEDAR_TEMPLATE_FIELD_TYPE = 'https://schema.metadatacenter.org/core/TemplateField';
@@ -44,7 +59,7 @@ export interface CedarTemplate {
   };
 }
 
-export interface CedarTemplateContext {
+interface CedarTemplateContext {
   pav: string;
   xsd: string;
   bibo: string;
@@ -68,64 +83,6 @@ export interface CedarTemplateContext {
   'schema:description': {
     '@type': string;
   };
-}
-
-export interface CedarMetadataTemplate {
-  id: string;
-  type: 'cedar-metadata-templates';
-  attributes: {
-    schema_name: string;
-    cedar_id: string;
-    template: CedarTemplate;
-    is_for_collections: boolean;
-  };
-}
-
-export interface CedarTemplate {
-  '@id': string;
-  '@type': string;
-  type: string;
-  title: string;
-  $schema: string;
-  '@context': CedarTemplateContext;
-  required: string[];
-  properties: Record<string, unknown>;
-  _ui: {
-    order: string[];
-    propertyLabels: Record<string, string>;
-    propertyDescriptions: Record<string, string>;
-  };
-}
-
-export interface CedarTemplateContext {
-  pav: string;
-  xsd: string;
-  bibo: string;
-  oslc: string;
-  schema: string;
-  'schema:name': {
-    '@type': string;
-  };
-  'pav:createdBy': {
-    '@type': string;
-  };
-  'pav:createdOn': {
-    '@type': string;
-  };
-  'oslc:modifiedBy': {
-    '@type': string;
-  };
-  'pav:lastUpdatedOn': {
-    '@type': string;
-  };
-  'schema:description': {
-    '@type': string;
-  };
-}
-
-export interface CedarMetadataTemplateJsonApi {
-  data: CedarMetadataDataTemplateJsonApi[];
-  links: PaginationLinksJsonApi;
 }
 
 export interface FieldSchema {
@@ -146,13 +103,6 @@ export interface FieldSchema {
   'schema:name'?: string;
   'schema:description'?: string;
   '@id': string;
-}
-
-export interface CedarFieldItem extends Record<string, unknown> {
-  '@id'?: string;
-  '@type'?: string;
-  'rdfs:label'?: string | null;
-  '@value'?: string;
 }
 
 export interface CedarMetadataAttributes {
@@ -200,55 +150,27 @@ export interface CedarMetadataAttributes {
   }[];
 }
 
-export interface CedarMetadataRecord {
-  data: CedarMetadataRecordData;
+interface CedarFieldItem extends Record<string, unknown> {
+  '@id'?: string;
+  '@type'?: string;
+  'rdfs:label'?: string | null;
+  '@value'?: string;
 }
 
-export interface CedarRecordDataBinding {
-  data: CedarMetadataAttributes;
-  id: string;
-  isPublished: boolean;
-}
-
-export interface CedarMetadataRecordJsonApi {
-  data: CedarMetadataRecordData[];
-  links: PaginationLinksJsonApi;
-  meta: MetaJsonApi;
-}
-
-export interface CedarMetadataRecordData {
+export interface CedarMetadataRecordDataJsonApi {
   id?: string;
+  type?: string;
   attributes: CedarMetadataRecordAttributes;
   embeds?: {
-    template: {
-      data: {
-        attributes: {
-          active: boolean;
-          cedar_id: string;
-          schema_name: string;
-        };
-        id: string;
-      };
-    };
+    template: Embed<CedarMetadataDataTemplateJsonApi>;
   };
   relationships: {
-    template: {
-      data: {
-        type: string;
-        id: string;
-      };
-    };
-    target: {
-      data: {
-        type: string;
-        id: string;
-      };
-    };
+    template: ToOneRelData;
+    target: ToOneRelData;
   };
-  type?: string;
 }
 
-export interface CedarMetadataRecordAttributes {
+interface CedarMetadataRecordAttributes {
   metadata: CedarMetadataAttributes;
   is_published: boolean;
 }

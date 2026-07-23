@@ -9,10 +9,11 @@ import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum'
 import { ResourceVisibilityFilter } from '@osf/shared/enums/resource-visibility-filter.enum';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { MyResourcesMapper } from '@osf/shared/mappers/my-resources.mapper';
-import { MyResourcesResponseJsonApi } from '@osf/shared/models/my-resources/my-resources.model';
 
 import { MOCK_MY_RESOURCES_ITEM_PROJECT } from '@testing/mocks/my-resources.mock';
 import { JsonApiServiceMock, JsonApiServiceMockType } from '@testing/providers/json-api.service.mock';
+
+import { MyResourcesResponseJsonApi } from '../models/my-resources/my-resources-json-api.model';
 
 import { JsonApiService } from './json-api.service';
 import { MyResourcesService } from './my-resources.service';
@@ -91,7 +92,6 @@ describe('MyResourcesService', () => {
     });
     expect(mapperSpy).toHaveBeenCalled();
     expect(response.data).toEqual([MOCK_MY_RESOURCES_ITEM_PROJECT]);
-    expect(response.meta.total).toBe(1);
   });
 
   it('getMyProjects should include search, pagination, and sort params', async () => {

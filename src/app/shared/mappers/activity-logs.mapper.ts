@@ -1,13 +1,19 @@
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import { DEFAULT_TABLE_PARAMS } from '../constants/default-table-params.constants';
-import { ActivityLog, LogContributor } from '../models/activity-logs/activity-logs.model';
-import { ActivityLogJsonApi, LogContributorJsonApi } from '../models/activity-logs/activity-logs-json-api.model';
-import { ResponseJsonApi } from '../models/common/json-api.model';
+import { ActivityLogModel, LogContributorModel } from '../models/activity-logs/activity-logs.model';
+import {
+  ActivityLogDataJsonApi,
+  ActivityLogsResponseJsonApi,
+  LogContributorJsonApi,
+} from '../models/activity-logs/activity-logs-json-api.model';
 import { PaginatedData } from '../models/paginated-data.model';
 
+import { BaseNodeMapper } from './nodes';
+import { UserMapper } from './user';
+
 export class ActivityLogsMapper {
-  static fromActivityLogJsonApi(log: ActivityLogJsonApi, isAnonymous?: boolean): ActivityLog {
+  static fromActivityLogJsonApi(log: ActivityLogDataJsonApi, isAnonymous?: boolean): ActivityLogModel {
     const params = log.attributes.params ?? {};
     const contributors = params.contributors ?? [];
 
@@ -18,12 +24,21 @@ export class ActivityLogsMapper {
       date: log.attributes.date,
       foreignUser: log.attributes.foreign_user,
       params: {
+        addon: params.addon,
+        anonymousLink: params.anonymous_link,
         contributors: contributors.length
           ? contributors.map((contributor) => this.fromContributorJsonApi(contributor))
           : [],
-        license: params.license,
-        tag: params.tag,
+        destination: params.destination,
+        file: params.file,
+        githubUser: params.github_user,
+        identifiers: params.identifiers,
         institution: params.institution,
+        kind: params.kind,
+        license: params.license,
+        oldPage: params.old_page,
+        page: params.page,
+        pageId: params.page_id,
         paramsNode: params.params_node
           ? {
               id: params.params_node.id,
@@ -31,13 +46,6 @@ export class ActivityLogsMapper {
             }
           : { id: '', title: '' },
         paramsProject: params.params_project,
-        template_node: params.template_node
-          ? {
-              id: params.template_node.id,
-              url: params.template_node.url,
-              title: replaceBadEncodedChars(params.template_node.title),
-            }
-          : null,
         pointer: params.pointer
           ? {
               category: params.pointer.category,
@@ -46,116 +54,41 @@ export class ActivityLogsMapper {
               url: params.pointer.url,
             }
           : null,
-        preprintProvider: params.preprint_provider,
-        addon: params.addon,
-        anonymousLink: params.anonymous_link,
-        file: params.file,
-        wiki: params.wiki,
-        destination: params.destination,
-        identifiers: params.identifiers,
-        kind: params.kind,
-        oldPage: params.old_page,
-        page: params.page,
-        pageId: params.page_id,
-        path: params.path,
-        urls: params.urls,
         preprint: params.preprint,
+        preprintProvider: params.preprint_provider,
         source: params.source,
+        tag: params.tag,
+        templateNode: params.template_node
+          ? {
+              id: params.template_node.id,
+              url: params.template_node.url,
+              title: replaceBadEncodedChars(params.template_node.title),
+            }
+          : null,
         titleNew: params.title_new,
         titleOriginal: params.title_original,
         updatedFields: params.updated_fields,
+        urls: params.urls,
         value: params.value,
         version: params.version,
-        githubUser: params.github_user,
+        wiki: params.wiki,
       },
       isAnonymous,
       embeds: log.embeds
         ? {
             originalNode: log.embeds.original_node?.data
-              ? {
-                  id: log.embeds.original_node.data.id,
-                  type: log.embeds.original_node.data.type,
-                  title: replaceBadEncodedChars(log.embeds.original_node.data.attributes.title),
-                  description: replaceBadEncodedChars(log.embeds.original_node.data.attributes.description),
-                  category: log.embeds.original_node.data.attributes.category,
-                  customCitation: log.embeds.original_node.data.attributes.custom_citation,
-                  dateCreated: log.embeds.original_node.data.attributes.date_created,
-                  dateModified: log.embeds.original_node.data.attributes.date_modified,
-                  registration: log.embeds.original_node.data.attributes.registration,
-                  preprint: log.embeds.original_node.data.attributes.preprint,
-                  fork: log.embeds.original_node.data.attributes.fork,
-                  collection: log.embeds.original_node.data.attributes.collection,
-                  tags: log.embeds.original_node.data.attributes.tags,
-                  accessRequestsEnabled: log.embeds.original_node.data.attributes.access_requests_enabled,
-                  nodeLicense: log.embeds.original_node.data.attributes.node_license
-                    ? {
-                        copyrightHolders: log.embeds.original_node.data.attributes.node_license.copyright_holders,
-                        year: log.embeds.original_node.data.attributes.node_license.year,
-                      }
-                    : { copyrightHolders: [], year: null },
-                  currentUserCanComment: log.embeds.original_node.data.attributes.current_user_can_comment,
-                  currentUserPermissions: log.embeds.original_node.data.attributes.current_user_permissions,
-                  currentUserIsContributor: log.embeds.original_node.data.attributes.current_user_is_contributor,
-                  currentUserIsContributorOrGroupMember:
-                    log.embeds.original_node.data.attributes.current_user_is_contributor_or_group_member,
-                  wikiEnabled: log.embeds.original_node.data.attributes.wiki_enabled,
-                  public: log.embeds.original_node.data.attributes.public,
-                  subjects: log.embeds.original_node.data.attributes.subjects,
-                }
+              ? BaseNodeMapper.getNodeData(log.embeds.original_node.data)
               : undefined,
-            user: log.embeds.user?.data
-              ? {
-                  id: log.embeds.user.data.id,
-                  type: log.embeds.user.data.type,
-                  fullName: log.embeds.user.data.attributes.full_name,
-                  givenName: log.embeds.user.data.attributes.given_name,
-                  middleNames: log.embeds.user.data.attributes.middle_names,
-                  familyName: log.embeds.user.data.attributes.family_name,
-                  suffix: log.embeds.user.data.attributes.suffix,
-                  dateRegistered: log.embeds.user.data.attributes.date_registered,
-                  active: log.embeds.user.data.attributes.active,
-                  timezone: log.embeds.user.data.attributes.timezone,
-                  locale: log.embeds.user.data.attributes.locale,
-                }
-              : undefined,
+            user: log.embeds.user?.data ? UserMapper.fromUserGetResponse(log.embeds.user.data) : undefined,
             linkedNode: log.embeds.linked_node?.data
-              ? {
-                  id: log.embeds.linked_node.data.id,
-                  type: log.embeds.linked_node.data.type,
-                  title: replaceBadEncodedChars(log.embeds.linked_node.data.attributes.title),
-                  description: replaceBadEncodedChars(log.embeds.linked_node.data.attributes.description),
-                  category: log.embeds.linked_node.data.attributes.category,
-                  customCitation: log.embeds.linked_node.data.attributes.custom_citation,
-                  dateCreated: log.embeds.linked_node.data.attributes.date_created,
-                  dateModified: log.embeds.linked_node.data.attributes.date_modified,
-                  registration: log.embeds.linked_node.data.attributes.registration,
-                  preprint: log.embeds.linked_node.data.attributes.preprint,
-                  fork: log.embeds.linked_node.data.attributes.fork,
-                  collection: log.embeds.linked_node.data.attributes.collection,
-                  tags: log.embeds.linked_node.data.attributes.tags,
-                  accessRequestsEnabled: log.embeds.linked_node.data.attributes.access_requests_enabled,
-                  nodeLicense: log.embeds.linked_node.data.attributes.node_license
-                    ? {
-                        copyrightHolders: log.embeds.linked_node.data.attributes.node_license.copyright_holders,
-                        year: log.embeds.linked_node.data.attributes.node_license.year,
-                      }
-                    : { copyrightHolders: [], year: null },
-                  currentUserCanComment: log.embeds.linked_node.data.attributes.current_user_can_comment,
-                  currentUserPermissions: log.embeds.linked_node.data.attributes.current_user_permissions,
-                  currentUserIsContributor: log.embeds.linked_node.data.attributes.current_user_is_contributor,
-                  currentUserIsContributorOrGroupMember:
-                    log.embeds.linked_node.data.attributes.current_user_is_contributor_or_group_member,
-                  wikiEnabled: log.embeds.linked_node.data.attributes.wiki_enabled,
-                  public: log.embeds.linked_node.data.attributes.public,
-                  subjects: log.embeds.linked_node.data.attributes.subjects,
-                }
+              ? BaseNodeMapper.getNodeData(log.embeds.linked_node.data)
               : undefined,
           }
         : undefined,
     };
   }
 
-  static fromGetActivityLogsResponse(logs: ResponseJsonApi<ActivityLogJsonApi[]>): PaginatedData<ActivityLog[]> {
+  static fromGetActivityLogsResponse(logs: ActivityLogsResponseJsonApi): PaginatedData<ActivityLogModel[]> {
     const isAnonymous = logs.meta.anonymous ?? false;
     return {
       data: logs.data.map((log) => this.fromActivityLogJsonApi(log, isAnonymous)),
@@ -165,7 +98,7 @@ export class ActivityLogsMapper {
     };
   }
 
-  private static fromContributorJsonApi(contributor: LogContributorJsonApi): LogContributor {
+  private static fromContributorJsonApi(contributor: LogContributorJsonApi): LogContributorModel {
     return {
       id: contributor.id,
       fullName: contributor.full_name,

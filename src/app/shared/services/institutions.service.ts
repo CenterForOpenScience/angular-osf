@@ -10,7 +10,6 @@ import { InstitutionsMapper } from '../mappers/institutions';
 import {
   InstitutionJsonApiResponse,
   InstitutionsJsonApiResponse,
-  InstitutionsWithMetaJsonApiResponse,
 } from '../models/institutions/institution-json-api.model';
 import { Institution, InstitutionsWithTotalCount } from '../models/institutions/institutions.model';
 
@@ -43,7 +42,7 @@ export class InstitutionsService {
     }
 
     return this.jsonApiService
-      .get<InstitutionsWithMetaJsonApiResponse>(`${this.apiUrl}/institutions/`, params)
+      .get<InstitutionsJsonApiResponse>(`${this.apiUrl}/institutions/`, params)
       .pipe(map((response) => InstitutionsMapper.fromResponseWithMeta(response)));
   }
 

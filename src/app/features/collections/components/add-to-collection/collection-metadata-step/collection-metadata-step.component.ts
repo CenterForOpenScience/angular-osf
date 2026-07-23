@@ -24,7 +24,7 @@ import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/consta
 import {
   CedarEditorElement,
   CedarMetadataDataTemplateJsonApi,
-  CedarMetadataRecordData,
+  CedarMetadataRecordDataJsonApi,
   CedarRecordDataBinding,
 } from '@osf/features/metadata/models';
 
@@ -42,7 +42,7 @@ export class CollectionMetadataStepComponent {
   targetStepValue = input.required<number>();
   isDisabled = input.required<boolean>();
   cedarTemplate = input<CedarMetadataDataTemplateJsonApi | null>(null);
-  existingCedarRecord = input<CedarMetadataRecordData | null>(null);
+  existingCedarRecord = input<CedarMetadataRecordDataJsonApi | null>(null);
 
   stepChange = output<number>();
   cedarDataSaved = output<CedarRecordDataBinding>();

@@ -1,14 +1,8 @@
 import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
-import { ContributorPermission } from '@osf/shared/enums/contributors/contributor-permission.enum';
-import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { ContributorModel, ContributorShortInfoModel } from '@osf/shared/models/contributors/contributor.model';
 import { ContributorAddModel } from '@osf/shared/models/contributors/contributor-add.model';
-import {
-  ContributorAddRequestModel,
-  ContributorDataJsonApi,
-} from '@osf/shared/models/contributors/contributor-response-json-api.model';
-import { PaginatedData } from '@osf/shared/models/paginated-data.model';
-import { UserDataJsonApi } from '@osf/shared/models/user/user-json-api.model';
+import { ContributorAddRequestModel } from '@osf/shared/models/contributors/contributor-add-request.model';
+import { ContributorDataJsonApi } from '@osf/shared/models/contributors/contributor-response-json-api.model';
 
 export class ContributorsMapper {
   static getContributors(response: ContributorDataJsonApi[] | undefined): ContributorModel[] {
@@ -55,22 +49,6 @@ export class ContributorsMapper {
       index: contributor.index,
       permission: contributor.permission,
     }));
-  }
-
-  static getPaginatedUsers(response: ResponseJsonApi<UserDataJsonApi[]>): PaginatedData<ContributorAddModel[]> {
-    return {
-      data: response.data.map(
-        (user) =>
-          ({
-            id: user.id,
-            fullName: user.attributes.full_name,
-            isBibliographic: true,
-            permission: ContributorPermission.Write,
-          }) as ContributorAddModel
-      ),
-      totalCount: response.meta.total,
-      pageSize: response.meta.per_page,
-    };
   }
 
   static toContributorAddRequest(

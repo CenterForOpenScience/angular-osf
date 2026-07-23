@@ -2,10 +2,10 @@ import { Mock } from 'vitest';
 
 import { SafeHtml } from '@angular/platform-browser';
 
-import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
+import { ActivityLogModel } from '@osf/shared/models/activity-logs/activity-logs.model';
 import { ActivityLogDisplayService } from '@osf/shared/services/activity-logs/activity-log-display.service';
 
-type GetActivityDisplayFn = (log: ActivityLog) => SafeHtml;
+type GetActivityDisplayFn = (log: ActivityLogModel) => SafeHtml;
 
 export type ActivityLogDisplayServiceMockType = Partial<ActivityLogDisplayService> & {
   getActivityDisplay: Mock<GetActivityDisplayFn>;

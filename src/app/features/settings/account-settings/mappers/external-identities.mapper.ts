@@ -1,10 +1,6 @@
-import { ApiData } from '@osf/shared/models/common/json-api.model';
+import { ExternalIdentity, ListIdentitiesDataJsonApi } from '../models';
 
-import { ExternalIdentity, ExternalIdentityResponseJsonApi } from '../models';
-
-export function MapExternalIdentities(
-  data: ApiData<ExternalIdentityResponseJsonApi, null, null, null>[]
-): ExternalIdentity[] {
+export function MapExternalIdentities(data: ListIdentitiesDataJsonApi[]): ExternalIdentity[] {
   const identities: ExternalIdentity[] = [];
   for (const item of data) {
     identities.push({

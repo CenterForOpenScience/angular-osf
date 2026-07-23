@@ -1,14 +1,11 @@
 import { BlockType } from '@osf/shared/enums/block-type.enum';
 
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common/json-api.model';
+import { JsonApiResource } from '../common/json-api/resource.model';
+import { ListResponse } from '../common/json-api/responses.model';
 
-export interface SchemaBlocksResponseJsonApi {
-  data: SchemaBlockJsonApi[];
-  meta: MetaJsonApi;
-  links: PaginationLinksJsonApi;
-}
+export type SchemaBlocksResponseJsonApi = ListResponse<SchemaBlockJsonApi>;
 
-export type SchemaBlockJsonApi = ApiData<SchemaBlockAttributesJsonApi, null, null, null>;
+type SchemaBlockJsonApi = JsonApiResource<'schema-blocks', SchemaBlockAttributesJsonApi>;
 
 interface SchemaBlockAttributesJsonApi {
   block_type: BlockType;

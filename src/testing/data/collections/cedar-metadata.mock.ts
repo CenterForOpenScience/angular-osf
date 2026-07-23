@@ -1,11 +1,12 @@
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi } from '@osf/features/metadata/models';
 import { CollectionSubmissionReviewState } from '@osf/shared/enums/collection-submission-review-state.enum';
-import { CollectionSubmission } from '@osf/shared/models/collections/collections.model';
+import { CollectionSubmission } from '@osf/shared/models/collections/collection-submissions.model';
 
 export const MOCK_CEDAR_TEMPLATE: CedarMetadataDataTemplateJsonApi = {
   id: 'template-1',
   type: 'cedar-metadata-templates',
   attributes: {
+    active: true,
     schema_name: 'Test Template',
     cedar_id: 'cedar-1',
     template: {
@@ -36,10 +37,10 @@ export const MOCK_CEDAR_TEMPLATE: CedarMetadataDataTemplateJsonApi = {
   },
 };
 
-export const MOCK_CEDAR_RECORD: CedarMetadataRecordData = {
+export const MOCK_CEDAR_RECORD: CedarMetadataRecordDataJsonApi = {
   id: 'record-1',
   attributes: {
-    metadata: { field: 'value' } as unknown as CedarMetadataRecordData['attributes']['metadata'],
+    metadata: { field: 'value' } as unknown as CedarMetadataRecordDataJsonApi['attributes']['metadata'],
     is_published: true,
   },
   relationships: {

@@ -61,7 +61,7 @@ export class ProjectDownloadOptionsService {
       configuredAddons: this.filesService.getConfiguredStorageAddons(projectId),
     }).pipe(
       switchMap(({ rootFoldersResponse, configuredAddons }) =>
-        this.buildOptions(rootFoldersResponse.files, configuredAddons)
+        this.buildOptions(rootFoldersResponse.data, configuredAddons)
       ),
       map((options) => {
         this.optionsCache.set(projectId, options);

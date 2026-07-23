@@ -11,8 +11,6 @@ export interface LinkedNode {
   tags: string[];
   isPublic: boolean;
   contributors: ContributorModel[];
-  htmlUrl: string;
-  apiUrl: string;
 }
 
 export interface LinkedRegistration {

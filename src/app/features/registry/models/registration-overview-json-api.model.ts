@@ -1,41 +1,23 @@
-import { ResponseJsonApi } from '@shared/models/common/json-api.model';
+import { RelationshipLinks, ToOneRelData } from '@osf/shared/models/common/json-api/relationships.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ItemResponse } from '@shared/models/common/json-api/responses.model';
 import { RegistrationNodeAttributesJsonApi } from '@shared/models/registration/registration-node-json-api.model';
 
-export type RegistrationOverviewResponse = ResponseJsonApi<RegistrationOverviewDataJsonApi>;
+export type RegistrationOverviewResponse = ItemResponse<RegistrationOverviewDataJsonApi>;
 
-export interface RegistrationOverviewDataJsonApi {
-  id: string;
-  attributes: RegistrationNodeAttributesJsonApi;
-  relationships: RegistryOverviewJsonApiRelationships;
+export interface RegistrationOverviewDataJsonApi extends JsonApiResource<
+  'registrations',
+  RegistrationNodeAttributesJsonApi
+> {
+  relationships: RegistryOverviewRelationshipsJsonApi;
 }
 
-export interface RegistryOverviewJsonApiRelationships {
-  registered_from: {
-    data: {
-      id: string;
-    };
-  };
+interface RegistryOverviewRelationshipsJsonApi {
+  license: ToOneRelData<'licenses'>;
+  provider: ToOneRelData<'registration-providers'>;
+  registered_from: ToOneRelData<'nodes'>;
   registration_schema: {
-    links: {
-      related: {
-        href: string;
-      };
-    };
+    links: RelationshipLinks;
   };
-  root: {
-    data: {
-      id: string;
-      type: string;
-    };
-  };
-  license: {
-    data: {
-      id: string;
-    };
-  };
-  provider: {
-    data: {
-      id: string;
-    };
-  };
+  root: ToOneRelData<'registrations'>;
 }

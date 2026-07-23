@@ -1,3 +1,13 @@
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ItemResponse } from '@osf/shared/models/common/json-api/responses.model';
+
+export type InstitutionSummaryMetricsJsonApi = ItemResponse<InstitutionSummaryMetricsDataJsonApi>;
+
+export type InstitutionSummaryMetricsDataJsonApi = JsonApiResource<
+  'institution-summary-metrics',
+  InstitutionSummaryMetricsAttributesJsonApi
+>;
+
 export interface InstitutionSummaryMetricsAttributesJsonApi {
   report_yearmonth: string;
   user_count: number;
@@ -10,37 +20,4 @@ export interface InstitutionSummaryMetricsAttributesJsonApi {
   storage_byte_count: number;
   monthly_logged_in_user_count: number;
   monthly_active_user_count: number;
-}
-
-export interface InstitutionSummaryMetricsRelationshipsJsonApi {
-  user: {
-    data: null;
-  };
-  institution: {
-    links: {
-      related: {
-        href: string;
-        meta: Record<string, unknown>;
-      };
-    };
-    data: {
-      id: string;
-      type: 'institutions';
-    };
-  };
-}
-
-export interface InstitutionSummaryMetricsDataJsonApi {
-  id: string;
-  type: 'institution-summary-metrics';
-  attributes: InstitutionSummaryMetricsAttributesJsonApi;
-  relationships: InstitutionSummaryMetricsRelationshipsJsonApi;
-  links: Record<string, unknown>;
-}
-
-export interface InstitutionSummaryMetricsJsonApi {
-  data: InstitutionSummaryMetricsDataJsonApi;
-  meta: {
-    version: string;
-  };
 }

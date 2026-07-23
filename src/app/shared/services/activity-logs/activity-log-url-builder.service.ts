@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
-import { ActivityLog } from '@osf/shared/models/activity-logs/activity-logs.model';
+import { ActivityLogModel } from '@osf/shared/models/activity-logs/activity-logs.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class ActivityLogUrlBuilderService {
     return `<a href="${relativeUrl}">${value}</a>`;
   }
 
-  buildUserUrl(log: ActivityLog): string {
+  buildUserUrl(log: ActivityLogModel): string {
     const user = log.embeds?.user;
     const githubUser = log.params.githubUser;
 
@@ -30,7 +30,7 @@ export class ActivityLogUrlBuilderService {
     return '';
   }
 
-  buildNodeUrl(log: ActivityLog): string {
+  buildNodeUrl(log: ActivityLogModel): string {
     if (!log.params.paramsNode) {
       return '';
     }
@@ -42,7 +42,7 @@ export class ActivityLogUrlBuilderService {
     return this.buildAHrefElement(`/${log.params.paramsNode.id}`, log.params.paramsNode.title);
   }
 
-  buildInstitutionUrl(log: ActivityLog): string {
+  buildInstitutionUrl(log: ActivityLogModel): string {
     if (!log.params.institution) {
       return '';
     }
@@ -50,7 +50,7 @@ export class ActivityLogUrlBuilderService {
     return this.buildAHrefElement(`/institutions/${log.params.institution.id}`, log.params.institution.name);
   }
 
-  buildTagUrl(log: ActivityLog): string {
+  buildTagUrl(log: ActivityLogModel): string {
     if (!log.params.tag) {
       return '';
     }
@@ -58,7 +58,7 @@ export class ActivityLogUrlBuilderService {
     return this.buildAHrefElement(`/search?search=%22${log.params.tag}%22`, log.params.tag);
   }
 
-  buildPreprintUrl(log: ActivityLog, preprintWord: string): string {
+  buildPreprintUrl(log: ActivityLogModel, preprintWord: string): string {
     if (!log.params.preprint) {
       return '';
     }
@@ -66,7 +66,7 @@ export class ActivityLogUrlBuilderService {
     return this.buildAHrefElement(`preprints/${log.params.preprint}`, preprintWord);
   }
 
-  buildPreprintProviderUrl(log: ActivityLog): string {
+  buildPreprintProviderUrl(log: ActivityLogModel): string {
     if (!log.params.preprintProvider) {
       return '';
     }
@@ -81,7 +81,7 @@ export class ActivityLogUrlBuilderService {
     );
   }
 
-  buildTitleUrl(log: ActivityLog, title: string | undefined): string {
+  buildTitleUrl(log: ActivityLogModel, title: string | undefined): string {
     const originalNode = log.embeds?.originalNode;
     if (originalNode?.id && title) {
       return this.buildAHrefElement(`/${originalNode.id}`, title);
@@ -89,7 +89,7 @@ export class ActivityLogUrlBuilderService {
     return '';
   }
 
-  buildEmbeddedUrl(log: ActivityLog): string {
+  buildEmbeddedUrl(log: ActivityLogModel): string {
     const linkedNode = log.embeds?.linkedNode;
     const originalNode = log.embeds?.originalNode;
 
@@ -101,8 +101,8 @@ export class ActivityLogUrlBuilderService {
     return '';
   }
 
-  buildTemplateUrl(log: ActivityLog): string {
-    const templateNode = log.params.template_node;
+  buildTemplateUrl(log: ActivityLogModel): string {
+    const templateNode = log.params.templateNode;
 
     if (templateNode?.id) {
       return this.buildAHrefElement(`/${templateNode.id}`, templateNode.title);
@@ -110,7 +110,7 @@ export class ActivityLogUrlBuilderService {
     return '';
   }
 
-  buildFileUrl(log: ActivityLog, path: string): string {
+  buildFileUrl(log: ActivityLogModel, path: string): string {
     const acceptableLinkedItems = [
       'osf_storage_file_added',
       'osf_storage_file_updated',
@@ -137,7 +137,7 @@ export class ActivityLogUrlBuilderService {
     return path;
   }
 
-  buildPageUrl(log: ActivityLog, page: string): string {
+  buildPageUrl(log: ActivityLogModel, page: string): string {
     const acceptableLinkedItems = ['wiki_updated', 'wiki_renamed'];
     const projectId = log.embeds?.originalNode?.id;
     if (acceptableLinkedItems.includes(log.action) && log.params.pageId && projectId) {

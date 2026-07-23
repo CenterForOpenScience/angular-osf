@@ -1,21 +1,18 @@
+import { ToOneRelData } from '@osf/shared/models/common/json-api/relationships.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { DataResponse } from '@osf/shared/models/common/json-api/responses.model';
 import { LicenseRecordJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 
-export interface PreprintLicenseRelationshipJsonApi {
-  id: string;
-  type: 'licenses';
+export type PreprintLicensePayloadJsonApi = DataResponse<PreprintLicenseDataJsonApi>;
+
+interface PreprintLicenseDataJsonApi extends JsonApiResource<'preprints', PreprintLicenseAttributesJsonApi> {
+  relationships: PreprintLicenseRelationshipsJsonApi;
 }
 
-export interface PreprintLicensePayloadJsonApi {
-  data: {
-    type: 'preprints';
-    id: string;
-    relationships: {
-      license: {
-        data: PreprintLicenseRelationshipJsonApi;
-      };
-    };
-    attributes: {
-      license_record?: LicenseRecordJsonApi;
-    };
-  };
+interface PreprintLicenseAttributesJsonApi {
+  license_record?: LicenseRecordJsonApi;
+}
+
+interface PreprintLicenseRelationshipsJsonApi {
+  license: ToOneRelData<'licenses'>;
 }

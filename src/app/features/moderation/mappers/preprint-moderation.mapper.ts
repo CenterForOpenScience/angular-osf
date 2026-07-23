@@ -1,11 +1,12 @@
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { UserMapper } from '@osf/shared/mappers/user';
-import { ResponseJsonApi } from '@osf/shared/models/common/json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
 import {
   PreprintProviderModerationInfo,
   PreprintRelatedCountJsonApi,
+  PreprintReviewActionListResponseJsonApi,
   PreprintSubmissionResponseJsonApi,
   PreprintSubmissionWithdrawalResponseJsonApi,
   PreprintWithdrawalPaginatedData,
@@ -39,12 +40,12 @@ export class PreprintModerationMapper {
   }
 
   static fromResponseWithPagination(
-    response: ResponseJsonApi<ReviewActionJsonApi[]>
+    response: PreprintReviewActionListResponseJsonApi
   ): PaginatedData<PreprintReviewActionModel[]> {
     return {
       data: response.data.map((x) => this.fromResponse(x)),
       totalCount: response.meta.total,
-      pageSize: response.meta.per_page,
+      pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
     };
   }
 
@@ -73,7 +74,7 @@ export class PreprintModerationMapper {
         totalContributors: 0,
       })),
       totalCount: response.meta.total,
-      pageSize: response.meta.per_page,
+      pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
       pendingCount: response.meta?.reviews_state_counts?.pending || 0,
       acceptedCount: response.meta?.reviews_state_counts?.accepted || 0,
       rejectedCount: response.meta?.reviews_state_counts?.rejected || 0,
@@ -87,14 +88,14 @@ export class PreprintModerationMapper {
     return {
       data: response.data.map((x) => ({
         id: x.id,
-        title: replaceBadEncodedChars(x.embeds.target.data.attributes.title),
-        preprintId: x.embeds.target.data.id,
+        title: replaceBadEncodedChars(x.embeds.target?.data?.attributes?.title),
+        preprintId: x.embeds.target?.data?.id,
         actions: [],
         contributors: [],
         totalContributors: 0,
       })),
       totalCount: response.meta.total,
-      pageSize: response.meta.per_page,
+      pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
       pendingCount: response.meta.requests_state_counts.pending,
       acceptedCount: response.meta.requests_state_counts.accepted,
       rejectedCount: response.meta.requests_state_counts.rejected,

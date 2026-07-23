@@ -1,3 +1,4 @@
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { UserMapper } from '@osf/shared/mappers/user';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
@@ -7,7 +8,7 @@ import {
   RegistryModeration,
   RegistryResponseJsonApi,
   ReviewAction,
-  ReviewActionsDataJsonApi,
+  ReviewActionDataJsonApi,
 } from '../models';
 
 export class RegistryModerationMapper {
@@ -29,11 +30,11 @@ export class RegistryModerationMapper {
     return {
       data: response.data.map((x) => this.fromResponse(x)),
       totalCount: response.meta.total,
-      pageSize: response.meta.per_page,
+      pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
     };
   }
 
-  static fromActionResponse(response: ReviewActionsDataJsonApi): ReviewAction {
+  static fromActionResponse(response: ReviewActionDataJsonApi): ReviewAction {
     const creator = UserMapper.getUserInfo(response.embeds?.creator);
 
     return {

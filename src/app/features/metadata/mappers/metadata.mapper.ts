@@ -2,10 +2,10 @@ import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { replaceBadEncodedChars } from '@shared/helpers/format-bad-encoding.helper';
 
-import { CustomItemMetadataRecord, CustomMetadataJsonApi, MetadataJsonApi, MetadataModel } from '../models';
+import { CustomItemMetadataRecord, CustomMetadataDataJsonApi, MetadataDataJsonApi, MetadataModel } from '../models';
 
 export class MetadataMapper {
-  static fromMetadataApiResponse(response: MetadataJsonApi): MetadataModel {
+  static fromMetadataApiResponse(response: MetadataDataJsonApi): MetadataModel {
     return {
       id: response.id,
       title: replaceBadEncodedChars(response.attributes.title),
@@ -14,7 +14,9 @@ export class MetadataMapper {
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
       publicationDoi: response.attributes.article_doi,
-      license: LicensesMapper.fromLicenseDataJsonApi(response.embeds?.license?.data),
+      license: response.embeds?.license?.data
+        ? LicensesMapper.fromLicenseDataJsonApi(response.embeds?.license?.data)
+        : null,
       nodeLicense: response.attributes.node_license
         ? {
             copyrightHolders: response.attributes.node_license.copyright_holders || [],
@@ -22,14 +24,14 @@ export class MetadataMapper {
           }
         : undefined,
       identifiers: IdentifiersMapper.fromJsonApi(response.embeds?.identifiers),
-      provider: response.embeds?.provider?.data.id,
+      provider: response.relationships?.provider?.data?.id,
       public: response.attributes.public,
       currentUserPermissions: response.attributes.current_user_permissions,
       registrationSupplement: response.attributes.registration_supplement,
     };
   }
 
-  static fromCustomMetadataApiResponse(response: CustomMetadataJsonApi): Partial<CustomItemMetadataRecord> {
+  static fromCustomMetadataApiResponse(response: CustomMetadataDataJsonApi): Partial<CustomItemMetadataRecord> {
     return {
       language: response.attributes.language,
       resourceTypeGeneral: response.attributes.resource_type_general,

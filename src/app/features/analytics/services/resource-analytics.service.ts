@@ -7,7 +7,7 @@ import { AnalyticsMetricsMapper, RelatedCountsMapper } from '@osf/features/analy
 import {
   NodeAnalyticsModel,
   NodeAnalyticsResponseJsonApi,
-  RelatedCountsGetResponse,
+  RelatedCountsResponseJsonApi,
 } from '@osf/features/analytics/models';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
@@ -41,7 +41,7 @@ export class ResourceAnalyticsService {
     const url = `${this.apiDomainUrl}/v2/${resourcePath}/${resourceId}/?related_counts=true`;
 
     return this.jsonApiService
-      .get<RelatedCountsGetResponse>(url)
+      .get<RelatedCountsResponseJsonApi>(url)
       .pipe(map((response) => RelatedCountsMapper.fromResponse(response)));
   }
 }

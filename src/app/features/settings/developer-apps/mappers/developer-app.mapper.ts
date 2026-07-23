@@ -2,7 +2,7 @@ import {
   DeveloperApp,
   DeveloperAppCreateRequestJsonApi,
   DeveloperAppCreateUpdate,
-  DeveloperAppGetResponseJsonApi,
+  DeveloperAppDataJsonApi,
   DeveloperAppUpdateRequestJsonApi,
 } from '../models';
 
@@ -48,7 +48,7 @@ export class DeveloperAppMapper {
     };
   }
 
-  static fromGetResponse(response: DeveloperAppGetResponseJsonApi): DeveloperApp {
+  static fromGetResponse(response: DeveloperAppDataJsonApi): DeveloperApp {
     return {
       id: response.id,
       name: response.attributes.name,

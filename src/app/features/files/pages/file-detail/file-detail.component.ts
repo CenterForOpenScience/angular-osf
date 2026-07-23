@@ -25,7 +25,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import {
   CedarMetadataDataTemplateJsonApi,
-  CedarMetadataRecordData,
+  CedarMetadataRecordDataJsonApi,
   CedarRecordDataBinding,
 } from '@osf/features/metadata/models';
 import {
@@ -182,7 +182,7 @@ export class FileDetailComponent implements OnDestroy {
 
   selectedMetadataTab = signal('osf');
 
-  selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
+  selectedCedarRecord = signal<CedarMetadataRecordDataJsonApi | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
 

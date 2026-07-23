@@ -1,7 +1,8 @@
 import { FormControl } from '@angular/forms';
 
-import { ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { LicenseModel } from '@osf/shared/models/license/license.model';
+
+import { ProjectMetadataFormControls } from '../enums';
 
 export interface ProjectMetadataForm {
   [ProjectMetadataFormControls.Title]: FormControl<string>;

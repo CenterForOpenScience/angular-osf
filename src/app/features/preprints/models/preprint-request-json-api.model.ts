@@ -1,23 +1,25 @@
-import { PreprintRequestMachineState, PreprintRequestType } from '@osf/features/preprints/enums';
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ListResponse } from '@osf/shared/models/common/json-api/responses.model';
 import { UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
-export type PreprintRequestsJsonApiResponse = JsonApiResponse<PreprintRequestDataJsonApi[], null>;
+import { PreprintRequestMachineState, PreprintRequestType } from '../enums';
 
-export interface PreprintRequestDataJsonApi {
-  id: string;
-  type: 'preprint_requests';
-  attributes: PreprintRequestAttributesJsonApi;
+export type PreprintRequestsJsonApiResponse = ListResponse<PreprintRequestDataJsonApi>;
+
+export interface PreprintRequestDataJsonApi extends JsonApiResource<
+  'preprint_requests',
+  PreprintRequestAttributesJsonApi
+> {
   embeds: PreprintRequestEmbedsJsonApi;
 }
 
 interface PreprintRequestAttributesJsonApi {
-  request_type: PreprintRequestType;
-  machine_state: PreprintRequestMachineState;
   comment: string;
   created: Date;
-  modified: Date;
   date_last_transitioned: Date;
+  machine_state: PreprintRequestMachineState;
+  modified: Date;
+  request_type: PreprintRequestType;
 }
 
 interface PreprintRequestEmbedsJsonApi {

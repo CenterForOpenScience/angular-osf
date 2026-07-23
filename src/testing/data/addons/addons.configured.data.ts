@@ -1,6 +1,7 @@
 import { AddonMapper } from '@osf/shared/mappers/addon.mapper';
+import { ConfiguredAddonListResponseWithIncludeJsonApi } from '@osf/shared/models/addons/configured-addon-json-api.model';
 
-const ConfiguredAddons = {
+const ConfiguredAddons: ConfiguredAddonListResponseWithIncludeJsonApi = {
   data: [
     {
       type: 'configured-storage-addons',
@@ -15,44 +16,17 @@ const ConfiguredAddons = {
       },
       relationships: {
         base_account: {
-          links: {
-            related:
-              'https://addons.staging4.osf.io/v1/configured-storage-addons/756579dc-3a24-4849-8866-698a60846ac3/base_account',
-          },
           data: {
             type: 'authorized-storage-accounts',
             id: '62ed6dd7-f7b7-4003-b7b4-855789c1f991',
           },
         },
-        authorized_resource: {
-          links: {
-            related:
-              'https://addons.staging4.osf.io/v1/configured-storage-addons/756579dc-3a24-4849-8866-698a60846ac3/authorized_resource',
-          },
-          data: {
-            type: 'resource-references',
-            id: '3193f97c-e6d8-41a4-8312-b73483442086',
-          },
-        },
-        connected_operations: {
-          links: {
-            related:
-              'https://addons.staging4.osf.io/v1/configured-storage-addons/756579dc-3a24-4849-8866-698a60846ac3/connected_operations',
-          },
-        },
         external_storage_service: {
-          links: {
-            related:
-              'https://addons.staging4.osf.io/v1/configured-storage-addons/756579dc-3a24-4849-8866-698a60846ac3/external_storage_service',
-          },
           data: {
             type: 'external-storage-services',
             id: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
           },
         },
-      },
-      links: {
-        self: 'https://addons.staging4.osf.io/v1/configured-storage-addons/756579dc-3a24-4849-8866-698a60846ac3',
       },
     },
   ],
@@ -64,9 +38,6 @@ const ConfiguredAddons = {
         external_service_name: 'googledrive',
         credentials_format: 'OAUTH2',
         icon_url: 'https://osf.io/assets/images/logo.svg',
-      },
-      links: {
-        self: 'https://addons.staging4.osf.io/v1/external-storage-services/8aeb85e9-3a73-426f-a89b-5624b4b9d418',
       },
     },
   ],
@@ -87,9 +58,9 @@ export function getConfiguredAddonsData(index?: number, asArray?: boolean) {
 export function getConfiguredAddonsMappedData(index?: number, asArray?: boolean) {
   if (index || index === 0) {
     if (asArray) {
-      return [structuredClone(AddonMapper.fromConfiguredAddonResponse(ConfiguredAddons.data[index] as any))];
+      return [structuredClone(AddonMapper.fromConfiguredAddonResponse(ConfiguredAddons.data[index]))];
     } else {
-      return structuredClone(AddonMapper.fromConfiguredAddonResponse(ConfiguredAddons.data[index] as any));
+      return structuredClone(AddonMapper.fromConfiguredAddonResponse(ConfiguredAddons.data[index]));
     }
   } else {
     return structuredClone(ConfiguredAddons.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item)));

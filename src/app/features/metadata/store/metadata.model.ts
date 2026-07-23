@@ -1,6 +1,6 @@
 import {
   CedarMetadataRecord,
-  CedarMetadataRecordData,
+  CedarMetadataRecordDataJsonApi,
   CedarMetadataTemplateJsonApi,
   CustomItemMetadataRecord,
 } from '@osf/features/metadata/models';
@@ -15,7 +15,7 @@ export interface MetadataStateModel {
   fundersList: AsyncStateModel<RorFunderOption[]>;
   cedarTemplates: AsyncStateModel<CedarMetadataTemplateJsonApi | null>;
   cedarRecord: AsyncStateModel<CedarMetadataRecord | null>;
-  cedarRecords: AsyncStateModel<CedarMetadataRecordData[]>;
+  cedarRecords: AsyncStateModel<CedarMetadataRecordDataJsonApi[]>;
 }
 
 export const METADATA_STATE_DEFAULTS: MetadataStateModel = {

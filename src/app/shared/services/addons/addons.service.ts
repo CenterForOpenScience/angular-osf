@@ -11,25 +11,31 @@ import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@osf/shared/mappers/addon.mapper';
 import { AddonModel } from '@osf/shared/models/addons/addon.model';
 import {
-  AddonGetResponseJsonApi,
-  AuthorizedAddonGetResponseJsonApi,
-  AuthorizedAddonRequestJsonApi,
-  AuthorizedAddonResponseJsonApi,
-  ConfiguredAddonGetResponseJsonApi,
-  ConfiguredAddonRequestJsonApi,
-  ConfiguredAddonResponseJsonApi,
-  IncludedAddonData,
-  ResourceReferenceJsonApi,
-  UserReferenceJsonApi,
-} from '@osf/shared/models/addons/addon-json-api.model';
-import {
   OperationInvocationRequestJsonApi,
   OperationInvocationResponseJsonApi,
 } from '@osf/shared/models/addons/addon-operations-json-api.model';
+import {
+  ResourceReferenceJsonApi,
+  ResourceReferenceResponseJsonApi,
+  UserReferenceJsonApi,
+  UserReferenceResponseJsonApi,
+} from '@osf/shared/models/addons/addon-reference-json-api.model';
 import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
+import {
+  AuthorizedAddonDataJsonApi,
+  AuthorizedAddonListResponseJsonApi,
+  AuthorizedAddonRequestJsonApi,
+  AuthorizedAddonResponseJsonApi,
+} from '@osf/shared/models/addons/authorized-addon-json-api.model';
 import { ConfiguredAddonModel } from '@osf/shared/models/addons/configured-addon.model';
+import {
+  ConfiguredAddonDataJsonApi,
+  ConfiguredAddonItemResponseJsonApi,
+  ConfiguredAddonListResponseWithIncludeJsonApi,
+  ConfiguredAddonRequestJsonApi,
+} from '@osf/shared/models/addons/configured-addon-json-api.model';
+import { AddonGetListResponseJsonApi } from '@osf/shared/models/addons/external-addon-json-api.model';
 import { OperationInvocation } from '@osf/shared/models/addons/operation-invocation.model';
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 
 import { JsonApiService } from '../json-api.service';
 
@@ -52,7 +58,7 @@ export class AddonsService {
 
   getAddons(addonType: string): Observable<AddonModel[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<AddonGetResponseJsonApi[], null>>(`${this.apiUrl}/external-${addonType}-services`)
+      .get<AddonGetListResponseJsonApi>(`${this.apiUrl}/external-${addonType}-services`)
       .pipe(map((response) => response.data.map((item) => AddonMapper.fromResponse(item))));
   }
 
@@ -64,7 +70,7 @@ export class AddonsService {
     const params = { 'filter[user_uri]': userUri };
 
     return this.jsonApiService
-      .get<JsonApiResponse<UserReferenceJsonApi[], null>>(this.apiUrl + '/user-references/', params)
+      .get<UserReferenceResponseJsonApi>(this.apiUrl + '/user-references/', params)
       .pipe(map((response) => response.data));
   }
 
@@ -73,7 +79,7 @@ export class AddonsService {
     const params = { 'filter[resource_uri]': resourceUri };
 
     return this.jsonApiService
-      .get<JsonApiResponse<ResourceReferenceJsonApi[], null>>(this.apiUrl + '/resource-references/', params)
+      .get<ResourceReferenceResponseJsonApi>(this.apiUrl + '/resource-references/', params)
       .pipe(map((response) => response.data));
   }
 
@@ -82,9 +88,10 @@ export class AddonsService {
       [`fields[external-${addonType}-services]`]: 'external_service_name,credentials_format,icon_url',
     };
     return this.jsonApiService
-      .get<
-        JsonApiResponse<AuthorizedAddonGetResponseJsonApi[], IncludedAddonData[]>
-      >(`${this.apiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
+      .get<AuthorizedAddonListResponseJsonApi>(
+        `${this.apiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`,
+        params
+      )
       .pipe(
         map((response) => response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included)))
       );
@@ -95,7 +102,7 @@ export class AddonsService {
     context.set(BYPASS_ERROR_INTERCEPTOR, true);
 
     return this.jsonApiService
-      .patch<AuthorizedAddonGetResponseJsonApi>(
+      .patch<AuthorizedAddonDataJsonApi>(
         `${this.apiUrl}/authorized-${addonType}-accounts/${accountId}`,
         {
           data: {
@@ -108,7 +115,7 @@ export class AddonsService {
         {},
         context
       )
-      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi)));
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonDataJsonApi)));
   }
 
   getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddonModel[]> {
@@ -116,9 +123,10 @@ export class AddonsService {
       [`fields[external-${addonType}-services]`]: 'external_service_name,credentials_format,icon_url',
     };
     return this.jsonApiService
-      .get<
-        JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], IncludedAddonData[]>
-      >(`${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/?include=external-${addonType}-service`, params)
+      .get<ConfiguredAddonListResponseWithIncludeJsonApi>(
+        `${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/?include=external-${addonType}-service`,
+        params
+      )
       .pipe(
         map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item, response.included)))
       );
@@ -129,9 +137,10 @@ export class AddonsService {
     addonType: string
   ): Observable<AuthorizedAccountModel> {
     return this.jsonApiService
-      .post<
-        JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
-      >(`${this.apiUrl}/authorized-${addonType}-accounts/?include=external-${addonType}-service`, addonRequestPayload)
+      .post<AuthorizedAddonResponseJsonApi>(
+        `${this.apiUrl}/authorized-${addonType}-accounts/?include=external-${addonType}-service`,
+        addonRequestPayload
+      )
       .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
@@ -141,20 +150,19 @@ export class AddonsService {
     addonId: string
   ): Observable<AuthorizedAccountModel> {
     return this.jsonApiService.http
-      .patch<
-        JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
-      >(`${this.apiUrl}/authorized-${addonType}-accounts/${addonId}/?include=external-${addonType}-service`, addonRequestPayload)
+      .patch<AuthorizedAddonResponseJsonApi>(
+        `${this.apiUrl}/authorized-${addonType}-accounts/${addonId}/?include=external-${addonType}-service`,
+        addonRequestPayload
+      )
       .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
   createConfiguredAddon(
     addonRequestPayload: ConfiguredAddonRequestJsonApi,
     addonType: string
-  ): Observable<ConfiguredAddonResponseJsonApi> {
+  ): Observable<ConfiguredAddonDataJsonApi> {
     return this.jsonApiService
-      .post<
-        JsonApiResponse<ConfiguredAddonResponseJsonApi, null>
-      >(`${this.apiUrl}/configured-${addonType}-addons/`, addonRequestPayload)
+      .post<ConfiguredAddonItemResponseJsonApi>(`${this.apiUrl}/configured-${addonType}-addons/`, addonRequestPayload)
       .pipe(map((response) => response.data));
   }
 
@@ -162,8 +170,8 @@ export class AddonsService {
     addonRequestPayload: ConfiguredAddonRequestJsonApi,
     addonType: string,
     addonId: string
-  ): Observable<ConfiguredAddonResponseJsonApi> {
-    return this.jsonApiService.patch<ConfiguredAddonResponseJsonApi>(
+  ): Observable<ConfiguredAddonDataJsonApi> {
+    return this.jsonApiService.patch<ConfiguredAddonDataJsonApi>(
       `${this.apiUrl}/configured-${addonType}-addons/${addonId}/`,
       addonRequestPayload
     );
@@ -173,9 +181,7 @@ export class AddonsService {
     invocationRequestPayload: OperationInvocationRequestJsonApi
   ): Observable<OperationInvocation> {
     return this.jsonApiService
-      .post<
-        JsonApiResponse<OperationInvocationResponseJsonApi, null>
-      >(`${this.apiUrl}/addon-operation-invocations/`, invocationRequestPayload)
+      .post<OperationInvocationResponseJsonApi>(`${this.apiUrl}/addon-operation-invocations/`, invocationRequestPayload)
       .pipe(map((response) => AddonMapper.fromOperationInvocationResponse(response.data)));
   }
 

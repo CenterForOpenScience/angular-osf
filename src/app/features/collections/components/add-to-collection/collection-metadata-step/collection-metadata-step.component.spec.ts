@@ -4,13 +4,11 @@ import { Step, StepItem, StepPanel } from 'primeng/stepper';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData } from '@osf/features/metadata/models';
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordDataJsonApi } from '@osf/features/metadata/models';
 
 import { MOCK_CEDAR_RECORD, MOCK_CEDAR_TEMPLATE } from '@testing/data/collections/cedar-metadata.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-
-import '@testing/mocks/cedar-embeddable-editor.mock';
 
 import { CollectionMetadataStepComponent } from './collection-metadata-step.component';
 
@@ -21,7 +19,7 @@ describe('CollectionMetadataStepComponent', () => {
   function setup(
     options: {
       cedarTemplate?: CedarMetadataDataTemplateJsonApi | null;
-      existingCedarRecord?: CedarMetadataRecordData | null;
+      existingCedarRecord?: CedarMetadataRecordDataJsonApi | null;
       stepperActiveValue?: number;
       targetStepValue?: number;
       isDisabled?: boolean;
@@ -142,7 +140,7 @@ describe('CollectionMetadataStepComponent', () => {
       ...MOCK_CEDAR_RECORD,
       attributes: {
         ...MOCK_CEDAR_RECORD.attributes,
-        metadata: { field: 'api' } as unknown as CedarMetadataRecordData['attributes']['metadata'],
+        metadata: { field: 'api' } as unknown as CedarMetadataRecordDataJsonApi['attributes']['metadata'],
       },
     });
     fixture.detectChanges();

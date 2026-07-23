@@ -1,24 +1,25 @@
-import { JsonApiResponse } from '@osf/shared/models/common/json-api.model';
+import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
+import { ListResponse } from '@osf/shared/models/common/json-api/responses.model';
 import { UserDataErrorResponseJsonApi } from '@osf/shared/models/user/user-json-api.model';
 
-export type PreprintRequestActionsJsonApiResponse = JsonApiResponse<PreprintRequestActionDataJsonApi[], null>;
+export type PreprintRequestActionsJsonApiResponse = ListResponse<PreprintRequestActionDataJsonApi>;
 
-export interface PreprintRequestActionDataJsonApi {
-  id: string;
-  type: 'preprint_request_actions';
-  attributes: PreprintRequestActionsAttributesJsonApi;
-  embeds: PreprintRequestEmbedsJsonApi;
+export interface PreprintRequestActionDataJsonApi extends JsonApiResource<
+  'preprint_request_actions',
+  PreprintRequestActionAttributesJsonApi
+> {
+  embeds: PreprintRequestActionEmbedsJsonApi;
 }
 
-interface PreprintRequestActionsAttributesJsonApi {
-  trigger: string;
+interface PreprintRequestActionAttributesJsonApi {
   comment: string;
-  from_state: string;
-  to_state: string;
   date_created: Date;
   date_modified: Date;
+  from_state: string;
+  to_state: string;
+  trigger: string;
 }
 
-interface PreprintRequestEmbedsJsonApi {
+interface PreprintRequestActionEmbedsJsonApi {
   creator: UserDataErrorResponseJsonApi;
 }

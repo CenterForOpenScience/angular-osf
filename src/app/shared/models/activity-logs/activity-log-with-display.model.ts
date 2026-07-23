@@ -1,7 +1,7 @@
 import { SafeHtml } from '@angular/platform-browser';
 
-import { ActivityLog } from './activity-logs.model';
+import { ActivityLogModel } from './activity-logs.model';
 
-export interface ActivityLogWithDisplay extends ActivityLog {
+export interface ActivityLogWithDisplayModel extends ActivityLogModel {
   formattedActivity?: SafeHtml;
 }

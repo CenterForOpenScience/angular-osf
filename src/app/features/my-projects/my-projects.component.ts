@@ -32,7 +32,7 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources-item.model';
 import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ProjectRedirectDialogService } from '@osf/shared/services/project-redirect-dialog.service';

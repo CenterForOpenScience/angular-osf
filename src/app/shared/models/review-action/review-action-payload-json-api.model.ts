@@ -1,19 +1,20 @@
 import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 
-export interface ReviewActionPayloadJsonApi<ActionType, TargetType> {
+import { ToOneRelData } from '../common/json-api/relationships.model';
+
+export interface ReviewActionPayloadJsonApi<TActionType extends string, TTargetType extends string> {
   data: {
-    type: ActionType;
-    attributes: {
-      trigger: ReviewActionTrigger | string;
-      comment: string;
-    };
-    relationships: {
-      target: {
-        data: {
-          type: TargetType;
-          id: string;
-        };
-      };
-    };
+    type: TActionType;
+    attributes: ReviewActionPayloadAttributesJsonApi;
+    relationships: ReviewActionPayloadRelationshipsJsonApi<TTargetType>;
   };
+}
+
+interface ReviewActionPayloadAttributesJsonApi {
+  comment: string;
+  trigger: ReviewActionTrigger | string;
+}
+
+interface ReviewActionPayloadRelationshipsJsonApi<TTargetType extends string> {
+  target: ToOneRelData<TTargetType>;
 }
