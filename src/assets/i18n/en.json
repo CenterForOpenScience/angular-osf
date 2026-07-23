@@ -1,5 +1,35 @@
 {
+  "truncatedText": {
+    "readMore": "Read more",
+    "hide": "Hide"
+  },
   "activityLog": {
+    "defaults": {
+      "preprint": "Preprint",
+      "preprintPlural": "Preprints",
+      "anonymousA": "a",
+      "anonymousAn": "an anonymous",
+      "someUsers": "some users",
+      "contributorsAnd": ", and ",
+      "contributorsOthers": " others",
+      "aNewNameLocation": "a new name/location",
+      "materialized": "{{materialized}} in {{addon}}",
+      "aTitle": "a title",
+      "aNameLocation": "a name/location",
+      "pageTitle": "a title",
+      "aFile": "a file",
+      "folder": "folder",
+      "file": "file",
+      "aUser": "A user",
+      "aProject": "a project",
+      "fileOn": "on {{file}}",
+      "wikiOn": "on wiki page {{wiki}}",
+      "field": "field",
+      "updatedFields": "{{old}} to {{new}}",
+      "uncategorized": "Uncategorized",
+      "fallbackWithNode": "{{user}} performed action \"{{action}}\" on {{node}}",
+      "fallbackWithoutNode": "{{user}} performed action \"{{action}}\""
+    },
     "activities": {
       "addon_added": "{{user}} enabled {{addon}} to {{node}}",
       "addon_file_copied": "{{user}} copied {{source}} to {{destination}} in {{node}}",
@@ -88,8 +118,8 @@
       "registration_approved": "{{user}} approved a registration of {{node}}",
       "registration_approved_no_user": "Registration of {{node}} was approved",
       "registration_cancelled": "{{user}} cancelled a registration of {{node}}",
-      "registration_date_updated": "An OSF Support Team member updated the registration date of {{node}}",
       "registration_initiated": "{{user}} initiated a registration of {{node}}",
+      "registration_date_updated": "An OSF Support Team member updated the registration date of {{node}}",
       "resource_identifier_added": "{{user}} has added a Resource to Registration {{node}}",
       "resource_identifier_removed": "{{user}} has removed a Resource to Registration {{node}}",
       "resource_identifier_updated": "{{user}} has updated a Resource to Registration {{node}}",
@@ -109,32 +139,6 @@
       "wiki_deleted": "{{user}} deleted wiki page {{page}} of {{node}}",
       "wiki_renamed": "{{user}} renamed wiki page {{oldPage}} to {{page}} of {{node}}",
       "wiki_updated": "{{user}} updated wiki page {{page}} to version {{version}} of {{node}}"
-    },
-    "defaults": {
-      "aFile": "a file",
-      "aNameLocation": "a name/location",
-      "aNewNameLocation": "a new name/location",
-      "anonymousA": "a",
-      "anonymousAn": "an anonymous",
-      "aProject": "a project",
-      "aTitle": "a title",
-      "aUser": "A user",
-      "contributorsAnd": ", and ",
-      "contributorsOthers": " others",
-      "fallbackWithNode": "{{user}} performed action \"{{action}}\" on {{node}}",
-      "fallbackWithoutNode": "{{user}} performed action \"{{action}}\"",
-      "field": "field",
-      "file": "file",
-      "fileOn": "on {{file}}",
-      "folder": "folder",
-      "materialized": "{{materialized}} in {{addon}}",
-      "pageTitle": "a title",
-      "preprint": "Preprint",
-      "preprintPlural": "Preprints",
-      "someUsers": "some users",
-      "uncategorized": "Uncategorized",
-      "updatedFields": "{{old}} to {{new}}",
-      "wikiOn": "on wiki page {{wiki}}"
     }
   },
   "adminInstitutions": {
@@ -281,6 +285,7 @@
   },
   "collections": {
     "addToCollection": {
+      "cedarFormNotAvailable": "CEDAR metadata form is not available for this collection.",
       "collectionMetadata": "Collection Metadata",
       "confirmationDialogHeader": "Add to Collection",
       "confirmationDialogMessage": "Once submitted to the collection, the project will be made public. It can later be made private again. A moderator will review your submission before it is included in the collection.",
@@ -299,7 +304,8 @@
       "projectMetadataUpdateSuccess": "Project Metadata successfully updated.",
       "resourceMetadata": "Project Metadata",
       "selectProject": "Select a project",
-      "tooltipMessage": "Complete previous step to edit this section"
+      "tooltipMessage": "Complete previous step to edit this section",
+      "updateError": "Failed to submit to the collection. Please try again."
     },
     "common": {
       "by": "by",
@@ -308,68 +314,13 @@
     },
     "filters": {
       "additionalFilters": "Additional Filters",
-      "collectedType": {
-        "description": "Please select the collected type from the dropdown below or start typing to find it",
-        "label": "Type",
-        "placeholder": "Select collected types"
-      },
-      "dataType": {
-        "description": "Please select the data type from the dropdown below or start typing to find it",
-        "label": "Data Type",
-        "placeholder": "Select data types"
-      },
-      "disease": {
-        "description": "Please select the disease from the dropdown below or start typing to find it",
-        "label": "Disease",
-        "placeholder": "Select diseases"
-      },
-      "gradeLevels": {
-        "description": "Please select the grade level from the dropdown below or start typing to find it",
-        "label": "Grade Levels",
-        "placeholder": "Select grade levels"
-      },
-      "issue": {
-        "description": "Please select the issue from the dropdown below or start typing to find it",
-        "label": "Issue",
-        "placeholder": "Select issues"
-      },
       "noFiltersAvailable": "No filters available",
       "noOptionsAvailable": "No options available",
-      "programArea": {
-        "description": "Please select the program area from the dropdown below or start typing to find it",
-        "label": "Program Area",
-        "placeholder": "Select program areas"
-      },
-      "reviewsState": {
-        "description": "Please select the reviews state from the dropdown below or start typing to find it",
-        "label": "Reviews State",
-        "placeholder": "Select reviews states"
-      },
-      "schoolType": {
-        "description": "Please select the school type from the dropdown below or start typing to find it",
-        "label": "School Type",
-        "placeholder": "Select school types"
-      },
       "searchCreators": "Search for creators",
       "sort": {
         "label": "Sort by:"
       },
-      "sortBy": "Sort by",
-      "status": {
-        "description": "Please select the status from the dropdown below or start typing to find it",
-        "label": "Status",
-        "placeholder": "Select status"
-      },
-      "studyDesign": {
-        "description": "Please select the study design from the dropdown below or start typing to find it",
-        "label": "Study Design",
-        "placeholder": "Select study designs"
-      },
-      "volume": {
-        "description": "Please select the volume from the dropdown below or start typing to find it",
-        "label": "Volume",
-        "placeholder": "Select volumes"
-      }
+      "sortBy": "Sort by"
     },
     "helpDialog": {
       "header": "Search help",
@@ -553,6 +504,7 @@
         "creator": "Creator name",
         "dateCreated": "Select date",
         "funder": "Select funder",
+        "generic": "",
         "isPartOfCollection": "Select collection",
         "publisher": "Select provider",
         "resourceType": "Select resource type",
@@ -1121,9 +1073,7 @@
       "deleteProject": "Delete Project",
       "descriptions": {
         "file_updated": {
-          "instant": "You'll be notified immediately when files are updated.",
           "daily": "You'll receive a daily summary of file updates.",
-          "instant": "You'll be notified immediately when files are updated.",
           "none": "You won't receive file update notifications."
         }
       },
@@ -1162,12 +1112,39 @@
       "wikiText": "Enable the wiki in {{projectName}}"
     },
     "table": {
-      "searchPlaceholder": "Filter by title, description, and tags"
+      "emptyState": {
+        "all": {
+          "both": "You don't have any projects or components.",
+          "private": "You don't have any private projects or components.",
+          "public": "You don't have any public projects or components."
+        },
+        "components": {
+          "both": "You don't have any components.",
+          "private": "You don't have any private components.",
+          "public": "You don't have any public components."
+        },
+        "projects": {
+          "both": "You don't have any projects.",
+          "private": "You don't have any private projects.",
+          "public": "You don't have any public projects."
+        }
+      },
+      "searchPlaceholder": "Filter by title, description, and tags",
+      "download": {
+        "addonFiles": "Download {{addonName}} files",
+        "files": "Download OSF Storage files",
+        "metadata": "Download metadata"
+      }
     },
     "tabOptions": {
-      "all": "All",
+      "all": "Projects and Components",
       "component": "Components",
       "root": "Projects"
+    },
+    "visibilityFilterOptions": {
+      "all": "Public and Private",
+      "private": "Private",
+      "public": "Public"
     },
     "tabs": {
       "bookmarks": "Bookmarks",
@@ -1234,10 +1211,10 @@
     "hypothesis": "Hypothesis",
     "instrumentation": "Instrumentation",
     "methods and measures": "Methods and Measures",
-    "other": "Other",
     "procedure": "Procedure",
     "project": "Project",
-    "software": "Software"
+    "software": "Software",
+    "other": "Other"
   },
   "pageNotFound": {
     "message": "The page you were looking for is either doesn't exist, was deleted, or the URL may be incorrect. If this should not have occurred and the issue persists, please report it to",

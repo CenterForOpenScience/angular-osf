@@ -25,7 +25,12 @@
                 @if (isDraft()) {
                   <p>{{ file.file_name }}</p>
                 } @else {
-                  <a class="font-bold cursor-pointer" target="_blank" rel="noopener" [href]="file?.file_urls?.html">
+                  <a
+                    class="font-bold cursor-pointer"
+                    target="_blank"
+                    rel="noopener"
+                    [href]="getFileUrl(file?.file_urls?.html)"
+                  >
                     {{ file.file_name }}
                   </a>
                 }

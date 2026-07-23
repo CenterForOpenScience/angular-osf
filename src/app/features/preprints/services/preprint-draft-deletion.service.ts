@@ -18,19 +18,12 @@ export class PreprintDraftDeletionService {
     return hasBeenSubmitted || this.preprintDeleted;
   }
 
-  deleteOnDestroyIfNeeded(onDelete: () => void): void {
-    if (!this.preprintDeleted) {
-      onDelete();
-    }
-  }
-
   confirmDeleteDraft(options: ConfirmDeleteDraftOptions): void {
     this.customConfirmationService.confirmDelete({
       headerKey: 'preprints.preprintStepper.deleteDraft.header',
       messageKey: 'preprints.preprintStepper.deleteDraft.message',
       onConfirm: () => {
         this.preprintDeleted = true;
-        options.onDelete();
         options.onReset();
         this.toastService.showSuccess('preprints.preprintStepper.deleteDraft.success');
         this.router.navigateByUrl(options.redirectUrl);

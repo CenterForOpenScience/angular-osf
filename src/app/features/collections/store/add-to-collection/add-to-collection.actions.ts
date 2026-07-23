@@ -23,12 +23,6 @@ export class CreateCollectionSubmission {
   constructor(public metadata: CollectionSubmissionPayload) {}
 }
 
-export class UpdateCollectionSubmission {
-  static readonly type = '[Add To Collection] Update Collection Submission';
-
-  constructor(public metadata: CollectionSubmissionPayload) {}
-}
-
 export class RemoveCollectionSubmission {
   static readonly type = '[Add To Collection] Delete Collection Submission';
 

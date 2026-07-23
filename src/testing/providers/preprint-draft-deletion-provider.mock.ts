@@ -6,7 +6,6 @@ export type PreprintDraftDeletionServiceMockType = Partial<PreprintDraftDeletion
   deleted: boolean;
   confirmDeleteDraft: Mock;
   canDeactivate: Mock;
-  deleteOnDestroyIfNeeded: Mock;
 };
 
 export const PreprintDraftDeletionServiceMock = {
@@ -15,11 +14,6 @@ export const PreprintDraftDeletionServiceMock = {
       deleted: false,
       confirmDeleteDraft: vi.fn(),
       canDeactivate: vi.fn((submitted: boolean) => submitted || service.deleted),
-      deleteOnDestroyIfNeeded: vi.fn((onDelete: () => void) => {
-        if (!service.deleted) {
-          onDelete();
-        }
-      }),
     };
     return service;
   },

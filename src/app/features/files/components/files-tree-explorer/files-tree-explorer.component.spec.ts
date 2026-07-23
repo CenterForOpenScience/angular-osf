@@ -13,15 +13,13 @@ import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
-import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
-import { FilesService } from '@osf/shared/services/files.service';
+import { FileDownloadService } from '@osf/shared/services/file-download.service';
 import { FilesShareEmbedService } from '@osf/shared/services/files-share-embed.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { FileModelMock } from '@testing/mocks/file.model.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { DataciteServiceMock, DataciteServiceMockType } from '@testing/providers/datacite.service.mock';
-import { FilesServiceMock, FilesServiceMockType } from '@testing/providers/files-service.mock';
+import { FileDownloadServiceMock, FileDownloadServiceMockType } from '@testing/providers/file-download-service.mock';
 import {
   FilesShareEmbedServiceMock,
   FilesShareEmbedServiceMockType,
@@ -37,8 +35,7 @@ describe('FilesTreeExplorerComponent', () => {
   let component: FilesTreeExplorerComponent;
   let fixture: ComponentFixture<FilesTreeExplorerComponent>;
   let routerMock: RouterMockType;
-  let filesService: FilesServiceMockType;
-  let dataciteService: DataciteServiceMockType;
+  let fileDownloadService: FileDownloadServiceMockType;
   let filesShareEmbedService: FilesShareEmbedServiceMockType;
   let viewOnlyHelper: ViewOnlyLinkHelperMockType;
 
@@ -62,8 +59,7 @@ describe('FilesTreeExplorerComponent', () => {
 
   function setup() {
     routerMock = RouterMockBuilder.create().withUrl('/node-1/files').build();
-    filesService = FilesServiceMock.simple();
-    dataciteService = DataciteServiceMock.simple();
+    fileDownloadService = FileDownloadServiceMock.simple();
     viewOnlyHelper = ViewOnlyLinkHelperMock.simple(false);
     filesShareEmbedService = FilesShareEmbedServiceMock.simple();
 
@@ -75,8 +71,7 @@ describe('FilesTreeExplorerComponent', () => {
       providers: [
         provideOSFCore(),
         MockProvider(Router, routerMock),
-        MockProvider(FilesService, filesService),
-        MockProvider(DataciteService, dataciteService),
+        MockProvider(FileDownloadService, fileDownloadService),
         MockProvider(FilesShareEmbedService, filesShareEmbedService),
         MockProvider(ViewOnlyLinkHelperService, viewOnlyHelper),
       ],
@@ -244,14 +239,20 @@ describe('FilesTreeExplorerComponent', () => {
     expect(emitSpy).toHaveBeenNthCalledWith(2, { file, action: MoveCopyAction.Copy });
   });
 
-  it('should download folder with resolved zip link', () => {
+  it('should download folder from file menu action', () => {
     setup();
-    const openSpy = vi.spyOn(window, 'open').mockReturnValue({ focus: vi.fn() } as unknown as Window);
+    const file = FileModelMock.simple({
+      kind: FileKind.Folder,
+      links: { ...FileModelMock.simple().links, upload: '/upload-folder' },
+    });
 
-    component.downloadFolder('/upload-folder');
+    component.onFileMenuAction({ value: FileMenuType.Download }, file);
 
-    expect(filesService.getFolderDownloadLink).toHaveBeenCalledWith('/upload-folder');
-    expect(openSpy).toHaveBeenCalledWith('/upload-folder?zip=', '_blank');
+    expect(fileDownloadService.downloadFileOrFolder).toHaveBeenCalledWith({
+      resourceId: 'node-1',
+      resourceType: CurrentResourceType.Projects,
+      file,
+    });
   });
 
   it('should open share link in new tab for non self target', () => {

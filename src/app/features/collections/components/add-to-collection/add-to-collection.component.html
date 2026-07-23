@@ -47,8 +47,9 @@
           [stepperActiveValue]="stepperActiveValue()"
           [targetStepValue]="AddToCollectionSteps.CollectionMetadata"
           [isDisabled]="isCollectionMetadataDisabled()"
-          [primaryCollectionId]="primaryCollectionId()"
-          (metadataSaved)="handleCollectionMetadataSaved($event)"
+          [cedarTemplate]="requiredMetadataTemplate()"
+          [existingCedarRecord]="existingCedarRecord()"
+          (cedarDataSaved)="handleCedarDataSaved($event)"
           (stepChange)="handleChangeStep($event)"
         />
       </p-stepper>

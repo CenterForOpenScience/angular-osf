@@ -16,8 +16,20 @@ export class MetadataRecordsService {
     return this.environment.webUrl;
   }
 
-  getMetadataRecord(osfid: string, format: MetadataRecordFormat) {
-    const url = `${this.webUrl}/metadata/${osfid}/?format=${format}`;
+  getMetadataDownloadUrl(id: string): string {
+    return `${this.webUrl}/metadata/${id}`;
+  }
+
+  downloadMetadata(id: string): void {
+    if (!id) {
+      return;
+    }
+
+    window.open(this.getMetadataDownloadUrl(id), '_blank');
+  }
+
+  getMetadataRecord(id: string, format: MetadataRecordFormat) {
+    const url = `${this.webUrl}/metadata/${id}/?format=${format}`;
     return this.http.get(url, {
       responseType: 'text',
       headers: new HttpHeaders({ 'X-No-Auth-Redirect': 'true' }),

@@ -123,10 +123,6 @@ export class PreprintsService {
       );
   }
 
-  deletePreprint(id: string) {
-    return this.jsonApiService.delete(`${this.apiUrl}/preprints/${id}/`);
-  }
-
   updatePreprint(id: string, payload: Partial<PreprintModel>): Observable<PreprintModel> {
     const apiPayload = this.mapPreprintDomainToApiPayload(payload);
 

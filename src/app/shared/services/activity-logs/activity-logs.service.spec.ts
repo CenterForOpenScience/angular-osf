@@ -5,11 +5,7 @@ import { inject, TestBed } from '@angular/core/testing';
 
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 
-import {
-  buildNodeLogsUrl,
-  buildRegistrationLogsUrl,
-  getActivityLogsResponse,
-} from '@testing/data/activity-logs/activity-logs.data';
+import { buildNodeLogsUrl, buildRegistrationLogsUrl, getActivityLogsResponse } from '@testing/mocks/activity-log.mock';
 import { provideOSFCore, provideOSFHttp } from '@testing/osf.testing.provider';
 import { ActivityLogDisplayServiceMock } from '@testing/providers/activity-log-display.service.mock';
 import { EnvironmentTokenMock } from '@testing/providers/environment.token.mock';

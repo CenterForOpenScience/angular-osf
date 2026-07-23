@@ -30,6 +30,10 @@
         {{ 'common.labels.modified' | translate }}
         <p-sortIcon field="dateModified" />
       </th>
+
+      @if (downloadCellTemplate()) {
+        <th [attr.aria-label]="'common.buttons.download' | translate"></th>
+      }
     </tr>
   </ng-template>
 
@@ -48,10 +52,16 @@
         </td>
 
         <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
+
+        @if (downloadCellTemplate(); as downloadTemplate) {
+          <td class="text-center">
+            <ng-container *ngTemplateOutlet="downloadTemplate; context: { $implicit: item }" />
+          </td>
+        }
       </tr>
     } @else {
       <tr class="loading-row">
-        <td colspan="3">
+        <td [attr.colspan]="columnCount()">
           <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
         </td>
       </tr>
@@ -60,7 +70,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="3" class="text-center">{{ 'common.search.noResultsFound' | translate }}</td>
+      <td [attr.colspan]="columnCount()" class="text-center">{{ emptyMessageKey() | translate }}</td>
     </tr>
   </ng-template>
 </p-table>

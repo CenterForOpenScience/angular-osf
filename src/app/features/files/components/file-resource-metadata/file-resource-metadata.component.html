@@ -105,7 +105,10 @@
       <div class="flex flex-column gap-2">
         <h4>{{ 'common.labels.contributors' | translate }}</h4>
 
-        <osf-contributors-list [contributors]="resourceContributors" [anonymous]="hasViewOnly"></osf-contributors-list>
+        <osf-contributors-list
+          [contributors]="resourceContributors"
+          [anonymous]="isAnonymous()"
+        ></osf-contributors-list>
       </div>
     }
   }

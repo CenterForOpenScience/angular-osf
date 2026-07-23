@@ -39,6 +39,7 @@ import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-ty
 import { mapRootFoldersToStorageLabels } from '@osf/shared/helpers/storage-addon-options.helper';
 import { FilePageLinkModel } from '@osf/shared/models/files/file-page-link.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { FileDownloadService } from '@osf/shared/services/file-download.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { FilesTreeActionsService } from '@osf/shared/services/files-tree-actions.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -48,7 +49,6 @@ import { StorageItem } from '@shared/models/addons/storage-item.model';
 import { FileModel } from '@shared/models/files/file.model';
 import { FileFolderModel } from '@shared/models/files/file-folder.model';
 import { FileLabelModel } from '@shared/models/files/file-label.model';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { FileBrowserInfoComponent } from '../../components/file-browser-info/file-browser-info.component';
 import { FilesSelectionActionsComponent } from '../../components/files-selection-actions/files-selection-actions.component';
@@ -107,7 +107,7 @@ export class FilesComponent {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
-  private readonly dataciteService = inject(DataciteService);
+  private readonly fileDownloadService = inject(FileDownloadService);
   private readonly filesActionsService = inject(FilesActionsService);
   private readonly filesTreeActionsService = inject(FilesTreeActionsService);
   private readonly filesUploadService = inject(FilesUploadService);
@@ -506,17 +506,11 @@ export class FilesComponent {
   }
 
   downloadFolder(): void {
-    const resourceId = this.resourceId();
-    const resourcePath = this.resourceMetadata()?.type ?? 'nodes';
-    const downloadLink = this.currentFolder()?.links.download ?? '';
-    if (resourceId && downloadLink) {
-      this.dataciteService
-        .logFileDownload(resourceId, resourcePath)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe();
-      const link = this.filesService.getFolderDownloadLink(downloadLink);
-      window.open(link, '_blank')?.focus();
-    }
+    this.fileDownloadService.downloadFolderAsZip({
+      resourceId: this.resourceId() ?? '',
+      resourceType: this.resourceMetadata()?.type ?? 'nodes',
+      downloadLink: this.currentFolder()?.links.download ?? '',
+    });
   }
 
   showInfoDialog() {

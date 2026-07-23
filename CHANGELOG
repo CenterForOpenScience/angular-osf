@@ -2,6 +2,31 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.14.0 (2026-07-20)
+====================
+
+* My Projects Page Improvements & DAZ Improvements
+
+26.13.0 (2026-06-23)
+====================
+
+* PB&S and ES2 code cleanup
+
+26.12.0 (2026-06-23)
+====================
+
+* ES2 consolidation
+
+26.11.1 (2026-06-10)
+====================
+
+* Don't send delete request to API when deleting preprint draft
+
+26.11.0 (2026-05-27)
+====================
+
+* PB&S 26-9 Release
+
 26.10.1 (2026-05-15)
 ====================
 

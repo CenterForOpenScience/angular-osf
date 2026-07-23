@@ -37,12 +37,7 @@ import { TitleAndAbstractStepComponent } from '../../components/stepper/title-an
 import { submitPreprintSteps } from '../../constants';
 import { PreprintSteps, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
-import {
-  DeletePreprint,
-  FetchPreprintById,
-  PreprintStepperSelectors,
-  ResetPreprintStepperState,
-} from '../../store/preprint-stepper';
+import { FetchPreprintById, PreprintStepperSelectors, ResetPreprintStepperState } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-update-preprint-stepper',
@@ -76,7 +71,6 @@ export class UpdatePreprintStepperComponent implements OnDestroy, CanDeactivateC
     getPreprintProviderById: GetPreprintProviderById,
     resetState: ResetPreprintStepperState,
     fetchPreprint: FetchPreprintById,
-    deletePreprint: DeletePreprint,
   });
 
   readonly preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
