@@ -242,4 +242,65 @@ describe('MetadataComponent', () => {
 
     expect(navigateSpy).toHaveBeenCalled();
   });
+
+  it('should hide edit DOI button for project even without existing identifiers when public', () => {
+    expect(component.hideEditDoi()).toBe(true);
+  });
+
+  describe('when project has no identifiers and is public', () => {
+    let noIdentifiersFixture: ComponentFixture<MetadataComponent>;
+    let noIdentifiersComponent: MetadataComponent;
+
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          MetadataComponent,
+          ...MockComponents(
+            SubHeaderComponent,
+            MetadataTabsComponent,
+            MetadataSubjectsComponent,
+            MetadataPublicationDoiComponent,
+            MetadataLicenseComponent,
+            MetadataAffiliatedInstitutionsComponent,
+            MetadataDescriptionComponent,
+            MetadataContributorsComponent,
+            MetadataResourceInformationComponent,
+            MetadataFundingComponent,
+            MetadataDateInfoComponent,
+            MetadataTagsComponent,
+            MetadataTitleComponent,
+            MetadataRegistrationDoiComponent
+          ),
+        ],
+        providers: [
+          provideOSFCore(),
+          MockProvider(ActivatedRoute, activatedRouteMock),
+          MockProvider(Router, routerMock),
+          MockProvider(CustomDialogService, customDialogServiceMock),
+          MockProvider(ToastService, toastServiceMock),
+          MockProvider(CustomConfirmationService, customConfirmationServiceMock),
+          provideMockStore({
+            selectors: [
+              {
+                selector: MetadataSelectors.getResourceMetadata,
+                value: { ...mockMetadata, identifiers: [], public: true },
+              },
+              { selector: MetadataSelectors.getLoading, value: false },
+              { selector: MetadataSelectors.getSubmitting, value: false },
+              { selector: MetadataSelectors.getCedarRecords, value: [] },
+              { selector: MetadataSelectors.getCedarTemplates, value: null },
+              { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
+            ],
+          }),
+        ],
+      });
+
+      noIdentifiersFixture = TestBed.createComponent(MetadataComponent);
+      noIdentifiersComponent = noIdentifiersFixture.componentInstance;
+    });
+
+    it('still hides the edit DOI button', () => {
+      expect(noIdentifiersComponent.hideEditDoi()).toBe(true);
+    });
+  });
 });
