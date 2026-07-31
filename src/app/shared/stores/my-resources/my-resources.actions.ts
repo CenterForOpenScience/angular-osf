@@ -1,4 +1,5 @@
 import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
+import { ResourceVisibilityFilter } from '@osf/shared/enums/resource-visibility-filter.enum';
 import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.model';
 
 export class GetMyProjects {
@@ -9,7 +10,8 @@ export class GetMyProjects {
     public pageSize: number,
     public filters: MyResourcesSearchFilters,
     public searchMode?: ResourceSearchMode,
-    public rootProjectId?: string
+    public rootProjectId?: string,
+    public visibilityFilter?: ResourceVisibilityFilter
   ) {}
 }
 

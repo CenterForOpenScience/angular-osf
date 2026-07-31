@@ -31,6 +31,31 @@ describe('MetadataRecordsService', () => {
     expect(service.webUrl).toBe(environment.webUrl);
   });
 
+  it('builds metadata download url', () => {
+    const osfid = 'ezcuj';
+    const environment = TestBed.inject(ENVIRONMENT);
+
+    expect(service.getMetadataDownloadUrl(osfid)).toBe(`${environment.webUrl}/metadata/${osfid}`);
+  });
+
+  it('opens metadata download url in a new tab', () => {
+    const osfid = 'ezcuj';
+    const environment = TestBed.inject(ENVIRONMENT);
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
+
+    service.downloadMetadata(osfid);
+
+    expect(openSpy).toHaveBeenCalledWith(`${environment.webUrl}/metadata/${osfid}`, '_blank');
+  });
+
+  it('does not open metadata download url when osfid is empty', () => {
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
+
+    service.downloadMetadata('');
+
+    expect(openSpy).not.toHaveBeenCalled();
+  });
+
   it('requests metadata record in text format', () => {
     const osfid = 'ezcuj';
     let responseBody = '';

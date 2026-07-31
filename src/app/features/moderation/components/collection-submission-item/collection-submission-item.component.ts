@@ -8,7 +8,6 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { collectionFilterNames } from '@osf/features/collections/constants';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
@@ -55,18 +54,6 @@ export class CollectionSubmissionItemComponent {
     if (!actions || !actions.length) return null;
 
     return actions[0];
-  });
-
-  currentSubmissionAttributes = computed(() => {
-    const item = this.submission();
-    if (!item) return null;
-
-    return collectionFilterNames
-      .map((attribute) => ({
-        ...attribute,
-        value: item[attribute.key as keyof CollectionSubmissionWithGuid] as string,
-      }))
-      .filter((attribute) => attribute.value);
   });
 
   hasMoreContributors = computed(() => {

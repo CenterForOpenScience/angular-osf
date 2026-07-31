@@ -90,39 +90,6 @@ describe('CollectionSubmissionItemComponent', () => {
     expect(currentAction).toBeNull();
   });
 
-  it('should compute current submission attributes correctly', () => {
-    fixture.componentRef.setInput('submission', mockSubmission);
-    fixture.detectChanges();
-
-    const attributes = component.currentSubmissionAttributes();
-    expect(attributes).toBeDefined();
-    expect(Array.isArray(attributes)).toBe(true);
-  });
-
-  it('should return attributes even when submission has no actions', () => {
-    const submissionWithoutActions = { ...mockSubmission, actions: [] };
-    fixture.componentRef.setInput('submission', submissionWithoutActions);
-    fixture.detectChanges();
-
-    const attributes = component.currentSubmissionAttributes();
-    expect(attributes).toBeDefined();
-    expect(attributes).not.toBeNull();
-    expect(Array.isArray(attributes)).toBe(true);
-    expect(attributes!.length).toBeGreaterThan(0);
-  });
-
-  it('should return attributes with filtered null values', () => {
-    const submissionWithNullFields = { ...mockSubmission, programArea: null, collectedType: null, dataType: null };
-    fixture.componentRef.setInput('submission', submissionWithNullFields);
-    fixture.detectChanges();
-
-    const attributes = component.currentSubmissionAttributes();
-    expect(attributes).toBeDefined();
-    expect(attributes).not.toBeNull();
-    expect(Array.isArray(attributes)).toBe(true);
-    expect(attributes!.length).toBeGreaterThan(0);
-  });
-
   it('should have SubmissionReviewStatus enum available', () => {
     expect(component.SubmissionReviewStatus).toBe(SubmissionReviewStatus);
   });

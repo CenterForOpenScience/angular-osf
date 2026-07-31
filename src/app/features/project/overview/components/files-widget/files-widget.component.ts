@@ -2,6 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { TabsModule } from 'primeng/tabs';
 
@@ -32,7 +33,7 @@ import {
 } from '@osf/features/files/store';
 import { FilesTreeComponent } from '@osf/shared/components/files-tree/files-tree.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { buildProjectPathOptions } from '@osf/shared/helpers/project-path-options.helper';
 import { mapRootFoldersToStorageLabels } from '@osf/shared/helpers/storage-addon-options.helper';
 import { Primitive } from '@osf/shared/helpers/types.helper';
@@ -42,12 +43,13 @@ import { FileLabelModel } from '@osf/shared/models/files/file-label.model';
 import { FilePageLinkModel } from '@osf/shared/models/files/file-page-link.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
 import { SelectOption } from '@osf/shared/models/select-option.model';
+import { FileDownloadService } from '@osf/shared/services/file-download.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 @Component({
   selector: 'osf-files-widget',
-  imports: [TranslatePipe, SelectComponent, TabsModule, FilesTreeComponent, Skeleton],
+  imports: [Button, TranslatePipe, SelectComponent, TabsModule, FilesTreeComponent, Skeleton],
   templateUrl: './files-widget.component.html',
   styleUrl: './files-widget.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,6 +63,7 @@ export class FilesWidgetComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
   private readonly filesService = inject(FilesService);
+  private readonly fileDownloadService = inject(FileDownloadService);
   private readonly translateService = inject(TranslateService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -97,6 +100,9 @@ export class FilesWidgetComponent {
   });
 
   readonly isStorageLoading = computed(() => this.isConfiguredStorageAddonsLoading() || this.isRootFoldersLoading());
+  readonly isButtonDisabled = computed(
+    () => this.isFilesLoading() || this.isStorageLoading() || this.filesTotalCount() === 0
+  );
 
   selectedRoot: string | null = null;
 
@@ -179,6 +185,14 @@ export class FilesWidgetComponent {
           this.openFile(file.guid);
         }
       });
+  }
+
+  downloadFolder(): void {
+    this.fileDownloadService.downloadFolderAsZip({
+      resourceId: this.selectedRoot ?? '',
+      resourceType: CurrentResourceType.Projects,
+      downloadLink: this.currentFolder()?.links.download ?? '',
+    });
   }
 
   onLoadFiles(event: FilePageLinkModel) {

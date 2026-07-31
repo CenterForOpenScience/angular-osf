@@ -38,10 +38,11 @@ import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.moc
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
+import { CreateProjectDialogComponent } from './components/create-project-dialog/create-project-dialog.component';
 import { PROJECT_FILTER_OPTIONS } from './constants/project-filter-options.const';
+import { VISIBILITY_FILTER_OPTIONS } from './constants/visibility-filter-options.const';
 import { MyProjectsQueryService } from './services/my-projects-query.service';
 import { MyProjectsTableParamsService } from './services/my-projects-table-params.service';
-import { CreateProjectDialogComponent } from './components';
 import { MyProjectsTab } from './enums';
 import { MyProjectsComponent } from './my-projects.component';
 
@@ -77,7 +78,11 @@ describe('MyProjectsComponent', () => {
     { selector: BookmarksSelectors.getBookmarksTotalCount, value: 0 },
   ];
 
-  function setup(selectorOverrides?: SignalOverride[]) {
+  function setup(
+    selectorOverrides?: SignalOverride[],
+    queryModelOverrides?: { search?: string },
+    routeQueryParams: Record<string, string> = { tab: '1', page: '1', size: '10' }
+  ) {
     routerMock = RouterMockBuilder.create().build();
     customDialogService = CustomDialogServiceMock.simple();
     projectRedirectDialogService = ProjectRedirectDialogServiceMock.simple();
@@ -86,14 +91,14 @@ describe('MyProjectsComponent', () => {
       .withQueryModel({
         page: 1,
         size: 10,
-        search: '',
+        search: queryModelOverrides?.search ?? '',
         sortColumn: '',
         sortOrder: SortOrder.Asc,
       })
       .withSelectedTab(MyProjectsTab.Projects)
       .build();
     tableParamsServiceMock = MyProjectsTableParamsServiceMock.simple();
-    const routeMock = ActivatedRouteMockBuilder.create().withQueryParams({ tab: '1', page: '1', size: '10' }).build();
+    const routeMock = ActivatedRouteMockBuilder.create().withQueryParams(routeQueryParams).build();
 
     TestBed.configureTestingModule({
       imports: [
@@ -109,9 +114,7 @@ describe('MyProjectsComponent', () => {
         MockProvider(MyProjectsQueryService, queryServiceMock),
         MockProvider(MyProjectsTableParamsService, tableParamsServiceMock),
         MockProvider(IS_MEDIUM, of(false)),
-        provideMockStore({
-          signals: mergeSignalOverrides(defaultSignals, selectorOverrides),
-        }),
+        provideMockStore({ signals: mergeSignalOverrides(defaultSignals, selectorOverrides) }),
       ],
     });
 
@@ -170,6 +173,7 @@ describe('MyProjectsComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new ClearMyResources());
     expect(component.selectedTab()).toBe(MyProjectsTab.Registrations);
     expect(component.selectedProjectFilterOption()).toBe(PROJECT_FILTER_OPTIONS[0].value);
+    expect(component.selectedVisibilityFilterOption()).toBe(VISIBILITY_FILTER_OPTIONS[0].value);
     expect(queryServiceMock.handleTabSwitch).toHaveBeenCalledWith(
       { tab: '1', page: '1', size: '10' },
       MyProjectsTab.Registrations
@@ -208,6 +212,111 @@ describe('MyProjectsComponent', () => {
 
     expect(component.activeProject()).toEqual(projectItem);
     expect(routerMock.navigate).toHaveBeenCalledWith([projectItem.id]);
+  });
+
+  it('should navigate to registry and set active project', () => {
+    setup();
+
+    component.navigateToRegistry(projectItem);
+
+    expect(component.activeProject()).toEqual(projectItem);
+    expect(routerMock.navigate).toHaveBeenCalledWith([projectItem.id]);
+  });
+
+  it('should fetch projects on project filter change', () => {
+    setup();
+    const getMyProjectsSpy = vi.spyOn(component.actions, 'getMyProjects').mockReturnValue(of(void 0));
+
+    component.onProjectFilterChange();
+
+    expect(getMyProjectsSpy).toHaveBeenCalledWith(
+      1,
+      10,
+      {
+        searchValue: '',
+        searchFields: ['title', 'tags', 'description'],
+        sortColumn: '',
+        sortOrder: SortOrder.Asc,
+      },
+      PROJECT_FILTER_OPTIONS[0].value,
+      undefined,
+      VISIBILITY_FILTER_OPTIONS[0].value
+    );
+    expect(component.isLoading()).toBe(false);
+  });
+
+  it('should fetch projects on visibility filter change', () => {
+    setup();
+    const getMyProjectsSpy = vi.spyOn(component.actions, 'getMyProjects').mockReturnValue(of(void 0));
+
+    component.onVisibilityFilterChange();
+
+    expect(getMyProjectsSpy).toHaveBeenCalled();
+    expect(component.isLoading()).toBe(false);
+  });
+
+  it('should fetch preprints with preprint search fields', () => {
+    setup();
+    component.selectedTab.set(MyProjectsTab.Preprints);
+    const getMyPreprintsSpy = vi.spyOn(component.actions, 'getMyPreprints').mockReturnValue(of(void 0));
+
+    component.onProjectFilterChange();
+
+    expect(getMyPreprintsSpy).toHaveBeenCalledWith(1, 10, {
+      searchValue: '',
+      searchFields: ['title', 'tags'],
+      sortColumn: '',
+      sortOrder: SortOrder.Asc,
+    });
+  });
+
+  it('should fetch bookmarks when collection id exists', () => {
+    setup();
+    component.selectedTab.set(MyProjectsTab.Bookmarks);
+    const getBookmarksSpy = vi.spyOn(component.actions, 'getMyBookmarks').mockReturnValue(of(void 0));
+
+    component.onProjectFilterChange();
+
+    expect(getBookmarksSpy).toHaveBeenCalledWith('bookmark-collection-id', {
+      searchValue: '',
+      searchFields: ['title', 'tags', 'description'],
+      sortColumn: '',
+      sortOrder: SortOrder.Asc,
+    });
+  });
+
+  it('should not fetch bookmarks when collection id is missing', () => {
+    setup([{ selector: BookmarksSelectors.getBookmarksCollectionId, value: null }]);
+    component.selectedTab.set(MyProjectsTab.Bookmarks);
+    const getBookmarksSpy = vi.spyOn(component.actions, 'getMyBookmarks').mockReturnValue(of(void 0));
+
+    component.onProjectFilterChange();
+
+    expect(getBookmarksSpy).not.toHaveBeenCalled();
+    expect(component.isLoading()).toBe(true);
+  });
+
+  it('should compute no results message key when search is applied', () => {
+    setup(undefined, { search: 'alpha' }, { tab: '1', page: '1', size: '10', search: 'alpha' });
+
+    expect(component.projectsEmptyMessageKey()).toBe('common.search.noResultsFound');
+  });
+
+  it('should compute empty state message key when search is empty', () => {
+    setup();
+
+    expect(component.projectsEmptyMessageKey()).toBe('myProjects.table.emptyState.all.both');
+  });
+
+  it('should not redirect when create project dialog closes without project id', () => {
+    setup();
+    const onClose$ = new Subject<{ project?: { id?: string } }>();
+    customDialogService.open.mockReturnValue(CustomDialogServiceMock.dialogRefWithClose(onClose$.asObservable()));
+
+    component.createProject();
+    onClose$.next({ project: {} });
+
+    expect(projectRedirectDialogService.showProjectRedirectDialog).not.toHaveBeenCalled();
   });
 
   it('should delegate search handling after debounce', () => {

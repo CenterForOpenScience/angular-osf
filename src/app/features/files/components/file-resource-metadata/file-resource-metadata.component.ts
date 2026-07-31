@@ -5,11 +5,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Skeleton } from 'primeng/skeleton';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
-import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { FilesSelectors } from '../../store';
 
@@ -21,15 +19,11 @@ import { FilesSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileResourceMetadataComponent {
-  private readonly router = inject(Router);
-  private readonly viewOnlyService = inject(ViewOnlyLinkHelperService);
+  readonly resourceType = input<string>('nodes');
 
-  resourceType = input<string>('nodes');
-
-  resourceMetadata = select(FilesSelectors.getResourceMetadata);
-  contributors = select(FilesSelectors.getContributors);
-  isResourceMetadataLoading = select(FilesSelectors.isResourceMetadataLoading);
-  isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
-
-  hasViewOnly = this.viewOnlyService.hasViewOnlyParam(this.router);
+  readonly resourceMetadata = select(FilesSelectors.getResourceMetadata);
+  readonly contributors = select(FilesSelectors.getContributors);
+  readonly isResourceMetadataLoading = select(FilesSelectors.isResourceMetadataLoading);
+  readonly isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
+  readonly isAnonymous = select(FilesSelectors.isFilesAnonymous);
 }

@@ -23,6 +23,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { normalizeQuotes } from '@osf/shared/helpers/normalize-quotes';
 import { DiscoverableFilter, FilterOption } from '@osf/shared/models/search/discoverable-filter.model';
+import { FilterOptionRemoved } from '@osf/shared/models/search/filter-option-removed';
+import { FilterOptionSelected } from '@osf/shared/models/search/filter-option-selected.model';
+import { FilterOptionsSearchText } from '@osf/shared/models/search/filter-options-search-text.model';
 import { SearchFiltersComponent } from '@shared/components/search-filters/search-filters.component';
 import { ResourceType } from '@shared/enums/resource-type.enum';
 import { TabOption } from '@shared/models/tab-option.model';
@@ -130,7 +133,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.actions.loadMoreFilterOptions(filter.key);
   }
 
-  onSearchFilterOptions(event: { searchText: string; filter: DiscoverableFilter }): void {
+  onSearchFilterOptions(event: FilterOptionsSearchText): void {
     if (event.searchText.trim()) {
       this.actions.loadFilterOptionsWithSearch(event.filter.key, event.searchText);
     } else {
@@ -138,7 +141,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectedFilterOptionsChanged(event: { filter: DiscoverableFilter; filterOption: FilterOption[] }): void {
+  onSelectedFilterOptionsChanged(event: FilterOptionSelected): void {
     this.actions.updateSelectedFilterOption(event.filter.key, event.filterOption);
 
     const currentFilters = this.filterOptions();
@@ -171,7 +174,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectedOptionRemoved(event: { filterKey: string; optionRemoved: FilterOption }): void {
+  onSelectedOptionRemoved(event: FilterOptionRemoved): void {
     const updatedOptions = this.filterOptions()[event.filterKey].filter(
       (option) => option.value !== event.optionRemoved.value
     );

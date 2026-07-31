@@ -133,13 +133,11 @@ describe('FileMetadataComponent', () => {
 
   it('should open metadata url when file guid exists', () => {
     setup({ routeParams: { fileGuid: 'guid-123' } });
-    const focus = vi.fn();
-    const openSpy = vi.spyOn(window, 'open').mockReturnValue({ focus } as unknown as Window);
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
 
     component.downloadFileMetadata();
 
-    expect(openSpy).toHaveBeenCalledWith(expect.stringMatching(/\/metadata\/guid-123$/));
-    expect(focus).toHaveBeenCalled();
+    expect(openSpy).toHaveBeenCalledWith(expect.stringMatching(/\/metadata\/guid-123$/), '_blank');
   });
 
   it('should not open metadata url when file guid is missing', () => {

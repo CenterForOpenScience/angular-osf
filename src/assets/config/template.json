@@ -27,6 +27,5 @@
   "newRelicLoaderConfigTrustKey": "",
   "newRelicLoaderConfigAgentID": "",
   "newRelicLoaderConfigLicenseKey": "",
-  "newRelicLoaderConfigApplicationID": "",
-  "collectionSubmissionWithCedar": false
+  "newRelicLoaderConfigApplicationID": ""
 }

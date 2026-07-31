@@ -1,31 +1,21 @@
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { ResourceMetadata } from '@osf/shared/models/resource-metadata.model';
-import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
 import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY } from '@testing/mocks/contributors.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
-import { ViewOnlyLinkHelperMock, ViewOnlyLinkHelperMockType } from '@testing/providers/view-only-link-helper.mock';
 
 import { FilesSelectors } from '../../store';
 
 import { FileResourceMetadataComponent } from './file-resource-metadata.component';
 
-interface SetupOverrides extends BaseSetupOverrides {
-  hasViewOnly?: boolean;
-}
-
 describe('FileResourceMetadataComponent', () => {
   let component: FileResourceMetadataComponent;
   let fixture: ComponentFixture<FileResourceMetadataComponent>;
-  let mockRouter: RouterMockType;
-  let viewOnlyService: ViewOnlyLinkHelperMockType;
 
   const mockResourceMetadata: ResourceMetadata = {
     title: 'Test Resource',
@@ -45,18 +35,14 @@ describe('FileResourceMetadataComponent', () => {
     { selector: FilesSelectors.getContributors, value: mockContributors },
     { selector: FilesSelectors.isResourceMetadataLoading, value: false },
     { selector: FilesSelectors.isResourceContributorsLoading, value: false },
+    { selector: FilesSelectors.isFilesAnonymous, value: false },
   ];
 
-  function setup(overrides: SetupOverrides = {}): void {
-    mockRouter = RouterMockBuilder.create().withUrl('/test').build();
-    viewOnlyService = ViewOnlyLinkHelperMock.simple(overrides.hasViewOnly ?? false);
-
+  function setup(overrides: BaseSetupOverrides = {}): void {
     TestBed.configureTestingModule({
       imports: [FileResourceMetadataComponent, MockComponent(ContributorsListComponent)],
       providers: [
         provideOSFCore(),
-        MockProvider(Router, mockRouter),
-        MockProvider(ViewOnlyLinkHelperService, viewOnlyService),
         provideMockStore({ signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides) }),
       ],
     });
@@ -102,12 +88,12 @@ describe('FileResourceMetadataComponent', () => {
     expect(component.isResourceContributorsLoading()).toBe(true);
   });
 
-  it('should set hasViewOnly based on helper service', () => {
-    setup({ hasViewOnly: true });
+  it('should expose isAnonymous from store', () => {
+    setup({
+      selectorOverrides: [{ selector: FilesSelectors.isFilesAnonymous, value: true }],
+    });
 
-    expect(component.hasViewOnly).toBe(true);
-    expect(viewOnlyService.hasViewOnlyParam).toHaveBeenCalled();
-    expect(viewOnlyService.hasViewOnlyParam).toHaveBeenCalledWith(expect.objectContaining({ url: '/test' }));
+    expect(component.isAnonymous()).toBe(true);
   });
 
   it('should handle input changes', () => {

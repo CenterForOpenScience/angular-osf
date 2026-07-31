@@ -13,7 +13,7 @@ import { RecentActivityListComponent } from '@osf/shared/components/recent-activ
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ActivityLogsSelectors, ClearActivityLogs } from '@osf/shared/stores/activity-logs';
 
-import { MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log-with-display.mock';
+import { MOCK_ACTIVITY_LOGS_WITH_DISPLAY } from '@testing/mocks/activity-log.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';

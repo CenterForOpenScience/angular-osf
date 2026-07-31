@@ -37,30 +37,6 @@ describe('MetadataCollectionItemComponent', () => {
     expect(component.submission()).toEqual(mockSubmission);
   });
 
-  it('should compute attributes from submission', () => {
-    const attributes = component.attributes();
-    expect(attributes.length).toBeGreaterThan(0);
-    expect(attributes.some((attr) => attr.key === 'programArea' && attr.value === 'Science')).toBe(true);
-    expect(attributes.some((attr) => attr.key === 'collectedType' && attr.value === 'preprint')).toBe(true);
-    expect(attributes.some((attr) => attr.key === 'dataType' && attr.value === 'Quantitative')).toBe(true);
-  });
-
-  it('should filter out empty attributes', () => {
-    const submissionWithEmptyFields: CollectionSubmission = {
-      ...mockSubmission,
-      programArea: '',
-      disease: '',
-      gradeLevels: '',
-    };
-    fixture.componentRef.setInput('submission', submissionWithEmptyFields);
-    fixture.detectChanges();
-
-    const attributes = component.attributes();
-    expect(attributes.some((attr) => attr.key === 'programArea')).toBe(false);
-    expect(attributes.some((attr) => attr.key === 'disease')).toBe(false);
-    expect(attributes.some((attr) => attr.key === 'gradeLevels')).toBe(false);
-  });
-
   it('should toggle submission button visibility based on reviews state', () => {
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
@@ -68,8 +44,7 @@ describe('MetadataCollectionItemComponent', () => {
     });
     fixture.detectChanges();
 
-    const submissionButtonVisible = fixture.nativeElement.querySelector('p-button[severity="secondary"]');
-    expect(submissionButtonVisible).toBeTruthy();
+    expect(component.showSubmissionButton()).toBe(true);
 
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
@@ -77,15 +52,13 @@ describe('MetadataCollectionItemComponent', () => {
     });
     fixture.detectChanges();
 
-    const submissionButtonHidden = fixture.nativeElement.querySelector('p-button[severity="secondary"]');
-    expect(submissionButtonHidden).toBeFalsy();
+    expect(component.showSubmissionButton()).toBe(false);
   });
 
   it('should switch submission button label for removed status', () => {
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
-      reviewsState: CollectionSubmissionReviewState.Accepted,
-      status: CollectionSubmissionReviewState.Removed,
+      reviewsState: CollectionSubmissionReviewState.Removed,
     });
     fixture.detectChanges();
 
@@ -94,65 +67,14 @@ describe('MetadataCollectionItemComponent', () => {
     fixture.componentRef.setInput('submission', {
       ...mockSubmission,
       reviewsState: CollectionSubmissionReviewState.Accepted,
-      status: CollectionSubmissionReviewState.Accepted,
     });
     fixture.detectChanges();
 
     expect(component.submissionButtonLabel()).toBe('common.buttons.edit');
   });
 
-  it('should not display attributes section when all fields are empty', () => {
-    const submissionWithNoAttributes: CollectionSubmission = {
-      id: '1',
-      type: 'collection-submission',
-      collectionTitle: 'Test Collection',
-      collectionId: 'collection-123',
-      reviewsState: CollectionSubmissionReviewState.Pending,
-      collectedType: '',
-      status: '',
-      volume: '',
-      issue: '',
-      programArea: '',
-      schoolType: '',
-      studyDesign: '',
-      dataType: '',
-      disease: '',
-      gradeLevels: '',
-    };
-    fixture.componentRef.setInput('submission', submissionWithNoAttributes);
-    fixture.detectChanges();
-
-    const attributes = component.attributes();
-    expect(attributes.length).toBe(0);
-
-    const attributesSection = fixture.nativeElement.querySelector('.flex.flex-column.gap-2.mt-2');
-    expect(attributesSection).toBeFalsy();
-  });
-
-  it('should hide attributes when reviews state is Removed even with data', () => {
-    fixture.componentRef.setInput('submission', {
-      ...mockSubmission,
-      reviewsState: CollectionSubmissionReviewState.Removed,
-    });
-    fixture.detectChanges();
-
-    expect(component.attributes().length).toBeGreaterThan(0);
-    const attributesSection = fixture.nativeElement.querySelector('.flex.flex-column.gap-2.mt-2');
-    expect(attributesSection).toBeFalsy();
-  });
-
   describe('CEDAR mode', () => {
-    it('should not show cedar viewer when isCedarMode is false', () => {
-      fixture.componentRef.setInput('isCedarMode', false);
-      fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
-      fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
-      fixture.detectChanges();
-
-      expect(component.showCedarViewer()).toBe(false);
-    });
-
     it('should not show cedar viewer when cedarRecord is null', () => {
-      fixture.componentRef.setInput('isCedarMode', true);
       fixture.componentRef.setInput('cedarRecord', null);
       fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
       fixture.detectChanges();
@@ -161,7 +83,6 @@ describe('MetadataCollectionItemComponent', () => {
     });
 
     it('should not show cedar viewer when cedarTemplate is null', () => {
-      fixture.componentRef.setInput('isCedarMode', true);
       fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
       fixture.componentRef.setInput('cedarTemplate', null);
       fixture.detectChanges();
@@ -169,8 +90,7 @@ describe('MetadataCollectionItemComponent', () => {
       expect(component.showCedarViewer()).toBe(false);
     });
 
-    it('should show cedar viewer when isCedarMode, record, and template are provided', () => {
-      fixture.componentRef.setInput('isCedarMode', true);
+    it('should show cedar viewer when record and template are provided', () => {
       fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
       fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
       fixture.detectChanges();
@@ -179,7 +99,6 @@ describe('MetadataCollectionItemComponent', () => {
     });
 
     it('should not show cedar viewer when submission is removed', () => {
-      fixture.componentRef.setInput('isCedarMode', true);
       fixture.componentRef.setInput('cedarRecord', mockCedarRecord);
       fixture.componentRef.setInput('cedarTemplate', mockCedarTemplate);
       fixture.componentRef.setInput('submission', {
@@ -189,13 +108,6 @@ describe('MetadataCollectionItemComponent', () => {
       fixture.detectChanges();
 
       expect(component.showCedarViewer()).toBe(false);
-    });
-
-    it('should not show attributes in cedar mode', () => {
-      fixture.componentRef.setInput('isCedarMode', true);
-      fixture.detectChanges();
-
-      expect(component.showAttributes()).toBe(false);
     });
 
     it('should compute cedarMetadata from record', () => {

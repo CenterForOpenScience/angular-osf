@@ -6,6 +6,7 @@ import { inject, Injectable } from '@angular/core';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { ResourceSearchMode } from '../enums/resource-search-mode.enum';
+import { ResourceVisibilityFilter } from '../enums/resource-visibility-filter.enum';
 import { SortOrder } from '../enums/sort-order.enum';
 import { MyResourcesMapper } from '../mappers/my-resources.mapper';
 import { JsonApiResponse } from '../models/common/json-api.model';
@@ -74,7 +75,8 @@ export class MyResourcesService {
     pageSize?: number,
     resourceType?: string,
     searchMode?: ResourceSearchMode,
-    rootProjectId?: string
+    rootProjectId?: string,
+    visibilityFilter?: ResourceVisibilityFilter
   ): Observable<MyResourcesItemResponseJsonApi> {
     const params = this.buildCommonParams(filters, pageNumber, pageSize, resourceType);
 
@@ -103,6 +105,12 @@ export class MyResourcesService {
       params['filter[parent]'] = null;
     }
 
+    if (visibilityFilter === ResourceVisibilityFilter.Public) {
+      params['filter[public]'] = true;
+    } else if (visibilityFilter === ResourceVisibilityFilter.Private) {
+      params['filter[public]'] = false;
+    }
+
     return this.jsonApiService.get<MyResourcesResponseJsonApi>(url, params).pipe(
       map((response: MyResourcesResponseJsonApi) => ({
         data: response.data.map((item: MyResourcesItemGetResponseJsonApi) => MyResourcesMapper.fromResponse(item)),
@@ -117,9 +125,19 @@ export class MyResourcesService {
     pageNumber?: number,
     pageSize?: number,
     searchMode?: ResourceSearchMode,
-    rootProjectId?: string
+    rootProjectId?: string,
+    visibilityFilter?: ResourceVisibilityFilter
   ): Observable<MyResourcesItemResponseJsonApi> {
-    return this.getResources('nodes/', filters, pageNumber, pageSize, 'nodes', searchMode, rootProjectId);
+    return this.getResources(
+      'nodes/',
+      filters,
+      pageNumber,
+      pageSize,
+      'nodes',
+      searchMode,
+      rootProjectId,
+      visibilityFilter
+    );
   }
 
   getMyRegistrations(

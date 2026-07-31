@@ -17,6 +17,8 @@ import {
   FilterOperatorOption,
   FilterOption,
 } from '@osf/shared/models/search/discoverable-filter.model';
+import { FilterOptionSelected } from '@osf/shared/models/search/filter-option-selected.model';
+import { FilterOptionsSearchText } from '@osf/shared/models/search/filter-options-search-text.model';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
@@ -52,8 +54,8 @@ export class SearchFiltersComponent {
   loadFilterOptions = output<DiscoverableFilter>();
   loadMoreFilterOptions = output<DiscoverableFilter>();
 
-  filterOptionSelected = output<{ filter: DiscoverableFilter; filterOption: FilterOption[] }>();
-  filterOptionsSearch = output<{ filter: DiscoverableFilter; searchText: string }>();
+  filterOptionSelected = output<FilterOptionSelected>();
+  filterOptionsSearch = output<FilterOptionsSearchText>();
 
   readonly String = String;
   readonly Boolean = Boolean;

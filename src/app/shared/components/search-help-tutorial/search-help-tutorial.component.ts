@@ -8,7 +8,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { SEARCH_TUTORIAL_STEPS } from '@osf/shared/constants/search-tutorial-steps.const';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
-import { TutorialStep } from '@shared/models/tutorial-step.model';
 
 @Component({
   selector: 'osf-search-help-tutorial',
@@ -35,9 +34,5 @@ export class SearchHelpTutorialComponent {
     } else {
       this.currentStep.set(nextStepIndex);
     }
-  }
-
-  getStepPosition(step: TutorialStep) {
-    return this.isTablet() ? step.position : step.mobilePosition || {};
   }
 }

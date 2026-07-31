@@ -47,11 +47,15 @@ import {
 import { QueryParams } from '@shared/models/query-params.model';
 import { TableParameters } from '@shared/models/table-parameters.model';
 
+import { CreateProjectDialogComponent } from './components/create-project-dialog/create-project-dialog.component';
+import { ProjectDownloadMenuComponent } from './components/project-download-menu/project-download-menu.component';
+import { MY_PROJECTS_TABS } from './constants/my-projects-tabs.const';
 import { PROJECT_FILTER_OPTIONS } from './constants/project-filter-options.const';
+import { VISIBILITY_FILTER_OPTIONS } from './constants/visibility-filter-options.const';
+import { getMyProjectsEmptyMessageKey } from './helpers/get-my-projects-empty-message-key.util';
 import { MyProjectsQueryService } from './services/my-projects-query.service';
 import { MyProjectsTableParamsService } from './services/my-projects-table-params.service';
-import { CreateProjectDialogComponent } from './components';
-import { MY_PROJECTS_TABS } from './constants';
+import { ProjectDownloadOptionsService } from './services/project-download-options.service';
 import { MyProjectsTab } from './enums';
 
 @Component({
@@ -65,6 +69,7 @@ import { MyProjectsTab } from './enums';
     Tabs,
     SubHeaderComponent,
     MyProjectsTableComponent,
+    ProjectDownloadMenuComponent,
     SearchInputComponent,
     SelectComponent,
     TranslatePipe,
@@ -81,6 +86,7 @@ export class MyProjectsComponent implements OnInit {
   readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
   readonly queryService = inject(MyProjectsQueryService);
   readonly tableParamsService = inject(MyProjectsTableParamsService);
+  readonly downloadOptionsService = inject(ProjectDownloadOptionsService);
   readonly platformId = inject(PLATFORM_ID);
   readonly isBrowser = isPlatformBrowser(this.platformId);
 
@@ -89,9 +95,24 @@ export class MyProjectsComponent implements OnInit {
   readonly tabOptions = MY_PROJECTS_TABS;
   readonly tabOption = MyProjectsTab;
   readonly projectFilterOption = PROJECT_FILTER_OPTIONS;
+  readonly visibilityFilterOption = VISIBILITY_FILTER_OPTIONS;
   readonly selectedProjectFilterOption = signal(PROJECT_FILTER_OPTIONS[0].value);
+  readonly selectedVisibilityFilterOption = signal(VISIBILITY_FILTER_OPTIONS[0].value);
 
   readonly searchControl = new FormControl<string>('');
+
+  readonly appliedSearch = computed(() => {
+    const params = this.queryParams();
+    return params ? this.queryService.toQueryModel(params).search || '' : '';
+  });
+
+  readonly projectsEmptyMessageKey = computed(() => {
+    if (this.appliedSearch()) {
+      return 'common.search.noResultsFound';
+    }
+
+    return getMyProjectsEmptyMessageKey(this.selectedProjectFilterOption(), this.selectedVisibilityFilterOption());
+  });
 
   readonly queryParams = toSignal(this.route.queryParams);
   readonly currentPage = signal(1);
@@ -154,12 +175,22 @@ export class MyProjectsComponent implements OnInit {
       this.actions.clearMyProjects();
       this.selectedTab.set(value);
       this.selectedProjectFilterOption.set(PROJECT_FILTER_OPTIONS[0].value);
+      this.selectedVisibilityFilterOption.set(VISIBILITY_FILTER_OPTIONS[0].value);
       const current = this.queryService.getRawParams();
       this.queryService.handleTabSwitch(current, this.selectedTab());
     }
   }
 
   onProjectFilterChange(): void {
+    const params = this.queryParams();
+
+    if (params) {
+      const queryParams = this.queryService.toQueryModel(params);
+      this.fetchDataForCurrentTab(queryParams);
+    }
+  }
+
+  onVisibilityFilterChange(): void {
     const params = this.queryParams();
 
     if (params) {
@@ -196,6 +227,7 @@ export class MyProjectsComponent implements OnInit {
     this.destroyRef.onDestroy(() => {
       if (this.isBrowser) {
         this.actions.clearMyProjects();
+        this.downloadOptionsService.clearCache();
       }
     });
   }
@@ -312,7 +344,14 @@ export class MyProjectsComponent implements OnInit {
     let action$;
     switch (this.selectedTab()) {
       case MyProjectsTab.Projects:
-        action$ = this.actions.getMyProjects(pageNumber, pageSize, filters, this.selectedProjectFilterOption());
+        action$ = this.actions.getMyProjects(
+          pageNumber,
+          pageSize,
+          filters,
+          this.selectedProjectFilterOption(),
+          undefined,
+          this.selectedVisibilityFilterOption()
+        );
         break;
       case MyProjectsTab.Registrations:
         action$ = this.actions.getMyRegistrations(pageNumber, pageSize, filters);

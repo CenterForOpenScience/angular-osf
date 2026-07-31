@@ -18,11 +18,12 @@ import {
   SetFilesCurrentFolder,
 } from '@osf/features/files/store';
 import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FilePageLinkModel } from '@osf/shared/models/files/file-page-link.model';
 import { NodeShortInfoModel } from '@osf/shared/models/nodes/node-with-children.model';
 import { SelectOption } from '@osf/shared/models/select-option.model';
+import { FileDownloadService } from '@osf/shared/services/file-download.service';
 import { FilesService } from '@osf/shared/services/files.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
@@ -30,6 +31,7 @@ import { MOCK_CONFIGURED_ADDON } from '@testing/mocks/configured-addon.mock';
 import { FileModelMock } from '@testing/mocks/file.model.mock';
 import { OSF_FILE_MOCK } from '@testing/mocks/osf-file.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { FileDownloadServiceMock, FileDownloadServiceMockType } from '@testing/providers/file-download-service.mock';
 import { FilesServiceMock, FilesServiceMockType } from '@testing/providers/files-service.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import {
@@ -55,6 +57,7 @@ describe('FilesWidgetComponent', () => {
   let store: Store;
   let routerMock: RouterMockType;
   let filesService: FilesServiceMockType;
+  let fileDownloadService: FileDownloadServiceMockType;
   let viewOnlyHelper: ViewOnlyLinkHelperMockType;
 
   const rootFolder: FileFolderModel = {
@@ -78,6 +81,7 @@ describe('FilesWidgetComponent', () => {
       .withSerializeUrl(vi.fn().mockReturnValue('/serialized'))
       .build();
     filesService = FilesServiceMock.simple();
+    fileDownloadService = FileDownloadServiceMock.simple();
     viewOnlyHelper = ViewOnlyLinkHelperMock.simple(overrides.hasViewOnly ?? false);
     viewOnlyHelper.getViewOnlyParamFromUrl.mockReturnValue('token');
 
@@ -105,6 +109,7 @@ describe('FilesWidgetComponent', () => {
         provideOSFCore(),
         MockProvider(Router, routerMock),
         MockProvider(FilesService, filesService),
+        MockProvider(FileDownloadService, fileDownloadService),
         MockProvider(ViewOnlyLinkHelperService, viewOnlyHelper),
         provideMockStore({ signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides) }),
       ],
@@ -177,6 +182,34 @@ describe('FilesWidgetComponent', () => {
     component.setCurrentFolder(rootFolder);
 
     expect(store.dispatch).toHaveBeenCalledWith(new SetFilesCurrentFolder(rootFolder));
+  });
+
+  it('should disable download button when folder has no files', () => {
+    setup();
+
+    expect(component.isButtonDisabled()).toBe(true);
+  });
+
+  it('should enable download button when folder has files', () => {
+    setup({
+      selectorOverrides: [{ selector: FilesSelectors.getFilesTotalCount, value: 2 }],
+    });
+
+    expect(component.isButtonDisabled()).toBe(false);
+  });
+
+  it('should download current folder as zip', () => {
+    setup({
+      selectorOverrides: [{ selector: FilesSelectors.getFilesTotalCount, value: 1 }],
+    });
+
+    component.downloadFolder();
+
+    expect(fileDownloadService.downloadFolderAsZip).toHaveBeenCalledWith({
+      resourceId: 'project-1',
+      resourceType: CurrentResourceType.Projects,
+      downloadLink: '/v2/files/file-123/download/',
+    });
   });
 
   it('should open file directly when guid exists', () => {
