@@ -7,7 +7,6 @@ import { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
 import {
   GetCedarMetadataRecords,
   GetCedarMetadataTemplates,
@@ -23,6 +22,7 @@ import { ResourceLicenseComponent } from '@osf/shared/components/resource-licens
 import { SubjectsListComponent } from '@osf/shared/components/subjects-list/subjects-list.component';
 import { TagsListComponent } from '@osf/shared/components/tags-list/tags-list.component';
 import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { MetadataRecordsService } from '@osf/shared/services/metadata-records.service';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores/collections';
 import {
   ContributorsSelectors,
@@ -55,6 +55,7 @@ describe('ProjectOverviewMetadataComponent', () => {
   let store: Store;
   let dispatchMock: Mock;
   let mockRouter: RouterMockType;
+  let metadataRecordsService: { downloadMetadata: Mock };
 
   interface SetupOverrides {
     project?: typeof MOCK_PROJECT_OVERVIEW | null;
@@ -63,6 +64,7 @@ describe('ProjectOverviewMetadataComponent', () => {
   function setup(overrides: SetupOverrides = {}) {
     const project = 'project' in overrides ? overrides.project : MOCK_PROJECT_OVERVIEW;
     mockRouter = RouterMockBuilder.create().withUrl('/project/project-1/overview').build();
+    metadataRecordsService = { downloadMetadata: vi.fn() };
 
     TestBed.configureTestingModule({
       imports: [
@@ -82,6 +84,7 @@ describe('ProjectOverviewMetadataComponent', () => {
       ],
       providers: [
         provideOSFCore(),
+        MockProvider(MetadataRecordsService, metadataRecordsService),
         MockProvider(Router, mockRouter),
         provideMockStore({
           signals: [
@@ -103,7 +106,6 @@ describe('ProjectOverviewMetadataComponent', () => {
             { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
             { selector: CollectionsSelectors.getCurrentProjectSubmissions, value: [] },
             { selector: CollectionsSelectors.getCurrentProjectSubmissionsLoading, value: false },
-            { selector: UserSelectors.getActiveFlags, value: [] },
             { selector: MetadataSelectors.getCedarRecords, value: [] },
             { selector: MetadataSelectors.getCedarTemplates, value: null },
             { selector: MetadataSelectors.getCustomItemMetadata, value: null },
@@ -174,6 +176,22 @@ describe('ProjectOverviewMetadataComponent', () => {
     expect(dispatchMock).toHaveBeenCalledWith(
       new LoadMoreBibliographicContributors(undefined as unknown as string, ResourceType.Project)
     );
+  });
+
+  it('should download metadata for current project', () => {
+    setup();
+
+    component.downloadMetadata();
+
+    expect(metadataRecordsService.downloadMetadata).toHaveBeenCalledWith('project-1');
+  });
+
+  it('should not download metadata when project is missing', () => {
+    setup({ project: null });
+
+    component.downloadMetadata();
+
+    expect(metadataRecordsService.downloadMetadata).not.toHaveBeenCalled();
   });
 
   it('should navigate to search when clicking a tag', () => {

@@ -4,8 +4,8 @@ import { SortEvent } from 'primeng/api';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input, output, TemplateRef } from '@angular/core';
 
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources.model';
@@ -16,23 +16,37 @@ import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'osf-my-projects-table',
-  imports: [TableModule, Skeleton, IconComponent, ContributorsListShortenerComponent, TranslatePipe, DatePipe],
+  imports: [
+    TableModule,
+    Skeleton,
+    IconComponent,
+    ContributorsListShortenerComponent,
+    NgTemplateOutlet,
+    TranslatePipe,
+    DatePipe,
+  ],
   templateUrl: './my-projects-table.component.html',
   styleUrl: './my-projects-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsTableComponent {
-  items = input<MyResourcesItem[]>([]);
-  tableParams = input.required<TableParameters>();
-  sortColumn = input<string | undefined>(undefined);
-  sortOrder = input<SortOrder>(SortOrder.Asc);
-  isLoading = input<boolean>(false);
+  private readonly BASE_COLUMN_COUNT = 3;
 
-  pageChange = output<TablePageEvent>();
-  sort = output<SortEvent>();
-  itemClick = output<MyResourcesItem>();
+  readonly items = input<MyResourcesItem[]>([]);
+  readonly tableParams = input.required<TableParameters>();
+  readonly sortColumn = input<string | undefined>(undefined);
+  readonly sortOrder = input<SortOrder>(SortOrder.Asc);
+  readonly isLoading = input<boolean>(false);
+  readonly emptyMessageKey = input<string>('common.search.noResultsFound');
+  readonly downloadCellTemplate = input<TemplateRef<{ $implicit: MyResourcesItem }>>();
 
-  skeletonData: MyResourcesItem[] = Array.from({ length: 10 }, () => ({}) as MyResourcesItem);
+  readonly pageChange = output<TablePageEvent>();
+  readonly sort = output<SortEvent>();
+  readonly itemClick = output<MyResourcesItem>();
+
+  readonly skeletonData = Array.from({ length: 10 }, () => ({}) as MyResourcesItem);
+
+  readonly columnCount = computed(() => this.BASE_COLUMN_COUNT + Number(!!this.downloadCellTemplate()));
 
   onPageChange(event: TablePageEvent): void {
     this.pageChange.emit(event);

@@ -47,11 +47,8 @@
           [stepperActiveValue]="stepperActiveValue()"
           [targetStepValue]="AddToCollectionSteps.CollectionMetadata"
           [isDisabled]="isCollectionMetadataDisabled()"
-          [primaryCollectionId]="primaryCollectionId()"
-          [isCedarMode]="isCedarMode()"
           [cedarTemplate]="requiredMetadataTemplate()"
           [existingCedarRecord]="existingCedarRecord()"
-          (metadataSaved)="handleCollectionMetadataSaved($event)"
           (cedarDataSaved)="handleCedarDataSaved($event)"
           (stepChange)="handleChangeStep($event)"
         />

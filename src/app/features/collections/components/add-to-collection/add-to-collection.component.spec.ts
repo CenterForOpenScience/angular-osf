@@ -3,7 +3,6 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { of, Subject, throwError } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
@@ -51,7 +50,6 @@ const DEFAULT_SIGNALS: SignalOverride[] = [
   { selector: CollectionsSelectors.getRequiredMetadataTemplate, value: null },
   { selector: ProjectsSelectors.getSelectedProject, value: MOCK_PROJECT },
   { selector: UserSelectors.getCurrentUser, value: MOCK_USER },
-  { selector: UserSelectors.getActiveFlags, value: [] },
   { selector: MetadataSelectors.getCedarRecords, value: [] },
   { selector: AddToCollectionSelectors.getCurrentCollectionSubmission, value: null },
 ];
@@ -175,16 +173,6 @@ describe('AddToCollectionComponent', () => {
     expect(component.projectContributorsSaved()).toBe(true);
   });
 
-  it('should handle collection metadata saved', () => {
-    const { component } = setup();
-    const mockForm = new FormGroup({});
-    component.handleCollectionMetadataSaved(mockForm);
-
-    expect(component.collectionMetadataForm).toBe(mockForm);
-    expect(component.collectionMetadataSaved()).toBe(true);
-    expect(component.stepperActiveValue()).toBe(AddToCollectionSteps.Complete);
-  });
-
   it('should handle cedar data saved', () => {
     const { component } = setup();
     const mockCedarData: CedarRecordDataBinding = {
@@ -283,11 +271,10 @@ describe('AddToCollectionComponent', () => {
     );
   });
 
-  it('should update submission and navigate on success in edit mode', () => {
+  it('should navigate on success in edit mode', () => {
     const { component, mockToastService, mockLoaderService, mockRouter } = setup({
       routeParams: { id: 'project-1', providerId: 'provider-1' },
     });
-    vi.spyOn(component.actions, 'updateCollectionSubmission').mockReturnValue(of(void 0));
 
     component.handleAddToCollection();
 
@@ -299,11 +286,20 @@ describe('AddToCollectionComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['project-1', 'overview']);
   });
 
-  it('should show error toast when update fails in edit mode', () => {
+  it('should show error toast when saving cedar record fails in edit mode', () => {
     const { component, mockToastService } = setup({
       routeParams: { id: 'project-1', providerId: 'provider-1' },
+      selectorOverrides: [
+        { selector: CollectionsSelectors.getRequiredMetadataTemplate, value: { id: 'template-123' } },
+      ],
     });
-    vi.spyOn(component.actions, 'updateCollectionSubmission').mockReturnValue(throwError(() => new Error('fail')));
+    const mockCedarData: CedarRecordDataBinding = {
+      data: {} as CedarRecordDataBinding['data'],
+      id: 'template-123',
+      isPublished: false,
+    };
+    component.handleCedarDataSaved(mockCedarData);
+    vi.spyOn(component.actions, 'createCedarRecord').mockReturnValue(throwError(() => new Error('fail')));
 
     component.handleAddToCollection();
 

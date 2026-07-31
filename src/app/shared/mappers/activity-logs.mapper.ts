@@ -16,6 +16,7 @@ export class ActivityLogsMapper {
       type: log.type,
       action: log.attributes.action,
       date: log.attributes.date,
+      foreignUser: log.attributes.foreign_user,
       params: {
         contributors: contributors.length
           ? contributors.map((contributor) => this.fromContributorJsonApi(contributor))
