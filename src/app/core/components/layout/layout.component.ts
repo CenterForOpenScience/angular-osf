@@ -6,7 +6,6 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
-import { MaintenanceModeService } from '@core/services/maintenance-mode.service';
 import { ScrollTopOnRouteChangeDirective } from '@osf/shared/directives/scroll-top.directive';
 import { IS_MEDIUM, IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 
@@ -36,9 +35,6 @@ import { TopnavComponent } from '../topnav/topnav.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutComponent {
-  private readonly maintenanceModeService = inject(MaintenanceModeService);
-
   isWeb = toSignal(inject(IS_WEB));
   isMedium = toSignal(inject(IS_MEDIUM));
-  isMaintenanceMode = this.maintenanceModeService.isActive;
 }

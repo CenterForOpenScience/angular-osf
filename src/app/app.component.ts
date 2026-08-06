@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { switchMap, timer } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
@@ -8,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationCancel, NavigationEnd, NavigationError, ResolveStart, Router, RouterOutlet } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { MaintenanceModeService } from '@core/services/maintenance-mode.service';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 
@@ -21,7 +24,7 @@ import { GoogleTagManagerService } from 'angular-google-tag-manager';
 
 @Component({
   selector: 'osf-root',
-  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent],
+  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent, TranslatePipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,8 +39,10 @@ export class AppComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly loaderService = inject(LoaderService);
+  private readonly maintenanceModeService = inject(MaintenanceModeService);
 
   unverifiedEmails = select(UserEmailsSelectors.getUnverifiedEmails);
+  isMaintenanceMode = this.maintenanceModeService.isActive;
 
   constructor() {
     effect(() => {
@@ -57,6 +62,9 @@ export class AppComponent implements OnInit {
       .subscribe();
 
     if (this.isBrowser) {
+      // `GetCurrentUser` short-circuits on a cached user, so it cannot be relied on to surface an outage.
+      this.maintenanceModeService.checkOnce();
+
       this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event) => {
         if (event instanceof ResolveStart) {
           this.loaderService.show();

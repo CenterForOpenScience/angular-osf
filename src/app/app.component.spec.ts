@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationEnd, ResolveStart, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { MaintenanceModeService } from '@core/services/maintenance-mode.service';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { AccountEmailModel } from '@osf/shared/models/emails/account-email.model';
@@ -17,6 +18,10 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
+import {
+  MaintenanceModeServiceMock,
+  MaintenanceModeServiceMockType,
+} from '@testing/providers/maintenance-mode.service.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 
@@ -36,6 +41,7 @@ describe('AppComponent', () => {
   let loaderServiceMock: LoaderServiceMock;
   let customDialogServiceMock: ReturnType<CustomDialogServiceMockBuilder['build']>;
   let gtmServiceMock: { pushTag: Mock };
+  let maintenanceModeServiceMock: MaintenanceModeServiceMockType;
 
   const unverifiedEmail: AccountEmailModel = {
     id: 'email-1',
@@ -50,6 +56,7 @@ describe('AppComponent', () => {
     isBrowser?: boolean;
     unverifiedEmails?: AccountEmailModel[];
     googleTagManagerId?: string;
+    isMaintenanceMode?: boolean;
   }
 
   function setup(overrides: SetupOverrides = {}) {
@@ -58,6 +65,7 @@ describe('AppComponent', () => {
     loaderServiceMock = new LoaderServiceMock();
     customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     gtmServiceMock = { pushTag: vi.fn() };
+    maintenanceModeServiceMock = MaintenanceModeServiceMock.simple(overrides.isMaintenanceMode ?? false);
 
     TestBed.configureTestingModule({
       imports: [AppComponent, ...MockComponents(ToastComponent, FullScreenLoaderComponent)],
@@ -67,6 +75,7 @@ describe('AppComponent', () => {
         MockProvider(Router, routerMock),
         MockProvider(CustomDialogService, customDialogServiceMock),
         MockProvider(GoogleTagManagerService, gtmServiceMock),
+        MockProvider(MaintenanceModeService, maintenanceModeServiceMock),
         MockProvider(PLATFORM_ID, overrides.isBrowser === false ? 'server' : 'browser'),
         provideMockStore({
           signals: mergeSignalOverrides(
@@ -147,6 +156,21 @@ describe('AppComponent', () => {
       event: 'page',
       pageName: '/preprints/osf/1',
     });
+  });
+
+  it('should probe maintenance mode once on init in browser', () => {
+    setup();
+    expect(maintenanceModeServiceMock.checkOnce).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render the maintenance overlay when maintenance mode is active', () => {
+    setup({ isMaintenanceMode: true });
+    expect(fixture.nativeElement.querySelector('.maintenance-overlay')).toBeTruthy();
+  });
+
+  it('should not render the maintenance overlay when maintenance mode is inactive', () => {
+    setup();
+    expect(fixture.nativeElement.querySelector('.maintenance-overlay')).toBeFalsy();
   });
 
   it('should not subscribe to router events on server', () => {

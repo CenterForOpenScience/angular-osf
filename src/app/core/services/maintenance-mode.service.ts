@@ -23,6 +23,18 @@ export class MaintenanceModeService implements OnDestroy {
 
   readonly isActive = this._isActive.asReadonly();
 
+  /**
+   * Check for maintenance mode upon application startup.
+   * If the application is in maintenance mode, activate the service and start polling for when maintenance mode ends.
+   */
+  checkOnce(): void {
+    this.checkMaintenanceStatus().subscribe((isMaintenance) => {
+      if (isMaintenance) {
+        this.activate();
+      }
+    });
+  }
+
   activate(): void {
     this._isActive.set(true);
     if (this.pollingSubscription) {
