@@ -1,3 +1,10 @@
 <router-outlet />
 <osf-toast></osf-toast>
 <osf-full-screen-loader></osf-full-screen-loader>
+
+@if (isMaintenanceMode()) {
+  <section class="maintenance-overlay font-bold text-xl flex flex-column align-items-center justify-content-center">
+    <p>{{ 'maintenance.title' | translate }}</p>
+    <p>{{ 'maintenance.message' | translate }}</p>
+  </section>
+}
