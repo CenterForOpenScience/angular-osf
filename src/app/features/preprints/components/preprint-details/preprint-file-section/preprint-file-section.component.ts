@@ -14,6 +14,7 @@ import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { getMfrUrlWithVersion } from '@osf/shared/helpers/mfr-url.helper';
 import { SafeUrlPipe } from '@osf/shared/pipes/safe-url.pipe';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
@@ -43,7 +44,11 @@ export class PreprintFileSectionComponent {
   fileVersions = select(PreprintSelectors.getPreprintFileVersions);
   areFileVersionsLoading = select(PreprintSelectors.arePreprintFileVersionsLoading);
 
-  safeLink = computed(() => this.file()?.links.render ?? null);
+  safeLink = computed(() => {
+    const latestVersionId = this.fileVersions()?.[0]?.id ?? '';
+
+    return getMfrUrlWithVersion(this.file()?.links.render, latestVersionId);
+  });
   isIframeLoading = true;
 
   versionMenuItems = computed(() => {

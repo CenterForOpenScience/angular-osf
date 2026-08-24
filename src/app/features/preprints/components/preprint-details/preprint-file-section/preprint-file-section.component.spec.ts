@@ -116,6 +116,47 @@ describe('PreprintFileSectionComponent', () => {
     expect(component.safeLink()).toBeNull();
   });
 
+  it('should pin the safe link to the latest file version to bust stale MFR/CDN caches', () => {
+    const downloadUrl = 'https://files.osf.io/v1/resources/abc/providers/osfstorage/def';
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprintFile,
+          value: {
+            ...mockFile,
+            links: { ...mockFile.links, render: `https://mfr.osf.io/render?url=${encodeURIComponent(downloadUrl)}` },
+          },
+        },
+      ],
+    });
+
+    const safeLink = component.safeLink();
+    const nestedDownloadUrl = new URL(new URL(safeLink!).searchParams.get('url')!);
+
+    expect(nestedDownloadUrl.searchParams.get('version')).toBe('1');
+  });
+
+  it('should not add a version param when there are no file versions yet', () => {
+    const downloadUrl = 'https://files.osf.io/v1/resources/abc/providers/osfstorage/def';
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprintFile,
+          value: {
+            ...mockFile,
+            links: { ...mockFile.links, render: `https://mfr.osf.io/render?url=${encodeURIComponent(downloadUrl)}` },
+          },
+        },
+        { selector: PreprintSelectors.getPreprintFileVersions, value: [] },
+      ],
+    });
+
+    const safeLink = component.safeLink();
+    const nestedDownloadUrl = new URL(new URL(safeLink!).searchParams.get('url')!);
+
+    expect(nestedDownloadUrl.searchParams.has('version')).toBe(false);
+  });
+
   it('should compute version menu items from file versions', () => {
     setup();
     const menuItems = component.versionMenuItems();
