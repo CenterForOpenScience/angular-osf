@@ -116,7 +116,7 @@ interface ResourceMetadataJsonApi {
   isPartOfCollection: MetadataField[];
   storageByteCount: { '@value': string }[];
   storageRegion: { prefLabel: { '@value': string }[] }[];
-  usage: Usage;
+  usage: Usage[];
   hasOsfAddon: { prefLabel: { '@value': string }[] }[];
   funder: MetadataField[];
   affiliation: MetadataField[];
