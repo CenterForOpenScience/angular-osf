@@ -80,8 +80,8 @@ export function MapResources(indexCardSearchResponseJsonApi: IndexCardSearchResp
       }))[0],
       storageByteCount: resourceMetadata.storageByteCount?.[0]?.['@value'],
       storageRegion: resourceMetadata.storageRegion?.[0]?.prefLabel?.[0]?.['@value'],
-      viewsCount: resourceMetadata.usage?.viewCount?.[0]?.['@value'],
-      downloadCount: resourceMetadata.usage?.downloadCount?.[0]?.['@value'],
+      viewsCount: resourceMetadata.usage?.[0]?.viewCount?.[0]?.['@value'],
+      downloadCount: resourceMetadata.usage?.[0]?.downloadCount?.[0]?.['@value'],
       addons: (resourceMetadata.hasOsfAddon ?? null)?.map((addon) => addon.prefLabel?.[0]?.['@value']),
       license: (resourceMetadata.rights ?? null)?.map((part) => ({
         absoluteUrl: part?.['@id'],
