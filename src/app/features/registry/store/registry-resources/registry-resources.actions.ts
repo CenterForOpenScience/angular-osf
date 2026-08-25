@@ -3,7 +3,10 @@ import { AddResource, ConfirmAddResource } from '../../models';
 export class GetRegistryResources {
   static readonly type = '[Registry Resources] Get Registry Resources';
 
-  constructor(public registryId: string) {}
+  constructor(
+    public registryId: string,
+    public page = 1
+  ) {}
 }
 
 export class AddRegistryResource {

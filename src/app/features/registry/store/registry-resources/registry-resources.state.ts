@@ -38,14 +38,16 @@ export class RegistryResourcesState {
       },
     });
 
-    return this.registryResourcesService.getResources(action.registryId).pipe(
+    return this.registryResourcesService.getResources(action.registryId, action.page).pipe(
       tap((resources) => {
         ctx.patchState({
           resources: {
-            data: resources,
+            data: resources.data,
             isLoading: false,
             error: null,
+            totalCount: resources.totalCount,
           },
+          currentPage: action.page,
         });
       }),
       catchError((err) => handleSectionError(ctx, 'resources', err))
@@ -105,7 +107,7 @@ export class RegistryResourcesState {
   confirmAddRegistryResource(ctx: StateContext<RegistryResourcesStateModel>, action: ConfirmAddRegistryResource) {
     return this.registryResourcesService.confirmAddingResource(action.resourceId, action.resource).pipe(
       tap(() => {
-        ctx.dispatch(new GetRegistryResources(action.registryId));
+        ctx.dispatch(new GetRegistryResources(action.registryId, 1));
       }),
       catchError((err) => handleSectionError(ctx, 'resources', err))
     );
@@ -123,7 +125,7 @@ export class RegistryResourcesState {
 
     return this.registryResourcesService.deleteResource(action.resourceId).pipe(
       tap(() => {
-        ctx.dispatch(new GetRegistryResources(action.registryId));
+        ctx.dispatch(new GetRegistryResources(action.registryId, 1));
       }),
       catchError((err) => handleSectionError(ctx, 'resources', err))
     );
@@ -152,7 +154,7 @@ export class RegistryResourcesState {
             isLoading: false,
           },
         });
-        ctx.dispatch(new GetRegistryResources(action.registryId));
+        ctx.dispatch(new GetRegistryResources(action.registryId, ctx.getState().currentPage));
       }),
       catchError((err) => handleSectionError(ctx, 'resources', err))
     );

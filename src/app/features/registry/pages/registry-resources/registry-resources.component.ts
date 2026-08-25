@@ -3,6 +3,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { PaginatorState } from 'primeng/paginator';
 
 import { filter, finalize, map, of, switchMap } from 'rxjs';
 
@@ -19,9 +20,11 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -41,13 +44,21 @@ import {
 
 @Component({
   selector: 'osf-registry-resources',
-  imports: [Button, SubHeaderComponent, LoadingSpinnerComponent, IconComponent, TranslatePipe],
+  imports: [
+    Button,
+    SubHeaderComponent,
+    LoadingSpinnerComponent,
+    IconComponent,
+    TranslatePipe,
+    CustomPaginatorComponent,
+  ],
   templateUrl: './registry-resources.component.html',
   styleUrl: './registry-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistryResourcesComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+
   private readonly route = inject(ActivatedRoute);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
@@ -55,10 +66,12 @@ export class RegistryResourcesComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly resources = select(RegistryResourcesSelectors.getResources);
+  readonly resourcesTotalCount = select(RegistryResourcesSelectors.getResourcesTotalCount);
   readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
   readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
   readonly registry = select(RegistrySelectors.getRegistry);
   readonly identifiers = select(RegistrySelectors.getIdentifiers);
+  readonly canEdit = select(RegistrySelectors.hasWriteAccess);
 
   private readonly registryId = toSignal<string | undefined>(
     this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
@@ -66,6 +79,8 @@ export class RegistryResourcesComponent {
 
   isAddingResource = signal(false);
   doiDomain = 'https://doi.org/';
+  first = signal(0);
+  rows = signal(DEFAULT_TABLE_PARAMS.rows);
 
   private readonly actions = createDispatchMap({
     getResources: GetRegistryResources,
@@ -74,8 +89,6 @@ export class RegistryResourcesComponent {
   });
 
   readonly RegistryResourceType = RegistryResourceType;
-
-  canEdit = select(RegistrySelectors.hasWriteAccess);
 
   addButtonVisible = computed(() => !!this.identifiers().length && this.canEdit());
 
@@ -88,6 +101,7 @@ export class RegistryResourcesComponent {
       const registryId = this.registryId();
 
       if (registryId) {
+        this.resetPagination();
         this.actions.getResources(registryId);
       }
     });
@@ -108,7 +122,10 @@ export class RegistryResourcesComponent {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-        next: () => this.toastService.showSuccess('resources.toastMessages.addResourceSuccess'),
+        next: () => {
+          this.resetPagination();
+          this.toastService.showSuccess('resources.toastMessages.addResourceSuccess');
+        },
         error: () => this.toastService.showError('resources.toastMessages.addResourceError'),
       });
   }
@@ -145,9 +162,30 @@ export class RegistryResourcesComponent {
         this.actions
           .deleteResource(id, registryId)
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(() => this.toastService.showSuccess('resources.toastMessages.deletedResourceSuccess'));
+          .subscribe(() => {
+            this.resetPagination();
+            this.toastService.showSuccess('resources.toastMessages.deletedResourceSuccess');
+          });
       },
     });
+  }
+
+  onPageChange(event: PaginatorState) {
+    this.first.set(event.first ?? 0);
+    this.rows.set(event.rows ?? this.rows());
+
+    if (event.page === undefined) {
+      return;
+    }
+
+    const registryId = this.registryId();
+    if (!registryId) return;
+
+    this.actions.getResources(registryId, event.page + 1);
+  }
+
+  private resetPagination() {
+    this.first.set(0);
   }
 
   private openAddResourceDialog(registryId: string) {

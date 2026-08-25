@@ -2,6 +2,9 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { Button } from 'primeng/button';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+
 import { Subject, throwError } from 'rxjs';
 
 import { Mock } from 'vitest';
@@ -9,9 +12,11 @@ import { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { RegistryResourceType } from '@osf/shared/enums/registry-resource.enum';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -59,6 +64,7 @@ function setup(overrides: BaseSetupOverrides = {}) {
 
   const defaultSignals = [
     { selector: RegistryResourcesSelectors.getResources, value: [] },
+    { selector: RegistryResourcesSelectors.getResourcesTotalCount, value: 0 },
     { selector: RegistryResourcesSelectors.isResourcesLoading, value: false },
     { selector: RegistryResourcesSelectors.getCurrentResource, value: null },
     { selector: RegistrySelectors.getRegistry, value: null },
@@ -71,7 +77,7 @@ function setup(overrides: BaseSetupOverrides = {}) {
   TestBed.configureTestingModule({
     imports: [
       RegistryResourcesComponent,
-      ...MockComponents(LoadingSpinnerComponent, SubHeaderComponent, IconComponent),
+      ...MockComponents(Button, LoadingSpinnerComponent, SubHeaderComponent, IconComponent, CustomPaginatorComponent),
     ],
     providers: [
       provideOSFCore(),
@@ -100,79 +106,71 @@ function setup(overrides: BaseSetupOverrides = {}) {
 }
 
 describe('RegistryResourcesComponent', () => {
-  it('should create with default values', () => {
-    const { component } = setup();
+  it('should initialize defaults and load the first page', () => {
+    const { component, store, fixture } = setup();
 
-    expect(component).toBeTruthy();
     expect(component.isAddingResource()).toBe(false);
-    expect(component.doiDomain).toBe('https://doi.org/');
-  });
-
-  it('should dispatch getResources when registryId is available', () => {
-    const { store } = setup();
-
-    expect(store.dispatch).toHaveBeenCalledWith(expect.objectContaining({ registryId: 'reg-1' }));
-  });
-
-  it('should not dispatch getResources when registryId is not available', () => {
-    const { store } = setup({ hasParent: false });
-
-    expect(store.dispatch).not.toHaveBeenCalled();
-  });
-
-  it('should compute addButtonVisible when identifiers exist and canEdit', () => {
-    const { component } = setup();
-
+    expect(component.first()).toBe(0);
+    expect(component.rows()).toBe(DEFAULT_TABLE_PARAMS.rows);
     expect(component.addButtonVisible()).toBe(true);
+    expect(store.dispatch).toHaveBeenCalledWith(expect.objectContaining({ registryId: 'reg-1', page: 1 }));
+    expect(fixture.nativeElement.querySelector('osf-custom-paginator')).toBeFalsy();
   });
 
-  it('should compute addButtonVisible as false when no identifiers', () => {
-    const { component } = setup({
-      selectorOverrides: [{ selector: RegistrySelectors.getIdentifiers, value: [] }],
-    });
-
-    expect(component.addButtonVisible()).toBe(false);
-  });
-
-  it('should compute addButtonVisible as false when canEdit is false', () => {
-    const { component } = setup({
-      selectorOverrides: [{ selector: RegistrySelectors.hasWriteAccess, value: false }],
-    });
-
-    expect(component.addButtonVisible()).toBe(false);
-  });
-
-  it('should add resource and show success toast on dialog confirm', () => {
-    const { component, dialogClose$, mockDialogService, mockToastService, store } = setup();
+  it('should skip resource actions when registryId is missing', () => {
+    const { component, store, mockDialogService, mockConfirmationService } = setup({ hasParent: false });
 
     (store.dispatch as Mock).mockClear();
     component.addResource();
+    component.updateResource(MOCK_RESOURCE);
+    component.deleteResource('res-1');
+    component.onPageChange({ page: 1, first: 10, rows: 10 });
 
-    expect(component.isAddingResource()).toBe(true);
-    expect(store.dispatch).toHaveBeenCalled();
-    expect(mockDialogService.open).toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(mockDialogService.open).not.toHaveBeenCalled();
+    expect(mockConfirmationService.confirmDelete).not.toHaveBeenCalled();
+    expect(component.isAddingResource()).toBe(false);
+    expect(component.first()).toBe(10);
+  });
 
+  it('should hide add button when identifiers or write access are missing', () => {
+    const { component: withoutIdentifiers } = setup({
+      selectorOverrides: [{ selector: RegistrySelectors.getIdentifiers, value: [] }],
+    });
+    const { component: withoutWriteAccess } = setup({
+      selectorOverrides: [{ selector: RegistrySelectors.hasWriteAccess, value: false }],
+    });
+
+    expect(withoutIdentifiers.addButtonVisible()).toBe(false);
+    expect(withoutWriteAccess.addButtonVisible()).toBe(false);
+  });
+
+  it('should add a resource, reset pagination, and show a success toast', () => {
+    const { component, dialogClose$, mockDialogService, mockToastService, store } = setup();
+
+    (store.dispatch as Mock).mockClear();
+    component.first.set(20);
+    component.addResource();
     dialogClose$.next(true);
     dialogClose$.complete();
 
+    expect(mockDialogService.open).toHaveBeenCalled();
     expect(mockToastService.showSuccess).toHaveBeenCalledWith('resources.toastMessages.addResourceSuccess');
     expect(component.isAddingResource()).toBe(false);
+    expect(component.first()).toBe(0);
   });
 
-  it('should reset isAddingResource when dialog is dismissed', () => {
+  it('should reset isAddingResource when the add dialog is dismissed', () => {
     const { component, dialogClose$ } = setup();
 
     component.addResource();
-
-    expect(component.isAddingResource()).toBe(true);
-
     dialogClose$.next(null);
     dialogClose$.complete();
 
     expect(component.isAddingResource()).toBe(false);
   });
 
-  it('should show error toast when addResource dispatch errors', () => {
+  it('should show an error toast when addResource fails', () => {
     const { component, store, mockToastService } = setup();
 
     vi.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('fail')));
@@ -181,21 +179,12 @@ describe('RegistryResourcesComponent', () => {
     expect(mockToastService.showError).toHaveBeenCalledWith('resources.toastMessages.addResourceError');
   });
 
-  it('should not add resource when registryId is not available', () => {
-    const { component, store, mockDialogService } = setup({ hasParent: false });
-
-    (store.dispatch as Mock).mockClear();
-    component.addResource();
-
-    expect(component.isAddingResource()).toBe(false);
-    expect(store.dispatch).not.toHaveBeenCalled();
-    expect(mockDialogService.open).not.toHaveBeenCalled();
-  });
-
-  it('should open edit dialog on updateResource', () => {
-    const { component, mockDialogService } = setup();
+  it('should update a resource and show a success toast', () => {
+    const { component, dialogClose$, mockDialogService, mockToastService } = setup();
 
     component.updateResource(MOCK_RESOURCE);
+    dialogClose$.next(true);
+    dialogClose$.complete();
 
     expect(mockDialogService.open).toHaveBeenCalledWith(
       expect.any(Function),
@@ -204,40 +193,29 @@ describe('RegistryResourcesComponent', () => {
         data: { id: 'reg-1', resource: MOCK_RESOURCE },
       })
     );
-  });
-
-  it('should show success toast on updateResource dialog confirm', () => {
-    const { component, dialogClose$, mockToastService } = setup();
-
-    component.updateResource(MOCK_RESOURCE);
-    dialogClose$.next(true);
-    dialogClose$.complete();
-
     expect(mockToastService.showSuccess).toHaveBeenCalledWith('resources.toastMessages.updatedResourceSuccess');
   });
 
-  it('should show error toast when updateResource dialog errors', () => {
+  it('should show an error toast when updateResource fails', () => {
     const errorSubject = new Subject<unknown>();
     const { component, mockDialogService, mockToastService } = setup();
 
-    mockDialogService.open.mockReturnValue({ onClose: errorSubject.pipe() } as any);
+    mockDialogService.open.mockReturnValue({
+      onClose: errorSubject.pipe(),
+      close: vi.fn(),
+    } as unknown as DynamicDialogRef);
     component.updateResource(MOCK_RESOURCE);
     errorSubject.error(new Error('fail'));
 
     expect(mockToastService.showError).toHaveBeenCalledWith('resources.toastMessages.updateResourceError');
   });
 
-  it('should not update resource when registryId is not available', () => {
-    const { component, mockDialogService } = setup({ hasParent: false });
+  it('should delete a resource, reset pagination, and show a success toast', () => {
+    const { component, mockConfirmationService, mockToastService, store } = setup();
 
-    component.updateResource(MOCK_RESOURCE);
-
-    expect(mockDialogService.open).not.toHaveBeenCalled();
-  });
-
-  it('should delete resource with confirmation', () => {
-    const { component, mockConfirmationService } = setup();
-
+    mockConfirmationService.confirmDelete.mockImplementation(({ onConfirm }: { onConfirm: () => void }) => onConfirm());
+    (store.dispatch as Mock).mockClear();
+    component.first.set(20);
     component.deleteResource('res-1');
 
     expect(mockConfirmationService.confirmDelete).toHaveBeenCalledWith(
@@ -245,43 +223,49 @@ describe('RegistryResourcesComponent', () => {
         headerKey: 'resources.delete',
         messageKey: 'resources.deleteText',
         acceptLabelKey: 'common.buttons.remove',
-        onConfirm: expect.any(Function),
       })
     );
-  });
-
-  it('should dispatch delete and show toast on confirm', () => {
-    const { component, mockConfirmationService, mockToastService, store } = setup();
-
-    mockConfirmationService.confirmDelete.mockImplementation(({ onConfirm }: { onConfirm: () => void }) => onConfirm());
-
-    (store.dispatch as Mock).mockClear();
-    component.deleteResource('res-1');
-
     expect(store.dispatch).toHaveBeenCalled();
     expect(mockToastService.showSuccess).toHaveBeenCalledWith('resources.toastMessages.deletedResourceSuccess');
+    expect(component.first()).toBe(0);
   });
 
-  it('should not delete resource when registryId is not available', () => {
-    const { component, mockConfirmationService } = setup({ hasParent: false });
-
-    component.deleteResource('res-1');
-
-    expect(mockConfirmationService.confirmDelete).not.toHaveBeenCalled();
-  });
-
-  it('should return translation key for known resource type', () => {
+  it('should resolve resource type labels', () => {
     const { component } = setup();
 
     expect(component.getResourceTypeTranslationKey(RegistryResourceType.Data)).toBe('resourceCard.resources.data');
     expect(component.getResourceTypeTranslationKey(RegistryResourceType.Code)).toBe(
       'resourceCard.resources.analyticCode'
     );
+    expect(component.getResourceTypeTranslationKey('unknown')).toBe('');
   });
 
-  it('should return empty string for unknown resource type', () => {
-    const { component } = setup();
+  it('should load the selected page and keep current rows when rows are omitted', () => {
+    const { component, store } = setup();
 
-    expect(component.getResourceTypeTranslationKey('unknown')).toBe('');
+    (store.dispatch as Mock).mockClear();
+    component.rows.set(25);
+    component.onPageChange({ page: 1, first: 25, rows: undefined });
+
+    expect(component.first()).toBe(25);
+    expect(component.rows()).toBe(25);
+    expect(store.dispatch).toHaveBeenCalledWith(expect.objectContaining({ registryId: 'reg-1', page: 2 }));
+  });
+
+  it('should not load a page when the paginator page is undefined', () => {
+    const { component, store } = setup();
+
+    (store.dispatch as Mock).mockClear();
+    component.onPageChange({ page: undefined, first: 0, rows: 10 });
+
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should render the paginator when total count exceeds page size', () => {
+    const { fixture } = setup({
+      selectorOverrides: [{ selector: RegistryResourcesSelectors.getResourcesTotalCount, value: 25 }],
+    });
+
+    expect(fixture.nativeElement.querySelector('osf-custom-paginator')).toBeTruthy();
   });
 });

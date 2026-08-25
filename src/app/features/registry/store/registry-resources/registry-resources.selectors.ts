@@ -12,6 +12,11 @@ export class RegistryResourcesSelectors {
   }
 
   @Selector([RegistryResourcesState])
+  static getResourcesTotalCount(state: RegistryResourcesStateModel): number {
+    return state.resources.totalCount;
+  }
+
+  @Selector([RegistryResourcesState])
   static isResourcesLoading(state: RegistryResourcesStateModel): boolean {
     return state.resources.isLoading;
   }

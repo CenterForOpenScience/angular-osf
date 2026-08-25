@@ -3,6 +3,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { MapAddResourceRequest, MapRegistryResource, toAddResourceRequestBody } from '../mappers';
@@ -26,14 +28,26 @@ export class RegistryResourcesService {
     return `${this.environment.apiDomainUrl}/v2`;
   }
 
-  getResources(registryId: string): Observable<RegistryResource[]> {
+  getResources(
+    registryId: string,
+    page = 1,
+    pageSize = DEFAULT_TABLE_PARAMS.rows
+  ): Observable<PaginatedData<RegistryResource[]>> {
     const params = {
       'fields[resources]': 'description,finalized,resource_type,pid',
+      page,
+      'page[size]': pageSize,
     };
 
     return this.jsonApiService
-      .get<GetRegistryResourcesJsonApi>(`${this.apiUrl}/registrations/${registryId}/resources/?page=1`, params)
-      .pipe(map((response) => response.data.map((resource) => MapRegistryResource(resource))));
+      .get<GetRegistryResourcesJsonApi>(`${this.apiUrl}/registrations/${registryId}/resources/`, params)
+      .pipe(
+        map((response) => ({
+          data: response.data.map((resource) => MapRegistryResource(resource)),
+          totalCount: response.meta.total,
+          pageSize: response.meta.per_page ?? DEFAULT_TABLE_PARAMS.rows,
+        }))
+      );
   }
 
   addRegistryResource(registryId: string): Observable<RegistryResource> {

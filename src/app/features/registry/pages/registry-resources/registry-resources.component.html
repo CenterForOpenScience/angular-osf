@@ -6,21 +6,21 @@
   (buttonClick)="addResource()"
 />
 
-@if (isResourcesLoading()) {
-  <osf-loading-spinner></osf-loading-spinner>
-} @else {
-  <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-    <p>
-      @if (addButtonVisible()) {
-        <span>{{ 'resources.linkDoi' | translate }}</span>
-      }
+<div class="flex flex-column bg-white flex-1 p-4 gap-4">
+  <p>
+    @if (addButtonVisible()) {
+      <span>{{ 'resources.linkDoi' | translate }}</span>
+    }
 
-      <span>{{ 'resources.description' | translate }}</span>
-      <a class="font-bold" href="https://help.osf.io/article/452-open-practice-badges" target="_blank">
-        {{ 'common.labels.learnMore' | translate }}
-      </a>
-    </p>
+    <span>{{ 'resources.description' | translate }}</span>
+    <a class="font-bold" href="https://help.osf.io/article/452-open-practice-badges" target="_blank">
+      {{ 'common.labels.learnMore' | translate }}
+    </a>
+  </p>
 
+  @if (isResourcesLoading()) {
+    <osf-loading-spinner></osf-loading-spinner>
+  } @else {
     <div class="flex flex-column gap-2">
       @for (resource of resources(); track resource.id) {
         <div class="resource-block gap-3 p-3 flex flex-column md:p-4 md:flex-row">
@@ -60,5 +60,15 @@
         </div>
       }
     </div>
-  </div>
-}
+  }
+
+  @if (resourcesTotalCount() > rows()) {
+    <osf-custom-paginator
+      class="block mt-auto"
+      [first]="first()"
+      [rows]="rows()"
+      [totalCount]="resourcesTotalCount()"
+      (pageChanged)="onPageChange($event)"
+    ></osf-custom-paginator>
+  }
+</div>
