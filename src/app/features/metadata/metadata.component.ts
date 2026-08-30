@@ -201,11 +201,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       this.areResourceInstitutionsSubmitting()
   );
 
-  hideEditDoi = computed(
-    () =>
-      this.resourceType() === ResourceType.Project &&
-      (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
-  );
+  hideEditDoi = computed(() => this.resourceType() === ResourceType.Project);
 
   isProjectType = computed(() => this.resourceType() === ResourceType.Project);
   isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
