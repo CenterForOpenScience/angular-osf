@@ -472,7 +472,8 @@
       "message": "Are you sure you want to discard your unsaved changes?"
     },
     "errorMessages": {
-      "serverError": "An unexpected error occurred. Please try again later."
+      "serverError": "An unexpected error occurred. Please try again later.",
+      "actionUnavailable": "This action is no longer available. Contact support if you have any questions."
     },
     "hint": {
       "tagSeparators": "Use enter or comma to create a tag.",
@@ -787,6 +788,7 @@
     "loggedIn": {
       "dashboard": {
         "createProject": "Create New Project",
+        "createProjectDisabledTooltip": "Project creation is no longer available. OSF is transitioning away from Projects as part of a platform update. Your existing projects remain accessible.",
         "getStartedHelp": "Visit Get Started Help Guides",
         "images": {
           "osfCollectionsImageAltText": "OSF Collections",
@@ -794,6 +796,8 @@
           "osfPreprintsImageAltTest": "OSF Preprints",
           "osfRegistriesImageAltTest": "OSF Registries"
         },
+        "noCreatedProject": "You haven’t created a project yet.",
+        "noCreatedProjectAndCreateProjectDisabled": "You don't have any projects.",
         "workflowLauncher": {
           "title": "Plan and document the lifecycle of your research",
           "description1": "OSF is designed to support your research process — planning your study, registering your methods, and sharing your findings as preprints. ",
@@ -821,7 +825,6 @@
             }
           }
         },
-        "noCreatedProject": "You haven’t created a project yet.",
         "projectTransition": "New projects can no longer be created after November 16th, and all existing projects will become read-only on February 19th. You can read more about the upcoming transition <a href='https://help.osf.io/article/727-osf-projects-transition' target='_blank' rel='noopener noreferrer'>here</a>.",
         "quickSearch": {
           "goTo": "Go to",
@@ -1094,6 +1097,7 @@
     },
     "header": {
       "createProject": "Create Project",
+      "createProjectDisabledTooltip": "Project creation is no longer available. OSF is transitioning away from Projects as part of a platform update. Your existing projects remain accessible.",
       "title": "My Projects"
     },
     "redirectDialog": {
@@ -1118,12 +1122,15 @@
       "deleteProject": "Delete Project",
       "descriptions": {
         "file_updated": {
+          "instantly": "You'll be notified immediately when files are updated.",
           "daily": "You'll receive a daily summary of file updates.",
           "none": "You won't receive file update notifications."
         }
       },
+      "disabledForWiki": "This feature is disabled for wikis of private projects.",
       "emailNotifications": "Email Notifications",
       "emailNotificationsText": "These notification settings only apply to you. They do NOT affect any other contributor on this project.",
+      "enabledForWiki": "This feature is enabled for wikis of private projects.",
       "ensureNoInformation": "Ensure the wiki pages, files, registration forms and add-ons do not contain identifying information.",
       "faq": "FAQ",
       "institutionalLogos": "institutional logos to be displayed on public projects",
@@ -1588,6 +1595,7 @@
           "connectExisting": "Connect An Existing OSF Project",
           "createNew": "Create A New OSF Project"
         },
+        "projectCreationDisabled": "Project creation is no longer available. OSF is transitioning away from Projects as part of a platform update. Your existing projects remain accessible.",
         "successMessages": {
           "projectConnected": "Project connected",
           "projectCreated": "Project created",
@@ -1704,13 +1712,16 @@
       "permissionInfo": {
         "addComponents": "Add and configure components",
         "addResourcesLinks": "Add resources links",
+        "deleteProject": "Delete project and components",
         "deleteRegister": "Delete and register project",
         "editContent": "Add and edit content",
         "editMetadata": "Edit metadata",
         "endEmbargoEarly": "End embargo early",
         "manageContributors": "Manage contributor",
+        "manageViewOnlyLinks": "Manage view-only links",
         "publicPrivate": "Public private settings",
         "read": "Read privileges",
+        "readOnlyViewProjectContent": "View project content",
         "readWrite": "Read and write privileges",
         "title": "Permission Information",
         "viewProjectContent": "View project content and comment",
@@ -1877,7 +1888,8 @@
         "forkProjectLabel": "Duplicate project",
         "manageContributors": "Manage Contributors",
         "settings": "Settings",
-        "viewDuplication": "View duplicates"
+        "viewDuplication": "View duplicates",
+        "duplicatingProjectsNotAllowed": "Duplicating projects is no longer available. OSF is transitioning away from Projects as part of a platform update."
       },
       "citations": {
         "copyCitation": "Copy citation",
@@ -1891,6 +1903,7 @@
       },
       "components": {
         "addComponentButton": "Add Component",
+        "addComponentDisabled": "Component creation is no longer available. OSF is transitioning away from Projects as part of a platform update.",
         "linkProjectsButton": "Link Projects",
         "noComponentsMessage": "Add components to organize your project.",
         "title": "Components"
@@ -1956,7 +1969,8 @@
         "makePublic": {
           "confirmButton": "Make Public",
           "header": "Make Project Public",
-          "message": "Please review your projects, components, and add-ons for sensitive or restricted information before making them public. <br/> <br/> Once they are made public, you should assume they will always be public. You can return them to private later, but search engines (including Google's cache) or others may access files, wiki pages, or analytics before you do."
+          "message": "Please review your projects, components, and add-ons for sensitive or restricted information before making them public. <br/> <br/> Once they are made public, you should assume they will always be public. You can return them to private later, but search engines (including Google's cache) or others may access files, wiki pages, or analytics before you do.",
+          "messageReadOnly": "Please review your projects, components, and add-ons for sensitive or restricted information before making them public. <br/> <br/><b>This action is irreversible.<b>"
         },
         "privacySettingsPermissionTooltip": "You must have admin permission on this component to be able to change privacy settings",
         "toast": {
@@ -2316,6 +2330,8 @@
     "commentLabel": "Comment (Optional)",
     "helpMessage": "If this should not have occurred, please contact",
     "message": "Ask for access, or switch to an account with permission.",
+    "messageReadOnly": "This project is in a read-only state, and new access can no longer be granted. If you are already a contributor, please switch to the account that has access to this project. <br><br> If you need assistance locating the correct account or have questions, please contact support at",
+    "readOnlyTitle": "You Don't Have Access",
     "requestAccess": "Request Access",
     "requestedSuccessMessage": "Your request for access has been sent.",
     "switchAccount": "Switch Account",
@@ -2864,6 +2880,7 @@
     },
     "files": {
       "description": "Uploaded files will automatically be archived in this registration. They will also be added to a related project that will be created for this registration.",
+      "descriptionNoProject": "Uploaded files will automatically be archived in this registration.",
       "limitText": "You may attach up to 5 file(s) to this question. Files cannot total over 5GB in size."
     },
     "license": {

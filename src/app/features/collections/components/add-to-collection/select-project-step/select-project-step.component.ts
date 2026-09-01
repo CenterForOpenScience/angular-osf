@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
+import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 
@@ -16,7 +17,7 @@ import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 @Component({
   selector: 'osf-select-project-step',
-  imports: [Button, TranslatePipe, ProjectSelectorComponent, Step, StepItem, StepPanel],
+  imports: [Button, Tooltip, TranslatePipe, ProjectSelectorComponent, Step, StepItem, StepPanel],
   templateUrl: './select-project-step.component.html',
   styleUrl: './select-project-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +29,7 @@ export class SelectProjectStepComponent {
   stepperActiveValue = input.required<number>();
   targetStepValue = input.required<number>();
   collectionId = input.required<string>();
+  isProjectReadOnly = input.required<boolean>();
 
   stepChange = output<number>();
   projectSelected = output<void>();

@@ -1,3 +1,5 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
@@ -6,13 +8,14 @@ import { Textarea } from 'primeng/textarea';
 import { map, of } from 'rxjs';
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { AuthService } from '@core/services/auth.service';
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { RequestAccessService } from '@osf/shared/services/request-access.service';
@@ -40,6 +43,16 @@ export class RequestAccessComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
+
+  readonly isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
+
+  readonly titleTranslation = computed(() =>
+    this.isProjectReadOnly() ? 'requestAccess.readOnlyTitle' : 'requestAccess.title'
+  );
+
+  readonly messageTranslation = computed(() =>
+    this.isProjectReadOnly() ? 'requestAccess.messageReadOnly' : 'requestAccess.message'
+  );
 
   requestAccess() {
     this.loaderService.show();

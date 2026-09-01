@@ -27,6 +27,7 @@ describe('FilesSelectionActionsComponent', () => {
     expect(component.selectedFilesCount()).toBe(0);
     expect(component.canUpdateFiles()).toBe(true);
     expect(component.hasViewOnly()).toBe(false);
+    expect(component.isProjectReadOnly()).toBe(false);
   });
 
   it('should update selected files count input', () => {
@@ -50,7 +51,14 @@ describe('FilesSelectionActionsComponent', () => {
     expect(component.hasViewOnly()).toBe(true);
   });
 
-  it('should emit copySelected output', () => {
+  it('should handle isProjectReadOnly input', () => {
+    fixture.componentRef.setInput('isProjectReadOnly', true);
+    fixture.detectChanges();
+
+    expect(component.isProjectReadOnly()).toBe(true);
+  });
+
+  it('should emit copySelected event', () => {
     const copySelectedSpy = vi.spyOn(component.copySelected, 'emit');
 
     component.copySelected.emit();

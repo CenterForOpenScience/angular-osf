@@ -4,8 +4,9 @@
   @if (hasAdminAccess()) {
     <p-button
       [label]="'project.contributors.addContributor' | translate"
-      [disabled]="isContributorsLoading()"
+      [disabled]="disableAddButton()"
       (onClick)="openAddContributorDialog()"
+      [pTooltip]="(disableAddButton() ? 'common.errorMessages.actionUnavailable' : '') | translate"
     ></p-button>
   }
 

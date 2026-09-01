@@ -244,4 +244,16 @@ describe('EditSectionComponent', () => {
     expect(component.content).toBe('');
     expect(component.initialContent).toBe('');
   });
+
+  it('should handle disableSaveButton input', () => {
+    fixture.componentRef.setInput('disableSaveButton', true);
+    fixture.detectChanges();
+
+    expect(component.disableSaveButton()).toBe(true);
+
+    fixture.componentRef.setInput('disableSaveButton', false);
+    fixture.detectChanges();
+
+    expect(component.disableSaveButton()).toBe(false);
+  });
 });

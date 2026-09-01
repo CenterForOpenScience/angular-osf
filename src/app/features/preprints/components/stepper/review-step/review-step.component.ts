@@ -12,6 +12,7 @@ import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
@@ -85,6 +86,7 @@ export class ReviewStepComponent implements OnInit {
   readonly affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
   readonly license = select(PreprintStepperSelectors.getPreprintLicense);
   readonly preprintProject = select(PreprintStepperSelectors.getPreprintProject);
+  readonly isProjectCreationDisabled = select(UserSelectors.isProjectCreationDisabled);
   readonly licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
   readonly ApplicabilityStatus = ApplicabilityStatus;

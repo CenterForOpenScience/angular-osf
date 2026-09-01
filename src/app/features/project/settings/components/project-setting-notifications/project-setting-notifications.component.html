@@ -8,6 +8,7 @@
       (emitValueChange)="changeEmittedValue($event)"
       [rightControls]="allAccordionData"
       [title]="title()"
+      [disabledRightControls]="isProjectReadOnly()"
     >
       <div class="flex align-items-baseline gap-2 mt-2">
         <i class="fas fa-minus text-sm p-3"></i>

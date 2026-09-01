@@ -29,6 +29,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { FILE_COUNT_ATTACHMENTS_LIMIT } from '@osf/shared/constants/files-limits.const';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
@@ -87,6 +88,7 @@ export class CustomStepComponent implements OnDestroy {
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly stepsState = select(RegistriesSelectors.getStepsState);
+  readonly projectCreationDisabled = select(UserSelectors.isProjectCreationDisabled);
 
   private readonly actions = createDispatchMap({
     updateStepState: UpdateStepState,
@@ -99,6 +101,12 @@ export class CustomStepComponent implements OnDestroy {
   step = signal(this.route.snapshot.params['step']);
   draftId = signal(this.route.snapshot.params['id']);
   currentPage = computed(() => this.pages()[this.step() - 1]);
+  readonly fileUploadDescription = computed(() => {
+    if (this.projectCreationDisabled()) {
+      return 'shared.files.descriptionNoProject';
+    }
+    return 'shared.files.description';
+  });
 
   stepForm: FormGroup = this.fb.group({});
   attachedFiles: Record<string, AttachedFile[]> = {};

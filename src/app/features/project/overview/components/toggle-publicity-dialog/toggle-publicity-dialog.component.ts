@@ -17,6 +17,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { ComponentsSelectionListComponent } from '@osf/shared/components/components-selection-list/components-selection-list.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
@@ -44,6 +45,7 @@ export class TogglePublicityDialogComponent {
   destroyRef = inject(DestroyRef);
   isSubmitting = select(ProjectOverviewSelectors.getUpdatePublicStatusSubmitting);
   components = select(CurrentResourceSelectors.getResourceWithChildren);
+  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
 
   actions = createDispatchMap({ updateProjectPublicStatus: UpdateProjectPublicStatus });
 
@@ -54,6 +56,11 @@ export class TogglePublicityDialogComponent {
   componentsList: WritableSignal<ComponentCheckboxItemModel[]> = signal([]);
 
   isInformationStep = computed(() => this.step() === TogglePublicityStep.Information);
+  makePublicMessage = computed(() =>
+    this.isProjectReadOnly()
+      ? 'project.overview.dialog.makePublic.messageReadOnly'
+      : 'project.overview.dialog.makePublic.message'
+  );
 
   constructor() {
     effect(() => {

@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
+
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { SettingsAccessRequestsCardComponent } from './settings-access-requests-card.component';
 
@@ -11,7 +14,17 @@ describe('SettingsAccessRequestsCardComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SettingsAccessRequestsCardComponent],
-      providers: [provideOSFCore()],
+      providers: [
+        provideOSFCore(),
+        provideMockStore({
+          signals: [
+            {
+              selector: UserSelectors.isProjectReadOnly,
+              value: false,
+            },
+          ],
+        }),
+      ],
     });
 
     fixture = TestBed.createComponent(SettingsAccessRequestsCardComponent);

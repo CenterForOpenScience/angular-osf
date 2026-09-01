@@ -156,4 +156,30 @@ describe('RegistryOverviewMetadataComponent', () => {
 
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/search'], { queryParams: { search: 'test-tag' } });
   });
+
+  it('should show associated project section if registry has associated project and is not a project registration', () => {
+    const { fixture } = setup({
+      registry: { ...MOCK_REGISTRY, associatedProjectId: 'project-123', hasProject: true },
+    });
+    const associatedProjectSection = fixture.nativeElement.querySelector(
+      '[data-test-registry-overview-metadata-associated-project-link]'
+    );
+    expect(associatedProjectSection).not.toBeNull();
+  });
+
+  it('should hide associated project section if registry has no associated project', () => {
+    const { fixture } = setup({ registry: { ...MOCK_REGISTRY, associatedProjectId: 'abc123', hasProject: false } });
+    const associatedProjectSection = fixture.nativeElement.querySelector(
+      '[data-test-registry-overview-metadata-associated-project-link]'
+    );
+    expect(associatedProjectSection).toBeNull();
+
+    const { fixture: fixture2 } = setup({
+      registry: { ...MOCK_REGISTRY, associatedProjectId: undefined, hasProject: true },
+    });
+    const associatedProjectSection2 = fixture2.nativeElement.querySelector(
+      '[data-test-registry-overview-metadata-associated-project-link]'
+    );
+    expect(associatedProjectSection2).toBeNull();
+  });
 });

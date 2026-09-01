@@ -42,6 +42,7 @@ export class NewRegistrationComponent {
   readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
   readonly isProvidersLoading = select(RegistriesSelectors.isProvidersLoading);
   readonly isProjectsLoading = select(RegistriesSelectors.isProjectsLoading);
+  readonly isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
   private readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
   readonly canShowForm = computed(() => !this.isProvidersLoading() && !!this.provider()?.allowSubmissions);
@@ -53,7 +54,7 @@ export class NewRegistrationComponent {
     createDraft: CreateDraft,
   });
   private readonly providerId = this.route.snapshot.params['providerId'];
-  private readonly projectId = this.route.snapshot.queryParams['projectId'];
+  private readonly projectId = this.isProjectReadOnly() ? undefined : this.route.snapshot.queryParams['projectId'];
   private readonly filter$ = new Subject<string>();
 
   readonly fromProject = signal(this.projectId !== undefined);

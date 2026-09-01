@@ -8,6 +8,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { UserSelectors } from '@core/store/user';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
@@ -20,7 +21,7 @@ import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
 import { CollectionsDiscoverComponent } from './collections-discover.component';
@@ -75,14 +76,23 @@ const MOCK_COLLECTION_PROVIDER_WITH_TEMPLATE = {
 
 interface SetupOptions {
   provider?: typeof MOCK_COLLECTION_PROVIDER | typeof MOCK_COLLECTION_PROVIDER_WITH_TEMPLATE;
+  selectorOverrides?: { selector: any; value: any }[];
 }
 
 function setup(options: SetupOptions = {}) {
-  const { provider = MOCK_COLLECTION_PROVIDER } = options;
+  const { provider = MOCK_COLLECTION_PROVIDER, selectorOverrides = [] } = options;
 
   const toastServiceMock = ToastServiceMock.simple();
   const mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
   const mockRoute = ActivatedRouteMockBuilder.create().withParams({ providerId: 'provider-1' }).build();
+
+  const defaultSignals = [
+    { selector: CollectionsSelectors.getCollectionProvider, value: provider },
+    { selector: CollectionsSelectors.getCollectionProviderLoading, value: false },
+    { selector: UserSelectors.isProjectReadOnly, value: false },
+  ];
+
+  const signals = mergeSignalOverrides(defaultSignals, selectorOverrides || []);
 
   TestBed.configureTestingModule({
     imports: [
@@ -96,10 +106,7 @@ function setup(options: SetupOptions = {}) {
       MockProvider(CustomDialogService, mockCustomDialogService),
       MockProvider(ActivatedRoute, mockRoute),
       provideMockStore({
-        signals: [
-          { selector: CollectionsSelectors.getCollectionProvider, value: provider },
-          { selector: CollectionsSelectors.getCollectionProviderLoading, value: false },
-        ],
+        signals,
       }),
     ],
   });
@@ -159,5 +166,10 @@ describe('CollectionsDiscoverComponent', () => {
     const { fixture } = setup();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('osf-global-search')).toBeTruthy();
+  });
+
+  it('should disable add button when user has isProjectReadOnly', () => {
+    const { component } = setup({ selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }] });
+    expect(component.disableAddButtonTooltip()).toBe('common.errorMessages.actionUnavailable');
   });
 });

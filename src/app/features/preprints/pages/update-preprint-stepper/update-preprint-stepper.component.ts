@@ -20,6 +20,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { BrandService } from '@osf/shared/services/brand.service';
@@ -78,6 +79,7 @@ export class UpdatePreprintStepperComponent implements OnDestroy, CanDeactivateC
   readonly isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   readonly hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
   readonly hasAdminAccess = select(PreprintStepperSelectors.hasAdminAccess);
+  readonly supplementsDisabled = select(UserSelectors.isProjectCreationDisabled);
 
   readonly isWeb = toSignal(inject(IS_WEB));
 
@@ -107,6 +109,9 @@ export class UpdatePreprintStepperComponent implements OnDestroy, CanDeactivateC
         }
         if (step.value === PreprintSteps.AuthorAssertions) {
           return provider.assertionsEnabled && this.hasAdminAccess();
+        }
+        if (step.value === PreprintSteps.Supplements) {
+          return !this.supplementsDisabled();
         }
         return true;
       })

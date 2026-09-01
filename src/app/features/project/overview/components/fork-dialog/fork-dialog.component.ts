@@ -5,7 +5,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { finalize } from 'rxjs';
+import { EMPTY } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -42,11 +43,16 @@ export class ForkDialogComponent {
       .forkResource(resourceId, resourceType)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => {
-          this.dialogRef.close({ success: true });
-          this.toastService.showSuccess('project.overview.dialog.toast.fork.success');
+        catchError((e) => {
+          this.toastService.showError(e.error.errors[0].detail);
+          return EMPTY;
         })
       )
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.toastService.showSuccess('project.overview.dialog.toast.fork.success');
+        },
+      });
   }
 }

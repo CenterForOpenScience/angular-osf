@@ -1,12 +1,16 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Textarea } from 'primeng/textarea';
+import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
@@ -16,7 +20,7 @@ import { NodeDetailsModel, ProjectDetailsModel } from '../../models';
 
 @Component({
   selector: 'osf-settings-project-form-card',
-  imports: [Button, Card, Textarea, TranslatePipe, ReactiveFormsModule, TextInputComponent],
+  imports: [Button, Card, Textarea, TranslatePipe, ReactiveFormsModule, TextInputComponent, Tooltip],
   templateUrl: './settings-project-form-card.component.html',
   styleUrl: 'settings-project-form-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +33,8 @@ export class SettingsProjectFormCardComponent {
 
   readonly ProjectFormControls = ProjectFormControls;
   readonly inputLimits = InputLimits;
+
+  readonly isProjectReadonly = select(UserSelectors.isProjectReadOnly);
 
   projectForm = new FormGroup({
     [ProjectFormControls.Title]: new FormControl('', CustomValidators.requiredTrimmed()),

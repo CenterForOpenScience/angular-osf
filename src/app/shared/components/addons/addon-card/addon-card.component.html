@@ -21,7 +21,8 @@
       <p-button
         [label]="buttonLabel() | translate"
         severity="secondary"
-        [disabled]="!canConfigure()"
+        [disabled]="!canConfigure() || shouldDisableConnect()"
+        [pTooltip]="buttonTooltip() | translate"
         [class.opacity-0]="!canConfigure()"
         (onClick)="!isConfiguredAddon() ? onConnectAddon() : onConfigureAddon()"
       ></p-button>

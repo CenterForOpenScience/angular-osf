@@ -3,6 +3,7 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -17,7 +18,7 @@ import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 import { MetadataAffiliatedInstitutionsComponent } from './components/metadata-affiliated-institutions/metadata-affiliated-institutions.component';
@@ -47,11 +48,22 @@ describe('MetadataComponent', () => {
   const mockMetadata = MOCK_PROJECT_METADATA;
   const mockResourceId = 'test-resource-id';
 
-  beforeEach(() => {
+  function setup(selectorOverrides?: SignalOverride[]) {
     activatedRouteMock = ActivatedRouteMockBuilder.create()
       .withId(mockResourceId)
       .withData({ resourceType: ResourceType.Project })
       .build();
+
+    const defaultSignals: SignalOverride[] = [
+      { selector: MetadataSelectors.getResourceMetadata, value: mockMetadata },
+      { selector: MetadataSelectors.getLoading, value: false },
+      { selector: MetadataSelectors.getSubmitting, value: false },
+      { selector: MetadataSelectors.getCedarRecords, value: [] },
+      { selector: MetadataSelectors.getCedarTemplates, value: null },
+      { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
+      { selector: UserSelectors.isProjectReadOnly, value: false },
+    ];
+    const signals = mergeSignalOverrides(defaultSignals, selectorOverrides);
 
     Object.defineProperty(activatedRouteMock, 'parent', {
       value: {
@@ -99,27 +111,22 @@ describe('MetadataComponent', () => {
         MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, customConfirmationServiceMock),
         provideMockStore({
-          selectors: [
-            { selector: MetadataSelectors.getResourceMetadata, value: mockMetadata },
-            { selector: MetadataSelectors.getLoading, value: false },
-            { selector: MetadataSelectors.getSubmitting, value: false },
-            { selector: MetadataSelectors.getCedarRecords, value: [] },
-            { selector: MetadataSelectors.getCedarTemplates, value: null },
-            { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
-          ],
+          signals: signals,
         }),
       ],
     });
 
     fixture = TestBed.createComponent(MetadataComponent);
     component = fixture.componentInstance;
-  });
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
   it('should handle tab change for OSF tab', () => {
+    setup();
     const tabId = 'osf';
     const navigateSpy = vi.spyOn(routerMock, 'navigate');
 
@@ -130,6 +137,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should toggle edit mode', () => {
+    setup();
     const initialReadonly = component.cedarFormReadonly();
 
     component.toggleEditMode();
@@ -138,12 +146,14 @@ describe('MetadataComponent', () => {
   });
 
   it('should handle tags changed', () => {
+    setup();
     const tags = ['tag1', 'tag2'];
 
     expect(() => component.onTagsChanged(tags)).not.toThrow();
   });
 
   it('should open edit contributor dialog', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     expect(openSpy).toHaveBeenCalledTimes(0);
@@ -152,6 +162,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should open edit title dialog', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     component.openEditTitleDialog();
@@ -160,6 +171,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should open edit description dialog', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     component.openEditDescriptionDialog();
@@ -168,6 +180,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should open edit resource information dialog', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     component.openEditResourceInformationDialog();
@@ -176,6 +189,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should show resource info tooltip', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     component.onShowResourceInfo();
@@ -184,6 +198,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should open edit license dialog', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     component.openEditLicenseDialog();
@@ -192,6 +207,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should open edit funding dialog', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     component.openEditFundingDialog();
@@ -200,6 +216,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should open edit affiliated institutions dialog', () => {
+    setup();
     const openSpy = vi.spyOn(customDialogServiceMock, 'open');
 
     component.openEditAffiliatedInstitutionsDialog();
@@ -208,18 +225,21 @@ describe('MetadataComponent', () => {
   });
 
   it('should handle subject children fetch', () => {
+    setup();
     const parentId = 'parent-subject-id';
 
     expect(() => component.getSubjectChildren(parentId)).not.toThrow();
   });
 
   it('should handle subject search', () => {
+    setup();
     const searchTerm = 'test search';
 
     expect(() => component.searchSubjects(searchTerm)).not.toThrow();
   });
 
   it('should handle edit DOI for project', () => {
+    setup();
     const confirmSpy = vi.spyOn(customConfirmationServiceMock, 'confirmDelete');
 
     component.handleEditDoi();
@@ -228,6 +248,7 @@ describe('MetadataComponent', () => {
   });
 
   it('should open add record', () => {
+    setup();
     const navigateSpy = vi.spyOn(routerMock, 'navigate');
 
     component.openAddRecord();
@@ -236,10 +257,19 @@ describe('MetadataComponent', () => {
   });
 
   it('should handle cedar form change template', () => {
+    setup();
     const navigateSpy = vi.spyOn(routerMock, 'navigate');
 
     component.onCedarFormChangeTemplate();
 
     expect(navigateSpy).toHaveBeenCalled();
+  });
+
+  it('should handle isProjectReadOnly', () => {
+    setup([{ selector: UserSelectors.isProjectReadOnly, value: true }]);
+
+    expect(component.isTagsReadOnly()).toBe(true);
+    expect(component.isSubjectsReadOnly()).toBe(true);
+    expect(component.disabledButtonTooltip()).toBe('common.errorMessages.actionUnavailable');
   });
 });

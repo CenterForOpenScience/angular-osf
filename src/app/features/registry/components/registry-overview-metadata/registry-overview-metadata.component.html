@@ -62,6 +62,20 @@
       <p data-test-registry-overview-metadata-registry-provider>{{ registryProvider()?.name }}</p>
     </div>
 
+    @if (showAssociatedProject()) {
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'registry.overview.metadata.associatedProject' | translate }}</h3>
+
+        <a
+          class="font-bold"
+          [routerLink]="['/', resource.associatedProjectId]"
+          data-test-registry-overview-metadata-associated-project-link
+        >
+          {{ webUrl + '/' + resource.associatedProjectId }}
+        </a>
+      </div>
+    }
+
     <div class="flex gap-5 lg:gap-2 lg:justify-content-between">
       <div class="flex flex-column gap-2">
         <h3>{{ 'project.overview.metadata.dateCreated' | translate }}</h3>
@@ -124,7 +138,7 @@
       </p>
     </div>
 
-    @if (resource.associatedProjectId) {
+    @if (showAssociatedProject()) {
       <div class="flex flex-column gap-2">
         <h3>{{ 'registry.overview.metadata.associatedProject' | translate }}</h3>
 

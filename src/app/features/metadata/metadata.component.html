@@ -2,7 +2,8 @@
   <osf-sub-header
     [showButton]="hasWriteAccess()"
     [buttonLabel]="'project.metadata.addCommunityMetadataRecord.title' | translate"
-    [isButtonDisabled]="isLoading()"
+    [isButtonDisabled]="isLoading() || isProjectReadOnly()"
+    [buttonTooltip]="disabledButtonTooltip() | translate"
     (buttonClick)="openAddRecord()"
     [title]="'common.labels.metadata' | translate"
   />
@@ -13,7 +14,7 @@
     [selectedCedarTemplate]="selectedCedarTemplate()!"
     [selectedCedarRecord]="selectedCedarRecord()!"
     [cedarFormReadonly]="cedarFormReadonly()"
-    [canEdit]="hasWriteAccess()"
+    [canEdit]="hasWriteAccess() && !isProjectReadOnly()"
     (changeTab)="onTabChange($event)"
     (formSubmit)="onCedarFormSubmit($event)"
     (cedarFormChangeTemplate)="onCedarFormChangeTemplate()"
@@ -25,12 +26,16 @@
           (openEditTitleDialog)="openEditTitleDialog()"
           [title]="metadata()?.title!"
           [readonly]="!hasWriteAccess()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         <osf-metadata-description
           (openEditDescriptionDialog)="openEditDescriptionDialog()"
           [description]="metadata()?.description!"
           [readonly]="!hasWriteAccess()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         @if (isRegistrationType()) {
@@ -46,6 +51,8 @@
           [hasMoreContributors]="hasMoreContributors()"
           [readonly]="!hasWriteAccess()"
           (loadMoreContributors)="handleLoadMoreContributors()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         <osf-metadata-resource-information
@@ -53,18 +60,24 @@
           (showResourceInfo)="onShowResourceInfo()"
           [customItemMetadata]="customItemMetadata()!"
           [readonly]="!hasWriteAccess()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         <osf-metadata-funding
           (openEditFundingDialog)="openEditFundingDialog()"
           [funders]="customItemMetadata()?.funders!"
           [readonly]="!hasWriteAccess()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         <osf-metadata-affiliated-institutions
           (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
           [affiliatedInstitutions]="affiliatedInstitutions()"
           [readonly]="!hasWriteAccess()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         @if (isProjectType()) {
@@ -82,6 +95,8 @@
           (openEditLicenseDialog)="openEditLicenseDialog()"
           [license]="metadata()?.license!"
           [readonly]="!hasWriteAccess()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         <osf-metadata-publication-doi
@@ -90,6 +105,8 @@
           [identifiers]="metadata()?.identifiers!"
           [publicationDoi]="metadata()?.publicationDoi || null"
           [resourceType]="resourceType()"
+          [disabled]="isProjectReadOnly()"
+          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
         />
 
         @if (isRegistrationType()) {
@@ -99,7 +116,7 @@
         <osf-metadata-tags
           [tags]="metadata()?.tags || []"
           (tagsChanged)="onTagsChanged($event)"
-          [readonly]="isRegistrationType() ? !hasAdminAccess() : !hasWriteAccess()"
+          [readonly]="isTagsReadOnly()"
         ></osf-metadata-tags>
 
         <osf-metadata-subjects
@@ -108,7 +125,7 @@
           (updateSelectedSubjects)="updateSelectedSubjects($event)"
           [isSubjectsUpdating]="isSubjectsUpdating()!"
           [selectedSubjects]="selectedSubjects()"
-          [readonly]="!hasAdminAccess()"
+          [readonly]="isSubjectsReadOnly()"
         />
       </div>
     </div>

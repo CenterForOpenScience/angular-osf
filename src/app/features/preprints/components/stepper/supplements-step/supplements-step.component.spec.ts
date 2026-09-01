@@ -6,6 +6,7 @@ import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { SupplementOptions } from '@osf/features/preprints/enums';
 import {
   ConnectProject,
@@ -46,6 +47,7 @@ describe('SupplementsStepComponent', () => {
     { selector: PreprintStepperSelectors.areAvailableProjectsLoading, value: false },
     { selector: PreprintStepperSelectors.getPreprintProject, value: null },
     { selector: PreprintStepperSelectors.isPreprintProjectLoading, value: false },
+    { selector: UserSelectors.isProjectCreationDisabled, value: false },
   ];
 
   function setup(overrides?: { selectorOverrides?: SignalOverride[]; detectChanges?: boolean }) {
@@ -358,5 +360,14 @@ describe('SupplementsStepComponent', () => {
     expect(component.isNextButtonDisabled()).toBe(false);
     component.selectedSupplementOption.set(SupplementOptions.ConnectExistingProject);
     expect(component.isNextButtonDisabled()).toBe(false);
+  });
+
+  it('should compute create project disabled state based on isProjectCreationDisabled', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
+      detectChanges: false,
+    });
+
+    expect(component.createProjectTooltip()).toBe('preprints.preprintStepper.supplements.projectCreationDisabled');
   });
 });

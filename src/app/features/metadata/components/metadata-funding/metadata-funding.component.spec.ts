@@ -41,6 +41,15 @@ describe('MetadataFundingComponent', () => {
     expect(component.readonly()).toBe(true);
   });
 
+  it('should set disabled inputs', () => {
+    fixture.componentRef.setInput('disabled', true);
+    fixture.componentRef.setInput('disabledButtonTooltip', 'Editing is disabled');
+    fixture.detectChanges();
+
+    expect(component.disabled()).toBe(true);
+    expect(component.disabledButtonTooltip()).toBe('Editing is disabled');
+  });
+
   it('should emit openEditFundingDialog event', () => {
     const emitSpy = vi.spyOn(component.openEditFundingDialog, 'emit');
 

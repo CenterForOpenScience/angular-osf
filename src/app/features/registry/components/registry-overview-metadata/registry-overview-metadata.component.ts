@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -84,6 +84,9 @@ export class RegistryOverviewMetadataComponent {
   readonly currentResourceType = CurrentResourceType.Registrations;
   readonly dateFormat = 'MMM d, y, h:mm a';
   readonly webUrl = this.environment.webUrl;
+  readonly showAssociatedProject = computed(
+    () => !!this.registry()?.associatedProjectId && this.registry()?.hasProject
+  );
 
   private readonly actions = createDispatchMap({
     getSubjects: FetchSelectedSubjects,

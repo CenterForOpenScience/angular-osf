@@ -8,6 +8,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -20,7 +21,7 @@ import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { LoadMoreComponents, ProjectOverviewSelectors, ReorderComponents } from '../../store';
@@ -29,6 +30,10 @@ import { ComponentCardComponent } from '../component-card/component-card.compone
 import { DeleteComponentDialogComponent } from '../delete-component-dialog/delete-component-dialog.component';
 
 import { OverviewComponentsComponent } from './overview-components.component';
+
+interface SetupOverrides extends BaseSetupOverrides {
+  selectors?: any[];
+}
 
 describe('OverviewComponentsComponent', () => {
   let component: OverviewComponentsComponent;
@@ -48,11 +53,21 @@ describe('OverviewComponentsComponent', () => {
     rootParentId: 'root-1',
   };
 
-  beforeEach(() => {
+  function setup(overrides: SetupOverrides = {}) {
     routerMock = RouterMockBuilder.create().build();
     customDialogService = CustomDialogServiceMockBuilder.create().build();
     loaderService = new LoaderServiceMock();
     toastService = ToastServiceMock.simple();
+
+    const defaultSelectors = [
+      { selector: ProjectOverviewSelectors.getComponents, value: components },
+      { selector: ProjectOverviewSelectors.getComponentsLoading, value: false },
+      { selector: ProjectOverviewSelectors.getComponentsSubmitting, value: false },
+      { selector: ProjectOverviewSelectors.hasMoreComponents, value: true },
+      { selector: ProjectOverviewSelectors.getProject, value: project },
+      { selector: UserSelectors.isProjectCreationDisabled, value: false },
+    ];
+    const signals = mergeSignalOverrides(defaultSelectors, overrides.selectors);
 
     TestBed.configureTestingModule({
       imports: [OverviewComponentsComponent, MockComponent(ComponentCardComponent)],
@@ -63,13 +78,7 @@ describe('OverviewComponentsComponent', () => {
         MockProvider(LoaderService, loaderService),
         MockProvider(ToastService, toastService),
         provideMockStore({
-          signals: [
-            { selector: ProjectOverviewSelectors.getComponents, value: components },
-            { selector: ProjectOverviewSelectors.getComponentsLoading, value: false },
-            { selector: ProjectOverviewSelectors.getComponentsSubmitting, value: false },
-            { selector: ProjectOverviewSelectors.hasMoreComponents, value: true },
-            { selector: ProjectOverviewSelectors.getProject, value: project },
-          ],
+          signals,
         }),
       ],
     });
@@ -79,17 +88,20 @@ describe('OverviewComponentsComponent', () => {
     component = fixture.componentInstance;
     fixture.componentRef.setInput('canEdit', true);
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
   it('should initialize reorderedComponents from components selector', () => {
+    setup();
     expect(component.reorderedComponents()).toEqual(components);
   });
 
   it('should open add component dialog', () => {
+    setup();
     component.handleAddComponent();
 
     expect(customDialogService.open).toHaveBeenCalledWith(AddComponentDialogComponent, {
@@ -99,18 +111,21 @@ describe('OverviewComponentsComponent', () => {
   });
 
   it('should navigate for manageContributors action', () => {
+    setup();
     component.handleMenuAction('manageContributors', 'comp-a');
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['comp-a', 'contributors']);
   });
 
   it('should navigate for settings action', () => {
+    setup();
     component.handleMenuAction('settings', 'comp-a');
 
     expect(routerMock.navigate).toHaveBeenCalledWith(['comp-a', 'settings']);
   });
 
   it('should open delete component dialog through delete menu action', () => {
+    setup();
     component.handleMenuAction('delete', 'comp-a');
 
     expect(loaderService.show).toHaveBeenCalled();
@@ -124,6 +139,7 @@ describe('OverviewComponentsComponent', () => {
   });
 
   it('should open component url in same tab on navigate', () => {
+    setup();
     const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
     vi.spyOn(routerMock, 'createUrlTree').mockReturnValue({} as any);
     vi.spyOn(routerMock, 'serializeUrl').mockReturnValue('/comp-a');
@@ -135,6 +151,7 @@ describe('OverviewComponentsComponent', () => {
   });
 
   it('should dispatch load more components when project exists', () => {
+    setup();
     (store.dispatch as Mock).mockClear();
 
     component.loadMoreComponents();
@@ -143,6 +160,7 @@ describe('OverviewComponentsComponent', () => {
   });
 
   it('should reorder components and dispatch reorder action', () => {
+    setup();
     (store.dispatch as Mock).mockClear();
     const event = { previousIndex: 0, currentIndex: 1 } as CdkDragDrop<NodeModel[]>;
 
@@ -154,6 +172,7 @@ describe('OverviewComponentsComponent', () => {
   });
 
   it('should not reorder when canEdit is false', () => {
+    setup();
     fixture.componentRef.setInput('canEdit', false);
     fixture.detectChanges();
     (store.dispatch as Mock).mockClear();
@@ -162,5 +181,14 @@ describe('OverviewComponentsComponent', () => {
     component.onReorder(event);
 
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(ReorderComponents));
+  });
+
+  it('should disable add component button and show tooltip when isProjectCreationDisabled flag is true', () => {
+    setup({
+      selectors: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
+    });
+
+    expect(component.preventComponentCreation()).toBe(true);
+    expect(component.createComponentTooltip()).toBe('project.overview.components.addComponentDisabled');
   });
 });

@@ -2,6 +2,8 @@
   [title]="'project.analytics.kpi.forks' | translate"
   [showButton]="isAuthenticated()"
   [buttonLabel]="'project.overview.actions.forkProjectLabel' | translate"
+  [isButtonDisabled]="preventDuplicateCreation()"
+  [buttonTooltip]="duplicateButtonTooltip() | translate"
   (buttonClick)="handleForkResource()"
 />
 

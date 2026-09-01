@@ -7,6 +7,8 @@
         (onClick)="handleAddComponent()"
         severity="secondary"
         [label]="'project.overview.components.addComponentButton' | translate"
+        [disabled]="preventComponentCreation()"
+        [pTooltip]="createComponentTooltip() | translate"
       />
     }
   </div>

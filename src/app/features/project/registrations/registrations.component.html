@@ -1,6 +1,8 @@
 <osf-sub-header
   [showButton]="hasAdminAccess()"
   [buttonLabel]="'project.registrations.addRegistration' | translate"
+  [isButtonDisabled]="isProjectReadOnly()"
+  [buttonTooltip]="(isProjectReadOnly() ? 'common.errorMessages.actionUnavailable' : '') | translate"
   [title]="'navigation.registrations' | translate"
   (buttonClick)="addRegistration()"
 />

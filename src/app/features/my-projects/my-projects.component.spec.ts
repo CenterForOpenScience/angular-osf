@@ -9,6 +9,7 @@ import { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { MyProjectsTableComponent } from '@osf/shared/components/my-projects-table/my-projects-table.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SelectComponent } from '@osf/shared/components/select/select.component';
@@ -76,6 +77,7 @@ describe('MyProjectsComponent', () => {
     { selector: BookmarksSelectors.getBookmarks, value: [] },
     { selector: BookmarksSelectors.getBookmarksCollectionId, value: 'bookmark-collection-id' },
     { selector: BookmarksSelectors.getBookmarksTotalCount, value: 0 },
+    { selector: UserSelectors.isProjectCreationDisabled, value: false },
   ];
 
   function setup(
@@ -131,6 +133,13 @@ describe('MyProjectsComponent', () => {
   it('should create', () => {
     setup();
     expect(component).toBeTruthy();
+  });
+
+  it('should disable project creation and show tooltip when isProjectCreationDisabled is true', () => {
+    setup([{ selector: UserSelectors.isProjectCreationDisabled, value: true }]);
+
+    expect(component.projectCreationDisabled()).toBe(true);
+    expect(component.buttonTooltip()).toBe('myProjects.header.createProjectDisabledTooltip');
   });
 
   it('should dispatch get bookmarks collection id on init', () => {

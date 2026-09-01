@@ -4,12 +4,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
+import { Tooltip } from 'primeng/tooltip';
 
 import { filter } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
@@ -22,7 +24,7 @@ import { LinkResourceDialogComponent } from '../link-resource-dialog/link-resour
 
 @Component({
   selector: 'osf-linked-resources',
-  imports: [Button, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, ContributorsListComponent],
+  imports: [Button, Skeleton, Tooltip, TranslatePipe, TruncatedTextComponent, IconComponent, ContributorsListComponent],
   templateUrl: './linked-resources.component.html',
   styleUrl: './linked-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +40,11 @@ export class LinkedResourcesComponent {
   hasMoreLinkedResources = select(NodeLinksSelectors.hasMoreLinkedResources);
   isLoadingMoreLinkedResources = select(NodeLinksSelectors.isLoadingMoreLinkedResources);
   currentProject = select(ProjectOverviewSelectors.getProject);
+  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
+
+  readonly disabledButtonTooltip = computed(() =>
+    this.isProjectReadOnly() ? 'common.errorMessages.actionUnavailable' : ''
+  );
 
   private readonly actions = createDispatchMap({
     getLinkedResources: GetLinkedResources,

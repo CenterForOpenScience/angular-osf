@@ -29,7 +29,8 @@
         type="submit"
         class="w-10rem btn-full-width bg-primary-blue-second"
         [label]="'myProjects.settings.saveChanges' | translate"
-        [disabled]="projectForm.invalid"
+        [disabled]="projectForm.invalid || isProjectReadonly()"
+        [pTooltip]="(isProjectReadonly() ? 'common.errorMessages.actionUnavailable' : '') | translate"
       ></p-button>
     </div>
 

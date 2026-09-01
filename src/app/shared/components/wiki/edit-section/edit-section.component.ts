@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Panel } from 'primeng/panel';
+import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +15,7 @@ import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-s
 
 @Component({
   selector: 'osf-edit-section',
-  imports: [Checkbox, Panel, Button, TranslatePipe, FormsModule, LMarkdownEditorModule],
+  imports: [Checkbox, Panel, Button, Tooltip, TranslatePipe, FormsModule, LMarkdownEditorModule],
   templateUrl: './edit-section.component.html',
   styleUrl: './edit-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +26,7 @@ export class EditSectionComponent {
   readonly currentContent = input.required<string>();
   readonly versionContent = input.required<string>();
   readonly isSaving = input<boolean>(false);
+  readonly disableSaveButton = input<boolean>(false);
   readonly contentChange = output<string>();
   readonly saveContent = output<string>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

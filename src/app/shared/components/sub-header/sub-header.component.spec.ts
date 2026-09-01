@@ -128,6 +128,11 @@ describe('SubHeaderComponent', () => {
     expect(component.isButtonDisabled()).toBe(true);
   });
 
+  it('should set buttonTooltip input correctly', () => {
+    fixture.componentRef.setInput('buttonTooltip', 'Test button tooltip');
+    expect(component.buttonTooltip()).toBe('Test button tooltip');
+  });
+
   it('should emit buttonClick event', () => {
     const emitSpy = vi.spyOn(component.buttonClick, 'emit');
 
@@ -155,12 +160,14 @@ describe('SubHeaderComponent', () => {
     fixture.componentRef.setInput('description', 'Description with special chars: <>&"\'');
     fixture.componentRef.setInput('buttonLabel', 'Button with special chars: !@#$%');
     fixture.componentRef.setInput('tooltip', 'Tooltip with special chars: [{}]|\\');
+    fixture.componentRef.setInput('buttonTooltip', 'Button tooltip with special chars: @#$%()<>');
     fixture.componentRef.setInput('icon', 'pi-icon-with-special-chars');
 
     expect(component.title()).toBe('Title with special chars: @#$%^&*()');
     expect(component.description()).toBe('Description with special chars: <>&"\'');
     expect(component.buttonLabel()).toBe('Button with special chars: !@#$%');
     expect(component.tooltip()).toBe('Tooltip with special chars: [{}]|\\');
+    expect(component.buttonTooltip()).toBe('Button tooltip with special chars: @#$%()<>');
     expect(component.icon()).toBe('pi-icon-with-special-chars');
   });
 
@@ -169,12 +176,14 @@ describe('SubHeaderComponent', () => {
     fixture.componentRef.setInput('description', '');
     fixture.componentRef.setInput('buttonLabel', '');
     fixture.componentRef.setInput('tooltip', '');
+    fixture.componentRef.setInput('buttonTooltip', '');
     fixture.componentRef.setInput('icon', '');
 
     expect(component.title()).toBe('');
     expect(component.description()).toBe('');
     expect(component.buttonLabel()).toBe('');
     expect(component.tooltip()).toBe('');
+    expect(component.buttonTooltip()).toBe('');
     expect(component.icon()).toBe('');
   });
 
@@ -193,9 +202,11 @@ describe('SubHeaderComponent', () => {
     fixture.componentRef.setInput('showButton', true);
     fixture.componentRef.setInput('isButtonDisabled', true);
     fixture.componentRef.setInput('buttonLabel', 'Disabled Button');
+    fixture.componentRef.setInput('buttonTooltip', 'Disabled Button Tooltip');
 
     expect(component.showButton()).toBe(true);
     expect(component.isButtonDisabled()).toBe(true);
     expect(component.buttonLabel()).toBe('Disabled Button');
+    expect(component.buttonTooltip()).toBe('Disabled Button Tooltip');
   });
 });

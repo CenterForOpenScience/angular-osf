@@ -1,3 +1,5 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { MenuItem } from 'primeng/api';
@@ -5,11 +7,13 @@ import { Button } from 'primeng/button';
 import { Panel } from 'primeng/panel';
 import { PanelMenu } from 'primeng/panelmenu';
 import { Skeleton } from 'primeng/skeleton';
+import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { WikiItemType } from '@osf/shared/enums/wiki-type.enum';
 import { WikiModel } from '@osf/shared/models/wiki/wiki.model';
 import { WikiMenuItem } from '@osf/shared/models/wiki/wiki-menu.model';
@@ -22,7 +26,7 @@ import { RenameWikiDialogComponent } from '../rename-wiki-dialog/rename-wiki-dia
 
 @Component({
   selector: 'osf-wiki-list',
-  imports: [Button, Panel, PanelMenu, Skeleton, TranslatePipe],
+  imports: [Button, Panel, PanelMenu, Skeleton, Tooltip, TranslatePipe],
   templateUrl: './wiki-list.component.html',
   styleUrl: './wiki-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,12 +49,15 @@ export class WikiListComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
+  readonly isWikiReadonly = select(UserSelectors.isProjectReadOnly);
+
   wikiItemType = WikiItemType;
   expanded = signal(true);
 
   hasComponentsWikis = computed(() => this.componentsList().length > 0);
   homeWikiId = computed(() => this.list()?.find((wiki) => wiki.name.toLowerCase() === 'home')?.id);
   isHomeWikiSelected = computed(() => this.currentWikiId() === this.homeWikiId());
+  disabledButtonTooltip = computed(() => (this.isWikiReadonly() ? 'common.errorMessages.actionUnavailable' : ''));
 
   wikiMenu = computed(() => {
     const menu: WikiMenuItem[] = [

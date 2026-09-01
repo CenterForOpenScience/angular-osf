@@ -5,6 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { WikiItemType } from '@osf/shared/enums/wiki-type.enum';
 import { WikiModel } from '@osf/shared/models/wiki/wiki.model';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
@@ -14,6 +15,7 @@ import { ComponentWiki } from '@osf/shared/stores/wiki';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 import { WikiListComponent } from './wiki-list.component';
 
@@ -42,10 +44,13 @@ describe('WikiListComponent', () => {
     },
   ];
 
-  beforeEach(() => {
+  const defaultSignals: SignalOverride[] = [{ selector: UserSelectors.isProjectReadOnly, value: false }];
+
+  function setup({ selectorOverrides = defaultSignals } = {}) {
     mockCustomConfirmationService = CustomConfirmationServiceMockBuilder.create().build();
     mockRouter = RouterMockBuilder.create().withUrl('/project/abc123/wiki').build();
 
+    const signals = mergeSignalOverrides(defaultSignals, selectorOverrides ?? []);
     TestBed.configureTestingModule({
       imports: [WikiListComponent],
       providers: [
@@ -53,14 +58,16 @@ describe('WikiListComponent', () => {
         MockProvider(CustomDialogService),
         MockProvider(CustomConfirmationService, mockCustomConfirmationService),
         MockProvider(Router, mockRouter),
+        provideMockStore({ signals }),
       ],
     });
 
     fixture = TestBed.createComponent(WikiListComponent);
     component = fixture.componentInstance;
-  });
+  }
 
   it('should create', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -71,6 +78,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should have all required inputs', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -84,6 +92,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should have default values for optional inputs', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -95,6 +104,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should have WikiItemType enum available', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -105,6 +115,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should have expanded signal initialized to true', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -115,6 +126,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should compute hasComponentsWikis correctly', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -125,6 +137,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should compute hasComponentsWikis as false when empty', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -135,6 +148,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should compute isHomeWikiSelected correctly when home wiki is selected', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -145,6 +159,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should compute isHomeWikiSelected as false when other wiki is selected', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki2');
@@ -155,6 +170,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should compute homeWikiId correctly', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -165,6 +181,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should return true for canEditName when user can edit and item is not home', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -177,6 +194,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should return false for canEditName when item is home wiki', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -189,6 +207,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should return false for canEditName when user cannot edit', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -201,6 +220,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should compute wikiMenu with main wikis', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -215,6 +235,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should compute wikiMenu with components wikis when present', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -229,6 +250,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should open delete confirmation dialog when openDeleteWikiDialog is called', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -241,6 +263,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should emit deleteWiki when delete is confirmed', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -258,6 +281,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should toggle expanded state when collapseNavigation is called', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -276,6 +300,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should handle empty wiki list', () => {
+    setup();
     fixture.componentRef.setInput('list', []);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', '');
@@ -289,6 +314,7 @@ describe('WikiListComponent', () => {
   });
 
   it('should handle empty components list', () => {
+    setup();
     fixture.componentRef.setInput('list', mockWikiList);
     fixture.componentRef.setInput('resourceId', 'resource-123');
     fixture.componentRef.setInput('currentWikiId', 'wiki1');
@@ -299,5 +325,22 @@ describe('WikiListComponent', () => {
 
     const menu = component.wikiMenu();
     expect(menu.length).toBe(1);
+  });
+
+  it('should compute disabledButtonTooltip when wiki is read-only', () => {
+    const selectorOverrides: SignalOverride[] = [
+      {
+        selector: UserSelectors.isProjectReadOnly,
+        value: true,
+      },
+    ];
+    setup({ selectorOverrides });
+    fixture.componentRef.setInput('list', mockWikiList);
+    fixture.componentRef.setInput('resourceId', 'resource-123');
+    fixture.componentRef.setInput('currentWikiId', 'wiki1');
+    fixture.componentRef.setInput('componentsList', []);
+    fixture.detectChanges();
+
+    expect(component.disabledButtonTooltip()).toBe('common.errorMessages.actionUnavailable');
   });
 });

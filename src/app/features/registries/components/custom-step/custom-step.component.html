@@ -160,7 +160,7 @@
                 {{ 'shared.files.limitText' | translate }}
               </p>
               <p>
-                {{ 'shared.files.description' | translate }}
+                {{ fileUploadDescription() | translate }}
               </p>
               <div class="flex flex-wrap gap-2 mt-3 mb-3">
                 @for (file of attachedFiles[q.responseKey!] || []; track file) {

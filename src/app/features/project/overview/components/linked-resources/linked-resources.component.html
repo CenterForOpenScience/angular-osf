@@ -6,6 +6,8 @@
         severity="secondary"
         [label]="'project.overview.components.linkProjectsButton' | translate"
         (onClick)="openLinkProjectModal()"
+        [disabled]="isProjectReadOnly()"
+        [pTooltip]="disabledButtonTooltip() | translate"
       />
     }
   </div>

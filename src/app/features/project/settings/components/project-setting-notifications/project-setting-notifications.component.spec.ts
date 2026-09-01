@@ -2,11 +2,13 @@ import { MockComponent, MockPipe } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
 
 import { MOCK_NOTIFICATION_SUBSCRIPTIONS } from '@testing/mocks/notification-subscription.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { NotificationDescriptionPipe } from '../../pipes';
 import { ProjectDetailSettingAccordionComponent } from '../project-detail-setting-accordion/project-detail-setting-accordion.component';
@@ -26,7 +28,17 @@ describe('ProjectSettingNotificationsComponent', () => {
         MockComponent(ProjectDetailSettingAccordionComponent),
         MockPipe(NotificationDescriptionPipe),
       ],
-      providers: [provideOSFCore()],
+      providers: [
+        provideOSFCore(),
+        provideMockStore({
+          signals: [
+            {
+              selector: UserSelectors.isProjectReadOnly,
+              value: false,
+            },
+          ],
+        }),
+      ],
     });
 
     fixture = TestBed.createComponent(ProjectSettingNotificationsComponent);

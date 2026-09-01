@@ -2,7 +2,10 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
+
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { ProjectDetailSettingAccordionComponent } from '../project-detail-setting-accordion/project-detail-setting-accordion.component';
 
@@ -20,7 +23,17 @@ describe('SettingsWikiCardComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SettingsWikiCardComponent, MockComponent(ProjectDetailSettingAccordionComponent)],
-      providers: [provideOSFCore()],
+      providers: [
+        provideOSFCore(),
+        provideMockStore({
+          signals: [
+            {
+              selector: UserSelectors.isProjectReadOnly,
+              value: false,
+            },
+          ],
+        }),
+      ],
     });
 
     fixture = TestBed.createComponent(SettingsWikiCardComponent);

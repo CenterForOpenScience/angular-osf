@@ -10,6 +10,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-section/compare-section.component';
@@ -75,6 +76,7 @@ describe('WikiComponent', () => {
     { selector: WikiSelectors.getCompareVersionsLoading, value: false },
     { selector: WikiSelectors.isWikiAnonymous, value: false },
     { selector: CurrentResourceSelectors.hasWriteAccess, value: true },
+    { selector: UserSelectors.isProjectReadOnly, value: false },
   ];
 
   function setup({
@@ -252,5 +254,20 @@ describe('WikiComponent', () => {
     fixture.destroy();
 
     expect(store.dispatch).toHaveBeenCalledWith(new ClearWiki());
+  });
+
+  it('should disable the wiki edit button and show tooltip when isProjectReadOnly is true', async () => {
+    setup({
+      hasWriteAccess: true,
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
+    });
+    await fixture.whenStable();
+
+    expect(component.disabledEditTooltip()).toBe('common.errorMessages.actionUnavailable');
+
+    setup({ hasWriteAccess: true, selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: false }] });
+    await fixture.whenStable();
+
+    expect(component.disabledEditTooltip()).toBe('');
   });
 });

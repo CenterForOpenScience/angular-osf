@@ -8,6 +8,7 @@ import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { FieldType } from '@osf/shared/enums/field-type.enum';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -68,6 +69,7 @@ describe('CustomStepComponent', () => {
     const defaultSignals: SignalOverride[] = [
       { selector: RegistriesSelectors.getPagesSchema, value: overrides.pages ?? [MOCK_REGISTRIES_PAGE] },
       { selector: RegistriesSelectors.getStepsState, value: overrides.stepsState ?? {} },
+      { selector: UserSelectors.isProjectCreationDisabled, value: false },
     ];
     const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
 
@@ -163,6 +165,18 @@ describe('CustomStepComponent', () => {
     component.ngOnDestroy();
 
     expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should update file upload description based on isProjectCreationDisabled', () => {
+    const { component } = setup({
+      selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
+    });
+    expect(component.fileUploadDescription()).toBe('shared.files.descriptionNoProject');
+
+    const { component: component2 } = setup({
+      selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: false }],
+    });
+    expect(component2.fileUploadDescription()).toBe('shared.files.description');
   });
 
   it('should attach file and emit updateAction', () => {

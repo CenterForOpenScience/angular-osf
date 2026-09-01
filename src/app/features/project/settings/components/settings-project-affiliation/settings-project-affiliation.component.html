@@ -28,6 +28,8 @@
 
           @if (canRemoveAffiliation(affiliation)) {
             <p-button
+              [disabled]="isProjectReadOnly()"
+              [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
               class="danger-icon-btn"
               icon="fas fa-trash"
               severity="danger"

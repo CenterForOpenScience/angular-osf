@@ -50,6 +50,8 @@ const DEFAULT_SIGNALS: SignalOverride[] = [
   { selector: CollectionsSelectors.getRequiredMetadataTemplate, value: null },
   { selector: ProjectsSelectors.getSelectedProject, value: MOCK_PROJECT },
   { selector: UserSelectors.getCurrentUser, value: MOCK_USER },
+  { selector: UserSelectors.getActiveFlags, value: [] },
+  { selector: UserSelectors.isProjectReadOnly, value: false },
   { selector: MetadataSelectors.getCedarRecords, value: [] },
   { selector: AddToCollectionSelectors.getCurrentCollectionSubmission, value: null },
 ];
@@ -330,5 +332,10 @@ describe('AddToCollectionComponent', () => {
     expect(mockLoaderService.hide).toHaveBeenCalled();
     expect(component.allowNavigation()).toBe(true);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['project-1', 'overview']);
+  });
+
+  it('should disable the add to collection button if isProjectReadOnly', () => {
+    const { component } = setup({ selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }] });
+    expect(component.disabledAddButtonTooltip()).toBe('common.errorMessages.actionUnavailable');
   });
 });

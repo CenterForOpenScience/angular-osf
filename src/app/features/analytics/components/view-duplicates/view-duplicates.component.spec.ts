@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { RegistrySelectors } from '@osf/features/registry/store/registry';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
@@ -24,9 +25,13 @@ import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { ViewDuplicatesComponent } from './view-duplicates.component';
+
+interface SetupOverrides extends BaseSetupOverrides {
+  selectors?: any[];
+}
 
 describe('Component: View Duplicates', () => {
   let component: ViewDuplicatesComponent;
@@ -35,13 +40,25 @@ describe('Component: View Duplicates', () => {
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   let mockCustomDialogService: ReturnType<CustomDialogServiceMockBuilder['build']>;
 
-  beforeEach(() => {
+  function setup(overrides: SetupOverrides = {}) {
     mockCustomDialogService = CustomDialogServiceMockBuilder.create().build();
     routerMock = RouterMockBuilder.create().build();
     activatedRouteMock = ActivatedRouteMockBuilder.create()
       .withParams({ id: 'rid' })
       .withData({ resourceType: ResourceType.Project })
       .build();
+
+    const defaultSelectors = [
+      { selector: DuplicatesSelectors.getDuplicates, value: [] },
+      { selector: DuplicatesSelectors.getDuplicatesLoading, value: false },
+      { selector: DuplicatesSelectors.getDuplicatesTotalCount, value: 0 },
+      { selector: ProjectOverviewSelectors.getProject, value: MOCK_PROJECT_OVERVIEW },
+      { selector: ProjectOverviewSelectors.isProjectAnonymous, value: false },
+      { selector: RegistrySelectors.getRegistry, value: undefined },
+      { selector: RegistrySelectors.isRegistryAnonymous, value: false },
+      { selector: UserSelectors.isProjectCreationDisabled, value: false },
+    ];
+    const signals = mergeSignalOverrides(defaultSelectors, overrides.selectors || []);
 
     TestBed.configureTestingModule({
       imports: [
@@ -58,15 +75,7 @@ describe('Component: View Duplicates', () => {
       providers: [
         provideOSFCore(),
         provideMockStore({
-          signals: [
-            { selector: DuplicatesSelectors.getDuplicates, value: [] },
-            { selector: DuplicatesSelectors.getDuplicatesLoading, value: false },
-            { selector: DuplicatesSelectors.getDuplicatesTotalCount, value: 0 },
-            { selector: ProjectOverviewSelectors.getProject, value: MOCK_PROJECT_OVERVIEW },
-            { selector: ProjectOverviewSelectors.isProjectAnonymous, value: false },
-            { selector: RegistrySelectors.getRegistry, value: undefined },
-            { selector: RegistrySelectors.isRegistryAnonymous, value: false },
-          ],
+          signals,
         }),
         MockProvider(CustomDialogService, mockCustomDialogService),
         MockProvider(Router, routerMock),
@@ -78,13 +87,23 @@ describe('Component: View Duplicates', () => {
     component = fixture.componentInstance;
 
     fixture.detectChanges();
-  });
+  }
 
   it('should create', () => {
+    setup();
     expect(component).toBeTruthy();
   });
 
+  it('should disable fork button and show tooltip when isProjectCreationDisabled is true', () => {
+    setup({
+      selectors: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
+    });
+    expect(component.preventDuplicateCreation()).toBe(true);
+    expect(component.duplicateButtonTooltip()).toBe('project.overview.actions.duplicatingProjectsNotAllowed');
+  });
+
   it('should open ForkDialog with width 450px when small and not refresh on failure', () => {
+    setup();
     (component as any).actions = { ...component.actions, getDuplicates: vi.fn() };
 
     const openSpy = vi
@@ -98,12 +117,14 @@ describe('Component: View Duplicates', () => {
   });
 
   it('should update currentPage when page is defined', () => {
+    setup();
     const event: PaginatorState = { page: 1 } as PaginatorState;
     component.onPageChange(event);
     expect(component.currentPage()).toBe(2);
   });
 
   it('should not update currentPage when page is undefined', () => {
+    setup();
     component.currentPage.set(5);
     const event: PaginatorState = { page: undefined } as PaginatorState;
     component.onPageChange(event);

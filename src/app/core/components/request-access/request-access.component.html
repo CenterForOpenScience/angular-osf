@@ -1,35 +1,44 @@
 <section class="container text-center flex flex-column flex-1 my-7 mx-3 p-3 md:p-4">
-  <h2>{{ 'requestAccess.title' | translate }}</h2>
+  <h2>{{ titleTranslation() | translate }}</h2>
 
-  <p class="mt-4">{{ 'requestAccess.message' | translate }}</p>
+  <p class="mt-4">
+    <span [innerHTML]="messageTranslation() | translate"></span>
+    @if (isProjectReadOnly()) {
+      <a class="ml-1 font-bold" [href]="'mailto:' + supportEmail">{{ supportEmail }}</a>
+    }
+  </p>
 
-  <div class="flex flex-column text-left mt-4">
-    <label class="font-bold" for="comment">
-      {{ 'requestAccess.commentLabel' | translate }}
-    </label>
+  @if (!isProjectReadOnly()) {
+    <div class="flex flex-column text-left mt-4">
+      <label class="font-bold" for="comment">
+        {{ 'requestAccess.commentLabel' | translate }}
+      </label>
 
-    <textarea
-      class="comment-input"
-      pTextarea
-      id="comment"
-      [rows]="3"
-      [maxLength]="commentLimit"
-      [(ngModel)]="comment"
-    ></textarea>
-  </div>
+      <textarea
+        class="comment-input"
+        pTextarea
+        id="comment"
+        [rows]="3"
+        [maxLength]="commentLimit"
+        [(ngModel)]="comment"
+      ></textarea>
+    </div>
+  }
 
   <div class="flex align-items-center gap-3 mt-6">
-    <p-button
-      class="w-full"
-      styleClass="w-full"
-      [label]="'requestAccess.requestAccess' | translate"
-      (onClick)="requestAccess()"
-    ></p-button>
+    @if (!isProjectReadOnly()) {
+      <p-button
+        class="w-full"
+        styleClass="w-full"
+        [label]="'requestAccess.requestAccess' | translate"
+        (onClick)="requestAccess()"
+      ></p-button>
+    }
 
     <p-button
       class="w-full"
       styleClass="w-full"
-      severity="secondary"
+      [severity]="isProjectReadOnly() ? 'primary' : 'secondary'"
       [label]="'requestAccess.switchAccount' | translate"
       (onClick)="switchAccount()"
     ></p-button>

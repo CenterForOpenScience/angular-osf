@@ -69,6 +69,7 @@ export class DashboardComponent implements OnInit {
   readonly projects = select(MyResourcesSelectors.getProjects);
   readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
   readonly areProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
+  readonly projectCreationDisabled = select(UserSelectors.isProjectCreationDisabled);
   readonly activeFlags = select(UserSelectors.getActiveFlags);
 
   readonly actions = createDispatchMap({ getMyProjects: GetMyProjects, clearMyResources: ClearMyResources });
@@ -82,7 +83,17 @@ export class DashboardComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
+  readonly buttonTooltip = computed(() => {
+    return this.projectCreationDisabled() ? 'home.loggedIn.dashboard.createProjectDisabledTooltip' : '';
+  });
+
   readonly existsProjects = computed(() => this.projects().length || !!this.searchControl.value?.length);
+  readonly noProjectsMessage = computed(() => {
+    if (this.projectCreationDisabled()) {
+      return 'home.loggedIn.dashboard.noCreatedProjectAndCreateProjectDisabled';
+    }
+    return 'home.loggedIn.dashboard.noCreatedProject';
+  });
   readonly subHeaderTitle = computed(() =>
     this.existsProjects() ? 'home.loggedIn.dashboard.title' : 'home.loggedIn.dashboard.welcome'
   );

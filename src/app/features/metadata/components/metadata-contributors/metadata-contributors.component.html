@@ -7,6 +7,9 @@
         (onClick)="openEditContributorDialog.emit()"
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
+        [disabled]="disabled()"
+        [pTooltip]="disabledButtonTooltip()"
+        tooltipPosition="left"
         data-test-edit-contributors-button
       ></p-button>
     }

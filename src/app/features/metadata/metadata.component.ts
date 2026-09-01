@@ -19,6 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { MetadataTabsComponent } from '@osf/shared/components/metadata-tabs/metadata-tabs.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
@@ -160,6 +161,8 @@ export class MetadataComponent implements OnInit, OnDestroy {
   hasWriteAccess = select(MetadataSelectors.hasWriteAccess);
   hasAdminAccess = select(MetadataSelectors.hasAdminAccess);
 
+  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
+
   provider = this.environment.defaultProvider;
 
   private readonly resourceNameMap = new Map<ResourceType, string>([
@@ -207,8 +210,23 @@ export class MetadataComponent implements OnInit, OnDestroy {
       (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
   );
 
+  isTagsReadOnly = computed(() => {
+    if (this.isProjectReadOnly()) {
+      return true;
+    }
+    return this.isRegistrationType() ? !this.hasAdminAccess() : !this.hasWriteAccess();
+  });
+
+  isSubjectsReadOnly = computed(() => {
+    if (this.isProjectReadOnly()) {
+      return true;
+    }
+    return !this.hasAdminAccess();
+  });
+
   isProjectType = computed(() => this.resourceType() === ResourceType.Project);
   isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
+  disabledButtonTooltip = computed(() => (this.isProjectReadOnly() ? 'common.errorMessages.actionUnavailable' : ''));
 
   constructor() {
     effect(() => {

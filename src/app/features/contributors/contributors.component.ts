@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { Tooltip } from 'primeng/tooltip';
 
 import { debounceTime, distinctUntilChanged, filter, map, of, switchMap } from 'rxjs';
 
@@ -94,6 +95,7 @@ import { ResourceInfoModel } from './models';
     RequestAccessTableComponent,
     ViewOnlyTableComponent,
     TranslatePipe,
+    Tooltip,
   ],
   templateUrl: './contributors.component.html',
   styleUrl: './contributors.component.scss',
@@ -138,6 +140,7 @@ export class ContributorsComponent implements OnInit, OnDestroy {
   readonly hasAdminAccess = select(CurrentResourceSelectors.hasResourceAdminAccess);
   readonly resourceAccessRequestEnabled = select(CurrentResourceSelectors.resourceAccessRequestEnabled);
   readonly currentUser = select(UserSelectors.getCurrentUser);
+  readonly isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
 
   readonly tableParams = computed<TableParameters>(() => ({
     ...DEFAULT_TABLE_PARAMS,
@@ -148,6 +151,7 @@ export class ContributorsComponent implements OnInit, OnDestroy {
     rows: this.pageSize(),
   }));
 
+  disableAddButton = computed(() => this.isContributorsLoading() || this.isProjectReadOnly() || !this.hasAdminAccess());
   canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
   searchPlaceholder = computed(() =>
     this.resourceType() === ResourceType.Project

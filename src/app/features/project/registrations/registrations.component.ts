@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { CustomPaginatorComponent } from '@osf/shared/components/custom-paginator/custom-paginator.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
@@ -45,6 +46,7 @@ export class RegistrationsComponent implements OnInit {
   registrations = select(RegistrationsSelectors.getRegistrations);
   registrationsTotalCount = select(RegistrationsSelectors.getRegistrationsTotalCount);
   isRegistrationsLoading = select(RegistrationsSelectors.isRegistrationsLoading);
+  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
   actions = createDispatchMap({ getRegistrations: GetRegistrations });
 
   itemsPerPage = 10;

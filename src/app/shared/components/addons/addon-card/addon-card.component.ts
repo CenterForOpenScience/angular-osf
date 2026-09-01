@@ -1,13 +1,15 @@
-import { createDispatchMap } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { getAddonTypeString, isConfiguredAddon } from '@osf/shared/helpers/addon-type.helper';
+import { UserSelectors } from '@osf/core/store/user';
+import { getAddonTypeString, isConfiguredAddon, isStorageAddon } from '@osf/shared/helpers/addon-type.helper';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { AddonModel } from '@shared/models/addons/addon.model';
@@ -18,7 +20,7 @@ import { DeleteAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({
   selector: 'osf-addon-card',
-  imports: [Button, TranslatePipe],
+  imports: [Button, Tooltip, TranslatePipe],
   templateUrl: './addon-card.component.html',
   styleUrl: './addon-card.component.scss',
 })
@@ -31,6 +33,8 @@ export class AddonCardComponent {
   readonly card = input<AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | AddonCardModel | null>(null);
   readonly isConnected = input<boolean>(false);
   readonly hasAdminAccess = input<boolean>(false);
+
+  readonly isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
 
   readonly actualAddon = computed(() => {
     const actualCard = this.card();
@@ -72,6 +76,20 @@ export class AddonCardComponent {
     }
 
     return hasAdmin || isOwner;
+  });
+
+  readonly shouldDisableConnect = computed(() => {
+    if (this.isConfiguredAddon() || this.isConnected()) {
+      return false;
+    }
+    if (this.isProjectReadOnly() && !this.isConnected() && isStorageAddon(this.actualAddon())) {
+      return true;
+    }
+    return false;
+  });
+
+  readonly buttonTooltip = computed(() => {
+    return this.shouldDisableConnect() ? 'common.errorMessages.actionUnavailable' : '';
   });
 
   readonly buttonLabel = computed(() => {

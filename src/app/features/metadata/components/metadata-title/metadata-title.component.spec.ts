@@ -31,6 +31,16 @@ describe('MetadataTitleComponent', () => {
     expect(component.title()).toEqual(mockTitle);
   });
 
+  it('should set disabled inputs', () => {
+    fixture.componentRef.setInput('title', mockTitle);
+    fixture.componentRef.setInput('disabled', true);
+    fixture.componentRef.setInput('disabledButtonTooltip', 'Editing is disabled');
+    fixture.detectChanges();
+
+    expect(component.disabled()).toBe(true);
+    expect(component.disabledButtonTooltip()).toBe('Editing is disabled');
+  });
+
   it('should emit openEditTitleDialog event', () => {
     const emitSpy = vi.spyOn(component.openEditTitleDialog, 'emit');
 

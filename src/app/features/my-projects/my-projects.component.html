@@ -3,6 +3,8 @@
     [showButton]="true"
     [buttonLabel]="'myProjects.header.createProject' | translate"
     [title]="'myProjects.header.title' | translate"
+    [isButtonDisabled]="projectCreationDisabled()"
+    [buttonTooltip]="buttonTooltip() | translate"
     [icon]="'custom-icon-projects'"
     (buttonClick)="createProject()"
   />

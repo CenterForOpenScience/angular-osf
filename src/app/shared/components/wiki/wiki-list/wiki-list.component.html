@@ -18,6 +18,8 @@
           @if (canEdit()) {
             <p-button
               [label]="'project.wiki.addNewWiki' | translate"
+              [disabled]="isWikiReadonly()"
+              [pTooltip]="disabledButtonTooltip() | translate"
               icon="fas fa-plus"
               severity="success"
               outlined
@@ -39,6 +41,8 @@
             <p-button
               icon="fas fa-trash"
               [label]="'common.buttons.delete' | translate"
+              [disabled]="isWikiReadonly()"
+              [pTooltip]="disabledButtonTooltip() | translate"
               severity="danger"
               outlined
               (onClick)="openDeleteWikiDialog()"
@@ -72,6 +76,8 @@
                         <p-button
                           icon="fas fa-pencil"
                           [rounded]="true"
+                          [disabled]="isWikiReadonly()"
+                          [pTooltip]="disabledButtonTooltip() | translate"
                           variant="text"
                           osfStopPropagation
                           (onClick)="openRenameWikiDialog(item.id, item.label)"
@@ -104,6 +110,8 @@
           <p-button
             class="btn-icon-only"
             icon="fas fa-plus"
+            [disabled]="isWikiReadonly()"
+            [pTooltip]="disabledButtonTooltip() | translate"
             raised
             outlined
             severity="success"
@@ -117,6 +125,8 @@
                 raised
                 outlined
                 severity="danger"
+                [disabled]="isWikiReadonly()"
+                [pTooltip]="disabledButtonTooltip() | translate"
                 (onClick)="openDeleteWikiDialog()"
               />
             }

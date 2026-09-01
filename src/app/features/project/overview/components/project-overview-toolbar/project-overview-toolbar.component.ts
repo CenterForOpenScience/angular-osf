@@ -9,7 +9,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { timer } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -75,6 +75,13 @@ export class ProjectOverviewToolbarComponent {
 
   duplicatedProject = select(ProjectOverviewSelectors.getDuplicatedProject);
   isAuthenticated = select(UserSelectors.isAuthenticated);
+  preventDuplicateCreation = select(UserSelectors.isProjectCreationDisabled);
+  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
+
+  disableProjectPrivacyToggle = computed(() => this.isProjectReadOnly() && this.isPublic());
+  projectReadOnlyTooltip = computed(() =>
+    this.disableProjectPrivacyToggle() ? 'common.errorMessages.actionUnavailable' : ''
+  );
 
   actions = createDispatchMap({
     getResourceBookmark: GetResourceBookmark,
@@ -96,9 +103,7 @@ export class ProjectOverviewToolbarComponent {
     },
     {
       label: 'project.overview.actions.viewDuplication',
-      command: () => {
-        this.router.navigate(['../analytics/duplicates'], { relativeTo: this.route });
-      },
+      command: () => this.navigateToDuplicatesView(),
     },
   ];
 
@@ -204,5 +209,9 @@ export class ProjectOverviewToolbarComponent {
         },
         complete: () => this.actions.clearDuplicatedProject(),
       });
+  }
+
+  navigateToDuplicatesView(): void {
+    this.router.navigate(['../analytics/duplicates'], { relativeTo: this.route });
   }
 }

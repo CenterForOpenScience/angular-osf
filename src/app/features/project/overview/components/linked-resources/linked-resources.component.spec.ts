@@ -2,6 +2,7 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -10,7 +11,7 @@ import { NodeLinksSelectors } from '@osf/shared/stores/node-links';
 import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 
 import { ProjectOverviewSelectors } from '../../store';
 import { DeleteNodeLinkDialogComponent } from '../delete-node-link-dialog/delete-node-link-dialog.component';
@@ -29,21 +30,24 @@ describe('LinkedProjectsComponent', () => {
     { ...MOCK_NODE_WITH_ADMIN, id: 'resource-3', title: 'Linked Resource 3' },
   ];
 
-  beforeEach(() => {
+  function setup(selectorOverrides?: SignalOverride[]) {
     customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
+    const defaultSignals: SignalOverride[] = [
+      { selector: NodeLinksSelectors.getLinkedResources, value: mockLinkedResources },
+      { selector: NodeLinksSelectors.getLinkedResourcesLoading, value: false },
+      { selector: NodeLinksSelectors.hasMoreLinkedResources, value: false },
+      { selector: NodeLinksSelectors.isLoadingMoreLinkedResources, value: false },
+      { selector: ProjectOverviewSelectors.getProject, value: MOCK_NODE_WITH_ADMIN },
+      { selector: UserSelectors.isProjectReadOnly, value: false },
+    ];
+    const signals = mergeSignalOverrides(defaultSignals, selectorOverrides);
 
     TestBed.configureTestingModule({
       imports: [LinkedResourcesComponent, ...MockComponents(IconComponent, ContributorsListComponent)],
       providers: [
         provideOSFCore(),
         provideMockStore({
-          signals: [
-            { selector: NodeLinksSelectors.getLinkedResources, value: mockLinkedResources },
-            { selector: NodeLinksSelectors.getLinkedResourcesLoading, value: false },
-            { selector: NodeLinksSelectors.hasMoreLinkedResources, value: false },
-            { selector: NodeLinksSelectors.isLoadingMoreLinkedResources, value: false },
-            { selector: ProjectOverviewSelectors.getProject, value: MOCK_NODE_WITH_ADMIN },
-          ],
+          signals: signals,
         }),
         MockProvider(CustomDialogService, customDialogServiceMock),
       ],
@@ -53,9 +57,10 @@ describe('LinkedProjectsComponent', () => {
     component = fixture.componentInstance;
     fixture.componentRef.setInput('canEdit', true);
     fixture.detectChanges();
-  });
+  }
 
   it('should open LinkResourceDialogComponent with correct config', () => {
+    setup();
     component.openLinkProjectModal();
 
     expect(customDialogServiceMock.open).toHaveBeenCalledWith(LinkResourceDialogComponent, {
@@ -66,6 +71,7 @@ describe('LinkedProjectsComponent', () => {
   });
 
   it('should find resource by id and open DeleteNodeLinkDialogComponent with correct config when resource exists', () => {
+    setup();
     component.openDeleteResourceModal('resource-2');
 
     expect(customDialogServiceMock.open).toHaveBeenCalledWith(DeleteNodeLinkDialogComponent, {
@@ -76,10 +82,19 @@ describe('LinkedProjectsComponent', () => {
   });
 
   it('should return early and not open dialog when resource is not found', () => {
+    setup();
     customDialogServiceMock.open.mockClear();
 
     component.openDeleteResourceModal('non-existent-id');
 
     expect(customDialogServiceMock.open).not.toHaveBeenCalled();
+  });
+
+  it('should return disabledButtonTooltip based on isProjectReadOnly', () => {
+    setup();
+    expect(component.disabledButtonTooltip()).toBe('');
+
+    setup([{ selector: UserSelectors.isProjectReadOnly, value: true }]);
+    expect(component.disabledButtonTooltip()).toBe('common.errorMessages.actionUnavailable');
   });
 });

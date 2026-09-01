@@ -1,9 +1,12 @@
+import { select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { SubscriptionEvent } from '@osf/shared/enums/subscriptions/subscription-event.enum';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
 import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
@@ -23,6 +26,8 @@ export class ProjectSettingNotificationsComponent {
   notifications = input.required<NotificationSubscription[]>();
   title = input<string>();
   notificationEmitValue = output<NotificationSubscription>();
+
+  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
 
   allAccordionData: RightControl[] | undefined = [];
 

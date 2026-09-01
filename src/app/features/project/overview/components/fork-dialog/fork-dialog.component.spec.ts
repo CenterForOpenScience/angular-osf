@@ -4,10 +4,11 @@ import { MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { EMPTY } from 'rxjs';
+import { throwError } from 'rxjs';
 
 import { Mock } from 'vitest';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -105,18 +106,21 @@ describe('ForkDialogComponent', () => {
     component.handleForkConfirm();
 
     expect(store.dispatch).toHaveBeenCalledWith(new ForkResource('project-1', ResourceType.Project));
-    expect(dialogRef.close).toHaveBeenCalledWith({ success: true });
+    expect(dialogRef.close).toHaveBeenCalledWith();
     expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.fork.success');
   });
 
-  it('should still close dialog and show toast when fork action errors', () => {
+  it('should keep dialog open and show toast when fork action errors', () => {
+    const errorDetail = 'Fork creation failed';
     setup({ resourceId: 'project-1', resourceType: ResourceType.Project });
     (store.dispatch as Mock).mockClear();
-    (store.dispatch as Mock).mockReturnValueOnce(EMPTY);
+    (store.dispatch as Mock).mockReturnValueOnce(
+      throwError(() => new HttpErrorResponse({ status: 405, error: { errors: [{ detail: errorDetail }] } }))
+    );
 
     component.handleForkConfirm();
     expect(store.dispatch).toHaveBeenCalledWith(new ForkResource('project-1', ResourceType.Project));
-    expect(dialogRef.close).toHaveBeenCalledWith({ success: true });
-    expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.fork.success');
+    expect(dialogRef.close).callCount(0);
+    expect(toastService.showError).toHaveBeenCalledWith(errorDetail);
   });
 });

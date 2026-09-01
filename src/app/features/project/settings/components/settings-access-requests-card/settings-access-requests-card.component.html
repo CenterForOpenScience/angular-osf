@@ -6,11 +6,16 @@
       [binary]="true"
       [ngModel]="accessRequest()"
       (ngModelChange)="accessRequestChange.emit($event)"
+      [disabled]="isProjectReadOnly()"
       inputId="accessRequest"
       name="ongoing"
     ></p-checkbox>
 
-    <label class="mb-0 ml-2 cursor-pointer" [for]="'accessRequest'">
+    <label
+      [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
+      class="mb-0 ml-2 cursor-pointer"
+      [for]="'accessRequest'"
+    >
       {{ 'myProjects.settings.accessRequestsText' | translate }}
     </label>
   </div>

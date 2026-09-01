@@ -9,12 +9,15 @@
           <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
         </div>
 
-        <p-toggleswitch
-          class="visibility-switch"
-          [ariaLabel]="'common.accessibility.toggleProjectVisibility' | translate"
-          [(ngModel)]="isPublic"
-          (onChange)="handleToggleProjectPublicity()"
-        />
+        <span [pTooltip]="projectReadOnlyTooltip() | translate">
+          <p-toggleswitch
+            class="visibility-switch"
+            [ariaLabel]="'common.accessibility.toggleProjectVisibility' | translate"
+            [(ngModel)]="isPublic"
+            (onChange)="handleToggleProjectPublicity()"
+            [disabled]="disableProjectPrivacyToggle()"
+          />
+        </span>
 
         <div class="flex gap-2" [class.inactive]="!isPublic()">
           <i class="fas fa-lock-open"></i>
@@ -59,23 +62,36 @@
             }
 
             @if (!viewOnly()) {
-              <p-button
-                class="flex"
-                (click)="forkActionMenu.toggle($event)"
-                [pTooltip]="'project.overview.tooltips.duplicate' | translate"
-                tooltipPosition="bottom"
-                [ariaLabel]="'project.overview.tooltips.duplicate' | translate"
-              >
-                <span class="font-bold">{{ resource.forksCount }}</span>
-                <i class="fas fa-clone text-2xl"></i>
-                <p-menu appendTo="body" #forkActionMenu [model]="forkActionItems" popup>
-                  <ng-template #item let-item>
-                    <a class="p-menu-item-link">
-                      {{ item.label | translate }}
-                    </a>
-                  </ng-template>
-                </p-menu>
-              </p-button>
+              @if (preventDuplicateCreation()) {
+                <p-button
+                  class="flex"
+                  (click)="navigateToDuplicatesView()"
+                  [pTooltip]="'project.overview.actions.viewDuplication' | translate"
+                  tooltipPosition="bottom"
+                  [ariaLabel]="'project.overview.actions.viewDuplication' | translate"
+                >
+                  <span class="font-bold">{{ resource.forksCount }}</span>
+                  <i class="fas fa-clone text-2xl"></i>
+                </p-button>
+              } @else {
+                <p-button
+                  class="flex"
+                  (click)="forkActionMenu.toggle($event)"
+                  [pTooltip]="'project.overview.tooltips.duplicate' | translate"
+                  tooltipPosition="bottom"
+                  [ariaLabel]="'project.overview.tooltips.duplicate' | translate"
+                >
+                  <span class="font-bold">{{ resource.forksCount }}</span>
+                  <i class="fas fa-clone text-2xl"></i>
+                  <p-menu appendTo="body" #forkActionMenu [model]="forkActionItems" popup>
+                    <ng-template #item let-item>
+                      <a class="p-menu-item-link">
+                        {{ item.label | translate }}
+                      </a>
+                    </ng-template>
+                  </p-menu>
+                </p-button>
+              }
             }
 
             @if (!viewOnly()) {

@@ -18,6 +18,8 @@
       <div class="flex gap-2 ml-auto">
         @if (canUpdateFiles()) {
           <p-button
+            [disabled]="isProjectReadOnly()"
+            [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
             icon="fas fa-arrows-alt"
             outlined
             raised
@@ -27,6 +29,8 @@
         }
 
         <p-button
+          [disabled]="isProjectReadOnly()"
+          [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
           icon="fas fa-copy"
           severity="success"
           outlined
@@ -36,6 +40,8 @@
         />
         @if (canUpdateFiles()) {
           <p-button
+            [disabled]="isProjectReadOnly()"
+            [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
             icon="fas fa-trash"
             severity="danger"
             outlined

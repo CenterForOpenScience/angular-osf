@@ -6,30 +6,37 @@
       [binary]="true"
       [ngModel]="wikiEnabled()"
       (ngModelChange)="wikiChangeEmit.emit($event)"
+      [disabled]="isProjectReadOnly()"
       inputId="wiki"
       name="ongoing"
     ></p-checkbox>
 
-    <label class="mb-0 ml-2" [for]="'wiki'">
+    <label
+      [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
+      class="mb-0 ml-2"
+      [for]="'wiki'"
+    >
       {{ 'myProjects.settings.wikiText' | translate: { projectName: title() } }}
     </label>
   </div>
 
-  <h2 class="py-4">{{ 'myProjects.settings.wikiConfigureTitle' | translate }}</h2>
+  @if (!isProjectReadOnly()) {
+    <h2 class="py-4">{{ 'myProjects.settings.wikiConfigureTitle' | translate }}</h2>
 
-  <p class="pb-4">{{ 'myProjects.settings.wikiConfigureText' | translate }}</p>
+    <p class="pb-4">{{ 'myProjects.settings.wikiConfigureText' | translate }}</p>
 
-  <osf-project-detail-setting-accordion
-    (emitValueChange)="changeEmittedValue($event)"
-    [title]="title()"
-    [rightControls]="allAccordionData"
-    [disabledRightControls]="!isPublic()"
-  >
-    <div class="flex align-items-baseline gap-2">
-      <i class="fas fa-minus text-sm p-3"></i>
-      <span>
-        {{ 'myProjects.settings.' + (anyoneCanEditWiki() ? 'enabledForWiki' : 'disabledForWiki') | translate }}
-      </span>
-    </div>
-  </osf-project-detail-setting-accordion>
+    <osf-project-detail-setting-accordion
+      (emitValueChange)="changeEmittedValue($event)"
+      [title]="title()"
+      [rightControls]="allAccordionData"
+      [disabledRightControls]="!isPublic() || isProjectReadOnly()"
+    >
+      <div class="flex align-items-baseline gap-2">
+        <i class="fas fa-minus text-sm p-3"></i>
+        <span>
+          {{ 'myProjects.settings.' + (anyoneCanEditWiki() ? 'enabledForWiki' : 'disabledForWiki') | translate }}
+        </span>
+      </div>
+    </osf-project-detail-setting-accordion>
+  }
 </p-card>

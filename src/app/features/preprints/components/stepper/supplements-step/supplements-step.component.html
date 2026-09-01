@@ -25,6 +25,8 @@
       styleClass="w-full"
       [label]="'preprints.preprintStepper.supplements.options.createNew' | translate"
       severity="secondary"
+      [disabled]="createProjectDisabled()"
+      [pTooltip]="createProjectTooltip() | translate"
       (onClick)="selectSupplementOption(SupplementOptions.CreateNewProject)"
     />
   </section>

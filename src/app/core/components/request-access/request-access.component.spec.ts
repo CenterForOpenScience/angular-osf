@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '@core/services/auth.service';
+import { UserSelectors } from '@core/store/user';
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
 import { RequestAccessService } from '@osf/shared/services/request-access.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -18,9 +19,16 @@ import { AuthServiceMock, AuthServiceMockType } from '@testing/providers/auth-se
 import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { RequestAccessComponent } from './request-access.component';
+
+interface SetupOverrides extends BaseSetupOverrides {
+  routeId?: string;
+  requestAccessResult?: Observable<void>;
+  requestAccessError?: HttpErrorResponse;
+}
 
 describe('RequestAccessComponent', () => {
   let fixture: ComponentFixture<RequestAccessComponent>;
@@ -31,12 +39,10 @@ describe('RequestAccessComponent', () => {
   let toastServiceMock: ToastServiceMockType;
   let authServiceMock: AuthServiceMockType;
 
-  function setup(overrides?: {
-    routeId?: string;
-    requestAccessResult?: Observable<void>;
-    requestAccessError?: HttpErrorResponse;
-  }) {
+  function setup(overrides?: SetupOverrides) {
     const routeId = overrides?.routeId ?? 'project-1';
+    const defaultSignals = [{ selector: UserSelectors.isProjectReadOnly, value: false }];
+    const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides ?? []);
     routerMock = RouterMockBuilder.create().withNavigate(vi.fn().mockResolvedValue(true)).build();
     loaderServiceMock = new LoaderServiceMock();
     toastServiceMock = ToastServiceMock.simple();
@@ -60,6 +66,7 @@ describe('RequestAccessComponent', () => {
         MockProvider(RequestAccessService, requestAccessServiceMock),
         MockProvider(ToastService, toastServiceMock),
         MockProvider(AuthService, authServiceMock),
+        provideMockStore({ signals }),
       ],
     });
 
@@ -84,6 +91,23 @@ describe('RequestAccessComponent', () => {
     const supportLink = fixture.nativeElement.querySelector('a');
     expect(supportLink.getAttribute('href')).toBe(`mailto:${component.supportEmail}`);
     expect(supportLink.textContent).toContain(component.supportEmail);
+  });
+
+  it('should expose title and message translations based on read-only state', () => {
+    setup({ selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }] });
+    expect(component.titleTranslation()).toBe('requestAccess.readOnlyTitle');
+    expect(component.messageTranslation()).toBe('requestAccess.messageReadOnly');
+
+    const buttons = fixture.nativeElement.querySelectorAll('p-button');
+    expect(buttons).toHaveLength(1);
+  });
+
+  it('should expose title and message translations based on non-read-only state', () => {
+    setup({ selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: false }] });
+    expect(component.titleTranslation()).toBe('requestAccess.title');
+    expect(component.messageTranslation()).toBe('requestAccess.message');
+    const buttons = fixture.nativeElement.querySelectorAll('p-button');
+    expect(buttons.length).toBe(2);
   });
 
   it('should request access and handle success flow', () => {

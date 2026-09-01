@@ -4,11 +4,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
+import { Tooltip } from 'primeng/tooltip';
 
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -23,7 +25,7 @@ import { DeleteComponentDialogComponent } from '../delete-component-dialog/delet
 
 @Component({
   selector: 'osf-project-components',
-  imports: [Button, CdkDrag, CdkDropList, Skeleton, TranslatePipe, ComponentCardComponent],
+  imports: [Button, CdkDrag, CdkDropList, Skeleton, Tooltip, TranslatePipe, ComponentCardComponent],
   templateUrl: './overview-components.component.html',
   styleUrl: './overview-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +44,7 @@ export class OverviewComponentsComponent {
   isComponentsSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
   hasMoreComponents = select(ProjectOverviewSelectors.hasMoreComponents);
   project = select(ProjectOverviewSelectors.getProject);
+  preventComponentCreation = select(UserSelectors.isProjectCreationDisabled);
 
   reorderedComponents = signal<NodeModel[]>([]);
 
@@ -53,6 +56,10 @@ export class OverviewComponentsComponent {
 
   isDragDisabled = computed(
     () => this.isComponentsSubmitting() || (!this.canEdit() && this.reorderedComponents().length <= 1)
+  );
+
+  createComponentTooltip = computed(() =>
+    this.preventComponentCreation() ? 'project.overview.components.addComponentDisabled' : ''
   );
 
   constructor() {
@@ -77,6 +84,8 @@ export class OverviewComponentsComponent {
   }
 
   handleAddComponent(): void {
+    if (this.preventComponentCreation()) return;
+
     this.customDialogService.open(AddComponentDialogComponent, {
       header: 'project.overview.dialog.addComponent.header',
       width: '850px',

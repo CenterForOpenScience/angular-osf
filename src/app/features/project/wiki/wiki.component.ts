@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
+import { Tooltip } from 'primeng/tooltip';
 
 import { filter, map, mergeMap, of, tap } from 'rxjs';
 
@@ -12,6 +13,7 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, PLATF
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { CompareSectionComponent } from '@osf/shared/components/wiki/compare-section/compare-section.component';
 import { EditSectionComponent } from '@osf/shared/components/wiki/edit-section/edit-section.component';
@@ -39,7 +41,6 @@ import {
   WikiSelectors,
 } from '@osf/shared/stores/wiki';
 import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
-
 @Component({
   selector: 'osf-wiki',
   imports: [
@@ -51,6 +52,7 @@ import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-
     EditSectionComponent,
     CompareSectionComponent,
     ViewOnlyLinkMessageComponent,
+    Tooltip,
     TranslatePipe,
   ],
   templateUrl: './wiki.component.html',
@@ -83,6 +85,7 @@ export class WikiComponent {
   isCompareVersionLoading = select(WikiSelectors.getCompareVersionsLoading);
   isAnonymous = select(WikiSelectors.isWikiAnonymous);
   hasWriteAccess = select(CurrentResourceSelectors.hasWriteAccess);
+  disableWikiEdit = select(UserSelectors.isProjectReadOnly);
 
   actions = createDispatchMap({
     getWikiModes: GetWikiModes,
@@ -104,6 +107,10 @@ export class WikiComponent {
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
+
+  readonly disabledEditTooltip = computed(() =>
+    this.disableWikiEdit() ? 'common.errorMessages.actionUnavailable' : ''
+  );
 
   constructor() {
     this.actions

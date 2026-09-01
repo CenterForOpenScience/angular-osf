@@ -6,6 +6,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
+import { Tooltip } from 'primeng/tooltip';
 
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
@@ -26,6 +27,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { SupplementOptions } from '@osf/features/preprints/enums';
 import {
   ConnectProject,
@@ -45,7 +47,17 @@ import { ProjectForm } from '@shared/models/projects/create-project-form.model';
 
 @Component({
   selector: 'osf-supplements-step',
-  imports: [Button, NgClass, Card, Select, AddProjectFormComponent, ReactiveFormsModule, Skeleton, TranslatePipe],
+  imports: [
+    Button,
+    NgClass,
+    Card,
+    Select,
+    AddProjectFormComponent,
+    ReactiveFormsModule,
+    Skeleton,
+    Tooltip,
+    TranslatePipe,
+  ],
   templateUrl: './supplements-step.component.html',
   styleUrl: './supplements-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +81,7 @@ export class SupplementsStepComponent implements OnInit {
   readonly areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
   readonly preprintProject = select(PreprintStepperSelectors.getPreprintProject);
   readonly isPreprintProjectLoading = select(PreprintStepperSelectors.isPreprintProjectLoading);
+  readonly createProjectDisabled = select(UserSelectors.isProjectCreationDisabled);
 
   selectedSupplementOption = signal<SupplementOptions>(SupplementOptions.None);
   selectedProjectId = signal<StringOrNull>(null);
@@ -112,6 +125,10 @@ export class SupplementsStepComponent implements OnInit {
 
     return false;
   });
+
+  createProjectTooltip = computed(() =>
+    this.createProjectDisabled() ? 'preprints.preprintStepper.supplements.projectCreationDisabled' : ''
+  );
 
   constructor() {
     effect(() => {

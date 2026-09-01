@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Stepper } from 'primeng/stepper';
+import { Tooltip } from 'primeng/tooltip';
 
 import { filter, finalize, map, Observable, of, switchMap } from 'rxjs';
 
@@ -65,6 +66,7 @@ import { SelectProjectStepComponent } from './select-project-step/select-project
     Button,
     Stepper,
     RouterLink,
+    Tooltip,
     TranslatePipe,
     LoadingSpinnerComponent,
     SelectProjectStepComponent,
@@ -100,6 +102,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   selectedProject = select(ProjectsSelectors.getSelectedProject);
   currentUser = select(UserSelectors.getCurrentUser);
   currentCollectionSubmission = select(AddToCollectionSelectors.getCurrentCollectionSubmission);
+  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
 
   providerId = signal<string>('');
@@ -117,6 +120,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   isCollectionMetadataDisabled = computed(
     () => !this.selectedProject() || !this.projectMetadataSaved() || !this.projectContributorsSaved()
   );
+  disabledAddButtonTooltip = computed(() => (this.isProjectReadOnly() ? 'common.errorMessages.actionUnavailable' : ''));
   existingCedarRecord = computed<CedarMetadataRecordModel | null>(() => {
     const records = this.cedarRecords();
     const templateId = this.requiredMetadataTemplate()?.id;

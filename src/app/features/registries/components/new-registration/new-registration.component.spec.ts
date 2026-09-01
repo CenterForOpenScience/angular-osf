@@ -46,6 +46,7 @@ describe('NewRegistrationComponent', () => {
     { selector: RegistriesSelectors.isProvidersLoading, value: false },
     { selector: RegistriesSelectors.isProjectsLoading, value: false },
     { selector: UserSelectors.getCurrentUser, value: { id: 'user-1' } },
+    { selector: UserSelectors.isProjectReadOnly, value: false },
     { selector: RegistrationProviderSelectors.getBrandedProvider, value: { id: 'prov-1', allowSubmissions: true } },
   ];
 
@@ -127,6 +128,13 @@ describe('NewRegistrationComponent', () => {
   it('should init fromProject as true when projectId is present', () => {
     setup();
     expect(component.fromProject()).toBe(true);
+  });
+
+  it('should not show project panel when projectId is present, but isProjectReadOnly is true', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
+    });
+    expect(component.fromProject()).toBe(false);
   });
 
   it('should init form with project id from route', () => {

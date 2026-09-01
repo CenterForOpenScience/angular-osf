@@ -9,6 +9,7 @@ import { Mock } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
 import { GoogleFilePickerComponent } from '@osf/shared/components/google-file-picker/google-file-picker.component';
@@ -18,6 +19,7 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { SupportedFeature } from '@osf/shared/enums/addon-supported-features.enum';
 import { FileKind } from '@osf/shared/enums/file-kind.enum';
+import { FileMenuType } from '@osf/shared/enums/file-menu-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { CurrentResource } from '@osf/shared/models/current-resource.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
@@ -72,6 +74,9 @@ import { FilesComponent } from './files.component';
 interface SetupOverrides extends BaseSetupOverrides {
   routeParams?: Record<string, string>;
   resourceId?: string;
+  fileProvider?: string;
+  hasViewOnlyParam?: boolean;
+  withResourceType?: ResourceType;
 }
 
 describe('FilesComponent', () => {
@@ -139,10 +144,11 @@ describe('FilesComponent', () => {
     };
 
     const resourceRoute = ActivatedRouteMockBuilder.create()
+      .withData({ resourceType: overrides.withResourceType ?? ResourceType.Project })
       .withParams({ id: overrides.resourceId ?? 'node-1' })
       .build();
     const dataRoute = ActivatedRouteMockBuilder.create()
-      .withData({ resourceType: ResourceType.Project })
+      .withData({ resourceType: overrides.withResourceType ?? ResourceType.Project })
       .withParentRoute(resourceRoute)
       .build();
     const routeMock = ActivatedRouteMockBuilder.create()
@@ -166,10 +172,11 @@ describe('FilesComponent', () => {
       { selector: FilesSelectors.isConfiguredStorageAddonsLoading, value: false },
       {
         selector: FilesSelectors.getStorageSupportedFeatures,
-        value: { [FileProvider.OsfStorage]: [SupportedFeature.AddUpdateFiles] },
+        value: { [FileProvider.OsfStorage]: [...Object.values(SupportedFeature)] },
       },
       { selector: CurrentResourceSelectors.hasResourceWriteAccess, value: true },
       { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: false },
+      { selector: UserSelectors.isProjectReadOnly, value: false },
     ];
 
     TestBed.configureTestingModule({
@@ -230,6 +237,114 @@ describe('FilesComponent', () => {
     expect(calls).toContainEqual(new GetResourceDetails('node-1', ResourceType.Project));
     expect(calls).toContainEqual(new GetRootFolders('node-1', ResourceType.Project));
     expect(calls).toContainEqual(new GetConfiguredStorageAddons('node-1'));
+  });
+
+  it('should compute isProjectReadOnly true when readOnlyFlagActive is true and resourceType is Project', () => {
+    setup({
+      withResourceType: ResourceType.Project,
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
+    });
+    expect(component.isProjectReadOnly()).toBe(true);
+
+    setup({
+      withResourceType: ResourceType.ProjectComponent,
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
+    });
+    expect(component.isProjectReadOnly()).toBe(true);
+
+    setup({
+      withResourceType: ResourceType.Project,
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: false }],
+    });
+    expect(component.isProjectReadOnly()).toBe(false);
+
+    setup({
+      withResourceType: ResourceType.ProjectComponent,
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: false }],
+    });
+    expect(component.isProjectReadOnly()).toBe(false);
+
+    setup({
+      withResourceType: ResourceType.Registration,
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
+    });
+    expect(component.isProjectReadOnly()).toBe(false);
+  });
+
+  it('should compute allowedMenuActions based on view only, registration, edit access and project read only flag', () => {
+    const editableMenu = {
+      [FileMenuType.Download]: true,
+      [FileMenuType.Embed]: true,
+      [FileMenuType.Share]: true,
+      [FileMenuType.Move]: true,
+      [FileMenuType.Copy]: true,
+      [FileMenuType.Rename]: true,
+      [FileMenuType.Delete]: true,
+    };
+    const readonlyMenu = {
+      [FileMenuType.Download]: true,
+      [FileMenuType.Embed]: true,
+      [FileMenuType.Share]: true,
+      [FileMenuType.Move]: false,
+      [FileMenuType.Copy]: false,
+      [FileMenuType.Rename]: false,
+      [FileMenuType.Delete]: false,
+    };
+
+    setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.hasResourceWriteAccess, value: false },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: false },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+      ],
+    });
+    expect(component.allowedMenuActions()).toEqual(readonlyMenu);
+
+    setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.hasResourceWriteAccess, value: true },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: true },
+        { selector: UserSelectors.isProjectReadOnly, value: true },
+      ],
+    });
+    expect(component.allowedMenuActions()).toEqual(readonlyMenu);
+
+    setup({
+      withResourceType: ResourceType.Registration,
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.hasResourceWriteAccess, value: true },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: true },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+      ],
+    });
+    expect(component.allowedMenuActions()).toEqual(readonlyMenu);
+
+    setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.hasResourceWriteAccess, value: true },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: false },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+      ],
+    });
+    expect(component.allowedMenuActions()).toEqual(editableMenu);
+
+    setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.hasResourceWriteAccess, value: false },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: true },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+      ],
+    });
+    expect(component.allowedMenuActions()).toEqual(editableMenu);
+
+    setup({
+      selectorOverrides: [
+        { selector: CurrentResourceSelectors.hasResourceWriteAccess, value: true },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: true },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+      ],
+    });
+    expect(component.allowedMenuActions()).toEqual(editableMenu);
   });
 
   it('should call uploadFiles from tree upload confirm callback', () => {

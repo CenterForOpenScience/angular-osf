@@ -10,6 +10,8 @@
         [label]="'common.buttons.edit' | translate"
         [variant]="wikiModes().edit ? undefined : 'outlined'"
         (onClick)="toggleMode(WikiModes.Edit)"
+        [disabled]="disableWikiEdit()"
+        [pTooltip]="disabledEditTooltip() | translate"
       />
     }
     <p-button
@@ -53,6 +55,7 @@
       [versionContent]="versionContent()"
       (contentChange)="updateWikiPreviewContent($event)"
       [isSaving]="isWikiVersionSubmitting()"
+      [disableSaveButton]="disableWikiEdit()"
       (saveContent)="onSaveContent($event)"
     ></osf-edit-section>
   }

@@ -10,7 +10,7 @@
           <li>{{ 'project.overview.dialog.makePrivate.messageItems.removedFromCollections' | translate }}</li>
         </ul>
       } @else {
-        <p [innerHTML]="'project.overview.dialog.makePublic.message' | translate"></p>
+        <p [innerHTML]="makePublicMessage() | translate"></p>
       }
     } @else {
       <div>

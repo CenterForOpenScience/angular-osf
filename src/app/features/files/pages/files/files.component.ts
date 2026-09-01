@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
+import { Tooltip } from 'primeng/tooltip';
 
 import { debounceTime, distinctUntilChanged, finalize, map, of, switchMap, tap } from 'rxjs';
 
@@ -24,6 +25,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { FileUploadDialogComponent } from '@osf/shared/components/file-upload-dialog/file-upload-dialog.component';
 import { FormSelectComponent } from '@osf/shared/components/form-select/form-select.component';
 import { GoogleFilePickerComponent } from '@osf/shared/components/google-file-picker/google-file-picker.component';
@@ -94,6 +96,7 @@ import {
     ViewOnlyLinkMessageComponent,
     FilesSelectionActionsComponent,
     TranslatePipe,
+    Tooltip,
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',
@@ -147,6 +150,7 @@ export class FilesComponent {
   readonly supportedFeatures = select(FilesSelectors.getStorageSupportedFeatures);
   readonly hasWriteAccess = select(CurrentResourceSelectors.hasResourceWriteAccess);
   readonly hasAdminAccess = select(CurrentResourceSelectors.hasResourceAdminAccess);
+  readonly readOnlyFlagActive = select(UserSelectors.isProjectReadOnly);
   readonly currentResourceType = computed<CurrentResourceType>(
     () => (this.resourceMetadata()?.type as CurrentResourceType) ?? CurrentResourceType.Projects
   );
@@ -181,11 +185,12 @@ export class FilesComponent {
     const supportedFeatures = this.supportedFeatures()[provider] || [];
     const hasViewOnly = this.hasViewOnly();
     const isRegistration = this.resourceType() === ResourceType.Registration;
+    const isProjectReadOnly = this.isProjectReadOnly();
     const menuMap = mapMenuActions(supportedFeatures);
 
     const result: Record<FileMenuType, boolean> = { ...menuMap };
 
-    if (hasViewOnly || isRegistration || !this.canEdit()) {
+    if (hasViewOnly || isRegistration || !this.canEdit() || isProjectReadOnly) {
       const allowed = new Set<FileMenuType>([FileMenuType.Download, FileMenuType.Embed, FileMenuType.Share]);
 
       (Object.keys(result) as FileMenuType[]).forEach((key) => {
@@ -207,6 +212,12 @@ export class FilesComponent {
 
   readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
   readonly canEdit = computed(() => this.hasWriteAccess() || this.hasAdminAccess());
+
+  readonly isProjectReadOnly = computed(
+    () =>
+      this.readOnlyFlagActive() && [ResourceType.Project, ResourceType.ProjectComponent].includes(this.resourceType())
+  );
+
   readonly isRegistration = computed(() => this.resourceType() === ResourceType.Registration);
 
   canUploadFiles = computed(

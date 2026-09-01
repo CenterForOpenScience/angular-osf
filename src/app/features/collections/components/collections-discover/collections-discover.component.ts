@@ -3,6 +3,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 import { isPlatformBrowser } from '@angular/common';
 import {
@@ -18,6 +19,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
@@ -32,7 +34,15 @@ import { CollectionsHelpDialogComponent } from '../collections-help-dialog/colle
 
 @Component({
   selector: 'osf-collections-discover',
-  imports: [Button, RouterLink, SearchInputComponent, GlobalSearchComponent, LoadingSpinnerComponent, TranslatePipe],
+  imports: [
+    Button,
+    RouterLink,
+    SearchInputComponent,
+    GlobalSearchComponent,
+    LoadingSpinnerComponent,
+    Tooltip,
+    TranslatePipe,
+  ],
   templateUrl: './collections-discover.component.html',
   styleUrl: './collections-discover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,8 +63,10 @@ export class CollectionsDiscoverComponent {
 
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  disableAddButton = select(UserSelectors.isProjectReadOnly);
 
   primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
+  disableAddButtonTooltip = computed(() => (this.disableAddButton() ? 'common.errorMessages.actionUnavailable' : ''));
 
   actions = createDispatchMap({
     getCollectionProvider: GetCollectionProvider,

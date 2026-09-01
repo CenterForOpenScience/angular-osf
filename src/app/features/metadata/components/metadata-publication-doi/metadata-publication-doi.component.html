@@ -10,6 +10,9 @@
       <p-button
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
+        [disabled]="disabled()"
+        [pTooltip]="disabledButtonTooltip()"
+        tooltipPosition="left"
         (onClick)="openEditPublicationDoiDialog.emit()"
         data-test-edit-doi-button
       ></p-button>

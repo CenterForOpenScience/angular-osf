@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { BrandService } from '@osf/shared/services/brand.service';
@@ -55,6 +56,7 @@ describe('UpdatePreprintStepperComponent', () => {
     { selector: PreprintStepperSelectors.getPreprint, value: mockPreprint },
     { selector: PreprintStepperSelectors.hasBeenSubmitted, value: false },
     { selector: PreprintStepperSelectors.hasAdminAccess, value: false },
+    { selector: UserSelectors.isProjectCreationDisabled, value: false },
   ];
 
   function setup(overrides?: { selectorOverrides?: SignalOverride[] }) {
@@ -148,6 +150,26 @@ describe('UpdatePreprintStepperComponent', () => {
     expect(stepValues).toContain(PreprintSteps.Metadata);
     expect(stepValues).toContain(PreprintSteps.Supplements);
     expect(stepValues).toContain(PreprintSteps.Review);
+  });
+
+  it('should filter out Supplements step when isProjectCreationDisabled is true', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
+    });
+
+    const steps = component.updateSteps();
+    const stepValues = steps.map((s) => s.value);
+
+    expect(stepValues).not.toContain(PreprintSteps.Supplements);
+  });
+
+  it('should include Supplements step when isProjectCreationDisabled is false', () => {
+    setup();
+
+    const steps = component.updateSteps();
+    const stepValues = steps.map((s) => s.value);
+
+    expect(stepValues).toContain(PreprintSteps.Supplements);
   });
 
   it('should re-index steps sequentially', () => {

@@ -78,6 +78,7 @@ describe('ContributorsComponent', () => {
     { selector: UserSelectors.getCurrentUser, value: { id: 'user-1' } },
     { selector: ContributorsSelectors.getContributorsPageSize, value: 10 },
     { selector: ContributorsSelectors.isContributorsLoadingMore, value: false },
+    { selector: UserSelectors.isProjectReadOnly, value: false },
   ];
 
   function setup(overrides: BaseSetupOverrides = {}) {
@@ -242,5 +243,47 @@ describe('ContributorsComponent', () => {
     fixture.destroy();
 
     expect(store.dispatch).toHaveBeenCalledWith(new ResetContributorsState());
+  });
+
+  it('should disable add contributor button when loading, read-only, or no admin access', () => {
+    setup({
+      routeParams: { id: 'resource-id' },
+      selectorOverrides: [
+        { selector: ContributorsSelectors.isContributorsLoading, value: true },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: true },
+      ],
+    });
+    expect(component.disableAddButton()).toBe(true);
+
+    setup({
+      routeParams: { id: 'resource-id' },
+      selectorOverrides: [
+        { selector: ContributorsSelectors.isContributorsLoading, value: false },
+        { selector: UserSelectors.isProjectReadOnly, value: true },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: true },
+      ],
+    });
+    expect(component.disableAddButton()).toBe(true);
+
+    setup({
+      routeParams: { id: 'resource-id' },
+      selectorOverrides: [
+        { selector: ContributorsSelectors.isContributorsLoading, value: false },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: false },
+      ],
+    });
+    expect(component.disableAddButton()).toBe(true);
+
+    setup({
+      routeParams: { id: 'resource-id' },
+      selectorOverrides: [
+        { selector: ContributorsSelectors.isContributorsLoading, value: false },
+        { selector: UserSelectors.isProjectReadOnly, value: false },
+        { selector: CurrentResourceSelectors.hasResourceAdminAccess, value: true },
+      ],
+    });
+    expect(component.disableAddButton()).toBe(false);
   });
 });

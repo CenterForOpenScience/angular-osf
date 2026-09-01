@@ -25,5 +25,6 @@ export class SubHeaderComponent {
   isLoading = input<boolean>(false);
   isSubmitting = input<boolean>(false);
   isButtonDisabled = input<boolean>(false);
+  buttonTooltip = input<string>('');
   buttonClick = output<void>();
 }

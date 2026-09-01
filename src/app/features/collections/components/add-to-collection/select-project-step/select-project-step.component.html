@@ -1,4 +1,8 @@
-<p-step-item class="p-4" [value]="targetStepValue()">
+<p-step-item
+  [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
+  class="p-4"
+  [value]="targetStepValue()"
+>
   <p-step [value]="targetStepValue()">
     <ng-template #content>
       <div class="flex flex-column gap-4 w-full">
@@ -28,6 +32,7 @@
           [excludeProjectIds]="excludedProjectIds()"
           [publicOnly]="true"
           [(selectedProject)]="currentSelectedProject"
+          [disabled]="isProjectReadOnly()"
           (projectChange)="handleProjectChange($event)"
           (projectsLoaded)="handleProjectsLoaded($event)"
         />

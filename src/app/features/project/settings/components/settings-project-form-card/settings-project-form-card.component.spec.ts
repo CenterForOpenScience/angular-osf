@@ -9,6 +9,7 @@ import { ProjectFormControls } from '@osf/shared/enums/create-project-form-contr
 
 import { MOCK_NODE_DETAILS } from '@testing/mocks/node-details.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { NodeDetailsModel } from '../../models';
 
@@ -23,7 +24,7 @@ describe('SettingsProjectFormCardComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SettingsProjectFormCardComponent, MockComponent(TextInputComponent), MockDirective(Textarea)],
-      providers: [provideOSFCore()],
+      providers: [provideOSFCore(), provideMockStore()],
     });
 
     fixture = TestBed.createComponent(SettingsProjectFormCardComponent);

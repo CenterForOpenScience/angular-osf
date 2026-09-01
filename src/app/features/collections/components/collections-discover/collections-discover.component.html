@@ -20,7 +20,12 @@
         }
       </div>
 
-      <p-button [routerLink]="['../add']" [label]="'common.buttons.addToCollection' | translate" />
+      <p-button
+        [disabled]="disableAddButton()"
+        [pTooltip]="disableAddButtonTooltip() | translate"
+        [routerLink]="['../add']"
+        [label]="'common.buttons.addToCollection' | translate"
+      />
     </div>
 
     <div class="search-input-container">

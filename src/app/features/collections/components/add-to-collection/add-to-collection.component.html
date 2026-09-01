@@ -19,6 +19,7 @@
             [stepperActiveValue]="stepperActiveValue()"
             [collectionId]="primaryCollectionId() ?? ''"
             [targetStepValue]="AddToCollectionSteps.SelectProject"
+            [isProjectReadOnly]="isProjectReadOnly()"
             (projectSelected)="handleProjectSelected()"
             (stepChange)="handleChangeStep($event)"
           />
@@ -68,7 +69,8 @@
 
           <p-button
             [label]="(isEditMode() ? 'common.buttons.update' : 'common.buttons.addToCollection') | translate"
-            [disabled]="stepperActiveValue() !== AddToCollectionSteps.Complete"
+            [disabled]="stepperActiveValue() !== AddToCollectionSteps.Complete || isProjectReadOnly()"
+            [pTooltip]="disabledAddButtonTooltip() | translate"
             (click)="handleAddToCollection()"
           />
         </div>

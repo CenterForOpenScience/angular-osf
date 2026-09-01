@@ -7,6 +7,8 @@
       [title]="subHeaderTitle() | translate"
       [icon]="'fas fa-home'"
       [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
+      [isButtonDisabled]="projectCreationDisabled()"
+      [buttonTooltip]="buttonTooltip() | translate"
       (buttonClick)="createProject()"
     />
 
@@ -64,7 +66,7 @@
       </div>
     } @else {
       <div class="flex flex-column align-items-center bg-white gap-4 text-center py-4 px-6">
-        <p>{{ 'home.loggedIn.dashboard.noCreatedProject' | translate }}</p>
+        <p>{{ noProjectsMessage() | translate }}</p>
 
         <p class="rich-text" [innerHTML]="'home.loggedIn.dashboard.projectTransition' | translate"></p>
 

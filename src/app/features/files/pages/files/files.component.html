@@ -27,6 +27,7 @@
           [canUpdateFiles]="canUploadFiles()"
           [selectedFilesCount]="filesSelection.length"
           [hasViewOnly]="hasViewOnly()"
+          [isProjectReadOnly]="isProjectReadOnly()"
           (deleteSelected)="onDeleteSelected()"
           (moveSelected)="onMoveSelected()"
           (copySelected)="onCopySelected()"
@@ -72,7 +73,8 @@
 
           @if (canUploadFiles() && !hasViewOnly()) {
             <p-button
-              [disabled]="isButtonDisabled()"
+              [disabled]="isButtonDisabled() || isProjectReadOnly()"
+              [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
               outlined
               raised
               severity="success"
@@ -83,7 +85,8 @@
             </p-button>
 
             <p-button
-              [disabled]="isButtonDisabled()"
+              [disabled]="isButtonDisabled() || isProjectReadOnly()"
+              [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
               outlined
               raised
               severity="success"
@@ -95,7 +98,8 @@
 
             @if (isGoogleDrive()) {
               <p-button
-                [disabled]="isGoogleDriveButtonDisabled()"
+                [disabled]="isGoogleDriveButtonDisabled() || isProjectReadOnly()"
+                [pTooltip]="isProjectReadOnly() ? ('common.errorMessages.actionUnavailable' | translate) : ''"
                 outlined
                 raised
                 severity="success"

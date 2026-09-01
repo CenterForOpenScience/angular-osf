@@ -220,16 +220,18 @@
   </p-card>
 }
 
-<p-card class="card mt-4">
-  <div class="flex flex-column gap-4">
-    <h2>{{ 'preprints.preprintStepper.review.sections.supplements.title' | translate }}</h2>
-    @if (preprintProject()) {
-      <p>{{ preprintProject()?.name }}</p>
-    } @else {
-      <p>{{ 'preprints.preprintStepper.review.sections.supplements.noSupplements' | translate }}</p>
-    }
-  </div>
-</p-card>
+@if (!isProjectCreationDisabled()) {
+  <p-card class="card mt-4">
+    <div class="flex flex-column gap-4">
+      <h2>{{ 'preprints.preprintStepper.review.sections.supplements.title' | translate }}</h2>
+      @if (preprintProject()) {
+        <p>{{ preprintProject()?.name }}</p>
+      } @else {
+        <p>{{ 'preprints.preprintStepper.review.sections.supplements.noSupplements' | translate }}</p>
+      }
+    </div>
+  </p-card>
+}
 
 <section class="mt-6 flex flex-row justify-content-end align-items-center gap-2">
   <p-button

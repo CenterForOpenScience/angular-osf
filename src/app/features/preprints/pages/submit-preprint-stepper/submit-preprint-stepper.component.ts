@@ -21,6 +21,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { IS_WEB } from '@osf/shared/helpers/breakpoints.tokens';
 import { CanDeactivateComponent } from '@osf/shared/models/can-deactivate.interface';
@@ -79,6 +80,7 @@ export class SubmitPreprintStepperComponent implements OnDestroy, CanDeactivateC
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
+  supplementsDisabled = select(UserSelectors.isProjectCreationDisabled);
 
   currentStep = signal<StepOption>(submitPreprintSteps[0]);
 
@@ -94,7 +96,12 @@ export class SubmitPreprintStepperComponent implements OnDestroy, CanDeactivateC
     }
 
     return submitPreprintSteps
-      .filter((step) => step.value !== PreprintSteps.AuthorAssertions || provider.assertionsEnabled)
+      .filter((step) => {
+        return (
+          (step.value !== PreprintSteps.AuthorAssertions || provider.assertionsEnabled) &&
+          (step.value !== PreprintSteps.Supplements || !this.supplementsDisabled())
+        );
+      })
       .map((step, index) => ({ ...step, index }));
   });
 

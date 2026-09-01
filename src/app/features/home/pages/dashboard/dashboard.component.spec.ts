@@ -72,6 +72,7 @@ describe('DashboardComponent', () => {
     { selector: MyResourcesSelectors.getProjects, value: [] },
     { selector: MyResourcesSelectors.getTotalProjects, value: 0 },
     { selector: MyResourcesSelectors.getProjectsLoading, value: false },
+    { selector: UserSelectors.isProjectCreationDisabled, value: false },
     { selector: UserSelectors.getActiveFlags, value: [] },
   ];
 
@@ -129,6 +130,14 @@ describe('DashboardComponent', () => {
         sortOrder: SortOrder.Asc,
       })
     );
+  });
+
+  it('should disable project creation and show tooltip when isProjectCreationDisabled is true', () => {
+    setup({
+      selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
+    });
+
+    expect(component.buttonTooltip()).toBe('home.loggedIn.dashboard.createProjectDisabledTooltip');
   });
 
   it('should read query params and fetch projects on init', () => {

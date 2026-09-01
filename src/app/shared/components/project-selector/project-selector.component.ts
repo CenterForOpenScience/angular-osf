@@ -25,7 +25,6 @@ import { UserSelectors } from '@core/store/user';
 import { ProjectModel } from '@osf/shared/models/projects/projects.model';
 import { CustomOption } from '@shared/models/select-option.model';
 import { GetProjects, ProjectsSelectors } from '@shared/stores/projects';
-
 @Component({
   selector: 'osf-project-selector',
   imports: [Select, TranslatePipe, FormsModule],
@@ -44,6 +43,7 @@ export class ProjectSelectorComponent {
   placeholder = input<string>('common.buttons.select');
   showClear = input<boolean>(true);
   excludeProjectIds = input<string[]>([]);
+  disabled = input<boolean>(false);
   publicOnly = input<boolean>(false);
   selectedProject = model<ProjectModel | null>(null);
 
