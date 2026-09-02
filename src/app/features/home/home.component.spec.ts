@@ -3,6 +3,7 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ScheduledBannerComponent } from '@osf/core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
@@ -23,7 +24,7 @@ describe('HomeComponent', () => {
     activatedRouteMock = ActivatedRouteMockBuilder.create().build();
 
     TestBed.configureTestingModule({
-      imports: [HomeComponent, ...MockComponents(SearchInputComponent, IconComponent)],
+      imports: [HomeComponent, ...MockComponents(SearchInputComponent, IconComponent, ScheduledBannerComponent)],
       providers: [provideOSFCore(), MockProvider(Router, routerMock), MockProvider(ActivatedRoute, activatedRouteMock)],
     });
 

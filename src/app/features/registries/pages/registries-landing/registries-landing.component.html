@@ -1,21 +1,21 @@
 <section class="subheader flex flex-column">
-  <div class="flex flex-column align-items-start">
-    <osf-sub-header
-      [title]="'registries.title' | translate"
-      [icon]="'custom-icon-registries'"
-      [description]="'registries.description' | translate"
-      [showButton]="true"
-      [buttonLabel]="'registries.addRegistration' | translate"
-      (buttonClick)="goToCreateRegistration()"
-    />
-    <osf-scheduled-banner />
-    <osf-search-input
-      class="w-full py-4 px-4"
-      [control]="searchControl"
-      [placeholder]="'registries.searchPlaceholder' | translate"
-      (triggerSearch)="redirectToSearchPageWithValue()"
-    />
-  </div>
+  <osf-sub-header
+    [title]="'registries.title' | translate"
+    [icon]="'custom-icon-registries'"
+    [description]="'registries.description' | translate"
+    [showButton]="true"
+    [buttonLabel]="'registries.addRegistration' | translate"
+    (buttonClick)="goToCreateRegistration()"
+  />
+
+  <osf-scheduled-banner />
+
+  <osf-search-input
+    class="w-full py-4 px-4"
+    [control]="searchControl"
+    [placeholder]="'registries.searchPlaceholder' | translate"
+    (triggerSearch)="redirectToSearchPageWithValue()"
+  />
 
   <osf-registry-services class="mt-4"></osf-registry-services>
 

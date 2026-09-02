@@ -8,6 +8,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
+import { ScheduledBannerComponent } from '@osf/core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 
@@ -19,6 +20,7 @@ import { INTEGRATION_ICONS, SLIDES } from './constants/data';
     Carousel,
     Button,
     SearchInputComponent,
+    ScheduledBannerComponent,
     IconComponent,
     NgOptimizedImage,
     NgTemplateOutlet,
