@@ -56,7 +56,11 @@ export class MetaTagsService {
   };
 
   private readonly metaTagClass = 'osf-dynamic-meta';
-  private metaTagStack: { metaTagsData: MetaTagsData; componentDestroyRef: DestroyRef }[] = [];
+  private metaTagStack: {
+    metaTagsData: MetaTagsData;
+    componentDestroyRef: DestroyRef;
+    mergeDefaults: boolean;
+  }[] = [];
 
   areMetaTagsApplied = signal(false);
 
@@ -68,8 +72,16 @@ export class MetaTagsService {
     });
   }
 
-  updateMetaTags(metaTagsData: MetaTagsData, componentDestroyRef: DestroyRef): void {
-    this.metaTagStack = [...this.metaTagStackWithout(componentDestroyRef), { metaTagsData, componentDestroyRef }];
+  updateMetaTags(
+    metaTagsData: MetaTagsData,
+    componentDestroyRef: DestroyRef,
+    options?: { mergeDefaults?: boolean }
+  ): void {
+    const mergeDefaults = options?.mergeDefaults ?? true;
+    this.metaTagStack = [
+      ...this.metaTagStackWithout(componentDestroyRef),
+      { metaTagsData, componentDestroyRef, mergeDefaults },
+    ];
     componentDestroyRef.onDestroy(() => {
       this.metaTagStack = this.metaTagStackWithout(componentDestroyRef);
       this.applyNearestMetaTags();
@@ -97,18 +109,18 @@ export class MetaTagsService {
     const nearest = this.metaTagStack.at(-1);
 
     if (nearest) {
-      this.applyMetaTagsData(nearest.metaTagsData);
+      this.applyMetaTagsData(nearest.metaTagsData, nearest.mergeDefaults);
     } else {
       this.clearMetaTags();
     }
   }
 
-  private applyMetaTagsData(metaTagsData: MetaTagsData): void {
+  private applyMetaTagsData(metaTagsData: MetaTagsData, mergeDefaults = true): void {
     this.areMetaTagsApplied.set(false);
     this.prerenderReady.setNotReady();
     this.removeDynamicMetaTags();
 
-    const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
+    const combinedData = mergeDefaults ? { ...this.defaultMetaTags, ...metaTagsData } : metaTagsData;
     const headTags = this.getHeadTags(combinedData);
 
     of(metaTagsData.osfGuid)
@@ -158,6 +170,7 @@ export class MetaTagsService {
       citation_description: metaTagsData.description,
       citation_public_url: metaTagsData.url,
       citation_publication_date: metaTagsData.publishedDate,
+      'osf:type': metaTagsData.osfType,
 
       // Dublin Core
       'dct.title': metaTagsData.title,

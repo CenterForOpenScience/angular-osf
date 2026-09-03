@@ -15,6 +15,20 @@ import { PrerenderReadyServiceMockFactory } from '@testing/providers/prerender-r
 import { MetaTagsService } from './meta-tags.service';
 import { MetadataRecordsService } from './metadata-records.service';
 
+function createDestroyRefMock() {
+  let destroyCallback: (() => void) | undefined;
+  const destroyRef = {
+    onDestroy: vi.fn((cb: () => void) => {
+      destroyCallback = cb;
+    }),
+  } as unknown as DestroyRef;
+
+  return {
+    destroyRef,
+    destroy: () => destroyCallback?.(),
+  };
+}
+
 describe('MetaTagsService', () => {
   let service: MetaTagsService;
   let metadataRecordsMock: { getMetadataRecord: Mock };
@@ -38,9 +52,7 @@ describe('MetaTagsService', () => {
   });
 
   it('adds canonical link from url', () => {
-    const destroyRef = {
-      onDestroy: vi.fn(),
-    } as unknown as DestroyRef;
+    const { destroyRef } = createDestroyRefMock();
 
     service.updateMetaTags(
       {
@@ -55,9 +67,7 @@ describe('MetaTagsService', () => {
   });
 
   it('uses canonicalUrl when it differs from url', () => {
-    const destroyRef = {
-      onDestroy: vi.fn(),
-    } as unknown as DestroyRef;
+    const { destroyRef } = createDestroyRefMock();
 
     service.updateMetaTags(
       {
@@ -73,9 +83,7 @@ describe('MetaTagsService', () => {
   });
 
   it('replaces canonical link when updated again', () => {
-    const destroyRef = {
-      onDestroy: vi.fn(),
-    } as unknown as DestroyRef;
+    const { destroyRef } = createDestroyRefMock();
 
     service.updateMetaTags(
       {
@@ -99,12 +107,7 @@ describe('MetaTagsService', () => {
   });
 
   it('removes canonical link on destroy callback', () => {
-    let destroyCallback: (() => void) | undefined;
-    const destroyRef = {
-      onDestroy: vi.fn((cb: () => void) => {
-        destroyCallback = cb;
-      }),
-    } as unknown as DestroyRef;
+    const { destroyRef, destroy } = createDestroyRefMock();
 
     service.updateMetaTags(
       {
@@ -114,9 +117,19 @@ describe('MetaTagsService', () => {
       destroyRef
     );
 
-    destroyCallback?.();
+    destroy();
 
     const canonical = document.head.querySelector('link[rel="canonical"]');
     expect(canonical).toBeNull();
+  });
+
+  it('applies osf:type without default tags when mergeDefaults is false', () => {
+    const { destroyRef } = createDestroyRefMock();
+
+    service.updateMetaTags({ osfType: 'users' }, destroyRef, { mergeDefaults: false });
+
+    expect(document.head.querySelector('meta[name="osf:type"]')?.getAttribute('content')).toBe('users');
+    expect(document.head.querySelector('meta[name="citation_description"]')).toBeNull();
+    expect(document.head.querySelector('meta[property="og:image"]')).toBeNull();
   });
 });

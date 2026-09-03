@@ -22,8 +22,9 @@ import { UserSelectors } from '@core/store/user';
 import { GlobalSearchComponent } from '@osf/shared/components/global-search/global-search.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants/search-tab-options.const';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { UserModel } from '@osf/shared/models/user/user.model';
+import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 
@@ -38,10 +39,11 @@ import { FetchUserProfile, ProfileSelectors, SetUserProfile } from './store';
   imports: [ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent, Message, TranslatePipe],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly prerenderReady = inject(PrerenderReadyService);
+  private readonly metaTags = inject(MetaTagsService);
 
   private actions = createDispatchMap({
     fetchUserProfile: FetchUserProfile,
@@ -62,6 +64,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   defaultSearchFiltersInitialized = signal<boolean>(false);
 
   ngOnInit(): void {
+    this.prerenderReady.setNotReady();
+
     const userId = this.route.snapshot.params['id'];
     const currentUser = this.loggedInUser();
 
@@ -97,7 +101,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.defaultSearchFiltersInitialized.set(true);
     }
 
-    this.prerenderReady.setReady();
+    this.setMetaTags();
   }
 
   private setSearchFilter(): void {
@@ -108,6 +112,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.defaultSearchFiltersInitialized.set(true);
     }
 
-    this.prerenderReady.setReady();
+    this.setMetaTags();
+  }
+
+  private setMetaTags(): void {
+    this.metaTags.updateMetaTags({ osfType: CurrentResourceType.Users }, this.destroyRef, { mergeDefaults: false });
   }
 }

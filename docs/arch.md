@@ -79,6 +79,12 @@ See [NGXS State Management](./ngxs.md).
 
 ---
 
+## SSR
+
+Server-side rendering, route render modes, config, and bot traffic are documented in [SSR](./ssr.md). Render metrics are in [SSR metrics](./ssr-metrics.md).
+
+---
+
 ## 🚀 Dynamic File Generation (Schematics)
 
 Use Angular CLI for scaffolding:
