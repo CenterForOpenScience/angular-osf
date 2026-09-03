@@ -58,7 +58,7 @@ export class TosConsentBannerComponent {
      * if user is authenticated we check whether is accepted terms of service to hide banner or show if not
      * otherwise user is not authenticated we hide banner always
      */
-    return user ? user.acceptedTermsOfService : true;
+    return user?.id ? user.acceptedTermsOfService : true;
   });
 
   /**
