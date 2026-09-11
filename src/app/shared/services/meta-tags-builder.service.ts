@@ -9,6 +9,7 @@ import { PreprintModel } from '@osf/features/preprints/models';
 import { ProjectOverviewModel } from '@osf/features/project/overview/models';
 import { RegistrationOverviewModel } from '@osf/features/registry/models';
 
+import { CurrentResourceType } from '../enums/resource-type.enum';
 import { pathJoin } from '../helpers/path-join.helper';
 import { ContributorModel } from '../models/contributors/contributor.model';
 import { FileDetailsModel } from '../models/files/file.model';
@@ -35,6 +36,7 @@ export class MetaTagsBuilderService {
 
     return {
       osfGuid: project.id,
+      osfType: CurrentResourceType.Projects,
       title: project.title,
       description: project.description,
       url: pathJoin(this.environment.webUrl, project.id, 'overview'),
@@ -61,6 +63,7 @@ export class MetaTagsBuilderService {
 
     return {
       osfGuid: registry.id,
+      osfType: CurrentResourceType.Registrations,
       title: registry.title,
       description: registry.description,
       publishedDate: this.formatDate(registry.dateRegistered),
@@ -85,6 +88,7 @@ export class MetaTagsBuilderService {
 
     return {
       osfGuid: preprint?.id,
+      osfType: CurrentResourceType.Preprints,
       title: preprint?.title,
       description: preprint?.description,
       publishedDate: this.formatDate(preprint?.datePublished),
@@ -111,6 +115,7 @@ export class MetaTagsBuilderService {
 
     return {
       osfGuid: file.guid,
+      osfType: CurrentResourceType.Files,
       title: fileMetadata?.title || file.name,
       type: fileMetadata?.resourceTypeGeneral,
       description: fileMetadata?.description ?? this.translateService.instant('files.metaTagDescriptionPlaceholder'),
