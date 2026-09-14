@@ -1,0 +1,17 @@
+@use "styles/mixins" as mix;
+
+:host {
+  @include mix.flex-center;
+  flex: 1;
+  background: var(--gradient-3);
+}
+
+.resend-confirmation-container {
+  @include mix.flex-column;
+  background: var(--white);
+  border-radius: mix.rem(12px);
+  box-shadow: 0 2px 4px var(--grey-outline);
+  max-width: mix.rem(448px);
+  gap: mix.rem(24px);
+  flex: 1;
+}
