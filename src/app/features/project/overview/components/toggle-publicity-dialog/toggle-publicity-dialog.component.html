@@ -10,7 +10,14 @@
           <li>{{ 'project.overview.dialog.makePrivate.messageItems.removedFromCollections' | translate }}</li>
         </ul>
       } @else {
-        <p [innerHTML]="makePublicMessage() | translate"></p>
+        <p [innerHTML]="'project.overview.dialog.makePublic.message' | translate"></p>
+        @if (isProjectReadOnly()) {
+          <p-message class="mt-4" icon="fas fa-circle-exclamation" severity="error">
+            {{ 'project.overview.dialog.makePublic.warningReadOnly' | translate }}
+          </p-message>
+        } @else {
+          <p class="mt-4 warning-message" [innerHTML]="'project.overview.dialog.makePublic.warning' | translate"></p>
+        }
       }
     } @else {
       <div>

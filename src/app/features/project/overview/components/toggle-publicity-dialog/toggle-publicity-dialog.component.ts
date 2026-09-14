@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Message } from 'primeng/message';
 
 import {
   ChangeDetectionStrategy,
@@ -31,7 +32,7 @@ import { ProjectOverviewSelectors, UpdateProjectPublicStatus } from '../../store
 
 @Component({
   selector: 'osf-toggle-publicity-dialog',
-  imports: [Button, TranslatePipe, ComponentsSelectionListComponent, LoadingSpinnerComponent],
+  imports: [Button, Message, TranslatePipe, ComponentsSelectionListComponent, LoadingSpinnerComponent],
   templateUrl: './toggle-publicity-dialog.component.html',
   styleUrl: './toggle-publicity-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,11 +57,6 @@ export class TogglePublicityDialogComponent {
   componentsList: WritableSignal<ComponentCheckboxItemModel[]> = signal([]);
 
   isInformationStep = computed(() => this.step() === TogglePublicityStep.Information);
-  makePublicMessage = computed(() =>
-    this.isProjectReadOnly()
-      ? 'project.overview.dialog.makePublic.messageReadOnly'
-      : 'project.overview.dialog.makePublic.message'
-  );
 
   constructor() {
     effect(() => {

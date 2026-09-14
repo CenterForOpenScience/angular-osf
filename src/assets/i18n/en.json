@@ -1969,8 +1969,9 @@
         "makePublic": {
           "confirmButton": "Make Public",
           "header": "Make Project Public",
-          "message": "Please review your projects, components, and add-ons for sensitive or restricted information before making them public. <br/> <br/> Once they are made public, you should assume they will always be public. You can return them to private later, but search engines (including Google's cache) or others may access files, wiki pages, or analytics before you do.",
-          "messageReadOnly": "Please review your projects, components, and add-ons for sensitive or restricted information before making them public. <br/> <br/><b>This action is irreversible.<b>"
+          "message": "Please review your projects, components, and add-ons for sensitive or restricted information before making them public.",
+          "warning":  "Once they are made public, you should assume they will always be public. You can return them to private later, but search engines (including Google's cache) or others may access files, wiki pages, or analytics before you do.",
+          "warningReadOnly": "This action is irreversible."
         },
         "privacySettingsPermissionTooltip": "You must have admin permission on this component to be able to change privacy settings",
         "toast": {
