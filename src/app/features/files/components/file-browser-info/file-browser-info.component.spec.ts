@@ -4,10 +4,12 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UserSelectors } from '@osf/core/store/user/user.selectors';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { FileBrowserInfoComponent } from './file-browser-info.component';
 
@@ -21,7 +23,14 @@ describe('FileBrowserInfoComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [FileBrowserInfoComponent],
-      providers: [provideOSFCore(), provideDynamicDialogRefMock(), MockProvider(DynamicDialogConfig, dialogConfigMock)],
+      providers: [
+        provideOSFCore(),
+        provideDynamicDialogRefMock(),
+        MockProvider(DynamicDialogConfig, dialogConfigMock),
+        provideMockStore({
+          signals: [{ selector: UserSelectors.isProjectReadOnly, value: false }],
+        }),
+      ],
     });
 
     fixture = TestBed.createComponent(FileBrowserInfoComponent);

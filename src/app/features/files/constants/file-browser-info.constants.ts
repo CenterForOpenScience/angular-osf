@@ -59,3 +59,31 @@ export const FILE_BROWSER_INFO_ITEMS: FileInfoItem[] = [
     showForResourceTypes: [ResourceType.Project, ResourceType.Registration],
   },
 ];
+
+export const FILE_BROWSER_READ_ONLY_INFO_ITEMS: FileInfoItem[] = [
+  {
+    titleKey: 'files.filesBrowserDialog.seeAllFiles',
+    descriptionKey: 'files.filesBrowserDialog.seeAllFilesDescription',
+    showForResourceTypes: [ResourceType.Project, ResourceType.Registration],
+  },
+  {
+    titleKey: 'files.filesBrowserDialog.openViewFiles',
+    descriptionKey: 'files.filesBrowserDialog.openViewFilesDescription',
+    showForResourceTypes: [ResourceType.Project, ResourceType.Registration],
+  },
+  {
+    titleKey: 'files.filesBrowserDialog.downloadAllFilesZip',
+    descriptionKey: 'files.filesBrowserDialog.downloadAllFilesZipDescription',
+    showForResourceTypes: [ResourceType.Project, ResourceType.Registration],
+  },
+  {
+    titleKey: 'files.filesBrowserDialog.downloadFolderZip',
+    descriptionKey: 'files.filesBrowserDialog.downloadFolderZipDescription',
+    showForResourceTypes: [ResourceType.Project, ResourceType.Registration],
+  },
+  {
+    titleKey: 'files.filesBrowserDialog.downloadFile',
+    descriptionKey: 'files.filesBrowserDialog.downloadFileDescription',
+    showForResourceTypes: [ResourceType.Project, ResourceType.Registration],
+  },
+];

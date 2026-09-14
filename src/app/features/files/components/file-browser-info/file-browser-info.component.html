@@ -1,4 +1,14 @@
 <main class="flex flex-column gap-3">
+  @if (isProjectReadOnly()) {
+    <p>
+      <b>{{ 'files.filesBrowserDialog.note' | translate }}</b>
+      {{ 'files.filesBrowserDialog.readOnlyWarning' | translate }}
+      <a class="font-bold" href="https://help.osf.io/article/727-osf-projects-transition">
+        {{ 'files.filesBrowserDialog.osfProjectTransition' | translate }}
+      </a>
+    </p>
+  }
+
   @for (item of filteredInfoItems; track item.titleKey) {
     <div>
       <h3>{{ item.titleKey | translate }}</h3>
