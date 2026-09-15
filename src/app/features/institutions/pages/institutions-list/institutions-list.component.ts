@@ -10,7 +10,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -25,7 +24,6 @@ import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/ins
     SubHeaderComponent,
     SearchInputComponent,
     LoadingSpinnerComponent,
-    ScheduledBannerComponent,
   ],
   templateUrl: './institutions-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

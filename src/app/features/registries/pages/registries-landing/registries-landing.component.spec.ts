@@ -8,7 +8,6 @@ import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '@osf/shared/components/resource-card/resource-card.component';
@@ -42,8 +41,7 @@ describe('RegistriesLandingComponent', () => {
           RegistryServicesComponent,
           ResourceCardComponent,
           LoadingSpinnerComponent,
-          SubHeaderComponent,
-          ScheduledBannerComponent
+          SubHeaderComponent
         ),
       ],
       providers: [

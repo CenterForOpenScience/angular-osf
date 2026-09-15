@@ -8,7 +8,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 
-import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
@@ -31,7 +30,7 @@ describe('InstitutionsListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         InstitutionsListComponent,
-        ...MockComponents(SubHeaderComponent, SearchInputComponent, LoadingSpinnerComponent, ScheduledBannerComponent),
+        ...MockComponents(SubHeaderComponent, SearchInputComponent, LoadingSpinnerComponent),
       ],
       providers: [
         provideOSFCore(),
