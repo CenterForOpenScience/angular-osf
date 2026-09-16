@@ -23,10 +23,14 @@ take up to 60 seconds once the docker build finishes.
 ### Recommended
 
 - [Docker Commands](docs/docker.md).
+- [Architecture](docs/arch.md).
 - [ESLint Strategy](docs/eslint.md).
 - [Git Conventions](docs/git-convention.md).
 - [i18n](docs/i18n.md).
+- [Models conventions](docs/models.md).
 - [NGXS Conventions](docs/ngxs.md).
+- [SSR](docs/ssr.md).
+- [SSR metrics](docs/ssr-metrics.md).
 - [Testing Strategy](docs/testing.md).
 
 ### Optional
@@ -59,6 +63,6 @@ Install Volta from [volta](https://volta.sh/) and it will automatically pin Node
 
 ## Configuration
 
-OSF uses an `assets/config/config.json` file for any 3rd-party tokens. This file is not committed to the repo.
+OSF uses `src/assets/config/config.json` for third-party tokens and environment URLs. This file is not committed to the repo.
 
-There is a `assets/config/template.json` file that can be copied to `assets/config/config.json` to store any 3rd-party tokens locally.
+Copy `src/assets/config/template.json` to `src/assets/config/config.json` for local development. At runtime the app loads it from `/assets/config/config.json`.
