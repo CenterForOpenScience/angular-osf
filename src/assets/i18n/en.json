@@ -240,7 +240,8 @@
           "required": "Password is required."
         }
       },
-      "resetPassword": "Reset password"
+      "resetPassword": "Reset password",
+      "resendConfirmation": "Resend"
     },
     "forgotPassword": {
       "description": "Enter your email address and we'll send a link to reset your password",
@@ -248,6 +249,13 @@
         "success": "Thanks. Check your email to reset your password."
       },
       "title": "Forgot Your Password?"
+    },
+    "resendConfirmation": {
+      "description": "Enter your email address and we'll resend your confirmation link.",
+      "messages": {
+        "success": "Thanks. Check your email for confirmation link."
+      },
+      "title": "Resend Confirmation Email"
     },
     "resetPassword": {
       "success": {
