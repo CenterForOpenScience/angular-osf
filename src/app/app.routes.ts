@@ -68,6 +68,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'resend',
+        loadComponent: () =>
+          import('./features/auth/pages/resend/resend-confirmation.component').then(
+            (mod) => mod.ResendConfirmationComponent
+          ),
+        data: { skipBreadcrumbs: true },
+      },
+      {
         path: 'search',
         loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
       },

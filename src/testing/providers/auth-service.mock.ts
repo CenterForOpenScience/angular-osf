@@ -15,6 +15,7 @@ export type AuthServiceMockType = Partial<AuthService> & {
   register: Mock;
   forgotPassword: Mock;
   resetPassword: Mock;
+  resendConfirmationUrl: Mock;
 };
 
 export const AuthServiceMock = {
@@ -30,6 +31,7 @@ export const AuthServiceMock = {
       register: vi.fn().mockReturnValue(of({})),
       forgotPassword: vi.fn().mockReturnValue(of({})),
       resetPassword: vi.fn().mockReturnValue(of({})),
+      resendConfirmationUrl: vi.fn().mockReturnValue(of({})),
     };
   },
 };
