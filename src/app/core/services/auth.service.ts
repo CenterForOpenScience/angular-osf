@@ -120,8 +120,14 @@ export class AuthService {
 
   resendConfirmationUrl(email: string) {
     const baseUrl = `${this.apiUrl}/resend_confirmation/`;
-    const params: Record<string, string> = { email };
+    const body = {
+      data: {
+        attributes: {
+          email: email,
+        },
+      },
+    };
 
-    return this.jsonApiService.get(baseUrl, params);
+    return this.jsonApiService.post(baseUrl, body);
   }
 }
