@@ -2,7 +2,6 @@ import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
@@ -19,7 +18,7 @@ import {
   PLATFORM_ID,
   signal,
 } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -46,18 +45,7 @@ import { AddonDialogService } from '../../services/addon-dialog.service';
 
 @Component({
   selector: 'osf-configure-addon',
-  imports: [
-    SubHeaderComponent,
-    TranslatePipe,
-    Button,
-    RouterLink,
-    Card,
-    ReactiveFormsModule,
-    FormsModule,
-    Skeleton,
-    BreadcrumbModule,
-    StorageItemSelectorComponent,
-  ],
+  imports: [SubHeaderComponent, TranslatePipe, Button, RouterLink, Card, Skeleton, StorageItemSelectorComponent],
   templateUrl: './configure-addon.component.html',
   styleUrl: './configure-addon.component.scss',
   providers: [AddonDialogService],

@@ -15,24 +15,26 @@ import { AddonsSelectors, DeleteConfiguredAddon } from '@osf/shared/stores/addon
   selector: 'osf-disconnect-addon-modal',
   imports: [Button, TranslatePipe],
   templateUrl: './disconnect-addon-modal.component.html',
-  styleUrl: './disconnect-addon-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DisconnectAddonModalComponent {
-  private dialogConfig = inject(DynamicDialogConfig);
-  dialogRef = inject(DynamicDialogRef);
+  private readonly dialogConfig = inject(DynamicDialogConfig);
+  readonly dialogRef = inject(DynamicDialogRef);
+
   addon = this.dialogConfig.data.addon;
   dialogMessage = this.dialogConfig.data.message || '';
-  isSubmitting = select(AddonsSelectors.getDeleteStorageAddonSubmitting);
-  selectedFolder = select(AddonsSelectors.getSelectedStorageItem);
-  selectedItemLabel = computed(() => {
+
+  private readonly actions = createDispatchMap({ deleteConfiguredAddon: DeleteConfiguredAddon });
+
+  readonly isSubmitting = select(AddonsSelectors.getDeleteStorageAddonSubmitting);
+  readonly selectedFolder = select(AddonsSelectors.getSelectedStorageItem);
+
+  readonly selectedItemLabel = computed(() => {
     const addonType = getAddonTypeString(this.addon);
     return addonType === AddonType.LINK
       ? 'settings.addons.configureAddon.linkedItem'
       : 'settings.addons.configureAddon.selectedFolder';
   });
-
-  actions = createDispatchMap({ deleteConfiguredAddon: DeleteConfiguredAddon });
 
   handleDisconnectAddonAccount(): void {
     if (!this.addon) return;

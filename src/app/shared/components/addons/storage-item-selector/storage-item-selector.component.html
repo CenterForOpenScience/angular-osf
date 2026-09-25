@@ -1,21 +1,23 @@
 <section class="flex flex-column gap-4">
   <div>
-    <p-breadcrumb
-      class="max-w-full folders-breadcrumbs"
-      [model]="breadcrumbItems()"
-      [home]="homeBreadcrumb"
-      (onItemClick)="handleCreateOperationInvocation($event.item.state?.['operationName']!, $event.item.id!)"
-    >
-      <ng-template #item let-item>
-        <a
-          class="cursor-pointer"
-          tabindex="0"
-          (click)="handleCreateOperationInvocation(item.state.operationName, item.id)"
-          (keydown.enter)="handleCreateOperationInvocation(item.state.operationName, item.id)"
-          >{{ item.label | translate }}</a
-        >
-      </ng-template>
-    </p-breadcrumb>
+    @if (!isGoogleFilePicker()) {
+      <p-breadcrumb
+        class="max-w-full folders-breadcrumbs rich-text"
+        [model]="breadcrumbItems()"
+        [home]="homeBreadcrumb"
+        (onItemClick)="handleCreateOperationInvocation($event.item.state?.['operationName']!, $event.item.id!)"
+      >
+        <ng-template #item let-item>
+          <a
+            class="cursor-pointer"
+            tabindex="0"
+            (click)="handleCreateOperationInvocation(item.state.operationName, item.id)"
+            (keydown.enter)="handleCreateOperationInvocation(item.state.operationName, item.id)"
+            >{{ item.label | translate }}</a
+          >
+        </ng-template>
+      </p-breadcrumb>
+    }
 
     <p-card>
       <p>
@@ -112,7 +114,7 @@
           <p>{{ 'settings.addons.configureAddon.noFolders' | translate }}</p>
         </div>
       }
-      @if (showLoadMoreButton() && !isOperationInvocationSubmitting()) {
+      @if (showLoadMoreButton()) {
         <div class="flex justify-content-center my-3">
           <p-button
             link

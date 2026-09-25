@@ -28,7 +28,7 @@
                   <p-button
                     icon="fas fa-pencil"
                     text
-                    (click)="toggleEditMode()"
+                    (onClick)="toggleEditMode()"
                     (keydown.enter)="toggleEditMode()"
                   ></p-button>
                 }
@@ -36,7 +36,7 @@
                   icon="fas fa-trash"
                   severity="danger"
                   text
-                  (click)="handleDisconnectAccount()"
+                  (onClick)="handleDisconnectAccount()"
                   (keydown.enter)="handleDisconnectAccount()"
                 ></p-button>
               </div>
@@ -63,7 +63,7 @@
         <p-button
           [label]="'common.buttons.back' | translate"
           severity="info"
-          (click)="toggleEditMode()"
+          (onClick)="toggleEditMode()"
           (keydown.enter)="toggleEditMode()"
         ></p-button>
       </div>

@@ -91,8 +91,6 @@ export class StorageItemSelectorComponent implements OnInit {
   operationInvokeWithCursor = output<OperationInvokeData>();
   save = output<void>();
   cancelSelection = output<void>();
-  readonly OperationNames = OperationNames;
-  readonly StorageItemType = StorageItemType;
   hasInputChanged = signal(false);
   hasFolderChanged = signal(false);
   hasResourceTypeChanged = signal(false);
@@ -159,19 +157,8 @@ export class StorageItemSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initializeFormState();
-    this.setupAccountNameTracking();
-  }
-
-  private initializeFormState(): void {
     this.initialResourceType.set(this.selectedResourceType());
-    this.resetChangeFlags();
-  }
-
-  private resetChangeFlags(): void {
-    this.hasInputChanged.set(false);
-    this.hasFolderChanged.set(false);
-    this.hasResourceTypeChanged.set(false);
+    this.setupAccountNameTracking();
   }
 
   private setupAccountNameTracking(): void {
@@ -271,7 +258,7 @@ export class StorageItemSelectorComponent implements OnInit {
         id: itemId,
         label: itemName,
         state: {
-          operationName: mayContainRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO,
+          operationName: OperationNames.LIST_CHILD_ITEMS,
         },
       };
 

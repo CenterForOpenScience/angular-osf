@@ -6,7 +6,6 @@ import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { OperationNames } from '@osf/shared/enums/operation-names.enum';
 import { AddonOperationInvocationService } from '@osf/shared/services/addons/addon-operation-invocation.service';
@@ -14,21 +13,19 @@ import { AddonsSelectors, CreateAddonOperationInvocation } from '@osf/shared/sto
 
 @Component({
   selector: 'osf-confirm-account-connection-modal',
-  imports: [Button, ReactiveFormsModule, TranslatePipe],
+  imports: [Button, TranslatePipe],
   templateUrl: './confirm-account-connection-modal.component.html',
-  styleUrl: './confirm-account-connection-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmAccountConnectionModalComponent {
-  private dialogConfig = inject(DynamicDialogConfig);
-  private operationInvocationService = inject(AddonOperationInvocationService);
-  dialogRef = inject(DynamicDialogRef);
-  dialogMessage = this.dialogConfig.data.message || '';
-  isSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
+  private readonly dialogConfig = inject(DynamicDialogConfig);
+  private readonly operationInvocationService = inject(AddonOperationInvocationService);
+  readonly dialogRef = inject(DynamicDialogRef);
 
-  actions = createDispatchMap({
-    createAddonOperationInvocation: CreateAddonOperationInvocation,
-  });
+  dialogMessage = this.dialogConfig.data.message || '';
+  readonly isSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
+
+  private readonly actions = createDispatchMap({ createAddonOperationInvocation: CreateAddonOperationInvocation });
 
   handleConnectAddonAccount(): void {
     const selectedAccount = this.dialogConfig.data.selectedAccount;

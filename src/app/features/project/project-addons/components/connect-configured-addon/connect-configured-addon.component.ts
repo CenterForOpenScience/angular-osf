@@ -3,15 +3,12 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
-import { TableModule } from 'primeng/table';
 
 import { isPlatformBrowser } from '@angular/common';
 import { Component, computed, DestroyRef, inject, PLATFORM_ID, signal, viewChild } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -25,7 +22,6 @@ import { OperationNames } from '@osf/shared/enums/operation-names.enum';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums/profile-addons-stepper.enum';
 import { getAddonTypeString } from '@osf/shared/helpers/addon-type.helper';
 import { AddonModel } from '@osf/shared/models/addons/addon.model';
-import { AddonTerm } from '@osf/shared/models/addons/addon-utils.model';
 import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
 import { AuthorizedAddonRequestJsonApi } from '@osf/shared/models/addons/authorized-addon-json-api.model';
 import { AddonFormService } from '@osf/shared/services/addons/addon-form.service';
@@ -40,11 +36,9 @@ import {
   GetAuthorizedCitationAddons,
   GetAuthorizedLinkAddons,
   GetAuthorizedStorageAddons,
-  UpdateAuthorizedAddon,
-  UpdateConfiguredAddon,
 } from '@osf/shared/stores/addons';
 
-import { AddonConfigMap } from '../../models';
+import { AddonConfigMap } from '../../models/addon-config-actions.model';
 import { AddonDialogService } from '../../services';
 
 @Component({
@@ -55,17 +49,13 @@ import { AddonDialogService } from '../../services';
     StepPanels,
     Stepper,
     Button,
-    TableModule,
     RouterLink,
     FormsModule,
-    ReactiveFormsModule,
     TranslatePipe,
     RadioButtonModule,
     StorageItemSelectorComponent,
     AddonTermsComponent,
     AddonSetupAccountFormComponent,
-    DialogModule,
-    DynamicDialogModule,
   ],
   templateUrl: './connect-configured-addon.component.html',
   providers: [AddonDialogService],
@@ -93,7 +83,6 @@ export class ConnectConfiguredAddonComponent {
   readonly stepper = viewChild(Stepper);
 
   accountNameControl = new FormControl('');
-  terms = signal<AddonTerm[]>([]);
   addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
   addonAuthUrl = signal<string>('/settings/addons');
   currentAuthorizedAddonAccounts = signal<AuthorizedAccountModel[]>([]);
@@ -129,8 +118,6 @@ export class ConnectConfiguredAddonComponent {
     getAuthorizedLinkAddons: GetAuthorizedLinkAddons,
     createAuthorizedAddon: CreateAuthorizedAddon,
     createConfiguredAddon: CreateConfiguredAddon,
-    updateConfiguredAddon: UpdateConfiguredAddon,
-    updateAuthorizedAddon: UpdateAuthorizedAddon,
     createAddonOperationInvocation: CreateAddonOperationInvocation,
   });
 

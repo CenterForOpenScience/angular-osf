@@ -46,6 +46,5 @@ describe.skip('ConnectAddonComponent', () => {
   it('should create and initialize with addon data from router state', () => {
     expect(component).toBeTruthy();
     expect(component['addon']()).toEqual(mockAddon);
-    expect(component['terms']().length).toBeGreaterThan(0);
   });
 });

@@ -4,6 +4,7 @@ import { MockProvider } from 'ng-mocks';
 
 import { throwError } from 'rxjs';
 
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
@@ -11,8 +12,9 @@ import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AddonType } from '@shared/enums/addon-type.enum';
 import { StorageItem } from '@shared/models/addons/storage-item.model';
 import { GoogleFileDataModel } from '@shared/models/files/google-file-data.model';
+import { GoogleFilePickerModel } from '@shared/models/files/google-file-picker.model';
 import { GoogleFilePickerDownloadService } from '@shared/services/google-file-picker.download.service';
-import { GetAuthorizedStorageOauthToken } from '@shared/stores/addons';
+import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@shared/stores/addons';
 
 import { setupGooglePickerMock } from '@testing/mocks/google-picker.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -34,21 +36,38 @@ describe('GoogleFilePickerComponent', () => {
   let pickerBuilderMock: ReturnType<typeof setupGooglePickerMock>['pickerBuilderMock'];
   let pickerSetVisibleMock: ReturnType<typeof setupGooglePickerMock>['pickerSetVisibleMock'];
 
+  const registeredPickerCallback = (): ((data: GoogleFilePickerModel) => void) | undefined => {
+    const callback = pickerBuilderMock.setCallback.mock.calls.at(-1)?.[0];
+    return typeof callback === 'function' ? callback : undefined;
+  };
+
   const rootFolder: StorageItem = {
     itemId: 'root-folder-id',
     itemName: 'Root Folder',
   };
 
-  const setup = (options?: { accountId?: string; isFolderPicker?: boolean; googleFilePickerApiKey?: string }) => {
+  const setup = (options?: {
+    accountId?: string;
+    isFolderPicker?: boolean;
+    googleFilePickerApiKey?: string;
+    oauthToken?: string;
+    detectChanges?: boolean;
+  }) => {
     sentryMock = SentryMock.simple();
     googlePickerDownloadServiceMock = GoogleFilePickerDownloadServiceMockBuilder.create().build();
     ({ pickerBuilderMock, pickerSetVisibleMock } = setupGooglePickerMock());
+
+    const authorizedStorageAddons = options?.oauthToken
+      ? [{ id: options.accountId ?? '', oauthToken: options.oauthToken }]
+      : [];
 
     TestBed.configureTestingModule({
       imports: [GoogleFilePickerComponent],
       providers: [
         provideOSFCore(),
-        provideMockStore(),
+        provideMockStore({
+          signals: [{ selector: AddonsSelectors.getAuthorizedStorageAddons, value: signal(authorizedStorageAddons) }],
+        }),
         { provide: SENTRY_TOKEN, useValue: sentryMock },
         MockProvider(GoogleFilePickerDownloadService, googlePickerDownloadServiceMock),
         MockProvider(ENVIRONMENT, {
@@ -66,7 +85,9 @@ describe('GoogleFilePickerComponent', () => {
     fixture.componentRef.setInput('rootFolder', rootFolder);
     fixture.componentRef.setInput('accountId', options?.accountId ?? '');
     fixture.componentRef.setInput('currentAddonType', AddonType.STORAGE);
-    fixture.detectChanges();
+    if (options?.detectChanges !== false) {
+      fixture.detectChanges();
+    }
   };
 
   it('should create', () => {
@@ -78,8 +99,6 @@ describe('GoogleFilePickerComponent', () => {
   it('should disable picker when configuration is missing', () => {
     setup({ googleFilePickerApiKey: '' });
 
-    component.ngOnInit();
-
     expect(component.isGFPDisabled()).toBe(true);
     expect(googlePickerDownloadServiceMock.loadScript).not.toHaveBeenCalled();
   });
@@ -87,49 +106,44 @@ describe('GoogleFilePickerComponent', () => {
   it('should initialize and set folder picker visible on init', () => {
     setup({ isFolderPicker: true });
 
-    component.ngOnInit();
-
     expect(googlePickerDownloadServiceMock.loadScript).toHaveBeenCalled();
     expect(googlePickerDownloadServiceMock.loadGapiModules).toHaveBeenCalled();
     expect(component.visible()).toBe(true);
   });
 
   it('should capture Sentry error when script loading fails', () => {
-    setup();
+    setup({ detectChanges: false });
     const error = new Error('script fail');
     googlePickerDownloadServiceMock.loadScript.mockReturnValue(throwError(() => error));
 
-    component.ngOnInit();
+    fixture.detectChanges();
 
     expect(sentryMock.captureException).toHaveBeenCalledWith(error, { tags: { feature: 'google-picker load' } });
   });
 
   it('should capture Sentry error when gapi modules loading fails', () => {
-    setup();
+    setup({ detectChanges: false });
     const error = new Error('gapi fail');
     googlePickerDownloadServiceMock.loadGapiModules.mockReturnValue(throwError(() => error));
 
-    component.ngOnInit();
+    fixture.detectChanges();
 
     expect(sentryMock.captureException).toHaveBeenCalledWith(error, { tags: { feature: 'google-picker auth' } });
   });
 
   it('should dispatch token action and open picker for account id', () => {
-    setup({ accountId: 'account-1' });
-    vi.spyOn(store, 'selectSnapshot').mockReturnValue('oauth-token');
+    setup({ accountId: 'account-1', oauthToken: 'oauth-token' });
 
-    component.ngOnInit();
     component.createPicker();
 
     expect(store.dispatch).toHaveBeenCalledWith(new GetAuthorizedStorageOauthToken('account-1', AddonType.STORAGE));
-    expect(component.accessToken()).toBe('oauth-token');
     expect(component.isGFPDisabled()).toBe(false);
     expect(pickerBuilderMock.setOAuthToken).toHaveBeenCalledWith('oauth-token');
     expect(pickerSetVisibleMock).toHaveBeenCalledWith(true);
   });
 
   it('should send selected item to handleFolderSelection on PICKED action', () => {
-    setup();
+    setup({ accountId: 'account-1', oauthToken: 'oauth-token' });
     const handleFolderSelection = vi.fn();
     fixture.componentRef.setInput('handleFolderSelection', handleFolderSelection);
     fixture.detectChanges();
@@ -139,24 +153,26 @@ describe('GoogleFilePickerComponent', () => {
       id: 42,
     };
 
-    component.pickerCallback({
+    component.createPicker();
+    registeredPickerCallback()?.({
       action: 'picked',
       docs: [selectedDoc],
     });
 
     expect(handleFolderSelection).toHaveBeenCalledWith({
       itemName: 'Google Doc',
-      itemId: 42,
+      itemId: '42',
     });
   });
 
   it('should ignore callback when action is not PICKED', () => {
-    setup();
+    setup({ accountId: 'account-1', oauthToken: 'oauth-token' });
     const handleFolderSelection = vi.fn();
     fixture.componentRef.setInput('handleFolderSelection', handleFolderSelection);
     fixture.detectChanges();
 
-    component.pickerCallback({
+    component.createPicker();
+    registeredPickerCallback()?.({
       action: 'cancel',
       docs: [{ name: 'Google Doc', id: 42 }],
     });

@@ -4,11 +4,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
-import { TableModule } from 'primeng/table';
 
 import { isPlatformBrowser } from '@angular/common';
 import { Component, computed, DestroyRef, effect, inject, PLATFORM_ID, signal, viewChild } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { AddonSetupAccountFormComponent } from '@osf/shared/components/addons/addon-setup-account-form/addon-setup-account-form.component';
@@ -18,7 +16,6 @@ import { AddonServiceNames } from '@osf/shared/enums/addon-service-names.enum';
 import { AddonType } from '@osf/shared/enums/addon-type.enum';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums/profile-addons-stepper.enum';
 import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers/addon-type.helper';
-import { AddonTerm } from '@osf/shared/models/addons/addon-utils.model';
 import { AuthorizedAddonRequestJsonApi } from '@osf/shared/models/addons/authorized-addon-json-api.model';
 import { AddonOAuthService } from '@osf/shared/services/addons/addon-oauth.service';
 import { ToastService } from '@osf/shared/services/toast.service';
@@ -34,10 +31,7 @@ import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@
     StepPanels,
     Stepper,
     Button,
-    TableModule,
     RouterLink,
-    FormsModule,
-    ReactiveFormsModule,
     TranslatePipe,
     AddonTermsComponent,
     AddonSetupAccountFormComponent,
@@ -57,7 +51,6 @@ export class ConnectAddonComponent {
   readonly AddonType = AddonType;
   readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
 
-  terms = signal<AddonTerm[]>([]);
   addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
   addonAuthUrl = signal<string>('/settings/addons');
 

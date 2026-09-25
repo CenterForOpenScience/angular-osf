@@ -21,7 +21,7 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
@@ -42,7 +42,6 @@ import { AddonsQueryParamsService } from '@shared/services/addons-query-params.s
 import {
   AddonsSelectors,
   ClearConfiguredAddons,
-  DeleteAuthorizedAddon,
   GetAddonsResourceReference,
   GetAddonsUserReference,
   GetCitationAddons,
@@ -67,7 +66,6 @@ import { CurrentResourceSelectors } from '@shared/stores/current-resource';
     TabPanels,
     Tabs,
     TranslatePipe,
-    FormsModule,
     LoadingSpinnerComponent,
     SelectComponent,
   ],
@@ -76,15 +74,16 @@ import { CurrentResourceSelectors } from '@shared/stores/current-resource';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectAddonsComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef);
-  private queryParamsService = inject(AddonsQueryParamsService);
-  private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly queryParamsService = inject(AddonsQueryParamsService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly tabOptions = ADDON_TAB_OPTIONS;
   readonly AddonTabValue = AddonTabValue;
   readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
+
   searchControl = new FormControl<string>('');
   searchValue = signal<string>('');
   selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
@@ -127,16 +126,6 @@ export class ProjectAddonsComponent implements OnInit {
     return ADDON_CATEGORY_OPTIONS;
   });
 
-  isAddonsLoading = computed(() => {
-    return (
-      this.isStorageAddonsLoading() ||
-      this.isCitationAddonsLoading() ||
-      this.isLinkAddonsLoading() ||
-      this.isRedirectAddonsLoading() ||
-      this.isUserReferenceLoading() ||
-      this.isCurrentUserLoading()
-    );
-  });
   isConfiguredAddonsLoading = computed(() => {
     let categoryLoading;
 
@@ -175,9 +164,7 @@ export class ProjectAddonsComponent implements OnInit {
     }
   });
 
-  isAllAddonsTabLoading = computed(() => {
-    return this.currentAddonsLoading() || this.isConfiguredAddonsLoading();
-  });
+  isAllAddonsTabLoading = computed(() => this.currentAddonsLoading() || this.isConfiguredAddonsLoading());
 
   actions = createDispatchMap({
     getStorageAddons: GetStorageAddons,
@@ -189,7 +176,6 @@ export class ProjectAddonsComponent implements OnInit {
     getConfiguredLinkAddons: GetConfiguredLinkAddons,
     getAddonsUserReference: GetAddonsUserReference,
     getAddonsResourceReference: GetAddonsResourceReference,
-    deleteAuthorizedAddon: DeleteAuthorizedAddon,
     clearConfiguredAddons: ClearConfiguredAddons,
   });
 
@@ -233,9 +219,7 @@ export class ProjectAddonsComponent implements OnInit {
     }
   });
 
-  resourceReferenceId = computed(() => {
-    return this.addonsResourceReference()[0]?.id;
-  });
+  resourceReferenceId = computed(() => this.addonsResourceReference()[0]?.id);
 
   currentAction = computed(() => {
     switch (this.selectedCategory()) {
