@@ -8,6 +8,7 @@ export interface MetaTagsData {
   osfGuid?: string | null;
   title?: DataContent;
   type?: DataContent;
+  osfType?: DataContent;
   description?: DataContent;
   url?: DataContent;
   canonicalUrl?: DataContent;
