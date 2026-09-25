@@ -7,6 +7,7 @@ import { SchemaBlocksResponseJsonApi } from '@shared/models/registration/schema-
 export class PageSchemaMapper {
   static fromSchemaBlocksResponse(response: SchemaBlocksResponseJsonApi): PageSchema[] {
     const pages: PageSchema[] = [];
+    const unpagedQuestions: Question[] = [];
     let currentPage!: PageSchema;
     let currentQuestion: Question | null = null;
     let currentSection: Section | null = null;
@@ -75,6 +76,8 @@ export class PageSchemaMapper {
           } else if (currentPage) {
             currentPage.questions = currentPage.questions || [];
             currentPage.questions.push(currentQuestion);
+          } else {
+            unpagedQuestions.push(currentQuestion);
           }
           break;
 
@@ -94,6 +97,8 @@ export class PageSchemaMapper {
           } else if (currentPage) {
             currentPage.questions = currentPage.questions || [];
             currentPage.questions.push(currentQuestion);
+          } else {
+            unpagedQuestions.push(currentQuestion);
           }
           break;
 
@@ -150,6 +155,14 @@ export class PageSchemaMapper {
           return;
       }
     });
+
+    if (!pages.length && unpagedQuestions.length) {
+      pages.push({
+        id: unpagedQuestions[0].id,
+        title: '',
+        questions: unpagedQuestions,
+      });
+    }
 
     return pages;
   }
