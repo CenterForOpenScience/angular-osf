@@ -1,9 +1,24 @@
+import { inject } from '@angular/core';
 import { CanMatchFn, Route, UrlSegment } from '@angular/router';
 
-import { FileProvider } from '@osf/features/files/constants';
+import { FileProviderRegistryService } from '@core/services/file-provider-registry.service';
 
-export const isFileProvider: CanMatchFn = (route: Route, segments: UrlSegment[]) => {
+/**
+ * Route guard that checks if a file provider is valid.
+ * Supports both built-in providers (osfstorage, googledrive, etc.) and
+ * dynamically discovered external storage services (foreign addons like s3compat).
+ */
+export const isFileProvider: CanMatchFn = async (route: Route, segments: UrlSegment[]) => {
   const id = segments[0]?.path;
+  if (!id) {
+    return false;
+  }
 
-  return !!(id && Object.values(FileProvider).some((provider) => provider === id));
+  const registry = inject(FileProviderRegistryService);
+
+  try {
+    return await registry.isValidProvider(id);
+  } catch {
+    return false;
+  }
 };
