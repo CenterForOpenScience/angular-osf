@@ -24,7 +24,7 @@ export class AddonDialogService {
     const dialogRef = this.dialogService.open(DisconnectAddonModalComponent, {
       focusOnShow: false,
       header: this.translateService.instant('settings.addons.configureAddon.disconnect', {
-        addonName: AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames],
+        addonName: AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames] || addon.displayName,
       }),
       closeOnEscape: true,
       modal: true,
