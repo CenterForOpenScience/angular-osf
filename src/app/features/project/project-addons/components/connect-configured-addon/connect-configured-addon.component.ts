@@ -216,7 +216,8 @@ export class ConnectConfiguredAddonComponent {
             },
           });
           this.toastService.showSuccess('settings.addons.toast.createSuccess', {
-            addonName: AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames],
+            addonName:
+              AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames] || addon.providerName,
           });
         }
       },
