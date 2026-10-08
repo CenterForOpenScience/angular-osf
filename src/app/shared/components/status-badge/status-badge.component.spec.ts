@@ -37,6 +37,13 @@ describe('StatusBadgeComponent', () => {
     expect(component.severity()).toBe('success');
   });
 
+  it('should map rejected status to label and severity', () => {
+    setup(RegistryStatus.Rejected);
+
+    expect(component.label()).toBe('shared.statuses.rejected');
+    expect(component.severity()).toBe('danger');
+  });
+
   it('should not render tag when status label is empty', () => {
     setup(RegistryStatus.None);
 

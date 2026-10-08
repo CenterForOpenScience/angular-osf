@@ -111,7 +111,11 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
   readonly showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn);
   readonly isInitialState = computed(() => this.registry()?.reviewsState === RegistrationReviewStates.Initial);
   readonly canMakeDecision = computed(
-    () => !this.registry()?.archiving && !this.registry()?.withdrawn && this.isModeration()
+    () =>
+      !this.registry()?.archiving &&
+      !this.registry()?.withdrawn &&
+      this.registry()?.reviewsState !== RegistrationReviewStates.Rejected &&
+      this.isModeration()
   );
 
   readonly canUpdate = computed(() => this.hasAdminAccess() && this.allowUpdates());

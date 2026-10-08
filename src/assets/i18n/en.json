@@ -2333,6 +2333,11 @@
           "short": "Pending withdraw request",
           "text": "Pending withdrawal"
         },
+        "rejected": {
+          "long": "This registration was not accepted by the registry moderators and is visible only to its contributors and the registry moderators. Its draft was returned to the contributors so they can make edits and resubmit.",
+          "short": "Rejected by moderators",
+          "text": "Rejected"
+        },
         "updatePendingApproval": {
           "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved.",
           "short": "Update pending approval",
@@ -2938,6 +2943,7 @@
       "pendingRegistrationApproval": "Pending registration approval",
       "pendingWithdraw": "Pending withdrawal",
       "pendingWithdrawRequest": "Pending withdraw request",
+      "rejected": "Rejected",
       "unapproved": "Unapproved",
       "updatePendingApproval": "Update pending approval",
       "withdrawn": "Withdrawn"
