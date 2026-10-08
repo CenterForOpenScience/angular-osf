@@ -184,6 +184,15 @@ describe('RegistryOverviewComponent', () => {
     expect(component.canMakeDecision()).toBe(false);
   });
 
+  it('should compute canMakeDecision as false for a rejected registration in moderator mode', () => {
+    const { component } = setup({
+      registry: { ...MOCK_REGISTRATION_OVERVIEW_MODEL, reviewsState: RegistrationReviewStates.Rejected },
+      queryParams: { mode: 'moderator' },
+    });
+
+    expect(component.canMakeDecision()).toBe(false);
+  });
+
   it('should compute canUpdate as true when admin access and provider updates are allowed', () => {
     const { component } = setup({
       registry: MOCK_REGISTRATION_OVERVIEW_MODEL,

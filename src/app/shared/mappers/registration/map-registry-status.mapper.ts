@@ -42,6 +42,8 @@ export function MapRegistryStatus(
     return RegistryStatus.PendingWithdraw;
   } else if (registry.reviews_state === RegistrationReviewStates.Withdrawn) {
     return RegistryStatus.Withdrawn;
+  } else if (registry.reviews_state === RegistrationReviewStates.Rejected) {
+    return RegistryStatus.Rejected;
   } else if (
     registry.reviews_state === RegistrationReviewStates.Initial &&
     registry.revision_state === RevisionReviewStates.Approved
