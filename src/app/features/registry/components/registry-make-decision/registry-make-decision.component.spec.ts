@@ -13,11 +13,13 @@ import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { ReviewActionTrigger, SchemaResponseActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
 import { RegistrySelectors } from '../../store/registry';
 
@@ -43,6 +45,7 @@ function setup(overrides: SetupOverrides = {}) {
     providers: [
       provideOSFCore(),
       provideDynamicDialogRefMock(),
+      MockProvider(ToastService, ToastServiceMock.simple()),
       MockProvider(DynamicDialogConfig, { data: { registry, revisionId } }),
       provideMockStore({
         signals: [

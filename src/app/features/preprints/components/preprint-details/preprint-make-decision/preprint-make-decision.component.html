@@ -97,7 +97,13 @@
 
         <section class="w-full mt-4 flex flex-column gap-2">
           <div class="flex flex-row align-items-start gap-2">
-            <p-radio-button inputId="accept" class="pt-1" [value]="ReviewsState.Accepted" [(ngModel)]="decision" />
+            <p-radio-button
+              inputId="accept"
+              class="pt-1"
+              [value]="ReviewsState.Accepted"
+              [(ngModel)]="decision"
+              (change)="decisionToggled()"
+            />
 
             <label for="accept" class="cursor-pointer">
               <h4 class="line-height-3">{{ 'preprints.details.decision.accept.label' | translate }}</h4>
@@ -106,11 +112,30 @@
           </div>
 
           <div class="flex flex-row align-items-start gap-2">
-            <p-radio-button inputId="reject" class="pt-1" [value]="rejectRadioButtonValue()" [(ngModel)]="decision" />
+            <p-radio-button
+              inputId="reject"
+              class="pt-1"
+              [value]="rejectRadioButtonValue()"
+              [(ngModel)]="decision"
+              (change)="decisionToggled()"
+            />
 
             <label for="reject" class="cursor-pointer">
               <h4 class="line-height-3">{{ rejectOptionLabel() | translate }}</h4>
               <p class="line-height-3">{{ rejectOptionExplanation() | translate }}</p>
+            </label>
+          </div>
+
+          <div class="flex flex-row align-items-start gap-2">
+            <p-radio-button
+              inputId="reportSpam"
+              class="pt-1"
+              [value]="ReviewActionTrigger.ReportSpam"
+              [(ngModel)]="decision"
+              (change)="decisionToggled()"
+            />
+            <label for="reportSpam" class="cursor-pointer">
+              <h4 class="line-height-3">{{ 'preprints.details.decision.reportSpam.label' | translate }}</h4>
             </label>
           </div>
         </section>

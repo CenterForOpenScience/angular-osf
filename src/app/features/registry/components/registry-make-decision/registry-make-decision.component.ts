@@ -9,7 +9,7 @@ import { RadioButton } from 'primeng/radiobutton';
 import { Textarea } from 'primeng/textarea';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -45,6 +45,9 @@ export class RegistryMakeDecisionComponent {
   readonly decisionCommentLimit = InputLimits.decisionComment.maxLength;
 
   readonly reviewActions = select(RegistrySelectors.getReviewActions);
+  readonly decisionActions = computed(() =>
+    this.reviewActions().filter((action) => action.trigger !== ReviewActionTrigger.ReportSpam)
+  );
   readonly isSubmitting = select(RegistrySelectors.isReviewActionSubmitting);
 
   private readonly actions = createDispatchMap({ submitDecision: SubmitDecision });
@@ -94,12 +97,14 @@ export class RegistryMakeDecisionComponent {
   }
 
   handleSubmission(): void {
-    const revisionId = this.config.data.revisionId;
+    const action = this.requestForm.value[ModerationDecisionFormControls.Action] ?? '';
+    // a spam report is related to the registration and its submitter, so a revision is never its target
+    const revisionId = action === ReviewActionTrigger.ReportSpam ? null : this.config.data.revisionId;
     this.actions
       .submitDecision(
         {
           targetId: revisionId ? revisionId : this.registry.id,
-          action: this.requestForm.value[ModerationDecisionFormControls.Action] ?? '',
+          action,
           comment: this.requestForm.value[ModerationDecisionFormControls.Comment] ?? '',
         },
         !!revisionId

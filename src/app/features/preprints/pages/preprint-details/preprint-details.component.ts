@@ -30,6 +30,7 @@ import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
+import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
@@ -147,7 +148,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   });
 
   latestAction = computed(() => {
-    const actions = this.reviewActions();
+    // banners and the decision dialog describe the last decision, and a spam report is not one
+    const actions = this.reviewActions().filter((action) => action.trigger !== ReviewActionTrigger.ReportSpam);
     return actions.length > 0 ? actions[0] : null;
   });
 

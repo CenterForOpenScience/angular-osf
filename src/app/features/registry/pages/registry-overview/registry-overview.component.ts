@@ -29,6 +29,7 @@ import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-l
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { toCamelCase } from '@osf/shared/helpers/camel-case';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
@@ -228,6 +229,12 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
           if (data.action) {
             const action = toCamelCase(data.action);
             this.toastService.showSuccess(`moderation.makeDecision.${action}Success`);
+          }
+
+          // a spam report leaves the registration untouched, and the reload below drops the
+          // moderator query param, which would hide the 'Make decision' button
+          if (data.action === ReviewActionTrigger.ReportSpam) {
+            return;
           }
 
           const currentUrl = this.router.url.split('?')[0];

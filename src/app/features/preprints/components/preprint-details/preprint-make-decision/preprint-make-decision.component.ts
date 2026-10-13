@@ -26,7 +26,9 @@ import {
   SubmitReviewsDecision,
 } from '@osf/features/preprints/store/preprint';
 import { InputLimits } from '@osf/shared/constants/input-limits.const';
+import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 @Component({
   selector: 'osf-preprint-make-decision',
@@ -38,6 +40,7 @@ import { StringOrNull } from '@osf/shared/helpers/types.helper';
 export class PreprintMakeDecisionComponent {
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   private readonly actions = createDispatchMap({
     submitReviewsDecision: SubmitReviewsDecision,
@@ -53,7 +56,7 @@ export class PreprintMakeDecisionComponent {
 
   dialogVisible = false;
   didValidate = signal<boolean>(false);
-  decision = signal<ReviewsState>(ReviewsState.Accepted);
+  decision = signal<ReviewsState | ReviewActionTrigger.ReportSpam>(ReviewsState.Accepted);
   initialReviewerComment = signal<StringOrNull>(null);
   reviewerComment = signal<StringOrNull>(null);
   requestDecisionJustification = signal<StringOrNull>(null);
@@ -61,6 +64,7 @@ export class PreprintMakeDecisionComponent {
 
   readonly decisionCommentLimit = InputLimits.decisionComment.maxLength;
   readonly ReviewsState = ReviewsState;
+  readonly ReviewActionTrigger = ReviewActionTrigger;
 
   labelDecisionButton = computed(() => {
     const preprint = this.preprint();
@@ -99,7 +103,11 @@ export class PreprintMakeDecisionComponent {
     const preprint = this.preprint();
     const reviewsState = preprint?.reviewsState;
 
-    if (this.isPendingWithdrawal() || reviewsState === ReviewsState.Pending) {
+    if (
+      this.decision() === ReviewActionTrigger.ReportSpam ||
+      this.isPendingWithdrawal() ||
+      reviewsState === ReviewsState.Pending
+    ) {
       return 'preprints.details.decision.submitButton.submitDecision';
     }
 
@@ -231,6 +239,11 @@ export class PreprintMakeDecisionComponent {
     const preprint = this.preprint();
     if (!preprint) return;
 
+    if (this.decision() === ReviewActionTrigger.ReportSpam) {
+      this.reportSpam();
+      return;
+    }
+
     let trigger;
     if (preprint.reviewsState !== ReviewsState.Pending && this.commentEdited() && !this.decisionChanged()) {
       // If the submission is not pending,
@@ -304,6 +317,32 @@ export class PreprintMakeDecisionComponent {
           },
         });
     }
+  }
+
+  decisionToggled() {
+    if (this.decision() === ReviewActionTrigger.ReportSpam) {
+      this.reviewerComment.set(null);
+    } else {
+      this.reviewerComment.set(this.initialReviewerComment());
+    }
+  }
+
+  private reportSpam() {
+    const preprint = this.preprint();
+    if (!preprint) return;
+
+    this.saving.set(true);
+    this.actions
+      .submitReviewsDecision(ReviewActionTrigger.ReportSpam, this.reviewerComment()?.trim() || null)
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccess('preprints.details.decision.reportSpam.success');
+          this.dialogVisible = false;
+          this.decision.set(preprint.reviewsState);
+          this.reviewerComment.set(this.initialReviewerComment());
+        },
+      });
   }
 
   requestDecisionToggled() {

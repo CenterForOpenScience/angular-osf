@@ -977,6 +977,8 @@
       "rejectWithdrawalMessage": "Submission will remain fully public",
       "remarksPlaceholder": "Add remarks to registration admins",
       "removeSuccess": "Submission has been withdrawn successfully",
+      "reportSpam": "Report spam",
+      "reportSpamSuccess": "Submission has been reported as spam",
       "submitDecision": "Submit decision",
       "withdrawRequest": "Withdraw Request",
       "withdrawRequestMessage": "Submission will be withdrawn from the collection and will no longer appear in search results."
@@ -1331,6 +1333,10 @@
           "label": "Reject submission",
           "post": "Submission will be removed from search results and made private.",
           "pre": "Submission will not appear in search results and will remain private."
+        },
+        "reportSpam": {
+          "label": "Report spam",
+          "success": "Submission has been reported as spam"
         },
         "settings": {
           "comments": {
