@@ -223,7 +223,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    // previous versions stay editable, except rejected ones
     return !preprintIsRejected;
   });
 
