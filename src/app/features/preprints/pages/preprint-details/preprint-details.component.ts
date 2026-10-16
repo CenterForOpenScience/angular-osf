@@ -223,7 +223,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    return false;
+    return !preprintIsRejected;
   });
 
   editButtonLabel = computed(() => {
