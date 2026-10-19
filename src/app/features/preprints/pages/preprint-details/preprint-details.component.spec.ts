@@ -354,6 +354,17 @@ describe('PreprintDetailsComponent', () => {
     expect(component.isOsfPreprint()).toBe(true);
   });
 
+  it('should render the title outside of the provider logo link', () => {
+    setup();
+
+    const title: HTMLElement = fixture.nativeElement.querySelector('h1');
+    const logoImage: HTMLElement = fixture.nativeElement.querySelector('img.fit-contain');
+
+    expect(title.textContent?.trim()).toBe(mockPreprint.title);
+    expect(title.closest('a')).toBeNull();
+    expect(logoImage.closest('a')).not.toBeNull();
+  });
+
   it('should mark preprint withdrawable for pending and accepted states', () => {
     setup();
     vi.spyOn(component, 'preprint').mockReturnValue({ ...mockPreprint, reviewsState: ReviewsState.Pending } as any);
