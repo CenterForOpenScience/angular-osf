@@ -6,6 +6,7 @@ import { Card } from 'primeng/card';
 
 import { finalize } from 'rxjs';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
@@ -41,8 +42,24 @@ export class ConnectedIdentitiesComponent {
         this.actions
           .deleteExternalIdentity(identity.id)
           .pipe(finalize(() => this.loaderService.hide()))
-          .subscribe(() => this.toastService.showSuccess('settings.accountSettings.connectedIdentities.successDelete'));
+          .subscribe({
+            next: () => this.toastService.showSuccess('settings.accountSettings.connectedIdentities.successDelete'),
+            error: (error: HttpErrorResponse) => this.toastService.showError(this.getDeleteErrorKey(error)),
+          });
       },
     });
+  }
+
+  private getDeleteErrorKey(error: HttpErrorResponse): string {
+    const prefix = 'settings.accountSettings.connectedIdentities.errors';
+
+    switch (error.status) {
+      case 503:
+        return `${prefix}.retryLater`;
+      case 409:
+        return `${prefix}.signInViaOrcid`;
+      default:
+        return `${prefix}.contactSupport`;
+    }
   }
 }

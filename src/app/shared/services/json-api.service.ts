@@ -80,7 +80,7 @@ export class JsonApiService {
     });
   }
 
-  delete(url: string, body?: unknown, headers?: Record<string, string>): Observable<void> {
-    return this.http.delete<void>(url, { body, headers });
+  delete(url: string, body?: unknown, headers?: Record<string, string>, context?: HttpContext): Observable<void> {
+    return this.http.delete<void>(url, { body, headers, context });
   }
 }

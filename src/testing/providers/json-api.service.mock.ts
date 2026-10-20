@@ -27,7 +27,12 @@ type PatchFn = (
 ) => Observable<unknown>;
 type PutFn = (url: string, body: unknown, params?: Record<string, unknown>) => Observable<unknown>;
 type PutFileFn = (url: string, file: File, params?: Record<string, string>) => Observable<HttpEvent<unknown>>;
-type DeleteFn = (url: string, body?: unknown, headers?: Record<string, string>) => Observable<void>;
+type DeleteFn = (
+  url: string,
+  body?: unknown,
+  headers?: Record<string, string>,
+  context?: HttpContext
+) => Observable<void>;
 
 export type JsonApiServiceMockType = Pick<JsonApiService, 'get' | 'post' | 'patch' | 'put' | 'putFile' | 'delete'> & {
   get: Mock<GetFn>;

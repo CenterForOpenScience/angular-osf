@@ -2,8 +2,11 @@ import { Store } from '@ngxs/store';
 
 import { MockComponent, MockProvider } from 'ng-mocks';
 
+import { throwError } from 'rxjs';
+
 import { Mock } from 'vitest';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
@@ -92,6 +95,22 @@ describe('ConnectedIdentitiesComponent', () => {
     expect(loaderService.show).toHaveBeenCalled();
     expect(store.dispatch).toHaveBeenCalledWith(new DeleteExternalIdentity(mockIdentity.id));
     expect(toastService.showSuccess).toHaveBeenCalledWith('settings.accountSettings.connectedIdentities.successDelete');
+    expect(loaderService.hide).toHaveBeenCalled();
+  });
+
+  it.each([
+    [503, 'settings.accountSettings.connectedIdentities.errors.retryLater'],
+    [409, 'settings.accountSettings.connectedIdentities.errors.signInViaOrcid'],
+    [500, 'settings.accountSettings.connectedIdentities.errors.contactSupport'],
+  ])('should show the matching error toast for status %i', (status, messageKey) => {
+    (store.dispatch as Mock).mockReturnValue(throwError(() => new HttpErrorResponse({ status })));
+    component.deleteExternalIdentity(mockIdentity);
+
+    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
+    onConfirm();
+
+    expect(toastService.showError).toHaveBeenCalledWith(messageKey);
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
     expect(loaderService.hide).toHaveBeenCalled();
   });
 

@@ -2552,6 +2552,11 @@
           "message": "Are you sure you want to delete <b>{{name}}</b> identity?"
         },
         "description": "Connected identities allow you to log in to the OSF via a third-party service. You can revoke these identifies.",
+        "errors": {
+          "contactSupport": "Unable to disconnect this identity. Please contact support if the problem persists.",
+          "retryLater": "Unable to revoke ORCiD access at this time. Please try again later.",
+          "signInViaOrcid": "We couldn't find a stored ORCiD authorization for this identity. Please sign in via ORCiD and try again."
+        },
         "noIdentities": "You have not authorized any external services to log in to the OSF.",
         "successDelete": "Successfully deleted connected identities.",
         "title": "Connected identities"
