@@ -1,40 +1,26 @@
-import { Store } from '@ngxs/store';
-
 import { MockComponent, MockProvider } from 'ng-mocks';
 
-import { throwError } from 'rxjs';
-
-import { Mock } from 'vitest';
-
-import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReadonlyInputComponent } from '@osf/shared/components/readonly-input/readonly-input.component';
-import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
-import { LoaderService } from '@osf/shared/services/loader.service';
-import { ToastService } from '@osf/shared/services/toast.service';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import {
-  CustomConfirmationServiceMock,
-  CustomConfirmationServiceMockType,
-} from '@testing/providers/custom-confirmation-provider.mock';
-import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
+  ExternalIdentityDeletionServiceMock,
+  ExternalIdentityDeletionServiceMockType,
+} from '@testing/providers/external-identity-deletion-service.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
-import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { ExternalIdentity } from '../../models';
-import { AccountSettingsSelectors, DeleteExternalIdentity } from '../../store';
+import { ExternalIdentityDeletionService } from '../../services';
+import { AccountSettingsSelectors } from '../../store';
 
 import { ConnectedIdentitiesComponent } from './connected-identities.component';
 
 describe('ConnectedIdentitiesComponent', () => {
   let component: ConnectedIdentitiesComponent;
   let fixture: ComponentFixture<ConnectedIdentitiesComponent>;
-  let store: Store;
-  let loaderService: LoaderServiceMock;
-  let confirmationService: CustomConfirmationServiceMockType;
-  let toastService: ToastServiceMockType;
+  let externalIdentityDeletion: ExternalIdentityDeletionServiceMockType;
 
   const mockIdentity: ExternalIdentity = {
     id: 'orcid',
@@ -43,24 +29,19 @@ describe('ConnectedIdentitiesComponent', () => {
   };
 
   beforeEach(() => {
-    loaderService = new LoaderServiceMock();
-    confirmationService = CustomConfirmationServiceMock.simple();
-    toastService = ToastServiceMock.simple();
+    externalIdentityDeletion = ExternalIdentityDeletionServiceMock.simple();
 
     TestBed.configureTestingModule({
       imports: [ConnectedIdentitiesComponent, MockComponent(ReadonlyInputComponent)],
       providers: [
         provideOSFCore(),
-        MockProvider(LoaderService, loaderService),
-        MockProvider(CustomConfirmationService, confirmationService),
-        MockProvider(ToastService, toastService),
+        MockProvider(ExternalIdentityDeletionService, externalIdentityDeletion),
         provideMockStore({
           signals: [{ selector: AccountSettingsSelectors.getExternalIdentities, value: [mockIdentity] }],
         }),
       ],
     });
 
-    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ConnectedIdentitiesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -74,52 +55,9 @@ describe('ConnectedIdentitiesComponent', () => {
     expect(component.externalIdentities()).toEqual([mockIdentity]);
   });
 
-  it('should open delete confirmation with expected payload', () => {
+  it('should delegate deletion of the identity to the deletion service', () => {
     component.deleteExternalIdentity(mockIdentity);
 
-    expect(confirmationService.confirmDelete).toHaveBeenCalledWith({
-      headerKey: 'settings.accountSettings.connectedIdentities.deleteDialog.header',
-      messageParams: { name: mockIdentity.id },
-      messageKey: 'settings.accountSettings.connectedIdentities.deleteDialog.message',
-      onConfirm: expect.any(Function),
-    });
-  });
-
-  it('should dispatch delete and show success when confirmation is accepted', () => {
-    (store.dispatch as Mock).mockClear();
-    component.deleteExternalIdentity(mockIdentity);
-
-    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
-    onConfirm();
-
-    expect(loaderService.show).toHaveBeenCalled();
-    expect(store.dispatch).toHaveBeenCalledWith(new DeleteExternalIdentity(mockIdentity.id));
-    expect(toastService.showSuccess).toHaveBeenCalledWith('settings.accountSettings.connectedIdentities.successDelete');
-    expect(loaderService.hide).toHaveBeenCalled();
-  });
-
-  it.each([
-    [503, 'settings.accountSettings.connectedIdentities.errors.retryLater'],
-    [409, 'settings.accountSettings.connectedIdentities.errors.signInViaOrcid'],
-    [500, 'settings.accountSettings.connectedIdentities.errors.contactSupport'],
-  ])('should show the matching error toast for status %i', (status, messageKey) => {
-    (store.dispatch as Mock).mockReturnValue(throwError(() => new HttpErrorResponse({ status })));
-    component.deleteExternalIdentity(mockIdentity);
-
-    const { onConfirm } = confirmationService.confirmDelete.mock.calls[0][0];
-    onConfirm();
-
-    expect(toastService.showError).toHaveBeenCalledWith(messageKey);
-    expect(toastService.showSuccess).not.toHaveBeenCalled();
-    expect(loaderService.hide).toHaveBeenCalled();
-  });
-
-  it('should not dispatch delete when confirmation is not accepted', () => {
-    (store.dispatch as Mock).mockClear();
-    component.deleteExternalIdentity(mockIdentity);
-
-    expect(loaderService.show).not.toHaveBeenCalled();
-    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(DeleteExternalIdentity));
-    expect(toastService.showSuccess).not.toHaveBeenCalled();
+    expect(externalIdentityDeletion.confirmAndDelete).toHaveBeenCalledWith(mockIdentity.id);
   });
 });
