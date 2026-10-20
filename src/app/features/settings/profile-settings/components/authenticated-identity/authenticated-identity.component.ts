@@ -5,23 +5,15 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 
-import { finalize } from 'rxjs';
-
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { AuthService } from '@core/services/auth.service';
 import { ExternalIdentityStatus } from '@osf/shared/enums/external-identity-status.enum';
-import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
-import { LoaderService } from '@osf/shared/services/loader.service';
-import { ToastService } from '@osf/shared/services/toast.service';
 
-import {
-  AccountSettingsSelectors,
-  DeleteExternalIdentity,
-  GetExternalIdentities,
-} from '../../../account-settings/store';
+import { ExternalIdentityDeletionService } from '../../../account-settings/services';
+import { AccountSettingsSelectors, GetExternalIdentities } from '../../../account-settings/store';
 import { ProfileSettingsTabOption } from '../../enums';
 
 @Component({
@@ -34,9 +26,7 @@ import { ProfileSettingsTabOption } from '../../enums';
 export class AuthenticatedIdentityComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly environment = inject(ENVIRONMENT);
-  private readonly customConfirmationService = inject(CustomConfirmationService);
-  private readonly toastService = inject(ToastService);
-  private readonly loaderService = inject(LoaderService);
+  private readonly externalIdentityDeletion = inject(ExternalIdentityDeletionService);
 
   private readonly ORCID_PROVIDER = 'ORCID';
 
@@ -45,7 +35,6 @@ export class AuthenticatedIdentityComponent implements OnInit {
   }
 
   readonly actions = createDispatchMap({
-    deleteExternalIdentity: DeleteExternalIdentity,
     getExternalIdentities: GetExternalIdentities,
   });
 
@@ -60,18 +49,7 @@ export class AuthenticatedIdentityComponent implements OnInit {
   );
 
   disconnectOrcid(): void {
-    this.customConfirmationService.confirmDelete({
-      headerKey: 'settings.accountSettings.connectedIdentities.deleteDialog.header',
-      messageParams: { name: this.ORCID_PROVIDER },
-      messageKey: 'settings.accountSettings.connectedIdentities.deleteDialog.message',
-      onConfirm: () => {
-        this.loaderService.show();
-        this.actions
-          .deleteExternalIdentity(this.ORCID_PROVIDER)
-          .pipe(finalize(() => this.loaderService.hide()))
-          .subscribe(() => this.toastService.showSuccess('settings.accountSettings.connectedIdentities.successDelete'));
-      },
-    });
+    this.externalIdentityDeletion.confirmAndDelete(this.ORCID_PROVIDER);
   }
 
   connectOrcid(): void {

@@ -2,8 +2,11 @@ import { Store } from '@ngxs/store';
 
 import { MockProvider } from 'ng-mocks';
 
+import { throwError } from 'rxjs';
+
 import { Mock } from 'vitest';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -113,6 +116,20 @@ describe('AuthenticatedIdentityComponent', () => {
     expect(toastServiceMock.showSuccess).toHaveBeenCalledWith(
       'settings.accountSettings.connectedIdentities.successDelete'
     );
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
+  });
+
+  it('should show the contact support error toast when deleting ORCID fails', () => {
+    (store.dispatch as Mock).mockReturnValue(throwError(() => new HttpErrorResponse({ status: 500 })));
+    component.disconnectOrcid();
+
+    const { onConfirm } = customConfirmationServiceMock.confirmDelete.mock.calls[0][0];
+    onConfirm();
+
+    expect(toastServiceMock.showError).toHaveBeenCalledWith(
+      'settings.accountSettings.connectedIdentities.errors.contactSupport'
+    );
+    expect(toastServiceMock.showSuccess).not.toHaveBeenCalled();
     expect(loaderServiceMock.hide).toHaveBeenCalled();
   });
 
