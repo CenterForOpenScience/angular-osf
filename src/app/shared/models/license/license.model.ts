@@ -11,6 +11,11 @@ export interface LicenseOptions {
   year: string;
 }
 
+export interface LicenseDetails {
+  id: string;
+  licenseOptions: LicenseOptions;
+}
+
 export interface LicensesOption {
   copyrightHolders: string[] | null;
   year: string | null;
