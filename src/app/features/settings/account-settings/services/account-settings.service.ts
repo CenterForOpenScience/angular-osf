@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { bypassErrorInterceptorContext } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserMapper } from '@osf/shared/mappers/user';
 import { UserModel } from '@osf/shared/models/user/user.model';
@@ -113,6 +114,11 @@ export class AccountSettingsService {
   }
 
   deleteExternalIdentity(id: string): Observable<void> {
-    return this.jsonApiService.delete(`${this.apiUrl}/users/me/settings/identities/${id}/`);
+    return this.jsonApiService.delete(
+      `${this.apiUrl}/users/me/settings/identities/${id}/`,
+      undefined,
+      undefined,
+      bypassErrorInterceptorContext()
+    );
   }
 }

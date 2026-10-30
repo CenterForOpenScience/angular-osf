@@ -2,10 +2,7 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { Button } from 'primeng/button';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-
-import { Subject, throwError } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { Mock } from 'vitest';
 
@@ -66,8 +63,6 @@ function setup(overrides: BaseSetupOverrides = {}) {
     { selector: RegistryResourcesSelectors.getResources, value: [] },
     { selector: RegistryResourcesSelectors.getResourcesTotalCount, value: 0 },
     { selector: RegistryResourcesSelectors.isResourcesLoading, value: false },
-    { selector: RegistryResourcesSelectors.getCurrentResource, value: null },
-    { selector: RegistrySelectors.getRegistry, value: null },
     { selector: RegistrySelectors.getIdentifiers, value: [MOCK_PROJECT_IDENTIFIERS] },
     { selector: RegistrySelectors.hasWriteAccess, value: true },
   ];
@@ -77,7 +72,7 @@ function setup(overrides: BaseSetupOverrides = {}) {
   TestBed.configureTestingModule({
     imports: [
       RegistryResourcesComponent,
-      ...MockComponents(Button, LoadingSpinnerComponent, SubHeaderComponent, IconComponent, CustomPaginatorComponent),
+      ...MockComponents(LoadingSpinnerComponent, SubHeaderComponent, IconComponent, CustomPaginatorComponent),
     ],
     providers: [
       provideOSFCore(),
@@ -170,15 +165,6 @@ describe('RegistryResourcesComponent', () => {
     expect(component.isAddingResource()).toBe(false);
   });
 
-  it('should show an error toast when addResource fails', () => {
-    const { component, store, mockToastService } = setup();
-
-    vi.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('fail')));
-    component.addResource();
-
-    expect(mockToastService.showError).toHaveBeenCalledWith('resources.toastMessages.addResourceError');
-  });
-
   it('should update a resource and show a success toast', () => {
     const { component, dialogClose$, mockDialogService, mockToastService } = setup();
 
@@ -194,20 +180,6 @@ describe('RegistryResourcesComponent', () => {
       })
     );
     expect(mockToastService.showSuccess).toHaveBeenCalledWith('resources.toastMessages.updatedResourceSuccess');
-  });
-
-  it('should show an error toast when updateResource fails', () => {
-    const errorSubject = new Subject<unknown>();
-    const { component, mockDialogService, mockToastService } = setup();
-
-    mockDialogService.open.mockReturnValue({
-      onClose: errorSubject.pipe(),
-      close: vi.fn(),
-    } as unknown as DynamicDialogRef);
-    component.updateResource(MOCK_RESOURCE);
-    errorSubject.error(new Error('fail'));
-
-    expect(mockToastService.showError).toHaveBeenCalledWith('resources.toastMessages.updateResourceError');
   });
 
   it('should delete a resource, reset pagination, and show a success toast', () => {

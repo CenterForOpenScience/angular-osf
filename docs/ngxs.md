@@ -87,7 +87,7 @@ export interface FilesStateModel {
 1. `data` holds strongly typed domain data (not raw JSON:API payloads when a domain model exists).
 2. `isLoading` indicates a read/fetch is in progress.
 3. `isSubmitting` indicates a write (create/update/delete) is in progress.
-4. `error` stores a failed request message for UI or logging.
+4. `error` stores a failed request message for UI or logging. Set it via `handleSectionError` in action `catchError` — see [Error handling](./error-handling.md#ngxs-state-errors).
 
 Each domain state should be minimal and scoped to its feature.
 
@@ -112,4 +112,5 @@ Each domain state should be minimal and scoped to its feature.
 
 - [Models Conventions](./models.md)
 - [Folder Structure](./arch.md)
+- [Error handling](./error-handling.md) (HTTP interceptor + `handleSectionError`)
 - Official NGXS docs: [https://www.ngxs.io/docs](https://www.ngxs.io/docs)

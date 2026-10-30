@@ -27,12 +27,21 @@ type PatchFn = (
 ) => Observable<unknown>;
 type PutFn = (url: string, body: unknown, params?: Record<string, unknown>) => Observable<unknown>;
 type PutFileFn = (url: string, file: File, params?: Record<string, string>) => Observable<HttpEvent<unknown>>;
-type DeleteFn = (url: string, body?: unknown, headers?: Record<string, string>) => Observable<void>;
+type DeleteFn = (
+  url: string,
+  body?: unknown,
+  headers?: Record<string, string>,
+  context?: HttpContext
+) => Observable<void>;
 
-export type JsonApiServiceMockType = Pick<JsonApiService, 'get' | 'post' | 'patch' | 'put' | 'putFile' | 'delete'> & {
+export type JsonApiServiceMockType = Pick<
+  JsonApiService,
+  'get' | 'post' | 'patch' | 'patchResponse' | 'put' | 'putFile' | 'delete'
+> & {
   get: Mock<GetFn>;
   post: Mock<PostFn>;
   patch: Mock<PatchFn>;
+  patchResponse: Mock<PatchFn>;
   put: Mock<PutFn>;
   putFile: Mock<PutFileFn>;
   delete: Mock<DeleteFn>;
@@ -42,6 +51,7 @@ export class JsonApiServiceMockBuilder {
   private getMock: Mock<GetFn> = vi.fn().mockReturnValue(of({}));
   private postMock: Mock<PostFn> = vi.fn().mockReturnValue(of({}));
   private patchMock: Mock<PatchFn> = vi.fn().mockReturnValue(of({}));
+  private patchResponseMock: Mock<PatchFn> = vi.fn().mockReturnValue(of({}));
   private putMock: Mock<PutFn> = vi.fn().mockReturnValue(of({}));
   private putFileMock: Mock<PutFileFn> = vi.fn().mockReturnValue(of({} as HttpEvent<unknown>));
   private deleteMock: Mock<DeleteFn> = vi.fn().mockReturnValue(of(void 0));
@@ -65,6 +75,11 @@ export class JsonApiServiceMockBuilder {
     return this;
   }
 
+  withPatchResponse(mockImpl: Mock<PatchFn>): JsonApiServiceMockBuilder {
+    this.patchResponseMock = mockImpl;
+    return this;
+  }
+
   withPut(mockImpl: Mock<PutFn>): JsonApiServiceMockBuilder {
     this.putMock = mockImpl;
     return this;
@@ -85,6 +100,7 @@ export class JsonApiServiceMockBuilder {
       get: this.getMock,
       post: this.postMock,
       patch: this.patchMock,
+      patchResponse: this.patchResponseMock,
       put: this.putMock,
       putFile: this.putFileMock,
       delete: this.deleteMock,

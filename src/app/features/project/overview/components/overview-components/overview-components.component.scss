@@ -6,6 +6,10 @@
 .component-drag-item {
   cursor: move;
 
+  &.cdk-drag-disabled {
+    cursor: default;
+  }
+
   &.cdk-drag-preview {
     background-color: var(--white);
     border-radius: 0.6rem;

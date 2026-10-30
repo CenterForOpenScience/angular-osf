@@ -53,16 +53,15 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.actions
-      .getCurrentUser()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        switchMap(() => this.actions.getEmails())
-      )
-      .subscribe();
-
     if (this.isBrowser) {
-      // `GetCurrentUser` short-circuits on a cached user, so it cannot be relied on to surface an outage.
+      this.actions
+        .getCurrentUser()
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          switchMap(() => this.actions.getEmails())
+        )
+        .subscribe();
+
       this.maintenanceModeService.checkOnce();
 
       this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event) => {

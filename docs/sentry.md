@@ -2,6 +2,17 @@
 
 Sentry collects JavaScript errors from the OSF Angular app in the browser. Many of those events are not application bugs: flaky networks, cancelled requests, missing/deleted API resources, browser extensions, and stale tabs after a deploy.
 
+## Setup
+
+`Sentry.init` runs in the browser from `src/app/core/provider/application.initialization.provider.ts` after `assets/config/config.json` loads. Set:
+
+| Key                 | Role                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `sentryDsn`         | Enables Sentry when non-empty                                                                    |
+| `sentryEnvironment` | Passed as Sentry’s `environment` option (use the same name as other services for managed Sentry) |
+
+## Filtering
+
 Filtering happens on the client when Sentry starts. Change the lists in `src/app/core/helpers/sentry-filter.helper.ts`. That file is passed into `Sentry.init` from `src/app/core/provider/application.initialization.provider.ts`.
 
 [Sentry filtering docs](https://docs.sentry.io/platforms/javascript/configuration/filtering/)

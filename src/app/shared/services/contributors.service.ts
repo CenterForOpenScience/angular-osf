@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
+import { JSON_API_BULK_HEADERS } from '@osf/shared/constants/json-api-headers.const';
 
 import { AddContributorType } from '../enums/contributors/add-contributor-type.enum';
 import { ContributorPermission } from '../enums/contributors/contributor-permission.enum';
@@ -201,12 +202,8 @@ export class ContributorsService {
       data: contributors.map((contributor) => ContributorsMapper.toContributorUpdateRequest(contributor)),
     };
 
-    const headers = {
-      'Content-Type': 'application/vnd.api+json; ext=bulk',
-    };
-
     return this.jsonApiService
-      .patch<ContributorsResponseJsonApi>(baseUrl, contributorData, undefined, headers)
+      .patch<ContributorsResponseJsonApi>(baseUrl, contributorData, undefined, JSON_API_BULK_HEADERS)
       .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 
@@ -229,12 +226,8 @@ export class ContributorsService {
       }),
     };
 
-    const headers = {
-      'Content-Type': 'application/vnd.api+json; ext=bulk',
-    };
-
     return this.jsonApiService
-      .post<ContributorsResponseJsonApi>(baseUrl, contributorData, undefined, headers)
+      .post<ContributorsResponseJsonApi>(baseUrl, contributorData, undefined, JSON_API_BULK_HEADERS)
       .pipe(map((response) => ContributorsMapper.getContributors(response.data)));
   }
 

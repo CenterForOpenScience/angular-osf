@@ -9,7 +9,7 @@ import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { InstitutionsService } from '@osf/shared/services/institutions.service';
 
 import { AccountSettingsMapper } from '../mappers';
-import { AccountSettingsService } from '../services';
+import { AccountSettingsService } from '../services/account-settings.service';
 
 import {
   CancelDeactivationRequest,

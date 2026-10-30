@@ -3,6 +3,7 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { authGuard } from '@core/guards/auth.guard';
+import { PAGE_NOT_FOUND_ROUTE_DATA } from '@osf/core/constants/page-not-found.constants';
 import { ConfirmLeavingGuard } from '@osf/shared/guards';
 import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
 import { BookmarksState } from '@osf/shared/stores/bookmarks';
@@ -27,7 +28,7 @@ export const collectionsRoutes: Routes = [
         pathMatch: 'full',
         loadComponent: () =>
           import('@core/components/page-not-found/page-not-found.component').then((m) => m.PageNotFoundComponent),
-        data: { skipBreadcrumbs: true },
+        data: PAGE_NOT_FOUND_ROUTE_DATA,
       },
       {
         path: ':providerId',

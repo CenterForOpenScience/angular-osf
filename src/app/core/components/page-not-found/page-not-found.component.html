@@ -1,8 +1,7 @@
 <section class="container text-center flex flex-column flex-1 my-7 mx-3 p-3 md:p-4">
-  <h2>{{ 'pageNotFound.title' | translate }}</h2>
-  <p class="mt-4">
-    <span>{{ 'pageNotFound.message' | translate }}</span>
-    <a class="ml-1 font-bold" [href]="'mailto:' + supportEmail">{{ supportEmail }}</a
-    >.
-  </p>
+  <h2>{{ titleKey | translate }}</h2>
+  <p class="mt-4">{{ messageKey | translate }}</p>
+  <a class="p-button font-bold no-underline mt-4 align-self-center" [href]="'mailto:' + supportEmail">
+    {{ 'pageNotFound.contactSupport' | translate }}
+  </a>
 </section>

@@ -1,0 +1,30 @@
+@if (preventDuplicateCreation()) {
+  <p-button
+    class="flex"
+    (onClick)="viewDuplicates.emit()"
+    [pTooltip]="'project.overview.actions.viewDuplication' | translate"
+    tooltipPosition="bottom"
+    [ariaLabel]="'project.overview.actions.viewDuplication' | translate"
+  >
+    <span class="font-bold">{{ forksCount() }}</span>
+    <i class="fas fa-clone text-2xl"></i>
+  </p-button>
+} @else {
+  <p-button
+    class="flex"
+    (onClick)="forkActionMenu.toggle($event)"
+    [pTooltip]="'project.overview.tooltips.duplicate' | translate"
+    tooltipPosition="bottom"
+    [ariaLabel]="'project.overview.tooltips.duplicate' | translate"
+  >
+    <span class="font-bold">{{ forksCount() }}</span>
+    <i class="fas fa-clone text-2xl"></i>
+    <p-menu appendTo="body" #forkActionMenu [model]="menuItems()" popup>
+      <ng-template #item let-item>
+        <a class="p-menu-item-link">
+          {{ item.label | translate }}
+        </a>
+      </ng-template>
+    </p-menu>
+  </p-button>
+}

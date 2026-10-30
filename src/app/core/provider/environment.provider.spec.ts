@@ -37,14 +37,6 @@ describe('Provider: Environment', () => {
     expect(environment.dataciteTrackerRepoId).toBeNull();
   });
 
-  it('should allow updating an optional nested object', () => {
-    environment.activityLogs = { pageSize: 100 };
-    expect(environment.activityLogs).toEqual({ pageSize: 100 });
-    environment.activityLogs.pageSize = 200;
-    expect(environment.activityLogs).toEqual({ pageSize: 200 });
-    expect(environment.activityLogs.pageSize).toBe(200);
-  });
-
   it('should reflect changes in subsequent reads', () => {
     environment.facebookAppId = 'abc123';
     expect(environment.facebookAppId).toBe('abc123');

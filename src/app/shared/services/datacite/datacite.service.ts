@@ -1,10 +1,10 @@
 import { EMPTY, filter, map, Observable, of, switchMap, take } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 
-import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
+import { bypassErrorInterceptorContext } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { DataciteEvent } from '@osf/shared/enums/datacite/datacite-event.enum';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
@@ -61,7 +61,7 @@ export class DataciteService {
 
   private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
     const url = `${this.apiDomainUrl}/v2/${targetType}/${targetId}/identifiers`;
-    return this.http.get<IdentifiersResponseJsonApi>(url).pipe(
+    return this.http.get<IdentifiersResponseJsonApi>(url, { context: bypassErrorInterceptorContext() }).pipe(
       map((item) => ({
         identifiers: item.data.map<IdentifierModel>((identifierData) => ({
           id: identifierData.id,
@@ -74,21 +74,8 @@ export class DataciteService {
     );
   }
 
-  /**
-   * Internal helper to log a specific Datacite event for a given DOI.
-   * Only tracks in browser environment using sendBeacon with HTTP POST fallback.
-   *
-   * @param event - The Datacite event type (VIEW or DOWNLOAD).
-   * @param doi - The DOI (Digital Object Identifier) of the resource.
-   * @returns An Observable that completes when the tracking request is sent,
-   *          or EMPTY if DOI, repo ID is missing, or not in browser.
-   */
   private logActivity(event: DataciteEvent, doi: string): Observable<void> {
-    if (!doi || !this.dataciteTrackerRepoId) {
-      return EMPTY;
-    }
-
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.dataciteTrackerRepoId || !isPlatformBrowser(this.platformId)) {
       return EMPTY;
     }
 
@@ -105,13 +92,11 @@ export class DataciteService {
       return of(void 0);
     } else {
       const headers = { 'Content-Type': 'application/json' };
-      const context = new HttpContext();
-      context.set(BYPASS_ERROR_INTERCEPTOR, true);
 
       return this.http
         .post(this.dataciteTrackerAddress, payload, {
           headers,
-          context,
+          context: bypassErrorInterceptorContext(),
         })
         .pipe(map(() => undefined));
     }

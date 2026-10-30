@@ -68,8 +68,6 @@ export class RegistryResourcesComponent {
   readonly resources = select(RegistryResourcesSelectors.getResources);
   readonly resourcesTotalCount = select(RegistryResourcesSelectors.getResourcesTotalCount);
   readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
-  readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
-  readonly registry = select(RegistrySelectors.getRegistry);
   readonly identifiers = select(RegistrySelectors.getIdentifiers);
   readonly canEdit = select(RegistrySelectors.hasWriteAccess);
 
@@ -126,7 +124,6 @@ export class RegistryResourcesComponent {
           this.resetPagination();
           this.toastService.showSuccess('resources.toastMessages.addResourceSuccess');
         },
-        error: () => this.toastService.showError('resources.toastMessages.addResourceError'),
       });
   }
 
@@ -146,7 +143,6 @@ export class RegistryResourcesComponent {
       )
       .subscribe({
         next: () => this.toastService.showSuccess('resources.toastMessages.updatedResourceSuccess'),
-        error: () => this.toastService.showError('resources.toastMessages.updateResourceError'),
       });
   }
 

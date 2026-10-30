@@ -173,11 +173,13 @@ describe('AppComponent', () => {
     expect(fixture.nativeElement.querySelector('.maintenance-overlay')).toBeFalsy();
   });
 
-  it('should not subscribe to router events on server', () => {
+  it('should not dispatch user session or subscribe to router events on server', () => {
     setup({ isBrowser: false });
     routerBuilder.emit(new ResolveStart(1, '/next', '/next', {} as any));
     routerBuilder.emit(new NavigationEnd(5, '/x', '/x'));
     fixture.detectChanges();
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(maintenanceModeServiceMock.checkOnce).not.toHaveBeenCalled();
     expect(loaderServiceMock.show).not.toHaveBeenCalled();
     expect(loaderServiceMock.hide).not.toHaveBeenCalled();
     expect(gtmServiceMock.pushTag).not.toHaveBeenCalled();

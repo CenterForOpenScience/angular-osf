@@ -13,6 +13,6 @@ export function MapRegistrationOverview(data: RegistrationOverviewDataJsonApi): 
     providerId: data.relationships?.provider?.data?.id,
     rootParentId: data.relationships.root?.data?.id,
     status: MapRegistryStatus(data.attributes),
-    forksCount: 0,
+    forksCount: data.relationships.forks?.links.related.meta.count ?? 0,
   };
 }

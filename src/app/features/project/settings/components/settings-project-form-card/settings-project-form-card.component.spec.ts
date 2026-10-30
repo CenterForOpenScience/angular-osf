@@ -3,7 +3,9 @@ import { MockComponent, MockDirective } from 'ng-mocks';
 import { Textarea } from 'primeng/textarea';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 
@@ -24,7 +26,12 @@ describe('SettingsProjectFormCardComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [SettingsProjectFormCardComponent, MockComponent(TextInputComponent), MockDirective(Textarea)],
-      providers: [provideOSFCore(), provideMockStore()],
+      providers: [
+        provideOSFCore(),
+        provideMockStore({
+          signals: [{ selector: UserSelectors.isProjectReadOnly, value: false }],
+        }),
+      ],
     });
 
     fixture = TestBed.createComponent(SettingsProjectFormCardComponent);
@@ -79,13 +86,18 @@ describe('SettingsProjectFormCardComponent', () => {
   });
 
   it('should emit deleteProject when delete button is clicked', () => {
-    vi.spyOn(component.deleteProject, 'emit');
+    const emitSpy = vi.spyOn(component.deleteProject, 'emit');
     fixture.componentRef.setInput('projectDetails', mockNodeDetails);
+    fixture.componentRef.setInput('canDelete', true);
     fixture.detectChanges();
 
-    component.deleteProject.emit();
+    const deleteButton = fixture.debugElement
+      .queryAll(By.css('p-button'))
+      .find((element) => element.nativeElement.textContent?.includes('myProjects.settings.deleteProject'));
 
-    expect(component.deleteProject.emit).toHaveBeenCalled();
+    deleteButton?.triggerEventHandler('onClick');
+
+    expect(emitSpy).toHaveBeenCalled();
   });
 
   it('should reset form to original values', () => {

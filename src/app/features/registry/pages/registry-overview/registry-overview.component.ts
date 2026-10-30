@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Message } from 'primeng/message';
 
-import { map, of, switchMap } from 'rxjs';
+import { finalize, map, of, switchMap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -29,6 +29,7 @@ import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-l
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
+import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { toCamelCase } from '@osf/shared/helpers/camel-case';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
@@ -107,7 +108,7 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
   readonly revisionId = computed(() => (this.queryParams()?.['revisionId'] as string) ?? null);
   readonly isModeration = computed(() => this.queryParams()?.['mode'] === 'moderator');
 
-  readonly hasViewOnly = computed(() => this.viewOnlyService.hasViewOnlyParam(this.router));
+  readonly hasViewOnly = this.viewOnlyService.hasViewOnlyParam(this.router);
   readonly showToolbar = computed(() => !this.registry()?.archiving && !this.registry()?.withdrawn);
   readonly isInitialState = computed(() => this.registry()?.reviewsState === RegistrationReviewStates.Initial);
   readonly canMakeDecision = computed(
@@ -116,7 +117,7 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
 
   readonly canUpdate = computed(() => this.hasAdminAccess() && this.allowUpdates());
 
-  isRootRegistration = computed(() => {
+  readonly isRootRegistration = computed(() => {
     const rootId = this.registry()?.rootParentId;
     return !rootId || rootId === this.registry()?.id;
   });
@@ -127,9 +128,8 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
   });
 
   readonly schemaResponse = computed(() => {
-    const index = this.selectedRevisionIndex();
     const schemaResponses = this.schemaResponses() || [];
-    return index !== null ? schemaResponses[index] : null;
+    return schemaResponses[this.selectedRevisionIndex()] ?? null;
   });
 
   private readonly registryId = toSignal(
@@ -182,7 +182,10 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
     this.loaderService.show();
     this.actions
       .createSchemaResponse(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.loaderService.hide()),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: () => {
           const revisionId = this.currentRevision()?.id;
@@ -228,6 +231,12 @@ export class RegistryOverviewComponent implements OnInit, OnDestroy {
           if (data.action) {
             const action = toCamelCase(data.action);
             this.toastService.showSuccess(`moderation.makeDecision.${action}Success`);
+          }
+
+          // a spam report leaves the registration untouched, and the reload below drops the
+          // moderator query param, which would hide the 'Make decision' button
+          if (data.action === ReviewActionTrigger.ReportSpam) {
+            return;
           }
 
           const currentUrl = this.router.url.split('?')[0];

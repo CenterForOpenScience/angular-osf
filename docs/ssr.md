@@ -153,6 +153,10 @@ Docker `start:docker` runs the **development** configuration (CSR), not the SSR 
 
 ---
 
+## HTTP status codes for failed resources
+
+When SSR fetches a resource and the API returns `401` / `403` / `404` / `410` / `5xx`, the error interceptor sets `RESPONSE_INIT.status` on the requested URL. Network/timeout errors (`status: 0`) map to `503`. First non-OK wins, except a later `401` / `403` / `404` / `410` may replace an earlier `5xx`. No navigation/toasts on the server. Bypass skips this. Silent requests (`X-No-Auth-Redirect` or request-access URL) do not set status for any code. Anonymous SSR usually sees `401` for private resources (not `403`). GUID guards catch errors and return `false`, so routing falls through to `**` (not-found page HTML with that HTTP status). See [Error handling](./error-handling.md).
+
 ## Adding or changing SSR routes
 
 1. Add the route in `app.routes.ts` (browser routes).

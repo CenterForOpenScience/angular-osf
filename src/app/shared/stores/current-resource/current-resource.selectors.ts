@@ -24,6 +24,13 @@ export class CurrentResourceSelectors {
     return state.resourceChildren.data;
   }
 
+  @Selector([CurrentResourceSelectors.getResourceWithChildren])
+  static allResourceChildrenHaveAdminAccess(children: NodeShortInfoModel[]): boolean {
+    if (!children?.length) return false;
+
+    return children.every((child) => child.permissions?.includes(UserPermissions.Admin));
+  }
+
   @Selector([CurrentResourceState])
   static hasWriteAccess(state: CurrentResourceStateModel): boolean {
     return state.currentResource.data?.permissions?.includes(UserPermissions.Write) || false;

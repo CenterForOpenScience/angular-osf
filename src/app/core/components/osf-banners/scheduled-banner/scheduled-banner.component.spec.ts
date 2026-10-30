@@ -4,7 +4,7 @@ import { MockProvider } from 'ng-mocks';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { signal, WritableSignal } from '@angular/core';
+import { PLATFORM_ID, signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BannerModel } from '@core/components/osf-banners/models/banner.model';
@@ -24,43 +24,51 @@ describe('Component: Scheduled Banner', () => {
   const currentBannerSignal: WritableSignal<BannerModel | null> = signal<BannerModel | null>(null);
   let isMobile$: BehaviorSubject<boolean>;
 
-  beforeEach(() => {
+  function setup(overrides: { isBrowser?: boolean } = {}) {
     isMobile$ = new BehaviorSubject<boolean>(false);
+    currentBannerSignal.set(null);
 
     TestBed.configureTestingModule({
       imports: [ScheduledBannerComponent],
       providers: [
         provideOSFCore(),
         MockProvider(IS_XSMALL, isMobile$),
+        MockProvider(PLATFORM_ID, overrides.isBrowser === false ? 'server' : 'browser'),
         provideMockStore({
           signals: [{ selector: BannersSelector.getCurrentBanner, value: currentBannerSignal }],
         }),
       ],
     });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ScheduledBannerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    store = TestBed.inject(Store);
-  });
+  }
 
   it('should create the component', () => {
+    setup();
     expect(component).toBeInstanceOf(ScheduledBannerComponent);
   });
 
-  it('should dispatch FetchCurrentScheduledBanner on init', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    component.ngOnInit();
-    expect(dispatchSpy).toHaveBeenCalledWith(new GetCurrentScheduledBanner());
+  it('should dispatch GetCurrentScheduledBanner on init in browser', () => {
+    setup();
+    expect(store.dispatch).toHaveBeenCalledWith(new GetCurrentScheduledBanner());
+  });
+
+  it('should not dispatch GetCurrentScheduledBanner on server', () => {
+    setup({ isBrowser: false });
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
   it('should return false if no banner is set', () => {
+    setup();
     currentBannerSignal.set(null);
     expect(component.shouldShowBanner()).toBe(false);
   });
 
   it('should return true if current time is within banner window', () => {
+    setup();
     const showBanner = component.shouldShowBanner;
     expect(showBanner()).toBeFalsy();
 
@@ -87,6 +95,7 @@ describe('Component: Scheduled Banner', () => {
   });
 
   it('should return false if current time is outside the banner window', () => {
+    setup();
     const now = new Date();
     currentBannerSignal.set(
       Object({
@@ -104,6 +113,7 @@ describe('Component: Scheduled Banner', () => {
   });
 
   it('should reflect the isMobile signal', () => {
+    setup();
     const now = new Date();
     currentBannerSignal.set(
       Object({

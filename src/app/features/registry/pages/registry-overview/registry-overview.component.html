@@ -1,9 +1,11 @@
-@if (!isRegistryLoading()) {
+@let currentRegistry = registry();
+
+@if (!isRegistryLoading() && currentRegistry) {
   <div
     class="flex flex-column justify-content-center flex-wrap md:flex-row md:justify-content-between md:align-items-center"
   >
     <osf-sub-header
-      [title]="registry()?.title ?? ''"
+      [title]="currentRegistry.title"
       [showButton]="canMakeDecision()"
       [buttonSeverity]="'success'"
       [buttonLabel]="'moderation.makeDecision.header' | translate"
@@ -15,54 +17,58 @@
     @if (showToolbar()) {
       <div class="pb-5 pl-4 ml-auto w-full md:pr-4">
         <osf-registration-overview-toolbar
-          [resourceId]="registry()!.id"
-          [resourceTitle]="registry()!.title"
-          [isPublic]="!!registry()?.isPublic"
+          [resourceId]="currentRegistry.id"
+          [resourceTitle]="currentRegistry.title"
+          [isPublic]="!!currentRegistry.isPublic"
+          [forksCount]="currentRegistry.forksCount"
+          [viewOnly]="hasViewOnly"
         />
       </div>
     }
   </div>
 
-  @if (registry()?.archiving) {
+  @if (currentRegistry.archiving) {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      <osf-archiving-message [registration]="registry()!"></osf-archiving-message>
+      <osf-archiving-message [registration]="currentRegistry"></osf-archiving-message>
     </div>
-  } @else if (registry()?.withdrawn) {
+  } @else if (currentRegistry.withdrawn) {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      <osf-withdrawn-message [registration]="registry()!"></osf-withdrawn-message>
+      <osf-withdrawn-message [registration]="currentRegistry"></osf-withdrawn-message>
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      @if (schemaResponse() && !schemaResponse()?.isOriginalResponse && !isInitialState()) {
+      @let currentSchemaResponse = schemaResponse();
+
+      @if (currentSchemaResponse && !currentSchemaResponse.isOriginalResponse && !isInitialState()) {
         <p-message class="overview-message w-full" severity="warn">
           <ng-template #container>
             <div>
               <h4 class="mb-1">
                 {{ 'registry.overview.updatedRevisionDescription' | translate }}
-                {{ schemaResponse()?.dateCreated | date }}.
+                {{ currentSchemaResponse.dateCreated | date }}.
               </h4>
               <p>
                 {{ 'registry.overview.updateReason' | translate }}
               </p>
               <p>
-                {{ schemaResponse()?.revisionJustification }}
+                {{ currentSchemaResponse.revisionJustification }}
               </p>
             </div>
           </ng-template>
         </p-message>
       }
 
-      @if (hasViewOnly()) {
+      @if (hasViewOnly) {
         <osf-view-only-link-message />
       }
 
       <osf-data-resources
-        [absoluteUrl]="registry()?.id"
-        [hasData]="registry()?.hasData"
-        [hasAnalyticCode]="registry()?.hasAnalyticCode"
-        [hasMaterials]="registry()?.hasMaterials"
-        [hasPapers]="registry()?.hasPapers"
-        [hasSupplements]="registry()?.hasSupplements"
+        [absoluteUrl]="currentRegistry.id"
+        [hasData]="currentRegistry.hasData"
+        [hasAnalyticCode]="currentRegistry.hasAnalyticCode"
+        [hasMaterials]="currentRegistry.hasMaterials"
+        [hasPapers]="currentRegistry.hasPapers"
+        [hasSupplements]="currentRegistry.hasSupplements"
       ></osf-data-resources>
 
       <div class="flex flex-column gap-4 xl:flex-row">
@@ -70,13 +76,13 @@
           @if (!isAnonymous()) {
             <div class="flex flex-column gap-4 md:flex-row resource">
               <osf-registry-statuses
-                [registry]="registry()"
+                [registry]="currentRegistry"
                 [canEdit]="hasAdminAccess()"
                 [isModeration]="isModeration()"
               ></osf-registry-statuses>
 
               <osf-registry-revisions
-                [registry]="registry()"
+                [registry]="currentRegistry"
                 [schemaResponses]="schemaResponses()"
                 [selectedRevisionIndex]="selectedRevisionIndex()"
                 (openRevision)="openRevision($event)"
@@ -94,7 +100,7 @@
             <osf-registry-blocks-section
               [schemaBlocks]="schemaBlocks()"
               [isLoading]="isSchemaBlocksLoading() || isSchemaResponsesLoading()"
-              [schemaResponse]="schemaResponse()"
+              [schemaResponse]="currentSchemaResponse"
             ></osf-registry-blocks-section>
           </div>
         </div>

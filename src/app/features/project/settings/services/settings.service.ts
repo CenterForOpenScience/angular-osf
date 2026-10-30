@@ -3,6 +3,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { JSON_API_BULK_HEADERS } from '@osf/shared/constants/json-api-headers.const';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { SubscriptionFrequency } from '@osf/shared/enums/subscriptions/subscription-frequency.enum';
 import { NotificationSubscriptionMapper } from '@osf/shared/mappers/notification-subscription.mapper';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
@@ -83,18 +85,9 @@ export class SettingsService {
   }
 
   deleteProject(projects: NodeShortInfoModel[]): Observable<void> {
-    const payload = {
-      data: projects.map((project) => ({
-        type: 'nodes',
-        id: project.id,
-      })),
-    };
+    const payload = { data: projects.map((project) => ({ id: project.id, type: CurrentResourceType.Projects })) };
 
-    const headers = {
-      'Content-Type': 'application/vnd.api+json; ext=bulk',
-    };
-
-    return this.jsonApiService.delete(`${this.apiUrl}/nodes/`, payload, headers);
+    return this.jsonApiService.delete(`${this.apiUrl}/nodes/`, payload, JSON_API_BULK_HEADERS);
   }
 
   deleteInstitution(institutionId: string, projectId: string): Observable<void> {

@@ -1,15 +1,19 @@
 import { Store } from '@ngxs/store';
 
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, throwError } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject, PLATFORM_ID } from '@angular/core';
+import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { inject, PLATFORM_ID, RESPONSE_INIT } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ERROR_MESSAGES } from '@core/constants/error-messages';
-import { MaintenanceResponse } from '@core/models/maintenance-response.model';
+import { PREPRINT_PENDING_MODERATION_DETAIL } from '@core/constants/http-error-details.const';
+import {
+  isServerError,
+  setSsrResponseStatus,
+  shouldPropagateHttpStatusToSsr,
+} from '@core/helpers/ssr-response-status.helper';
 import { SENTRY_TOKEN } from '@core/provider/sentry.provider';
 import { AuthService } from '@core/services/auth.service';
 import { MaintenanceModeService } from '@core/services/maintenance-mode.service';
@@ -20,6 +24,33 @@ import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-h
 
 import { BYPASS_ERROR_INTERCEPTOR } from './error-interceptor.tokens';
 
+const NO_AUTH_REDIRECT_HEADER = 'X-No-Auth-Redirect';
+const REQUEST_ACCESS_URL_REGEX = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
+const NODE_ID_URL_REGEX = /\/v2\/nodes\/([^/]+)/;
+const DRAFT_REGISTRY_ROUTE_REGEX = /\/registries\/drafts\/.+/i;
+
+const isSilentForbidden = (req: HttpRequest<unknown>, error: HttpErrorResponse): boolean =>
+  req.headers.has(NO_AUTH_REDIRECT_HEADER) || (!!error.url && REQUEST_ACCESS_URL_REGEX.test(error.url));
+
+const isPendingModerationForbidden = (error: HttpErrorResponse): boolean =>
+  error.error?.errors?.[0]?.detail === PREPRINT_PENDING_MODERATION_DETAIL;
+
+const getErrorMessage = (error: HttpErrorResponse): string => {
+  if (error.error instanceof ErrorEvent) {
+    return error.error.message;
+  }
+
+  if (error.error?.errors?.[0]?.detail) {
+    return error.error.errors[0].detail;
+  }
+
+  if (isServerError(error.status)) {
+    return error.error?.message || ERROR_MESSAGES[500];
+  }
+
+  return ERROR_MESSAGES[error.status as keyof typeof ERROR_MESSAGES] || ERROR_MESSAGES.default;
+};
+
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
   const loaderService = inject(LoaderService);
@@ -27,87 +58,89 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const maintenanceModeService = inject(MaintenanceModeService);
   const sentry = inject(SENTRY_TOKEN);
-  const platformId = inject(PLATFORM_ID);
   const viewOnlyHelper = inject(ViewOnlyLinkHelperService);
   const store = inject(Store);
+  const responseInit = inject(RESPONSE_INIT, { optional: true });
+  const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  const handleUnauthorized = () => {
+    if (viewOnlyHelper.hasViewOnlyParam(router)) {
+      return;
+    }
+
+    if (store.selectSnapshot(UserSelectors.isAuthenticated)) {
+      authService.logout(window.location.href);
+    } else {
+      authService.navigateToSignIn();
+    }
+  };
+
+  const handleForbidden = (url: string | null) => {
+    const nodeId = url?.match(NODE_ID_URL_REGEX)?.[1];
+
+    if (!nodeId) {
+      router.navigate(['/forbidden']);
+    } else if (!DRAFT_REGISTRY_ROUTE_REGEX.test(router.url)) {
+      router.navigate(['/request-access', nodeId]);
+    }
+  };
+
+  const applySsrStatus = (error: HttpErrorResponse) => {
+    if (
+      req.context.get(BYPASS_ERROR_INTERCEPTOR) ||
+      !shouldPropagateHttpStatusToSsr(error.status) ||
+      isSilentForbidden(req, error)
+    ) {
+      return;
+    }
+
+    setSsrResponseStatus(responseInit, error.status);
+  };
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      let errorMessage: string;
+      const rethrow = () => throwError(() => error);
+
+      if (!isBrowser) {
+        applySsrStatus(error);
+        return rethrow();
+      }
+
       if (req.context.get(BYPASS_ERROR_INTERCEPTOR)) {
         sentry.captureException(error);
-        return throwError(() => error);
+        return rethrow();
       }
 
-      if (isPlatformBrowser(platformId) && error.error instanceof ErrorEvent) {
-        errorMessage = error.error.message;
-      } else {
-        if (error.error?.errors?.[0]?.detail) {
-          errorMessage = error.error.errors[0].detail;
-        } else {
-          errorMessage = ERROR_MESSAGES[error.status as keyof typeof ERROR_MESSAGES] || ERROR_MESSAGES.default;
-        }
-      }
-
-      const serverErrorRegex = /5\d{2}/;
-      const maintenanceResponse = error.error as MaintenanceResponse | null;
-
-      const maintenanceMode = error.status === 503 && maintenanceResponse?.meta?.maintenance_mode === true;
-
-      if (maintenanceMode) {
+      if (maintenanceModeService.isMaintenanceError(error)) {
         loaderService.hide();
-        if (isPlatformBrowser(platformId)) {
-          maintenanceModeService.activate();
-        }
-        return throwError(() => error);
+        maintenanceModeService.activate();
+        return rethrow();
       }
 
-      if (serverErrorRegex.test(error.status.toString())) {
-        errorMessage = error.error.message || 'common.errorMessages.serverError';
-      }
-
-      if (error.status === 409) {
-        return throwError(() => error);
-      }
-
-      if (error.status === 401) {
-        if (!viewOnlyHelper.hasViewOnlyParam(router)) {
-          if (isPlatformBrowser(platformId)) {
-            if (store.selectSnapshot(UserSelectors.isAuthenticated)) {
-              authService.logout(window.location.href);
-            } else {
-              authService.navigateToSignIn();
-            }
+      switch (error.status) {
+        case 401:
+          handleUnauthorized();
+          break;
+        case 403:
+          if (!isSilentForbidden(req, error) && !isPendingModerationForbidden(error)) {
+            handleForbidden(error.url);
           }
-        }
-        return throwError(() => error);
-      }
-
-      if (error.status === 403) {
-        const requestAccessRegex = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
-
-        if (error.url && (requestAccessRegex.test(error.url) || req.headers.has('X-No-Auth-Redirect'))) {
-          loaderService.hide();
-          return throwError(() => error);
-        }
-
-        if (error.url?.includes('v2/nodes/')) {
-          const match = error.url.match(/\/nodes\/([^/]+)/);
-          const id = match ? match[1] : null;
-          const draftRegistryUrlRegex = /\/registries\/drafts\/.+/i;
-          if (!draftRegistryUrlRegex.test(router.url)) {
-            router.navigate([`/request-access/${id}`]);
-          }
-        } else {
-          router.navigate(['/forbidden']);
-        }
+          break;
+        case 404:
+          router.navigate(['/not-found']);
+          break;
+        case 409:
+          return rethrow();
+        case 410:
+          router.navigate(['/content-deleted']);
+          break;
+        default:
+          toastService.showError(getErrorMessage(error));
+          break;
       }
 
       loaderService.hide();
-
-      toastService.showError(errorMessage);
-
-      return throwError(() => error);
+      return rethrow();
     })
   );
 };

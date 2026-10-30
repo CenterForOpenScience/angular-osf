@@ -10,13 +10,13 @@ import * as Sentry from '@sentry/angular';
 import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
 
 /**
- * Asynchronous initializer function that loads the Sentry DSN from the config service
- * and initializes Sentry at application bootstrap.
+ * App initializer factory used with `provideAppInitializer`.
  *
- * This function is meant to be used with `provideAppInitializer`, which blocks Angular
- * bootstrap until the Promise resolves. This avoids race conditions when reading config.
+ * Loads runtime config via `OSFConfigService`, then on the browser configures
+ * Google Tag Manager, Sentry, and New Relic when their config values are present.
+ * Bootstrap waits until this Promise resolves so config is available before startup.
  *
- * @returns A Promise that resolves once Sentry is initialized (or skipped if no DSN)
+ * @returns An async initializer that resolves after config load and optional browser setup
  */
 export function initializeApplication() {
   return async () => {
@@ -27,35 +27,30 @@ export function initializeApplication() {
 
     await configService.load();
 
-    if (isPlatformBrowser(platformId)) {
-      const googleTagManagerId = environment.googleTagManagerId;
-
-      if (googleTagManagerId) {
-        googleTagManagerConfiguration.set({ id: googleTagManagerId });
-      }
-
-      const dsn = environment.sentryDsn;
-
-      if (dsn) {
-        // More Options
-        // https://docs.sentry.io/platforms/javascript/guides/angular/configuration/options/
-        Sentry.init({
-          dsn,
-          environment: environment.production ? 'production' : 'development',
-          maxBreadcrumbs: 50,
-          sampleRate: 1.0,
-          ignoreErrors: SENTRY_IGNORE_ERRORS,
-          denyUrls: SENTRY_DENY_URLS,
-          beforeSend: sentryBeforeSend,
-        });
-      }
+    if (!isPlatformBrowser(platformId)) {
+      return;
     }
 
-    if (environment.newRelicEnabled && isPlatformBrowser(platformId)) {
+    if (environment.googleTagManagerId) {
+      googleTagManagerConfiguration.set({ id: environment.googleTagManagerId });
+    }
+
+    if (environment.sentryDsn) {
+      Sentry.init({
+        dsn: environment.sentryDsn,
+        environment: environment.sentryEnvironment,
+        maxBreadcrumbs: 50,
+        sampleRate: 1.0,
+        ignoreErrors: SENTRY_IGNORE_ERRORS,
+        denyUrls: SENTRY_DENY_URLS,
+        beforeSend: sentryBeforeSend,
+      });
+    }
+
+    if (environment.newRelicEnabled) {
       const { BrowserAgent } = await import('@newrelic/browser-agent/loaders/browser-agent');
 
-      const newRelicConfig = {
-        enabled: environment.newRelicEnabled,
+      new BrowserAgent({
         init: {
           distributed_tracing: { enabled: environment.newRelicInitDistributedTracingEnabled },
           performance: { capture_measures: environment.newRelicInitPerformanceCaptureMeasures },
@@ -76,22 +71,18 @@ export function initializeApplication() {
           licenseKey: environment.newRelicLoaderConfigLicenseKey,
           applicationID: environment.newRelicLoaderConfigApplicationID,
         },
-      };
-      new BrowserAgent(newRelicConfig);
+      });
     }
   };
 }
 
 /**
- * Provides the Sentry initialization logic during Angular's application bootstrap phase.
+ * Registers application bootstrap initialization via `provideAppInitializer`.
  *
- * This uses `provideAppInitializer` to block application startup until Sentry is initialized.
- * It ensures that the Sentry DSN (fetched from OSFConfigService) is available and configured
- * before any errors are handled or reported by the app.
- *
- * `initializeSentry` is a function that returns a Promise which resolves after Sentry is fully initialized.
+ * Blocks startup until runtime config is loaded and browser integrations
+ * (GTM, Sentry, New Relic) are configured when enabled.
  *
  * @see https://docs.sentry.io/platforms/javascript/guides/angular/
- * @see Angular's `provideAppInitializer`: https://angular.io/api/core/provideAppInitializer
+ * @see https://angular.io/api/core/provideAppInitializer
  */
 export const APPLICATION_INITIALIZATION_PROVIDER = provideAppInitializer(initializeApplication());

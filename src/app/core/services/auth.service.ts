@@ -8,6 +8,7 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { SignUpModel } from '@core/models/sign-up.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { WINDOW } from '@core/provider/window.provider';
+import { CookieConsentService } from '@core/services/cookie-consent.service';
 import { ClearCurrentUser } from '@osf/core/store/user';
 import { urlParam } from '@osf/shared/helpers/url-param.helper';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
@@ -19,10 +20,11 @@ import { LoaderService } from '@osf/shared/services/loader.service';
 export class AuthService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly cookieService = inject(CookieService);
+  private readonly cookieConsent = inject(CookieConsentService);
   private readonly loaderService = inject(LoaderService);
   private readonly environment = inject(ENVIRONMENT);
   private readonly window = inject(WINDOW);
-  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly actions = createDispatchMap({ clearCurrentUser: ClearCurrentUser });
 
   get apiUrl() {
@@ -38,7 +40,7 @@ export class AuthService {
   }
 
   navigateToSignIn(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -54,7 +56,7 @@ export class AuthService {
   }
 
   navigateToOrcidSignIn(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -68,7 +70,7 @@ export class AuthService {
   }
 
   navigateToInstitutionSignIn(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -85,8 +87,15 @@ export class AuthService {
     this.loaderService.show();
     this.actions.clearCurrentUser();
 
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.isBrowser) {
+      const hasCookieConsent = this.cookieConsent.hasConsent();
+
       this.cookieService.deleteAll();
+
+      if (hasCookieConsent) {
+        this.cookieConsent.accept();
+      }
+
       this.window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent(nextUrl || `${this.window.location.origin}/`)}`;
     }
   }

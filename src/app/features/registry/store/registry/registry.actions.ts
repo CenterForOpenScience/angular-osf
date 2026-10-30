@@ -84,6 +84,12 @@ export class SubmitDecision {
   ) {}
 }
 
+export class ForkRegistry {
+  static readonly type = '[Registry] Fork Registry';
+
+  constructor(public resourceId: string) {}
+}
+
 export class ClearRegistry {
   static readonly type = '[Registry] Clear Registry';
 }

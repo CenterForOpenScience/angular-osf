@@ -1,11 +1,10 @@
 import { select } from '@ngxs/store';
 
-import { map, Observable } from 'rxjs';
+import { map, Observable, throwError } from 'rxjs';
 
-import { HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
+import { bypassErrorInterceptorContext } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@osf/shared/mappers/addon.mapper';
@@ -64,7 +63,9 @@ export class AddonsService {
 
   getAddonsUserReference(): Observable<UserReferenceModel[]> {
     const currentUser = this.currentUser();
-    if (!currentUser) throw new Error('Current user not found');
+    if (!currentUser) {
+      return throwError(() => new Error('Current user not found'));
+    }
 
     const userUri = `${this.webUrl}/${currentUser.id}`;
     const params = { 'filter[user_uri]': userUri };
@@ -98,24 +99,23 @@ export class AddonsService {
   }
 
   getAuthorizedStorageOauthToken(accountId: string, addonType: string): Observable<AuthorizedAccountModel> {
-    const context = new HttpContext();
-    context.set(BYPASS_ERROR_INTERCEPTOR, true);
+    const payload = {
+      data: {
+        id: accountId,
+        type: `authorized-${addonType}-accounts`,
+        attributes: { serialize_oauth_token: 'true' },
+      },
+    };
 
     return this.jsonApiService
       .patch<AuthorizedAddonDataJsonApi>(
         `${this.apiUrl}/authorized-${addonType}-accounts/${accountId}`,
-        {
-          data: {
-            id: accountId,
-            type: `authorized-${addonType}-accounts`,
-            attributes: { serialize_oauth_token: 'true' },
-          },
-        },
-        {},
-        {},
-        context
+        payload,
+        undefined,
+        undefined,
+        bypassErrorInterceptorContext()
       )
-      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonDataJsonApi)));
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response)));
   }
 
   getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddonModel[]> {
@@ -149,8 +149,8 @@ export class AddonsService {
     addonType: string,
     addonId: string
   ): Observable<AuthorizedAccountModel> {
-    return this.jsonApiService.http
-      .patch<AuthorizedAddonResponseJsonApi>(
+    return this.jsonApiService
+      .patchResponse<AuthorizedAddonResponseJsonApi>(
         `${this.apiUrl}/authorized-${addonType}-accounts/${addonId}/?include=external-${addonType}-service`,
         addonRequestPayload
       )

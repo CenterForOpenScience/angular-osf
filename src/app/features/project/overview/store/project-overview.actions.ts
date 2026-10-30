@@ -1,5 +1,4 @@
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { PrivacyStatusModel } from '../models';
 
@@ -51,13 +50,10 @@ export class SetProjectCustomCitation {
   constructor(public citation: string) {}
 }
 
-export class ForkResource {
-  static readonly type = '[Project Overview] Fork Resource';
+export class ForkProject {
+  static readonly type = '[Project Overview] Fork Project';
 
-  constructor(
-    public resourceId: string,
-    public resourceType: ResourceType
-  ) {}
+  constructor(public resourceId: string) {}
 }
 
 export class DuplicateProject {
@@ -89,12 +85,6 @@ export class CreateComponent {
     public affiliatedInstitutions: string[],
     public inheritContributors: boolean
   ) {}
-}
-
-export class DeleteComponent {
-  static readonly type = '[Project Overview] Delete Component';
-
-  constructor(public componentId: string) {}
 }
 
 export class GetComponents {

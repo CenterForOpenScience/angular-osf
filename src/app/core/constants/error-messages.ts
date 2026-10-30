@@ -1,9 +1,9 @@
 export const ERROR_MESSAGES = {
-  400: 'Invalid request. Please check your input.',
-  401: 'You are not authorized to perform this action.',
-  403: `You don't have permission to access this resource.`,
-  404: 'The requested resource was not found.',
-  500: 'An unexpected error occurred. Please try again later.',
-  0: 'An unexpected error occurred. Please try again later.',
-  default: 'An unknown error occurred. Please try again.',
-};
+  0: 'common.errorMessages.serverError',
+  400: 'common.errorMessages.badRequest',
+  401: 'common.errorMessages.unauthorized',
+  403: 'common.errorMessages.forbidden',
+  404: 'common.errorMessages.notFound',
+  500: 'common.errorMessages.serverError',
+  default: 'common.errorMessages.unknown',
+} as const;

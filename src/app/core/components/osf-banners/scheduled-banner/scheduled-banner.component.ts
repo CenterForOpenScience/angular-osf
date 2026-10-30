@@ -1,6 +1,7 @@
 import { Store } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { IS_XSMALL } from '@osf/shared/helpers/breakpoints.tokens';
@@ -27,6 +28,7 @@ export class ScheduledBannerComponent implements OnInit {
    * Injected NGXS Store instance used to dispatch actions and select state.
    */
   private readonly store = inject(Store);
+  private readonly platformId = inject(PLATFORM_ID);
 
   /**
    * Reactive signal of the currently scheduled banner fetched from the NGXS store.
@@ -44,7 +46,9 @@ export class ScheduledBannerComponent implements OnInit {
    * when the component initializes.
    */
   ngOnInit(): void {
-    this.store.dispatch(new GetCurrentScheduledBanner());
+    if (isPlatformBrowser(this.platformId)) {
+      this.store.dispatch(new GetCurrentScheduledBanner());
+    }
   }
 
   /**

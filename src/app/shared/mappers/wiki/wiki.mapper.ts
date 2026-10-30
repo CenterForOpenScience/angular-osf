@@ -35,7 +35,7 @@ export class WikiMapper {
     return {
       id: response.id,
       createdAt: response.attributes.date_created,
-      createdBy: UserMapper.getUserInfo(response.embeds.user)?.fullName,
+      createdBy: UserMapper.getUserInfo(response.embeds?.user)?.fullName,
     };
   }
 

@@ -1,53 +1,63 @@
-import { CookieService } from 'ngx-cookie-service';
 import { MockComponent, MockProvider } from 'ng-mocks';
 
+import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { CookieConsentService } from '@core/services/cookie-consent.service';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { CookieServiceMock } from '@testing/providers/cookie-service.mock';
+import { CookieConsentServiceMock, CookieConsentServiceMockType } from '@testing/providers/cookie-consent.service.mock';
 
 import { CookieConsentBannerComponent } from './cookie-consent-banner.component';
 
 describe('Component: Cookie Consent Banner', () => {
   let fixture: ComponentFixture<CookieConsentBannerComponent>;
   let component: CookieConsentBannerComponent;
+  let cookieConsentMock: CookieConsentServiceMockType;
 
-  const cookieServiceMock = CookieServiceMock.simple();
+  function setup(overrides: { hasConsent?: boolean; isBrowser?: boolean } = {}) {
+    cookieConsentMock = CookieConsentServiceMock.simple();
+    cookieConsentMock.hasConsent.mockReturnValue(overrides.hasConsent ?? false);
 
-  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CookieConsentBannerComponent, MockComponent(IconComponent)],
-      providers: [provideOSFCore(), MockProvider(CookieService, cookieServiceMock)],
+      providers: [
+        provideOSFCore(),
+        MockProvider(CookieConsentService, cookieConsentMock),
+        MockProvider(PLATFORM_ID, overrides.isBrowser === false ? 'server' : 'browser'),
+      ],
     });
-  });
 
-  it('should show the banner if cookie is not set', () => {
-    cookieServiceMock.check.mockReturnValue(false);
     fixture = TestBed.createComponent(CookieConsentBannerComponent);
     component = fixture.componentInstance;
+  }
+
+  it('should show the banner when consent is missing', () => {
+    setup();
 
     expect(component.displayBanner()).toBe(true);
   });
 
-  it('should hide the banner if cookie is set', () => {
-    cookieServiceMock.check.mockReturnValue(true);
-    fixture = TestBed.createComponent(CookieConsentBannerComponent);
-    component = fixture.componentInstance;
+  it('should hide the banner when consent is already recorded', () => {
+    setup({ hasConsent: true });
 
     expect(component.displayBanner()).toBe(false);
   });
 
-  it('should set cookie and hide banner on acceptCookies()', () => {
-    cookieServiceMock.check.mockReturnValue(false);
-    fixture = TestBed.createComponent(CookieConsentBannerComponent);
-    component = fixture.componentInstance;
+  it('should keep the banner hidden outside the browser', () => {
+    setup({ isBrowser: false });
+
+    expect(component.displayBanner()).toBe(false);
+    expect(cookieConsentMock.hasConsent).not.toHaveBeenCalled();
+  });
+
+  it('should accept cookies and hide the banner', () => {
+    setup();
 
     component.acceptCookies();
 
-    expect(cookieServiceMock.set).toHaveBeenCalledWith('cookie-consent', 'true', new Date('9999-12-31T23:59:59Z'), '/');
-
+    expect(cookieConsentMock.accept).toHaveBeenCalled();
     expect(component.displayBanner()).toBe(false);
   });
 });

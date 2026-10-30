@@ -5,7 +5,9 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
+import { DuplicatesService } from '@osf/shared/services/duplicates.service';
 import { GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
 import { RegistryOverviewService } from '../../services';
@@ -13,6 +15,7 @@ import { RegistryOverviewService } from '../../services';
 import {
   ClearRegistry,
   CreateSchemaResponse,
+  ForkRegistry,
   GetRegistryById,
   GetRegistryIdentifiers,
   GetRegistryInstitutions,
@@ -35,6 +38,7 @@ import { REGISTRY_DEFAULTS, RegistryStateModel } from './registry.model';
 })
 export class RegistryState {
   private readonly registryOverviewService = inject(RegistryOverviewService);
+  private readonly duplicatesService = inject(DuplicatesService);
 
   @Action(GetRegistryById)
   getRegistryById(ctx: StateContext<RegistryStateModel>, action: GetRegistryById) {
@@ -358,6 +362,27 @@ export class RegistryState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'moderationActions', error))
+    );
+  }
+
+  @Action(ForkRegistry)
+  forkRegistry(ctx: StateContext<RegistryStateModel>, action: ForkRegistry) {
+    return this.duplicatesService.forkResource(action.resourceId, CurrentResourceType.Registrations).pipe(
+      tap(() => {
+        const state = ctx.getState();
+        if (!state.registry.data) return;
+
+        ctx.patchState({
+          registry: {
+            ...state.registry,
+            data: {
+              ...state.registry.data,
+              forksCount: state.registry.data.forksCount + 1,
+            },
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'registry', error))
     );
   }
 
