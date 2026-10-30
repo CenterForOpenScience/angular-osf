@@ -12,7 +12,7 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
 import { LicenseComponent } from '@osf/shared/components/license/license.component';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
-import { LicenseModel, LicenseOptions } from '@shared/models/license/license.model';
+import { LicenseDetails, LicenseModel } from '@shared/models/license/license.model';
 
 @Component({
   selector: 'osf-registries-license',
@@ -60,7 +60,7 @@ export class RegistriesLicenseComponent {
     });
   }
 
-  createLicense(licenseDetails: { id: string; licenseOptions: LicenseOptions }) {
+  createLicense(licenseDetails: LicenseDetails) {
     this.actions.saveLicense(this.draftId(), licenseDetails.id, licenseDetails.licenseOptions);
   }
 

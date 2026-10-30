@@ -1,58 +1,67 @@
 <p-select
-  class="mt-4 w-full"
   data-test-select-license
-  [options]="licenses()"
-  [(ngModel)]="selectedLicense"
+  class="w-full"
   optionLabel="name"
-  [class]="fullWidthSelect() ? 'md:w-full' : 'md:w-6'"
+  [options]="licenses()"
+  [ngModel]="selectedLicense()"
   [placeholder]="'shared.license.selectLicense' | translate"
   [appendTo]="appendTo()"
   (onChange)="onSelectLicense($event.value)"
 />
-@if (selectedLicense()) {
+
+@let license = selectedLicense();
+
+@if (license) {
   <p-divider class="my-3" />
-  @if (selectedLicense()!.requiredFields.length) {
+  @if (hasRequiredFields()) {
     <form [formGroup]="licenseForm" class="flex flex-column gap-3 mb-3 w-full md:flex-row">
       <div class="w-full md:w-6">
-        <label for="licenseYear"> {{ 'common.labels.year' | translate }} </label>
+        <label [for]="yearInputId"> {{ 'common.labels.year' | translate }} </label>
         <p-datePicker
-          inputId="licenseYear"
           formControlName="year"
-          [maxDate]="currentYear"
           dataType="string"
           view="year"
           dateFormat="yy"
+          [inputId]="yearInputId"
+          [maxDate]="today"
         />
+
+        @if (
+          licenseForm.controls.year.invalid && (licenseForm.controls.year.touched || licenseForm.controls.year.dirty)
+        ) {
+          <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+            {{ requiredMessage | translate }}
+          </p-message>
+        }
       </div>
       <osf-text-input
         class="w-full md:w-6"
         label="shared.license.copyrightHolders"
-        [control]="licenseForm.controls['copyrightHolders']"
+        [control]="licenseForm.controls.copyrightHolders"
         [maxLength]="inputLimits.fullName.maxLength"
       />
     </form>
   }
 
   <p class="highlight-block">
-    <osf-truncated-text [text]="selectedLicense()!.text | interpolate: licenseForm.value" />
+    <osf-truncated-text [text]="license.text | interpolate: licenseFormValue()" />
   </p>
 
-  @if (selectedLicense()!.requiredFields.length && showInternalButtons()) {
+  @if (hasRequiredFields() && showInternalButtons()) {
     <section class="mt-6 flex flex-row justify-content-end align-items-center gap-2">
       <p-button
         class="w-6 md:w-6rem"
         styleClass="w-full"
         [label]="'common.buttons.cancel' | translate"
         severity="info"
-        (click)="cancel()"
+        (onClick)="cancel()"
       />
       <p-button
         class="w-6 md:w-9rem"
         styleClass="w-full"
         [label]="'common.buttons.save' | translate"
-        [loading]="isSubmitting()"
-        [disabled]="licenseForm.invalid || saveButtonDisabled()"
-        (click)="saveLicense()"
+        [disabled]="licenseFormInvalid() || saveButtonDisabled()"
+        (onClick)="saveLicense()"
       />
     </section>
   }

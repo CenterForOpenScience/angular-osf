@@ -7,15 +7,12 @@ import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
-import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { PageSchemaMapper, RegistrationMapper } from '@osf/shared/mappers/registration';
 import { ReviewActionsMapper } from '@osf/shared/mappers/review-actions.mapper';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
-import { LicenseModel } from '@osf/shared/models/license/license.model';
-import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 import { SchemaBlocksResponseJsonApi } from '@osf/shared/models/registration/schema-blocks-json-api.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
@@ -68,12 +65,6 @@ export class RegistryOverviewService {
     return this.jsonApiService
       .get<IdentifiersResponseJsonApi>(`${this.apiUrl}/registrations/${registryId}/identifiers/`)
       .pipe(map((response) => IdentifiersMapper.fromJsonApi(response)));
-  }
-
-  getRegistryLicense(licenseId: string): Observable<LicenseModel | null> {
-    return this.jsonApiService
-      .get<LicenseResponseJsonApi>(`${this.apiUrl}/licenses/${licenseId}/`)
-      .pipe(map((response) => LicensesMapper.fromLicenseDataJsonApi(response.data)));
   }
 
   getSchemaBlocks(schemaLink: string): Observable<PageSchema[]> {

@@ -8,10 +8,12 @@ import { HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { PreprintModel } from '@osf/features/preprints/models';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FilesService } from '@osf/shared/services/files.service';
+import { LicensesService } from '@osf/shared/services/licenses.service';
 
 import { PreprintFilesService } from '../../services/preprint-files.service';
 import { PreprintLicensesService } from '../../services/preprint-licenses.service';
@@ -55,7 +57,8 @@ export class PreprintStepperState {
   private preprintsService = inject(PreprintsService);
   private preprintFilesService = inject(PreprintFilesService);
   private fileService = inject(FilesService);
-  private licensesService = inject(PreprintLicensesService);
+  private preprintLicensesService = inject(PreprintLicensesService);
+  private licensesService = inject(LicensesService);
   private preprintProjectsService = inject(PreprintsProjectsService);
 
   @Action(CreatePreprint)
@@ -318,7 +321,7 @@ export class PreprintStepperState {
   fetchLicenses(ctx: StateContext<PreprintStepperStateModel>, action: FetchLicenses) {
     ctx.setState(patch({ licenses: patch({ isLoading: true }) }));
 
-    return this.licensesService.getLicenses(action.providerId).pipe(
+    return this.licensesService.getLicenses(ResourceType.Preprint, action.providerId).pipe(
       tap((licenses) => {
         ctx.setState(patch({ licenses: patch({ isLoading: false, data: licenses }) }));
       }),
@@ -331,12 +334,14 @@ export class PreprintStepperState {
     const createdPreprintId = ctx.getState().preprint.data!.id;
     ctx.setState(patch({ preprint: patch({ isSubmitting: true }) }));
 
-    return this.licensesService.updatePreprintLicense(createdPreprintId, action.licenseId, action.licenseOptions).pipe(
-      tap((preprint) => {
-        ctx.setState(patch({ preprint: patch({ isSubmitting: false, data: preprint }) }));
-      }),
-      catchError((error) => handleSectionError(ctx, 'preprint', error))
-    );
+    return this.preprintLicensesService
+      .updatePreprintLicense(createdPreprintId, action.licenseId, action.licenseOptions)
+      .pipe(
+        tap((preprint) => {
+          ctx.setState(patch({ preprint: patch({ isSubmitting: false, data: preprint }) }));
+        }),
+        catchError((error) => handleSectionError(ctx, 'preprint', error))
+      );
   }
 
   @Action(DisconnectProject)

@@ -8,6 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { DuplicatesService } from '@osf/shared/services/duplicates.service';
+import { LicensesService } from '@osf/shared/services/licenses.service';
 import { GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
 import { RegistryOverviewService } from '../../services';
@@ -39,6 +40,7 @@ import { REGISTRY_DEFAULTS, RegistryStateModel } from './registry.model';
 export class RegistryState {
   private readonly registryOverviewService = inject(RegistryOverviewService);
   private readonly duplicatesService = inject(DuplicatesService);
+  private readonly licensesService = inject(LicensesService);
 
   @Action(GetRegistryById)
   getRegistryById(ctx: StateContext<RegistryStateModel>, action: GetRegistryById) {
@@ -164,7 +166,7 @@ export class RegistryState {
       },
     });
 
-    return this.registryOverviewService.getRegistryLicense(action.licenseId).pipe(
+    return this.licensesService.getLicenseById(action.licenseId).pipe(
       tap((license) => {
         ctx.patchState({
           license: {
