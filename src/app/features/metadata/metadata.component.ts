@@ -33,7 +33,6 @@ import {
   ContributorsSelectors,
   GetBibliographicContributors,
   LoadMoreBibliographicContributors,
-  UpdateContributorsSearchValue,
 } from '@osf/shared/stores/contributors';
 import {
   FetchResourceInstitutions,
@@ -74,6 +73,7 @@ import { LicenseDialogComponent } from './dialogs/license-dialog/license-dialog.
 import { PublicationDoiDialogComponent } from './dialogs/publication-doi-dialog/publication-doi-dialog.component';
 import { ResourceInformationDialogComponent } from './dialogs/resource-information-dialog/resource-information-dialog.component';
 import { ResourceInfoTooltipComponent } from './dialogs/resource-tooltip-info/resource-tooltip-info.component';
+import { LicenseDialogData, LicenseDialogResult } from './models/license-dialog.model';
 import {
   CedarMetadataRecordModel,
   CedarMetadataTemplateModel,
@@ -81,7 +81,6 @@ import {
   DialogValueModel,
 } from './models';
 import {
-  CreateCedarMetadataRecord,
   CreateDoi,
   GetCedarMetadataRecords,
   GetCedarMetadataTemplates,
@@ -184,14 +183,12 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
     getCedarRecords: GetCedarMetadataRecords,
     getCedarTemplates: GetCedarMetadataTemplates,
-    createCedarRecord: CreateCedarMetadataRecord,
     updateCedarRecord: UpdateCedarMetadataRecord,
 
     fetchSubjects: FetchSubjects,
     fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,
     updateResourceSubjects: UpdateResourceSubjects,
-    updateContributorsSearchValue: UpdateContributorsSearchValue,
 
     getProjectSubmissions: GetProjectSubmissions,
   });
@@ -308,7 +305,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
     this.selectedTab.set(tab.id as MetadataResourceEnum);
 
-    if (tab.type === 'cedar') {
+    if (tab.type === MetadataResourceEnum.CEDAR) {
       this.selectedCedarRecord.set(null);
       this.selectedCedarTemplate.set(null);
       const currentRecordId = this.activeRoute.snapshot.paramMap.get('recordId');
@@ -466,24 +463,28 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   openEditLicenseDialog(): void {
+    const data: LicenseDialogData = {
+      metadata: this.metadata(),
+      resourceType: this.resourceType(),
+      providerId: this.provider,
+    };
+
     this.customDialogService
       .open(LicenseDialogComponent, {
         header: 'project.metadata.license.dialog.header',
         width: '600px',
-        data: {
-          metadata: this.metadata(),
-        },
+        data,
       })
       .onClose.pipe(
-        filter((result) => !!result && result.licenseId),
-        switchMap((result) => {
-          return this.actions.updateResourceLicense(
+        filter((result): result is LicenseDialogResult => !!result?.licenseId),
+        switchMap((result) =>
+          this.actions.updateResourceLicense(
             this.resourceId,
             this.resourceType(),
             result.licenseId,
             result.licenseOptions
-          );
-        })
+          )
+        )
       )
       .subscribe(() => this.toastService.showSuccess('project.metadata.license.updated'));
   }

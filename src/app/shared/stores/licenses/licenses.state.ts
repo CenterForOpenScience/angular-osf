@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { LicensesService } from '@osf/shared/services/licenses.service';
 
-import { LoadAllLicenses } from './licenses.actions';
+import { FetchLicenses } from './licenses.actions';
 import { LICENSES_STATE_DEFAULTS, LicensesStateModel } from './licenses.model';
 
 @State<LicensesStateModel>({
@@ -18,8 +18,8 @@ import { LICENSES_STATE_DEFAULTS, LicensesStateModel } from './licenses.model';
 export class LicensesState {
   private readonly licensesService = inject(LicensesService);
 
-  @Action(LoadAllLicenses)
-  loadAllLicenses(ctx: StateContext<LicensesStateModel>) {
+  @Action(FetchLicenses)
+  fetchLicenses(ctx: StateContext<LicensesStateModel>, { resourceType, providerId }: FetchLicenses) {
     ctx.patchState({
       licenses: {
         data: [],
@@ -28,7 +28,7 @@ export class LicensesState {
       },
     });
 
-    return this.licensesService.getAllLicenses().pipe(
+    return this.licensesService.getLicenses(resourceType, providerId).pipe(
       tap((data) => {
         ctx.patchState({
           licenses: {

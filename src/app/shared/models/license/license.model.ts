@@ -16,6 +16,11 @@ export interface LicenseDetails {
   licenseOptions: LicenseOptions;
 }
 
+export interface LicenseState {
+  licenseOptions: LicenseOptions;
+  formInvalid: boolean;
+}
+
 export interface LicensesOption {
   copyrightHolders: string[] | null;
   year: string | null;

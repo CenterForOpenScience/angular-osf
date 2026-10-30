@@ -23,7 +23,6 @@
     [licenses]="licenses()"
     [selectedLicenseId]="createdPreprint()?.licenseId || defaultLicense()"
     [selectedLicenseOptions]="createdPreprint()?.licenseOptions"
-    [fullWidthSelect]="true"
     (createLicense)="createLicense($event)"
     (selectLicense)="selectLicense($event)"
   />

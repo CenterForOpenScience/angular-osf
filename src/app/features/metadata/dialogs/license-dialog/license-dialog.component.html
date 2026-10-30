@@ -1,32 +1,22 @@
 <div class="flex flex-column gap-4">
   @if (licensesLoading()) {
-    <osf-loading-spinner></osf-loading-spinner>
+    <osf-loading-spinner />
   } @else {
-    <div class="license-content">
-      <h3 class="mb-3">{{ 'project.metadata.license.dialog.chooseLicense.label' | translate }}</h3>
+    <h3>{{ 'project.metadata.license.dialog.chooseLicense.label' | translate }}</h3>
 
-      <osf-license
-        #licenseComponent
-        [licenses]="licenses()"
-        [selectedLicenseId]="selectedLicenseId()"
-        [selectedLicenseOptions]="selectedLicenseOptions()"
-        [isSubmitting]="isSubmitting()"
-        [showInternalButtons]="false"
-        [fullWidthSelect]="true"
-        [appendTo]="'body'"
-        (selectLicense)="onSelectLicense($event)"
-        (createLicense)="onCreateLicense($event)"
-      />
-    </div>
+    <osf-license
+      appendTo="body"
+      [licenses]="licenses()"
+      [selectedLicenseId]="selectedLicenseId()"
+      [selectedLicenseOptions]="initialLicenseOptions"
+      [showInternalButtons]="false"
+      (selectLicense)="selectedLicenseId.set($event.id)"
+      (licenseStateChange)="licenseState.set($event)"
+    />
   }
 
   <div class="flex justify-content-end gap-2">
     <p-button severity="info" [label]="'common.buttons.cancel' | translate" (onClick)="cancel()" />
-    <p-button
-      [label]="'common.buttons.save' | translate"
-      (onClick)="save()"
-      [disabled]="isInvalid"
-      [loading]="isSubmitting()"
-    />
+    <p-button [label]="'common.buttons.save' | translate" [disabled]="isSaveDisabled()" (onClick)="save()" />
   </div>
 </div>

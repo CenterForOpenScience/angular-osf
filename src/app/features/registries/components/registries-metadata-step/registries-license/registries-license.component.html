@@ -10,7 +10,6 @@
   </p>
   <osf-license
     [licenses]="licenses()"
-    [fullWidthSelect]="true"
     [selectedLicenseId]="selectedLicense()?.id || control().get('id')?.value"
     [selectedLicenseOptions]="selectedLicense()?.options"
     (createLicense)="createLicense($event)"
