@@ -32,8 +32,6 @@ export class LicensesService {
     [ResourceType.Collection, 'collections'],
   ]);
 
-  private readonly sortedProviderTypes = new Set<ResourceType>([ResourceType.Preprint, ResourceType.Collection]);
-
   getLicenses(resourceType: ResourceType, providerId = this.defaultProvider): Observable<LicenseModel[]> {
     const baseUrl =
       resourceType === ResourceType.Project
@@ -42,11 +40,8 @@ export class LicensesService {
 
     const params: Record<string, unknown> = {
       'page[size]': 100,
+      sort: 'name',
     };
-
-    if (this.sortedProviderTypes.has(resourceType)) {
-      params['sort'] = 'name';
-    }
 
     return this.jsonApiService
       .get<LicensesResponseJsonApi>(baseUrl, params)

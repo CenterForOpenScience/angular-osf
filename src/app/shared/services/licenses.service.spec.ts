@@ -48,7 +48,7 @@ describe('LicensesService', () => {
     expect(service.defaultProvider).toBe(defaultProvider);
   });
 
-  it('getLicenses should request project licenses without sort', async () => {
+  it('getLicenses should request project licenses with sort', async () => {
     setup();
     const mapperSpy = vi.spyOn(LicensesMapper, 'fromLicensesResponse').mockReturnValue([MOCK_LICENSE]);
     jsonApiService.get.mockReturnValue(of(apiResponse));
@@ -57,12 +57,13 @@ describe('LicensesService', () => {
 
     expect(jsonApiService.get).toHaveBeenCalledWith(`${MOCK_API_URL}/licenses/`, {
       'page[size]': 100,
+      sort: 'name',
     });
     expect(mapperSpy).toHaveBeenCalledWith(apiResponse);
     expect(response).toEqual([MOCK_LICENSE]);
   });
 
-  it('getLicenses should request registration licenses for provider without sort', async () => {
+  it('getLicenses should request registration licenses for provider with sort', async () => {
     setup();
     const providerId = 'provider-1';
     const mapperSpy = vi.spyOn(LicensesMapper, 'fromLicensesResponse').mockReturnValue([MOCK_LICENSE]);
@@ -72,6 +73,7 @@ describe('LicensesService', () => {
 
     expect(jsonApiService.get).toHaveBeenCalledWith(`${MOCK_API_URL}/providers/registrations/${providerId}/licenses/`, {
       'page[size]': 100,
+      sort: 'name',
     });
     expect(mapperSpy).toHaveBeenCalledWith(apiResponse);
     expect(response).toEqual([MOCK_LICENSE]);
