@@ -2,6 +2,24 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.22.0 (2026-11-02)
+====================
+
+* Report Sentry environment from config.json
+* Improve error pages
+* Ability for moderator to report users as spam
+* Fix circular dependencies in settings
+* Update toast errors for SSR
+* Update delete project/component
+* Show specific error toasts when disconnecting an ORCID
+* Make it possible to edit metadata on previous versions of a preprint
+* Preprint title incorrectly hyperlinked
+* Update Angular dependencies and fix remaining security vulnerabilities
+* Turn off source maps in production
+* Cookie consent is not saved after accepting cookies
+* Change maintenance mode wording
+* Unable to duplicate a registration from overview page
+
 26.21.0 (2026-10-08)
 ====================
 
