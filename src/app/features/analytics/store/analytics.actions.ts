@@ -1,6 +1,6 @@
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 
-import { DateRange } from '../enums';
+import { DateRange } from '../enums/date-range.enum';
 
 export class GetMetrics {
   static readonly type = '[Analytics] Get Metrics';

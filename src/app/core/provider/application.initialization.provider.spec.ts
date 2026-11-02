@@ -7,11 +7,9 @@ import { OSFConfigService } from '@core/services/osf-config.service';
 import { EnvironmentModel } from '@osf/shared/models/environment.model';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { SentryMock, SentryMockType } from '@testing/providers/sentry-provider.mock';
 
 import { initializeApplication } from './application.initialization.provider';
 import { ENVIRONMENT } from './environment.provider';
-import { SENTRY_TOKEN } from './sentry.provider';
 
 import * as Sentry from '@sentry/angular';
 import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
@@ -29,12 +27,10 @@ describe('initializeApplication', () => {
   let googleTagManagerConfigurationMock: { set: ReturnType<typeof vi.fn> };
   let environment: EnvironmentModel;
   let sentryInitMock: ReturnType<typeof vi.fn>;
-  let sentryMock: SentryMockType;
 
   function setup(platformId: 'browser' | 'server', environmentOverrides: Partial<EnvironmentModel> = {}) {
     configServiceMock = { load: vi.fn().mockResolvedValue(undefined) };
     googleTagManagerConfigurationMock = { set: vi.fn() };
-    sentryMock = SentryMock.simple();
 
     TestBed.configureTestingModule({
       providers: [
@@ -42,7 +38,6 @@ describe('initializeApplication', () => {
         MockProvider(PLATFORM_ID, platformId),
         { provide: OSFConfigService, useValue: configServiceMock },
         { provide: GoogleTagManagerConfiguration, useValue: googleTagManagerConfigurationMock },
-        { provide: SENTRY_TOKEN, useValue: sentryMock },
       ],
     });
 
@@ -56,7 +51,7 @@ describe('initializeApplication', () => {
     setup('browser', {
       googleTagManagerId: 'GTM-TEST',
       sentryDsn: 'https://dsn.example/123',
-      production: true,
+      sentryEnvironment: 'staging',
     });
     await TestBed.runInInjectionContext(async () => initializeApplication()());
 
@@ -65,7 +60,7 @@ describe('initializeApplication', () => {
     expect(sentryInitMock).toHaveBeenCalledWith(
       expect.objectContaining({
         dsn: 'https://dsn.example/123',
-        environment: 'production',
+        environment: 'staging',
       })
     );
   });
@@ -84,7 +79,7 @@ describe('initializeApplication', () => {
     setup('server', {
       googleTagManagerId: 'GTM-TEST',
       sentryDsn: 'https://dsn.example/123',
-      production: true,
+      sentryEnvironment: 'staging',
     });
     await TestBed.runInInjectionContext(async () => initializeApplication()());
 

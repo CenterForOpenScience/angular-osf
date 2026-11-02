@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
@@ -83,6 +84,36 @@ describe('MaintenanceModeService', () => {
     service.checkOnce();
     expectStatusRequest().error(new ProgressEvent('error'));
     expect(service.isActive()).toBe(false);
+  });
+
+  it('should detect maintenance from a 503 maintenance error response', () => {
+    const error = new HttpErrorResponse({
+      status: 503,
+      error: maintenanceOn,
+      statusText: 'Service Unavailable',
+    });
+
+    expect(service.isMaintenanceError(error)).toBe(true);
+  });
+
+  it('should not detect maintenance from a 503 without maintenance_mode', () => {
+    const error = new HttpErrorResponse({
+      status: 503,
+      error: maintenanceOff,
+      statusText: 'Service Unavailable',
+    });
+
+    expect(service.isMaintenanceError(error)).toBe(false);
+  });
+
+  it('should not detect maintenance from a non-503 error', () => {
+    const error = new HttpErrorResponse({
+      status: 500,
+      error: maintenanceOn,
+      statusText: 'Server Error',
+    });
+
+    expect(service.isMaintenanceError(error)).toBe(false);
   });
 
   it('should deactivate when a poll receives a successful non-maintenance response', () => {

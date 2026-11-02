@@ -1,4 +1,8 @@
-import { RelationshipLinks, ToOneRelData } from '@osf/shared/models/common/json-api/relationships.model';
+import {
+  RelatedCountRel,
+  RelationshipLinks,
+  ToOneRelData,
+} from '@osf/shared/models/common/json-api/relationships.model';
 import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
 import { ItemResponse } from '@shared/models/common/json-api/responses.model';
 import { RegistrationNodeAttributesJsonApi } from '@shared/models/registration/registration-node-json-api.model';
@@ -13,6 +17,7 @@ export interface RegistrationOverviewDataJsonApi extends JsonApiResource<
 }
 
 interface RegistryOverviewRelationshipsJsonApi {
+  forks?: RelatedCountRel;
   license: ToOneRelData<'licenses'>;
   provider: ToOneRelData<'registration-providers'>;
   registered_from: ToOneRelData<'nodes'>;

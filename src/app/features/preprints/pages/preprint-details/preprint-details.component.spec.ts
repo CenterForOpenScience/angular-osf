@@ -11,6 +11,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PREPRINT_PENDING_MODERATION_DETAIL } from '@core/constants/http-error-details.const';
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
@@ -49,7 +50,7 @@ import { PreprintTombstoneComponent } from '../../components/preprint-details/pr
 import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
 import { ShareAndDownloadComponent } from '../../components/preprint-details/share-and-download/share-and-download.component';
 import { StatusBannerComponent } from '../../components/preprint-details/status-banner/status-banner.component';
-import { ReviewsState } from '../../enums';
+import { ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import {
   FetchPreprintDetails,
   FetchPreprintRequestActions,
@@ -308,7 +309,7 @@ describe('PreprintDetailsComponent', () => {
     const errorResponse = new HttpErrorResponse({
       status: 403,
       error: {
-        errors: [{ detail: 'This preprint is pending moderation and is not yet publicly available.' }],
+        errors: [{ detail: PREPRINT_PENDING_MODERATION_DETAIL }],
       },
     });
 
@@ -352,6 +353,17 @@ describe('PreprintDetailsComponent', () => {
     expect(component.isWithdrawalRejected()).toBe(false);
     expect(component.moderationMode()).toBe(true);
     expect(component.isOsfPreprint()).toBe(true);
+  });
+
+  it('should render the title outside of the provider logo link', () => {
+    setup();
+
+    const title: HTMLElement = fixture.nativeElement.querySelector('h1');
+    const logoImage: HTMLElement = fixture.nativeElement.querySelector('img.fit-contain');
+
+    expect(title.textContent?.trim()).toBe(mockPreprint.title);
+    expect(title.closest('a')).toBeNull();
+    expect(logoImage.closest('a')).not.toBeNull();
   });
 
   it('should mark preprint withdrawable for pending and accepted states', () => {
@@ -405,6 +417,68 @@ describe('PreprintDetailsComponent', () => {
     });
 
     expect(component.editButtonVisible()).toBe(true);
+  });
+
+  it('should show edit button for previous version of preprint', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, isLatestVersion: false, reviewsState: ReviewsState.Accepted },
+        },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(true);
+  });
+
+  it('should show edit button for previous version of postmoderation preprint', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintProvidersSelectors.getPreprintProviderDetails('osf'),
+          value: { ...mockProvider, reviewsWorkflow: ProviderReviewsWorkflow.PostModeration },
+        },
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, isLatestVersion: false, reviewsState: ReviewsState.Accepted },
+        },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(true);
+  });
+
+  it('should hide edit button for previous version when user does not have write access', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: { ...mockPreprint, isLatestVersion: false, reviewsState: ReviewsState.Accepted },
+        },
+        { selector: PreprintSelectors.hasWriteAccess, value: false },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(false);
+  });
+
+  it('should hide edit button for withdrawn previous version', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintSelectors.getPreprint,
+          value: {
+            ...mockPreprint,
+            isLatestVersion: false,
+            reviewsState: ReviewsState.Withdrawn,
+            dateWithdrawn: '2024-01-01',
+          },
+        },
+      ],
+    });
+
+    expect(component.editButtonVisible()).toBe(false);
   });
 
   it('should show edit button for pending premoderation preprint', () => {

@@ -17,6 +17,14 @@ export interface ConfigModel {
   sentryDsn: string;
 
   /**
+   * Sentry environment name sent with captured events.
+   * Names are case-sensitive and cannot contain spaces, newlines, or forward slashes.
+   *
+   * @example "staging"
+   */
+  sentryEnvironment: string;
+
+  /**
    * The Google Tag Manager ID used to embed GTM scripts for analytics tracking.
    * This ID typically starts with "GTM-".
    *

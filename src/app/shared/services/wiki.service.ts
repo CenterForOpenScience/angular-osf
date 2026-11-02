@@ -15,7 +15,6 @@ import {
   WikiDataJsonApi,
   WikiItemResponseJsonApi,
   WikiResponseJsonApi,
-  WikiVersionItemResponseJsonApi,
   WikiVersionResponseJsonApi,
 } from '../models/wiki/wiki-json-api.model';
 import { ComponentWiki } from '../stores/wiki';
@@ -133,8 +132,8 @@ export class WikiService {
     const body = { data: { type: 'wiki-versions', attributes: { content } } };
 
     return this.jsonApiService
-      .post<WikiVersionItemResponseJsonApi>(`${this.apiUrl}/wikis/${wikiId}/versions/`, body)
-      .pipe(map((response) => WikiMapper.fromGetWikiVersionResponse(response.data)));
+      .post<WikiItemResponseJsonApi>(`${this.apiUrl}/wikis/${wikiId}/versions/`, body)
+      .pipe(map((response) => WikiMapper.fromCreateWikiVersionResponse(response.data)));
   }
 
   getWikiVersionContent(wikiId: string, versionId: string): Observable<string> {

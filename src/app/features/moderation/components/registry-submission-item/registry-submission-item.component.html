@@ -29,7 +29,7 @@
               </p>
             }
 
-            @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {
+            @for (action of showAll ? visibleActions() : visibleActions().slice(0, limitValue); track $index) {
               <div class="flex flex-wrap gap-1 mt-2">
                 <span>{{ registryActionLabel[action.toState] | translate }}</span>
                 <span>{{ action.dateModified | dateAgo }}</span>
@@ -46,7 +46,7 @@
               </div>
             }
 
-            @if (submission().actions.length > 1) {
+            @if (visibleActions().length > 1) {
               <p-button
                 class="link-btn-no-padding block mt-2"
                 [link]="true"

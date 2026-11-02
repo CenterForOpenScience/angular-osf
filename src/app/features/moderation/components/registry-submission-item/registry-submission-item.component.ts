@@ -10,6 +10,7 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { FunderAwardsListComponent } from '@osf/shared/components/funder-awards-list/funder-awards-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 
 import { REGISTRY_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
@@ -46,6 +47,10 @@ export class RegistrySubmissionItemComponent {
   readonly reviewStatusIcon = ReviewStatusIcon;
   readonly registryActionLabel = REGISTRY_ACTION_LABEL;
   readonly registryActionState = ActionStatus;
+
+  readonly visibleActions = computed(() =>
+    this.submission().actions.filter((action) => action.trigger !== ReviewActionTrigger.ReportSpam)
+  );
 
   limitValue = 1;
   showAll = false;

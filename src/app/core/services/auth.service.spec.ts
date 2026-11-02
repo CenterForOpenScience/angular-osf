@@ -1,3 +1,5 @@
+import { Store } from '@ngxs/store';
+
 import { CookieService } from 'ngx-cookie-service';
 import { MockProvider } from 'ng-mocks';
 
@@ -6,10 +8,13 @@ import { TestBed } from '@angular/core/testing';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { WINDOW } from '@core/provider/window.provider';
+import { CookieConsentService } from '@core/services/cookie-consent.service';
+import { ClearCurrentUser } from '@osf/core/store/user';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 
-import { CookieServiceMock } from '@testing/providers/cookie-service.mock';
+import { CookieConsentServiceMock, CookieConsentServiceMockType } from '@testing/providers/cookie-consent.service.mock';
+import { CookieServiceMock, CookieServiceMockType } from '@testing/providers/cookie-service.mock';
 import { JsonApiServiceMock } from '@testing/providers/json-api.service.mock';
 import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -22,10 +27,15 @@ describe('AuthService', () => {
   const origin = 'https://osf.test';
 
   let service: AuthService;
+  let store: Store;
   let loaderService: LoaderServiceMock;
+  let cookieServiceMock: CookieServiceMockType;
+  let cookieConsentMock: CookieConsentServiceMockType;
   let locationMock: { href: string; pathname: string; origin: string };
 
-  function setup(overrides: { pathname?: string; href?: string; isBrowser?: boolean } = {}) {
+  function setup(
+    overrides: { pathname?: string; href?: string; isBrowser?: boolean; hasCookieConsent?: boolean } = {}
+  ) {
     const pathname = overrides.pathname ?? '/dashboard';
     locationMock = {
       href: overrides.href ?? `${origin}${pathname}`,
@@ -34,13 +44,17 @@ describe('AuthService', () => {
     };
 
     loaderService = new LoaderServiceMock();
+    cookieServiceMock = CookieServiceMock.simple();
+    cookieConsentMock = CookieConsentServiceMock.simple();
+    cookieConsentMock.hasConsent.mockReturnValue(overrides.hasCookieConsent ?? false);
 
     TestBed.configureTestingModule({
       providers: [
         AuthService,
         provideMockStore(),
         MockProvider(JsonApiService, JsonApiServiceMock.simple()),
-        MockProvider(CookieService, CookieServiceMock.simple()),
+        MockProvider(CookieService, cookieServiceMock),
+        MockProvider(CookieConsentService, cookieConsentMock),
         MockProvider(LoaderService, loaderService),
         MockProvider(WINDOW, { location: locationMock } as Window),
         MockProvider(ENVIRONMENT, { webUrl, casUrl, apiDomainUrl: 'https://api.test' }),
@@ -49,6 +63,7 @@ describe('AuthService', () => {
     });
 
     service = TestBed.inject(AuthService);
+    store = TestBed.inject(Store);
   }
 
   function nextFromServiceParam(href: string): string | null {
@@ -99,6 +114,43 @@ describe('AuthService', () => {
     service.navigateToSignIn();
 
     expect(loaderService.show).not.toHaveBeenCalled();
+    expect(locationMock.href).toBe(`${origin}/dashboard`);
+  });
+
+  it('should clear session cookies and restore cookie consent on logout', () => {
+    setup({ hasCookieConsent: true });
+
+    service.logout();
+
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearCurrentUser());
+    expect(cookieConsentMock.hasConsent.mock.invocationCallOrder[0]).toBeLessThan(
+      cookieServiceMock.deleteAll.mock.invocationCallOrder[0]
+    );
+    expect(cookieServiceMock.deleteAll.mock.invocationCallOrder[0]).toBeLessThan(
+      cookieConsentMock.accept.mock.invocationCallOrder[0]
+    );
+    expect(locationMock.href).toBe(`${webUrl}/logout/?next=${encodeURIComponent(`${origin}/`)}`);
+  });
+
+  it('should not restore cookie consent on logout when the user has not accepted', () => {
+    setup();
+
+    service.logout();
+
+    expect(cookieServiceMock.deleteAll).toHaveBeenCalled();
+    expect(cookieConsentMock.accept).not.toHaveBeenCalled();
+  });
+
+  it('should not clear cookies when logging out outside the browser', () => {
+    setup({ isBrowser: false, hasCookieConsent: true, href: `${origin}/dashboard` });
+
+    service.logout();
+
+    expect(loaderService.show).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearCurrentUser());
+    expect(cookieServiceMock.deleteAll).not.toHaveBeenCalled();
+    expect(cookieConsentMock.hasConsent).not.toHaveBeenCalled();
     expect(locationMock.href).toBe(`${origin}/dashboard`);
   });
 });

@@ -9,6 +9,7 @@ import { ContributorsListComponent } from '@osf/shared/components/contributors-l
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { StopPropagationDirective } from '@osf/shared/directives/stop-propagation.directive';
+import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { DateAgoPipe } from '@osf/shared/pipes/date-ago.pipe';
 import { FixSpecialCharPipe } from '@osf/shared/pipes/fix-special-char.pipe';
 
@@ -46,6 +47,10 @@ export class PreprintSubmissionItemComponent {
   readonly reviewStatusIcon = ReviewStatusIcon;
   readonly actionLabel = PREPRINT_ACTION_LABEL;
   readonly actionState = ActionStatus;
+
+  readonly visibleActions = computed(() =>
+    this.submission().actions.filter((action) => action.trigger !== ReviewActionTrigger.ReportSpam)
+  );
 
   limitValue = 1;
   showAll = false;

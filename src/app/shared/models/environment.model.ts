@@ -29,9 +29,6 @@ export interface EnvironmentModel {
   newRelicLoaderConfigAgentID: string;
   newRelicLoaderConfigLicenseKey: string;
   newRelicLoaderConfigApplicationID: string;
-  activityLogs?: {
-    pageSize?: number;
-  };
 
   /**
    * The DSN (Data Source Name) used to configure Sentry for error tracking.
@@ -40,6 +37,14 @@ export interface EnvironmentModel {
    * @example "https://1234567890abcdef.ingest.sentry.io/1234567"
    */
   sentryDsn: string;
+
+  /**
+   * Sentry environment name sent with captured events.
+   * Names are case-sensitive and cannot contain spaces, newlines, or forward slashes.
+   *
+   * @example "staging"
+   */
+  sentryEnvironment: string;
 
   /**
    * The Google Tag Manager ID used to embed GTM scripts for analytics tracking.

@@ -1,5 +1,14 @@
 @if (resourceId()) {
   <div class="flex gap-2 justify-content-end">
+    @if (isAuthenticated() && !viewOnly()) {
+      <osf-fork-menu-button
+        [forksCount]="forksCount()"
+        [menuItems]="forkActionItems"
+        [preventDuplicateCreation]="preventDuplicateCreation()"
+        (viewDuplicates)="navigateToDuplicatesView()"
+      />
+    }
+
     @if (isAuthenticated()) {
       <p-button
         styleClass="px-4"

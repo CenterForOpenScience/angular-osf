@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Message } from 'primeng/message';
 
-import { Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -32,6 +32,7 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
   selector: 'osf-tos-consent-banner',
   imports: [FormsModule, Checkbox, Button, Message, TranslatePipe, IconComponent, RouterLink],
   templateUrl: './tos-consent-banner.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TosConsentBannerComponent {
   /**

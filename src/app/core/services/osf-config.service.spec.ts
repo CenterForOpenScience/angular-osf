@@ -19,6 +19,7 @@ describe('OSFConfigService', () => {
 
   const mockConfig: ConfigModel = {
     sentryDsn: 'https://sentry.example.com/123',
+    sentryEnvironment: 'staging',
     googleTagManagerId: 'GTM-TEST',
     googleFilePickerApiKey: '',
     googleFilePickerAppId: 0,

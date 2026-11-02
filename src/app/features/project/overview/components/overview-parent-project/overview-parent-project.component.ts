@@ -5,6 +5,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { NodeMenuAction } from '@osf/shared/enums/node-menu-action.enum';
 import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 
 import { ComponentCardComponent } from '../component-card/component-card.component';
@@ -31,18 +32,18 @@ export class OverviewParentProjectComponent {
     window.open(url, '_self');
   }
 
-  handleMenuAction(action: string): void {
-    const projectId = this.project()?.id;
+  handleMenuAction(action: NodeMenuAction): void {
+    const projectId = this.project().id;
 
     if (!projectId) {
       return;
     }
 
     switch (action) {
-      case 'manageContributors':
+      case NodeMenuAction.ManageContributors:
         this.router.navigate([projectId, 'contributors']);
         break;
-      case 'settings':
+      case NodeMenuAction.Settings:
         this.router.navigate([projectId, 'settings']);
         break;
     }

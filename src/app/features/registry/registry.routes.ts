@@ -13,6 +13,7 @@ import { ViewOnlyLinkState } from '@osf/shared/stores/view-only-links';
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
+import { SettingsState } from '../project/settings/store';
 
 import { RegistryState } from './store/registry';
 import { RegistryComponentsState } from './store/registry-components';
@@ -73,7 +74,7 @@ export const registryRoutes: Routes = [
           import('../analytics/components/view-duplicates/view-duplicates.component').then(
             (mod) => mod.ViewDuplicatesComponent
           ),
-        providers: [provideStates([DuplicatesState])],
+        providers: [provideStates([DuplicatesState, SettingsState])],
       },
       {
         path: 'files',

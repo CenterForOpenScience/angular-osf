@@ -105,7 +105,7 @@ export const projectRoutes: Routes = [
           import('../analytics/components/view-duplicates/view-duplicates.component').then(
             (mod) => mod.ViewDuplicatesComponent
           ),
-        providers: [provideStates([DuplicatesState])],
+        providers: [provideStates([DuplicatesState, SettingsState])],
       },
       {
         path: 'wiki/:wikiName',

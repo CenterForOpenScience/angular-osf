@@ -6,7 +6,6 @@ import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
 export type WikiResponseJsonApi = ListResponse<WikiDataJsonApi>;
 export type WikiItemResponseJsonApi = ItemResponse<WikiDataJsonApi>;
 export type WikiVersionResponseJsonApi = ListResponse<WikiVersionJsonApi>;
-export type WikiVersionItemResponseJsonApi = ItemResponse<WikiVersionJsonApi>;
 
 export interface WikiDataJsonApi extends JsonApiResource<'wikis', WikiAttributesJsonApi> {
   links: WikiLinksJsonApi;

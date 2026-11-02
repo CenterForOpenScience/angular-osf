@@ -1,84 +1,21 @@
 <osf-sub-header
   [title]="'project.analytics.kpi.forks' | translate"
   [showButton]="isAuthenticated()"
-  [buttonLabel]="'project.overview.actions.forkProjectLabel' | translate"
+  [buttonLabel]="duplicateButtonLabel() | translate"
   [isButtonDisabled]="preventDuplicateCreation()"
   [buttonTooltip]="duplicateButtonTooltip() | translate"
-  (buttonClick)="handleForkResource()"
+  (buttonClick)="handleFork()"
 />
 
 <div class="flex flex-column flex-1 bg-white gap-5 p-3 sm:p-4">
-  @if (!isDuplicatesLoading() && currentResource()) {
+  @if (!isDuplicatesLoading()) {
     @if (!duplicates().length) {
       <p class="mt-5 text-center">{{ 'project.overview.dialog.fork.noForksMessage' | translate }}</p>
     } @else {
       <p>{{ 'project.overview.dialog.fork.forksMessage' | translate }}</p>
 
       @for (duplicate of duplicates(); track duplicate.id) {
-        <div class="duplicate-wrapper flex flex-column gap-3 p-3 sm:p-4">
-          <div class="flex justify-content-between align-items-center">
-            <h2 class="flex align-items-center gap-2">
-              <osf-icon [iconClass]="duplicate.isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
-              {{ duplicate.title }}
-            </h2>
-
-            @if (showMoreOptions(duplicate)) {
-              <div>
-                <p-button
-                  severity="contrast"
-                  icon="fas fa-ellipsis-vertical"
-                  raised
-                  variant="outlined"
-                  [ariaLabel]="'common.buttons.more' | translate"
-                  (onClick)="menu.toggle($event)"
-                >
-                </p-button>
-
-                <p-menu appendTo="body" [model]="forkActionItems(duplicate.id)" popup #menu>
-                  <ng-template #item let-item>
-                    <a
-                      class="p-menu-item-link"
-                      (mousedown)="handleMenuAction(item.action, item.resourceId)"
-                      (keydown.enter)="handleMenuAction(item.action, item.resourceId)"
-                      tabindex="0"
-                    >
-                      {{ item.label | translate }}
-                    </a>
-                  </ng-template>
-                </p-menu>
-              </div>
-            }
-          </div>
-
-          <div class="flex flex-column gap-2">
-            <div class="flex flex-wrap align-items-center gap-1">
-              <span class="font-bold">{{ 'common.labels.forked' | translate }}:</span>
-              <p>{{ duplicate.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
-            </div>
-
-            <div class="flex flex-wrap align-items-center gap-1">
-              <span class="font-bold">{{ 'common.labels.lastUpdated' | translate }}:</span>
-              <p>{{ duplicate.dateModified | date: 'MMM d, y, h:mm a' }}</p>
-            </div>
-
-            <div class="flex align-items-start gap-1">
-              <span class="font-bold">{{ 'common.labels.contributors' | translate }}:</span>
-
-              <osf-contributors-list [contributors]="duplicate.bibliographicContributors"></osf-contributors-list>
-            </div>
-
-            @if (duplicate.description) {
-              <osf-truncated-text
-                [text]="('resourceCard.labels.descriptionBold' | translate) + duplicate.description"
-              />
-            }
-          </div>
-          <p-button
-            [label]="'common.buttons.view' | translate"
-            severity="secondary"
-            [routerLink]="['/', duplicate.id]"
-          />
-        </div>
+        <osf-duplicate-card [duplicate]="duplicate" (menuAction)="handleMenuAction($event, duplicate.id)" />
       }
 
       @if (totalDuplicates() > pageSize) {

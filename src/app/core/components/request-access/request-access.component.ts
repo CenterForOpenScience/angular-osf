@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Textarea } from 'primeng/textarea';
 
-import { map, of } from 'rxjs';
+import { finalize, map } from 'rxjs';
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, model } from '@angular/core';
@@ -36,7 +36,7 @@ export class RequestAccessComponent {
   readonly commentLimit = InputLimits.requestAccessComment.maxLength;
 
   private readonly route = inject(ActivatedRoute);
-  private readonly id = toSignal(this.route?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  private readonly id = toSignal(this.route.params.pipe(map((params) => params['id'])));
 
   private readonly router = inject(Router);
   private readonly requestAccessService = inject(RequestAccessService);
@@ -55,19 +55,26 @@ export class RequestAccessComponent {
   );
 
   requestAccess() {
+    const id = this.id();
+    if (!id) {
+      return;
+    }
+
     this.loaderService.show();
-    this.requestAccessService.requestAccessToProject(this.id(), this.comment()).subscribe({
-      next: () => {
-        this.loaderService.hide();
-        this.router.navigate(['/']);
-        this.toastService.showSuccess('requestAccess.requestedSuccessMessage');
-      },
-      error: (error: HttpErrorResponse) => {
-        if (error.status === 409) {
-          this.toastService.showError('requestAccess.alreadyRequestedMessage');
-        }
-      },
-    });
+    this.requestAccessService
+      .requestAccessToProject(id, this.comment())
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccess('requestAccess.requestedSuccessMessage');
+          this.router.navigate(['/']);
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 409) {
+            this.toastService.showError('requestAccess.alreadyRequestedMessage');
+          }
+        },
+      });
   }
 
   switchAccount() {

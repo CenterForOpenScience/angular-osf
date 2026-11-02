@@ -40,9 +40,11 @@
 
     <div class="flex ml-auto">
       <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row lg:flex-row">
-        @if (storage()) {
+        @let storageData = storage();
+
+        @if (storageData) {
           <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">
-            {{ +storage()!.storageUsage | fileSize }}
+            {{ +storageData.storageUsage | fileSize }}
           </p>
         }
 
@@ -62,39 +64,13 @@
             }
 
             @if (!viewOnly()) {
-              @if (preventDuplicateCreation()) {
-                <p-button
-                  class="flex"
-                  (click)="navigateToDuplicatesView()"
-                  [pTooltip]="'project.overview.actions.viewDuplication' | translate"
-                  tooltipPosition="bottom"
-                  [ariaLabel]="'project.overview.actions.viewDuplication' | translate"
-                >
-                  <span class="font-bold">{{ resource.forksCount }}</span>
-                  <i class="fas fa-clone text-2xl"></i>
-                </p-button>
-              } @else {
-                <p-button
-                  class="flex"
-                  (click)="forkActionMenu.toggle($event)"
-                  [pTooltip]="'project.overview.tooltips.duplicate' | translate"
-                  tooltipPosition="bottom"
-                  [ariaLabel]="'project.overview.tooltips.duplicate' | translate"
-                >
-                  <span class="font-bold">{{ resource.forksCount }}</span>
-                  <i class="fas fa-clone text-2xl"></i>
-                  <p-menu appendTo="body" #forkActionMenu [model]="forkActionItems" popup>
-                    <ng-template #item let-item>
-                      <a class="p-menu-item-link">
-                        {{ item.label | translate }}
-                      </a>
-                    </ng-template>
-                  </p-menu>
-                </p-button>
-              }
-            }
+              <osf-fork-menu-button
+                [forksCount]="resource.forksCount"
+                [menuItems]="forkActionItems"
+                [preventDuplicateCreation]="preventDuplicateCreation()"
+                (viewDuplicates)="navigateToDuplicatesView()"
+              />
 
-            @if (!viewOnly()) {
               <p-button
                 class="flex"
                 styleClass="px-4"
@@ -110,8 +86,8 @@
 
           @if (resource.isPublic && !viewOnly()) {
             <osf-socials-share-button
-              [resourceId]="currentResource().id"
-              [resourceTitle]="currentResource().title"
+              [resourceId]="resource.id"
+              [resourceTitle]="resource.title"
               [resourceType]="resourceType"
             ></osf-socials-share-button>
           }

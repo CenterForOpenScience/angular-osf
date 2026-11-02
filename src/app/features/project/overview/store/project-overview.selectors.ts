@@ -32,11 +32,6 @@ export class ProjectOverviewSelectors {
   }
 
   @Selector([ProjectOverviewState])
-  static getForkProjectSubmitting(state: ProjectOverviewStateModel) {
-    return state.project.isSubmitting;
-  }
-
-  @Selector([ProjectOverviewState])
   static getDuplicateProjectSubmitting(state: ProjectOverviewStateModel) {
     return state.project.isSubmitting;
   }

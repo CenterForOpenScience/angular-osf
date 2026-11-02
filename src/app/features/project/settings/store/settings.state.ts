@@ -9,7 +9,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { NotificationSubscription } from '@osf/shared/models/notifications/notification-subscription.model';
 
-import { SettingsService } from '../services';
+import { SettingsService } from '../services/settings.service';
 
 import {
   DeleteInstitution,

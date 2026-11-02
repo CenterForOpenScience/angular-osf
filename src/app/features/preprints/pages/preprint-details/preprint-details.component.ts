@@ -24,12 +24,13 @@ import {
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { PREPRINT_PENDING_MODERATION_DETAIL } from '@core/constants/http-error-details.const';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { HelpScoutService } from '@core/services/help-scout.service';
 import { PrerenderReadyService } from '@core/services/prerender-ready.service';
 import { ClearCurrentProvider } from '@core/store/provider';
-import { UserSelectors } from '@core/store/user';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
+import { ReviewActionTrigger } from '@osf/shared/enums/trigger-action.enum';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
@@ -119,7 +120,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     clearCurrentProvider: ClearCurrentProvider,
   });
 
-  currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   preprint = select(PreprintSelectors.getPreprint);
@@ -147,7 +147,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   });
 
   latestAction = computed(() => {
-    const actions = this.reviewActions();
+    // banners and the decision dialog describe the last decision, and a spam report is not one
+    const actions = this.reviewActions().filter((action) => action.trigger !== ReviewActionTrigger.ReportSpam);
     return actions.length > 0 ? actions[0] : null;
   });
 
@@ -221,7 +222,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    return false;
+    return !preprintIsRejected;
   });
 
   editButtonLabel = computed(() => {
@@ -360,11 +361,11 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     this.actions
       .createNewVersion(preprintId)
       .pipe(
-        catchError((e) => {
+        catchError((error: HttpErrorResponse) => {
           this.loaderService.hide();
 
-          if (e instanceof HttpErrorResponse && e.status === 409) {
-            this.toastService.showError(e.error.errors[0].detail);
+          if (error.status === 409) {
+            this.toastService.showError(error?.error?.errors[0]?.detail);
           }
 
           return EMPTY;
@@ -409,12 +410,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
           }
         }
       },
-      error: (error) => {
-        if (
-          error instanceof HttpErrorResponse &&
-          error.status === 403 &&
-          error?.error?.errors[0]?.detail === 'This preprint is pending moderation and is not yet publicly available.'
-        ) {
+      error: (error: HttpErrorResponse) => {
+        if (error?.status === 403 && error.error?.errors?.[0]?.detail === PREPRINT_PENDING_MODERATION_DETAIL) {
           this.router.navigate(['/preprints', this.providerId(), preprintId, 'pending-moderation']);
         }
       },

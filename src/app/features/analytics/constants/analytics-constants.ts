@@ -1,5 +1,5 @@
-import { DateRange } from '../enums';
-import { DateRangeOption } from '../models';
+import { DateRange } from '../enums/date-range.enum';
+import { DateRangeOption } from '../models/date-range-option.model';
 
 export const DATE_RANGE_OPTIONS: DateRangeOption[] = [
   { label: 'project.analytics.charts.pastWeek', value: DateRange.PastWeek },

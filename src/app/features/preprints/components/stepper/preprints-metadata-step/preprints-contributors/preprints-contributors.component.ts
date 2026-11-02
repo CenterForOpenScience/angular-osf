@@ -21,6 +21,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { AddContributorDialogComponent } from '@osf/shared/components/contributors/add-contributor-dialog/add-contributor-dialog.component';
 import { AddUnregisteredContributorDialogComponent } from '@osf/shared/components/contributors/add-unregistered-contributor-dialog/add-unregistered-contributor-dialog.component';
 import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
@@ -65,6 +66,7 @@ export class PreprintsContributorsComponent implements OnInit {
   readonly hasMoreContributors = select(ContributorsSelectors.hasMoreContributors);
   readonly isLoadingMore = select(ContributorsSelectors.isContributorsLoadingMore);
   readonly pageSize = select(ContributorsSelectors.getContributorsPageSize);
+  readonly hasAdminAccess = select(PreprintStepperSelectors.hasAdminAccess);
 
   readonly actions = createDispatchMap({
     getContributors: GetAllContributors,

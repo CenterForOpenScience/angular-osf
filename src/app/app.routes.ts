@@ -7,6 +7,7 @@ import { isFileGuard } from '@core/guards/is-file.guard';
 import { isProjectGuard } from '@core/guards/is-project.guard';
 import { isRegistryGuard } from '@core/guards/is-registry.guard';
 import { redirectIfLoggedInGuard } from '@core/guards/redirect-if-logged-in.guard';
+import { CONTENT_DELETED_ROUTE_DATA, PAGE_NOT_FOUND_ROUTE_DATA } from '@osf/core/constants/page-not-found.constants';
 
 import { MyPreprintsState } from './features/preprints/store/my-preprints';
 import { ProfileState } from './features/profile/store';
@@ -195,7 +196,13 @@ export const routes: Routes = [
         path: 'not-found',
         loadComponent: () =>
           import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
-        data: { skipBreadcrumbs: true },
+        data: PAGE_NOT_FOUND_ROUTE_DATA,
+      },
+      {
+        path: 'content-deleted',
+        loadComponent: () =>
+          import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
+        data: CONTENT_DELETED_ROUTE_DATA,
       },
       {
         path: ':id/files/:fileGuid/preview',
@@ -244,7 +251,7 @@ export const routes: Routes = [
         path: '**',
         loadComponent: () =>
           import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
-        data: { skipBreadcrumbs: true },
+        data: PAGE_NOT_FOUND_ROUTE_DATA,
       },
     ],
   },

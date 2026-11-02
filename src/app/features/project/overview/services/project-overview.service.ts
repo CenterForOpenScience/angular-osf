@@ -1,11 +1,10 @@
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, Observable, of, switchMap } from 'rxjs';
 
-import { HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.tokens';
+import { bypassErrorInterceptorContext } from '@core/interceptors/error-interceptor.tokens';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { JSON_API_BULK_HEADERS } from '@osf/shared/constants/json-api-headers.const';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
 import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
@@ -92,23 +91,9 @@ export class ProjectOverviewService {
       data: data.map((item) => ({ id: item.id, type: 'nodes', attributes: { public: item.public } })),
     };
 
-    const headers = {
-      'Content-Type': 'application/vnd.api+json; ext=bulk',
-    };
-
     return this.jsonApiService
-      .patch<BaseNodeDataJsonApi[]>(`${this.apiUrl}/nodes/`, payload, undefined, headers)
+      .patch<BaseNodeDataJsonApi[]>(`${this.apiUrl}/nodes/`, payload, undefined, JSON_API_BULK_HEADERS)
       .pipe(map((res) => BaseNodeMapper.getNodesData(res)));
-  }
-
-  forkResource(projectId: string, resourceType: string): Observable<void> {
-    const payload = {
-      data: {
-        type: 'nodes',
-      },
-    };
-
-    return this.jsonApiService.post<void>(`${this.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
   }
 
   duplicateProject(projectId: string, title: string): Observable<BaseNodeModel> {
@@ -182,10 +167,6 @@ export class ProjectOverviewService {
       );
   }
 
-  deleteComponent(componentId: string): Observable<void> {
-    return this.jsonApiService.delete(`${this.apiUrl}/nodes/${componentId}/`);
-  }
-
   getComponents(projectId: string, page = 1, pageSize = 10): Observable<PaginatedData<NodeModel[]>> {
     const params: Record<string, unknown> = {
       embed: 'bibliographic_contributors',
@@ -203,11 +184,8 @@ export class ProjectOverviewService {
   getParentProject(projectId: string): Observable<NodeModel> {
     const params: Record<string, unknown> = { 'embed[]': ['bibliographic_contributors'] };
 
-    const context = new HttpContext();
-    context.set(BYPASS_ERROR_INTERCEPTOR, true);
-
     return this.jsonApiService
-      .get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params, context)
+      .get<NodeResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params, bypassErrorInterceptorContext())
       .pipe(map((response) => BaseNodeMapper.getNodeWithEmbedContributors(response.data)));
   }
 
@@ -222,15 +200,11 @@ export class ProjectOverviewService {
       })),
     };
 
-    const headers = {
-      'Content-Type': 'application/vnd.api+json; ext=bulk',
-    };
-
     return this.jsonApiService.patch<void>(
       `${this.apiUrl}/nodes/${projectId}/reorder_components/`,
       payload,
       undefined,
-      headers
+      JSON_API_BULK_HEADERS
     );
   }
 }

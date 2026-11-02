@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { NodeMenuAction } from '@osf/shared/enums/node-menu-action.enum';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { NodeModel } from '@osf/shared/models/nodes/base-node.model';
 
@@ -24,7 +25,7 @@ export class ComponentCardComponent {
   hideDeleteAction = input<boolean>(false);
 
   navigate = output<string>();
-  menuAction = output<string>();
+  menuAction = output<NodeMenuAction>();
 
   readonly componentActionItems = computed(() => {
     const component = this.component();
@@ -32,18 +33,18 @@ export class ComponentCardComponent {
     const baseItems = [
       {
         label: 'project.overview.actions.manageContributors',
-        action: 'manageContributors',
+        action: NodeMenuAction.ManageContributors,
       },
       {
         label: 'project.overview.actions.settings',
-        action: 'settings',
+        action: NodeMenuAction.Settings,
       },
     ];
 
     if (!this.hideDeleteAction() && component.currentUserPermissions.includes(UserPermissions.Admin)) {
       baseItems.push({
         label: 'common.labels.delete',
-        action: 'delete',
+        action: NodeMenuAction.Delete,
       });
     }
 
@@ -54,7 +55,7 @@ export class ComponentCardComponent {
     this.navigate.emit(componentId);
   }
 
-  handleMenuAction(action: string): void {
+  handleMenuAction(action: NodeMenuAction): void {
     this.menuAction.emit(action);
   }
 }

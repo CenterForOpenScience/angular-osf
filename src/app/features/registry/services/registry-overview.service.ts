@@ -46,7 +46,9 @@ export class RegistryOverviewService {
   }
 
   getRegistrationById(id: string): Observable<RegistryOverviewWithMeta> {
-    return this.jsonApiService.get<RegistrationOverviewResponse>(`${this.apiUrl}/registrations/${id}/`).pipe(
+    const params = { related_counts: 'forks' };
+
+    return this.jsonApiService.get<RegistrationOverviewResponse>(`${this.apiUrl}/registrations/${id}/`, params).pipe(
       map((response) => ({
         registry: MapRegistrationOverview(response.data),
         isAnonymous: response.meta?.anonymous ?? false,

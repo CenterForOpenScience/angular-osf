@@ -13,6 +13,7 @@ import {
   SubmitRequestsDecision,
   SubmitReviewsDecision,
 } from '@osf/features/preprints/store/preprint';
+import { ToastService } from '@osf/shared/services/toast.service';
 
 import { PREPRINT_MOCK } from '@testing/mocks/preprint.mock';
 import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider-details';
@@ -21,6 +22,7 @@ import { REVIEW_ACTION_MOCK } from '@testing/mocks/review-action.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
 import { PreprintMakeDecisionComponent } from './preprint-make-decision.component';
 
@@ -44,6 +46,7 @@ describe('PreprintMakeDecisionComponent', () => {
       providers: [
         provideOSFCore(),
         MockProvider(Router, routerMock),
+        MockProvider(ToastService, ToastServiceMock.simple()),
         provideMockStore({
           signals: [{ selector: PreprintSelectors.getPreprint, value: mockPreprint }],
         }),

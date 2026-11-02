@@ -1,11 +1,13 @@
 <p-card class="w-full">
   <h2>{{ 'common.labels.contributors' | translate }}</h2>
 
-  <div class="warning-message mt-4 mb-3">
-    <p-message icon="fas fa-circle-exclamation" severity="error">
-      {{ 'preprints.preprintContributorsWarning' | translate }}
-    </p-message>
-  </div>
+  @if (hasAdminAccess()) {
+    <div class="warning-message mt-4 mb-3">
+      <p-message icon="fas fa-circle-exclamation" severity="error">
+        {{ 'preprints.preprintContributorsWarning' | translate }}
+      </p-message>
+    </div>
+  }
 
   <osf-contributors-table
     class="w-full"
@@ -14,22 +16,25 @@
     [isLoading]="isContributorsLoading()"
     [showLoadMore]="hasMoreContributors()"
     [isLoadingMore]="isLoadingMore()"
+    [hasAdminAccess]="hasAdminAccess()"
     (remove)="removeContributor($event)"
     (loadMore)="loadMoreContributors()"
   />
-  <div class="flex justify-content-end mt-3">
-    @if (hasChanges) {
-      <div class="flex gap-2 mr-4">
-        <p-button (onClick)="cancel()" severity="info" [label]="'common.buttons.cancel' | translate" />
-        <p-button (onClick)="save()" [label]="'common.buttons.save' | translate" />
-      </div>
-    }
-    <p-button
-      class="w-full md:w-auto"
-      styleClass="w-full"
-      [label]="'preprints.addContributorBySearch' | translate"
-      type="submit"
-      (onClick)="openAddContributorDialog()"
-    />
-  </div>
+  @if (hasAdminAccess()) {
+    <div class="flex justify-content-end mt-3">
+      @if (hasChanges) {
+        <div class="flex gap-2 mr-4">
+          <p-button (onClick)="cancel()" severity="info" [label]="'common.buttons.cancel' | translate" />
+          <p-button (onClick)="save()" [label]="'common.buttons.save' | translate" />
+        </div>
+      }
+      <p-button
+        class="w-full md:w-auto"
+        styleClass="w-full"
+        [label]="'preprints.addContributorBySearch' | translate"
+        type="submit"
+        (onClick)="openAddContributorDialog()"
+      />
+    </div>
+  }
 </p-card>

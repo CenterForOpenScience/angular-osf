@@ -73,11 +73,11 @@ describe('MaintenanceBannerComponent', () => {
     expect(component.maintenance()).toEqual(activeMaintenance);
   });
 
-  it('should fetch maintenance on server without cookie check', () => {
+  it('should not check cookie or fetch maintenance on server', () => {
     setup({ isBrowser: false, maintenance: activeMaintenance });
     expect(cookieServiceMock.check).not.toHaveBeenCalled();
-    expect(maintenanceServiceMock.fetchMaintenanceStatus).toHaveBeenCalledTimes(1);
-    expect(component.maintenance()).toEqual(activeMaintenance);
+    expect(maintenanceServiceMock.fetchMaintenanceStatus).not.toHaveBeenCalled();
+    expect(component.maintenance()).toBeNull();
   });
 
   it('should dismiss and persist cookie in browser', () => {
@@ -89,7 +89,7 @@ describe('MaintenanceBannerComponent', () => {
   });
 
   it('should dismiss without setting cookie on server', () => {
-    setup({ isBrowser: false, maintenance: activeMaintenance });
+    setup({ isBrowser: false });
     component.dismiss();
     expect(cookieServiceMock.set).not.toHaveBeenCalled();
     expect(component.dismissed()).toBe(true);

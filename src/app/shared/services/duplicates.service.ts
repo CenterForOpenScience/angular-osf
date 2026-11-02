@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 
 import { BaseNodeMapper } from '../mappers/nodes';
 import { NodeModel } from '../models/nodes/base-node.model';
@@ -45,5 +46,11 @@ export class DuplicatesService {
     return this.jsonApiService
       .get<NodesResponseJsonApi>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
       .pipe(map((res) => BaseNodeMapper.getNodesWithEmbedsAndTotalData(res)));
+  }
+
+  forkResource(resourceId: string, resourceType: CurrentResourceType): Observable<void> {
+    const payload = { data: { type: CurrentResourceType.Projects } };
+
+    return this.jsonApiService.post<void>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, payload);
   }
 }

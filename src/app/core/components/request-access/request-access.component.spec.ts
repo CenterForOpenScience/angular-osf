@@ -118,8 +118,19 @@ describe('RequestAccessComponent', () => {
     expect(loaderServiceMock.show).toHaveBeenCalled();
     expect(requestAccessServiceMock.requestAccessToProject).toHaveBeenCalledWith('project-123', 'please grant access');
     expect(loaderServiceMock.hide).toHaveBeenCalled();
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
     expect(toastServiceMock.showSuccess).toHaveBeenCalledWith('requestAccess.requestedSuccessMessage');
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/']);
+    expect(toastServiceMock.showSuccess.mock.invocationCallOrder[0]).toBeLessThan(
+      (routerMock.navigate as Mock).mock.invocationCallOrder[0]
+    );
+  });
+
+  it('should not request access when route id is missing', () => {
+    setup({ routeId: '' });
+    component.requestAccess();
+
+    expect(loaderServiceMock.show).not.toHaveBeenCalled();
+    expect(requestAccessServiceMock.requestAccessToProject).not.toHaveBeenCalled();
   });
 
   it('should show already requested error on 409', () => {
@@ -129,6 +140,7 @@ describe('RequestAccessComponent', () => {
     component.requestAccess();
 
     expect(loaderServiceMock.show).toHaveBeenCalled();
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
     expect(toastServiceMock.showError).toHaveBeenCalledWith('requestAccess.alreadyRequestedMessage');
     expect(routerMock.navigate).not.toHaveBeenCalled();
   });
@@ -139,6 +151,7 @@ describe('RequestAccessComponent', () => {
     });
     component.requestAccess();
 
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
     expect(toastServiceMock.showError).not.toHaveBeenCalled();
     expect(routerMock.navigate).not.toHaveBeenCalled();
   });

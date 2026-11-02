@@ -33,9 +33,9 @@ import { Primitive } from '@osf/shared/helpers/types.helper';
 import { DatasetInput } from '@osf/shared/models/charts/dataset-input.model';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
 
+import { DateRange } from './enums/date-range.enum';
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
-import { DateRange } from './enums';
 import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from './store';
 
 @Component({

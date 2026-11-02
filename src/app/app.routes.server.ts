@@ -26,6 +26,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
   {
+    path: 'content-deleted',
+    renderMode: RenderMode.Prerender,
+  },
+  {
     path: 'forgotpassword',
     renderMode: RenderMode.Prerender,
   },

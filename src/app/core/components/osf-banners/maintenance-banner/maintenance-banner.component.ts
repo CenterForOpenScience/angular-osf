@@ -65,9 +65,11 @@ export class MaintenanceBannerComponent implements OnInit {
    * - If not dismissed, triggers a fetch of current maintenance status
    */
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.dismissed.set(this.cookies.check(this.cookieName));
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
+
+    this.dismissed.set(this.cookies.check(this.cookieName));
 
     if (!this.dismissed()) {
       this.fetchMaintenanceStatus();

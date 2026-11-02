@@ -1,4 +1,3 @@
-import { CookieService } from 'ngx-cookie-service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
@@ -7,12 +6,13 @@ import { Message } from 'primeng/message';
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal } from '@angular/core';
 
+import { CookieConsentService } from '@core/services/cookie-consent.service';
 import { IconComponent } from '@osf/shared/components/icon/icon.component';
 
 /**
  * Displays a cookie consent banner until the user accepts.
  *
- * - Uses `ngx-cookie-service` to persist acceptance across sessions.
+ * - Persists acceptance through `CookieConsentService`.
  * - Automatically hides the banner if consent is already recorded.
  * - Supports translation via `TranslatePipe`.
  */
@@ -25,29 +25,21 @@ import { IconComponent } from '@osf/shared/components/icon/icon.component';
 })
 export class CookieConsentBannerComponent {
   /**
-   * The name of the cookie used to track whether the user accepted cookies.
-   */
-  private readonly cookieName = 'cookie-consent';
-
-  /**
    * Signal controlling the visibility of the cookie banner.
    * Set to `true` if the user has not accepted cookies yet.
    */
   readonly displayBanner = signal<boolean>(false);
 
-  /**
-   * Cookie service used to persist dismissal state in the browser.
-   */
-  private readonly cookies = inject(CookieService);
-  private readonly platformId = inject(PLATFORM_ID);
+  private readonly cookieConsent = inject(CookieConsentService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   /**
    * Initializes the component and sets the banner display
    * based on the existence of the cookie.
    */
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.displayBanner.set(!this.cookies.check(this.cookieName));
+    if (this.isBrowser) {
+      this.displayBanner.set(!this.cookieConsent.hasConsent());
     }
   }
 
@@ -57,10 +49,7 @@ export class CookieConsentBannerComponent {
    * - Hides the banner immediately.
    */
   acceptCookies() {
-    if (isPlatformBrowser(this.platformId)) {
-      const expireDate = new Date('9999-12-31T23:59:59Z');
-      this.cookies.set(this.cookieName, 'true', expireDate, '/');
-    }
+    this.cookieConsent.accept();
     this.displayBanner.set(false);
   }
 }

@@ -1,0 +1,17 @@
+<p>
+  {{ messageKey | translate }}
+</p>
+
+<div class="flex mt-6 gap-3 justify-content-between">
+  <p-button
+    class="btn-full-width"
+    severity="info"
+    [label]="'common.buttons.cancel' | translate"
+    (onClick)="dialogRef.close(false)"
+  />
+  <p-button
+    class="btn-full-width"
+    [label]="'project.overview.dialog.fork.confirmButton' | translate"
+    (onClick)="dialogRef.close(true)"
+  />
+</div>

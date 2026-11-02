@@ -1,5 +1,5 @@
 <div class="flex flex-column gap-4">
-  @for (action of reviewActions(); track $index) {
+  @for (action of decisionActions(); track $index) {
     <p class="flex flex-wrap gap-1">
       @switch (action.toState) {
         @case (SubmissionReviewStatus.Pending) {
@@ -63,6 +63,17 @@
             }
           </label>
         </div>
+
+        <div class="flex gap-2">
+          <p-radioButton
+            [formControlName]="ModerationDecisionFormControls.Action"
+            [inputId]="ReviewActionTrigger.ReportSpam"
+            [value]="ReviewActionTrigger.ReportSpam"
+          ></p-radioButton>
+          <label [for]="ReviewActionTrigger.ReportSpam" class="m-0 flex gap-2 flex-column">
+            <p class="font-bold">{{ 'moderation.makeDecision.reportSpam' | translate }}</p>
+          </label>
+        </div>
       </div>
 
       <div class="flex flex-column gap-1">
@@ -90,6 +101,17 @@
           <label [for]="ReviewActionTrigger.ForceWithdraw" class="m-0 flex gap-2 flex-column">
             <p class="font-bold">{{ 'moderation.makeDecision.forceWithdraw' | translate }}</p>
             <p>{{ 'moderation.makeDecision.forceWithdrawMessage' | translate }}</p>
+          </label>
+        </div>
+
+        <div class="flex gap-2">
+          <p-radioButton
+            [formControlName]="ModerationDecisionFormControls.Action"
+            [inputId]="ReviewActionTrigger.ReportSpam"
+            [value]="ReviewActionTrigger.ReportSpam"
+          ></p-radioButton>
+          <label [for]="ReviewActionTrigger.ReportSpam" class="m-0 flex gap-2 flex-column">
+            <p class="font-bold">{{ 'moderation.makeDecision.reportSpam' | translate }}</p>
           </label>
         </div>
       </div>

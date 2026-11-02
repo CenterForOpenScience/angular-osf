@@ -1,6 +1,6 @@
 import { Store } from '@ngxs/store';
 
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 import { inject } from '@angular/core';
 import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
@@ -49,6 +49,7 @@ export const isRegistryGuard: CanMatchFn = (route: Route, segments: UrlSegment[]
       }
 
       return resource.type === CurrentResourceType.Registrations;
-    })
+    }),
+    catchError(() => of(false))
   );
 };

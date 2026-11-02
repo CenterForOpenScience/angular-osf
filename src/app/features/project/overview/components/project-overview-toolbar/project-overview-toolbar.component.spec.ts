@@ -2,65 +2,93 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
+import { Subject } from 'rxjs';
+
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ClearDuplicatedProject, ForkProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ForkMenuButtonComponent } from '@osf/shared/components/fork-menu-button/fork-menu-button.component';
 import { SocialsShareButtonComponent } from '@osf/shared/components/socials-share-button/socials-share-button.component';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources-item.model';
 import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ForkDialogService } from '@osf/shared/services/fork-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { BookmarksSelectors, GetResourceBookmark } from '@osf/shared/stores/bookmarks';
+import {
+  AddResourceToBookmarks,
+  BookmarksSelectors,
+  GetResourceBookmark,
+  RemoveResourceFromBookmarks,
+} from '@osf/shared/stores/bookmarks';
 
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { CustomDialogServiceMockBuilder } from '@testing/providers/custom-dialog-provider.mock';
+import {
+  CustomDialogServiceMock,
+  CustomDialogServiceMockBuilder,
+} from '@testing/providers/custom-dialog-provider.mock';
+import { ForkDialogServiceMock, ForkDialogServiceMockType } from '@testing/providers/fork-dialog.service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { ProjectOverviewModel } from '../../models';
+import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
 import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggle-publicity-dialog.component';
 
 import { ProjectOverviewToolbarComponent } from './project-overview-toolbar.component';
 
 interface SetupOverrides extends BaseSetupOverrides {
-  selectors?: any[];
+  isPublic?: boolean;
 }
 
 describe('ProjectOverviewToolbarComponent', () => {
   let component: ProjectOverviewToolbarComponent;
   let fixture: ComponentFixture<ProjectOverviewToolbarComponent>;
   let store: Store;
-  let routerMock: ReturnType<RouterMockBuilder['build']>;
-  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let routerMock: RouterMockType;
   let customDialogServiceMock: ReturnType<CustomDialogServiceMockBuilder['build']>;
   let toastService: ToastServiceMockType;
-
-  const mockResource: ProjectOverviewModel = {
-    ...MOCK_PROJECT_OVERVIEW,
-    id: 'project-123',
-    title: 'Test Project',
-    isPublic: true,
-  } as ProjectOverviewModel;
+  let forkDialogService: ForkDialogServiceMockType;
 
   const mockStorage: NodeStorageModel = {
     id: 'storage-123',
     storageLimitStatus: 'ok',
-    storageUsage: '500MB',
+    storageUsage: '1500',
+  };
+
+  const bookmarkedItem: MyResourcesItem = {
+    id: 'project-123',
+    dateCreated: '2023-01-01',
+    dateModified: '2023-01-01',
+    isPublic: true,
+    contributors: [],
+    title: 'Test Project',
+    type: 'nodes',
   };
 
   function setup(overrides: SetupOverrides = {}) {
     routerMock = RouterMockBuilder.create().build();
-    activatedRouteMock = ActivatedRouteMockBuilder.create().build();
     customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     toastService = ToastServiceMock.simple();
-    const defaultSelectors = [
+    forkDialogService = ForkDialogServiceMock.simple();
+
+    const resource: ProjectOverviewModel = {
+      ...MOCK_PROJECT_OVERVIEW,
+      id: 'project-123',
+      title: 'Test Project',
+      isPublic: overrides.isPublic ?? true,
+      forksCount: 4,
+      viewOnlyLinksCount: 2,
+    };
+
+    const defaultSignals = [
       { selector: BookmarksSelectors.getBookmarksCollectionId, value: 'bookmarks-123' },
       { selector: BookmarksSelectors.getBookmarks, value: [] },
       { selector: BookmarksSelectors.areBookmarksLoading, value: false },
@@ -70,207 +98,224 @@ describe('ProjectOverviewToolbarComponent', () => {
       { selector: UserSelectors.isProjectCreationDisabled, value: false },
       { selector: UserSelectors.isProjectReadOnly, value: false },
     ];
-    const signals = mergeSignalOverrides(defaultSelectors, overrides.selectors);
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
 
     TestBed.configureTestingModule({
-      imports: [ProjectOverviewToolbarComponent, ...MockComponents(SocialsShareButtonComponent)],
+      imports: [
+        ProjectOverviewToolbarComponent,
+        ...MockComponents(SocialsShareButtonComponent, ForkMenuButtonComponent),
+      ],
       providers: [
         provideOSFCore(),
-        provideMockStore({
-          signals,
-        }),
+        provideRouter([]),
+        provideMockStore({ signals }),
         MockProvider(Router, routerMock),
-        MockProvider(ActivatedRoute, activatedRouteMock),
+        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
         MockProvider(CustomDialogService, customDialogServiceMock),
         MockProvider(ToastService, toastService),
+        MockProvider(ForkDialogService, forkDialogService),
       ],
     });
 
     store = TestBed.inject(Store);
-    store.dispatch = vi.fn().mockReturnValue(of(true));
     fixture = TestBed.createComponent(ProjectOverviewToolbarComponent);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('canEdit', true);
-    fixture.componentRef.setInput('currentResource', mockResource);
+    fixture.componentRef.setInput('currentResource', resource);
     fixture.componentRef.setInput('storage', mockStorage);
     fixture.componentRef.setInput('viewOnly', false);
+    fixture.detectChanges();
   }
 
-  it('should create', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should read preventDuplicateCreation from the user state', () => {
+    setup({ selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }] });
+
+    expect(component.preventDuplicateCreation()).toBe(true);
+  });
+
+  it('should dispatch GetResourceBookmark on init', () => {
     setup();
-    expect(component).toBeTruthy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new GetResourceBookmark('bookmarks-123', 'project-123', ResourceType.Project)
+    );
   });
 
-  describe('Input Bindings', () => {
-    it('should set canEdit input correctly', () => {
-      setup();
-      fixture.componentRef.setInput('canEdit', false);
-      fixture.detectChanges();
+  it('should not dispatch GetResourceBookmark without a bookmarks collection id', () => {
+    setup({ selectorOverrides: [{ selector: BookmarksSelectors.getBookmarksCollectionId, value: null }] });
 
-      expect(component.canEdit()).toBe(false);
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetResourceBookmark));
+  });
+
+  it('should mark the project as bookmarked when it is in the bookmarks list', () => {
+    setup({ selectorOverrides: [{ selector: BookmarksSelectors.getBookmarks, value: [bookmarkedItem] }] });
+
+    expect(component.isBookmarked()).toBe(true);
+  });
+
+  it('should leave the project unbookmarked when it is absent from the bookmarks list', () => {
+    setup({
+      selectorOverrides: [{ selector: BookmarksSelectors.getBookmarks, value: [{ ...bookmarkedItem, id: 'other' }] }],
     });
 
-    it('should set currentResource input correctly', () => {
-      setup();
-      expect(component.currentResource()).toEqual(mockResource);
+    expect(component.isBookmarked()).toBe(false);
+  });
+
+  it('should add a bookmark and show a toast when the project is not bookmarked', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    component.toggleBookmark();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new AddResourceToBookmarks('bookmarks-123', 'project-123', ResourceType.Project)
+    );
+    expect(component.isBookmarked()).toBe(true);
+    expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.bookmark.add');
+  });
+
+  it('should remove a bookmark and show a toast when the project is bookmarked', () => {
+    setup({ selectorOverrides: [{ selector: BookmarksSelectors.getBookmarks, value: [bookmarkedItem] }] });
+    (store.dispatch as Mock).mockClear();
+
+    component.toggleBookmark();
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new RemoveResourceFromBookmarks('bookmarks-123', 'project-123', ResourceType.Project)
+    );
+    expect(component.isBookmarked()).toBe(false);
+    expect(toastService.showSuccess).toHaveBeenCalledWith('project.overview.dialog.toast.bookmark.remove');
+  });
+
+  it('should not toggle a bookmark without a bookmarks collection id', () => {
+    setup({ selectorOverrides: [{ selector: BookmarksSelectors.getBookmarksCollectionId, value: null }] });
+    (store.dispatch as Mock).mockClear();
+
+    component.toggleBookmark();
+
+    expect(store.dispatch).not.toHaveBeenCalled();
+    expect(toastService.showSuccess).not.toHaveBeenCalled();
+  });
+
+  it('should open the make-private dialog for a public project', () => {
+    vi.useFakeTimers();
+    setup();
+
+    component.handleToggleProjectPublicity();
+    vi.advanceTimersByTime(100);
+
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(TogglePublicityDialogComponent, {
+      header: 'project.overview.dialog.makePrivate.header',
+      width: '600px',
+      data: {
+        projectId: 'project-123',
+        isCurrentlyPublic: true,
+      },
+    });
+    expect(component.isPublic()).toBe(true);
+  });
+
+  it('should open the make-public dialog for a private project', () => {
+    vi.useFakeTimers();
+    setup({ isPublic: false });
+
+    component.handleToggleProjectPublicity();
+    vi.advanceTimersByTime(100);
+
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(TogglePublicityDialogComponent, {
+      header: 'project.overview.dialog.makePublic.header',
+      width: '600px',
+      data: {
+        projectId: 'project-123',
+        isCurrentlyPublic: false,
+      },
+    });
+    expect(component.isPublic()).toBe(false);
+  });
+
+  it('should disable the privacy toggle when a public project is read only', () => {
+    setup({ selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }] });
+
+    expect(component.disableProjectPrivacyToggle()).toBe(true);
+    expect(component.projectReadOnlyTooltip()).toBe('common.errorMessages.actionUnavailable');
+  });
+
+  it('should keep the privacy toggle enabled when a private project is read only', () => {
+    setup({
+      isPublic: false,
+      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
     });
 
-    it('should set storage input correctly', () => {
-      setup();
-      expect(component.storage()).toEqual(mockStorage);
-    });
+    expect(component.disableProjectPrivacyToggle()).toBe(false);
+    expect(component.projectReadOnlyTooltip()).toBe('');
+  });
 
-    it('should default viewOnly to false', () => {
-      setup();
-      expect(component.viewOnly()).toBe(false);
-    });
+  it('should navigate to the duplicates view', () => {
+    setup();
 
-    it('should set viewOnly input correctly', () => {
-      setup();
-      fixture.componentRef.setInput('viewOnly', true);
-      fixture.detectChanges();
+    component.forkActionItems[2].command?.({});
 
-      expect(component.viewOnly()).toBe(true);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['../analytics/duplicates'], {
+      relativeTo: TestBed.inject(ActivatedRoute),
     });
   });
 
-  describe('Effects', () => {
-    it('should set isPublic from currentResource', () => {
-      setup();
-      fixture.detectChanges();
+  it('should open fork confirmation for a project', () => {
+    setup();
 
-      expect(component.isPublic()).toBe(true);
-    });
+    component.forkActionItems[0].command?.({});
 
-    it('should dispatch getResourceBookmark when bookmarksId and resource exist', () => {
-      setup();
-      fixture.detectChanges();
-
-      expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetResourceBookmark));
-    });
+    expect(forkDialogService.confirmFork).toHaveBeenCalledWith(
+      expect.objectContaining({ resourceType: CurrentResourceType.Projects })
+    );
   });
 
-  describe('handleToggleProjectPublicity', () => {
-    it('should open TogglePublicityDialogComponent with makePrivate header when project is public', () => {
-      setup();
-      fixture.detectChanges();
+  it('should dispatch ForkProject when the fork is confirmed', () => {
+    setup();
+    component.forkActionItems[0].command?.({});
+    const [options] = forkDialogService.confirmFork.mock.calls[0];
+    (store.dispatch as Mock).mockClear();
 
-      component.handleToggleProjectPublicity();
+    options.fork();
 
-      expect(customDialogServiceMock.open).toHaveBeenCalledWith(TogglePublicityDialogComponent, {
-        header: 'project.overview.dialog.makePrivate.header',
-        width: '600px',
-        data: {
-          projectId: 'project-123',
-          isCurrentlyPublic: true,
+    expect(store.dispatch).toHaveBeenCalledWith(new ForkProject('project-123'));
+  });
+
+  it('should navigate to the duplicated project when the dialog closes', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: ProjectOverviewSelectors.getDuplicatedProject,
+          value: { ...MOCK_PROJECT_OVERVIEW, id: 'copy-1' },
         },
-      });
+      ],
     });
+    const onClose$ = new Subject<void>();
+    customDialogServiceMock.open.mockReturnValue(CustomDialogServiceMock.dialogRefWithClose(onClose$));
 
-    it('should open TogglePublicityDialogComponent with makePublic header when project is private', () => {
-      setup();
-      fixture.componentRef.setInput('currentResource', { ...mockResource, isPublic: false });
-      fixture.detectChanges();
+    component.forkActionItems[1].command?.({});
+    onClose$.next();
 
-      component.handleToggleProjectPublicity();
-
-      expect(customDialogServiceMock.open).toHaveBeenCalledWith(TogglePublicityDialogComponent, {
-        header: 'project.overview.dialog.makePublic.header',
-        width: '600px',
-        data: {
-          projectId: 'project-123',
-          isCurrentlyPublic: false,
-        },
-      });
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(DuplicateDialogComponent, {
+      header: 'project.overview.dialog.duplicate.header',
     });
-
-    it('should not open dialog when resource is null', () => {
-      setup();
-      fixture.componentRef.setInput('currentResource', null as any);
-      fixture.detectChanges();
-
-      component.handleToggleProjectPublicity();
-
-      expect(customDialogServiceMock.open).not.toHaveBeenCalled();
-    });
-
-    it('should compute disableProjectPrivacyToggle when isProjectReadOnly is false', () => {
-      setup();
-      fixture.detectChanges();
-
-      expect(component.isPublic()).toBe(true);
-      expect(component.disableProjectPrivacyToggle()).toBe(false);
-
-      fixture.componentRef.setInput('currentResource', { ...mockResource, isPublic: false });
-      fixture.detectChanges();
-
-      expect(component.isPublic()).toBe(false);
-      expect(component.disableProjectPrivacyToggle()).toBe(false);
-    });
-
-    it('should compute disableProjectPrivacyToggle when isProjectReadOnly is true', () => {
-      setup({ selectors: [{ selector: UserSelectors.isProjectReadOnly, value: true }] });
-      fixture.detectChanges();
-
-      expect(component.isPublic()).toBe(true);
-      expect(component.disableProjectPrivacyToggle()).toBe(true);
-
-      fixture.componentRef.setInput('currentResource', { ...mockResource, isPublic: false });
-      fixture.detectChanges();
-
-      expect(component.isPublic()).toBe(false);
-      expect(component.disableProjectPrivacyToggle()).toBe(false);
-    });
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'copy-1']);
   });
 
-  describe('Properties', () => {
-    it('should have ResourceType property', () => {
-      setup();
-      expect(component.ResourceType).toBe(ResourceType);
-    });
+  it('should clear the duplicated project when the dialog completes', () => {
+    setup();
+    const onClose$ = new Subject<void>();
+    customDialogServiceMock.open.mockReturnValue(CustomDialogServiceMock.dialogRefWithClose(onClose$));
+    (store.dispatch as Mock).mockClear();
 
-    it('should have resourceType set to Project', () => {
-      setup();
-      expect(component.resourceType).toBe(ResourceType.Project);
-    });
-  });
+    component.forkActionItems[1].command?.({});
+    onClose$.complete();
 
-  describe('preventDuplicateCreation', () => {
-    it('should return false when isProjectCreationDisabled is false', () => {
-      setup();
-      expect(component.preventDuplicateCreation()).toBe(false);
-    });
-
-    it('should return true when isProjectCreationDisabled is true', () => {
-      setup({
-        selectors: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
-      });
-      fixture.detectChanges();
-      expect(component.preventDuplicateCreation()).toBe(true);
-    });
-  });
-
-  describe('projectReadOnlyTooltip', () => {
-    it('should return empty string when isProjectReadOnly is false', () => {
-      setup();
-      expect(component.projectReadOnlyTooltip()).toBe('');
-
-      fixture.componentRef.setInput('currentResource', { ...mockResource, isPublic: false });
-      fixture.detectChanges();
-      expect(component.projectReadOnlyTooltip()).toBe('');
-    });
-
-    it('should return tooltip message when isProjectReadOnly is true', () => {
-      setup({
-        selectors: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
-      });
-      fixture.detectChanges();
-      expect(component.projectReadOnlyTooltip()).toBe('common.errorMessages.actionUnavailable');
-
-      fixture.componentRef.setInput('currentResource', { ...mockResource, isPublic: false });
-      fixture.detectChanges();
-      expect(component.projectReadOnlyTooltip()).toBe('');
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearDuplicatedProject());
   });
 });

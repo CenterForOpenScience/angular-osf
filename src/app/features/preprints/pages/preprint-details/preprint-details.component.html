@@ -7,18 +7,21 @@
           <p-skeleton width="12rem" height="2.25rem" />
         </div>
       } @else {
-        <a
-          class="flex flex-column gap-3 custom-light-hover dark-blue-link md:flex-row"
-          [routerLink]="['/preprints', preprintProvider()?.id, 'discover']"
-        >
-          <img
-            class="fit-contain"
-            height="36"
-            [src]="preprintProvider()?.brand?.heroLogoImageUrl"
-            [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
-          />
+        <div class="flex flex-column gap-3 md:flex-row">
+          <a
+            class="flex align-self-start max-w-full custom-light-hover"
+            [routerLink]="['/preprints', preprintProvider()?.id, 'discover']"
+          >
+            <img
+              class="fit-contain max-w-full"
+              height="36"
+              [src]="preprintProvider()?.brand?.heroLogoImageUrl"
+              [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
+            />
+          </a>
+
           <h1>{{ preprint()?.title }}</h1>
-        </a>
+        </div>
       }
 
       @if (moderationMode()) {

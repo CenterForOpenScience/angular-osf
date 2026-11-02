@@ -1,11 +1,12 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider, ngMocks } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { ContributorsTableComponent } from '@osf/shared/components/contributors/contributors-table/contributors-table.component';
 import { AddContributorType } from '@osf/shared/enums/contributors/add-contributor-type.enum';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -49,6 +50,7 @@ describe('PreprintsContributorsComponent', () => {
     { selector: ContributorsSelectors.isContributorsLoadingMore, value: false },
     { selector: ContributorsSelectors.getContributorsPageSize, value: 10 },
     { selector: ContributorsSelectors.getContributorsTotalCount, value: 1 },
+    { selector: PreprintStepperSelectors.hasAdminAccess, value: true },
   ];
 
   function setup(overrides?: {
@@ -107,6 +109,24 @@ describe('PreprintsContributorsComponent', () => {
 
     expect(component.contributors()).toEqual(mockContributors);
     expect(component.contributors()).not.toBe(mockContributors);
+  });
+
+  it('should allow admin to manage contributors', () => {
+    setup();
+
+    expect(ngMocks.input(ngMocks.find(ContributorsTableComponent), 'hasAdminAccess')).toBe(true);
+    expect(fixture.nativeElement.querySelector('p-message')).toBeTruthy();
+    expect(fixture.nativeElement.querySelectorAll('p-button').length).toBe(1);
+  });
+
+  it('should show contributors as read-only without admin access', () => {
+    setup({ selectorOverrides: [{ selector: PreprintStepperSelectors.hasAdminAccess, value: false }] });
+    component.contributors.set([{ ...MOCK_CONTRIBUTOR, fullName: 'Updated Name' }]);
+    fixture.detectChanges();
+
+    expect(ngMocks.input(ngMocks.find(ContributorsTableComponent), 'hasAdminAccess')).toBe(false);
+    expect(fixture.nativeElement.querySelector('p-message')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('p-button').length).toBe(0);
   });
 
   it('should compute hasChanges correctly', () => {

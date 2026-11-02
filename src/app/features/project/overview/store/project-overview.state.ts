@@ -4,18 +4,18 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
-import { ResourceType } from '@shared/enums/resource-type.enum';
+import { DuplicatesService } from '@osf/shared/services/duplicates.service';
 
-import { ProjectOverviewService } from '../services';
+import { ProjectOverviewService } from '../services/project-overview.service';
 
 import {
   ClearDuplicatedProject,
   ClearProjectOverview,
   CreateComponent,
-  DeleteComponent,
   DuplicateProject,
-  ForkResource,
+  ForkProject,
   GetComponents,
   GetParentProject,
   GetProjectById,
@@ -37,7 +37,8 @@ import { PROJECT_OVERVIEW_DEFAULTS, ProjectOverviewStateModel } from './project-
 })
 @Injectable()
 export class ProjectOverviewState {
-  projectOverviewService = inject(ProjectOverviewService);
+  private readonly projectOverviewService = inject(ProjectOverviewService);
+  private readonly duplicatesService = inject(DuplicatesService);
 
   @Action(GetProjectById)
   getProjectById(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectById) {
@@ -269,36 +270,20 @@ export class ProjectOverviewState {
     });
   }
 
-  @Action(ForkResource)
-  forkResource(ctx: StateContext<ProjectOverviewStateModel>, action: ForkResource) {
-    const state = ctx.getState();
-    ctx.patchState({
-      project: {
-        ...state.project,
-        isSubmitting: true,
-      },
-    });
-
-    let resourceType = '';
-    switch (action.resourceType) {
-      case ResourceType.Project:
-        resourceType = 'nodes';
-        break;
-      case ResourceType.Registration:
-        resourceType = 'registrations';
-        break;
-    }
-
-    return this.projectOverviewService.forkResource(action.resourceId, resourceType).pipe(
+  @Action(ForkProject)
+  forkProject(ctx: StateContext<ProjectOverviewStateModel>, action: ForkProject) {
+    return this.duplicatesService.forkResource(action.resourceId, CurrentResourceType.Projects).pipe(
       tap(() => {
+        const state = ctx.getState();
+        if (!state.project.data) return;
+
         ctx.patchState({
           project: {
             ...state.project,
             data: {
-              ...state.project.data!,
-              forksCount: state.project.data!.forksCount + 1,
+              ...state.project.data,
+              forksCount: state.project.data.forksCount + 1,
             },
-            isSubmitting: false,
           },
         });
       }),
@@ -368,30 +353,6 @@ export class ProjectOverviewState {
         }),
         catchError((error) => handleSectionError(ctx, 'components', error))
       );
-  }
-
-  @Action(DeleteComponent)
-  deleteComponent(ctx: StateContext<ProjectOverviewStateModel>, action: DeleteComponent) {
-    const state = ctx.getState();
-    ctx.patchState({
-      components: {
-        ...state.components,
-        isSubmitting: true,
-      },
-    });
-
-    return this.projectOverviewService.deleteComponent(action.componentId).pipe(
-      tap(() => {
-        ctx.patchState({
-          components: {
-            ...state.components,
-            isSubmitting: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'components', error))
-    );
   }
 
   @Action(GetComponents)

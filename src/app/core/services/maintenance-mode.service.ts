@@ -1,13 +1,13 @@
 import { catchError, map, Observable, of, Subscription, switchMap, timer } from 'rxjs';
 
-import { HttpClient, HttpContext, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 
 import { MaintenanceStatus } from '@core/enums/maintenance-status.enum';
 import { MaintenanceResponse } from '@core/models/maintenance-response.model';
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { BYPASS_ERROR_INTERCEPTOR } from '../interceptors/error-interceptor.tokens';
+import { bypassErrorInterceptorContext } from '../interceptors/error-interceptor.tokens';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,6 @@ export class MaintenanceModeService implements OnDestroy {
 
   private readonly POLL_INTERVAL_MS = 5 * 60 * 1_000;
   private readonly _isActive = signal(false);
-  private readonly bypassContext = new HttpContext().set(BYPASS_ERROR_INTERCEPTOR, true);
 
   private pollingSubscription: Subscription | null = null;
 
@@ -43,6 +42,11 @@ export class MaintenanceModeService implements OnDestroy {
         this.activate();
       }
     });
+  }
+
+  isMaintenanceError(error: HttpErrorResponse): boolean {
+    const response = error.error as MaintenanceResponse | null;
+    return error.status === 503 && response?.meta?.maintenance_mode === true;
   }
 
   activate(): void {
@@ -83,7 +87,9 @@ export class MaintenanceModeService implements OnDestroy {
 
   private checkMaintenanceStatus(): Observable<MaintenanceStatus> {
     return this.http
-      .get<MaintenanceResponse>(`${this.environment.apiDomainUrl}/v2/`, { context: this.bypassContext })
+      .get<MaintenanceResponse>(`${this.environment.apiDomainUrl}/v2/`, {
+        context: bypassErrorInterceptorContext(),
+      })
       .pipe(
         map((response) =>
           response.meta?.maintenance_mode === true ? MaintenanceStatus.Active : MaintenanceStatus.Inactive
@@ -93,9 +99,6 @@ export class MaintenanceModeService implements OnDestroy {
   }
 
   private statusFromError(error: HttpErrorResponse): MaintenanceStatus {
-    const response = error.error as MaintenanceResponse | null;
-    return error.status === 503 && response?.meta?.maintenance_mode === true
-      ? MaintenanceStatus.Active
-      : MaintenanceStatus.Unknown;
+    return this.isMaintenanceError(error) ? MaintenanceStatus.Active : MaintenanceStatus.Unknown;
   }
 }

@@ -1,6 +1,6 @@
 import { Store } from '@ngxs/store';
 
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
 import { inject, PLATFORM_ID } from '@angular/core';
@@ -58,6 +58,7 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
       }
 
       return resource.type === CurrentResourceType.Files;
-    })
+    }),
+    catchError(() => of(false))
   );
 };

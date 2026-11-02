@@ -15,11 +15,15 @@ import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ViewOnlyLinkMessageComponent } from '@osf/shared/components/view-only-link-message/view-only-link-message.component';
 import { RegistrationReviewStates } from '@osf/shared/enums/registration-review-states.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.enum';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { SignpostingService } from '@osf/shared/services/signposting.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
+import { GetBookmarksCollectionId } from '@osf/shared/stores/bookmarks';
+import { GetBibliographicContributors } from '@osf/shared/stores/contributors';
 import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
@@ -29,6 +33,7 @@ import { CustomDialogServiceMock } from '@testing/providers/custom-dialog-provid
 import { LoaderServiceMock, provideLoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
+import { SignpostingServiceMock } from '@testing/providers/signposting-provider.mock';
 import { BaseSetupOverrides, mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 import { ViewOnlyLinkHelperMock } from '@testing/providers/view-only-link-helper.mock';
@@ -41,7 +46,7 @@ import { RegistryOverviewMetadataComponent } from '../../components/registry-ove
 import { RegistryRevisionsComponent } from '../../components/registry-revisions/registry-revisions.component';
 import { RegistryStatusesComponent } from '../../components/registry-statuses/registry-statuses.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
-import { RegistrySelectors } from '../../store/registry';
+import { GetRegistryById, GetRegistrySchemaResponses, GetSchemaBlocks, RegistrySelectors } from '../../store/registry';
 
 import { RegistryOverviewComponent } from './registry-overview.component';
 
@@ -59,15 +64,21 @@ function setup(overrides: SetupOverrides = {}) {
   const schemaResponses = overrides.schemaResponses ?? [];
 
   const mockRouter = RouterMockBuilder.create().withUrl('/registries/registry-1').build();
-  const mockActivatedRoute = ActivatedRouteMockBuilder.create()
+  const routeBuilder = ActivatedRouteMockBuilder.create()
     .withParams({ id: registryId })
-    .withQueryParams(overrides.queryParams ?? {})
-    .build();
+    .withQueryParams(overrides.queryParams ?? {});
+
+  if (overrides.hasParent === false) {
+    routeBuilder.withNoParent();
+  }
+
+  const mockActivatedRoute = routeBuilder.build();
 
   const mockDialogService = CustomDialogServiceMock.simple();
   const mockLoaderService = new LoaderServiceMock();
   const mockToastService = ToastServiceMock.simple();
   const mockViewOnlyHelper = ViewOnlyLinkHelperMock.simple(overrides.hasViewOnly);
+  const signpostingService = SignpostingServiceMock.simple();
   const signalDefaults = [
     { selector: RegistrySelectors.getRegistry, value: registry },
     { selector: RegistrySelectors.isRegistryLoading, value: false },
@@ -107,6 +118,7 @@ function setup(overrides: SetupOverrides = {}) {
       provideLoaderServiceMock(mockLoaderService),
       MockProvider(ToastService, mockToastService),
       MockProvider(ViewOnlyLinkHelperService, mockViewOnlyHelper),
+      MockProvider(SignpostingService, signpostingService),
       provideMockStore({
         signals: mergeSignalOverrides(signalDefaults, overrides.selectorOverrides),
       }),
@@ -125,6 +137,7 @@ function setup(overrides: SetupOverrides = {}) {
     mockDialogService,
     mockLoaderService,
     mockToastService,
+    signpostingService,
   };
 }
 
@@ -232,10 +245,16 @@ describe('RegistryOverviewComponent', () => {
     expect(component.isRootRegistration()).toBe(true);
   });
 
+  it('should compute isRootRegistration as false for a child registration', () => {
+    const { component } = setup({ registry: MOCK_REGISTRATION_OVERVIEW_MODEL });
+
+    expect(component.isRootRegistration()).toBe(false);
+  });
+
   it('should compute hasViewOnly from ViewOnlyLinkHelperService', () => {
     const { component } = setup({ registry: MOCK_REGISTRATION_OVERVIEW_MODEL, hasViewOnly: true });
 
-    expect(component.hasViewOnly()).toBe(true);
+    expect(component.hasViewOnly).toBe(true);
   });
 
   it('should compute revisionInProgress from schemaResponses', () => {
@@ -262,28 +281,56 @@ describe('RegistryOverviewComponent', () => {
     expect(component.schemaResponse()?.id).toBe('rev-2');
   });
 
-  it('should dispatch init actions when registryId is available', () => {
+  it('should return null schemaResponse when the selected index is missing', () => {
+    const { component } = setup({
+      registry: MOCK_REGISTRATION_OVERVIEW_MODEL,
+      schemaResponses: [createMockSchemaResponse('rev-1', RevisionReviewStates.Approved)],
+    });
+
+    component.openRevision(3);
+
+    expect(component.schemaResponse()).toBeNull();
+  });
+
+  it('should load the registry, contributors, and bookmarks for the route id', () => {
     const { store } = setup({ registryId: 'reg-1', registry: MOCK_REGISTRATION_OVERVIEW_MODEL });
 
-    expect(store.dispatch).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistryById('reg-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetBibliographicContributors('reg-1', ResourceType.Registration));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetBookmarksCollectionId());
+  });
+
+  it('should not load the registry when the parent route is missing', () => {
+    const { store } = setup({ hasParent: false, registry: MOCK_REGISTRATION_OVERVIEW_MODEL });
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetRegistryById));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetBookmarksCollectionId());
+  });
+
+  it('should add signposting for the registry id and remove it on destroy', () => {
+    const { fixture, signpostingService } = setup({ registryId: 'reg-1', registry: MOCK_REGISTRATION_OVERVIEW_MODEL });
+
+    expect(signpostingService.addSignposting).toHaveBeenCalledWith('reg-1');
+
+    fixture.destroy();
+
+    expect(signpostingService.removeSignpostingLinkTags).toHaveBeenCalled();
   });
 
   it('should dispatch schema actions when registry exists and is not withdrawn', () => {
     const { store } = setup({ registry: MOCK_REGISTRATION_OVERVIEW_MODEL });
 
-    const calls = (store.dispatch as Mock).mock.calls.map((c) => c[0]);
-    const hasSchemaResponses = calls.some((a) => a.constructor?.name === 'GetRegistrySchemaResponses');
-
-    expect(hasSchemaResponses).toBe(true);
+    expect(store.dispatch).toHaveBeenCalledWith(
+      new GetSchemaBlocks(MOCK_REGISTRATION_OVERVIEW_MODEL.registrationSchemaLink)
+    );
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistrySchemaResponses(MOCK_REGISTRATION_OVERVIEW_MODEL.id));
   });
 
   it('should not dispatch schema actions when registry is withdrawn', () => {
     const { store } = setup({ registry: { ...MOCK_REGISTRATION_OVERVIEW_MODEL, withdrawn: true } });
 
-    const calls = (store.dispatch as Mock).mock.calls.map((c) => c[0]);
-    const hasSchemaResponses = calls.some((a) => a.constructor?.name === 'GetRegistrySchemaResponses');
-
-    expect(hasSchemaResponses).toBe(false);
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetRegistrySchemaResponses));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetSchemaBlocks));
   });
 
   it('should call loaderService.show and navigate on onUpdateRegistration', () => {
@@ -297,10 +344,11 @@ describe('RegistryOverviewComponent', () => {
     component.onUpdateRegistration('registry-1');
 
     expect(mockLoaderService.show).toHaveBeenCalled();
+    expect(mockLoaderService.hide).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/registries/revisions/new-rev/justification']);
   });
 
-  it('should navigate to justification on onContinueUpdateRegistration for approved revision', () => {
+  it('should navigate to justification on onContinueUpdateRegistration for an in-progress revision', () => {
     const schemaResponses = [createMockSchemaResponse('rev-1', RevisionReviewStates.RevisionInProgress)];
     const { component, mockRouter } = setup({
       registry: MOCK_REGISTRATION_OVERVIEW_MODEL,
@@ -334,13 +382,15 @@ describe('RegistryOverviewComponent', () => {
   });
 
   it('should open make decision dialog and handle success response', () => {
-    const onCloseSubject = new Subject<any>();
+    const onCloseSubject = new Subject<{ action: string }>();
     const { component, store, mockDialogService, mockToastService, mockRouter } = setup({
       registry: { ...MOCK_REGISTRATION_OVERVIEW_MODEL, id: 'reg-1' },
       queryParams: { revisionId: 'rev-1' },
     });
     vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
-    mockDialogService.open.mockReturnValue({ onClose: onCloseSubject.asObservable() } as any);
+    mockDialogService.open.mockReturnValue({
+      onClose: onCloseSubject.asObservable(),
+    } as ReturnType<CustomDialogService['open']>);
 
     component.handleOpenMakeDecisionDialog();
 

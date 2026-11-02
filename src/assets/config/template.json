@@ -10,6 +10,7 @@
   "dataciteTrackerRepoId": null,
   "dataciteTrackerAddress": "",
   "sentryDsn": "",
+  "sentryEnvironment": "",
   "googleTagManagerId": "",
   "googleFilePickerApiKey": "",
   "googleFilePickerAppId": 0,

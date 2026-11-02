@@ -7,6 +7,7 @@ export enum ReviewActionTrigger {
   AcceptWithdrawal = 'accept_withdrawal',
   RejectWithdrawal = 'reject_withdrawal',
   RequestEmbargoTermination = 'request_embargo_termination',
+  ReportSpam = 'report_spam',
 }
 
 export enum SchemaResponseActionTrigger {

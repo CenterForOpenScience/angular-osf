@@ -2,8 +2,8 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { Menu } from 'primeng/menu';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -15,12 +15,14 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { ClearDuplicatedProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ClearDuplicatedProject, ForkProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ForkMenuButtonComponent } from '@osf/shared/components/fork-menu-button/fork-menu-button.component';
 import { SocialsShareButtonComponent } from '@osf/shared/components/socials-share-button/socials-share-button.component';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { FileSizePipe } from '@osf/shared/pipes/file-size.pipe';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
+import { ForkDialogService } from '@osf/shared/services/fork-dialog.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 import {
   AddResourceToBookmarks,
@@ -31,7 +33,6 @@ import {
 
 import { ProjectOverviewModel } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
-import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
 import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggle-publicity-dialog.component';
 
 @Component({
@@ -39,63 +40,63 @@ import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggl
   imports: [
     ToggleSwitch,
     TranslatePipe,
-    Menu,
     Button,
     Tooltip,
     FormsModule,
     RouterLink,
     FileSizePipe,
     SocialsShareButtonComponent,
+    ForkMenuButtonComponent,
   ],
   templateUrl: './project-overview-toolbar.component.html',
   styleUrl: './project-overview-toolbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectOverviewToolbarComponent {
-  private customDialogService = inject(CustomDialogService);
-  private toastService = inject(ToastService);
-  private destroyRef = inject(DestroyRef);
-
+  private readonly customDialogService = inject(CustomDialogService);
+  private readonly forkDialogService = inject(ForkDialogService);
+  private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  canEdit = input.required<boolean>();
-  storage = input<NodeStorageModel | null>();
-  viewOnly = input<boolean>(false);
-  currentResource = input.required<ProjectOverviewModel>();
+  readonly canEdit = input.required<boolean>();
+  readonly storage = input<NodeStorageModel | null>();
+  readonly viewOnly = input<boolean>(false);
+  readonly currentResource = input.required<ProjectOverviewModel>();
 
   isPublic = signal(false);
   isBookmarked = signal(false);
-  resourceType = ResourceType.Project;
 
-  bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
-  bookmarks = select(BookmarksSelectors.getBookmarks);
-  isBookmarksLoading = select(BookmarksSelectors.areBookmarksLoading);
-  isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
+  readonly resourceType = ResourceType.Project;
 
-  duplicatedProject = select(ProjectOverviewSelectors.getDuplicatedProject);
-  isAuthenticated = select(UserSelectors.isAuthenticated);
-  preventDuplicateCreation = select(UserSelectors.isProjectCreationDisabled);
-  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
+  readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
+  readonly bookmarks = select(BookmarksSelectors.getBookmarks);
+  readonly isBookmarksLoading = select(BookmarksSelectors.areBookmarksLoading);
+  readonly isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
 
-  disableProjectPrivacyToggle = computed(() => this.isProjectReadOnly() && this.isPublic());
-  projectReadOnlyTooltip = computed(() =>
-    this.disableProjectPrivacyToggle() ? 'common.errorMessages.actionUnavailable' : ''
-  );
+  readonly duplicatedProject = select(ProjectOverviewSelectors.getDuplicatedProject);
+  readonly isAuthenticated = select(UserSelectors.isAuthenticated);
+  readonly preventDuplicateCreation = select(UserSelectors.isProjectCreationDisabled);
+  readonly isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
 
-  actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     getResourceBookmark: GetResourceBookmark,
     addResourceToBookmarks: AddResourceToBookmarks,
     removeResourceFromBookmarks: RemoveResourceFromBookmarks,
     clearDuplicatedProject: ClearDuplicatedProject,
+    forkProject: ForkProject,
   });
 
-  readonly ResourceType = ResourceType;
+  readonly disableProjectPrivacyToggle = computed(() => this.isProjectReadOnly() && this.isPublic());
+  readonly projectReadOnlyTooltip = computed(() =>
+    this.disableProjectPrivacyToggle() ? 'common.errorMessages.actionUnavailable' : ''
+  );
 
-  readonly forkActionItems = [
+  readonly forkActionItems: MenuItem[] = [
     {
       label: 'project.overview.actions.forkProject',
-      command: () => this.handleForkResource(),
+      command: () => this.handleForkProject(),
     },
     {
       label: 'project.overview.actions.duplicateProject',
@@ -186,21 +187,26 @@ export class ProjectOverviewToolbarComponent {
     }
   }
 
-  private handleForkResource(): void {
-    const resource = this.currentResource();
+  navigateToDuplicatesView(): void {
+    this.router.navigate(['../analytics/duplicates'], { relativeTo: this.route });
+  }
 
-    if (resource) {
-      this.customDialogService.open(ForkDialogComponent, {
-        header: 'project.overview.dialog.fork.headerProject',
-        data: { resourceId: resource.id, resourceType: this.resourceType },
-      });
-    }
+  private handleForkProject(): void {
+    const resource = this.currentResource();
+    if (!resource) return;
+
+    this.forkDialogService.confirmFork({
+      resourceType: CurrentResourceType.Projects,
+      destroyRef: this.destroyRef,
+      fork: () => this.actions.forkProject(resource.id),
+    });
   }
 
   private handleDuplicateProject(): void {
     this.customDialogService
       .open(DuplicateDialogComponent, { header: 'project.overview.dialog.duplicate.header' })
-      .onClose.subscribe({
+      .onClose.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: () => {
           const duplicatedProject = this.duplicatedProject();
           if (duplicatedProject) {
@@ -209,9 +215,5 @@ export class ProjectOverviewToolbarComponent {
         },
         complete: () => this.actions.clearDuplicatedProject(),
       });
-  }
-
-  navigateToDuplicatesView(): void {
-    this.router.navigate(['../analytics/duplicates'], { relativeTo: this.route });
   }
 }

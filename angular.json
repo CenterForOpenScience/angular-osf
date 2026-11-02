@@ -77,6 +77,7 @@
               "outputMode": "static",
               "server": false,
               "ssr": false,
+              "sourceMap": false,
               "budgets": [
                 {
                   "type": "initial",
