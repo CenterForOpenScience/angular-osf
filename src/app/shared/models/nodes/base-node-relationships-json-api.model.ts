@@ -22,7 +22,7 @@ export interface BaseNodeRelationships {
   logs?: ToManyRel<'logs'>;
   node_links?: ToManyRel<'node-links'>;
   parent?: ToOneRel<'nodes'>;
-  preprints?: ToManyRel<'preprints'>;
+  preprints?: ToManyRel<'preprints'> | null;
   region?: ToOneRel<'regions'>;
   registrations?: ToManyRel<'registrations'>;
   root?: ToOneRel<'nodes'>;

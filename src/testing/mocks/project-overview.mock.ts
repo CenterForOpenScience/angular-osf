@@ -57,4 +57,5 @@ export const MOCK_PROJECT_OVERVIEW: ProjectOverviewModel = {
   contributors: [],
   forksCount: 0,
   viewOnlyLinksCount: 0,
+  preprintsUrl: 'https://api.osf.io/v2/nodes/project-1/preprints/',
 };

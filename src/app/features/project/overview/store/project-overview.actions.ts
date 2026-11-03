@@ -35,7 +35,7 @@ export class GetProjectStorage {
 export class GetProjectPreprints {
   static readonly type = '[Project Overview] Get Project Preprints';
 
-  constructor(public projectId: string) {}
+  constructor(public preprintsUrl: string | null | undefined) {}
 }
 
 export class UpdateProjectPublicStatus {

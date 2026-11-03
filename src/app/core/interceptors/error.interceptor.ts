@@ -26,7 +26,8 @@ import { BYPASS_ERROR_INTERCEPTOR } from './error-interceptor.tokens';
 
 const NO_AUTH_REDIRECT_HEADER = 'X-No-Auth-Redirect';
 const REQUEST_ACCESS_URL_REGEX = /\/v2\/nodes\/[^/]+\/requests\/?$/i;
-const NODE_ID_URL_REGEX = /\/v2\/nodes\/([^/]+)/;
+const NODE_RESOURCE_URL_REGEX = /\/v2\/nodes\/([^/?]+)\/?(?:\?|$)/i;
+const NODE_RELATED_URL_REGEX = /\/v2\/nodes\/[^/?]+\/[^?]/i;
 const DRAFT_REGISTRY_ROUTE_REGEX = /\/registries\/drafts\/.+/i;
 
 const isSilentForbidden = (req: HttpRequest<unknown>, error: HttpErrorResponse): boolean =>
@@ -34,6 +35,11 @@ const isSilentForbidden = (req: HttpRequest<unknown>, error: HttpErrorResponse):
 
 const isPendingModerationForbidden = (error: HttpErrorResponse): boolean =>
   error.error?.errors?.[0]?.detail === PREPRINT_PENDING_MODERATION_DETAIL;
+
+const getNodeResourceId = (url: string | null | undefined): string | undefined =>
+  url?.match(NODE_RESOURCE_URL_REGEX)?.[1];
+
+const isNodeRelatedUrl = (url: string | null | undefined): boolean => !!url && NODE_RELATED_URL_REGEX.test(url);
 
 const getErrorMessage = (error: HttpErrorResponse): string => {
   if (error.error instanceof ErrorEvent) {
@@ -76,20 +82,24 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   };
 
   const handleForbidden = (url: string | null) => {
-    const nodeId = url?.match(NODE_ID_URL_REGEX)?.[1];
+    const nodeId = getNodeResourceId(url);
 
-    if (!nodeId) {
-      router.navigate(['/forbidden']);
-    } else if (!DRAFT_REGISTRY_ROUTE_REGEX.test(router.url)) {
-      router.navigate(['/request-access', nodeId]);
+    if (nodeId) {
+      if (!DRAFT_REGISTRY_ROUTE_REGEX.test(router.url)) {
+        router.navigate(['/request-access', nodeId]);
+      }
+      return;
     }
+
+    router.navigate(['/forbidden']);
   };
 
   const applySsrStatus = (error: HttpErrorResponse) => {
     if (
       req.context.get(BYPASS_ERROR_INTERCEPTOR) ||
       !shouldPropagateHttpStatusToSsr(error.status) ||
-      isSilentForbidden(req, error)
+      isSilentForbidden(req, error) ||
+      (error.status === 403 && isNodeRelatedUrl(error.url))
     ) {
       return;
     }
@@ -122,7 +132,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           handleUnauthorized();
           break;
         case 403:
-          if (!isSilentForbidden(req, error) && !isPendingModerationForbidden(error)) {
+          if (!isSilentForbidden(req, error) && !isPendingModerationForbidden(error) && !isNodeRelatedUrl(error.url)) {
             handleForbidden(error.url);
           }
           break;
