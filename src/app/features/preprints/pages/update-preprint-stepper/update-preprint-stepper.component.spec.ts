@@ -63,7 +63,7 @@ describe('UpdatePreprintStepperComponent', () => {
     const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
 
     const routeMock = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: mockProviderId, preprintId: mockPreprintId })
+      .withParams({ providerId: mockProviderId, id: mockPreprintId })
       .build();
 
     brandServiceMock = BrandServiceMock.simple();
