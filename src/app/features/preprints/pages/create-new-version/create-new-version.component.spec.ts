@@ -62,7 +62,7 @@ describe('CreateNewVersionComponent', () => {
 
     routerMock = RouterMockBuilder.create().withNavigate(vi.fn().mockResolvedValue(true)).build();
     const routeMock = ActivatedRouteMockBuilder.create()
-      .withParams({ providerId: mockProviderId, preprintId: mockPreprintId })
+      .withParams({ providerId: mockProviderId, id: mockPreprintId })
       .withQueryParams({})
       .build();
 

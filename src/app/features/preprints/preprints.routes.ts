@@ -62,7 +62,7 @@ export const preprintsRoutes: Routes = [
         providers: [provideStates([ProjectsState])],
       },
       {
-        path: ':providerId/edit/:preprintId',
+        path: ':providerId/edit/:id',
         canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/preprints/pages/update-preprint-stepper/update-preprint-stepper.component').then(
@@ -87,13 +87,34 @@ export const preprintsRoutes: Routes = [
         providers: [provideStates([PreprintModerationState])],
       },
       {
-        path: ':providerId/new-version/:preprintId',
+        path: ':providerId/new-version/:id',
         canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/preprints/pages/create-new-version/create-new-version.component').then(
             (c) => c.CreateNewVersionComponent
           ),
         canDeactivate: [ConfirmLeavingGuard],
+      },
+      {
+        path: ':providerId/:id/pending-moderation',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-pending-moderation/preprint-pending-moderation.component').then(
+            (mod) => mod.PreprintPendingModerationComponent
+          ),
+      },
+      {
+        path: ':providerId/:id/download',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-download-redirect/preprint-download-redirect.component').then(
+            (c) => c.PreprintDownloadRedirectComponent
+          ),
+      },
+      {
+        path: ':providerId/:id',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-details/preprint-details.component').then(
+            (c) => c.PreprintDetailsComponent
+          ),
       },
       {
         path: ':providerId',
