@@ -143,7 +143,7 @@ describe('ProjectOverviewMetadataComponent', () => {
     expect(dispatchMock).toHaveBeenCalledWith(new GetBibliographicContributors('project-1', ResourceType.Project));
     expect(dispatchMock).toHaveBeenCalledWith(new GetProjectInstitutions('project-1'));
     expect(dispatchMock).toHaveBeenCalledWith(new GetProjectIdentifiers('project-1'));
-    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectPreprints('project-1'));
+    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectPreprints(MOCK_PROJECT_OVERVIEW.preprintsUrl));
     expect(dispatchMock).toHaveBeenCalledWith(new FetchSelectedSubjects('project-1', ResourceType.Project));
     expect(dispatchMock).toHaveBeenCalledWith(new GetProjectSubmissions('project-1'));
     expect(dispatchMock).toHaveBeenCalledWith(new GetCustomItemMetadata('project-1'));

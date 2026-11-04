@@ -152,13 +152,14 @@ describe('ProjectOverviewService', () => {
 
   it('getProjectPreprints should request preprints and map response', async () => {
     setup();
+    const preprintsUrl = `${MOCK_API_URL}/nodes/${projectId}/preprints/`;
     const apiResponse = { data: [] } as unknown as NodePreprintsResponseJsonApi;
     const mapperSpy = vi.spyOn(NodePreprintMapper, 'getNodePreprints').mockReturnValue(MOCK_NODE_PREPRINTS);
     jsonApiService.get.mockReturnValue(of(apiResponse));
 
-    const response = await firstValueFrom(service.getProjectPreprints(projectId));
+    const response = await firstValueFrom(service.getProjectPreprints(preprintsUrl));
 
-    expect(jsonApiService.get).toHaveBeenCalledWith(`${MOCK_API_URL}/nodes/${projectId}/preprints/`);
+    expect(jsonApiService.get).toHaveBeenCalledWith(preprintsUrl);
     expect(mapperSpy).toHaveBeenCalledWith(apiResponse.data);
     expect(response).toEqual(MOCK_NODE_PREPRINTS);
   });

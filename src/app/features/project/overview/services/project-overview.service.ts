@@ -80,9 +80,9 @@ export class ProjectOverviewService {
       .pipe(map((response) => NodeStorageMapper.getNodeStorage(response.data)));
   }
 
-  getProjectPreprints(projectId: string): Observable<NodePreprintModel[]> {
+  getProjectPreprints(preprintsUrl: string): Observable<NodePreprintModel[]> {
     return this.jsonApiService
-      .get<NodePreprintsResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/preprints/`)
+      .get<NodePreprintsResponseJsonApi>(preprintsUrl)
       .pipe(map((response) => NodePreprintMapper.getNodePreprints(response.data)));
   }
 

@@ -19,6 +19,7 @@ export class ProjectOverviewMapper {
         ? (relationships?.view_only_links?.links?.related?.meta['count'] as number)
         : 0,
       licenseId: relationships?.license?.data?.id,
+      preprintsUrl: relationships?.preprints?.links?.related?.href ?? null,
     };
   }
 }

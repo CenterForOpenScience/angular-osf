@@ -132,7 +132,7 @@ export class ProjectOverviewMetadataComponent {
         this.actions.getBibliographicContributors(project.id, ResourceType.Project);
         this.actions.getInstitutions(project.id);
         this.actions.getIdentifiers(project.id);
-        this.actions.getPreprints(project.id);
+        this.actions.getPreprints(project.preprintsUrl);
         this.actions.getSubjects(project.id, ResourceType.Project);
         this.actions.getProjectSubmissions(project.id);
         this.actions.getLicense(project.licenseId);

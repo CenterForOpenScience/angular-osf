@@ -187,6 +187,10 @@ export class ProjectOverviewState {
 
   @Action(GetProjectPreprints)
   getProjectPreprints(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectPreprints) {
+    if (!action.preprintsUrl) {
+      return;
+    }
+
     const state = ctx.getState();
     ctx.patchState({
       preprints: {
@@ -195,7 +199,7 @@ export class ProjectOverviewState {
       },
     });
 
-    return this.projectOverviewService.getProjectPreprints(action.projectId).pipe(
+    return this.projectOverviewService.getProjectPreprints(action.preprintsUrl).pipe(
       tap((preprints) => {
         ctx.patchState({
           preprints: {
