@@ -28,7 +28,7 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models/project-metadata-form.model';
@@ -54,7 +54,6 @@ import { CollectionsSelectors } from '@shared/stores/collections';
     TranslatePipe,
     ReactiveFormsModule,
     Textarea,
-    FormsModule,
     TagsInputComponent,
     Chip,
     Card,
@@ -94,7 +93,6 @@ export class ProjectMetadataStepComponent {
   stepperActiveValue = input.required<number>();
   targetStepValue = input.required<number>();
   isDisabled = input.required<boolean>();
-  providerId = input.required<string>();
 
   stepChange = output<number>();
   metadataSaved = output<void>();
@@ -219,10 +217,9 @@ export class ProjectMetadataStepComponent {
   private setupEffects(): void {
     effect(() => {
       const licenses = this.collectionLicenses();
-      const providerId = this.providerId();
 
-      if (!licenses.length && providerId) {
-        this.actions.getCollectionLicenses(providerId);
+      if (!licenses.length) {
+        this.actions.getCollectionLicenses(this.collectionProvider()?.licensesLink);
       }
     });
 

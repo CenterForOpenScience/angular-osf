@@ -107,16 +107,6 @@ export class ProjectOverviewSelectors {
   }
 
   @Selector([ProjectOverviewState])
-  static getLicense(state: ProjectOverviewStateModel) {
-    return state.license.data;
-  }
-
-  @Selector([ProjectOverviewState])
-  static isLicenseLoading(state: ProjectOverviewStateModel) {
-    return state.license.isLoading;
-  }
-
-  @Selector([ProjectOverviewState])
   static getStorage(state: ProjectOverviewStateModel) {
     return state.storage.data;
   }

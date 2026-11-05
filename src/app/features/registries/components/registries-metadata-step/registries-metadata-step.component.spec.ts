@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { MOCK_DRAFT_REGISTRATION } from '@testing/mocks/draft-registration.mock';
@@ -77,6 +78,7 @@ describe('RegistriesMetadataStepComponent', () => {
             { selector: RegistriesSelectors.hasDraftAdminAccess, value: true },
             { selector: ContributorsSelectors.getContributors, value: [] },
             { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
+            { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
           ],
         }),
       ],
@@ -143,7 +145,7 @@ describe('RegistriesMetadataStepComponent', () => {
   });
 
   it('should set isDraftDeleted and navigate on deleteDraft confirm', () => {
-    customConfirmationService.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
+    customConfirmationService.confirmDelete.mockImplementation(({ onConfirm }) => onConfirm?.());
     (store.dispatch as Mock).mockClear();
 
     component.deleteDraft();

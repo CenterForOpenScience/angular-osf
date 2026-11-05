@@ -17,7 +17,12 @@ export class LicensesSelectors {
   }
 
   @Selector([LicensesState])
-  static getError(state: LicensesStateModel): string | null {
-    return state.licenses.error;
+  static getLicense(state: LicensesStateModel): LicenseModel | null {
+    return state.license.data;
+  }
+
+  @Selector([LicensesState])
+  static isLicenseLoading(state: LicensesStateModel): boolean {
+    return state.license.isLoading;
   }
 }

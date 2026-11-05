@@ -9,21 +9,18 @@ import { BYPASS_ERROR_INTERCEPTOR } from '@core/interceptors/error-interceptor.t
 import { JSON_API_BULK_HEADERS } from '@osf/shared/constants/json-api-headers.const';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
-import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { BaseNodeMapper } from '@osf/shared/mappers/nodes';
 import { NodePreprintMapper } from '@osf/shared/mappers/nodes/node-preprint.mapper';
 import { NodeStorageMapper } from '@osf/shared/mappers/nodes/node-storage.mapper';
 import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
-import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { NodePreprintsResponseJsonApi } from '@osf/shared/models/nodes/node-preprint-json-api.model';
 import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { NodeResponseJsonApi, NodesResponseJsonApi } from '@osf/shared/models/nodes/nodes-json-api.model';
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
-import { LicenseModel } from '@shared/models/license/license.model';
 
 import { MOCK_NODE_WITH_ADMIN } from '@testing/mocks/node.mock';
 import { MOCK_NODE_PREPRINTS } from '@testing/mocks/node-preprint.mock';
@@ -119,21 +116,6 @@ describe('ProjectOverviewService', () => {
     expect(jsonApiService.get).toHaveBeenCalledWith(`${MOCK_API_URL}/nodes/${projectId}/identifiers/`);
     expect(mapperSpy).toHaveBeenCalledWith(apiResponse);
     expect(response).toEqual([MOCK_PROJECT_IDENTIFIERS]);
-  });
-
-  it('getProjectLicense should request license and map response', async () => {
-    setup();
-    const licenseId = 'license-1';
-    const mappedLicense = { id: licenseId, name: 'MIT' } as LicenseModel;
-    const apiResponse = { data: { id: licenseId } } as LicenseResponseJsonApi;
-    const mapperSpy = vi.spyOn(LicensesMapper, 'fromLicenseDataJsonApi').mockReturnValue(mappedLicense);
-    jsonApiService.get.mockReturnValue(of(apiResponse));
-
-    const response = await firstValueFrom(service.getProjectLicense(licenseId));
-
-    expect(jsonApiService.get).toHaveBeenCalledWith(`${MOCK_API_URL}/licenses/${licenseId}/`);
-    expect(mapperSpy).toHaveBeenCalledWith(apiResponse.data);
-    expect(response).toEqual(mappedLicense);
   });
 
   it('getProjectStorage should request storage and map response', async () => {

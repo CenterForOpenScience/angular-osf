@@ -11,9 +11,11 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LoaderService } from '@osf/shared/services/loader.service';
-import { ContributorsSelectors } from '@osf/shared/stores/contributors';
-import { SubjectsSelectors } from '@osf/shared/stores/subjects';
+import { ContributorsSelectors, GetAllContributors } from '@osf/shared/stores/contributors';
+import { GetRegistryProvider, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
+import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import {
   MOCK_DRAFT_REGISTRATION,
@@ -25,18 +27,21 @@ import { provideOSFCore } from '@testing/osf.testing.provider';
 import { LoaderServiceMock } from '@testing/providers/loader-service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 
-import { ClearState, RegistriesSelectors } from '../../store';
+import { ClearState, FetchDraft, RegistriesSelectors } from '../../store';
 
 import { DraftsComponent } from './drafts.component';
 
-interface SetupOverrides {
-  routeParams?: Record<string, string>;
+interface SetupOverrides extends BaseSetupOverrides {
   firstChildParams?: Record<string, string> | null;
   routerUrl?: string;
   routerEvents?: unknown;
-  selectorOverrides?: { selector: unknown; value: unknown }[];
 }
 
 function setup(overrides: SetupOverrides = {}) {
@@ -61,22 +66,15 @@ function setup(overrides: SetupOverrides = {}) {
     mockRouter.events = of(new NavigationEnd(1, '/', '/'));
   }
 
-  const defaultSignals: { selector: unknown; value: unknown }[] = [
+  const defaultSignals: SignalOverride[] = [
     { selector: RegistriesSelectors.getPagesSchema, value: MOCK_PAGES_SCHEMA },
     { selector: RegistriesSelectors.getDraftRegistration, value: MOCK_DRAFT_REGISTRATION },
-    { selector: RegistriesSelectors.getRegistrationLicense, value: { id: 'mit' } },
     { selector: RegistriesSelectors.getStepsState, value: {} },
     { selector: RegistriesSelectors.getStepsData, value: {} },
     { selector: ContributorsSelectors.getContributors, value: [{ id: 'c1' }] },
     { selector: SubjectsSelectors.getSelectedSubjects, value: [{ id: 's1' }] },
+    { selector: RegistrationProviderSelectors.getBrandedProvider, value: { id: 'osf' } },
   ];
-
-  const signals = overrides.selectorOverrides
-    ? defaultSignals.map((s) => {
-        const override = overrides.selectorOverrides!.find((o) => o.selector === s.selector);
-        return override ? { ...s, value: override.value } : s;
-      })
-    : defaultSignals;
 
   TestBed.configureTestingModule({
     imports: [DraftsComponent, ...MockComponents(StepperComponent, SubHeaderComponent)],
@@ -85,7 +83,9 @@ function setup(overrides: SetupOverrides = {}) {
       MockProvider(ActivatedRoute, mockActivatedRoute),
       MockProvider(Router, mockRouter),
       MockProvider(LoaderService, new LoaderServiceMock()),
-      provideMockStore({ signals }),
+      provideMockStore({
+        signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+      }),
     ],
   });
 
@@ -186,7 +186,12 @@ describe('DraftsComponent', () => {
 
   it('should set metadata step as invalid when license is missing', () => {
     const { component: c } = setup({
-      selectorOverrides: [{ selector: RegistriesSelectors.getRegistrationLicense, value: null }],
+      selectorOverrides: [
+        {
+          selector: RegistriesSelectors.getDraftRegistration,
+          value: { ...MOCK_DRAFT_REGISTRATION, license: { id: '', options: null } },
+        },
+      ],
     });
 
     const steps = c.steps();
@@ -194,39 +199,62 @@ describe('DraftsComponent', () => {
   });
 
   it('should dispatch getDraftRegistration when draftRegistration is null', () => {
-    const { component: c } = setup({
+    const { store: s } = setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getDraftRegistration, value: null }],
     });
 
-    expect(c).toBeTruthy();
+    expect(s.dispatch).toHaveBeenCalledWith(new FetchDraft('reg-1'));
   });
 
   it('should dispatch getContributors when contributors list is empty', () => {
-    const { component: c } = setup({
+    const { store: s } = setup({
       selectorOverrides: [{ selector: ContributorsSelectors.getContributors, value: [] }],
     });
 
-    expect(c).toBeTruthy();
+    expect(s.dispatch).toHaveBeenCalledWith(new GetAllContributors('reg-1', ResourceType.DraftRegistration));
   });
 
   it('should dispatch getSubjects when selectedSubjects list is empty', () => {
-    const { component: c } = setup({
+    const { store: s } = setup({
       selectorOverrides: [{ selector: SubjectsSelectors.getSelectedSubjects, value: [] }],
     });
 
-    expect(c).toBeTruthy();
+    expect(s.dispatch).toHaveBeenCalledWith(new FetchSelectedSubjects('reg-1', ResourceType.DraftRegistration));
   });
 
-  it('should dispatch all actions when all initial data is missing', () => {
-    const { component: c } = setup({
+  it('should dispatch getRegistryProvider when branded provider is missing', () => {
+    const { store: s, fixture: f } = setup({
+      selectorOverrides: [{ selector: RegistrationProviderSelectors.getBrandedProvider, value: null }],
+    });
+
+    f.detectChanges();
+
+    expect(s.dispatch).toHaveBeenCalledWith(new GetRegistryProvider('osf'));
+  });
+
+  it('should dispatch getRegistryProvider with defaultProvider when draft has no providerId', () => {
+    const { store: s, fixture: f } = setup({
       selectorOverrides: [
-        { selector: RegistriesSelectors.getDraftRegistration, value: null },
-        { selector: ContributorsSelectors.getContributors, value: [] },
-        { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
+        {
+          selector: RegistriesSelectors.getDraftRegistration,
+          value: { ...MOCK_DRAFT_REGISTRATION, providerId: undefined },
+        },
+        { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
       ],
     });
 
-    expect(c).toBeTruthy();
+    f.detectChanges();
+
+    expect(s.dispatch).toHaveBeenCalledWith(new GetRegistryProvider('osf'));
+  });
+
+  it('should not dispatch getRegistryProvider when branded provider already matches', () => {
+    const { store: s, fixture: f } = setup();
+
+    (s.dispatch as Mock).mockClear();
+    f.detectChanges();
+
+    expect(s.dispatch).not.toHaveBeenCalledWith(expect.any(GetRegistryProvider));
   });
 
   it('should hide loader after schema blocks are fetched', async () => {
@@ -399,18 +427,6 @@ describe('DraftsComponent', () => {
     });
 
     expect(c.currentStepIndex()).toBe(0);
-  });
-
-  it('should validate metadata step as invalid when license is missing', () => {
-    const { component: c } = setup({
-      firstChildParams: { id: 'reg-1', step: '1' },
-      selectorOverrides: [
-        { selector: RegistriesSelectors.getRegistrationLicense, value: null },
-        { selector: RegistriesSelectors.getStepsData, value: { field1: 'v1' } },
-      ],
-    });
-
-    expect(c.isMetaDataInvalid()).toBe(true);
   });
 
   it('should validate metadata step as invalid when description is missing', () => {

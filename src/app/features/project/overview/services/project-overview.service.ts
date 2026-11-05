@@ -7,14 +7,12 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { JSON_API_BULK_HEADERS } from '@osf/shared/constants/json-api-headers.const';
 import { IdentifiersMapper } from '@osf/shared/mappers/identifiers.mapper';
 import { InstitutionsMapper } from '@osf/shared/mappers/institutions';
-import { LicensesMapper } from '@osf/shared/mappers/licenses.mapper';
 import { BaseNodeMapper } from '@osf/shared/mappers/nodes';
 import { NodePreprintMapper } from '@osf/shared/mappers/nodes/node-preprint.mapper';
 import { NodeStorageMapper } from '@osf/shared/mappers/nodes/node-storage.mapper';
 import { IdentifiersResponseJsonApi } from '@osf/shared/models/identifiers/identifier-json-api.model';
 import { InstitutionsJsonApiResponse } from '@osf/shared/models/institutions/institution-json-api.model';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
-import { LicenseResponseJsonApi } from '@osf/shared/models/license/licenses-json-api.model';
 import { BaseNodeModel, NodeModel } from '@osf/shared/models/nodes/base-node.model';
 import { BaseNodeDataJsonApi } from '@osf/shared/models/nodes/base-node-data-json-api.model';
 import { NodePreprintModel } from '@osf/shared/models/nodes/node-preprint.model';
@@ -25,7 +23,6 @@ import { NodeResponseJsonApi, NodesResponseJsonApi } from '@osf/shared/models/no
 import { PaginatedData } from '@osf/shared/models/paginated-data.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
-import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewMapper } from '../mappers';
 import { PrivacyStatusModel, ProjectOverviewModel } from '../models';
@@ -66,12 +63,6 @@ export class ProjectOverviewService {
     return this.jsonApiService
       .get<IdentifiersResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/identifiers/`)
       .pipe(map((response) => IdentifiersMapper.fromJsonApi(response)));
-  }
-
-  getProjectLicense(licenseId: string): Observable<LicenseModel | null> {
-    return this.jsonApiService
-      .get<LicenseResponseJsonApi>(`${this.apiUrl}/licenses/${licenseId}/`)
-      .pipe(map((response) => LicensesMapper.fromLicenseDataJsonApi(response.data)));
   }
 
   getProjectStorage(projectId: string): Observable<NodeStorageModel> {

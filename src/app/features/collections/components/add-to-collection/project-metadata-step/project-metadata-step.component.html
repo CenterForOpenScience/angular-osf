@@ -38,10 +38,10 @@
             </div>
           </div>
           <p-button
-            (click)="handleEditStep()"
             severity="secondary"
             class="align-self-end"
             [label]="'common.buttons.clickToEdit' | translate"
+            (onClick)="handleEditStep()"
           ></p-button>
         }
       </div>
@@ -141,16 +141,16 @@
 
         <div class="flex justify-content-end gap-3">
           <p-button
-            (click)="handleDiscardChanges()"
             [disabled]="isSelectedProjectUpdateSubmitting()"
             severity="info"
             [label]="'common.buttons.discardChanges' | translate"
+            (onClick)="handleDiscardChanges()"
           />
           <p-button
             [label]="'common.buttons.saveAndContinue' | translate"
             [loading]="isSelectedProjectUpdateSubmitting()"
             [disabled]="!projectMetadataForm.valid"
-            (click)="handleUpdateMetadata()"
+            (onClick)="handleUpdateMetadata()"
           />
         </div>
       </form>

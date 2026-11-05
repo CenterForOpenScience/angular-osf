@@ -28,6 +28,7 @@ export const MOCK_PROVIDER = {
   facebookAppId: null,
   reviewsCommentsPrivate: null,
   reviewsCommentsAnonymous: null,
+  licensesLink: 'https://api.osf.io/v2/providers/collections/1/licenses/',
   primaryCollection: {
     id: 'collection-1',
     title: 'Test Collection',

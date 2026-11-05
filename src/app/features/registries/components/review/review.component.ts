@@ -9,6 +9,7 @@ import { Tag } from 'primeng/tag';
 
 import { filter, map } from 'rxjs';
 
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,7 +23,6 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
 import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
@@ -37,15 +37,17 @@ import {
   LoadMoreContributors,
   ResetContributorsState,
 } from '@osf/shared/stores/contributors';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
-import { ClearState, DeleteDraft, FetchLicenses, FetchProjectChildren, RegistriesSelectors } from '../../store';
+import { ClearState, DeleteDraft, FetchProjectChildren, RegistriesSelectors } from '../../store';
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
 import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
 
 @Component({
   selector: 'osf-review',
   imports: [
+    NgTemplateOutlet,
     TranslatePipe,
     Card,
     Message,
@@ -66,15 +68,14 @@ export class ReviewComponent implements OnDestroy {
   private readonly customDialogService = inject(CustomDialogService);
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly environment = inject(ENVIRONMENT);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
   readonly isDraftLoading = select(RegistriesSelectors.isDraftLoading);
   readonly stepsData = select(RegistriesSelectors.getStepsData);
   readonly components = select(RegistriesSelectors.getRegistrationComponents);
-  readonly license = select(RegistriesSelectors.getRegistrationLicense);
+  readonly isRegistrationComponentsLoading = select(RegistriesSelectors.isRegistrationComponentsLoading);
+  readonly license = select(LicensesSelectors.getLicense);
   readonly newRegistration = select(RegistriesSelectors.getRegistration);
   readonly stepsState = select(RegistriesSelectors.getStepsState);
   readonly contributors = select(ContributorsSelectors.getContributors);
@@ -89,7 +90,7 @@ export class ReviewComponent implements OnDestroy {
     deleteDraft: DeleteDraft,
     clearState: ClearState,
     getProjectsComponents: FetchProjectChildren,
-    fetchLicenses: FetchLicenses,
+    fetchLicense: FetchLicense,
     loadMoreContributors: LoadMoreContributors,
     resetContributorsState: ResetContributorsState,
   });
@@ -97,17 +98,14 @@ export class ReviewComponent implements OnDestroy {
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])));
-
-  private readonly resolvedProviderId = computed(() => {
-    const draft = this.draftRegistration();
-    return draft ? (draft.providerId ?? this.environment.defaultProvider) : undefined;
-  });
-
   private readonly componentsLoaded = signal(false);
 
   isDraftInvalid = computed(() => Object.values(this.stepsState()).some((step) => step.invalid));
   licenseOptionsRecord = computed(() => (this.draftRegistration()?.license.options ?? {}) as Record<string, string>);
-  registerButtonDisabled = computed(() => this.isDraftLoading() || this.isDraftInvalid() || !this.hasAdminAccess());
+  registerButtonDisabled = computed(
+    () =>
+      this.isDraftLoading() || this.isRegistrationComponentsLoading() || this.isDraftInvalid() || !this.hasAdminAccess()
+  );
 
   constructor() {
     if (!this.contributors()?.length) {
@@ -119,21 +117,18 @@ export class ReviewComponent implements OnDestroy {
     }
 
     effect(() => {
-      const providerId = this.resolvedProviderId();
-
-      if (providerId) {
-        this.actions.fetchLicenses(providerId);
-      }
+      this.actions.fetchLicense(this.draftRegistration()?.license?.id);
     });
 
     effect(() => {
-      if (!this.isDraftSubmitting() && !this.componentsLoaded()) {
-        const draft = this.draftRegistration();
-        if (draft?.hasProject) {
-          this.actions.getProjectsComponents(draft.branchedFrom?.id ?? '');
-          this.componentsLoaded.set(true);
-        }
+      const projectId = this.draftRegistration()?.hasProject ? this.draftRegistration()?.branchedFrom?.id : undefined;
+
+      if (!projectId || this.componentsLoaded()) {
+        return;
       }
+
+      this.componentsLoaded.set(true);
+      this.actions.getProjectsComponents(projectId);
     });
   }
 

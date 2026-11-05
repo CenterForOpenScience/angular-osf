@@ -276,8 +276,8 @@ export class RegistriesState {
   }
 
   @Action(FetchLicenses)
-  fetchLicenses(ctx: StateContext<RegistriesStateModel>, { providerId }: FetchLicenses) {
-    return this.licensesHandler.fetchLicenses(ctx, providerId);
+  fetchLicenses(ctx: StateContext<RegistriesStateModel>, { licensesUrl }: FetchLicenses) {
+    return this.licensesHandler.fetchLicenses(ctx, licensesUrl);
   }
 
   @Action(SaveLicense)

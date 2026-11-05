@@ -109,7 +109,7 @@ describe('PreprintsMetadataStepComponent', () => {
 
   it('should dispatch fetch licenses on init', () => {
     setup();
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(mockProvider.id));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(mockProvider.licensesLink));
   });
 
   it('should auto-select default license and dispatch save when license has no required fields', () => {

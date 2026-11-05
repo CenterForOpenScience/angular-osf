@@ -5,12 +5,7 @@ import { of, Subject, throwError } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
-import { CollectionMetadataStepComponent } from '@osf/features/collections/components/add-to-collection/collection-metadata-step/collection-metadata-step.component';
-import { ProjectContributorsStepComponent } from '@osf/features/collections/components/add-to-collection/project-contributors-step/project-contributors-step.component';
-import { ProjectMetadataStepComponent } from '@osf/features/collections/components/add-to-collection/project-metadata-step/project-metadata-step.component';
-import { SelectProjectStepComponent } from '@osf/features/collections/components/add-to-collection/select-project-step/select-project-step.component';
-import { AddToCollectionSteps } from '@osf/features/collections/enums';
+import { UserSelectors } from '@osf/core/store/user';
 import { CedarRecordDataBinding } from '@osf/features/metadata/models';
 import { MetadataSelectors } from '@osf/features/metadata/store';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
@@ -19,8 +14,8 @@ import { CustomDialogService } from '@osf/shared/services/custom-dialog.service'
 import { HeaderStyleService } from '@osf/shared/services/header-style.service';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { CollectionsSelectors } from '@shared/stores/collections';
-import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
+import { CollectionsSelectors } from '@osf/shared/stores/collections';
+import { ProjectsSelectors } from '@osf/shared/stores/projects';
 
 import { MOCK_USER } from '@testing/mocks/data.mock';
 import { MOCK_PROJECT } from '@testing/mocks/project.mock';
@@ -38,8 +33,13 @@ import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
 import { ToastServiceMock } from '@testing/providers/toast-provider.mock';
 
+import { AddToCollectionSteps } from '../../enums';
 import { AddToCollectionSelectors } from '../../store/add-to-collection';
 
+import { CollectionMetadataStepComponent } from './collection-metadata-step/collection-metadata-step.component';
+import { ProjectContributorsStepComponent } from './project-contributors-step/project-contributors-step.component';
+import { ProjectMetadataStepComponent } from './project-metadata-step/project-metadata-step.component';
+import { SelectProjectStepComponent } from './select-project-step/select-project-step.component';
 import { AddToCollectionComponent } from './add-to-collection.component';
 
 const mockCollectionProvider = MOCK_PROVIDER;
@@ -136,11 +136,6 @@ describe('AddToCollectionComponent', () => {
   it('should navigate to /not-found when providerId is absent from route', () => {
     const { mockRouter } = setup({ routeParams: {} });
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/not-found']);
-  });
-
-  it('should set providerId and dispatch getCollectionProvider when providerId is present', () => {
-    const { component } = setup({ routeParams: { providerId: 'provider-1' } });
-    expect(component.providerId()).toBe('provider-1');
   });
 
   it('should handle project selection', () => {

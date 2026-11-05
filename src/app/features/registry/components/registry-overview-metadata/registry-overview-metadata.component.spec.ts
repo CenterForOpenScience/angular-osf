@@ -2,8 +2,6 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
 import { Mock } from 'vitest';
 
 import { TestBed } from '@angular/core/testing';
@@ -20,19 +18,24 @@ import { SubjectsListComponent } from '@osf/shared/components/subjects-list/subj
 import { TagsListComponent } from '@osf/shared/components/tags-list/tags-list.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/shared/stores/contributors';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
-import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 
 import {
   GetRegistryIdentifiers,
   GetRegistryInstitutions,
-  GetRegistryLicense,
   RegistrySelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry';
@@ -41,97 +44,97 @@ import { RegistryOverviewMetadataComponent } from './registry-overview-metadata.
 
 const MOCK_REGISTRY = { ...MOCK_REGISTRATION_OVERVIEW_MODEL, id: 'registry-123', licenseId: 'license-123' };
 
-interface SetupOverrides {
+interface SetupOverrides extends BaseSetupOverrides {
   registry?: typeof MOCK_REGISTRY | null;
 }
 
-function setup(overrides: SetupOverrides = {}) {
-  const registryValue = 'registry' in overrides ? overrides.registry! : MOCK_REGISTRY;
-  const mockRouter = RouterMockBuilder.create().build();
-
-  TestBed.configureTestingModule({
-    imports: [
-      RegistryOverviewMetadataComponent,
-      ...MockComponents(
-        ResourceCitationsComponent,
-        AffiliatedInstitutionsViewComponent,
-        ContributorsListComponent,
-        ResourceDoiComponent,
-        ResourceLicenseComponent,
-        SubjectsListComponent,
-        TagsListComponent,
-        FundersListComponent
-      ),
-    ],
-    providers: [
-      provideOSFCore(),
-      MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
-      MockProvider(Router, mockRouter),
-      provideMockStore({
-        signals: [
-          { selector: RegistrySelectors.getRegistry, value: registryValue },
-          { selector: RegistrySelectors.isRegistryAnonymous, value: false },
-          { selector: RegistrySelectors.hasWriteAccess, value: true },
-          { selector: RegistrySelectors.getLicense, value: null },
-          { selector: RegistrySelectors.isLicenseLoading, value: false },
-          { selector: RegistrySelectors.getIdentifiers, value: [] },
-          { selector: RegistrySelectors.isIdentifiersLoading, value: false },
-          { selector: RegistrySelectors.getInstitutions, value: [] },
-          { selector: RegistrySelectors.isInstitutionsLoading, value: false },
-          { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
-          { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
-          { selector: SubjectsSelectors.areSelectedSubjectsLoading, value: false },
-          { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
-          { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
-          { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
-          { selector: MetadataSelectors.getCustomItemMetadata, value: null },
-          { selector: MetadataSelectors.isCustomItemMetadataLoading, value: false },
-        ],
-      }),
-    ],
-  });
-
-  const store = TestBed.inject(Store);
-  const fixture = TestBed.createComponent(RegistryOverviewMetadataComponent);
-  fixture.detectChanges();
-
-  return { fixture, component: fixture.componentInstance, store, mockRouter };
-}
-
 describe('RegistryOverviewMetadataComponent', () => {
-  it('should dispatch all init actions when registry exists', () => {
-    const { store } = setup();
+  let store: Store;
+  let mockRouter: RouterMockType;
 
-    expect(store.dispatch).toHaveBeenCalledWith(expect.objectContaining({ registryId: 'registry-123' }));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryInstitutions));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(FetchSelectedSubjects));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryLicense));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetRegistryIdentifiers));
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(GetCustomItemMetadata));
+  function setup(overrides: SetupOverrides = {}) {
+    const registryValue = 'registry' in overrides ? overrides.registry! : MOCK_REGISTRY;
+    mockRouter = RouterMockBuilder.create().build();
+
+    const defaultSignals: SignalOverride[] = [
+      { selector: RegistrySelectors.getRegistry, value: registryValue },
+      { selector: RegistrySelectors.isRegistryAnonymous, value: false },
+      { selector: RegistrySelectors.hasWriteAccess, value: true },
+      { selector: LicensesSelectors.getLicense, value: null },
+      { selector: LicensesSelectors.isLicenseLoading, value: false },
+      { selector: RegistrySelectors.getIdentifiers, value: [] },
+      { selector: RegistrySelectors.isIdentifiersLoading, value: false },
+      { selector: RegistrySelectors.getInstitutions, value: [] },
+      { selector: RegistrySelectors.isInstitutionsLoading, value: false },
+      { selector: RegistrationProviderSelectors.getBrandedProvider, value: null },
+      { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
+      { selector: SubjectsSelectors.areSelectedSubjectsLoading, value: false },
+      { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
+      { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
+      { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
+      { selector: MetadataSelectors.getCustomItemMetadata, value: null },
+      { selector: MetadataSelectors.isCustomItemMetadataLoading, value: false },
+    ];
+
+    TestBed.configureTestingModule({
+      imports: [
+        RegistryOverviewMetadataComponent,
+        ...MockComponents(
+          ResourceCitationsComponent,
+          AffiliatedInstitutionsViewComponent,
+          ContributorsListComponent,
+          ResourceDoiComponent,
+          ResourceLicenseComponent,
+          SubjectsListComponent,
+          TagsListComponent,
+          FundersListComponent
+        ),
+      ],
+      providers: [
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, ActivatedRouteMockBuilder.create().build()),
+        MockProvider(Router, mockRouter),
+        provideMockStore({
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
+      ],
+    });
+
+    store = TestBed.inject(Store);
+    const fixture = TestBed.createComponent(RegistryOverviewMetadataComponent);
+    fixture.detectChanges();
+
+    return { fixture, component: fixture.componentInstance };
+  }
+
+  it('should dispatch all init actions when registry exists', () => {
+    setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistryInstitutions('registry-123'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchSelectedSubjects('registry-123', ResourceType.Registration));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicense('license-123'));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetRegistryIdentifiers('registry-123'));
+    expect(store.dispatch).toHaveBeenCalledWith(new GetCustomItemMetadata('registry-123'));
   });
 
   it('should not dispatch init actions when registry is null', () => {
-    const { store } = setup({ registry: null });
+    setup({ registry: null });
 
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
   it('should dispatch SetRegistryCustomCitation on onCustomCitationUpdated', () => {
-    const { component, store } = setup();
+    const { component } = setup();
+    (store.dispatch as Mock).mockClear();
 
     component.onCustomCitationUpdated('Custom Citation');
 
-    const call = (store.dispatch as Mock).mock.calls.find((c) => c[0] instanceof SetRegistryCustomCitation);
-    expect(call?.[0]).toBeInstanceOf(SetRegistryCustomCitation);
-    if (!call) {
-      throw new Error('SetRegistryCustomCitation dispatch call was not found');
-    }
-    expect((call[0] as SetRegistryCustomCitation).citation).toBe('Custom Citation');
+    expect(store.dispatch).toHaveBeenCalledWith(new SetRegistryCustomCitation('Custom Citation'));
   });
 
   it('should dispatch LoadMoreBibliographicContributors on handleLoadMoreContributors', () => {
-    const { component, store } = setup();
-    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    const { component } = setup();
+    (store.dispatch as Mock).mockClear();
 
     component.handleLoadMoreContributors();
 
@@ -141,8 +144,8 @@ describe('RegistryOverviewMetadataComponent', () => {
   });
 
   it('should not dispatch on handleLoadMoreContributors when registry is null', () => {
-    const { component, store } = setup({ registry: null });
-    vi.spyOn(store, 'dispatch').mockReturnValue(of(undefined));
+    const { component } = setup({ registry: null });
+    (store.dispatch as Mock).mockClear();
 
     component.handleLoadMoreContributors();
 
@@ -150,7 +153,7 @@ describe('RegistryOverviewMetadataComponent', () => {
   });
 
   it('should navigate to search on tagClicked', () => {
-    const { component, mockRouter } = setup();
+    const { component } = setup();
 
     component.tagClicked('test-tag');
 

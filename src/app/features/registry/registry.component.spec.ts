@@ -18,6 +18,7 @@ import { DataciteService } from '@osf/shared/services/datacite/datacite.service'
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { MetaTagsBuilderService } from '@osf/shared/services/meta-tags-builder.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
+import { LicensesSelectors } from '@osf/shared/stores/licenses';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
 import { MOCK_REGISTRATION_OVERVIEW_MODEL } from '@testing/mocks/registration-overview-model.mock';
@@ -79,8 +80,8 @@ function setup(overrides: SetupOverrides = {}) {
     { selector: RegistrySelectors.getRegistry, value: registry },
     { selector: RegistrySelectors.isRegistryLoading, value: false },
     { selector: RegistrySelectors.getIdentifiers, value: identifiers },
-    { selector: RegistrySelectors.getLicense, value: { name: 'MIT' } },
-    { selector: RegistrySelectors.isLicenseLoading, value: false },
+    { selector: LicensesSelectors.getLicense, value: { name: 'MIT' } },
+    { selector: LicensesSelectors.isLicenseLoading, value: false },
     { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
     { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
     { selector: CurrentResourceSelectors.getCurrentResource, value: null },

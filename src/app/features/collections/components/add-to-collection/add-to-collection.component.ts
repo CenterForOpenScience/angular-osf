@@ -105,7 +105,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
 
-  providerId = signal<string>('');
   allowNavigation = signal<boolean>(false);
   projectMetadataSaved = signal<boolean>(false);
   projectContributorsSaved = signal<boolean>(false);
@@ -298,7 +297,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       return;
     }
 
-    this.providerId.set(id);
     this.actions.getCollectionProvider(id);
   }
 

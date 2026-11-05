@@ -21,7 +21,6 @@ import {
   GetProjectById,
   GetProjectIdentifiers,
   GetProjectInstitutions,
-  GetProjectLicense,
   GetProjectPreprints,
   GetProjectStorage,
   LoadMoreComponents,
@@ -125,39 +124,6 @@ export class ProjectOverviewState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'identifiers', error))
-    );
-  }
-
-  @Action(GetProjectLicense)
-  getProjectLicense(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectLicense) {
-    if (!action.licenseId) {
-      return;
-    }
-
-    const state = ctx.getState();
-
-    if (state.license.isLoading) {
-      return;
-    }
-
-    ctx.patchState({
-      license: {
-        ...state.license,
-        isLoading: true,
-      },
-    });
-
-    return this.projectOverviewService.getProjectLicense(action.licenseId).pipe(
-      tap((license) => {
-        ctx.patchState({
-          license: {
-            data: license,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'license', error))
     );
   }
 

@@ -61,6 +61,7 @@ export class CollectionsMapper {
         type: response.relationships.primary_collection.data!.type,
       },
       defaultLicenseId: response.attributes?.default_license_id,
+      licensesLink: response.relationships?.licenses_acceptable?.links?.related?.href ?? '',
       brand: response.embeds.brand.data
         ? {
             id: response.embeds.brand.data.id,

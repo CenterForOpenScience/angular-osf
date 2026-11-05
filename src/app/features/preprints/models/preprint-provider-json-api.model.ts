@@ -3,6 +3,7 @@ import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import { BrandDataJsonApi } from '@osf/shared/models/brand/brand-json-api.model';
 import { Embed } from '@osf/shared/models/common/json-api/embeds.model';
 import { ResourceLinksJsonApi } from '@osf/shared/models/common/json-api/links.model';
+import { ToManyRel } from '@osf/shared/models/common/json-api/relationships.model';
 import { JsonApiResource } from '@osf/shared/models/common/json-api/resource.model';
 import { ItemResponse, ListResponse } from '@osf/shared/models/common/json-api/responses.model';
 
@@ -18,6 +19,9 @@ export interface PreprintProviderDetailsJsonApi extends JsonApiResource<
   PreprintProviderAttributesJsonApi
 > {
   embeds?: PreprintProviderEmbedsJsonApi;
+  relationships?: {
+    licenses_acceptable?: Pick<ToManyRel<'licenses'>, 'links'>;
+  };
   links: ResourceLinksJsonApi;
 }
 

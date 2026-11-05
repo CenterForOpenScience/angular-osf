@@ -5,7 +5,6 @@ import { NodeStorageModel } from '@osf/shared/models/nodes/node-storage.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
 import { AsyncStateWithTotalCount } from '@osf/shared/models/store/async-state-with-total-count.model';
 import { IdentifierModel } from '@shared/models/identifiers/identifier.model';
-import { LicenseModel } from '@shared/models/license/license.model';
 
 import { ProjectOverviewModel } from '../models';
 
@@ -18,7 +17,6 @@ export interface ProjectOverviewStateModel {
   parentProject: AsyncStateModel<NodeModel | null>;
   institutions: AsyncStateModel<Institution[]>;
   identifiers: AsyncStateModel<IdentifierModel[]>;
-  license: AsyncStateModel<LicenseModel | null>;
   storage: AsyncStateModel<NodeStorageModel | null>;
   preprints: AsyncStateModel<NodePreprintModel[]>;
   isAnonymous: boolean;
@@ -53,11 +51,6 @@ export const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
   },
   identifiers: {
     data: [],
-    isLoading: false,
-    error: null,
-  },
-  license: {
-    data: null,
     isLoading: false,
     error: null,
   },
