@@ -164,6 +164,11 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
+  static isRegistrationComponentsLoading(state: RegistriesStateModel): boolean {
+    return state.registrationComponents.isLoading;
+  }
+
+  @Selector([RegistriesState])
   static getCurrentFolder(state: RegistriesStateModel): FileFolderModel | null {
     return state.currentFolder;
   }

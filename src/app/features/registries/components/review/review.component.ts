@@ -10,7 +10,16 @@ import { Tag } from 'primeng/tag';
 import { filter, map } from 'rxjs';
 
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -65,6 +74,7 @@ export class ReviewComponent implements OnDestroy {
   readonly isDraftLoading = select(RegistriesSelectors.isDraftLoading);
   readonly stepsData = select(RegistriesSelectors.getStepsData);
   readonly components = select(RegistriesSelectors.getRegistrationComponents);
+  readonly isRegistrationComponentsLoading = select(RegistriesSelectors.isRegistrationComponentsLoading);
   readonly license = select(LicensesSelectors.getLicense);
   readonly newRegistration = select(RegistriesSelectors.getRegistration);
   readonly stepsState = select(RegistriesSelectors.getStepsState);
@@ -88,10 +98,14 @@ export class ReviewComponent implements OnDestroy {
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])));
+  private readonly componentsLoaded = signal(false);
 
   isDraftInvalid = computed(() => Object.values(this.stepsState()).some((step) => step.invalid));
   licenseOptionsRecord = computed(() => (this.draftRegistration()?.license.options ?? {}) as Record<string, string>);
-  registerButtonDisabled = computed(() => this.isDraftLoading() || this.isDraftInvalid() || !this.hasAdminAccess());
+  registerButtonDisabled = computed(
+    () =>
+      this.isDraftLoading() || this.isRegistrationComponentsLoading() || this.isDraftInvalid() || !this.hasAdminAccess()
+  );
 
   constructor() {
     if (!this.contributors()?.length) {
@@ -107,11 +121,14 @@ export class ReviewComponent implements OnDestroy {
     });
 
     effect(() => {
-      const draft = this.draftRegistration();
+      const projectId = this.draftRegistration()?.hasProject ? this.draftRegistration()?.branchedFrom?.id : undefined;
 
-      if (draft?.hasProject) {
-        this.actions.getProjectsComponents(draft.branchedFrom?.id ?? '');
+      if (!projectId || this.componentsLoaded()) {
+        return;
       }
+
+      this.componentsLoaded.set(true);
+      this.actions.getProjectsComponents(projectId);
     });
   }
 

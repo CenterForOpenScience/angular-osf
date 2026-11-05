@@ -47,21 +47,24 @@ export class LicensesState {
     );
   }
 
-  @Action(FetchLicense)
+  @Action(FetchLicense, { cancelUncompleted: true })
   fetchLicense(ctx: StateContext<LicensesStateModel>, { licenseId }: FetchLicense) {
     if (!licenseId) {
-      return EMPTY;
-    }
-
-    const state = ctx.getState();
-    if (state.license.isLoading) {
+      ctx.patchState({
+        license: {
+          data: null,
+          isLoading: false,
+          error: null,
+        },
+      });
       return EMPTY;
     }
 
     ctx.patchState({
       license: {
-        ...state.license,
+        data: null,
         isLoading: true,
+        error: null,
       },
     });
 

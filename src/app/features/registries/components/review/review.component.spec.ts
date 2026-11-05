@@ -92,6 +92,7 @@ describe('ReviewComponent', () => {
       { selector: RegistriesSelectors.isDraftLoading, value: false },
       { selector: RegistriesSelectors.getStepsData, value: {} },
       { selector: RegistriesSelectors.getRegistrationComponents, value: [] },
+      { selector: RegistriesSelectors.isRegistrationComponentsLoading, value: false },
       { selector: LicensesSelectors.getLicense, value: null },
       { selector: RegistriesSelectors.getRegistration, value: { id: 'new-reg-1' } },
       { selector: RegistriesSelectors.getStepsState, value: { 0: { invalid: false } } },
@@ -308,6 +309,13 @@ describe('ReviewComponent', () => {
     expect(component.registerButtonDisabled()).toBe(true);
   });
 
+  it('should compute registerButtonDisabled as true when registration components are loading', () => {
+    setup({
+      selectorOverrides: [{ selector: RegistriesSelectors.isRegistrationComponentsLoading, value: true }],
+    });
+    expect(component.registerButtonDisabled()).toBe(true);
+  });
+
   it('should compute licenseOptionsRecord from draft license options', () => {
     setup({
       selectorOverrides: [
@@ -381,7 +389,7 @@ describe('ReviewComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new FetchProjectChildren('proj-1'));
   });
 
-  it('should dispatch getProjectsComponents with empty string when branchedFrom has no id', () => {
+  it('should not dispatch getProjectsComponents when branchedFrom has no id', () => {
     setup({
       selectorOverrides: [
         {
@@ -391,6 +399,6 @@ describe('ReviewComponent', () => {
       ],
     });
 
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchProjectChildren(''));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchProjectChildren));
   });
 });

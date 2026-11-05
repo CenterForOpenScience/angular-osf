@@ -41,7 +41,7 @@
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.license' | translate }}</h4>
 
-      @if (selectedLicense) {
+      @if (draft?.license?.id && selectedLicense) {
         <osf-license-display [license]="selectedLicense" [licenseOptions]="licenseOptionsRecord()" />
       } @else {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>

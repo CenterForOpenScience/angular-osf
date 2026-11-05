@@ -161,7 +161,7 @@ export class ProjectComponent implements OnDestroy {
       project,
       canonicalPath: this.canonicalPath(),
       contributors: this.bibliographicContributors(),
-      licenseName: this.license.name,
+      licenseName: this.license()?.name,
     });
 
     this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
