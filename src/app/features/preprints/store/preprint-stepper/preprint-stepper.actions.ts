@@ -93,7 +93,7 @@ export class FetchProjectFilesByLink {
 export class FetchLicenses {
   static readonly type = '[Preprint Stepper] Fetch Licenses';
 
-  constructor(public providerId: string) {}
+  constructor(public licensesUrl?: string) {}
 }
 
 export class SaveLicense {

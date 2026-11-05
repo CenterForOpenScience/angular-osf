@@ -5,10 +5,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
 import { LicenseComponent } from '@osf/shared/components/license/license.component';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
@@ -22,26 +21,24 @@ import { LicenseDetails, LicenseModel } from '@shared/models/license/license.mod
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesLicenseComponent {
-  control = input.required<FormGroup>();
-  draftId = input.required<string>();
+  readonly control = input.required<FormGroup>();
+  readonly draftId = input.required<string>();
+  readonly licensesUrl = input<string>();
 
-  private readonly environment = inject(ENVIRONMENT);
+  readonly actions = createDispatchMap({ fetchLicenses: FetchLicenses, saveLicense: SaveLicense });
 
-  actions = createDispatchMap({ fetchLicenses: FetchLicenses, saveLicense: SaveLicense });
-
-  licenses = select(RegistriesSelectors.getLicenses);
-  selectedLicense = select(RegistriesSelectors.getSelectedLicense);
-  draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  readonly licenses = select(RegistriesSelectors.getLicenses);
+  readonly selectedLicense = select(RegistriesSelectors.getSelectedLicense);
+  readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  private readonly licensesLoaded = signal(false);
-
   constructor() {
     effect(() => {
-      if (this.draftRegistration() && !this.licensesLoaded()) {
-        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.environment.defaultProvider);
-        this.licensesLoaded.set(true);
+      const licensesUrl = this.licensesUrl();
+
+      if (licensesUrl) {
+        this.actions.fetchLicenses(licensesUrl);
       }
     });
 

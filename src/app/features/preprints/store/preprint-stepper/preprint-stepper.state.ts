@@ -8,7 +8,6 @@ import { HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { PreprintModel } from '@osf/features/preprints/models';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
@@ -319,9 +318,13 @@ export class PreprintStepperState {
 
   @Action(FetchLicenses)
   fetchLicenses(ctx: StateContext<PreprintStepperStateModel>, action: FetchLicenses) {
+    if (!action.licensesUrl) {
+      return EMPTY;
+    }
+
     ctx.setState(patch({ licenses: patch({ isLoading: true }) }));
 
-    return this.licensesService.getLicenses(ResourceType.Preprint, action.providerId).pipe(
+    return this.licensesService.getLicenses(action.licensesUrl).pipe(
       tap((licenses) => {
         ctx.setState(patch({ licenses: patch({ isLoading: false, data: licenses }) }));
       }),

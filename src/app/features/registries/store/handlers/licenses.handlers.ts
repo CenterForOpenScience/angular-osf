@@ -1,10 +1,9 @@
 import { StateContext } from '@ngxs/store';
 
-import { catchError, tap } from 'rxjs';
+import { catchError, EMPTY, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { LicensesService } from '@osf/shared/services/licenses.service';
 
@@ -17,7 +16,11 @@ export class LicensesHandlers {
   registrationsLicenseService = inject(RegistrationsLicenseService);
   licensesService = inject(LicensesService);
 
-  fetchLicenses(ctx: StateContext<RegistriesStateModel>, providerId: string) {
+  fetchLicenses(ctx: StateContext<RegistriesStateModel>, licensesUrl?: string) {
+    if (!licensesUrl) {
+      return EMPTY;
+    }
+
     ctx.patchState({
       licenses: {
         ...ctx.getState().licenses,
@@ -25,7 +28,7 @@ export class LicensesHandlers {
       },
     });
 
-    return this.licensesService.getLicenses(ResourceType.Registration, providerId).pipe(
+    return this.licensesService.getLicenses(licensesUrl).pipe(
       tap((licenses) => {
         ctx.patchState({
           licenses: {

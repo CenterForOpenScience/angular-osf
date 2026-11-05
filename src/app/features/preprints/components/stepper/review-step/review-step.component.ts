@@ -16,7 +16,6 @@ import { UserSelectors } from '@osf/core/store/user';
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
-  FetchLicenses,
   FetchPreprintProject,
   PreprintStepperSelectors,
   SubmitPreprint,
@@ -35,6 +34,7 @@ import {
   LoadMoreBibliographicContributors,
 } from '@shared/stores/contributors';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
+import { FetchLicense, LicensesSelectors } from '@shared/stores/licenses';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores/subjects';
 
 @Component({
@@ -66,7 +66,7 @@ export class ReviewStepComponent implements OnInit {
   private readonly actions = createDispatchMap({
     getBibliographicContributors: GetBibliographicContributors,
     fetchSubjects: FetchSelectedSubjects,
-    fetchLicenses: FetchLicenses,
+    fetchLicense: FetchLicense,
     fetchPreprintProject: FetchPreprintProject,
     submitPreprint: SubmitPreprint,
     fetchResourceInstitutions: FetchResourceInstitutions,
@@ -84,7 +84,7 @@ export class ReviewStepComponent implements OnInit {
   readonly hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
   readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
   readonly affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
-  readonly license = select(PreprintStepperSelectors.getPreprintLicense);
+  readonly license = select(LicensesSelectors.getLicense);
   readonly preprintProject = select(PreprintStepperSelectors.getPreprintProject);
   readonly isProjectCreationDisabled = select(UserSelectors.isProjectCreationDisabled);
   readonly licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
@@ -93,17 +93,16 @@ export class ReviewStepComponent implements OnInit {
   readonly PreregLinkInfo = PreregLinkInfo;
 
   ngOnInit(): void {
-    this.actions.fetchLicenses(this.provider().id);
-    this.actions.fetchPreprintProject();
-
-    const preprintId = this.preprint()?.id;
-    if (!preprintId) {
+    const preprint = this.preprint();
+    if (!preprint?.id) {
       return;
     }
 
-    this.actions.getBibliographicContributors(preprintId, ResourceType.Preprint);
-    this.actions.fetchSubjects(preprintId, ResourceType.Preprint);
-    this.actions.fetchResourceInstitutions(preprintId, ResourceType.Preprint);
+    this.actions.fetchLicense(preprint.licenseId ?? undefined);
+    this.actions.getBibliographicContributors(preprint.id, ResourceType.Preprint);
+    this.actions.fetchSubjects(preprint.id, ResourceType.Preprint);
+    this.actions.fetchResourceInstitutions(preprint.id, ResourceType.Preprint);
+    this.actions.fetchPreprintProject();
   }
 
   submitPreprint(): void {

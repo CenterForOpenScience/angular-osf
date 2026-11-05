@@ -10,6 +10,7 @@ export interface CollectionProvider extends BaseProviderModel {
   defaultLicenseId?: string | null;
   requiredMetadataTemplate?: CedarMetadataTemplateModel | null;
   iri?: string;
+  licensesLink?: string;
 }
 
 interface CollectionProviderAssets {

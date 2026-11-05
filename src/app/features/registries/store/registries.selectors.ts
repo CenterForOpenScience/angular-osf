@@ -84,11 +84,6 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getRegistrationLicense(state: RegistriesStateModel): LicenseModel | null {
-    return state.licenses.data.find((l) => l.id === state.draftRegistration.data?.license.id) || null;
-  }
-
-  @Selector([RegistriesState])
   static getPagesSchema(state: RegistriesStateModel): PageSchema[] {
     return state.pagesSchema.data;
   }
@@ -165,7 +160,7 @@ export class RegistriesSelectors {
 
   @Selector([RegistriesState])
   static getRegistrationComponents(state: RegistriesStateModel) {
-    return state.draftRegistration.data?.components || [];
+    return state.registrationComponents.data;
   }
 
   @Selector([RegistriesState])

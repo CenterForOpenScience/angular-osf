@@ -104,7 +104,7 @@ export class PreprintsMetadataStepComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.actions.fetchLicenses(this.provider().id);
+    this.actions.fetchLicenses(this.provider().licensesLink);
     this.initForm();
   }
 

@@ -4,7 +4,6 @@ import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/provider/environment.provider';
 
-import { ResourceType } from '../enums/resource-type.enum';
 import { LicensesMapper } from '../mappers/licenses.mapper';
 import { LicenseModel } from '../models/license/license.model';
 import { LicenseResponseJsonApi, LicensesResponseJsonApi } from '../models/license/licenses-json-api.model';
@@ -22,29 +21,14 @@ export class LicensesService {
     return `${this.environment.apiDomainUrl}/v2`;
   }
 
-  get defaultProvider() {
-    return this.environment.defaultProvider;
-  }
-
-  private readonly urlMap = new Map<ResourceType, string>([
-    [ResourceType.Registration, 'registrations'],
-    [ResourceType.Preprint, 'preprints'],
-    [ResourceType.Collection, 'collections'],
-  ]);
-
-  getLicenses(resourceType: ResourceType, providerId = this.defaultProvider): Observable<LicenseModel[]> {
-    const baseUrl =
-      resourceType === ResourceType.Project
-        ? `${this.apiUrl}/licenses/`
-        : `${this.apiUrl}/providers/${this.urlMap.get(resourceType)}/${providerId}/licenses/`;
-
+  getLicenses(licensesUrl: string): Observable<LicenseModel[]> {
     const params: Record<string, unknown> = {
       'page[size]': 100,
       sort: 'name',
     };
 
     return this.jsonApiService
-      .get<LicensesResponseJsonApi>(baseUrl, params)
+      .get<LicensesResponseJsonApi>(licensesUrl, params)
       .pipe(map((licenses) => LicensesMapper.fromLicensesResponse(licenses)));
   }
 

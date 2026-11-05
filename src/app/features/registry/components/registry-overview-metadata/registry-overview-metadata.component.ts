@@ -23,13 +23,13 @@ import { CurrentResourceType, ResourceType } from '@osf/shared/enums/resource-ty
 import { LanguageLabelPipe } from '@osf/shared/pipes/language-label.pipe';
 import { ResourceTypeGeneralLabelPipe } from '@osf/shared/pipes/resource-type-general-label.pipe';
 import { ContributorsSelectors, LoadMoreBibliographicContributors } from '@osf/shared/stores/contributors';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import {
   GetRegistryIdentifiers,
   GetRegistryInstitutions,
-  GetRegistryLicense,
   RegistrySelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry';
@@ -68,8 +68,8 @@ export class RegistryOverviewMetadataComponent {
   readonly isCustomItemMetadataLoading = select(MetadataSelectors.isCustomItemMetadataLoading);
 
   canEdit = select(RegistrySelectors.hasWriteAccess);
-  license = select(RegistrySelectors.getLicense);
-  isLicenseLoading = select(RegistrySelectors.isLicenseLoading);
+  license = select(LicensesSelectors.getLicense);
+  isLicenseLoading = select(LicensesSelectors.isLicenseLoading);
   identifiers = select(RegistrySelectors.getIdentifiers);
   isIdentifiersLoading = select(RegistrySelectors.isIdentifiersLoading);
   institutions = select(RegistrySelectors.getInstitutions);
@@ -92,7 +92,7 @@ export class RegistryOverviewMetadataComponent {
     getSubjects: FetchSelectedSubjects,
     getInstitutions: GetRegistryInstitutions,
     getIdentifiers: GetRegistryIdentifiers,
-    getLicense: GetRegistryLicense,
+    getLicense: FetchLicense,
     getCustomItemMetadata: GetCustomItemMetadata,
     setCustomCitation: SetRegistryCustomCitation,
     loadMoreBibliographicContributors: LoadMoreBibliographicContributors,

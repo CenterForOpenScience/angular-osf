@@ -35,12 +35,12 @@ import {
   GetBibliographicContributors,
   LoadMoreBibliographicContributors,
 } from '@osf/shared/stores/contributors';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import {
   GetProjectIdentifiers,
   GetProjectInstitutions,
-  GetProjectLicense,
   GetProjectPreprints,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,
@@ -87,8 +87,8 @@ export class ProjectOverviewMetadataComponent {
   readonly isInstitutionsLoading = select(ProjectOverviewSelectors.isInstitutionsLoading);
   readonly identifiers = select(ProjectOverviewSelectors.getIdentifiers);
   readonly isIdentifiersLoading = select(ProjectOverviewSelectors.isIdentifiersLoading);
-  readonly license = select(ProjectOverviewSelectors.getLicense);
-  readonly isLicenseLoading = select(ProjectOverviewSelectors.isLicenseLoading);
+  readonly license = select(LicensesSelectors.getLicense);
+  readonly isLicenseLoading = select(LicensesSelectors.isLicenseLoading);
   readonly preprints = select(ProjectOverviewSelectors.getPreprints);
   readonly isPreprintsLoading = select(ProjectOverviewSelectors.isPreprintsLoading);
   readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
@@ -112,7 +112,7 @@ export class ProjectOverviewMetadataComponent {
   private readonly actions = createDispatchMap({
     getInstitutions: GetProjectInstitutions,
     getIdentifiers: GetProjectIdentifiers,
-    getLicense: GetProjectLicense,
+    getLicense: FetchLicense,
     getPreprints: GetProjectPreprints,
     setCustomCitation: SetProjectCustomCitation,
     getSubjects: FetchSelectedSubjects,

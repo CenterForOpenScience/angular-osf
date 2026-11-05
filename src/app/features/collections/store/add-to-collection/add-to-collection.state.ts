@@ -1,12 +1,11 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { tap } from 'rxjs';
+import { EMPTY, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
 import { AddToCollectionService } from '@osf/features/collections/services/add-to-collection.service';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { CollectionsService } from '@osf/shared/services/collections.service';
 import { LicensesService } from '@osf/shared/services/licenses.service';
@@ -32,6 +31,10 @@ export class AddToCollectionState {
 
   @Action(GetCollectionLicenses)
   getCollectionLicenses(ctx: StateContext<AddToCollectionStateModel>, action: GetCollectionLicenses) {
+    if (!action.licensesUrl) {
+      return EMPTY;
+    }
+
     const state = ctx.getState();
     ctx.patchState({
       collectionLicenses: {
@@ -40,7 +43,7 @@ export class AddToCollectionState {
       },
     });
 
-    return this.licensesService.getLicenses(ResourceType.Collection, action.providerId).pipe(
+    return this.licensesService.getLicenses(action.licensesUrl).pipe(
       tap((licenses) => {
         ctx.patchState({
           collectionLicenses: {

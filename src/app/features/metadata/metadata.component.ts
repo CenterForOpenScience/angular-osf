@@ -463,11 +463,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   openEditLicenseDialog(): void {
-    const data: LicenseDialogData = {
-      metadata: this.metadata(),
-      resourceType: this.resourceType(),
-      providerId: this.provider,
-    };
+    const licensesUrl = this.isProjectType()
+      ? `${this.environment.apiDomainUrl}/v2/licenses/`
+      : this.registryProvider()?.licensesLink;
+
+    const data: LicenseDialogData = { metadata: this.metadata(), licensesUrl };
 
     this.customDialogService
       .open(LicenseDialogComponent, {

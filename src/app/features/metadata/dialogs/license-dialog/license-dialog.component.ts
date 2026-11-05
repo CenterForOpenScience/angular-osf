@@ -9,7 +9,6 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } 
 
 import { LicenseComponent } from '@osf/shared/components/license/license.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LicenseOptions, LicenseState } from '@osf/shared/models/license/license.model';
 import { FetchLicenses, LicensesSelectors } from '@osf/shared/stores/licenses';
 
@@ -74,7 +73,7 @@ export class LicenseDialogComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.actions.fetchLicenses(this.data.resourceType ?? ResourceType.Project, this.data.providerId);
+    this.actions.fetchLicenses(this.data.licensesUrl);
   }
 
   save(): void {

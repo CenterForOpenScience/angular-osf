@@ -47,10 +47,13 @@ export class ProjectsHandlers {
   }
 
   fetchProjectChildren(ctx: StateContext<RegistriesStateModel>, projectId: string) {
-    const state = ctx.getState();
+    if (!projectId) {
+      return;
+    }
+
     ctx.patchState({
-      draftRegistration: {
-        data: state.draftRegistration.data,
+      registrationComponents: {
+        data: [],
         isLoading: true,
         error: null,
       },
@@ -59,17 +62,14 @@ export class ProjectsHandlers {
     return this.projectsService.getComponentsTree(projectId).subscribe({
       next: (children: ProjectShortInfoModel[]) => {
         ctx.patchState({
-          draftRegistration: {
-            data: {
-              ...state.draftRegistration.data!,
-              components: [...state.draftRegistration.data!.components, ...children],
-            },
+          registrationComponents: {
+            data: children,
             isLoading: false,
             error: null,
           },
         });
       },
-      error: (error) => handleSectionError(ctx, 'draftRegistration', error),
+      error: (error) => handleSectionError(ctx, 'registrationComponents', error),
     });
   }
 }

@@ -30,6 +30,7 @@ import { AnalyticsService } from '@osf/shared/services/analytics.service';
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { MetaTagsBuilderService } from '@osf/shared/services/meta-tags-builder.service';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
+import { LicensesSelectors } from '@osf/shared/stores/licenses';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
@@ -76,8 +77,8 @@ export class RegistryComponent implements OnDestroy {
   private readonly isBibliographicContributorsLoading = select(
     ContributorsSelectors.isBibliographicContributorsLoading
   );
-  private readonly license = select(RegistrySelectors.getLicense);
-  private readonly isLicenseLoading = select(RegistrySelectors.isLicenseLoading);
+  private readonly license = select(LicensesSelectors.getLicense);
+  private readonly isLicenseLoading = select(LicensesSelectors.isLicenseLoading);
 
   private readonly canonicalPath = signal(this.getCanonicalPathFromSnapshot());
   private readonly isFileDetailRoute = signal(this.isFileDetailRouteFromSnapshot());

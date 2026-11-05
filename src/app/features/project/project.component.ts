@@ -27,10 +27,11 @@ import { DataciteService } from '@osf/shared/services/datacite/datacite.service'
 import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { MetaTagsBuilderService } from '@osf/shared/services/meta-tags-builder.service';
 import { ContributorsSelectors, GetBibliographicContributors } from '@osf/shared/stores/contributors';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { AnalyticsService } from '@shared/services/analytics.service';
 import { CurrentResourceSelectors } from '@shared/stores/current-resource';
 
-import { GetProjectById, GetProjectIdentifiers, GetProjectLicense, ProjectOverviewSelectors } from './overview/store';
+import { GetProjectById, GetProjectIdentifiers, ProjectOverviewSelectors } from './overview/store';
 
 @Component({
   selector: 'osf-project',
@@ -58,8 +59,8 @@ export class ProjectComponent implements OnDestroy {
   readonly isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
   readonly isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
-  readonly license = select(ProjectOverviewSelectors.getLicense);
-  readonly isLicenseLoading = select(ProjectOverviewSelectors.isLicenseLoading);
+  readonly license = select(LicensesSelectors.getLicense);
+  readonly isLicenseLoading = select(LicensesSelectors.isLicenseLoading);
 
   readonly identifiersForDatacite$ = toObservable(select(ProjectOverviewSelectors.getIdentifiers)).pipe(
     map((identifiers) => (identifiers?.length ? { identifiers } : null))
@@ -67,7 +68,7 @@ export class ProjectComponent implements OnDestroy {
 
   private readonly actions = createDispatchMap({
     getProject: GetProjectById,
-    getLicense: GetProjectLicense,
+    getLicense: FetchLicense,
     getIdentifiers: GetProjectIdentifiers,
     getBibliographicContributors: GetBibliographicContributors,
   });

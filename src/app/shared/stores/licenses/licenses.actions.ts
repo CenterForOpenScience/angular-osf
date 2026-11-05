@@ -1,10 +1,11 @@
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-
 export class FetchLicenses {
   static readonly type = '[Licenses] Fetch Licenses';
 
-  constructor(
-    public resourceType: ResourceType,
-    public providerId?: string
-  ) {}
+  constructor(public licensesUrl?: string) {}
+}
+
+export class FetchLicense {
+  static readonly type = '[Licenses] Fetch License';
+
+  constructor(public licenseId?: string) {}
 }

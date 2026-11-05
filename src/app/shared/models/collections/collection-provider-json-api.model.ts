@@ -3,7 +3,7 @@ import { CedarMetadataDataTemplateJsonApi } from '@osf/features/metadata/models/
 import { BrandDataJsonApi } from '../brand/brand-json-api.model';
 import { Embed } from '../common/json-api/embeds.model';
 import { ResourceLinksJsonApi } from '../common/json-api/links.model';
-import { ToOneRel } from '../common/json-api/relationships.model';
+import { ToManyRel, ToOneRel } from '../common/json-api/relationships.model';
 import { JsonApiResource } from '../common/json-api/resource.model';
 import { ItemResponse } from '../common/json-api/responses.model';
 import { CollectionsProviderAttributesJsonApi } from '../provider/collections-provider-json-api.model';
@@ -26,4 +26,5 @@ interface CollectionProviderEmbedsJsonApi {
 
 interface CollectionProviderRelationshipsJsonApi {
   primary_collection: ToOneRel<'collections'>;
+  licenses_acceptable?: Pick<ToManyRel<'licenses'>, 'links'>;
 }
