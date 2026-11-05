@@ -65,11 +65,6 @@ export class PreprintStepperSelectors {
   }
 
   @Selector([PreprintStepperState])
-  static getPreprintLicense(state: PreprintStepperStateModel) {
-    return state.licenses.data.find((l) => l.id === state.preprint.data?.licenseId) || null;
-  }
-
-  @Selector([PreprintStepperState])
   static getPreprintProject(state: PreprintStepperStateModel) {
     return state.preprintProject.data;
   }

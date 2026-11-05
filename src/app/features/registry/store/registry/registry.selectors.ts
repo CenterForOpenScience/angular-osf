@@ -5,7 +5,6 @@ import { RegistrationOverviewModel } from '@osf/features/registry/models';
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
-import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { PageSchema } from '@shared/models/registration/page-schema.model';
 
@@ -71,16 +70,6 @@ export class RegistrySelectors {
   @Selector([RegistryState])
   static isIdentifiersLoading(state: RegistryStateModel): boolean {
     return state.identifiers.isLoading;
-  }
-
-  @Selector([RegistryState])
-  static getLicense(state: RegistryStateModel): LicenseModel | null {
-    return state.license.data;
-  }
-
-  @Selector([RegistryState])
-  static isLicenseLoading(state: RegistryStateModel): boolean {
-    return state.license.isLoading;
   }
 
   @Selector([RegistryState])

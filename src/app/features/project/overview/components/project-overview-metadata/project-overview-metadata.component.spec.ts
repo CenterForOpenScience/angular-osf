@@ -30,18 +30,23 @@ import {
   GetBibliographicContributors,
   LoadMoreBibliographicContributors,
 } from '@osf/shared/stores/contributors';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
-import { mergeSignalOverrides, provideMockStore } from '@testing/providers/store-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 
 import {
   GetProjectIdentifiers,
   GetProjectInstitutions,
-  GetProjectLicense,
   GetProjectPreprints,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,
@@ -51,6 +56,8 @@ import { OverviewSupplementsComponent } from '../overview-supplements/overview-s
 
 import { ProjectOverviewMetadataComponent } from './project-overview-metadata.component';
 
+const MOCK_PROJECT_WITH_LICENSE = { ...MOCK_PROJECT_OVERVIEW, licenseId: 'license-1' };
+
 describe('ProjectOverviewMetadataComponent', () => {
   let component: ProjectOverviewMetadataComponent;
   let fixture: ComponentFixture<ProjectOverviewMetadataComponent>;
@@ -59,17 +66,16 @@ describe('ProjectOverviewMetadataComponent', () => {
   let mockRouter: RouterMockType;
   let metadataRecordsService: { downloadMetadata: Mock };
 
-  interface SetupOverrides {
+  interface SetupOverrides extends BaseSetupOverrides {
     project?: typeof MOCK_PROJECT_OVERVIEW | null;
-    selectorOverrides?: { selector: any; value: any }[];
   }
 
   function setup(overrides: SetupOverrides = {}) {
-    const project = 'project' in overrides ? overrides.project : MOCK_PROJECT_OVERVIEW;
+    const project = 'project' in overrides ? overrides.project : MOCK_PROJECT_WITH_LICENSE;
     mockRouter = RouterMockBuilder.create().withUrl('/project/project-1/overview').build();
     metadataRecordsService = { downloadMetadata: vi.fn() };
 
-    const defaultSignals = [
+    const defaultSignals: SignalOverride[] = [
       { selector: ProjectOverviewSelectors.getProject, value: project },
       { selector: ProjectOverviewSelectors.isProjectAnonymous, value: false },
       { selector: ProjectOverviewSelectors.hasWriteAccess, value: true },
@@ -77,8 +83,8 @@ describe('ProjectOverviewMetadataComponent', () => {
       { selector: ProjectOverviewSelectors.isInstitutionsLoading, value: false },
       { selector: ProjectOverviewSelectors.getIdentifiers, value: [] },
       { selector: ProjectOverviewSelectors.isIdentifiersLoading, value: false },
-      { selector: ProjectOverviewSelectors.getLicense, value: null },
-      { selector: ProjectOverviewSelectors.isLicenseLoading, value: false },
+      { selector: LicensesSelectors.getLicense, value: null },
+      { selector: LicensesSelectors.isLicenseLoading, value: false },
       { selector: ProjectOverviewSelectors.getPreprints, value: [] },
       { selector: ProjectOverviewSelectors.isPreprintsLoading, value: false },
       { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
@@ -95,7 +101,7 @@ describe('ProjectOverviewMetadataComponent', () => {
       { selector: MetadataSelectors.getCustomItemMetadata, value: null },
       { selector: MetadataSelectors.isCustomItemMetadataLoading, value: false },
     ];
-    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides || []);
+    const signals = mergeSignalOverrides(defaultSignals, overrides.selectorOverrides);
 
     TestBed.configureTestingModule({
       imports: [
@@ -147,7 +153,7 @@ describe('ProjectOverviewMetadataComponent', () => {
     expect(dispatchMock).toHaveBeenCalledWith(new FetchSelectedSubjects('project-1', ResourceType.Project));
     expect(dispatchMock).toHaveBeenCalledWith(new GetProjectSubmissions('project-1'));
     expect(dispatchMock).toHaveBeenCalledWith(new GetCustomItemMetadata('project-1'));
-    expect(dispatchMock).toHaveBeenCalledWith(new GetProjectLicense(MOCK_PROJECT_OVERVIEW.licenseId));
+    expect(dispatchMock).toHaveBeenCalledWith(new FetchLicense('license-1'));
     expect(dispatchMock).toHaveBeenCalledWith(new GetCedarMetadataRecords('project-1', ResourceType.Project));
     expect(dispatchMock).toHaveBeenCalledWith(new GetCedarMetadataTemplates());
   });

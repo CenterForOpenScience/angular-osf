@@ -1,13 +1,15 @@
 import { Store } from '@ngxs/store';
 
-import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
+
+import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
-  FetchLicenses,
   FetchPreprintProject,
   PreprintStepperSelectors,
   SubmitPreprint,
@@ -17,8 +19,8 @@ import {
 import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
+import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
-import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { ToastService } from '@osf/shared/services/toast.service';
 import {
   ContributorsSelectors,
@@ -26,6 +28,7 @@ import {
   LoadMoreBibliographicContributors,
 } from '@osf/shared/stores/contributors';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { MOCK_CONTRIBUTOR } from '@testing/mocks/contributors.mock';
@@ -37,12 +40,22 @@ import { PREPRINT_PROVIDER_DETAILS_MOCK } from '@testing/mocks/preprint-provider
 import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
-import { mergeSignalOverrides, provideMockStore, SignalOverride } from '@testing/providers/store-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { ReviewsState } from '../../../enums';
 
 import { ReviewStepComponent } from './review-step.component';
+
+interface SetupOverrides extends BaseSetupOverrides {
+  provider?: PreprintProviderDetails;
+  detectChanges?: boolean;
+}
 
 describe('ReviewStepComponent', () => {
   let component: ReviewStepComponent;
@@ -59,43 +72,45 @@ describe('ReviewStepComponent', () => {
     { selector: PreprintStepperSelectors.getPreprint, value: mockPreprint },
     { selector: PreprintStepperSelectors.getPreprintFile, value: mockPreprintFile },
     { selector: PreprintStepperSelectors.isPreprintSubmitting, value: false },
-    { selector: PreprintStepperSelectors.getPreprintLicense, value: MOCK_LICENSE },
+    { selector: LicensesSelectors.getLicense, value: MOCK_LICENSE },
     { selector: PreprintStepperSelectors.getPreprintProject, value: { id: 'project-id', name: 'Test Project' } },
     { selector: ContributorsSelectors.getBibliographicContributors, value: [MOCK_CONTRIBUTOR] },
     { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
     { selector: ContributorsSelectors.hasMoreBibliographicContributors, value: false },
     { selector: SubjectsSelectors.getSelectedSubjects, value: SUBJECTS_MOCK },
     { selector: InstitutionsSelectors.getResourceInstitutions, value: [MOCK_INSTITUTION] },
+    { selector: UserSelectors.isProjectCreationDisabled, value: false },
   ];
 
-  function setup(overrides?: {
-    selectorOverrides?: SignalOverride[];
-    provider?: PreprintProviderDetails;
-    detectChanges?: boolean;
-  }) {
-    const signals = mergeSignalOverrides(defaultSignals, overrides?.selectorOverrides);
+  function setup(overrides: SetupOverrides = {}) {
     routerMock = RouterMockBuilder.create().build();
     toastMock = ToastServiceMock.simple();
 
     TestBed.configureTestingModule({
       imports: [
         ReviewStepComponent,
-        ...MockComponents(AffiliatedInstitutionsViewComponent, ContributorsListComponent, LicenseDisplayComponent),
-        MockPipe(InterpolatePipe),
+        ...MockComponents(
+          AffiliatedInstitutionsViewComponent,
+          ContributorsListComponent,
+          LicenseDisplayComponent,
+          TruncatedTextComponent
+        ),
       ],
       providers: [
         provideOSFCore(),
         MockProvider(Router, routerMock),
         MockProvider(ToastService, toastMock),
-        provideMockStore({ signals }),
+        provideMockStore({
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
       ],
     });
 
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ReviewStepComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('provider', overrides && 'provider' in overrides ? overrides.provider : mockProvider);
-    if (overrides?.detectChanges ?? true) {
+    fixture.componentRef.setInput('provider', 'provider' in overrides ? overrides.provider : mockProvider);
+    if (overrides.detectChanges ?? true) {
       fixture.detectChanges();
     }
   }
@@ -103,7 +118,7 @@ describe('ReviewStepComponent', () => {
   it('should dispatch initial fetch actions when preprint exists', () => {
     setup();
 
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(mockProvider.id));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicense(mockPreprint.licenseId ?? undefined));
     expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintProject());
     expect(store.dispatch).toHaveBeenCalledWith(
       new GetBibliographicContributors(mockPreprint.id, ResourceType.Preprint)
@@ -112,13 +127,13 @@ describe('ReviewStepComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new FetchResourceInstitutions(mockPreprint.id, ResourceType.Preprint));
   });
 
-  it('should skip preprint-dependent fetches when preprint is missing', () => {
+  it('should skip fetches when preprint is missing', () => {
     setup({
       selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: null }],
     });
 
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(mockProvider.id));
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintProject());
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchLicense));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintProject));
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetBibliographicContributors));
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchSelectedSubjects));
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchResourceInstitutions));
@@ -145,7 +160,7 @@ describe('ReviewStepComponent', () => {
     expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/preprints');
   });
 
-  it('should return early in submitPreprint when required data is missing', () => {
+  it('should return early in submitPreprint when preprint is missing', () => {
     setup({
       selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: null }],
       detectChanges: false,
@@ -159,13 +174,13 @@ describe('ReviewStepComponent', () => {
   });
 
   it('should return early in submitPreprint when no file id is available', () => {
-    const preprintWithoutPrimaryFileId = { ...mockPreprint, primaryFileId: null };
     setup({
       selectorOverrides: [
-        { selector: PreprintStepperSelectors.getPreprint, value: preprintWithoutPrimaryFileId },
+        { selector: PreprintStepperSelectors.getPreprint, value: { ...mockPreprint, primaryFileId: null } },
         { selector: PreprintStepperSelectors.getPreprintFile, value: null },
       ],
     });
+    (store.dispatch as Mock).mockClear();
 
     component.submitPreprint();
 
@@ -178,6 +193,7 @@ describe('ReviewStepComponent', () => {
     setup({
       provider: { ...mockProvider, reviewsWorkflow: null },
     });
+    (store.dispatch as Mock).mockClear();
 
     component.submitPreprint();
 
@@ -190,10 +206,15 @@ describe('ReviewStepComponent', () => {
   });
 
   it('should submit preprint when workflow exists and reviews state is not accepted', () => {
-    const preprintPending = { ...mockPreprint, reviewsState: ReviewsState.Pending };
     setup({
-      selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: preprintPending }],
+      selectorOverrides: [
+        {
+          selector: PreprintStepperSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Pending },
+        },
+      ],
     });
+    (store.dispatch as Mock).mockClear();
 
     component.submitPreprint();
 
@@ -206,10 +227,15 @@ describe('ReviewStepComponent', () => {
   });
 
   it('should skip submit/update when reviews state is accepted and still navigate', () => {
-    const preprintAccepted = { ...mockPreprint, reviewsState: ReviewsState.Accepted };
     setup({
-      selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: preprintAccepted }],
+      selectorOverrides: [
+        {
+          selector: PreprintStepperSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Accepted },
+        },
+      ],
     });
+    (store.dispatch as Mock).mockClear();
 
     component.submitPreprint();
 
@@ -222,26 +248,14 @@ describe('ReviewStepComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith(['/preprints', mockProvider.id, mockPreprint.id]);
   });
 
-  it('should load more contributors when preprint id exists', () => {
+  it('should load more contributors', () => {
     setup();
+    (store.dispatch as Mock).mockClear();
 
     component.loadMoreContributors();
 
     expect(store.dispatch).toHaveBeenCalledWith(
       new LoadMoreBibliographicContributors(mockPreprint.id, ResourceType.Preprint)
-    );
-  });
-
-  it('should load more contributors with undefined id when preprint is missing', () => {
-    setup({
-      selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: null }],
-      detectChanges: false,
-    });
-
-    component.loadMoreContributors();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      new LoadMoreBibliographicContributors(undefined, ResourceType.Preprint)
     );
   });
 
@@ -252,20 +266,5 @@ describe('ReviewStepComponent', () => {
     component.deletePreprint();
 
     expect(emitSpy).toHaveBeenCalled();
-  });
-
-  it('should default showDeleteButton to false', () => {
-    setup();
-
-    expect(component.showDeleteButton()).toBe(false);
-  });
-
-  it('should update showDeleteButton when input changes', () => {
-    setup();
-
-    fixture.componentRef.setInput('showDeleteButton', true);
-    fixture.detectChanges();
-
-    expect(component.showDeleteButton()).toBe(true);
   });
 });

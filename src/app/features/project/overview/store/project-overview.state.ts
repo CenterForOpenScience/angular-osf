@@ -7,7 +7,6 @@ import { inject, Injectable } from '@angular/core';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { DuplicatesService } from '@osf/shared/services/duplicates.service';
-import { LicensesService } from '@osf/shared/services/licenses.service';
 
 import { ProjectOverviewService } from '../services/project-overview.service';
 
@@ -22,7 +21,6 @@ import {
   GetProjectById,
   GetProjectIdentifiers,
   GetProjectInstitutions,
-  GetProjectLicense,
   GetProjectPreprints,
   GetProjectStorage,
   LoadMoreComponents,
@@ -40,7 +38,6 @@ import { PROJECT_OVERVIEW_DEFAULTS, ProjectOverviewStateModel } from './project-
 export class ProjectOverviewState {
   private readonly projectOverviewService = inject(ProjectOverviewService);
   private readonly duplicatesService = inject(DuplicatesService);
-  private readonly licensesService = inject(LicensesService);
 
   @Action(GetProjectById)
   getProjectById(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectById) {
@@ -127,39 +124,6 @@ export class ProjectOverviewState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'identifiers', error))
-    );
-  }
-
-  @Action(GetProjectLicense)
-  getProjectLicense(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectLicense) {
-    if (!action.licenseId) {
-      return;
-    }
-
-    const state = ctx.getState();
-
-    if (state.license.isLoading) {
-      return;
-    }
-
-    ctx.patchState({
-      license: {
-        ...state.license,
-        isLoading: true,
-      },
-    });
-
-    return this.licensesService.getLicenseById(action.licenseId).pipe(
-      tap((license) => {
-        ctx.patchState({
-          license: {
-            data: license,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'license', error))
     );
   }
 

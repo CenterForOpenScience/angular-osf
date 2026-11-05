@@ -18,6 +18,7 @@ import { MetaTagsService } from '@osf/shared/services/meta-tags.service';
 import { MetaTagsBuilderService } from '@osf/shared/services/meta-tags-builder.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
 import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 
 import { MOCK_PROJECT_OVERVIEW } from '@testing/mocks/project-overview.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -36,7 +37,7 @@ import {
   SignalOverride,
 } from '@testing/providers/store-provider.mock';
 
-import { GetProjectById, GetProjectIdentifiers, GetProjectLicense, ProjectOverviewSelectors } from './overview/store';
+import { GetProjectById, GetProjectIdentifiers, ProjectOverviewSelectors } from './overview/store';
 import { ProjectComponent } from './project.component';
 
 interface SetupOverrides extends BaseSetupOverrides {
@@ -92,8 +93,8 @@ function setup(overrides: SetupOverrides = {}) {
     { selector: ProjectOverviewSelectors.getProject, value: null },
     { selector: ProjectOverviewSelectors.getProjectLoading, value: false },
     { selector: ProjectOverviewSelectors.getIdentifiers, value: [] },
-    { selector: ProjectOverviewSelectors.getLicense, value: { name: 'MIT' } },
-    { selector: ProjectOverviewSelectors.isLicenseLoading, value: false },
+    { selector: LicensesSelectors.getLicense, value: { name: 'MIT' } },
+    { selector: LicensesSelectors.isLicenseLoading, value: false },
     { selector: ContributorsSelectors.getBibliographicContributors, value: [] },
     { selector: ContributorsSelectors.isBibliographicContributorsLoading, value: false },
     { selector: CurrentResourceSelectors.getCurrentResource, value: null },
@@ -159,7 +160,7 @@ describe('Component: Project', () => {
       selectorOverrides: [{ selector: ProjectOverviewSelectors.getProject, value: project }],
     });
 
-    expect(store.dispatch).toHaveBeenCalledWith(new GetProjectLicense('license-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicense('license-1'));
   });
 
   it('should call datacite tracking on init', () => {

@@ -18,6 +18,13 @@ import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 import { RegistriesLicenseComponent } from './registries-license.component';
 
+const DEFAULT_LICENSES_URL = 'https://api.osf.io/v2/providers/registrations/osf/licenses/';
+
+interface SetupOverrides {
+  draft?: Partial<DraftRegistrationModel> | null;
+  licensesUrl?: string | null;
+}
+
 describe('RegistriesLicenseComponent', () => {
   let component: RegistriesLicenseComponent;
   let fixture: ComponentFixture<RegistriesLicenseComponent>;
@@ -29,7 +36,10 @@ describe('RegistriesLicenseComponent', () => {
   const mockLicense: LicenseModel = { id: 'lic-1', name: 'MIT', requiredFields: [], url: '', text: '' };
   const mockDefaultLicense: LicenseModel = { id: 'default-1', name: 'Default', requiredFields: [], url: '', text: '' };
 
-  function setup(draft: Partial<DraftRegistrationModel> | null = { providerId: 'osf' }) {
+  function setup(overrides: SetupOverrides = {}) {
+    const draft = 'draft' in overrides ? overrides.draft! : {};
+    const licensesUrl = 'licensesUrl' in overrides ? overrides.licensesUrl : DEFAULT_LICENSES_URL;
+
     licensesSignal = signal<LicenseModel[]>([]);
     selectedLicenseSignal = signal<DraftRegistrationModel['license'] | null>(null);
     draftRegistrationSignal = signal(draft);
@@ -53,6 +63,9 @@ describe('RegistriesLicenseComponent', () => {
     component = fixture.componentInstance;
     fixture.componentRef.setInput('control', new FormGroup({ id: new FormControl('') }));
     fixture.componentRef.setInput('draftId', 'draft-1');
+    if (licensesUrl != null) {
+      fixture.componentRef.setInput('licensesUrl', licensesUrl);
+    }
     fixture.detectChanges();
   }
 
@@ -61,20 +74,20 @@ describe('RegistriesLicenseComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch fetchLicenses on init when draft present', () => {
+  it('should dispatch fetchLicenses on init when licensesUrl present', () => {
     setup();
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses('osf'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(DEFAULT_LICENSES_URL));
   });
 
-  it('should fetch licenses with defaultProvider when draft has no providerId', () => {
-    setup({});
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses('osf'));
+  it('should not fetch licenses when licensesUrl is missing', () => {
+    setup({ licensesUrl: null });
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchLicenses));
   });
 
-  it('should fetch licenses only once even if draft re-emits', () => {
+  it('should not re-fetch when draft registration changes', () => {
     setup();
     (store.dispatch as Mock).mockClear();
-    draftRegistrationSignal.set({ providerId: 'other' });
+    draftRegistrationSignal.set({ defaultLicenseId: 'default-1' });
     fixture.detectChanges();
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchLicenses));
   });
@@ -88,7 +101,7 @@ describe('RegistriesLicenseComponent', () => {
   });
 
   it('should apply default license when selected license is not in the list', () => {
-    setup({ providerId: 'osf', defaultLicenseId: 'default-1' });
+    setup({ draft: { defaultLicenseId: 'default-1' } });
     (store.dispatch as Mock).mockClear();
     selectedLicenseSignal.set({ id: 'missing-lic', options: null });
     licensesSignal.set([mockDefaultLicense]);
@@ -98,7 +111,7 @@ describe('RegistriesLicenseComponent', () => {
   });
 
   it('should apply default license and save when no selected license', () => {
-    setup({ providerId: 'osf', defaultLicenseId: 'default-1' });
+    setup({ draft: { defaultLicenseId: 'default-1' } });
     (store.dispatch as Mock).mockClear();
     licensesSignal.set([mockDefaultLicense]);
     fixture.detectChanges();
@@ -107,7 +120,7 @@ describe('RegistriesLicenseComponent', () => {
   });
 
   it('should apply default license but not save when it has required fields', () => {
-    setup({ providerId: 'osf', defaultLicenseId: 'default-2' });
+    setup({ draft: { defaultLicenseId: 'default-2' } });
     (store.dispatch as Mock).mockClear();
     const licenseWithFields: LicenseModel = {
       id: 'default-2',
@@ -123,7 +136,7 @@ describe('RegistriesLicenseComponent', () => {
   });
 
   it('should prefer selected license over default license', () => {
-    setup({ providerId: 'osf', defaultLicenseId: 'default-1' });
+    setup({ draft: { defaultLicenseId: 'default-1' } });
     licensesSignal.set([mockDefaultLicense, mockLicense]);
     selectedLicenseSignal.set({ id: 'lic-1', options: { year: '2024', copyrightHolders: 'Me' } });
     fixture.detectChanges();
@@ -159,7 +172,7 @@ describe('RegistriesLicenseComponent', () => {
   });
 
   it('should not apply default license when defaultLicenseId is not in the list', () => {
-    setup({ providerId: 'osf', defaultLicenseId: 'non-existent' });
+    setup({ draft: { defaultLicenseId: 'non-existent' } });
     (store.dispatch as Mock).mockClear();
     licensesSignal.set([mockLicense]);
     fixture.detectChanges();

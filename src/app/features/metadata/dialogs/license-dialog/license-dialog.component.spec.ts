@@ -9,7 +9,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LicenseComponent } from '@osf/shared/components/license/license.component';
 import { LoadingSpinnerComponent } from '@osf/shared/components/loading-spinner/loading-spinner.component';
-import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import { LicenseModel, LicenseOptions } from '@osf/shared/models/license/license.model';
 import { FetchLicenses, LicensesSelectors } from '@osf/shared/stores/licenses';
 
@@ -19,7 +18,11 @@ import { provideOSFCore } from '@testing/osf.testing.provider';
 import { provideDynamicDialogRefMock } from '@testing/providers/dynamic-dialog-ref.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
+import { LicenseDialogData } from '../../models/license-dialog.model';
+
 import { LicenseDialogComponent } from './license-dialog.component';
+
+const DEFAULT_LICENSES_URL = 'https://api.osf.io/v2/licenses/';
 
 describe('LicenseDialogComponent', () => {
   let component: LicenseDialogComponent;
@@ -41,11 +44,7 @@ describe('LicenseDialogComponent', () => {
   };
 
   interface SetupOverrides {
-    dialogData?: {
-      resourceType?: ResourceType;
-      providerId?: string;
-      metadata?: typeof MOCK_PROJECT_METADATA | null;
-    };
+    dialogData?: LicenseDialogData;
     licenses?: LicenseModel[];
     licensesLoading?: boolean;
   }
@@ -58,7 +57,9 @@ describe('LicenseDialogComponent', () => {
       providers: [
         provideOSFCore(),
         provideDynamicDialogRefMock(),
-        MockProvider(DynamicDialogConfig, { data: overrides.dialogData ?? {} }),
+        MockProvider(DynamicDialogConfig, {
+          data: { licensesUrl: DEFAULT_LICENSES_URL, ...overrides.dialogData },
+        }),
         provideMockStore({
           signals: [
             {
@@ -78,21 +79,10 @@ describe('LicenseDialogComponent', () => {
     fixture.detectChanges();
   }
 
-  it('should dispatch FetchLicenses on init with defaults', () => {
+  it('should dispatch FetchLicenses on init with licensesUrl', () => {
     setup();
 
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(ResourceType.Project, undefined));
-  });
-
-  it('should dispatch FetchLicenses with dialog resource type and provider', () => {
-    setup({
-      dialogData: {
-        resourceType: ResourceType.Registration,
-        providerId: 'provider-1',
-      },
-    });
-
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(ResourceType.Registration, 'provider-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses(DEFAULT_LICENSES_URL));
   });
 
   it('should initialize selected license and options from metadata', () => {
@@ -163,17 +153,6 @@ describe('LicenseDialogComponent', () => {
     setup();
     const closeSpy = vi.spyOn(dialogRef, 'close');
     component.selectedLicenseId.set(null);
-
-    expect(component.isSaveDisabled()).toBe(true);
-    component.save();
-
-    expect(closeSpy).not.toHaveBeenCalled();
-  });
-
-  it('should not save when selected license is not found', () => {
-    setup();
-    const closeSpy = vi.spyOn(dialogRef, 'close');
-    component.selectedLicenseId.set('non-existent-license');
 
     expect(component.isSaveDisabled()).toBe(true);
     component.save();

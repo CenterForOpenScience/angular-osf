@@ -24,12 +24,6 @@ export class GetRegistryIdentifiers {
   constructor(public registryId: string) {}
 }
 
-export class GetRegistryLicense {
-  static readonly type = '[Registry] Get Registry License';
-
-  constructor(public licenseId: string | undefined) {}
-}
-
 export class GetSchemaBlocks {
   static readonly type = '[Registry] Get Schema Blocks';
 

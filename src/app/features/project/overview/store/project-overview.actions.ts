@@ -20,12 +20,6 @@ export class GetProjectIdentifiers {
   constructor(public projectId: string) {}
 }
 
-export class GetProjectLicense {
-  static readonly type = '[Project Overview] Get Project License';
-
-  constructor(public licenseId: string | undefined) {}
-}
-
 export class GetProjectStorage {
   static readonly type = '[Project Overview] Get Project Storage';
 

@@ -357,7 +357,7 @@ describe('MetadataComponent', () => {
     );
   });
 
-  it('should open license dialog with typed license data', () => {
+  it('should open license dialog with project licenses url', () => {
     setup();
 
     component.openEditLicenseDialog();
@@ -369,8 +369,29 @@ describe('MetadataComponent', () => {
         width: '600px',
         data: {
           metadata: mockMetadata,
-          resourceType: ResourceType.Project,
-          providerId: component.provider,
+          licensesUrl: 'http://localhost:8000/v2/licenses/',
+        },
+      })
+    );
+  });
+
+  it('should open license dialog with registry provider licenses link', () => {
+    const licensesLink = 'https://api.osf.io/v2/providers/registrations/osf/licenses/';
+    setup({
+      resourceType: ResourceType.Registration,
+      selectorOverrides: [
+        { selector: RegistrationProviderSelectors.getBrandedProvider, value: { id: 'osf', licensesLink } },
+      ],
+    });
+
+    component.openEditLicenseDialog();
+
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(
+      LicenseDialogComponent,
+      expect.objectContaining({
+        data: {
+          metadata: mockMetadata,
+          licensesUrl: licensesLink,
         },
       })
     );

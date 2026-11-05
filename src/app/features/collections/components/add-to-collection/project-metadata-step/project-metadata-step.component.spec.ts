@@ -1,118 +1,205 @@
+import { Store } from '@ngxs/store';
+
 import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
+import { Step, StepItem, StepPanel } from 'primeng/stepper';
+
+import { Mock } from 'vitest';
+
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection';
+import { AddToCollectionSteps } from '@osf/features/collections/enums';
+import { AddToCollectionSelectors, GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection';
 import { TagsInputComponent } from '@osf/shared/components/tags-input/tags-input.component';
 import { TextInputComponent } from '@osf/shared/components/text-input/text-input.component';
 import { TruncatedTextComponent } from '@osf/shared/components/truncated-text/truncated-text.component';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
+import { LicenseModel } from '@osf/shared/models/license/license.model';
+import { InterpolatePipe } from '@osf/shared/pipes/interpolate.pipe';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { InterpolatePipe } from '@shared/pipes/interpolate.pipe';
-import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
+import { CollectionsSelectors } from '@osf/shared/stores/collections';
+import { GetAllContributors } from '@osf/shared/stores/contributors';
+import { ClearProjects, ProjectsSelectors } from '@osf/shared/stores/projects';
 
 import { MOCK_PROJECT } from '@testing/mocks/project.mock';
+import { MOCK_PROVIDER } from '@testing/mocks/provider.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 import { ProjectMetadataStepComponent } from './project-metadata-step.component';
 
-describe.skip('ProjectMetadataStepComponent', () => {
+const MOCK_LICENSE: LicenseModel = {
+  id: 'MIT',
+  name: 'MIT License',
+  requiredFields: [],
+  url: '',
+  text: '',
+};
+
+const MOCK_COLLECTION_PROVIDER = {
+  ...MOCK_PROVIDER,
+  licensesLink: 'https://api.osf.io/v2/providers/collections/1/licenses/',
+  defaultLicenseId: null,
+};
+
+interface SetupOverrides extends BaseSetupOverrides {
+  project?: typeof MOCK_PROJECT | null;
+  licenses?: LicenseModel[];
+  provider?: typeof MOCK_COLLECTION_PROVIDER | null;
+}
+
+describe('ProjectMetadataStepComponent', () => {
   let component: ProjectMetadataStepComponent;
   let fixture: ComponentFixture<ProjectMetadataStepComponent>;
-  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let store: Store;
+  let licensesSignal: WritableSignal<LicenseModel[]>;
 
-  beforeEach(() => {
-    toastServiceMock = ToastServiceMockBuilder.create().build();
+  function setup(overrides: SetupOverrides = {}) {
+    const project = 'project' in overrides ? overrides.project! : MOCK_PROJECT;
+    const licenses = overrides.licenses ?? [];
+    const provider = 'provider' in overrides ? overrides.provider! : MOCK_COLLECTION_PROVIDER;
+    const toastServiceMock = ToastServiceMockBuilder.create().build();
+
+    licensesSignal = signal(licenses);
+
+    const defaultSignals: SignalOverride[] = [
+      { selector: ProjectsSelectors.getSelectedProject, value: project },
+      { selector: CollectionsSelectors.getCollectionProvider, value: provider },
+      { selector: AddToCollectionSelectors.getCollectionLicenses, value: licensesSignal },
+      { selector: ProjectsSelectors.getSelectedProjectUpdateSubmitting, value: false },
+    ];
 
     TestBed.configureTestingModule({
       imports: [
         ProjectMetadataStepComponent,
-        ...MockComponents(TagsInputComponent, TextInputComponent, TruncatedTextComponent),
+        ...MockComponents(TagsInputComponent, TextInputComponent, TruncatedTextComponent, StepPanel, Step, StepItem),
         MockPipe(InterpolatePipe),
       ],
       providers: [
         provideOSFCore(),
         MockProvider(ToastService, toastServiceMock),
         provideMockStore({
-          signals: [
-            { selector: ProjectsSelectors.getSelectedProject, value: MOCK_PROJECT },
-            { selector: AddToCollectionSelectors.getCollectionLicenses, value: [] },
-            { selector: ProjectsSelectors.getSelectedProjectUpdateSubmitting, value: false },
-          ],
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
         }),
       ],
     });
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(ProjectMetadataStepComponent);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('stepperActiveValue', 0);
-    fixture.componentRef.setInput('targetStepValue', 2);
+    fixture.componentRef.setInput('targetStepValue', AddToCollectionSteps.ProjectMetadata);
     fixture.componentRef.setInput('isDisabled', false);
-    fixture.componentRef.setInput('providerId', 'id1');
-
     fixture.detectChanges();
-  });
+  }
 
-  it('should create', () => {
+  it('should create with required inputs', () => {
+    setup();
+
     expect(component).toBeTruthy();
-  });
-
-  it('should initialize with input values', () => {
     expect(component.stepperActiveValue()).toBe(0);
-    expect(component.targetStepValue()).toBe(2);
+    expect(component.targetStepValue()).toBe(AddToCollectionSteps.ProjectMetadata);
     expect(component.isDisabled()).toBe(false);
-    expect(component.providerId()).toBe('id1');
   });
 
-  it('should handle tags change', () => {
-    const mockTags = ['tag1', 'tag2', 'tag3'];
+  it('should dispatch GetCollectionLicenses with provider licensesLink when licenses are empty', () => {
+    setup({ licenses: [] });
 
-    component.handleTagsChange(mockTags);
-
-    expect(component.projectTags()).toEqual(mockTags);
+    expect(store.dispatch).toHaveBeenCalledWith(new GetCollectionLicenses(MOCK_COLLECTION_PROVIDER.licensesLink));
   });
 
-  it('should handle discard changes', () => {
+  it('should not dispatch GetCollectionLicenses when licenses are already loaded', () => {
+    setup({ licenses: [MOCK_LICENSE] });
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetCollectionLicenses));
+  });
+
+  it('should resolve projectLicense from collection licenses by project licenseId', () => {
+    setup({ licenses: [MOCK_LICENSE] });
+
+    expect(component.projectLicense()).toEqual(MOCK_LICENSE);
+    expect(component.selectedLicense()).toEqual(MOCK_LICENSE);
+  });
+
+  it('should return null projectLicense when project is missing', () => {
+    setup({ project: null, licenses: [MOCK_LICENSE] });
+
+    expect(component.projectLicense()).toBeNull();
+  });
+
+  it('should update tags on handleTagsChange', () => {
+    setup({ licenses: [MOCK_LICENSE] });
+
     component.handleTagsChange(['tag1', 'tag2']);
-    expect(component.projectTags()).toEqual(['tag1', 'tag2']);
 
+    expect(component.projectTags()).toEqual(['tag1', 'tag2']);
+  });
+
+  it('should restore project tags on discard changes', () => {
+    setup({ licenses: [MOCK_LICENSE] });
+
+    component.handleTagsChange(['changed']);
     component.handleDiscardChanges();
 
-    expect(component).toBeTruthy();
+    expect(component.projectTags()).toEqual(MOCK_PROJECT.tags);
   });
 
-  it('should handle edit step', () => {
+  it('should emit stepChange on handleEditStep', () => {
+    setup();
     const stepChangeSpy = vi.spyOn(component.stepChange, 'emit');
 
     component.handleEditStep();
 
-    expect(stepChangeSpy).toHaveBeenCalledWith(component.targetStepValue());
+    expect(stepChangeSpy).toHaveBeenCalledWith(AddToCollectionSteps.ProjectMetadata);
   });
 
-  it('should handle different input values', () => {
-    fixture.componentRef.setInput('stepperActiveValue', 1);
-    fixture.componentRef.setInput('targetStepValue', 3);
-    fixture.componentRef.setInput('isDisabled', true);
-    fixture.componentRef.setInput('providerId', 'id2');
-    fixture.detectChanges();
+  it('should select license from select change event', () => {
+    setup({ licenses: [MOCK_LICENSE] });
+    const otherLicense: LicenseModel = { ...MOCK_LICENSE, id: 'CC0', name: 'CC0' };
 
-    expect(component.stepperActiveValue()).toBe(1);
-    expect(component.targetStepValue()).toBe(3);
-    expect(component.isDisabled()).toBe(true);
-    expect(component.providerId()).toBe('id2');
+    component.handleSelectCollectionLicense({ value: otherLicense } as never);
+
+    expect(component.selectedLicense()).toEqual(otherLicense);
   });
 
-  it('should initialize selected license as null', () => {
-    expect(component.selectedLicense()).toBe(null);
+  it('should proceed to contributors step when metadata is unchanged', () => {
+    setup({ licenses: [MOCK_LICENSE] });
+    (store.dispatch as Mock).mockClear();
+    const stepChangeSpy = vi.spyOn(component.stepChange, 'emit');
+    const metadataSavedSpy = vi.spyOn(component.metadataSaved, 'emit');
+
+    component.handleUpdateMetadata();
+
+    expect(stepChangeSpy).toHaveBeenCalledWith(AddToCollectionSteps.ProjectContributors);
+    expect(store.dispatch).toHaveBeenCalledWith(new GetAllContributors(MOCK_PROJECT.id, ResourceType.Project));
+    expect(metadataSavedSpy).toHaveBeenCalled();
   });
 
-  it('should have project metadata form', () => {
-    expect(component.projectMetadataForm).toBeDefined();
+  it('should not update metadata when project is missing', () => {
+    setup({ project: null });
+    (store.dispatch as Mock).mockClear();
+    const stepChangeSpy = vi.spyOn(component.stepChange, 'emit');
+
+    component.handleUpdateMetadata();
+
+    expect(stepChangeSpy).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(GetAllContributors));
   });
 
-  it('should have computed project license', () => {
-    expect(component.projectLicense()).toBeDefined();
+  it('should dispatch ClearProjects on destroy', () => {
+    setup();
+    (store.dispatch as Mock).mockClear();
+
+    fixture.destroy();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new ClearProjects());
   });
 });
