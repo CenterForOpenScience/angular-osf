@@ -29,17 +29,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { UserSelectors } from '@osf/core/store/user/user.selectors';
+import { UserSelectors } from '@osf/core/store/user';
 import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 import { FILE_COUNT_ATTACHMENTS_LIMIT } from '@osf/shared/constants/files-limits.const';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants/input-validation-messages.const';
 import { FieldType } from '@osf/shared/enums/field-type.enum';
 import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.helper';
 import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
+import { FileModel } from '@osf/shared/models/files/file.model';
+import { FilePayloadJsonApi } from '@osf/shared/models/files/file-payload-json-api.model';
+import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 import { ToastService } from '@osf/shared/services/toast.service';
-import { FileModel } from '@shared/models/files/file.model';
-import { FilePayloadJsonApi } from '@shared/models/files/file-payload-json-api.model';
-import { PageSchema } from '@shared/models/registration/page-schema.model';
 
 import { FilesMapper } from '../../mappers/files.mapper';
 import { AttachedFile } from '../../models/attached-file.model';
@@ -69,16 +69,14 @@ import { FilesControlComponent } from '../files-control/files-control.component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomStepComponent implements OnDestroy {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  stepsData = input.required<Record<string, any>>();
-  filesLink = input.required<string>();
-  projectId = input.required<string>();
-  filesViewOnly = input<boolean>(false);
+  readonly stepsData = input.required<Record<string, unknown>>();
+  readonly filesLink = input.required<string>();
+  readonly projectId = input.required<string>();
+  readonly filesViewOnly = input<boolean>(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateAction = output<Record<string, any>>();
-  back = output<void>();
-  next = output<void>();
+  readonly updateAction = output<Record<string, unknown>>();
+  readonly back = output<void>();
+  readonly next = output<void>();
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -98,9 +96,9 @@ export class CustomStepComponent implements OnDestroy {
   readonly FieldType = FieldType;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  step = signal(this.route.snapshot.params['step']);
-  draftId = signal(this.route.snapshot.params['id']);
-  currentPage = computed(() => this.pages()[this.step() - 1]);
+  readonly step = signal(+this.route.snapshot.params['step']);
+  readonly draftId = signal(this.route.snapshot.params['id'] as string);
+  readonly currentPage = computed(() => this.pages()[this.step() - 1]);
   readonly fileUploadDescription = computed(() => {
     if (this.projectCreationDisabled()) {
       return 'shared.files.descriptionNoProject';
@@ -134,13 +132,7 @@ export class CustomStepComponent implements OnDestroy {
 
     this.attachedFiles[questionKey] = [...this.attachedFiles[questionKey], file];
     this.stepForm.patchValue({ [questionKey]: this.attachedFiles[questionKey] });
-
-    const otherFormValues = { ...this.stepForm.value };
-    delete otherFormValues[questionKey];
-    this.updateAction.emit({
-      [questionKey]: this.mapFilesToPayload(this.attachedFiles[questionKey]),
-      ...otherFormValues,
-    });
+    this.updateAction.emit(this.getFormPayload());
   }
 
   onOpenFile(file: FileModel): void {
@@ -184,6 +176,7 @@ export class CustomStepComponent implements OnDestroy {
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.saveStepState();
       this.step.set(+params['step']);
+      this.draftId.set(params['id']);
     });
   }
 
@@ -198,6 +191,7 @@ export class CustomStepComponent implements OnDestroy {
 
   private initStepForm(page: PageSchema): void {
     this.stepForm = this.fb.group({});
+    this.attachedFiles = {};
     const questions = [
       ...(page.questions || []),
       ...(page.sections?.flatMap((section) => section.questions ?? []) ?? []),
@@ -209,8 +203,8 @@ export class CustomStepComponent implements OnDestroy {
       if (!control) return;
 
       if (q.fieldType === FieldType.File) {
-        this.attachedFiles[controlName] =
-          this.stepsData()[controlName]?.map((file: FilePayloadJsonApi) => ({ ...file, name: file.file_name })) || [];
+        const files = (this.stepsData()[controlName] as FilePayloadJsonApi[] | undefined) || [];
+        this.attachedFiles[controlName] = files.map((file) => ({ ...file, name: file.file_name }));
       }
 
       this.stepForm.addControl(controlName, control);
@@ -253,14 +247,27 @@ export class CustomStepComponent implements OnDestroy {
       return;
     }
 
-    const changedFields = findChangedFields(this.stepForm.value, this.stepsData());
+    const formPayload = this.getFormPayload();
+    const changedFields = findChangedFields(formPayload, this.stepsData());
     if (Object.keys(changedFields).length > 0) {
       this.actions.setUpdatedFields(changedFields);
-      this.updateAction.emit(this.stepForm.value);
+      this.updateAction.emit(formPayload);
     }
 
     this.stepForm.markAllAsTouched();
-    this.actions.updateStepState(this.step(), this.stepForm.invalid, true);
+    this.actions.updateStepState(String(this.step()), this.stepForm.invalid, true);
+  }
+
+  private getFormPayload(): Record<string, unknown> {
+    const values: Record<string, unknown> = { ...this.stepForm.value };
+
+    for (const key of Object.keys(this.attachedFiles)) {
+      if (Object.prototype.hasOwnProperty.call(values, key)) {
+        values[key] = this.mapFilesToPayload(this.attachedFiles[key] ?? []);
+      }
+    }
+
+    return values;
   }
 
   private mapFilesToPayload(files: AttachedFile[]): FilePayloadJsonApi[] {
