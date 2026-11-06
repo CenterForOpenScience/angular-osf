@@ -53,10 +53,10 @@ export class UpdatePrimaryFileRelationship {
   constructor(public fileId: string) {}
 }
 
-export class ReuploadFile {
-  static readonly type = '[Preprint Stepper] Reupload File';
+export class DeletePreprintFile {
+  static readonly type = '[Preprint Stepper] Delete Preprint File';
 
-  constructor(public file: File) {}
+  constructor(public deleteLink: string) {}
 }
 
 export class CopyFileFromProject {

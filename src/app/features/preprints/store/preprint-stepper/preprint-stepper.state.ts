@@ -14,6 +14,7 @@ import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FilesService } from '@osf/shared/services/files.service';
 import { LicensesService } from '@osf/shared/services/licenses.service';
 
+import { PreprintFileSource } from '../../enums';
 import { PreprintFilesService } from '../../services/preprint-files.service';
 import { PreprintLicensesService } from '../../services/preprint-licenses.service';
 import { PreprintsService } from '../../services/preprints.service';
@@ -25,6 +26,7 @@ import {
   CreateNewProject,
   CreateNewVersion,
   CreatePreprint,
+  DeletePreprintFile,
   DisconnectProject,
   FetchAvailableProjects,
   FetchLicenses,
@@ -34,7 +36,6 @@ import {
   FetchPreprintProject,
   FetchProjectFilesByLink,
   ResetPreprintStepperState,
-  ReuploadFile,
   SaveLicense,
   SetInstitutionsChanged,
   SetPreprintStepperCurrentFolder,
@@ -157,20 +158,31 @@ export class PreprintStepperState {
     );
   }
 
-  @Action(ReuploadFile)
-  reuploadFile(ctx: StateContext<PreprintStepperStateModel>, action: ReuploadFile) {
-    const state = ctx.getState();
-    const uploadedFile = state.preprintFile.data;
-    if (!uploadedFile) return EMPTY;
-
+  @Action(DeletePreprintFile)
+  deletePreprintFile(ctx: StateContext<PreprintStepperStateModel>, action: DeletePreprintFile) {
     ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
 
-    return this.fileService.updateFileContent(action.file, uploadedFile.links.upload).pipe(
-      switchMap(() =>
-        uploadedFile.name !== action.file.name
-          ? this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace')
-          : of(null)
-      ),
+    return this.fileService.deleteEntry(action.deleteLink).pipe(
+      tap(() => {
+        const state = ctx.getState();
+        ctx.patchState({
+          preprintFile: {
+            data: null,
+            isLoading: false,
+            error: null,
+          },
+          fileSource: PreprintFileSource.None,
+          preprint: {
+            ...state.preprint,
+            data: state.preprint.data
+              ? {
+                  ...state.preprint.data,
+                  primaryFileId: null,
+                }
+              : null,
+          },
+        });
+      }),
       catchError((error) => handleSectionError(ctx, 'preprintFile', error))
     );
   }

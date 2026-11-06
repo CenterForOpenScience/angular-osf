@@ -25,16 +25,16 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { PreprintFileSource } from '@osf/features/preprints/enums';
+import { PreprintFileSource, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   CopyFileFromProject,
+  DeletePreprintFile,
   FetchAvailableProjects,
   FetchPreprintFilesLinks,
   FetchPreprintPrimaryFile,
   FetchProjectFilesByLink,
   PreprintStepperSelectors,
-  ReuploadFile,
   SetPreprintStepperCurrentFolder,
   SetProjectRootFolder,
   SetSelectedPreprintFileSource,
@@ -47,6 +47,7 @@ import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FileFolderModel } from '@osf/shared/models/files/file-folder.model';
 import { FilePageLinkModel } from '@osf/shared/models/files/file-page-link.model';
+import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 @Component({
@@ -70,14 +71,15 @@ import { ToastService } from '@osf/shared/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileStepComponent implements OnInit {
-  private toastService = inject(ToastService);
-  private destroyRef = inject(DestroyRef);
+  private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
 
   private actions = createDispatchMap({
     setSelectedFileSource: SetSelectedPreprintFileSource,
     getPreprintFilesLinks: FetchPreprintFilesLinks,
+    deletePreprintFile: DeletePreprintFile,
     uploadFile: UploadFile,
-    reuploadFile: ReuploadFile,
     fetchPreprintFile: FetchPreprintPrimaryFile,
     getAvailableProjects: FetchAvailableProjects,
     setProjectRootFolder: SetProjectRootFolder,
@@ -88,42 +90,45 @@ export class FileStepComponent implements OnInit {
 
   readonly PreprintFileSource = PreprintFileSource;
 
-  provider = input.required<PreprintProviderDetails>();
-  showDeleteButton = input(false);
-  preprint = select(PreprintStepperSelectors.getPreprint);
-  selectedFileSource = select(PreprintStepperSelectors.getSelectedFileSource);
-  fileUploadLink = select(PreprintStepperSelectors.getUploadLink);
+  readonly provider = input.required<PreprintProviderDetails>();
+  readonly showDeleteButton = input(false);
 
-  preprintFile = select(PreprintStepperSelectors.getPreprintFile);
-  isPreprintFileLoading = select(PreprintStepperSelectors.isPreprintFilesLoading);
+  readonly nextClicked = output<void>();
+  readonly backClicked = output<void>();
+  readonly deleteClicked = output<void>();
 
-  availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
-  areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
+  readonly preprint = select(PreprintStepperSelectors.getPreprint);
+  readonly selectedFileSource = select(PreprintStepperSelectors.getSelectedFileSource);
+  readonly fileUploadLink = select(PreprintStepperSelectors.getUploadLink);
 
-  projectFiles = select(PreprintStepperSelectors.getProjectFiles);
-  filesTotalCount = select(PreprintStepperSelectors.getFilesTotalCount);
-  areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
+  readonly preprintFile = select(PreprintStepperSelectors.getPreprintFile);
+  readonly isPreprintFileLoading = select(PreprintStepperSelectors.isPreprintFilesLoading);
 
-  currentFolder = select(PreprintStepperSelectors.getCurrentFolder);
-  isCurrentFolderLoading = select(PreprintStepperSelectors.isCurrentFolderLoading);
-  selectedProjectId = signal<StringOrNull>(null);
+  readonly availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
+  readonly areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
 
-  versionFileMode = signal<boolean>(false);
+  readonly projectFiles = select(PreprintStepperSelectors.getProjectFiles);
+  readonly filesTotalCount = select(PreprintStepperSelectors.getFilesTotalCount);
+  readonly areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
 
-  preprintHasPrimaryFile = computed(() => !!this.preprint()?.primaryFileId);
+  readonly currentFolder = select(PreprintStepperSelectors.getCurrentFolder);
+  readonly isCurrentFolderLoading = select(PreprintStepperSelectors.isCurrentFolderLoading);
+  readonly selectedProjectId = signal<StringOrNull>(null);
 
-  cancelSourceOptionButtonVisible = computed(
+  readonly preprintHasPrimaryFile = computed(() => !!this.preprint()?.primaryFileId);
+
+  readonly canDeletePrimaryFile = computed(() => {
+    const reviewsState = this.preprint()?.reviewsState;
+    return reviewsState === ReviewsState.Initial || reviewsState === ReviewsState.Rejected;
+  });
+
+  readonly cancelSourceOptionButtonVisible = computed(
     () => !this.preprintFile() && this.selectedFileSource() !== PreprintFileSource.None && !this.isPreprintFileLoading()
   );
 
-  projectNameControl = new FormControl<StringOrNull>(null);
+  readonly projectNameControl = new FormControl<StringOrNull>(null);
 
-  nextClicked = output<void>();
-  backClicked = output<void>();
-  deleteClicked = output<void>();
-
-  isFileSourceSelected = computed(() => this.selectedFileSource() !== PreprintFileSource.None);
-  canProceedToNext = computed(() => !!this.preprintFile() && !this.versionFileMode());
+  readonly isFileSourceSelected = computed(() => this.selectedFileSource() !== PreprintFileSource.None);
 
   ngOnInit() {
     this.actions.getPreprintFilesLinks();
@@ -156,7 +161,7 @@ export class FileStepComponent implements OnInit {
   }
 
   nextButtonClicked() {
-    if (!this.canProceedToNext() || !this.preprint()?.primaryFileId) {
+    if (!this.preprintFile() || !this.preprint()?.primaryFileId) {
       return;
     }
 
@@ -173,14 +178,10 @@ export class FileStepComponent implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
 
-    const isVersionFileMode = this.versionFileMode();
-
-    if (isVersionFileMode) {
-      this.versionFileMode.set(false);
-    }
-
-    const uploadAction = isVersionFileMode ? this.actions.reuploadFile(file) : this.actions.uploadFile(file);
-    uploadAction.subscribe(() => this.actions.fetchPreprintFile());
+    this.actions
+      .uploadFile(file)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.actions.fetchPreprintFile());
   }
 
   selectProject(event: SelectChangeEvent) {
@@ -200,13 +201,40 @@ export class FileStepComponent implements OnInit {
           } else {
             return EMPTY;
           }
-        })
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
   selectProjectFile(file: FileModel) {
-    this.actions.copyFileFromProject(file).subscribe(() => this.actions.fetchPreprintFile());
+    this.actions
+      .copyFileFromProject(file)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.actions.fetchPreprintFile());
+  }
+
+  deletePreprintFile() {
+    const file = this.preprintFile();
+
+    if (!file || !this.canDeletePrimaryFile()) {
+      return;
+    }
+
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'files.dialogs.deleteFile.title',
+      messageParams: { name: file.name },
+      messageKey: 'files.dialogs.deleteFile.message',
+      onConfirm: () => {
+        this.actions
+          .deletePreprintFile(file.links.delete)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
+            this.selectedProjectId.set(null);
+            this.toastService.showSuccess('files.dialogs.deleteFile.success');
+          });
+      },
+    });
   }
 
   cancelButtonClicked() {
