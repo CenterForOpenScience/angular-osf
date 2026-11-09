@@ -54,7 +54,7 @@ export class CreateNewVersionComponent implements OnDestroy, CanDeactivateCompon
   private readonly draftDeletionService = inject(PreprintDraftDeletionService);
 
   private readonly providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])));
-  private readonly preprintId = toSignal(this.route.params.pipe(map((params) => params['preprintId'])));
+  private readonly preprintId = toSignal(this.route.params.pipe(map((params) => params['id'])));
 
   private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
