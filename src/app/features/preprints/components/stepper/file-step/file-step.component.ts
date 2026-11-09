@@ -16,11 +16,13 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   input,
   OnInit,
   output,
   signal,
+  untracked,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -115,7 +117,9 @@ export class FileStepComponent implements OnInit {
   readonly isCurrentFolderLoading = select(PreprintStepperSelectors.isCurrentFolderLoading);
   readonly selectedProjectId = signal<StringOrNull>(null);
 
-  readonly preprintHasPrimaryFile = computed(() => !!this.preprint()?.primaryFileId);
+  readonly preprintId = computed(() => this.preprint()?.id ?? null);
+  readonly primaryFileId = computed(() => this.preprint()?.primaryFileId ?? null);
+  readonly preprintHasPrimaryFile = computed(() => !!this.primaryFileId());
 
   readonly canDeletePrimaryFile = computed(() => {
     const reviewsState = this.preprint()?.reviewsState;
@@ -130,13 +134,29 @@ export class FileStepComponent implements OnInit {
 
   readonly isFileSourceSelected = computed(() => this.selectedFileSource() !== PreprintFileSource.None);
 
-  ngOnInit() {
-    this.actions.getPreprintFilesLinks();
+  constructor() {
+    effect(() => {
+      if (!this.preprintId()) {
+        return;
+      }
 
-    if (this.preprintHasPrimaryFile() && !this.preprintFile()) {
+      this.actions.getPreprintFilesLinks();
+    });
+
+    effect(() => {
+      if (!this.primaryFileId()) {
+        return;
+      }
+
+      if (untracked(() => this.preprintFile())) {
+        return;
+      }
+
       this.actions.fetchPreprintFile();
-    }
+    });
+  }
 
+  ngOnInit() {
     this.projectNameControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((projectNameOrId) => {
@@ -161,7 +181,7 @@ export class FileStepComponent implements OnInit {
   }
 
   nextButtonClicked() {
-    if (!this.preprintFile() || !this.preprint()?.primaryFileId) {
+    if (!this.preprintFile() || !this.primaryFileId()) {
       return;
     }
 
@@ -178,10 +198,7 @@ export class FileStepComponent implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
 
-    this.actions
-      .uploadFile(file)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.actions.fetchPreprintFile());
+    this.actions.uploadFile(file).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   selectProject(event: SelectChangeEvent) {
@@ -208,10 +225,7 @@ export class FileStepComponent implements OnInit {
   }
 
   selectProjectFile(file: FileModel) {
-    this.actions
-      .copyFileFromProject(file)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.actions.fetchPreprintFile());
+    this.actions.copyFileFromProject(file).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   deletePreprintFile() {
@@ -231,6 +245,7 @@ export class FileStepComponent implements OnInit {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => {
             this.selectedProjectId.set(null);
+            this.projectNameControl.setValue(null, { emitEvent: false });
             this.toastService.showSuccess('files.dialogs.deleteFile.success');
           });
       },
@@ -242,6 +257,8 @@ export class FileStepComponent implements OnInit {
       return;
     }
 
+    this.selectedProjectId.set(null);
+    this.projectNameControl.setValue(null, { emitEvent: false });
     this.actions.setSelectedFileSource(PreprintFileSource.None);
   }
 

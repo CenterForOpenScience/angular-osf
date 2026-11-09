@@ -8,7 +8,7 @@ import { Mock } from 'vitest';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PreprintFileSource } from '@osf/features/preprints/enums';
+import { PreprintFileSource, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   CopyFileFromProject,
@@ -62,7 +62,7 @@ describe('FileStepComponent', () => {
   const originalPointerEvent = (globalThis as unknown as { PointerEvent?: typeof Event }).PointerEvent;
 
   const mockProvider: PreprintProviderDetails = PREPRINT_PROVIDER_DETAILS_MOCK;
-  const mockPreprint = PREPRINT_MOCK;
+  const mockPreprint = { ...PREPRINT_MOCK, reviewsState: ReviewsState.Initial };
   const mockPreprintFile = FileModelMock.simple({
     id: 'file-123',
     name: 'example.pdf',
@@ -145,11 +145,40 @@ describe('FileStepComponent', () => {
     expect(component).toBeTruthy();
     expect(component.showDeleteButton()).toBe(false);
     expect(component.preprintHasPrimaryFile()).toBe(true);
+    expect(component.canDeletePrimaryFile()).toBe(true);
     expect(component.isFileSourceSelected()).toBe(false);
     expect(component.cancelSourceOptionButtonVisible()).toBe(false);
 
     fixture.componentRef.setInput('showDeleteButton', true);
     expect(component.showDeleteButton()).toBe(true);
+  });
+
+  it('should disallow delete for non-initial and non-rejected review states', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintStepperSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Pending },
+        },
+      ],
+      detectChanges: false,
+    });
+
+    expect(component.canDeletePrimaryFile()).toBe(false);
+  });
+
+  it('should allow delete for rejected review state', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintStepperSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Rejected },
+        },
+      ],
+      detectChanges: false,
+    });
+
+    expect(component.canDeletePrimaryFile()).toBe(true);
   });
 
   it('should show cancel source button when source selected and file missing', () => {
@@ -164,13 +193,17 @@ describe('FileStepComponent', () => {
     expect(component.cancelSourceOptionButtonVisible()).toBe(true);
   });
 
-  it('should dispatch fetch links and primary file when file id exists without loaded file', () => {
+  it('should dispatch fetch links and skip primary file when file is already loaded', () => {
+    setup();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintFilesLinks());
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintPrimaryFile));
+  });
+
+  it('should dispatch fetch links and primary file when primary file id exists without loaded file', () => {
     setup({
       selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprintFile, value: null }],
-      detectChanges: false,
     });
-
-    component.ngOnInit();
 
     expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintFilesLinks());
     expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintPrimaryFile());
@@ -181,12 +214,18 @@ describe('FileStepComponent', () => {
       selectorOverrides: [
         { selector: PreprintStepperSelectors.getPreprint, value: { ...mockPreprint, primaryFileId: null } },
       ],
-      detectChanges: false,
     });
 
-    component.ngOnInit();
-
     expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintFilesLinks());
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintPrimaryFile));
+  });
+
+  it('should skip init fetches when preprint is missing', () => {
+    setup({
+      selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprint, value: null }],
+    });
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintFilesLinks));
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintPrimaryFile));
   });
 
@@ -264,7 +303,7 @@ describe('FileStepComponent', () => {
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
-  it('should upload selected file and refetch primary file', () => {
+  it('should upload selected file', () => {
     setup({ detectChanges: false });
     const file = new File(['content'], 'upload.pdf');
     const input = document.createElement('input');
@@ -273,7 +312,7 @@ describe('FileStepComponent', () => {
     component.onFileSelected({ target: input } as unknown as Event);
 
     expect(store.dispatch).toHaveBeenCalledWith(new UploadFile(file));
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintPrimaryFile());
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintPrimaryFile));
   });
 
   it('should skip upload when no file is selected', () => {
@@ -325,19 +364,20 @@ describe('FileStepComponent', () => {
     expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(SetProjectRootFolder));
   });
 
-  it('should copy project file and refetch primary file', () => {
+  it('should copy project file', () => {
     setup({ detectChanges: false });
     const projectFile = FileModelMock.simple({ id: 'project-file-1' });
 
     component.selectProjectFile(projectFile);
 
     expect(store.dispatch).toHaveBeenCalledWith(new CopyFileFromProject(projectFile));
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchPreprintPrimaryFile());
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchPreprintPrimaryFile));
   });
 
-  it('should confirm delete preprint file and clear selected project on confirm', () => {
+  it('should confirm delete preprint file and clear project selection on confirm', () => {
     setup({ detectChanges: false });
     component.selectedProjectId.set('project-1');
+    component.projectNameControl.setValue('project-1', { emitEvent: false });
 
     component.deletePreprintFile();
 
@@ -353,6 +393,7 @@ describe('FileStepComponent', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(new DeletePreprintFile(mockPreprintFile.links.delete));
     expect(component.selectedProjectId()).toBeNull();
+    expect(component.projectNameControl.value).toBeNull();
     expect(toastServiceMock.showSuccess).toHaveBeenCalledWith('files.dialogs.deleteFile.success');
   });
 
@@ -367,23 +408,44 @@ describe('FileStepComponent', () => {
     expect(confirmationMock.confirmDelete).not.toHaveBeenCalled();
   });
 
-  it('should reset file source on cancel only when file is missing', () => {
-    setup({ detectChanges: false });
+  it('should skip delete preprint file when review state does not allow delete', () => {
+    setup({
+      selectorOverrides: [
+        {
+          selector: PreprintStepperSelectors.getPreprint,
+          value: { ...mockPreprint, reviewsState: ReviewsState.Pending },
+        },
+      ],
+      detectChanges: false,
+    });
 
-    component.cancelButtonClicked();
-    expect(store.dispatch).not.toHaveBeenCalledWith(new SetSelectedPreprintFileSource(PreprintFileSource.None));
+    component.deletePreprintFile();
+
+    expect(confirmationMock.confirmDelete).not.toHaveBeenCalled();
   });
 
-  it('should reset file source on cancel when preprint file is absent', () => {
+  it('should reset file source and project selection on cancel when file is missing', () => {
     setup({
       selectorOverrides: [{ selector: PreprintStepperSelectors.getPreprintFile, value: null }],
       detectChanges: false,
     });
+    component.selectedProjectId.set('project-1');
+    component.projectNameControl.setValue('project-1', { emitEvent: false });
     (store.dispatch as Mock).mockClear();
 
     component.cancelButtonClicked();
 
+    expect(component.selectedProjectId()).toBeNull();
+    expect(component.projectNameControl.value).toBeNull();
     expect(store.dispatch).toHaveBeenCalledWith(new SetSelectedPreprintFileSource(PreprintFileSource.None));
+  });
+
+  it('should keep file source on cancel when file is present', () => {
+    setup({ detectChanges: false });
+
+    component.cancelButtonClicked();
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(new SetSelectedPreprintFileSource(PreprintFileSource.None));
   });
 
   it('should set current folder only when folder id changes', () => {

@@ -7,10 +7,9 @@
         | translate: { preprintWord: provider().preprintWord | titlecase }
     }}
   </p>
-  <p class="line-height-3">{{ 'preprints.preprintStepper.file.note' | translate }}</p>
 </section>
 
-@if (!preprintHasPrimaryFile()) {
+@if (preprint() && !preprintHasPrimaryFile()) {
   <section class="mt-4 w-full flex flex-column gap-2 md:flex-row">
     <p-button
       data-test-computer-button
@@ -22,10 +21,6 @@
       [label]="'preprints.preprintStepper.file.uploadFromComputer' | translate"
       severity="secondary"
       [disabled]="isFileSourceSelected()"
-      [pTooltip]="
-        isFileSourceSelected() ? ('preprints.preprintStepper.file.tooltips.computerDisabled' | translate) : ''
-      "
-      tooltipPosition="top"
       (onClick)="selectFileSource(PreprintFileSource.Computer)"
     />
     <p-button
@@ -38,18 +33,16 @@
       [label]="'preprints.preprintStepper.file.selectFromProject' | translate"
       severity="secondary"
       [disabled]="isFileSourceSelected()"
-      [pTooltip]="isFileSourceSelected() ? ('preprints.preprintStepper.file.tooltips.projectDisabled' | translate) : ''"
-      tooltipPosition="top"
       (onClick)="selectFileSource(PreprintFileSource.Project)"
     />
   </section>
 }
 
-@if (selectedFileSource() === PreprintFileSource.Computer) {
+@if (selectedFileSource() === PreprintFileSource.Computer && !preprintFile() && !isPreprintFileLoading()) {
   <section class="mt-6">
     @if (!fileUploadLink()) {
       <p-skeleton width="5rem" height="2rem" />
-    } @else if (!preprintFile() && !isPreprintFileLoading()) {
+    } @else {
       <p-button
         outlined
         raised
@@ -134,6 +127,8 @@
           severity="danger"
           text
           [ariaLabel]="'common.buttons.delete' | translate"
+          [pTooltip]="'common.buttons.delete' | translate"
+          tooltipPosition="top"
           (onClick)="deletePreprintFile()"
         />
       }

@@ -1541,13 +1541,8 @@
         "success": "Preprint draft successfully deleted."
       },
       "file": {
-        "note": "Note: You cannot switch options once a file is attached.",
         "selectFromProject": "Select From Existing OSF Project",
         "title": "File",
-        "tooltips": {
-          "computerDisabled": "Start a new preprint to attach a file from your computer.",
-          "projectDisabled": "Start a new preprint to attach a file from your project."
-        },
         "uploadDescription": "Please Upload your {{preprintWord}}",
         "uploadFileButton": "Upload file",
         "uploadFromComputer": "Upload From Your Computer"
