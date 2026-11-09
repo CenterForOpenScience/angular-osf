@@ -1,7 +1,6 @@
 import { ReviewAction } from '@osf/features/moderation/models';
 import { IdentifierModel } from '@osf/shared/models/identifiers/identifier.model';
 import { Institution } from '@osf/shared/models/institutions/institutions.model';
-import { LicenseModel } from '@osf/shared/models/license/license.model';
 import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
 import { SchemaResponse } from '@osf/shared/models/registration/schema-response.model';
 import { AsyncStateModel } from '@osf/shared/models/store/async-state.model';
@@ -12,7 +11,6 @@ export interface RegistryStateModel {
   registry: AsyncStateModel<RegistrationOverviewModel | null>;
   institutions: AsyncStateModel<Institution[] | null>;
   identifiers: AsyncStateModel<IdentifierModel[]>;
-  license: AsyncStateModel<LicenseModel | null>;
   schemaBlocks: AsyncStateModel<PageSchema[] | null>;
   schemaResponses: AsyncStateModel<SchemaResponse[]>;
   currentSchemaResponse: AsyncStateModel<SchemaResponse | null>;
@@ -39,11 +37,6 @@ export const REGISTRY_DEFAULTS: RegistryStateModel = {
   },
   identifiers: {
     data: [],
-    isLoading: false,
-    error: null,
-  },
-  license: {
-    data: null,
     isLoading: false,
     error: null,
   },

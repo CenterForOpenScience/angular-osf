@@ -12,4 +12,5 @@ export interface RegistryProviderDetails {
   reviewsWorkflow: string;
   allowSubmissions: boolean;
   allowUpdates: boolean;
+  licensesLink?: string;
 }

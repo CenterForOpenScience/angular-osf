@@ -28,6 +28,7 @@ export interface PreprintProviderDetails {
   facebookAppId: StringOrNull;
   reviewsCommentsPrivate: StringOrNull;
   reviewsCommentsAnonymous: StringOrNull;
+  licensesLink?: string;
 }
 
 export interface PreprintProviderShortInfo {

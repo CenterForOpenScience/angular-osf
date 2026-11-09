@@ -18,6 +18,7 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/provider/environment.provider';
 import { StepperComponent } from '@osf/shared/components/stepper/stepper.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { ResourceType } from '@osf/shared/enums/resource-type.enum';
@@ -25,6 +26,7 @@ import { PageSchema, Question } from '@osf/shared/models/registration/page-schem
 import { StepOption } from '@osf/shared/models/step-option.model';
 import { LoaderService } from '@osf/shared/services/loader.service';
 import { ContributorsSelectors, GetAllContributors } from '@osf/shared/stores/contributors';
+import { GetRegistryProvider, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { DEFAULT_STEPS } from '../../constants';
@@ -43,13 +45,14 @@ export class DraftsComponent implements OnDestroy {
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly environment = inject(ENVIRONMENT);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   readonly stepsState = select(RegistriesSelectors.getStepsState);
+  readonly provider = select(RegistrationProviderSelectors.getBrandedProvider);
 
   private readonly stepsData = select(RegistriesSelectors.getStepsData);
-  private readonly registrationLicense = select(RegistriesSelectors.getRegistrationLicense);
   private readonly selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   private readonly contributors = select(ContributorsSelectors.getContributors);
 
@@ -57,9 +60,10 @@ export class DraftsComponent implements OnDestroy {
     getSchemaBlocks: FetchSchemaBlocks,
     getDraftRegistration: FetchDraft,
     updateStepState: UpdateStepState,
-    clearState: ClearState,
     getContributors: GetAllContributors,
     getSubjects: FetchSelectedSubjects,
+    getRegistryProvider: GetRegistryProvider,
+    clearState: ClearState,
   });
 
   get isReviewPage(): boolean {
@@ -70,7 +74,7 @@ export class DraftsComponent implements OnDestroy {
     () =>
       !this.draftRegistration()?.title ||
       !this.draftRegistration()?.description ||
-      !this.registrationLicense() ||
+      !this.draftRegistration()?.license?.id ||
       !this.selectedSubjects()?.length
   );
 
@@ -115,6 +119,7 @@ export class DraftsComponent implements OnDestroy {
   constructor() {
     this.loadInitialData();
     this.setupSchemaLoader();
+    this.setupProviderLoader();
     this.setupRouteWatcher();
     this.setupReviewStepSync();
     this.setupStepValidation();
@@ -154,6 +159,20 @@ export class DraftsComponent implements OnDestroy {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => this.loaderService.hide());
+  }
+
+  private setupProviderLoader() {
+    effect(() => {
+      const draft = this.draftRegistration();
+      if (!draft) {
+        return;
+      }
+
+      const providerId = draft.providerId ?? this.environment.defaultProvider;
+      if (this.provider()?.id !== providerId) {
+        this.actions.getRegistryProvider(providerId);
+      }
+    });
   }
 
   private setupRouteWatcher() {

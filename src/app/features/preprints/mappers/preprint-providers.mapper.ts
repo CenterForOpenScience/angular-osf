@@ -29,6 +29,7 @@ export class PreprintProvidersMapper {
       facebookAppId: response.attributes.facebook_app_id,
       reviewsCommentsPrivate: response.attributes.reviews_comments_private,
       reviewsCommentsAnonymous: response.attributes.reviews_comments_anonymous,
+      licensesLink: response.relationships?.licenses_acceptable?.links?.related?.href ?? '',
     };
   }
 

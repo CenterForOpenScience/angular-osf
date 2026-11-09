@@ -295,6 +295,34 @@ describe('errorInterceptor', () => {
     expect(toastServiceMock.showError).not.toHaveBeenCalled();
   });
 
+  it('should navigate to request-access for 403 node URL with trailing slash and query', async () => {
+    setup('browser', false, '/projects/abc');
+    const request = createRequest('/api/v2/nodes/abc/?related_counts=forks');
+    const error = new HttpErrorResponse({
+      status: 403,
+      error: {},
+      url: '/api/v2/nodes/abc/?related_counts=forks',
+    });
+
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(403);
+    expect(router.navigate).toHaveBeenCalledWith(['/request-access', 'abc']);
+  });
+
+  it('should not redirect on 403 for node relationship URL', async () => {
+    setup('browser', false, '/projects/abc');
+    const request = createRequest('/api/v2/nodes/abc/preprints/');
+    const error = new HttpErrorResponse({ status: 403, error: {}, url: '/api/v2/nodes/abc/preprints/' });
+
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(403);
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(loaderServiceMock.hide).toHaveBeenCalled();
+    expect(toastServiceMock.showError).not.toHaveBeenCalled();
+  });
+
   it('should navigate to forbidden for 403 without a node URL', async () => {
     setup();
     const request = createRequest('/api/v2/users/me/');
@@ -306,6 +334,18 @@ describe('errorInterceptor', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/forbidden']);
     expect(loaderServiceMock.hide).toHaveBeenCalled();
     expect(toastServiceMock.showError).not.toHaveBeenCalled();
+  });
+
+  it('should not set SSR response status for node relationship 403', async () => {
+    setup('server');
+    const request = createRequest('/api/v2/nodes/abc/preprints/');
+    const error = new HttpErrorResponse({ status: 403, error: {}, url: '/api/v2/nodes/abc/preprints/' });
+
+    const caught = await runInterceptor(request, error);
+
+    expect(caught?.status).toBe(403);
+    expect(responseInit.status).toBeUndefined();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('should not redirect on 403 when current route is a draft registry', async () => {

@@ -36,6 +36,7 @@ export class RegistrationProviderMapper {
       reviewsWorkflow: response.attributes.reviews_workflow,
       allowSubmissions: response.attributes.allow_submissions,
       allowUpdates: response.attributes.allow_updates,
+      licensesLink: response.relationships?.licenses_acceptable?.links?.related?.href ?? '',
     };
   }
 }

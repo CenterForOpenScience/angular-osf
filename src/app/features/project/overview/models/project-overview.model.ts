@@ -7,5 +7,6 @@ export interface ProjectOverviewModel extends BaseNodeModel {
   parentId?: string;
   rootParentId?: string;
   licenseId?: string;
+  preprintsUrl?: string | null;
   contributors?: ContributorModel[];
 }

@@ -9,13 +9,7 @@ import { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  ClearState,
-  DeleteDraft,
-  FetchLicenses,
-  FetchProjectChildren,
-  RegistriesSelectors,
-} from '@osf/features/registries/store';
+import { ClearState, DeleteDraft, FetchProjectChildren, RegistriesSelectors } from '@osf/features/registries/store';
 import { ContributorsListComponent } from '@osf/shared/components/contributors-list/contributors-list.component';
 import { LicenseDisplayComponent } from '@osf/shared/components/license-display/license-display.component';
 import { RegistrationBlocksDataComponent } from '@osf/shared/components/registration-blocks-data/registration-blocks-data.component';
@@ -29,6 +23,7 @@ import {
   LoadMoreContributors,
   ResetContributorsState,
 } from '@osf/shared/stores/contributors';
+import { FetchLicense, LicensesSelectors } from '@osf/shared/stores/licenses';
 import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores/subjects';
 
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -42,7 +37,12 @@ import {
 } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
-import { provideMockStore } from '@testing/providers/store-provider.mock';
+import {
+  BaseSetupOverrides,
+  mergeSignalOverrides,
+  provideMockStore,
+  SignalOverride,
+} from '@testing/providers/store-provider.mock';
 import { ToastServiceMock, ToastServiceMockType } from '@testing/providers/toast-provider.mock';
 
 import { ReviewComponent } from './review.component';
@@ -52,80 +52,12 @@ const DEFAULT_DRAFT = {
   providerId: 'prov-1',
   currentUserPermissions: [],
   hasProject: false,
-  license: { options: {} },
+  license: { id: 'lic-1', options: {} },
   branchedFrom: { id: 'proj-1', type: 'nodes' },
 };
 
-function createDefaultSignals(overrides: { selector: any; value: any }[] = []) {
-  const defaults = [
-    { selector: RegistriesSelectors.getPagesSchema, value: [] },
-    { selector: RegistriesSelectors.getDraftRegistration, value: DEFAULT_DRAFT },
-    { selector: RegistriesSelectors.isDraftSubmitting, value: false },
-    { selector: RegistriesSelectors.isDraftLoading, value: false },
-    { selector: RegistriesSelectors.getStepsData, value: {} },
-    { selector: RegistriesSelectors.getRegistrationComponents, value: [] },
-    { selector: RegistriesSelectors.getRegistrationLicense, value: null },
-    { selector: RegistriesSelectors.getRegistration, value: { id: 'new-reg-1' } },
-    { selector: RegistriesSelectors.getStepsState, value: { 0: { invalid: false } } },
-    { selector: RegistriesSelectors.hasDraftAdminAccess, value: true },
-    { selector: ContributorsSelectors.getContributors, value: [] },
-    { selector: ContributorsSelectors.isContributorsLoading, value: false },
-    { selector: ContributorsSelectors.hasMoreContributors, value: false },
-    { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
-  ];
-
-  return overrides.length
-    ? defaults.map((s) => {
-        const override = overrides.find((o) => o.selector === s.selector);
-        return override ? { ...s, value: override.value } : s;
-      })
-    : defaults;
-}
-
-function setup(
-  opts: {
-    selectorOverrides?: { selector: any; value: any }[];
-    dialogCloseSubject?: Subject<any>;
-  } = {}
-) {
-  const mockRouter = RouterMockBuilder.create().withUrl('/registries/123/review').build();
-  const mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
-
-  const dialogClose$ = opts.dialogCloseSubject ?? new Subject<any>();
-  const mockDialog = CustomDialogServiceMockBuilder.create()
-    .withOpen(
-      vi.fn().mockReturnValue({
-        onClose: dialogClose$.pipe(),
-        close: vi.fn(),
-      })
-    )
-    .build();
-
-  const mockToast = ToastServiceMock.simple();
-  const mockConfirmation = CustomConfirmationServiceMock.simple();
-
-  TestBed.configureTestingModule({
-    imports: [
-      ReviewComponent,
-      ...MockComponents(RegistrationBlocksDataComponent, ContributorsListComponent, LicenseDisplayComponent),
-    ],
-    providers: [
-      provideOSFCore(),
-      MockProvider(ActivatedRoute, mockActivatedRoute),
-      MockProvider(Router, mockRouter),
-      MockProvider(CustomDialogService, mockDialog),
-      MockProvider(CustomConfirmationService, mockConfirmation),
-      MockProvider(ToastService, mockToast),
-      provideMockStore({ signals: createDefaultSignals(opts.selectorOverrides) }),
-    ],
-  });
-
-  const store = TestBed.inject(Store);
-  const fixture = TestBed.createComponent(ReviewComponent);
-  const component = fixture.componentInstance;
-  fixture.detectChanges();
-
-  return { fixture, component, store, mockRouter, mockDialog, mockToast, mockConfirmation, dialogClose$ };
+interface SetupOverrides extends BaseSetupOverrides {
+  dialogCloseSubject?: Subject<unknown>;
 }
 
 describe('ReviewComponent', () => {
@@ -135,37 +67,88 @@ describe('ReviewComponent', () => {
   let mockDialog: CustomDialogServiceMockType;
   let mockToast: ToastServiceMockType;
   let mockConfirmation: CustomConfirmationServiceMockType;
-  let dialogClose$: Subject<any>;
+  let dialogClose$: Subject<unknown>;
+
+  function setup(overrides: SetupOverrides = {}) {
+    mockRouter = RouterMockBuilder.create().withUrl('/registries/123/review').build();
+    const mockActivatedRoute = ActivatedRouteMockBuilder.create().withParams({ id: 'draft-1' }).build();
+
+    dialogClose$ = overrides.dialogCloseSubject ?? new Subject<unknown>();
+    mockDialog = CustomDialogServiceMockBuilder.create()
+      .withOpen(
+        vi.fn().mockReturnValue({
+          onClose: dialogClose$.pipe(),
+          close: vi.fn(),
+        })
+      )
+      .build();
+
+    mockToast = ToastServiceMock.simple();
+    mockConfirmation = CustomConfirmationServiceMock.simple();
+
+    const defaultSignals: SignalOverride[] = [
+      { selector: RegistriesSelectors.getPagesSchema, value: [] },
+      { selector: RegistriesSelectors.getDraftRegistration, value: DEFAULT_DRAFT },
+      { selector: RegistriesSelectors.isDraftLoading, value: false },
+      { selector: RegistriesSelectors.getStepsData, value: {} },
+      { selector: RegistriesSelectors.getRegistrationComponents, value: [] },
+      { selector: RegistriesSelectors.isRegistrationComponentsLoading, value: false },
+      { selector: LicensesSelectors.getLicense, value: null },
+      { selector: RegistriesSelectors.getRegistration, value: { id: 'new-reg-1' } },
+      { selector: RegistriesSelectors.getStepsState, value: { 0: { invalid: false } } },
+      { selector: RegistriesSelectors.hasDraftAdminAccess, value: true },
+      { selector: ContributorsSelectors.getContributors, value: [] },
+      { selector: ContributorsSelectors.isContributorsLoading, value: false },
+      { selector: ContributorsSelectors.hasMoreContributors, value: false },
+      { selector: SubjectsSelectors.getSelectedSubjects, value: [] },
+    ];
+
+    TestBed.configureTestingModule({
+      imports: [
+        ReviewComponent,
+        ...MockComponents(RegistrationBlocksDataComponent, ContributorsListComponent, LicenseDisplayComponent),
+      ],
+      providers: [
+        provideOSFCore(),
+        MockProvider(ActivatedRoute, mockActivatedRoute),
+        MockProvider(Router, mockRouter),
+        MockProvider(CustomDialogService, mockDialog),
+        MockProvider(CustomConfirmationService, mockConfirmation),
+        MockProvider(ToastService, mockToast),
+        provideMockStore({
+          signals: mergeSignalOverrides(defaultSignals, overrides.selectorOverrides),
+        }),
+      ],
+    });
+
+    store = TestBed.inject(Store);
+    const fixture = TestBed.createComponent(ReviewComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }
 
   beforeEach(() => {
-    const result = setup();
-    component = result.component;
-    store = result.store;
-    mockRouter = result.mockRouter;
-    mockDialog = result.mockDialog;
-    mockToast = result.mockToast;
-    mockConfirmation = result.mockConfirmation;
-    dialogClose$ = result.dialogClose$;
+    setup();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch getContributors, getSubjects and fetchLicenses on init', () => {
+  it('should dispatch getContributors, getSubjects and fetchLicense on init', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new GetAllContributors('draft-1', ResourceType.DraftRegistration));
     expect(store.dispatch).toHaveBeenCalledWith(new FetchSelectedSubjects('draft-1', ResourceType.DraftRegistration));
-    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicenses('prov-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchLicense('lic-1'));
   });
 
   it('should navigate to previous step on goBack', () => {
-    const { component: c, mockRouter: router } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getPagesSchema, value: [{ id: '1' }, { id: '2' }] }],
     });
 
-    c.goBack();
+    component.goBack();
 
-    expect(router.navigate).toHaveBeenCalledWith(
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
       ['../', 2],
       expect.objectContaining({ relativeTo: expect.anything() })
     );
@@ -181,7 +164,7 @@ describe('ReviewComponent', () => {
   });
 
   it('should dispatch deleteDraft and navigate on confirm', () => {
-    mockConfirmation.confirmDelete.mockImplementation(({ onConfirm }: any) => onConfirm());
+    mockConfirmation.confirmDelete.mockImplementation(({ onConfirm }) => onConfirm?.());
     (store.dispatch as Mock).mockClear();
 
     component.deleteDraft();
@@ -192,14 +175,14 @@ describe('ReviewComponent', () => {
   });
 
   it('should open select components dialog when components exist', () => {
-    const { component: c, mockDialog: dialog } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getRegistrationComponents, value: [{ id: 'comp-1' }] }],
     });
 
-    c.confirmRegistration();
+    component.confirmRegistration();
 
-    expect(dialog.open).toHaveBeenCalled();
-    const firstCallArgs = (dialog.open as Mock).mock.calls[0];
+    expect(mockDialog.open).toHaveBeenCalled();
+    const firstCallArgs = (mockDialog.open as Mock).mock.calls[0];
     expect(firstCallArgs[1].header).toBe('registries.review.selectComponents.title');
   });
 
@@ -220,18 +203,14 @@ describe('ReviewComponent', () => {
   });
 
   it('should reopen select components dialog when confirm dialog closed with falsy result and components exist', () => {
-    const {
-      component: c,
-      mockDialog: dialog,
-      dialogClose$: close$,
-    } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getRegistrationComponents, value: [{ id: 'comp-1' }] }],
     });
 
-    c.openConfirmRegistrationDialog(['comp-1']);
-    close$.next(false);
+    component.openConfirmRegistrationDialog(['comp-1']);
+    dialogClose$.next(false);
 
-    expect(dialog.open).toHaveBeenCalledTimes(2);
+    expect(mockDialog.open).toHaveBeenCalledTimes(2);
   });
 
   it('should not navigate when confirm dialog closed with falsy result and no components', () => {
@@ -242,44 +221,44 @@ describe('ReviewComponent', () => {
   });
 
   it('should pass selected components from select dialog to confirm dialog', () => {
-    const selectClose$ = new Subject<any>();
-    const confirmClose$ = new Subject<any>();
+    const selectClose$ = new Subject<unknown>();
+    const confirmClose$ = new Subject<unknown>();
     let callCount = 0;
 
-    const { component: c, mockDialog: dialog } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getRegistrationComponents, value: [{ id: 'comp-1' }] }],
     });
 
-    (dialog.open as Mock).mockImplementation(() => {
+    (mockDialog.open as Mock).mockImplementation(() => {
       callCount++;
       const subj = callCount === 1 ? selectClose$ : confirmClose$;
       return { onClose: subj.pipe(), close: vi.fn() };
     });
 
-    c.openSelectComponentsForRegistrationDialog();
+    component.openSelectComponentsForRegistrationDialog();
     selectClose$.next(['comp-1']);
 
-    expect(dialog.open).toHaveBeenCalledTimes(2);
-    const secondCallArgs = (dialog.open as Mock).mock.calls[1];
+    expect(mockDialog.open).toHaveBeenCalledTimes(2);
+    const secondCallArgs = (mockDialog.open as Mock).mock.calls[1];
     expect(secondCallArgs[1].data.components).toEqual(['comp-1']);
   });
 
   it('should not open confirm dialog when select components dialog returns falsy', () => {
-    const selectClose$ = new Subject<any>();
+    const selectClose$ = new Subject<unknown>();
 
-    const { component: c, mockDialog: dialog } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getRegistrationComponents, value: [{ id: 'comp-1' }] }],
     });
 
-    (dialog.open as Mock).mockReturnValue({
+    (mockDialog.open as Mock).mockReturnValue({
       onClose: selectClose$.pipe(),
       close: vi.fn(),
     });
 
-    c.openSelectComponentsForRegistrationDialog();
+    component.openSelectComponentsForRegistrationDialog();
     selectClose$.next(null);
 
-    expect(dialog.open).toHaveBeenCalledTimes(1);
+    expect(mockDialog.open).toHaveBeenCalledTimes(1);
   });
 
   it('should dispatch loadMoreContributors', () => {
@@ -299,10 +278,10 @@ describe('ReviewComponent', () => {
   });
 
   it('should compute isDraftInvalid as true when any step is invalid', () => {
-    const { component: c } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getStepsState, value: { 0: { invalid: true } } }],
     });
-    expect(c.isDraftInvalid()).toBe(true);
+    expect(component.isDraftInvalid()).toBe(true);
   });
 
   it('should compute registerButtonDisabled as false when valid and has admin access', () => {
@@ -310,36 +289,43 @@ describe('ReviewComponent', () => {
   });
 
   it('should compute registerButtonDisabled as true when draft is loading', () => {
-    const { component: c } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.isDraftLoading, value: true }],
     });
-    expect(c.registerButtonDisabled()).toBe(true);
+    expect(component.registerButtonDisabled()).toBe(true);
   });
 
   it('should compute registerButtonDisabled as true when draft is invalid', () => {
-    const { component: c } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getStepsState, value: { 0: { invalid: true } } }],
     });
-    expect(c.registerButtonDisabled()).toBe(true);
+    expect(component.registerButtonDisabled()).toBe(true);
   });
 
   it('should compute registerButtonDisabled as true when no admin access', () => {
-    const { component: c } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.hasDraftAdminAccess, value: false }],
     });
-    expect(c.registerButtonDisabled()).toBe(true);
+    expect(component.registerButtonDisabled()).toBe(true);
+  });
+
+  it('should compute registerButtonDisabled as true when registration components are loading', () => {
+    setup({
+      selectorOverrides: [{ selector: RegistriesSelectors.isRegistrationComponentsLoading, value: true }],
+    });
+    expect(component.registerButtonDisabled()).toBe(true);
   });
 
   it('should compute licenseOptionsRecord from draft license options', () => {
-    const { component: c } = setup({
+    setup({
       selectorOverrides: [
         {
           selector: RegistriesSelectors.getDraftRegistration,
-          value: { ...DEFAULT_DRAFT, license: { options: { year: '2026', copyright: 'Test' } } },
+          value: { ...DEFAULT_DRAFT, license: { id: 'lic-1', options: { year: '2026', copyright: 'Test' } } },
         },
       ],
     });
-    expect(c.licenseOptionsRecord()).toEqual({ year: '2026', copyright: 'Test' });
+    expect(component.licenseOptionsRecord()).toEqual({ year: '2026', copyright: 'Test' });
   });
 
   it('should compute licenseOptionsRecord as empty when no license options', () => {
@@ -356,7 +342,7 @@ describe('ReviewComponent', () => {
   });
 
   it('should set projectId to null when branchedFrom type is not nodes', () => {
-    const { component: c, mockDialog: dialog } = setup({
+    setup({
       selectorOverrides: [
         {
           selector: RegistriesSelectors.getDraftRegistration,
@@ -365,9 +351,9 @@ describe('ReviewComponent', () => {
       ],
     });
 
-    c.openConfirmRegistrationDialog();
+    component.openConfirmRegistrationDialog();
 
-    const callArgs = (dialog.open as Mock).mock.calls[0];
+    const callArgs = (mockDialog.open as Mock).mock.calls[0];
     expect(callArgs[1].data.projectId).toBeNull();
   });
 
@@ -379,24 +365,19 @@ describe('ReviewComponent', () => {
   });
 
   it('should not navigate after registration when newRegistration has no id', () => {
-    const {
-      component: c,
-      mockRouter: router,
-      mockToast: toast,
-      dialogClose$: close$,
-    } = setup({
+    setup({
       selectorOverrides: [{ selector: RegistriesSelectors.getRegistration, value: { id: null } }],
     });
 
-    c.openConfirmRegistrationDialog();
-    close$.next(true);
+    component.openConfirmRegistrationDialog();
+    dialogClose$.next(true);
 
-    expect(toast.showSuccess).toHaveBeenCalled();
-    expect(router.navigate).not.toHaveBeenCalled();
+    expect(mockToast.showSuccess).toHaveBeenCalled();
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
   it('should dispatch getProjectsComponents when draft hasProject is true', () => {
-    const { store: s } = setup({
+    setup({
       selectorOverrides: [
         {
           selector: RegistriesSelectors.getDraftRegistration,
@@ -405,11 +386,11 @@ describe('ReviewComponent', () => {
       ],
     });
 
-    expect(s.dispatch).toHaveBeenCalledWith(new FetchProjectChildren('proj-1'));
+    expect(store.dispatch).toHaveBeenCalledWith(new FetchProjectChildren('proj-1'));
   });
 
-  it('should dispatch getProjectsComponents with empty string when branchedFrom has no id', () => {
-    const { store: s } = setup({
+  it('should not dispatch getProjectsComponents when branchedFrom has no id', () => {
+    setup({
       selectorOverrides: [
         {
           selector: RegistriesSelectors.getDraftRegistration,
@@ -418,20 +399,6 @@ describe('ReviewComponent', () => {
       ],
     });
 
-    expect(s.dispatch).toHaveBeenCalledWith(new FetchProjectChildren(''));
-  });
-
-  it('should not dispatch getProjectsComponents when isDraftSubmitting is true', () => {
-    const { store: s } = setup({
-      selectorOverrides: [
-        { selector: RegistriesSelectors.isDraftSubmitting, value: true },
-        {
-          selector: RegistriesSelectors.getDraftRegistration,
-          value: { ...DEFAULT_DRAFT, hasProject: true },
-        },
-      ],
-    });
-
-    expect(s.dispatch).not.toHaveBeenCalledWith(expect.any(FetchProjectChildren));
+    expect(store.dispatch).not.toHaveBeenCalledWith(expect.any(FetchProjectChildren));
   });
 });

@@ -53,17 +53,19 @@
       </p-card>
     </section>
 
-    <osf-registries-contributors
-      [control]="metadataForm.controls['contributors']"
+    <osf-registries-contributors [control]="metadataForm.controls['contributors']" [draftId]="draftId" />
+
+    <osf-registries-affiliated-institution [draftId]="draftId" />
+
+    <osf-registries-license
+      [control]="metadataForm.controls['license']"
       [draftId]="draftId"
-    ></osf-registries-contributors>
-    <osf-registries-affiliated-institution [draftId]="draftId"></osf-registries-affiliated-institution>
-    <osf-registries-license [control]="metadataForm.controls['license']" [draftId]="draftId"></osf-registries-license>
-    <osf-registries-subjects
-      [control]="metadataForm.controls['subjects']"
-      [draftId]="draftId"
-    ></osf-registries-subjects>
-    <osf-registries-tags [draftId]="draftId"></osf-registries-tags>
+      [licensesUrl]="provider()?.licensesLink"
+    />
+
+    <osf-registries-subjects [control]="metadataForm.controls['subjects']" [draftId]="draftId" />
+
+    <osf-registries-tags [draftId]="draftId" />
 
     <div class="flex justify-content-end">
       <p-button

@@ -18,6 +18,7 @@ export interface RegistriesStateModel {
   projects: AsyncStateModel<ProjectShortInfoModel[]>;
   draftRegistration: AsyncStateModel<DraftRegistrationModel | null>;
   registration: AsyncStateModel<RegistrationModel | null>;
+  registrationComponents: AsyncStateModel<ProjectShortInfoModel[]>;
   registries: AsyncStateModel<ResourceModel[]>;
   licenses: AsyncStateModel<LicenseModel[]>;
   pagesSchema: AsyncStateModel<PageSchema[]>;
@@ -68,6 +69,11 @@ export const REGISTRIES_STATE_DEFAULTS: RegistriesStateModel = {
     data: null,
     isLoading: false,
     isSubmitting: false,
+    error: null,
+  },
+  registrationComponents: {
+    data: [],
+    isLoading: false,
     error: null,
   },
   draftRegistrations: {

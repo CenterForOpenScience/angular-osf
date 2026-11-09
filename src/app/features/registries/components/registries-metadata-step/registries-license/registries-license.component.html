@@ -2,7 +2,7 @@
   <h2 class="mb-2">{{ 'common.labels.license' | translate }}</h2>
 
   <p class="mb-1">{{ 'shared.license.description' | translate }}</p>
-  <p>
+  <p class="mb-4">
     {{ 'shared.license.helpText' | translate }}
     <a class="font-bold" href="https://help.osf.io/article/148-licensing" target="_blank">
       {{ 'common.links.helpGuide' | translate }}</a
@@ -10,7 +10,6 @@
   </p>
   <osf-license
     [licenses]="licenses()"
-    [fullWidthSelect]="true"
     [selectedLicenseId]="selectedLicense()?.id || control().get('id')?.value"
     [selectedLicenseOptions]="selectedLicense()?.options"
     (createLicense)="createLicense($event)"

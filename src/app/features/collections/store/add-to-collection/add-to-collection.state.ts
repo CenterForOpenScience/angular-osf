@@ -1,6 +1,6 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { tap } from 'rxjs';
+import { EMPTY, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
@@ -8,6 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { AddToCollectionService } from '@osf/features/collections/services/add-to-collection.service';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { CollectionsService } from '@osf/shared/services/collections.service';
+import { LicensesService } from '@osf/shared/services/licenses.service';
 
 import {
   ClearAddToCollectionState,
@@ -26,9 +27,14 @@ import { ADD_TO_COLLECTION_DEFAULTS, AddToCollectionStateModel } from './add-to-
 export class AddToCollectionState {
   addToCollectionService = inject(AddToCollectionService);
   collectionsService = inject(CollectionsService);
+  licensesService = inject(LicensesService);
 
   @Action(GetCollectionLicenses)
   getCollectionLicenses(ctx: StateContext<AddToCollectionStateModel>, action: GetCollectionLicenses) {
+    if (!action.licensesUrl) {
+      return EMPTY;
+    }
+
     const state = ctx.getState();
     ctx.patchState({
       collectionLicenses: {
@@ -37,7 +43,7 @@ export class AddToCollectionState {
       },
     });
 
-    return this.addToCollectionService.fetchCollectionLicenses(action.providerId).pipe(
+    return this.licensesService.getLicenses(action.licensesUrl).pipe(
       tap((licenses) => {
         ctx.patchState({
           collectionLicenses: {

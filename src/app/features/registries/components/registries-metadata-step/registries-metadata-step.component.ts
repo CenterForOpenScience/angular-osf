@@ -21,6 +21,7 @@ import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.hel
 import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
 import { CustomConfirmationService } from '@osf/shared/services/custom-confirmation.service';
 import { ContributorsSelectors } from '@osf/shared/stores/contributors';
+import { RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 import { SubjectsSelectors } from '@osf/shared/stores/subjects';
 import { ContributorModel } from '@shared/models/contributors/contributor.model';
 import { DraftRegistrationModel } from '@shared/models/registration/draft-registration.model';
@@ -70,6 +71,7 @@ export class RegistriesMetadataStepComponent implements OnDestroy {
   initialContributors = select(ContributorsSelectors.getContributors);
   stepsState = select(RegistriesSelectors.getStepsState);
   hasAdminAccess = select(RegistriesSelectors.hasDraftAdminAccess);
+  provider = select(RegistrationProviderSelectors.getBrandedProvider);
 
   actions = createDispatchMap({
     deleteDraft: DeleteDraft,

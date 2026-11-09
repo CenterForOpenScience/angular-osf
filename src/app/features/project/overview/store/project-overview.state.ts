@@ -21,7 +21,6 @@ import {
   GetProjectById,
   GetProjectIdentifiers,
   GetProjectInstitutions,
-  GetProjectLicense,
   GetProjectPreprints,
   GetProjectStorage,
   LoadMoreComponents,
@@ -128,39 +127,6 @@ export class ProjectOverviewState {
     );
   }
 
-  @Action(GetProjectLicense)
-  getProjectLicense(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectLicense) {
-    if (!action.licenseId) {
-      return;
-    }
-
-    const state = ctx.getState();
-
-    if (state.license.isLoading) {
-      return;
-    }
-
-    ctx.patchState({
-      license: {
-        ...state.license,
-        isLoading: true,
-      },
-    });
-
-    return this.projectOverviewService.getProjectLicense(action.licenseId).pipe(
-      tap((license) => {
-        ctx.patchState({
-          license: {
-            data: license,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'license', error))
-    );
-  }
-
   @Action(GetProjectStorage)
   getProjectStorage(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectStorage) {
     const state = ctx.getState();
@@ -187,6 +153,10 @@ export class ProjectOverviewState {
 
   @Action(GetProjectPreprints)
   getProjectPreprints(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectPreprints) {
+    if (!action.preprintsUrl) {
+      return;
+    }
+
     const state = ctx.getState();
     ctx.patchState({
       preprints: {
@@ -195,7 +165,7 @@ export class ProjectOverviewState {
       },
     });
 
-    return this.projectOverviewService.getProjectPreprints(action.projectId).pipe(
+    return this.projectOverviewService.getProjectPreprints(action.preprintsUrl).pipe(
       tap((preprints) => {
         ctx.patchState({
           preprints: {

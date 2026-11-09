@@ -5,7 +5,7 @@ import { RemoveCollectionSubmissionPayload } from '../../models/remove-collectio
 export class GetCollectionLicenses {
   static readonly type = '[Add To Collection] Get Collection Licenses';
 
-  constructor(public providerId: string) {}
+  constructor(public licensesUrl?: string) {}
 }
 
 export class GetCurrentCollectionSubmission {

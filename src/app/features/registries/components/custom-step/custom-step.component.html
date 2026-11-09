@@ -1,25 +1,23 @@
 <section class="flex flex-column bg-white flex-1 p-5 gap-4 w-full">
-  @if (currentPage()) {
+  @let page = currentPage();
+
+  @if (page) {
     <div class="flex align-items-baseline gap-1">
-      <h2>{{ currentPage().title }}</h2>
+      <h2>{{ page.title }}</h2>
 
-      @let helpText = currentPage().helpText;
-
-      @if (helpText) {
-        <osf-info-icon [tooltipText]="helpText" tooltipPosition="top"></osf-info-icon>
+      @if (page.helpText) {
+        <osf-info-icon [tooltipText]="page.helpText" tooltipPosition="top"></osf-info-icon>
       }
     </div>
 
-    @if (currentPage().description?.length) {
-      <p class="preserve-whitespace">{{ currentPage().description }}</p>
+    @if (page.description?.length) {
+      <p class="preserve-whitespace">{{ page.description }}</p>
     }
 
-    @let questions = currentPage().questions || [];
+    <ng-container *ngTemplateOutlet="questionList; context: { $implicit: page.questions || [] }"></ng-container>
 
-    <ng-container *ngTemplateOutlet="questionList; context: { $implicit: questions }"></ng-container>
-
-    @if (currentPage().sections?.length) {
-      @for (section of currentPage().sections; track section.id) {
+    @if (page.sections?.length) {
+      @for (section of page.sections; track section.id) {
         <p-card>
           <div class="flex align-items-baseline gap-1">
             <h3 class="mb-2">{{ section.title }}</h3>
@@ -39,8 +37,8 @@
 
     <ng-template #questionList let-questions>
       @for (q of questions; track q.id) {
-        <form class="mb-4" [formGroup]="stepForm">
-          <label [for]="q.groupKey">
+        <div class="mb-4" [formGroup]="stepForm">
+          <div>
             <div class="flex align-items-baseline gap-1">
               <h3 class="mb-2">
                 {{ q.displayText }}
@@ -55,7 +53,7 @@
             @if (q.helpText) {
               <p class="preserve-whitespace">{{ q.helpText }}</p>
             }
-          </label>
+          </div>
 
           @if (q.exampleText) {
             <p-inplace #inplaceRef class="mb-4">
@@ -74,85 +72,70 @@
           @switch (q.fieldType) {
             @case (FieldType.TextArea) {
               <textarea
-                id="{{ q.groupKey }}"
+                [id]="q.responseKey!"
+                [attr.aria-label]="q.displayText"
                 class="w-full"
                 rows="5"
                 cols="30"
                 pTextarea
                 [formControlName]="q.responseKey!"
               ></textarea>
-              @if (
-                stepForm.controls[q.responseKey!].errors?.['required'] &&
-                (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
-              ) {
-                <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-                  {{ INPUT_VALIDATION_MESSAGES.required | translate }}
-                </p-message>
-              }
+              <ng-container *ngTemplateOutlet="requiredError; context: { $implicit: q.responseKey! }"></ng-container>
             }
             @case (FieldType.Radio) {
-              <div class="flex flex-column gap-2 mt-3">
-                @for (option of q.options; track option) {
-                  <div class="flex align -items-center gap-2">
+              <div class="flex flex-column gap-2 mt-3" role="radiogroup" [attr.aria-label]="q.displayText">
+                @for (option of q.options; track option.value) {
+                  <div class="flex align-items-center gap-2">
                     <p-radioButton
+                      [name]="q.responseKey!"
                       [formControlName]="q.responseKey!"
-                      [inputId]="option.value"
+                      [inputId]="q.responseKey! + '-' + option.value"
                       [value]="option.value"
                     ></p-radioButton>
 
-                    <label [for]="option.value" class="mb-0 cursor-pointer">{{ option.label }}</label>
+                    <label [for]="q.responseKey! + '-' + option.value" class="mb-0 cursor-pointer">{{
+                      option.label
+                    }}</label>
                     @if (option.helpText) {
                       <osf-info-icon [tooltipText]="option.helpText" tooltipPosition="top"></osf-info-icon>
                     }
                   </div>
                 }
               </div>
-              @if (
-                stepForm.controls[q.responseKey!].errors?.['required'] &&
-                (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
-              ) {
-                <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-                  {{ INPUT_VALIDATION_MESSAGES.required | translate }}
-                </p-message>
-              }
+              <ng-container *ngTemplateOutlet="requiredError; context: { $implicit: q.responseKey! }"></ng-container>
             }
             @case (FieldType.Checkbox) {
-              <div class="flex flex-column gap-2 mt-3">
-                @for (option of q.options; track option) {
+              <div class="flex flex-column gap-2 mt-3" role="group" [attr.aria-label]="q.displayText">
+                @for (option of q.options; track option.value) {
                   <div class="flex align-items-center gap-2">
                     <p-checkbox
-                      [inputId]="option.value"
+                      [inputId]="q.responseKey! + '-' + option.value"
                       [formControlName]="q.responseKey!"
                       [value]="option.value"
                     ></p-checkbox>
 
-                    <label [for]="option.value" class="mb-0 cursor-pointer">{{ option.label }}</label>
+                    <label [for]="q.responseKey! + '-' + option.value" class="mb-0 cursor-pointer">
+                      {{ option.label }}
+                    </label>
                     @if (option.helpText) {
                       <osf-info-icon [tooltipText]="option.helpText" tooltipPosition="top"></osf-info-icon>
                     }
                   </div>
                 }
               </div>
-              @if (
-                stepForm.controls[q.responseKey!].errors?.['required'] &&
-                (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
-              ) {
-                <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-                  {{ INPUT_VALIDATION_MESSAGES.required | translate }}
-                </p-message>
-              }
+              <ng-container *ngTemplateOutlet="requiredError; context: { $implicit: q.responseKey! }"></ng-container>
             }
 
             @case (FieldType.Text) {
-              <input [id]="q.groupKey" [formControlName]="q.responseKey!" type="text" class="w-full" pInputText />
-              @if (
-                stepForm.controls[q.responseKey!].errors?.['required'] &&
-                (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
-              ) {
-                <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-                  {{ INPUT_VALIDATION_MESSAGES.required | translate }}
-                </p-message>
-              }
+              <input
+                [id]="q.responseKey!"
+                [attr.aria-label]="q.displayText"
+                [formControlName]="q.responseKey!"
+                type="text"
+                class="w-full"
+                pInputText
+              />
+              <ng-container *ngTemplateOutlet="requiredError; context: { $implicit: q.responseKey! }"></ng-container>
             }
             @case (FieldType.File) {
               <h3 class="mb-2">{{ 'files.actions.uploadFile' | translate }}</h3>
@@ -163,7 +146,7 @@
                 {{ fileUploadDescription() | translate }}
               </p>
               <div class="flex flex-wrap gap-2 mt-3 mb-3">
-                @for (file of attachedFiles[q.responseKey!] || []; track file) {
+                @for (file of attachedFiles[q.responseKey!] || []; track file.file_id) {
                   <p-chip
                     [label]="file.name"
                     severity="info"
@@ -185,25 +168,25 @@
               </div>
             }
           }
-        </form>
+        </div>
+      }
+    </ng-template>
+
+    <ng-template #requiredError let-controlName>
+      @if (
+        stepForm.controls[controlName].errors?.['required'] &&
+        (stepForm.controls[controlName].touched || stepForm.controls[controlName].dirty)
+      ) {
+        <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+          {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+        </p-message>
       }
     </ng-template>
   }
 
   <div class="flex justify-content-end">
-    <p-button
-      type="button"
-      [label]="'common.buttons.back' | translate"
-      severity="info"
-      class="mr-2"
-      (onClick)="goBack()"
-    ></p-button>
+    <p-button [label]="'common.buttons.back' | translate" severity="info" class="mr-2" (onClick)="goBack()"></p-button>
 
-    <p-button
-      data-test-goto-next-page
-      type="button"
-      [label]="'common.buttons.next' | translate"
-      (onClick)="goNext()"
-    ></p-button>
+    <p-button data-test-goto-next-page [label]="'common.buttons.next' | translate" (onClick)="goNext()"></p-button>
   </div>
 </section>

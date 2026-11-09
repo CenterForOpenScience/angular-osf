@@ -8,6 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { handleSectionError } from '@osf/shared/helpers/state-error.handler';
 import { DuplicatesService } from '@osf/shared/services/duplicates.service';
+import { FetchLicense } from '@osf/shared/stores/licenses';
 import { GetRegistryProvider } from '@osf/shared/stores/registration-provider';
 
 import { RegistryOverviewService } from '../../services';
@@ -19,7 +20,6 @@ import {
   GetRegistryById,
   GetRegistryIdentifiers,
   GetRegistryInstitutions,
-  GetRegistryLicense,
   GetRegistryReviewActions,
   GetRegistrySchemaResponses,
   GetRegistryWithRelatedData,
@@ -96,7 +96,7 @@ export class RegistryState {
           ctx.dispatch(new GetRegistryProvider(registryOverview.providerId));
         }
 
-        ctx.dispatch(new GetRegistryLicense(registryOverview.licenseId));
+        ctx.dispatch(new FetchLicense(registryOverview.licenseId));
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))
     );
@@ -147,34 +147,6 @@ export class RegistryState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'identifiers', error))
-    );
-  }
-
-  @Action(GetRegistryLicense)
-  getRegistryLicense(ctx: StateContext<RegistryStateModel>, action: GetRegistryLicense) {
-    if (!action.licenseId) {
-      return;
-    }
-
-    const state = ctx.getState();
-    ctx.patchState({
-      license: {
-        ...state.license,
-        isLoading: true,
-      },
-    });
-
-    return this.registryOverviewService.getRegistryLicense(action.licenseId).pipe(
-      tap((license) => {
-        ctx.patchState({
-          license: {
-            data: license,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'license', error))
     );
   }
 

@@ -31,5 +31,6 @@ export const PREPRINT_PROVIDER_DETAILS_MOCK: PreprintProviderDetails = {
   facebookAppId: '1234567890',
   reviewsCommentsPrivate: null,
   reviewsCommentsAnonymous: null,
+  licensesLink: 'https://api.osf.io/v2/providers/preprints/osf-preprints/licenses/',
   lastFetched: Date.now(),
 };
