@@ -7,22 +7,20 @@
         | translate: { preprintWord: provider().preprintWord | titlecase }
     }}
   </p>
-  <p class="line-height-3">{{ 'preprints.preprintStepper.file.note' | translate }}</p>
 </section>
 
-@if (!preprintHasPrimaryFile() || versionFileMode()) {
+@if (preprint() && !preprintHasPrimaryFile()) {
   <section class="mt-4 w-full flex flex-column gap-2 md:flex-row">
     <p-button
+      data-test-computer-button
       [ngClass]="{
         active: selectedFileSource() === PreprintFileSource.Computer,
       }"
       class="file-source-button w-full"
-      [styleClass]="selectedFileSource() ? 'w-full cursor-not-allowed' : 'w-full'"
-      [label]="'preprints.preprintStepper.file.uploadFromComputer' | translate | titlecase"
+      [styleClass]="isFileSourceSelected() ? 'w-full cursor-not-allowed' : 'w-full'"
+      [label]="'preprints.preprintStepper.file.uploadFromComputer' | translate"
       severity="secondary"
       [disabled]="isFileSourceSelected()"
-      [pTooltip]="'preprints.preprintStepper.file.tooltips.computerDisabled' | translate"
-      tooltipPosition="top"
       (onClick)="selectFileSource(PreprintFileSource.Computer)"
     />
     <p-button
@@ -34,25 +32,23 @@
       [styleClass]="isFileSourceSelected() ? 'w-full cursor-not-allowed' : 'w-full'"
       [label]="'preprints.preprintStepper.file.selectFromProject' | translate"
       severity="secondary"
-      [disabled]="isFileSourceSelected() || versionFileMode()"
-      [pTooltip]="'preprints.preprintStepper.file.tooltips.projectDisabled' | translate"
-      tooltipPosition="top"
+      [disabled]="isFileSourceSelected()"
       (onClick)="selectFileSource(PreprintFileSource.Project)"
     />
   </section>
 }
 
-@if (selectedFileSource() === PreprintFileSource.Computer) {
+@if (selectedFileSource() === PreprintFileSource.Computer && !preprintFile() && !isPreprintFileLoading()) {
   <section class="mt-6">
     @if (!fileUploadLink()) {
       <p-skeleton width="5rem" height="2rem" />
-    } @else if ((!preprintFile() && !isPreprintFileLoading()) || versionFileMode()) {
+    } @else {
       <p-button
         outlined
         raised
         severity="success"
-        [icon]="'fas fa-upload'"
-        [label]="'preprints.preprintStepper.file.uploadFileButton' | translate | titlecase"
+        icon="fas fa-upload"
+        [label]="'preprints.preprintStepper.file.uploadFileButton' | translate"
         (onClick)="fileInput.click()"
       />
 
@@ -63,39 +59,37 @@
 
 @if (selectedFileSource() === PreprintFileSource.Project && !preprintFile() && !isPreprintFileLoading()) {
   <p-card class="card mt-6">
-    <div>
-      <p class="line-height-3">
-        {{ 'preprints.preprintStepper.projectSelection.description' | translate }}
-      </p>
-      <p class="line-height-3">
-        {{ 'preprints.preprintStepper.projectSelection.subDescription' | translate }}
-      </p>
+    <p class="line-height-3">
+      {{ 'preprints.preprintStepper.projectSelection.description' | translate }}
+    </p>
+    <p class="line-height-3">
+      {{ 'preprints.preprintStepper.projectSelection.subDescription' | translate }}
+    </p>
 
-      <p-select
-        id="project-select"
-        class="w-12 md:w-6 mt-4"
-        appendTo="body"
-        optionLabel="name"
-        optionValue="id"
-        [options]="availableProjects()"
-        [formControl]="projectNameControl"
-        [placeholder]="'preprints.preprintStepper.projectSelection.selectProject' | translate"
-        [editable]="true"
-        [showClear]="false"
-        [loading]="areAvailableProjectsLoading() || areProjectFilesLoading() || isCurrentFolderLoading()"
-        (onChange)="selectProject($event)"
-      />
-    </div>
+    <p-select
+      id="project-select"
+      class="w-12 md:w-6 mt-4"
+      appendTo="body"
+      optionLabel="name"
+      optionValue="id"
+      [options]="availableProjects()"
+      [formControl]="projectNameControl"
+      [placeholder]="'preprints.preprintStepper.projectSelection.selectProject' | translate"
+      [editable]="true"
+      [showClear]="false"
+      [loading]="areAvailableProjectsLoading() || areProjectFilesLoading() || isCurrentFolderLoading()"
+      (onChange)="selectProject($event)"
+    />
   </p-card>
 
   <section class="mt-4">
-    @if (selectedProjectId()) {
+    @if (selectedProjectId() && currentFolder(); as folder) {
       <osf-files-tree
-        [currentFolder]="currentFolder()!"
+        [currentFolder]="folder"
         [files]="projectFiles()"
         [totalCount]="filesTotalCount()"
         [isLoading]="areProjectFilesLoading() || isCurrentFolderLoading()"
-        [scrollHeight]="'500px'"
+        scrollHeight="500px"
         (fileOpened)="selectProjectFile($event)"
         (currentFolderChanged)="setCurrentFolder($event)"
         (loadFiles)="onLoadFiles($event)"
@@ -116,20 +110,31 @@
   </div>
 }
 
-@if (!versionFileMode()) {
-  <section class="mt-6">
-    @if (isPreprintFileLoading()) {
-      <p-skeleton height="2rem" class="w-full" />
-    } @else if (preprintFile()) {
-      <section class="file-row">
-        <div class="flex flex-row gap-2">
-          <osf-icon [iconClass]="'fas fa-file'" />
-          <p data-test-file-name>{{ preprintFile()!.name }}</p>
-        </div>
-      </section>
-    }
-  </section>
-}
+<section class="mt-6">
+  @if (isPreprintFileLoading()) {
+    <p-skeleton height="2rem" class="w-full" />
+  } @else if (preprintFile(); as file) {
+    <div class="file-row">
+      <div class="flex flex-row gap-2">
+        <osf-icon [iconClass]="'fas fa-file'" />
+        <p data-test-file-name>{{ file.name }}</p>
+      </div>
+
+      @if (canDeletePrimaryFile()) {
+        <p-button
+          class="danger-icon-btn"
+          icon="fas fa-trash"
+          severity="danger"
+          text
+          [ariaLabel]="'common.buttons.delete' | translate"
+          [pTooltip]="'common.buttons.delete' | translate"
+          tooltipPosition="top"
+          (onClick)="deletePreprintFile()"
+        />
+      }
+    </div>
+  }
+</section>
 
 <section class="mt-6 flex flex-row justify-content-end align-items-center gap-2">
   <p-button
@@ -152,10 +157,8 @@
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"
-    [disabled]="!canProceedToNext()"
-    [pTooltip]="
-      !canProceedToNext() ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate) : ''
-    "
+    [disabled]="!preprintFile()"
+    [pTooltip]="!preprintFile() ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate) : ''"
     tooltipPosition="top"
     (onClick)="nextButtonClicked()"
   />
