@@ -111,7 +111,8 @@ export class PreprintStepperState {
     return this.preprintFilesService.getPreprintFilesLinks(state.preprint.data.id).pipe(
       tap((preprintStorage) => {
         ctx.setState(patch({ preprintFilesLinks: patch({ isLoading: false, data: preprintStorage }) }));
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintFilesLinks', error))
     );
   }
 
@@ -131,7 +132,8 @@ export class PreprintStepperState {
         const createdFileId = file.id.split('/')[1];
 
         return ctx.dispatch(new UpdatePrimaryFileRelationship(createdFileId));
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintFile', error))
     );
   }
 
@@ -299,7 +301,7 @@ export class PreprintStepperState {
   copyFileFromProject(ctx: StateContext<PreprintStepperStateModel>, action: CopyFileFromProject) {
     const createdPreprintId = ctx.getState().preprint.data?.id;
     if (!createdPreprintId) {
-      return;
+      return EMPTY;
     }
 
     ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
@@ -469,7 +471,11 @@ export class PreprintStepperState {
 
   @Action(SubmitPreprint)
   submitPreprint(ctx: StateContext<PreprintStepperStateModel>) {
-    const createdPreprintId = ctx.getState().preprint.data!.id;
+    const createdPreprintId = ctx.getState().preprint.data?.id;
+    if (!createdPreprintId) {
+      return EMPTY;
+    }
+
     ctx.setState(patch({ preprint: patch({ isSubmitting: true }) }));
 
     return this.preprintsService.submitPreprint(createdPreprintId).pipe(

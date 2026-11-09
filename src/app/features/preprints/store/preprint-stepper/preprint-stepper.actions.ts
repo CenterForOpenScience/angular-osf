@@ -132,7 +132,7 @@ export class CreateNewProject {
 }
 
 export class SubmitPreprint {
-  static readonly type = '[Preprint Stepper] Preprint Stepper';
+  static readonly type = '[Preprint Stepper] Submit Preprint';
 }
 
 export class CreateNewVersion {
