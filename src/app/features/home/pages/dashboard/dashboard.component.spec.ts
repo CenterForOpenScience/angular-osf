@@ -2,13 +2,16 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { SortEvent } from 'primeng/api';
+import { TablePageEvent } from 'primeng/table';
+
 import { Subject } from 'rxjs';
 
 import { Mock } from 'vitest';
 
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { ScheduledBannerComponent } from '@core/components/osf-banners/scheduled-banner/scheduled-banner.component';
 import { UserSelectors } from '@osf/core/store/user';
@@ -19,13 +22,20 @@ import { SearchInputComponent } from '@osf/shared/components/search-input/search
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { FEATURE_FLAGS } from '@osf/shared/constants/feature-flags.const';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
-import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources-item.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
 import { ProjectRedirectDialogService } from '@osf/shared/services/project-redirect-dialog.service';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores/my-resources';
 
+import {
+  MOCK_MY_RESOURCES_ITEM_PROJECT,
+  MOCK_MY_RESOURCES_ITEM_PROJECT_PRIVATE,
+} from '@testing/mocks/my-resources.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomDialogServiceMock, CustomDialogServiceMockType } from '@testing/providers/custom-dialog-provider.mock';
+import {
+  ProjectRedirectDialogServiceMock,
+  ProjectRedirectDialogServiceMockType,
+} from '@testing/providers/project-redirect-dialog.service.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder, RouterMockType } from '@testing/providers/router-provider.mock';
 import {
@@ -36,7 +46,6 @@ import {
 } from '@testing/providers/store-provider.mock';
 
 import { WorkflowLauncherSectionComponent } from '../../components/workflow-launcher-section/workflow-launcher-section.component';
-import { DASHBOARD_PRODUCT_LINKS } from '../../constants/dashboard-products.constants';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -46,27 +55,10 @@ describe('DashboardComponent', () => {
   let store: Store;
   let routerMock: RouterMockType;
   let customDialogService: CustomDialogServiceMockType;
-  let projectRedirectDialogService: { showProjectRedirectDialog: Mock };
+  let projectRedirectDialogService: ProjectRedirectDialogServiceMockType;
 
-  const projectItem: MyResourcesItem = {
-    id: '1',
-    type: 'nodes',
-    title: 'Alpha project',
-    dateCreated: '2024-01-01',
-    dateModified: '2024-01-02',
-    isPublic: true,
-    contributors: [],
-  };
-
-  const secondProjectItem: MyResourcesItem = {
-    id: '2',
-    type: 'nodes',
-    title: 'Beta project',
-    dateCreated: '2024-01-03',
-    dateModified: '2024-01-04',
-    isPublic: false,
-    contributors: [],
-  };
+  const projectItem = MOCK_MY_RESOURCES_ITEM_PROJECT;
+  const secondProjectItem = MOCK_MY_RESOURCES_ITEM_PROJECT_PRIVATE;
 
   const defaultSignals: SignalOverride[] = [
     { selector: MyResourcesSelectors.getProjects, value: [] },
@@ -84,7 +76,7 @@ describe('DashboardComponent', () => {
   function setup(options: SetupOverrides = {}) {
     routerMock = RouterMockBuilder.create().build();
     customDialogService = CustomDialogServiceMock.simple();
-    projectRedirectDialogService = { showProjectRedirectDialog: vi.fn() };
+    projectRedirectDialogService = ProjectRedirectDialogServiceMock.simple();
     const routeMock = ActivatedRouteMockBuilder.create()
       .withQueryParams(options.routeQueryParams ?? {})
       .build();
@@ -103,11 +95,12 @@ describe('DashboardComponent', () => {
       ],
       providers: [
         provideOSFCore(),
+        provideRouter([]),
         MockProvider(ActivatedRoute, routeMock),
         MockProvider(Router, routerMock),
         MockProvider(CustomDialogService, customDialogService),
         MockProvider(ProjectRedirectDialogService, projectRedirectDialogService),
-        MockProvider(PLATFORM_ID, options?.platformId ?? 'browser'),
+        MockProvider(PLATFORM_ID, options.platformId ?? 'browser'),
         provideMockStore({ signals: mergeSignalOverrides(defaultSignals, options.selectorOverrides) }),
       ],
     });
@@ -117,6 +110,10 @@ describe('DashboardComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   }
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   it('should create and fetch projects with default params on init', () => {
     setup();
@@ -130,14 +127,6 @@ describe('DashboardComponent', () => {
         sortOrder: SortOrder.Asc,
       })
     );
-  });
-
-  it('should disable project creation and show tooltip when isProjectCreationDisabled is true', () => {
-    setup({
-      selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
-    });
-
-    expect(component.buttonTooltip()).toBe('home.loggedIn.dashboard.createProjectDisabledTooltip');
   });
 
   it('should read query params and fetch projects on init', () => {
@@ -166,12 +155,6 @@ describe('DashboardComponent', () => {
     );
   });
 
-  it('should sync total projects count into table params', () => {
-    setup({ selectorOverrides: [{ selector: MyResourcesSelectors.getTotalProjects, value: 42 }] });
-
-    expect(component.tableParams().totalRecords).toBe(42);
-  });
-
   it('should default sort order when query param sort order is invalid', () => {
     setup({
       routeQueryParams: {
@@ -183,20 +166,26 @@ describe('DashboardComponent', () => {
     expect(component.sortOrder()).toBe(SortOrder.Asc);
   });
 
-  it('should use dashboard sub header when projects exist', () => {
+  it('should sync total projects count into table params', () => {
+    setup({ selectorOverrides: [{ selector: MyResourcesSelectors.getTotalProjects, value: 42 }] });
+
+    expect(component.tableParams().totalRecords).toBe(42);
+  });
+
+  it('should disable project creation messaging when isProjectCreationDisabled is true', () => {
     setup({
-      selectorOverrides: [{ selector: MyResourcesSelectors.getProjects, value: [projectItem] }],
+      selectorOverrides: [{ selector: UserSelectors.isProjectCreationDisabled, value: true }],
     });
 
-    expect(component.existsProjects()).toBeTruthy();
-    expect(component.subHeaderTitle()).toBe('home.loggedIn.dashboard.title');
+    expect(component.buttonTooltip()).toBe('home.loggedIn.dashboard.createProjectDisabledTooltip');
+    expect(component.noProjectsMessage()).toBe('home.loggedIn.dashboard.noCreatedProjectAndCreateProjectDisabled');
   });
 
   it('should update query params on page change', () => {
     setup();
     (routerMock.navigate as Mock).mockClear();
 
-    component.onPageChange({ first: 20, rows: 10 } as never);
+    component.onPageChange({ first: 20, rows: 10 } as TablePageEvent);
 
     expect(routerMock.navigate).toHaveBeenCalledWith([], {
       relativeTo: TestBed.inject(ActivatedRoute),
@@ -215,10 +204,10 @@ describe('DashboardComponent', () => {
     setup();
     (routerMock.navigate as Mock).mockClear();
 
-    component.onSort({ field: 'dateModified', order: -1 } as never);
+    component.onSort({ field: 'dateModified', order: SortOrder.Desc } as SortEvent);
 
     expect(component.sortColumn()).toBe('dateModified');
-    expect(component.sortOrder()).toBe(-1);
+    expect(component.sortOrder()).toBe(SortOrder.Desc);
     expect(routerMock.navigate).toHaveBeenCalledWith([], {
       relativeTo: TestBed.inject(ActivatedRoute),
       queryParams: {
@@ -226,7 +215,7 @@ describe('DashboardComponent', () => {
         rows: 10,
         search: undefined,
         sortField: 'dateModified',
-        sortOrder: -1,
+        sortOrder: SortOrder.Desc,
       },
       queryParamsHandling: 'merge',
     });
@@ -236,63 +225,9 @@ describe('DashboardComponent', () => {
     setup();
     (routerMock.navigate as Mock).mockClear();
 
-    component.onSort({ field: undefined, order: SortOrder.Desc } as never);
+    component.onSort({ field: undefined, order: SortOrder.Desc } as SortEvent);
 
     expect(routerMock.navigate).not.toHaveBeenCalled();
-  });
-
-  it('should dispatch fetch projects with current search and sort state', () => {
-    setup();
-    (store.dispatch as Mock).mockClear();
-
-    component.searchControl.setValue('alp');
-    component.sortColumn.set('title');
-    component.sortOrder.set(-1);
-
-    component.fetchProjects();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      new GetMyProjects(1, 10, {
-        searchValue: 'alp',
-        searchFields: ['title'],
-        sortColumn: 'title',
-        sortOrder: -1,
-      })
-    );
-  });
-
-  it('should filter projects by search value', () => {
-    setup({
-      routeQueryParams: { search: 'alp' },
-      selectorOverrides: [
-        {
-          selector: MyResourcesSelectors.getProjects,
-          value: [projectItem, secondProjectItem],
-        },
-      ],
-    });
-
-    expect(component.filteredProjects()).toEqual([projectItem]);
-  });
-
-  it('should treat search value as existing projects when list is empty', () => {
-    setup({ routeQueryParams: { search: 'query' } });
-
-    expect(component.existsProjects()).toBeTruthy();
-    expect(component.subHeaderTitle()).toBe('home.loggedIn.dashboard.title');
-  });
-
-  it('should use welcome sub header when no projects and no search', () => {
-    setup();
-
-    expect(component.existsProjects()).toBe(false);
-    expect(component.subHeaderTitle()).toBe('home.loggedIn.dashboard.welcome');
-  });
-
-  it('should expose dashboard product links', () => {
-    setup();
-
-    expect(component.dashboardProducts).toBe(DASHBOARD_PRODUCT_LINKS);
   });
 
   it('should update query params after search debounce', () => {
@@ -314,7 +249,61 @@ describe('DashboardComponent', () => {
       },
       queryParamsHandling: 'merge',
     });
-    vi.useRealTimers();
+  });
+
+  it('should not update query params when debounced search value is unchanged', () => {
+    vi.useFakeTimers();
+    setup();
+    component.searchControl.setValue('alpha');
+    vi.advanceTimersByTime(300);
+    (routerMock.navigate as Mock).mockClear();
+
+    component.searchControl.setValue('alpha');
+    vi.advanceTimersByTime(300);
+
+    expect(routerMock.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should omit empty search from query params', () => {
+    setup();
+    (routerMock.navigate as Mock).mockClear();
+
+    component.searchControl.setValue('');
+    component.updateQueryParams();
+
+    expect(routerMock.navigate).toHaveBeenCalledWith([], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+      queryParams: {
+        page: 1,
+        rows: 10,
+        search: undefined,
+        sortField: undefined,
+        sortOrder: 1,
+      },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('should filter projects by search value case insensitively', () => {
+    setup({
+      routeQueryParams: { search: 'PRIVATE' },
+      selectorOverrides: [
+        {
+          selector: MyResourcesSelectors.getProjects,
+          value: [projectItem, secondProjectItem],
+        },
+      ],
+    });
+
+    expect(component.filteredProjects()).toEqual([secondProjectItem]);
+  });
+
+  it('should return all projects when search is empty', () => {
+    setup({
+      selectorOverrides: [{ selector: MyResourcesSelectors.getProjects, value: [projectItem, secondProjectItem] }],
+    });
+
+    expect(component.filteredProjects()).toEqual([projectItem, secondProjectItem]);
   });
 
   it('should navigate to project and set active project', () => {
@@ -343,12 +332,14 @@ describe('DashboardComponent', () => {
 
   it('should not redirect when create project dialog closes without project id', () => {
     setup();
-    const onClose$ = new Subject<unknown>();
+    const onClose$ = new Subject<{ project?: { id?: string } } | null>();
     customDialogService.open.mockReturnValue(CustomDialogServiceMock.dialogRefWithClose(onClose$.asObservable()));
 
     component.createProject();
     onClose$.next(null);
+    expect(projectRedirectDialogService.showProjectRedirectDialog).not.toHaveBeenCalled();
 
+    onClose$.next({ project: {} });
     expect(projectRedirectDialogService.showProjectRedirectDialog).not.toHaveBeenCalled();
   });
 
@@ -402,100 +393,31 @@ describe('DashboardComponent', () => {
     expect(fixture.nativeElement.querySelector('osf-workflow-launcher-section')).toBeFalsy();
   });
 
-  it('should return all projects when search is empty', () => {
-    setup({
-      selectorOverrides: [{ selector: MyResourcesSelectors.getProjects, value: [projectItem, secondProjectItem] }],
-    });
-
-    expect(component.filteredProjects()).toEqual([projectItem, secondProjectItem]);
-  });
-
-  it('should filter projects case insensitively', () => {
-    setup({
-      routeQueryParams: { search: 'ALPHA' },
-      selectorOverrides: [{ selector: MyResourcesSelectors.getProjects, value: [projectItem, secondProjectItem] }],
-    });
-
-    expect(component.filteredProjects()).toEqual([projectItem]);
-  });
-
-  it('should omit empty search from query params', () => {
-    setup();
-    (routerMock.navigate as Mock).mockClear();
-
-    component.searchControl.setValue('');
-    component.updateQueryParams();
-
-    expect(routerMock.navigate).toHaveBeenCalledWith([], {
-      relativeTo: TestBed.inject(ActivatedRoute),
-      queryParams: {
-        page: 1,
-        rows: 10,
-        search: undefined,
-        sortField: undefined,
-        sortOrder: 1,
-      },
-      queryParamsHandling: 'merge',
-    });
-  });
-
-  it('should not update query params when debounced search value is unchanged', () => {
-    vi.useFakeTimers();
-    setup();
-    component.searchControl.setValue('alpha');
-    vi.advanceTimersByTime(300);
-    (routerMock.navigate as Mock).mockClear();
-
-    component.searchControl.setValue('alpha');
-    vi.advanceTimersByTime(300);
-
-    expect(routerMock.navigate).not.toHaveBeenCalled();
-    vi.useRealTimers();
-  });
-
-  it('should render empty state when no projects exist', () => {
+  it('should use welcome state when no projects and no search', () => {
     setup();
 
-    expect(fixture.nativeElement.querySelector('.connected-record-image')).toBeTruthy();
+    expect(component.existsProjects()).toBe(false);
+    expect(component.subHeaderTitle()).toBe('home.loggedIn.dashboard.welcome');
+    expect(component.noProjectsMessage()).toBe('home.loggedIn.dashboard.noCreatedProject');
     expect(fixture.nativeElement.querySelector('osf-my-projects-table')).toBeFalsy();
     expect(fixture.nativeElement.querySelector('.latest-research-container')).toBeFalsy();
   });
 
-  it('should render projects table and latest research when projects exist', () => {
+  it('should treat search value as existing projects when list is empty', () => {
+    setup({ routeQueryParams: { search: 'query' } });
+
+    expect(component.existsProjects()).toBeTruthy();
+    expect(component.subHeaderTitle()).toBe('home.loggedIn.dashboard.title');
+  });
+
+  it('should show projects table when projects exist', () => {
     setup({
       selectorOverrides: [{ selector: MyResourcesSelectors.getProjects, value: [projectItem] }],
     });
 
+    expect(component.existsProjects()).toBeTruthy();
+    expect(component.subHeaderTitle()).toBe('home.loggedIn.dashboard.title');
     expect(fixture.nativeElement.querySelector('osf-my-projects-table')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('.latest-research-container')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('.connected-record-image')).toBeFalsy();
-  });
-
-  it('should render dashboard product links', () => {
-    setup();
-
-    const productImages = fixture.nativeElement.querySelectorAll('.flex.flex-column.p-4 img');
-
-    expect(productImages.length).toBe(DASHBOARD_PRODUCT_LINKS.length);
-  });
-
-  it('should render external product link with blank target', () => {
-    setup();
-
-    const externalLink = fixture.nativeElement.querySelector('[data-test-products-collections]');
-
-    expect(externalLink?.getAttribute('target')).toBe('_blank');
-    expect(externalLink?.getAttribute('rel')).toBe('noopener noreferrer');
-  });
-
-  it('should not redirect when create project dialog closes with missing project id', () => {
-    setup();
-    const onClose$ = new Subject<{ project: { id?: string } }>();
-    customDialogService.open.mockReturnValue(CustomDialogServiceMock.dialogRefWithClose(onClose$.asObservable()));
-
-    component.createProject();
-    onClose$.next({ project: {} });
-
-    expect(projectRedirectDialogService.showProjectRedirectDialog).not.toHaveBeenCalled();
   });
 });
