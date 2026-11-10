@@ -807,7 +807,6 @@
         "createProjectDisabledTooltip": "Project creation is no longer available. OSF is transitioning away from Projects as part of a platform update. Your existing projects remain accessible.",
         "getStartedHelp": "Visit Get Started Help Guides",
         "images": {
-          "osfCollectionsImageAltText": "OSF Collections",
           "osfInstitutionsImageAltText": "OSF Institutions",
           "osfPreprintsImageAltTest": "OSF Preprints",
           "osfRegistriesImageAltTest": "OSF Registries"

@@ -9,7 +9,17 @@ import { TablePageEvent } from 'primeng/table';
 import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
-import { Component, computed, DestroyRef, effect, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -50,6 +60,7 @@ import { DASHBOARD_PRODUCT_LINKS } from '../../constants/dashboard-products.cons
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
@@ -57,8 +68,7 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly customDialogService = inject(CustomDialogService);
   private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
-  private readonly platformId = inject(PLATFORM_ID);
-  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly searchControl = new FormControl<string>('');
   readonly activeProject = signal<MyResourcesItem | null>(null);
@@ -83,17 +93,16 @@ export class DashboardComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
-  readonly buttonTooltip = computed(() => {
-    return this.projectCreationDisabled() ? 'home.loggedIn.dashboard.createProjectDisabledTooltip' : '';
-  });
-
   readonly existsProjects = computed(() => this.projects().length || !!this.searchControl.value?.length);
-  readonly noProjectsMessage = computed(() => {
-    if (this.projectCreationDisabled()) {
-      return 'home.loggedIn.dashboard.noCreatedProjectAndCreateProjectDisabled';
-    }
-    return 'home.loggedIn.dashboard.noCreatedProject';
-  });
+
+  readonly buttonTooltip = computed(() =>
+    this.projectCreationDisabled() ? 'home.loggedIn.dashboard.createProjectDisabledTooltip' : ''
+  );
+  readonly noProjectsMessage = computed(() =>
+    this.projectCreationDisabled()
+      ? 'home.loggedIn.dashboard.noCreatedProjectAndCreateProjectDisabled'
+      : 'home.loggedIn.dashboard.noCreatedProject'
+  );
   readonly subHeaderTitle = computed(() =>
     this.existsProjects() ? 'home.loggedIn.dashboard.title' : 'home.loggedIn.dashboard.welcome'
   );
@@ -215,7 +224,7 @@ export class DashboardComponent implements OnInit {
     this.customDialogService
       .open(CreateProjectDialogComponent, { header: 'myProjects.header.createProject', width: '850px' })
       .onClose.pipe(
-        filter((result) => result?.project.id),
+        filter((result: { project: MyResourcesItem }) => !!result?.project.id),
         tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
         takeUntilDestroyed(this.destroyRef)
       )

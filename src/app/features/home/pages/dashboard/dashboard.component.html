@@ -84,20 +84,9 @@
 
     <div class="flex flex-column p-4">
       @for (product of dashboardProducts; track product.imageSrc) {
-        @if (product.external) {
-          <a
-            [href]="product.link"
-            target="_blank"
-            rel="noopener noreferrer"
-            [attr.data-test-products-collections]="product.testId ? '' : null"
-          >
-            <img class="max-w-full" [src]="product.imageSrc" [alt]="product.altKey | translate" />
-          </a>
-        } @else {
-          <a [routerLink]="product.link">
-            <img class="max-w-full" [src]="product.imageSrc" [alt]="product.altKey | translate" />
-          </a>
-        }
+        <a [routerLink]="product.link">
+          <img class="max-w-full" [src]="product.imageSrc" [alt]="product.altKey | translate" />
+        </a>
       }
     </div>
   }

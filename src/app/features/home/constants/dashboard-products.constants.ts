@@ -2,13 +2,6 @@ import { DashboardProductLink } from '../models/dashboard-product-link.model';
 
 export const DASHBOARD_PRODUCT_LINKS: DashboardProductLink[] = [
   {
-    link: 'https://www.cos.io/products/osf-collections',
-    imageSrc: 'assets/images/dashboard/products/osf-collections.png',
-    altKey: 'home.loggedIn.dashboard.images.osfCollectionsImageAltText',
-    external: true,
-    testId: 'products-collections',
-  },
-  {
     link: '/institutions',
     imageSrc: 'assets/images/dashboard/products/osf-institutions.png',
     altKey: 'home.loggedIn.dashboard.images.osfInstitutionsImageAltText',
