@@ -19,7 +19,7 @@ export interface ResourceMetadataJsonApi {
   isPartOfCollection: MetadataFieldJsonApi[];
   storageByteCount: ValueNodeJsonApi[];
   storageRegion: { prefLabel: ValueNodeJsonApi[] }[];
-  usage: UsageJsonApi;
+  usage: UsageJsonApi[];
   hasOsfAddon: { prefLabel: ValueNodeJsonApi[] }[];
   funder: MetadataFieldJsonApi[];
   affiliation: MetadataFieldJsonApi[];
