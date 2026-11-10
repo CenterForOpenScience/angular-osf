@@ -38,7 +38,7 @@ import { CustomValidators } from '@osf/shared/helpers/custom-form-validators.hel
 import { findChangedFields } from '@osf/shared/helpers/find-changed-fields';
 import { FileModel } from '@osf/shared/models/files/file.model';
 import { FilePayloadJsonApi } from '@osf/shared/models/files/file-payload-json-api.model';
-import { PageSchema } from '@osf/shared/models/registration/page-schema.model';
+import { PageSchema, Question } from '@osf/shared/models/registration/page-schema.model';
 import { ToastService } from '@osf/shared/services/toast.service';
 
 import { FilesMapper } from '../../mappers/files.mapper';
@@ -105,6 +105,12 @@ export class CustomStepComponent implements OnDestroy {
     }
     return 'shared.files.description';
   });
+  private readonly fileQuestionKeys = computed(() =>
+    this.pages()
+      .flatMap((page) => this.getPageQuestions(page))
+      .filter((q) => q.fieldType === FieldType.File)
+      .map((q) => q.responseKey as string)
+  );
 
   stepForm: FormGroup = this.fb.group({});
   attachedFiles: Record<string, AttachedFile[]> = {};
@@ -130,9 +136,33 @@ export class CustomStepComponent implements OnDestroy {
       return;
     }
 
-    this.attachedFiles[questionKey] = [...this.attachedFiles[questionKey], file];
+    const attachedFile = { ...FilesMapper.toFilePayload(file), name: file.name };
+    this.attachedFiles[questionKey] = [...this.attachedFiles[questionKey], attachedFile];
     this.stepForm.patchValue({ [questionKey]: this.attachedFiles[questionKey] });
     this.updateAction.emit(this.getFormPayload());
+  }
+
+  onFileDeleted(fileId: string): void {
+    const payload: Record<string, FilePayloadJsonApi[]> = {};
+
+    // the same file can be attached to file questions on other pages
+    for (const key of this.fileQuestionKeys()) {
+      const files = this.attachedFiles[key] ?? this.getSavedFiles(key);
+      if (!files.some((f) => f.file_id === fileId)) {
+        continue;
+      }
+
+      const remaining = files.filter((f) => f.file_id !== fileId);
+      if (this.attachedFiles[key]) {
+        this.attachedFiles[key] = remaining;
+        this.stepForm.patchValue({ [key]: remaining });
+      }
+      payload[key] = this.mapFilesToPayload(remaining);
+    }
+
+    if (Object.keys(payload).length) {
+      this.updateAction.emit(payload);
+    }
   }
 
   onOpenFile(file: FileModel): void {
@@ -192,19 +222,13 @@ export class CustomStepComponent implements OnDestroy {
   private initStepForm(page: PageSchema): void {
     this.stepForm = this.fb.group({});
     this.attachedFiles = {};
-    const questions = [
-      ...(page.questions || []),
-      ...(page.sections?.flatMap((section) => section.questions ?? []) ?? []),
-    ];
-
-    questions.forEach((q) => {
+    this.getPageQuestions(page).forEach((q) => {
       const controlName = q.responseKey as string;
       const control = this.createControl(q.fieldType!, controlName, q.required);
       if (!control) return;
 
       if (q.fieldType === FieldType.File) {
-        const files = (this.stepsData()[controlName] as FilePayloadJsonApi[] | undefined) || [];
-        this.attachedFiles[controlName] = files.map((file) => ({ ...file, name: file.file_name }));
+        this.attachedFiles[controlName] = this.getSavedFiles(controlName);
       }
 
       this.stepForm.addControl(controlName, control);
@@ -270,13 +294,16 @@ export class CustomStepComponent implements OnDestroy {
     return values;
   }
 
+  private getPageQuestions(page: PageSchema): Question[] {
+    return [...(page.questions || []), ...(page.sections?.flatMap((section) => section.questions ?? []) ?? [])];
+  }
+
+  private getSavedFiles(questionKey: string): AttachedFile[] {
+    const files = (this.stepsData()[questionKey] as FilePayloadJsonApi[] | undefined) || [];
+    return files.map((file) => ({ ...file, name: file.file_name }));
+  }
+
   private mapFilesToPayload(files: AttachedFile[]): FilePayloadJsonApi[] {
-    return files.map((f) => {
-      if (f.file_id) {
-        const { name: _, ...payload } = f;
-        return payload as FilePayloadJsonApi;
-      }
-      return FilesMapper.toFilePayload(f as FileModel);
-    });
+    return files.map(({ name: _, ...payload }) => payload);
   }
 }

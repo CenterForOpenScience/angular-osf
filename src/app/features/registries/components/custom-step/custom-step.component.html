@@ -163,7 +163,7 @@
                   [filesViewOnly]="filesViewOnly()"
                   (attachFile)="onAttachFile($event, q.responseKey!)"
                   (openFile)="onOpenFile($event)"
-                  (removeFromAttachedFiles)="removeFromAttachedFiles($event, q.responseKey!)"
+                  (removeFromAttachedFiles)="onFileDeleted($event)"
                 ></osf-files-control>
               </div>
             }
