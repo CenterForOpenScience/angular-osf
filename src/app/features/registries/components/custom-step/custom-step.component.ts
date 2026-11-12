@@ -142,10 +142,9 @@ export class CustomStepComponent implements OnDestroy {
     this.updateAction.emit(this.getFormPayload());
   }
 
-  onFileDeleted(fileId: string): void {
+  removeDeletedFileFromAllQuestions(fileId: string): void {
     const payload: Record<string, FilePayloadJsonApi[]> = {};
 
-    // the same file can be attached to file questions on other pages
     for (const key of this.fileQuestionKeys()) {
       const files = this.attachedFiles[key] ?? this.getSavedFiles(key);
       if (!files.some((f) => f.file_id === fileId)) {

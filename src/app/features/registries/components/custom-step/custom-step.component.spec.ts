@@ -392,7 +392,7 @@ describe('CustomStepComponent', () => {
     });
     const emitSpy = vi.spyOn(component.updateAction, 'emit');
 
-    component.onFileDeleted('f1');
+    component.removeDeletedFileFromAllQuestions('f1');
 
     expect(component.attachedFiles['files']).toEqual([{ ...otherFile, name: 'other.pdf' }]);
     expect(component.stepForm.get('files')?.value).toEqual([{ ...otherFile, name: 'other.pdf' }]);
@@ -407,7 +407,7 @@ describe('CustomStepComponent', () => {
     component.onAttachFile(FileModelMock.simple({ id: 'new-file' }), 'files');
     const emitSpy = vi.spyOn(component.updateAction, 'emit');
 
-    component.onFileDeleted('new-file');
+    component.removeDeletedFileFromAllQuestions('new-file');
 
     expect(component.attachedFiles['files']).toEqual([]);
     expect(emitSpy).toHaveBeenCalledWith({ files: [] });
@@ -420,7 +420,7 @@ describe('CustomStepComponent', () => {
     });
     const emitSpy = vi.spyOn(component.updateAction, 'emit');
 
-    component.onFileDeleted('unknown');
+    component.removeDeletedFileFromAllQuestions('unknown');
 
     expect(component.attachedFiles['files']).toHaveLength(1);
     expect(emitSpy).not.toHaveBeenCalled();
@@ -431,7 +431,7 @@ describe('CustomStepComponent', () => {
       pages: [createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })])],
       stepsData: { files: [filePayload] },
     });
-    const deleteSpy = vi.spyOn(component, 'onFileDeleted');
+    const deleteSpy = vi.spyOn(component, 'removeDeletedFileFromAllQuestions');
 
     fixture.debugElement
       .query(By.directive(FilesControlComponent))
