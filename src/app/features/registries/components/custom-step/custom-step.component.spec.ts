@@ -6,6 +6,7 @@ import { Mock } from 'vitest';
 
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user/user.selectors';
@@ -298,7 +299,7 @@ describe('CustomStepComponent', () => {
       pages: [createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })])],
       stepsData: { files: [] },
     });
-    component.attachedFiles['files'] = [{ file_id: 'file-1', name: 'existing.txt' }];
+    component.attachedFiles['files'] = [{ ...filePayload, file_id: 'file-1', name: 'existing.txt' }];
     const emitSpy = vi.spyOn(component.updateAction, 'emit');
 
     component.onAttachFile(FileModelMock.simple({ id: 'file-1' }), 'files');
@@ -307,12 +308,28 @@ describe('CustomStepComponent', () => {
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
+  it('should not attach the same file twice before the draft is saved', () => {
+    const { component } = setup({
+      pages: [createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })])],
+      stepsData: { files: [] },
+    });
+    const mockFile = FileModelMock.simple({ id: 'new-file', name: 'new.txt' });
+
+    component.onAttachFile(mockFile, 'files');
+    component.onAttachFile(mockFile, 'files');
+
+    expect(component.attachedFiles['files']).toEqual([
+      expect.objectContaining({ file_id: 'new-file', file_name: 'new.txt', name: 'new.txt' }),
+    ]);
+  });
+
   it('should warn when the attachment limit is reached', () => {
     const { component, toastMock } = setup({
       pages: [createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })])],
       stepsData: { files: [] },
     });
     component.attachedFiles['files'] = Array.from({ length: FILE_COUNT_ATTACHMENTS_LIMIT }, (_, i) => ({
+      ...filePayload,
       file_id: `f-${i}`,
       name: `f-${i}`,
     }));
@@ -362,6 +379,65 @@ describe('CustomStepComponent', () => {
     component.removeFromAttachedFiles('f1', 'nonexistent');
 
     expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should remove a deleted file from file questions on every page', () => {
+    const otherFile: FilePayloadJsonApi = { ...filePayload, file_id: 'f2', file_name: 'other.pdf' };
+    const { component } = setup({
+      pages: [
+        createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })]),
+        createPage([createQuestion({ responseKey: 'otherFiles', fieldType: FieldType.File })]),
+      ],
+      stepsData: { files: [filePayload, otherFile], otherFiles: [filePayload] },
+    });
+    const emitSpy = vi.spyOn(component.updateAction, 'emit');
+
+    component.removeDeletedFileFromAllQuestions('f1');
+
+    expect(component.attachedFiles['files']).toEqual([{ ...otherFile, name: 'other.pdf' }]);
+    expect(component.stepForm.get('files')?.value).toEqual([{ ...otherFile, name: 'other.pdf' }]);
+    expect(emitSpy).toHaveBeenCalledWith({ files: [otherFile], otherFiles: [] });
+  });
+
+  it('should remove a file attached on this page when it is deleted', () => {
+    const { component } = setup({
+      pages: [createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })])],
+      stepsData: { files: [] },
+    });
+    component.onAttachFile(FileModelMock.simple({ id: 'new-file' }), 'files');
+    const emitSpy = vi.spyOn(component.updateAction, 'emit');
+
+    component.removeDeletedFileFromAllQuestions('new-file');
+
+    expect(component.attachedFiles['files']).toEqual([]);
+    expect(emitSpy).toHaveBeenCalledWith({ files: [] });
+  });
+
+  it('should not emit when the deleted file is not attached', () => {
+    const { component } = setup({
+      pages: [createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })])],
+      stepsData: { files: [filePayload] },
+    });
+    const emitSpy = vi.spyOn(component.updateAction, 'emit');
+
+    component.removeDeletedFileFromAllQuestions('unknown');
+
+    expect(component.attachedFiles['files']).toHaveLength(1);
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should handle a file deleted from the files list', () => {
+    const { component, fixture } = setup({
+      pages: [createPage([createQuestion({ responseKey: 'files', fieldType: FieldType.File })])],
+      stepsData: { files: [filePayload] },
+    });
+    const deleteSpy = vi.spyOn(component, 'removeDeletedFileFromAllQuestions');
+
+    fixture.debugElement
+      .query(By.directive(FilesControlComponent))
+      .triggerEventHandler('removeFromAttachedFiles', 'f1');
+
+    expect(deleteSpy).toHaveBeenCalledWith('f1');
   });
 
   it('should open file preview when draftId and guid exist', () => {
