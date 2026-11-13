@@ -50,7 +50,11 @@ export class MyResourcesService {
     };
 
     if (resourceType) {
-      params[`fields[${resourceType}]`] = 'title,date_created,date_modified,public,bibliographic_contributors';
+      const fields = ['title', 'date_created', 'date_modified', 'public', 'bibliographic_contributors'];
+      if (resourceType === 'preprints') {
+        fields.push('is_migrated');
+      }
+      params[`fields[${resourceType}]`] = fields.join(',');
     }
 
     if (filters?.searchValue && filters.searchFields?.length) {

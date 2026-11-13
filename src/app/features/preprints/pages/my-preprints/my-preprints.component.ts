@@ -24,6 +24,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ContributorsListShortenerComponent } from '@osf/shared/components/contributors-list-shortener/contributors-list-shortener.component';
+import { MigratedLabelComponent } from '@osf/shared/components/migrated-label/migrated-label.component';
 import { SearchInputComponent } from '@osf/shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
@@ -47,9 +48,9 @@ import { FetchMyPreprints, MyPreprintsSelectors } from '../../store/my-preprints
     DatePipe,
     TranslatePipe,
     TitleCasePipe,
+    MigratedLabelComponent,
   ],
   templateUrl: './my-preprints.component.html',
-  styleUrl: './my-preprints.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyPreprintsComponent {

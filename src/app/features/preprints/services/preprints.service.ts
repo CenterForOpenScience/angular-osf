@@ -143,7 +143,7 @@ export class PreprintsService {
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
       'fields[users]': 'family_name,full_name,given_name,middle_name',
-      'fields[preprints]': 'title,date_modified,public,bibliographic_contributors,provider',
+      'fields[preprints]': 'title,date_modified,public,bibliographic_contributors,provider,is_migrated',
     };
 
     searchPreferencesToJsonApiQueryParams(params, pageNumber, pageSize, filters, preprintSortFieldMap);

@@ -13,6 +13,7 @@ import { TableParameters } from '@osf/shared/models/table-parameters.model';
 
 import { ContributorsListShortenerComponent } from '../contributors-list-shortener/contributors-list-shortener.component';
 import { IconComponent } from '../icon/icon.component';
+import { MigratedLabelComponent } from '../migrated-label/migrated-label.component';
 
 @Component({
   selector: 'osf-my-projects-table',
@@ -21,6 +22,7 @@ import { IconComponent } from '../icon/icon.component';
     Skeleton,
     IconComponent,
     ContributorsListShortenerComponent,
+    MigratedLabelComponent,
     NgTemplateOutlet,
     TranslatePipe,
     DatePipe,

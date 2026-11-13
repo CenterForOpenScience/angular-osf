@@ -15,6 +15,7 @@ export class MyResourcesMapper {
       dateModified: response.attributes.date_modified,
       isPublic: response.attributes.public,
       contributors: ContributorsMapper.getContributors(response.embeds?.bibliographic_contributors?.data),
+      isMigrated: !!response.attributes.is_migrated,
     };
   }
 }

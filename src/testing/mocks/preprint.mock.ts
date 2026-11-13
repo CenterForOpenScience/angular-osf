@@ -22,6 +22,7 @@ export const PREPRINT_MOCK: PreprintModel = {
   isPublic: true,
   version: 1,
   isLatestVersion: true,
+  isMigrated: false,
   isPreprintOrphan: false,
   withdrawalJustification: null,
   nodeId: 'node-123',

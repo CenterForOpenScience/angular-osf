@@ -3,6 +3,7 @@ import { createDispatchMap, select, Store } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Message } from 'primeng/message';
 import { Skeleton } from 'primeng/skeleton';
 
 import { catchError, EMPTY, filter, map } from 'rxjs';
@@ -68,6 +69,7 @@ import { CreateNewVersion, PreprintStepperSelectors } from '../../store/preprint
   imports: [
     Button,
     Skeleton,
+    Message,
     PreprintFileSectionComponent,
     ShareAndDownloadComponent,
     GeneralInformationComponent,
@@ -147,7 +149,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   });
 
   latestAction = computed(() => {
-    // banners and the decision dialog describe the last decision, and a spam report is not one
     const actions = this.reviewActions().filter((action) => action.trigger !== ReviewActionTrigger.ReportSpam);
     return actions.length > 0 ? actions[0] : null;
   });
@@ -323,16 +324,20 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   handleWithdrawClicked(): void {
+    const provider = this.preprintProvider();
+    const preprint = this.preprint();
+
+    if (!provider || !preprint || preprint.isMigrated) {
+      return;
+    }
+
     this.customDialogService
       .open(PreprintWithdrawDialogComponent, {
         header: this.translateService.instant('preprints.details.withdrawDialog.title', {
-          preprintWord: this.preprintProvider()!.preprintWord,
+          preprintWord: provider.preprintWord,
         }),
         width: '700px',
-        data: {
-          preprint: this.preprint(),
-          provider: this.preprintProvider(),
-        },
+        data: { preprint, provider },
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean))
       .subscribe(() => this.fetchPreprint(this.preprintId()));
@@ -342,7 +347,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     const providerId = this.providerId();
     const preprintId = this.preprintId();
 
-    if (!providerId || !preprintId) {
+    if (!providerId || !preprintId || this.preprint()?.isMigrated) {
       return;
     }
 
@@ -352,7 +357,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   createNewVersionClicked(): void {
     const preprintId = this.preprintId();
 
-    if (!preprintId) {
+    if (!preprintId || this.preprint()?.isMigrated) {
       return;
     }
 

@@ -1,5 +1,5 @@
 import { ResourceSearchMode } from '@osf/shared/enums/resource-search-mode.enum';
-import { TabOption } from '@shared/models/tab-option.model';
+import { TabOption } from '@osf/shared/models/tab-option.model';
 
 export const PROJECT_FILTER_OPTIONS: TabOption[] = [
   {

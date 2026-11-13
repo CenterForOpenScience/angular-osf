@@ -9,6 +9,7 @@ export const PREPRINT_SHORT_INFO_ARRAY_MOCK: PreprintShortInfo[] = [
     dateModified: '2024-01-01T00:00:00Z',
     contributors: [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY],
     providerId: 'provider-1',
+    isMigrated: false,
   },
   {
     id: 'preprint-2',
@@ -16,6 +17,7 @@ export const PREPRINT_SHORT_INFO_ARRAY_MOCK: PreprintShortInfo[] = [
     dateModified: '2024-01-02T00:00:00Z',
     contributors: [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY],
     providerId: 'provider-2',
+    isMigrated: false,
   },
   {
     id: 'preprint-3',
@@ -23,6 +25,7 @@ export const PREPRINT_SHORT_INFO_ARRAY_MOCK: PreprintShortInfo[] = [
     dateModified: '2024-01-03T00:00:00Z',
     contributors: [],
     providerId: 'provider-1',
+    isMigrated: false,
   },
   {
     id: 'preprint-4',
@@ -30,6 +33,7 @@ export const PREPRINT_SHORT_INFO_ARRAY_MOCK: PreprintShortInfo[] = [
     dateModified: '2024-01-04T00:00:00Z',
     contributors: [MOCK_CONTRIBUTOR],
     providerId: 'provider-3',
+    isMigrated: false,
   },
   {
     id: 'preprint-5',
@@ -37,5 +41,6 @@ export const PREPRINT_SHORT_INFO_ARRAY_MOCK: PreprintShortInfo[] = [
     dateModified: '2024-01-05T00:00:00Z',
     contributors: [MOCK_CONTRIBUTOR],
     providerId: 'provider-2',
+    isMigrated: false,
   },
 ];

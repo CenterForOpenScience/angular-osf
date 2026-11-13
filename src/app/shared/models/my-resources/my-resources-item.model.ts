@@ -8,4 +8,5 @@ export interface MyResourcesItem {
   contributors: ContributorModel[];
   title: string;
   type: string;
+  isMigrated?: boolean;
 }

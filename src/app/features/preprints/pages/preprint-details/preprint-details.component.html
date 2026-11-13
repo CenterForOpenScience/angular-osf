@@ -1,3 +1,6 @@
+@let provider = preprintProvider();
+@let isMigrated = !!preprint()?.isMigrated;
+
 <div class="flex flex-column xl:mt-6 flex-1">
   <section class="flex flex-column py-5 px-3 gap-4 md:py-6 md:px-4">
     <div class="flex flex-column justify-content-between md:flex-row">
@@ -10,12 +13,12 @@
         <div class="flex flex-column gap-3 md:flex-row">
           <a
             class="flex align-self-start max-w-full custom-light-hover"
-            [routerLink]="['/preprints', preprintProvider()?.id, 'discover']"
+            [routerLink]="['/preprints', provider?.id, 'discover']"
           >
             <img
               class="fit-contain max-w-full"
               height="36"
-              [src]="preprintProvider()?.brand?.heroLogoImageUrl"
+              [src]="provider?.brand?.heroLogoImageUrl"
               [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
             />
           </a>
@@ -24,7 +27,7 @@
         </div>
       }
 
-      @if (moderationMode()) {
+      @if (moderationMode() && !isMigrated) {
         @if (
           isPreprintLoading() ||
           areReviewActionsLoading() ||
@@ -32,9 +35,9 @@
           areRequestActionsLoading()
         ) {
           <p-skeleton width="10rem" height="2.25rem" />
-        } @else {
+        } @else if (provider) {
           <osf-preprint-make-decision
-            [provider]="preprintProvider()!"
+            [provider]="provider"
             [isPendingWithdrawal]="isPendingWithdrawal()"
             [latestAction]="latestAction()"
             [latestWithdrawalRequest]="latestWithdrawalRequest()"
@@ -56,6 +59,7 @@
             class="w-full md:w-11rem"
             styleClass="w-full"
             [label]="editButtonLabel() | translate"
+            [disabled]="isMigrated"
             (onClick)="editPreprintClicked()"
           />
         }
@@ -64,6 +68,7 @@
             class="w-full md:w-11rem"
             styleClass="w-full"
             [label]="'common.buttons.createNewVersion' | translate"
+            [disabled]="isMigrated"
             (onClick)="createNewVersionClicked()"
           />
         }
@@ -73,32 +78,39 @@
             styleClass="w-full"
             [label]="'common.buttons.withdraw' | translate"
             severity="danger"
+            [disabled]="isMigrated"
             (onClick)="handleWithdrawClicked()"
           />
         }
 
-        <osf-preprint-share-and-download [preprintProvider]="preprintProvider()" />
+        <osf-preprint-share-and-download [preprintProvider]="provider" />
       }
     </div>
   </section>
 
   <section class="flex-1 flex flex-column gap-2 bg-white py-2 px-3 md:px-4">
+    @if (isMigrated) {
+      <p-message styleClass="w-full" icon="fas fa-circle-info" severity="info" class="my-4">
+        {{ 'preprints.details.migratedBanner' | translate }}
+      </p-message>
+    }
+
     @if (isOsfPreprint()) {
       <osf-preprint-warning-banner />
     }
 
-    @if (moderationStatusBannerVisible()) {
+    @if (moderationStatusBannerVisible() && provider) {
       <osf-moderation-status-banner
-        [provider]="preprintProvider()!"
+        [provider]="provider"
         [isPendingWithdrawal]="isPendingWithdrawal()"
         [latestAction]="latestAction()"
         [latestWithdrawalRequest]="latestWithdrawalRequest()"
       />
     }
 
-    @if (statusBannerVisible()) {
+    @if (statusBannerVisible() && provider) {
       <osf-preprint-status-banner
-        [provider]="preprintProvider()!"
+        [provider]="provider"
         [latestAction]="latestAction()"
         [latestRequestAction]="latestRequestAction()"
         [isPendingWithdrawal]="isPendingWithdrawal()"
@@ -109,12 +121,12 @@
     @if (!preprint()?.dateWithdrawn) {
       <section class="flex-1 flex flex-column gap-4 align-items-start lg:flex-row">
         <section class="flex flex-column flex-1 h-full w-12 lg:w-8">
-          <osf-preprint-file-section [providerReviewsWorkflow]="preprintProvider()?.reviewsWorkflow || null" />
+          <osf-preprint-file-section [providerReviewsWorkflow]="provider?.reviewsWorkflow || null" />
         </section>
 
         <section class="flex flex-column gap-4 w-12 lg:w-4">
           <osf-preprint-general-information
-            [preprintProvider]="preprintProvider()"
+            [preprintProvider]="provider"
             (preprintVersionSelected)="fetchPreprint($event)"
           />
 
@@ -129,7 +141,7 @@
     } @else {
       <osf-preprint-tombstone
         class="lg:w-6"
-        [preprintProvider]="preprintProvider()"
+        [preprintProvider]="provider"
         (preprintVersionSelected)="fetchPreprint($event)"
       />
     }

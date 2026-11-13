@@ -15,6 +15,7 @@ interface MyResourcesItemAttributesJsonApi {
   date_modified: string;
   public: boolean;
   title: string;
+  is_migrated?: boolean;
 }
 
 interface MyResourcesItemEmbedsJsonApi {

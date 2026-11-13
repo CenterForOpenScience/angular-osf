@@ -27,7 +27,6 @@
       [scrollable]="true"
       [sortMode]="'single'"
       [lazy]="true"
-      [lazyLoadOnInit]="true"
       (onPage)="onPageChange($event)"
       (onSort)="onSort($event)"
       [sortField]="sortColumn()"
@@ -51,7 +50,12 @@
       <ng-template #body let-item>
         @if (item?.id) {
           <tr class="cursor-pointer" (click)="navigateToPreprintDetails(item)">
-            <td>{{ item.title }}</td>
+            <td>
+              <div class="flex align-items-center gap-2">
+                <span>{{ item.title }}</span>
+                <osf-migrated-label [isMigrated]="item.isMigrated" />
+              </div>
+            </td>
             <td>
               <osf-contributors-list-shortener [data]="item.contributors" />
             </td>
