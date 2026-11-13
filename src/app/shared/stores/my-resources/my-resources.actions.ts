@@ -10,7 +10,6 @@ export class GetMyProjects {
     public pageSize: number,
     public filters: MyResourcesSearchFilters,
     public searchMode?: ResourceSearchMode,
-    public rootProjectId?: string,
     public visibilityFilter?: ResourceVisibilityFilter
   ) {}
 }
@@ -22,8 +21,7 @@ export class GetMyRegistrations {
     public pageNumber: number,
     public pageSize: number,
     public filters: MyResourcesSearchFilters,
-    public searchMode?: ResourceSearchMode,
-    public rootRegistrationId?: string
+    public searchMode?: ResourceSearchMode
   ) {}
 }
 

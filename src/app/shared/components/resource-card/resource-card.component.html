@@ -23,9 +23,9 @@
         </h2>
 
         @if (isWithdrawn()) {
-          <p-tag severity="secondary" data-test-search-result-card-withdrawn>{{
-            'resourceCard.labels.withdrawn' | translate
-          }}</p-tag>
+          <p-tag severity="secondary" data-test-search-result-card-withdrawn>
+            {{ 'resourceCard.labels.withdrawn' | translate }}
+          </p-tag>
         }
 
         @let orcidValues = orcids();

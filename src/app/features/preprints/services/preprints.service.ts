@@ -3,11 +3,9 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ENVIRONMENT } from '@core/provider/environment.provider';
+import { ENVIRONMENT } from '@osf/core/provider/environment.provider';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
-import { ReviewActionsResponseJsonApi } from '@osf/features/moderation/models/review-action-json-api.model';
-import { PreprintRequestActionsMapper } from '@osf/features/preprints/mappers/preprint-request-actions.mapper';
-import { PreprintRequestAction } from '@osf/features/preprints/models/preprint-request-action.model';
+import { ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { searchPreferencesToJsonApiQueryParams } from '@osf/shared/helpers/search-pref-to-json-api-query-params.helper';
 import { StringOrNull } from '@osf/shared/helpers/types.helper';
 import {
@@ -21,10 +19,11 @@ import { SearchFilters } from '@osf/shared/models/search-filters.model';
 import { JsonApiService } from '@osf/shared/services/json-api.service';
 
 import { preprintSortFieldMap } from '../constants';
-import { PreprintRequestMapper, PreprintsMapper } from '../mappers';
+import { PreprintRequestActionsMapper, PreprintRequestMapper, PreprintsMapper } from '../mappers';
 import {
   PreprintModel,
   PreprintRequest,
+  PreprintRequestAction,
   PreprintRequestActionsJsonApiResponse,
   PreprintRequestsJsonApiResponse,
 } from '../models';

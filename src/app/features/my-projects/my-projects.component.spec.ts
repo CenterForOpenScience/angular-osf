@@ -228,7 +228,6 @@ describe('MyProjectsComponent', () => {
           sortOrder: SortOrder.Asc,
         },
         PROJECT_FILTER_OPTIONS[0].value,
-        undefined,
         VISIBILITY_FILTER_OPTIONS[0].value
       )
     );

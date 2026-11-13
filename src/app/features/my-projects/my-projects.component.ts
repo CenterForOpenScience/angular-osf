@@ -331,7 +331,6 @@ export class MyProjectsComponent implements OnInit {
           pageSize,
           filters,
           this.selectedProjectFilterOption(),
-          undefined,
           this.selectedVisibilityFilterOption()
         );
         break;

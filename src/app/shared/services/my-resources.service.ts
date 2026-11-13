@@ -7,10 +7,10 @@ import { ENVIRONMENT } from '@core/provider/environment.provider';
 
 import { DEFAULT_TABLE_PARAMS } from '../constants/default-table-params.constants';
 import { ResourceSearchMode } from '../enums/resource-search-mode.enum';
+import { CurrentResourceType } from '../enums/resource-type.enum';
 import { ResourceVisibilityFilter } from '../enums/resource-visibility-filter.enum';
 import { SortOrder } from '../enums/sort-order.enum';
 import { MyResourcesMapper } from '../mappers/my-resources.mapper';
-import { EndpointType } from '../models/my-resources/my-resources-endpoint.type';
 import { MyResourcesItem } from '../models/my-resources/my-resources-item.model';
 import {
   MyResourcesItemResponseJsonApi,
@@ -39,23 +39,21 @@ export class MyResourcesService {
   }
 
   private buildCommonParams(
+    resourceType: CurrentResourceType,
     filters?: MyResourcesSearchFilters,
     pageNumber?: number,
-    pageSize?: number,
-    resourceType?: string
+    pageSize?: number
   ): Record<string, unknown> {
+    const fields = ['title', 'date_created', 'date_modified', 'public', 'bibliographic_contributors'];
+    if (resourceType === CurrentResourceType.Preprints) {
+      fields.push('is_migrated');
+    }
+
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
       'fields[users]': 'family_name,full_name,given_name,middle_name',
+      [`fields[${resourceType}]`]: fields.join(','),
     };
-
-    if (resourceType) {
-      const fields = ['title', 'date_created', 'date_modified', 'public', 'bibliographic_contributors'];
-      if (resourceType === 'preprints') {
-        fields.push('is_migrated');
-      }
-      params[`fields[${resourceType}]`] = fields.join(',');
-    }
 
     if (filters?.searchValue && filters.searchFields?.length) {
       params[`filter[${filters.searchFields.join(',')}]`] = filters.searchValue;
@@ -73,16 +71,14 @@ export class MyResourcesService {
   }
 
   private getResources(
-    endpoint: EndpointType,
+    resourceType: CurrentResourceType,
     filters?: MyResourcesSearchFilters,
     pageNumber?: number,
     pageSize?: number,
-    resourceType?: string,
     searchMode?: ResourceSearchMode,
-    rootProjectId?: string,
     visibilityFilter?: ResourceVisibilityFilter
   ): Observable<PaginatedData<MyResourcesItem[]>> {
-    const params = this.buildCommonParams(filters, pageNumber, pageSize, resourceType);
+    const params = this.buildCommonParams(resourceType, filters, pageNumber, pageSize);
 
     if (searchMode !== ResourceSearchMode.All) {
       if (filters?.sortColumn && this.sortFieldMap[filters.sortColumn]) {
@@ -94,12 +90,10 @@ export class MyResourcesService {
       }
     }
 
-    if (rootProjectId) {
-      params['filter[root][ne]'] = rootProjectId;
-    }
-
     const url =
-      searchMode === ResourceSearchMode.All ? `${this.apiUrl}/${endpoint}` : `${this.apiUrl}/users/me/${endpoint}`;
+      searchMode === ResourceSearchMode.All
+        ? `${this.apiUrl}/${resourceType}/`
+        : `${this.apiUrl}/users/me/${resourceType}/`;
 
     if (searchMode === ResourceSearchMode.Component) {
       params['filter[parent][ne]'] = null;
@@ -129,37 +123,18 @@ export class MyResourcesService {
     pageNumber?: number,
     pageSize?: number,
     searchMode?: ResourceSearchMode,
-    rootProjectId?: string,
     visibilityFilter?: ResourceVisibilityFilter
   ): Observable<PaginatedData<MyResourcesItem[]>> {
-    return this.getResources(
-      'nodes/',
-      filters,
-      pageNumber,
-      pageSize,
-      'nodes',
-      searchMode,
-      rootProjectId,
-      visibilityFilter
-    );
+    return this.getResources(CurrentResourceType.Projects, filters, pageNumber, pageSize, searchMode, visibilityFilter);
   }
 
   getMyRegistrations(
     filters?: MyResourcesSearchFilters,
     pageNumber?: number,
     pageSize?: number,
-    searchMode?: ResourceSearchMode,
-    rootProjectId?: string
+    searchMode?: ResourceSearchMode
   ): Observable<PaginatedData<MyResourcesItem[]>> {
-    return this.getResources(
-      'registrations/',
-      filters,
-      pageNumber,
-      pageSize,
-      'registrations',
-      searchMode,
-      rootProjectId
-    );
+    return this.getResources(CurrentResourceType.Registrations, filters, pageNumber, pageSize, searchMode);
   }
 
   getMyPreprints(
@@ -167,7 +142,7 @@ export class MyResourcesService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<PaginatedData<MyResourcesItem[]>> {
-    return this.getResources('preprints/', filters, pageNumber, pageSize, 'preprints');
+    return this.getResources(CurrentResourceType.Preprints, filters, pageNumber, pageSize);
   }
 
   createProject(
@@ -179,7 +154,7 @@ export class MyResourcesService {
   ): Observable<MyResourcesItem> {
     const payload: CreateProjectPayloadJsoApi = {
       data: {
-        type: 'nodes',
+        type: CurrentResourceType.Projects,
         attributes: {
           title,
           ...(description && { description }),
@@ -208,12 +183,12 @@ export class MyResourcesService {
 
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
-      'fields[nodes]': 'title,date_modified,public,bibliographic_contributors',
+      [`fields[${CurrentResourceType.Projects}]`]: 'title,date_modified,public,bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
     return this.jsonApiService
-      .post<MyResourcesItemResponseJsonApi>(`${this.apiUrl}/nodes/`, payload, params)
+      .post<MyResourcesItemResponseJsonApi>(`${this.apiUrl}/${CurrentResourceType.Projects}/`, payload, params)
       .pipe(map((response) => MyResourcesMapper.fromResponse(response.data)));
   }
 }
