@@ -1,6 +1,6 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, Actions, ofActionDispatched, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap } from 'rxjs';
+import { catchError, Observable, takeUntil, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -22,64 +22,88 @@ import { MY_RESOURCES_STATE_DEFAULTS, MyResourcesStateModel } from './my-resourc
 })
 @Injectable()
 export class MyResourcesState {
+  private readonly actions$ = inject(Actions);
   private readonly myResourcesService = inject(MyResourcesService);
 
-  @Action(GetMyProjects)
+  @Action(GetMyProjects, { cancelUncompleted: true })
   getProjects(ctx: StateContext<MyResourcesStateModel>, action: GetMyProjects) {
-    const state = ctx.getState();
     ctx.patchState({
       projects: {
-        ...state.projects,
+        ...ctx.getState().projects,
         isLoading: true,
+        error: null,
       },
     });
 
-    return this.myResourcesService
-      .getMyProjects(
-        action.filters,
-        action.pageNumber,
-        action.pageSize,
-        action.searchMode,
-        action.rootProjectId,
-        action.visibilityFilter
-      )
-      .pipe(
-        tap((res) => {
-          ctx.patchState({
-            projects: {
-              data: res.data,
-              isLoading: false,
-              error: null,
-              totalCount: res.totalCount,
-            },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'projects', error))
-      );
+    return this.untilCleared(
+      this.myResourcesService
+        .getMyProjects(action.filters, action.pageNumber, action.pageSize, action.searchMode, action.visibilityFilter)
+        .pipe(
+          tap((res) => {
+            const projects = ctx.getState().projects;
+            ctx.patchState({
+              projects: {
+                ...projects,
+                data: res.data,
+                isLoading: false,
+                error: null,
+                totalCount: res.totalCount,
+              },
+            });
+          }),
+          catchError((error) => handleSectionError(ctx, 'projects', error))
+        )
+    );
   }
 
-  @Action(GetMyRegistrations)
+  @Action(GetMyRegistrations, { cancelUncompleted: true })
   getRegistrations(ctx: StateContext<MyResourcesStateModel>, action: GetMyRegistrations) {
-    const state = ctx.getState();
     ctx.patchState({
       registrations: {
-        ...state.registrations,
+        ...ctx.getState().registrations,
         isLoading: true,
+        error: null,
       },
     });
 
-    return this.myResourcesService
-      .getMyRegistrations(
-        action.filters,
-        action.pageNumber,
-        action.pageSize,
-        action.searchMode,
-        action.rootRegistrationId
-      )
-      .pipe(
+    return this.untilCleared(
+      this.myResourcesService
+        .getMyRegistrations(action.filters, action.pageNumber, action.pageSize, action.searchMode)
+        .pipe(
+          tap((res) => {
+            const registrations = ctx.getState().registrations;
+            ctx.patchState({
+              registrations: {
+                ...registrations,
+                data: res.data,
+                isLoading: false,
+                error: null,
+                totalCount: res.totalCount,
+              },
+            });
+          }),
+          catchError((error) => handleSectionError(ctx, 'registrations', error))
+        )
+    );
+  }
+
+  @Action(GetMyPreprints, { cancelUncompleted: true })
+  getPreprints(ctx: StateContext<MyResourcesStateModel>, action: GetMyPreprints) {
+    ctx.patchState({
+      preprints: {
+        ...ctx.getState().preprints,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.untilCleared(
+      this.myResourcesService.getMyPreprints(action.filters, action.pageNumber, action.pageSize).pipe(
         tap((res) => {
+          const preprints = ctx.getState().preprints;
           ctx.patchState({
-            registrations: {
+            preprints: {
+              ...preprints,
               data: res.data,
               isLoading: false,
               error: null,
@@ -87,32 +111,8 @@ export class MyResourcesState {
             },
           });
         }),
-        catchError((error) => handleSectionError(ctx, 'registrations', error))
-      );
-  }
-
-  @Action(GetMyPreprints)
-  getPreprints(ctx: StateContext<MyResourcesStateModel>, action: GetMyPreprints) {
-    const state = ctx.getState();
-    ctx.patchState({
-      preprints: {
-        ...state.preprints,
-        isLoading: true,
-      },
-    });
-
-    return this.myResourcesService.getMyPreprints(action.filters, action.pageNumber, action.pageSize).pipe(
-      tap((res) => {
-        ctx.patchState({
-          preprints: {
-            data: res.data,
-            isLoading: false,
-            error: null,
-            totalCount: res.totalCount,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'preprints', error))
+        catchError((error) => handleSectionError(ctx, 'preprints', error))
+      )
     );
   }
 
@@ -123,29 +123,36 @@ export class MyResourcesState {
 
   @Action(CreateProject)
   createProject(ctx: StateContext<MyResourcesStateModel>, action: CreateProject) {
-    const state = ctx.getState();
     ctx.patchState({
       projects: {
-        ...state.projects,
+        ...ctx.getState().projects,
         isSubmitting: true,
+        error: null,
       },
     });
 
-    return this.myResourcesService
-      .createProject(action.title, action.description, action.templateFrom, action.region, action.affiliations)
-      .pipe(
-        tap((project) => {
-          ctx.patchState({
-            projects: {
-              data: [project, ...state.projects.data],
-              isLoading: false,
-              isSubmitting: false,
-              error: null,
-              totalCount: state.projects.totalCount + 1,
-            },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'projects', error))
-      );
+    return this.untilCleared(
+      this.myResourcesService
+        .createProject(action.title, action.description, action.templateFrom, action.region, action.affiliations)
+        .pipe(
+          tap((project) => {
+            const projects = ctx.getState().projects;
+            ctx.patchState({
+              projects: {
+                ...projects,
+                data: [project, ...projects.data],
+                isSubmitting: false,
+                error: null,
+                totalCount: projects.totalCount + 1,
+              },
+            });
+          }),
+          catchError((error) => handleSectionError(ctx, 'projects', error))
+        )
+    );
+  }
+
+  private untilCleared<T>(source: Observable<T>): Observable<T> {
+    return source.pipe(takeUntil(this.actions$.pipe(ofActionDispatched(ClearMyResources))));
   }
 }
