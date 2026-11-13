@@ -11,6 +11,20 @@ import { FileProvider } from '../constants';
 import { OsfFileCustomMetadata } from '../models/file-custom-metadata.model';
 import { OsfFileRevision } from '../models/file-revisions.model';
 
+/**
+ * Type alias for built-in file providers.
+ * `FileProvider` is declared without `as const`, so this resolves to `string` today.
+ */
+type BuiltInFileProvider = (typeof FileProvider)[keyof typeof FileProvider];
+
+/**
+ * A file provider name: a built-in one, or a dynamic one that gravyvalet lists
+ * (e.g., s3compat from a foreign addon).
+ * Resolves to `string` today. `(string & {})` keeps dynamic names accepted, and
+ * lets the IDE suggest the built-in names, if `FileProvider` is ever declared `as const`.
+ */
+export type FileProviderType = BuiltInFileProvider | (string & {});
+
 export interface FilesStateModel {
   files: AsyncStateWithTotalCount<FileModel[]>;
   moveDialogFiles: AsyncStateWithTotalCount<FileModel[]>;
@@ -18,7 +32,7 @@ export interface FilesStateModel {
   moveDialogCurrentFolder: FileFolderModel | null;
   search: string;
   sort: string;
-  provider: (typeof FileProvider)[keyof typeof FileProvider];
+  provider: FileProviderType;
   openedFile: AsyncStateModel<FileDetailsModel | null>;
   fileMetadata: AsyncStateModel<OsfFileCustomMetadata | null>;
   resourceMetadata: AsyncStateModel<ResourceMetadata | null>;
