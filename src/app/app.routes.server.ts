@@ -126,6 +126,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    path: 'preprints',
+    renderMode: RenderMode.Server,
+  },
+  {
     path: 'registries/my-registrations',
     renderMode: RenderMode.Client,
   },
@@ -143,6 +147,10 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'registries/:providerId',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'registries',
     renderMode: RenderMode.Server,
   },
   {

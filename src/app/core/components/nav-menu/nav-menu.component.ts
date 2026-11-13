@@ -1,4 +1,4 @@
-import { createDispatchMap, select } from '@ngxs/store';
+import { select } from '@ngxs/store';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -7,7 +7,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { filter, map } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
-import { Component, computed, inject, output, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output, PLATFORM_ID } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -23,13 +23,14 @@ import { CurrentResourceType } from '@osf/shared/enums/resource-type.enum';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
 import { WrapFnPipe } from '@osf/shared/pipes/wrap-fn.pipe';
 import { ViewOnlyLinkHelperService } from '@osf/shared/services/view-only-link-helper.service';
-import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores/current-resource';
+import { CurrentResourceSelectors } from '@osf/shared/stores/current-resource';
 
 @Component({
   selector: 'osf-nav-menu',
   imports: [RouterLinkActive, RouterLink, PanelMenuModule, IconComponent, WrapFnPipe],
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavMenuComponent {
   closeMenu = output<void>();
@@ -46,8 +47,6 @@ export class NavMenuComponent {
   private readonly provider = select(ProviderSelectors.getCurrentProvider);
   private readonly translationsReady = toSignal(this.translateService.stream('navigation.overview'));
 
-  readonly actions = createDispatchMap({ getResourceDetails: GetResourceDetails });
-
   readonly mainMenuItems = computed(() => {
     this.translationsReady();
     const isAuthenticated = this.isAuthenticated();
@@ -55,7 +54,7 @@ export class NavMenuComponent {
 
     const routeContext: RouteContext = {
       resourceId: this.currentResourceId(),
-      providerId: this.provider()?.id,
+      providerId: this.provider()?.id ?? this.currentRoute().providerId,
       isProject:
         this.currentResource()?.type === CurrentResourceType.Projects &&
         this.currentResourceId() === this.currentResource()?.id,
@@ -78,11 +77,7 @@ export class NavMenuComponent {
       permissions: this.currentResource()?.permissions,
     };
 
-    const items = updateMenuItems(filtered, routeContext);
-
-    this.translateMenuItems(items);
-
-    return items;
+    return this.translateMenuItems(updateMenuItems(filtered, routeContext));
   });
 
   readonly currentRoute = toSignal(
@@ -103,10 +98,11 @@ export class NavMenuComponent {
   private getRouteInfo() {
     const urlSegments = this.router.url.split('/').filter((segment) => segment);
     const resourceFromQueryParams = this.route.snapshot.queryParams['resourceId'];
-    const resourceId = this.route.firstChild?.snapshot.params['id'] || resourceFromQueryParams;
-    const providerId = this.route.firstChild?.snapshot.params['providerId'];
+    const params = this.getMergedRouteParams();
+    const resourceId = params['id'] || resourceFromQueryParams;
+    const providerId = params['providerId'];
     const isCollectionsWithId = urlSegments[0] === 'collections' && urlSegments[1] && urlSegments[1] !== '';
-    const isPreprintRoute = urlSegments[0] === 'preprints' && !!urlSegments[2];
+    const isPreprintRoute = urlSegments[0] === 'preprints' && !!providerId && !!resourceId;
 
     return {
       resourceId,
@@ -139,15 +135,23 @@ export class NavMenuComponent {
   readonly hasVisibleChildren = (item: CustomMenuItem): boolean =>
     Array.isArray(item.items) && item.items.some((child) => !!child.visible);
 
-  private translateMenuItems(items: CustomMenuItem[]): void {
-    items.forEach((item) => {
-      if (item.label) {
-        item.label = this.translateService.instant(item.label);
-      }
+  private translateMenuItems(items: CustomMenuItem[]): CustomMenuItem[] {
+    return items.map((item) => ({
+      ...item,
+      label: item.label ? this.translateService.instant(item.label) : item.label,
+      items: item.items?.length ? this.translateMenuItems(item.items) : item.items,
+    }));
+  }
 
-      if (item.items && item.items.length > 0) {
-        this.translateMenuItems(item.items);
-      }
-    });
+  private getMergedRouteParams(): Record<string, string> {
+    let current = this.route.snapshot;
+    let params = { ...current.params };
+
+    while (current.firstChild) {
+      current = current.firstChild;
+      params = { ...params, ...current.params };
+    }
+
+    return params;
   }
 }
