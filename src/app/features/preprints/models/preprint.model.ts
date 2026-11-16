@@ -26,6 +26,7 @@ export interface PreprintModel {
   isPublic: boolean;
   version: number;
   isLatestVersion: boolean;
+  isMigrated: boolean;
   isPreprintOrphan: boolean;
   withdrawalJustification: StringOrNull;
   nodeId: StringOrNull;
@@ -60,6 +61,7 @@ export interface PreprintShortInfo {
   dateModified: string;
   contributors: ContributorModel[];
   providerId: string;
+  isMigrated: boolean;
 }
 
 export interface PreprintShortInfoWithTotalCount {

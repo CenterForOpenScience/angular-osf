@@ -6,7 +6,7 @@ import type { SortEvent } from 'primeng/api';
 import { TablePageEvent } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, finalize, tap } from 'rxjs';
 
 import { isPlatformBrowser } from '@angular/common';
 import {
@@ -22,7 +22,7 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
@@ -33,6 +33,7 @@ import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/default-table-params.constants';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { IS_MEDIUM } from '@osf/shared/helpers/breakpoints.tokens';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 import { MyResourcesItem } from '@osf/shared/models/my-resources/my-resources-item.model';
 import { MyResourcesSearchFilters } from '@osf/shared/models/my-resources/my-resources-search-filters.model';
 import { CustomDialogService } from '@osf/shared/services/custom-dialog.service';
@@ -62,7 +63,6 @@ import { MyProjectsTab } from './enums';
 @Component({
   selector: 'osf-my-projects',
   imports: [
-    FormsModule,
     Tab,
     TabList,
     TabPanel,
@@ -80,17 +80,16 @@ import { MyProjectsTab } from './enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsComponent implements OnInit {
-  readonly destroyRef = inject(DestroyRef);
-  readonly customDialogService = inject(CustomDialogService);
-  readonly router = inject(Router);
-  readonly route = inject(ActivatedRoute);
-  readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
-  readonly queryService = inject(MyProjectsQueryService);
-  readonly tableParamsService = inject(MyProjectsTableParamsService);
-  readonly downloadOptionsService = inject(ProjectDownloadOptionsService);
-  readonly platformId = inject(PLATFORM_ID);
-  readonly isBrowser = isPlatformBrowser(this.platformId);
-  readonly projectCreationDisabled = select(UserSelectors.isProjectCreationDisabled);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly customDialogService = inject(CustomDialogService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
+  private readonly queryService = inject(MyProjectsQueryService);
+  private readonly tableParamsService = inject(MyProjectsTableParamsService);
+  private readonly downloadOptionsService = inject(ProjectDownloadOptionsService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly isLoading = signal(false);
   readonly isMedium = toSignal(inject(IS_MEDIUM));
@@ -103,27 +102,20 @@ export class MyProjectsComponent implements OnInit {
 
   readonly searchControl = new FormControl<string>('');
 
-  readonly appliedSearch = computed(() => {
-    const params = this.queryParams();
-    return params ? this.queryService.toQueryModel(params).search || '' : '';
-  });
-
-  readonly projectsEmptyMessageKey = computed(() => {
-    if (this.appliedSearch()) {
-      return 'common.search.noResultsFound';
-    }
-
-    return getMyProjectsEmptyMessageKey(this.selectedProjectFilterOption(), this.selectedVisibilityFilterOption());
-  });
-
   readonly queryParams = toSignal(this.route.queryParams);
-  readonly currentPage = signal(1);
-  readonly currentPageSize = signal(DEFAULT_TABLE_PARAMS.rows);
   readonly selectedTab = signal(MyProjectsTab.Projects);
-  readonly activeProject = signal<MyResourcesItem | null>(null);
   readonly sortColumn = signal<string | undefined>(undefined);
   readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
   readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS, firstRowIndex: 0 });
+
+  private readonly actions = createDispatchMap({
+    getBookmarksCollectionId: GetBookmarksCollectionId,
+    clearMyProjects: ClearMyResources,
+    getMyProjects: GetMyProjects,
+    getMyRegistrations: GetMyRegistrations,
+    getMyPreprints: GetMyPreprints,
+    getMyBookmarks: GetAllMyBookmarks,
+  });
 
   readonly projects = select(MyResourcesSelectors.getProjects);
   readonly registrations = select(MyResourcesSelectors.getRegistrations);
@@ -135,18 +127,24 @@ export class MyProjectsComponent implements OnInit {
   readonly bookmarks = select(BookmarksSelectors.getBookmarks);
   readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   readonly totalBookmarksCount = select(BookmarksSelectors.getBookmarksTotalCount);
+  readonly projectCreationDisabled = select(UserSelectors.isProjectCreationDisabled);
+
   readonly isBookmarks = computed(() => this.selectedTab() === MyProjectsTab.Bookmarks);
   readonly buttonTooltip = computed(() =>
     this.projectCreationDisabled() ? 'myProjects.header.createProjectDisabledTooltip' : ''
   );
 
-  readonly actions = createDispatchMap({
-    getBookmarksCollectionId: GetBookmarksCollectionId,
-    clearMyProjects: ClearMyResources,
-    getMyProjects: GetMyProjects,
-    getMyRegistrations: GetMyRegistrations,
-    getMyPreprints: GetMyPreprints,
-    getMyBookmarks: GetAllMyBookmarks,
+  readonly appliedSearch = computed(() => {
+    const params = this.queryParams();
+    return params ? this.queryService.toQueryModel(params).search || '' : '';
+  });
+
+  readonly projectsEmptyMessageKey = computed(() => {
+    if (this.appliedSearch()) {
+      return 'common.search.noResultsFound';
+    }
+
+    return getMyProjectsEmptyMessageKey(this.selectedProjectFilterOption(), this.selectedVisibilityFilterOption());
   });
 
   constructor() {
@@ -173,7 +171,11 @@ export class MyProjectsComponent implements OnInit {
     }
   }
 
-  onTabChange(event: string | number | undefined): void {
+  onTabChange(event: Primitive): void {
+    if (event == null || typeof event === 'boolean') {
+      return;
+    }
+
     const value = Number(event);
 
     if (!isNaN(value)) {
@@ -186,22 +188,17 @@ export class MyProjectsComponent implements OnInit {
     }
   }
 
-  onProjectFilterChange(): void {
-    const params = this.queryParams();
+  onFilterChange(): void {
+    const current = this.queryService.getRawParams();
+    const queryParams = { ...this.queryService.toQueryModel(current), page: 1 };
 
-    if (params) {
-      const queryParams = this.queryService.toQueryModel(params);
-      this.fetchDataForCurrentTab(queryParams);
+    if (Number(current['page'] || 1) !== 1) {
+      this.queryService.updateParams({ page: 1 }, current, this.selectedTab());
+      return;
     }
-  }
 
-  onVisibilityFilterChange(): void {
-    const params = this.queryParams();
-
-    if (params) {
-      const queryParams = this.queryService.toQueryModel(params);
-      this.fetchDataForCurrentTab(queryParams);
-    }
+    this.updateComponentState(queryParams);
+    this.fetchDataForCurrentTab(queryParams);
   }
 
   createProject(): void {
@@ -218,14 +215,8 @@ export class MyProjectsComponent implements OnInit {
       .subscribe();
   }
 
-  navigateToProject(project: MyResourcesItem): void {
-    this.activeProject.set(project);
-    this.router.navigate([project.id]);
-  }
-
-  navigateToRegistry(registry: MyResourcesItem): void {
-    this.activeProject.set(registry);
-    this.router.navigate([registry.id]);
+  navigateToItem(item: MyResourcesItem): void {
+    this.router.navigate([item.id]);
   }
 
   private setupCleanup(): void {
@@ -247,7 +238,7 @@ export class MyProjectsComponent implements OnInit {
     effect(() => {
       const totalRecords = this.getTotalRecordsForCurrentTab();
       untracked(() => {
-        this.updateTableParams({ totalRecords });
+        this.tableParams.update((current) => ({ ...current, totalRecords }));
       });
     });
   }
@@ -287,9 +278,7 @@ export class MyProjectsComponent implements OnInit {
       const params = this.queryParams();
       if (!params) return;
 
-      const raw = params;
-
-      if (!this.queryService.hasTabInUrl(raw)) {
+      if (!this.queryService.hasTabInUrl(params)) {
         untracked(() => {
           const current = this.queryParams() || {};
           this.queryService.updateParams({ page: 1 }, current, this.selectedTab());
@@ -298,13 +287,13 @@ export class MyProjectsComponent implements OnInit {
       }
 
       untracked(() => {
-        const tabFromUrl = this.queryService.getTabFromUrl(raw);
+        const tabFromUrl = this.queryService.getTabFromUrl(params);
         if (tabFromUrl !== null && this.selectedTab() !== tabFromUrl) {
           this.selectedTab.set(tabFromUrl);
         }
 
         if (!this.isBookmarks()) {
-          const queryParams = this.queryService.toQueryModel(raw);
+          const queryParams = this.queryService.toQueryModel(params);
           this.updateComponentState(queryParams);
           this.fetchDataForCurrentTab(queryParams);
         }
@@ -316,8 +305,6 @@ export class MyProjectsComponent implements OnInit {
     untracked(() => {
       const size = params.size || DEFAULT_TABLE_PARAMS.rows;
 
-      this.currentPage.set(params.page ?? 1);
-      this.currentPageSize.set(size);
       this.searchControl.setValue(params.search || '', { emitEvent: false });
       this.sortColumn.set(params.sortColumn);
       this.sortOrder.set(params.sortOrder ?? SortOrder.Asc);
@@ -326,18 +313,8 @@ export class MyProjectsComponent implements OnInit {
       const tableParams = this.tableParamsService.buildTableParams(size, totalRecords, this.isBookmarks());
       tableParams.firstRowIndex = ((params.page ?? 1) - 1) * size;
 
-      this.tableParams.set({
-        ...tableParams,
-        rows: size,
-      });
+      this.tableParams.set({ ...tableParams, rows: size });
     });
-  }
-
-  private updateTableParams(updates: Partial<TableParameters>): void {
-    this.tableParams.update((current) => ({
-      ...current,
-      ...updates,
-    }));
   }
 
   private fetchDataForCurrentTab(params: QueryParams): void {
@@ -354,7 +331,6 @@ export class MyProjectsComponent implements OnInit {
           pageSize,
           filters,
           this.selectedProjectFilterOption(),
-          undefined,
           this.selectedVisibilityFilterOption()
         );
         break;
@@ -371,14 +347,12 @@ export class MyProjectsComponent implements OnInit {
         break;
     }
 
-    action$?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      complete: () => {
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-      },
-    });
+    action$
+      ?.pipe(
+        finalize(() => this.isLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 
   private createFilters(params: QueryParams): MyResourcesSearchFilters {

@@ -1,0 +1,8 @@
+@if (isMigrated()) {
+  <p-tag
+    class="migrated-label"
+    severity="secondary"
+    data-test-migrated-label
+    [value]="'common.labels.migrated' | translate"
+  />
+}

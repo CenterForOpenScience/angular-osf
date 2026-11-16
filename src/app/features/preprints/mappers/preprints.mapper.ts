@@ -54,6 +54,7 @@ export class PreprintsMapper {
       isPublic: response.attributes.public,
       version: response.attributes.version,
       isLatestVersion: response.attributes.is_latest_version,
+      isMigrated: !!response.attributes.is_migrated,
       isPreprintOrphan: response.attributes.is_preprint_orphan,
       primaryFileId: response.relationships.primary_file?.data?.id || null,
       nodeId: response.relationships.node?.data?.id,
@@ -109,6 +110,7 @@ export class PreprintsMapper {
       isPublic: data.attributes.public,
       version: data.attributes.version,
       isLatestVersion: data.attributes.is_latest_version,
+      isMigrated: !!data.attributes.is_migrated,
       isPreprintOrphan: data.attributes.is_preprint_orphan,
       primaryFileId: data.relationships.primary_file?.data?.id || null,
       nodeId: data.relationships.node?.data?.id,
@@ -168,6 +170,7 @@ export class PreprintsMapper {
         dateModified: preprintData.attributes.date_modified,
         contributors: ContributorsMapper.getContributors(preprintData.embeds?.bibliographic_contributors?.data),
         providerId: preprintData.relationships.provider.data.id,
+        isMigrated: !!preprintData.attributes?.is_migrated,
       })),
       totalCount: response.meta.total,
     };

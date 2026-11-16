@@ -110,9 +110,7 @@ export class ResourceCardComponent {
     return [];
   });
 
-  isWithdrawn = computed(() => {
-    return !!this.resource().dateWithdrawn;
-  });
+  isWithdrawn = computed(() => !!this.resource().dateWithdrawn);
 
   dateFields = computed(() => {
     const resource = this.resource();

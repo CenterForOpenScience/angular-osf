@@ -518,6 +518,7 @@
       "license": "License",
       "makePublic": "Make Public",
       "metadata": "Metadata",
+      "migrated": "Migrated",
       "modified": "Modified",
       "more": "more",
       "no": "No",
@@ -1435,6 +1436,7 @@
         "withdrawn": "Withdrawn"
       },
       "supplementalMaterials": "Supplemental Materials",
+      "migratedBanner": "This preprint was migrated off this platform.",
       "warningBanner": "OSF preprints are not peer reviewed and acceptance into OSF preprints is not an indicator of scholarly merit.",
       "withdrawDialog": {
         "justificationInputError": "Comment must be at least {{length}} characters.",

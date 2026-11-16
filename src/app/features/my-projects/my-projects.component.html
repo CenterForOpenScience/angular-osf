@@ -24,8 +24,9 @@
           <osf-select
             class="block mb-4"
             [options]="tabOptions"
-            [(selectedValue)]="selectedTab"
+            [selectedValue]="selectedTab()"
             [fullWidth]="true"
+            (changeValue)="onTabChange($event)"
           ></osf-select>
         }
 
@@ -43,7 +44,7 @@
                 [options]="projectFilterOption"
                 [(selectedValue)]="selectedProjectFilterOption"
                 [fullWidth]="true"
-                (changeValue)="onProjectFilterChange()"
+                (changeValue)="onFilterChange()"
               ></osf-select>
 
               <osf-select
@@ -51,7 +52,7 @@
                 [options]="visibilityFilterOption"
                 [(selectedValue)]="selectedVisibilityFilterOption"
                 [fullWidth]="true"
-                (changeValue)="onVisibilityFilterChange()"
+                (changeValue)="onFilterChange()"
               ></osf-select>
             </div>
 
@@ -69,7 +70,7 @@
               [emptyMessageKey]="projectsEmptyMessageKey()"
               (pageChange)="onPageChange($event)"
               (sort)="onSort($event)"
-              (itemClick)="navigateToProject($event)"
+              (itemClick)="navigateToItem($event)"
             />
           </section>
         </p-tabpanel>
@@ -89,7 +90,7 @@
               [isLoading]="isLoading()"
               (pageChange)="onPageChange($event)"
               (sort)="onSort($event)"
-              (itemClick)="navigateToRegistry($event)"
+              (itemClick)="navigateToItem($event)"
             />
           </section>
         </p-tabpanel>
@@ -109,7 +110,7 @@
               [isLoading]="isLoading()"
               (pageChange)="onPageChange($event)"
               (sort)="onSort($event)"
-              (itemClick)="navigateToProject($event)"
+              (itemClick)="navigateToItem($event)"
             />
           </section>
         </p-tabpanel>
@@ -129,7 +130,7 @@
               [isLoading]="isLoading()"
               (pageChange)="onPageChange($event)"
               (sort)="onSort($event)"
-              (itemClick)="navigateToProject($event)"
+              (itemClick)="navigateToItem($event)"
             />
           </section>
         </p-tabpanel>

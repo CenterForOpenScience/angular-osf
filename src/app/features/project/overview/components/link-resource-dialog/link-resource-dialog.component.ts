@@ -197,9 +197,9 @@ export class LinkResourceDialogComponent {
       if (!currentResourceId) return;
 
       if (resourceType === ResourceType.Project) {
-        this.actions.getProjects(this.currentPage(), this.tableRows, searchFilters, searchMode, undefined);
+        this.actions.getProjects(this.currentPage(), this.tableRows, searchFilters, searchMode);
       } else if (resourceType === ResourceType.Registration) {
-        this.actions.getRegistrations(this.currentPage(), this.tableRows, searchFilters, searchMode, undefined);
+        this.actions.getRegistrations(this.currentPage(), this.tableRows, searchFilters, searchMode);
       }
     });
   }

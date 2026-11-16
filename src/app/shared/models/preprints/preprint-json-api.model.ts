@@ -40,6 +40,7 @@ export interface PreprintAttributesJsonApi {
   has_data_links: ApplicabilityStatus | null;
   has_prereg_links: ApplicabilityStatus | null;
   is_latest_version: boolean;
+  is_migrated: boolean;
   is_preprint_orphan: boolean;
   is_published: boolean;
   license_record: LicenseRecordJsonApi | null;
