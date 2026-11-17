@@ -24,6 +24,8 @@ export interface BaseProviderModel {
   footerLinks: string;
   name: string;
   permissions: ReviewPermissions[];
+  redirectAutomatically: boolean;
+  redirectUrl?: string;
   reviewsWorkflow: string;
   sharePublishType: string;
   shareSource: string;

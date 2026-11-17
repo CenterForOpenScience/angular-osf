@@ -55,6 +55,8 @@ export class CollectionsMapper {
       shareSource: response.attributes.share_source,
       sharePublishType: response.attributes.share_publish_type,
       permissions: response.attributes.permissions,
+      redirectAutomatically: response.attributes.redirect_automatically,
+      redirectUrl: response.links?.redirect_url,
       reviewsWorkflow: response.attributes.reviews_workflow,
       primaryCollection: {
         id: response.relationships.primary_collection.data!.id,

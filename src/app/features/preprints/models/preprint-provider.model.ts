@@ -26,6 +26,8 @@ export interface PreprintProviderDetails {
   faviconUrl: string;
   squareColorNoTransparentImageUrl: string;
   facebookAppId: StringOrNull;
+  redirectAutomatically: boolean;
+  redirectUrl?: string;
   reviewsCommentsPrivate: StringOrNull;
   reviewsCommentsAnonymous: StringOrNull;
 }

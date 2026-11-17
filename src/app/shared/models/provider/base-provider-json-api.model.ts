@@ -13,6 +13,7 @@ export interface BaseProviderAttributesJsonApi {
   footer_links: string;
   name: string;
   permissions: ReviewPermissions[];
+  redirect_automatically: boolean;
   reviews_workflow: string;
   share_publish_type: string;
   share_source: string;
