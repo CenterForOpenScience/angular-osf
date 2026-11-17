@@ -31,6 +31,7 @@ export interface BaseFileAttributesJsonApi {
   name: string;
   path: string;
   provider: string;
+  redirect_automatically: boolean;
   size: number;
 }
 
@@ -68,6 +69,7 @@ export interface FileLinksJsonApi {
   render: string;
   self: string;
   upload: string;
+  redirect_url: string;
 }
 
 interface FileEmbedsJsonApi {

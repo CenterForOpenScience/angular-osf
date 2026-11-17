@@ -19,6 +19,7 @@ export interface BaseNodeAttributesJsonApi {
   node_license: LicenseRecordJsonApi | null;
   preprint: boolean;
   public: boolean;
+  redirect_automatically: boolean;
   registration: boolean;
   tags: string[];
   title: string;

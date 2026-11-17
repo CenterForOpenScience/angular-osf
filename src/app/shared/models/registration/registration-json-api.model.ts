@@ -3,6 +3,7 @@ import { RevisionReviewStates } from '@osf/shared/enums/revision-review-states.e
 import { UserPermissions } from '@osf/shared/enums/user-permissions.enum';
 
 import { EmbedList } from '../common/json-api/embeds.model';
+import { ResourceLinksJsonApi } from '../common/json-api/links.model';
 import { RelatedCountRel, ToOneRel, ToOneRelData } from '../common/json-api/relationships.model';
 import { JsonApiResource, JsonApiResourceRef } from '../common/json-api/resource.model';
 import { ItemResponse, ListResponse } from '../common/json-api/responses.model';
@@ -28,6 +29,7 @@ export interface DraftRegistrationDataJsonApi extends JsonApiResource<
 export interface RegistrationDataJsonApi extends JsonApiResource<'registrations', RegistrationNodeAttributesJsonApi> {
   relationships: RegistrationRelationshipsJsonApi;
   embeds?: RegistrationEmbedsJsonApi;
+  links: ResourceLinksJsonApi;
 }
 
 export interface CreateRegistrationPayloadJsonApi {
@@ -88,6 +90,7 @@ export interface RegistrationAttributesJsonApi {
   pending_embargo_termination_approval: boolean;
   pending_registration_approval: boolean;
   public: boolean;
+  redirect_automatically: boolean;
   revision_state: RevisionReviewStates;
   reviews_state: RegistrationReviewStates;
   title: string;
