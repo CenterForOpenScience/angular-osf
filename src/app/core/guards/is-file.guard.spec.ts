@@ -28,6 +28,7 @@ describe('isFileGuard', () => {
     id: 'file-id',
     type: CurrentResourceType.Files,
     permissions: [],
+    redirectAutomatically: false,
     ...overrides,
   });
 
