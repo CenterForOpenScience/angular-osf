@@ -29,6 +29,8 @@ export const PREPRINT_PROVIDER_DETAILS_MOCK: PreprintProviderDetails = {
   faviconUrl: 'https://osf.io/favicon.ico',
   squareColorNoTransparentImageUrl: 'https://osf.io/image.png',
   facebookAppId: '1234567890',
+  redirectAutomatically: false,
+  redirectUrl: 'https://osf.io/redirect',
   reviewsCommentsPrivate: null,
   reviewsCommentsAnonymous: null,
   lastFetched: Date.now(),

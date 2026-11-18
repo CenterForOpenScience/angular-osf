@@ -25,6 +25,8 @@ export class PreprintProvidersMapper {
       iri: response.links.iri,
       faviconUrl: response.attributes.assets?.favicon,
       squareColorNoTransparentImageUrl: response.attributes.assets?.square_color_no_transparent,
+      redirectAutomatically: response.attributes.redirect_automatically,
+      redirectUrl: response.links.redirect_url,
       reviewsWorkflow: response.attributes.reviews_workflow,
       facebookAppId: response.attributes.facebook_app_id,
       reviewsCommentsPrivate: response.attributes.reviews_comments_private,

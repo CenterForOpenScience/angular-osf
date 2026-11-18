@@ -34,6 +34,7 @@ interface PreprintProviderAttributesJsonApi {
   name: string;
   permissions: ReviewPermissions[];
   preprint_word: PreprintWord;
+  redirect_automatically: boolean;
   reviews_comments_anonymous: StringOrNull;
   reviews_comments_private: StringOrNull;
   reviews_workflow: ProviderReviewsWorkflow | null;

@@ -48,6 +48,7 @@ export interface PreprintAttributesJsonApi {
   prereg_links: string[];
   preprint_doi_created: Date | null;
   public: boolean;
+  redirect_automatically: boolean;
   reviews_state: ReviewsState;
   tags: string[];
   title: string;
@@ -80,4 +81,5 @@ interface PreprintMetaJsonApi {
 interface PreprintLinksJsonApi {
   doi: string;
   preprint_doi: string;
+  redirect_url?: string;
 }

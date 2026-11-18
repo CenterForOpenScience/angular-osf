@@ -20,6 +20,7 @@ describe('MetadataRegistryInfoComponent', () => {
     reviewsWorkflow: 'standard',
     allowSubmissions: true,
     allowUpdates: true,
+    redirectAutomatically: false,
   };
 
   beforeEach(() => {

@@ -16,7 +16,7 @@ export interface CollectionProviderDataJsonApi extends JsonApiResource<
 > {
   embeds: CollectionProviderEmbedsJsonApi;
   relationships: CollectionProviderRelationshipsJsonApi;
-  links?: Pick<ResourceLinksJsonApi, 'iri'>;
+  links?: Pick<ResourceLinksJsonApi, 'iri' | 'self' | 'redirect_url'>;
 }
 
 interface CollectionProviderEmbedsJsonApi {

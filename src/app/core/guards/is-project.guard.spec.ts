@@ -30,6 +30,7 @@ describe('isProjectGuard', () => {
     id: 'resource-id',
     type: CurrentResourceType.Projects,
     permissions: [],
+    redirectAutomatically: false,
     ...overrides,
   });
 

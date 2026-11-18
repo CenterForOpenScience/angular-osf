@@ -30,6 +30,7 @@ describe('isRegistryGuard', () => {
     id: 'resource-id',
     type: CurrentResourceType.Registrations,
     permissions: [],
+    redirectAutomatically: false,
     ...overrides,
   });
 

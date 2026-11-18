@@ -38,6 +38,7 @@ describe('RegistryProviderHeroComponent', () => {
     reviewsWorkflow: '',
     allowSubmissions: false,
     allowUpdates: true,
+    redirectAutomatically: false,
   };
 
   beforeEach(() => {

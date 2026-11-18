@@ -2,6 +2,7 @@ export interface ResourceLinksJsonApi {
   html: string;
   self: string;
   iri: string;
+  redirect_url?: string;
 }
 
 export interface PaginationLinks {

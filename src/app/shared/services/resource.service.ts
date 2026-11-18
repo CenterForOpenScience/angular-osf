@@ -55,6 +55,8 @@ export class ResourceGuidService {
                 : res.data.relationships.target?.data?.type,
             wikiEnabled: res.data.attributes.wiki_enabled,
             permissions: res.data.attributes.current_user_permissions,
+            redirectAutomatically: res.data.attributes.redirect_automatically,
+            redirectUrl: res.data.links.redirect_url,
             rootResourceId: res.data.relationships.root?.data?.id,
             title: res.data.attributes?.title,
           }) as CurrentResource

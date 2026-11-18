@@ -1,5 +1,6 @@
 import { UserPermissions } from '../enums/user-permissions.enum';
 
+import { ResourceLinksJsonApi } from './common/json-api/links.model';
 import { ToOneRel } from './common/json-api/relationships.model';
 import { JsonApiResource } from './common/json-api/resource.model';
 import { ItemResponse } from './common/json-api/responses.model';
@@ -8,11 +9,13 @@ export type GuidedResponseJsonApi = ItemResponse<GuidDataJsonApi>;
 
 export interface GuidDataJsonApi extends JsonApiResource<string, GuidAttributesJsonApi> {
   relationships: GuidRelationshipsJsonApi;
+  links: ResourceLinksJsonApi;
 }
 
 interface GuidAttributesJsonApi {
   current_user_permissions: UserPermissions[];
   guid: string;
+  redirect_automatically: boolean;
   title?: string;
   wiki_enabled: boolean;
 }

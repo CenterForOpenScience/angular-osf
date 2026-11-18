@@ -37,6 +37,7 @@ const MOCK_PROVIDER: RegistryProviderDetails = {
   reviewsWorkflow: 'pre-moderation',
   allowSubmissions: true,
   allowUpdates: true,
+  redirectAutomatically: false,
 };
 
 describe('RegistriesProviderSearchComponent', () => {

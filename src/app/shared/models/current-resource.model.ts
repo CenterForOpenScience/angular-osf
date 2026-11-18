@@ -9,4 +9,6 @@ export interface CurrentResource {
   wikiEnabled?: boolean;
   permissions: UserPermissions[];
   title?: string;
+  redirectUrl?: string;
+  redirectAutomatically: boolean;
 }
