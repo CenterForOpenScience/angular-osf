@@ -4,7 +4,11 @@ import { Step, StepItem, StepPanel } from 'primeng/stepper';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CedarMetadataRecordModel, CedarMetadataTemplateModel } from '@osf/features/metadata/models';
+import {
+  CedarEditorElement,
+  CedarMetadataRecordModel,
+  CedarMetadataTemplateModel,
+} from '@osf/features/metadata/models';
 
 import { MOCK_CEDAR_RECORD } from '@testing/data/collections/cedar-metadata.mock';
 import { MOCK_CEDAR_METADATA_TEMPLATE } from '@testing/mocks/cedar-metadata-domain.mock';
@@ -26,6 +30,7 @@ describe('CollectionMetadataStepComponent', () => {
       stepperActiveValue?: number;
       targetStepValue?: number;
       isDisabled?: boolean;
+      editor?: CedarEditorElement;
     } = {}
   ) {
     TestBed.configureTestingModule({
@@ -35,6 +40,10 @@ describe('CollectionMetadataStepComponent', () => {
 
     fixture = TestBed.createComponent(CollectionMetadataStepComponent);
     component = fixture.componentInstance;
+
+    if (options.editor) {
+      vi.spyOn(component, 'cedarEditor').mockReturnValue({ nativeElement: options.editor } as never);
+    }
 
     fixture.componentRef.setInput('stepperActiveValue', options.stepperActiveValue ?? 0);
     fixture.componentRef.setInput('targetStepValue', options.targetStepValue ?? 1);
@@ -119,6 +128,50 @@ describe('CollectionMetadataStepComponent', () => {
 
     expect(component.collectionMetadataSaved()).toBe(false);
     expect(component.cedarFormData()).toEqual({ field: 'value' });
+  });
+
+  it('should load template and existing record metadata together when step opens', () => {
+    const editor = {} as CedarEditorElement;
+    setup({
+      cedarTemplate: mockCedarTemplate,
+      existingCedarRecord: MOCK_CEDAR_RECORD,
+      stepperActiveValue: 1,
+      editor,
+    });
+
+    expect(editor.templateAndInstanceObject).toEqual({
+      templateObject: mockCedarTemplate.template,
+      instanceObject: { field: 'value' },
+    });
+    expect(editor.instanceObject).toBeUndefined();
+  });
+
+  it('should load saved metadata together with template when step is reopened', () => {
+    const editor = {} as CedarEditorElement;
+    setup({ cedarTemplate: mockCedarTemplate, editor });
+
+    component.cedarFormData.set({ field: 'saved' });
+    component.collectionMetadataSaved.set(true);
+    fixture.componentRef.setInput('stepperActiveValue', 1);
+    fixture.detectChanges();
+
+    expect(editor.templateAndInstanceObject).toEqual({
+      templateObject: mockCedarTemplate.template,
+      instanceObject: { field: 'saved' },
+    });
+  });
+
+  it('should load existing record metadata together with template on discard', () => {
+    const editor = {} as CedarEditorElement;
+    setup({ cedarTemplate: mockCedarTemplate, existingCedarRecord: MOCK_CEDAR_RECORD, editor });
+
+    component.cedarFormData.set({ field: 'edited' });
+    component.handleDiscardChanges();
+
+    expect(editor.templateAndInstanceObject).toEqual({
+      templateObject: mockCedarTemplate.template,
+      instanceObject: { field: 'value' },
+    });
   });
 
   it('should populate cedarFormData from existingCedarRecord', () => {

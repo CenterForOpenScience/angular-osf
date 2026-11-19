@@ -1827,6 +1827,7 @@
         "publishedText": "This metadata has a status of 'Published' and is publicly viewable.",
         "recordCreatedSuccessfully": "Record created successfully",
         "recordUpdatedSuccessfully": "Record updated successfully",
+        "saveDraft": "Save draft",
         "select": "Select",
         "selectTemplate": "Select a Metadata Template",
         "title": "Add community metadata record",
