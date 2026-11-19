@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
+import { CedarEditorElement } from '@osf/features/metadata/models';
 
 import { MOCK_CEDAR_METADATA_RECORD, MOCK_CEDAR_METADATA_TEMPLATE } from '@testing/mocks/cedar-metadata-domain.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
@@ -101,5 +102,46 @@ describe('CedarTemplateFormComponent', () => {
     component.onCedarChange(mockEvent);
 
     expect(component.formData()).toEqual(initialFormData);
+  });
+
+  it('should load template and record metadata together into the editor', () => {
+    const editor = {} as CedarEditorElement;
+    vi.spyOn(component, 'cedarEditor').mockReturnValue({ nativeElement: editor } as never);
+
+    fixture.componentRef.setInput('existingRecord', mockRecord);
+    fixture.detectChanges();
+
+    expect(editor.templateAndInstanceObject).toEqual({
+      templateObject: mockTemplate.template,
+      instanceObject: mockRecord.metadata,
+    });
+    expect(editor.instanceObject).toBeUndefined();
+  });
+
+  it('should publish on submit when the editor report is valid', () => {
+    const editor = {
+      currentMetadata: { field: 'value' },
+      dataQualityReport: { isValid: true },
+    } as unknown as CedarEditorElement;
+    vi.spyOn(component, 'cedarEditor').mockReturnValue({ nativeElement: editor } as never);
+    const emitSpy = vi.spyOn(component.emitData, 'emit');
+    component.isValid = false;
+
+    component.onSubmit();
+
+    expect(emitSpy).toHaveBeenCalledWith({ data: { field: 'value' }, id: mockTemplate.id, isPublished: true });
+  });
+
+  it('should save as draft on submit when the editor report is not valid', () => {
+    const editor = {
+      currentMetadata: { field: 'value' },
+      dataQualityReport: { isValid: false },
+    } as unknown as CedarEditorElement;
+    vi.spyOn(component, 'cedarEditor').mockReturnValue({ nativeElement: editor } as never);
+    const emitSpy = vi.spyOn(component.emitData, 'emit');
+
+    component.onSubmit();
+
+    expect(emitSpy).toHaveBeenCalledWith({ data: { field: 'value' }, id: mockTemplate.id, isPublished: false });
   });
 });

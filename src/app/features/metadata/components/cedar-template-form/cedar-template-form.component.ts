@@ -113,7 +113,8 @@ export class CedarTemplateFormComponent {
     this.initializeFormData();
 
     if (metadata) {
-      if (editor) editor.instanceObject = metadata;
+      const template = this.template()?.template;
+      if (editor && template) editor.templateAndInstanceObject = { templateObject: template, instanceObject: metadata };
       if (viewer) viewer.instanceObject = metadata;
     }
 
@@ -182,6 +183,7 @@ export class CedarTemplateFormComponent {
   onSubmit() {
     const editor = this.cedarEditor()?.nativeElement;
     if (editor && typeof editor.currentMetadata !== 'undefined') {
+      this.validateCedarMetadata();
       const finalData = { data: editor.currentMetadata, id: this.template().id, isPublished: this.isValid };
       this.formData.set(finalData);
       this.emitData.emit(finalData as CedarRecordDataBinding);
