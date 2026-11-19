@@ -1,5 +1,8 @@
 // `value` must be from resourceTypeGeneral controlled vocab in https://schema.datacite.org/meta/kernel-4/
 // see https://datacite-metadata-schema.readthedocs.io/en/4.6/appendices/appendix-1/resourceTypeGeneral/
+
+export const STUDY_REGISTRATION_RESOURCE_TYPE = 'StudyRegistration';
+
 export const RESOURCE_TYPE_GENERAL_OPTIONS = [
   { label: 'Audiovisual', value: 'Audiovisual' },
   { label: 'Book', value: 'Book' },
@@ -28,7 +31,7 @@ export const RESOURCE_TYPE_GENERAL_OPTIONS = [
   { label: 'Software', value: 'Software' },
   { label: 'Sound', value: 'Sound' },
   { label: 'Standard', value: 'Standard' },
-  { label: 'StudyRegistration', value: 'StudyRegistration' },
+  { label: 'StudyRegistration', value: STUDY_REGISTRATION_RESOURCE_TYPE },
   { label: 'Text', value: 'Text' },
   { label: 'Workflow', value: 'Workflow' },
   { label: 'Other', value: 'Other' },

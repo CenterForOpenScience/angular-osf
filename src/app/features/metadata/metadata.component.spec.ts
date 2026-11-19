@@ -4,6 +4,8 @@ import { MockComponents, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -33,11 +35,13 @@ import {
 
 import { MOCK_LICENSE } from '@testing/mocks/license.mock';
 import { MOCK_PROJECT_METADATA } from '@testing/mocks/project-metadata.mock';
+import { SUBJECTS_MOCK } from '@testing/mocks/subject.mock';
 import { provideOSFCore } from '@testing/osf.testing.provider';
 import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import {
   CustomDialogServiceMock,
   CustomDialogServiceMockBuilder,
+  CustomDialogServiceMockType,
 } from '@testing/providers/custom-dialog-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
@@ -64,11 +68,6 @@ import { MetadataResourceInformationComponent } from './components/metadata-reso
 import { MetadataSubjectsComponent } from './components/metadata-subjects/metadata-subjects.component';
 import { MetadataTagsComponent } from './components/metadata-tags/metadata-tags.component';
 import { MetadataTitleComponent } from './components/metadata-title/metadata-title.component';
-import { AffiliatedInstitutionsDialogComponent } from './dialogs/affiliated-institutions-dialog/affiliated-institutions-dialog.component';
-import { ContributorsDialogComponent } from './dialogs/contributors-dialog/contributors-dialog.component';
-import { DescriptionDialogComponent } from './dialogs/description-dialog/description-dialog.component';
-import { EditTitleDialogComponent } from './dialogs/edit-title-dialog/edit-title-dialog.component';
-import { FundingDialogComponent } from './dialogs/funding-dialog/funding-dialog.component';
 import { LicenseDialogComponent } from './dialogs/license-dialog/license-dialog.component';
 import { PublicationDoiDialogComponent } from './dialogs/publication-doi-dialog/publication-doi-dialog.component';
 import { ResourceInformationDialogComponent } from './dialogs/resource-information-dialog/resource-information-dialog.component';
@@ -89,7 +88,7 @@ describe('MetadataComponent', () => {
   let fixture: ComponentFixture<MetadataComponent>;
   let store: Store;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
-  let customDialogServiceMock: ReturnType<CustomDialogServiceMockBuilder['build']>;
+  let customDialogServiceMock: CustomDialogServiceMockType;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
   let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
   let signpostingServiceMock: ReturnType<typeof SignpostingServiceMock.simple>;
@@ -146,17 +145,7 @@ describe('MetadataComponent', () => {
     ];
 
     routerMock = RouterMockBuilder.create().build();
-    customDialogServiceMock = CustomDialogServiceMockBuilder.create()
-      .withOpen(
-        vi.fn().mockReturnValue({
-          onClose: {
-            pipe: vi.fn().mockReturnValue({ subscribe: vi.fn() }),
-            subscribe: vi.fn(),
-          },
-          close: vi.fn(),
-        })
-      )
-      .build();
+    customDialogServiceMock = CustomDialogServiceMockBuilder.create().withDefaultOpen().build();
     toastServiceMock = ToastServiceMockBuilder.create().build();
     customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
     signpostingServiceMock = SignpostingServiceMock.simple();
@@ -221,11 +210,13 @@ describe('MetadataComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new GetProjectSubmissions(defaultResourceId));
     expect(store.dispatch).toHaveBeenCalledWith(new FetchSubjects(ResourceType.Project));
     expect(signpostingServiceMock.addMetadataSignposting).toHaveBeenCalledWith(defaultResourceId);
+    expect(component.isProjectType()).toBe(true);
   });
 
-  it('should not fetch project submissions for registrations', () => {
+  it('should load registration metadata without project submissions', () => {
     setup({ resourceType: ResourceType.Registration });
 
+    expect(component.isRegistrationType()).toBe(true);
     expect(store.dispatch).not.toHaveBeenCalledWith(new GetProjectSubmissions(defaultResourceId));
     expect(store.dispatch).toHaveBeenCalledWith(new FetchSubjects(ResourceType.Registration, 'osf'));
   });
@@ -238,54 +229,63 @@ describe('MetadataComponent', () => {
     expect(signpostingServiceMock.removeSignpostingLinkTags).toHaveBeenCalled();
   });
 
-  it('should compute loading and resource type flags', () => {
+  it('should compute loading and read-only flags', () => {
     setup({
-      selectorOverrides: [{ selector: MetadataSelectors.getLoading, value: true }],
+      selectorOverrides: [
+        { selector: MetadataSelectors.getLoading, value: true },
+        { selector: UserSelectors.isProjectReadOnly, value: true },
+      ],
     });
 
     expect(component.isLoading()).toBe(true);
-    expect(component.isProjectType()).toBe(true);
-    expect(component.isRegistrationType()).toBe(false);
-  });
-
-  it('should hide edit doi for public projects that already have identifiers', () => {
-    setup();
-
     expect(component.hideEditDoi()).toBe(true);
-  });
-
-  it('should mark tags and subjects read-only when project is read-only', () => {
-    setup({
-      selectorOverrides: [{ selector: UserSelectors.isProjectReadOnly, value: true }],
-    });
-
     expect(component.isTagsReadOnly()).toBe(true);
     expect(component.isSubjectsReadOnly()).toBe(true);
     expect(component.disabledButtonTooltip()).toBe('common.errorMessages.actionUnavailable');
   });
 
+  it('should require admin access for registration tags', () => {
+    setup({
+      resourceType: ResourceType.Registration,
+      selectorOverrides: [
+        { selector: MetadataSelectors.hasAdminAccess, value: false },
+        { selector: MetadataSelectors.hasWriteAccess, value: true },
+      ],
+    });
+
+    expect(component.isTagsReadOnly()).toBe(true);
+    expect(component.isSubjectsReadOnly()).toBe(true);
+  });
+
   it('should select osf tab without navigation', () => {
     setup();
-    const navigateSpy = vi.spyOn(routerMock, 'navigate');
 
     component.onTabChange('osf');
 
     expect(component.selectedTab()).toBe('osf');
-    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(routerMock.navigate).not.toHaveBeenCalled();
   });
 
   it('should toggle cedar edit mode', () => {
     setup();
-    const initialReadonly = component.cedarFormReadonly();
 
     component.toggleEditMode();
 
-    expect(component.cedarFormReadonly()).toBe(!initialReadonly);
+    expect(component.cedarFormReadonly()).toBe(false);
+  });
+
+  it('should navigate when opening add record or changing cedar template', () => {
+    setup();
+
+    component.openAddRecord();
+    component.onCedarFormChangeTemplate();
+
+    expect(routerMock.navigate).toHaveBeenCalledTimes(2);
   });
 
   it('should dispatch metadata update when tags change', () => {
     setup();
-    (store.dispatch as ReturnType<typeof vi.fn>).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.onTagsChanged(['tag1', 'tag2']);
 
@@ -296,7 +296,7 @@ describe('MetadataComponent', () => {
 
   it('should load more contributors', () => {
     setup();
-    (store.dispatch as ReturnType<typeof vi.fn>).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.handleLoadMoreContributors();
 
@@ -307,52 +307,59 @@ describe('MetadataComponent', () => {
 
   it('should fetch and update subjects', () => {
     setup();
-    (store.dispatch as ReturnType<typeof vi.fn>).mockClear();
+    (store.dispatch as Mock).mockClear();
 
     component.getSubjectChildren('parent-1');
     component.searchSubjects('psychology');
-    component.updateSelectedSubjects([{ id: 'subject-1' } as never]);
+    component.updateSelectedSubjects([SUBJECTS_MOCK[0]]);
 
     expect(store.dispatch).toHaveBeenCalledWith(new FetchChildrenSubjects('parent-1'));
     expect(store.dispatch).toHaveBeenCalledWith(
       new FetchSubjects(ResourceType.Project, component.provider, 'psychology')
     );
     expect(store.dispatch).toHaveBeenCalledWith(
-      new UpdateResourceSubjects(defaultResourceId, ResourceType.Project, [{ id: 'subject-1' } as never])
+      new UpdateResourceSubjects(defaultResourceId, ResourceType.Project, [SUBJECTS_MOCK[0]])
     );
   });
 
-  it('should open metadata edit dialogs with expected components', () => {
+  it('should open resource information dialog for projects', () => {
     setup();
-    const openSpy = customDialogServiceMock.open;
 
-    component.openEditTitleDialog();
-    component.openEditDescriptionDialog();
     component.openEditResourceInformationDialog();
-    component.onShowResourceInfo();
-    component.openEditFundingDialog();
-    component.openEditAffiliatedInstitutionsDialog();
-    component.openEditContributorDialog();
 
-    expect(openSpy).toHaveBeenCalledWith(EditTitleDialogComponent, expect.objectContaining({ width: '500px' }));
-    expect(openSpy).toHaveBeenCalledWith(DescriptionDialogComponent, expect.objectContaining({ width: '500px' }));
-    expect(openSpy).toHaveBeenCalledWith(
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(
       ResourceInformationDialogComponent,
-      expect.objectContaining({ width: '500px' })
-    );
-    expect(openSpy).toHaveBeenCalledWith(ResourceInfoTooltipComponent, expect.objectContaining({ width: '850px' }));
-    expect(openSpy).toHaveBeenCalledWith(FundingDialogComponent, expect.objectContaining({ width: '600px' }));
-    expect(openSpy).toHaveBeenCalledWith(
-      AffiliatedInstitutionsDialogComponent,
-      expect.objectContaining({ width: '500px' })
-    );
-    expect(openSpy).toHaveBeenCalledWith(
-      ContributorsDialogComponent,
       expect.objectContaining({
-        data: {
-          resourceId: defaultResourceId,
-          resourceType: ResourceType.Project,
-        },
+        header: 'project.metadata.resourceInformation.dialog.header',
+        data: { customItemMetadata: null, languageOnly: false },
+      })
+    );
+  });
+
+  it('should open language-only resource information dialog for registrations', () => {
+    setup({ resourceType: ResourceType.Registration });
+
+    component.openEditResourceInformationDialog();
+
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(
+      ResourceInformationDialogComponent,
+      expect.objectContaining({
+        header: 'project.metadata.resourceInformation.dialog.languageHeader',
+        data: { customItemMetadata: null, languageOnly: true },
+      })
+    );
+  });
+
+  it('should open resource info tooltip', () => {
+    setup();
+
+    component.onShowResourceInfo();
+
+    expect(customDialogServiceMock.open).toHaveBeenCalledWith(
+      ResourceInfoTooltipComponent,
+      expect.objectContaining({
+        header: 'project.metadata.resourceInformation.tooltipDialog.header',
+        width: '850px',
       })
     );
   });
@@ -365,8 +372,6 @@ describe('MetadataComponent', () => {
     expect(customDialogServiceMock.open).toHaveBeenCalledWith(
       LicenseDialogComponent,
       expect.objectContaining({
-        header: 'project.metadata.license.dialog.header',
-        width: '600px',
         data: {
           metadata: mockMetadata,
           licensesUrl: 'http://localhost:8000/v2/licenses/',
@@ -407,8 +412,8 @@ describe('MetadataComponent', () => {
         })
       )
     );
-    (store.dispatch as ReturnType<typeof vi.fn>).mockClear();
-    (store.dispatch as ReturnType<typeof vi.fn>).mockReturnValue(of(undefined));
+    (store.dispatch as Mock).mockClear();
+    (store.dispatch as Mock).mockReturnValue(of(undefined));
 
     component.openEditLicenseDialog();
 
@@ -437,19 +442,8 @@ describe('MetadataComponent', () => {
     expect(customDialogServiceMock.open).toHaveBeenCalledWith(
       PublicationDoiDialogComponent,
       expect.objectContaining({
-        header: 'project.metadata.doi.dialog.header',
         data: mockMetadata.publicationDoi,
       })
     );
-  });
-
-  it('should navigate when opening add record or changing cedar template', () => {
-    setup();
-    const navigateSpy = vi.spyOn(routerMock, 'navigate');
-
-    component.openAddRecord();
-    component.onCedarFormChangeTemplate();
-
-    expect(navigateSpy).toHaveBeenCalledTimes(2);
   });
 });

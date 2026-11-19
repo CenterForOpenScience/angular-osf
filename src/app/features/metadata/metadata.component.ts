@@ -130,46 +130,43 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private resourceId = '';
 
-  tabs = signal<MetadataTabsModel[]>([]);
-  selectedTab = signal('osf');
+  readonly tabs = signal<MetadataTabsModel[]>([]);
+  readonly selectedTab = signal('osf');
 
-  selectedCedarRecord = signal<CedarMetadataRecordModel | null>(null);
-  selectedCedarTemplate = signal<CedarMetadataTemplateModel | null>(null);
-  cedarFormReadonly = signal<boolean>(true);
-  resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
+  readonly selectedCedarRecord = signal<CedarMetadataRecordModel | null>(null);
+  readonly selectedCedarTemplate = signal<CedarMetadataTemplateModel | null>(null);
+  readonly cedarFormReadonly = signal<boolean>(true);
+  readonly resourceType = signal<ResourceType>(
+    this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project
+  );
 
-  metadata = select(MetadataSelectors.getResourceMetadata);
-  isMetadataLoading = select(MetadataSelectors.getLoading);
-  customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
-  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
-  isContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
-  hasMoreContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
-  cedarRecords = select(MetadataSelectors.getCedarRecords);
-  cedarTemplates = select(MetadataSelectors.getCedarTemplates);
-  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
-  isSubmitting = select(MetadataSelectors.getSubmitting);
-  affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
-  areInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
-  areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
-  registryProvider = select(RegistrationProviderSelectors.getBrandedProvider);
+  readonly metadata = select(MetadataSelectors.getResourceMetadata);
+  readonly isMetadataLoading = select(MetadataSelectors.getLoading);
+  readonly customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
+  readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  readonly isContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  readonly hasMoreContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
+  readonly cedarRecords = select(MetadataSelectors.getCedarRecords);
+  readonly cedarTemplates = select(MetadataSelectors.getCedarTemplates);
+  readonly selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
+  readonly isSubmitting = select(MetadataSelectors.getSubmitting);
+  readonly affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
+  readonly areInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
+  readonly areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
+  readonly registryProvider = select(RegistrationProviderSelectors.getBrandedProvider);
 
-  projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
-  isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
+  readonly projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
+  readonly isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
 
-  hasWriteAccess = select(MetadataSelectors.hasWriteAccess);
-  hasAdminAccess = select(MetadataSelectors.hasAdminAccess);
+  readonly hasWriteAccess = select(MetadataSelectors.hasWriteAccess);
+  readonly hasAdminAccess = select(MetadataSelectors.hasAdminAccess);
 
-  isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
+  readonly isProjectReadOnly = select(UserSelectors.isProjectReadOnly);
 
   provider = this.environment.defaultProvider;
 
-  private readonly resourceNameMap = new Map<ResourceType, string>([
-    [ResourceType.Project, 'project'],
-    [ResourceType.Registration, 'registration'],
-  ]);
-
-  actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     getResourceMetadata: GetResourceMetadata,
     updateMetadata: UpdateResourceDetails,
     updateResourceLicense: UpdateResourceLicense,
@@ -193,7 +190,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     getProjectSubmissions: GetProjectSubmissions,
   });
 
-  isLoading = computed(
+  readonly isLoading = computed(
     () =>
       this.isMetadataLoading() ||
       this.areInstitutionsLoading() ||
@@ -201,29 +198,22 @@ export class MetadataComponent implements OnInit, OnDestroy {
       this.areResourceInstitutionsSubmitting()
   );
 
-  hideEditDoi = computed(
-    () =>
-      this.resourceType() === ResourceType.Project &&
-      (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
+  readonly isProjectType = computed(() => this.resourceType() === ResourceType.Project);
+  readonly isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
+
+  readonly hideEditDoi = computed(
+    () => this.isProjectType() && (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
   );
 
-  isTagsReadOnly = computed(() => {
-    if (this.isProjectReadOnly()) {
-      return true;
-    }
-    return this.isRegistrationType() ? !this.hasAdminAccess() : !this.hasWriteAccess();
-  });
+  readonly isTagsReadOnly = computed(
+    () => this.isProjectReadOnly() || (this.isRegistrationType() ? !this.hasAdminAccess() : !this.hasWriteAccess())
+  );
 
-  isSubjectsReadOnly = computed(() => {
-    if (this.isProjectReadOnly()) {
-      return true;
-    }
-    return !this.hasAdminAccess();
-  });
+  readonly isSubjectsReadOnly = computed(() => this.isProjectReadOnly() || !this.hasAdminAccess());
 
-  isProjectType = computed(() => this.resourceType() === ResourceType.Project);
-  isRegistrationType = computed(() => this.resourceType() === ResourceType.Registration);
-  disabledButtonTooltip = computed(() => (this.isProjectReadOnly() ? 'common.errorMessages.actionUnavailable' : ''));
+  readonly disabledButtonTooltip = computed(() =>
+    this.isProjectReadOnly() ? 'common.errorMessages.actionUnavailable' : ''
+  );
 
   constructor() {
     effect(() => {
@@ -262,7 +252,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     effect(() => {
       const metadata = this.metadata();
 
-      if (this.resourceType() === ResourceType.Registration) {
+      if (this.isRegistrationType()) {
         if (metadata) {
           this.provider = metadata.provider || this.environment.defaultProvider;
           this.actions.fetchSubjects(this.resourceType(), this.provider);
@@ -432,33 +422,30 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   openEditResourceInformationDialog(): void {
     const currentCustomMetadata = this.customItemMetadata();
+    const languageOnly = this.isRegistrationType();
 
     this.customDialogService
       .open(ResourceInformationDialogComponent, {
-        header: 'project.metadata.resourceInformation.dialog.header',
+        header: languageOnly
+          ? 'project.metadata.resourceInformation.dialog.languageHeader'
+          : 'project.metadata.resourceInformation.dialog.header',
         width: '500px',
-        data: {
-          customItemMetadata: currentCustomMetadata,
-        },
+        data: { customItemMetadata: currentCustomMetadata, languageOnly },
       })
       .onClose.pipe(
         filter((result) => !!result && (result.resourceTypeGeneral || result.language)),
         switchMap((result) => {
-          const updatedMetadata = {
-            ...currentCustomMetadata,
-            ...result,
-          };
+          const updatedMetadata = { ...currentCustomMetadata, ...result };
           return this.actions.updateCustomItemMetadata(this.resourceId, updatedMetadata);
         })
       )
       .subscribe(() => this.toastService.showSuccess('project.metadata.resourceInformation.updated'));
   }
 
-  onShowResourceInfo() {
+  onShowResourceInfo(): void {
     this.customDialogService.open(ResourceInfoTooltipComponent, {
       header: 'project.metadata.resourceInformation.tooltipDialog.header',
       width: '850px',
-      data: this.resourceNameMap.get(this.resourceType()),
     });
   }
 
@@ -496,17 +483,12 @@ export class MetadataComponent implements OnInit, OnDestroy {
       .open(FundingDialogComponent, {
         header: 'project.metadata.funding.dialog.header',
         width: '600px',
-        data: {
-          funders: currentCustomMetadata?.funders || [],
-        },
+        data: { funders: currentCustomMetadata?.funders || [] },
       })
       .onClose.pipe(
         filter((result) => !!result && result.fundingEntries),
         switchMap((result) => {
-          const updatedMetadata = {
-            ...currentCustomMetadata,
-            funders: result.fundingEntries,
-          };
+          const updatedMetadata = { ...currentCustomMetadata, funders: result.fundingEntries };
           return this.actions.updateCustomItemMetadata(this.resourceId, updatedMetadata);
         })
       )
@@ -542,7 +524,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   handleEditDoi(): void {
-    if (this.resourceType() === ResourceType.Project) {
+    if (this.isProjectType()) {
       this.customConfirmationService.confirmDelete({
         headerKey: 'project.metadata.doi.dialog.createConfirm.header',
         messageKey: 'project.metadata.doi.dialog.createConfirm.message',
@@ -617,7 +599,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     if (tab) {
       this.selectedTab.set(tab.id);
 
-      if (tab.type === 'cedar') {
+      if (tab.type === MetadataResourceEnum.CEDAR) {
         this.loadCedarRecord(tab.id);
       }
     }
