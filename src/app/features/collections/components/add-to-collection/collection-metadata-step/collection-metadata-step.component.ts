@@ -69,7 +69,7 @@ export class CollectionMetadataStepComponent {
   handleDiscardChanges() {
     const record = this.existingCedarRecord();
     this.cedarFormData.set(record?.metadata ? (record.metadata as Record<string, unknown>) : {});
-    this.syncCedarInstance(this.cedarEditor()?.nativeElement);
+    this.syncCedarEditor();
     this.collectionMetadataSaved.set(false);
   }
 
@@ -124,13 +124,24 @@ export class CollectionMetadataStepComponent {
 
       if (!record?.metadata && !saved) return;
 
-      this.syncCedarInstance(this.cedarEditor()?.nativeElement);
+      this.syncCedarEditor();
     });
 
     effect(() => {
       if (this.isStepActive() || !this.collectionMetadataSaved()) return;
       this.syncCedarInstance(this.cedarViewer()?.nativeElement);
     });
+  }
+
+  private syncCedarEditor(): void {
+    const editor = this.cedarEditor()?.nativeElement;
+    const template = this.cedarTemplate()?.template;
+    if (editor && template) {
+      editor.templateAndInstanceObject = {
+        templateObject: template,
+        instanceObject: untracked(() => this.cedarFormData()),
+      };
+    }
   }
 
   private syncCedarInstance(element: CedarEditorElement | undefined): void {
