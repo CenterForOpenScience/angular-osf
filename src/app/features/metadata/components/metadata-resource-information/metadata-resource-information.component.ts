@@ -19,9 +19,10 @@ import { BaseMetadataComponent } from '../base-metadata.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataResourceInformationComponent extends BaseMetadataComponent {
-  openEditResourceInformationDialog = output<void>();
+  readonly customItemMetadata = input.required<CustomItemMetadataRecord | null>();
+  readonly readonly = input<boolean>(false);
+  readonly languageOnly = input<boolean>(false);
 
-  customItemMetadata = input.required<CustomItemMetadataRecord | null>();
-  readonly = input<boolean>(false);
-  showResourceInfo = output<void>();
+  readonly openEditResourceInformationDialog = output<void>();
+  readonly showResourceInfo = output<void>();
 }

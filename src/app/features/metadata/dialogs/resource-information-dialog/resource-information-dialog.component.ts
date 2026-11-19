@@ -8,7 +8,10 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { LANGUAGE_CODES } from '@osf/shared/constants/language.const';
-import { RESOURCE_TYPE_GENERAL_OPTIONS } from '@osf/shared/constants/resource-type-general-options.const';
+import {
+  RESOURCE_TYPE_GENERAL_OPTIONS,
+  STUDY_REGISTRATION_RESOURCE_TYPE,
+} from '@osf/shared/constants/resource-type-general-options.const';
 
 import { ResourceInformationForm } from '../../models';
 
@@ -19,8 +22,9 @@ import { ResourceInformationForm } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceInformationDialogComponent implements OnInit {
-  dialogRef = inject(DynamicDialogRef);
-  config = inject(DynamicDialogConfig);
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly config = inject(DynamicDialogConfig);
+  readonly languageOnly = !!this.config.data?.languageOnly;
 
   resourceForm = new FormGroup<ResourceInformationForm>({
     resourceType: new FormControl(''),
@@ -33,18 +37,16 @@ export class ResourceInformationDialogComponent implements OnInit {
   ngOnInit(): void {
     const metadata = this.config.data?.customItemMetadata;
 
-    if (metadata) {
-      this.resourceForm.patchValue({
-        resourceType: metadata.resourceTypeGeneral || '',
-        resourceLanguage: metadata.language || '',
-      });
-    }
+    this.resourceForm.patchValue({
+      resourceType: this.languageOnly ? STUDY_REGISTRATION_RESOURCE_TYPE : metadata?.resourceTypeGeneral || '',
+      resourceLanguage: metadata?.language || '',
+    });
   }
 
   save(): void {
     const formValue = this.resourceForm.getRawValue();
     this.dialogRef.close({
-      resourceTypeGeneral: formValue.resourceType,
+      resourceTypeGeneral: this.languageOnly ? STUDY_REGISTRATION_RESOURCE_TYPE : formValue.resourceType,
       language: formValue.resourceLanguage,
     });
   }

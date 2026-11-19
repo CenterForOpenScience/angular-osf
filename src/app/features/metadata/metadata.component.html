@@ -12,7 +12,7 @@
     [tabs]="tabs()"
     [selectedTab]="selectedTab()"
     [selectedCedarTemplate]="selectedCedarTemplate()!"
-    [selectedCedarRecord]="selectedCedarRecord()!"
+    [selectedCedarRecord]="selectedCedarRecord()"
     [cedarFormReadonly]="cedarFormReadonly()"
     [canEdit]="hasWriteAccess() && !isProjectReadOnly()"
     (changeTab)="onTabChange($event)"
@@ -20,114 +20,123 @@
     (cedarFormChangeTemplate)="onCedarFormChangeTemplate()"
     (toggleFormEdit)="toggleEditMode()"
   >
-    <div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
-      <div class="col-12 lg:col-6 flex flex-column gap-4">
-        <osf-metadata-title
-          (openEditTitleDialog)="openEditTitleDialog()"
-          [title]="metadata()?.title!"
-          [readonly]="!hasWriteAccess()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        <osf-metadata-description
-          (openEditDescriptionDialog)="openEditDescriptionDialog()"
-          [description]="metadata()?.description!"
-          [readonly]="!hasWriteAccess()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        @if (isRegistrationType()) {
-          <osf-metadata-registry-info [type]="metadata()?.registrationSupplement" [provider]="registryProvider()" />
-        }
-
-        <osf-metadata-date-info [dateCreated]="metadata()?.dateCreated" [dateModified]="metadata()?.dateModified" />
-
-        <osf-metadata-contributors
-          (openEditContributorDialog)="openEditContributorDialog()"
-          [contributors]="bibliographicContributors()"
-          [isLoading]="isContributorsLoading()"
-          [hasMoreContributors]="hasMoreContributors()"
-          [readonly]="!hasWriteAccess()"
-          (loadMoreContributors)="handleLoadMoreContributors()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        <osf-metadata-resource-information
-          (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
-          (showResourceInfo)="onShowResourceInfo()"
-          [customItemMetadata]="customItemMetadata()!"
-          [readonly]="!hasWriteAccess()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        <osf-metadata-funding
-          (openEditFundingDialog)="openEditFundingDialog()"
-          [funders]="customItemMetadata()?.funders!"
-          [readonly]="!hasWriteAccess()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        <osf-metadata-affiliated-institutions
-          (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
-          [affiliatedInstitutions]="affiliatedInstitutions()"
-          [readonly]="!hasWriteAccess()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        @if (isProjectType()) {
-          <osf-metadata-collections
-            [projectSubmissions]="projectSubmissions()"
-            [isProjectSubmissionsLoading]="isProjectSubmissionsLoading()"
-            [cedarRecords]="cedarRecords()"
-            [cedarTemplates]="cedarTemplates()?.data ?? null"
+    @if (metadata(); as resourceMetadata) {
+      <div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
+        <div class="col-12 lg:col-6 flex flex-column gap-4">
+          <osf-metadata-title
+            (openEditTitleDialog)="openEditTitleDialog()"
+            [title]="resourceMetadata.title"
+            [readonly]="!hasWriteAccess()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
           />
-        }
+
+          <osf-metadata-description
+            (openEditDescriptionDialog)="openEditDescriptionDialog()"
+            [description]="resourceMetadata.description"
+            [readonly]="!hasWriteAccess()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
+          />
+
+          @if (isRegistrationType()) {
+            <osf-metadata-registry-info
+              [type]="resourceMetadata.registrationSupplement"
+              [provider]="registryProvider()"
+            />
+          }
+
+          <osf-metadata-date-info
+            [dateCreated]="resourceMetadata.dateCreated"
+            [dateModified]="resourceMetadata.dateModified"
+          />
+
+          <osf-metadata-contributors
+            (openEditContributorDialog)="openEditContributorDialog()"
+            [contributors]="bibliographicContributors()"
+            [isLoading]="isContributorsLoading()"
+            [hasMoreContributors]="hasMoreContributors()"
+            [readonly]="!hasWriteAccess()"
+            (loadMoreContributors)="handleLoadMoreContributors()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
+          />
+
+          <osf-metadata-resource-information
+            (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
+            (showResourceInfo)="onShowResourceInfo()"
+            [customItemMetadata]="customItemMetadata()"
+            [readonly]="!hasWriteAccess()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
+            [languageOnly]="isRegistrationType()"
+          />
+
+          <osf-metadata-funding
+            (openEditFundingDialog)="openEditFundingDialog()"
+            [funders]="customItemMetadata()?.funders"
+            [readonly]="!hasWriteAccess()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
+          />
+
+          <osf-metadata-affiliated-institutions
+            (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
+            [affiliatedInstitutions]="affiliatedInstitutions()"
+            [readonly]="!hasWriteAccess()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
+          />
+
+          @if (isProjectType()) {
+            <osf-metadata-collections
+              [projectSubmissions]="projectSubmissions()"
+              [isProjectSubmissionsLoading]="isProjectSubmissionsLoading()"
+              [cedarRecords]="cedarRecords()"
+              [cedarTemplates]="cedarTemplates()?.data ?? null"
+            />
+          }
+        </div>
+
+        <div class="col-12 lg:col-6 flex flex-column gap-4">
+          <osf-metadata-license
+            (openEditLicenseDialog)="openEditLicenseDialog()"
+            [license]="resourceMetadata.license"
+            [readonly]="!hasWriteAccess()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
+          />
+
+          <osf-metadata-publication-doi
+            (openEditPublicationDoiDialog)="handleEditDoi()"
+            [hideEditDoi]="hideEditDoi() || !hasWriteAccess()"
+            [identifiers]="resourceMetadata.identifiers"
+            [publicationDoi]="resourceMetadata.publicationDoi || null"
+            [resourceType]="resourceType()"
+            [disabled]="isProjectReadOnly()"
+            [disabledButtonTooltip]="disabledButtonTooltip() | translate"
+          />
+
+          @if (isRegistrationType()) {
+            <osf-metadata-registration-doi [identifiers]="resourceMetadata.identifiers" />
+          }
+
+          <osf-metadata-tags
+            [tags]="resourceMetadata.tags || []"
+            (tagsChanged)="onTagsChanged($event)"
+            [readonly]="isTagsReadOnly()"
+          />
+
+          <osf-metadata-subjects
+            (getSubjectChildren)="getSubjectChildren($event)"
+            (searchSubjects)="searchSubjects($event)"
+            (updateSelectedSubjects)="updateSelectedSubjects($event)"
+            [isSubjectsUpdating]="isSubjectsUpdating()"
+            [selectedSubjects]="selectedSubjects()"
+            [readonly]="isSubjectsReadOnly()"
+          />
+        </div>
       </div>
-
-      <div class="col-12 lg:col-6 flex flex-column gap-4">
-        <osf-metadata-license
-          (openEditLicenseDialog)="openEditLicenseDialog()"
-          [license]="metadata()?.license!"
-          [readonly]="!hasWriteAccess()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        <osf-metadata-publication-doi
-          (openEditPublicationDoiDialog)="handleEditDoi()"
-          [hideEditDoi]="hideEditDoi() || !hasWriteAccess()"
-          [identifiers]="metadata()?.identifiers!"
-          [publicationDoi]="metadata()?.publicationDoi || null"
-          [resourceType]="resourceType()"
-          [disabled]="isProjectReadOnly()"
-          [disabledButtonTooltip]="disabledButtonTooltip() | translate"
-        />
-
-        @if (isRegistrationType()) {
-          <osf-metadata-registration-doi [identifiers]="metadata()?.identifiers!"></osf-metadata-registration-doi>
-        }
-
-        <osf-metadata-tags
-          [tags]="metadata()?.tags || []"
-          (tagsChanged)="onTagsChanged($event)"
-          [readonly]="isTagsReadOnly()"
-        ></osf-metadata-tags>
-
-        <osf-metadata-subjects
-          (getSubjectChildren)="getSubjectChildren($event)"
-          (searchSubjects)="searchSubjects($event)"
-          (updateSelectedSubjects)="updateSelectedSubjects($event)"
-          [isSubjectsUpdating]="isSubjectsUpdating()!"
-          [selectedSubjects]="selectedSubjects()"
-          [readonly]="isSubjectsReadOnly()"
-        />
-      </div>
-    </div>
+    }
   </osf-metadata-tabs>
 </section>
