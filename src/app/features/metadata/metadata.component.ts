@@ -205,9 +205,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     () => this.isProjectType() && (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
   );
 
-  readonly isTagsReadOnly = computed(
-    () => this.isProjectReadOnly() || (this.isRegistrationType() ? !this.hasAdminAccess() : !this.hasWriteAccess())
-  );
+  readonly isTagsReadOnly = computed(() => this.isProjectReadOnly() || !this.hasWriteAccess());
 
   readonly isSubjectsReadOnly = computed(() => this.isProjectReadOnly() || !this.hasAdminAccess());
 

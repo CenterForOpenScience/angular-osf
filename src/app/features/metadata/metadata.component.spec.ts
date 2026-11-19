@@ -244,7 +244,7 @@ describe('MetadataComponent', () => {
     expect(component.disabledButtonTooltip()).toBe('common.errorMessages.actionUnavailable');
   });
 
-  it('should require admin access for registration tags', () => {
+  it('should allow write users to edit registration tags', () => {
     setup({
       resourceType: ResourceType.Registration,
       selectorOverrides: [
@@ -253,7 +253,7 @@ describe('MetadataComponent', () => {
       ],
     });
 
-    expect(component.isTagsReadOnly()).toBe(true);
+    expect(component.isTagsReadOnly()).toBe(false);
     expect(component.isSubjectsReadOnly()).toBe(true);
   });
 
