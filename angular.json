@@ -115,11 +115,6 @@
               "outputHashing": "all",
               "optimization": true
             },
-            "analyze-bundle": {
-              "sourceMap": true,
-              "outputHashing": "none",
-              "namedChunks": true
-            },
             "development": {
               "outputMode": "static",
               "server": false,
