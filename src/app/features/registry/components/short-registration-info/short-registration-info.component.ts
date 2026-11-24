@@ -23,17 +23,20 @@ import { RegistrationOverviewModel } from '../../models';
 export class ShortRegistrationInfoComponent {
   private readonly environment = inject(ENVIRONMENT);
 
-  registration = input.required<RegistrationOverviewModel>();
+  readonly registration = input.required<RegistrationOverviewModel>();
+  readonly showAssociatedProject = input(true);
 
-  bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
-  isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
-  hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
+  readonly bibliographicContributors = select(ContributorsSelectors.getBibliographicContributors);
+  readonly isBibliographicContributorsLoading = select(ContributorsSelectors.isBibliographicContributorsLoading);
+  readonly hasMoreBibliographicContributors = select(ContributorsSelectors.hasMoreBibliographicContributors);
 
   private readonly actions = createDispatchMap({
     loadMoreBibliographicContributors: LoadMoreBibliographicContributors,
   });
 
-  associatedProjectUrl = computed(() => `${this.environment.webUrl}/${this.registration().associatedProjectId}`);
+  readonly associatedProjectUrl = computed(
+    () => `${this.environment.webUrl}/${this.registration().associatedProjectId}`
+  );
 
   handleLoadMoreContributors(): void {
     this.actions.loadMoreBibliographicContributors(this.registration()?.id, ResourceType.Registration);

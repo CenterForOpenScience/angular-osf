@@ -48,6 +48,25 @@ describe('ShortRegistrationInfoComponent', () => {
     expect(fixture.componentInstance.associatedProjectUrl()).toBe(expectedUrl);
   });
 
+  it('should show associated project by default', () => {
+    const fixture = TestBed.createComponent(ShortRegistrationInfoComponent);
+    fixture.componentRef.setInput('registration', MOCK_REGISTRATION_OVERVIEW_MODEL);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('[data-test-short-registration-info-associated-project]')
+    ).not.toBeNull();
+  });
+
+  it('should hide associated project when showAssociatedProject is false', () => {
+    const fixture = TestBed.createComponent(ShortRegistrationInfoComponent);
+    fixture.componentRef.setInput('registration', MOCK_REGISTRATION_OVERVIEW_MODEL);
+    fixture.componentRef.setInput('showAssociatedProject', false);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[data-test-short-registration-info-associated-project]')).toBeNull();
+  });
+
   it('should dispatch LoadMoreBibliographicContributors', () => {
     const fixture = TestBed.createComponent(ShortRegistrationInfoComponent);
     fixture.componentRef.setInput('registration', MOCK_REGISTRATION_OVERVIEW_MODEL);
