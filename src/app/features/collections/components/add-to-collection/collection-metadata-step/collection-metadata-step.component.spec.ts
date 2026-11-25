@@ -130,7 +130,7 @@ describe('CollectionMetadataStepComponent', () => {
     expect(component.cedarFormData()).toEqual({ field: 'value' });
   });
 
-  it('should load template and existing record metadata together when step opens', () => {
+  it('should load existing record metadata with the template and then on its own to keep checkbox answers when step opens', () => {
     const editor = {} as CedarEditorElement;
     setup({
       cedarTemplate: mockCedarTemplate,
@@ -139,11 +139,12 @@ describe('CollectionMetadataStepComponent', () => {
       editor,
     });
 
+    expect(Object.keys(editor)).toEqual(['templateAndInstanceObject', 'instanceObject']);
     expect(editor.templateAndInstanceObject).toEqual({
       templateObject: mockCedarTemplate.template,
       instanceObject: { field: 'value' },
     });
-    expect(editor.instanceObject).toBeUndefined();
+    expect(editor.instanceObject).toEqual({ field: 'value' });
   });
 
   it('should load saved metadata together with template when step is reopened', () => {
@@ -159,6 +160,7 @@ describe('CollectionMetadataStepComponent', () => {
       templateObject: mockCedarTemplate.template,
       instanceObject: { field: 'saved' },
     });
+    expect(editor.instanceObject).toEqual({ field: 'saved' });
   });
 
   it('should load existing record metadata together with template on discard', () => {
@@ -172,6 +174,7 @@ describe('CollectionMetadataStepComponent', () => {
       templateObject: mockCedarTemplate.template,
       instanceObject: { field: 'value' },
     });
+    expect(editor.instanceObject).toEqual({ field: 'value' });
   });
 
   it('should populate cedarFormData from existingCedarRecord', () => {

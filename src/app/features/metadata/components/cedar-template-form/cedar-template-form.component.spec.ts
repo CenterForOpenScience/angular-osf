@@ -104,18 +104,19 @@ describe('CedarTemplateFormComponent', () => {
     expect(component.formData()).toEqual(initialFormData);
   });
 
-  it('should load template and record metadata together into the editor', () => {
+  it('should load record metadata with the template and then on its own to keep checkbox answers', () => {
     const editor = {} as CedarEditorElement;
     vi.spyOn(component, 'cedarEditor').mockReturnValue({ nativeElement: editor } as never);
 
     fixture.componentRef.setInput('existingRecord', mockRecord);
     fixture.detectChanges();
 
+    expect(Object.keys(editor)).toEqual(['templateAndInstanceObject', 'instanceObject']);
     expect(editor.templateAndInstanceObject).toEqual({
       templateObject: mockTemplate.template,
       instanceObject: mockRecord.metadata,
     });
-    expect(editor.instanceObject).toBeUndefined();
+    expect(editor.instanceObject).toEqual(mockRecord.metadata);
   });
 
   it('should publish on submit when the editor report is valid', () => {
