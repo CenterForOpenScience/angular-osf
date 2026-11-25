@@ -438,6 +438,7 @@
       "editAndResubmit": "Edit And Resubmit",
       "embed": "Embed",
       "filter": "Filter",
+      "goBack": "Go back",
       "hide": "Hide",
       "leaveThisView": "Leave this view",
       "loadMore": "Load more",
@@ -2165,6 +2166,11 @@
       },
       "view": "View"
     }
+  },
+  "redirectPage": {
+    "header": "You're leaving OSF.",
+    "message": "You’re about to leave the OSF. The site you’re about to visit has its own terms and privacy policy. You will be automatically redirected in a moment.",
+    "altText": "You're leaving OSF"
   },
   "registries": {
     "addRegistration": "Add a Registration",
