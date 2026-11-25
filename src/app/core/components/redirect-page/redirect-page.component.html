@@ -1,0 +1,26 @@
+<section
+  class="container flex flex-column flex-1 my-7 mx-3 p-3 align-items-center md:p-4 md:flex-row md:justify-content-between"
+>
+  <img
+    class="redirect-image w-8 md:w-6"
+    ngSrc="assets/images/laptop-books.png"
+    width="500"
+    height="346"
+    priority
+    [alt]="'redirectPage.altText' | translate"
+  />
+
+  <div class="flex flex-column align-items-center m-4 md:align-items-start">
+    <h2>{{ 'redirectPage.header' | translate }}</h2>
+    <p class="mt-4">{{ 'redirectPage.message' | translate }}</p>
+
+    <div class="flex flex-column mt-4 gap-4 md:flex-row md:justify-content-start">
+      <a class="p-button font-bold no-underline" [href]="redirectDestination()">
+        {{ 'common.buttons.continue' | translate }}
+      </a>
+      <p-button severity="info" (onClick)="goBack()">
+        {{ 'common.buttons.goBack' | translate }}
+      </p-button>
+    </div>
+  </div>
+</section>

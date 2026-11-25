@@ -1,0 +1,19 @@
+@use "styles/mixins" as mix;
+
+:host {
+  @include mix.flex-center;
+  flex: 1;
+  background: var(--gradient-3);
+}
+
+.container {
+  background: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px var(--grey-outline);
+  color: var(--dark-blue-1);
+}
+
+.redirect-image {
+  height: auto;
+  object-fit: contain;
+}
