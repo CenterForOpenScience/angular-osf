@@ -141,6 +141,7 @@ export class CollectionMetadataStepComponent {
         templateObject: template,
         instanceObject: untracked(() => this.cedarFormData()),
       };
+      this.syncCedarInstance(editor);
     }
   }
 

@@ -114,7 +114,10 @@ export class CedarTemplateFormComponent {
 
     if (metadata) {
       const template = this.template()?.template;
-      if (editor && template) editor.templateAndInstanceObject = { templateObject: template, instanceObject: metadata };
+      if (editor && template) {
+        editor.templateAndInstanceObject = { templateObject: template, instanceObject: metadata };
+        editor.instanceObject = metadata;
+      }
       if (viewer) viewer.instanceObject = metadata;
     }
 
