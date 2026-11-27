@@ -45,11 +45,15 @@ export class RegistriesService {
   createDraft(
     registrationSchemaId: string,
     provider: string,
-    projectId?: string | undefined
+    acceptableUseConfirmed: boolean,
+    projectId?: string
   ): Observable<DraftRegistrationModel> {
     const payload = {
       data: {
         type: 'draft_registrations',
+        attributes: {
+          acceptable_use_confirmed: acceptableUseConfirmed,
+        },
         relationships: {
           branched_from: projectId
             ? {

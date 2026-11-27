@@ -111,6 +111,7 @@ export class NewRegistrationComponent {
       .createDraft({
         registrationSchemaId: providerSchema!,
         provider: this.providerId,
+        acceptableUseConfirmed: this.policyAcknowledged(),
         projectId: this.fromProject() ? (project ?? undefined) : undefined,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))

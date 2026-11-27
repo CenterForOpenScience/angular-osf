@@ -170,7 +170,12 @@ describe('NewRegistrationComponent', () => {
 
     expect(component.isCreateDraftDisabled()).toBe(false);
     expect(store.dispatch).toHaveBeenCalledWith(
-      new CreateDraft({ registrationSchemaId: 'schema-1', provider: 'prov-1', projectId: 'proj-1' })
+      new CreateDraft({
+        registrationSchemaId: 'schema-1',
+        provider: 'prov-1',
+        acceptableUseConfirmed: true,
+        projectId: 'proj-1',
+      })
     );
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/registries/drafts/', 'draft-1', 'metadata']);
   });

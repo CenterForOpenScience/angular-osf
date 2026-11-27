@@ -29,7 +29,14 @@ export class GetProjects {
 export class CreateDraft {
   static readonly type = '[Registries]  Create Draft';
 
-  constructor(public payload: { registrationSchemaId: string; provider: string; projectId?: string }) {}
+  constructor(
+    public payload: {
+      registrationSchemaId: string;
+      provider: string;
+      acceptableUseConfirmed: boolean;
+      projectId?: string;
+    }
+  ) {}
 }
 
 export class FetchDraft {
