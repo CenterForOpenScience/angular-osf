@@ -5,17 +5,16 @@
         <osf-icon iconClass="text-red-500 fas fa-hourglass-half mr-2 text-4xl"></osf-icon>
         {{ 'registry.archiving.title' | translate }}
       </h2>
-      <p class="text-red-500 mb-2 font-bold pl-5">{{ 'registry.archiving.pleaseNote' | translate }}</p>
-      <p class="pl-5">
+      <p class="ml-6">
         {{ 'registry.archiving.description' | translate }}
-        <a [href]="'mailto:' + supportEmail">{{ supportEmail }}</a>
+        <a class="font-bold" [href]="'mailto:' + supportEmail">{{ supportEmail }}</a>
         {{ 'registry.archiving.descriptionEnd' | translate }}
       </p>
     </div>
     <p-divider layout="vertical" class="hidden lg:block" />
     <p-divider class="lg:hidden" />
     <div class="lg:w-6">
-      <osf-short-registration-info [registration]="registration()"></osf-short-registration-info>
+      <osf-short-registration-info [registration]="registration()" [showAssociatedProject]="false" />
     </div>
   </div>
 </p-card>

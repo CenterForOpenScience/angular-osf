@@ -32,8 +32,10 @@
     <p>{{ registration().dateCreated | date }}</p>
   </div>
 
-  <div class="mb-3 w-6">
-    <h4>{{ 'registry.overview.metadata.associatedProject' | translate }}</h4>
-    <a class="font-bold" [routerLink]="['/', registration().associatedProjectId]">{{ associatedProjectUrl() }}</a>
-  </div>
+  @if (showAssociatedProject()) {
+    <div class="mb-3 w-6" data-test-short-registration-info-associated-project>
+      <h4>{{ 'registry.overview.metadata.associatedProject' | translate }}</h4>
+      <a class="font-bold" [routerLink]="['/', registration().associatedProjectId]">{{ associatedProjectUrl() }}</a>
+    </div>
+  }
 </div>

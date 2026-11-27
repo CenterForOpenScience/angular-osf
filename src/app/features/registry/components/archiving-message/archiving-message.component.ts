@@ -21,7 +21,7 @@ import { ShortRegistrationInfoComponent } from '../short-registration-info/short
 export class ArchivingMessageComponent {
   private readonly environment = inject(ENVIRONMENT);
 
-  registration = input.required<RegistrationOverviewModel>();
+  readonly registration = input.required<RegistrationOverviewModel>();
 
   readonly supportEmail = this.environment.supportEmail;
 }
