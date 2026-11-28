@@ -3,7 +3,6 @@
   "version": "26.22.1",
   "scripts": {
     "ng": "ng",
-    "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks",
     "build": "ng build",
     "build:ssr": "ng build --configuration=ssr",
     "check:config": "node ./docker/check-config.js",
@@ -41,13 +40,13 @@
     "@angular/platform-browser-dynamic": "^21.2.25",
     "@angular/platform-server": "^21.2.25",
     "@angular/router": "^21.2.25",
-    "@angular/ssr": "^21.2.26",
+    "@angular/ssr": "^21.2.29",
     "@centerforopenscience/markdown-it-atrules": "^0.1.2",
     "@citation-js/core": "^0.7.21",
     "@citation-js/plugin-csl": "^0.7.21",
     "@fortawesome/fontawesome-free": "^7.3.1",
     "@mdit/plugin-img-size": "0.23.1",
-    "@newrelic/browser-agent": "^1.323.0",
+    "@newrelic/browser-agent": "^1.324.1",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "@ngxs/store": "^21.0.0",
@@ -60,8 +59,8 @@
     "cedar-embeddable-editor": "1.5.0",
     "chart.js": "^4.5.1",
     "diff": "^8.0.3",
-    "express": "^5.1.0",
-    "markdown-it": "^14.1.1",
+    "express": "^5.3.0",
+    "markdown-it": "^14.3.3",
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-toc-done-right": "^4.2.0",
     "markdown-it-video": "^0.6.3",
@@ -78,8 +77,8 @@
     "@angular-eslint/eslint-plugin": "^21.4.0",
     "@angular-eslint/eslint-plugin-template": "^21.4.0",
     "@angular-eslint/template-parser": "^21.4.0",
-    "@angular/build": "^21.2.26",
-    "@angular/cli": "^21.2.26",
+    "@angular/build": "^21.2.29",
+    "@angular/cli": "^21.2.29",
     "@angular/compiler-cli": "^21.2.25",
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
@@ -89,7 +88,7 @@
     "@types/gapi.auth2": "^0.0.61",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.17.19",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.12",
     "angular-eslint": "^21.4.0",
     "angularx-qrcode": "^21.0.4",
     "eslint": "^10.11.0",
@@ -102,14 +101,15 @@
     "lint-staged": "^16.3.2",
     "ng-mocks": "^14.18.1",
     "prettier": "3.8.1",
-    "source-map-explorer": "^2.5.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.71.0",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "lint-staged": {
+    "**/*.{ts,html,scss,md,json,yml,yaml}": [
+      "prettier --write"
+    ],
     "**/*.{ts,html,scss}": [
-      "prettier --write",
       "eslint --fix"
     ]
   },
