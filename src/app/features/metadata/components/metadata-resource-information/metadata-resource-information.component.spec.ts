@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
 
@@ -12,7 +13,7 @@ describe('MetadataResourceInformationComponent', () => {
 
   const mockCustomItemMetadata: CustomItemMetadataRecord = {
     language: 'eng',
-    resourceTypeGeneral: 'dataset',
+    resourceTypeGeneral: 'Dataset',
     funders: [],
   };
 
@@ -25,8 +26,9 @@ describe('MetadataResourceInformationComponent', () => {
     fixture = TestBed.createComponent(MetadataResourceInformationComponent);
     fixture.componentRef.setInput('customItemMetadata', mockCustomItemMetadata);
     fixture.componentRef.setInput('readonly', false);
-
+    fixture.componentRef.setInput('languageOnly', false);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -35,12 +37,10 @@ describe('MetadataResourceInformationComponent', () => {
 
   it('should initialize with default values', () => {
     expect(component.readonly()).toBe(false);
+    expect(component.languageOnly()).toBe(false);
   });
 
   it('should set customItemMetadata input', () => {
-    fixture.componentRef.setInput('customItemMetadata', mockCustomItemMetadata);
-    fixture.detectChanges();
-
     expect(component.customItemMetadata()).toEqual(mockCustomItemMetadata);
   });
 
@@ -51,19 +51,27 @@ describe('MetadataResourceInformationComponent', () => {
     expect(component.readonly()).toBe(true);
   });
 
-  it('should set disabled inputs', () => {
+  it('should disable edit button when disabled', () => {
     fixture.componentRef.setInput('disabled', true);
-    fixture.componentRef.setInput('disabledButtonTooltip', 'Editing is disabled');
     fixture.detectChanges();
 
-    expect(component.disabled()).toBe(true);
-    expect(component.disabledButtonTooltip()).toBe('Editing is disabled');
+    const editButton = fixture.debugElement.query(By.css('[data-test-edit-resource-information-button]'));
+
+    expect(editButton.componentInstance.disabled).toBe(true);
   });
 
   it('should emit openEditResourceInformationDialog event', () => {
     const emitSpy = vi.spyOn(component.openEditResourceInformationDialog, 'emit');
 
     component.openEditResourceInformationDialog.emit();
+
+    expect(emitSpy).toHaveBeenCalled();
+  });
+
+  it('should emit showResourceInfo event', () => {
+    const emitSpy = vi.spyOn(component.showResourceInfo, 'emit');
+
+    component.showResourceInfo.emit();
 
     expect(emitSpy).toHaveBeenCalled();
   });

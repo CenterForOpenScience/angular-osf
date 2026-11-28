@@ -1,7 +1,7 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
@@ -14,7 +14,5 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 })
 export class ResourceInfoTooltipComponent {
   readonly dialogRef = inject(DynamicDialogRef);
-  readonly config = inject(DynamicDialogConfig);
-
-  readonly resourceName = this.config.data;
+  readonly resourceName = 'project';
 }

@@ -1,14 +1,24 @@
+@let language = customItemMetadata()?.language;
+@let resourceTypeGeneral = customItemMetadata()?.resourceTypeGeneral;
+
 <p-card>
   <div class="flex justify-content-between align-items-center">
     <h2>
-      {{ 'project.overview.metadata.resourceInformation' | translate }}
-      <p-button
-        icon="fas fa-info-circle blue-icon"
-        severity="secondary"
-        text
-        (onClick)="showResourceInfo.emit()"
-        [ariaLabel]="'project.metadata.resourceInformation.tooltipDialog.header' | translate"
-      ></p-button>
+      {{
+        (languageOnly()
+          ? 'project.overview.metadata.resourceLanguage'
+          : 'project.overview.metadata.resourceInformation'
+        ) | translate
+      }}
+      @if (!languageOnly()) {
+        <p-button
+          icon="fas fa-info-circle blue-icon"
+          severity="secondary"
+          text
+          (onClick)="showResourceInfo.emit()"
+          [ariaLabel]="'project.metadata.resourceInformation.tooltipDialog.header' | translate"
+        ></p-button>
+      }
     </h2>
 
     @if (!readonly()) {
@@ -25,17 +35,29 @@
   </div>
 
   <div class="mt-4">
-    @if (customItemMetadata()?.resourceTypeGeneral || customItemMetadata()?.language) {
-      <div class="flex-column flex gap-2">
-        <p class="inline-block font-bold" data-test-display-resource-type-general>
-          <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>
-          <span>{{ customItemMetadata()?.resourceTypeGeneral | resourceTypeGeneralLabel }}</span>
-        </p>
-
+    @if (languageOnly()) {
+      @if (language) {
         <p class="inline-block font-bold" data-test-display-resource-language>
-          <span> {{ 'project.overview.metadata.resourceLanguage' | translate }}: </span>
-          <span>{{ customItemMetadata()?.language | languageLabel }}</span>
+          {{ language | languageLabel }}
         </p>
+      } @else {
+        <p>{{ 'project.overview.metadata.languageNotProvided' | translate }}</p>
+      }
+    } @else if (resourceTypeGeneral || language) {
+      <div class="flex-column flex gap-2">
+        @if (resourceTypeGeneral) {
+          <p class="inline-block font-bold" data-test-display-resource-type-general>
+            <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>
+            <span>{{ resourceTypeGeneral | resourceTypeGeneralLabel }}</span>
+          </p>
+        }
+
+        @if (language) {
+          <p class="inline-block font-bold" data-test-display-resource-language>
+            <span> {{ 'project.overview.metadata.resourceLanguage' | translate }}: </span>
+            <span>{{ language | languageLabel }}</span>
+          </p>
+        }
       </div>
     } @else {
       <p>{{ 'project.overview.metadata.noResourceInformation' | translate }}</p>

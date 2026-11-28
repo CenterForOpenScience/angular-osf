@@ -1890,7 +1890,8 @@
       },
       "resourceInformation": {
         "dialog": {
-          "header": "Edit Resource Information"
+          "header": "Edit Resource Information",
+          "languageHeader": "Edit Resource Language"
         },
         "tooltipDialog": {
           "dataTypeLink": "Datacite Resource Types",
@@ -2062,6 +2063,7 @@
         "noProjectDoi": "No Project DOI",
         "noPublicationDoi": "No Publication DOI",
         "noLanguage": "No language",
+        "languageNotProvided": "Language not provided.",
         "noResourceInformation": "No resource information available",
         "noResourceType": "No resource type",
         "noSupplements": "No supplements",
